@@ -1,15 +1,10 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { InteractionManager } from "pixi.js";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
-import {
-  AnimateMapActionTypes,
-  setAnimateMapFireBarrel,
-} from "store/actions/AnimateMap";
+import { AnimateMapActionTypes } from "store/actions/AnimateMap";
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { GameInstance } from "../../GameInstance";
-import { Barrel } from "../graphics/Barrel";
+import EntityFactory from "../entities/EntityFactory";
 import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
 import { PlayerNode } from "../nodes/PlayerNode";
@@ -19,49 +14,62 @@ export class FirebarrelSystem extends System {
   private player?: NodeList<PlayerNode>;
   private barrels?: NodeList<BarrelNode>;
 
-  private _unsubscribeSetPointer!: () => void;
+  private _unsubscribeFirebarrelSet!: () => void;
+  private _unsubscribeFirebarrelEnter!: () => void;
+  private _unsubscribeFirebarrelExit!: () => void;
+
+  private creator: EntityFactory;
+  private waitingEnterFirebarrelId?: number;
+  private WAITING_ENTER_FIREBARREL_TIMEOUT = 15000;
+
+  // private _unsubscribeSetPointer!: () => void;
+  constructor(creator: EntityFactory) {
+    super();
+    this.creator = creator;
+  }
 
   addToEngine(engine: Engine) {
     this.bots = engine.getNodeList(BotNode);
     this.player = engine.getNodeList(PlayerNode);
     this.barrels = engine.getNodeList(BarrelNode);
-    this.barrels?.nodeAdded.add(this.barrelNodeAdded);
-    this.barrels?.nodeRemoved.add(this.barrelNodeRemoved);
+    // this.barrels?.nodeAdded.add(this.barrelNodeAdded);
+    // this.barrels?.nodeRemoved.add(this.barrelNodeRemoved);
 
-    this._unsubscribeSetPointer = subscribeActionAfter(
-      AnimateMapActionTypes.SET_POINTER,
+    this._unsubscribeFirebarrelEnter = subscribeActionAfter(
+      AnimateMapActionTypes.ENTER_FIREBARREL,
       () => {
-        const renderer = GameInstance.instance.getRenderer();
-        const map = GameInstance.instance.getMapContainer();
-
-        if (renderer && map) {
-          const interaction = renderer.plugins
-            .interaction as InteractionManager;
-          const pointer = interaction.mouse.global;
-          const hitTest = interaction.hitTest(pointer, map);
-
-          const target = Array.isArray(hitTest) ? hitTest[0] : hitTest;
-
-          if (target instanceof Barrel) {
-            GameInstance.instance
-              .getStore()
-              .dispatch(setAnimateMapFireBarrel(target.name)); // name === barrel.id
+        clearTimeout(this.waitingEnterFirebarrelId);
+        // this.creator.enterFirebarrel(barrelId);
+      }
+    );
+    this._unsubscribeFirebarrelSet = subscribeActionAfter(
+      AnimateMapActionTypes.SET_FIREBARREL,
+      () => {
+        this.waitingEnterFirebarrelId = setTimeout(() => {
+          if (this.player) {
+            this.creator.exitFirebarrel();
+            console.log("exit firebarrel 2");
           }
-        }
+        }, this.WAITING_ENTER_FIREBARREL_TIMEOUT);
+      }
+    );
+    this._unsubscribeFirebarrelExit = subscribeActionAfter(
+      AnimateMapActionTypes.EXIT_FIREBARREL,
+      () => {
+        this.creator.exitFirebarrel();
+        console.log("exit firebarrel 1");
       }
     );
 
     for (let node = this.barrels?.head; node; node = node.next) {
       this.barrelNodeAdded(node);
     }
-
-    // setTimeout(() => {
-    //   this.updateDebug();
-    // }, 3000);
   }
 
   removeFromEngine(engine: Engine) {
-    this._unsubscribeSetPointer();
+    this._unsubscribeFirebarrelSet();
+    this._unsubscribeFirebarrelEnter();
+    this._unsubscribeFirebarrelExit();
 
     this.barrels?.nodeAdded.remove(this.barrelNodeAdded);
     this.barrels?.nodeRemoved.remove(this.barrelNodeRemoved);
@@ -95,7 +103,6 @@ export class FirebarrelSystem extends System {
   }
 
   private barrelNodeDraw(node: BarrelNode): void {
-    console.log("barrelNodeDraw", node.barrel.model.data.connectedUsers.length);
     // to place bots around barrel
     if (node.barrel.model.data.connectedUsers.length === 0) {
       return;

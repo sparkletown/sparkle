@@ -269,6 +269,7 @@ export interface AuditoriumVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   template: VenueTemplate.animatemap;
   playerioGameId: string;
+  playerioAdvancedMode: boolean;
 }
 
 export interface Question {

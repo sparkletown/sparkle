@@ -82,7 +82,10 @@ export class TooltipSystem extends System {
       this.viewport.head.viewport.zoomViewport *
       1.1;
     const delta =
-      (k + tooltipHeight / 2) * (node.tooltip.position === "bottom" ? 1 : -1);
+      node.tooltip.position === "center"
+        ? 0
+        : (k + tooltipHeight / 2) *
+          (node.tooltip.position === "bottom" ? 1 : -1);
 
     node.tooltip.view?.position.set(
       point.x - node.tooltip.view.width / 2,

@@ -4,10 +4,10 @@ export class VenueTooltipEnter extends Sprite {
   constructor(public text = "default tooltip", public backgroundColor: number) {
     super();
 
-    this.drawTooltipElement();
+    this.draw();
   }
 
-  private drawTooltipElement(): void {
+  private draw(): void {
     const style = new TextStyle({
       fill: "#ede8fe",
       fontSize: 14,

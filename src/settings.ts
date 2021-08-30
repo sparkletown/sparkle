@@ -20,21 +20,19 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapBackground from "assets/images/bm-default-map-background.jpg";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
-export const SPARKLE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklespaces.com/terms-of-use/";
-export const SPARKLE_PRIVACY_POLICY =
-  "https://sparklespaces.com/privacy-policy/";
-
 // Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
+  "https://sparklever.se/terms-of-use/";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
-export const PLATFORM_BRAND_NAME = "Sparkle";
+export const PLATFORM_BRAND_NAME = "SparkleVerse";
+
+export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
+export const SPARKLE_TERMS_AND_CONDITIONS_URL = SPARKLEVERSE_TERMS_AND_CONDITIONS_URL;
+export const SPARKLE_PRIVACY_POLICY = SPARKLEVERSE_PRIVACY_POLICY;
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -667,10 +665,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  "/avatars/avatar-01.png",
+  "/avatars/avatar-05.png",
+  "/avatars/avatar-07.png",
+  "/avatars/avatar-08.png",
+  "/avatars/avatar-10.png",
+  "/avatars/avatar-12.png",
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms

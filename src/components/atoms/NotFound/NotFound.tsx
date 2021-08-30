@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -8,12 +9,20 @@ import TV_IMAGE from "assets/images/old-tv-404.png";
 
 import "./NotFound.scss";
 
-export const NotFound: React.FC = ({ children }) => {
+export interface NotFoundProps {
+  fullScreen?: boolean;
+}
+
+export const NotFound: React.FC<NotFoundProps> = ({ fullScreen }) => {
   const history = useHistory();
   const navigateBack = useCallback(() => history.goBack(), [history]);
+  const componentClasses = classNames({
+    NotFound: true,
+    "NotFound--full-screen": fullScreen,
+  });
 
   return (
-    <div className="NotFound">
+    <div className={componentClasses}>
       <div className="NotFound__message-container">
         <SparkleLogo className="NotFound__logo" />
         <img

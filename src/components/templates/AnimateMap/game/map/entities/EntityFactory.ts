@@ -1,8 +1,8 @@
 import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
+import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
 import {
-  PlayerModel,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
@@ -10,11 +10,15 @@ import {
 
 import { Point } from "types/utility";
 
+import { GameConfig } from "../../../configs/GameConfig";
+import { ImageToCanvas } from "../../commands/ImageToCanvas";
+import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
+import { BarrelComponent } from "../components/BarrelComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
@@ -24,6 +28,7 @@ import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
 import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
+import { MotionTeleportComponent } from "../components/MotionTeleportComponent";
 import { MovementComponent } from "../components/MovementComponent";
 import { PlayerComponent } from "../components/PlayerComponent";
 import { PositionComponent } from "../components/PositionComponent";
@@ -191,9 +196,13 @@ export default class EntityFactory {
 
   public createBubble(userId: string, text: string): Entity | null {
     const bot = this.getBotNode(userId);
+    const player = this.getPlayerNode();
     if (bot) {
       bot.entity.add(new BubbleComponent(text, bot.bot.data.data.dotColor));
       return bot.entity;
+    }
+    if (player) {
+      player.entity.add(new BubbleComponent(text));
     }
     return null;
   }
@@ -203,12 +212,6 @@ export default class EntityFactory {
   }
 
   public createPlayer(user: ReplicatedUser): Entity {
-    let avatarUrlString = user.data.avatarUrlString;
-
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
-
     // HACK
     user.data.cycle = avatarCycles[0];
 
@@ -216,7 +219,7 @@ export default class EntityFactory {
     const motionControl = new MotionControlSwitchComponent();
     const collision: CollisionComponent = new CollisionComponent(0);
 
-    const scale = 0.2;
+    const scale = 0.36;
 
     const entity: Entity = new Entity();
     const fsm: FSMBase = new FSMBase(entity);
@@ -258,40 +261,66 @@ export default class EntityFactory {
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(new ViewportFollowComponent());
 
-    fsm.changeState("flying");
+    fsm.changeState(player.FLYING);
     this.engine.addEntity(entity);
 
-    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
+    const url = user.data.pictureUrl;
     const sprite: Avatar = new Avatar();
-    new RoundAvatar(url)
-      .execute()
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
 
-        // avatar
-        sprite.avatar = Sprite.from(comm.canvas);
-        sprite.avatar.anchor.set(0.5);
-        sprite.addChild(sprite.avatar);
+    if (GameConfig.AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
+      new LoadImage(url)
+        .execute()
+        .then((comm) => {
+          if (comm.image) {
+            return new ImageToCanvas(comm.image).execute();
+          } else {
+            return Promise.reject();
+          }
+        })
+        .then((comm) => {
+          if (comm.canvas) {
+            // avatar
+            sprite.avatar = Sprite.from(comm.canvas);
+            sprite.avatar.anchor.set(0.5);
+            sprite.addChild(sprite.avatar);
+          }
+        })
+        .catch((error) => {})
+        .finally(() => {
+          const spriteComponent: SpriteComponent = new SpriteComponent();
+          spriteComponent.view = sprite;
+          entity.add(spriteComponent);
+        });
+    } else {
+      new RoundAvatar(url)
+        .execute()
+        .then((comm: RoundAvatar) => {
+          if (!comm.canvas) return Promise.reject();
 
-        return Promise.resolve(comm);
-      })
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
+          // avatar
+          sprite.avatar = Sprite.from(comm.canvas);
+          sprite.avatar.anchor.set(0.5);
+          sprite.addChild(sprite.avatar);
 
-        const spriteComponent: SpriteComponent = new SpriteComponent();
-        spriteComponent.view = sprite;
-        entity.add(spriteComponent);
-      });
+          return Promise.resolve(comm);
+        })
+        .catch(() => {})
+        .finally(() => {
+          const spriteComponent: SpriteComponent = new SpriteComponent();
+          spriteComponent.view = sprite;
+          entity.add(spriteComponent);
+        });
+    }
 
     return entity;
   }
 
   public createArtcar(user: ReplicatedUser): Entity {
-    let avatarUrlString = user.data.avatarUrlString;
+    const pictureUrls = [user.data.pictureUrl];
 
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
+    // if (!Array.isArray(pictureUrls)) {
+    //   pictureUrls = [pictureUrls];
+    // }
 
     const scale = 0.3;
 
@@ -353,7 +382,7 @@ export default class EntityFactory {
 
         resolve(true);
       });
-      img.src = avatarUrlString[0];
+      img.src = pictureUrls[0] ?? "";
     }).then(() => {
       const spriteComponent: SpriteComponent = new SpriteComponent();
       spriteComponent.view = Sprite.from(canvas);
@@ -413,18 +442,18 @@ export default class EntityFactory {
     }
   }
 
-  public updateUserPositionById(userId: string, x: number, y: number) {
-    let bot: BotNode | null = this.getBotNode(userId);
+  public updateUserPositionById(user: ReplicatedUser) {
+    let bot: BotNode | null = this.getBotNode(user.data.id);
     if (!bot) {
-      const player: PlayerModel = new PlayerModel(userId, -1, "", x, y);
-      // player.data.id = userId;
+      // const player: PlayerModel = new PlayerModel(user, -1, "", x, y);
+      // player.data.id = user;
       // player.x = x;
       // player.y = y;
-      this.createBot(player, true);
+      this.createBot(user, true);
       bot = this.engine.getNodeList(BotNode).head as BotNode;
       bot.bot.fsm.changeState("idle");
     } else {
-      this.updateBotPosition(bot.bot.data, x, y);
+      this.updateBotPosition(bot.bot.data, user.x, user.y); //TODO: update another field too?
     }
   }
 
@@ -444,8 +473,71 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(barrel: ReplicatedFirebarrel): Entity {
+  public createFireBarrel(barrel: ReplicatedFirebarrel): Entity {
     return createFirebarrelEntity(barrel, this);
+  }
+
+  public enterFirebarrel(firebarrelId: string): void {
+    console.log("enterFirebarrel");
+
+    const playerNode = this.getPlayerNode();
+    const firebarrelNode = this.getFirebarrelNode(firebarrelId);
+    if (
+      playerNode &&
+      firebarrelNode &&
+      playerNode.player.fsm.currentStateName !== playerNode.player.IMMOBILIZED
+    ) {
+      GameInstance.instance
+        .getStore()
+        .dispatch(setAnimateMapFireBarrel(firebarrelId));
+
+      playerNode.entity.add(firebarrelNode.barrel);
+      playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);
+
+      const x1 = firebarrelNode.position.x;
+      const y1 = firebarrelNode.position.y;
+      const x2 = playerNode.position.x;
+      const y2 = playerNode.position.y;
+      const d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      const r = (firebarrelNode.collision.radius * 1.6) / d;
+
+      const x3 =
+        r * x2 + (1 - r) * x1 ||
+        firebarrelNode.position.x + firebarrelNode.collision.radius * 0.8;
+      const y3 =
+        r * y2 + (1 - r) * y1 ||
+        firebarrelNode.position.y + firebarrelNode.collision.radius * 0.8;
+
+      playerNode.entity.add(new MotionTeleportComponent(x3, y3));
+
+      // setTimeout(() => {
+      //   this.exitFirebarrel();
+      // }, 5000);
+    }
+  }
+
+  public exitFirebarrel(): void {
+    console.log("exitFirebarrel");
+    const playerNode = this.getPlayerNode();
+
+    if (!playerNode) {
+      return;
+    }
+    const barrelComponent = playerNode.entity.remove(BarrelComponent);
+    playerNode.player.fsm.changeState(playerNode.player.FLYING);
+    playerNode.entity.add(playerNode.player);
+
+    if (barrelComponent) {
+      const x1 = barrelComponent.model.x;
+      const y1 = barrelComponent.model.y;
+      const x2 = playerNode.position.x;
+      const y2 = playerNode.position.y;
+
+      const x3 = playerNode.position.x + (x2 - x1) * 2;
+      const y3 = playerNode.position.y + (y2 - y1) * 2;
+
+      playerNode.entity.add(new MotionTeleportComponent(x3, y3));
+    }
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
@@ -503,12 +595,10 @@ export default class EntityFactory {
       playerEntity?.remove(ViewportFollowComponent);
   }
 
-  public getFirebarrelNode(
-    firebarrel: ReplicatedFirebarrel
-  ): BarrelNode | undefined {
+  public getFirebarrelNode(id: string): BarrelNode | undefined {
     const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
     for (let node = nodes.head; node; node = node.next) {
-      if (node.barrel.model.data.id === firebarrel.data.id) {
+      if (node.barrel.model.data.id === id) {
         return node;
       }
     }
@@ -516,12 +606,12 @@ export default class EntityFactory {
   }
 
   public removeBarrel(firebarrel: ReplicatedFirebarrel) {
-    const node = this.getFirebarrelNode(firebarrel);
+    const node = this.getFirebarrelNode(firebarrel.data.id);
     if (node) this.engine.removeEntity(node.entity);
   }
 
   public updateBarrel(firebarrel: ReplicatedFirebarrel) {
-    const node = this.getFirebarrelNode(firebarrel);
+    const node = this.getFirebarrelNode(firebarrel.data.id);
     if (!node) {
       return;
     }

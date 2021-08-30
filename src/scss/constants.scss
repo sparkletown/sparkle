@@ -167,6 +167,7 @@ $z-layer-navbar: 30;
 $z-layer-live-schedule: 35;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 30;
+$z-layer-left-column: 15;
 $z-layer-emergency-content: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
@@ -206,7 +207,7 @@ $z-layers: (
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
-  left-column: $z-layer-sidebar,
+  left-column: $z-layer-left-column,
   // UserAvatar
   global-profile-icon: 1,
   user-avatar-status-indicator: 1,

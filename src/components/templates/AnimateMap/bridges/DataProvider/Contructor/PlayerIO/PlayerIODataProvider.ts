@@ -4,18 +4,23 @@ import { Point } from "types/utility";
 
 import { getRandomInt } from "utils/getRandomInt";
 
+import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
 import {
   ConnectionSuccessCallback,
   PlayerIOInstance,
 } from "../../../../vendors/playerio/PlayerIO";
 import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/ProxyClient";
+import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
 import { ProxyPlayerIO } from "../../../../vendors/playerio/PromissesWrappers/ProxyPlayerIO";
 import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
+import { CloudDataProvider } from "../../CloudDataProvider";
 import playerModel from "../../Structures/PlayerModel";
 import { RoomInfoType } from "../../Structures/RoomsModel";
 
+import { IPlayerIORoomOperator } from "./RoomOperator/IPlayerIORoomOperator";
+import { PlayerIORoomOperator } from "./RoomOperator/PlayerIORoomOperator";
+import { PlayerIOSeparatedRoomOperator } from "./RoomOperator/PlayerIOSeparatedRoomOperator";
 import { getIntByHash } from "./utils/getIntByHash";
-import { PlayerIORoomOperator } from "./PlayerIORoomOperator";
 import {
   FindMessageTuple,
   MessagesTypes,
@@ -29,12 +34,14 @@ export class PlayerIODataProvider extends utils.EventEmitter {
   public client?: ProxyClient;
   private isReserveTypeOfMove = false;
 
-  private playerIORoomOperator?: PlayerIORoomOperator;
+  private playerIORoomOperator?: IPlayerIORoomOperator;
   private _playerObject?: PlayerObject;
 
   constructor(
+    readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
     readonly playerId: string,
+    readonly playerioAdvancedMode: boolean,
     private _connectionInitCallback: ConnectionSuccessCallback
   ) {
     super();
@@ -62,7 +69,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       return Promise.reject("Connection not ready.");
 
     return this.client.multiplayer.listRooms<RoomInfoType>(
-      RoomTypes.Zone,
+      this.playerioAdvancedMode ? RoomTypes.Zone : RoomTypes.SeparatedRoom,
       null,
       0,
       0
@@ -93,11 +100,20 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       this._playerObject.y === undefined
     ) {
       needSave = true;
-      // const pos = StartPoint();
-      // playerObject.x = pos.x;
-      // playerObject.y = pos.y;
-      this._playerObject.x = getRandomInt(9920);
-      this._playerObject.y = getRandomInt(9920);
+      do {
+        this._playerObject.x = getRandomInt(9920);
+        this._playerObject.y = getRandomInt(9920);
+        console.log(
+          "CREATE USER in ",
+          this._playerObject.x,
+          this._playerObject.y
+        );
+      } while (
+        !PlaygroundMap.pointIsOnThePlayground(
+          this._playerObject.x,
+          this._playerObject.y
+        )
+      );
       this._playerObject.i = getIntByHash(this.playerId);
     }
 
@@ -112,14 +128,8 @@ export class PlayerIODataProvider extends utils.EventEmitter {
 
     EventProvider.emit(EventType.PLAYER_MODEL_READY, playerModel);
 
-    if (!this.playerIORoomOperator) {
-      console.log("init room operator");
-      this.playerIORoomOperator = new PlayerIORoomOperator(
-        this.client.multiplayer,
-        { x: this._playerObject.x, y: this._playerObject.y },
-        this.playerId
-      );
-    }
+    this.playerIORoomOperator = this._getRoomOperator(this.client, playerModel);
+
     this.playerIORoomOperator.position = {
       x: this._playerObject.x,
       y: this._playerObject.y,
@@ -129,53 +139,30 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     return Promise.resolve(this.playerIORoomOperator);
   };
 
-  // public async loadOrCreate(
-  //   table: string,
-  //   key: string,
-  //   successCallback: (dbObj: dbObj) => void,
-  //   errorCallback: (error: Error) => void
-  // ) {
-  //   if (this.client) {
-  //     return new Promise((resolve, reject) => {
-  //       this.client?.originClient.bigDB.loadOrCreate(
-  //         table,
-  //         key,
-  //         (dbObj: dbObj) => {
-  //           successCallback(dbObj);
-  //           return resolve(dbObj);
-  //         },
-  //         (error: Error) => {
-  //           errorCallback(error);
-  //           return reject(error);
-  //         }
-  //       );
-  //     });
-  //   } else return Promise.reject("Can't load. PlayerIO client is undefined!");
-  // }
+  private _getRoomOperator(client: ProxyClient, playerPosition: Point) {
+    if (this.playerIORoomOperator) return this.playerIORoomOperator;
 
-  // public async load(
-  //   table: string,
-  //   key: string,
-  //   successCallback: (dbObj: dbObj) => void,
-  //   errorCallback: (error: Error) => void
-  // ) {
-  //   if (this.client) {
-  //     return new Promise((resolve, reject) => {
-  // this.client?.originClient.bigDB.loadOrCreate(
-  //   table,
-  //   key,
-  //   (dbObj: dbObj) => {
-  //     successCallback(dbObj);
-  //     return resolve(dbObj);
-  //   },
-  //   (error: Error) => {
-  //     errorCallback(error);
-  //     return reject(error);
-  //   }
-  // );
-  // });
-  // } else return Promise.reject("Can't load. PlayerIO client is undefined!");
-  // }
+    console.log(
+      `init ${
+        this.playerioAdvancedMode ? "ADVANCED" : "SEPARATED"
+      } room operator`
+    );
+    const initialParams: [
+      CloudDataProvider,
+      ProxyMultiplayer,
+      Point,
+      string
+    ] = [
+      this.cloudDataProvider,
+      client.multiplayer,
+      { x: playerPosition.x, y: playerPosition.y },
+      this.playerId,
+    ];
+
+    if (this.playerioAdvancedMode)
+      return new PlayerIORoomOperator(...initialParams);
+    else return new PlayerIOSeparatedRoomOperator(...initialParams);
+  }
 
   public sendPlayerPosition(x: number, y: number) {
     if (!this.playerIORoomOperator?.mainConnection?.instance) {
@@ -190,6 +177,23 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     );
     m.addUInt<0>(x);
     m.addUInt<1>(y);
+    this.playerIORoomOperator.mainConnection.instance.sendMessage(m);
+  }
+
+  public sendShoutMessage(shout: string) {
+    if (!this.playerIORoomOperator?.mainConnection?.instance) {
+      console.error("connection not exist");
+      return;
+    }
+
+    const m = this.playerIORoomOperator.mainConnection.instance.createMessage<
+      FindMessageTuple<MessagesTypes.shout | MessagesTypes.shoutReserve>
+    >(
+      this.isReserveTypeOfMove
+        ? MessagesTypes.shoutReserve
+        : MessagesTypes.shout
+    );
+    m.addString<0>(shout);
     this.playerIORoomOperator.mainConnection.instance.sendMessage(m);
   }
 

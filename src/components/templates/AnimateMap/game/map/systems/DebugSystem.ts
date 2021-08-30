@@ -161,19 +161,19 @@ export class DebugSystem extends System {
       const lineThikness =
         currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING ? 2 : 4;
 
+      const dayTime = Math.floor(
+        GameInstance.instance.getConfig().getCurUTCTime() % 24
+      );
+      const backgroundColor = dayTime > 5 && dayTime < 18 ? 0x5e07ca : 0xffffff;
+      const borderColor = dayTime > 5 && dayTime < 18 ? 0x6108e6 : 0xffffff;
+
       const g: Graphics = s.getChildAt(0) as Graphics;
       g.clear();
-      g.beginFill(0x5e07ca, 0.15);
+      g.beginFill(backgroundColor, 0.15);
       g.drawCircle(0, 0, visionOfSightRadius);
       g.endFill();
-      g.lineStyle(lineThikness, 0x6108e6);
+      g.lineStyle(lineThikness, borderColor);
       g.drawCircle(0, 0, visionOfSightRadius);
-      // s.scale.set(
-      //   Math.random() *
-      //     ((currentZoomLevel === GameConfig.ZOOM_LEVEL_FLYING ? 1.05 : 1.01) -
-      //       0.99) +
-      //     0.99
-      // );
 
       this.halo.time +=
         time * (this.halo.direction === 1 ? 1 : 0.7) * this.halo.direction;
