@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const fetch = require("node-fetch");
-const { parseJson } = require("functions/src/utils/misc");
+const { parseJson } = require("./src/utils/misc");
 
 const fetchWeather = async () => {
   const url =
