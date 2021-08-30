@@ -298,12 +298,15 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   return (
     <>
-      <div className="firebarrel-room__participants">
-        <div className="firebarrel-room__exit-container">
+      <div className="firebarrel-room__exit-btn-wrapper">
+        <div className="firebarrel-room__exit-btn-inner">
           <Button customClass="firebarrel-room__exit-btn" onClick={onExitClick}>
             Leave
           </Button>
         </div>
+      </div>
+      <div className="firebarrel-room__participants">
+        <div className="firebarrel-room__exit-container"></div>
         {myVideo}
         {sidedVideos}
         {otherVideos}
