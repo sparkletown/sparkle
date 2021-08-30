@@ -1,10 +1,10 @@
 export class HoverableSpriteComponent {
-  public on?: () => void;
-  public off?: () => void;
+  public on: () => void;
+  public off: () => void;
 
   constructor(
-    on?: () => void,
-    off?: () => void,
+    on: () => void = () => {},
+    off: () => void = () => {},
     isCursorPointer: boolean = true
   ) {
     if (!isCursorPointer) {

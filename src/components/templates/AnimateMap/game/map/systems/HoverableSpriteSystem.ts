@@ -54,7 +54,7 @@ export class HoverableSpriteSystem extends System {
     for (let node = this.hoverables?.head; node; node = node.next) {
       if (event.target === node.sprite.view) {
         this.hovered = node.entity;
-        node.hover?.on?.();
+        node.hover?.on();
         break;
       }
     }
@@ -63,7 +63,7 @@ export class HoverableSpriteSystem extends System {
   private handleMouseOut = (event: InteractionEvent) => {
     if (this.hovered) {
       const comp = this.hovered.get(HoverableSpriteComponent);
-      comp?.off?.();
+      comp?.off();
       this.hovered = undefined;
     }
   };
