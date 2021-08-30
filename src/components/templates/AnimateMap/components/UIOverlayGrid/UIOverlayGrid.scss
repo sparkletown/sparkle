@@ -14,7 +14,7 @@
     ". . . . . ."
     ". . . . . ."
     ". . . . . zoom"
-    ". . . tooltip . center";
+    ". . . tooltip shoutouter center";
 
   &__zoom {
     grid-area: zoom;
@@ -30,6 +30,10 @@
 
   &__tooltip {
     grid-area: tooltip;
+  }
+
+  &__shoutouter {
+    grid-area: shoutouter;
   }
 
   &__test {

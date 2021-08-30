@@ -2,6 +2,11 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
+import { CollisionComponent } from "../components/CollisionComponent";
+import { MovementComponent } from "../components/MovementComponent";
+import { PositionComponent } from "../components/PositionComponent";
+import EntityFactory from "../entities/EntityFactory";
+import { BarrelNode } from "../nodes/BarrelNode";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
 import { VenueNode } from "../nodes/VenueNode";
@@ -10,40 +15,77 @@ export class MotionCollisionSystem extends System {
   private player?: NodeList<PlayerNode>;
   private colliders?: NodeList<MotionCollidedNode>;
   private venues?: NodeList<VenueNode>;
+  private barrels?: NodeList<BarrelNode>;
+
+  private creator: EntityFactory;
+
+  constructor(creator: EntityFactory) {
+    super();
+    this.creator = creator;
+  }
 
   addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
     this.colliders = engine.getNodeList(MotionCollidedNode);
     this.venues = engine.getNodeList(VenueNode);
+    this.barrels = engine.getNodeList(BarrelNode);
   }
 
   removeFromEngine(engine: Engine) {
     this.player = undefined;
     this.colliders = undefined;
     this.venues = undefined;
+    this.barrels = undefined;
   }
 
   update(time: number) {
+    const playgroundMap = GameInstance.instance.getConfig().playgroundMap;
+
     if (
       this.colliders &&
       this.colliders.head &&
       (this.colliders.head.movement.velocityX !== 0 ||
         this.colliders.head.movement.velocityY !== 0)
     ) {
+      if (
+        this.collidePlaygroudnBounds(
+          time,
+          this.colliders.head.position,
+          this.colliders.head.movement
+        )
+      ) {
+        return;
+      }
+
+      const currentPosition = this.colliders.head.position;
       const previousX =
-        this.colliders.head.position.x -
-        this.colliders.head.movement.velocityX * time;
+        currentPosition.x - this.colliders.head.movement.velocityX * time;
       const previousY =
-        this.colliders.head.position.y -
-        this.colliders.head.movement.velocityY * time;
+        currentPosition.y - this.colliders.head.movement.velocityY * time;
+
+      if (this.player && this.player.head) {
+        playgroundMap.pointIsOnThePlayground(
+          this.player.head.position.x,
+          this.player.head.position.y
+        );
+      }
+
       for (
         let node: VenueNode | null | undefined = this.venues?.head;
         node;
         node = node.next
       ) {
         if (
-          this.collideVenue(this.colliders.head, previousX, previousY, node)
+          this.collideObject(
+            this.colliders.head,
+            previousX,
+            previousY,
+            node.position,
+            node.collision
+          )
         ) {
+          this.creator.createWaitingVenueClick(node.venue.model);
+
           GameInstance.instance.eventProvider.emit(
             EventType.ON_VENUE_COLLISION,
             node.venue.model
@@ -51,16 +93,62 @@ export class MotionCollisionSystem extends System {
           break;
         }
       }
+
+      for (
+        let barrelNode = this.barrels?.head;
+        barrelNode;
+        barrelNode = barrelNode.next
+      ) {
+        if (
+          this.collideObject(
+            this.colliders.head,
+            previousX,
+            previousY,
+            barrelNode.position,
+            barrelNode.collision
+          )
+        ) {
+          console.log("collide firebarrel");
+        }
+      }
+    }
+  }
+
+  public collidePlaygroudnBounds(
+    time: number,
+    position: PositionComponent,
+    movement: MovementComponent
+  ): boolean {
+    const playgroundMap = GameInstance.instance.getConfig().playgroundMap;
+
+    time *= 2;
+    const nextX = position.x + movement.velocityX * time;
+    const nextY = position.y + movement.velocityY * time;
+
+    if (playgroundMap.pointIsInTheOuterCircle(position.x, position.y)) {
+      return false;
     }
 
-    if (this.player && this.player.head) {
-      GameInstance.instance
-        .getConfig()
-        .playgroundMap.pointIsOnThePlayground(
-          this.player.head.position.x,
-          this.player.head.position.y
-        );
+    if (playgroundMap.pointIsOnThePlayground(nextX, nextY)) {
+      return false;
     }
+
+    const previousX = position.x - movement.velocityX * time;
+    const previousY = position.y - movement.velocityY * time;
+
+    const boundingCollide = playgroundMap.getPointIfBoundingPlaygroundBorder(
+      previousX,
+      previousY,
+      nextX,
+      nextY
+    );
+    if (boundingCollide) {
+      position.x = boundingCollide.x;
+      position.y = boundingCollide.y;
+      return true;
+    }
+
+    return false;
   }
 
   public collideBoundingBox(player: MotionCollidedNode): boolean {
@@ -89,11 +177,12 @@ export class MotionCollisionSystem extends System {
     return collide;
   }
 
-  public collideVenue(
+  public collideObject(
     player: MotionCollidedNode,
     previousX: number,
     previousY: number,
-    venue: VenueNode
+    position: PositionComponent,
+    collision: CollisionComponent
   ): boolean {
     const bounce = 1;
 
@@ -107,22 +196,22 @@ export class MotionCollisionSystem extends System {
     let adjustSpeed = 0;
     let positionRatio = 0;
     const epsilon = 0.001;
-    const dx = player.position.x - venue.position.x;
-    const dy = player.position.y - venue.position.y;
+    const dx = player.position.x - position.x;
+    const dy = player.position.y - position.y;
     let dotProduct =
       player.movement.velocityX * dx + player.movement.velocityY * dy;
     dotProduct =
       dotProduct > 0 ? -1 * dotProduct : dotProduct === 0 ? -0.001 : dotProduct;
 
-    outerLimit = venue.collision.radius + player.collision.radius;
+    outerLimit = collision.radius + player.collision.radius;
     if (Math.abs(dx) > outerLimit) return false;
     if (Math.abs(dy) > outerLimit) return false;
     distanceSq = dx * dx + dy * dy;
     outerLimitSq = outerLimit * outerLimit;
     if (distanceSq > outerLimitSq) return false;
 
-    pdx = previousX - venue.position.x;
-    pdy = previousY - venue.position.y;
+    pdx = previousX - position.x;
+    pdy = previousY - position.y;
     pDistanceSq = pdx * pdx + pdy * pdy;
     if (pDistanceSq > outerLimitSq) {
       adjustSpeed = ((1 + bounce) * dotProduct) / distanceSq;
@@ -130,8 +219,8 @@ export class MotionCollisionSystem extends System {
       player.movement.velocityY -= adjustSpeed * dy;
       distance = Math.sqrt(distanceSq);
       positionRatio = (2 * outerLimit - distance) / distance + epsilon;
-      player.position.x = venue.position.x + dx * positionRatio;
-      player.position.y = venue.position.y + dy * positionRatio;
+      player.position.x = position.x + dx * positionRatio;
+      player.position.y = position.y + dy * positionRatio;
       return true;
     }
 

@@ -14,6 +14,7 @@ $video-participant-optimal-height: 195px;
     justify-content: center;
     justify-self: center;
     max-width: $video-participant-optimal-width;
+    min-width: 15%;
     max-height: $video-participant-optimal-height;
     border-radius: 15px;
 
@@ -35,10 +36,8 @@ $video-participant-optimal-height: 195px;
 
       .profile-icon {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 25px;
-        height: 25px;
+        bottom: $spacing--sm;
+        left: $spacing--sm;
         border-radius: 188%;
         z-index: z(jazzbar-participant-profile-icon);
       }
@@ -71,6 +70,17 @@ $video-participant-optimal-height: 195px;
     flex-direction: row;
     height: 100%;
     padding: 20px;
+    overflow-x: auto;
+
+    .firebarrel-room__exit-container {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+    }
 
     .firebarrel-room__participant {
       margin: 0 0.25rem;

@@ -93,7 +93,7 @@ export class MotionBotSystem extends MotionBaseSystem {
       node.position.y = node.click.y;
       node.movement.velocityX = 0;
       node.movement.velocityY = 0;
-      node.bot.fsm.changeState("idle");
+      node.bot.fsm.changeState(node.bot.IDLE);
       return;
     }
 

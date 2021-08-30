@@ -4,6 +4,7 @@ import { ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { getRandomInt } from "utils/getRandomInt";
 
+import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
 import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 
@@ -19,21 +20,21 @@ export const stubUsersData = () => {
   for (let i = 0; i < len; i++) {
     const x = getRandomInt(config.worldWidth - paddingH * 2) + paddingH;
     const y = getRandomInt(config.worldHeight - paddingV * 2) + paddingV;
+    const id = uuid();
     users.set(i.toString(), {
       x,
       y,
       data: {
-        id: uuid(),
-        videoUrlString: "",
-        avatarUrlString: `/avatars/default-profile-pic-${
-          getRandomInt(3) + 1
-        }.png`,
+        id: id,
+        partyName: id,
+        messengerId: getIntByHash(id),
+        pictureUrl: `/avatars/default-profile-pic-${getRandomInt(3) + 1}.png`,
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
         accessories: avatarAccessories[y % avatarAccessories.length],
         cycle: avatarCycles[x % avatarCycles.length],
       },
-    });
+    } as ReplicatedUser);
   }
   return users;
 };

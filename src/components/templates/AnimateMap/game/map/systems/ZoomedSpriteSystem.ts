@@ -2,7 +2,7 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Texture } from "pixi.js";
 
 import { GameConfig } from "../../../configs/GameConfig";
-import { PlayerNode } from "../nodes/PlayerNode";
+import { PlayerMovementNode } from "../nodes/PlayerMovementNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 import { ZoomedSpriteNode } from "../nodes/ZoomedSpriteNode";
 
@@ -12,10 +12,10 @@ export class ZoomedSpriteSystem extends System {
   private sprites?: NodeList<ZoomedSpriteNode>;
   private viewport?: NodeList<ViewportNode>;
 
-  private player?: NodeList<PlayerNode>;
+  private player?: NodeList<PlayerMovementNode>;
 
   public addToEngine(engine: Engine) {
-    this.player = engine.getNodeList(PlayerNode);
+    this.player = engine.getNodeList(PlayerMovementNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
 
     this.sprites = engine.getNodeList(ZoomedSpriteNode);
@@ -47,7 +47,9 @@ export class ZoomedSpriteSystem extends System {
       this.zoomUpdated = false;
       this.currentZoomLevel = this.viewport.head.viewport.zoomLevel;
 
-      this.updatePlayer();
+      if (this.player && this.player.head) {
+        this.updatePlayer(this.player.head);
+      }
 
       for (let node = this.sprites?.head; node; node = node.next) {
         this.updateNode(node, this.currentZoomLevel);
@@ -55,27 +57,17 @@ export class ZoomedSpriteSystem extends System {
     }
   }
 
-  private handlePlayerAdded = (node: PlayerNode) => {
+  private handlePlayerAdded = (node: PlayerMovementNode) => {
     this.updatePlayer(node);
   };
 
-  private updatePlayer(
-    node: PlayerNode | null | undefined = this.player?.head
-  ) {
-    if (!node) {
-      node = this.player?.head;
-    }
-
-    if (!node) {
-      return;
-    }
-
+  private updatePlayer(node: PlayerMovementNode) {
     if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING) {
-      node.player.fsm.changeState("walking");
+      node.player.fsm.changeState(node.player.WALKING);
     } else if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_CYCLING) {
-      node.player.fsm.changeState("cycling");
+      node.player.fsm.changeState(node.player.CYCLING);
     } else {
-      node.player.fsm.changeState("flying");
+      node.player.fsm.changeState(node.player.FLYING);
     }
   }
 

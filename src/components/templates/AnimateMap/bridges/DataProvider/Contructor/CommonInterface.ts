@@ -1,4 +1,6 @@
-import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
+// import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
+
+// import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
 
 import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
 import { PlayerIODataProvider } from "./PlayerIO/PlayerIODataProvider";
@@ -16,7 +18,7 @@ export enum RemoteTable {
  * Major abstraction for providing query from GameInstance to cloud services.
  */
 export interface CommonInterface {
-  loadUsersAsync(): Promise<User[]>;
+  // loadUsersAsync(): Promise<User[]>;
 
   // getUser(id: string): User;
 
@@ -27,8 +29,11 @@ export interface CommonInterface {
   // ): Promise<unknown>;
 
   sendPlayerPosition(x: number, y: number): void;
+  sendShoutMessage(shout: string): void;
 
-  loadVenuesAsync(): Promise<QuerySnapshot<DocumentData>>;
+  // updateUsers(users: ReplicatedUser[]) : void;
+
+  // loadVenuesAsync(): Promise<QuerySnapshot<DocumentData>>;
 }
 
 /**
@@ -40,9 +45,9 @@ export class CommonLinker implements CommonInterface {
     private _firebaseProvider: FirebaseDataProvider
   ) {}
 
-  loadUsersAsync(): Promise<User[]> {
-    return Promise.resolve([]);
-  }
+  // loadUsersAsync(): Promise<User[]> {
+  //   return Promise.resolve([]);
+  // }
 
   // loadPlayerPositionAsync(
   // playerId: string,
@@ -61,7 +66,15 @@ export class CommonLinker implements CommonInterface {
     this._playerIOProvider.sendPlayerPosition(x, y);
   }
 
-  loadVenuesAsync() {
-    return this._firebaseProvider.loadVenue();
+  sendShoutMessage(shout: string) {
+    this._playerIOProvider.sendShoutMessage(shout);
   }
+
+  // updateUsers(users: ReplicatedUser[]): void {
+  //   this.
+  // }
+
+  // loadVenuesAsync() {
+  //   return this._firebaseProvider.loadVenue();
+  // }
 }

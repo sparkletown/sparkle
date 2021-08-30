@@ -269,6 +269,7 @@ export interface AuditoriumVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   template: VenueTemplate.animatemap;
   playerioGameId: string;
+  playerioAdvancedMode: boolean;
 }
 
 export interface Question {
@@ -350,6 +351,7 @@ export interface VenueEvent {
   room?: string;
   id?: string;
   orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {
@@ -366,6 +368,7 @@ export interface LocationEvents {
 export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;
+  liveAudience: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

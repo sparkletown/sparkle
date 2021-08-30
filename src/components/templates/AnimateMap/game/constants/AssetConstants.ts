@@ -56,6 +56,9 @@ import MAP_IMAGE_16 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_16
 import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_4096.jpg";
 import JOYSTICK_IMAGE from "assets/images/AnimateMap/UI/JoyStick/plate.png";
 import JOYSTICK_HANDLE_IMAGE from "assets/images/AnimateMap/UI/JoyStick/stick.png";
+import VENUE_PEOPLE from "assets/images/AnimateMap/venues/people.png";
+import VENUE_PLATE from "assets/images/AnimateMap/venues/venue_plate.png";
+import VENUE_HALO from "assets/images/AnimateMap/venues/venue_plate_glow.png";
 import PLAYA_01_SOUND from "assets/sounds/AnimateMap/playa_01.mp3";
 import PLAYA_02_SOUND from "assets/sounds/AnimateMap/playa_02.mp3";
 import PLAYA_03_SOUND from "assets/sounds/AnimateMap/playa_03.mp3";
@@ -108,6 +111,8 @@ const artcars = [
 
 const barrels = [BARREL_0];
 
+const venues = { VENUE_HALO, VENUE_PEOPLE, VENUE_PLATE };
+
 const mapZoomedLevel0 = [
   MAP_IMAGE_1,
   MAP_IMAGE_2,
@@ -145,6 +150,7 @@ export {
   avatarFeets,
   artcars,
   barrels,
+  venues,
   MAP_IMAGE,
   HALO,
   MAP_JSON,
