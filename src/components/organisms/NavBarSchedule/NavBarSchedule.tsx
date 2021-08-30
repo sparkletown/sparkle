@@ -155,20 +155,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       eventTimeAndOrderComparator
     );
 
+    const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
+      (event) =>
+        event.isSaved && event.venueId === currentVenue?.id?.toLowerCase()
+    );
+
+    const currentVenueEvents = eventsFilledWithPriority.filter(
+      (event) => event.venueId === currentVenue?.id?.toLowerCase()
+    );
+
+    const personalisedSchedule = filterRelatedEvents
+      ? currentVenueBookMarkEvents
+      : eventsFilledWithPriority.filter((event) => event.isSaved);
+
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? filterRelatedEvents
-          ? eventsFilledWithPriority.filter(
-              (event) =>
-                event.isSaved &&
-                event.venueId === currentVenue?.id?.toLowerCase()
-            )
-          : eventsFilledWithPriority.filter((event) => event.isSaved)
+        ? personalisedSchedule
         : filterRelatedEvents
-        ? eventsFilledWithPriority.filter(
-            (event) => event.venueId === currentVenue?.id?.toLowerCase()
-          )
+        ? currentVenueEvents
         : eventsFilledWithPriority,
     };
   }, [

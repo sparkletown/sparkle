@@ -9,6 +9,7 @@ $menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
 $volume-popover-width-with-sliders: 30em;
 $volume-popover-width-without-sliders: 15em;
+$spaceBackButton: 50px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -165,7 +166,7 @@ $volume-popover-width-without-sliders: 15em;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  top: $navbar-height + 50px;
+  top: $navbar-height + $spaceBackButton;
   left: 0;
   color: $white;
   width: $nav-container-width;
