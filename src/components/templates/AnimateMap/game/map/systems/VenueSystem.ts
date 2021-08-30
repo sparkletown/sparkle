@@ -23,7 +23,7 @@ export class VenueSystem extends System {
       node.venue.fsm.changeState(node.venue.HALO_ANIMATED);
     } else if (
       node.venue.model.data.countUsers >=
-      GameConfig.VENUE_MIN_PEOPLE_COUNT_FOR_STATIC_HALO
+      GameConfig.VENUE_MIN_PEOPLE_COUNT_FOR_HALO
     ) {
       node.venue.fsm.changeState(node.venue.HALO);
     } else {
