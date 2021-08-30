@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import { useAsyncFn } from "react-use";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
@@ -47,39 +48,37 @@ export const RoomsForm: React.FC = () => {
   const { user } = useUser();
   const firestore = useFirestore();
   const [venue, setVenue] = useState<PartyMapVenue>();
-  const [isLoading, setIsLoading] = useState(false);
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
+  const [{ loading: isLoading }, fetchVenueFromAPI] = useAsyncFn(async () => {
+    const venueSnapshot = await firestore
+      .collection("venues")
+      .doc(venueId)
+      .get();
+
+    if (!venueSnapshot.exists) return history.replace("/admin");
+
+    const data = venueSnapshot.data() as AnyVenue;
+    //find the template
+    const template = ALL_VENUE_TEMPLATES.find(
+      (template) => data.template === template.template
+    );
+
+    if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
+      history.replace("/admin");
+    }
+    setVenue(data as PartyMapVenue);
+  }, [firestore, history, venueId]);
+
   useEffect(() => {
     if (!venueId) return history.replace("/admin");
 
-    const fetchVenueFromAPI = async () => {
-      setIsLoading(true);
-      const venueSnapshot = await firestore
-        .collection("venues")
-        .doc(venueId)
-        .get();
-      setIsLoading(false);
-
-      if (!venueSnapshot.exists) return history.replace("/admin");
-
-      const data = venueSnapshot.data() as AnyVenue;
-      //find the template
-      const template = ALL_VENUE_TEMPLATES.find(
-        (template) => data.template === template.template
-      );
-
-      if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
-        history.replace("/admin");
-      }
-      setVenue(data as PartyMapVenue);
-    };
     fetchVenueFromAPI();
-  }, [firestore, venueId, history]);
+  }, [firestore, venueId, history, fetchVenueFromAPI]);
 
   const room = useMemo(() => {
     if (
