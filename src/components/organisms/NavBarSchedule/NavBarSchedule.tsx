@@ -166,13 +166,18 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
+  const relatedVenueRooms =
+    relatedVenues.flatMap((venue) => venue.rooms || []).filter((x) => !!x) ||
+    [];
+  const currentVenueRooms = currentVenue?.rooms || [];
   const roomList = scheduleNG.daysEvents.map((el) => {
     const [roomData] =
-      currentVenue?.rooms?.filter((room) => room.title === el?.room) || [];
+      [...relatedVenueRooms, ...currentVenueRooms].filter(
+        (room) => room?.title === el?.room
+      ) || [];
     return roomData;
   });
-  const recentRoomUsers = useRoomRecentUsersList({ roomList });
-
+  const recentRoomUsers = useRoomRecentUsersList({ roomList, venueId });
   const scheduleNGWithAttendees = {
     ...scheduleNG,
     daysEvents: scheduleNG.daysEvents.map((event, index) =>

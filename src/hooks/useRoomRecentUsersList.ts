@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import { Room } from "types/rooms";
 
+import { getExternalRoomSlug } from "utils/room";
 import { getRoomUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -10,10 +11,12 @@ import { useVisitedLocationsUser } from "./users/useVisitedLocationsUser";
 
 export interface UseRoomRecentUsersListProps {
   roomList?: Room[];
+  venueId: string;
 }
 
 export const useRoomRecentUsersList = ({
   roomList,
+  venueId,
 }: UseRoomRecentUsersListProps) => {
   const roomUrls = roomList?.map((room) =>
     room?.url ? getRoomUrl(room.url) : ""
@@ -22,9 +25,17 @@ export const useRoomRecentUsersList = ({
   const matchedRoomVenues = useMemo(
     () =>
       relatedVenues.filter(
-        (venue) => roomUrls?.filter((url) => url.endsWith(venue.id)).length
+        (venue) =>
+          roomUrls?.filter(
+            (url, index) =>
+              url.endsWith(venue.id) ||
+              getExternalRoomSlug({
+                roomTitle: roomList && roomList[index].title,
+                venueName: venueId,
+              })
+          ).length
       ),
-    [relatedVenues, roomUrls]
+    [relatedVenues, roomUrls, venueId, roomList]
   );
   const roomSlugs =
     matchedRoomVenues &&
@@ -33,5 +44,8 @@ export const useRoomRecentUsersList = ({
     locationNames: roomSlugs,
   });
 
-  return recentLocationUsers;
+  const filteredRecentUsers = recentLocationUsers?.filter(
+    (userLocation) => !!userLocation.length
+  );
+  return filteredRecentUsers;
 };
