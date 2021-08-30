@@ -1,8 +1,4 @@
 .UIShoutouter {
-  position: absolute;
-  right: 68px;
-  bottom: 22px;
-  z-index: 200;
   width: 287px;
   height: 34px;
   display: flex;
@@ -12,7 +8,6 @@
   border-radius: 17px;
   padding: 4px;
   background-color: rgba(0, 0, 0, 0.15);
-  //backdrop-filter: blur(8px);
   vertical-align: middle;
 
   & input {
@@ -22,7 +17,7 @@
     background: transparent;
   }
   & input:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
   }
   & input::placeholder {
     color: #d3d3d3;

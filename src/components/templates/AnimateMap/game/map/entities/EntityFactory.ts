@@ -10,6 +10,9 @@ import {
 
 import { Point } from "types/utility";
 
+import { GameConfig } from "../../../configs/GameConfig";
+import { ImageToCanvas } from "../../commands/ImageToCanvas";
+import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
@@ -209,12 +212,6 @@ export default class EntityFactory {
   }
 
   public createPlayer(user: ReplicatedUser): Entity {
-    const pictureUrls = [user.data.pictureUrl];
-
-    // if (!Array.isArray(pictureUrls)) {
-    //   pictureUrls = [pictureUrls];
-    // }
-
     // HACK
     user.data.cycle = avatarCycles[0];
 
@@ -222,7 +219,7 @@ export default class EntityFactory {
     const motionControl = new MotionControlSwitchComponent();
     const collision: CollisionComponent = new CollisionComponent(0);
 
-    const scale = 0.2;
+    const scale = 0.36;
 
     const entity: Entity = new Entity();
     const fsm: FSMBase = new FSMBase(entity);
@@ -264,30 +261,56 @@ export default class EntityFactory {
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(new ViewportFollowComponent());
 
-    fsm.changeState("flying");
+    fsm.changeState(player.FLYING);
     this.engine.addEntity(entity);
 
-    const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
+    const url = user.data.pictureUrl;
     const sprite: Avatar = new Avatar();
-    new RoundAvatar(url)
-      .execute()
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
 
-        // avatar
-        sprite.avatar = Sprite.from(comm.canvas);
-        sprite.avatar.anchor.set(0.5);
-        sprite.addChild(sprite.avatar);
+    if (GameConfig.AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
+      new LoadImage(url)
+        .execute()
+        .then((comm) => {
+          if (comm.image) {
+            return new ImageToCanvas(comm.image).execute();
+          } else {
+            return Promise.reject();
+          }
+        })
+        .then((comm) => {
+          if (comm.canvas) {
+            // avatar
+            sprite.avatar = Sprite.from(comm.canvas);
+            sprite.avatar.anchor.set(0.5);
+            sprite.addChild(sprite.avatar);
+          }
+        })
+        .catch((error) => {})
+        .finally(() => {
+          const spriteComponent: SpriteComponent = new SpriteComponent();
+          spriteComponent.view = sprite;
+          entity.add(spriteComponent);
+        });
+    } else {
+      new RoundAvatar(url)
+        .execute()
+        .then((comm: RoundAvatar) => {
+          if (!comm.canvas) return Promise.reject();
 
-        return Promise.resolve(comm);
-      })
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
+          // avatar
+          sprite.avatar = Sprite.from(comm.canvas);
+          sprite.avatar.anchor.set(0.5);
+          sprite.addChild(sprite.avatar);
 
-        const spriteComponent: SpriteComponent = new SpriteComponent();
-        spriteComponent.view = sprite;
-        entity.add(spriteComponent);
-      });
+          return Promise.resolve(comm);
+        })
+        .catch(() => {})
+        .finally(() => {
+          const spriteComponent: SpriteComponent = new SpriteComponent();
+          spriteComponent.view = sprite;
+          entity.add(spriteComponent);
+        });
+    }
 
     return entity;
   }
@@ -476,7 +499,7 @@ export default class EntityFactory {
       const x2 = playerNode.position.x;
       const y2 = playerNode.position.y;
       const d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-      const r = firebarrelNode.collision.radius / d;
+      const r = (firebarrelNode.collision.radius * 1.6) / d;
 
       const x3 =
         r * x2 + (1 - r) * x1 ||

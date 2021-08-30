@@ -14,6 +14,7 @@ $video-participant-optimal-height: 195px;
     justify-content: center;
     justify-self: center;
     max-width: $video-participant-optimal-width;
+    min-width: 15%;
     max-height: $video-participant-optimal-height;
     border-radius: 15px;
 
@@ -35,10 +36,8 @@ $video-participant-optimal-height: 195px;
 
       .profile-icon {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 25px;
-        height: 25px;
+        bottom: $spacing--sm;
+        left: $spacing--sm;
         border-radius: 188%;
         z-index: z(jazzbar-participant-profile-icon);
       }
@@ -71,6 +70,7 @@ $video-participant-optimal-height: 195px;
     flex-direction: row;
     height: 100%;
     padding: 20px;
+    overflow-x: auto;
 
     .firebarrel-room__exit-container {
       position: absolute;
@@ -80,6 +80,22 @@ $video-participant-optimal-height: 195px;
       display: flex;
       justify-content: center;
       cursor: pointer;
+    }
+
+    // @debt: overwrites default btn btn-primary styles
+    & .firebarrel-room__exit-btn {
+      cursor: pointer;
+      opacity: 0.8;
+      margin-right: $spacing--sm;
+
+      text-shadow: 0 2px 4px opaque-black(0.3);
+      padding: 0.35em 1em;
+      background-color: rgba(0, 0, 0, 0.15);
+
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
     }
 
     .firebarrel-room__participant {

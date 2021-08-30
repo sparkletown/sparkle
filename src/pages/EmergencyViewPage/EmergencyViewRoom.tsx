@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Room } from "types/rooms";
 
+import { getFirebaseStorageResizedImage } from "utils/image";
+
 import { useRoom } from "hooks/useRoom";
 
 type EmergencyViewRoomProps = {
@@ -18,6 +20,11 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   isLive,
 }) => {
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const roomImage = getFirebaseStorageResizedImage(room.image_url, {
+    fit: "crop",
+    width: 100,
+    height: 100,
+  });
 
   return (
     <div className="EmergencyView_content_room">
@@ -33,7 +40,7 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
       <div className="EmergencyView_content_room_body" onClick={enterRoom}>
         <img
           className="EmergencyView_content_room_body_image"
-          src={room.image_url}
+          src={roomImage}
           alt={room.title}
         />
         <span>{room.title}</span>
