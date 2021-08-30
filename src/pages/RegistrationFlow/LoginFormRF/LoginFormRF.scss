@@ -1,0 +1,16 @@
+@import "scss/constants.scss";
+@import "../constants-rf";
+
+.LoginFormRF {
+  &__forgot {
+    place-self: flex-start;
+    margin-top: -$reg-flow-element-distance + $spacing--sm;
+    margin-left: $spacing--sm;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+      opacity: 1;
+    }
+  }
+}

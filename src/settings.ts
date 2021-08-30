@@ -20,21 +20,19 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapBackground from "assets/images/bm-default-map-background.jpg";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
-export const SPARKLE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklespaces.com/terms-of-use/";
-export const SPARKLE_PRIVACY_POLICY =
-  "https://sparklespaces.com/privacy-policy/";
-
 // Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
+  "https://sparklever.se/terms-of-use/";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
-export const PLATFORM_BRAND_NAME = "Sparkle";
+export const PLATFORM_BRAND_NAME = "SparkleVerse";
+
+export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
+export const SPARKLE_TERMS_AND_CONDITIONS_URL = SPARKLEVERSE_TERMS_AND_CONDITIONS_URL;
+export const SPARKLE_PRIVACY_POLICY = SPARKLEVERSE_PRIVACY_POLICY;
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -58,6 +56,10 @@ export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
 export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+export const HELP_CENTER_URL =
+  "https://sparklever.se/faq/#1597682029675-21e837b4-e441";
+export const VEST_RANGERS_URL = "https://multiverserangers.org/rangers911";
+export const VPLAYA_URL = "https://www.vplaya.info";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -176,6 +178,7 @@ export const IFRAME_ALLOW =
 export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
 export const ENABLE_PLAYA_ADDRESS = false;
+export const IS_SIMPLE_MUTE_BUTTON = true;
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -299,7 +302,7 @@ export const BURN_VENUE_TEMPLATES: Template[] = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening room",
+    name: "Screening Room",
     description: ["Add an screening room with the videos listed inside."],
   },
 ];
@@ -662,10 +665,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  "/avatars/avatar-01.png",
+  "/avatars/avatar-05.png",
+  "/avatars/avatar-07.png",
+  "/avatars/avatar-08.png",
+  "/avatars/avatar-10.png",
+  "/avatars/avatar-12.png",
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
@@ -755,7 +760,14 @@ export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
-export const EVENTS_PREVIEW_LIST_LENGTH = 5;
+export const EVENTS_PREVIEW_LIST_LENGTH = 50;
+
+// Set these to have images uploaded to Firebase Storage served off of Imgix
+// @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf
+export const FIREBASE_STORAGE_IMAGES_ORIGIN =
+  "https://firebasestorage.googleapis.com/v0/b/sparkle-burn.appspot.com/o/";
+export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
+  "https://sparkle-burn-users.imgix.net/";
 
 export const BM_PARENT_ID = "playa";
 
@@ -772,3 +784,6 @@ export const MAX_AUDIO_VOLUME: number = 100;
 // localStorage keys for syncing volume with AnimateMap's game instance
 export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
 export const LS_KEY_RADIO_VOLUME = "LS_KEY_RADIO_VOLUME";
+
+// NOTE: flag for components that display Not Found screen or use some mitigation when no venueId or no venue exists
+export const ALLOW_NO_VENUE: boolean = true;

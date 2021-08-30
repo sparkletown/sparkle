@@ -15,7 +15,14 @@ export type ButtonGradientType =
   | "danger-gradient";
 
 export type ButtonType = "button" | "reset" | "submit";
-export type ButtonVariant = "primary" | "secondary" | "white" | "dark";
+
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "white"
+  | "dark"
+  | "seethrough";
+
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
 export interface ButtonProps {

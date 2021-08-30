@@ -61,10 +61,11 @@ export const AnimateMapOnboardFlow: React.FC = () => {
         onSkip={skip}
         className="AnimateMapOnboardFlow__step-video"
       >
+        <h3>Click allow to enable your camera and microphone for later!</h3>
         <DeviceVideo />
         <div>
-          You need to allow the use of your microphone and camera to get started
-          on the playa !
+          For on playa interactions in Fire Barrels and Art Pieces, you’ll need
+          to give access to your camera and microphone!
         </div>
       </OnboardingModal>
       <OnboardingModal

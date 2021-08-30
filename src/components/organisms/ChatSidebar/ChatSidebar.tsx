@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   faChevronLeft,
   faChevronRight,
   faCommentDots,
   faEnvelope,
+  faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -18,6 +19,8 @@ import {
   useChatSidebarControls,
   useChatSidebarInfo,
 } from "hooks/chats/chatSidebar";
+
+import { HelpCenter } from "components/organisms/HelpCenter";
 
 import { PrivateChats, VenueChat } from "./components";
 
@@ -40,6 +43,8 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo(venue);
 
+  const [isShownHelpCenter, setShownHelpCenter] = useState<boolean>(false);
+
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
   const recipientId =
@@ -47,10 +52,23 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       ? chatSettings.recipientId
       : undefined;
 
+  const openHelpCenter = useCallback(() => {
+    setShownHelpCenter(true);
+    toggleSidebar();
+  }, [toggleSidebar]);
+
+  const handleSidebar = useCallback(() => {
+    toggleSidebar();
+    if (isShownHelpCenter) {
+      setShownHelpCenter(false);
+    }
+  }, [isShownHelpCenter, toggleSidebar]);
+
   const containerStyles = classNames({
     "chat-sidebar": true,
     "chat-sidebar--expanded": isExpanded,
     "chat-sidebar--collapsed": !isExpanded,
+    "chat-sidebar--wide": isShownHelpCenter,
   });
 
   const venueChatTabStyles = classNames({
@@ -76,7 +94,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
         <button
           aria-label={isExpanded ? "Hide chat" : "Show chat"}
           className="chat-sidebar__controller"
-          onClick={toggleSidebar}
+          onClick={handleSidebar}
         >
           {isExpanded ? (
             <FontAwesomeIcon icon={faChevronRight} size="sm" />
@@ -94,49 +112,63 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
             className="chat-sidebar__controller chat-sidebar__private-chat"
             onClick={togglePrivateChatSidebar}
           >
-            {isExpanded ? (
-              <FontAwesomeIcon icon={faChevronRight} size="sm" />
-            ) : (
-              <>
-                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-                <FontAwesomeIcon icon={faEnvelope} size="lg" />
-                {newPrivateMessageRecived > 0 && (
-                  <div className="chat-sidebar__controller--new-message"></div>
-                )}
-              </>
+            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+            <FontAwesomeIcon icon={faEnvelope} size="lg" />
+            {newPrivateMessageRecived > 0 && (
+              <div className="chat-sidebar__controller--new-message"></div>
             )}
           </button>
         )}
 
+        {!isShownHelpCenter && !isExpanded && (
+          <button
+            aria-label={
+              isExpanded ? "Hide question centre" : "Show question centre"
+            }
+            className="chat-sidebar__controller chat-sidebar__help-center-icon"
+            onClick={openHelpCenter}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+            <FontAwesomeIcon icon={faQuestion} size="lg" />
+          </button>
+        )}
+
         {isExpanded && (
-          <div className="chat-sidebar__tabs" role="tablist">
-            <button
-              role="tab"
-              id={venueTabId}
-              aria-label={venueChatTabTitle}
-              aria-selected={isVenueChat}
-              className={venueChatTabStyles}
-              onClick={selectVenueChat}
-            >
-              {venueChatTabTitle}
-            </button>
-            <button
-              role="tab"
-              id={privateTabId}
-              aria-label={privateChatTabTitle}
-              aria-selected={isPrivateChat}
-              className={privateChatTabStyles}
-              onClick={selectPrivateChat}
-            >
-              {privateChatTabTitle}
-            </button>
-          </div>
+          <>
+            {!isShownHelpCenter && (
+              <div className="chat-sidebar__tabs" role="tablist">
+                <button
+                  role="tab"
+                  id={venueTabId}
+                  aria-label={venueChatTabTitle}
+                  aria-selected={isVenueChat}
+                  className={venueChatTabStyles}
+                  onClick={selectVenueChat}
+                >
+                  {venueChatTabTitle}
+                </button>
+                <button
+                  role="tab"
+                  id={privateTabId}
+                  aria-label={privateChatTabTitle}
+                  aria-selected={isPrivateChat}
+                  className={privateChatTabStyles}
+                  onClick={selectPrivateChat}
+                >
+                  {privateChatTabTitle}
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
       {isExpanded && (
         <div role="tabpanel" className="chat-sidebar__tab-content">
-          {isVenueChat && <VenueChat venue={venue} />}
-          {isPrivateChat && <PrivateChats recipientId={recipientId} />}
+          {!isShownHelpCenter && isVenueChat && <VenueChat venue={venue} />}
+          {!isShownHelpCenter && isPrivateChat && (
+            <PrivateChats recipientId={recipientId} />
+          )}
+          {isShownHelpCenter && <HelpCenter />}
         </div>
       )}
     </div>

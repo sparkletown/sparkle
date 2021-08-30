@@ -114,6 +114,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       >
         <div className="Chatbox__inputs">
           <InputField
+            containerClassName="Chatbox__input-container"
             inputClassName="Chatbox__input"
             ref={register({ required: true })}
             name="message"

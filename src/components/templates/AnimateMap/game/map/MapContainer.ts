@@ -23,6 +23,7 @@ import { AnimationSystem } from "./systems/AnimationSysem";
 import { AvatarTuningSystem } from "./systems/AvatarTuningSystem";
 import { BubbleSystem } from "./systems/BubbleSystem";
 import { ClickableSpriteSystem } from "./systems/ClickableSpriteSystem";
+import { DeadSystem } from "./systems/DeadSystem";
 import { DebugSystem } from "./systems/DebugSystem";
 import { FirebarrelSystem } from "./systems/FirebarrelSystem";
 import { FixScaleByViewportZoomSystem } from "./systems/FixScaleByViewportZoomSystem";
@@ -108,7 +109,7 @@ export class MapContainer extends Container {
   }
 
   private initViewport() {
-    this._viewport = new Viewport({ noTicker: true });
+    this._viewport = new Viewport({ noTicker: true, divWheel: this._app.view });
     this.addChild(this._viewport);
   }
 
@@ -132,6 +133,11 @@ export class MapContainer extends Container {
     this._engine = new Engine();
     this.entityFactory = new EntityFactory(this._engine);
 
+    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
+    this._engine.addSystem(
+      new DeadSystem(this._engine),
+      SystemPriorities.update
+    );
     this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
     this._engine.addSystem(
       new MotionControlSwitchSystem(),
@@ -189,7 +195,7 @@ export class MapContainer extends Container {
       SystemPriorities.move
     );
     this._engine.addSystem(
-      new MotionCollisionSystem(),
+      new MotionCollisionSystem(this.entityFactory),
       SystemPriorities.resolveCollisions
     );
 
@@ -229,10 +235,13 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport as Viewport),
+      new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
-    this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
+    this._engine.addSystem(
+      new FirebarrelSystem(this.entityFactory),
+      SystemPriorities.render
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -295,30 +304,18 @@ export class MapContainer extends Container {
         .execute()
         .then(() => {
           if (this.entityFactory) {
-            const firebarrels = GameInstance.instance
-              .getConfig()
-              .getFirebarrels();
-
-            if (firebarrels) {
-              for (let i = 0; i < firebarrels.length; i++) {
-                this.entityFactory.createBarrel(firebarrels[i]);
-                // this.entityFactory.createBarrel({
-                //   x: firebarrel.x,
-                //   y: firebarrel.y,
-                //   data: { url: firebarrel.id, image_url: barrels[0] },
-                // } as ReplicatedVenue);
+            GameInstance.instance.dataProvider.firebarrelsData.forEach(
+              (firebarrel) => {
+                this.entityFactory?.createFireBarrel(firebarrel);
               }
-            }
+            );
           }
         })
         .then(() => {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.getConfig()
               .playgroundMap;
-            const bots: Map<
-              string,
-              ReplicatedUser
-            > = GameInstance.instance.getState().users;
+            const bots = GameInstance.instance.getState().users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {

@@ -1,5 +1,5 @@
-import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
+import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
 
 export class BarrelComponent {
-  constructor(public data: GameOptionsFirebarrel) {}
+  constructor(public model: ReplicatedFirebarrel) {}
 }

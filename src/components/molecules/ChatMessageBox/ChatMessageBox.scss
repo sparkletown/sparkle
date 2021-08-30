@@ -10,37 +10,29 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
   &__form {
     padding: $spacing--md;
     display: flex;
-    align-items: center;
-
-    .InputField {
-      flex-grow: 1;
-    }
   }
 
   &__inputs {
     display: flex;
     align-items: center;
-    justify-content: center;
-    align-content: center;
+    place-content: center;
     flex-grow: 1;
     margin-right: $spacing--lg;
+  }
 
-    .InputField {
-      flex-grow: 1;
+  &__input-container {
+    flex-grow: 1;
+  }
 
-      input {
-        // NOTE: this removes screen artefacts of the embedded <input> inside InputField being as wide as the parent
-        margin: 1px;
-      }
-
-      &__input {
-        padding-right: $submit-button-diameter;
-      }
-    }
+  &__input {
+    padding-right: $submit-button-diameter;
+    // NOTE: this removes screen artefacts of the embedded <input> inside InputField being as wide as the parent
+    margin: 1px;
   }
 
   &__emoji-button {
     margin-left: -1 * $submit-button-diameter;
+    padding: $spacing--xs;
     @include square-size(
       $emoji-button-diameter,
       $emoji-button-diameter,
@@ -58,18 +50,13 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
     padding-left: $spacing--lg;
   }
 
-  &__buttons {
-    display: flex;
-    flex-grow: 0;
-  }
-
   &__submit-button {
     min-width: $submit-button-diameter;
     min-height: $submit-button-diameter;
-  }
 
-  &__submit-button-icon {
-    color: $white;
+    &-icon {
+      color: $white;
+    }
   }
 
   &__emoji-picker {

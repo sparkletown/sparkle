@@ -11,7 +11,7 @@ export class KeyPollSingleton {
   private constructor() {
     window.addEventListener("keyup", this.keyUpHandler);
     window.addEventListener("keydown", this.keyDownHandler);
-    document.addEventListener("blur", this.windowBlurHandler);
+    window.addEventListener("blur", this.windowBlurHandler.bind(this));
   }
 
   public static getInstance(): KeyPollSingleton {

@@ -1,0 +1,8 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.RegisterFormRF {
+  &__date-of-birth {
+    max-width: $reg-flow-button-width--max;
+  }
+}

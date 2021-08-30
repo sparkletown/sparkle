@@ -1,21 +1,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
+import {
+  enterAnimateMapFireBarrel,
+  exitAnimateMapFireBarrel,
+  updateAnimateMapFireBarrel,
+} from "store/actions/AnimateMap";
+
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
 import { AnimateMapOnboardFlow } from "components/organisms/AnimateMapOnboardFlow";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
-import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProvider";
-import { UIOverlay } from "./components/UIOverlay/UIOverlay";
-import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
+import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
+import { FirebarrelProvider, UIOverlay, UIOverlayGrid } from "./components";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
@@ -32,6 +38,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   const [app, setApp] = useState<GameInstance | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const store = useStore();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!app && dataProvider && containerRef && containerRef.current) {
@@ -68,6 +75,8 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
 
   const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
 
+  const relatedRooms = useRelatedPartymapRooms({ venue });
+
   return (
     <div className="AnimateMap">
       <AnimateMapOnboardFlow />
@@ -84,7 +93,18 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
           >
             <FirebarrelProvider
               venue={venue}
-              onConnectChange={(value) => setShowFirebarrelFlag(value)}
+              setUserList={(roomId, userList) => {
+                dispatch(updateAnimateMapFireBarrel(roomId, userList));
+              }}
+              onConnectChange={(roomId, userList, isConnected) => {
+                if (isConnected) {
+                  dispatch(enterAnimateMapFireBarrel(roomId, userList));
+                } else {
+                  dispatch(exitAnimateMapFireBarrel(roomId));
+                }
+
+                setShowFirebarrelFlag(isConnected);
+              }}
             />
           </div>
         </UIOverlay>
@@ -93,6 +113,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
       <CloudDataProviderWrapper
         venue={venue}
         newDataProviderCreate={setDataProvider}
+        relatedRooms={relatedRooms}
       />
     </div>
   );

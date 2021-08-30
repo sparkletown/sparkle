@@ -15,7 +15,7 @@ import { Provided } from "./Provided";
 export const AdminSubrouter: React.FC = () => {
   return (
     <Switch>
-      {/* Admin V1 */}
+      {/* Admin OG */}
 
       <Route path="/admin/venue/rooms/:venueId">
         <Provided withWorldUsers>
@@ -47,7 +47,7 @@ export const AdminSubrouter: React.FC = () => {
         </Provided>
       </Route>
 
-      {/* Admin V2/3/NG */}
+      {/* Admin NG */}
 
       <Route path="/admin-ng/venue/:venueId?/:selectedTab?">
         <Provided withWorldUsers>

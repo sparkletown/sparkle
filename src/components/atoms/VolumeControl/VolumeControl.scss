@@ -5,7 +5,6 @@ $mute-size: 32px;
 
 .VolumeControl {
   margin: $spacing--xs;
-  width: calc(100% - #{2 * $spacing--xs});
   display: flex;
   justify-content: space-between;
   align-items: center;

@@ -118,6 +118,8 @@ $page-max-width: 1240px;
   flex: 1;
   background-image: url(/assets/images/bm-login-background.jpeg);
   background-color: #1a1d24;
+  background-size: cover;
+  background-repeat: no-repeat;
   height: 100vh;
 
   .logo-container {

@@ -1,0 +1,59 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.CheckboxWrapRF {
+  &:focus,
+  &:focus-within {
+    outline: 1px dotted $white;
+  }
+
+  &__label {
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  &__error,
+  &__required {
+    text-align: center;
+    font-weight: bold;
+    color: $reg-flow-color--error;
+    font-size: $reg-flow-font-size--error;
+  }
+
+  input[type="checkbox"] {
+    @include square-size($reg-flow-checkbox-size);
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: block;
+    cursor: pointer;
+
+    &:before {
+      @include square-size($reg-flow-checkbox-size);
+      content: "";
+      position: absolute;
+      margin-left: -$reg-flow-checkbox-size / 2;
+      border-radius: $reg-flow-checkbox-size / 2;
+      background-color: $reg-flow-color--transparent;
+      border-color: $reg-flow-color--transparent;
+      box-shadow: box-shadow--input(opaque-white(0.4));
+    }
+
+    &:hover {
+      &:before {
+        box-shadow: box-shadow--input($white);
+      }
+    }
+  }
+
+  input:checked {
+    &:before {
+      background-color: $primary;
+      border: 1px solid $reg-flow-color--transparent;
+      box-shadow: box-shadow--input(transparent);
+      background-image: url(/assets/icons/checkbox-rf.png);
+      background-size: $reg-flow-checkbox-size $reg-flow-checkbox-size;
+    }
+  }
+}

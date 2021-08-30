@@ -39,15 +39,25 @@ import { useVenueId } from "hooks/useVenueId";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
+import { NotFound } from "components/atoms/NotFound";
+
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-const Login = lazy(() =>
-  tracePromise("VenuePage::lazy-import::Login", () =>
-    import("pages/Account/Login").then(({ Login }) => ({
-      default: Login,
+// const Login = lazy(() =>
+//   tracePromise("VenuePage::lazy-import::Login", () =>
+//     import("pages/Account/Login").then(({ Login }) => ({
+//       default: Login,
+//     }))
+//   )
+// );
+
+const LoginRF = lazy(() =>
+  tracePromise("VenuePage::lazy-import::LoginRF", () =>
+    import("pages/RegistrationFlow/LoginRF").then(({ LoginRF }) => ({
+      default: LoginRF,
     }))
   )
 );
@@ -163,7 +173,11 @@ export const VenuePage: React.FC = () => {
       return;
     }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
+    updateProfileEnteredVenueIds(
+      profile?.enteredVenueIds,
+      userId,
+      venueId
+    ).then((e) => console.error(VenuePage.name, "error:", e));
   }, [profile, userId, venueId]);
 
   // NOTE: User's timespent updates
@@ -186,7 +200,7 @@ export const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+    return <NotFound />;
   }
 
   if (!venue || !venueId) {
@@ -197,7 +211,7 @@ export const VenuePage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venue={venue} />
+        <LoginRF venueId={venueId} />
       </Suspense>
     );
   }
