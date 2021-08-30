@@ -10,6 +10,15 @@ $spacing: 20px;
   background-repeat: no-repeat;
   background-size: cover;
 
+  @media (max-width: $media-breakpoint--xl) {
+    &--mobile {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      margin: 0;
+    }
+  }
+
   h2 {
     text-align: center;
   }
@@ -80,6 +89,7 @@ $spacing: 20px;
   &__events {
     max-height: 35vh;
     overflow-y: auto;
+
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {

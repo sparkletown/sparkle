@@ -59,10 +59,18 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
-      <div className="room-modal">
+    <Modal
+      show={show}
+      onHide={onHide}
+      contentClassName="room-modal--mobile"
+      className="room-modal--mobile"
+      dialogClassName="room-modal--mobile"
+      backdropClassName="room-modal--mobile"
+    >
+      <Modal.Header closeButton />
+      <Modal.Body className="room-modal--mobile">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
-      </div>
+      </Modal.Body>
     </Modal>
   );
 };
