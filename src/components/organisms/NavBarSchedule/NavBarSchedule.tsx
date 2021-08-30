@@ -248,6 +248,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
+        <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" />
+        <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
+          {weekdays}
+        </ul>
         <div className="NavBarSchedule__breadcrumb">
           <label>Events on: </label>
           <button
@@ -266,10 +270,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             </button>
           )}
         </div>
-        <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" />
-        <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
-          {weekdays}
-        </ul>
         {venueId && <ScheduleVenueDescription venueId={venueId} />}
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
