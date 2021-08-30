@@ -45,7 +45,7 @@ export const useImageInputCompression = (
       } else setIsTooLargeFileError(false);
 
       const compressedFile = await tryCompress(file);
-      const url = URL.createObjectURL(file);
+      const url = URL.createObjectURL(compressedFile);
 
       return [url, compressedFile];
     },
