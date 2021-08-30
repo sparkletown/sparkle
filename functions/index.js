@@ -1,6 +1,5 @@
 const firebase = require("firebase");
 const admin = require("firebase-admin");
-const { passwordsMatch } = require("./auth");
 
 require("firebase/firestore");
 const functions = require("firebase-functions");
@@ -34,33 +33,11 @@ const auth = require("./auth");
 const stats = require("./stats");
 const venue = require("./venue");
 const video = require("./video");
+const openWeatherMap = require("./openweathermap");
 
 exports.access = access;
 exports.auth = auth;
 exports.stats = stats;
 exports.venue = venue;
 exports.video = video;
-
-// @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
-//   It doesn't look like anything calls it in the codebase currently?
-exports.checkPassword = functions.https.onCall(async (data) => {
-  await firebase
-    .firestore()
-    .doc(`venues/${data.venue}`)
-    .get()
-    .then((doc) => {
-      if (
-        doc &&
-        doc.exists &&
-        doc.data() &&
-        doc.data().password &&
-        passwordsMatch(data.password, doc.data().password)
-      ) {
-        return "OK";
-      }
-      throw new functions.https.HttpsError(
-        "unauthenticated",
-        "Password incorrect"
-      );
-    });
-});
+exports.openweathermap = openWeatherMap;
