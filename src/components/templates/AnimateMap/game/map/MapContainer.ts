@@ -45,7 +45,6 @@ import { TooltipSystem } from "./systems/TooltipSystem";
 import { VenueSystem } from "./systems/VenueSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
-import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
 
 export class MapContainer extends Container {
   private _app: Application;
@@ -225,7 +224,6 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
 
-    this._engine.addSystem(new ZoomedSpriteSystem(), SystemPriorities.render);
     this._engine.addSystem(
       new ViewportSystem(
         this._app,
