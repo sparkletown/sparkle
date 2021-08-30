@@ -4,6 +4,7 @@ import {
   faChevronRight,
   faCommentDots,
   faEnvelope,
+  faPen,
   faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +15,7 @@ import { ChatTypes } from "types/chat";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { openUrl } from "utils/url";
 
 import {
   useChatSidebarControls,
@@ -56,6 +58,10 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     setShownHelpCenter(true);
     toggleSidebar();
   }, [toggleSidebar]);
+
+  const goToAdmin = useCallback(() => {
+    openUrl("/admin");
+  }, []);
 
   const handleSidebar = useCallback(() => {
     toggleSidebar();
@@ -130,6 +136,17 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           >
             <FontAwesomeIcon icon={faChevronLeft} size="sm" />
             <FontAwesomeIcon icon={faQuestion} size="lg" />
+          </button>
+        )}
+
+        {!isShownHelpCenter && !isExpanded && (
+          <button
+            aria-label={"Create space"}
+            className="chat-sidebar__controller chat-sidebar__create-icon"
+            onClick={goToAdmin}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+            <FontAwesomeIcon icon={faPen} size="lg" />
           </button>
         )}
 
