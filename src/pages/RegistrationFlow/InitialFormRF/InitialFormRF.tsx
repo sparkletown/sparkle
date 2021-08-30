@@ -23,7 +23,7 @@ export const InitialFormRF: FC<InitialFormRFProps> = ({
         href="https://www.eventbrite.com/e/sparkleverse-2021-online-burn-tickets-167724347037"
       >
         {" "}
-        Buy Tickets
+        Get a ticket
       </LinkButton>
       <ButtonRF onClick={onRegister} variant="seethrough">
         I&apos;ve got a ticket already
