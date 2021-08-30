@@ -84,7 +84,8 @@ $video-participant-optimal-height: 195px;
 
     .firebarrel-room__participant {
       margin: 0 0.25rem;
-      width: $video-participant-optimal-width;
+      min-width: 100px;
+      //width: $video-participant-optimal-width;
     }
   }
 
