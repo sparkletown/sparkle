@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn } from "react-use";
+import { useAsync } from "react-use";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
@@ -47,14 +47,15 @@ export const RoomsForm: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<PartyMapVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  const [{ loading: isLoading }, fetchVenueFromAPI] = useAsyncFn(async () => {
+  const { loading: isLoading, value: venue } = useAsync(async () => {
+    if (!venueId) return history.replace("/admin");
+
     const venueSnapshot = await firestore
       .collection("venues")
       .doc(venueId)
@@ -71,14 +72,9 @@ export const RoomsForm: React.FC = () => {
     if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
       history.replace("/admin");
     }
-    setVenue(data as PartyMapVenue);
+
+    return data as PartyMapVenue;
   }, [firestore, history, venueId]);
-
-  useEffect(() => {
-    if (!venueId) return history.replace("/admin");
-
-    fetchVenueFromAPI();
-  }, [firestore, venueId, history, fetchVenueFromAPI]);
 
   const room = useMemo(() => {
     if (
