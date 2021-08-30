@@ -14,11 +14,15 @@ import {
   setAnimateMapFirstEntrance,
   setAnimateMapUsers,
 } from "store/actions/AnimateMap";
-import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  AnimateMapState,
+  ReplicatedFirebarrel,
+  ReplicatedUser,
+  ReplicatedVenue,
+} from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-// import { DataProvider } from "../bridges/DataProvider";
 import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
@@ -124,15 +128,17 @@ export class GameInstance {
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
-      return new TimeoutCommand(1000)
-        .execute()
-        .then(() => {
-          return new WaitClickForHeroCreation().execute();
-        })
-        .then(async (command: WaitClickForHeroCreation) => {
-          await this._play(command.clickPoint);
-          this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
-        });
+      return (
+        new TimeoutCommand(1000)
+          .execute()
+          // .then(() => {
+          //   return new WaitClickForHeroCreation().execute();
+          // })
+          .then(async (command: WaitClickForHeroCreation) => {
+            await this._play(command.clickPoint);
+            this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
+          })
+      );
     }
   }
 
@@ -213,26 +219,21 @@ export class GameInstance {
   private _subscribes() {
     //TODO: refactor all subscribes to separate class? An example, rework eventProvider for this.
 
-    EventProvider.on(EventType.USER_JOINED, (userId: number) => {
-      console.log(`- ${userId} join to room`);
+    EventProvider.on(EventType.USER_JOINED, (user: ReplicatedUser) => {
+      console.log(`- ${user} join to room`);
+      this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
-    EventProvider.on(EventType.USER_LEFT, (userId: number) => {
-      console.log(`- ${userId} left from room`);
-      this._mapContainer?.entityFactory?.removeUserById(userId.toString());
+    EventProvider.on(EventType.USER_LEFT, (user: ReplicatedUser) => {
+      console.log(`- ${user} left from room`);
+      this._mapContainer?.entityFactory?.removeUserById(user.toString());
     });
 
-    EventProvider.on(
-      EventType.USER_MOVED,
-      (userId: number, x: number, y: number) => {
-        this._mapContainer?.entityFactory?.updateUserPositionById(
-          userId.toString(),
-          x,
-          y
-        );
-      }
-    );
+    EventProvider.on(EventType.USER_MOVED, (user: ReplicatedUser) => {
+      this._mapContainer?.entityFactory?.updateUserPositionById(user);
+    });
 
+    // Venues
     this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
@@ -250,8 +251,29 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_UPDATED,
       (venue: ReplicatedVenue) => {
-        this._mapContainer?.entityFactory?.removeVenue(venue);
-        this._mapContainer?.entityFactory?.createVenue(venue);
+        this._mapContainer?.entityFactory?.updateVenue(venue);
+      }
+    );
+
+    // Firebarrels
+    this.dataProvider.on(
+      DataProviderEvent.FIREBARREL_ADDED,
+      (firebarrel: ReplicatedFirebarrel) => {
+        this._mapContainer?.entityFactory?.createFireBarrel(firebarrel);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.FIREBARREL_REMOVED,
+      (firebarrel: ReplicatedFirebarrel) => {
+        this._mapContainer?.entityFactory?.removeBarrel(firebarrel);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.FIREBARREL_UPDATED,
+      (firebarrel: ReplicatedFirebarrel) => {
+        this._mapContainer?.entityFactory?.updateBarrel(firebarrel);
       }
     );
 

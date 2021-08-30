@@ -4,10 +4,10 @@ export class VenueTooltipEnter extends Sprite {
   constructor(public text = "default tooltip", public backgroundColor: number) {
     super();
 
-    this.drawTooltipElement();
+    this.draw();
   }
 
-  private drawTooltipElement(): void {
+  private draw(): void {
     const style = new TextStyle({
       fill: "#ede8fe",
       fontSize: 14,
@@ -16,16 +16,21 @@ export class VenueTooltipEnter extends Sprite {
 
     const text1: Text = new Text(this.text, style);
 
-    const txt = "Click Enter to join";
-    const text2: Text = new Text(txt, style);
+    style.fontWeight = "normal";
+    const text2: Text = new Text("Click ENTER to join", style);
+
+    style.fontWeight = "bold";
+    const text3: Text = new Text("ENTER", style);
 
     text1.position.set(-text1.width / 2, -text1.height / 2);
     text2.position.set(
       -text2.width / 2,
       -text2.height / 2 + text1.position.y + 30
     );
+    text3.position.set(text2.position.x + 37, text2.position.y);
     this.addChild(text1);
     this.addChild(text2);
+    this.addChild(text3);
 
     const h = Math.max(text1.height * 3, 18);
     const w = Math.max(text1.width, text2.width) + 2 * text1.height;

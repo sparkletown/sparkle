@@ -9,4 +9,8 @@ export enum DataProviderEvent {
   VENUE_ADDED = "BufferingDataProviderEvent.VENUE_ADDED",
   VENUE_UPDATED = "BufferingDataProviderEvent.VENUE_UPDATED",
   VENUE_REMOVED = "BufferingDataProviderEvent.VENUE_REMOVED",
+
+  FIREBARREL_ADDED = "BufferingDataProviderEvent.FIREBARREL_ADDED",
+  FIREBARREL_UPDATED = "BufferingDataProviderEvent.FIREBARREL_UPDATED",
+  FIREBARREL_REMOVED = "BufferingDataProviderEvent.FIREBARREL_REMOVED",
 }
