@@ -27,7 +27,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import { NavBarScheduleWeather } from "components/molecules/NavBarScheduleWeather";
+// import { NavBarScheduleWeather } from "components/molecules/NavBarScheduleWeather";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
@@ -246,10 +246,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
   });
 
+  const selectedVenue =
+    (filterRelatedEvents ? venueId : sovereignVenue?.id) ?? "";
+
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" />
+        {/* <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" /> */}
         <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
           {weekdays}
         </ul>
@@ -271,7 +274,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             </button>
           )}
         </div>
-        {venueId && <ScheduleVenueDescription venueId={venueId} />}
+        {venueId && <ScheduleVenueDescription venueId={selectedVenue} />}
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"
