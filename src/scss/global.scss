@@ -757,6 +757,11 @@ span.link {
   height: 100%;
 }
 
+.image-input.disabled {
+  cursor: none;
+  pointer-events: none;
+}
+
 .image-input .empty .text {
   text-align: center;
 }
