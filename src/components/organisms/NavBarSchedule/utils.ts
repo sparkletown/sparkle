@@ -6,10 +6,13 @@ import { AnyVenue, ScheduledVenueEvent, VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 import { arrayIncludes } from "utils/types";
 
+interface UserWithVenueIdProps extends WithId<User> {
+  venueId?: string;
+}
 export interface PrepareForScheduleProps {
   usersEvents: MyPersonalizedSchedule;
   relatedVenues: WithId<AnyVenue>[];
-  recentRoomUsers?: readonly WithId<User>[][];
+  recentRoomUsers?: UserWithVenueIdProps[];
   index?: number;
 }
 
@@ -27,7 +30,7 @@ export const prepareForSchedule = ({
     venueIcon:
       relatedVenues.find((venue) => venue.id === event.venueId)?.host?.icon ??
       DEFAULT_VENUE_LOGO,
-    liveAudience: recentRoomUsers?.[index]?.length ?? 0,
+    liveAudience: recentRoomUsers?.length ?? 0,
     orderPriority: event.orderPriority ?? 0,
   };
 };

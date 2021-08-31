@@ -25,6 +25,7 @@ interface EditRoomFormProps {
   onDelete?: () => void;
   onEdit?: () => void;
 }
+
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   room,
   updatedRoom,
@@ -134,7 +135,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           <ImageInput
             onChange={handleImageChange}
             name="image"
-            forwardRef={register}
+            setValue={setValue}
+            register={register}
             small
             nameWithUnderscore
             imgUrl={room.image_url}
