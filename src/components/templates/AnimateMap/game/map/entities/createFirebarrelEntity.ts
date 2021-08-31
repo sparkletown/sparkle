@@ -17,6 +17,7 @@ import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Firebarrel } from "../graphics/Firebarrel";
+import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
 import { FirebarrelHalo } from "../graphics/FirebarrelHalo";
 import { FirebarrelHaloAnimated } from "../graphics/FirebarrelHaloAnimated";
 import { FirebarrelHaloEmpty } from "../graphics/FirebarrelHaloEmpty";
@@ -157,6 +158,7 @@ export const createFirebarrelEntity = (
     .add(new CollisionComponent(getCollisionRadius()))
     .add(positionComponent)
     .add(spriteComponent)
+    .add(new FirebarrelCamIcon(spriteComponent.view))
     .add(
       new HoverableSpriteComponent(
         () => {

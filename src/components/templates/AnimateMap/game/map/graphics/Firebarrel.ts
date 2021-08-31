@@ -6,4 +6,5 @@ export class Firebarrel extends Sprite implements Hoverable {
   public halo?: Sprite;
   public main?: Sprite;
   public avatars?: Sprite;
+  public camIcon?: Sprite;
 }
