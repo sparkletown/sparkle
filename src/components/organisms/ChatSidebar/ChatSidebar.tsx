@@ -117,7 +117,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
         {!isShownHelpCenter && !isExpanded && (
           <ChatSidebarButton
-            text="Help"
+            text="Help!"
             tooltipText="Opens help centre"
             ariaLabel={isExpanded ? "Hide help centre" : "Show help centre"}
             icon={faQuestion}
