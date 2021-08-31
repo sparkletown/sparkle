@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { getDay, getMonth, getYear } from "date-fns";
 import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
@@ -11,12 +12,17 @@ import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { venueSelector } from "utils/selectors";
+import { isDefined } from "utils/types";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserPrivate } from "pages/Account/helpers";
+import {
+  validateDateOfBirth,
+  validateDateOfBirthInfo,
+} from "pages/RegistrationFlow/utils-rf";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -34,6 +40,7 @@ import "./RegisterFormRF.scss";
 // @debt temporary switches for development only, should be removed
 const ALWAYS_REQUIRE_CODES = false;
 const ALWAYS_REQUIRE_BIRTH = false;
+const USE_CALENDAR_CONTROL = false;
 
 export interface RegisterFormRfProps {
   onLogin: () => void;
@@ -76,6 +83,9 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
+  const now = new Date();
+  const currentYear = getYear(now);
+
   const {
     register,
     handleSubmit,
@@ -87,6 +97,11 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
   } = useForm<RegisterFormRfData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
+    defaultValues: {
+      day: `${getDay(now)}`,
+      month: `${getMonth(now)}`,
+      year: `${currentYear}`,
+    },
   });
 
   const [{ loading }, onSubmit] = useAsyncFn(
@@ -255,56 +270,160 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
           </InputWrapRF>
         )}
 
-        {/* @debt: commenting the calendar style input until we find a better fix */}
-        {(venue.requiresDateOfBirth || ALWAYS_REQUIRE_BIRTH) && (
-          // <InputWrapRF
-          //   info={
-          //     <>
-          //       You need to be 18 years old to attend this event.
-          //       <br />
-          //       Please confirm your age.
-          //     </>
-          //   }
-          //   error={
-          //     errors?.date_of_birth && (
-          //       <>
-          //         <SpanRF>
-          //           {errors?.date_of_birth.type === "required" &&
-          //             "Date of birth is required"}
-          //         </SpanRF>
-          //         <SpanRF>
-          //           {errors?.date_of_birth.type === "validate" &&
-          //             "You need to be at least 18 years of age."}
-          //         </SpanRF>
-          //       </>
-          //     )
-          //   }
-          // >
-          //   <input
-          //     className="RegisterFormRF__date-of-birth"
-          //     name="date_of_birth"
-          //     type="date"
-          //     ref={register({ required: true, validate: validateDateOfBirth })}
-          //   />
-          // </InputWrapRF>
-
-          <CheckboxWrapRF
-            label="I am at least 18 years old."
-            error={
-              errors?.["date_of_birth"]?.type === "required" &&
-              "You must be over 18 to attend this event"
-            }
-          >
-            <input
-              name="date_of_birth"
-              ref={register({
-                required: true,
-              })}
-              type="checkbox"
-            />
-          </CheckboxWrapRF>
+        {/* @debt: the calendar style input validation needs fixing*/}
+        {USE_CALENDAR_CONTROL &&
+          (venue.requiresDateOfBirth || ALWAYS_REQUIRE_BIRTH) && (
+            <InputWrapRF
+              info={
+                <>
+                  You need to be 18 years old to attend this event.
+                  <br />
+                  Please confirm your age.
+                </>
+              }
+              error={
+                errors?.date_of_birth && (
+                  <>
+                    <SpanRF>
+                      {errors?.date_of_birth.type === "required" &&
+                        "Date of birth is required"}
+                    </SpanRF>
+                    <SpanRF>
+                      {errors?.date_of_birth.type === "validate" &&
+                        "You must be over 18 to attend this event"}
+                    </SpanRF>
+                  </>
+                )
+              }
+            >
+              <input
+                className="RegisterFormRF__date-of-birth"
+                name="date_of_birth"
+                type="date"
+                ref={register({
+                  required: true,
+                  validate: validateDateOfBirth,
+                })}
+              />
+            </InputWrapRF>
+          )}
+        {!USE_CALENDAR_CONTROL && (
+          <DivRF variant="secondary">
+            You need to be 18 years old to attend this event. Please confirm
+            your age.
+          </DivRF>
         )}
+        {!USE_CALENDAR_CONTROL && (
+          <DivRF className="RegisterFormRF__dob-container mod--flex-row">
+            <InputWrapRF
+              error={
+                isDefined(errors?.month?.type) &&
+                errors?.month?.type !== "validate" &&
+                "Must be a valid month"
+              }
+            >
+              <label>
+                <SpanRF>Month:</SpanRF>
+                <input
+                  className="RegisterFormRF__dob-month RegisterFormRF__dob-input"
+                  name="month"
+                  type="number"
+                  aria-label="month"
+                  ref={register({
+                    required: true,
+                    max: 12,
+                    min: 1,
+                    validate: () => {
+                      const { day, month, year } = getValues();
+                      const result = validateDateOfBirthInfo({
+                        day,
+                        month,
+                        year,
+                      });
+                      result && clearError(["day", "month", "year"]);
+                      return result;
+                    },
+                  })}
+                />
+              </label>
+            </InputWrapRF>
+            <InputWrapRF
+              error={
+                isDefined(errors?.day?.type) &&
+                errors?.day?.type !== "validate" &&
+                "Must be a valid day"
+              }
+            >
+              <label>
+                <SpanRF>Day:</SpanRF>
+                <input
+                  className="RegisterFormRF__dob-day RegisterFormRF__dob-input"
+                  name="day"
+                  type="number"
+                  aria-label="day"
+                  ref={register({
+                    required: true,
+                    max: 31,
+                    min: 1,
+                    validate: () => {
+                      const { day, month, year } = getValues();
+                      const result = validateDateOfBirthInfo({
+                        day,
+                        month,
+                        year,
+                      });
+                      result && clearError(["day", "month", "year"]);
+                      return result;
+                    },
+                  })}
+                />
+              </label>
+            </InputWrapRF>
 
+            <InputWrapRF
+              error={
+                isDefined(errors?.year?.type) &&
+                errors?.year?.type !== "validate" &&
+                "Must be a valid year"
+              }
+            >
+              <label>
+                <SpanRF>Year:</SpanRF>
+                <input
+                  className="RegisterFormRF__dob-year RegisterFormRF__dob-input"
+                  name="year"
+                  type="number"
+                  aria-label="year"
+                  ref={register({
+                    required: true,
+                    maxLength: 4,
+                    minLength: 4,
+                    max: currentYear,
+                    min: 1900,
+                    validate: () => {
+                      const { day, month, year } = getValues();
+                      const result = validateDateOfBirthInfo({
+                        day,
+                        month,
+                        year,
+                      });
+                      result && clearError(["day", "month", "year"]);
+                      return result;
+                    },
+                  })}
+                />
+              </label>
+            </InputWrapRF>
+          </DivRF>
+        )}
+        {!USE_CALENDAR_CONTROL && (
+          <SpanRF variant="error">
+            {(errors?.year?.type === "validate" ||
+              errors?.month?.type === "validate" ||
+              errors?.day?.type === "validate") &&
+              "You must be over 18 to attend this event"}
+          </SpanRF>
+        )}
         <SpanRF variant="error">{errors?.backend?.message}</SpanRF>
 
         <CheckboxWrapRF
