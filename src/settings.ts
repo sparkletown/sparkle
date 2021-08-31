@@ -112,9 +112,12 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
-export const MAX_IMAGE_FILE_SIZE_MB = 2;
-export const MAX_IMAGE_FILE_SIZE_MB_TEXT = `${MAX_IMAGE_FILE_SIZE_MB}MB`;
-export const MAX_IMAGE_FILE_SIZE_BYTES = MAX_IMAGE_FILE_SIZE_MB * 1024 * 1024;
+export const MAX_UPLOAD_IMAGE_FILE_SIZE_MB = 2;
+export const MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES =
+  MAX_UPLOAD_IMAGE_FILE_SIZE_MB * 1024 * 1024;
+export const MAX_SELECTABLE_IMAGE_FILE_SIZE_MB = 30;
+export const MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES =
+  MAX_SELECTABLE_IMAGE_FILE_SIZE_MB * 1024 * 1024;
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
@@ -755,3 +758,11 @@ export const FIREBASE_STORAGE_IMAGES_ORIGIN =
   "https://firebasestorage.googleapis.com/v0/b/sparkle-burn.appspot.com/o/";
 export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
   "https://sparkle-burn-users.imgix.net/";
+
+// Helper values that can be safely used in places that might re-render but don't have useMemo/useCallback
+export const ALWAYS_EMPTY_OBJECT = {};
+Object.freeze(ALWAYS_EMPTY_OBJECT);
+export const ALWAYS_EMPTY_ARRAY = [];
+Object.freeze(ALWAYS_EMPTY_ARRAY);
+export const ALWAYS_NOOP_FUNCTION = () => {};
+Object.freeze(ALWAYS_NOOP_FUNCTION);
