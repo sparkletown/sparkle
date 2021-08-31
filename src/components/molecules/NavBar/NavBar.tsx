@@ -322,10 +322,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               ) : (
                 <div>{navbarTitle}</div>
               )}
-              <div className="NavBar__playa-info">
-                <PlayaTime />
-                <div className="NavBar__separator">-</div>
-                <VenuePartygoers />
+
+              <div className="navbar-links__simplified-view">
+                <a
+                  className="navbar-links__simplified-view-a"
+                  href={`/m/${venueId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <ButtonNG className="navbar-links__simplified-view-button">
+                    <span className="navbar-links__simplified-view-text">
+                      Simplified View &nbsp;
+                    </span>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} />
+                  </ButtonNG>
+                </a>
               </div>
             </div>
 
@@ -333,20 +344,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                <div className="navbar-links__simplified-view">
-                  <a
-                    className="navbar-links__simplified-view-a"
-                    href={`/m/${venueId}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <ButtonNG className="navbar-links__simplified-view-button">
-                      <span className="navbar-links__simplified-view-text">
-                        Simplified View &nbsp;
-                      </span>
-                      <FontAwesomeIcon icon={faExternalLinkAlt} />
-                    </ButtonNG>
-                  </a>
+                <div className="NavBar__playa-info">
+                  <PlayaTime />
+                  <div className="NavBar__separator">-</div>
+                  <VenuePartygoers />
                 </div>
                 <NavSearchBar venueId={venueId ?? ""} />
 
