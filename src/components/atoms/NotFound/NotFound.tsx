@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 import TV_IMAGE from "assets/images/old-tv-404.png";
+import SPARKLEVERSE_LANDSCAPE from "assets/images/sparkleverse-landscape.png";
 
 import "./NotFound.scss";
 
@@ -24,7 +24,11 @@ export const NotFound: React.FC<NotFoundProps> = ({ fullScreen }) => {
   return (
     <div className={componentClasses}>
       <div className="NotFound__message-container">
-        <SparkleLogo className="NotFound__logo" />
+        <img
+          className="NotFound__logo"
+          alt="sparkle logo"
+          src={SPARKLEVERSE_LANDSCAPE}
+        />
         <img
           className="NotFound__tv"
           alt="shape indicating denied access"

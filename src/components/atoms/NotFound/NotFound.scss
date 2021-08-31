@@ -24,6 +24,11 @@ $denied-shape-size: 96px;
     border-radius: 0 !important;
   }
 
+  &__logo {
+    padding-bottom: 30px;
+    height: 90px;
+  }
+
   &__message-container {
     width: $message-container-width;
     display: flex;
