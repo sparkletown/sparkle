@@ -9,16 +9,29 @@ export class CropVenue implements Command {
   private resolve?: Function;
   public canvas: HTMLCanvasElement;
   public usersCount = 0;
+  public usersCountColor = "rgb(0, 0, 0, 0.5)";
 
   private static VENUE_PLATE?: HTMLCanvasElement;
   private static VENUE_PEOPLE?: HTMLCanvasElement;
 
-  constructor(private url: string, private venueIsEnabled = false) {
+  constructor(private url: string) {
     this.canvas = document.createElement("canvas");
   }
 
   public setUsersCount(usersCount: number): this {
     this.usersCount = usersCount;
+    return this;
+  }
+
+  public setUsersCountColor(color: number): this {
+    const str = color.toString(16);
+    this.usersCountColor = `rgb(${parseInt(
+      str.substring(0, 2),
+      16
+    )}, ${parseInt(str.substring(2, 4), 16)}, ${parseInt(
+      str.substring(4),
+      16
+    )}, 0.5)`;
     return this;
   }
 
@@ -184,9 +197,7 @@ export class CropVenue implements Command {
     const radius = width / 6;
 
     ctx.save();
-    ctx.fillStyle = this.venueIsEnabled
-      ? "rgba(124, 70, 251, 0.5)"
-      : "rgba(0, 0, 0, .5)";
+    ctx.fillStyle = this.usersCountColor;
 
     ctx.beginPath();
     ctx.moveTo(x, ctx.canvas.height - stroke);

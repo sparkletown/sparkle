@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -8,8 +9,11 @@ import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import Room from "components/organisms/Room";
 
+import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
@@ -22,42 +26,55 @@ export interface ArtPieceProps {
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   if (!venue) return <Loading label="Loading..." />;
 
-  const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
+  const { name, host, config, showRangers, iframeUrl, videoAspect } = venue;
+  const landingPageConfig = config?.landingPageConfig;
+  const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
 
-  const aspectContainerClasses = `aspect-container ${
-    venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
-  }`;
+  const aspectContainerClasses = classNames({
+    "ArtPiece__aspect-container": true,
+    "mod--sixteen-nine": videoAspect === VideoAspectRatio.SixteenNine,
+    "mod--anamorphic": videoAspect !== VideoAspectRatio.SixteenNine,
+  });
 
   return (
-    <>
-      <div className="full-page-container art-piece-container">
-        <div className="content">
-          <div className={aspectContainerClasses}>
-            <iframe
-              className="youtube-video"
-              title="art-piece-video"
-              src={iframeUrl}
-              frameBorder="0"
-              allow={IFRAME_ALLOW}
-              allowFullScreen
-            />
+    <div className="ArtPiece">
+      <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationCard title="About the venue">
+          <p className="ArtPiece__title-sidebar">{name}</p>
+          <p className="ArtPiece__short-description-sidebar">
+            {landingPageConfig?.subtitle}
+          </p>
+          <div className="ArtPiece__rendered-markdown">
+            <RenderMarkdown text={landingPageConfig?.description} />
           </div>
-          <div className="video-chat-wrapper">
-            <Room
-              venueName={venue.name}
-              roomName={venue.name}
-              setUserList={() => null}
-              hasChairs={false}
-              defaultMute={true}
-            />
-          </div>
+        </InformationCard>
+      </InformationLeftColumn>
+      <div className="ArtPiece__content">
+        <div className={aspectContainerClasses}>
+          <iframe
+            className="ArtPiece__youtube-video"
+            title="art-piece-video"
+            src={embeddableUrl}
+            frameBorder="0"
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
+        </div>
+        <div className="ArtPiece__video-chat-wrapper">
+          <Room
+            venueName={name}
+            roomName={name}
+            setUserList={() => null}
+            hasChairs={false}
+            defaultMute={true}
+          />
         </div>
       </div>
-      {venue?.showRangers && (
-        <div className="sparkle-fairies">
+      {showRangers && (
+        <div className="ArtPiece__sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>
       )}
-    </>
+    </div>
   );
 };

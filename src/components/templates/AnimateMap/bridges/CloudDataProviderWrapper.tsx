@@ -9,9 +9,10 @@ import { WithId } from "utils/id";
 import { WithVenue } from "utils/venue";
 
 import { useVenueEvents } from "hooks/events";
-import { useWorldUsers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
+import { getFirebaseStorageResizedImage } from "../../../../utils/image";
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
@@ -42,7 +43,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   );
   const firebase = useFirebase();
   const user = useUser();
-  const worldUsers = useWorldUsers();
+  const worldUsers = useRecentWorldUsers();
 
   const venues: WithId<AnyVenue>[] = useMemo(
     () =>
@@ -95,7 +96,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
 
     return {
       ...room,
-      ...{ id: index, isLive: !!(room.title.length % 2), countUsers: 0 },
+      ...{ id: index, isLive: false, countUsers: 0 },
     };
   });
 
@@ -122,12 +123,22 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   useEffect(
     () => {
       if (typeof user.userId === "string" && !dataProvider && firebase) {
-        const dataProvider = new CloudDataProvider(
-          user.userId,
-          user.profile?.pictureUrl,
-          firebase,
-          venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
-        );
+        const dataProvider = new CloudDataProvider({
+          playerId: user.userId,
+          userAvatarUrl: getFirebaseStorageResizedImage(
+            user.profile?.pictureUrl ?? "",
+            {
+              width: 64,
+              height: 64,
+              fit: "crop",
+            }
+          ),
+          firebase: firebase,
+          playerioGameId: venue.playerioGameId,
+          playerioMaxPlayerPerRoom: venue.playerioMaxPlayerPerRoom ?? 80,
+          playerioFrequencyUpdate: venue.playerioFrequencyUpdate ?? 0.5,
+          // playerioAdvancedMode: venue.playerioAdvancedMode,
+        });
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
         dataProvider.updateUsers(worldUsers);

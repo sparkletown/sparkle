@@ -1,0 +1,25 @@
+@import "scss/constants.scss";
+
+$images: (
+  ("morning1", url("/assets/images/BlackRockWeather/morning1.png"), 50% 100%),
+  ("morning2", url("/assets/images/BlackRockWeather/morning2.png"), 50% 60%),
+  ("morning3", url("/assets/images/BlackRockWeather/morning3.png"), 50% 100%),
+  ("day1", url("/assets/images/BlackRockWeather/day1.png"), 80% 50%),
+  ("day2", url("/assets/images/BlackRockWeather/day2.png"), 50% 62%),
+  ("day3", url("/assets/images/BlackRockWeather/day3.png"), 20% 55%),
+  ("evening1", url("/assets/images/BlackRockWeather/evening1.png"), 50% 60%),
+  ("evening2", url("/assets/images/BlackRockWeather/evening2.png"), 50% 100%),
+  ("evening3", url("/assets/images/BlackRockWeather/evening3.png"), 100% 20%),
+  ("night1", url("/assets/images/BlackRockWeather/night1.png"), 50% 40%),
+  ("night2", url("/assets/images/BlackRockWeather/night2.png"), 50% 25%),
+  ("night3", url("/assets/images/BlackRockWeather/night3.png"), 50% 45%)
+);
+
+.BlackRockWeatherBackground {
+  @each $modifier, $url, $placement in $images {
+    &--#{$modifier} {
+      background-image: $url;
+      background-position: $placement;
+    }
+  }
+}

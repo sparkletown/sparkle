@@ -1,0 +1,40 @@
+@import "scss/constants.scss";
+
+$header-gap: 1rem;
+$badge-size: 4rem;
+
+$columns: (("1", 1), ("2", 2), ("3", 3));
+
+@mixin columns($name) {
+  @each $modifier, $column in $columns {
+    .#{$name}--#{$modifier} {
+      grid-column: $column;
+      @content;
+    }
+  }
+}
+
+@include columns(InfoBlock__header) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $header-gap;
+  grid-row: 1;
+}
+
+@include columns(InfoBlock__text) {
+  grid-row: 2;
+  text-align: center;
+  font-size: $font-size--md;
+}
+
+@include columns(InfoBlock__button) {
+  grid-row: 3;
+}
+
+.InfoBlock__img {
+  user-select: none;
+  border-radius: 100%;
+  @include square-size($badge-size);
+}

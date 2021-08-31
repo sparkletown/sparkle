@@ -1,0 +1,32 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.InputWrapRF {
+  min-width: $reg-flow-input-width;
+  width: $reg-flow-input-width;
+
+  // remove screen artefacts
+  padding: $spacing--lg;
+
+  input:focus {
+    border-color: $reg-flow-color--normal;
+  }
+
+  &--error input {
+    border: 1px solid $red;
+  }
+
+  &__info {
+    font-size: $reg-flow-font-size--info;
+    opacity: 0.8;
+    align-self: center;
+  }
+
+  &__error,
+  &__required {
+    text-align: center;
+    font-weight: bold;
+    color: $reg-flow-color--error;
+    font-size: $reg-flow-font-size--error;
+  }
+}

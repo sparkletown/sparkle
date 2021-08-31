@@ -17,11 +17,22 @@ $denied-shape-size: 96px;
   background-size: cover;
   background-position: center;
 
+  &--full-screen {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0 !important;
+  }
+
   &__message-container {
     width: $message-container-width;
     display: flex;
     flex-direction: column;
     place-items: center;
+  }
+
+  &__move-along-text {
+    margin-top: $spacing--xl;
   }
 
   &__button {

@@ -15,7 +15,8 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
-import { UIPlayerContextMenu } from "../PlayerContextMenu/PlayerContextMenu";
+import { UIPlayerClickHandler } from "../PlayerContextMenu/PlayerContextMenu";
+import { Shoutouter } from "../Shoutouter/Shoutouter";
 import { SingleButton } from "../SingleButton/SingleButton";
 import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { UIContainer } from "../UIContainer/UIContainer";
@@ -32,7 +33,6 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
   venue,
   children,
 }) => {
-  // const eventProvider = useSelector(animateMapEventProviderSelector);
   const eventProvider = EventProvider;
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
   const hasSelectedRoom = !!selectedRoom;
@@ -87,7 +87,10 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
           </UIContainer>
         </div>
         <div className="UIOverlayGrid__contextmenu">
-          <UIPlayerContextMenu />
+          <UIPlayerClickHandler />
+        </div>
+        <div className="UIOverlayGrid__shoutouter">
+          <Shoutouter />
         </div>
       </div>
     </div>

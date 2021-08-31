@@ -13,6 +13,7 @@ import { venueLandingUrl } from "utils/url";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
+import { LoginRF } from "pages/RegistrationFlow/LoginRF";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
@@ -67,6 +68,14 @@ const VenuePage = lazy(() =>
   )
 );
 
+const EmergencyViewPage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::EmergencyViewPage", () =>
+    import("pages/EmergencyViewPage").then(({ EmergencyViewPage }) => ({
+      default: EmergencyViewPage,
+    }))
+  )
+);
+
 export const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
@@ -88,6 +97,9 @@ export const AppRouter: React.FC = () => {
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
           {/*<Route path="/login" component={Login} />*/}
 
+          {/* route for testing registration flow */}
+          <Route path="/login/:venueId" component={LoginRF} />
+
           <Route path="/v/:venueId">
             <Provided withWorldUsers withRelatedVenues>
               <VenueLandingPage />
@@ -104,6 +116,12 @@ export const AppRouter: React.FC = () => {
               <VenuePage />
             </Provided>
           </Route>
+          <Route path="/m/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <EmergencyViewPage />
+            </Provided>
+          </Route>
+
           <Route path="/version" component={VersionPage} />
 
           <Route

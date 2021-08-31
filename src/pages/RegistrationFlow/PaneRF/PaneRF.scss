@@ -1,0 +1,37 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+$window-width: 98vw; // avoids unnecessary horizontal scrollbar
+$window-height: 100vh;
+
+.PaneRF {
+  margin: 0;
+  padding: $reg-flow-page-padding-top 0 0;
+  min-height: $window-height;
+  min-width: $window-width;
+
+  background-color: $secondary--live;
+  background-image: url(/assets/images/bm-login-background.jpeg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+
+  text-align: center;
+  place-items: center;
+
+  .mod--flex-col {
+    align-items: center;
+
+    > * {
+      margin-bottom: $reg-flow-element-distance;
+    }
+  }
+
+  .mod--flex-row {
+    align-items: center;
+
+    > * {
+      margin-right: $reg-flow-element-distance;
+    }
+  }
+}

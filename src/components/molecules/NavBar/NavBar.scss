@@ -9,9 +9,35 @@ $menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
 $volume-popover-width-with-sliders: 30em;
 $volume-popover-width-without-sliders: 15em;
+$simplified-view-button--height: 32px;
+$simplified-view-button--padding: 0 10px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
+}
+
+.navbar-links {
+  flex: 1;
+
+  &__simplified-view {
+    font-size: 0.8rem;
+    margin-right: $spacing--sm;
+  }
+
+  &__simplified-view-a {
+    color: opaque-white(0.8);
+  }
+
+  &__simplified-view-button {
+    height: $simplified-view-button--height;
+    padding: $simplified-view-button--padding;
+  }
+
+  @media (max-width: 900px) {
+    &__simplified-view-text {
+      display: none;
+    }
+  }
 }
 
 .navbar-container {
@@ -174,7 +200,7 @@ $volume-popover-width-without-sliders: 15em;
   border-bottom-right-radius: $nav-btn-border-radius;
   cursor: pointer;
   background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
-  margin-top: $spacing--sm;
+  margin-top: $spacing--xxl * 2;
 
   &:hover {
     background-color: $nav-btn-hover-background;
@@ -188,10 +214,6 @@ $volume-popover-width-without-sliders: 15em;
     &:after {
       opacity: 0.7;
     }
-  }
-
-  &-marged {
-    margin-top: $spacing--xl * 2;
   }
 
   &-triggered {
@@ -261,6 +283,11 @@ $volume-popover-width-without-sliders: 15em;
 }
 
 .NavBar {
+  &__playa-info {
+    display: flex;
+    align-items: center;
+  }
+
   &__volume-control--hidden {
     display: none;
   }
@@ -295,6 +322,7 @@ $volume-popover-width-without-sliders: 15em;
 
   &__sparkle {
     &-logo {
+      cursor: pointer;
       margin-right: $spacing--lg;
       @include square-size($logo-size);
       background-image: url(/assets/icons/sparkle-nav-logo.png);
@@ -390,6 +418,12 @@ $volume-popover-width-without-sliders: 15em;
     &-icon {
       @include square-size($menu-item-size);
       background: opaque-white(0.1);
+    }
+  }
+
+  @media (max-width: 800px) {
+    &__playa-info {
+      display: none;
     }
   }
 }

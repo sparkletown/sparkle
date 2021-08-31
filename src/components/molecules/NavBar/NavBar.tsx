@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import {
   faBars,
+  faExternalLinkAlt,
   faTicketAlt,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
@@ -112,11 +113,13 @@ const VolumePopover = (
 );
 export interface NavBarPropsType {
   hasBackButton?: boolean;
+  withSchedule?: boolean;
   hasSchedule?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton = true,
+  withSchedule = true,
   hasSchedule = true,
 }) => {
   const { user, userWithId } = useUser();
@@ -155,9 +158,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     openUserProfileModal(userWithId);
   }, [openUserProfileModal, userWithId]);
 
-  const shouldShowSchedule = !hasSchedule
-    ? false
-    : currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+  const shouldShowSchedule =
+    withSchedule &&
+    hasSchedule &&
+    (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -252,7 +256,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const scheduleBtnClasses = classNames("nav-schedule", {
     "nav-schedule-clicked": isEventScheduleVisible,
     "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
-    "nav-schedule-marged": hasBackButton,
   });
 
   const navBarScheduleClassName = "NavBar__schedule-dropdown";
@@ -319,15 +322,32 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               ) : (
                 <div>{navbarTitle}</div>
               )}
-              <PlayaTime />
-              <div className="NavBar__separator">-</div>
-              <VenuePartygoers />
+              <div className="NavBar__playa-info">
+                <PlayaTime />
+                <div className="NavBar__separator">-</div>
+                <VenuePartygoers />
+              </div>
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
+                <div className="navbar-links__simplified-view">
+                  <a
+                    className="navbar-links__simplified-view-a"
+                    href={`/m/${venueId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ButtonNG className="navbar-links__simplified-view-button">
+                      <span className="navbar-links__simplified-view-text">
+                        Simplified View &nbsp;
+                      </span>
+                      <FontAwesomeIcon icon={faExternalLinkAlt} />
+                    </ButtonNG>
+                  </a>
+                </div>
                 <NavSearchBar venueId={venueId ?? ""} />
 
                 {hasUpcomingEvents && (

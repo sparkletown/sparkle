@@ -25,17 +25,22 @@ import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
 import EntityFactory from "./EntityFactory";
 
-const addVenueTooltip = (
-  venue: ReplicatedVenue,
-  entity: Entity,
-  text: string
-) => {
+const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
+const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
+const TOOLTIP_TEXT_LENGTH_MAX = 18;
+
+const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
-
+  const text =
+    venue.data.title.length > TOOLTIP_TEXT_LENGTH_MAX
+      ? venue.data.title.slice(0, 15) + "..."
+      : venue.data.title;
   const tooltip = new TooltipComponent(text);
-  tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
+  tooltip.borderColor = venue.data.isLive
+    ? TOOLTIP_COLOR_ISLIVE
+    : TOOLTIP_COLOR_DEFAULT;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
@@ -45,8 +50,11 @@ const updateVenueImage = (
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
 ) => {
-  new CropVenue(replicatedVenue.data.image_url, replicatedVenue.data.isEnabled)
+  new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
+    .setUsersCountColor(
+      replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT
+    )
     .execute()
     .then((comm: CropVenue) => {
       const size = GameConfig.VENUE_DEFAULT_SIZE;
@@ -69,6 +77,12 @@ const updateVenueImage = (
     });
 };
 
+const getCurrentReplicatedVenue = (
+  venueComponent: VenueComponent
+): ReplicatedVenue => {
+  return venueComponent.model;
+};
+
 export const updateVenueEntity = (
   venue: ReplicatedVenue,
   creator: EntityFactory
@@ -77,7 +91,10 @@ export const updateVenueEntity = (
   if (!node) {
     return;
   }
+
   node.venue.model = venue;
+  node.entity.add(node.venue);
+
   const sprite = node.entity.get(SpriteComponent);
   if (!sprite) {
     return;
@@ -93,6 +110,7 @@ export const createVenueEntity = (
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
   const venueComponent = new VenueComponent(venue, fsm);
+  const positionComponent = new PositionComponent(venue.x, venue.y, 0, 0, 0);
   const spriteComponent: SpriteComponent = new SpriteComponent();
   const sprite: Venue = new Venue();
   sprite.zIndex = -1;
@@ -112,7 +130,7 @@ export const createVenueEntity = (
     .add(VenueHalo)
     .withMethod(
       (): VenueHalo => {
-        return new VenueHalo(sprite, entity.get(PositionComponent)?.scaleY);
+        return new VenueHalo(sprite);
       }
     );
 
@@ -122,7 +140,7 @@ export const createVenueEntity = (
     .withMethod(
       (): AnimationComponent => {
         return new AnimationComponent(
-          new VenueHaloAnimated(sprite, entity.get(PositionComponent)?.scaleY),
+          new VenueHaloAnimated(sprite),
           Number.MAX_VALUE
         );
       }
@@ -132,21 +150,18 @@ export const createVenueEntity = (
   const hoverEffectDuration = 100;
 
   entity
+    .add(positionComponent)
     .add(venueComponent)
     .add(spriteComponent)
+    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS))
     .add(
       new HoverableSpriteComponent(
         () => {
           // add tooltip
           const waiting = creator.getWaitingVenueClick();
-          if (!waiting || waiting.data.id !== venue.data.id) {
-            addVenueTooltip(
-              venue,
-              entity,
-              venue.data.title.length > 18
-                ? venue.data.title.slice(0, 15) + "..."
-                : venue.data.title
-            );
+          const currentVenue = getCurrentReplicatedVenue(venueComponent);
+          if (!waiting || waiting.data.id !== currentVenue.data.id) {
+            addVenueTooltip(currentVenue, entity);
           }
 
           // add increase
@@ -188,29 +203,27 @@ export const createVenueEntity = (
     )
     .add(
       new ClickableSpriteComponent(() => {
+        const currentVenue = getCurrentReplicatedVenue(venueComponent);
         GameInstance.instance.getStore().dispatch(
           setAnimateMapRoom({
-            title: venue.data.title,
-            subtitle: venue.data.subtitle,
-            url: venue.data.url,
-            about: venue.data.about,
+            title: currentVenue.data.title,
+            subtitle: currentVenue.data.subtitle,
+            url: currentVenue.data.url,
+            about: currentVenue.data.about,
             x_percent: 50,
             y_percent: 50,
             width_percent: 5,
             height_percent: 5,
-            isEnabled: venue.data.isEnabled,
-            image_url: venue.data.image_url,
+            isEnabled: currentVenue.data.isEnabled,
+            image_url: currentVenue.data.image_url,
           })
         );
       })
-    )
-    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS));
+    );
 
-  const position = new PositionComponent(venue.x, venue.y, 0, 0, 0);
-  entity.add(position);
   engine.addEntity(entity);
 
-  updateVenueImage(venue, spriteComponent, position);
+  updateVenueImage(venue, spriteComponent, positionComponent);
 
   return entity;
 };

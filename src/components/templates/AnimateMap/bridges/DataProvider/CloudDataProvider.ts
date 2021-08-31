@@ -9,15 +9,17 @@ import {
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
+import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
 
+import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
-import { WorldUsersData } from "hooks/users/useWorldUsers";
+import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
-import { Firebarrel } from "../../../../../types/animateMap";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
+import EventProvider, { EventType } from "../EventProvider/EventProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
@@ -29,7 +31,15 @@ import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import playerModel from "./Structures/PlayerModel";
 
-const FREQUENCY_UPDATE = 0.02; //per second
+interface CloudDataProviderSetting {
+  playerId: string;
+  userAvatarUrl?: string;
+  firebase: ExtendedFirebaseInstance;
+  playerioGameId: string;
+  playerioMaxPlayerPerRoom: number;
+  playerioFrequencyUpdate: number;
+  playerioAdvancedMode?: boolean;
+}
 
 /**
  * Dirty class, for initiating all general data bridge logic
@@ -38,7 +48,7 @@ export class CloudDataProvider
   extends utils.EventEmitter
   implements DataProvider {
   private _updateCounter = 0;
-  private _maxUpdateCounter = 1 / FREQUENCY_UPDATE;
+  private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
 
   readonly player: PlayerDataProvider;
   readonly users: UsersDataProvider;
@@ -47,42 +57,50 @@ export class CloudDataProvider
   /**
    * Update frequency (per second)
    */
-  private _frequencyUpdate = FREQUENCY_UPDATE;
   get frequencyUpdate() {
-    return this._frequencyUpdate;
+    return this.settings.playerioFrequencyUpdate;
   }
 
   set frequencyUpdate(value) {
-    this._frequencyUpdate = value;
+    this.settings.playerioFrequencyUpdate = value;
     this._maxUpdateCounter = 1 / value;
   }
 
   private _testBots;
 
-  constructor(
-    readonly playerId: string,
-    readonly userAvatarUrl: string | undefined,
-    firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId: string
-  ) {
+  constructor(readonly settings: CloudDataProviderSetting) {
     super();
 
-    this._testBots = new PlayerIOBots(this.playerioGameId ?? "");
+    this.settings = { ...settings };
+
+    this._testBots = new PlayerIOBots(
+      this,
+      this.settings.playerioGameId,
+      this.settings.playerioAdvancedMode
+    );
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
-    playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
-    playerModel.data.id = playerId;
+    playerModel.data.pictureUrl =
+      this.settings.userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
+    playerModel.data.id = this.settings.playerId;
 
     this.commonInterface = new CommonLinker(
       new PlayerIODataProvider(
-        playerioGameId ?? "",
-        playerId,
-        (connection) => {}
-      ), //TODO: remove callback
-      new FirebaseDataProvider(firebase)
+        this,
+        this.settings.playerioGameId,
+        this.settings.playerId
+      ),
+      new FirebaseDataProvider(this.settings.firebase)
     );
-    this.player = new PlayerDataProvider(playerId, this.commonInterface);
+    this.player = new PlayerDataProvider(
+      this.settings.playerId,
+      this.commonInterface
+    );
     this.users = new UsersDataProvider(this.commonInterface);
+    EventProvider.on(
+      EventType.SEND_SHOUT,
+      this.commonInterface.sendShoutMessage.bind(this.commonInterface)
+    );
   }
 
   public update(dt: number) {
@@ -140,7 +158,11 @@ export class CloudDataProvider
           room.url === venue.data.url &&
           room.title === venue.data.title &&
           room.subtitle === venue.data.subtitle &&
-          room.image_url === venue.data.image_url &&
+          getFirebaseStorageResizedImage(room.image_url, {
+            width: 256,
+            height: 256,
+            fit: "crop",
+          }) === venue.data.image_url &&
           room.isLive === venue.data.isLive &&
           room.countUsers === venue.data.countUsers &&
           room.isEnabled === venue.data.isEnabled
@@ -153,8 +175,13 @@ export class CloudDataProvider
           x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
           y: (room.y_percent / 100) * 9920 + 50,
           data: {
-            countUsers: room.countUsers ?? 0,
             ...room,
+            countUsers: room.countUsers ?? 0,
+            image_url: getFirebaseStorageResizedImage(room.image_url, {
+              width: 256,
+              height: 256,
+              fit: "crop",
+            }),
           },
         } as ReplicatedVenue;
         return vn;
@@ -169,8 +196,13 @@ export class CloudDataProvider
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,
         data: {
-          countUsers: countUsers,
           ...room,
+          countUsers: countUsers,
+          image_url: getFirebaseStorageResizedImage(room.image_url, {
+            width: 256,
+            height: 256,
+            fit: "crop",
+          }),
         },
       } as ReplicatedVenue;
       this.venuesData.push(vn);
@@ -186,7 +218,7 @@ export class CloudDataProvider
 
   private isUpdateUsersLocked = false;
 
-  public async updateUsersAsync(data: WorldUsersData) {
+  public async updateUsersAsync(data: RecentWorldUsersData) {
     if (this.isUpdateUsersLocked) return;
 
     this.isUpdateUsersLocked = true;
@@ -194,12 +226,12 @@ export class CloudDataProvider
     this.isUpdateUsersLocked = false;
   }
 
-  public updateUsers(data: WorldUsersData) {
-    if (!data?.isWorldUsersLoaded) return;
+  public updateUsers(data: RecentWorldUsersData) {
+    if (!data?.isRecentWorldUsersLoaded) return;
 
     // new entities scenario
     const usersData: ReplicatedUser[] = [];
-    data.worldUsers.forEach((user) => {
+    data.recentWorldUsers.forEach((user) => {
       // if (user.lastSeenIn) //todo: add counter
 
       usersData.push({
@@ -207,9 +239,13 @@ export class CloudDataProvider
         y: -1000,
         data: {
           id: user.id,
+          partyName: user.partyName,
           messengerId: getIntByHash(user.id),
-          avatarUrlString: user.pictureUrl ?? "",
-          videoUrlString: "",
+          pictureUrl: getFirebaseStorageResizedImage(user.pictureUrl ?? "", {
+            width: 64,
+            height: 64,
+            fit: "crop",
+          }),
           dotColor: 0xabfcfb,
         },
       });

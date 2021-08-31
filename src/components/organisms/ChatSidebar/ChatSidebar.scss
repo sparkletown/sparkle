@@ -5,6 +5,7 @@ $header-height: 45px;
 // NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
 $media-width--mobile-min: 768px;
 $media-width--mobile-max: 1024px;
+$help-center-background-color: #232225;
 
 .chat-sidebar {
   transform: translateX(100%);
@@ -75,11 +76,6 @@ $media-width--mobile-max: 1024px;
     align-items: center;
   }
 
-  &__help-center {
-    width: 100%;
-    height: 100%;
-  }
-
   &__controller {
     color: $white;
     background-color: $secondary;
@@ -146,8 +142,13 @@ $media-width--mobile-max: 1024px;
     margin-top: 2 * $header-height + 3 * $spacing--md;
   }
 
+  &__create-icon {
+    margin-top: 3 * $header-height + 4 * $spacing--md;
+  }
+
   &--wide {
-    width: 90%;
+    background-color: $help-center-background-color;
+    width: 60%;
   }
 
   @media only screen and (min-device-width: $media-width--mobile-min) and (max-device-width: $media-width--mobile-max) {
