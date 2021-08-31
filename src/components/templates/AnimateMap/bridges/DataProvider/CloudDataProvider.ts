@@ -148,7 +148,7 @@ export class CloudDataProvider
       (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
 
-    const existedVenues = this.venuesData
+    const modifiedVenues = this.venuesData
       .filter((venue) => {
         const room = data.find((room) => room.id === venue.data.id);
 
@@ -186,8 +186,10 @@ export class CloudDataProvider
         } as ReplicatedVenue;
         return vn;
       });
-    existedVenues.forEach((venue) => {
-      this.emit(DataProviderEvent.VENUE_UPDATED, venue);
+    modifiedVenues.forEach((modifiedVenue) => {
+      const indx = this.venuesData.findIndex((venue) => venue.data.id === modifiedVenue.data.id);
+      if (indx >= 0) this.venuesData[indx] = modifiedVenue;
+      this.emit(DataProviderEvent.VENUE_UPDATED, modifiedVenue);
     });
 
     newVenues.forEach((room) => {
