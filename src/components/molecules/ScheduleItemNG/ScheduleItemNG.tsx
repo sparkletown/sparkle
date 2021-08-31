@@ -13,6 +13,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
+import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
+
 import {
   addEventToPersonalizedSchedule,
   removeEventFromPersonalizedSchedule,
@@ -24,6 +26,7 @@ import { ScheduledVenueEvent } from "types/venues";
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import { isDefined } from "utils/types";
 import { enterVenue, getFullVenueInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -52,13 +55,13 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
 
   const relatedVenuesRooms = relatedVenues
     ?.flatMap((venue) => venue.rooms ?? [])
-    .filter((room) => room !== undefined);
+    .filter(isDefined);
 
   const eventRoom = useMemo<Room | undefined>(() => {
     const { room: eventRoomTitle = "" } = event;
 
-    return relatedVenuesRooms?.find((room) => {
-      return room.title === eventRoomTitle;
+    return relatedVenuesRooms?.find(({ title }) => {
+      return title === eventRoomTitle;
     });
   }, [relatedVenuesRooms, event]);
 
@@ -72,17 +75,20 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   );
   const isCurrentEventLive = isEventLive(event);
 
+  const [isEventLinkCopied, setIsEventLinkCopied] = useState(false);
   const handleCopyEventLink = useCallback(
     (e?: React.MouseEvent<HTMLButtonElement>) => {
       // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e && e.stopPropagation();
 
-      const eventLink = eventRoom
-        ? eventRoom.url
-        : getFullVenueInsideUrl(eventVenue?.id ?? "");
+      const eventLink =
+        eventRoom?.url ?? getFullVenueInsideUrl(eventVenue?.id ?? "");
       navigator.clipboard.writeText(eventLink);
       setIsEventLinkCopied(true);
-      setTimeout(setIsEventLinkCopied, 1000, false);
+      setTimeout(
+        () => setIsEventLinkCopied(false),
+        SCHEDULE_SHOW_COPIED_TEXT_MS
+      );
     },
     [eventRoom, eventVenue]
   );
@@ -128,8 +134,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     [userId, event]
   );
 
-  const [isEventLinkCopied, setIsEventLinkCopied] = useState(false);
-
   return (
     <div className="ScheduleItemNG" onClick={toggleEventExpand}>
       <div className={infoContaier}>
@@ -171,9 +175,9 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
           {eventRoom && (
             <>
               {", "}
-              <button className="button--a" onClick={enterRoom}>
+              <span className="button--a" onClick={enterRoom}>
                 {event.room}
-              </button>
+              </span>
             </>
           )}
         </div>
