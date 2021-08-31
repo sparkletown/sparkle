@@ -634,12 +634,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         (Enter an embeddable URL link. For now there is a placeholder video, so
         you can edit this later.)
       </div>
+
+      {/* note: the default embedded video is the "Intro to Sparkle" video*/}
       <textarea
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        value="https://player.vimeo.com/video/527446677?h=86a9c0dbf5&title=0&byline=0&portrait=0"
+        value="https://player.vimeo.com/video/512606583?h=84853fbd28"
       />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
