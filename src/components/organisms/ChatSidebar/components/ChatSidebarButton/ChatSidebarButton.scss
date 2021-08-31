@@ -1,0 +1,37 @@
+@import "scss/constants.scss";
+@import "../../ChatSidebar.scss";
+
+.ChatSidebarButton {
+  color: $white;
+  background-color: $secondary;
+  cursor: pointer;
+
+  border: none;
+  padding: 0 $spacing--lg;
+  height: $header-height;
+  border-radius: $border-radius--lg 0 0 $border-radius--lg;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  &:hover {
+    background-color: $lighter-intermediate-grey;
+  }
+
+  &__right-container {
+    flex: 1;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__text {
+    margin-left: $spacing--xs;
+    margin-top: $spacing--xs;
+    font-size: $font-size--sm;
+  }
+}

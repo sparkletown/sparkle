@@ -1,13 +1,10 @@
 import React, { useCallback, useState } from "react";
 import {
-  faChevronLeft,
-  faChevronRight,
   faCommentDots,
   faEnvelope,
   faPen,
   faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
@@ -15,13 +12,14 @@ import { ChatTypes } from "types/chat";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { openUrl } from "utils/url";
+import { openUrlInNewTab } from "utils/url";
 
 import {
   useChatSidebarControls,
   useChatSidebarInfo,
 } from "hooks/chats/chatSidebar";
 
+import { ChatSidebarButton } from "components/organisms/ChatSidebar/components/ChatSidebarButton";
 import { HelpCenter } from "components/organisms/HelpCenter";
 
 import { PrivateChats, VenueChat } from "./components";
@@ -60,7 +58,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   }, [toggleSidebar]);
 
   const goToAdmin = useCallback(() => {
-    openUrl("/admin");
+    openUrlInNewTab(`${window.location.origin}/admin`);
   }, []);
 
   const handleSidebar = useCallback(() => {
@@ -97,58 +95,51 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       className={containerStyles}
     >
       <div className="chat-sidebar__header">
-        <button
-          aria-label={isExpanded ? "Hide chat" : "Show chat"}
-          className="chat-sidebar__controller"
-          onClick={handleSidebar}
-        >
-          {isExpanded ? (
-            <FontAwesomeIcon icon={faChevronRight} size="sm" />
-          ) : (
-            <>
-              <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon icon={faCommentDots} size="lg" />
-            </>
+        <div className="chat-sidebar__header-buttons">
+          <ChatSidebarButton
+            text="Chat"
+            ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
+            icon={faCommentDots}
+            onClick={handleSidebar}
+            isExpanded={isExpanded}
+          />
+
+          {!isExpanded && (
+            <ChatSidebarButton
+              text="Messages"
+              ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
+              icon={faEnvelope}
+              onClick={togglePrivateChatSidebar}
+              // containerClassName="chat-sidebar__private-chat"
+            >
+              {newPrivateMessageRecived > 0 && (
+                <div className="chat-sidebar__controller--new-message" />
+              )}
+            </ChatSidebarButton>
           )}
-        </button>
 
-        {!isExpanded && (
-          <button
-            aria-label={isExpanded ? "Hide chat" : "Show chat"}
-            className="chat-sidebar__controller chat-sidebar__private-chat"
-            onClick={togglePrivateChatSidebar}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-            <FontAwesomeIcon icon={faEnvelope} size="lg" />
-            {newPrivateMessageRecived > 0 && (
-              <div className="chat-sidebar__controller--new-message"></div>
-            )}
-          </button>
-        )}
+          {!isShownHelpCenter && !isExpanded && (
+            <ChatSidebarButton
+              text="Help"
+              ariaLabel={
+                isExpanded ? "Hide question centre" : "Show question centre"
+              }
+              icon={faQuestion}
+              onClick={openHelpCenter}
+              // containerClassName="chat-sidebar__help-center-icon"
+            />
+          )}
 
-        {!isShownHelpCenter && !isExpanded && (
-          <button
-            aria-label={
-              isExpanded ? "Hide question centre" : "Show question centre"
-            }
-            className="chat-sidebar__controller chat-sidebar__help-center-icon"
-            onClick={openHelpCenter}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-            <FontAwesomeIcon icon={faQuestion} size="lg" />
-          </button>
-        )}
-
-        {!isShownHelpCenter && !isExpanded && (
-          <button
-            aria-label="Create space"
-            className="chat-sidebar__controller chat-sidebar__create-icon"
-            onClick={goToAdmin}
-          >
-            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-            <FontAwesomeIcon icon={faPen} size="lg" />
-          </button>
-        )}
+          {!isShownHelpCenter && !isExpanded && (
+            <ChatSidebarButton
+              text="Create"
+              ariaLabel="Create space"
+              icon={faPen}
+              onClick={goToAdmin}
+              // containerClassName="chat-sidebar__create-icon"
+            />
+          )}
+        </div>
 
         {isExpanded && (
           <>
