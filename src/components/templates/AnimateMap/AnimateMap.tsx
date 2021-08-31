@@ -87,15 +87,8 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
               }}
               onConnectChange={(roomId, userList, isConnected) => {
                 if (isConnected) {
-                  //todo:
-                  // eslint-disable-next-line no-debugger
-                  debugger;
-                  console.log("!!!!!!!!!!!!!!!!IS CONNECT");
                   dispatch(enterAnimateMapFireBarrel(roomId, userList));
                 } else {
-                  // eslint-disable-next-line no-debugger
-                  debugger;
-                  console.log("!!!!!!!!!!!!!!!!IS NOT CONNECT");
                   dispatch(exitAnimateMapFireBarrel(roomId));
                 }
 

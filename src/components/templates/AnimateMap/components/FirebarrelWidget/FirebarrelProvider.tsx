@@ -43,6 +43,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
 
   return currentRoomId ? (
     <FirebarrelWidget
+      venue={venue}
       roomName={currentRoomId}
       onEnter={(roomId, userList) => {
         console.log("onEnter", true);

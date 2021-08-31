@@ -6,6 +6,7 @@ import Video from "twilio-video";
 import { getTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
+import { AnimateMapVenue } from "types/venues";
 
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
@@ -14,13 +15,14 @@ import LocalParticipant from "components/organisms/Room/LocalParticipant";
 import Participant from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
-import { Button } from "../../../../atoms/Button";
+import { Button } from "components/atoms/Button";
 
 import "./FirebarrelWidget.scss";
 
 const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
 export interface FirebarrelWidgetProps {
+  venue: AnimateMapVenue;
   roomName: string;
   onEnter: (roomId: string, val: User[]) => void;
   onExit: (roomId: string) => void;
@@ -36,6 +38,7 @@ export interface FirebarrelWidgetProps {
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
 export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
+  venue,
   roomName,
   setUserList,
   onEnter,
@@ -168,7 +171,16 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   useEffect(() => {
     if (!room) return;
-    setUserList(roomName, getUserList());
+    const users = getUserList();
+    //@debt rewrite this hardcode
+    firebase
+      .firestore()
+      .collection("venues")
+      .doc(venue.id)
+      .collection("firebarrels")
+      .doc(roomName)
+      .update({ connectedUsers: users.map((user) => user.id) });
+    setUserList(roomName, users);
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants, worldUsersById]);
