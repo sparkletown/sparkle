@@ -123,17 +123,22 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   useEffect(
     () => {
       if (typeof user.userId === "string" && !dataProvider && firebase) {
-        const dataProvider = new CloudDataProvider(
-          user.userId,
-          getFirebaseStorageResizedImage(user.profile?.pictureUrl ?? "", {
-            width: 64,
-            height: 64,
-            fit: "crop",
-          }),
-          firebase,
-          venue.playerioGameId,
-          venue.playerioAdvancedMode
-        );
+        const dataProvider = new CloudDataProvider({
+          playerId: user.userId,
+          userAvatarUrl: getFirebaseStorageResizedImage(
+            user.profile?.pictureUrl ?? "",
+            {
+              width: 64,
+              height: 64,
+              fit: "crop",
+            }
+          ),
+          firebase: firebase,
+          playerioGameId: venue.playerioGameId,
+          playerioMaxPlayerPerRoom: venue.playerioMaxPlayerPerRoom ?? 80,
+          playerioFrequencyUpdate: venue.playerioFrequencyUpdate ?? 0.5,
+          // playerioAdvancedMode: venue.playerioAdvancedMode,
+        });
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
         dataProvider.updateUsers(worldUsers);

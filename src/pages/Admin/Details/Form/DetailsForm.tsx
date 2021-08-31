@@ -66,6 +66,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     setValue,
     errors,
     handleSubmit,
+    triggerValidation,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -103,9 +104,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     }
   }, [editData, setValue, venueId]);
 
-  const handleBannerUpload = (url: string) => setBannerURL(dispatch, url);
+  const handleBannerUpload = (url: string) => {
+    setBannerURL(dispatch, url);
+    void triggerValidation();
+  };
 
-  const handleLogoUpload = (url: string) => setSquareLogoUrl(dispatch, url);
+  const handleLogoUpload = (url: string) => {
+    setSquareLogoUrl(dispatch, url);
+    void triggerValidation();
+  };
 
   const renderVenueName = () => (
     <S.InputContainer hasError={!!errors?.name}>
@@ -175,7 +182,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         onChange={handleBannerUpload}
         name="bannerImage"
         error={errors.bannerImageFile || errors.bannerImageUrl}
-        forwardRef={register}
+        setValue={setValue}
+        register={register}
         imgUrl={editData?.bannerImageUrl}
       />
     </S.InputContainer>
@@ -191,7 +199,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         name="logoImage"
         small
         error={errors.logoImageFile || errors.logoImageUrl}
-        forwardRef={register}
+        setValue={setValue}
+        register={register}
         imgUrl={editData?.logoImageUrl}
       />
     </S.InputContainer>

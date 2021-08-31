@@ -31,7 +31,15 @@ import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import playerModel from "./Structures/PlayerModel";
 
-const FREQUENCY_UPDATE = 0.005; //per second
+interface CloudDataProviderSetting {
+  playerId: string;
+  userAvatarUrl?: string;
+  firebase: ExtendedFirebaseInstance;
+  playerioGameId: string;
+  playerioMaxPlayerPerRoom: number;
+  playerioFrequencyUpdate: number;
+  playerioAdvancedMode?: boolean;
+}
 
 /**
  * Dirty class, for initiating all general data bridge logic
@@ -40,7 +48,7 @@ export class CloudDataProvider
   extends utils.EventEmitter
   implements DataProvider {
   private _updateCounter = 0;
-  private _maxUpdateCounter = 1 / FREQUENCY_UPDATE;
+  private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
 
   readonly player: PlayerDataProvider;
   readonly users: UsersDataProvider;
@@ -49,48 +57,45 @@ export class CloudDataProvider
   /**
    * Update frequency (per second)
    */
-  private _frequencyUpdate = FREQUENCY_UPDATE;
   get frequencyUpdate() {
-    return this._frequencyUpdate;
+    return this.settings.playerioFrequencyUpdate;
   }
 
   set frequencyUpdate(value) {
-    this._frequencyUpdate = value;
+    this.settings.playerioFrequencyUpdate = value;
     this._maxUpdateCounter = 1 / value;
   }
 
   private _testBots;
 
-  constructor(
-    readonly playerId: string,
-    readonly userAvatarUrl: string | undefined,
-    firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId: string,
-    readonly playerioAdvancedMode: boolean
-  ) {
+  constructor(readonly settings: CloudDataProviderSetting) {
     super();
+
+    this.settings = { ...settings };
 
     this._testBots = new PlayerIOBots(
       this,
-      this.playerioGameId,
-      this.playerioAdvancedMode
+      this.settings.playerioGameId,
+      this.settings.playerioAdvancedMode
     );
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
-    playerModel.data.pictureUrl = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
-    playerModel.data.id = playerId;
+    playerModel.data.pictureUrl =
+      this.settings.userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
+    playerModel.data.id = this.settings.playerId;
 
     this.commonInterface = new CommonLinker(
       new PlayerIODataProvider(
         this,
-        playerioGameId ?? "",
-        playerId,
-        playerioAdvancedMode,
-        (connection) => {}
-      ), //TODO: remove callback
-      new FirebaseDataProvider(firebase)
+        this.settings.playerioGameId,
+        this.settings.playerId
+      ),
+      new FirebaseDataProvider(this.settings.firebase)
     );
-    this.player = new PlayerDataProvider(playerId, this.commonInterface);
+    this.player = new PlayerDataProvider(
+      this.settings.playerId,
+      this.commonInterface
+    );
     this.users = new UsersDataProvider(this.commonInterface);
     EventProvider.on(
       EventType.SEND_SHOUT,

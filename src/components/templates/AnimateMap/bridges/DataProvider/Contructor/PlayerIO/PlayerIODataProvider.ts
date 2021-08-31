@@ -5,10 +5,7 @@ import { Point } from "types/utility";
 import { getRandomInt } from "utils/getRandomInt";
 
 import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
-import {
-  ConnectionSuccessCallback,
-  PlayerIOInstance,
-} from "../../../../vendors/playerio/PlayerIO";
+import { PlayerIOInstance } from "../../../../vendors/playerio/PlayerIO";
 import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/ProxyClient";
 import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
 import { ProxyPlayerIO } from "../../../../vendors/playerio/PromissesWrappers/ProxyPlayerIO";
@@ -40,9 +37,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
   constructor(
     readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
-    readonly playerId: string,
-    readonly playerioAdvancedMode: boolean,
-    private _connectionInitCallback: ConnectionSuccessCallback
+    readonly playerId: string
   ) {
     super();
     this._init();
@@ -69,7 +64,9 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       return Promise.reject("Connection not ready.");
 
     return this.client.multiplayer.listRooms<RoomInfoType>(
-      this.playerioAdvancedMode ? RoomTypes.Zone : RoomTypes.SeparatedRoom,
+      this.cloudDataProvider.settings.playerioAdvancedMode
+        ? RoomTypes.Zone
+        : RoomTypes.SeparatedRoom,
       null,
       0,
       0
@@ -144,7 +141,9 @@ export class PlayerIODataProvider extends utils.EventEmitter {
 
     console.log(
       `init ${
-        this.playerioAdvancedMode ? "ADVANCED" : "SEPARATED"
+        this.cloudDataProvider.settings.playerioAdvancedMode
+          ? "ADVANCED"
+          : "SEPARATED"
       } room operator`
     );
     const initialParams: [
@@ -159,7 +158,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       this.playerId,
     ];
 
-    if (this.playerioAdvancedMode)
+    if (this.cloudDataProvider.settings.playerioAdvancedMode)
       return new PlayerIORoomOperator(...initialParams);
     else return new PlayerIOSeparatedRoomOperator(...initialParams);
   }

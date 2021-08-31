@@ -17,8 +17,6 @@ enum IsConnectedStates {
   inProgress,
 }
 
-const MAX_USERS = 80;
-
 export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
   mainConnection: ConnectionWrapper = {};
   position: Point;
@@ -41,7 +39,11 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
     this.isConnected = IsConnectedStates.inProgress;
     console.log("UPDATE ROOM...");
     const id = listRooms
-      .filter((room) => room.onlineUsers < MAX_USERS)
+      .filter(
+        (room) =>
+          room.onlineUsers <
+          this.cloudDataProvider.settings.playerioMaxPlayerPerRoom
+      )
       .sort((a, b) => b.onlineUsers - a.onlineUsers)[0]?.id;
     this.onCreate(id)
       .then(() => {
@@ -56,7 +58,6 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
   }
 
   public async onCreate(id: string | undefined) {
-    console.log(this);
     return this.multiplayer
       .createJoinRoom(id ?? "", RoomTypes.SeparatedRoom, true, initialRoomData)
       .then((connection) => {

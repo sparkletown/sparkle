@@ -10,9 +10,10 @@
   }
 
   &__bottom-panel {
+    position: relative;
     pointer-events: all;
     transition: 0.3s;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     height: 0;
     &--show {
       height: 200px;

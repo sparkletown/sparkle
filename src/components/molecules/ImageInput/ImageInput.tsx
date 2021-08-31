@@ -1,9 +1,14 @@
-import React, { useMemo } from "react";
-import { FieldError } from "react-hook-form";
+import React, { ChangeEvent, useCallback, useMemo } from "react";
+import { FieldError, useForm } from "react-hook-form";
+import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { ContainerClassName } from "types/utility";
+
+import { useImageInputCompression } from "hooks/useImageInputCompression";
+
+import { ImageOverlay } from "components/atoms/ImageOverlay";
 
 import "firebase/functions";
 
@@ -15,12 +20,13 @@ interface ImageInputProps extends ContainerClassName {
   image?: FileList;
   imageClassName?: string;
   error?: FieldError;
+  setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  register: ReturnType<typeof useForm>["register"];
 }
 
-// eslint-disable-next-line
 export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
-  (props, ref) => {
-    const {
+  (
+    {
       image,
       remoteUrlInputName,
       remoteImageUrl,
@@ -29,8 +35,11 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
       name,
       error,
       disabled,
-    } = props;
-
+      setValue,
+      register,
+    },
+    ref
+  ) => {
     const imageUrl = useMemo(
       () =>
         (image && image.length > 0 && URL.createObjectURL(image[0])) ||
@@ -38,9 +47,37 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
       [image, remoteImageUrl]
     );
 
+    const {
+      loading,
+      errorMessage,
+      handleFileInputChange,
+    } = useImageInputCompression(register, error?.message, name);
+
+    const handleFileInputChangeWrapper = useCallback(
+      async (event: ChangeEvent<HTMLInputElement>) => {
+        const [url, compressedFile] = await handleFileInputChange(event);
+        if (!compressedFile || !url) return;
+
+        setValue(name, [compressedFile], false);
+
+        if (remoteUrlInputName) {
+          setValue(remoteUrlInputName, url, true);
+        }
+      },
+      [handleFileInputChange, name, remoteUrlInputName, setValue]
+    );
+
     return (
       <>
-        <div className={`image-input default-container ${containerClassName}`}>
+        <div
+          className={classNames(
+            `image-input default-container`,
+            containerClassName,
+            {
+              disabled: loading,
+            }
+          )}
+        >
           {imageUrl ? (
             <img
               className={`default-image ${imageClassName}`}
@@ -55,13 +92,13 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             </div>
           )}
           <input
-            disabled={disabled}
-            name={name}
+            disabled={disabled || loading}
             type="file"
-            ref={ref}
             accept={ACCEPTED_IMAGE_TYPES}
+            onChange={handleFileInputChangeWrapper}
             className="default-input"
           />
+          {loading && <ImageOverlay>processing...</ImageOverlay>}
           {remoteUrlInputName && (
             <input
               type="hidden"
@@ -71,8 +108,10 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             />
           )}
         </div>
-        {error?.message && <span className="input-error">{error.message}</span>}
+        {errorMessage && <span className="input-error">{errorMessage}</span>}
       </>
     );
   }
 );
+
+ImageInput.displayName = "ImageInput";
