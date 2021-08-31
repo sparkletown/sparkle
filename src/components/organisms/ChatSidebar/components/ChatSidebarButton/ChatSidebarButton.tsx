@@ -1,5 +1,4 @@
-import React, { useRef } from "react";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import React from "react";
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faChevronLeft,
@@ -10,6 +9,8 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
+import { Tooltip } from "components/atoms/Tooltip";
+
 import "./ChatSidebarButton.scss";
 
 export interface ChatSidebarButtonProps extends ContainerClassName {
@@ -18,7 +19,7 @@ export interface ChatSidebarButtonProps extends ContainerClassName {
   ariaLabel: string;
   icon: IconDefinition;
   onClick: () => void;
-  isExpanded?: boolean;
+  isChatSidebarExpanded?: boolean;
   newMessage?: boolean;
 }
 
@@ -29,32 +30,22 @@ export const ChatSidebarButton: React.FC<ChatSidebarButtonProps> = ({
   icon,
   onClick,
   containerClassName,
-  isExpanded,
+  isChatSidebarExpanded,
   newMessage,
 }) => {
-  const buttonRef = useRef(null);
-
   return (
-    <OverlayTrigger
+    <Tooltip
+      id={`${text}-${tooltipText}-${icon.iconName}`}
+      text={tooltipText}
       placement="left"
-      {...(isExpanded ? { show: false } : {})}
-      overlay={
-        tooltipText ? (
-          <Tooltip id={`${text}-${tooltipText}-${icon.iconName}`}>
-            {tooltipText}
-          </Tooltip>
-        ) : (
-          <></>
-        )
-      }
+      {...(isChatSidebarExpanded ? { show: false } : {})}
     >
       <button
         aria-label={ariaLabel}
         className={classNames("ChatSidebarButton", containerClassName)}
         onClick={onClick}
-        ref={buttonRef}
       >
-        {isExpanded ? (
+        {isChatSidebarExpanded ? (
           <FontAwesomeIcon icon={faChevronRight} size="sm" />
         ) : (
           <>
@@ -73,6 +64,6 @@ export const ChatSidebarButton: React.FC<ChatSidebarButtonProps> = ({
           </>
         )}
       </button>
-    </OverlayTrigger>
+    </Tooltip>
   );
 };

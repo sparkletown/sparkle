@@ -101,7 +101,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
           icon={faCommentDots}
           onClick={handleSidebar}
-          isExpanded={isExpanded}
+          isChatSidebarExpanded={isExpanded}
         />
 
         {!isExpanded && (
@@ -111,7 +111,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
             ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
             icon={faEnvelope}
             onClick={togglePrivateChatSidebar}
-            newMessage={true || newPrivateMessageReceived > 0}
+            newMessage={newPrivateMessageReceived > 0}
           />
         )}
 
