@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
 import {
@@ -67,6 +67,13 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
 
   const relatedRooms = useRelatedPartymapRooms({ venue });
 
+  const setUserList = useCallback(
+    (roomId, userList) => {
+      dispatch(updateAnimateMapFireBarrel(roomId, userList));
+    },
+    [dispatch]
+  );
+
   return (
     <div className="AnimateMap">
       <div className="AnimateMap__ui-wrapper">
@@ -82,9 +89,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
           >
             <FirebarrelProvider
               venue={venue}
-              setUserList={(roomId, userList) => {
-                dispatch(updateAnimateMapFireBarrel(roomId, userList));
-              }}
+              setUserList={setUserList}
               onConnectChange={(roomId, userList, isConnected) => {
                 if (isConnected) {
                   dispatch(enterAnimateMapFireBarrel(roomId, userList));
