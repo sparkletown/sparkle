@@ -111,10 +111,10 @@ export const EmergencyViewPage: React.FC = () => {
   );
 
   const containerVars = useCss({
-    "--background-image": `url(${validBannerImageUrl})`,
+    "--background-image": `url(${validBannerImageUrl ?? DEFAULT_VENUE_BANNER})`,
   });
 
-  const emergencyViewClasses = classNames("EmergencyView__main", containerVars);
+  const containerClasses = classNames("EmergencyView__main", containerVars);
 
   if (venueRequestStatus && !venue && !venueId) {
     return <>This venue does not exist</>;
@@ -128,7 +128,7 @@ export const EmergencyViewPage: React.FC = () => {
     <WithNavigationBar withSchedule={false} hasBackButton={false}>
       <div className="EmergencyView">
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
-        <div className={emergencyViewClasses}>
+        <div className={containerClasses}>
           {!selectedTab ? (
             <EmergencyViewPageRooms
               descendantVenues={descendantVenues}
