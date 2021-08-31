@@ -50,7 +50,6 @@ export const useVisitedLocationsUser = ({
 
       const recentLocationUsers = locationNames?.map((location) => {
         const [parentLocation, childLocation] = location.split("/");
-
         const result = worldUsers
           .filter((user) => {
             const {
@@ -60,7 +59,8 @@ export const useVisitedLocationsUser = ({
               worldUserLocationsById,
               user,
               location,
-              childLocation,
+              childLocation: childLocation.trim(),
+              parentLocation: parentLocation.trim(),
             });
 
             return (
@@ -74,7 +74,6 @@ export const useVisitedLocationsUser = ({
             venueId: parentLocation,
             portalId: childLocation,
           }));
-
         return result;
       });
 

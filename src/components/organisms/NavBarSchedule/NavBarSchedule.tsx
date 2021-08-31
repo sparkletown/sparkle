@@ -22,7 +22,6 @@ import {
 import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
-import { isTruthy } from "utils/types";
 
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
 import { useShowHide } from "hooks/useShowHide";
@@ -55,8 +54,6 @@ interface UserWithVenueIdProps extends WithId<User> {
   venueId?: string;
   portalId?: string;
 }
-
-const emptyArrayObj: [] = [];
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
@@ -172,18 +169,16 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
-  const relatedVenueRooms =
-    relatedVenues
-      .flatMap((venue) => venue.rooms || emptyArrayObj)
-      .filter(isTruthy) || emptyArrayObj;
+  const day = addDays(firstScheduleDate, 0);
 
-  const roomList = scheduleNG.daysEvents.map((el) => {
-    const [roomData] =
-      relatedVenueRooms.filter((room) => room?.title === el?.room) ||
-      emptyArrayObj;
-    return roomData;
+  const daysEvents = liveAndFutureEvents.filter(
+    isEventWithinDateAndNotFinished(day)
+  );
+
+  const recentRoomUsers = useRoomRecentUsersList({
+    eventList: daysEvents,
+    venueId,
   });
-  const recentRoomUsers = useRoomRecentUsersList({ roomList, venueId });
 
   const flatRoomUsers: UserWithVenueIdProps[] = recentRoomUsers.flatMap(
     (user) => user
@@ -194,15 +189,16 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       prepareForSchedule({
         relatedVenues,
         usersEvents: userEventIds,
-        recentRoomUsers: flatRoomUsers.filter(
-          (user) =>
-            user.venueId === event.venueId || user.portalId === event.room
-        ),
+        recentRoomUsers: flatRoomUsers.filter((user) => {
+          return (
+            user.venueId === event.venueId ||
+            user.portalId === event?.room?.trim()
+          );
+        }),
         index,
       })(event)
     ),
   };
-
   const downloadPersonalEventsCalendar = useCallback(() => {
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
