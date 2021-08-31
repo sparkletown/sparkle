@@ -35,7 +35,8 @@ export class FirebarrelHaloAnimated
       this.time = this.duration;
       this.direction = -1;
     }
-    const value = FirebarrelHaloAnimated.getValue(this.time / this.duration);
+    const value =
+      FirebarrelHaloAnimated.getValue(this.time / this.duration) / 2;
     this.view.halo.alpha = 0.3 + value;
   }
 
