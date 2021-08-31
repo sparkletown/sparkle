@@ -4,6 +4,7 @@ import {
   Loader,
   LoaderResource,
   Renderer,
+  settings,
 } from "pixi.js";
 import { Store } from "redux";
 import { subscribeActionAfter } from "redux-subscribe-action";
@@ -163,7 +164,7 @@ export class GameInstance {
     const position = this._mapContainer?.entityFactory?.getPlayerNode()
       ?.position;
     if (position) this.dataProvider.setPlayerPosition(position.x, position.y);
-    this.dataProvider.update(dt);
+    this.dataProvider.update(dt / settings.TARGET_FPMS);
     this._mapContainer?.update(dt);
     if (Date.now() % 200 === 0) {
       //TODO: can find better decision? Possibly resize on rerender?
