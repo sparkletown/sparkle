@@ -32,9 +32,9 @@ export const getUserLocationData = ({
   const userLastSeenLocation =
     userLocation.lastSeenIn?.[parentLocation] ||
     userLocation.lastSeenIn?.[childLocation] ||
+    userLocation.lastSeenIn?.[location] ||
     Object.values(userLocation.lastSeenIn)[0];
   const isLocationMatch = userLastSeenIn && userLastSeenLocation;
-
   return {
     isLocationMatch,
     userLastSeenLocation,
