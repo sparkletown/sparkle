@@ -22,7 +22,7 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "..";
+import { ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
@@ -59,10 +59,21 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
-      <div className="room-modal">
-        <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
-      </div>
+    <Modal
+      show={show}
+      onHide={onHide}
+      contentClassName="RoomModal__modal-content"
+      centered
+    >
+      <Modal.Body className="RoomModal__modal-body">
+        <div className="RoomModal">
+          <RoomModalContent
+            room={room}
+            venueEvents={venueEvents}
+            venue={venue}
+          />
+        </div>
+      </Modal.Body>
     </Modal>
   );
 };
@@ -130,10 +141,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
         enterEventLocation={enterRoomWithSound}
-        roomUrl={room.url}
       />
     ));
-  }, [enterRoomWithSound, room.url, showSchedule, venueEvents]);
+  }, [enterRoomWithSound, showSchedule, venueEvents]);
 
   const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
@@ -147,49 +157,45 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   return (
     <>
-      <h2>{roomTitle}</h2>
+      <div className="RoomModal__main">
+        <div className="RoomModal__icon" style={iconStyles} />
 
-      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
+        <div className="RoomModal__content">
+          <div className="RoomModal__title">{roomTitle}</div>
 
-      <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyles} />
-
-        <div className="room-modal__content">
-          {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
+          {roomSubtitle && (
+            <div className="RoomModal__subtitle">{roomSubtitle}</div>
+          )}
 
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
           {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
           <button
-            className="btn btn-primary room-modal__btn-enter"
+            className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
             onClick={enterRoomWithSound}
           >
-            Enter
+            Join Room
           </button>
         </div>
       </div>
 
-      <UserList
-        containerClassName="room-modal__userlist"
-        users={userList}
-        limit={11}
-        activity="in this room"
-        hasClickableAvatars
-      />
-
       {room.about && (
-        <div className="room-modal__description">
+        <div className="RoomModal__description">
           <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
-      {showRoomEvents && (
-        <div className="room-modal__events">
-          <div className="room-modal__title">Room Schedule</div>
+      <UserList
+        containerClassName="RoomModal__userlist"
+        users={userList}
+        limit={11}
+        activity="in here"
+        hasClickableAvatars
+      />
 
-          {renderedRoomEvents}
-        </div>
+      {showRoomEvents && (
+        <div className="RoomModal__events">{renderedRoomEvents}</div>
       )}
     </>
   );
