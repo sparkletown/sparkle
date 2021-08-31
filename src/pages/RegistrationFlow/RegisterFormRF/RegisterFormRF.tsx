@@ -28,7 +28,6 @@ import { ConfirmationModalRF } from "../ConfirmationModalRF";
 import { DivRF } from "../DivRF";
 import { InputWrapRF } from "../InputWrapRF";
 import { SpanRF } from "../SpanRF";
-import { validateDateOfBirth } from "../utils-rf";
 
 import "./RegisterFormRF.scss";
 
@@ -256,37 +255,54 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
           </InputWrapRF>
         )}
 
+        {/* @debt: commenting the calendar style input until we find a better fix */}
         {(venue.requiresDateOfBirth || ALWAYS_REQUIRE_BIRTH) && (
-          <InputWrapRF
-            info={
-              <>
-                You need to be 18 years old to attend this event.
-                <br />
-                Please confirm your age.
-              </>
-            }
+          // <InputWrapRF
+          //   info={
+          //     <>
+          //       You need to be 18 years old to attend this event.
+          //       <br />
+          //       Please confirm your age.
+          //     </>
+          //   }
+          //   error={
+          //     errors?.date_of_birth && (
+          //       <>
+          //         <SpanRF>
+          //           {errors?.date_of_birth.type === "required" &&
+          //             "Date of birth is required"}
+          //         </SpanRF>
+          //         <SpanRF>
+          //           {errors?.date_of_birth.type === "validate" &&
+          //             "You need to be at least 18 years of age."}
+          //         </SpanRF>
+          //       </>
+          //     )
+          //   }
+          // >
+          //   <input
+          //     className="RegisterFormRF__date-of-birth"
+          //     name="date_of_birth"
+          //     type="date"
+          //     ref={register({ required: true, validate: validateDateOfBirth })}
+          //   />
+          // </InputWrapRF>
+
+          <CheckboxWrapRF
+            label="I am at least 18 years old."
             error={
-              errors?.date_of_birth && (
-                <>
-                  <SpanRF>
-                    {errors?.date_of_birth.type === "required" &&
-                      "Date of birth is required"}
-                  </SpanRF>
-                  <SpanRF>
-                    {errors?.date_of_birth.type === "validate" &&
-                      "You need to be at least 18 years of age."}
-                  </SpanRF>
-                </>
-              )
+              errors?.["date_of_birth"]?.type === "required" &&
+              "You must be over 18 to attend this event"
             }
           >
             <input
-              className="RegisterFormRF__date-of-birth"
               name="date_of_birth"
-              type="date"
-              ref={register({ required: true, validate: validateDateOfBirth })}
+              ref={register({
+                required: true,
+              })}
+              type="checkbox"
             />
-          </InputWrapRF>
+          </CheckboxWrapRF>
         )}
 
         <SpanRF variant="error">{errors?.backend?.message}</SpanRF>
