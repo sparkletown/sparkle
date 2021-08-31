@@ -106,9 +106,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         console.log("connect to room", room);
         setRoom(room);
 
-        if (onEnter) {
-          onEnter(roomName, getUserList());
-        }
+        onEnter(roomName, getUserList());
       })
       .catch((error) => {
         console.error("error connect to room", error.message);
@@ -161,9 +159,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
 
-        if (onEnter) {
-          onEnter(roomName, getUserList());
-        }
+        onEnter(roomName, getUserList());
       })
       .catch((error) => setVideoError(error.message));
     // note: we really doesn't need rerender this for others dependencies
