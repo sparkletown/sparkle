@@ -20,6 +20,7 @@ import { ExtractProps } from "types/utility";
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { withId } from "utils/id";
+import { venueInsideUrl } from "utils/url";
 
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
@@ -135,7 +136,10 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     reValidateMode: "onChange",
     validationSchema: validationSchema,
     validationContext: { editing: !!editingRoom },
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      url: defaultValues.url ?? venueInsideUrl(venueId),
+    },
   });
 
   const { user } = useUser();
