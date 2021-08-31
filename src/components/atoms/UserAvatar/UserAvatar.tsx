@@ -26,7 +26,7 @@ export interface UserAvatarProps extends ContainerClassName {
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
-  onClick?: (e: React.MouseEvent) => void;
+  onClick?: () => void;
   size?: UserAvatarSize;
 }
 

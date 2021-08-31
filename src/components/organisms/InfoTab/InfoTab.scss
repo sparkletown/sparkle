@@ -1,24 +1,24 @@
 @import "scss/constants";
 
-$InfoTab-position-top: 188px;
-$InfoTab-width: 70px;
-$InfoTab-width-expanded: 464px;
-$InfoTab-body-margin-top: 56px;
+$infoTab-position-top: 188px;
+$infoTab-width: 70px;
+$infoTab-width-expanded: 464px;
+$infoTab-body-margin-top: 56px;
 
-$InfoTab-logo-width: 50px;
-$InfoTab-logo-height: $InfoTab-logo-width;
-$InfoTab-logo-width-expanded: 124px;
-$InfoTab-logo-height-expanded: $InfoTab-logo-width-expanded;
+$infoTab-logo-width: 50px;
+$infoTab-logo-height: $infoTab-logo-width;
+$infoTab-logo-width-expanded: 124px;
+$infoTab-logo-height-expanded: $infoTab-logo-width-expanded;
 
 .InfoTab {
   position: fixed;
-  top: $InfoTab-position-top;
+  top: $infoTab-position-top;
   z-index: z(left-column);
 
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: $InfoTab-width;
+  width: $infoTab-width;
   padding: $spacing--md;
 
   background: $dark;
@@ -30,7 +30,7 @@ $InfoTab-logo-height-expanded: $InfoTab-logo-width-expanded;
 
   &--expanded {
     align-items: flex-start;
-    width: $InfoTab-width-expanded;
+    width: $infoTab-width-expanded;
     padding: $spacing--xl $spacing--xxl $spacing--xxl $spacing--xxl;
   }
 
@@ -44,7 +44,7 @@ $InfoTab-logo-height-expanded: $InfoTab-logo-width-expanded;
   &__body {
     display: flex;
     flex-direction: row;
-    margin-top: $InfoTab-body-margin-top;
+    margin-top: $infoTab-body-margin-top;
 
     font-size: $font-size--md;
     line-height: $spacing--lg;
@@ -94,16 +94,18 @@ $InfoTab-logo-height-expanded: $InfoTab-logo-width-expanded;
     }
   }
 
-  &__logo {
-    width: $InfoTab-logo-width !important;
-    height: $InfoTab-logo-height !important;
-    border-radius: $border-radius--max;
-    object-fit: cover;
+  &__logoWrapper {
+    & > .InfoTab__logo {
+      width: $infoTab-logo-width;
+      height: $infoTab-logo-height;
+      border-radius: $border-radius--max;
+      object-fit: cover;
 
-    &--expanded {
-      width: $InfoTab-logo-width-expanded !important;
-      height: $InfoTab-logo-height-expanded !important;
-      border-radius: $border-radius--lg;
+      &--expanded {
+        width: $infoTab-logo-width-expanded;
+        height: $infoTab-logo-height-expanded;
+        border-radius: $border-radius--lg;
+      }
     }
   }
 }

@@ -16,25 +16,25 @@ interface InfoTabLogoProps {
 
 type ValidLogoIconName = "ambulance" | "create" | "heart" | "info";
 
-const logoMap = new Map<ValidLogoIconName, IconDefinition>([
-  ["ambulance", faAmbulance],
-  ["create", faEdit],
-  ["heart", faHeart],
-  ["info", faInfoCircle],
-]);
+const logoMap: Record<ValidLogoIconName, IconDefinition> = {
+  ambulance: faAmbulance,
+  create: faEdit,
+  heart: faHeart,
+  info: faInfoCircle,
+};
 
 export const InfoTabLogo: FC<InfoTabLogoProps> = ({
   iconNameOrPath,
   isInfoTabShown,
 }) => {
-  const iconPath = logoMap.get(iconNameOrPath as ValidLogoIconName);
+  const iconPath = logoMap[iconNameOrPath as ValidLogoIconName];
 
   const infoTabLogoClasses = classNames("InfoTab__logo", {
     "InfoTab__logo--expanded": isInfoTabShown,
   });
 
   return (
-    <div>
+    <div className="InfoTab__logoWrapper">
       {iconPath !== undefined ? (
         <FontAwesomeIcon
           className={infoTabLogoClasses}

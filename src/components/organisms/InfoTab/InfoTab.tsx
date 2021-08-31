@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 import { faAngleDoubleRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -11,6 +11,9 @@ import { InfoTabContent } from "./InfoTabContent";
 import { InfoTabLogo } from "./InfoTabLogo";
 
 import "./InfoTab.scss";
+
+const userListTogglerClass = "UserList__toggler-text";
+const userListAvatarClass = "UserList__avatar";
 
 interface InfoTabProps {
   venue?: AnyVenue | GenericVenue;
@@ -28,8 +31,22 @@ export const InfoTab: FC<InfoTabProps> = ({ venue }) => {
     "InfoTab__chevron--turned": isShown,
   });
 
+  const toggleTab = useCallback(
+    (event) => {
+      if (
+        event.target.closest(`.${userListTogglerClass}`) ||
+        event.target.closest(`.${userListAvatarClass}`)
+      ) {
+        return;
+      }
+
+      toggle();
+    },
+    [toggle]
+  );
+
   return (
-    <div className={infoTabClasses} onClick={toggle}>
+    <div className={infoTabClasses} onClick={toggleTab}>
       <div className="InfoTab__chevronWrapper">
         <div className={chevronIconClasses}>
           <FontAwesomeIcon icon={faAngleDoubleRight} size="lg" />
