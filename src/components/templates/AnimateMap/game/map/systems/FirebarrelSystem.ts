@@ -1,6 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { GameConfig } from "../../../configs/GameConfig";
+import EntityFactory from "../entities/EntityFactory";
 import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { ViewportNode } from "../nodes/ViewportNode";
@@ -10,6 +11,10 @@ export class FirebarrelSystem extends System {
   private viewport?: NodeList<ViewportNode>;
   private zoomLevelCurrent = -1;
   private zoomLevelUpdated = false;
+
+  constructor(private creator: EntityFactory) {
+    super();
+  }
 
   addToEngine(engine: Engine) {
     this.firebarrels = engine.getNodeList(FirebarrelNode);
@@ -32,6 +37,18 @@ export class FirebarrelSystem extends System {
       this.zoomLevelUpdated = false;
       for (let node = this.firebarrels?.head; node; node = node.next) {
         this.updateFirebarrel(node);
+      }
+    }
+
+    for (let node = this.firebarrels?.head; node; node = node.next) {
+      node.shouter.currentTime += time;
+      if (node.shouter.currentTime >= node.shouter.timeOut) {
+        node.shouter.currentTime = 0;
+        this.creator.createShout(
+          node.position.x,
+          node.position.y - node.collision.radius,
+          "Join Firebarrel Video chat!"
+        );
       }
     }
   }

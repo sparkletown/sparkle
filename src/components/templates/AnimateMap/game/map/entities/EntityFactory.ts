@@ -194,6 +194,22 @@ export default class EntityFactory {
     nodelist.head.entity.add(comm ? comm : nodelist.head.keyboard);
   }
 
+  public createShout(x: number, y: number, text: string): Entity {
+    console.log("CREATE SHOUT");
+    // TODO refactoring
+    const spriteComponent = new SpriteComponent();
+    const view = new Sprite();
+    view.position.set(x, y);
+
+    const entity = new Entity()
+      .add(new DeadComponent(100))
+      .add(new BubbleComponent(text))
+      .add(new PositionComponent(x, y))
+      .add(spriteComponent);
+    this.engine.addEntity(entity);
+    return entity;
+  }
+
   public createBubble(userId: string, text: string): Entity | null {
     const bot = this.getBotNode(userId);
     const player = this.getPlayerNode();
