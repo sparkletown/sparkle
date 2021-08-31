@@ -11,6 +11,7 @@ import {
 
 import { PLATFORM_BRAND_NAME } from "settings";
 
+import { User } from "types/User";
 import { ScheduledVenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
@@ -18,8 +19,10 @@ import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
+import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
+import { isTruthy } from "utils/types";
 
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
 import { useShowHide } from "hooks/useShowHide";
@@ -46,6 +49,11 @@ export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
   venueId: string;
+}
+
+interface UserWithVenueIdProps extends WithId<User> {
+  venueId?: string;
+  portalId?: string;
 }
 
 const emptyArrayObj: [] = [];
@@ -167,7 +175,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const relatedVenueRooms =
     relatedVenues
       .flatMap((venue) => venue.rooms || emptyArrayObj)
-      .filter((x) => !!x) || emptyArrayObj;
+      .filter(isTruthy) || emptyArrayObj;
 
   const roomList = scheduleNG.daysEvents.map((el) => {
     const [roomData] =
@@ -176,13 +184,20 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     return roomData;
   });
   const recentRoomUsers = useRoomRecentUsersList({ roomList, venueId });
+
+  const flatRoomUsers: UserWithVenueIdProps[] = recentRoomUsers.flatMap(
+    (user) => user
+  );
   const scheduleNGWithAttendees = {
     ...scheduleNG,
     daysEvents: scheduleNG.daysEvents.map((event, index) =>
       prepareForSchedule({
         relatedVenues,
         usersEvents: userEventIds,
-        recentRoomUsers,
+        recentRoomUsers: flatRoomUsers.filter(
+          (user) =>
+            user.venueId === event.venueId || user.portalId === event.room
+        ),
         index,
       })(event)
     ),

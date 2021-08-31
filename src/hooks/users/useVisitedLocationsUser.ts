@@ -49,23 +49,31 @@ export const useVisitedLocationsUser = ({
         return { isSuccess, recentLocationUsers: [] };
 
       const recentLocationUsers = locationNames?.map((location) => {
-        const [, childLocation] = location.split("/");
-        const result = worldUsers.filter((user) => {
-          const { isLocationMatch, userLastSeenLocation } = getUserLocationData(
-            {
+        const [parentLocation, childLocation] = location.split("/");
+
+        const result = worldUsers
+          .filter((user) => {
+            const {
+              isLocationMatch,
+              userLastSeenLocation,
+            } = getUserLocationData({
               worldUserLocationsById,
               user,
               location,
               childLocation,
-            }
-          );
+            });
 
-          return (
-            isLocationMatch &&
-            normalizeTimestampToMilliseconds(userLastSeenLocation) >
-              lastSeenThreshold
-          );
-        });
+            return (
+              isLocationMatch &&
+              normalizeTimestampToMilliseconds(userLastSeenLocation) >
+                lastSeenThreshold
+            );
+          })
+          .map((user) => ({
+            ...user,
+            venueId: parentLocation,
+            portalId: childLocation,
+          }));
 
         return result;
       });
