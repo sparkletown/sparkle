@@ -187,7 +187,9 @@ export class CloudDataProvider
         return vn;
       });
     modifiedVenues.forEach((modifiedVenue) => {
-      const indx = this.venuesData.findIndex((venue) => venue.data.id === modifiedVenue.data.id);
+      const indx = this.venuesData.findIndex(
+        (venue) => venue.data.id === modifiedVenue.data.id
+      );
       if (indx >= 0) this.venuesData[indx] = modifiedVenue;
       this.emit(DataProviderEvent.VENUE_UPDATED, modifiedVenue);
     });
