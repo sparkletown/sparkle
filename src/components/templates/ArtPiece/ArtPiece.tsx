@@ -30,10 +30,13 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   const landingPageConfig = config?.landingPageConfig;
   const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
 
+  // NOTE: useful if some UI element with multiple options or free input is added for aspect ratio
   const aspectContainerClasses = classNames({
     "ArtPiece__aspect-container": true,
-    "mod--sixteen-nine": videoAspect === VideoAspectRatio.SixteenNine,
-    "mod--anamorphic": videoAspect !== VideoAspectRatio.SixteenNine,
+    "mod--sixteen-nine": videoAspect === VideoAspectRatio.sixteenNine,
+    "mod--anamorphic": videoAspect === VideoAspectRatio.anamorphic,
+    // @debt add useCss to set the aspect-ratio CSS property to the custom value instead of this purely informative class
+    [`ArtPiece__video-aspect--${videoAspect}`]: videoAspect,
   });
 
   return (
