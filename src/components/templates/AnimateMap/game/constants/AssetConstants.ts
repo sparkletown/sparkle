@@ -38,6 +38,7 @@ import HAT_18 from "assets/images/AnimateMap/avatarHats/cap_23.png";
 import BARREL_0 from "assets/images/AnimateMap/barrels/barrel.png";
 import FIREBARELL_CAM_ICON from "assets/images/AnimateMap/barrels/camIcon.png";
 import FIREBARELL_HALO from "assets/images/AnimateMap/barrels/halo.png";
+import FIREBARELL_HALO_GREEN from "assets/images/AnimateMap/barrels/haloGreen.png";
 import MAP_IMAGE_1 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_01.jpg";
 import MAP_IMAGE_2 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_02.jpg";
 import MAP_IMAGE_3 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_03.jpg";
@@ -154,6 +155,7 @@ export {
   venues,
   MAP_IMAGE,
   FIREBARELL_HALO,
+  FIREBARELL_HALO_GREEN,
   FIREBARELL_CAM_ICON,
   MAP_JSON,
   mapZoomedLevel0,

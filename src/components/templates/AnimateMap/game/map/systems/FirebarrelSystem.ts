@@ -37,23 +37,24 @@ export class FirebarrelSystem extends System {
   }
 
   private updateFirebarrel(node: FirebarrelNode): void {
-    console.log("updateFirebarrel");
+    const usersCount = node.firebarrel.model.data.connectedUsers
+      ? node.firebarrel.model.data.connectedUsers.length
+      : 0;
+    if (usersCount) {
+      node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
+    } else {
+      node.firebarrel.fsm.changeState(node.firebarrel.HALO);
+    }
+
     const camIcon = node.entity.get(FirebarrelCamIcon);
     if (camIcon && camIcon.view.camIcon) {
-      if (
-        this.viewport?.head?.viewport.zoomLevel === GameConfig.ZOOM_LEVEL_FLYING
-      ) {
-        console.log("VISIBLE");
-        camIcon.view.camIcon.visible = false;
-      } else {
-        console.log("NOT VISIBLE");
-        camIcon.view.camIcon.visible = true;
-      }
+      camIcon.view.camIcon.visible =
+        this.viewport?.head?.viewport.zoomLevel !==
+        GameConfig.ZOOM_LEVEL_FLYING;
     }
   }
 
   private handleViewportAdded = (node: ViewportNode): void => {
-    console.log("handleViewportAdded");
     if (this.zoomLevelCurrent !== node.viewport.zoomLevel) {
       this.zoomLevelCurrent = node.viewport.zoomLevel;
       this.zoomLevelUpdated = true;
@@ -62,12 +63,5 @@ export class FirebarrelSystem extends System {
 
   private handleFirebarrelAdded = (node: FirebarrelNode): void => {
     this.updateFirebarrel(node);
-    // TODO update halo status
-    // const usersCount
-    // if (usersCount) {
-    //   node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
-    // } else {
-    //   node.firebarrel.fsm.changeState(node.firebarrel.HALO);
-    // }
   };
 }

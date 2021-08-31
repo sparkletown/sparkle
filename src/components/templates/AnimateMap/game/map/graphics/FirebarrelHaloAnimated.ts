@@ -1,3 +1,5 @@
+import { Texture } from "pixi.js";
+
 import { Animatable } from "./Animatable";
 import { FirebarrelHalo } from "./FirebarrelHalo";
 
@@ -10,12 +12,15 @@ export class FirebarrelHaloAnimated
   private directionFactorIn = 1;
   private directionFactorOut = 1;
 
+  protected get texture(): Texture {
+    return FirebarrelHalo.FIREBARELL_HALO_GREEN;
+  }
+
   animate(time: number) {
     if (!this.view.halo) {
       return;
     }
 
-    const haloScale = FirebarrelHalo.SCALE;
     this.time +=
       time *
       (this.direction === 1
@@ -30,9 +35,8 @@ export class FirebarrelHaloAnimated
       this.time = this.duration;
       this.direction = -1;
     }
-    const value =
-      FirebarrelHaloAnimated.getValue(this.time / this.duration) / 2;
-    this.view.halo.scale.set(haloScale + value);
+    const value = FirebarrelHaloAnimated.getValue(this.time / this.duration);
+    this.view.halo.alpha = 0.3 + value;
   }
 
   static getValue(x: number): number {

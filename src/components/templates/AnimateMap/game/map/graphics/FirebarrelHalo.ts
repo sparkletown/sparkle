@@ -1,21 +1,32 @@
 import { Sprite, Texture } from "pixi.js";
 
-import { FIREBARELL_HALO } from "../../constants/AssetConstants";
+import {
+  FIREBARELL_HALO,
+  FIREBARELL_HALO_GREEN,
+} from "../../constants/AssetConstants";
 
 import { Firebarrel } from "./Firebarrel";
 
 export class FirebarrelHalo {
   static FIREBARELL_HALO = Texture.from(FIREBARELL_HALO);
+  static FIREBARELL_HALO_GREEN = Texture.from(FIREBARELL_HALO_GREEN);
   static SCALE = 1;
 
   constructor(protected view: Firebarrel) {
     if (view.halo && view.halo.parent) {
       view.halo.parent.removeChild(view.halo);
     }
+    this.setup();
+  }
 
-    view.halo = new Sprite(FirebarrelHalo.FIREBARELL_HALO); //Sprite.from(venues.VENUE_HALO);
-    view.halo.scale.set(FirebarrelHalo.SCALE);
-    view.halo.anchor.set(0.5);
-    view.addChildAt(view.halo, 0);
+  protected get texture(): Texture {
+    return FirebarrelHalo.FIREBARELL_HALO;
+  }
+
+  protected setup(): void {
+    this.view.halo = new Sprite(this.texture); //Sprite.from(venues.VENUE_HALO);
+    this.view.halo.scale.set(FirebarrelHalo.SCALE);
+    this.view.halo.anchor.set(0.5);
+    this.view.addChildAt(this.view.halo, 0);
   }
 }
