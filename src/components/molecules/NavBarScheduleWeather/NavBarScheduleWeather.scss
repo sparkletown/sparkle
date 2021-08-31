@@ -1,0 +1,28 @@
+@import "scss/constants.scss";
+
+$weather-padding: $spacing--lg $spacing--md * 3 $spacing--lg * 3 $spacing--lg;
+$weather-state-margin-bottom: 0.6rem;
+$weather-state-margin-left: $spacing--sm;
+
+.NavBarScheduleWeather {
+  cursor: default;
+  padding: $weather-padding;
+  b {
+    font-weight: $font-weight--500;
+  }
+
+  &__temp-and-state {
+    display: flex;
+    align-items: flex-end;
+  }
+  &__state {
+    margin-bottom: $weather-state-margin-bottom;
+    margin-left: $weather-state-margin-left;
+    font-weight: $font-weight--300;
+    text-transform: capitalize;
+  }
+
+  &__other-text {
+    white-space: pre;
+  }
+}

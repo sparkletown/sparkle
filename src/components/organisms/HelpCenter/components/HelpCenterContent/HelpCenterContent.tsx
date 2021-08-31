@@ -59,7 +59,7 @@ export const HelpCenterContent: React.FC<HelpContentProps> = ({
           onClick={onVplayaClicked}
           title="Playa Info"
           buttonText="Playa Info Camp"
-          text='Got questions? We\&apos;ve got answers! Head over to Virtual Playa Info to interface with one of our Oracles or just stop by to chat and say, "Hello!"'
+          text='Got questions? We&apos;ve got answers! Head over to Virtual Playa Info to interface with one of our Oracles or just stop by to chat and say, "Hello!"'
         />
       </div>
     </div>

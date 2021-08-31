@@ -102,6 +102,11 @@ $schedule-btn--height: 51px;
     }
   }
 
+  &--end-to-end {
+    margin-left: -$spacing--md;
+    margin-right: -$spacing--md;
+  }
+
   &__weekdays {
     @include scrollbar;
     display: flex;

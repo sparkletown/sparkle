@@ -27,6 +27,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
+import { NavBarScheduleWeather } from "components/molecules/NavBarScheduleWeather";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
@@ -246,7 +247,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+        <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" />
+        <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
+          {weekdays}
+        </ul>
         <div className="NavBarSchedule__breadcrumb">
           <label>Events on: </label>
           <button
@@ -266,7 +270,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           )}
         </div>
         {venueId && <ScheduleVenueDescription venueId={venueId} />}
-
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"

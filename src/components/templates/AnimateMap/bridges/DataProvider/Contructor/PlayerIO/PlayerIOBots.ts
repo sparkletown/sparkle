@@ -18,7 +18,7 @@ export class PlayerIOBots {
   constructor(
     readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
-    readonly playerioAdvancedMode: boolean
+    readonly playerioAdvancedMode?: boolean
   ) {}
 
   private _bots: Bot[] = [];
@@ -29,9 +29,9 @@ export class PlayerIOBots {
         this.cloudDataProvider,
         this.playerioGameId,
         getRandomBotId(28),
-        this.playerioAdvancedMode,
         getRandomInt(world_width),
-        getRandomInt(world_height)
+        getRandomInt(world_height),
+        this.playerioAdvancedMode
       )
     );
   }
@@ -55,9 +55,9 @@ class Bot {
     readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
     readonly id: string,
-    readonly playerioAdvancedMode: boolean,
     public x: number,
-    public y: number
+    public y: number,
+    readonly playerioAdvancedMode?: boolean
   ) {
     this._throttledUpdatePosition = throttle(
       this._updatePosition.bind(this),
@@ -67,12 +67,7 @@ class Bot {
     this._playerio = new PlayerIODataProvider(
       cloudDataProvider,
       playerioGameId,
-      id,
-      playerioAdvancedMode,
-      (connection) => {
-        this._playerioConnection = connection;
-        if (this._closed) this.closeConnection();
-      }
+      id
     );
   }
 

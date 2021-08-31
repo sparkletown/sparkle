@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
-import { faDoorOpen } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
@@ -15,6 +13,8 @@ import { useUser } from "hooks/useUser";
 import LocalParticipant from "components/organisms/Room/LocalParticipant";
 import Participant from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+
+import { Button } from "../../../../atoms/Button";
 
 import "./FirebarrelWidget.scss";
 
@@ -298,10 +298,15 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   return (
     <>
-      <div className="firebarrel-room__participants">
-        <div className="firebarrel-room__exit-container" onClick={onExitClick}>
-          <FontAwesomeIcon size="lg" icon={faDoorOpen} />
+      <div className="firebarrel-room__exit-btn-wrapper">
+        <div className="firebarrel-room__exit-btn-inner">
+          <Button customClass="firebarrel-room__exit-btn" onClick={onExitClick}>
+            Leave
+          </Button>
         </div>
+      </div>
+      <div className="firebarrel-room__participants">
+        <div className="firebarrel-room__exit-container"></div>
         {myVideo}
         {sidedVideos}
         {otherVideos}
