@@ -167,7 +167,15 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">
           <span className="ScheduleItemNG__place--location">in</span>{" "}
-          {event.room || eventVenue?.name}
+          {eventVenue?.name}
+          {eventRoom && (
+            <>
+              {", "}
+              <button className="button--a" onClick={enterRoom}>
+                {event.room}
+              </button>
+            </>
+          )}
         </div>
         {isEventExpanded && (
           <>
