@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FirebaseReducer, useFirebase } from "react-redux-firebase";
+import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
 import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
 
-import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import LocalParticipant from "components/organisms/Room/LocalParticipant";
@@ -22,7 +21,6 @@ import "./FirebarrelWidget.scss";
 const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
 export interface FirebarrelWidgetProps {
-  venueName: string;
   roomName: string;
   onEnter: (roomId: string, val: User[]) => void;
   onExit: (roomId: string) => void;
@@ -33,24 +31,11 @@ export interface FirebarrelWidgetProps {
   isAudioEffectDisabled: boolean;
 }
 
-// @debt Remove this eslint-disable + fix the any type properly + move to api/* or remove outright
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const firestoreUpdate = (doc: string, update: any) => {
-  const firestore = firebase.firestore();
-  firestore
-    .doc(doc)
-    .update(update)
-    .catch(() => {
-      firestore.doc(doc).set(update);
-    });
-};
-
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
 export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
-  venueName,
   roomName,
   setUserList,
   onEnter,
@@ -64,7 +49,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     []
   );
 
-  const { user, profile } = useUser();
+  const { user } = useUser();
   const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
@@ -85,73 +70,17 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
       });
       room.disconnect();
       setRoom(undefined);
-      leaveSeat(user, profile);
     }
   };
 
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName,
-  });
-
-  const takeSeat = (table: string, user?: FirebaseReducer.AuthState) => {
-    if (!user || !isRecentVenueUsersLoaded) return;
-
-    const doc = `users/${user.uid}`;
-    const existingData = recentVenueUsers.find((u) => u.id === user.uid)?.data;
-
-    const update = {
-      data: {
-        ...existingData,
-        [venueName]: {
-          table,
-          roomName,
-        },
-      },
-    };
-
-    firestoreUpdate(doc, update);
+  const getUserList = () => {
+    return room
+      ? [
+          ...participants.map((p) => worldUsersById[p.identity]),
+          worldUsersById[room.localParticipant.identity],
+        ]
+      : [];
   };
-
-  const leaveSeat = useCallback(
-    async (
-      user?: FirebaseReducer.AuthState,
-      profile?: FirebaseReducer.Profile<User>
-    ) => {
-      if (!user || !profile) return;
-
-      const doc = `users/${user.uid}`;
-      const existingData = profile.data;
-      const update = {
-        data: {
-          ...existingData,
-          [venueName]: {
-            table: null,
-            videoRoom: null,
-          },
-        },
-      };
-      const firestore = firebase.firestore();
-      await firestore
-        .doc(doc)
-        .update(update)
-        .catch(() => {
-          firestore.doc(doc).set(update);
-        });
-    },
-    [firebase, venueName]
-  );
-
-  useEffect(() => {
-    if (!user) return;
-
-    const onBeforeUnloadHandler = () => leaveSeat(user, profile);
-
-    // NOTE: Clear user location on page close
-    window.addEventListener("beforeunload", onBeforeUnloadHandler);
-
-    return () =>
-      window.removeEventListener("beforeunload", onBeforeUnloadHandler);
-  }, [user, leaveSeat, profile]);
 
   // @debt refactor this to use useAsync or similar?
   useEffect(() => {
@@ -163,7 +92,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     }).then((token) => {
       setToken(token);
     });
-  }, [roomName, user]);
+  }, [firebase, roomName, user]);
 
   const connectToVideoRoom = () => {
     if (!token || room) return;
@@ -176,13 +105,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
       .then((room) => {
         console.log("connect to room", room);
         setRoom(room);
-        takeSeat(roomName, user);
 
         if (onEnter) {
-          onEnter(roomName, [
-            ...participants.map((p) => worldUsersById[p.identity]),
-            worldUsersById[room.localParticipant.identity],
-          ]);
+          onEnter(roomName, getUserList());
         }
       })
       .catch((error) => {
@@ -225,25 +150,19 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
       });
     };
 
-    console.log("try to connect");
-
     Video.connect(token, {
       name: roomName,
     })
       .then((room) => {
         console.log("connect", room, room.localParticipant.state);
         setRoom(room);
-        takeSeat(roomName, user);
 
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
 
         if (onEnter) {
-          onEnter(roomName, [
-            ...participants.map((p) => worldUsersById[p.identity]),
-            worldUsersById[room.localParticipant.identity],
-          ]);
+          onEnter(roomName, getUserList());
         }
       })
       .catch((error) => setVideoError(error.message));
@@ -253,10 +172,8 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   useEffect(() => {
     if (!room) return;
-    setUserList(roomName, [
-      ...participants.map((p) => worldUsersById[p.identity]),
-      worldUsersById[room.localParticipant.identity],
-    ]);
+    setUserList(roomName, getUserList());
+    // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants, worldUsersById]);
 
@@ -389,7 +306,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         </div>
       </div>
       <div className="firebarrel-room__participants">
-        <div className="firebarrel-room__exit-container" />
+        <div className="firebarrel-room__exit-container"></div>
         {myVideo}
         {sidedVideos}
         {otherVideos}
