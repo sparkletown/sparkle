@@ -23,7 +23,7 @@ export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
   const isExpanded = useSelector(chatVisibilitySelector);
   const chatSettings = useSelector(selectedChatSettingsSelector);
-  const newPrivateMessageRecived = useNumberOfUnreadChats();
+  const newPrivateMessageReceived = useNumberOfUnreadChats();
 
   const expandSidebar = useCallback(() => {
     dispatch(setChatSidebarVisibility(true));
@@ -71,7 +71,7 @@ export const useChatSidebarControls = () => {
 
   return {
     isExpanded,
-    newPrivateMessageRecived,
+    newPrivateMessageReceived,
     chatSettings,
 
     expandSidebar,

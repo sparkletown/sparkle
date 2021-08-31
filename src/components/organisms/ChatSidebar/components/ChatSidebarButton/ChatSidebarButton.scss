@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 @import "../../ChatSidebar.scss";
 
+$new-message-border: 2px solid $secondary;
+
 .ChatSidebarButton {
   color: $white;
   background-color: $secondary;
@@ -18,6 +20,22 @@
 
   &:hover {
     background-color: $lighter-intermediate-grey;
+  }
+
+  &__icon-container {
+    position: relative;
+    margin: 0 auto;
+    width: min-content;
+  }
+
+  &__new-message {
+    background-color: $red;
+    @include square-size($spacing--md);
+    border: $new-message-border;
+    position: absolute;
+    border-radius: $border-radius--max;
+    right: -6px;
+    bottom: -2px;
   }
 
   &__right-container {

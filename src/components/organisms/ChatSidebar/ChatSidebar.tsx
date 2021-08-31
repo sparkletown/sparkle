@@ -33,7 +33,7 @@ export interface ChatSidebarProps {
 export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
-    newPrivateMessageRecived,
+    newPrivateMessageReceived,
     toggleSidebar,
     togglePrivateChatSidebar,
     chatSettings,
@@ -94,82 +94,76 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       aria-labelledby={isVenueChat ? venueTabId : privateTabId}
       className={containerStyles}
     >
-      <div className="chat-sidebar__header">
-        <div className="chat-sidebar__header-buttons">
+      <div className="chat-sidebar__header-buttons">
+        <ChatSidebarButton
+          text="Chat"
+          tooltipText="Opens pool chat"
+          ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
+          icon={faCommentDots}
+          onClick={handleSidebar}
+          isExpanded={isExpanded}
+        />
+
+        {!isExpanded && (
           <ChatSidebarButton
-            text="Chat"
+            text="Messages"
+            tooltipText="Opens direct messages"
             ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
-            icon={faCommentDots}
-            onClick={handleSidebar}
-            isExpanded={isExpanded}
+            icon={faEnvelope}
+            onClick={togglePrivateChatSidebar}
+            newMessage={true || newPrivateMessageReceived > 0}
           />
+        )}
 
-          {!isExpanded && (
-            <ChatSidebarButton
-              text="Messages"
-              ariaLabel={isExpanded ? "Hide chat" : "Show chat"}
-              icon={faEnvelope}
-              onClick={togglePrivateChatSidebar}
-              // containerClassName="chat-sidebar__private-chat"
-            >
-              {newPrivateMessageRecived > 0 && (
-                <div className="chat-sidebar__controller--new-message" />
-              )}
-            </ChatSidebarButton>
-          )}
+        {!isShownHelpCenter && !isExpanded && (
+          <ChatSidebarButton
+            text="Help"
+            tooltipText="Opens help centre"
+            ariaLabel={isExpanded ? "Hide help centre" : "Show help centre"}
+            icon={faQuestion}
+            onClick={openHelpCenter}
+          />
+        )}
 
-          {!isShownHelpCenter && !isExpanded && (
-            <ChatSidebarButton
-              text="Help"
-              ariaLabel={
-                isExpanded ? "Hide question centre" : "Show question centre"
-              }
-              icon={faQuestion}
-              onClick={openHelpCenter}
-              // containerClassName="chat-sidebar__help-center-icon"
-            />
-          )}
-
-          {!isShownHelpCenter && !isExpanded && (
-            <ChatSidebarButton
-              text="Create"
-              ariaLabel="Create space"
-              icon={faPen}
-              onClick={goToAdmin}
-              // containerClassName="chat-sidebar__create-icon"
-            />
-          )}
-        </div>
-
-        {isExpanded && (
-          <>
-            {!isShownHelpCenter && (
-              <div className="chat-sidebar__tabs" role="tablist">
-                <button
-                  role="tab"
-                  id={venueTabId}
-                  aria-label={venueChatTabTitle}
-                  aria-selected={isVenueChat}
-                  className={venueChatTabStyles}
-                  onClick={selectVenueChat}
-                >
-                  {venueChatTabTitle}
-                </button>
-                <button
-                  role="tab"
-                  id={privateTabId}
-                  aria-label={privateChatTabTitle}
-                  aria-selected={isPrivateChat}
-                  className={privateChatTabStyles}
-                  onClick={selectPrivateChat}
-                >
-                  {privateChatTabTitle}
-                </button>
-              </div>
-            )}
-          </>
+        {!isShownHelpCenter && !isExpanded && (
+          <ChatSidebarButton
+            text="Create"
+            tooltipText="Opens creation tools"
+            ariaLabel="Create space"
+            icon={faPen}
+            onClick={goToAdmin}
+          />
         )}
       </div>
+
+      {isExpanded && (
+        <>
+          {!isShownHelpCenter && (
+            <div className="chat-sidebar__tabs" role="tablist">
+              <button
+                role="tab"
+                id={venueTabId}
+                aria-label={venueChatTabTitle}
+                aria-selected={isVenueChat}
+                className={venueChatTabStyles}
+                onClick={selectVenueChat}
+              >
+                {venueChatTabTitle}
+              </button>
+              <button
+                role="tab"
+                id={privateTabId}
+                aria-label={privateChatTabTitle}
+                aria-selected={isPrivateChat}
+                className={privateChatTabStyles}
+                onClick={selectPrivateChat}
+              >
+                {privateChatTabTitle}
+              </button>
+            </div>
+          )}
+        </>
+      )}
       {isExpanded && (
         <div role="tabpanel" className="chat-sidebar__tab-content">
           {!isShownHelpCenter && isVenueChat && <VenueChat venue={venue} />}

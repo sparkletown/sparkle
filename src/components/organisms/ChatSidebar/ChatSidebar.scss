@@ -27,9 +27,6 @@ $help-center-background-color: #232225;
     box-shadow: -10px 0 40px opaque-black(0.5);
   }
 
-  &__header {
-  }
-
   &__header-buttons {
     display: flex;
     flex-direction: column;
@@ -83,28 +80,10 @@ $help-center-background-color: #232225;
     align-items: center;
   }
 
-  &__controller {
-    &--new-message {
-      background-color: $red;
-      height: 12px;
-      width: 12px;
-      border: 2px solid $secondary;
-      position: absolute;
-      border-radius: $border-radius--max;
-      right: 6px;
-      bottom: 10px;
-    }
-  }
-
   &__tab-content {
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
-  }
-
-  &__controller {
-    margin-top: $spacing--md;
-    min-width: 66px;
   }
 
   &--expanded &__controller {
