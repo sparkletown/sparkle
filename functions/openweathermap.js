@@ -5,7 +5,7 @@ const { parseJson } = require("./src/utils/misc");
 
 const fetchWeather = async () => {
   const url =
-    "https://api.openweathermap.org/data/2.5/weather?lat=40.787&lon=-119.206&units=metric&lang=en&" +
+    "https://api.openweathermap.org/data/2.5/weather?lat=40.787&lon=-119.206&units=imperial&lang=en&" +
     `appid=${functions.config().openweathermap.api_key}`;
 
   let response;

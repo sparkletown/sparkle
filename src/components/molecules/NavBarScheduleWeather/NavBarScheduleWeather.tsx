@@ -41,7 +41,7 @@ export const NavBarScheduleWeather: React.FC<ContainerClassName> = ({
           )}
         >
           <div className="NavBarScheduleWeather__temp-and-state">
-            <h3>{`${weather.temperatureCelsius} °C`}</h3>
+            <h3>{`${weather.temperatureFahrenheit} °F`}</h3>
             <h5 className="NavBarScheduleWeather__state">
               {weather.stateOfSky}
             </h5>
@@ -49,7 +49,7 @@ export const NavBarScheduleWeather: React.FC<ContainerClassName> = ({
           <div>
             Humidity <b>{weather.humidityPercents}</b>% — Wind{" "}
             <b>
-              {weather.windSpeedKPH} KPH {weather.windDirection}
+              {weather.windSpeedMPH} MPH {weather.windDirection}
             </b>
           </div>
           <div>Black Rock Desert, Nevada, USA</div>
