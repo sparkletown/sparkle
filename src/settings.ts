@@ -28,6 +28,7 @@ export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-of-use/";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
+export const SPARKLEVERSE_ITY = "https://sparklever.se/ity/";
 export const PLATFORM_BRAND_NAME = "SparkleVerse";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
