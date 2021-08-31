@@ -6,11 +6,14 @@
 
 .ScheduleEventSubListNG {
   &__title {
-    margin-bottom: $spacing--lg;
-
     font-size: $font-size--xl;
     font-weight: $font-weight--700;
     line-height: $spacing--xl;
+  }
+
+  &__subtitle {
+    margin-bottom: $spacing--lg;
+    font-size: $font-size--md;
   }
 
   &__button {

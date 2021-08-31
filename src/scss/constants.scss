@@ -47,11 +47,14 @@ $dark-green: #208a28;
 $clickable-area-color: #ffffff11;
 $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
+$card-background: #323232;
+
+// chat relevant colors
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$room-card-background: #323232;
+$chat-bubble: #434046;
 
 $gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
@@ -65,9 +68,11 @@ $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 $send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
-$chat-sidebar-width: 360px;
 $navbar-height: 66px;
+$sidebar-schedule-width: 40%;
 $footer-height: 30px;
+$reserved-page-height: $navbar-height + $footer-height;
+$chat-sidebar-width: 360px;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
 $admin-spaces-sidebar-width: 20%;
@@ -116,6 +121,8 @@ $font-weight--400: 400;
 $font-weight--500: 500;
 $font-weight--600: 600;
 $font-weight--700: 700;
+$font-weight--800: 800;
+$font-weight--900: 900;
 
 $media-breakpoint--sm: 576px;
 $media-breakpoint--md: 768px;
@@ -140,14 +147,27 @@ $image-input-border--error: 2px solid red;
 $venue-rooms-editor-background-placeholder-box-shadow: 0px 6px 12px
   opaque-black(0.25);
 $venue-rooms-editor-background: #292c33;
+$loading-page-background-color: linear-gradient(
+    0deg,
+    rgba(124, 70, 251, 0.15),
+    rgba(124, 70, 251, 0.15)
+  ),
+  #000000;
+
+$loading-page-text-gap: 1rem;
+$loading-page-icon-transform-animation: 2s infinite;
+$loading-page-icon-transform-big: translate(-50%, -59%) scale(1.1);
+$loading-page-icon-transform-small: translate(-50%, -59%) scale(0.8);
+$loading-page-icon-transform-small-opacity: 0.4;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
-$z-layer-live-schedule: 20;
+$z-layer-live-schedule: 35;
 $z-layer-live-schedule-download: 25;
-$z-layer-sidebar: 15;
+$z-layer-sidebar: 30;
+$z-layer-left-column: 15;
 $z-layer-emergency-content: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
@@ -187,7 +207,7 @@ $z-layers: (
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
-  left-column: $z-layer-sidebar,
+  left-column: $z-layer-left-column,
   // UserAvatar
   global-profile-icon: 1,
   user-avatar-status-indicator: 1,
@@ -237,28 +257,6 @@ $z-layers: (
   @return 0 10px 30px 0 rgba($black, $transparency);
 }
 
-@mixin scrollbar {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
-  }
-}
-
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
 @mixin line-clamp($line-count: 1) {
   display: -webkit-box;
@@ -289,5 +287,49 @@ $z-layers: (
   &:hover {
     color: $hover-color;
     text-decoration: underline $hover-color;
+  }
+}
+
+// @debt use only one scrollbar mixin (if two different styles are needed, add variables)
+@mixin scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba($black, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($white, 0.5);
+  }
+}
+
+@mixin gray-scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: $border-radius--xs;
+    background-color: $black;
+  }
+
+  &::-webkit-scrollbar {
+    @include square-size($spacing--sm);
+    background-color: opaque-black(0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $border-radius--xs;
+    background-color: opaque-white(0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: opaque-white(0.5);
   }
 }

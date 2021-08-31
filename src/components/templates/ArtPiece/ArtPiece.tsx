@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -25,55 +26,58 @@ export interface ArtPieceProps {
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   if (!venue) return <Loading label="Loading..." />;
 
-  const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
+  const { name, host, config, showRangers, iframeUrl, videoAspect } = venue;
+  const landingPageConfig = config?.landingPageConfig;
+  const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
 
-  const aspectContainerClasses = `aspect-container ${
-    venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
-  }`;
+  // NOTE: useful if some UI element with multiple options or free input is added for aspect ratio
+  const aspectContainerClasses = classNames({
+    "ArtPiece__aspect-container": true,
+    "mod--sixteen-nine": videoAspect === VideoAspectRatio.sixteenNine,
+    "mod--anamorphic": videoAspect === VideoAspectRatio.anamorphic,
+    // @debt add useCss to set the aspect-ratio CSS property to the custom value instead of this purely informative class
+    [`ArtPiece__video-aspect--${videoAspect}`]: videoAspect,
+  });
 
   return (
-    <>
-      <div className="full-page-container art-piece-container">
-        <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
-          <InformationCard title="About the venue">
-            <p className="title-sidebar">{venue.name}</p>
-            <p className="short-description-sidebar" style={{ fontSize: 18 }}>
-              {venue.config?.landingPageConfig.subtitle}
-            </p>
-            <div style={{ fontSize: 13 }}>
-              <RenderMarkdown
-                text={venue.config?.landingPageConfig.description}
-              />
-            </div>
-          </InformationCard>
-        </InformationLeftColumn>
-        <div className="content">
-          <div className={aspectContainerClasses}>
-            <iframe
-              className="youtube-video"
-              title="art-piece-video"
-              src={iframeUrl}
-              frameBorder="0"
-              allow={IFRAME_ALLOW}
-              allowFullScreen
-            />
+    <div className="ArtPiece">
+      <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationCard title="About the venue">
+          <p className="ArtPiece__title-sidebar">{name}</p>
+          <p className="ArtPiece__short-description-sidebar">
+            {landingPageConfig?.subtitle}
+          </p>
+          <div className="ArtPiece__rendered-markdown">
+            <RenderMarkdown text={landingPageConfig?.description} />
           </div>
-          <div className="video-chat-wrapper">
-            <Room
-              venueName={venue.name}
-              roomName={venue.name}
-              setUserList={() => null}
-              hasChairs={false}
-              defaultMute={true}
-            />
-          </div>
+        </InformationCard>
+      </InformationLeftColumn>
+      <div className="ArtPiece__content">
+        <div className={aspectContainerClasses}>
+          <iframe
+            className="ArtPiece__youtube-video"
+            title="art-piece-video"
+            src={embeddableUrl}
+            frameBorder="0"
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
+        </div>
+        <div className="ArtPiece__video-chat-wrapper">
+          <Room
+            venueName={name}
+            roomName={name}
+            setUserList={() => null}
+            hasChairs={false}
+            defaultMute={true}
+          />
         </div>
       </div>
-      {venue?.showRangers && (
-        <div className="sparkle-fairies">
+      {showRangers && (
+        <div className="ArtPiece__sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>
       )}
-    </>
+    </div>
   );
 };

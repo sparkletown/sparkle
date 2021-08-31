@@ -1,13 +1,11 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_SCHEDULE_NAME, DEFAULT_VENUE_LOGO } from "settings";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ScheduleVenueDescription.scss";
 
@@ -18,15 +16,14 @@ export interface ScheduleVenueDescriptionProps {
 export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
   venueId,
 }) => {
-  const { sovereignVenue } = useRelatedVenues({
+  const { currentVenue } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
   const [venueIcon] = useValidImage(
-    sovereignVenue?.host?.icon,
+    currentVenue?.host?.icon,
     DEFAULT_VENUE_LOGO
   );
-
   const containerCssVars = useCss({
     "--venue-picture--background-image": `url(${venueIcon})`,
   });
@@ -37,7 +34,7 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
   );
 
   const { subtitle, description } =
-    sovereignVenue?.config?.landingPageConfig ?? {};
+    currentVenue?.config?.landingPageConfig ?? {};
 
   return (
     <div className={containerClasses}>
@@ -45,13 +42,11 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
         <div className="ScheduleVenueDescription__pic" />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
-            {sovereignVenue?.name ?? "Schedule"}
+            {currentVenue?.name ?? DEFAULT_SCHEDULE_NAME}
           </h2>
           <h3 className="ScheduleVenueDescription__subtitle">{subtitle}</h3>
+          <p className="ScheduleVenueDescription__desc">{description}</p>
         </div>
-      </div>
-      <div className="ScheduleVenueDescription__desc">
-        <RenderMarkdown text={description} />
       </div>
     </div>
   );

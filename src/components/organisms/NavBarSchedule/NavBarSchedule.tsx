@@ -23,15 +23,15 @@ import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
+import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
-// Disabled as per designs. Up for deletion if confirmied not necessary
-// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { Button } from "components/atoms/Button";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -89,6 +89,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   }, [scheduledStartDate]);
 
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
+  const { currentVenue } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(true);
+
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
     .length;
 
@@ -156,10 +162,27 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       eventTimeAndOrderComparator
     );
 
+    const currentVenueId = currentVenue?.id?.toLowerCase();
+
+    const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
+      ({ isSaved, venueId }) =>
+        isSaved && venueId?.toLowerCase() === currentVenueId
+    );
+
+    const currentVenueEvents = eventsFilledWithPriority.filter(
+      ({ venueId }) => venueId?.toLowerCase() === currentVenueId
+    );
+
+    const personalisedSchedule = filterRelatedEvents
+      ? currentVenueBookMarkEvents
+      : eventsFilledWithPriority.filter((event) => event.isSaved);
+
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        ? personalisedSchedule
+        : filterRelatedEvents
+        ? currentVenueEvents
         : eventsFilledWithPriority,
     };
   }, [
@@ -167,6 +190,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     showPersonalisedSchedule,
     firstScheduleDate,
+    filterRelatedEvents,
+    currentVenue,
   ]);
 
   const day = addDays(firstScheduleDate, 0);
@@ -224,13 +249,47 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
+  const isNotSovereignVenue = venueId !== sovereignVenue?.id;
+  const breadcrumbSovereignVenueClasses = classNames(
+    "NavBarScheduleBreadcrumb__btn",
+    {
+      "NavBarScheduleBreadcrumb__btn--disabled": filterRelatedEvents,
+    }
+  );
+
+  const breadcrumbVenueClasses = classNames("NavBarScheduleBreadcrumb__btn", {
+    "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
+  });
+
+  const selectedVenue =
+    (filterRelatedEvents ? venueId : sovereignVenue?.id) ?? "";
+
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
-
-        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+        {/* <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" /> */}
+        <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
+          {weekdays}
+        </ul>
+        <div className="NavBarSchedule__breadcrumb">
+          <label>Events on: </label>
+          <button
+            onClick={() => setFilterRelatedEvents(false)}
+            className={breadcrumbSovereignVenueClasses}
+          >
+            {sovereignVenue?.name}
+          </button>
+          /
+          {isNotSovereignVenue && (
+            <button
+              onClick={() => setFilterRelatedEvents(true)}
+              className={breadcrumbVenueClasses}
+            >
+              {currentVenue?.name}
+            </button>
+          )}
+        </div>
+        {venueId && <ScheduleVenueDescription venueId={selectedVenue} />}
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"
