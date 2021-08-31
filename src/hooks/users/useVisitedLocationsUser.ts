@@ -59,8 +59,8 @@ export const useVisitedLocationsUser = ({
               worldUserLocationsById,
               user,
               location,
-              childLocation: childLocation.trim(),
-              parentLocation: parentLocation.trim(),
+              roomName: childLocation.trim(),
+              venueName: parentLocation.trim(),
             });
 
             return (

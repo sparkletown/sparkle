@@ -183,6 +183,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const flatRoomUsers: UserWithVenueIdProps[] = recentRoomUsers.flatMap(
     (user) => user
   );
+
   const scheduleNGWithAttendees = {
     ...scheduleNG,
     daysEvents: scheduleNG.daysEvents.map((event, index) =>
@@ -190,10 +191,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         relatedVenues,
         usersEvents: userEventIds,
         recentRoomUsers: flatRoomUsers.filter((user) => {
-          return (
-            user.venueId === event.venueId ||
-            user.portalId === event?.room?.trim()
-          );
+          return user.portalId === event?.room?.trim();
         }),
         index,
       })(event)
