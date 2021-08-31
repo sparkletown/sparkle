@@ -11,6 +11,7 @@ import {
 
 import { PLATFORM_BRAND_NAME } from "settings";
 
+import { User } from "types/User";
 import { ScheduledVenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
@@ -18,10 +19,10 @@ import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
+import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
@@ -47,6 +48,11 @@ export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
   venueId: string;
+}
+
+interface UserWithVenueIdProps extends WithId<User> {
+  venueId?: string;
+  portalId?: string;
 }
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
@@ -83,9 +89,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   }, [scheduledStartDate]);
 
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
-  const { currentVenue } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
     .length;
 
@@ -166,12 +169,20 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
-  const roomList = scheduleNG.daysEvents.map((el) => {
-    const [roomData] =
-      currentVenue?.rooms?.filter((room) => room.title === el?.room) || [];
-    return roomData;
+  const day = addDays(firstScheduleDate, 0);
+
+  const daysEvents = liveAndFutureEvents.filter(
+    isEventWithinDateAndNotFinished(day)
+  );
+
+  const recentRoomUsers = useRoomRecentUsersList({
+    eventList: daysEvents,
+    venueId,
   });
-  const recentRoomUsers = useRoomRecentUsersList({ roomList });
+
+  const flatRoomUsers: UserWithVenueIdProps[] = recentRoomUsers.flatMap(
+    (user) => user
+  );
 
   const scheduleNGWithAttendees = {
     ...scheduleNG,
@@ -179,12 +190,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       prepareForSchedule({
         relatedVenues,
         usersEvents: userEventIds,
-        recentRoomUsers,
+        recentRoomUsers: flatRoomUsers.filter((user) => {
+          return user.portalId === event?.room?.trim();
+        }),
         index,
       })(event)
     ),
   };
-
   const downloadPersonalEventsCalendar = useCallback(() => {
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
