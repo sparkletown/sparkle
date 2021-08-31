@@ -105,10 +105,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const firebarrels = useFirebarrels({ animateMapId: venue.id });
 
   const firebarrelsWithUsers = firebarrels?.firebarrels.map((firebarrel) => {
-    return {
-      ...firebarrel,
-      connectedUsers: [],
-    };
+    return firebarrel;
   });
 
   useEffect(() => {

@@ -65,7 +65,9 @@ service cloud.firestore {
       }
       match /firebarrels/{firebarrelId} {
         allow read: if request.auth.uid != null;
-        allow write: if false;
+        allow create: if (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['connectedUsers']));
+        allow update: if (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['connectedUsers']));
+        allow delete: if false;
       }
       match /artcars/{artcarId} {
         allow read: if request.auth.uid != null;

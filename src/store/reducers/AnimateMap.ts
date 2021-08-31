@@ -50,7 +50,7 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 }
 
 export interface ReplicatedFirebarrelData extends Firebarrel {
-  connectedUsers: ReplicatedUser[];
+  connectedUsers?: string[];
 }
 
 export interface ReplicatedFirebarrel extends AnimateMapEntity {

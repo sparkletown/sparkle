@@ -271,6 +271,8 @@ export class CloudDataProvider
           firebarrel.iconSrc === existFirebarrel.data.iconSrc &&
           firebarrel.trackSrc === existFirebarrel.data.trackSrc &&
           firebarrel.isLocked === existFirebarrel.data.isLocked &&
+          firebarrel.connectedUsers?.length ===
+            existFirebarrel.data.connectedUsers?.length &&
           firebarrel.maxUserCount === existFirebarrel.data.maxUserCount
         );
       })
