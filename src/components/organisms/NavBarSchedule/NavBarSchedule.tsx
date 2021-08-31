@@ -20,7 +20,6 @@ import {
 } from "utils/event";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
-import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
@@ -28,7 +27,6 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import { NavBarScheduleWeather } from "components/molecules/NavBarScheduleWeather";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
@@ -73,17 +71,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     sovereignVenue,
     relatedVenues,
   } = useVenueScheduleEvents({ venueId, userEventIds });
-
-  const venueRoomTitle = useMemo(
-    () =>
-      sovereignVenue?.rooms?.find((room) => {
-        const [roomName] = getLastUrlParam(
-          getUrlWithoutTrailingSlash(room.url)
-        );
-        return roomName.toLowerCase() === venueId;
-      }),
-    [sovereignVenue, venueId]
-  )?.title;
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -168,14 +155,27 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       eventTimeAndOrderComparator
     );
 
+    const currentVenueId = currentVenue?.id?.toLowerCase();
+
+    const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
+      ({ isSaved, venueId }) =>
+        isSaved && venueId?.toLowerCase() === currentVenueId
+    );
+
+    const currentVenueEvents = eventsFilledWithPriority.filter(
+      ({ venueId }) => venueId?.toLowerCase() === currentVenueId
+    );
+
+    const personalisedSchedule = filterRelatedEvents
+      ? currentVenueBookMarkEvents
+      : eventsFilledWithPriority.filter((event) => event.isSaved);
+
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        ? personalisedSchedule
         : filterRelatedEvents
-        ? eventsFilledWithPriority.filter(
-            (event) => event.room === venueRoomTitle
-          )
+        ? currentVenueEvents
         : eventsFilledWithPriority,
     };
   }, [
@@ -184,7 +184,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     showPersonalisedSchedule,
     firstScheduleDate,
     filterRelatedEvents,
-    venueRoomTitle,
+    currentVenue,
   ]);
 
   const roomList = scheduleNG.daysEvents.map((el) => {
@@ -245,10 +245,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
   });
 
+  const selectedVenue =
+    (filterRelatedEvents ? venueId : sovereignVenue?.id) ?? "";
+
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" />
+        {/* <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" /> */}
         <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
           {weekdays}
         </ul>
@@ -270,7 +273,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             </button>
           )}
         </div>
-        {venueId && <ScheduleVenueDescription venueId={venueId} />}
+        {venueId && <ScheduleVenueDescription venueId={selectedVenue} />}
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"

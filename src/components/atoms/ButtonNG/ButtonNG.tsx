@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { AriaRole, CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
@@ -41,6 +41,7 @@ export interface ButtonProps {
   iconName?: IconProp;
   iconSize?: ButtonIconSize;
   title?: string;
+  role?: AriaRole;
 }
 
 export const ButtonNG: React.FC<ButtonProps> = ({
@@ -60,6 +61,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconName,
   iconSize = "1x",
   title,
+  role,
   ...extraProps
 }) => {
   const parentClasses = classNames({
@@ -87,6 +89,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         style={style}
         type={type}
         title={title}
+        role={role}
         {...extraProps}
       >
         <FontAwesomeIcon
@@ -130,6 +133,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       title={title}
+      role={role}
       {...extraProps}
     >
       {iconName && (
