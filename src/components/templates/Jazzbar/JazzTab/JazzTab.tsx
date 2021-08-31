@@ -58,7 +58,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
   } = useShowHide();
-
+  console.log(venue, recentVenueUsers);
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
 
   const parentVenueId = parentVenue?.id;
@@ -209,7 +209,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   )} */}
                 </div>
               )}
-              <Jukebox />
+              <Jukebox recentVenueUsers={recentVenueUsers} />
 
               {!seatedAtTable && (
                 <TablesControlBar

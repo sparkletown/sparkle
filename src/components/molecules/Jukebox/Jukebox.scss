@@ -61,15 +61,19 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
     display: flex;
     flex-grow: 0;
 
+    & .ButtonNG__button {
+      background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
+        opaque-white(0.1);
+
+      &:hover {
+        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
+          opaque-white(0.2);
+        cursor: pointer;
+      }
+    }
     &-submit {
       width: 64px;
       height: 32px;
-      cursor: pointer;
-
-      & .Jukebox__buttons-submit {
-        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
-          opaque-white(0.1);
-      }
     }
   }
 
