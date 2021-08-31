@@ -142,6 +142,10 @@ $help-center-background-color: #232225;
     margin-top: 2 * $header-height + 3 * $spacing--md;
   }
 
+  &__create-icon {
+    margin-top: 3 * $header-height + 4 * $spacing--md;
+  }
+
   &--wide {
     background-color: $help-center-background-color;
     width: 60%;
