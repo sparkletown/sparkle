@@ -141,7 +141,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
         {!isShownHelpCenter && !isExpanded && (
           <button
-            aria-label={"Create space"}
+            aria-label="Create space"
             className="chat-sidebar__controller chat-sidebar__create-icon"
             onClick={goToAdmin}
           >
