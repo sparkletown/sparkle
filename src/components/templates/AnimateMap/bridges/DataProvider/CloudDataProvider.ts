@@ -10,10 +10,8 @@ import {
 } from "store/reducers/AnimateMap";
 
 import { Firebarrel } from "types/animateMap";
-import { Room } from "types/rooms";
 
 import { getFirebaseStorageResizedImage } from "utils/image";
-import { WithVenue } from "utils/venue";
 
 import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
@@ -117,12 +115,6 @@ export class CloudDataProvider
     this.player.release();
   }
 
-  // player provider
-  // public async initPlayerPositionAsync(x: number, y: number) {
-  //   //TODO: REWORK
-  //   return this.player.initPositionAsync(x, y);
-  // }
-
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
   }
@@ -130,9 +122,7 @@ export class CloudDataProvider
   public venuesData: ReplicatedVenue[] = [];
   public firebarrelsData: ReplicatedFirebarrel[] = [];
 
-  public updateRooms(
-    data: RoomWithFullData<WithVenue<Room> | Room>[] | undefined
-  ) {
+  public updateRooms(data?: RoomWithFullData[]) {
     if (!data) return;
 
     const newVenues = data.filter(
@@ -147,6 +137,23 @@ export class CloudDataProvider
     this.venuesData = this.venuesData.filter(
       (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
+
+    const createReplicatedVenue = (room: RoomWithFullData) => {
+      return {
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
+        data: {
+          ...room,
+          countUsers: room.countUsers ?? 0,
+          image_url: getFirebaseStorageResizedImage(room.image_url, {
+            width: 256,
+            height: 256,
+            fit: "crop",
+          }),
+          withoutPlate: room.title === "Temple" || room.title === "The Man",
+        },
+      } as ReplicatedVenue;
+    };
 
     const existedVenues = this.venuesData
       .filter((venue) => {
@@ -171,50 +178,18 @@ export class CloudDataProvider
       .map((venue) => {
         const room = data.find((item) => item.id === venue.data.id);
         if (!room) return venue;
-        const vn = {
-          x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-          y: (room.y_percent / 100) * 9920 + 50,
-          data: {
-            ...room,
-            countUsers: room.countUsers ?? 0,
-            image_url: getFirebaseStorageResizedImage(room.image_url, {
-              width: 256,
-              height: 256,
-              fit: "crop",
-            }),
-          },
-        } as ReplicatedVenue;
-        return vn;
+        return createReplicatedVenue(room);
       });
     existedVenues.forEach((venue) => {
       this.emit(DataProviderEvent.VENUE_UPDATED, venue);
     });
 
     newVenues.forEach((room) => {
-      const countUsers = "countUsers" in room ? room.countUsers : 0;
-      const vn = {
-        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-        y: (room.y_percent / 100) * 9920 + 50,
-        data: {
-          ...room,
-          countUsers: countUsers,
-          image_url: getFirebaseStorageResizedImage(room.image_url, {
-            width: 256,
-            height: 256,
-            fit: "crop",
-          }),
-        },
-      } as ReplicatedVenue;
+      const vn = createReplicatedVenue(room);
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
-    // const fff = this.venuesData.filter(item => item.data.countUsers);
-    // eslint-disable-next-line no-debugger
-    // debugger;
   }
-
-  // public usersData: ReplicatedUser[] = []
-  private countersForVenue = new Map<string, number>();
 
   private isUpdateUsersLocked = false;
 

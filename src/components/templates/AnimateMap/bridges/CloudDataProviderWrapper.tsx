@@ -25,7 +25,7 @@ export interface CloudDataProviderWrapperProps {
   relatedRooms: UseRelatedPartymapRoomsData;
 }
 
-export type RoomWithFullData<T> = T & {
+export type RoomWithFullData = (WithVenue<Room> | Room) & {
   id: number;
   isLive?: boolean;
   countUsers?: number;
@@ -74,31 +74,33 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     [events]
   );
 
-  const roomsWithFullData:
-    | RoomWithFullData<WithVenue<Room> | Room>[]
-    | undefined = relatedRooms?.map((room, index) => {
-    if ("venue" in room) {
-      const roomWithVenue = room as WithVenue<Room>;
-      const venue = roomWithVenue.venue as WithId<AnyVenue>;
-      const location = locationUsers.find(
-        (location) => location.id === venue.id
-      );
+  const roomsWithFullData: RoomWithFullData[] | undefined = relatedRooms?.map(
+    (room, index) => {
+      if ("venue" in room) {
+        const roomWithVenue = room as WithVenue<Room>;
+        const venue = roomWithVenue.venue as WithId<AnyVenue>;
+        const location = locationUsers.find(
+          (location) => location.id === venue.id
+        );
 
-      if (location) {
-        return {
-          ...roomWithVenue,
-          id: index,
-          countUsers: location ? location.users.length : 0,
-          isLive: !!liveEvents.find((event) => event.venueId === location?.id),
-        };
+        if (location) {
+          return {
+            ...roomWithVenue,
+            id: index,
+            countUsers: location ? location.users.length : 0,
+            isLive: !!liveEvents.find(
+              (event) => event.venueId === location?.id
+            ),
+          };
+        }
       }
-    }
 
-    return {
-      ...room,
-      ...{ id: index, isLive: false, countUsers: 0 },
-    };
-  });
+      return {
+        ...room,
+        ...{ id: index, isLive: false, countUsers: 0 },
+      };
+    }
+  );
 
   const firebarrels = useFirebarrels({ animateMapId: venue.id });
 
