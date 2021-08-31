@@ -1,4 +1,9 @@
-import React, { MouseEventHandler, useCallback, useMemo } from "react";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 import {
   faBookmark as solidBookmark,
@@ -19,14 +24,7 @@ import { ScheduledVenueEvent } from "types/venues";
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
-import {
-  enterVenue,
-  getFullVenueInsideUrl,
-  getLastUrlParam,
-  getUrlParamFromString,
-  getUrlWithoutTrailingSlash,
-  openUrl,
-} from "utils/url";
+import { enterVenue, getFullVenueInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -48,23 +46,22 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   event,
   isShowFullInfo,
 }) => {
-  const { currentVenue: eventVenue } = useRelatedVenues({
+  const { currentVenue: eventVenue, relatedVenues } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
-  const eventRoom = useMemo<Room | undefined>(
-    () =>
-      eventVenue?.rooms?.find((room) => {
-        const { room: eventRoom = "" } = event;
-        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
-        const [roomName] = getLastUrlParam(noTrailSlashUrl);
-        const roomUrlParam = getUrlParamFromString(eventRoom);
-        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
+  const relatedVenuesRooms = relatedVenues
+    ?.flatMap((venue) => venue.rooms ?? [])
+    .filter((room) => room !== undefined);
 
-        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
-      }),
-    [eventVenue, event]
-  );
+  const eventRoom = useMemo<Room | undefined>(() => {
+    const { room: eventRoomTitle = "" } = event;
+
+    return relatedVenuesRooms?.find((room) => {
+      return room.title === eventRoomTitle;
+    });
+  }, [relatedVenuesRooms, event]);
+
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
   const { enterRoom } = useRoom({
     room: eventRoom,
@@ -74,31 +71,29 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
   const isCurrentEventLive = isEventLive(event);
-  const roomUrlParam = getUrlParamFromString(event.room ?? "");
 
   const handleCopyEventLink = useCallback(
     (e?: React.MouseEvent<HTMLButtonElement>) => {
+      // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e && e.stopPropagation();
 
-      const eventLink = getFullVenueInsideUrl(roomUrlParam);
+      const eventLink = eventRoom
+        ? eventRoom.url
+        : getFullVenueInsideUrl(eventVenue?.id ?? "");
       navigator.clipboard.writeText(eventLink);
+      setIsEventLinkCopied(true);
+      setTimeout(setIsEventLinkCopied, 1000, false);
     },
-    [roomUrlParam]
+    [eventRoom, eventVenue]
   );
 
   const goToEventLocation = useCallback(() => {
-    if (!eventRoom) {
-      openUrl(roomUrlParam);
-
-      return;
-    }
-
-    if (event.room) {
+    if (eventRoom) {
       enterRoom();
     } else {
       enterVenue(event.venueId);
     }
-  }, [enterRoom, event, eventRoom, roomUrlParam]);
+  }, [enterRoom, event, eventRoom]);
 
   const eventImage = getFirebaseStorageResizedImage(
     eventRoom?.image_url ?? event.venueIcon,
@@ -123,6 +118,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     (e) => {
       if (!userId || !event.id) return;
 
+      // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e.stopPropagation();
 
       event.isSaved
@@ -131,6 +127,8 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     },
     [userId, event]
   );
+
+  const [isEventLinkCopied, setIsEventLinkCopied] = useState(false);
 
   return (
     <div className="ScheduleItemNG" onClick={toggleEventExpand}>
@@ -182,7 +180,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
                 onClick={handleCopyEventLink}
                 variant="secondary"
               >
-                Copy event link
+                {isEventLinkCopied ? "Copied!" : "Copy event link"}
               </ButtonNG>
               <ButtonNG
                 className="ScheduleItemNG__button"
