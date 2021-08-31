@@ -414,11 +414,6 @@ $simplified-view-button--padding: 0 10px;
         opacity: 1;
       }
     }
-
-    &-icon {
-      @include square-size($menu-item-size);
-      background: opaque-white(0.1);
-    }
   }
 
   @media (max-width: 800px) {

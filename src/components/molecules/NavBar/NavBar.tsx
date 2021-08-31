@@ -9,7 +9,6 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import {
-  faBars,
   faExternalLinkAlt,
   faTicketAlt,
   faVolumeUp,
@@ -54,7 +53,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { PlayaTime } from "components/molecules/PlayaTime";
 import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
@@ -81,14 +79,6 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
-
-const MenuPopover = (
-  <Popover id="menu-popover">
-    <Popover.Content>
-      <MenuPopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -444,19 +434,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     size="small"
                   />
                 </div>
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={MenuPopover}
-                  rootClose={true}
-                >
-                  <ButtonNG
-                    className="NavBar__menu--link NavBar__menu-icon"
-                    iconOnly
-                    iconSize="1x"
-                    iconName={faBars}
-                  />
-                </OverlayTrigger>
               </div>
             )}
           </div>
