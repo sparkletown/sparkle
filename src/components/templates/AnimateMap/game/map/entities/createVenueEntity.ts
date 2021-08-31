@@ -52,6 +52,7 @@ const updateVenueImage = (
 ): Promise<void> => {
   return new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
+    .setWithoutPlate(replicatedVenue.data.withoutPlate)
     .setUsersCountColor(
       replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT
     )
@@ -68,7 +69,12 @@ const updateVenueImage = (
       }
 
       venueSprite.main = Sprite.from(comm.canvas);
-      venueSprite.main.anchor.set(0.5);
+      if (replicatedVenue.data.withoutPlate) {
+        // 1 - 0.5 / ((comm.canvas.height * 2) / comm.canvas.width)
+        venueSprite.main.anchor.set(0.5, 0.5);
+      } else {
+        venueSprite.main.anchor.set(0.5);
+      }
       venueSprite.addChild(venueSprite.main);
       return Promise.resolve();
     })
