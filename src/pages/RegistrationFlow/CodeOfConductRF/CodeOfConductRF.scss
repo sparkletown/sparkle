@@ -1,0 +1,28 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+$principles-width: 40em;
+$subtitle-width: 35em;
+
+.CodeOfConductRF {
+  .DivRF--subtitle {
+    width: $subtitle-width;
+  }
+
+  &__bullets {
+    width: $principles-width;
+    align-items: flex-start !important;
+    text-align: left;
+  }
+
+  .CheckboxWrapRF {
+    margin: $reg-flow-element-distance / 2;
+    padding: $reg-flow-element-distance / 2;
+  }
+
+  .CheckboxWrapRF__error {
+    text-align: left;
+    padding-left: $reg-flow-checkbox-size + $reg-flow-element-distance / 2;
+    width: 100%;
+  }
+}

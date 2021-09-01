@@ -1,0 +1,17 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.ConfirmationModalRF {
+  .modal-content {
+    background-color: $reg-flow-color--transparent;
+    backdrop-filter: $reg-flow-blur--md;
+  }
+
+  * {
+    text-align: center;
+  }
+
+  .ButtonRF {
+    min-width: unset;
+  }
+}

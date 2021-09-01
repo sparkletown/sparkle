@@ -1,57 +1,133 @@
-.full-page-container.art-piece-container {
-  padding: 0;
+@import "scss/constants";
 
-  .content {
-    display: flex;
-    padding-left: 70px;
-    flex-grow: 1;
-    flex-direction: column;
-    overflow: auto;
+$info-bar-width: 96px;
+$chat-bar-width: 96px;
+$chat-wrapper-height: 260px;
+
+.ArtPiece {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+
+  &__title-sidebar {
+    font-size: $font-size--xl;
+    font-weight: $font-weight--700;
   }
 
-  .aspect-container {
+  &__short-description-sidebar {
+    font-size: $font-size--lg;
+    font-weight: $font-weight--700;
+  }
+
+  &__rendered-markdown {
+    font-size: $font-size--md;
+  }
+
+  &__sparkle-fairies {
+    position: fixed;
+    top: 250px;
+    left: 0;
+  }
+
+  &__content {
+    height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 1;
+    margin: 0;
+    padding: 0 $chat-bar-width 0 $info-bar-width;
     overflow: hidden;
-    position: relative;
+    align-content: center;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    // Default aspect ratio 2.39:1
-    padding-top: (1/2.39) * 100%;
+  &__aspect-container {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    padding: $spacing--xl;
+    overflow: auto;
+    @include gray-scrollbar();
+    max-width: 100%;
+    max-height: 100%;
+  }
 
-    &.aspect-16-9 {
-      padding-top: (9/16) * 100%;
+  &__youtube-video {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__video-chat-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: $spacing--xs;
+    margin: 0;
+    padding: 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+    height: $chat-wrapper-height;
+    @include gray-scrollbar();
+
+    .participant-container {
+      width: unset;
+      flex-grow: 0;
+      flex-shrink: 0;
+
+      .participant {
+        max-width: 200px;
+        max-height: 200px;
+        height: 100%;
+        padding: 0;
+        margin: 0;
+
+        display: flex;
+        border-radius: $border-radius--xl;
+
+        .mirrored {
+          transform: scale(-1, 1);
+        }
+
+        .profile-icon {
+          cursor: pointer;
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          border-radius: 188%;
+          z-index: z(global-profile-icon);
+        }
+
+        .mute-container,
+        .mute-other-container {
+          cursor: pointer;
+          position: absolute;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+        }
+
+        .mute-container {
+          bottom: $spacing--md;
+          left: 0;
+          right: 0;
+        }
+
+        .mute-other-container {
+          top: $spacing--md;
+          right: $spacing--md;
+        }
+
+        video {
+          border-radius: $border-radius--xl;
+          width: 100%;
+          display: block;
+          margin: 0 auto;
+        }
+      }
     }
   }
-
-  .youtube-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .video-chat-wrapper {
-    display: grid;
-    margin: 1rem 0;
-    grid-template-columns: repeat(15, 1fr);
-    grid-gap: 1rem;
-  }
-  .title-sidebar {
-    font-size: 22px;
-    font-weight: bold;
-  }
-  .short-description-sidebar {
-    font-size: 15px;
-    font-weight: bold;
-  }
-}
-.sparkle-fairies {
-  position: fixed;
-  top: 250px;
-  left: 0px;
-}
-.donate-popup {
-  position: fixed;
-  top: 370px;
-  left: 0px;
 }

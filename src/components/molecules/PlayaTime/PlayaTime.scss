@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+
+.PlayaTime {
+  &__container {
+    margin-left: $spacing--lg;
+    font-size: $font-size--sm;
+    line-height: $font-size--md;
+    color: opaque-white(0.8);
+  }
+
+  &__time {
+    font-weight: $font-weight--700;
+  }
+}

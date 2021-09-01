@@ -1,0 +1,29 @@
+@import "scss/constants.scss";
+@import "../constants-rf";
+
+.DivRF {
+  line-height: $font-size--xl;
+  font-size: $font-size--md;
+  font-weight: $font-weight--400;
+  font-style: normal;
+  letter-spacing: 0;
+
+  &--title {
+    line-height: $reg-flow-font-size--page-title + $spacing--xs;
+    font-size: $reg-flow-font-size--page-title;
+    font-weight: $font-weight--900;
+  }
+
+  &--subtitle {
+    line-height: $reg-flow-font-size--page-subtitle + $spacing--xs;
+    font-size: $reg-flow-font-size--page-subtitle;
+  }
+
+  &--dim {
+    opacity: 0.5;
+  }
+
+  &--secondary {
+    opacity: 0.8;
+  }
+}

@@ -3,17 +3,21 @@
 
 .NavSearchBar {
   position: relative;
-  width: $search-dropdown-width;
+  margin-left: $margin-right--navbar-links;
   margin-right: $margin-right--navbar-links;
+  flex: 1;
+  max-width: $search-dropdown-width;
 
   &__search-input {
     text-align: left;
-    font-size: 0.9em;
+    font-size: $font-size--sm;
+    height: $spacing--xxl;
   }
 
   &__clear-search {
     cursor: pointer;
     opacity: 0.4;
+    width: $spacing--xl;
 
     &:hover {
       opacity: 0.6;
