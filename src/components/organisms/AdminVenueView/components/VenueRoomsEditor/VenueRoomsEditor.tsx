@@ -21,6 +21,8 @@ import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
 
+import { CenterContent } from "components/atoms/CenterContent";
+
 import "./VenueRoomsEditor.scss";
 
 const styles: React.CSSProperties = {
@@ -49,7 +51,7 @@ interface PortalSize {
 export interface VenueRoomsEditorProps {
   snapToGrid?: boolean;
   roomIcons?: RoomIcon[];
-  backgroundImage: string;
+  backgroundImage?: string;
   iconImageStyle?: CSSProperties; // This is not being used ATM
   draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   roomIconsMap?: RoomIconsMap;
@@ -61,7 +63,7 @@ export interface VenueRoomsEditorProps {
   onMove?: (position: Position) => void;
   otherIconsStyle?: CSSProperties;
   rounded?: boolean;
-  backgroundImageStyle?: CSSProperties;
+  backgroundImageClassName?: string;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   rooms: RoomData_v2[];
@@ -78,7 +80,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   interactive,
   resizable,
   rounded,
-  backgroundImageStyle,
+  backgroundImageClassName,
   containerStyle,
   lockAspectRatio,
   rooms,
@@ -297,14 +299,19 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
         handleHeight
         onResize={(width, height) => setImageDims({ width, height })}
       />
-      <img
-        alt="draggable background "
-        style={{
-          width: "100%",
-          ...backgroundImageStyle,
-        }}
-        src={backgroundImage}
-      />
+      {!backgroundImage ? (
+        <div className="Container__background-image-placeholder">
+          <CenterContent>
+            Pick a background for your map{"\n"}(2000x1200px recommended size)
+          </CenterContent>
+        </div>
+      ) : (
+        <img
+          alt="draggable background "
+          className={`Container__background-image ${backgroundImageClassName}`}
+          src={backgroundImage}
+        />
+      )}
 
       {backgroundImage && renderRoomsPreview}
     </div>

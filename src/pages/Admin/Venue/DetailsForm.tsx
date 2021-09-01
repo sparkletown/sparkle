@@ -21,6 +21,8 @@ import {
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -133,13 +135,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     },
     defaultValues: {
       ...defaultValues,
+      logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
+      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
       parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
     },
   });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
-  const values = watch();
 
   const [formError, setFormError] = useState(false);
 
@@ -303,7 +306,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               setValue={setValue}
               state={state}
               previous={previous}
-              values={values}
               sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
@@ -379,26 +381,23 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   );
 };
 
-interface DetailsFormLeftProps {
+interface DetailsFormLeftProps
+  extends Pick<
+    ReturnType<typeof useForm>,
+    "register" | "watch" | "control" | "handleSubmit" | "setError" | "setValue"
+  > {
   venueId?: string;
   sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
-  values: FormValues;
   isSubmitting: boolean;
-  register: ReturnType<typeof useForm>["register"];
-  watch: ReturnType<typeof useForm>["watch"];
-  control: ReturnType<typeof useForm>["control"];
   onSubmit: (
     vals: Partial<FormValues>,
     userStatuses: UserStatus[],
     showUserStatuses: boolean
   ) => Promise<void>;
-  handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
-  setError: ReturnType<typeof useForm>["setError"];
   editing?: boolean;
-  setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
   setFormError: (value: boolean) => void;
 }
@@ -408,7 +407,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   sovereignVenue,
   editing,
   state,
-  values,
   isSubmitting,
   register,
   watch,
@@ -421,6 +419,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   formError,
   setFormError,
 }) => {
+  const values = watch();
+
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -525,7 +525,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         image={values.bannerImageFile}
         remoteUrlInputName={"bannerImageUrl"}
         remoteImageUrl={values.bannerImageUrl}
-        ref={register}
+        register={register}
+        setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
       />
     </div>
@@ -536,7 +537,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
-        ref={register}
+        register={register}
+        setValue={setValue}
         image={values.logoImageFile}
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}
