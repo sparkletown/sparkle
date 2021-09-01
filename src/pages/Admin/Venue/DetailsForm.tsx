@@ -448,7 +448,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         image={values.bannerImageFile}
         remoteUrlInputName={"bannerImageUrl"}
         remoteImageUrl={values.bannerImageUrl}
-        ref={register}
+        register={register}
+        setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
       />
     </div>
@@ -459,7 +460,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
-        ref={register}
+        register={register}
+        setValue={setValue}
         image={values.logoImageFile}
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}

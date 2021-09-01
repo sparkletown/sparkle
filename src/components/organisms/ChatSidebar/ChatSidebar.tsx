@@ -24,6 +24,8 @@ import {
 
 import { HelpCenter } from "components/organisms/HelpCenter";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import { PrivateChats, VenueChat } from "./components";
 
 import "./ChatSidebar.scss";
@@ -154,26 +156,26 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           <>
             {!isShownHelpCenter && (
               <div className="chat-sidebar__tabs" role="tablist">
-                <button
-                  role="tab"
-                  id={venueTabId}
-                  aria-label={venueChatTabTitle}
-                  aria-selected={isVenueChat}
+                <ButtonNG
                   className={venueChatTabStyles}
                   onClick={selectVenueChat}
+                  aria-label={venueChatTabTitle}
+                  aria-selected={isVenueChat}
+                  role="tab"
+                  iconName={faCommentDots}
                 >
                   {venueChatTabTitle}
-                </button>
-                <button
+                </ButtonNG>
+                <ButtonNG
                   role="tab"
-                  id={privateTabId}
                   aria-label={privateChatTabTitle}
                   aria-selected={isPrivateChat}
                   className={privateChatTabStyles}
                   onClick={selectPrivateChat}
+                  iconName={faEnvelope}
                 >
                   {privateChatTabTitle}
-                </button>
+                </ButtonNG>
               </div>
             )}
           </>
