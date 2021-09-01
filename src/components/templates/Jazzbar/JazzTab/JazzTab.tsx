@@ -56,7 +56,8 @@ interface JazzProps {
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
+
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
@@ -180,6 +181,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <TableHeader
           seatedAtTable={seatedAtTable}
           setSeatedAtTable={setSeatedAtTable}
+          venueId={venue.id}
           venueName={venue.name}
           tables={jazzbarTables}
         />
@@ -263,6 +265,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
           venueName={venue.name}
+          venueId={venue.id}
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}

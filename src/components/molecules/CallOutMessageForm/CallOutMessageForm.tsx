@@ -1,6 +1,6 @@
 import React from "react";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -17,7 +17,7 @@ interface PropsType {
 // eslint-disable-next-line react/display-name
 const CallOutMessageForm = React.forwardRef<HTMLInputElement, PropsType>(
   ({ onSubmit, placeholder, isMessageToTheBandSent }, ref) => {
-    const venue = useSelector(currentVenueSelectorData);
+    const venue = useSelector(currentVenueSelector);
     return (
       <form onSubmit={onSubmit} className="form-message">
         <input name="messageToTheBand" placeholder={placeholder} ref={ref} />
