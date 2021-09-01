@@ -18,11 +18,11 @@ import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
-import { BarrelComponent } from "../components/BarrelComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
 import { EllipseComponent } from "../components/EllipseComponent";
+import { FirebarrelComponent } from "../components/FirebarrelComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
@@ -42,8 +42,8 @@ import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Avatar } from "../graphics/Avatar";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { JoystickNode } from "../nodes/JoystickNode";
 import { KeyboardNode } from "../nodes/KeyboardNode";
 import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
@@ -192,6 +192,22 @@ export default class EntityFactory {
       return;
     }
     nodelist.head.entity.add(comm ? comm : nodelist.head.keyboard);
+  }
+
+  public createShout(x: number, y: number, text: string): Entity {
+    console.log("CREATE SHOUT");
+    // TODO refactoring
+    const spriteComponent = new SpriteComponent();
+    const view = new Sprite();
+    view.position.set(x, y);
+
+    const entity = new Entity()
+      .add(new DeadComponent(100))
+      .add(new BubbleComponent(text))
+      .add(new PositionComponent(x, y))
+      .add(spriteComponent);
+    this.engine.addEntity(entity);
+    return entity;
   }
 
   public createBubble(userId: string, text: string): Entity | null {
@@ -491,7 +507,7 @@ export default class EntityFactory {
         .getStore()
         .dispatch(setAnimateMapFireBarrel(firebarrelId));
 
-      playerNode.entity.add(firebarrelNode.barrel);
+      playerNode.entity.add(firebarrelNode.firebarrel);
       playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);
 
       const x1 = firebarrelNode.position.x;
@@ -523,7 +539,7 @@ export default class EntityFactory {
     if (!playerNode) {
       return;
     }
-    const barrelComponent = playerNode.entity.remove(BarrelComponent);
+    const barrelComponent = playerNode.entity.remove(FirebarrelComponent);
     playerNode.player.fsm.changeState(playerNode.player.FLYING);
     playerNode.entity.add(playerNode.player);
 
@@ -595,10 +611,12 @@ export default class EntityFactory {
       playerEntity?.remove(ViewportFollowComponent);
   }
 
-  public getFirebarrelNode(id: string): BarrelNode | undefined {
-    const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
+  public getFirebarrelNode(id: string): FirebarrelNode | undefined {
+    const nodes: NodeList<FirebarrelNode> = this.engine.getNodeList(
+      FirebarrelNode
+    );
     for (let node = nodes.head; node; node = node.next) {
-      if (node.barrel.model.data.id === id) {
+      if (node.firebarrel.model.data.id === id) {
         return node;
       }
     }
