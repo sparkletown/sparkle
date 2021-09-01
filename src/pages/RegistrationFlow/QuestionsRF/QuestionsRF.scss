@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+@import "../constants-rf";
+
+.QuestionsRF {
+  label,
+  .DivRF {
+    margin: $reg-flow-element-distance;
+  }
+
+  textarea {
+    width: $reg-flow-input-width;
+    height: min-content;
+  }
+}

@@ -30,6 +30,8 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import InformationCard from "components/molecules/InformationCard";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 dayjs.extend(advancedFormat);
 
 type VenueLandingPageContentProps = {
@@ -106,8 +108,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
           // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
           // (!futureOrOngoingVenueEvents ||
           //   futureOrOngoingVenueEvents.length === 0) &&
-          <button
-            className="btn btn-primary btn-block btn-centered"
+          <ButtonNG
+            className="mod--margin-centered mod--margin-bottom-1rem"
+            variant="primary"
             onClick={onJoinClick}
           >
             Join the event
@@ -116,7 +119,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
                 Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
               </span>
             )}
-          </button>
+          </ButtonNG>
         )}
       </div>
 

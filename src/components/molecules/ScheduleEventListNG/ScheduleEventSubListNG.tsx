@@ -50,6 +50,11 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
       {hasEvents && (
         <div className="ScheduleEventSubListNG__title">{title}</div>
       )}
+      {hasEvents && (
+        <div className="ScheduleEventSubListNG__subtitle">
+          Times displayed below are your local time
+        </div>
+      )}
       {renderEvents}
       {shouldShowMoreEvents && (
         <div

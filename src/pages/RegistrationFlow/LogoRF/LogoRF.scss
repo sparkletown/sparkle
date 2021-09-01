@@ -1,0 +1,10 @@
+@import "scss/constants.scss";
+
+.LogoRF {
+  padding: 0;
+
+  &,
+  &__logo {
+    @include square-size(96px);
+  }
+}
