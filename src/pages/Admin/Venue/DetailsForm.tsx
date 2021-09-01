@@ -558,8 +558,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         Livestream URL, or embed URL, for people to view in your venue
       </div>
       <div className="input-title">
-        (Enter an embeddable URL link. You can edit this later so you can leave
-        a placeholder for now)
+        (Enter an embeddable URL link. For now there is a placeholder video, so
+        you can edit this later.)
       </div>
 
       {/* note: the default embed here is a how to embed presentation, and for the jazzbar it's the intro to sparkle video */}

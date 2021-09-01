@@ -53,7 +53,7 @@ const venueRooms: VenueRooms[] = [
     template: VenueTemplate.jazzbar,
   },
   {
-    text: "Burn Barrel",
+    text: "Burn Firebarrel",
     icon: RoomIconBurnBarrel,
     template: VenueTemplate.firebarrel,
   },
