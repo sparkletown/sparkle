@@ -151,7 +151,10 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         <span className={timeContainer}>
           {isCurrentEventLive
             ? "Live"
-            : formatTimeLocalised(eventStartTime(event))}
+            : formatTimeLocalised(eventStartTime(event)) + "-"}
+        </span>
+        <span className="ScheduleItemNG__until ScheduleItemNG__time--end">
+          {isCurrentEventLive && "until "}
         </span>
 
         <span className="ScheduleItemNG__date ScheduleItemNG__time--end">
