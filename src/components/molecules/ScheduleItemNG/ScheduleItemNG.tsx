@@ -174,13 +174,12 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       <div className="ScheduleItemNG__details">
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">
-          <span className="ScheduleItemNG__place--location">in</span>{" "}
           <span className="button--a" onClick={enterEventVenue}>
             {eventVenue?.name}
           </span>
           {eventRoom && (
             <>
-              {", "}
+              <span className="ScheduleItemNG__place--location"> in </span>
               <span className="button--a" onClick={enterRoom}>
                 {event.room}
               </span>
