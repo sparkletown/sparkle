@@ -9,7 +9,6 @@ import { JukeboxMessage, SendJukeboxMessage } from "types/jukebox";
 
 import {
   getBaseMessageToDisplay,
-  getMessageReplies,
   partitionMessagesFromReplies,
 } from "utils/chat";
 import { WithId } from "utils/id";
@@ -25,10 +24,16 @@ import { useUser } from "hooks/useUser";
 
 const noMessages: WithId<JukeboxMessage>[] = [];
 
-export const useJukeboxChat = (venueId?: string, tableId?: number) => {
-  const messagesToDisplay = useChatMessages(venueId, tableId);
+export const useJukeboxChat = ({
+  venueId,
+  tableId,
+}: {
+  venueId?: string;
+  tableId?: string;
+}) => {
+  const messagesToDisplay = useJukeboxMessages(venueId, tableId);
 
-  const { sendJukeboxMsg } = useJukeboxActions(venueId);
+  const { sendJukeboxMsg } = useJukeboxActions(venueId, tableId);
 
   return {
     messagesToDisplay,
@@ -36,22 +41,25 @@ export const useJukeboxChat = (venueId?: string, tableId?: number) => {
   };
 };
 
-const useJukeboxActions = (venueId?: string) => {
+const useJukeboxActions = (venueId?: string, tableId?: string) => {
   const { userId } = useUser();
 
   const sendJukeboxMsg: SendJukeboxMessage = useCallback(
     async ({ message, url }) => {
-      if (!venueId || !userId) return;
-
+      if (!venueId || !userId || !tableId) return;
       const processedMessage = buildJukeboxMessage<JukeboxMessage>({
         from: userId,
         text: message,
         url: url,
+        tableId,
       });
-
-      return sendJukeboxMessage({ venueId, message: processedMessage });
+      return sendJukeboxMessage({
+        venueId,
+        tableId,
+        message: processedMessage,
+      });
     },
-    [venueId, userId]
+    [venueId, userId, tableId]
   );
 
   return {
@@ -59,11 +67,11 @@ const useJukeboxActions = (venueId?: string) => {
   };
 };
 
-const useChatMessages = (venueId?: string, tableId?: number) => {
+const useJukeboxMessages = (venueId?: string, tableId?: string) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userId } = useUser();
 
-  useConnectVenueChatMessages(venueId, tableId);
+  useConnectVenueJukeboxMessages(venueId, tableId);
 
   const chatMessages =
     useSelector(jukeboxMessagesSelector, isEqual) ?? noMessages;
@@ -78,7 +86,7 @@ const useChatMessages = (venueId?: string, tableId?: number) => {
     [chatMessages, venueChatAgeThresholdSec]
   );
 
-  const { messages, allMessagesReplies } = useMemo(
+  const { messages } = useMemo(
     () => partitionMessagesFromReplies(filteredMessages),
     [filteredMessages]
   );
@@ -97,27 +105,14 @@ const useChatMessages = (venueId?: string, tableId?: number) => {
 
           if (!displayMessage) return undefined;
 
-          const messageReplies = getMessageReplies<JukeboxMessage>({
-            messageId: message.id,
-            allReplies: allMessagesReplies,
-          })
-            .map((reply) =>
-              getBaseMessageToDisplay<WithId<JukeboxMessage>>({
-                message: reply,
-                usersById: worldUsersById,
-                myUserId: userId,
-              })
-            )
-            .filter(isTruthy);
-
-          return { ...displayMessage, replies: messageReplies };
+          return { ...displayMessage };
         })
         .filter(isTruthy),
-    [userId, worldUsersById, messages, allMessagesReplies]
+    [userId, worldUsersById, messages]
   );
 };
 
-const useConnectVenueChatMessages = (venueId?: string, tableId?: number) => {
+const useConnectVenueJukeboxMessages = (venueId?: string, tableId?: string) => {
   useFirestoreConnect(
     venueId && tableId
       ? {

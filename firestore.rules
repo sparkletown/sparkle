@@ -49,6 +49,11 @@ service cloud.firestore {
         allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
           isUpdateRestrictedToField(request, 'deleted');
       }
+      match /jukeboxMessages/{restOfPath=**} {
+        allow read,create: if request.auth.uid != null;
+        allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
+          isUpdateRestrictedToField(request, 'deleted');
+      }
       match /access/{method} {
         allow read, write: if false;
       }

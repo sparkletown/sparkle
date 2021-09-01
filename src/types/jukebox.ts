@@ -4,6 +4,7 @@ export type JukeboxMessage = {
   from: string;
   text: string;
   url: string;
+  tableId: string;
   ts_utc: firebase.firestore.Timestamp;
 };
 

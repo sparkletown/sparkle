@@ -97,7 +97,10 @@ export const venueChatMessagesSelector: SparkleSelector<
 
 export const jukeboxMessagesSelector: SparkleSelector<
   WithId<JukeboxMessage>[] | undefined
-> = (state) => state.firestore.ordered.jukeboxMessages;
+> = (state) => {
+  // console.log('state', state.firestore)
+  return state.firestore.ordered.venueJukeboxMessages;
+};
 
 export const privateChatMessagesSelector: SparkleSelector<
   WithId<PrivateChatMessage>[] | undefined
