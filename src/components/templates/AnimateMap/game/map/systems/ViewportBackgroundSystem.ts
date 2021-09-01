@@ -19,10 +19,10 @@ import {
   ShaderDataProvider,
   staticLightData,
 } from "../graphics/shaders/StaticShaderData";
-import { BarrelNode } from "../nodes/BarrelNode";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 
 export class ViewportBackgroundSystem extends System {
-  private barrels?: NodeList<BarrelNode>;
+  private barrels?: NodeList<FirebarrelNode>;
 
   private viewport: Viewport;
   private staticLightManager: ShaderDataProvider;
@@ -68,7 +68,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   addToEngine(engine: Engine) {
-    this.barrels = engine.getNodeList(BarrelNode);
+    this.barrels = engine.getNodeList(FirebarrelNode);
     this.setup().then(() => {
       this.setupTree();
 
