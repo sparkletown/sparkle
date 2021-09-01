@@ -26,17 +26,13 @@ export const getUserLocationData = ({
   const userLocation: WithId<UserLocation> | undefined =
     worldUserLocationsById[user.id];
 
-  const userLastSeenIn =
-    Object.keys(userLocation.lastSeenIn)[0] &&
-    !!Object.keys(userLocation.lastSeenIn)[0].includes(roomName);
-  const userLastSeenLocation =
-    userLocation.lastSeenIn?.[venueName] ||
-    userLocation.lastSeenIn?.[roomName] ||
-    userLocation.lastSeenIn?.[location] ||
-    Object.values(userLocation.lastSeenIn)[0];
-  const isLocationMatch = userLastSeenIn && userLastSeenLocation;
+  const isLocationMatch =
+    userLocation.lastSeenIn === venueName ||
+    userLocation.lastSeenIn === roomName ||
+    userLocation.lastSeenIn === location;
+
   return {
     isLocationMatch,
-    userLastSeenLocation,
+    userLastSeenLocation: userLocation.lastSeenIn,
   };
 };

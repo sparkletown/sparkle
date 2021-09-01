@@ -68,7 +68,7 @@ export interface UserStatus {
 }
 
 export interface UserLocation {
-  lastSeenIn: { [key: string]: number };
+  lastSeenIn: string | null;
   lastSeenAt: number;
 }
 

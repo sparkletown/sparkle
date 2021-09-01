@@ -10,20 +10,20 @@ import { logEventGoogleAnalytics } from "./googleAnalytics";
 import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl } from "./url";
 
-export type LocationData = Record<string, number>;
+export type LocationData = string | null;
 
 export interface UpdateLocationDataProps {
   userId: string;
-  newLocationData: LocationData;
+  newLocation: LocationData;
 }
 
 export const updateLocationData = ({
   userId,
-  newLocationData,
+  newLocation,
 }: UpdateLocationDataProps) => {
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastSeenIn: newLocationData,
+    lastSeenIn: newLocation,
   });
 };
 
@@ -40,9 +40,7 @@ export const setLocationData = ({
 }: SetLocationDataProps) => {
   updateLocationData({
     userId,
-    newLocationData: {
-      [locationName]: getCurrentTimeInMilliseconds(),
-    },
+    newLocation: locationName,
   });
 };
 
@@ -59,18 +57,16 @@ export const updateCurrentLocationData = ({
   userId,
   profileLocationData,
 }: UpdateCurrentLocationDataProps) => {
-  const [locationName] = Object.keys(profileLocationData);
-
   updateLocationData({
     userId,
-    newLocationData: { [locationName]: getCurrentTimeInMilliseconds() },
+    newLocation: profileLocationData,
   });
 };
 
 // TODO: refactor how user location updates works here?
 //   Called from VenuePage useEffect + onBeforeUnloadHandler
 export const clearLocationData = (userId: string) => {
-  updateLocationData({ userId, newLocationData: {} });
+  updateLocationData({ userId, newLocation: null });
 };
 
 export interface EnterExternalRoomProps {

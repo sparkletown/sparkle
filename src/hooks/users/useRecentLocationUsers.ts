@@ -1,15 +1,8 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query/react";
-
-import { useWorldUsersQueryState } from "store/api";
-
 import { User, UserLocation } from "types/User";
 
 import { WithId } from "utils/id";
-import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
-
-import { useWorldUsersContext } from "./useWorldUsers";
+import { useRecentWorldUsers } from "./useRecentWorldUsers";
 
 export interface RecentLocationUsersData {
   isRecentLocationUsersLoaded: boolean;
@@ -33,41 +26,21 @@ export const useRecentLocationUsers = ({
 }: {
   locationName?: string;
 }): RecentLocationUsersData => {
-  const lastSeenThreshold = useUserLastSeenThreshold();
-  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
   const {
-    isSuccess: isRecentLocationUsersLoaded,
-    recentLocationUsers,
-  } = useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
-    selectFromResult: ({
-      isSuccess,
-      data: { worldUsers, worldUserLocationsById } = {},
-    }) => {
-      if (!worldUsers || !worldUserLocationsById || !locationName)
-        return { isSuccess, recentLocationUsers: [] };
+    recentWorldUsers,
+    worldUserLocationsById,
+    isRecentWorldUsersLoaded,
+  } = useRecentWorldUsers();
 
-      const recentLocationUsers = worldUsers.filter((user) => {
-        const userLocation: WithId<UserLocation> | undefined =
-          worldUserLocationsById[user.id];
+  const recentLocationUsers = recentWorldUsers.filter((user) => {
+    const userLocation: WithId<UserLocation> | undefined =
+      worldUserLocationsById[user.id];
 
-        return (
-          userLocation.lastSeenIn?.[locationName] &&
-          normalizeTimestampToMilliseconds(
-            userLocation.lastSeenIn[locationName]
-          ) > lastSeenThreshold
-        );
-      });
-
-      return {
-        isSuccess,
-        recentLocationUsers,
-      };
-    },
+    return userLocation && userLocation.lastSeenIn === locationName;
   });
 
   return {
-    isRecentLocationUsersLoaded,
+    isRecentLocationUsersLoaded: isRecentWorldUsersLoaded,
     recentLocationUsers,
   };
 };

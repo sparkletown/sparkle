@@ -10,7 +10,7 @@ import { QuestionsFormData } from "./Questions";
 
 type LocationUpdateData = {
   lastSeenAt: number;
-  lastSeenIn: { [key: string]: number } | null;
+  lastSeenIn: string | null;
 };
 
 type KidsModeUpdateData = {
