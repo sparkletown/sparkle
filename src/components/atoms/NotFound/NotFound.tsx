@@ -26,7 +26,7 @@ export const NotFound: React.FC<NotFoundProps> = ({ fullScreen }) => {
       <div className="NotFound__message-container">
         <img
           className="NotFound__logo"
-          alt="sparkle logo"
+          alt="Sparkle logo"
           src={SPARKLEVERSE_LANDSCAPE}
         />
         <img
