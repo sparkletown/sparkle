@@ -51,7 +51,8 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
     "ArtPiece__aspect-container": true,
     "mod--sixteen-nine": videoAspect === VideoAspectRatio.sixteenNine,
     "mod--anamorphic": videoAspect === VideoAspectRatio.anamorphic,
-    "mod--width-100pp": videoAspect === VideoAspectRatio.fullWidth,
+    "mod--width-100pp":
+      !videoAspect || videoAspect === VideoAspectRatio.fullWidth,
     [customAspect]: true,
   });
 
