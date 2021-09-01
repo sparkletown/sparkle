@@ -4,10 +4,11 @@ import classNames from "classnames";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import {
-  // DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
+  MUSIC_VENUE_FIRST_TABLE_NAME,
 } from "settings";
 
 import { updateIframeUrl } from "api/venue";
@@ -82,7 +83,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
-
+  console.log(seatedAtTable);
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
@@ -129,7 +130,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const shouldShowReactions =
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
 
-  // const shouldShowJukebox = (seatedAtTable && venue.enableJukebox) ?? DEFAULT_ENABLE_JUKEBOX;
+  const shouldShowJukebox =
+    (seatedAtTable &&
+      venue.enableJukebox &&
+      seatedAtTable === MUSIC_VENUE_FIRST_TABLE_NAME) ??
+    DEFAULT_ENABLE_JUKEBOX;
 
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
@@ -181,7 +186,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <div className="video-container">
           {!venue.hideVideo && (
             <>
-              {seatedAtTable ? null : (
+              {
                 <div className="iframe-container">
                   {iframeUrl ? (
                     <iframe
@@ -198,7 +203,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     </div>
                   )}
                 </div>
-              )}
+              }
 
               {shouldShowReactions && (
                 <div className="actions-container">
@@ -221,13 +226,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 </div>
               )}
 
-              <Jukebox
-                recentVenueUsers={recentVenueUsers}
-                defaultIframe={venue.iframeUrl}
-                seatedAtTable={seatedAtTable}
-                updateIframeUrl={changeIframeUrl}
-                iframeUrl={iframeUrl}
-              />
+              {shouldShowJukebox && (
+                <Jukebox
+                  recentVenueUsers={recentVenueUsers}
+                  updateIframeUrl={changeIframeUrl}
+                />
+              )}
 
               {!seatedAtTable && (
                 <TablesControlBar

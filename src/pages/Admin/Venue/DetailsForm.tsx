@@ -872,6 +872,17 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderJukeboxToggle = () => {
+    const isJazzbar = templateID === VenueTemplate.jazzbar;
+
+    return (
+      <div className={`toggle-room DetailsForm${isJazzbar ? "" : "--hidden"}`}>
+        <h4 className="italic input-header">Enable Jukebox</h4>
+        <Toggler name="enableJukebox" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -1052,6 +1063,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        {renderJukeboxToggle()}
 
         <UserStatusManager
           venueId={venueId}
