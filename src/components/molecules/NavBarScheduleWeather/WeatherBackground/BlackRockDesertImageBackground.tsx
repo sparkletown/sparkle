@@ -6,7 +6,7 @@ import { ContainerClassName } from "types/utility";
 
 import { usePlayaTime } from "components/molecules/PlayaTime/usePlayaTime";
 
-import "./BlackRockWeatherBackground.scss";
+import "components/molecules/NavBarScheduleWeather/WeatherBackground/BlackRockDesertImageBackground.scss";
 
 const PART_OF_DAY = ["night", "morning", "day", "evening"];
 const PART_OF_DAY_LENGTH = 24 / PART_OF_DAY.length;
@@ -25,7 +25,7 @@ const getCurrentImageName = (playaTimeHour: number) => {
   return `${PART_OF_DAY[partOfDayIndex]}${partOfDaySubIndex}`;
 };
 
-export const BlackRockWeatherBackground: React.FC<
+export const BlackRockDesertImageBackground: React.FC<
   PropsWithChildren<ContainerClassName>
 > = ({ children, containerClassName }) => {
   const playaTime = usePlayaTime();
@@ -42,7 +42,7 @@ export const BlackRockWeatherBackground: React.FC<
   return (
     <div
       className={classNames(
-        `BlackRockWeatherBackground--${imageName}`,
+        `BlackRockDesertImageBackground--${imageName}`,
         containerClassName
       )}
     >

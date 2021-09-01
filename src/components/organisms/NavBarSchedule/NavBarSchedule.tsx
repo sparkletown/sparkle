@@ -29,6 +29,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
+import { NavBarBanner } from "components/molecules/NavBarScheduleWeather";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
@@ -267,7 +268,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        {/* <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" /> */}
+        <NavBarBanner containerClassName="NavBarSchedule--end-to-end" />
         <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
           {weekdays}
         </ul>
