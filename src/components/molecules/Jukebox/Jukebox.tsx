@@ -93,6 +93,10 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
     <>
       <div className="Jukebox__container">
         <div className="Jukebox__chat">
+          <span className="Jukebox__chat-messages">
+            When you paste a link here, it changes what people see in the box
+            above. Be respectful!
+          </span>
           {filteredMessages?.map((msg, index) => (
             <span key={`${msg}${index}`} className="Jukebox__chat-messages">
               {msg.author.partyName} changed video source to {msg.text}
