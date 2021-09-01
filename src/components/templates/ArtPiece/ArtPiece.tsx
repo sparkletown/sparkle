@@ -1,4 +1,5 @@
 import React from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { IFRAME_ALLOW } from "settings";
@@ -19,25 +20,42 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 
 import "./ArtPiece.scss";
 
+const DECLARATIVE_ASPECT_RATIOS = [
+  `${VideoAspectRatio.sixteenNine}`,
+  `${VideoAspectRatio.anamorphic}`,
+  `${VideoAspectRatio.fullWidth}`,
+];
+
+const filterAspectRatioProperty: (candidate?: string) => string = (candidate) =>
+  candidate && !DECLARATIVE_ASPECT_RATIOS.includes(candidate) ? candidate : "";
+
 export interface ArtPieceProps {
   venue: WithId<GenericVenue>;
 }
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
-  if (!venue) return <Loading label="Loading..." />;
+  // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
+  const { name, host, config, showRangers, iframeUrl, videoAspect } =
+    venue ?? {};
 
-  const { name, host, config, showRangers, iframeUrl, videoAspect } = venue;
   const landingPageConfig = config?.landingPageConfig;
   const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
+
+  const filteredAspect = filterAspectRatioProperty(videoAspect);
+  const customAspect = useCss({
+    "aspect-ratio": `${filteredAspect}`,
+  });
 
   // NOTE: useful if some UI element with multiple options or free input is added for aspect ratio
   const aspectContainerClasses = classNames({
     "ArtPiece__aspect-container": true,
     "mod--sixteen-nine": videoAspect === VideoAspectRatio.sixteenNine,
     "mod--anamorphic": videoAspect === VideoAspectRatio.anamorphic,
-    // @debt add useCss to set the aspect-ratio CSS property to the custom value instead of this purely informative class
-    [`ArtPiece__video-aspect--${videoAspect}`]: videoAspect,
+    "mod--width-100pp": videoAspect === VideoAspectRatio.fullWidth,
+    [customAspect]: true,
   });
+
+  if (!venue) return <Loading label="Loading..." />;
 
   return (
     <div className="ArtPiece">
