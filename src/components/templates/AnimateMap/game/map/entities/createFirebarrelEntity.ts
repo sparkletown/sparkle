@@ -118,7 +118,7 @@ export const createFirebarrelEntity = (
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
 
-  const shouterTimeOut = 250 * 6 + Math.random() * 120;
+  const shouterTimeOut = 250 * 600 + Math.random() * 120;
   const shouterCurrentTime = shouterTimeOut * Math.random();
   const shouter = new FirebarrelShouter(shouterTimeOut, shouterCurrentTime);
   const barrelComponent = new FirebarrelComponent(barrel, fsm);
