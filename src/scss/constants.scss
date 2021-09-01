@@ -68,6 +68,7 @@ $map-sidebar-width: 20%;
 $chat-sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
+$reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
 $admin-spaces-sidebar-width: 20%;
@@ -237,28 +238,6 @@ $z-layers: (
   @return 0 10px 30px 0 rgba($black, $transparency);
 }
 
-@mixin scrollbar {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
-  }
-}
-
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
 @mixin line-clamp($line-count: 1) {
   display: -webkit-box;
@@ -289,5 +268,49 @@ $z-layers: (
   &:hover {
     color: $hover-color;
     text-decoration: underline $hover-color;
+  }
+}
+
+// @debt use only one scrollbar mixin (if two different styles are needed, add variables)
+@mixin scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba($black, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($white, 0.5);
+  }
+}
+
+@mixin gray-scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: $border-radius--xs;
+    background-color: $black;
+  }
+
+  &::-webkit-scrollbar {
+    @include square-size($spacing--sm);
+    background-color: opaque-black(0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $border-radius--xs;
+    background-color: opaque-white(0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: opaque-white(0.5);
   }
 }
