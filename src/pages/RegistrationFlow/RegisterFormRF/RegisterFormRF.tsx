@@ -2,8 +2,9 @@ import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { getDay, getMonth, getYear } from "date-fns";
+import { getYear } from "date-fns";
 import firebase from "firebase/app";
+import { pick } from "lodash";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
@@ -83,9 +84,6 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
-  const now = new Date();
-  const currentYear = getYear(now);
-
   const {
     register,
     handleSubmit,
@@ -97,11 +95,6 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
   } = useForm<RegisterFormRfData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
-    defaultValues: {
-      day: `${getDay(now)}`,
-      month: `${getMonth(now)}`,
-      year: `${currentYear}`,
-    },
   });
 
   const [{ loading }, onSubmit] = useAsyncFn(
@@ -332,16 +325,10 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
                     required: true,
                     max: 12,
                     min: 1,
-                    validate: () => {
-                      const { day, month, year } = getValues();
-                      const result = validateDateOfBirthInfo({
-                        day,
-                        month,
-                        year,
-                      });
-                      result && clearError(["day", "month", "year"]);
-                      return result;
-                    },
+                    validate: () =>
+                      validateDateOfBirthInfo(
+                        pick(getValues(), ["day", "month", "year"])
+                      ),
                   })}
                 />
               </label>
@@ -364,16 +351,10 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
                     required: true,
                     max: 31,
                     min: 1,
-                    validate: () => {
-                      const { day, month, year } = getValues();
-                      const result = validateDateOfBirthInfo({
-                        day,
-                        month,
-                        year,
-                      });
-                      result && clearError(["day", "month", "year"]);
-                      return result;
-                    },
+                    validate: () =>
+                      validateDateOfBirthInfo(
+                        pick(getValues(), ["day", "month", "year"])
+                      ),
                   })}
                 />
               </label>
@@ -397,18 +378,12 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
                     required: true,
                     maxLength: 4,
                     minLength: 4,
-                    max: currentYear,
+                    max: getYear(new Date()),
                     min: 1900,
-                    validate: () => {
-                      const { day, month, year } = getValues();
-                      const result = validateDateOfBirthInfo({
-                        day,
-                        month,
-                        year,
-                      });
-                      result && clearError(["day", "month", "year"]);
-                      return result;
-                    },
+                    validate: () =>
+                      validateDateOfBirthInfo(
+                        pick(getValues(), ["day", "month", "year"])
+                      ),
                   })}
                 />
               </label>
@@ -464,7 +439,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
           type="submit"
           disabled={!formState.isValid || loading}
           variant="primary"
-          loading={loading}
+          loading={formState.isSubmitting || loading}
         >
           Create account
         </ButtonRF>
