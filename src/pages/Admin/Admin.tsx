@@ -20,14 +20,14 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { DEFAULT_VENUE, SPARKLEVERSE_ITY } from "settings";
+import { DEFAULT_VENUE, SPARKLEVERSEITY_URL } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { getExtraLinkProps, venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -125,7 +125,7 @@ const VenueList: React.FC<VenueListProps> = ({
         <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
-        <a href={SPARKLEVERSE_ITY} target="_blank" rel="noreferrer">
+        <a href={SPARKLEVERSEITY_URL} {...getExtraLinkProps(true)}>
           SparkleVersity Tutorials & Creator Guides
         </a>
       </div>
