@@ -5,34 +5,31 @@ $tab-item-height: 35px;
 $tab-item-image-size: 100px;
 $tab-item-room-height: 170px;
 $tab-item-room-width: 180px;
-$background-image: var(--background-image);
 
 // hide landing page content
 .venue-entrance-experience-container {
-  height: 0px;
+  height: 0;
 }
 
 .EmergencyView {
-  width: 100%;
-  height: auto;
   background-color: opaque-black(0.8);
-  position: relative;
   display: flex;
   flex-direction: column;
   z-index: z(emergency-content);
-  height: 100%;
   position: absolute;
   height: calc(100vh - #{$reserved-page-height});
   width: 100%;
 
+  overflow: auto;
+  @include gray-scrollbar();
+
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+
   &__main {
-    margin-bottom: $spacing--xxl * 2;
     margin-top: -($spacing--xxl * 2);
     padding: $spacing--xxl * 2 $tab-item-height 0px $tab-item-height;
-    background-image: $background-image;
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: top left;
   }
 
   &__weekdays {
