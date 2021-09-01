@@ -33,11 +33,9 @@ const auth = require("./auth");
 const stats = require("./stats");
 const venue = require("./venue");
 const video = require("./video");
-const openWeatherMap = require("./openweathermap");
 
 exports.access = access;
 exports.auth = auth;
 exports.stats = stats;
 exports.venue = venue;
 exports.video = video;
-exports.openweathermap = openWeatherMap;

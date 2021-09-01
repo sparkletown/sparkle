@@ -1,1 +1,1 @@
-export { NavBarScheduleWeather } from "./NavBarScheduleWeather";
+export { NavBarBanner } from "./NavBarBanner";

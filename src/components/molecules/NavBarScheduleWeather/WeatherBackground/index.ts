@@ -1,1 +1,1 @@
-export { BlackRockWeatherBackground } from "./BlackRockWeatherBackground";
+export { BlackRockDesertImageBackground } from "./BlackRockDesertImageBackground";

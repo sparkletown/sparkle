@@ -80,9 +80,5 @@ service cloud.firestore {
       allow read: if request.auth.uid != null;
       allow write: if false;
     }
-    match /weather/{docId} {
-      allow read: if true;
-      allow write: if false;
-    }
   }
 }
