@@ -561,12 +561,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         (Enter an embeddable URL link. You can edit this later so you can leave
         a placeholder for now)
       </div>
+
+      {/* note: the default embed here is a how to embed presentation, and for the jazzbar it's the intro to sparkle video */}
       <textarea
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        placeholder="https://youtu.be/embed/abcDEF987w"
+        value={
+          templateID === VenueTemplate.jazzbar
+            ? "https://player.vimeo.com/video/512606583?h=84853fbd28"
+            : "https://docs.google.com/presentation/d/e/2PACX-1vTeoZQSP2b4q4dMceEnm_fU1QaS4u5F_n1_EnZjjn-b7N91imfRbJaDX9w1aR0QS6G3NgnZcMTaMiq-/embed?start=false&loop=false&delayms=3000"
+        }
       />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
