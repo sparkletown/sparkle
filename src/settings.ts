@@ -61,6 +61,7 @@ export const HELP_CENTER_URL =
 export const VEST_RANGERS_URL = "https://multiverserangers.org/rangers911";
 export const VPLAYA_URL = "https://www.vplaya.info";
 
+export const DEFAULT_SCHEDULE_NAME = "Schedule";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
@@ -98,6 +99,7 @@ export const REFETCH_SCHEDULE_MS = 10 * ONE_MINUTE_MS; // 10 mins
 export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
 export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
 export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
+export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
@@ -120,9 +122,12 @@ export const EVENT_STATUS_REFRESH_MS = ONE_MINUTE_MS; // 1 min
 export const PLAYA_TIME_REFRESH_MS = ONE_MINUTE_MS / 2;
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
-export const MAX_IMAGE_FILE_SIZE_MB = 2;
-export const MAX_IMAGE_FILE_SIZE_MB_TEXT = `${MAX_IMAGE_FILE_SIZE_MB}MB`;
-export const MAX_IMAGE_FILE_SIZE_BYTES = MAX_IMAGE_FILE_SIZE_MB * 1024 * 1024;
+export const MAX_UPLOAD_IMAGE_FILE_SIZE_MB = 2;
+export const MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES =
+  MAX_UPLOAD_IMAGE_FILE_SIZE_MB * 1024 * 1024;
+export const MAX_SELECTABLE_IMAGE_FILE_SIZE_MB = 30;
+export const MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES =
+  MAX_SELECTABLE_IMAGE_FILE_SIZE_MB * 1024 * 1024;
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
@@ -769,6 +774,13 @@ export const FIREBASE_STORAGE_IMAGES_ORIGIN =
 export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
   "https://sparkle-burn-users.imgix.net/";
 
+// Helper values that can be safely used in places that might re-render but don't have useMemo/useCallback
+export const ALWAYS_EMPTY_OBJECT = {};
+Object.freeze(ALWAYS_EMPTY_OBJECT);
+export const ALWAYS_EMPTY_ARRAY = [];
+Object.freeze(ALWAYS_EMPTY_ARRAY);
+export const ALWAYS_NOOP_FUNCTION = () => {};
+Object.freeze(ALWAYS_NOOP_FUNCTION);
 export const BM_PARENT_ID = "playa";
 
 // NOTE: volume numbers are expressed in %, thus between 0 and 100

@@ -19,6 +19,8 @@ import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
+import { venueInsideUrl } from "utils/url";
+
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -137,7 +139,10 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     reValidateMode: "onChange",
     validationSchema: validationSchema,
     validationContext: { editing: !!editingRoom },
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      url: defaultValues.url ?? venueInsideUrl(venueId),
+    },
   });
 
   const { user } = useUser();
@@ -273,7 +278,8 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       remoteUrlInputName={"image_url"}
                       remoteImageUrl={values.image_url}
                       containerClassName="input-square-container"
-                      ref={register}
+                      register={register}
+                      setValue={setValue}
                       error={errors.image_file || errors.image_url}
                     />
                   </div>

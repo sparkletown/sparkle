@@ -9,7 +9,6 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import {
-  faBars,
   faExternalLinkAlt,
   faTicketAlt,
   faVolumeUp,
@@ -54,7 +53,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { PlayaTime } from "components/molecules/PlayaTime";
 import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
@@ -81,14 +79,6 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
-
-const MenuPopover = (
-  <Popover id="menu-popover">
-    <Popover.Content>
-      <MenuPopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -322,10 +312,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               ) : (
                 <div>{navbarTitle}</div>
               )}
-              <div className="NavBar__playa-info">
-                <PlayaTime />
-                <div className="NavBar__separator">-</div>
-                <VenuePartygoers />
+
+              <div className="navbar-links__simplified-view">
+                <a
+                  className="navbar-links__simplified-view-a"
+                  href={`/m/${venueId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <ButtonNG className="navbar-links__simplified-view-button">
+                    <span className="navbar-links__simplified-view-text">
+                      Simplified View &nbsp;
+                    </span>
+                    <FontAwesomeIcon icon={faExternalLinkAlt} />
+                  </ButtonNG>
+                </a>
               </div>
             </div>
 
@@ -333,20 +334,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                <div className="navbar-links__simplified-view">
-                  <a
-                    className="navbar-links__simplified-view-a"
-                    href={`/m/${venueId}`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <ButtonNG className="navbar-links__simplified-view-button">
-                      <span className="navbar-links__simplified-view-text">
-                        Simplified View &nbsp;
-                      </span>
-                      <FontAwesomeIcon icon={faExternalLinkAlt} />
-                    </ButtonNG>
-                  </a>
+                <div className="NavBar__playa-info">
+                  <PlayaTime />
+                  <div className="NavBar__separator">-</div>
+                  <VenuePartygoers />
                 </div>
                 <NavSearchBar venueId={venueId ?? ""} />
 
@@ -443,19 +434,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     size="small"
                   />
                 </div>
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={MenuPopover}
-                  rootClose={true}
-                >
-                  <ButtonNG
-                    className="NavBar__menu--link NavBar__menu-icon"
-                    iconOnly
-                    iconSize="1x"
-                    iconName={faBars}
-                  />
-                </OverlayTrigger>
               </div>
             )}
           </div>

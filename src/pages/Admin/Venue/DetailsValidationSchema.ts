@@ -2,10 +2,7 @@ import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
-  GIF_RESIZER_URL,
   IFRAME_TEMPLATES,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  MAX_IMAGE_FILE_SIZE_MB_TEXT,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_AUDITORIUM_COLUMNS_COUNT,
@@ -38,21 +35,11 @@ type ProfileQuestion = VenueInput["profile_questions"][number];
 type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
-  Yup.mixed<FileList>()
-    .test(
-      name,
-      "Image required",
-      (val: FileList) => !required || val.length > 0
-    )
-    .test(
-      name,
-      `File size limit is ${MAX_IMAGE_FILE_SIZE_MB_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
-      async (val?: FileList) => {
-        if (!val || val.length === 0) return true;
-        const file = val[0];
-        return file.size <= MAX_IMAGE_FILE_SIZE_BYTES;
-      }
-    );
+  Yup.mixed<FileList>().test(
+    name,
+    "Image required",
+    (val: FileList) => !required || val.length > 0
+  );
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
