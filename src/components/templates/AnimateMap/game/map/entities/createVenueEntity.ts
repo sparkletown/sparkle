@@ -121,8 +121,13 @@ export const createVenueEntity = (
   const sprite: Venue = new Venue();
   sprite.zIndex = -1;
   spriteComponent.view = sprite;
-  if (VENUE_TYPES_TO_DIM.includes(venue.data.venue?.template))
-    sprite.alpha = !venue.data.isLive && venue.data.countUsers === 0 ? 0.4 : 1;
+
+  if (
+    VENUE_TYPES_TO_DIM.includes(venue.data.venue?.template) &&
+    !venue.data.isLive &&
+    venue.data.countUsers === 0
+  )
+    sprite.alpha = 0.4;
 
   fsm
     .createState(venueComponent.WITHOUT_HALO)
