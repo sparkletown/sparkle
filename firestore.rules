@@ -65,6 +65,7 @@ service cloud.firestore {
       }
       match /firebarrels/{firebarrelId} {
         allow read: if request.auth.uid != null;
+        // @debt any user can set an empty arr
         allow create, update: if request.auth.uid != null && (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['connectedUsers']));
         allow delete: if false;
       }
