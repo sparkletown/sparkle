@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$header-height: 45px;
+$header-height: 50px;
 
 // NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
 $media-width--mobile-min: 768px;
@@ -32,12 +32,16 @@ $help-center-background-color: #232225;
     box-shadow: -10px 0 40px opaque-black(0.5);
   }
 
-  &__header {
-    height: $header-height;
+  &__header-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing--md;
+    position: absolute;
+    transform: translateX(-100%);
   }
 
   &__tabs {
-    height: 100%;
+    height: $header-height;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -85,58 +89,10 @@ $help-center-background-color: #232225;
     align-items: center;
   }
 
-  &__controller {
-    color: $white;
-    background-color: $secondary;
-    cursor: pointer;
-
-    border: none;
-    padding: 0 $spacing--lg;
-    height: $header-height;
-    border-radius: $border-radius--lg 0 0 $border-radius--lg;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-    top: 0;
-    transform: translateX(-100%);
-
-    &:hover {
-      background-color: $lighter-intermediate-grey;
-    }
-
-    svg:nth-child(2) {
-      margin-left: 2 * $spacing--xs;
-      margin-right: -1 * $spacing--xs;
-    }
-
-    &--new-message {
-      background-color: $red;
-      height: 12px;
-      width: 12px;
-      border: 2px solid $secondary;
-      position: absolute;
-      border-radius: $border-radius--max;
-      right: 6px;
-      bottom: 10px;
-    }
-  }
-
   &__tab-content {
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
-  }
-
-  &__private-chat {
-    margin-top: $spacing--xl * 2;
-  }
-
-  &__controller {
-    margin-top: $spacing--md;
-    min-width: 66px;
   }
 
   &--expanded &__controller {
