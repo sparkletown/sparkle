@@ -309,8 +309,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
           )}
         {!USE_CALENDAR_CONTROL && (
           <DivRF variant="secondary">
-            You need to be 18 years old to attend this event. Please confirm
-            your age.
+            This is an 18+ event, please confirm your date of birth to continue.
           </DivRF>
         )}
         {!USE_CALENDAR_CONTROL && (
@@ -323,7 +322,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
               }
             >
               <label>
-                <SpanRF>Month:</SpanRF>
+                <SpanRF>Month</SpanRF>
                 <input
                   className="RegisterFormRF__dob-month RegisterFormRF__dob-input"
                   name="month"
@@ -355,7 +354,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
               }
             >
               <label>
-                <SpanRF>Day:</SpanRF>
+                <SpanRF>Day</SpanRF>
                 <input
                   className="RegisterFormRF__dob-day RegisterFormRF__dob-input"
                   name="day"
@@ -388,7 +387,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
               }
             >
               <label>
-                <SpanRF>Year:</SpanRF>
+                <SpanRF>Year</SpanRF>
                 <input
                   className="RegisterFormRF__dob-year RegisterFormRF__dob-input"
                   name="year"
