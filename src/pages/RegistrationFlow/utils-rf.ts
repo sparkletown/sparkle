@@ -9,5 +9,21 @@ export const validateDateOfBirth: (stringDate: string) => boolean = (
   stringDate
 ) => {
   const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
-  return yearsDifference >= 18 && yearsDifference <= 100;
+  const result = yearsDifference >= 18 && yearsDifference <= 100;
+  return result;
+};
+
+export type DateOfBirthInfo = {
+  day: string;
+  month: string;
+  year: string;
+};
+
+export const validateDateOfBirthInfo: (values: DateOfBirthInfo) => boolean = (
+  info
+) => {
+  const now = new Date();
+  const dob = new Date(`${info.year}-${info.month}-${info.day}`);
+  const difference = differenceInYears(now, dob);
+  return Number.isSafeInteger(difference) && difference >= 18;
 };
