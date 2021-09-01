@@ -93,6 +93,7 @@ export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
 export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
 export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
+export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
