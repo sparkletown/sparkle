@@ -4,6 +4,7 @@ import {
   faChevronRight,
   faCommentDots,
   faEnvelope,
+  faPen,
   faQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +15,7 @@ import { ChatTypes } from "types/chat";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { openUrl } from "utils/url";
 
 import {
   useChatSidebarControls,
@@ -21,6 +23,8 @@ import {
 } from "hooks/chats/chatSidebar";
 
 import { HelpCenter } from "components/organisms/HelpCenter";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import { PrivateChats, VenueChat } from "./components";
 
@@ -56,6 +60,10 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     setShownHelpCenter(true);
     toggleSidebar();
   }, [toggleSidebar]);
+
+  const goToAdmin = useCallback(() => {
+    openUrl("/admin");
+  }, []);
 
   const handleSidebar = useCallback(() => {
     toggleSidebar();
@@ -133,30 +141,41 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           </button>
         )}
 
+        {!isShownHelpCenter && !isExpanded && (
+          <button
+            aria-label="Create space"
+            className="chat-sidebar__controller chat-sidebar__create-icon"
+            onClick={goToAdmin}
+          >
+            <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+            <FontAwesomeIcon icon={faPen} size="lg" />
+          </button>
+        )}
+
         {isExpanded && (
           <>
             {!isShownHelpCenter && (
               <div className="chat-sidebar__tabs" role="tablist">
-                <button
-                  role="tab"
-                  id={venueTabId}
-                  aria-label={venueChatTabTitle}
-                  aria-selected={isVenueChat}
+                <ButtonNG
                   className={venueChatTabStyles}
                   onClick={selectVenueChat}
+                  aria-label={venueChatTabTitle}
+                  aria-selected={isVenueChat}
+                  role="tab"
+                  iconName={faCommentDots}
                 >
                   {venueChatTabTitle}
-                </button>
-                <button
+                </ButtonNG>
+                <ButtonNG
                   role="tab"
-                  id={privateTabId}
                   aria-label={privateChatTabTitle}
                   aria-selected={isPrivateChat}
                   className={privateChatTabStyles}
                   onClick={selectPrivateChat}
+                  iconName={faEnvelope}
                 >
                   {privateChatTabTitle}
-                </button>
+                </ButtonNG>
               </div>
             )}
           </>

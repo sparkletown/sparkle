@@ -15,9 +15,9 @@ type OpenWeatherApiResponse = {
 };
 
 export type WeatherInfo = {
-  temperatureCelsius: number;
+  temperatureFahrenheit: number;
   stateOfSky: string;
-  windSpeedKPH: number;
+  windSpeedMPH: number;
   windDirection: string;
   humidityPercents: number;
 };
@@ -42,8 +42,6 @@ const convertWindDegreeToWindDirection = (deg: number) => {
   return windDirections[direction];
 };
 
-const convertMpsToKph = (mps: number) => mps * 3.6;
-
 export const getBlackRockWeatherInfo = async (): Promise<
   WeatherInfo | undefined
 > => {
@@ -52,11 +50,9 @@ export const getBlackRockWeatherInfo = async (): Promise<
   if (!openWeatherApiResponse) return;
 
   return {
-    temperatureCelsius: Math.round(openWeatherApiResponse.main.temp),
+    temperatureFahrenheit: Math.round(openWeatherApiResponse.main.temp),
     stateOfSky: openWeatherApiResponse.weather[0].description,
-    windSpeedKPH: Math.round(
-      convertMpsToKph(openWeatherApiResponse.wind.speed)
-    ),
+    windSpeedMPH: Math.round(openWeatherApiResponse.wind.speed),
     windDirection: convertWindDegreeToWindDirection(
       openWeatherApiResponse.wind.deg
     ),
