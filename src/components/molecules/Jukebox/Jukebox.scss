@@ -71,9 +71,19 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
         cursor: pointer;
       }
     }
+
     &-submit {
       width: 64px;
       height: 32px;
+    }
+
+    & .Jukebox__buttons-submit--active {
+      background-color: $primary--live;
+
+      &:hover {
+        background-color: $primary--live-hover;
+        cursor: pointer;
+      }
     }
   }
 

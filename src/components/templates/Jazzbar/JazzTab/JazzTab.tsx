@@ -53,16 +53,13 @@ interface JazzProps {
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
-
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
   } = useShowHide();
-  console.log(venue, recentVenueUsers);
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
-
   const parentVenueId = parentVenue?.id;
-
+  const [iframeUrl, updateIframeUrl] = useState(venue.iframeUrl);
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
@@ -172,22 +169,24 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <div className="video-container">
           {!venue.hideVideo && (
             <>
-              <div className="iframe-container">
-                {venue.iframeUrl ? (
-                  <iframe
-                    key="main-event"
-                    title="main event"
-                    className="iframe-video"
-                    src={`${venue.iframeUrl}?autoplay=1`}
-                    frameBorder="0"
-                    allow={IFRAME_ALLOW}
-                  />
-                ) : (
-                  <div className="iframe-video">
-                    Embedded Video URL not yet set up
-                  </div>
-                )}
-              </div>
+              {seatedAtTable ? null : (
+                <div className="iframe-container">
+                  {iframeUrl ? (
+                    <iframe
+                      key="main-event"
+                      title="main event"
+                      className="iframe-video"
+                      src={`${iframeUrl}?autoplay=1`}
+                      frameBorder="0"
+                      allow={IFRAME_ALLOW}
+                    />
+                  ) : (
+                    <div className="iframe-video">
+                      Embedded Video URL not yet set up
+                    </div>
+                  )}
+                </div>
+              )}
 
               {shouldShowReactions && (
                 <div className="actions-container">
@@ -209,7 +208,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   )} */}
                 </div>
               )}
-              <Jukebox recentVenueUsers={recentVenueUsers} />
+
+              <Jukebox
+                recentVenueUsers={recentVenueUsers}
+                defaultIframe={venue.iframeUrl}
+                seatedAtTable={seatedAtTable}
+                updateIframeUrl={updateIframeUrl}
+                iframeUrl={iframeUrl}
+              />
 
               {!seatedAtTable && (
                 <TablesControlBar

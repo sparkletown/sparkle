@@ -74,7 +74,7 @@ export interface FirestoreData {
   // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
-  jukeboxMessages?: Record<string, JukeboxMessage>;
+  venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
 
   /**
@@ -113,7 +113,7 @@ export interface FirestoreOrdered {
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
-  jukeboxMessages?: WithId<JukeboxMessage>[];
+  venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
 
   /**
