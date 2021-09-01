@@ -43,7 +43,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({
-    "aspect-ratio": `${filteredAspect}`,
+    "aspect-ratio": filteredAspect,
   });
 
   // NOTE: useful if some UI element with multiple options or free input is added for aspect ratio
