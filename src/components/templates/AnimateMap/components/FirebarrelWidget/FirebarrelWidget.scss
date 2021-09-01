@@ -84,7 +84,8 @@ $video-participant-optimal-height: 195px;
 
     .firebarrel-room__participant {
       margin: 0 0.25rem;
-      width: $video-participant-optimal-width;
+      min-width: 100px;
+      //width: $video-participant-optimal-width;
     }
   }
 
@@ -104,6 +105,46 @@ $video-participant-optimal-height: 195px;
         max-width: 49%;
       }
     }
+  }
+}
+
+.firebarrel-room__exit-btn {
+  &-wrapper {
+    position: absolute;
+    top: -42px;
+    height: 42px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &-inner {
+    background-color: rgba(0, 0, 0, 0.4);
+    margin: auto;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    height: 42px;
+
+    & .firebarrel-room__exit-btn {
+      padding: 0;
+    }
+  }
+
+  cursor: pointer;
+  opacity: 0.8;
+
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 22px;
+  margin: 7px 16px;
+  background-color: #7c46fb;
+
+  width: 95px;
+  height: 28px;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
   }
 }
 
