@@ -9,8 +9,6 @@ import { WithId } from "utils/id";
 
 import { AdminVenueCard } from "components/molecules/AdminVenueCard";
 
-import { M } from "components/atoms/M";
-
 import "./AdminVenues.scss";
 
 export interface AdminVenuesProps {
@@ -31,14 +29,10 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
   return (
     <div className="admin-venue">
       <div className="admin-venue__header">
-        <div className="admin-venue__title">
-          <M>{AdminVenues.name}.title</M>
-        </div>
-        <M>
-          <Button as={Link} to="/admin-ng/create/venue">
-            <M>{AdminVenues.name}.create.button</M>
-          </Button>
-        </M>
+        <div className="admin-venue__title">Admin Dashboard</div>
+        <Button as={Link} to="/admin-ng/create/venue">
+          Create a new space
+        </Button>
       </div>
       <div
         className={classNames("admin-venue__cards", {
@@ -47,11 +41,9 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
       >
         {!hasVenues && (
           <>
+            <div className="admin-venue__title">Welcome!</div>
             <div className="admin-venue__title">
-              <M>{AdminVenues.name}.welcome.message</M>
-            </div>
-            <div className="admin-venue__title">
-              <M>{AdminVenues.name}.no.venues.message</M>
+              Create your first Sparkle space
             </div>
           </>
         )}
