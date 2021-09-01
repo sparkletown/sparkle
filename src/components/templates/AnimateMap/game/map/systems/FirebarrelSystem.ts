@@ -1,19 +1,32 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
+import { subscribeActionAfter } from "redux-subscribe-action";
 
+import { AnimateMapActionTypes } from "../../../../../../store/actions/AnimateMap";
 import { GameConfig } from "../../../configs/GameConfig";
 import EntityFactory from "../entities/EntityFactory";
 import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
+import { PlayerNode } from "../nodes/PlayerNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class FirebarrelSystem extends System {
+  private player?: NodeList<PlayerNode>;
   private firebarrels?: NodeList<FirebarrelNode>;
   private viewport?: NodeList<ViewportNode>;
   private zoomLevelCurrent = -1;
   private zoomLevelUpdated = false;
 
-  constructor(private creator: EntityFactory) {
+  private _unsubscribeFirebarrelSet!: () => void;
+  private _unsubscribeFirebarrelEnter!: () => void;
+  private _unsubscribeFirebarrelExit!: () => void;
+
+  private creator: EntityFactory;
+  private waitingEnterFirebarrelId?: number;
+  private WAITING_ENTER_FIREBARREL_TIMEOUT = 15000;
+
+  constructor(creator: EntityFactory) {
     super();
+    this.creator = creator;
   }
 
   addToEngine(engine: Engine) {
@@ -22,6 +35,32 @@ export class FirebarrelSystem extends System {
 
     this.viewport = engine.getNodeList(ViewportNode);
     this.viewport.nodeAdded.add(this.handleViewportAdded);
+
+    this._unsubscribeFirebarrelEnter = subscribeActionAfter(
+      AnimateMapActionTypes.ENTER_FIREBARREL,
+      () => {
+        clearTimeout(this.waitingEnterFirebarrelId);
+        // this.creator.enterFirebarrel(barrelId);
+      }
+    );
+    this._unsubscribeFirebarrelSet = subscribeActionAfter(
+      AnimateMapActionTypes.SET_FIREBARREL,
+      () => {
+        this.waitingEnterFirebarrelId = setTimeout(() => {
+          if (this.player) {
+            this.creator.exitFirebarrel();
+            console.log("exit firebarrel 2");
+          }
+        }, this.WAITING_ENTER_FIREBARREL_TIMEOUT);
+      }
+    );
+    this._unsubscribeFirebarrelExit = subscribeActionAfter(
+      AnimateMapActionTypes.EXIT_FIREBARREL,
+      () => {
+        this.creator.exitFirebarrel();
+        console.log("exit firebarrel 1");
+      }
+    );
   }
 
   removeFromEngine(engine: Engine) {
