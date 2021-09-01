@@ -12,6 +12,7 @@ import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
 import { User } from "types/User";
 import { Point } from "types/utility";
+import { AnyVenue } from "types/venues";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
 
@@ -40,6 +41,7 @@ export interface ReplicatedVenueData extends Room {
   id: number;
   isLive: boolean;
   countUsers: number;
+  venue?: AnyVenue;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
