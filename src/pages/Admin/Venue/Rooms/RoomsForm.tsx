@@ -277,7 +277,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       name={"image_file"}
                       image={values.image_file}
                       remoteUrlInputName={"image_url"}
-                      remoteImageUrl={values.image_url}
+                      remoteImageUrl={defaultValues.image_url}
                       containerClassName="input-square-container"
                       register={register}
                       setValue={setValue}
