@@ -109,7 +109,16 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         console.log("connect to room", room);
         setRoom(room);
 
-        onEnter(roomName, getUserList());
+        const users = getUserList();
+        onEnter(roomName, users);
+        //@debt refactor this
+        firebase
+          .firestore()
+          .collection("venues")
+          .doc(venue.id)
+          .collection("firebarrels")
+          .doc(roomName)
+          .update({ connectedUsers: users.map((user) => user.id) });
       })
       .catch((error) => {
         console.error("error connect to room", error.message);
@@ -162,7 +171,16 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
 
-        onEnter(roomName, getUserList());
+        const users = getUserList();
+        onEnter(roomName, users);
+        //@debt refactor this
+        firebase
+          .firestore()
+          .collection("venues")
+          .doc(venue.id)
+          .collection("firebarrels")
+          .doc(roomName)
+          .update({ connectedUsers: users.map((user) => user.id) });
       })
       .catch((error) => setVideoError(error.message));
     // note: we really doesn't need rerender this for others dependencies
@@ -172,15 +190,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   useEffect(() => {
     if (!room) return;
     const users = getUserList();
-    //@debt rewrite this hardcode
-    firebase
-      .firestore()
-      .collection("venues")
-      .doc(venue.id)
-      .collection("firebarrels")
-      .doc(roomName)
-      .update({ connectedUsers: users.map((user) => user.id) });
-    setUserList(roomName, users);
+    setUserList(roomName, users); //FIXME: not call sometimes
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants, worldUsersById]);
@@ -293,6 +303,18 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
 
   const onExitClick = useCallback(() => {
+    const users = getUserList();
+    if (!users || users.length <= 1) {
+      //@debt rewrite this hardcode
+      firebase
+        .firestore()
+        .collection("venues")
+        .doc(venue.id)
+        .collection("firebarrels")
+        .doc(roomName)
+        .update({ connectedUsers: [] });
+    }
+
     disconnect();
 
     if (onExit) {
