@@ -155,7 +155,7 @@ export class CloudDataProvider
       } as ReplicatedVenue;
     };
 
-    const existedVenues = this.venuesData
+    const modifiedVenues = this.venuesData
       .filter((venue) => {
         const room = data.find((room) => room.id === venue.data.id);
 
@@ -180,8 +180,12 @@ export class CloudDataProvider
         if (!room) return venue;
         return createReplicatedVenue(room);
       });
-    existedVenues.forEach((venue) => {
-      this.emit(DataProviderEvent.VENUE_UPDATED, venue);
+    modifiedVenues.forEach((modifiedVenue) => {
+      const indx = this.venuesData.findIndex(
+        (venue) => venue.data.id === modifiedVenue.data.id
+      );
+      if (indx >= 0) this.venuesData[indx] = modifiedVenue;
+      this.emit(DataProviderEvent.VENUE_UPDATED, modifiedVenue);
     });
 
     newVenues.forEach((room) => {
