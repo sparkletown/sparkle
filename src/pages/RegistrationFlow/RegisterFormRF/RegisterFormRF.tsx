@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { getYear } from "date-fns";
+import { getDay, getMonth, getYear } from "date-fns";
 import firebase from "firebase/app";
 import { pick } from "lodash";
 
@@ -84,6 +84,9 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
+  const now = new Date();
+  const currentYear = getYear(now);
+
   const {
     register,
     handleSubmit,
@@ -95,6 +98,11 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
   } = useForm<RegisterFormRfData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
+    defaultValues: {
+      day: `${getDay(now)}`,
+      month: `${getMonth(now)}`,
+      year: `${currentYear}`,
+    },
   });
 
   const [{ loading }, onSubmit] = useAsyncFn(
@@ -378,12 +386,18 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
                     required: true,
                     maxLength: 4,
                     minLength: 4,
-                    max: getYear(new Date()),
+                    max: currentYear,
                     min: 1900,
-                    validate: () =>
-                      validateDateOfBirthInfo(
-                        pick(getValues(), ["day", "month", "year"])
-                      ),
+                    validate: () => {
+                      const { day, month, year } = getValues();
+                      const result = validateDateOfBirthInfo({
+                        day,
+                        month,
+                        year,
+                      });
+                      result && clearError(["day", "month", "year"]);
+                      return result;
+                    },
                   })}
                 />
               </label>

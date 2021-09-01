@@ -1,0 +1,17 @@
+@import "scss/constants.scss";
+
+$banner-width: 210px;
+
+.NavBarBanner {
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: $spacing--lg 0;
+
+  &__banner {
+    position: relative;
+    top: $spacing--xs;
+    width: $banner-width;
+  }
+}
