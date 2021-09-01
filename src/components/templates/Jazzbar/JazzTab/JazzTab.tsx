@@ -1,13 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import {
+  // DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
 } from "settings";
+
+import { updateIframeUrl } from "api/venue";
 
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
@@ -59,7 +62,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const parentVenueId = parentVenue?.id;
-  const [iframeUrl, updateIframeUrl] = useState(venue.iframeUrl);
+  const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
+
+  useEffect(() => {
+    if (iframeUrl !== venue.iframeUrl) {
+      updateIframeUrl(iframeUrl, venue.id);
+    }
+  }, [iframeUrl, venue.iframeUrl, venue.id]);
+
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
@@ -118,6 +128,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const shouldShowReactions =
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+
+  // const shouldShowJukebox = (seatedAtTable && venue.enableJukebox) ?? DEFAULT_ENABLE_JUKEBOX;
 
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
@@ -213,7 +225,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 recentVenueUsers={recentVenueUsers}
                 defaultIframe={venue.iframeUrl}
                 seatedAtTable={seatedAtTable}
-                updateIframeUrl={updateIframeUrl}
+                updateIframeUrl={changeIframeUrl}
                 iframeUrl={iframeUrl}
               />
 

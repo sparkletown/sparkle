@@ -160,6 +160,7 @@ export const validationSchema = Yup.object()
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
+    enableJukebox: Yup.bool().notRequired(),
     showShoutouts: Yup.bool().notRequired(),
     showNametags: Yup.mixed()
       .oneOf(Object.values(UsernameVisibility))
@@ -201,6 +202,7 @@ export const editVenueCastSchema = Yup.object()
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
+  .from("enableJukebox", "enableJukebox")
   .from("showShoutouts", "showShoutouts")
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")

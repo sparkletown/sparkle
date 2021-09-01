@@ -386,6 +386,10 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
+  }
+
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
