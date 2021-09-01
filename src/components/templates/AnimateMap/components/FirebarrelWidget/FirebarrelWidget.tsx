@@ -12,10 +12,12 @@ import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import LocalParticipant from "components/organisms/Room/LocalParticipant";
-import Participant from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { Button } from "components/atoms/Button";
+
+import { WithId } from "../../../../../utils/id";
+import Participant from "../../../../organisms/Room/Participant";
 
 import "./FirebarrelWidget.scss";
 
@@ -76,13 +78,12 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     }
   };
 
-  const getUserList = () => {
-    return room
-      ? [
-          ...participants.map((p) => worldUsersById[p.identity]),
-          worldUsersById[room.localParticipant.identity],
-        ]
-      : [];
+  const getUserList = (
+    room: Video.Room | undefined,
+    participants: Video.Participant[],
+    worldUsersById: Record<string, WithId<User>>
+  ) => {
+    return room ? [...participants.map((p) => worldUsersById[p.identity])] : [];
   };
 
   // @debt refactor this to use useAsync or similar?
@@ -97,6 +98,28 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     });
   }, [firebase, roomName, user]);
 
+  const convertRemoteParticipantToLocal = (
+    localParticipant: Video.LocalParticipant | undefined,
+    participants: Map<string, Video.RemoteParticipant> | undefined
+  ) => {
+    const result: Video.Participant[] = [];
+
+    if (localParticipant) {
+      result.push(localParticipant as Video.Participant);
+    }
+
+    if (participants) {
+      for (const key of Array.from(participants.keys())) {
+        const participant = participants.get(key);
+        if (participant) {
+          result.push(participant as Video.Participant);
+        }
+      }
+    }
+
+    return result;
+  };
+
   const connectToVideoRoom = () => {
     if (!token || room) return;
 
@@ -109,7 +132,14 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         console.log("connect to room", room);
         setRoom(room);
 
-        const users = getUserList();
+        const users = getUserList(
+          room,
+          convertRemoteParticipantToLocal(
+            room?.localParticipant,
+            room?.participants
+          ),
+          worldUsersById
+        );
         onEnter(roomName, users);
         //@debt refactor this
         firebase
@@ -171,7 +201,14 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
 
-        const users = getUserList();
+        const users = getUserList(
+          room,
+          convertRemoteParticipantToLocal(
+            room?.localParticipant,
+            room?.participants
+          ),
+          worldUsersById
+        );
         onEnter(roomName, users);
         //@debt refactor this
         firebase
@@ -189,7 +226,14 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   useEffect(() => {
     if (!room) return;
-    const users = getUserList();
+    const users = getUserList(
+      room,
+      convertRemoteParticipantToLocal(
+        room?.localParticipant,
+        room?.participants
+      ),
+      worldUsersById
+    );
     setUserList(roomName, users); //FIXME: not call sometimes
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
@@ -303,7 +347,14 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
 
   const onExitClick = useCallback(() => {
-    const users = getUserList();
+    const users = getUserList(
+      room,
+      convertRemoteParticipantToLocal(
+        room?.localParticipant,
+        room?.participants
+      ),
+      worldUsersById
+    );
     if (!users || users.length <= 1) {
       //@debt rewrite this hardcode
       firebase
@@ -336,7 +387,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         </div>
       </div>
       <div className="firebarrel-room__participants">
-        <div className="firebarrel-room__exit-container"></div>
+        <div className="firebarrel-room__exit-container" />
         {myVideo}
         {sidedVideos}
         {otherVideos}
