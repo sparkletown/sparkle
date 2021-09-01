@@ -126,7 +126,7 @@ const VenueList: React.FC<VenueListProps> = ({
           Create a venue
         </Link>
         <a href={SPARKLEVERSEITY_URL} {...getExtraLinkProps(true)}>
-          SparkleVersity Tutorials & Creator Guides
+          {"SparkleVersity Tutorials & Creator Guides"}
         </a>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
