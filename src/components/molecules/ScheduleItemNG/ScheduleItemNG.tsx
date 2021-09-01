@@ -101,6 +101,10 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     }
   }, [enterRoom, event, eventRoom]);
 
+  const enterEventVenue = useCallback(() => enterVenue(event.venueId), [
+    event.venueId,
+  ]);
+
   const eventImage = getFirebaseStorageResizedImage(
     eventRoom?.image_url ?? event.venueIcon,
     {
@@ -171,7 +175,9 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">
           <span className="ScheduleItemNG__place--location">in</span>{" "}
-          {eventVenue?.name}
+          <span className="button--a" onClick={enterEventVenue}>
+            {eventVenue?.name}
+          </span>
           {eventRoom && (
             <>
               {", "}
