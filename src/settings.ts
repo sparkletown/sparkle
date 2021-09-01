@@ -92,6 +92,7 @@ export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VEN
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 export const YOUTUBE_SHORT_URL_STRING = "youtu";
+export const MUSIC_VENUE_FIRST_TABLE_NAME = "Table 1";
 
 export const ONE_MINUTE_MS = 60 * 1000;
 // How often to refresh events schedule

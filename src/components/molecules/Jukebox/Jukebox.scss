@@ -5,8 +5,7 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
 .Jukebox {
   &__container {
     width: 100%;
-    height: 100%;
-    margin: 50px;
+    margin: $spacing--lg;
   }
   &__chat {
     overflow-y: scroll;

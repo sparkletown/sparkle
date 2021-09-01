@@ -2,16 +2,12 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
-import {
-  CHAT_MESSAGE_TIMEOUT,
-  IFRAME_ALLOW,
-  YOUTUBE_SHORT_URL_STRING,
-} from "settings";
+import { CHAT_MESSAGE_TIMEOUT, YOUTUBE_SHORT_URL_STRING } from "settings";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { getYoutubeEmbedFromUrl, isValidUrl } from "utils/url";
+import { getYoutubeEmbedFromUrl, isStringAValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
 import { useUser } from "hooks/useUser";
@@ -24,15 +20,10 @@ import "./Jukebox.scss";
 
 type JukeboxTypeProps = {
   recentVenueUsers: readonly WithId<User>[];
-  defaultIframe: string;
-  iframeUrl: string;
-  seatedAtTable: string;
   updateIframeUrl: Dispatch<SetStateAction<string>>;
 };
 const Jukebox: React.FC<JukeboxTypeProps> = ({
   recentVenueUsers,
-  iframeUrl,
-  seatedAtTable,
   updateIframeUrl,
 }) => {
   const { register, handleSubmit, watch, reset } = useForm<{
@@ -47,6 +38,7 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
   const [filteredUser] =
     recentVenueUsers.filter((vUser) => vUser.id === userId) || [];
   const tableName = venueId ? filteredUser?.data?.[venueId].table ?? "" : "";
+
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId,
     tableId: tableName,
@@ -64,13 +56,13 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
         updateIframeUrl(youtubeUrl);
         return;
       }
-      if (isValidUrl(lastMessage?.text)) {
+      if (isStringAValidUrl(lastMessage?.text)) {
         updateIframeUrl(lastMessage.text);
         return;
       }
       return;
     }
-  }, [messagesToDisplay, updateIframeUrl, iframeUrl]);
+  }, [messagesToDisplay, updateIframeUrl]);
 
   const sendMessageToChat = handleSubmit(({ jukeboxMessage }) => {
     const url = jukeboxMessage;
@@ -97,31 +89,13 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
     "Jukebox__buttons-submit--active": !isBtnDisabled,
   });
 
-  if (!seatedAtTable) {
-    return null;
-  }
-
   return (
     <>
-      {iframeUrl ? (
-        <div className="iframe-container">
-          <iframe
-            key="main-event"
-            title="main event"
-            className="iframe-video"
-            src={`${iframeUrl}?autoplay=1`}
-            frameBorder="0"
-            allow={IFRAME_ALLOW}
-          />
-        </div>
-      ) : (
-        <div className="iframe-video">Embedded Video URL not yet set up</div>
-      )}
       <div className="Jukebox__container">
         <div className="Jukebox__chat">
-          {filteredMessages.map((msg, index) => (
+          {filteredMessages?.map((msg, index) => (
             <span key={`${msg}${index}`} className="Jukebox__chat-messages">
-              {/* {msg.author} changed video source to {msg.text} */}
+              {msg.author.partyName} changed video source to {msg.text}
             </span>
           ))}
         </div>
