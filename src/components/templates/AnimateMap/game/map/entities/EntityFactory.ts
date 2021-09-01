@@ -53,7 +53,10 @@ import { ViewportNode } from "../nodes/ViewportNode";
 import { WaitingVenueClickNode } from "../nodes/WaitingVenueClickNode";
 
 import { createBotEntity } from "./createBotEntity";
-import { createFirebarrelEntity } from "./createFirebarrelEntity";
+import {
+  createFirebarrelEntity,
+  updateFirebarrelEntity,
+} from "./createFirebarrelEntity";
 import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
@@ -634,6 +637,6 @@ export default class EntityFactory {
       return;
     }
 
-    // TODO: update image, coords, etc
+    updateFirebarrelEntity(firebarrel, this);
   }
 }
