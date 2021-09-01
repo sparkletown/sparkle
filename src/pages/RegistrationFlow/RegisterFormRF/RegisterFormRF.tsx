@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-import { getDay, getMonth, getYear } from "date-fns";
+import { getYear } from "date-fns";
 import firebase from "firebase/app";
 import { pick } from "lodash";
 
@@ -66,7 +66,6 @@ const sparkleTermsAndConditions = {
 
 export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
   onLogin,
-  onReset,
   onFinish,
   onClose,
 }) => {
@@ -98,11 +97,6 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
   } = useForm<RegisterFormRfData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
-    defaultValues: {
-      day: `${getDay(now)}`,
-      month: `${getMonth(now)}`,
-      year: `${currentYear}`,
-    },
   });
 
   const [{ loading }, onSubmit] = useAsyncFn(
