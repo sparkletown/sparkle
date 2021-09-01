@@ -2,11 +2,16 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
-import { CHAT_MESSAGE_TIMEOUT, IFRAME_ALLOW } from "settings";
+import {
+  CHAT_MESSAGE_TIMEOUT,
+  IFRAME_ALLOW,
+  YOUTUBE_SHORT_URL_STRING,
+} from "settings";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
+import { getYoutubeEmbedFromUrl, isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
 import { useUser } from "hooks/useUser";
@@ -37,7 +42,6 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
-  // const chatValue = true;
   const venueId = useVenueId();
   const { userId } = useUser();
   const [filteredUser] =
@@ -55,12 +59,16 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
   useEffect(() => {
     if (messagesToDisplay.length) {
       const [lastMessage] = messagesToDisplay;
-      if (lastMessage?.text?.includes("embed")) {
+      if (lastMessage?.text?.includes(YOUTUBE_SHORT_URL_STRING)) {
+        const youtubeUrl = getYoutubeEmbedFromUrl(lastMessage?.text);
+        updateIframeUrl(youtubeUrl);
+        return;
+      }
+      if (isValidUrl(lastMessage?.text)) {
         updateIframeUrl(lastMessage.text);
         return;
       }
-
-      updateIframeUrl(iframeUrl);
+      return;
     }
   }, [messagesToDisplay, updateIframeUrl, iframeUrl]);
 
@@ -113,7 +121,7 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
         <div className="Jukebox__chat">
           {filteredMessages.map((msg, index) => (
             <span key={`${msg}${index}`} className="Jukebox__chat-messages">
-              Message: {msg.text}
+              {/* {msg.author} changed video source to {msg.text} */}
             </span>
           ))}
         </div>
