@@ -34,6 +34,12 @@ export interface ReplicatedUser extends AnimateMapEntity {
   data: ReplicatedUserData;
 }
 
+export interface ReplicatedArtcar extends ReplicatedUser {
+  radiusX: number;
+  radiusY: number;
+  angle: number;
+}
+
 export interface ReplicatedVenueData extends Room {
   id: number;
   isLive: boolean;

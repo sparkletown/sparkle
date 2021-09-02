@@ -3,6 +3,7 @@ import { Sprite } from "pixi.js";
 
 import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
 import {
+  ReplicatedArtcar,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
@@ -368,7 +369,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createArtcar(user: ReplicatedUser): Entity {
+  public createArtcar(user: ReplicatedArtcar): Entity {
     return createArtcarEntity(user, this);
   }
 

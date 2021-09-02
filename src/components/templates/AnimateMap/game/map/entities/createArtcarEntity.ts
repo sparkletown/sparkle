@@ -1,7 +1,10 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
+import {
+  ReplicatedArtcar,
+  ReplicatedUser,
+} from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
 import { GameConfig } from "../../../configs/GameConfig";
 import { FIREBARELL_HALO } from "../../constants/AssetConstants";
@@ -17,104 +20,23 @@ import { FSMBase } from "../finalStateMachines/FSMBase";
 
 import EntityFactory from "./EntityFactory";
 
-const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
-// const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
-const TOOLTIP_TEXT_LENGTH_MAX = 18;
+// const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
+const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
 
 const addArtcarTooltip = (artcar: ReplicatedUser, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
-  let text = artcar.data.partyName ? artcar.data.partyName : "Nemo";
-  text =
-    text.length > TOOLTIP_TEXT_LENGTH_MAX ? text.slice(0, 15) + "..." : text;
-  const tooltip = new TooltipComponent(text);
-
-  tooltip.borderColor = TOOLTIP_COLOR_DEFAULT;
-  // tooltip.borderColor = artcar.data.isLive
-  //     ? TOOLTIP_COLOR_ISLIVE
-  //     : TOOLTIP_COLOR_DEFAULT;
+  const tooltip = new TooltipComponent(artcar.data.partyName);
+  tooltip.borderColor = TOOLTIP_COLOR_ISLIVE;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
 
-const getCurrentReplicatedVenue = (
-  artcarComponent: ArtcarComponent
-): ReplicatedUser => {
+const getCurrentArtcar = (artcarComponent: ArtcarComponent): ReplicatedUser => {
   return artcarComponent.artcar;
 };
 
-export const createArtcars = (creator: EntityFactory) => {
-  const arr = [
-    {
-      name: "Darth Paul Art Car",
-      link: "https://burn.sparklever.se/in/darthpaul",
-    },
-    {
-      name: "Hand Some Art Car",
-      link: "https://burn.sparklever.se/in/handsome",
-    },
-    {
-      name: "Lobo de Playa Art Car",
-      link: "https://burn.sparklever.se/in/lobodeplaya",
-    },
-    {
-      name: "Send Noods Art Car",
-      link: "thttps://burn.sparklever.se/in/sendnoods",
-    },
-    {
-      name: "Arachnia Art Car",
-      link: "https://burn.sparklever.se/in/arachnia",
-    },
-    {
-      name: "Silly Lily Art Car",
-      link: "https://burn.sparklever.se/in/sillylily",
-    },
-    {
-      name: "Glam Clam Art Car",
-      link: "https://burn.sparklever.se/in/glamclam",
-    },
-    {
-      name: "Dragon: The Car Art Car",
-      link: "https://burn.sparklever.se/in/dragonthecar",
-    },
-    { name: "Tri-Honk Art Car", link: "https://burn.sparklever.se/in/trihonk" },
-    {
-      name: "Caranirvana Art Car",
-      link: "https://burn.sparklever.se/in/caranivana",
-    },
-    {
-      name: "Boaty McBoatface Art Car",
-      link: "https://burn.sparklever.se/in/interiorcrocodilealligator",
-    },
-    {
-      name: "Interior Crocodile Alligator Art Car",
-      link: "https://burn.sparklever.se/in/lobodeplaya",
-    },
-    {
-      name: "Wheely Fish Sticks Art Car",
-      link: "https://burn.sparklever.se/in/wheelyfishsticks",
-    },
-  ];
-
-  arr.forEach((item) => {
-    const user: ReplicatedUser = {
-      x: 0,
-      y: 0,
-      data: {
-        id: item.link,
-        partyName: item.name,
-        messengerId: 0,
-        pictureUrl: "",
-        dotColor: 0,
-        hat: "",
-        accessories: "",
-        cycle: "",
-      },
-    };
-    creator.createArtcar(user);
-  });
-};
 /*
 
 https://burn.sparklever.se/in/trihonk
@@ -125,22 +47,22 @@ https://burn.sparklever.se/in/wheelyfishsticks
  */
 
 export const createArtcarEntity = (
-  user: ReplicatedUser,
+  user: ReplicatedArtcar,
   creator: EntityFactory
 ): Entity => {
   const scale = 0.3;
 
   const config = GameInstance.instance.getConfig();
-  const innerRadius = config.venuesMainCircleOuterRadius;
-  const outerRadius = config.borderRadius;
+  // const innerRadius = config.venuesMainCircleOuterRadius;
+  // const outerRadius = config.borderRadius;
   const worldCenter: Point = config.worldCenter;
-
-  const angle = creator.getRandomNumber(0, 360) * (Math.PI / 180);
-  const radiusX = creator.getRandomNumber(innerRadius, outerRadius);
-  const radiusY = creator.getRandomNumber(innerRadius, outerRadius);
-
-  user.x = worldCenter.x + Math.cos(angle) * radiusX;
-  user.y = worldCenter.y + Math.sin(angle) * radiusY;
+  //
+  // const angle = creator.getRandomNumber(0, 360) * (Math.PI / 180);
+  // const radiusX = creator.getRandomNumber(innerRadius, outerRadius);
+  // const radiusY = creator.getRandomNumber(innerRadius, outerRadius);
+  //
+  // user.x = worldCenter.x + Math.cos(angle) * radiusX;
+  // user.y = worldCenter.y + Math.sin(angle) * radiusY;
 
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
@@ -152,9 +74,9 @@ export const createArtcarEntity = (
       new EllipseComponent(
         worldCenter.x,
         worldCenter.y,
-        radiusX,
-        radiusY,
-        angle
+        user.radiusX,
+        user.radiusY,
+        user.angle
       )
     );
 
@@ -167,7 +89,7 @@ export const createArtcarEntity = (
         () => {
           // add tooltip
           const waiting = creator.getWaitingVenueClick();
-          const currentArtcar = getCurrentReplicatedVenue(artcarComponent);
+          const currentArtcar = getCurrentArtcar(artcarComponent);
           if (!waiting || `${waiting.data.id}` !== currentArtcar.data.id) {
             addArtcarTooltip(currentArtcar, entity);
           }

@@ -94,7 +94,7 @@ export class GameConfig {
   }
 
   public get venuesMainCircleOuterRadius(): number {
-    return this.worldWidth * 0.16;
+    return this.worldWidth * 0.17;
   }
 
   public get borderRadius(): number {

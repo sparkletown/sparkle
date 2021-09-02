@@ -7,6 +7,19 @@ import ARTCAR_3 from "assets/images/AnimateMap/artcars/9.1.png";
 import ARTCAR_4 from "assets/images/AnimateMap/artcars/11.1.png";
 import ARTCAR_5 from "assets/images/AnimateMap/artcars/12.1.png";
 import ARTCAR_6 from "assets/images/AnimateMap/artcars/13.1.png";
+import ARTCAR__0 from "assets/images/AnimateMap/artcars13/0.png";
+import ARTCAR__1 from "assets/images/AnimateMap/artcars13/1.png";
+import ARTCAR__2 from "assets/images/AnimateMap/artcars13/2.png";
+import ARTCAR__3 from "assets/images/AnimateMap/artcars13/3.png";
+import ARTCAR__4 from "assets/images/AnimateMap/artcars13/4.png";
+import ARTCAR__5 from "assets/images/AnimateMap/artcars13/5.png";
+import ARTCAR__6 from "assets/images/AnimateMap/artcars13/6.png";
+import ARTCAR__7 from "assets/images/AnimateMap/artcars13/7.png";
+import ARTCAR__8 from "assets/images/AnimateMap/artcars13/8.png";
+import ARTCAR__9 from "assets/images/AnimateMap/artcars13/9.png";
+import ARTCAR__10 from "assets/images/AnimateMap/artcars13/10.png";
+import ARTCAR__11 from "assets/images/AnimateMap/artcars13/11.png";
+import ARTCAR__12 from "assets/images/AnimateMap/artcars13/12.png";
 import ACCESSORY_0 from "assets/images/AnimateMap/avatarAccessoryes/cap_2.png";
 import ACCESSORY_1 from "assets/images/AnimateMap/avatarAccessoryes/cap_3.png";
 import ACCESSORY_2 from "assets/images/AnimateMap/avatarAccessoryes/cap_5.png";
@@ -87,6 +100,22 @@ const avatarHats = [
   HAT_18,
 ];
 
+const artcars13 = [
+  ARTCAR__0,
+  ARTCAR__1,
+  ARTCAR__2,
+  ARTCAR__3,
+  ARTCAR__4,
+  ARTCAR__5,
+  ARTCAR__6,
+  ARTCAR__7,
+  ARTCAR__8,
+  ARTCAR__9,
+  ARTCAR__10,
+  ARTCAR__11,
+  ARTCAR__12,
+];
+
 const avatarAccessories = [
   ACCESSORY_0,
   ACCESSORY_1,
@@ -151,6 +180,7 @@ export {
   avatarAircraft,
   avatarFeets,
   artcars,
+  artcars13,
   barrels,
   venues,
   MAP_IMAGE,
