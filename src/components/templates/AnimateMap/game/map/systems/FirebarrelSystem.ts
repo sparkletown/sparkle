@@ -92,23 +92,16 @@ export class FirebarrelSystem extends System {
     }
   }
 
-  private test = 0;
   private updateFirebarrel(node: FirebarrelNode): void {
-    if (this.test === 0) {
+    node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
+    const usersCount = node.firebarrel.model.data.connectedUsers
+      ? node.firebarrel.model.data.connectedUsers.length
+      : 0;
+    if (usersCount) {
       node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
     } else {
-      // node.firebarrel.fsm.changeState(node.firebarrel.HALO);
+      node.firebarrel.fsm.changeState(node.firebarrel.HALO);
     }
-    this.test++;
-    // node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
-    // const usersCount = node.firebarrel.model.data.connectedUsers
-    //   ? node.firebarrel.model.data.connectedUsers.length
-    //   : 0;
-    // if (usersCount) {
-    //   node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
-    // } else {
-    //   node.firebarrel.fsm.changeState(node.firebarrel.HALO);
-    // }
 
     const camIcon = node.entity.get(FirebarrelCamIcon);
     if (camIcon && camIcon.view.camIcon) {
