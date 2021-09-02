@@ -57,11 +57,6 @@ export const currentVenueSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
 > = (state) => state.firestore.ordered.currentVenue?.[0];
 
-// @debt can we merge this with currentVenueSelector and just use 1 canonical version?
-export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.currentVenue;
-
 export const currentEventSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = makeOrderedSelector("currentEvent");

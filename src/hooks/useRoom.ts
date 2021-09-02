@@ -27,7 +27,7 @@ export const useRoom = ({ room, venueId }: UseRoomProps) => {
   );
 
   const { recentLocationUsers } = useRecentLocationUsers({
-    locationName: venueId,
+    venueId,
   });
 
   const enterRoom = useCallback(() => {

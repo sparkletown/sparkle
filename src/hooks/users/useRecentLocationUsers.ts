@@ -1,6 +1,7 @@
 import { User, UserLocation } from "types/User";
 
 import { WithId } from "utils/id";
+import { wrapIntoSlashes } from "utils/string";
 
 import { useRecentWorldUsers } from "./useRecentWorldUsers";
 
@@ -22,9 +23,9 @@ export interface RecentLocationUsersData {
  *   Can we cleanly refactor them into a single hook somehow to de-duplicate the logic?
  */
 export const useRecentLocationUsers = ({
-  locationName,
+  venueId,
 }: {
-  locationName?: string;
+  venueId?: string;
 }): RecentLocationUsersData => {
   const {
     recentWorldUsers,
@@ -36,7 +37,12 @@ export const useRecentLocationUsers = ({
     const userLocation: WithId<UserLocation> | undefined =
       worldUserLocationsById[user.id];
 
-    return userLocation && userLocation.lastSeenIn === locationName;
+    return (
+      userLocation.lastSeenIn &&
+      venueId &&
+      userLocation.lastSeenIn.includes &&
+      userLocation.lastSeenIn.includes(wrapIntoSlashes(venueId))
+    );
   });
 
   return {
