@@ -21,10 +21,12 @@ import "./Jukebox.scss";
 type JukeboxTypeProps = {
   recentVenueUsers: readonly WithId<User>[];
   updateIframeUrl: Dispatch<SetStateAction<string>>;
+  venueName: string;
 };
 const Jukebox: React.FC<JukeboxTypeProps> = ({
   recentVenueUsers,
   updateIframeUrl,
+  venueName,
 }) => {
   const { register, handleSubmit, watch, reset } = useForm<{
     jukeboxMessage: string;
@@ -37,7 +39,8 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
   const { userId } = useUser();
   const [filteredUser] =
     recentVenueUsers.filter((vUser) => vUser.id === userId) || [];
-  const tableName = venueId ? filteredUser?.data?.[venueId].table ?? "" : "";
+
+  const tableName = filteredUser?.data?.[venueName]?.table ?? "";
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId,

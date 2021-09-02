@@ -237,6 +237,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 <Jukebox
                   recentVenueUsers={recentVenueUsers}
                   updateIframeUrl={changeIframeUrl}
+                  venueName={venue.name}
                 />
               )}
 
