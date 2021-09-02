@@ -21,7 +21,6 @@ $tab-item-room-width: 180px;
   width: 100%;
 
   overflow: auto;
-  @include gray-scrollbar();
 
   background-attachment: fixed;
   background-size: cover;
@@ -35,7 +34,7 @@ $tab-item-room-width: 180px;
   &__weekdays {
     display: flex;
     flex-wrap: wrap;
-    background-color: opaque-black(0.2);
+    background-color: opaque-black(0.8);
     margin: 0 (-$tab-item-height);
     padding: $spacing--xxl;
 
@@ -61,7 +60,7 @@ $tab-item-room-width: 180px;
     margin: 0 auto;
     cursor: pointer;
     z-index: 15;
-    background-color: opaque-black(0.2);
+    background-color: opaque-black(0.8);
   }
 
   &__item {
@@ -82,7 +81,7 @@ $tab-item-room-width: 180px;
   &__content {
     display: flex;
     flex-wrap: wrap;
-    background-color: opaque-black(0.2);
+    background-color: opaque-black(0.8);
     margin: (-$font-size--xl) (-$tab-item-height) 0px (-$tab-item-height);
     padding: $font-size--xl $spacing--xxl $tab-item-height $spacing--xxl;
   }
