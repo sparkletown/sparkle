@@ -6,6 +6,7 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import {
@@ -26,6 +27,7 @@ import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
@@ -278,6 +280,23 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     takeSeat(null, null);
   }, [takeSeat]);
 
+  console.log(venue.mapBackgroundImageUrl);
+
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig?.bannerImageUrl ||
+      venue?.config?.landingPageConfig?.coverImageUrl,
+    "black"
+  );
+
+  const containerVars = useCss({
+    background:
+      validBannerImageUrl !== "black"
+        ? `url(${validBannerImageUrl}) rgba(0,0,0, 0.7)`
+        : "black",
+  });
+
+  const containerClasses = classNames("audience-container", containerVars);
+
   // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
@@ -356,13 +375,14 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     return (
       <>
         <div
-          className="audience-container"
+          className={containerClasses}
           style={{
             backgroundImage: venue.mapBackgroundImageUrl
               ? `url(${venue.mapBackgroundImageUrl})`
               : undefined,
           }}
         >
+          <div></div>
           <div className="audience">
             <div className="audience-overlay">
               <div
@@ -462,5 +482,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     isSeat,
     partygoersBySeat,
     takeSeat,
+    containerClasses,
   ]);
 };

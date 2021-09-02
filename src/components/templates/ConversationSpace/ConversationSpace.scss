@@ -2,6 +2,10 @@
 
 // @debt Are all of the jazzbar / emoji related styles actually needed/used here?
 .conversation-space-container {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+
   .userlist-container {
     margin-left: 80px;
   }

@@ -1,4 +1,6 @@
 import React, { useCallback, useState } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
@@ -7,6 +9,7 @@ import { GenericVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentVenueUsers } from "hooks/users";
@@ -60,6 +63,22 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const tables = venue?.config?.tables ?? TABLES;
 
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig?.bannerImageUrl ||
+      venue?.config?.landingPageConfig?.coverImageUrl,
+    "black"
+  );
+
+  const containerVars = useCss({
+    background:
+      validBannerImageUrl !== "black" ? `url(${validBannerImageUrl})` : "black",
+    height: seatedAtTable ? "100%" : "auto",
+  });
+
+  const containerClasses = classNames(
+    "conversation-space-container",
+    containerVars
+  );
   return (
     <>
       <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
@@ -75,7 +94,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <div className="conversation-space-container">
+      <div className={containerClasses}>
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}
