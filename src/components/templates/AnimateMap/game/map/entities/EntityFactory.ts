@@ -493,6 +493,8 @@ export default class EntityFactory {
   }
 
   public createFireBarrel(barrel: ReplicatedFirebarrel): Entity {
+    const node = this.getFirebarrelNode(barrel.data.id);
+    if (node) return node.entity;
     return createFirebarrelEntity(barrel, this);
   }
 
@@ -560,6 +562,8 @@ export default class EntityFactory {
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
+    const node = this.getVenueNode(venue);
+    if (node) return node.entity;
     return createVenueEntity(venue, this);
   }
 
