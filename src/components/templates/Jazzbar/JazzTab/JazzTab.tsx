@@ -131,7 +131,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
 
   const shouldShowJukebox =
-    (seatedAtTable &&
+    (!!seatedAtTable &&
       venue.enableJukebox &&
       seatedAtTable === MUSIC_VENUE_FIRST_TABLE_NAME) ??
     DEFAULT_ENABLE_JUKEBOX;
@@ -141,6 +141,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
+  });
+
+  const musicBarContainerClasses = classNames("music-bar-content", {
+    "music-bar-content-jukebox": shouldShowJukebox,
+  });
+
+  const videoContainerClasses = classNames("video-container", {
+    "video-container--seated": seatedAtTable,
   });
 
   if (!venue) return <>Loading...</>;
@@ -182,8 +190,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         />
       )}
 
-      <div className="music-bar-content">
-        <div className="video-container">
+      <div className={musicBarContainerClasses}>
+        <div className={videoContainerClasses}>
           {!venue.hideVideo && (
             <>
               {
@@ -250,6 +258,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
             isAudioEffectDisabled={isUserAudioMuted}
+            shouldShowJukebox={shouldShowJukebox}
           />
         )}
         <TablesUserList
