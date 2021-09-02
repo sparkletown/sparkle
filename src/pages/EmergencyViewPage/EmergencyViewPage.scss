@@ -21,7 +21,7 @@ $tab-item-room-width: 180px;
   width: 100%;
 
   overflow: auto;
-  @include gray-scrollbar();
+  @include scrollbar();
 
   background-attachment: fixed;
   background-size: cover;
