@@ -568,12 +568,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        value={
-          templateID === VenueTemplate.jazzbar
-            ? "https://player.vimeo.com/video/512606583?h=84853fbd28"
-            : "https://docs.google.com/presentation/d/e/2PACX-1vTeoZQSP2b4q4dMceEnm_fU1QaS4u5F_n1_EnZjjn-b7N91imfRbJaDX9w1aR0QS6G3NgnZcMTaMiq-/embed?start=false&loop=false&delayms=3000"
-        }
-      />
+      >
+        {templateID === VenueTemplate.jazzbar
+          ? "https://player.vimeo.com/video/512606583?h=84853fbd28"
+          : "https://docs.google.com/presentation/d/e/2PACX-1vTeoZQSP2b4q4dMceEnm_fU1QaS4u5F_n1_EnZjjn-b7N91imfRbJaDX9w1aR0QS6G3NgnZcMTaMiq-/embed?start=false&loop=false&delayms=3000"}
+      </textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
