@@ -53,16 +53,8 @@ export class MotionCollisionSystem extends System {
       this.colliders.head.movement.velocityX === 0 &&
       this.colliders.head.movement.velocityY === 0
     ) {
-      for (let node = this.artcars?.head; node; node = node.next) {
-        if (
-          this.collideObject(
-            this.colliders.head,
-            node.position.x,
-            node.position.y,
-            node.position,
-            node.collision
-          )
-        ) {
+      for (let node = this.artcars?.head; node; node = node?.next) {
+        if (this.artcarHittingOnThePlayer(node, this.colliders?.head)) {
           this.creator.createWaitingArtcarClick(node.artcar.artcar);
 
           // GameInstance.instance.eventProvider.emit(
@@ -223,7 +215,22 @@ export class MotionCollisionSystem extends System {
     return collide;
   }
 
-  public collideObject(
+  private artcarHittingOnThePlayer(
+    artcarNode: ArtcarNode,
+    playerNode: MotionCollidedNode
+  ): boolean {
+    const x1 = artcarNode.position.x;
+    const y1 = artcarNode.position.y;
+    const x2 = playerNode.position.x;
+    const y2 = playerNode.position.y;
+    const distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    if (distance < artcarNode.collision.radius) {
+      return true;
+    }
+    return false;
+  }
+
+  private collideObject(
     player: MotionCollidedNode,
     previousX: number,
     previousY: number,
