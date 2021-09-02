@@ -65,9 +65,9 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
   }, [messagesToDisplay, updateIframeUrl]);
 
   const sendMessageToChat = handleSubmit(({ jukeboxMessage }) => {
-    const url = jukeboxMessage;
     setMessageSending(true);
-    sendJukeboxMsg({ message: jukeboxMessage, url });
+
+    sendJukeboxMsg({ message: jukeboxMessage });
     reset();
   });
 
@@ -97,11 +97,16 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
             When you paste a link here, it changes what people see in the box
             above. Be respectful!
           </span>
-          {filteredMessages?.map((msg, index) => (
-            <span key={`${msg}${index}`} className="Jukebox__chat-messages">
-              {msg.author.partyName} changed video source to {msg.text}
-            </span>
-          ))}
+          {filteredMessages?.map((msg, index) => {
+            const msgAuthorName = msg.isMine
+              ? `${msg.author.partyName} (I)`
+              : msg.author.partyName;
+            return (
+              <span key={`${msg}${index}`} className="Jukebox__chat-messages">
+                {msgAuthorName} changed video source to {msg.text}
+              </span>
+            );
+          })}
         </div>
         <form className="Jukebox__form" onSubmit={sendMessageToChat}>
           <InputField
@@ -120,7 +125,7 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
               type="submit"
               disabled={isBtnDisabled}
               variant="primary"
-              iconOnly={true}
+              iconOnly
               iconSize="1x"
             />
           </div>

@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $emoji-button-diameter: $submit-button-diameter - $spacing--md;
+$jukebox-chat-max-height: 100px;
 
 .Jukebox {
   &__container {
@@ -13,15 +14,15 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
     overflow-y: scroll;
     display: flex;
     flex-direction: column;
-    max-height: 100px;
+    max-height: $jukebox-chat-max-height;
     background-color: opaque-white(0.12);
     height: 100%;
     width: 100%;
-    border-top-left-radius: 22px;
-    border-top-right-radius: 22px;
+    border-top-left-radius: $border-radius--xl;
+    border-top-right-radius: $border-radius--xl;
 
     &-messages {
-      padding: 4px 12px;
+      padding: $spacing--xs $spacing--md;
     }
   }
 
@@ -30,7 +31,7 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
   }
 
   &__form {
-    padding: $spacing--md 0px;
+    padding: $spacing--md 0;
     display: flex;
   }
 
@@ -55,7 +56,7 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
   &__input {
     padding-right: $submit-button-diameter;
     // NOTE: this removes screen artefacts of the embedded <input> inside InputField being as wide as the parent
-    height: 32px;
+    height: $spacing--lg * 2;
   }
 
   &__buttons {
@@ -74,8 +75,8 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
     }
 
     &-submit {
-      width: 64px;
-      height: 32px;
+      width: $spacing--lg * 4;
+      height: $spacing--lg * 2;
     }
 
     & .Jukebox__buttons-submit--active {

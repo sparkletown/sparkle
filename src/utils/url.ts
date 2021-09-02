@@ -105,7 +105,6 @@ export const isValidUrl = (url: string): boolean => {
   }
 };
 
-// @debt possibly merge this and isValidUrl right above
 export const isStringAValidUrl = (urlString: string) => {
   if (!urlString) return false;
 
@@ -114,7 +113,7 @@ export const isStringAValidUrl = (urlString: string) => {
 
     return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
-    if (e.name === "TypeError") {
+    if (e instanceof Error) {
       return false;
     }
     throw e;

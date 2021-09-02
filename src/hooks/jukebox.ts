@@ -1,8 +1,6 @@
 import { useCallback, useMemo } from "react";
 import { isEqual } from "lodash";
 
-import { VENUE_CHAT_AGE_DAYS } from "settings";
-
 import { sendJukeboxMessage } from "api/jukebox";
 
 import { JukeboxMessage, SendJukeboxMessage } from "types/jukebox";
@@ -14,7 +12,6 @@ import {
 import { WithId } from "utils/id";
 import { buildJukeboxMessage } from "utils/jukebox";
 import { jukeboxMessagesSelector } from "utils/selectors";
-import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -45,12 +42,12 @@ const useJukeboxActions = (venueId?: string, tableId?: string) => {
   const { userId } = useUser();
 
   const sendJukeboxMsg: SendJukeboxMessage = useCallback(
-    async ({ message, url }) => {
+    async ({ message }) => {
       if (!venueId || !userId || !tableId) return;
+
       const processedMessage = buildJukeboxMessage<JukeboxMessage>({
         from: userId,
         text: message,
-        url: url,
         tableId,
       });
       return sendJukeboxMessage({
@@ -73,22 +70,12 @@ const useJukeboxMessages = (venueId?: string, tableId?: string) => {
 
   useConnectVenueJukeboxMessages(venueId, tableId);
 
-  const chatMessages =
+  const jukeboxMessages =
     useSelector(jukeboxMessagesSelector, isEqual) ?? noMessages;
 
-  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-
-  const filteredMessages = useMemo(
-    () =>
-      chatMessages.filter(
-        (message) => message.ts_utc.seconds > venueChatAgeThresholdSec
-      ),
-    [chatMessages, venueChatAgeThresholdSec]
-  );
-
   const { messages } = useMemo(
-    () => partitionMessagesFromReplies(filteredMessages),
-    [filteredMessages]
+    () => partitionMessagesFromReplies(jukeboxMessages),
+    [jukeboxMessages]
   );
 
   return useMemo(
@@ -105,7 +92,7 @@ const useJukeboxMessages = (venueId?: string, tableId?: string) => {
 
           if (!displayMessage) return undefined;
 
-          return { ...displayMessage };
+          return displayMessage;
         })
         .filter(isTruthy),
     [userId, worldUsersById, messages]
