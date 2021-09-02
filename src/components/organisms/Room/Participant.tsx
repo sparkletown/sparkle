@@ -1,11 +1,17 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Video from "twilio-video";
 
 import { User } from "types/User";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
+import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
 
 export interface ParticipantProps {
   bartender?: User;
@@ -32,7 +38,6 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
-  const [muted, setMuted] = useState(defaultMute);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -97,19 +102,22 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     }
   }, [audioTracks]);
 
-  useEffect(() => {
-    if (muted) {
-      const audioTrack = audioTracks[0];
-      if (audioTrack) {
-        audioTrack.detach();
+  const changeAudioState = useCallback(
+    (enable: boolean) => {
+      if (!enable) {
+        const audioTrack = audioTracks[0];
+        if (audioTrack) {
+          audioTrack.detach();
+        }
+      } else {
+        const audioTrack = audioTracks[0];
+        if (audioTrack && audioRef.current) {
+          audioTrack.attach(audioRef.current);
+        }
       }
-    } else {
-      const audioTrack = audioTracks[0];
-      if (audioTrack && audioRef.current) {
-        audioTrack.attach(audioRef.current);
-      }
-    }
-  }, [participant, muted, audioTracks]);
+    },
+    [audioTracks]
+  );
 
   const videos = useMemo(
     () => (
@@ -139,13 +147,11 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
       )}
       {children}
       <div className="mute-other-container">
-        <div onClick={() => setMuted(!muted)} id="mute-myself">
-          <FontAwesomeIcon
-            size="lg"
-            icon={muted ? faVolumeMute : faVolumeUp}
-            color={muted ? "red" : undefined}
-          />
-        </div>
+        <VideoOverlayButton
+          variant="audio"
+          defaultValue={!defaultMute}
+          onEnabledChanged={changeAudioState}
+        />
       </div>
     </div>
   );

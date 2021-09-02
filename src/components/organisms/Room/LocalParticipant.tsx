@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  faMicrophone,
-  faMicrophoneSlash,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
+
+import { CameraMicrophoneControls } from "components/molecules/CameraMicrophoneControls";
 
 import Participant, { ParticipantProps } from "./Participant";
 
@@ -16,24 +13,6 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
   showIcon = true,
   isAudioEffectDisabled,
 }) => {
-  const [muted, setMuted] = useState(defaultMute);
-
-  useEffect(() => {
-    if (muted) {
-      participant.audioTracks.forEach((audioTrack) => {
-        audioTrack.track &&
-          "disable" in audioTrack.track &&
-          audioTrack.track.disable();
-      });
-    } else {
-      participant.audioTracks.forEach((audioTrack) => {
-        audioTrack.track &&
-          "enable" in audioTrack.track &&
-          audioTrack.track.enable();
-      });
-    }
-  }, [participant, muted]);
-
   return (
     <Participant
       participant={participant}
@@ -43,15 +22,11 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
       showIcon={showIcon}
       isAudioEffectDisabled={isAudioEffectDisabled}
     >
-      <div className="mute-container">
-        <div onClick={() => setMuted(!muted)} id="mute-person">
-          <FontAwesomeIcon
-            size="lg"
-            icon={muted ? faMicrophoneSlash : faMicrophone}
-            color={muted ? "red" : undefined}
-          />
-        </div>
-      </div>
+      <CameraMicrophoneControls
+        containerClassName="mute-container"
+        participant={participant}
+        defaultMute={defaultMute}
+      />
     </Participant>
   );
 };
