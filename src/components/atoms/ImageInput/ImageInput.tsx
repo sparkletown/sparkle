@@ -40,7 +40,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
     loading,
     errorMessage,
     handleFileInputChange,
-  } = useImageInputCompression(register, error?.message, name);
+  } = useImageInputCompression(register, error?.message, fileName);
 
   const handleFileInputChangeWrapper = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
