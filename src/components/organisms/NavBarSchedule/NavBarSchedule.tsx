@@ -44,10 +44,12 @@ export interface ScheduleNGDay {
   scheduleDate: Date;
 }
 
-export const emptyPersonalizedSchedule = {};
-export interface NavBarScheduleProps {
-  isVisible?: boolean;
+export interface NavBarScheduleBodyProps {
   venueId: string;
+}
+
+export interface NavBarScheduleProps extends NavBarScheduleBodyProps {
+  isVisible: boolean;
 }
 
 interface UserWithVenueIdProps extends WithId<User> {
@@ -55,8 +57,9 @@ interface UserWithVenueIdProps extends WithId<User> {
   portalId?: string;
 }
 
-export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
-  isVisible,
+export const emptyPersonalizedSchedule = {};
+
+export const NavBarScheduleBody: React.FC<NavBarScheduleBodyProps> = ({
   venueId,
 }) => {
   const { userWithId } = useUser();
@@ -220,13 +223,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     });
   }, [liveAndFutureEvents]);
 
-  const containerClasses = classNames("NavBarSchedule", {
-    "NavBarSchedule--show": isVisible,
-  });
-
   return (
-    <div className="NavBarWrapper">
-      <div className={containerClasses}>
+    <>
+      <div className="NavBarSchedule__schedule">
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
         {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
 
@@ -244,24 +243,40 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           {...scheduleNGWithAttendees}
         />
       </div>
-      {!isEventsLoading && (
-        <div className="NavBarWrapper__download-buttons">
-          {isShowPersonalDownloadBtn && (
+      <div className="NavBarSchedule__download-buttons">
+        {!isEventsLoading && (
+          <>
+            {isShowPersonalDownloadBtn && (
+              <Button
+                onClick={downloadPersonalEventsCalendar}
+                customClass="NavBarSchedule__download-schedule-btn"
+              >
+                Download your schedule
+              </Button>
+            )}
             <Button
-              onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarWrapper__download-schedule-btn"
+              onClick={downloadAllEventsCalendar}
+              customClass="NavBarSchedule__download-schedule-btn"
             >
-              Download your schedule
+              Download full schedule
             </Button>
-          )}
-          <Button
-            onClick={downloadAllEventsCalendar}
-            customClass="NavBarWrapper__download-schedule-btn"
-          >
-            Download full schedule
-          </Button>
-        </div>
-      )}
+          </>
+        )}
+      </div>
+    </>
+  );
+};
+
+export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
+  isVisible,
+  venueId,
+}) => {
+  const containerClasses = classNames("NavBarSchedule", {
+    "NavBarSchedule--show": isVisible,
+  });
+  return (
+    <div className={containerClasses}>
+      {isVisible && <NavBarScheduleBody venueId={venueId} />}
     </div>
   );
 };
