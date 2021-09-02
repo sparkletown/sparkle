@@ -34,26 +34,16 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   const hasSelectedRoom = !!selectedRoom;
 
-  const isNotExternalLink = useMemo(
-    () => !isExternalUrl(selectedRoom?.url ?? ""),
-    [selectedRoom]
-  );
-  const isExternalLink = useMemo(
-    () => !isExternalUrl(selectedRoom?.url ?? ""),
+  const [portalVenueId] = useMemo(
+    () => getLastUrlParam(selectedRoom?.url ?? ""),
     [selectedRoom]
   );
 
-  const venueId = useMemo(() => {
-    if (hasSelectedRoom) {
-      const roomVenueId = isExternalLink
-        ? venue.id
-        : getLastUrlParam(selectedRoom?.url ?? "")[0];
-      return roomVenueId;
-    } else {
-      return venue.id;
-    }
-  }, [hasSelectedRoom, selectedRoom?.url, isExternalLink, venue]);
-
+  const venueId = useMemo(() => (hasSelectedRoom ? portalVenueId : venue.id), [
+    venue,
+    hasSelectedRoom,
+    portalVenueId,
+  ]);
   const { relatedVenues: selectedRoomRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
@@ -66,6 +56,11 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { events: selectedRoomEventsSelfAndChildVenueEvents } = useVenueEvents({
     venueIds: selectedRoomselfAndChildVenueIds,
   });
+
+  const isNotExternalLink = useMemo(
+    () => !isExternalUrl(selectedRoom?.url ?? ""),
+    [selectedRoom]
+  );
 
   const selectedRoomEvents = useMemo(() => {
     if (!selectedRoomEventsSelfAndChildVenueEvents || !selectedRoom) return [];
