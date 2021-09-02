@@ -103,7 +103,7 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
           </span>
           {filteredMessages?.map((msg, index) => {
             const msgAuthorName = msg.isMine
-              ? `${msg.author.partyName} (I)`
+              ? `${msg.author.partyName} (That's you))`
               : msg.author.partyName;
             return (
               <span key={`${msg}${index}`} className="Jukebox__chat-messages">
