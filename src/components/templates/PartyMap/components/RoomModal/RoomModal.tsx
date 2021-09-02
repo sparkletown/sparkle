@@ -105,7 +105,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const { enterRoom, recentRoomUsers } = useRoom({ room, venueId: venue.id });
+  const { enterRoom, recentRoomUsers } = useRoom({
+    room,
+  });
   const userList = recentRoomUsers as readonly WithId<User>[];
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
