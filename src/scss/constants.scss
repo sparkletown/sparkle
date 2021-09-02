@@ -272,6 +272,18 @@ $z-layers: (
 }
 
 @mixin scrollbar {
+  // The standard properties
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+  scrollbar-color: opaque-white(0.3) $black;
+  scrollbar-width: thin;
+
+  // The webkit properties
+  @see https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+  &::-webkit-scrollbar-corner {
+    background-color: $black;
+  }
+
   &::-webkit-scrollbar-track {
     border-radius: $border-radius--xs;
     background-color: $black;
