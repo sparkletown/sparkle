@@ -39,7 +39,7 @@ import {
   animateMapEnvironmentSoundSelector,
   radioStationsSelector,
 } from "utils/selectors";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import { enterVenue, openUrlInNewTab, venueInsideUrl } from "utils/url";
 
 import { useAudioVolume } from "hooks/useAudioVolume";
 import { useDispatch } from "hooks/useDispatch";
@@ -312,6 +312,17 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               ) : (
                 <div>{navbarTitle}</div>
               )}
+
+              <div
+                className="nav-schedule nav-photobooth"
+                onClick={() =>
+                  openUrlInNewTab(
+                    "https://burn.sparklever.se/in/outsnappedphotoboothcamp"
+                  )
+                }
+              >
+                <p>Photobooth</p>
+              </div>
 
               <div className="navbar-links__simplified-view">
                 <a
