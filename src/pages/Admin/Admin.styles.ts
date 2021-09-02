@@ -11,7 +11,6 @@ export const Wrapper = styled.div<WrapperProps>`
 
   position: relative;
   overflow-y: scroll;
-  scrollbar-width: thin;
 
   input:disabled {
     cursor: not-allowed;

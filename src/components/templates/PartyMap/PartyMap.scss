@@ -26,8 +26,6 @@
 }
 
 body {
-  @include scrollbar;
-
   &.no-scroll {
     overflow: hidden;
   }
