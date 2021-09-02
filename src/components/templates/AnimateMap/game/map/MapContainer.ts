@@ -45,7 +45,6 @@ import { TooltipSystem } from "./systems/TooltipSystem";
 import { VenueSystem } from "./systems/VenueSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
-import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
 
 export class MapContainer extends Container {
   private _app: Application;
@@ -109,7 +108,7 @@ export class MapContainer extends Container {
   }
 
   private initViewport() {
-    this._viewport = new Viewport({ noTicker: true });
+    this._viewport = new Viewport({ noTicker: true, divWheel: this._app.view });
     this.addChild(this._viewport);
   }
 
@@ -225,7 +224,6 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
 
-    this._engine.addSystem(new ZoomedSpriteSystem(), SystemPriorities.render);
     this._engine.addSystem(
       new ViewportSystem(
         this._app,
@@ -238,7 +236,10 @@ export class MapContainer extends Container {
       new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
-    this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
+    this._engine.addSystem(
+      new FirebarrelSystem(this.entityFactory),
+      SystemPriorities.render
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -303,7 +304,7 @@ export class MapContainer extends Container {
           if (this.entityFactory) {
             GameInstance.instance.dataProvider.firebarrelsData.forEach(
               (firebarrel) => {
-                this.entityFactory?.createBarrel(firebarrel);
+                this.entityFactory?.createFireBarrel(firebarrel);
               }
             );
           }

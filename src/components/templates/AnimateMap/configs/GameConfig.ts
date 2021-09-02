@@ -34,6 +34,10 @@ export class GameConfig {
 
   public static QA_BOTS_NUMBER = 0; //TODO: remove this
 
+  public static AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING = false;
+  public static AVATAR_TEXTURE_DEFAULT_SIZE = 128;
+
+  public static VENUE_MIN_PEOPLE_COUNT_FOR_HALO = 1;
   public static VENUE_TEXTURE_DEFAULT_SIZE = 256;
   public static VENUE_DEFAULT_COLLISION_RADIUS = 60;
   public static VENUE_DEFAULT_SIZE = Math.floor(

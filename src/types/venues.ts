@@ -269,6 +269,10 @@ export interface AuditoriumVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   template: VenueTemplate.animatemap;
   playerioGameId: string;
+  playerioMaxPlayerPerRoom?: number;
+  playerioFrequencyUpdate?: number;
+  //@dept Right now advanced mode in develop, don't add this flag to venue!
+  playerioAdvancedMode?: boolean;
 }
 
 export interface Question {

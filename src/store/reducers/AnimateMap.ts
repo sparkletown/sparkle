@@ -6,12 +6,12 @@ import {
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
 
+import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
+import { User } from "types/User";
 import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
-
-import { Firebarrel } from "../../types/animateMap";
 
 export interface AnimateMapEntity {
   x: number;
@@ -19,11 +19,11 @@ export interface AnimateMapEntity {
   data: ReplicatedUserData | ReplicatedVenueData | ReplicatedFirebarrelData;
 }
 
-export interface ReplicatedUserData {
+export interface ReplicatedUserData extends User {
   id: string;
+  partyName?: string;
   messengerId: number; //playerio messager id
-  videoUrlString: string;
-  avatarUrlString: string | string[];
+  pictureUrl?: string;
   dotColor: number; //hex
   hat?: string;
   accessories?: string;
@@ -38,6 +38,7 @@ export interface ReplicatedVenueData extends Room {
   id: number;
   isLive: boolean;
   countUsers: number;
+  withoutPlate?: boolean;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
@@ -49,7 +50,7 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 }
 
 export interface ReplicatedFirebarrelData extends Firebarrel {
-  connectedUsers: ReplicatedUser[];
+  connectedUsers?: string[];
 }
 
 export interface ReplicatedFirebarrel extends AnimateMapEntity {
@@ -59,9 +60,9 @@ export interface ReplicatedFirebarrel extends AnimateMapEntity {
 export class PlayerModel implements ReplicatedUser {
   public data: ReplicatedUserData = {
     id: "",
+    partyName: "",
     messengerId: 0,
-    videoUrlString: "",
-    avatarUrlString: "",
+    pictureUrl: "",
     dotColor: Math.floor(Math.random() * 16777215),
   };
 
@@ -74,7 +75,7 @@ export class PlayerModel implements ReplicatedUser {
   ) {
     this.data.id = id;
     this.data.messengerId = messengerId;
-    this.data.avatarUrlString = avatarUrlString;
+    this.data.pictureUrl = avatarUrlString;
   }
 }
 
@@ -131,7 +132,6 @@ export const animateMapReducer: AnimateMapReducer = (
 
     case AnimateMapActionTypes.SET_LAST_ZOOM:
       const { lastZoom } = action.payload;
-      console.log("SAVE lastZoom ", lastZoom);
       window.sessionStorage.setItem(
         "AnimateMapState.lastZoom",
         lastZoom.toString()

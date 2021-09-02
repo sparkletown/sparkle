@@ -16,26 +16,31 @@ import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { VenueComponent } from "../components/VenueComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
+import { HoverIn } from "../graphics/HoverIn";
+import { HoverOut } from "../graphics/HoverOut";
 import { Venue } from "../graphics/Venue";
 import { VenueHalo } from "../graphics/VenueHalo";
 import { VenueHaloAnimated } from "../graphics/VenueHaloAnimated";
 import { VenueHaloEmpty } from "../graphics/VenueHaloEmpty";
-import { VenueHoverIn } from "../graphics/VenueHoverIn";
-import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
 import EntityFactory from "./EntityFactory";
 
-const addVenueTooltip = (
-  venue: ReplicatedVenue,
-  entity: Entity,
-  text: string
-) => {
+const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
+const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
+const TOOLTIP_TEXT_LENGTH_MAX = 18;
+
+const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
-
+  const text =
+    venue.data.title.length > TOOLTIP_TEXT_LENGTH_MAX
+      ? venue.data.title.slice(0, 15) + "..."
+      : venue.data.title;
   const tooltip = new TooltipComponent(text);
-  tooltip.borderColor = venue.data.isLive ? 0x7c46fb : 0x655a4d;
+  tooltip.borderColor = venue.data.isLive
+    ? TOOLTIP_COLOR_ISLIVE
+    : TOOLTIP_COLOR_DEFAULT;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
@@ -44,9 +49,13 @@ const updateVenueImage = (
   replicatedVenue: ReplicatedVenue,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
-) => {
-  new CropVenue(replicatedVenue.data.image_url, replicatedVenue.data.isEnabled)
+): Promise<void> => {
+  return new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
+    .setWithoutPlate(replicatedVenue.data.withoutPlate)
+    .setUsersCountColor(
+      replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT
+    )
     .execute()
     .then((comm: CropVenue) => {
       const size = GameConfig.VENUE_DEFAULT_SIZE;
@@ -55,17 +64,25 @@ const updateVenueImage = (
       positionComponent.scaleX = scale;
 
       const venueSprite = spriteComponent.view as Venue;
-      if (venueSprite.venue) {
-        venueSprite.venue.parent?.removeChild(venueSprite.venue);
+      if (venueSprite.main) {
+        venueSprite.main.parent?.removeChild(venueSprite.main);
       }
 
-      venueSprite.venue = Sprite.from(comm.canvas);
-      venueSprite.venue.anchor.set(0.5);
-      venueSprite.addChild(venueSprite.venue);
+      venueSprite.main = Sprite.from(comm.canvas);
+      if (replicatedVenue.data.withoutPlate) {
+        // 1 - 0.5 / ((comm.canvas.height * 2) / comm.canvas.width)
+        venueSprite.main.anchor.set(0.5, 0.5);
+      } else {
+        venueSprite.main.anchor.set(0.5);
+      }
+      venueSprite.addChild(venueSprite.main);
       return Promise.resolve();
     })
     .catch((err) => {
       console.log("err", err);
+    })
+    .finally(() => {
+      return Promise.resolve();
     });
 };
 
@@ -83,6 +100,7 @@ export const updateVenueEntity = (
   if (!node) {
     return;
   }
+
   node.venue.model = venue;
   node.entity.add(node.venue);
 
@@ -152,13 +170,7 @@ export const createVenueEntity = (
           const waiting = creator.getWaitingVenueClick();
           const currentVenue = getCurrentReplicatedVenue(venueComponent);
           if (!waiting || waiting.data.id !== currentVenue.data.id) {
-            addVenueTooltip(
-              currentVenue,
-              entity,
-              currentVenue.data.title.length > 18
-                ? currentVenue.data.title.slice(0, 15) + "..."
-                : currentVenue.data.title
-            );
+            addVenueTooltip(currentVenue, entity);
           }
 
           // add increase
@@ -170,7 +182,7 @@ export const createVenueEntity = (
             hoverEffectEntity = new Entity();
             hoverEffectEntity.add(
               new AnimationComponent(
-                new VenueHoverIn(comm.view as Venue, hoverEffectDuration),
+                new HoverIn(comm.view as Venue, hoverEffectDuration),
                 hoverEffectDuration
               )
             );
@@ -189,7 +201,7 @@ export const createVenueEntity = (
             hoverEffectEntity = new Entity();
             hoverEffectEntity.add(
               new AnimationComponent(
-                new VenueHoverOut(comm.view as Venue, hoverEffectDuration),
+                new HoverOut(comm.view as Venue, hoverEffectDuration),
                 hoverEffectDuration
               )
             );
@@ -220,7 +232,12 @@ export const createVenueEntity = (
 
   engine.addEntity(entity);
 
-  updateVenueImage(venue, spriteComponent, positionComponent);
+  spriteComponent.view.visible = false;
+  updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
+    if (spriteComponent && spriteComponent.view) {
+      spriteComponent.view.visible = true;
+    }
+  });
 
   return entity;
 };

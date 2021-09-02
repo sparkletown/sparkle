@@ -9,16 +9,35 @@ export class CropVenue implements Command {
   private resolve?: Function;
   public canvas: HTMLCanvasElement;
   public usersCount = 0;
+  public withoutPlate = false;
+  public usersCountColor = "rgb(0, 0, 0, 0.5)";
 
   private static VENUE_PLATE?: HTMLCanvasElement;
   private static VENUE_PEOPLE?: HTMLCanvasElement;
 
-  constructor(private url: string, private venueIsEnabled = false) {
+  constructor(private url: string) {
     this.canvas = document.createElement("canvas");
+  }
+
+  public setWithoutPlate(value: boolean = false): this {
+    this.withoutPlate = value;
+    return this;
   }
 
   public setUsersCount(usersCount: number): this {
     this.usersCount = usersCount;
+    return this;
+  }
+
+  public setUsersCountColor(color: number): this {
+    const str = color.toString(16);
+    this.usersCountColor = `rgb(${parseInt(
+      str.substring(0, 2),
+      16
+    )}, ${parseInt(str.substring(2, 4), 16)}, ${parseInt(
+      str.substring(4),
+      16
+    )}, 0.5)`;
     return this;
   }
 
@@ -97,7 +116,50 @@ export class CropVenue implements Command {
     });
   }
 
-  private doIt() {
+  private doIt(): void {
+    if (this.withoutPlate) {
+      this.doItWithoutPlate();
+    } else {
+      this.doItWithPlate();
+    }
+  }
+
+  private doItWithoutPlate() {
+    new LoadImage(this.url)
+      .execute()
+      .then((comm) => {
+        if (!comm.image) return console.error();
+
+        const border = 1;
+        this.canvas.width = GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+        this.canvas.height =
+          comm.image.height * (this.canvas.width / comm.image.width);
+
+        const ctx = this.canvas.getContext("2d");
+        if (ctx) {
+          ctx.drawImage(
+            comm.image,
+            0,
+            0,
+            comm.image.width,
+            comm.image.height,
+            border,
+            border,
+            this.canvas.width + border * 2,
+            this.canvas.height + border * 2
+          );
+
+          return this.drawUsersCount(ctx);
+        } else {
+          return Promise.reject();
+        }
+      })
+      .finally(() => {
+        this.complete();
+      });
+  }
+
+  private doItWithPlate() {
     new LoadImage(this.url)
       .execute()
       .then((comm: LoadImage) => {
@@ -150,6 +212,8 @@ export class CropVenue implements Command {
           ctx.restore();
 
           return this.drawUsersCount(ctx);
+        } else {
+          return Promise.reject();
         }
       })
       .catch((error) => {
@@ -184,9 +248,7 @@ export class CropVenue implements Command {
     const radius = width / 6;
 
     ctx.save();
-    ctx.fillStyle = this.venueIsEnabled
-      ? "rgba(124, 70, 251, 0.5)"
-      : "rgba(0, 0, 0, .5)";
+    ctx.fillStyle = this.usersCountColor;
 
     ctx.beginPath();
     ctx.moveTo(x, ctx.canvas.height - stroke);
