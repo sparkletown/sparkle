@@ -72,7 +72,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const { isLoading, ownedVenues } = useOwnedVenues({
+  const { ownedVenues } = useOwnedVenues({
     currentVenueId: selectedVenueId,
   });
 
@@ -108,8 +108,6 @@ const VenueList: React.FC<VenueListProps> = ({
       )),
     [currentSortingOption, toggleSortingDropdown]
   );
-
-  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -173,7 +171,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const { currentVenue } = useOwnedVenues({ currentVenueId: venueId });
+  const { isLoading, currentVenue } = useOwnedVenues({
+    currentVenueId: venueId,
+  });
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
@@ -204,6 +204,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
       },
     ].filter(isTruthyFilter);
   }, [matchUrl, currentVenue]);
+
+  if (isLoading) return <Loading />;
 
   if (!currentVenue) {
     return <>{"Oops, seems we can't find your venue!"}</>;
