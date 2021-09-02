@@ -21,7 +21,7 @@ import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
 import { FirebarrelHalo } from "../graphics/FirebarrelHalo";
 import { FirebarrelHaloAnimated } from "../graphics/FirebarrelHaloAnimated";
 import { FirebarrelHaloEmpty } from "../graphics/FirebarrelHaloEmpty";
-import { FirebarrelShouter } from "../graphics/FirebarrelShouter";
+// import { FirebarrelShouter } from "../graphics/FirebarrelShouter";
 import { FirebarrelTooltip } from "../graphics/FirebarrelTooltip";
 import { HoverIn } from "../graphics/HoverIn";
 import { HoverOut } from "../graphics/HoverOut";
@@ -119,9 +119,9 @@ export const createFirebarrelEntity = (
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
 
-  const shouterTimeOut = 250 * 6 + Math.random() * 120;
-  const shouterCurrentTime = shouterTimeOut * Math.random();
-  const shouter = new FirebarrelShouter(shouterTimeOut, shouterCurrentTime);
+  // const shouterTimeOut = 250 * 6 + Math.random() * 120;
+  // const shouterCurrentTime = shouterTimeOut * Math.random();
+  // const shouter = new FirebarrelShouter(shouterTimeOut, shouterCurrentTime);
   const barrelComponent = new FirebarrelComponent(barrel, fsm);
   const positionComponent = new PositionComponent(barrel.x, barrel.y);
   const spriteComponent = new SpriteComponent();
@@ -167,7 +167,7 @@ export const createFirebarrelEntity = (
     .add(positionComponent)
     .add(spriteComponent)
     .add(new FirebarrelCamIcon(spriteComponent.view))
-    .add(shouter)
+    // .add(shouter)
     .add(
       new HoverableSpriteComponent(
         () => {
