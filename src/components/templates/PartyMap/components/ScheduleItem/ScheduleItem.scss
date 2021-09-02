@@ -48,40 +48,40 @@
     padding: 5px 15px;
     background: $primary--live;
     box-shadow: 0px 0px 8px rgba($primary, 0.8);
-    border-radius: 22px;
+    border-radius: $border-radius--xl;
   }
 
   &__event-time {
-    font-weight: 400;
-    font-size: 14px;
+    font-weight: $font-weight--400;
+    font-size: $font-size--md;
   }
 
   &__event-end-time {
-    font-weight: 400;
-    font-size: 14px;
+    font-weight: $font-weight--400;
+    font-size: $font-size--md;
     opacity: 0.6;
   }
 
   &__event-name {
     display: block;
-    font-weight: 500;
-    font-size: 16px;
+    font-weight: $font-weight--500;
+    font-size: $font-size--lg;
   }
 
   &__event-date {
     display: block;
-    font-weight: 700;
+    font-weight: $font-weight--700;
     color: $concrete;
   }
 
   &__event-host-prefix {
-    font-weight: 400;
-    font-size: 14px;
+    font-weight: $font-weight--400;
+    font-size: $font-size--md;
     opacity: 0.6;
   }
 
   &__event-host {
-    font-weight: 400;
-    font-size: 14px;
+    font-weight: $font-weight--400;
+    font-size: $font-size--md;
   }
 }

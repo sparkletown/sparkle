@@ -62,17 +62,12 @@ export const RoomModal: React.FC<RoomModalProps> = ({
     <Modal
       show={show}
       onHide={onHide}
-      contentClassName="RoomModal__modal-content"
+      className="RoomModal"
+      contentClassName="modal-content"
       centered
     >
       <Modal.Body className="RoomModal__modal-body">
-        <div className="RoomModal">
-          <RoomModalContent
-            room={room}
-            venueEvents={venueEvents}
-            venue={venue}
-          />
-        </div>
+        <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </Modal.Body>
     </Modal>
   );

@@ -70,7 +70,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
       <div className="ScheduleItem__event-info">
         <div className="ScheduleItem__event-name">{event.name}</div>
         <div>
-          <span className="ScheduleItem__event-host-prefix">by</span>
+          <span className="ScheduleItem__event-host-prefix">by </span>
           <span className="ScheduleItem__event-host">{event.host}</span>
         </div>
         <div className="ScheduleItem__event-description">

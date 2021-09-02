@@ -4,20 +4,14 @@ $border-radius: 22px;
 $spacing: 20px;
 
 .RoomModal {
-  display: flex;
-  flex-direction: column;
-  max-height: 80vh;
-  background-color: $dark;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  // This overrides the default black background color of react-boostrap's modal.
-  &__modal-content {
-    background-color: $dark !important;
-  }
-
   &__modal-body {
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    background-color: $dark;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   &__title {
@@ -48,9 +42,8 @@ $spacing: 20px;
     background-position: center;
   }
 
-  &__content {
+  .modal-content {
     background: $dark;
-    padding: 10px $spacing;
     border-radius: $border-radius;
     height: fit-content;
   }
@@ -61,7 +54,7 @@ $spacing: 20px;
   }
 
   &__userlist {
-    margin-top: $spacing;
+    margin: $spacing 0;
   }
 
   &__description {
