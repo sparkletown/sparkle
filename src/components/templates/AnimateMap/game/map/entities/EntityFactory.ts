@@ -53,7 +53,10 @@ import { ViewportNode } from "../nodes/ViewportNode";
 import { WaitingVenueClickNode } from "../nodes/WaitingVenueClickNode";
 
 import { createBotEntity } from "./createBotEntity";
-import { createFirebarrelEntity } from "./createFirebarrelEntity";
+import {
+  createFirebarrelEntity,
+  updateFirebarrelEntity,
+} from "./createFirebarrelEntity";
 import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
@@ -490,6 +493,8 @@ export default class EntityFactory {
   }
 
   public createFireBarrel(barrel: ReplicatedFirebarrel): Entity {
+    const node = this.getFirebarrelNode(barrel.data.id);
+    if (node) return node.entity;
     return createFirebarrelEntity(barrel, this);
   }
 
@@ -557,6 +562,8 @@ export default class EntityFactory {
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
+    const node = this.getVenueNode(venue);
+    if (node) return node.entity;
     return createVenueEntity(venue, this);
   }
 
@@ -634,6 +641,6 @@ export default class EntityFactory {
       return;
     }
 
-    // TODO: update image, coords, etc
+    updateFirebarrelEntity(firebarrel, this);
   }
 }
