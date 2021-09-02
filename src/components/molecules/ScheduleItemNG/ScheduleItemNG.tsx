@@ -101,6 +101,10 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     }
   }, [enterRoom, event, eventRoom]);
 
+  const enterEventVenue = useCallback(() => enterVenue(event.venueId), [
+    event.venueId,
+  ]);
+
   const eventImage = getFirebaseStorageResizedImage(
     eventRoom?.image_url ?? event.venueIcon,
     {
@@ -147,7 +151,10 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         <span className={timeContainer}>
           {isCurrentEventLive
             ? "Live"
-            : formatTimeLocalised(eventStartTime(event))}
+            : formatTimeLocalised(eventStartTime(event)) + "-"}
+        </span>
+        <span className="ScheduleItemNG__until ScheduleItemNG__time--end">
+          {isCurrentEventLive && "until "}
         </span>
 
         <span className="ScheduleItemNG__date ScheduleItemNG__time--end">
@@ -170,16 +177,17 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       <div className="ScheduleItemNG__details">
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">
-          <span className="ScheduleItemNG__place--location">in</span>{" "}
-          {eventVenue?.name}
           {eventRoom && (
             <>
-              {", "}
               <span className="button--a" onClick={enterRoom}>
                 {event.room}
               </span>
+              <span className="ScheduleItemNG__place--location"> in </span>
             </>
           )}
+          <span className="button--a" onClick={enterEventVenue}>
+            {eventVenue?.name}
+          </span>
         </div>
         {isEventExpanded && (
           <>
