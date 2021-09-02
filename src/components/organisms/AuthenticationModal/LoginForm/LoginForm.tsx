@@ -6,9 +6,15 @@ import { VenueAccessMode } from "types/VenueAcccess";
 
 import { venueSelector } from "utils/selectors";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { NotFound } from "components/atoms/NotFound";
 
 export interface LoginFormProps {
   displayRegisterForm: () => void;
@@ -32,7 +38,6 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 }) => {
   const firebase = useFirebase();
 
-  const venue = useSelector(venueSelector);
   const {
     register,
     handleSubmit,
@@ -45,7 +50,15 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     reValidateMode: "onChange",
   });
 
-  if (!venue) return null;
+  const venueFromSelector = useSelector(venueSelector);
+  const venueId = useVenueId();
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
+  const venue = venueFromSelector ?? currentVenue;
+  if (!venue) {
+    return isCurrentVenueLoaded ? <NotFound fullScreen /> : <LoadingPage />;
+  }
 
   const clearBackendErrors = () => {
     clearError("backend");

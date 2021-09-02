@@ -14,6 +14,8 @@ import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { NotFound } from "components/atoms/NotFound";
+
 import { RunTabView } from "./components/RunTabView/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
@@ -103,8 +105,12 @@ export const AdminVenueView: React.FC = () => {
     [history, venueId]
   );
 
-  if (!isCurrentVenueLoaded) {
-    return <LoadingPage />;
+  if (!venueId) {
+    return <NotFound />;
+  }
+
+  if (!venue) {
+    return isCurrentVenueLoaded ? <NotFound /> : <LoadingPage />;
   }
 
   if (!isAdminUser) {

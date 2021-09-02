@@ -767,3 +767,6 @@ export const ALWAYS_EMPTY_ARRAY = [];
 Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
+
+// NOTE: flag for components that display Not Found screen or use some mitigation when no venueId or no venue exists
+export const ALLOW_NO_VENUE: boolean = true;

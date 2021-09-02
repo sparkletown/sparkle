@@ -14,7 +14,11 @@ import { isEmpty } from "lodash";
 
 import { IS_BURN } from "secrets";
 
-import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
+import {
+  ALLOW_NO_VENUE,
+  DEFAULT_SHOW_SCHEDULE,
+  PLAYA_VENUE_ID,
+} from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -197,10 +201,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []
   );
 
-  if (!venueId || !currentVenue) return null;
+  if (!ALLOW_NO_VENUE && !(venueId && currentVenue)) {
+    console.warn(
+      NavBar.name,
+      `aborted display because of missing id (${venueId}) or venue (${currentVenue})`
+    );
+    return null;
+  }
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue.name;
+  const navbarTitle = parentVenue?.name ?? currentVenue?.name;
 
   const radioStation = hasRadioStations(radioStations) && radioStations[0];
 
@@ -231,7 +241,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 />
               )}
 
-              {shouldShowSchedule ? (
+              {shouldShowSchedule && venueId ? (
                 <button
                   aria-label="Schedule"
                   className={`nav-party-logo ${
@@ -245,14 +255,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers venueId={venueId} />
+              <VenuePartygoers venueId={venueId ?? ""} />
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar venueId={venueId} />
+                <NavSearchBar venueId={venueId ?? ""} />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -342,7 +352,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
         </div>
       </header>
 
-      {shouldShowSchedule && (
+      {shouldShowSchedule && venueId && (
         <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
           className={`schedule-dropdown-backdrop ${

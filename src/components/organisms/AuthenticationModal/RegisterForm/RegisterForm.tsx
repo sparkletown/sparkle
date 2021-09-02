@@ -12,14 +12,19 @@ import { VenueAccessMode } from "types/VenueAcccess";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { NotFound } from "components/atoms/NotFound";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -53,7 +58,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector(venueSelector);
+  const venueFromSelector = useSelector(venueSelector);
+  const venueId = useVenueId();
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
+  const venue = venueFromSelector ?? currentVenue;
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -80,7 +90,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   };
 
   if (!venue) {
-    return <>Loading...</>;
+    return isCurrentVenueLoaded ? <NotFound fullScreen /> : <LoadingPage />;
   }
 
   const onSubmit = async (data: RegisterFormData) => {

@@ -19,6 +19,8 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { NotFound } from "components/atoms/NotFound";
+
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into Questions.scss
@@ -83,13 +85,14 @@ export const Questions: React.FC = () => {
   }, [venue]);
 
   if (!venueId) {
-    return <>Error: Missing required venueId param</>;
+    console.error(Questions.name, "Error: Missing required venueId param");
+    return <NotFound fullScreen />;
   }
 
-  if (isLoaded(venue) && !venue) {
-    return <>Error: venue not found for venueId={venueId}</>;
+  if (!venue && isLoaded(venue)) {
+    console.error(Questions.name, "Error: Missing venue for venueId:", venueId);
+    return <NotFound fullScreen />;
   }
-
   if (!venue || isSovereignVenueLoading) {
     return <LoadingPage />;
   }
