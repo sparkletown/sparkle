@@ -7,7 +7,7 @@ import { avatarCycles, avatarFeets } from "../../constants/AssetConstants";
 import EntityFactory from "../entities/EntityFactory";
 import { Avatar } from "../graphics/Avatar";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { PlayerNode } from "../nodes/PlayerNode";
+import { PlayerMovementNode } from "../nodes/PlayerMovementNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class AvatarTuningSystem extends System {
@@ -15,7 +15,7 @@ export class AvatarTuningSystem extends System {
 
   private viewport?: NodeList<ViewportNode>;
   private avatars?: NodeList<AvatarTuningNode>;
-  private player?: NodeList<PlayerNode>;
+  private player?: NodeList<PlayerMovementNode>;
   private zoomLevelCurrent = 0;
   private zoomChanged = true;
 
@@ -25,7 +25,7 @@ export class AvatarTuningSystem extends System {
   }
 
   addToEngine(engine: Engine) {
-    this.player = engine.getNodeList(PlayerNode);
+    this.player = engine.getNodeList(PlayerMovementNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
@@ -69,11 +69,7 @@ export class AvatarTuningSystem extends System {
     }
     this.zoomChanged = false;
 
-    for (
-      let avatar: AvatarTuningNode | null | undefined = this.avatars?.head;
-      avatar;
-      avatar = avatar.next
-    ) {
+    for (let avatar = this.avatars?.head; avatar; avatar = avatar.next) {
       this.handleAvatarAdded(avatar);
     }
 
@@ -82,11 +78,11 @@ export class AvatarTuningSystem extends System {
     }
   }
 
-  private handlePlayerAdded = (node: PlayerNode) => {
+  private handlePlayerAdded = (node: PlayerMovementNode) => {
     this.creator.updatePlayerTuning(node);
   };
 
-  private handlePlayerRemoved = (node: PlayerNode) => {
+  private handlePlayerRemoved = (node: PlayerMovementNode) => {
     this.creator.removePlayerTuning(node);
   };
 
@@ -124,46 +120,22 @@ export class AvatarTuningSystem extends System {
       }
       if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_WALKING) {
         view.cycle = Sprite.from(avatarFeets[0]);
-        view.cycle.y = view.avatar.height / 2;
+        view.cycle.y = view.avatar.height * 0.55;
         view.cycle.anchor.set(0.5);
         // TODO HARDCODE
-        view.cycle.scale.set(2);
+        view.cycle.scale.set(1);
 
         view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
       } else if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING) {
         view.cycle = Sprite.from(avatarCycles[0]);
-        view.cycle.y = view.avatar.height / 2;
+        view.cycle.y = view.avatar.height * 0.46;
         view.cycle.anchor.set(0.5);
         // TODO HARDCODE
-        view.cycle.scale.set(1.4);
+        view.cycle.scale.set(1.1);
 
         view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
       }
     }
-
-    // // CYCLE
-    // if (
-    //   this.player &&
-    //   this.player.head &&
-    //   this.player.head.player.data.id === node.tuning.user.id &&
-    //   this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING &&
-    //   !view.cycle
-    // ) {
-    //   view.cycle = Sprite.from(avatarCycles[0]);
-    //   view.cycle.y = view.avatar.height / 2;
-    //   view.cycle.anchor.set(0.5);
-    //   // TODO HARDCODE
-    //   view.cycle.scale.set(1.3);
-    //
-    //   view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-    // } else if (
-    //   (!node.tuning.user.data.cycle ||
-    //     this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_CYCLING) &&
-    //   view.cycle
-    // ) {
-    //   view.removeChild(view.cycle);
-    //   view.cycle = null;
-    // }
 
     // HAT
     if (

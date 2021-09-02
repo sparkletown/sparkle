@@ -78,9 +78,14 @@ export class TooltipSystem extends System {
     // TODO HACK
     const tooltipHeight = 40;
     const k =
-      node.tooltip.collisionRadius * this.viewport.head.viewport.zoomViewport;
+      node.tooltip.collisionRadius *
+      this.viewport.head.viewport.zoomViewport *
+      1.1;
     const delta =
-      (k + tooltipHeight / 2) * (node.tooltip.position === "bottom" ? 1 : -1);
+      node.tooltip.position === "center"
+        ? 0
+        : (k + tooltipHeight / 2) *
+          (node.tooltip.position === "bottom" ? 1 : -1);
 
     node.tooltip.view?.position.set(
       point.x - node.tooltip.view.width / 2,
@@ -90,6 +95,10 @@ export class TooltipSystem extends System {
 
   // TODO graphics component
   private drawTooltipElement(node: TooltipNode): Sprite {
+    if (node.tooltip.view) {
+      return node.tooltip.view;
+    }
+
     const view = new Sprite();
 
     const txt = node.tooltip.text;

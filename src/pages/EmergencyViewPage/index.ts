@@ -1,0 +1,1 @@
+export { EmergencyViewPage } from "./EmergencyViewPage";
