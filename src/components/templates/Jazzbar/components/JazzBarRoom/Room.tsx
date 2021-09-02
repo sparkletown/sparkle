@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
+import classNames from "classnames";
 import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
@@ -30,6 +31,7 @@ interface RoomProps {
   hasChairs?: boolean;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
+  shouldShowJukebox: boolean;
 }
 
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
@@ -45,6 +47,7 @@ const Room: React.FC<RoomProps> = ({
   hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
+  shouldShowJukebox,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");
@@ -229,6 +232,10 @@ const Room: React.FC<RoomProps> = ({
     return [sidedVideoParticipants, otherVideoParticipants];
   }, [participants]);
 
+  const containerClasses = classNames("jazzbar-room__participant", {
+    "jazzbar-room__participant-jukebox": shouldShowJukebox,
+  });
+
   const sidedVideos = useMemo(
     () =>
       sidedVideoParticipants.map((participant) => {
@@ -241,7 +248,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div key={participant.identity} className={containerClasses}>
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
@@ -251,7 +258,13 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [
+      sidedVideoParticipants,
+      meIsBartender,
+      worldUsersById,
+      roomName,
+      containerClasses,
+    ]
   );
 
   const otherVideos = useMemo(
@@ -266,7 +279,7 @@ const Room: React.FC<RoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div key={participant.identity} className={containerClasses}>
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
@@ -276,12 +289,18 @@ const Room: React.FC<RoomProps> = ({
           </div>
         );
       }),
-    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [
+      otherVideoParticipants,
+      meIsBartender,
+      worldUsersById,
+      roomName,
+      containerClasses,
+    ]
   );
 
   const myVideo = useMemo(() => {
     return room && profileData ? (
-      <div className="jazzbar-room__participant">
+      <div className={containerClasses}>
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -293,7 +312,14 @@ const Room: React.FC<RoomProps> = ({
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
+  }, [
+    meIsBartender,
+    room,
+    profileData,
+    defaultMute,
+    isAudioEffectDisabled,
+    containerClasses,
+  ]);
 
   if (!token) return null;
 

@@ -34,6 +34,11 @@
       flex-flow: wrap;
     }
 
+    .video-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
     .video-container {
       display: flex;
       flex-direction: column;
@@ -41,6 +46,10 @@
       width: 100%;
       padding: 0 10px;
       min-height: 395px;
+
+      &--seated {
+        min-height: 600px;
+      }
 
       grid-area: video;
 
@@ -118,6 +127,13 @@
           ".  video video ."
           ".  video video  ."
           "items items items items";
+
+        &-jukebox {
+          grid-template-rows: repeat(
+            auto-fill,
+            $video-participant-jukebox-height
+          );
+        }
       }
     }
   }

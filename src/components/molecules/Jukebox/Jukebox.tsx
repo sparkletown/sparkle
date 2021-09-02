@@ -44,9 +44,9 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
     tableId: tableName,
   });
 
-  const filteredMessages = messagesToDisplay.filter(
-    (msg) => msg.tableId === tableName
-  );
+  const filteredMessages = messagesToDisplay
+    .filter((msg) => msg.tableId === tableName)
+    .reverse();
 
   useEffect(() => {
     if (messagesToDisplay.length) {
