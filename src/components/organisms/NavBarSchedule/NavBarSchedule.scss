@@ -46,7 +46,6 @@ $schedule-btn--height: 51px;
 }
 
 .NavBarSchedule {
-  @include scrollbar;
   position: fixed;
   z-index: z(navbar-schedule);
   top: 0;
@@ -108,7 +107,6 @@ $schedule-btn--height: 51px;
   }
 
   &__weekdays {
-    @include scrollbar;
     display: flex;
     overflow: auto;
     cursor: default;

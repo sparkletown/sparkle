@@ -134,7 +134,6 @@ $reply-icon-radius: 20px;
   }
 
   &__replies {
-    @include scrollbar;
     background-color: opaque-black(0.14);
     padding: 0 $spacing--lg $spacing--lg $spacing--lg;
     font-size: $font-size--md;
