@@ -224,7 +224,7 @@ export class MotionCollisionSystem extends System {
     const x2 = playerNode.position.x;
     const y2 = playerNode.position.y;
     const distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    if (distance < artcarNode.collision.radius) {
+    if (distance <= artcarNode.collision.radius) {
       return true;
     }
     return false;

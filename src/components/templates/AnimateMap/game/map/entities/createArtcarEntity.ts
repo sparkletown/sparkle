@@ -4,6 +4,7 @@ import { Sprite } from "pixi.js";
 import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
 import { GameConfig } from "../../../configs/GameConfig";
+import { FIREBARELL_HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -42,6 +43,86 @@ const getCurrentReplicatedVenue = (
 ): ReplicatedUser => {
   return artcarComponent.artcar;
 };
+
+export const createArtcars = (creator: EntityFactory) => {
+  const arr = [
+    {
+      name: "Darth Paul Art Car",
+      link: "https://burn.sparklever.se/in/darthpaul",
+    },
+    {
+      name: "Hand Some Art Car",
+      link: "https://burn.sparklever.se/in/handsome",
+    },
+    {
+      name: "Lobo de Playa Art Car",
+      link: "https://burn.sparklever.se/in/lobodeplaya",
+    },
+    {
+      name: "Send Noods Art Car",
+      link: "thttps://burn.sparklever.se/in/sendnoods",
+    },
+    {
+      name: "Arachnia Art Car",
+      link: "https://burn.sparklever.se/in/arachnia",
+    },
+    {
+      name: "Silly Lily Art Car",
+      link: "https://burn.sparklever.se/in/sillylily",
+    },
+    {
+      name: "Glam Clam Art Car",
+      link: "https://burn.sparklever.se/in/glamclam",
+    },
+    {
+      name: "Dragon: The Car Art Car",
+      link: "https://burn.sparklever.se/in/dragonthecar",
+    },
+    { name: "Tri-Honk Art Car", link: "https://burn.sparklever.se/in/trihonk" },
+    {
+      name: "Caranirvana Art Car",
+      link: "https://burn.sparklever.se/in/caranivana",
+    },
+    {
+      name: "Boaty McBoatface Art Car",
+      link: "https://burn.sparklever.se/in/interiorcrocodilealligator",
+    },
+    {
+      name: "Interior Crocodile Alligator Art Car",
+      link: "https://burn.sparklever.se/in/lobodeplaya",
+    },
+    {
+      name: "Wheely Fish Sticks Art Car",
+      link: "https://burn.sparklever.se/in/wheelyfishsticks",
+    },
+  ];
+
+  arr.forEach((item) => {
+    const user: ReplicatedUser = {
+      x: 0,
+      y: 0,
+      data: {
+        id: item.link,
+        partyName: item.name,
+        messengerId: 0,
+        pictureUrl: "",
+        dotColor: 0,
+        hat: "",
+        accessories: "",
+        cycle: "",
+      },
+    };
+    creator.createArtcar(user);
+  });
+};
+/*
+
+https://burn.sparklever.se/in/trihonk
+https://burn.sparklever.se/in/caranivana
+https://burn.sparklever.se/in/boatymcboatface
+https://burn.sparklever.se/in/interiorcrocodilealligator
+https://burn.sparklever.se/in/wheelyfishsticks
+ */
 
 export const createArtcarEntity = (
   user: ReplicatedUser,
@@ -125,7 +206,16 @@ export const createArtcarEntity = (
     img.src = user.data.pictureUrl || "";
   }).then(() => {
     const spriteComponent: SpriteComponent = new SpriteComponent();
-    spriteComponent.view = Sprite.from(canvas);
+    spriteComponent.view = new Sprite();
+    spriteComponent.view.anchor.set(0.5);
+    const view = Sprite.from(canvas);
+    view.anchor.set(0.5);
+    const halo = Sprite.from(FIREBARELL_HALO);
+    halo.anchor.set(0.5);
+
+    spriteComponent.view.addChild(view);
+    spriteComponent.view.addChild(halo);
+
     entity.add(spriteComponent);
   });
 
