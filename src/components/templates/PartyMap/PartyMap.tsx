@@ -9,6 +9,7 @@ import {
   eventsByStartUtcSecondsSorter,
   isEventLiveOrFuture,
 } from "utils/event";
+import { getLastUrlParam, isExternalUrl } from "utils/url";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -29,37 +30,61 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
-  const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
-
-  const selfAndChildVenueIds = useMemo(
-    () =>
-      relatedVenues
-        .filter(
-          (relatedVenue) =>
-            relatedVenue.parentId === venue.id || relatedVenue.id === venue.id
-        )
-        .map((childVenue) => childVenue.id),
-    [relatedVenues, venue]
-  );
-
-  const { events: selfAndChildVenueEvents } = useVenueEvents({
-    venueIds: selfAndChildVenueIds,
-  });
-
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
   const hasSelectedRoom = !!selectedRoom;
 
-  const selectedRoomEvents = useMemo(() => {
-    if (!selfAndChildVenueEvents || !selectedRoom) return [];
+  const isNotExternalLink = useMemo(
+    () => !isExternalUrl(selectedRoom?.url ?? ""),
+    [selectedRoom]
+  );
+  const isExternalLink = useMemo(
+    () => !isExternalUrl(selectedRoom?.url ?? ""),
+    [selectedRoom]
+  );
 
-    return selfAndChildVenueEvents
+  const venueId = useMemo(() => {
+    if (hasSelectedRoom) {
+      const roomVenueId = isExternalLink
+        ? venue.id
+        : getLastUrlParam(selectedRoom?.url ?? "")[0];
+      return roomVenueId;
+    } else {
+      return venue.id;
+    }
+  }, [hasSelectedRoom, selectedRoom?.url, isExternalLink, venue]);
+
+  const { relatedVenues: selectedRoomRelatedVenues } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const selectedRoomselfAndChildVenueIds = useMemo(
+    () => selectedRoomRelatedVenues.map((childVenue) => childVenue.id),
+    [selectedRoomRelatedVenues]
+  );
+
+  const { events: selectedRoomEventsSelfAndChildVenueEvents } = useVenueEvents({
+    venueIds: selectedRoomselfAndChildVenueIds,
+  });
+
+  const selectedRoomEvents = useMemo(() => {
+    if (!selectedRoomEventsSelfAndChildVenueEvents || !selectedRoom) return [];
+
+    return selectedRoomEventsSelfAndChildVenueEvents
       .filter(
         (event) =>
-          event.room === selectedRoom.title && isEventLiveOrFuture(event)
+          (event.room === selectedRoom.title ||
+            (isNotExternalLink &&
+              selectedRoomselfAndChildVenueIds.includes(event.venueId))) &&
+          isEventLiveOrFuture(event)
       )
       .sort(eventsByStartUtcSecondsSorter);
-  }, [selfAndChildVenueEvents, selectedRoom]);
+  }, [
+    selectedRoomEventsSelfAndChildVenueEvents,
+    selectedRoomselfAndChildVenueIds,
+    isNotExternalLink,
+    selectedRoom,
+  ]);
 
   const selectRoom = useCallback((room: Room) => {
     if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
