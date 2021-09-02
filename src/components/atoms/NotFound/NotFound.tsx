@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { ButtonNG } from "components/atoms/ButtonNG";
 
 import TV_IMAGE from "assets/images/old-tv-404.png";
-import SPARKLEVERSE_LANDSCAPE from "assets/images/sparkleverse-landscape.png";
+import SPARKLEVERSE_LANDSCAPE from "assets/images/sparkleverse-logo.png";
 
 import "./NotFound.scss";
 

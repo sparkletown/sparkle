@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 $message-container-width: 28rem;
-$denied-shape-size: 96px;
+$logo-distance: 96px;
 
 .NotFound {
   height: calc(100% - #{$reserved-page-height});
@@ -26,7 +26,9 @@ $denied-shape-size: 96px;
 
   &__logo {
     padding-bottom: $spacing--xxl;
-    height: 90px;
+    height: $logo-distance;
+    width: 100%;
+    height: 100%;
   }
 
   &__message-container {
