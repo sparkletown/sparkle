@@ -33,6 +33,6 @@ export const getUserLocationData = ({
 
   return {
     isLocationMatch,
-    userLastSeenLocation: userLocation.lastSeenIn,
+    ...userLocation,
   };
 };

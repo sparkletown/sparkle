@@ -52,10 +52,7 @@ export const useVisitedLocationsUser = ({
         const [parentLocation, childLocation] = location.split("/");
         const result = worldUsers
           .filter((user) => {
-            const {
-              isLocationMatch,
-              userLastSeenLocation,
-            } = getUserLocationData({
+            const { isLocationMatch, lastSeenAt } = getUserLocationData({
               worldUserLocationsById,
               user,
               location,
@@ -65,8 +62,7 @@ export const useVisitedLocationsUser = ({
 
             return (
               isLocationMatch &&
-              normalizeTimestampToMilliseconds(userLastSeenLocation) >
-                lastSeenThreshold
+              normalizeTimestampToMilliseconds(lastSeenAt) > lastSeenThreshold
             );
           })
           .map((user) => ({

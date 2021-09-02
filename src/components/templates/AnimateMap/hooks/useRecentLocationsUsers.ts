@@ -46,10 +46,9 @@ export const useRecentLocationsUsers = (
               worldUserLocationsById[user.id];
 
             return (
-              userLocation.lastSeenIn?.[venueName] &&
-              normalizeTimestampToMilliseconds(
-                userLocation.lastSeenIn[venueName]
-              ) > lastSeenThreshold
+              userLocation.lastSeenIn === venueName &&
+              normalizeTimestampToMilliseconds(userLocation.lastSeenAt) >
+                lastSeenThreshold
             );
           }),
         });
