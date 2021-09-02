@@ -1,0 +1,29 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+$dob-input-width: 10em;
+$checkbox-link-distance: 1em;
+
+.RegisterFormRF {
+  &__date-of-birth {
+    max-width: $reg-flow-button-width--max;
+  }
+
+  &__dob-container {
+    &.mod--flex-row {
+      align-items: flex-start;
+    }
+
+    .InputWrapRF {
+      margin: 0;
+      width: $dob-input-width;
+      min-width: min-content;
+    }
+  }
+
+  .CheckboxWrapRF {
+    a {
+      padding-left: $checkbox-link-distance;
+    }
+  }
+}

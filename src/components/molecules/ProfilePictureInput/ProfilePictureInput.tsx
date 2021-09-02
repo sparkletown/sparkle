@@ -97,7 +97,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>Or pick one from our Sparkle profile pics</small>
+      <small>Or choose from one of ours</small>
       <DefaultAvatars
         venueId={venueId}
         onAvatarClick={setPictureUrl}

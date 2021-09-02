@@ -208,7 +208,3 @@ export const ownedVenuesSelector: SparkleSelector<
 export const animateMapEnvironmentSoundSelector: SparkleSelector<boolean> = (
   state
 ) => state.animatemap.environmentSound;
-
-export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
-  state
-) => state.animatemap.firstEntrance;

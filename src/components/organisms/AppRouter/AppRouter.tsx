@@ -13,6 +13,7 @@ import { venueLandingUrl } from "utils/url";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
+import { LoginRF } from "pages/RegistrationFlow/LoginRF";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
@@ -95,6 +96,9 @@ export const AppRouter: React.FC = () => {
           />
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
           {/*<Route path="/login" component={Login} />*/}
+
+          {/* route for testing registration flow */}
+          <Route path="/login/:venueId" component={LoginRF} />
 
           <Route path="/v/:venueId">
             <Provided withWorldUsers withRelatedVenues>

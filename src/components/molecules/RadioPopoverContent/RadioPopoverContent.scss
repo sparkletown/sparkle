@@ -1,0 +1,9 @@
+@import "scss/constants.scss";
+
+.RadioPopoverContent {
+  &__title {
+    font-size: $font-size--md;
+    color: opaque-white(0.5);
+    margin-bottom: $spacing--lg;
+  }
+}

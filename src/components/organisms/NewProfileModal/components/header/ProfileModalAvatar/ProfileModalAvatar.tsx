@@ -82,12 +82,11 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
           showStatus={!isCurrentUser}
         />
         {editMode && (
-          <ImageOverlay
-            disabled={uploadingState.loading}
-            onClick={uploadProfilePic}
-          >
-            {uploadingState.loading ? "Uploading..." : "Upload new"}
-          </ImageOverlay>
+          <div onClick={uploadProfilePic}>
+            <ImageOverlay disabled={uploadingState.loading}>
+              {uploadingState.loading ? "Uploading..." : "Upload new"}
+            </ImageOverlay>
+          </div>
         )}
       </div>
       <input
