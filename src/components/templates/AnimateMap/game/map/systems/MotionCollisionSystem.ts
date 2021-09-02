@@ -6,6 +6,7 @@ import { CollisionComponent } from "../components/CollisionComponent";
 import { MovementComponent } from "../components/MovementComponent";
 import { PositionComponent } from "../components/PositionComponent";
 import EntityFactory from "../entities/EntityFactory";
+import { ArtcarNode } from "../nodes/ArtcarNode";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
@@ -15,6 +16,7 @@ export class MotionCollisionSystem extends System {
   private player?: NodeList<PlayerNode>;
   private colliders?: NodeList<MotionCollidedNode>;
   private venues?: NodeList<VenueNode>;
+  private artcars?: NodeList<ArtcarNode>;
   private barrels?: NodeList<FirebarrelNode>;
 
   private creator: EntityFactory;
@@ -28,6 +30,7 @@ export class MotionCollisionSystem extends System {
     this.player = engine.getNodeList(PlayerNode);
     this.colliders = engine.getNodeList(MotionCollidedNode);
     this.venues = engine.getNodeList(VenueNode);
+    this.artcars = engine.getNodeList(ArtcarNode);
     this.barrels = engine.getNodeList(FirebarrelNode);
   }
 
@@ -35,18 +38,41 @@ export class MotionCollisionSystem extends System {
     this.player = undefined;
     this.colliders = undefined;
     this.venues = undefined;
+    this.artcars = undefined;
     this.barrels = undefined;
   }
 
   update(time: number) {
     const playgroundMap = GameInstance.instance.getConfig().playgroundMap;
 
+    if (!this.colliders || !this.colliders.head) {
+      return;
+    }
+
     if (
-      this.colliders &&
-      this.colliders.head &&
-      (this.colliders.head.movement.velocityX !== 0 ||
-        this.colliders.head.movement.velocityY !== 0)
+      this.colliders.head.movement.velocityX === 0 &&
+      this.colliders.head.movement.velocityY === 0
     ) {
+      for (let node = this.artcars?.head; node; node = node.next) {
+        if (
+          this.collideObject(
+            this.colliders.head,
+            node.position.x,
+            node.position.y,
+            node.position,
+            node.collision
+          )
+        ) {
+          this.creator.createWaitingArtcarClick(node.artcar.artcar);
+
+          // GameInstance.instance.eventProvider.emit(
+          //     EventType.ON_VENUE_COLLISION,
+          //     node.venue.model
+          // );
+          break;
+        }
+      }
+    } else {
       if (
         this.collidePlaygroudnBounds(
           time,
@@ -90,6 +116,26 @@ export class MotionCollisionSystem extends System {
             EventType.ON_VENUE_COLLISION,
             node.venue.model
           );
+          break;
+        }
+      }
+
+      for (let node = this.artcars?.head; node; node = node.next) {
+        if (
+          this.collideObject(
+            this.colliders.head,
+            previousX,
+            previousY,
+            node.position,
+            node.collision
+          )
+        ) {
+          this.creator.createWaitingArtcarClick(node.artcar.artcar);
+
+          // GameInstance.instance.eventProvider.emit(
+          //     EventType.ON_VENUE_COLLISION,
+          //     node.venue.model
+          // );
           break;
         }
       }

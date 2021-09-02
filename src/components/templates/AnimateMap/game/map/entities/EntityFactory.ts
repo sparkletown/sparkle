@@ -8,22 +8,17 @@ import {
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
-import { Point } from "types/utility";
-
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
-import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
-import { EllipseComponent } from "../components/EllipseComponent";
 import { FirebarrelComponent } from "../components/FirebarrelComponent";
-import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
 import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
@@ -37,10 +32,12 @@ import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
+import { WaitingArtcarEnterClickComponent } from "../components/WaitingArtcarEnterClickComponent";
 import { WaitingVenueClickComponent } from "../components/WaitingVenueClickComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Avatar } from "../graphics/Avatar";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
+import { ArtcarNode } from "../nodes/ArtcarNode";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
 import { BotNode } from "../nodes/BotNode";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
@@ -52,6 +49,7 @@ import { VenueNode } from "../nodes/VenueNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 import { WaitingVenueClickNode } from "../nodes/WaitingVenueClickNode";
 
+import { createArtcarEntity } from "./createArtcarEntity";
 import { createBotEntity } from "./createBotEntity";
 import {
   createFirebarrelEntity,
@@ -64,6 +62,42 @@ export default class EntityFactory {
 
   constructor(engine: Engine) {
     this.engine = engine;
+  }
+
+  public createWaitingArtcarClick(venue: ReplicatedUser): Entity | undefined {
+    const nodes = this.engine.getNodeList(WaitingVenueClickNode);
+    while (nodes.head) {
+      this.engine.removeEntity(nodes.head.entity);
+    }
+
+    const venueNode = this.getArtcarNode(venue.data.id);
+    if (!venueNode) {
+      return undefined;
+    }
+
+    const tooltip = new TooltipComponent("", 50);
+    tooltip.view = new VenueTooltipEnter(
+      venueNode.artcar.artcar.data.partyName,
+      0x6943f5
+    );
+
+    const spriteComponent = new SpriteComponent();
+    spriteComponent.view = new Sprite();
+
+    const entity = new Entity()
+      // .add(new WaitingVenueClickComponent(venue))
+      .add(new WaitingArtcarEnterClickComponent(venue))
+      .add(new DeadComponent(250))
+      .add(spriteComponent)
+      .add(venueNode.position)
+      .add(tooltip);
+
+    this.engine.addEntity(entity);
+
+    // removeAllTooltip on this venue
+    venueNode.entity.remove(TooltipComponent);
+
+    return entity;
   }
 
   public createWaitingVenueClick(venue: ReplicatedVenue): Entity | undefined {
@@ -335,80 +369,17 @@ export default class EntityFactory {
   }
 
   public createArtcar(user: ReplicatedUser): Entity {
-    const pictureUrls = [user.data.pictureUrl];
+    return createArtcarEntity(user, this);
+  }
 
-    // if (!Array.isArray(pictureUrls)) {
-    //   pictureUrls = [pictureUrls];
-    // }
-
-    const scale = 0.3;
-
-    const config = GameInstance.instance.getConfig();
-    const innerRadius = config.venuesMainCircleOuterRadius;
-    const outerRadius = config.borderRadius;
-    const worldCenter: Point = config.worldCenter;
-
-    const angle = this.getRandomNumber(0, 360) * (Math.PI / 180);
-    const radiusX = this.getRandomNumber(innerRadius, outerRadius);
-    const radiusY = this.getRandomNumber(innerRadius, outerRadius);
-
-    user.x = worldCenter.x + Math.cos(angle) * radiusX;
-    user.y = worldCenter.y + Math.sin(angle) * radiusY;
-
-    const entity: Entity = new Entity();
-    const fsm: FSMBase = new FSMBase(entity);
-    fsm
-      .createState("moving")
-      .add(MovementComponent)
-      .withInstance(new MovementComponent())
-      .add(EllipseComponent)
-      .withInstance(
-        new EllipseComponent(
-          worldCenter.x,
-          worldCenter.y,
-          radiusX,
-          radiusY,
-          angle
-        )
-      );
-
-    entity
-      .add(new ArtcarComponent(user, fsm))
-      .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-      .add(new HoverableSpriteComponent());
-
-    fsm.changeState("moving");
-    this.engine.addEntity(entity);
-
-    const img: HTMLImageElement = new Image();
-    const canvas: HTMLCanvasElement = document.createElement("canvas");
-    const context: CanvasRenderingContext2D = canvas.getContext(
-      "2d"
-    ) as CanvasRenderingContext2D;
-    new Promise((resolve) => {
-      img.addEventListener("load", () => {
-        canvas.width = img.height;
-        canvas.height = img.width;
-        const x = canvas.width / 2;
-        const y = canvas.height / 2;
-        const width = img.width;
-        const height = img.height;
-        context.translate(x, y);
-        context.rotate(1.5708);
-        context.drawImage(img, -width / 2, -height / 2, width, height);
-        context.rotate(-1.5708);
-        context.translate(-x, -y);
-
-        resolve(true);
-      });
-      img.src = pictureUrls[0] ?? "";
-    }).then(() => {
-      const spriteComponent: SpriteComponent = new SpriteComponent();
-      spriteComponent.view = Sprite.from(canvas);
-      entity.add(spriteComponent);
-    });
-
-    return entity;
+  public getArtcarNode(id: string): ArtcarNode | undefined {
+    const nodes = this.engine.getNodeList(ArtcarNode);
+    for (let node = nodes.head; node; node = node.next) {
+      if (node.artcar.artcar.data.id === id) {
+        return node;
+      }
+    }
+    return undefined;
   }
 
   public updatePlayerTuning(node: PlayerNode) {
