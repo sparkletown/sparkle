@@ -7,7 +7,7 @@ import {
 } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
 import { GameConfig } from "../../../configs/GameConfig";
-import { FIREBARELL_HALO } from "../../constants/AssetConstants";
+import { artcarsHalo } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -132,11 +132,12 @@ export const createArtcarEntity = (
     spriteComponent.view.anchor.set(0.5);
     const view = Sprite.from(canvas);
     view.anchor.set(0.5);
-    const halo = Sprite.from(FIREBARELL_HALO);
+    const halo = Sprite.from(artcarsHalo[user.data.dotColor]);
+    halo.scale.set(2);
     halo.anchor.set(0.5);
 
-    spriteComponent.view.addChild(view);
     spriteComponent.view.addChild(halo);
+    spriteComponent.view.addChild(view);
 
     entity.add(spriteComponent);
   });

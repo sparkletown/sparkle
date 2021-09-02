@@ -20,6 +20,19 @@ import ARTCAR__9 from "assets/images/AnimateMap/artcars13/9.png";
 import ARTCAR__10 from "assets/images/AnimateMap/artcars13/10.png";
 import ARTCAR__11 from "assets/images/AnimateMap/artcars13/11.png";
 import ARTCAR__12 from "assets/images/AnimateMap/artcars13/12.png";
+import ARTCAR__HALO_0 from "assets/images/AnimateMap/artcarsHalo/0.png";
+import ARTCAR__HALO_1 from "assets/images/AnimateMap/artcarsHalo/1.png";
+import ARTCAR__HALO_2 from "assets/images/AnimateMap/artcarsHalo/2.png";
+import ARTCAR__HALO_3 from "assets/images/AnimateMap/artcarsHalo/3.png";
+import ARTCAR__HALO_4 from "assets/images/AnimateMap/artcarsHalo/4.png";
+import ARTCAR__HALO_5 from "assets/images/AnimateMap/artcarsHalo/5.png";
+import ARTCAR__HALO_6 from "assets/images/AnimateMap/artcarsHalo/6.png";
+import ARTCAR__HALO_7 from "assets/images/AnimateMap/artcarsHalo/7.png";
+import ARTCAR__HALO_8 from "assets/images/AnimateMap/artcarsHalo/8.png";
+import ARTCAR__HALO_9 from "assets/images/AnimateMap/artcarsHalo/9.png";
+import ARTCAR__HALO_10 from "assets/images/AnimateMap/artcarsHalo/10.png";
+import ARTCAR__HALO_11 from "assets/images/AnimateMap/artcarsHalo/11.png";
+import ARTCAR__HALO_12 from "assets/images/AnimateMap/artcarsHalo/12.png";
 import ACCESSORY_0 from "assets/images/AnimateMap/avatarAccessoryes/cap_2.png";
 import ACCESSORY_1 from "assets/images/AnimateMap/avatarAccessoryes/cap_3.png";
 import ACCESSORY_2 from "assets/images/AnimateMap/avatarAccessoryes/cap_5.png";
@@ -116,6 +129,22 @@ const artcars13 = [
   ARTCAR__12,
 ];
 
+const artcarsHalo = [
+  ARTCAR__HALO_0,
+  ARTCAR__HALO_1,
+  ARTCAR__HALO_2,
+  ARTCAR__HALO_3,
+  ARTCAR__HALO_4,
+  ARTCAR__HALO_5,
+  ARTCAR__HALO_6,
+  ARTCAR__HALO_7,
+  ARTCAR__HALO_8,
+  ARTCAR__HALO_9,
+  ARTCAR__HALO_10,
+  ARTCAR__HALO_11,
+  ARTCAR__HALO_12,
+];
+
 const avatarAccessories = [
   ACCESSORY_0,
   ACCESSORY_1,
@@ -181,6 +210,7 @@ export {
   avatarFeets,
   artcars,
   artcars13,
+  artcarsHalo,
   barrels,
   venues,
   MAP_IMAGE,
