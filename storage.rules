@@ -2,11 +2,13 @@ rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
     match /assets/{allPaths=**} {
-        allow read
+        allow read;
     }
     match /users/{uid}/{allPaths=**} {
-        allow read
-        allow write, update: if request.auth.uid == uid
+        allow read;
+        // Allow users to create new files under their unique path.
+        // Don't allow updating files so we can cache files long-term
+        allow write: if request.auth.uid == uid && resource == null;
     }
   }
 }

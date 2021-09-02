@@ -1,3 +1,5 @@
 export enum VideoAspectRatio {
-  SixteenNine = "16:9",
+  sixteenNine = "16:9",
+  anamorphic = "anamorphic",
+  fullWidth = "full-width",
 }

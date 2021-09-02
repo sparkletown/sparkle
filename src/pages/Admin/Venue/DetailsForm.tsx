@@ -525,7 +525,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         image={values.bannerImageFile}
         remoteUrlInputName={"bannerImageUrl"}
         remoteImageUrl={values.bannerImageUrl}
-        ref={register}
+        register={register}
+        setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
       />
     </div>
@@ -536,7 +537,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
-        ref={register}
+        register={register}
+        setValue={setValue}
         image={values.logoImageFile}
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}
@@ -631,15 +633,17 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         Livestream URL, or embed URL, for people to view in your venue
       </div>
       <div className="input-title">
-        (Enter an embeddable URL link. You can edit this later so you can leave
-        a placeholder for now)
+        (Enter an embeddable URL link. For now there is a placeholder video, so
+        you can edit this later.)
       </div>
+
+      {/* note: the default embedded video is the "Intro to Sparkle" video*/}
       <textarea
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        placeholder="https://youtu.be/embed/abcDEF987w"
+        value="https://player.vimeo.com/video/512606583?h=84853fbd28"
       />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>

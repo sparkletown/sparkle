@@ -29,6 +29,7 @@ export interface CommonInterface {
   // ): Promise<unknown>;
 
   sendPlayerPosition(x: number, y: number): void;
+  sendShoutMessage(shout: string): void;
 
   // updateUsers(users: ReplicatedUser[]) : void;
 
@@ -63,6 +64,10 @@ export class CommonLinker implements CommonInterface {
 
   sendPlayerPosition(x: number, y: number) {
     this._playerIOProvider.sendPlayerPosition(x, y);
+  }
+
+  sendShoutMessage(shout: string) {
+    this._playerIOProvider.sendShoutMessage(shout);
   }
 
   // updateUsers(users: ReplicatedUser[]): void {

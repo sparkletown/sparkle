@@ -69,9 +69,13 @@ const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
   hasBackButton?: boolean;
+  withSchedule?: boolean;
 }
 
-export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
+export const NavBar: React.FC<NavBarPropsType> = ({
+  hasBackButton = true,
+  withSchedule = true,
+}) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
 
@@ -111,7 +115,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+    withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 

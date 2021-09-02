@@ -1,31 +1,19 @@
 import { Animatable } from "./Animatable";
-import { Venue } from "./Venue";
 import { VenueHalo } from "./VenueHalo";
 
 export class VenueHaloAnimated extends VenueHalo implements Animatable {
   private direction = 1;
   private time = 0;
-  private duration = 30;
+  private duration = 60;
   private directionFactorIn = 1;
   private directionFactorOut = 1;
-
-  constructor(view: Venue, scale = 1) {
-    super(view, scale);
-    this.setupRandomParams();
-  }
-
-  private setupRandomParams(): void {
-    this.duration = VenueHaloAnimated.getRandomInt(20, 40);
-    this.directionFactorIn = VenueHaloAnimated.getRandomInt(1, 4);
-    this.directionFactorOut = VenueHaloAnimated.getRandomInt(1, 3);
-  }
 
   animate(time: number) {
     if (!this.view.halo) {
       return;
     }
 
-    const haloScale = 1 / this.scale;
+    const haloScale = VenueHalo.SCALE;
     this.time +=
       time *
       (this.direction === 1

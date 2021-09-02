@@ -1,7 +1,6 @@
-import { Engine, System } from "@ash.ts/ash";
+import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { BaseTexture, Sprite } from "pixi.js";
-import * as PIXI from "pixi.js";
+import { Application, BaseTexture, Container, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -9,12 +8,30 @@ import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
+import { KeyFramer } from "../../utils/KeyFramer";
+import {
+  mapLightningShader,
+  moonKeyFramer,
+  staticLightKeyFramer,
+  sunKeyFramer,
+} from "../graphics/shaders/mapLightning";
+import {
+  ShaderDataProvider,
+  staticLightData,
+} from "../graphics/shaders/StaticShaderData";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 
 export class ViewportBackgroundSystem extends System {
-  private viewport: Viewport;
-  private readonly background: Sprite;
-  private readonly zoomed: Sprite;
+  private barrels?: NodeList<FirebarrelNode>;
 
+  private viewport: Viewport;
+  private staticLightManager: ShaderDataProvider;
+  private readonly container: PIXI.Container;
+  private readonly mapLOD_1: Sprite;
+  private readonly mapLOD_0: Sprite;
+  private sunKeyFramer: KeyFramer = sunKeyFramer;
+  private moonKeyFramer: KeyFramer = moonKeyFramer;
+  private lightsPos = new Float32Array(512);
   private initialized = false;
   private worldDivision = 0;
   private worldTileWidth = 0;
@@ -25,17 +42,37 @@ export class ViewportBackgroundSystem extends System {
 
   private tree?: QuadTree;
   private currentVisibleTiles: Map<number, Sprite> = new Map();
-
-  constructor(viewport: Viewport) {
+  /**
+   *
+   * @param viewport the app viewport
+   * @param timeAccelerator set to 1 in prod
+   */
+  constructor(
+    viewport: Viewport,
+    private app: Application,
+    private timeAccelerator: number = 1
+  ) {
     super();
     this.viewport = viewport;
-    this.background = new Sprite();
-    this.zoomed = new Sprite();
+    this.container = new Container();
+    this.mapLOD_1 = new Sprite();
+    this.mapLOD_1.name = "backgroundSprite";
+    this.mapLOD_0 = new Sprite();
+
+    this.initLighting();
+    this.staticLightManager = new ShaderDataProvider(staticLightData, this.app);
+  }
+
+  public initLighting() {
+    this.container.filters = [mapLightningShader];
   }
 
   addToEngine(engine: Engine) {
+    this.barrels = engine.getNodeList(FirebarrelNode);
     this.setup().then(() => {
       this.setupTree();
+
+      this.container.filters[0].uniforms.texStaticLights = this.staticLightManager.renderSprite();
 
       const back: Sprite = Sprite.from(MAP_IMAGE);
       back.anchor.set(0.5);
@@ -43,21 +80,31 @@ export class ViewportBackgroundSystem extends System {
       back.scale.set(scale);
       back.anchor.set(0);
 
-      this.background.addChild(back);
-      this.background.interactive = true;
+      this.mapLOD_1.addChild(back);
+      this.mapLOD_1.interactive = true;
 
-      this.viewport.addChildAt(this.zoomed, 0);
-      this.viewport.addChildAt(this.background, 0);
+      this.viewport.addChildAt(this.container, 0);
+
+      this.container.addChildAt(this.mapLOD_0, 0);
+      this.container.addChildAt(this.mapLOD_1, 0);
+
+      //shaders setup
+      this.container.filters[0].uniforms.frame = [
+        this.viewport.center.x,
+        this.viewport.center.y,
+        this.viewport.worldWidth,
+        this.viewport.worldHeight,
+      ];
 
       this.initialized = true;
-    });
 
-    this.colorMatrixFilter();
+      this.staticLightManager.sprite.texture.update();
+    });
   }
 
   removeFromEngine(engine: Engine) {
-    if (this.zoomed.children.length) {
-      this.zoomed.removeChildren();
+    if (this.mapLOD_0.children.length) {
+      this.mapLOD_0.removeChildren();
       this.currentVisibleTiles.clear();
     }
   }
@@ -67,14 +114,16 @@ export class ViewportBackgroundSystem extends System {
       return;
     }
 
+    this._updateFilters();
+
     const zoomLevel = GameInstance.instance
       .getConfig()
       .zoomViewportToLevel(this.viewport.scale.y);
 
     if (zoomLevel === GameConfig.ZOOM_LEVEL_FLYING) {
-      // remove zoomed
-      if (this.zoomed.children.length) {
-        this.zoomed.removeChildren();
+      // removing mapLOD_0
+      if (this.mapLOD_0.children.length) {
+        this.mapLOD_0.removeChildren();
         this.currentVisibleTiles.clear();
       }
       return;
@@ -131,8 +180,8 @@ export class ViewportBackgroundSystem extends System {
       }
       if (!br) {
         const sprite: Sprite | undefined = this.currentVisibleTiles.get(key);
-        if (sprite && this.zoomed.children.includes(sprite)) {
-          this.zoomed.removeChild(sprite);
+        if (sprite && this.mapLOD_0.children.includes(sprite)) {
+          this.mapLOD_0.removeChild(sprite);
           this.currentVisibleTiles.delete(key);
           break;
         }
@@ -140,24 +189,44 @@ export class ViewportBackgroundSystem extends System {
     }
   }
 
-  colorMatrixFilter() {
-    const apply = false;
+  private _updateFilters() {
+    let lightQuantity = 0;
 
-    if (!apply) {
-      return;
+    for (let i = this.barrels?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      lightQuantity += 1;
     }
-    const bool = true;
 
-    const colors: PIXI.filters.ColorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+    this.container.filters[0].uniforms.lightsPos = this.lightsPos;
+    this.container.filters[0].uniforms.lightQuantity = lightQuantity;
+    this.container.filters[0].uniforms.zoom = this.viewport.scale.x;
+    this.container.filters[0].uniforms.frame = [
+      this.viewport.left,
+      this.viewport.top,
+      this.viewport.worldScreenWidth,
+      this.viewport.worldScreenHeight,
+    ];
+    this.setDayTime(GameInstance.instance.getConfig().getCurUTCTime());
+  }
 
-    colors.saturate(-1, bool); // multiple?
-    colors.hue(317, bool);
-    colors.brightness(0.1, bool);
-    colors.contrast(13, bool);
-    colors.night(0.3, bool);
+  /**
+   * changing the mapLOD_1 visible time
+   * @param time in hourse [0;24)
+   */
+  public setDayTime(time: number) {
+    time = (time * this.timeAccelerator) % 24;
 
-    this.background.filters = [colors];
-    this.zoomed.filters = [colors];
+    const sunLight = this.sunKeyFramer.getFrame(time);
+    const moonLight = this.moonKeyFramer.getFrame(time);
+    const light = [0, 0, 0];
+    // note: what's happen, if sum of elements more than 1?
+    // answer: white desert will happen
+    for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
+    this.container.filters[0].uniforms.ambientLight = light;
+    this.container.filters[0].uniforms.staticLightAlpha = staticLightKeyFramer.getFrame(
+      time
+    )[0];
   }
 
   private addTile(point: Point): Sprite {
@@ -166,7 +235,7 @@ export class ViewportBackgroundSystem extends System {
     sprite.anchor.set(0.5);
     sprite.x = point.x;
     sprite.y = point.y;
-    this.zoomed.addChild(sprite);
+    this.mapLOD_0.addChild(sprite);
 
     return sprite;
   }

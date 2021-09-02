@@ -19,7 +19,6 @@ body,
 }
 
 body {
-  @include scrollbar;
   font: 1rem/1.3 "Rubik", "HelveticaNeue", "Helvetica Neue", Helvetica,
     sans-serif;
   -moz-osx-font-smoothing: grayscale;
@@ -36,6 +35,7 @@ body {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  @include scrollbar;
 }
 
 // Titles
@@ -48,29 +48,37 @@ h6 {
   font-weight: 700;
   margin-bottom: 0.5rem;
   line-height: 1.2;
+
   &.primary {
     color: $primary;
   }
+
   &.italic {
     font-weight: 900;
     font-style: italic;
   }
 }
+
 h1 {
   font-size: 3em;
 }
+
 h2 {
   font-size: 2em;
 }
+
 h3 {
   font-size: 1.6em;
 }
+
 h4 {
   font-size: 1.4em;
 }
+
 h5 {
   font-size: 1.2em;
 }
+
 h6 {
   font-size: 1em;
 }
@@ -96,27 +104,33 @@ input.btn {
     transform: translateY(-1px);
     background-color: rgba($primary, 0.18);
   }
+
   &.btn-primary {
     color: $white;
     background-image: $gradient;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+
     &:hover {
       background-color: darken($primary, 14%);
     }
   }
+
   &.btn-secondary {
     color: $white;
     background-color: rgba(124, 70, 251, 0.4);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+
     &:hover {
       background-color: rgba(124, 70, 251, 0.8);
     }
   }
+
   &.btn-danger {
     color: $white;
     background: $danger-gradient;
     border-color: rgba(0, 0, 0, 0);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+
     &:hover {
       background-color: darken($red, 14%);
     }
@@ -126,19 +140,23 @@ input.btn {
     padding: 6px 12px;
     font-size: 0.9em;
   }
+
   &.btn-block {
     display: block;
     max-width: 275px;
     margin-bottom: 0.8rem;
   }
+
   &.btn-centered {
     margin-left: auto;
     margin-right: auto;
   }
+
   &.disabled,
   &[type="submit"]:disabled {
     color: rgba($white, 0.5);
     background-color: rgba($white, 0.15);
+
     &.btn-primary {
       color: rgba($white, 0.5);
       background-image: none;
@@ -241,34 +259,43 @@ textarea {
   &:-webkit-autofill:focus {
     background-color: rgba(white, 0) !important;
   }
+
   &:hover {
     background-color: rgba($white, 0.16);
   }
+
   &:focus {
     box-shadow: 0 0 0 2px rgba($white, 1);
   }
+
   &[type="checkbox"]:focus {
     box-shadow: unset;
   }
+
   &.input-block {
     display: block;
     max-width: 275px;
     margin-bottom: 0.8rem;
   }
+
   &.wide-input-block {
     display: block;
     margin-bottom: 0.8rem;
   }
+
   &.align-left {
     text-align: left;
   }
+
   &.input-centered {
     margin-left: auto;
     margin-right: auto;
   }
+
   &.btn {
     font-weight: 700;
   }
+
   &.disabled {
     background-color: rgba($concrete, 1);
     cursor: default;
@@ -290,14 +317,17 @@ textarea {
   input.input-block {
     margin-bottom: 0.3rem;
   }
+
   .input-info {
     font-size: 0.8em;
     opacity: 0.8;
     align-self: center;
   }
+
   &.input-info {
     align-self: center;
   }
+
   .input-error {
     text-align: center;
     color: #e30b0b;
@@ -384,9 +414,11 @@ h4 {
 
 .modal-backdrop {
   background: $dark;
+
   &.show {
     opacity: 0.8;
   }
+
   &.chat-backdrop.show {
     opacity: 0;
   }
@@ -395,6 +427,7 @@ h4 {
 .chatbox-container {
   max-height: 2500px;
 }
+
 .modal-content {
   border: none;
   border-radius: 22px;
@@ -419,6 +452,7 @@ h4 {
   padding: 5px 30px;
   height: calc(100vh - 50px);
   width: 100%;
+
   & > * + * {
     margin-left: 10px;
   }
@@ -435,6 +469,7 @@ h4 {
     padding: 0;
     max-height: calc(100vh - 118px);
   }
+
   .content-column {
     height: 100%;
   }
@@ -492,6 +527,7 @@ h4 {
       width: 100%;
     }
   }
+
   .participant {
     display: flex;
     height: 100%;
@@ -504,8 +540,8 @@ h4 {
 
     .profile-icon {
       position: absolute;
-      bottom: 0;
-      left: 0;
+      bottom: $spacing--sm;
+      left: $spacing--sm;
       border-radius: 188%;
       z-index: z(global-profile-icon);
     }
@@ -582,10 +618,12 @@ h4 {
   right: 10px;
   top: 130px;
   height: calc(100vh - 220px);
+
   .modal-body {
     background: $dark;
     border-radius: 22px;
   }
+
   .chatbox-container {
     border: 2px solid $black;
   }
@@ -634,14 +672,17 @@ input.btn.btn-primary.btn-success {
       &.global {
         background: $dark;
       }
+
       &.private {
         background: $dark;
       }
+
       &.room {
         background: $dark;
       }
     }
   }
+
   .chat-input {
     background: $dark;
     margin-bottom: 10px;
@@ -681,23 +722,30 @@ span.link {
     width: 100%;
     word-wrap: break-word;
   }
+
   .message {
     display: flex;
+
     img {
       margin-right: 20px;
     }
+
     .timestamp {
       color: $concrete;
     }
+
     &.chat-message {
       flex-direction: column;
+
       .sender-info {
         display: flex;
         align-items: center;
         margin-bottom: 3px;
+
         img {
           margin-right: 10px;
         }
+
         .timestamp,
         .delete-button {
           margin-left: 10px;
@@ -718,6 +766,7 @@ span.link {
     }
   }
 }
+
 .image-input.default-container {
   display: flex;
   flex: 1;
@@ -741,6 +790,7 @@ span.link {
   opacity: 0;
   color: transparent;
 }
+
 .image-input .default-input::-webkit-file-upload-button {
   visibility: hidden;
 }
@@ -755,6 +805,11 @@ span.link {
   padding: 40px 10px;
   background-color: gray;
   height: 100%;
+}
+
+.image-input.disabled {
+  cursor: none;
+  pointer-events: none;
 }
 
 .image-input .empty .text {

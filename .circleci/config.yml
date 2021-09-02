@@ -170,6 +170,9 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/summit-hack" ]; then
               ENV=sparkle-summit-hack
             fi
+            if [ $CIRCLE_BRANCH = "env/northwell" ]; then
+              ENV=sparkle-northwell
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
@@ -365,6 +368,12 @@ jobs:
               TARGET=sparkle-summit-hack
               RELEASE_STAGE=env/summit-hack
             fi
+            if [ $CIRCLE_BRANCH = "env/northwell" ]; then
+              PREFIX=NORTHWELL_
+              ENV=sparkle-northwell
+              TARGET=sparkle-northwell
+              RELEASE_STAGE=env/northwell
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -430,6 +439,7 @@ workflows:
                 - env/burn-staging
                 - env/github
                 - env/summit-hack
+                - env/northwell
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -463,6 +473,7 @@ workflows:
                 - env/burn-staging
                 - env/github
                 - env/summit-hack
+                - env/northwell
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

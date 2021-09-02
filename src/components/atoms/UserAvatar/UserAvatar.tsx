@@ -8,6 +8,10 @@ import { User, UsernameVisibility } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
+import {
+  getFirebaseStorageResizedImage,
+  ImageResizeOptions,
+} from "utils/image";
 
 import { useIsOnline } from "hooks/useIsOnline";
 import { useVenueId } from "hooks/useVenueId";
@@ -15,7 +19,7 @@ import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
-export type UserAvatarSize = "small" | "medium" | "large" | "full";
+export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export interface UserAvatarProps extends ContainerClassName {
   user?: WithId<User>;
@@ -25,6 +29,15 @@ export interface UserAvatarProps extends ContainerClassName {
   onClick?: () => void;
   size?: UserAvatarSize;
 }
+
+// @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.scss
+const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
+  small: 25,
+  medium: 40,
+  large: 54,
+  xlarge: 100,
+  full: null,
+};
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
@@ -46,9 +59,19 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     isStatusEnabledForVenue,
   } = useVenueUserStatuses(venueId, user);
 
-  const avatarSrc: string = user?.anonMode
-    ? DEFAULT_PROFILE_IMAGE
-    : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+  const avatarSrc = useMemo((): string => {
+    const url = user?.anonMode
+      ? DEFAULT_PROFILE_IMAGE
+      : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+
+    const facadeSize = size ? AVATAR_SIZE_MAP[size] : undefined;
+    const resizeOptions: ImageResizeOptions = { fit: "crop" };
+    if (facadeSize) {
+      resizeOptions.width = resizeOptions.height = facadeSize;
+    }
+
+    return getFirebaseStorageResizedImage(url, resizeOptions);
+  }, [user, size]);
 
   const userDisplayName: string = user?.anonMode
     ? DEFAULT_PARTY_NAME
