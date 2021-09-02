@@ -27,6 +27,7 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
       <Loading
         containerClassName="ScheduleNG__loading"
         label="Events are loading"
+        displayWhile={isLoading}
       />
     );
   }
