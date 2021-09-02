@@ -29,7 +29,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
+  const { recentRoomUsers } = useRoom({ room, venueId: venue.id });
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
   const isUnclickable = room.type === RoomType.unclickable;

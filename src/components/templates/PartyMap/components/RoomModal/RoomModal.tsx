@@ -78,7 +78,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venue,
   venueEvents,
 }) => {
-  const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
+  const { showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
   const dispatch = useDispatch();
 
@@ -105,7 +105,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const { enterRoom, recentRoomUsers } = useRoom({ room, venueId: venue.id });
   const userList = recentRoomUsers as readonly WithId<User>[];
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {

@@ -86,7 +86,7 @@ const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
   venue,
   children,
 }) => {
-  const { enterRoom } = useRoom({ room, venueName: venue.name });
+  const { enterRoom } = useRoom({ room, venueId: venue.id });
 
   return <div onClick={enterRoom}>{children}</div>;
 };

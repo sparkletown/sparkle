@@ -23,7 +23,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {
-  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
+  const { recentRoomUsers } = useRoom({ room, venueId: venue.id });
 
   const numberOfExtraUsersInRoom = Math.max(
     recentRoomUsers.length - maxVisible,

@@ -46,7 +46,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 }) => {
   const { user } = useUser();
 
-  const { recentRoomUsers } = useRoom({ room, venueName });
+  const { recentRoomUsers } = useRoom({ room, venueId });
 
   const isRoomUnclickable = room.type === RoomType.unclickable;
 

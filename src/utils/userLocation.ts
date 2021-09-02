@@ -6,41 +6,38 @@ import { useInterval } from "hooks/useInterval";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-import { logEventGoogleAnalytics } from "./googleAnalytics";
 import { getCurrentTimeInMilliseconds } from "./time";
-import { openRoomUrl } from "./url";
 
 export type LocationData = string | null;
 
 export interface UpdateLocationDataProps {
   userId: string;
-  newLocation: LocationData;
+  newLocationPath: LocationData;
 }
 
 export const updateLocationData = ({
   userId,
-  newLocation,
+  newLocationPath,
 }: UpdateLocationDataProps) => {
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastSeenIn: newLocation,
+    lastSeenIn: newLocationPath,
   });
 };
 
 export interface SetLocationDataProps {
   userId: string;
-  locationName: string;
+  locationPath: string;
 }
 
-// TODO: refactor how user location updates works here?
 //   Called from VenuePage useEffect when venue changes, etc
 export const setLocationData = ({
   userId,
-  locationName,
+  locationPath,
 }: SetLocationDataProps) => {
   updateLocationData({
     userId,
-    newLocation: locationName,
+    newLocationPath: locationPath,
   });
 };
 
@@ -59,42 +56,14 @@ export const updateCurrentLocationData = ({
 }: UpdateCurrentLocationDataProps) => {
   updateLocationData({
     userId,
-    newLocation: profileLocationData,
+    newLocationPath: profileLocationData,
   });
 };
 
 // TODO: refactor how user location updates works here?
 //   Called from VenuePage useEffect + onBeforeUnloadHandler
 export const clearLocationData = (userId: string) => {
-  updateLocationData({ userId, newLocation: null });
-};
-
-export interface EnterExternalRoomProps {
-  userId: string;
-  roomUrl: string;
-  locationName: string;
-}
-
-export const enterExternalRoom = ({
-  userId,
-  locationName,
-  roomUrl,
-}: EnterExternalRoomProps) => {
-  setLocationData({
-    userId,
-    locationName,
-  });
-
-  logEventGoogleAnalytics({
-    eventName: "ENTER_THIRD_PARTY_ROOM",
-    eventAction: {
-      locationName,
-      userId,
-      roomUrl,
-    },
-  });
-
-  openRoomUrl(roomUrl);
+  updateLocationData({ userId, newLocationPath: null });
 };
 
 export interface UseUpdateTimespentPeriodicallyProps {

@@ -17,7 +17,6 @@ import { PartyMapVenue } from "types/venues";
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { hasElements } from "utils/types";
-import { setLocationData } from "utils/userLocation";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useGetUserByPosition } from "hooks/useGetUserByPosition";
@@ -52,7 +51,6 @@ export const Map: React.FC<MapProps> = ({
   unselectRoom,
 }) => {
   const venueId = venue.id;
-  const venueName = venue.name;
   const userUid = user?.uid;
   const showGrid = venue.showGrid;
 
@@ -94,15 +92,13 @@ export const Map: React.FC<MapProps> = ({
     (gridPosition: GridPosition) => {
       if (!userUid) return;
 
-      setLocationData({ userId: userUid, locationName: venueName });
-
       return setGridData({
         venueId,
         userId: userUid,
         gridData: gridPosition,
       });
     },
-    [userUid, venueId, venueName]
+    [userUid, venueId]
   );
 
   const currentPosition = profileData?.[venue.id];

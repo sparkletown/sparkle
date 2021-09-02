@@ -4,6 +4,8 @@ import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
+import { fetchSovereignVenue } from "api/venue";
+
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -15,6 +17,7 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
 } from "utils/selectors";
+import { wrapIntoSlashes } from "utils/string";
 import { isDefined, isTruthy } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 import {
@@ -132,10 +135,22 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !venueName) return;
+    if (!userId || !venueName || !venueId) return;
 
-    setLocationData({ userId, locationName: venueName });
-  }, [userId, venueName]);
+    const getWholePath = async () => {
+      const { sovereignVenue, checkedVenueIds } = await fetchSovereignVenue(
+        venueId
+      );
+
+      const allVenues = [...checkedVenueIds, sovereignVenue.id].reverse();
+
+      const locationPath = wrapIntoSlashes(allVenues.join("/"));
+
+      setLocationData({ userId, locationPath });
+    };
+
+    getWholePath();
+  }, [userId, venueName, venueId]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
