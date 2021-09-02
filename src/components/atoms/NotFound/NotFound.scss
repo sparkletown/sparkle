@@ -1,7 +1,6 @@
 @import "scss/constants";
 
 $message-container-width: 28rem;
-$logo-distance: 96px;
 
 .NotFound {
   height: calc(100% - #{$reserved-page-height});
@@ -26,7 +25,6 @@ $logo-distance: 96px;
 
   &__logo {
     padding-bottom: $spacing--xxl;
-    height: $logo-distance;
     width: 100%;
     height: 100%;
   }
