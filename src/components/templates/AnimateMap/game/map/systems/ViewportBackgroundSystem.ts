@@ -31,7 +31,8 @@ export class ViewportBackgroundSystem extends System {
   private readonly mapLOD_0: Sprite;
   private sunKeyFramer: KeyFramer = sunKeyFramer;
   private moonKeyFramer: KeyFramer = moonKeyFramer;
-  private lightsPos = new Float32Array(512);
+  private lightsPos = new Float32Array(260);
+  private lightsCol = new Int32Array(130);
   private initialized = false;
   private worldDivision = 0;
   private worldTileWidth = 0;
@@ -195,10 +196,15 @@ export class ViewportBackgroundSystem extends System {
     for (let i = this.barrels?.head; i; i = i?.next) {
       this.lightsPos[lightQuantity * 2] = i.position.x;
       this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.firebarrel.model.data.connectedUsers
+        ?.length
+        ? 0x7cdc6c
+        : 0xf6951d;
       lightQuantity += 1;
     }
 
     this.container.filters[0].uniforms.lightsPos = this.lightsPos;
+    this.container.filters[0].uniforms.lightsCol = this.lightsCol;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
     this.container.filters[0].uniforms.zoom = this.viewport.scale.x;
     this.container.filters[0].uniforms.frame = [
