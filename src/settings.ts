@@ -18,11 +18,14 @@ import { FIVE_MINUTES_MS } from "utils/time";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapBackground from "assets/images/bm-default-map-background.jpg";
+import externalRoomBackground from "assets/images/external-room-background.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 // Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
+export const ENABLE_POPUPS_URL =
+  "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-of-use/";
@@ -49,6 +52,8 @@ export const PRIVACY_POLICY = IS_BURN
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = defaultMapBackground;
+
+export const EXTERNAL_ROOM_BACKGROUND = externalRoomBackground;
 export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
@@ -64,6 +69,7 @@ export const VPLAYA_URL = "https://www.vplaya.info";
 
 export const DEFAULT_SCHEDULE_NAME = "Schedule";
 export const DEFAULT_PARTY_NAME = "Anon";
+export const USER_AVATAR_LIMIT = 11;
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
