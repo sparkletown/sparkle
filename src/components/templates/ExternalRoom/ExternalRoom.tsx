@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 
 import {
   ENABLE_POPUPS_URL,
@@ -30,19 +32,31 @@ export interface ExternalRoomProps {
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const redirectUrl = venue.zoomUrl;
 
+  const containerVars = useCss({
+    "background-image": `url(${EXTERNAL_ROOM_BACKGROUND})`,
+  });
+
+  const containerClasses = classNames("ExternalRoom", containerVars);
+
+  const venueLogoVars = useCss({
+    "background-image": `url(${venue.host?.icon})`,
+  });
+
+  const venueLogoClasses = classNames(
+    "ExternalRoom__venue-logo",
+    venueLogoVars
+  );
+
   useEffect(() => {
     if (!redirectUrl) return;
 
-    openUrl(redirectUrl);
+    // openUrl(redirectUrl);
   }, [redirectUrl]);
 
   const { worldUsers } = useWorldUsers();
 
   return (
-    <div
-      className="ExternalRoom"
-      style={{ backgroundImage: `url(${EXTERNAL_ROOM_BACKGROUND})` }}
-    >
+    <div className={containerClasses}>
       <LogoRF />
       {!redirectUrl && (
         <div className="ExternalRoom__message">
@@ -59,7 +73,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
             </a>
 
             <div>
-              in a new tab. If {`you're`} not seeing this, try{" "}
+              in a new tab. If you&apos;re not seeing this, try{" "}
               <a rel="noreferrer" href={ENABLE_POPUPS_URL} target="_blank">
                 enabling pop ups on your browser.
               </a>
@@ -67,10 +81,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
           </div>
           <div className="ExternalRoom__content">
             <div className="ExternalRoom__venue-container">
-              <div
-                className="ExternalRoom__venue-logo"
-                style={{ backgroundImage: `url(${venue.host?.icon})` }}
-              />
+              <div className={venueLogoClasses} />
 
               <div className="ExternalRoom__venue-details">
                 <div className="ExternalRoom__venue-title">{venue.name}</div>
@@ -80,7 +91,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
                 </div>
 
                 <ButtonNG
-                  className="btn btn-primary"
+                  variant="primary"
                   onClick={() => openUrl(redirectUrl)}
                 >
                   Enter
