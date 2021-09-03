@@ -94,7 +94,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     currentVenueId: venueId,
   });
 
-  const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(
+    currentVenue?.id !== sovereignVenue?.id
+  );
 
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
     .length;
