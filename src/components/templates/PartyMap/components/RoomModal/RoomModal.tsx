@@ -149,7 +149,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       <div className="RoomModal__main">
         <div className="RoomModal__icon" style={iconStyles} />
 
-        <div className="RoomModal__content">
+        <div className="RoomModal__room-info">
           <div className="RoomModal__title">{roomTitle}</div>
 
           {roomSubtitle && (

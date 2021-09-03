@@ -14,6 +14,14 @@ $spacing: 20px;
     background-size: cover;
   }
 
+  &__room-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: $spacing;
+    justify-content: space-between;
+  }
+
   &__title {
     font-weight: $font-weight--700;
     font-size: $font-size--xxl;
@@ -27,7 +35,6 @@ $spacing: 20px;
   &__main {
     padding: $spacing;
     display: flex;
-    flex-direction: row;
     justify-content: space-around;
   }
 
