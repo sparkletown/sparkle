@@ -91,8 +91,7 @@ export const stubArtcarsData = () => {
   const sector = 360 / arr.length + 2;
   for (let i = 0; i < arr.length; i++) {
     let angle = sector * i;
-    angle += (GameConfig.ARTCAR_ANGULAR_VELOCITY * new Date().getTime()) % 360;
-    angle *= Math.PI / 180;
+    angle += GameConfig.ARTCAR_ANGULAR_VELOCITY * (Date.now() - 1630629578769);
 
     const radiusX = getRandomNumber(innerRadius, outerRadius);
     const radiusY = getRandomNumber(innerRadius, outerRadius);
