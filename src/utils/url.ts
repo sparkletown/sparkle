@@ -66,7 +66,8 @@ export interface OpenUrlOptions {
 export const openUrl = (url: string, options?: OpenUrlOptions) => {
   const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
 
-  if (!isValidUrl({ url })) {
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+  if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
@@ -92,31 +93,32 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
   }
 };
 
-export const isValidUrl = ({
-  url,
-  isStrict,
-}: {
-  url: string;
-  isStrict?: boolean;
-}): boolean => {
-  if (!url) return false;
-
-  let urlObj = new URL(window.location.origin);
-  const isUrlIncludesProtocol = url.includes("http");
-  if (isStrict && !isUrlIncludesProtocol) {
-    return false;
+/**
+ * @deprecated This function doesn't perform a url check and returns true each time;
+ * Use isValidUrl instead if you want to validate that URL is correct
+ */
+export const isCurrentLocationValidUrl = (url: string): boolean => {
+  try {
+    return VALID_URL_PROTOCOLS.includes(
+      new URL(url, window.location.origin).protocol
+    );
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
   }
+};
 
-  if (isUrlIncludesProtocol) {
-    urlObj = new URL(url);
-  } else {
-    urlObj = new URL(url, window.location.origin);
-  }
+export const isValidUrl = (urlString: string) => {
+  if (!urlString) return false;
 
   try {
-    return VALID_URL_PROTOCOLS.includes(urlObj.protocol);
+    const url = new URL(urlString);
+
+    return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
-    if (e instanceof Error) {
+    if (e.name === "TypeError") {
       return false;
     }
     throw e;

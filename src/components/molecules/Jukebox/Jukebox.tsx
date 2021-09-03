@@ -61,11 +61,11 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     let urlToEmbed = lastMessage?.text;
     if (
       urlToEmbed?.includes(YOUTUBE_SHORT_URL_STRING) &&
-      isValidUrl({ url: urlToEmbed, isStrict: true })
+      isValidUrl(urlToEmbed)
     ) {
       urlToEmbed = getYoutubeEmbedFromUrl(lastMessage?.text);
     }
-    if (isValidUrl({ url: urlToEmbed, isStrict: true })) {
+    if (isValidUrl(urlToEmbed)) {
       updateIframeUrl(urlToEmbed);
     }
   }, [messagesToDisplay, updateIframeUrl]);
@@ -110,7 +110,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     () =>
       filteredMessages?.map((msg) => {
         const textMessage = `${
-          isValidUrl({ url: msg.text, isStrict: true })
+          isValidUrl(msg.text)
             ? `changed video source to ${msg.text}`
             : msg.text
         }`;
