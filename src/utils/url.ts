@@ -103,7 +103,6 @@ export const isValidUrl = ({
 
   let urlObj = new URL(window.location.origin);
   const isUrlIncludesProtocol = url.includes("http");
-  console.log(url);
   if (isStrict && !isUrlIncludesProtocol) {
     return false;
   }

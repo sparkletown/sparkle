@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
 $emoji-button-diameter: $submit-button-diameter - $spacing--md;
-$jukebox-chat-max-height: 100px;
+$jukebox-chat-max-height: 150px;
 
 .Jukebox {
   &__container {
@@ -16,6 +16,7 @@ $jukebox-chat-max-height: 100px;
     flex-direction: column;
     max-height: $jukebox-chat-max-height;
     background-color: opaque-white(0.12);
+    padding: $spacing--sm $spacing--md;
     height: 100%;
     width: 100%;
     border-top-left-radius: $border-radius--xl;
@@ -69,12 +70,10 @@ $jukebox-chat-max-height: 100px;
     }
 
     & .ButtonNG__button {
-      background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
-        opaque-white(0.1);
+      background: url("/assets/icons/arrow-send-msg.svg") no-repeat center;
 
       &:hover {
-        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
-          opaque-white(0.2);
+        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center;
         cursor: pointer;
       }
     }
