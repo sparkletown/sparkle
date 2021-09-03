@@ -15,7 +15,7 @@ export interface LoadingProps extends ContainerClassName {
 export const Loading: React.FC<LoadingProps> = ({
   containerClassName,
   label,
-  displayWhile,
+  displayWhile = true,
 }) => {
   const containerClasses = classNames("Loading", containerClassName);
   return displayWhile ? (

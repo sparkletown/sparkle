@@ -20,7 +20,7 @@ $help-center-background-color: #232225;
   background-color: $saturated-black;
   z-index: z(sidebar);
 
-  .ButtonNG__button {
+  &__tab {
     border-radius: 0;
     border: none;
   }
