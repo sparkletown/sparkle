@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { AriaRole, CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
@@ -15,7 +15,14 @@ export type ButtonGradientType =
   | "danger-gradient";
 
 export type ButtonType = "button" | "reset" | "submit";
-export type ButtonVariant = "primary" | "secondary" | "white" | "dark";
+
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "white"
+  | "dark"
+  | "seethrough";
+
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
 export interface ButtonProps {
@@ -34,6 +41,7 @@ export interface ButtonProps {
   iconName?: IconProp;
   iconSize?: ButtonIconSize;
   title?: string;
+  role?: AriaRole;
 }
 
 export const ButtonNG: React.FC<ButtonProps> = ({
@@ -45,7 +53,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   type = "button",
   gradient = "",
   isLink = false,
-  linkTo = "",
+  linkTo = "#",
   disabled = false,
   newTab = false,
   variant = "",
@@ -53,6 +61,8 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconName,
   iconSize = "1x",
   title,
+  role,
+  ...extraProps
 }) => {
   const parentClasses = classNames({
     "ButtonNG ButtonNG__link": isLink,
@@ -74,7 +84,14 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   if (loading) {
     return (
-      <button className={parentClasses} style={style} type={type} title={title}>
+      <button
+        className={parentClasses}
+        style={style}
+        type={type}
+        title={title}
+        role={role}
+        {...extraProps}
+      >
         <FontAwesomeIcon
           icon={faCircleNotch}
           spin
@@ -93,6 +110,8 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         to={disabled ? "#" : linkTo}
         {...getExtraLinkProps(newTab && !disabled)}
         title={title}
+        onClick={() => onClick?.()}
+        {...extraProps}
       >
         {iconName && (
           <FontAwesomeIcon
@@ -114,6 +133,8 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       onClick={onClick}
       disabled={disabled}
       title={title}
+      role={role}
+      {...extraProps}
     >
       {iconName && (
         <FontAwesomeIcon

@@ -1,6 +1,8 @@
 import { Box, QuadTree } from "js-quadtree";
 import { Reducer } from "redux";
 
+import { LS_KEY_IS_AMBIENT_AUDIO_VOCAL } from "settings";
+
 import {
   AnimateMapActions,
   AnimateMapActionTypes,
@@ -10,6 +12,7 @@ import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
 import { User } from "types/User";
 import { Point } from "types/utility";
+import { AnyVenue } from "types/venues";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
 
@@ -47,6 +50,7 @@ export interface ReplicatedVenueData extends Room {
   isLive: boolean;
   countUsers: number;
   withoutPlate?: boolean;
+  venue?: AnyVenue;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
@@ -122,7 +126,9 @@ const initialAnimateMapState: AnimateMapState = {
   lastZoom: lastZoom ? parseFloat(lastZoom) : 1,
   //flags
   firstEntrance: window.sessionStorage.getItem("AnimateMapState.firstEntrance"),
-  environmentSound: true,
+  // NOTE: null should default to true, hence the check as !== "false" instead of === "true"
+  environmentSound:
+    window.localStorage.getItem(LS_KEY_IS_AMBIENT_AUDIO_VOCAL) !== "false",
 };
 
 export type AnimateMapReducer = Reducer<AnimateMapState, AnimateMapActions>;
@@ -130,7 +136,7 @@ export type AnimateMapReducer = Reducer<AnimateMapState, AnimateMapActions>;
 export const animateMapReducer: AnimateMapReducer = (
   state = initialAnimateMapState,
   action: AnimateMapActions
-): AnimateMapState => {
+) => {
   const immutableState = state;
 
   switch (action.type) {

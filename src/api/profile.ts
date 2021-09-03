@@ -2,8 +2,8 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { AnyGridData } from "types/grid";
-import { ProfileLink } from "types/User";
-import { VenueEvent } from "types/venues";
+import { OnboardingData, ProfileLink } from "types/User";
+import { VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithVenueId } from "utils/id";
 
@@ -194,5 +194,45 @@ export const updateUserCollection = async ({
 
       throw err;
     });
+  });
+};
+
+export interface UpdateUserOnboardingProps {
+  userId: string;
+  venueId?: string;
+  template?: VenueTemplate;
+}
+
+export const updateUserOnboarding = async ({
+  venueId,
+  userId,
+  template,
+}: UpdateUserOnboardingProps): Promise<void> => {
+  const userRef = getUserRef(userId);
+  const now = Date.now();
+
+  const onboarded: OnboardingData = {};
+
+  if (template) {
+    onboarded.perTemplate = { [`${template}`]: now };
+  }
+
+  if (venueId) {
+    onboarded.perVenue = { [venueId]: now };
+  }
+
+  return userRef.update({ onboarded }).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateUserOnboarding",
+        venueId,
+        userId,
+        template,
+      });
+
+      throw err;
+    });
+
+    throw err;
   });
 };

@@ -1,6 +1,11 @@
 @import "scss/constants";
 
-$header-height: 45px;
+$header-height: 50px;
+
+// NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
+$media-width--mobile-min: 768px;
+$media-width--mobile-max: 1024px;
+$help-center-background-color: #232225;
 
 .chat-sidebar {
   transform: translateX(100%);
@@ -8,26 +13,35 @@ $header-height: 45px;
   position: fixed;
   display: flex;
   flex-flow: column;
-  top: 66px;
+  top: $navbar-height;
   right: 0;
   width: $chat-sidebar-width;
-  height: calc(100vh - 96px);
+  height: calc(100vh - #{$reserved-page-height});
   background-color: $saturated-black;
   z-index: z(sidebar);
+
+  &__tab {
+    border-radius: 0;
+    border: none;
+  }
 
   &--expanded {
     transform: translateX(0);
     transition: transform 0.3s;
     background-color: rgba($saturated-black, 0.9);
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    box-shadow: -10px 0 40px opaque-black(0.5);
   }
 
-  &__header {
-    height: $header-height;
+  &__header-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing--md;
+    position: absolute;
+    transform: translateX(-100%);
   }
 
   &__tabs {
-    height: 100%;
+    height: $header-height;
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -39,21 +53,25 @@ $header-height: 45px;
     border: none;
     display: flex;
     flex: 1;
-    font-size: 0.9rem;
-    justify-content: center;
+    font-size: 0.9em;
+    justify-content: space-evenly;
     align-items: center;
     cursor: pointer;
-    border-bottom: rgba(0, 0, 0, 0) thin solid;
-    color: rgba(255, 255, 255, 0.6);
+    border-bottom: thin solid opaque-black(0);
+    color: opaque-white(0.6);
 
     &:focus,
     &:hover {
-      color: rgba(255, 255, 255, 0.7);
+      color: opaque-white(0.7);
     }
 
     &--selected {
       border-bottom: $white 2px solid;
       color: $white;
+
+      &.ButtonNG__button {
+        border-bottom: $white 2px solid;
+      }
 
       &:focus,
       &:hover {
@@ -63,37 +81,66 @@ $header-height: 45px;
     }
   }
 
-  &__controller {
-    color: $white;
-    border: none;
+  &__help-center-header {
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 13px;
-    height: 45px;
-    background-color: $secondary;
-    border-radius: 16px 0 0 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    position: absolute;
-    top: 0;
-    transform: translateX(-100%);
-
-    &:hover {
-      background-color: $lighter-intermediate-grey;
-    }
-
-    &__second-icon {
-      margin-left: 5px;
-    }
   }
 
   &__tab-content {
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
+  }
+
+  &--expanded &__controller {
+    margin-top: 0;
+  }
+
+  &__private-chat {
+    margin-top: $header-height + 2 * $spacing--md;
+  }
+
+  &__help-center-icon {
+    margin-top: 2 * $header-height + 3 * $spacing--md;
+  }
+
+  &__create-icon {
+    margin-top: 3 * $header-height + 4 * $spacing--md;
+  }
+
+  &--wide {
+    background-color: $help-center-background-color;
+    width: 60%;
+  }
+
+  @media only screen and (max-device-width: $media-width--mobile-min) {
+    &--expanded {
+      width: 100%;
+    }
+
+    &--wide {
+      width: 100%;
+    }
+
+    &__tabs {
+      padding-left: 70px;
+    }
+
+    &__tab {
+      max-width: 50%;
+    }
+
+    &--expanded &__controller {
+      transform: translateX(0);
+      border-radius: 0 $border-radius--lg $border-radius--lg 0;
+    }
+
+    &--collapsed &__controller {
+      transform: translateX(-100%);
+      border-radius: $border-radius--lg 0 0 $border-radius--lg;
+    }
   }
 }

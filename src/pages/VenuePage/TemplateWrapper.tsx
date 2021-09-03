@@ -41,6 +41,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
   // @debt remove backButton from Navbar
   let hasBackButton = true;
+
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (
@@ -64,6 +65,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.animatemap:
       template = <AnimateMap venue={venue} />;
+      // @debt Remove the back button, because we don't need it in AnimateMap for now
+      hasBackButton = false;
       break;
 
     case VenueTemplate.artpiece:

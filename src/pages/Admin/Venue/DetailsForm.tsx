@@ -17,15 +17,14 @@ import { IS_BURN } from "secrets";
 import {
   BACKGROUND_IMG_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
+  BM_PARENT_ID,
+  DEFAULT_MAP_BACKGROUND,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
-  HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
   PLAYA_HEIGHT,
@@ -44,8 +43,6 @@ import {
   VenueInput,
 } from "api/admin";
 
-import { setSovereignVenue } from "store/actions/SovereignVenue";
-
 import { UserStatus } from "types/User";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
@@ -54,8 +51,6 @@ import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-import { useDispatch } from "hooks/useDispatch";
-import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
@@ -81,6 +76,7 @@ import { WizardPage } from "./VenueWizard";
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
+import "./DetailsForm.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -95,7 +91,7 @@ const iconPositionFieldName = "iconPosition";
 //  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
-  [VenueTemplate.partymap]: "Party Map",
+  [VenueTemplate.partymap]: "Camp",
 };
 
 export const DetailsForm: React.FC<DetailsFormProps> = ({
@@ -111,11 +107,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
-  const queryParams = useQuery();
-  const parentIdQuery = queryParams.get("parentId");
-
-  const dispatch = useDispatch();
-  const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const {
     watch,
@@ -138,7 +130,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       ...defaultValues,
       logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
       bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
-      parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
+      mapBackgroundImageUrl:
+        defaultValues?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND,
+      parentId: defaultValues?.parentId ?? BM_PARENT_ID,
     },
   });
   const { user } = useUser();
@@ -167,11 +161,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
   // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
-    async (
-      vals: Partial<FormValues>,
-      userStatuses: UserStatus[],
-      showUserStatuses: boolean
-    ) => {
+    async (vals: Partial<FormValues>) => {
       if (!user || formError) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
@@ -180,52 +170,13 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             {
               ...(vals as VenueInput),
               id: venueId,
-              userStatuses,
-              showUserStatus: showUserStatuses,
             },
             user
           );
-
-          //@debt Create separate function that updates the userStatuses separately by venue id.
-          if (
-            sovereignVenueId &&
-            sovereignVenue &&
-            sovereignVenueId !== venueId
-          )
-            await updateVenue(
-              {
-                id: sovereignVenueId,
-                name: sovereignVenue.name,
-                subtitle:
-                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
-                description:
-                  sovereignVenue.config?.landingPageConfig.description ?? "",
-                adultContent: sovereignVenue.adultContent ?? false,
-                profile_questions: sovereignVenue.profile_questions,
-                code_of_conduct_questions:
-                  sovereignVenue.code_of_conduct_questions,
-                userStatuses,
-                showUserStatus: showUserStatuses,
-                template: sovereignVenue.template,
-              },
-              user
-            ).then(() => {
-              if (sovereignVenue) {
-                dispatch(
-                  setSovereignVenue({
-                    ...sovereignVenue,
-                    userStatuses,
-                    showUserStatus: showUserStatuses,
-                  })
-                );
-              }
-            });
         } else
           await createVenue(
             {
               ...vals,
-              userStatuses,
-              showUserStatus: showUserStatuses,
             } as VenueInput,
             user
           );
@@ -243,15 +194,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [
-      user,
-      formError,
-      venueId,
-      history,
-      sovereignVenueId,
-      sovereignVenue,
-      dispatch,
-    ]
+    [user, formError, venueId, history]
   );
 
   const iconsMap = useMemo(
@@ -392,11 +335,11 @@ interface DetailsFormLeftProps
   state: WizardPage["state"];
   previous: WizardPage["previous"];
   isSubmitting: boolean;
-  onSubmit: (
-    vals: Partial<FormValues>,
-    userStatuses: UserStatus[],
-    showUserStatuses: boolean
-  ) => Promise<void>;
+  register: ReturnType<typeof useForm>["register"];
+  watch: ReturnType<typeof useForm>["watch"];
+  control: ReturnType<typeof useForm>["control"];
+  onSubmit: (vals: Partial<FormValues>) => Promise<void>;
+  handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
   editing?: boolean;
   formError: boolean;
@@ -410,7 +353,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   state,
   isSubmitting,
   register,
-  watch,
   errors,
   setError,
   previous,
@@ -419,6 +361,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   setValue,
   formError,
   setFormError,
+  watch,
 }) => {
   const values = watch();
 
@@ -497,26 +440,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderRestrictToAdultsInput = () => (
-    <div className="input-container">
-      <label
-        htmlFor={"chkadultContent"}
-        className={`checkbox ${
-          watch("adultContent", false) && "checkbox-checked"
-        }`}
-      >
-        Restrict entry to adults aged 18+
-      </label>
-      <input
-        type="checkbox"
-        id={"chkadultContent"}
-        name={"adultContent"}
-        defaultChecked={values.adultContent}
-        ref={register}
-      />
-    </div>
-  );
-
   const renderBannerPhotoInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Upload a banner photo</h4>
@@ -571,9 +494,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderAttendeesTitleInput = () => (
-    <div className="input-container">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Title of your venues attendees</h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         For example: guests, attendees, partygoers.
       </div>
       <input
@@ -591,9 +514,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderChatTitleInput = () => (
-    <div className="input-container">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Your venue type label</h4>
-      <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
+      <div className="DetailsForm__attendees-title">
+        For example: Party, Event, Meeting
+      </div>
       <input
         type="text"
         disabled={disable}
@@ -611,7 +536,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderUrlInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         Please post a URL to, for example, a Zoom room, Twitch stream, other
         Universe, or any interesting thing out there on the open web.
       </div>
@@ -638,14 +563,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         you can edit this later.)
       </div>
 
-      {/* note: the default embedded video is the "Intro to Sparkle" video*/}
+      {/* note: the default embed here is a how to embed presentation, and for the jazzbar it's the intro to sparkle video */}
       <textarea
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
       >
-        https://player.vimeo.com/video/512606583?h=84853fbd28
+        {templateID === VenueTemplate.jazzbar
+          ? "https://player.vimeo.com/video/512606583?h=84853fbd28"
+          : "https://docs.google.com/presentation/d/e/2PACX-1vTeoZQSP2b4q4dMceEnm_fU1QaS4u5F_n1_EnZjjn-b7N91imfRbJaDX9w1aR0QS6G3NgnZcMTaMiq-/embed?start=false&loop=false&delayms=3000"}
       </textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
@@ -655,7 +582,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
-    <div className="toggle-room">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Show Schedule</h4>
       <Toggler
         name="showSchedule"
@@ -666,89 +593,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowGridToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show grid layout</h4>
-      <Toggler name="showGrid" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
-    <div className="toggle-room">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Show badges</h4>
       <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
-  const renderSeatingNumberInput = () => (
-    <>
-      <div className="input-container">
-        <h4 className="italic input-header">Number of seats columns</h4>
-        <input
-          disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
-          min={5}
-          name="auditoriumColumns"
-          type="number"
-          ref={register}
-          className="align-left"
-          placeholder="Number of seats columns"
-        />
-        {errors.auditoriumColumns ? (
-          <span className="input-error">
-            {errors.auditoriumColumns.message}
-          </span>
-        ) : null}
-      </div>
-      <div className="input-container">
-        <h4 className="italic input-header">Number of seats rows</h4>
-        <input
-          disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
-          name="auditoriumRows"
-          type="number"
-          ref={register}
-          className="align-left"
-          placeholder="Number of seats rows"
-          min={5}
-        />
-        {errors.auditoriumRows ? (
-          <span className="input-error">{errors.auditoriumRows.message}</span>
-        ) : null}
-      </div>
-    </>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowReactions = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show reactions</h4>
-      <Toggler name="showReactions" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowShoutouts = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show shoutouts</h4>
-      <Toggler name="showShoutouts" forwardedRef={register} />
-    </div>
-  );
-
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
-    <div className="toggle-room">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Show Rangers support</h4>
       <Toggler name="showRangers" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderRestrictDOBToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Require date of birth on register</h4>
-      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -786,7 +642,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         Enter the parent venue ID, for the &quot;back&quot; button to go to, and
         for sharing events in the schedule
       </h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         The nav bar can show a &quot;back&quot; button if you enter an ID here.
         Clicking &quot;back&quot; will return the user to the venue whose ID you
         enter. Additionally, the events you add here will be shown to users
@@ -813,10 +669,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderRoomAppearanceSelect = () => (
     <>
-      <h4 className="italic input-header">
+      <h4 className="italic input-header DetailsForm--hidden">
         Choose how you&apos;d like your rooms to appear on the map
       </h4>
-      <div className="input-container">
+      <div className="input-container DetailsForm--hidden">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
           <option value="hover">Hover</option>
           <option value="count">Count</option>
@@ -850,25 +706,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderShowNametagsToggle = () => (
-    <>
-      <h4 className="italic input-header">
-        Display user names on their avatars
-      </h4>
-      <label className="input-container">
-        <Form.Control as="select" name="showNametags" ref={register} custom>
-          <option value="none">None</option>
-          {/* TODO: Implement Inline state */}
-          {/* <option value="inline">Inline</option> */}
-          <option value="hover">Inline and hover</option>
-        </Form.Control>
-      </label>
-    </>
-  );
-
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
-    <div className="toggle-room">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Enable venue radio</h4>
       <Toggler name="showRadio" forwardedRef={register} />
     </div>
@@ -890,7 +730,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   };
 
   const renderRadioStationInput = () => (
-    <div className="input-container">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Radio station stream URL:</h4>
       <input
         type="text"
@@ -904,6 +744,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <span className="input-error">{errors.radioStations.message}</span>
       )}
     </div>
+  );
+
+  const renderHelper = (text: string) => (
+    <p className="small light helper">{text}</p>
   );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
@@ -946,7 +790,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const updateStatusColor = (color: string, index: number) => {
     const statuses = [...userStatuses];
-    statuses[index] = { color, status: statuses[index].status };
+    statuses[index] = { ...statuses[index], color };
     setUserStatuses(statuses);
   };
 
@@ -973,38 +817,32 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     }
 
     statuses[index] = {
-      color: statuses[index].color,
+      ...statuses[index],
       status: event.currentTarget.value,
     };
     setUserStatuses(statuses);
   };
 
   return (
-    <form
-      className="full-height-container"
-      onSubmit={handleSubmit((vals) =>
-        onSubmit(vals, userStatuses, hasUserStatuses)
-      )}
-    >
+    <form className="full-height-container" onSubmit={handleSubmit(onSubmit)}>
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
         <h4 className="italic" style={{ fontSize: "30px" }}>{`${
           editing ? "Edit" : "Create"
         } your ${templateType}`}</h4>
-        <p
-          className="small light"
-          style={{ marginBottom: "2rem", fontSize: "16px" }}
-        >
-          You can change anything except for the name of your venue later
-        </p>
+        {renderHelper(
+          "You can change anything except for the name of your venue later"
+        )}
 
         {renderVenueNameInput()}
         {renderTaglineInput()}
         {renderDescriptionInput()}
-        {renderRestrictToAdultsInput()}
 
         {renderBannerPhotoInput()}
         {renderLogoInput()}
+        {renderHelper(
+          "This is how you will appear on the map. Please upload a square image."
+        )}
 
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
@@ -1029,6 +867,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderMapBackgroundInput(templateID)}
 
         <QuestionInput
+          className="DetailsForm--hidden"
           title="Code of conduct questions"
           fieldName="code_of_conduct_questions"
           register={register}
@@ -1036,6 +875,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           editing={state.detailsPage?.venue.code_of_conduct_questions}
         />
         <QuestionInput
+          className="DetailsForm--hidden"
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
@@ -1043,36 +883,24 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         />
 
         <EntranceInput
+          className="DetailsForm--hidden"
           fieldName="entrance"
           register={register}
           editing={state.detailsPage?.venue.entrance}
         />
 
         {renderShowScheduleToggle()}
-        {templateID &&
-          HAS_GRID_TEMPLATES.includes(templateID) &&
-          renderShowGridToggle()}
-        {renderShowBadgesToggle()}
-        {renderShowNametagsToggle()}
-        {templateID &&
-          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
-          renderShowReactions()}
-        {templateID &&
-          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
-          renderShowShoutouts()}
-        {renderShowRangersToggle()}
-        {renderRestrictDOBToggle()}
 
-        {templateID &&
-          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
-          HAS_GRID_TEMPLATES.includes(templateID) &&
-          renderSeatingNumberInput()}
+        {renderShowBadgesToggle()}
+
+        {renderShowRangersToggle()}
 
         {renderRadioToggle()}
 
         {renderJukeboxToggle()}
 
         <UserStatusManager
+          className="DetailsForm--hidden"
           venueId={venueId}
           checked={hasUserStatuses}
           userStatuses={userStatuses}
@@ -1157,7 +985,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
     <input
       className="btn btn-primary"
       type="submit"
-      value={editing ? `Update ${templateType}` : `Create ${templateType}`}
+      value={editing ? `Update ${templateType}` : "Build!"}
     />
   );
 };

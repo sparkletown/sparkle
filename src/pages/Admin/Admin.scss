@@ -64,7 +64,7 @@ $sorting-option--font-size: 0.8rem;
     overflow: hidden;
 
     .page-container-adminsidebar {
-      height: calc(100vh - 66px);
+      height: calc(100vh - #{$navbar-height});
 
       position: sticky;
       top: 0;
@@ -78,7 +78,7 @@ $sorting-option--font-size: 0.8rem;
         top: $sorting-dropdown--top;
         left: $sorting-dropdown--left;
         width: $sorting-dropdown--width;
-        background: $room-card-background;
+        background: $card-background;
         border-radius: $border-radius--lg;
         padding: $spacing--lg $spacing--sm;
       }
@@ -121,6 +121,7 @@ $sorting-option--font-size: 0.8rem;
 
         .btn {
           width: 100%;
+          margin-bottom: $spacing--sm;
         }
       }
 

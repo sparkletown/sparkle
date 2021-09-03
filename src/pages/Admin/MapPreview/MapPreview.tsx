@@ -47,6 +47,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
+  const [mapZoom, setMapZoom] = useState(0);
 
   useEffect(() => {
     if (
@@ -93,7 +94,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   );
 
   const [{ loading: isSaving }, saveRoomPositions] = useAsyncFn(async () => {
-    if (isSaving || !user) return;
+    if (!user) return;
 
     // Why is this using the ref and not mapRooms state?
     const updatedRooms = Object.values(roomRef.current);
@@ -119,11 +120,25 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [rooms, user, venueId]);
 
+  const renderMapZoom = () => {
+    return (
+      <div className="MapPreview__zoom">
+        <label>Zoom level:</label>
+        <input
+          type="range"
+          value={mapZoom}
+          onChange={(e) => setMapZoom(parseInt(e.target.value))}
+          max="500"
+        />
+      </div>
+    );
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="MapPreview">
-        <Legend text={`${venueName}'s Map`} />
-
+      <div className="MapPreview" style={{ width: `${100 + mapZoom}%` }}>
+        <Legend text={`${venueName}'s Map`} position={"right"} />
+        {renderMapZoom()}
         {!isEditing && (
           <BackgroundSelect
             venueName={venueName}
