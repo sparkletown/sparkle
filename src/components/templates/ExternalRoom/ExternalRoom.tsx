@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 
-import { EXTERNAL_ROOM_BACKGROUND } from "settings";
+import {
+  ENABLE_POPUPS_URL,
+  EXTERNAL_ROOM_BACKGROUND,
+  USER_AVATAR_LIMIT,
+} from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -14,6 +18,8 @@ import { LogoRF } from "pages/RegistrationFlow/LogoRF";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { UserList } from "components/molecules/UserList";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./ExternalRoom.scss";
 
@@ -54,11 +60,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
 
             <div>
               in a new tab. If {`you're`} not seeing this, try{" "}
-              <a
-                rel="noreferrer"
-                href="https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop"
-                target="_blank"
-              >
+              <a rel="noreferrer" href={ENABLE_POPUPS_URL} target="_blank">
                 enabling pop ups on your browser.
               </a>
             </div>
@@ -77,12 +79,12 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
                   {venue.config?.landingPageConfig.subtitle}
                 </div>
 
-                <button
+                <ButtonNG
                   className="btn btn-primary"
                   onClick={() => openUrl(redirectUrl)}
                 >
                   Enter
-                </button>
+                </ButtonNG>
               </div>
             </div>
 
@@ -95,7 +97,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
             <UserList
               containerClassName="ExternalRoom__userlist"
               users={worldUsers}
-              limit={11}
+              limit={USER_AVATAR_LIMIT}
               activity="in here"
               hasClickableAvatars
             />

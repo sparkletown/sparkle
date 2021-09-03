@@ -27,7 +27,7 @@ $spacing: 20px;
     display: flex;
     flex-direction: column;
     max-height: 80vh;
-    border-radius: 20px;
+    border-radius: $border-radius;
     background: $dark;
   }
 
