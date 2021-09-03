@@ -6,6 +6,8 @@ import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
+import { justLog } from "utils/promise";
+
 import "firebase/functions";
 
 interface ImageInputProps extends ContainerClassName {
@@ -51,7 +53,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
       const urls: Array<string> = await Promise.all(promises);
       setImageCollection(urls);
     };
-    f();
+    justLog(ImageCollectionInput.name, f());
   }, [collectionPath]);
 
   const [selectedCollectionImageUrl, setSelectedCollectionImageUrl] = useState<
@@ -130,12 +132,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
             )}
         </div>
       </div>
-      <input
-        type="hidden"
-        name={`${fieldName}Url`}
-        ref={register}
-        value={imageUrlForPreview}
-      />
+      <input type="hidden" name={`${fieldName}Url`} ref={register} />
       {error?.message && <span className="input-error">{error.message}</span>}
       {hasImageCollections && (
         <div style={{ marginTop: 10, fontSize: "16px" }}>

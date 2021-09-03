@@ -1,0 +1,21 @@
+@import "scss/constants.scss";
+
+.AutoSpan {
+  &--error {
+    color: $red;
+  }
+
+  &--info {
+    font-size: 0.8em;
+    opacity: 0.8;
+    align-self: center;
+  }
+
+  &--dim {
+    opacity: 0.5;
+  }
+
+  &--secondary {
+    opacity: 0.8;
+  }
+}

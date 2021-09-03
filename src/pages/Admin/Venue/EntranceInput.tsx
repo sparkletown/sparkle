@@ -10,6 +10,7 @@ interface EntranceButtonInputProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   editing?: EntranceStepConfig[];
 }
+
 const EntranceButtonInput: React.FC<EntranceButtonInputProps> = ({
   fieldName,
   register,
@@ -89,48 +90,48 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
-  const renderEntranceInput = (index: number) => {
-    const baseName = `${fieldName}[${index}]`;
-    const videoUrl = `${baseName}videoUrl`;
-    const tamplate = `${baseName}template`;
-
-    return (
-      <div
-        className="dynamic-input-wrapper"
-        key={`${fieldName}_${index}`}
-        style={{ padding: "0.5em", border: "1px solid #ccc" }}
-      >
-        <EntranceButtonInput
-          fieldName={`${baseName}buttons`}
-          register={register}
-        />
-        <fieldset name={baseName}>
-          <Form.Label>Template</Form.Label>
-          <Form.Control
-            ref={register}
-            name={tamplate}
-            value="welcomevideo"
-            disabled
-            custom
-          />
-          <Form.Label>Video URL</Form.Label>
-          <Form.Control ref={register} name={videoUrl} custom />
-          {errors?.[index]?.videoUrl && (
-            <div className="input-error">{errors[index].videoUrl.message}</div>
-          )}
-        </fieldset>
-
-        <Button onClick={remove(index)} variant="secondary">
-          Remove entrance step
-        </Button>
-      </div>
-    );
-  };
-
   return (
     <div className="input-container" style={{ marginBottom: "1.5rem" }}>
       {showTitle && <h4 className="italic input-header">Venue entrance</h4>}
-      {indexes.map((i) => renderEntranceInput(i))}
+      {indexes.map((index) => {
+        const baseName = `${fieldName}[${index}]`;
+        const videoUrl = `${baseName}videoUrl`;
+        const tamplate = `${baseName}template`;
+
+        return (
+          <div
+            className="dynamic-input-wrapper"
+            key={`${fieldName}_${index}`}
+            style={{ padding: "0.5em", border: "1px solid #ccc" }}
+          >
+            <EntranceButtonInput
+              fieldName={`${baseName}buttons`}
+              register={register}
+            />
+            <fieldset name={baseName}>
+              <Form.Label>Template</Form.Label>
+              <Form.Control
+                ref={register}
+                name={tamplate}
+                value="welcomevideo"
+                disabled
+                custom
+              />
+              <Form.Label>Video URL</Form.Label>
+              <Form.Control ref={register} name={videoUrl} custom />
+              {errors?.[index]?.videoUrl && (
+                <div className="input-error">
+                  {errors[index].videoUrl.message}
+                </div>
+              )}
+            </fieldset>
+
+            <Button onClick={remove(index)} variant="secondary">
+              Remove entrance step
+            </Button>
+          </div>
+        );
+      })}
 
       <div className="dynamic-input__button-wrapper">
         <Button onClick={add}>Add entrance step</Button>

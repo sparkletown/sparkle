@@ -13,6 +13,7 @@ import {
 } from "types/venues";
 
 import { WithId } from "utils/id";
+import { withLog } from "utils/promise";
 import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
@@ -294,9 +295,8 @@ export const createVenue = async (
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
-  return await firebase.functions().httpsCallable("venue-createVenue")(
-    firestoreVenueInput
-  );
+  const endpoint = firebase.functions().httpsCallable("venue-createVenue");
+  return await withLog("api/admin::createVenue", endpoint(firestoreVenueInput));
 };
 
 export const createVenue_v2 = async (

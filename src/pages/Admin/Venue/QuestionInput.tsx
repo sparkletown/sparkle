@@ -25,51 +25,58 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
-  const renderFieldset = (index: number) => {
-    const baseName = `${fieldName}[${index}]`;
-    const inputName = `${baseName}name`;
-    const inputText = `${baseName}text`;
-    const inputLink = `${baseName}link`;
-
-    return (
-      <div className="dynamic-input-wrapper" key={`${fieldName}_${index}`}>
-        <fieldset name={baseName}>
-          <Form.Label>Title</Form.Label>
-          <Form.Control ref={register} name={inputName} custom />
-          {errors && errors[index].name && (
-            <span className="input-error">{errors[index].name.message}</span>
-          )}
-
-          <Form.Label>Text</Form.Label>
-          <Form.Control ref={register} name={inputText} as="textarea" custom />
-          {errors && errors[index].text && (
-            <span className="input-error">{errors[index].text.message}</span>
-          )}
-
-          {hasLink && (
-            <>
-              <Form.Label>Link</Form.Label>
-              <Form.Control ref={register} name={inputLink} custom />
-              {errors && errors[index].link && (
-                <span className="input-error">
-                  {errors[index].link.message}
-                </span>
-              )}
-            </>
-          )}
-        </fieldset>
-        <Button onClick={remove(index)} variant="secondary">
-          Remove question
-        </Button>
-      </div>
-    );
-  };
-
   return (
     <div className="input-container" style={{ marginBottom: "1.5rem" }}>
       {title && <h4 className="italic input-header">{title}</h4>}
 
-      {indexes.map((i) => renderFieldset(i))}
+      {indexes.map((index) => {
+        const baseName = `${fieldName}[${index}]`;
+        const inputName = `${baseName}name`;
+        const inputText = `${baseName}text`;
+        const inputLink = `${baseName}link`;
+
+        return (
+          <div className="dynamic-input-wrapper" key={`${fieldName}_${index}`}>
+            <fieldset name={baseName}>
+              <Form.Label>Title</Form.Label>
+              <Form.Control ref={register} name={inputName} custom />
+              {errors && errors[index].name && (
+                <span className="input-error">
+                  {errors[index].name.message}
+                </span>
+              )}
+
+              <Form.Label>Text</Form.Label>
+              <Form.Control
+                ref={register}
+                name={inputText}
+                as="textarea"
+                custom
+              />
+              {errors && errors[index].text && (
+                <span className="input-error">
+                  {errors[index].text.message}
+                </span>
+              )}
+
+              {hasLink && (
+                <>
+                  <Form.Label>Link</Form.Label>
+                  <Form.Control ref={register} name={inputLink} custom />
+                  {errors && errors[index].link && (
+                    <span className="input-error">
+                      {errors[index].link.message}
+                    </span>
+                  )}
+                </>
+              )}
+            </fieldset>
+            <Button onClick={remove(index)} variant="secondary">
+              Remove question
+            </Button>
+          </div>
+        );
+      })}
 
       <div className="dynamic-input__button-wrapper">
         <Button onClick={add}>Add question</Button>
