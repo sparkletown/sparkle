@@ -29,6 +29,7 @@ import {
   LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
   LS_KEY_RADIO_VOLUME,
   PLAYA_VENUE_ID,
+  SPARKLEVERSE_PHOTOBOOTH_URL,
 } from "settings";
 
 import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
@@ -314,14 +315,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               )}
 
               <div
-                className="nav-schedule nav-photobooth"
-                onClick={() =>
-                  openUrlInNewTab(
-                    "https://burn.sparklever.se/in/outsnappedphotoboothcamp"
-                  )
-                }
+                className="NavBar__photobooth-button nav-schedule"
+                onClick={() => openUrlInNewTab(SPARKLEVERSE_PHOTOBOOTH_URL)}
               >
-                <p>Photobooth</p>
+                <p className="NavBar__photobooth-title">Photobooth</p>
               </div>
 
               <div className="navbar-links__simplified-view">

@@ -245,24 +245,6 @@ $photobooth-button-background-size: 35px;
   }
 }
 
-.nav-photobooth {
-  margin: $photobooth-button-margin;
-  background-image: url(/assets/icons/photobooth-icon.png);
-  background-size: $photobooth-button-background-size;
-  background-position: 50% 30%;
-  background-color: $lighter-intermediate-grey;
-
-  &:hover {
-    background-color: $lighter-intermediate-grey;
-  }
-
-  p {
-    text-decoration: none;
-    margin: $photobooth-button-text-margin;
-    font-size: $font-size--sm;
-  }
-}
-
 .schedule-text {
   background-color: $primary;
   border-radius: 10px;
@@ -350,6 +332,26 @@ $photobooth-button-background-size: 35px;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+    }
+  }
+
+  &__photobooth {
+    &-button {
+      background-color: $lighter-intermediate-grey !important;
+      margin: $photobooth-button-margin;
+      background-image: url(/assets/icons/photobooth-icon.png);
+      background-size: $photobooth-button-background-size;
+      background-position: 50% 30%;
+
+      &:hover {
+        background-color: $lighter-intermediate-grey;
+      }
+    }
+
+    &-title {
+      text-decoration: none;
+      margin: $photobooth-button-text-margin;
+      font-size: $font-size--sm;
     }
   }
 

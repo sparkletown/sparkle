@@ -87,6 +87,8 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
+export const SPARKLEVERSE_PHOTOBOOTH_URL =
+  "https://burn.sparklever.se/in/outsnappedphotoboothcamp";
 export const PLAYA_LOCATION_NAME = "playa";
 export const PLAYA_TIMEZONE = "America/Los_Angeles";
 
