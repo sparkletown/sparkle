@@ -1,11 +1,13 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
+import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
 import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
 import { GameConfig } from "../../../configs/GameConfig";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
+import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { EllipseComponent } from "../components/EllipseComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
@@ -97,6 +99,25 @@ export const createArtcarEntity = (
           entity.remove(TooltipComponent);
         }
       )
+    )
+    .add(
+      new ClickableSpriteComponent(() => {
+        const currentVenueArtcar = getCurrentArtcar(artcarComponent);
+        GameInstance.instance.getStore().dispatch(
+          setAnimateMapRoom({
+            title: currentVenueArtcar.data.title,
+            subtitle: "",
+            url: currentVenueArtcar.data.url,
+            about: currentVenueArtcar.data.about,
+            x_percent: 50,
+            y_percent: 50,
+            width_percent: 5,
+            height_percent: 5,
+            isEnabled: currentVenueArtcar.data.isEnabled,
+            image_url: currentVenueArtcar.data.image_url,
+          })
+        );
+      })
     );
 
   fsm.changeState("moving");

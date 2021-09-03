@@ -149,7 +149,7 @@ export const stubArtcarsData = () => {
         title: arr[i].name,
         subtitle: arr[i].info,
         url: arr[i].link,
-        about: "",
+        about: arr[i].info,
         x_percent: 0.5,
         y_percent: 0.5,
         width_percent: 0.5,
