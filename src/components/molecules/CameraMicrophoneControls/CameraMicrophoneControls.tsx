@@ -21,8 +21,8 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
   defaultMute,
   containerClassName,
 }) => {
-  const getChangeStateHandler = useCallback(
-    (variant: "microphone" | "camera"): ((enabled: boolean) => void) => {
+  const changeStateHandler = useCallback(
+    (variant: "microphone" | "camera", enabled: boolean) => {
       const tracks =
         variant === "microphone"
           ? participant.audioTracks
@@ -43,15 +43,15 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
     [participant.audioTracks, participant.videoTracks]
   );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const changeAudioState = useCallback(getChangeStateHandler("microphone"), [
-    getChangeStateHandler,
-  ]);
+  const changeAudioState = useCallback(
+    (enabled: boolean) => changeStateHandler("microphone", enabled),
+    [changeStateHandler]
+  );
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const changeVideoState = useCallback(getChangeStateHandler("camera"), [
-    getChangeStateHandler,
-  ]);
+  const changeVideoState = useCallback(
+    (enabled: boolean) => changeStateHandler("camera", enabled),
+    [changeStateHandler]
+  );
   return (
     <div className={classNames("CameraMicrophoneControls", containerClassName)}>
       <VideoOverlayButton
