@@ -28,6 +28,7 @@ import { DeadSystem } from "./systems/DeadSystem";
 import { DebugSystem } from "./systems/DebugSystem";
 import { FirebarrelSystem } from "./systems/FirebarrelSystem";
 import { FixScaleByViewportZoomSystem } from "./systems/FixScaleByViewportZoomSystem";
+import { FlameSystem } from "./systems/FlameSystem";
 import { HoverableSpriteSystem } from "./systems/HoverableSpriteSystem";
 import { LineOfSightSystem } from "./systems/LineOfSightSystem";
 import { MotionArtcarSystem } from "./systems/MotionArtcarSystem";
@@ -188,7 +189,10 @@ export class MapContainer extends Container {
         SystemPriorities.move
       );
     }
-
+    this._engine.addSystem(
+      new FlameSystem(this.entityFactory),
+      SystemPriorities.update
+    );
     this._engine.addSystem(new MovementSystem(), SystemPriorities.move);
     this._engine.addSystem(
       new LineOfSightSystem(this.entityFactory),
