@@ -33,6 +33,7 @@ $sorting-option--font-size: 0.8rem;
     background-color: $black;
     border-bottom: 1px solid rgba($white, 0.2);
     box-shadow: box-shadow--large(0.62);
+
     .navbar-container {
       position: relative;
       width: 100%;
@@ -41,6 +42,7 @@ $sorting-option--font-size: 0.8rem;
       max-width: $page-max-width;
       padding: 0 20px;
     }
+
     .sparkleverse-logo_navbar {
       width: 200px;
       height: 48px;
@@ -68,7 +70,6 @@ $sorting-option--font-size: 0.8rem;
       top: 0;
       left: 0;
       overflow: auto;
-      scrollbar-width: thin;
 
       background-image: $admin-gradient;
 
@@ -105,32 +106,40 @@ $sorting-option--font-size: 0.8rem;
 
         &__ellipsis {
           float: right;
+
           &:hover {
             cursor: pointer;
             color: $light-grey--lightest;
           }
         }
       }
+
       .page-container-adminsidebar-top {
         padding: 14px;
         text-align: center;
         width: 100%;
+
         .btn {
           width: 100%;
         }
       }
+
       ul.page-container-adminsidebar-venueslist {
         list-style-type: none;
+
         li {
           position: relative;
           padding: 14px;
           cursor: pointer;
+
           &:hover {
             background: rgba($black, 0.15);
           }
+
           &.selected {
             background: rgba($black, 0.3);
           }
+
           &.camp {
             &:after {
               position: absolute;
@@ -143,18 +152,22 @@ $sorting-option--font-size: 0.8rem;
               background-size: 20px 20px;
               transition: all 400ms $transition-function;
             }
+
             ul.page-container-adminsidebar-subvenueslist {
               list-style-type: none;
               display: block;
+
               li {
                 text-indent: 20px;
                 opacity: 0.5;
               }
             }
+
             &.selected {
               &:after {
                 transform: rotate(180deg);
               }
+
               // ul.page-container-adminsidebar-subvenueslist {
               //   display: block;
               // }
@@ -163,6 +176,7 @@ $sorting-option--font-size: 0.8rem;
         }
       }
     }
+
     .page-container-adminpanel {
       height: 100%;
       max-height: 100%;
@@ -174,6 +188,7 @@ $sorting-option--font-size: 0.8rem;
       .page-container-adminpanel-tabs {
         background: rgba($white, 0.15);
         display: flex;
+
         .page-container-adminpanel-tab {
           position: relative;
           padding: 14px 40px;
@@ -183,8 +198,10 @@ $sorting-option--font-size: 0.8rem;
           &:hover {
             opacity: 1;
           }
+
           &.selected {
             opacity: 1;
+
             &:after {
               content: "";
               position: absolute;
@@ -198,6 +215,7 @@ $sorting-option--font-size: 0.8rem;
           }
         }
       }
+
       .page-container-adminpanel-venuepage {
         height: 100%;
         max-height: 100%;
@@ -229,11 +247,13 @@ $sorting-option--font-size: 0.8rem;
             flex-direction: row;
             margin-top: 5px;
             justify-content: flex-start;
+
             .search-event-input {
               margin-left: 15px;
               margin-right: 10px;
             }
           }
+
           .venue-header {
             position: absolute;
             top: 0;
@@ -244,6 +264,7 @@ $sorting-option--font-size: 0.8rem;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
+
             &:after {
               content: "";
               position: absolute;
@@ -260,6 +281,7 @@ $sorting-option--font-size: 0.8rem;
               );
             }
           }
+
           .venue-preview {
             margin: 15px;
             border: 4px solid rgba($white, 0.2);
@@ -285,34 +307,43 @@ $sorting-option--font-size: 0.8rem;
             .heading {
               text-align: center;
             }
+
             .heading-group {
               margin-top: 20px;
+
               .title {
                 margin-right: 10px;
               }
             }
+
             .content-group {
               margin-top: 20px;
+
               .title {
                 margin-right: 20px;
                 width: 100px;
               }
+
               .banner {
                 width: 100%;
               }
+
               .icon {
                 width: 100px;
               }
             }
           }
         }
+
         .page-container-adminpanel-actions {
           padding-right: 40px;
           padding-top: 20px;
+
           &__note {
             margin-bottom: 12px;
           }
         }
+
         .page-container-adminpanel-sidebar {
           background-image: $admin-gradient;
           overflow-x: hidden;
@@ -377,7 +408,7 @@ $sorting-option--font-size: 0.8rem;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #ccc;
+      background-color: #cccccc;
       -webkit-transition: 0.4s;
       transition: 0.4s;
 
@@ -397,22 +428,28 @@ $sorting-option--font-size: 0.8rem;
       &.round {
         border-radius: 34px;
       }
+
       &.round:before {
         border-radius: 50%;
       }
     }
   }
+
   .rooms-list-container {
     margin: 20px;
+
     .room-stats {
       display: flex;
       justify-content: space-between;
     }
+
     .rooms-counter {
       align-self: center;
     }
+
     .add-rooms-button {
     }
+
     .venue-room-details {
       background: #1a1d24;
       border-radius: 50px;
@@ -422,6 +459,7 @@ $sorting-option--font-size: 0.8rem;
       .venue-content {
         display: flex;
         justify-content: space-between;
+
         .sub-content {
         }
       }
@@ -430,15 +468,19 @@ $sorting-option--font-size: 0.8rem;
         display: flex;
         justify-content: space-between;
         margin-bottom: 20px;
+
         h4 {
           font-size: 30px;
         }
+
         .room-options {
           display: flex;
           justify-content: space-between;
           flex-direction: column;
+
           .edit-room {
           }
+
           .toggle-room {
             align-self: center;
           }
@@ -446,27 +488,33 @@ $sorting-option--font-size: 0.8rem;
       }
     }
   }
+
   .banner {
     border-radius: 25px;
     overflow: hidden;
     height: 100%;
+
     .banner-image {
       height: 70px;
       width: 70px;
     }
   }
+
   .rooms-events-list {
     margin-top: 25px;
+
     .admin-room-list-events {
       display: flex;
       justify-content: space-between;
     }
+
     .event-description {
       &:first-child {
         display: block;
       }
     }
   }
+
   .room-disabled {
     color: #8a8b8e;
   }

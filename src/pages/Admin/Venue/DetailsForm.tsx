@@ -643,8 +643,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        value="https://player.vimeo.com/video/512606583?h=84853fbd28"
-      />
+      >
+        https://player.vimeo.com/video/512606583?h=84853fbd28
+      </textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
