@@ -23,10 +23,9 @@ export class MotionArtcarSystem extends MotionBaseSystem {
   }
 
   update(time: number) {
-    const ms = time / settings.TARGET_FPMS;
-
+    const sec = time / settings.TARGET_FPMS / 1000;
     for (let node = this.artcars?.head; node; node = node.next) {
-      node.elipse.rotation += GameConfig.ARTCAR_ANGULAR_VELOCITY * ms;
+      node.elipse.rotation += GameConfig.ARTCAR_ANGULAR_VELOCITY * sec;
 
       const oldX = node.position.x;
       const oldY = node.position.y;
