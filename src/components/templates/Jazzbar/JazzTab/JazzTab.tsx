@@ -1,13 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import {
+  DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
 } from "settings";
+
+import { updateIframeUrl } from "api/venue";
 
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
@@ -22,6 +25,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { Jukebox } from "components/molecules/Jukebox/Jukebox";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
@@ -52,15 +56,19 @@ interface JazzProps {
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
-
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
   } = useShowHide();
-
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
-
   const parentVenueId = parentVenue?.id;
+  const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
+
+  useEffect(() => {
+    if (iframeUrl !== venue.iframeUrl) {
+      updateIframeUrl(iframeUrl, venue.id);
+    }
+  }, [iframeUrl, venue.iframeUrl, venue.id]);
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
@@ -74,7 +82,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
-
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
@@ -120,12 +127,22 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const shouldShowReactions =
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+  const firstTableReference = jazzbarTables[0].reference;
 
+  const shouldShowJukebox =
+    (!!seatedAtTable &&
+      venue.enableJukebox &&
+      seatedAtTable === firstTableReference) ??
+    DEFAULT_ENABLE_JUKEBOX;
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
+  });
+
+  const videoContainerClasses = classNames("video-container", {
+    "video-container--seated": seatedAtTable,
   });
 
   if (!venue) return <>Loading...</>;
@@ -168,16 +185,16 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       )}
 
       <div className="music-bar-content">
-        <div className="video-container">
+        <div className={videoContainerClasses}>
           {!venue.hideVideo && (
             <>
               <div className="iframe-container">
-                {venue.iframeUrl ? (
+                {iframeUrl ? (
                   <iframe
                     key="main-event"
                     title="main event"
                     className="iframe-video"
-                    src={`${venue.iframeUrl}?autoplay=1`}
+                    src={`${iframeUrl}?autoplay=1`}
                     frameBorder="0"
                     allow={IFRAME_ALLOW}
                   />
@@ -208,6 +225,15 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   )} */}
                 </div>
               )}
+
+              {shouldShowJukebox && (
+                <Jukebox
+                  recentVenueUsers={recentVenueUsers}
+                  updateIframeUrl={changeIframeUrl}
+                  venue={venue}
+                />
+              )}
+
               {!seatedAtTable && (
                 <TablesControlBar
                   containerClassName="ControlBar__container"
