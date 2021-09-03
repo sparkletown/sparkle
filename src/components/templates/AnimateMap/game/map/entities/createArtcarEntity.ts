@@ -1,10 +1,7 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import {
-  ReplicatedArtcar,
-  ReplicatedUser,
-} from "../../../../../../store/reducers/AnimateMap";
+import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
 import { GameConfig } from "../../../configs/GameConfig";
 import { artcarsHalo } from "../../constants/AssetConstants";
@@ -23,17 +20,19 @@ import EntityFactory from "./EntityFactory";
 // const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
 const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
 
-const addArtcarTooltip = (artcar: ReplicatedUser, entity: Entity) => {
+const addArtcarTooltip = (artcar: ReplicatedArtcar, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
-  const tooltip = new TooltipComponent(artcar.data.partyName);
+  const tooltip = new TooltipComponent(artcar.data.title);
   tooltip.borderColor = TOOLTIP_COLOR_ISLIVE;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
 
-const getCurrentArtcar = (artcarComponent: ArtcarComponent): ReplicatedUser => {
+const getCurrentArtcar = (
+  artcarComponent: ArtcarComponent
+): ReplicatedArtcar => {
   return artcarComponent.artcar;
 };
 
@@ -90,7 +89,7 @@ export const createArtcarEntity = (
           // add tooltip
           const waiting = creator.getWaitingVenueClick();
           const currentArtcar = getCurrentArtcar(artcarComponent);
-          if (!waiting || `${waiting.data.id}` !== currentArtcar.data.id) {
+          if (!waiting || waiting.data.id !== currentArtcar.data.id) {
             addArtcarTooltip(currentArtcar, entity);
           }
         },
@@ -125,14 +124,14 @@ export const createArtcarEntity = (
 
       resolve(true);
     });
-    img.src = user.data.pictureUrl || "";
+    img.src = user.data.image_url || "";
   }).then(() => {
     const spriteComponent: SpriteComponent = new SpriteComponent();
     spriteComponent.view = new Sprite();
     spriteComponent.view.anchor.set(0.5);
     const view = Sprite.from(canvas);
     view.anchor.set(0.5);
-    const halo = Sprite.from(artcarsHalo[user.data.dotColor]);
+    const halo = Sprite.from(artcarsHalo[user.color]);
     halo.scale.set(2);
     halo.anchor.set(0.5);
 

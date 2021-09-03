@@ -1,5 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -57,10 +59,11 @@ export class MotionCollisionSystem extends System {
         if (this.artcarHittingOnThePlayer(node, this.colliders?.head)) {
           this.creator.createWaitingArtcarClick(node.artcar.artcar);
 
-          // GameInstance.instance.eventProvider.emit(
-          //     EventType.ON_VENUE_COLLISION,
-          //     node.venue.model
-          // );
+          GameInstance.instance.eventProvider.emit(
+            EventType.ON_VENUE_COLLISION,
+            node.artcar.artcar as ReplicatedVenue
+          );
+
           break;
         }
       }
@@ -224,10 +227,7 @@ export class MotionCollisionSystem extends System {
     const x2 = playerNode.position.x;
     const y2 = playerNode.position.y;
     const distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
-    if (distance <= artcarNode.collision.radius) {
-      return true;
-    }
-    return false;
+    return distance <= artcarNode.collision.radius;
   }
 
   private collideObject(

@@ -90,8 +90,6 @@ export const stubArtcarsData = () => {
   const worldCenter: Point = config.worldCenter;
   const sector = 360 / arr.length + 2;
   for (let i = 0; i < arr.length; i++) {
-    const item = arr[i];
-
     let angle = sector * i;
     angle += (GameConfig.ARTCAR_ANGULAR_VELOCITY * new Date().getTime()) % 360;
     angle *= Math.PI / 180;
@@ -107,15 +105,20 @@ export const stubArtcarsData = () => {
       radiusX: radiusX,
       radiusY: radiusY,
       angle: angle,
+      color: i,
       data: {
-        id: item.link,
-        partyName: item.name,
-        messengerId: 0,
-        pictureUrl: artcars13[i],
-        dotColor: i,
-        hat: "",
-        accessories: "",
-        cycle: "",
+        id: i * Date.now(),
+        isLive: true,
+        countUsers: 0,
+        title: arr[i].name,
+        url: arr[i].link,
+        about: "",
+        x_percent: 0.5,
+        y_percent: 0.5,
+        width_percent: 0.5,
+        height_percent: 0.5,
+        isEnabled: true,
+        image_url: artcars13[i],
       },
     });
   }

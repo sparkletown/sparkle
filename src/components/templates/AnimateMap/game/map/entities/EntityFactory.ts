@@ -65,20 +65,22 @@ export default class EntityFactory {
     this.engine = engine;
   }
 
-  public createWaitingArtcarClick(venue: ReplicatedUser): Entity | undefined {
+  public createWaitingArtcarClick(
+    artcar: ReplicatedArtcar
+  ): Entity | undefined {
     const nodes = this.engine.getNodeList(WaitingVenueClickNode);
     while (nodes.head) {
       this.engine.removeEntity(nodes.head.entity);
     }
 
-    const venueNode = this.getArtcarNode(venue.data.id);
+    const venueNode = this.getArtcarNode(artcar.data.id);
     if (!venueNode) {
       return undefined;
     }
 
     const tooltip = new TooltipComponent("", 50);
     tooltip.view = new VenueTooltipEnter(
-      venueNode.artcar.artcar.data.partyName,
+      venueNode.artcar.artcar.data.title,
       0x6943f5
     );
 
@@ -86,8 +88,7 @@ export default class EntityFactory {
     spriteComponent.view = new Sprite();
 
     const entity = new Entity()
-      // .add(new WaitingVenueClickComponent(venue))
-      .add(new WaitingArtcarEnterClickComponent(venue))
+      .add(new WaitingArtcarEnterClickComponent(artcar))
       .add(new DeadComponent(250))
       .add(spriteComponent)
       .add(venueNode.position)
@@ -373,7 +374,7 @@ export default class EntityFactory {
     return createArtcarEntity(user, this);
   }
 
-  public getArtcarNode(id: string): ArtcarNode | undefined {
+  public getArtcarNode(id: number): ArtcarNode | undefined {
     const nodes = this.engine.getNodeList(ArtcarNode);
     for (let node = nodes.head; node; node = node.next) {
       if (node.artcar.artcar.data.id === id) {
