@@ -1,7 +1,6 @@
 @import "scss/constants.scss";
 
 $NavBarSchedule--width: 40%;
-$NavBarSchedule--padding: 20px;
 
 $weekday--padding: 8px 10px;
 $weekday--margin-right: 10px;
@@ -17,8 +16,6 @@ $schedule-btn--height: 51px;
   left: 0;
   bottom: $footer-height;
   width: $NavBarSchedule--width;
-
-  padding-left: $NavBarSchedule--padding;
 
   background-color: opaque-black(0.8);
 
@@ -92,7 +89,8 @@ $schedule-btn--height: 51px;
 
   &__bookmarked-toggle {
     justify-content: left;
-    padding: $spacing--sm 0px;
+    padding: $spacing--sm 0 $spacing--sm 12px;
+
   }
 
   &__download-buttons {
@@ -101,7 +99,6 @@ $schedule-btn--height: 51px;
     justify-content: flex-end;
     background-color: opaque-black(0.9);
     height: $schedule-btn--height;
-    padding-left: $NavBarSchedule--padding;
   }
 
   // @debt: overwrites default btn btn-primary styles
