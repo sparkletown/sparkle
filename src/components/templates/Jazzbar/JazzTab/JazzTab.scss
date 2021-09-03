@@ -124,16 +124,10 @@
         );
         // Note: "items" grid area is used in Jazzbar room component
         grid-template-areas:
-          ".  video video ."
+          ".  video video  ."
+          ".  video video  ."
           ".  video video  ."
           "items items items items";
-
-        &-jukebox {
-          grid-template-rows: repeat(
-            auto-fill,
-            $video-participant-jukebox-height
-          );
-        }
       }
     }
   }

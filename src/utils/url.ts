@@ -66,7 +66,7 @@ export interface OpenUrlOptions {
 export const openUrl = (url: string, options?: OpenUrlOptions) => {
   const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
 
-  if (!isValidUrl(url)) {
+  if (!isValidUrl({ url })) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
@@ -92,26 +92,30 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
   }
 };
 
-export const isValidUrl = (url: string): boolean => {
-  try {
-    return VALID_URL_PROTOCOLS.includes(
-      new URL(url, window.location.origin).protocol
-    );
-  } catch (e) {
-    if (e.name === "TypeError") {
-      return false;
-    }
-    throw e;
+export const isValidUrl = ({
+  url,
+  isStrict,
+}: {
+  url: string;
+  isStrict?: boolean;
+}): boolean => {
+  if (!url) return false;
+
+  let urlObj = new URL(window.location.origin);
+  const isUrlIncludesProtocol = url.includes("http");
+  console.log(url);
+  if (isStrict && !isUrlIncludesProtocol) {
+    return false;
   }
-};
 
-export const isStringAValidUrl = (urlString: string) => {
-  if (!urlString) return false;
+  if (isUrlIncludesProtocol) {
+    urlObj = new URL(url);
+  } else {
+    urlObj = new URL(url, window.location.origin);
+  }
 
   try {
-    const url = new URL(urlString);
-
-    return VALID_URL_PROTOCOLS.includes(url.protocol);
+    return VALID_URL_PROTOCOLS.includes(urlObj.protocol);
   } catch (e) {
     if (e instanceof Error) {
       return false;

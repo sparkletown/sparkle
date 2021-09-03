@@ -24,7 +24,9 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
   const saveIframeUrl = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    updateIframeUrl(iframeUrl, venueId).catch((err) => setError(err));
+    updateIframeUrl(iframeUrl, venueId).catch((err) =>
+      setError(err.toString())
+    );
   };
 
   return (

@@ -21,7 +21,6 @@ export const sendJukeboxMessage = async ({
     .add(message)
     .then(noop)
     .catch((err) => {
-      console.log(err);
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
           location: "api/chat::sendJukeboxMessage",

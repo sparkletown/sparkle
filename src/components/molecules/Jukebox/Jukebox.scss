@@ -47,7 +47,7 @@ $jukebox-chat-max-height: 100px;
     flex-grow: 1;
     display: flex;
 
-    > div {
+    & .InputField__wrapper {
       width: 100%;
       margin: auto;
     }
@@ -63,6 +63,11 @@ $jukebox-chat-max-height: 100px;
     display: flex;
     flex-grow: 0;
 
+    &-submit {
+      width: $spacing--lg * 4;
+      height: $spacing--lg * 2;
+    }
+
     & .ButtonNG__button {
       background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
         opaque-white(0.1);
@@ -72,11 +77,6 @@ $jukebox-chat-max-height: 100px;
           opaque-white(0.2);
         cursor: pointer;
       }
-    }
-
-    &-submit {
-      width: $spacing--lg * 4;
-      height: $spacing--lg * 2;
     }
 
     & .Jukebox__buttons-submit--active {

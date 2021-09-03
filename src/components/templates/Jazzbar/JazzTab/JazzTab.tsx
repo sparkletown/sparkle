@@ -26,7 +26,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import Jukebox from "components/molecules/Jukebox/Jukebox";
+import { Jukebox } from "components/molecules/Jukebox/Jukebox";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
@@ -142,10 +142,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     "music-bar--tableview": seatedAtTable,
   });
 
-  const musicBarContainerClasses = classNames("music-bar-content", {
-    "music-bar-content-jukebox": shouldShowJukebox,
-  });
-
   const videoContainerClasses = classNames("video-container", {
     "video-container--seated": seatedAtTable,
   });
@@ -189,7 +185,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         />
       )}
 
-      <div className={musicBarContainerClasses}>
+      <div className="music-bar-content">
         <div className={videoContainerClasses}>
           {!venue.hideVideo && (
             <>
@@ -237,7 +233,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 <Jukebox
                   recentVenueUsers={recentVenueUsers}
                   updateIframeUrl={changeIframeUrl}
-                  venueName={venue.name}
+                  venue={venue}
                 />
               )}
 

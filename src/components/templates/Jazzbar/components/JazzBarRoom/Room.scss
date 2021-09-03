@@ -11,10 +11,6 @@
     max-height: $video-participant-optimal-height;
     border-radius: 15px;
 
-    &-jukebox {
-      max-height: $video-participant-jukebox-height;
-    }
-
     .participant {
       display: flex;
       height: 100%;

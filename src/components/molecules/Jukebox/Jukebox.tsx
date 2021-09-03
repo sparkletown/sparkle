@@ -1,17 +1,24 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
 import { CHAT_MESSAGE_TIMEOUT, YOUTUBE_SHORT_URL_STRING } from "settings";
 
 import { User } from "types/User";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { getYoutubeEmbedFromUrl, isStringAValidUrl } from "utils/url";
+import { getYoutubeEmbedFromUrl, isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -21,12 +28,13 @@ import "./Jukebox.scss";
 type JukeboxTypeProps = {
   recentVenueUsers: readonly WithId<User>[];
   updateIframeUrl: Dispatch<SetStateAction<string>>;
-  venueName: string;
+  venue: WithId<AnyVenue>;
 };
-const Jukebox: React.FC<JukeboxTypeProps> = ({
+
+export const Jukebox: React.FC<JukeboxTypeProps> = ({
   recentVenueUsers,
   updateIframeUrl,
-  venueName,
+  venue,
 }) => {
   const { register, handleSubmit, watch, reset } = useForm<{
     jukeboxMessage: string;
@@ -35,42 +43,36 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
-  const venueId = useVenueId();
   const { userId } = useUser();
-  const [filteredUser] =
-    recentVenueUsers.filter((vUser) => vUser.id === userId) || [];
-
-  const tableName = filteredUser?.data?.[venueName]?.table ?? "";
+  const [filteredUser] = recentVenueUsers.filter(({ id }) => id === userId);
+  const tableRef = filteredUser?.data?.[venue.name]?.table ?? "";
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
-    venueId,
-    tableId: tableName,
+    venueId: venue.id,
+    tableId: tableRef,
   });
-
   const filteredMessages = messagesToDisplay.filter(
-    (msg) => msg.tableId === tableName
+    ({ tableId }) => tableId === tableRef
   );
 
   useEffect(() => {
-    if (messagesToDisplay.length) {
-      const [lastMessage] = messagesToDisplay;
-      if (lastMessage?.text?.includes(YOUTUBE_SHORT_URL_STRING)) {
-        const youtubeUrl = getYoutubeEmbedFromUrl(lastMessage?.text);
-        updateIframeUrl(youtubeUrl);
-        return;
-      }
-      if (isStringAValidUrl(lastMessage?.text)) {
-        updateIframeUrl(lastMessage.text);
-        return;
-      }
-      return;
+    const [lastMessage] = messagesToDisplay.slice(-1);
+    let urlToEmbed = lastMessage?.text;
+    if (
+      urlToEmbed?.includes(YOUTUBE_SHORT_URL_STRING) &&
+      isValidUrl({ url: urlToEmbed, isStrict: true })
+    ) {
+      urlToEmbed = getYoutubeEmbedFromUrl(lastMessage?.text);
+    }
+    if (isValidUrl({ url: urlToEmbed, isStrict: true })) {
+      updateIframeUrl(urlToEmbed);
     }
   }, [messagesToDisplay, updateIframeUrl]);
 
-  const sendMessageToChat = handleSubmit(({ jukeboxMessage }) => {
+  const sendMessageToChat = handleSubmit(async ({ jukeboxMessage }) => {
     setMessageSending(true);
 
-    sendJukeboxMsg({ message: jukeboxMessage });
+    await sendJukeboxMsg({ message: jukeboxMessage });
     reset();
   });
 
@@ -93,6 +95,35 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
     "Jukebox__buttons-submit--active": !isBtnDisabled,
   });
 
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(scrollToBottom, [filteredMessages]);
+
+  const jukeboxChatMessages = useMemo(
+    () =>
+      filteredMessages?.map((msg, index) => {
+        const msgAuthorName = msg.isMine
+          ? `${msg.author.partyName} (That's you)`
+          : msg.author.partyName;
+
+        const textMessage = `${msgAuthorName} ${
+          isValidUrl({ url: msg.text, isStrict: true })
+            ? `changed video source to ${msg.text}`
+            : msg.text
+        }`;
+        return (
+          <span key={`${msg}${index}`} className="Jukebox__chat-messages">
+            {textMessage}
+          </span>
+        );
+      }),
+    [filteredMessages]
+  );
+
   return (
     <>
       <div className="Jukebox__container">
@@ -101,16 +132,8 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
             When you paste a link here, it changes what people see in the box
             above. Be respectful!
           </span>
-          {filteredMessages?.map((msg, index) => {
-            const msgAuthorName = msg.isMine
-              ? `${msg.author.partyName} (That's you))`
-              : msg.author.partyName;
-            return (
-              <span key={`${msg}${index}`} className="Jukebox__chat-messages">
-                {msgAuthorName} changed video source to {msg.text}
-              </span>
-            );
-          })}
+          {jukeboxChatMessages}
+          <div ref={messagesEndRef} />
         </div>
         <form className="Jukebox__form" onSubmit={sendMessageToChat}>
           <InputField
@@ -138,5 +161,3 @@ const Jukebox: React.FC<JukeboxTypeProps> = ({
     </>
   );
 };
-
-export default Jukebox;

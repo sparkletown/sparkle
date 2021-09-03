@@ -181,7 +181,6 @@ export interface BaseVenue {
   showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
-  enableJukebox?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
@@ -246,6 +245,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {
