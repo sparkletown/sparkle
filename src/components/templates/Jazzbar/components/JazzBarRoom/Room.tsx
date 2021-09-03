@@ -29,7 +29,6 @@ interface RoomProps {
   onBack?: () => void;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
-  shouldShowJukebox: boolean;
 }
 
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
@@ -44,7 +43,6 @@ const Room: React.FC<RoomProps> = ({
   setSeatedAtTable,
   defaultMute,
   isAudioEffectDisabled,
-  shouldShowJukebox,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");

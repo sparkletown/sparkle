@@ -254,7 +254,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
             isAudioEffectDisabled={isUserAudioMuted}
-            shouldShowJukebox={shouldShowJukebox}
           />
         )}
         <TablesUserList
