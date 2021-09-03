@@ -64,7 +64,9 @@ export interface OpenUrlOptions {
 }
 
 const checkInvalidUrl = (url: string) => {
-  if (!isValidUrl(url)) {
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+
+  if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
@@ -102,11 +104,30 @@ export const openUrlInExistingTab = (url: string) => {
   window.location.href = url;
 };
 
-export const isValidUrl = (url: string): boolean => {
+/**
+ * @deprecated This function doesn't perform a url check and returns true each time;
+ * Use isValidUrl instead if you want to validate that URL is correct
+ */
+export const isCurrentLocationValidUrl = (url: string): boolean => {
   try {
     return VALID_URL_PROTOCOLS.includes(
       new URL(url, window.location.origin).protocol
     );
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
+};
+
+export const isValidUrl = (urlString: string) => {
+  if (!urlString) return false;
+
+  try {
+    const url = new URL(urlString);
+
+    return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
     if (e.name === "TypeError") {
       return false;
@@ -136,4 +157,16 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
+};
+
+export const getYoutubeEmbedFromUrl = (url: string) => {
+  if (url.includes("embed")) {
+    return url;
+  }
+
+  const [, urlSearchQuery] = url.split("?");
+  const youtubeVideoParams = new URLSearchParams(urlSearchQuery);
+  const { v } = Object.fromEntries(youtubeVideoParams.entries());
+
+  return `https://www.youtube.com/embed/${v}`;
 };

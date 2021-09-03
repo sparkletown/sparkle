@@ -23,6 +23,7 @@ export class FirebarrelSystem extends System {
   private creator: EntityFactory;
   private waitingEnterFirebarrelId?: number;
   private WAITING_ENTER_FIREBARREL_TIMEOUT = 15000;
+  private SHOUTER_ON = false;
 
   constructor(creator: EntityFactory) {
     super();
@@ -79,20 +80,23 @@ export class FirebarrelSystem extends System {
       }
     }
 
-    for (let node = this.firebarrels?.head; node; node = node.next) {
-      node.shouter.currentTime += time;
-      if (node.shouter.currentTime >= node.shouter.timeOut) {
-        node.shouter.currentTime = 0;
-        this.creator.createShout(
-          node.position.x,
-          node.position.y - node.collision.radius,
-          "Join Firebarrel Video chat!"
-        );
+    if (this.SHOUTER_ON) {
+      for (let node = this.firebarrels?.head; node; node = node.next) {
+        node.shouter.currentTime += time;
+        if (node.shouter.currentTime >= node.shouter.timeOut) {
+          node.shouter.currentTime = 0;
+          this.creator.createShout(
+            node.position.x,
+            node.position.y - node.collision.radius,
+            "Join Firebarrel Video chat!"
+          );
+        }
       }
     }
   }
 
   private updateFirebarrel(node: FirebarrelNode): void {
+    node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
     const usersCount = node.firebarrel.model.data.connectedUsers
       ? node.firebarrel.model.data.connectedUsers.length
       : 0;

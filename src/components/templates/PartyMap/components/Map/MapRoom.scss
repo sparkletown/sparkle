@@ -61,6 +61,8 @@ $label-visible: flex;
     &:hover,
     &:focus {
       z-index: z(map-room--unclickable);
+      cursor: default;
+      outline: none;
     }
   }
 
