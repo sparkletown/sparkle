@@ -11,6 +11,7 @@ import { PartyMapVenue, RoomVisibility } from "types/venues";
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
+import { useRecentVenueUsers } from "hooks/users";
 
 import { RoomAttendance } from "../RoomAttendance";
 
@@ -29,7 +30,12 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { recentRoomUsers } = useRoom({ room });
+  const { portalVenueId } = useRoom({ room });
+
+  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
+    venueId: portalVenueId,
+  });
+
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
   const isUnclickable = room.type === RoomType.unclickable;

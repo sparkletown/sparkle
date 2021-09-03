@@ -7,6 +7,7 @@ import { Room } from "types/rooms";
 import { getFirebaseStorageResizedImage } from "utils/image";
 
 import { useRoom } from "hooks/useRoom";
+import { useRecentVenueUsers } from "hooks/users";
 
 type EmergencyViewRoomProps = {
   room: Room;
@@ -17,7 +18,12 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   room,
   isLive,
 }) => {
-  const { enterRoom, recentRoomUsers } = useRoom({ room });
+  const { enterRoom, portalVenueId } = useRoom({ room });
+
+  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
+    venueId: portalVenueId,
+  });
+
   const roomImage = getFirebaseStorageResizedImage(room.image_url, {
     fit: "crop",
     width: 100,

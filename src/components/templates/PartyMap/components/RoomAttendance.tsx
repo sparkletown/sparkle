@@ -8,6 +8,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 
 import { useRoom } from "hooks/useRoom";
+import { useRecentVenueUsers } from "hooks/users";
 
 import "./RoomAttendance.scss";
 
@@ -20,7 +21,11 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {
-  const { recentRoomUsers } = useRoom({ room });
+  const { portalVenueId } = useRoom({ room });
+
+  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
+    venueId: portalVenueId,
+  });
 
   const numberOfExtraUsersInRoom = Math.max(
     recentRoomUsers.length - maxVisible,
