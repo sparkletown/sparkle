@@ -44,17 +44,18 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
     hasSelectedRoom,
     portalVenueId,
   ]);
-  const { relatedVenues: selectedRoomRelatedVenues } = useRelatedVenues({
+
+  const { relatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
-  const selectedRoomselfAndChildVenueIds = useMemo(
-    () => selectedRoomRelatedVenues.map((childVenue) => childVenue.id),
-    [selectedRoomRelatedVenues]
+  const relatedVenuesIds = useMemo(
+    () => relatedVenues.map((relatedVenue) => relatedVenue.id),
+    [relatedVenues]
   );
 
-  const { events: selectedRoomEventsSelfAndChildVenueEvents } = useVenueEvents({
-    venueIds: selectedRoomselfAndChildVenueIds,
+  const { events: relatedVenuesEvents } = useVenueEvents({
+    venueIds: relatedVenuesIds,
   });
 
   const isNotExternalLink = useMemo(
@@ -63,23 +64,17 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   );
 
   const selectedRoomEvents = useMemo(() => {
-    if (!selectedRoomEventsSelfAndChildVenueEvents || !selectedRoom) return [];
+    if (!relatedVenuesEvents || !selectedRoom) return [];
 
-    return selectedRoomEventsSelfAndChildVenueEvents
+    return relatedVenuesEvents
       .filter(
         (event) =>
           (event.room === selectedRoom.title ||
-            (isNotExternalLink &&
-              selectedRoomselfAndChildVenueIds.includes(event.venueId))) &&
+            (isNotExternalLink && relatedVenuesIds.includes(event.venueId))) &&
           isEventLiveOrFuture(event)
       )
       .sort(eventsByStartUtcSecondsSorter);
-  }, [
-    selectedRoomEventsSelfAndChildVenueEvents,
-    selectedRoomselfAndChildVenueIds,
-    isNotExternalLink,
-    selectedRoom,
-  ]);
+  }, [relatedVenuesEvents, relatedVenuesIds, isNotExternalLink, selectedRoom]);
 
   const selectRoom = useCallback((room: Room) => {
     if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
