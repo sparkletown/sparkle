@@ -189,3 +189,11 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
     return withId(snapshot.data() as AnyVenue, snapshot.id);
   },
 };
+
+export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
+  if (!venueId) return;
+
+  return await firebase
+    .functions()
+    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+};

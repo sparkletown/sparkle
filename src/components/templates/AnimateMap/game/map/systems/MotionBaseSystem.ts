@@ -16,8 +16,7 @@ export class MotionBaseSystem extends System {
   }
 
   protected getSpeedByZoomLevel(zoomLevel: number = 0): number {
-    const speed = this.speedByZoomLevel[zoomLevel];
-    return speed;
+    return this.speedByZoomLevel[zoomLevel];
   }
 
   protected getSpeed() {
@@ -51,10 +50,6 @@ export class MotionBaseSystem extends System {
     const speed = minSpeed + (maxSpeed - minSpeed) * k;
     this.cashedSpeed = speed;
     return speed;
-  }
-
-  protected getArtcarDefaultSpeed(): number {
-    return 1.05;
   }
 
   addToEngine(engine: Engine) {
