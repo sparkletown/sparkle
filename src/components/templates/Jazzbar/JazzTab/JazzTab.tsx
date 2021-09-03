@@ -127,14 +127,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const shouldShowReactions =
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
-  const firstTableReference = venue?.config?.tables?.[0].reference;
+  const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =
     (!!seatedAtTable &&
       venue.enableJukebox &&
       seatedAtTable === firstTableReference) ??
     DEFAULT_ENABLE_JUKEBOX;
-
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
