@@ -25,6 +25,11 @@ $jukebox-chat-max-height: 150px;
     &-messages {
       padding: $spacing--xs $spacing--md;
     }
+
+    &-author {
+      font-weight: 700;
+      cursor: pointer;
+    }
   }
 
   &--question {
@@ -70,10 +75,12 @@ $jukebox-chat-max-height: 150px;
     }
 
     & .ButtonNG__button {
-      background: url("/assets/icons/arrow-send-msg.svg") no-repeat center;
+      background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
+        opaque-white(0.1);
 
       &:hover {
-        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center;
+        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
+          opaque-white(0.2);
         cursor: pointer;
       }
     }

@@ -18,6 +18,7 @@ import { WithId } from "utils/id";
 import { getYoutubeEmbedFromUrl, isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useUser } from "hooks/useUser";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -56,6 +57,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   );
 
   useEffect(() => {
+    console.log("huhuhu");
     const [lastMessage] = messagesToDisplay.slice(-1);
     let urlToEmbed = lastMessage?.text;
     if (
@@ -101,27 +103,31 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  useEffect(scrollToBottom, [filteredMessages]);
+  useEffect(scrollToBottom, [messagesToDisplay]);
+
+  const { openUserProfileModal } = useProfileModalControls();
 
   const jukeboxChatMessages = useMemo(
     () =>
-      filteredMessages?.map((msg, index) => {
-        const msgAuthorName = msg.isMine
-          ? `${msg.author.partyName} (That's you)`
-          : msg.author.partyName;
-
-        const textMessage = `${msgAuthorName} ${
+      filteredMessages?.map((msg) => {
+        const textMessage = `${
           isValidUrl({ url: msg.text, isStrict: true })
             ? `changed video source to ${msg.text}`
             : msg.text
         }`;
         return (
-          <span key={`${msg}${index}`} className="Jukebox__chat-messages">
-            {textMessage}
-          </span>
+          <div key={`${msg.id}`} className="Jukebox__chat-messages">
+            <span
+              className="Jukebox__chat-author"
+              onClick={() => openUserProfileModal(msg.author)}
+            >
+              {msg.author.partyName}{" "}
+            </span>
+            <span>{textMessage}</span>
+          </div>
         );
       }),
-    [filteredMessages]
+    [filteredMessages, openUserProfileModal]
   );
 
   return (
