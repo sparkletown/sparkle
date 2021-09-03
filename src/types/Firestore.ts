@@ -12,6 +12,7 @@ import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
 import { ArtCar, Firebarrel } from "./animateMap";
+import { JukeboxMessage } from "./jukebox";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
@@ -73,6 +74,7 @@ export interface FirestoreData {
   // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
+  venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
 
   /**
@@ -111,6 +113,7 @@ export interface FirestoreOrdered {
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
+  venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
 
   /**
