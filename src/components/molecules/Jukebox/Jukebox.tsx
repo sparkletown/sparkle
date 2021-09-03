@@ -116,11 +116,11 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
         return (
           <div key={msg.id} className="Jukebox__chat-messages">
             <span
-              className="Jukebox__chat-author"
+              className="Jukebox__chat-author button--a"
               onClick={() => openUserProfileModal(msg.author)}
             >
-              {msg.author.partyName}{" "}
-            </span>
+              {msg.author.partyName}
+            </span>{" "}
             <span>
               {isUrl && "changed video source to "}
               {msg.text}
