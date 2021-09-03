@@ -134,8 +134,9 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
       <div className="Jukebox__container">
         <div className="Jukebox__chat">
           <span className="Jukebox__chat-messages">
-            When you paste a link here, it changes what people see in the box
-            above. Be respectful!
+            JUKEBOX RULES: There’s no queue system. If you post up your link,
+            it’ll play. Be courteous people, do not post a new link until the
+            other one is finished!
           </span>
           {jukeboxChatMessages}
           <div ref={messagesEndRef} />
