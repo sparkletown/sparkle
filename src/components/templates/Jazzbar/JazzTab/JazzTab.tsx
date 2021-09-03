@@ -8,7 +8,6 @@ import {
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
-  MUSIC_VENUE_FIRST_TABLE_NAME,
 } from "settings";
 
 import { updateIframeUrl } from "api/venue";
@@ -128,11 +127,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const shouldShowReactions =
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+  const firstTableReference = venue?.config?.tables?.[0].reference;
 
   const shouldShowJukebox =
     (!!seatedAtTable &&
       venue.enableJukebox &&
-      seatedAtTable === MUSIC_VENUE_FIRST_TABLE_NAME) ??
+      seatedAtTable === firstTableReference) ??
     DEFAULT_ENABLE_JUKEBOX;
 
   // @debt will be needed if shoutouts are restored

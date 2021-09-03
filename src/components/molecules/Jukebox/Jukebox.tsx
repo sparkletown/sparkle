@@ -57,7 +57,6 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   );
 
   useEffect(() => {
-    console.log("huhuhu");
     const [lastMessage] = messagesToDisplay.slice(-1);
     let urlToEmbed = lastMessage?.text;
     if (
