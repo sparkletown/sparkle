@@ -215,6 +215,34 @@ export class ViewportBackgroundSystem extends System {
       lightQuantity += 1;
     }
 
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
     this.container.filters[0].uniforms.lightsPos = this.lightsPos;
     this.container.filters[0].uniforms.lightsCol = this.lightsCol;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
