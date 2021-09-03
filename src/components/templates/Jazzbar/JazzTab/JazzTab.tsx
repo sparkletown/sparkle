@@ -188,24 +188,22 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <div className={videoContainerClasses}>
           {!venue.hideVideo && (
             <>
-              {
-                <div className="iframe-container">
-                  {iframeUrl ? (
-                    <iframe
-                      key="main-event"
-                      title="main event"
-                      className="iframe-video"
-                      src={`${iframeUrl}?autoplay=1`}
-                      frameBorder="0"
-                      allow={IFRAME_ALLOW}
-                    />
-                  ) : (
-                    <div className="iframe-video">
-                      Embedded Video URL not yet set up
-                    </div>
-                  )}
-                </div>
-              }
+              <div className="iframe-container">
+                {iframeUrl ? (
+                  <iframe
+                    key="main-event"
+                    title="main event"
+                    className="iframe-video"
+                    src={`${iframeUrl}?autoplay=1`}
+                    frameBorder="0"
+                    allow={IFRAME_ALLOW}
+                  />
+                ) : (
+                  <div className="iframe-video">
+                    Embedded Video URL not yet set up
+                  </div>
+                )}
+              </div>
 
               {shouldShowReactions && (
                 <div className="actions-container">

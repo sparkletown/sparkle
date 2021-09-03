@@ -1,6 +1,7 @@
 import React, {
   Dispatch,
   SetStateAction,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -46,7 +47,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   const chatValue = watch("jukeboxMessage");
   const { userId } = useUser();
   const [filteredUser] = recentVenueUsers.filter(({ id }) => id === userId);
-  const tableRef = filteredUser?.data?.[venue.name]?.table ?? "";
+  const tableRef = filteredUser?.data?.[venue.name]?.table;
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
@@ -59,12 +60,14 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   useEffect(() => {
     const [lastMessage] = messagesToDisplay.slice(-1);
     let urlToEmbed = lastMessage?.text;
+
     if (
       urlToEmbed?.includes(YOUTUBE_SHORT_URL_STRING) &&
       isValidUrl(urlToEmbed)
     ) {
       urlToEmbed = getYoutubeEmbedFromUrl(lastMessage?.text);
     }
+
     if (isValidUrl(urlToEmbed)) {
       updateIframeUrl(urlToEmbed);
     }
@@ -98,31 +101,30 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  }, []);
 
-  useEffect(scrollToBottom, [messagesToDisplay]);
+  useEffect(scrollToBottom, [messagesToDisplay, scrollToBottom]);
 
   const { openUserProfileModal } = useProfileModalControls();
 
   const jukeboxChatMessages = useMemo(
     () =>
       filteredMessages?.map((msg) => {
-        const textMessage = `${
-          isValidUrl(msg.text)
-            ? `changed video source to ${msg.text}`
-            : msg.text
-        }`;
+        const isUrl = isValidUrl(msg.text);
         return (
-          <div key={`${msg.id}`} className="Jukebox__chat-messages">
+          <div key={msg.id} className="Jukebox__chat-messages">
             <span
               className="Jukebox__chat-author"
               onClick={() => openUserProfileModal(msg.author)}
             >
               {msg.author.partyName}{" "}
             </span>
-            <span>{textMessage}</span>
+            <span>
+              {isUrl && "changed video source to "}
+              {msg.text}
+            </span>
           </div>
         );
       }),
@@ -133,7 +135,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     <>
       <div className="Jukebox__container">
         <div className="Jukebox__chat">
-          <span className="Jukebox__chat-messages">
+          <span className="Jukebox__chat-messages--info">
             JUKEBOX RULES: There’s no queue system. If you post up your link,
             it’ll play. Be courteous people, do not post a new link until the
             other one is finished!
@@ -147,7 +149,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
             inputClassName="Jukebox__input"
             ref={register({ required: true })}
             name="jukeboxMessage"
-            placeholder="Add a link to the queue (YouTube, Vimeo, Twitch etc.)"
+            placeholder="Add an embeddable link (YouTube, Vimeo, Twitch, etc.)"
             autoComplete="off"
           />
 

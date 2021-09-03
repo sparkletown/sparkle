@@ -26,7 +26,7 @@ export const useJukeboxChat = ({
   tableId,
 }: {
   venueId?: string;
-  tableId?: string;
+  tableId?: string | null;
 }) => {
   const messagesToDisplay = useJukeboxMessages(venueId, tableId);
 
@@ -38,7 +38,7 @@ export const useJukeboxChat = ({
   };
 };
 
-const useJukeboxActions = (venueId?: string, tableId?: string) => {
+const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
   const { userId } = useUser();
 
   const sendJukeboxMsg: SendJukeboxMessage = useCallback(
@@ -64,7 +64,7 @@ const useJukeboxActions = (venueId?: string, tableId?: string) => {
   };
 };
 
-const useJukeboxMessages = (venueId?: string, tableId?: string) => {
+const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userId } = useUser();
 
@@ -99,7 +99,10 @@ const useJukeboxMessages = (venueId?: string, tableId?: string) => {
   );
 };
 
-const useConnectVenueJukeboxMessages = (venueId?: string, tableId?: string) => {
+const useConnectVenueJukeboxMessages = (
+  venueId?: string,
+  tableId?: string | null
+) => {
   useFirestoreConnect(
     venueId && tableId
       ? {

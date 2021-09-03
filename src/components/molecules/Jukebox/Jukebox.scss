@@ -24,6 +24,11 @@ $jukebox-chat-max-height: 150px;
 
     &-messages {
       padding: $spacing--xs $spacing--md;
+
+      &--info {
+        padding: $spacing--xs $spacing--md;
+        opacity: 0.6;
+      }
     }
 
     &-author {
