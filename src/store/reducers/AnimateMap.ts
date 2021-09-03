@@ -39,6 +39,7 @@ export interface ReplicatedArtcar extends ReplicatedVenue {
   radiusY: number;
   angle: number;
   color: number;
+  colorIndex: number;
 }
 
 export interface ReplicatedVenueData extends Room {

@@ -4,7 +4,6 @@ import { Sprite } from "pixi.js";
 import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
 import { GameConfig } from "../../../configs/GameConfig";
-import { artcarsHalo } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -131,11 +130,11 @@ export const createArtcarEntity = (
     spriteComponent.view.anchor.set(0.5);
     const view = Sprite.from(canvas);
     view.anchor.set(0.5);
-    const halo = Sprite.from(artcarsHalo[user.color]);
-    halo.scale.set(2);
-    halo.anchor.set(0.5);
+    // const halo = Sprite.from(artcarsHalo[user.colorIndex]);
+    // halo.scale.set(2);
+    // halo.anchor.set(0.5);
 
-    spriteComponent.view.addChild(halo);
+    // spriteComponent.view.addChild(halo);
     spriteComponent.view.addChild(view);
 
     entity.add(spriteComponent);

@@ -19,10 +19,12 @@ import {
   ShaderDataProvider,
   staticLightData,
 } from "../graphics/shaders/StaticShaderData";
+import { ArtcarNode } from "../nodes/ArtcarNode";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
 
 export class ViewportBackgroundSystem extends System {
   private barrels?: NodeList<FirebarrelNode>;
+  private artcars?: NodeList<ArtcarNode>;
 
   private viewport: Viewport;
   private staticLightManager: ShaderDataProvider;
@@ -70,6 +72,7 @@ export class ViewportBackgroundSystem extends System {
 
   addToEngine(engine: Engine) {
     this.barrels = engine.getNodeList(FirebarrelNode);
+    this.artcars = engine.getNodeList(ArtcarNode);
     this.setup().then(() => {
       this.setupTree();
 
@@ -104,6 +107,8 @@ export class ViewportBackgroundSystem extends System {
   }
 
   removeFromEngine(engine: Engine) {
+    this.barrels = undefined;
+    this.artcars = undefined;
     if (this.mapLOD_0.children.length) {
       this.mapLOD_0.removeChildren();
       this.currentVisibleTiles.clear();
@@ -198,8 +203,15 @@ export class ViewportBackgroundSystem extends System {
       this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
       this.lightsCol[lightQuantity] = i.firebarrel.model.data.connectedUsers
         ?.length
-        ? 0x7cdc6c
+        ? 0xf6951d
         : 0xf6951d;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
       lightQuantity += 1;
     }
 
