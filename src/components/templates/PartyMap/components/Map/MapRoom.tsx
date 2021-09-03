@@ -115,7 +115,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
-          <RoomAttendance venue={venue} room={room} />
+          <RoomAttendance room={room} />
         </div>
       )}
     </button>

@@ -4,7 +4,6 @@ import { DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
 
 import { Room } from "types/rooms";
 import { User } from "types/User";
-import { PartyMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -13,13 +12,11 @@ import { useRoom } from "hooks/useRoom";
 import "./RoomAttendance.scss";
 
 type RoomAttendanceProps = {
-  venue: PartyMapVenue;
   room: Room;
   maxVisible?: number;
 };
 
 export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
-  venue,
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {

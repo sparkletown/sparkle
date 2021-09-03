@@ -33,7 +33,6 @@ interface RoomCardProps {
   room: Room;
   index: number;
   venueId: string;
-  venueName: string;
   events?: WithVenueId<WithId<VenueEvent>>[];
 }
 
@@ -41,7 +40,6 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   room,
   index,
   venueId,
-  venueName,
   events,
 }) => {
   const { user } = useUser();
