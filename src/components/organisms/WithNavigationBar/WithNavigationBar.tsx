@@ -2,8 +2,11 @@ import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
+
+import { NewProfileModal } from "components/organisms/NewProfileModal";
 
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";
@@ -31,6 +34,8 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   // @debt remove useVenueId from here and just pass it through as a prop/similar
   const venueId = useVenueId();
 
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
   // @debt remove backButton from Navbar
   return (
     <>
@@ -48,6 +53,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
       <div className="navbar-margin">{children}</div>
 
       <Footer />
+      {(venue && <NewProfileModal venue={venue} />) || <Loading />}
     </>
   );
 };
