@@ -27,7 +27,7 @@ $jukebox-chat-max-height: 150px;
     }
 
     &-author {
-      font-weight: 700;
+      font-weight: $font-weight--700;
       cursor: pointer;
     }
   }

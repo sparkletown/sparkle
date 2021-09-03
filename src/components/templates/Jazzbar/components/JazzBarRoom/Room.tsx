@@ -297,7 +297,7 @@ const Room: React.FC<RoomProps> = ({
 
   return (
     <>
-      {[1, 1, 1, 1, 1, 1].map(() => myVideo)}
+      {myVideo}
       {sidedVideos}
       <div className="jazzbar-room__participants">{otherVideos}</div>
 
