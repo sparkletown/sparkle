@@ -100,9 +100,9 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
     const callback = (type: "down" | "up") => {
       if (!state.timeoutFunc) return; //reject
       if (type === "up") {
-        const current =
-          state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
-        if (!state.itemsData[current]) return; //FIXME
+        // const current =
+        //   state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
+        // if (!state.itemsData[current]) return; //FIXME
         // const room = state.itemsData[current].room;
         // openRoomUrl(room.url);
         dispatch(setAnimateMapRoom(state.lastVenue.data as Room));
