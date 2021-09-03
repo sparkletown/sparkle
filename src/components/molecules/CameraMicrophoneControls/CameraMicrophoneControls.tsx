@@ -8,6 +8,7 @@ import Video, {
 import { ContainerClassName } from "types/utility";
 
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
+import { VideoOverlayButtonVariant } from "components/atoms/VideoOverlayButton/VideoOverlayButton";
 
 import "components/molecules/CameraMicrophoneControls/CameraMicrophoneControls.scss";
 
@@ -22,23 +23,22 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
   containerClassName,
 }) => {
   const changeStateHandler = useCallback(
-    (variant: "microphone" | "camera", enabled: boolean) => {
+    (
+      variant: Extract<VideoOverlayButtonVariant, "microphone" | "camera">,
+      enable: boolean
+    ) => {
       const tracks =
         variant === "microphone"
           ? participant.audioTracks
           : participant.videoTracks;
 
-      return (enable: boolean) => {
-        tracks.forEach(
-          (track: AudioTrackPublication | VideoTrackPublication) => {
-            const innerTrack = track.track;
-            if (innerTrack) {
-              if (enable && "enable" in innerTrack) innerTrack.enable();
-              else if ("disable" in innerTrack) innerTrack.disable();
-            }
-          }
-        );
-      };
+      tracks.forEach((track: AudioTrackPublication | VideoTrackPublication) => {
+        const innerTrack = track.track;
+        if (innerTrack) {
+          if (enable && "enable" in innerTrack) innerTrack.enable();
+          else if ("disable" in innerTrack) innerTrack.disable();
+        }
+      });
     },
     [participant.audioTracks, participant.videoTracks]
   );
@@ -52,6 +52,7 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
     (enabled: boolean) => changeStateHandler("camera", enabled),
     [changeStateHandler]
   );
+
   return (
     <div className={classNames("CameraMicrophoneControls", containerClassName)}>
       <VideoOverlayButton

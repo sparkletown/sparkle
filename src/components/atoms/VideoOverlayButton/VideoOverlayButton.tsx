@@ -18,7 +18,7 @@ import { assertUnreachable } from "utils/error";
 
 import "./VideoOverlayButton.scss";
 
-type VideoOverlayButtonVariant = "microphone" | "camera" | "audio";
+export type VideoOverlayButtonVariant = "microphone" | "camera" | "audio";
 
 export interface VideoOverlayButtonProps extends ContainerClassName {
   variant: VideoOverlayButtonVariant;
@@ -34,9 +34,7 @@ export const VideoOverlayButton: React.FC<VideoOverlayButtonProps> = ({
 }) => {
   const [enabled, toggle] = useToggle(defaultValue);
 
-  useEffect(() => {
-    onEnabledChanged(enabled);
-  }, [enabled, onEnabledChanged]);
+  useEffect(() => onEnabledChanged(enabled), [enabled, onEnabledChanged]);
 
   let iconEnabled: IconDefinition = faMicrophone;
   let iconDisabled: IconDefinition = faMicrophoneSlash;

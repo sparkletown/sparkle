@@ -105,10 +105,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   const changeAudioState = useCallback(
     (enable: boolean) => {
       if (!enable) {
-        const audioTrack = audioTracks[0];
-        if (audioTrack) {
-          audioTrack.detach();
-        }
+        audioTracks?.[0]?.detach();
       } else {
         const audioTrack = audioTracks[0];
         if (audioTrack && audioRef.current) {
