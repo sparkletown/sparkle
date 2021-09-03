@@ -296,6 +296,10 @@ export class CloudDataProvider
       });
 
     existFirebarrels.forEach((firebarrel) => {
+      const index = this.firebarrelsData.findIndex(
+        (fb) => fb.data.id === firebarrel.data.id
+      );
+      this.firebarrelsData[index] = firebarrel;
       this.emit(DataProviderEvent.FIREBARREL_UPDATED, firebarrel);
     });
 

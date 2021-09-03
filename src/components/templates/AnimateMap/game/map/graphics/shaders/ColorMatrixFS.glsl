@@ -10,6 +10,7 @@ uniform float staticLightAlpha;
 varying vec2 pixelPos;
 varying vec2 pixelNPos;
 uniform vec2 lightsPos[MAX_LIGHTS];
+uniform int lightsCol[MAX_LIGHTS];
 uniform int lightQuantity;
 uniform float zoom;
 
@@ -47,7 +48,13 @@ void main(void) {
             magnX = pow(magnX, 2.0);
             magnY = pow(magnY, 2.0);
 
-            vec3 rgb = vec3(0.96, 0.58, 0.11);
+            int r = lightsCol[i] / 65536;
+            int g = (lightsCol[i] / 256) * 256;
+            int b = lightsCol[i] - g;
+            g = lightsCol[i] - r * 65536 - b;
+
+            vec3 rgb = vec3(float(r), float(g) / 256.0, float(b)) * 0.00392156862745;
+
             float magnitude = (magnX + magnY);
             rgb /= (1.0 + 0.027 * sqrt(magnitude) + 0.0028 * magnitude);
             dynamicLight += rgb;
