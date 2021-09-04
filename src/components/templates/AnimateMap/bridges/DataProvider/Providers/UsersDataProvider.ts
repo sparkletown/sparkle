@@ -28,6 +28,10 @@ export class UsersDataProvider {
   }
 
   public getUserByMessengerId(messengerId: number) {
-    return this.users.getUser(messengerId);
+    return this.users.getUserByInnerId(messengerId);
+  }
+
+  public getUserById(id: string) {
+    return this.users.getUserById(id);
   }
 }

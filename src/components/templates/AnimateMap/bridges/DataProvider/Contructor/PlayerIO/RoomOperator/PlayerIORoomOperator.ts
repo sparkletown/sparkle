@@ -61,9 +61,7 @@ export class PlayerIORoomOperator
           const x = m.getUInt(1);
           const y = m.getUInt(2);
           console.log(`User ${userId} joint to ${id} on position (${x},${y})`);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
-            parseInt(userId)
-          );
+          const user = this.cloudDataProvider.users.getUserById(userId);
           if (!user || Array.isArray(user)) return console.error("Bad user");
           user.x = x;
           user.y = y;
@@ -90,13 +88,10 @@ export class PlayerIORoomOperator
         connection.addMessageCallback<
           FindMessageTuple<MessagesTypes.processedMoveReserve>
         >(MessagesTypes.processedMoveReserve, (m) => {
-          const innerUserId = m.getString(0);
+          const userId = m.getString(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
-            //todo: add getUserById
-            parseInt(innerUserId)
-          );
+          const user = this.cloudDataProvider.users.getUserById(userId);
           if (!user || Array.isArray(user)) return console.error("Bad user");
           user.x = x;
           user.y = y;
@@ -119,12 +114,9 @@ export class PlayerIORoomOperator
         connection.addMessageCallback<
           FindMessageTuple<MessagesTypes.processedShoutReserve>
         >(MessagesTypes.processedShoutReserve, (m) => {
-          const innerUserId = m.getString(0);
+          const userId = m.getString(0);
           const shout = m.getString(1);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
-            //todo: add getUserById
-            parseInt(innerUserId)
-          );
+          const user = this.cloudDataProvider.users.getUserById(userId);
           if (!user || Array.isArray(user)) return console.error("Bad user");
           EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
         });
@@ -132,11 +124,9 @@ export class PlayerIORoomOperator
         connection.addMessageCallback<FindMessageTuple<MessagesTypes.userLeft>>(
           MessagesTypes.userLeft,
           (m) => {
-            const innerUserId = m.getString(0);
-            console.log(`User ${innerUserId} left from ${id}`);
-            const user = this.cloudDataProvider.users.getUserByMessengerId(
-              parseInt(innerUserId)
-            );
+            const userId = m.getString(0);
+            console.log(`User ${userId} left from ${id}`);
+            const user = this.cloudDataProvider.users.getUserById(userId);
             if (!user || Array.isArray(user)) return console.error("Bad user");
             if (this.playerId !== user.data.id)
               EventProvider.emit(EventType.USER_LEFT, user);

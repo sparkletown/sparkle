@@ -14,6 +14,7 @@ namespace BurningMan {
 		// server messages
 		public const string processedMove = "a";
 		public const string processedMoveReserve = "ar";
+		//public const string requestInnerId = "b";
 		public const string divideSpeakers = "d";
 		public const string roomInitResponse = "i";
 		public const string newUserJoined = "j";
@@ -22,6 +23,7 @@ namespace BurningMan {
 		public const string processedShoutReserve = "sr";
 		public const string unitListeners = "u";
 		// users messages
+		//public const string innerId = "x";
 		public const string shout = "y";
 		public const string shoutReserve = "yr";
 		public const string move = "z";
@@ -34,22 +36,35 @@ namespace BurningMan {
 		public const string innerId = "i";
 	}
 
-	//utils class
-	public class Position<X, Y>
+	public class Player : BasePlayer
 	{
-		public X x { get; set; }
-		public Y y { get; set; }
+		public uint x;
+		public uint y;
+		public bool isSpeaker;
+		protected ulong _innerId;
+		public ulong InnerId
+        {
+			get
+			{
+				if (_innerId > 0)
+					return _innerId;
 
-		public Position(X x, Y y)
-		{
-			this.x = x;
-			this.y = y;
-		}
-	}
+				_innerId = (ulong) this.PlayerObject.GetLong(PlayerObjectsFieldsEnum.innerId, 0);
 
-	// general classes
-	public class Player : BasePlayer {
-		
+				if (_innerId <= 0)
+				{
+					//this.Send(MessagesTypesEnum.requestInnerId);
+					throw new Exception("Inner id not exist " + this.ConnectUserId);
+				}
+				return _innerId;
+			}
+            set
+            {
+				_innerId = value;
+				this.PlayerObject.Set(PlayerObjectsFieldsEnum.innerId, value);
+				this.PlayerObject.Save();
+			}
+        }
 	}
 
 	[RoomType(RoomTypesEnum.Zone)]
@@ -68,9 +83,7 @@ namespace BurningMan {
 		private bool isClosedAndDivided = false;
 
 		// room state
-		private Dictionary<ulong, Position<uint,uint>> usersPositions = new Dictionary<ulong, Position<uint, uint>>();
-		private HashSet<int> speakers = new HashSet<int>();
-		private uint listenersCount;
+		private int speakersCount;
 
 		public override void GameStarted()
         {
@@ -79,8 +92,8 @@ namespace BurningMan {
 			PlayerIO.BigDB.Load(CONFIGS_TABLE, SERVER_CONFIG, delegate (DatabaseObject config) {
 				if (config == null) return;
 
-				maxSpeakers = Convert.ToInt32(config.GetValue(MAX_SPEAKERS));
-				updateTime = Convert.ToInt32(config.GetValue(UPDATE_TIME));
+				maxSpeakers = config.GetInt(MAX_SPEAKERS);
+				updateTime = config.GetInt(UPDATE_TIME);
 			});
 
 			configTimer = AddTimer(delegate {
@@ -99,7 +112,7 @@ namespace BurningMan {
 				return false;
 			}
 
-			bool needDivide = player.JoinData["isMain"] == "true" && speakers.Count >= maxSpeakers;
+			bool needDivide = player.JoinData["isMain"] == "true" && CountSpeakers() >= maxSpeakers;
 
 			if (needDivide)
             {
@@ -111,69 +124,60 @@ namespace BurningMan {
 		}
 
 		public override void UserJoined(Player player) {
-			listenersCount++;
 
-			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send speakers positions
-			ScheduleCallback(delegate () { player.Send(messageForPlayer); }, 50);
+			ScheduleCallback(delegate () { 
+				foreach (Player user in Players)
+                {
+					player.Send(MessagesTypesEnum.newUserJoined, user.ConnectUserId, user.x, user.y);
+				}
+			}, 5000);
 
 			if (player.JoinData["isMain"] == "true")
 			{
-				speakers.Add(player.Id);
-				ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
-				uint x = Convert.ToUInt32(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.x));
-				uint y = Convert.ToUInt32(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.y));
-
-				usersPositions.Add(playerInnerId, new Position<uint, uint>(x,y));
-				//Broadcast(MessagesTypesEnum.newUserJoined, player.ConnectUserId, x, y);
-				Broadcast(MessagesTypesEnum.newUserJoined, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString(), x, y);
+				player.isSpeaker = true;
+				player.x = player.PlayerObject.GetUInt(PlayerObjectsFieldsEnum.x, 0);
+				player.y = player.PlayerObject.GetUInt(PlayerObjectsFieldsEnum.y, 0);
+				Broadcast(MessagesTypesEnum.newUserJoined, player.ConnectUserId, player.x, player.y);
 			}
 
 		}
 
 		public override void UserLeft(Player player)
 		{
-			listenersCount--;
 			if (player.JoinData["isMain"] == "true")
 			{
-				speakers.Remove(player.Id);
 				SavePlayerPosition(player, true);
 			}
 
-			Broadcast(MessagesTypesEnum.userLeft, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString());
+			Broadcast(MessagesTypesEnum.userLeft, player.ConnectUserId);
 		}
 
 		public override void GotMessage(Player player, Message message) {
 			switch (message.Type) {
 				case MessagesTypesEnum.move: {
-						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
-						Position<uint,uint> pos = usersPositions[playerInnerId];
-						pos.x = message.GetUInt(0);
-						pos.y = message.GetUInt(1);
+						player.x = message.GetUInt(0);
+						player.y = message.GetUInt(1);
 
-						Broadcast(MessagesTypesEnum.processedMove, playerInnerId, pos.x, pos.y);
+						Broadcast(MessagesTypesEnum.processedMove, player.InnerId, player.x, player.y);
 						break;
 					}
 				case MessagesTypesEnum.moveReserve:
 					{
-						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
-						Position<uint, uint> pos = usersPositions[playerInnerId];
-						pos.x = message.GetUInt(0);
-						pos.y = message.GetUInt(1);
+						player.x = message.GetUInt(0);
+						player.y = message.GetUInt(1);
 
-						Broadcast(MessagesTypesEnum.processedMove, player.ConnectUserId, pos.x, pos.y);
+						Broadcast(MessagesTypesEnum.processedMove, player.ConnectUserId, player.x, player.y);
 						break;
 					}
 				case MessagesTypesEnum.shout:
 					{
-						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
 						string text = message.GetString(0);
 
-						Broadcast(MessagesTypesEnum.processedShout, playerInnerId, text);
+						Broadcast(MessagesTypesEnum.processedShout, player.InnerId, text);
 						break;
 					}
 				case MessagesTypesEnum.shoutReserve:
 					{
-						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
 						string text = message.GetString(0);
 
 						Broadcast(MessagesTypesEnum.processedShoutReserve, player.ConnectUserId, text);
@@ -189,8 +193,8 @@ namespace BurningMan {
 			PlayerIO.BigDB.Load(CONFIGS_TABLE, SERVER_CONFIG, delegate (DatabaseObject config) {
 				if (config == null) return;
 
-				int newMaxSpeakers = Convert.ToInt32(config.GetValue(MAX_SPEAKERS));
-				int newUpdateTime = Convert.ToInt32(config.GetValue(UPDATE_TIME));
+				int newMaxSpeakers = config.GetInt(MAX_SPEAKERS, maxSpeakers);
+				int newUpdateTime = config.GetInt(UPDATE_TIME, updateTime);
 
 				if (newMaxSpeakers != maxSpeakers)
 				{
@@ -211,7 +215,7 @@ namespace BurningMan {
 
 		private void DivideSpeakers(bool hardFlag = false)
 		{
-			if (speakers.Count <= maxSpeakers && !hardFlag) return;
+			if (CountSpeakers() <= maxSpeakers && !hardFlag) return;
 
 			Broadcast(MessagesTypesEnum.divideSpeakers);
 			this.isClosedAndDivided = true;
@@ -227,13 +231,19 @@ namespace BurningMan {
 
 		private void SavePlayerPosition(Player player, bool removeFlag = false)
 		{
-			ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
-			Position<uint, uint> pos = usersPositions[playerInnerId];
-			player.PlayerObject.Set(PlayerObjectsFieldsEnum.x, pos.x);
-			player.PlayerObject.Set(PlayerObjectsFieldsEnum.y, pos.y);
+			player.PlayerObject.Set(PlayerObjectsFieldsEnum.x, player.x);
+			player.PlayerObject.Set(PlayerObjectsFieldsEnum.y, player.y);
 			player.PlayerObject.Save();
-			if (removeFlag) usersPositions.Remove(playerInnerId);
 		}
 
+		private int CountSpeakers()
+		{
+			speakersCount = 0;
+			foreach (Player user in Players)
+			{
+				if (user.isSpeaker) speakersCount++;
+			}
+			return speakersCount;
+		}
 	}
 }

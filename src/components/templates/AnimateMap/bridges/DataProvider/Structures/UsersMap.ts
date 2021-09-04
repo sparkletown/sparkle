@@ -1,5 +1,7 @@
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
+import { getIntByHash } from "../Contructor/PlayerIO/utils/getIntByHash";
+
 type item = string | Set<string>;
 type itemU = ReplicatedUser | ReplicatedUser[];
 
@@ -70,8 +72,12 @@ export class UsersMap {
     return this._mapById.get(key);
   }
 
-  public getUser(key: number) {
+  public getUserByInnerId(key: number) {
     return this._mapUsersById.get(key);
+  }
+
+  public getUserById(id: string) {
+    return this._mapUsersById.get(getIntByHash(id));
   }
 
   private _addLogicTree(id: string, key?: number): boolean {

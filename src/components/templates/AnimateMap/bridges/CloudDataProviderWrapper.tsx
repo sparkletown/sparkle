@@ -136,7 +136,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           playerioGameId: venue.playerioGameId,
           playerioMaxPlayerPerRoom: venue.playerioMaxPlayerPerRoom ?? 80,
           playerioFrequencyUpdate: venue.playerioFrequencyUpdate ?? 0.5,
-          // playerioAdvancedMode: venue.playerioAdvancedMode,
+          playerioAdvancedMode: venue.playerioAdvancedMode,
         });
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
