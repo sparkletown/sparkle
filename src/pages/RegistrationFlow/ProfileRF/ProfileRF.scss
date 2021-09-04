@@ -1,0 +1,30 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.ProfileRF {
+  .ProfilePictureUploadForm {
+    width: $reg-flow-button-width--max;
+    max-width: $reg-flow-button-width--max;
+  }
+
+  .ProfilePicturePreviewContainer__image {
+    border: none;
+  }
+
+  .ProfilePictureUploadForm__uploadButton {
+    border: none;
+    background: opaque-white(0.2);
+    backdrop-filter: blur(10px);
+    border-radius: $reg-flow-border-radius;
+  }
+
+  .ProfilePictureUploadForm {
+    button {
+      outline: none;
+    }
+
+    button:focus {
+      border: 1px solid $reg-flow-color--normal;
+    }
+  }
+}

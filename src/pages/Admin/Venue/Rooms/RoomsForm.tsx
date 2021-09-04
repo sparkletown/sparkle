@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import { useAsync } from "react-use";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
@@ -19,21 +20,23 @@ import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
-import { withId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import Login from "pages/Account/Login";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+import { LoginRF } from "pages/RegistrationFlow/LoginRF";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 import { Toggler } from "components/atoms/Toggler";
 
 import RoomDeleteModal from "./RoomDeleteModal";
@@ -46,37 +49,34 @@ export const RoomsForm: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<PartyMapVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  useEffect(() => {
+  const { loading: isLoading, value: venue } = useAsync(async () => {
     if (!venueId) return history.replace("/admin");
 
-    const fetchVenueFromAPI = async () => {
-      const venueSnapshot = await firestore
-        .collection("venues")
-        .doc(venueId)
-        .get();
+    const venueSnapshot = await firestore
+      .collection("venues")
+      .doc(venueId)
+      .get();
 
-      if (!venueSnapshot.exists) return history.replace("/admin");
+    if (!venueSnapshot.exists) return history.replace("/admin");
 
-      const data = venueSnapshot.data() as AnyVenue;
-      //find the template
-      const template = ALL_VENUE_TEMPLATES.find(
-        (template) => data.template === template.template
-      );
+    const data = venueSnapshot.data() as AnyVenue;
+    //find the template
+    const template = ALL_VENUE_TEMPLATES.find(
+      (template) => data.template === template.template
+    );
 
-      if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
-        history.replace("/admin");
-      }
-      setVenue(data as PartyMapVenue);
-    };
-    fetchVenueFromAPI();
-  }, [firestore, venueId, history]);
+    if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
+      history.replace("/admin");
+    }
+
+    return data as PartyMapVenue;
+  }, [firestore, history, venueId]);
 
   const room = useMemo(() => {
     if (
@@ -90,20 +90,24 @@ export const RoomsForm: React.FC = () => {
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
-  if (!venue || !venueId) return null;
+  if (isLoading) return <LoadingPage />;
+
+  if (!venue || !venueId) return <NotFound />;
 
   if (!user) {
-    return <Login formType="login" venue={withId(venue, venueId)} />;
+    return <LoginRF formType="login" venueId={venueId} />;
   }
 
   return (
     <WithNavigationBar hasBackButton={false}>
-      <RoomInnerForm
-        venueId={venueId}
-        venue={venue}
-        editingRoom={room}
-        editingRoomIndex={queryRoomIndex}
-      />
+      <AdminRestricted>
+        <RoomInnerForm
+          venueId={venueId}
+          venue={venue}
+          editingRoom={room}
+          editingRoomIndex={queryRoomIndex}
+        />
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };

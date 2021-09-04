@@ -63,10 +63,9 @@ export interface OpenUrlOptions {
   customOpenExternalUrl?: (url: string) => void;
 }
 
-export const openUrl = (url: string, options?: OpenUrlOptions) => {
-  const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
-
+const checkInvalidUrl = (url: string) => {
   // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+
   if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
@@ -80,17 +79,29 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
     // @debt keep the checking in place so we can debug further, but don't block attempts to open
     // return;
   }
+};
+
+export const openUrl = (url: string, options?: OpenUrlOptions) => {
+  const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
 
   if (isExternalUrl(url)) {
-    customOpenExternalUrl
-      ? customOpenExternalUrl(url)
-      : window.open(url, "_blank", "noopener,noreferrer");
+    customOpenExternalUrl ? customOpenExternalUrl(url) : openUrlInNewTab(url);
   } else {
     // @debt Is this a decent enough way to use react router here? Should we just use it always and get rid of window.location.href?
     customOpenRelativeUrl
       ? customOpenRelativeUrl(url)
-      : (window.location.href = url);
+      : openUrlInExistingTab(url);
   }
+};
+
+export const openUrlInNewTab = (url: string) => {
+  checkInvalidUrl(url);
+  window.open(url, "_blank", "noopener,noreferrer");
+};
+
+export const openUrlInExistingTab = (url: string) => {
+  checkInvalidUrl(url);
+  window.location.href = url;
 };
 
 /**

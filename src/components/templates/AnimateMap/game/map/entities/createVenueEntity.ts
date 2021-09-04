@@ -4,6 +4,8 @@ import { Sprite } from "pixi.js";
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { VenueTemplate } from "types/venues";
+
 import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
 import { MAN_BURN, TEMPLE_BURN } from "../../constants/AssetConstants";
@@ -30,6 +32,10 @@ import EntityFactory from "./EntityFactory";
 const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
 const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
 const TOOLTIP_TEXT_LENGTH_MAX = 18;
+const VENUE_TYPES_TO_DIM: (VenueTemplate | undefined)[] = [
+  VenueTemplate.zoomroom,
+  VenueTemplate.partymap,
+];
 
 const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
@@ -199,6 +205,13 @@ export const createVenueEntity = (
     : new Venue();
   sprite.zIndex = -1;
   spriteComponent.view = sprite;
+
+  if (
+    VENUE_TYPES_TO_DIM.includes(venue.data.venue?.template) &&
+    !venue.data.isLive &&
+    venue.data.countUsers === 0
+  )
+    sprite.alpha = 0.4;
 
   fsm
     .createState(venueComponent.WITHOUT_HALO)

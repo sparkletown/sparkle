@@ -20,16 +20,14 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { IS_BURN } from "secrets";
-
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, SPARKLEVERSEITY_URL } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { getExtraLinkProps, venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -38,7 +36,6 @@ import {
   VenueSortingOptions,
 } from "utils/venue";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
@@ -49,6 +46,9 @@ import { useVenueId } from "hooks/useVenueId";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { Loading } from "components/molecules/Loading";
+
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 
 import "firebase/storage";
 
@@ -125,6 +125,9 @@ const VenueList: React.FC<VenueListProps> = ({
         <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
+        <a href={SPARKLEVERSEITY_URL} {...getExtraLinkProps(true)}>
+          {"SparkleVersity Tutorials & Creator Guides"}
+        </a>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
         {sortedVenues.map((venue) => (
@@ -206,7 +209,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   }, [matchUrl, currentVenue]);
 
   if (!currentVenue) {
-    return <>{"Oops, seems we can't find your venue!"}</>;
+    return <NotFound />;
   }
 
   return (
@@ -397,10 +400,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
 };
 
 export const Admin: React.FC = () => {
-  const { user } = useUser();
-  const userId = user?.uid || "";
-
-  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
+  const { user, userId = "" } = useUser();
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
@@ -417,29 +417,35 @@ export const Admin: React.FC = () => {
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  if (isAdminUserLoading) return <>Loading...</>;
-  if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
-
+  // @debt deliberately returning AdminRestricted before redirect as to keep original logic/behavior. Ideally they'd be in reverse
   if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
+    return (
+      <WithNavigationBar hasBackButton={false}>
+        <AdminRestricted>
+          <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
+        </AdminRestricted>
+      </WithNavigationBar>
+    );
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
-      <div className="admin-dashboard">
-        <div className="page-container page-container_adminview">
-          <div className="page-container-adminsidebar">
-            <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
-          </div>
-          <div className="page-container-adminpanel">
-            {venueId ? (
-              <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
-            ) : (
-              <>Select a venue to see its details</>
-            )}
+    <WithNavigationBar hasBackButton={false} hasSchedule={false}>
+      <AdminRestricted>
+        <div className="admin-dashboard">
+          <div className="page-container page-container_adminview">
+            <div className="page-container-adminsidebar">
+              <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
+            </div>
+            <div className="page-container-adminpanel">
+              {venueId ? (
+                <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+              ) : (
+                <>Select a venue to see its details</>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };
