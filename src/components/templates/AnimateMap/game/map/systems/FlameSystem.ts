@@ -1,6 +1,5 @@
 import { Engine, System } from "@ash.ts/ash";
 
-// import {FLAME_JSON, FLAME_PNG} from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { SpriteComponent } from "../components/SpriteComponent";
 import EntityFactory from "../entities/EntityFactory";
@@ -13,7 +12,14 @@ export class FlameSystem extends System {
     super();
   }
 
-  addToEngine(engine: Engine): void {}
+  addToEngine(engine: Engine): void {
+    // for (let i = 1; i < 77; i++) {
+    //   console.log(`import FLAME_${i < 10 ? '0' + i : i} from "assets/images/AnimateMap/flame/flame_3_loop_${i < 10 ? '0' + i : i}.png";`)
+    // }
+    // for (let i = 1; i < 77; i++) {
+    //   console.log(`FLAME_${i < 10 ? '0' + i : i},`);
+    // }
+  }
 
   removeFromEngine(engine: Engine): void {}
 

@@ -65,6 +65,7 @@ import BARREL_0 from "assets/images/AnimateMap/barrels/barrel.png";
 import FIREBARELL_CAM_ICON from "assets/images/AnimateMap/barrels/camIcon.png";
 import FIREBARELL_HALO from "assets/images/AnimateMap/barrels/halo2.png";
 import FIREBARELL_HALO_GREEN from "assets/images/AnimateMap/barrels/haloRedGlow.png";
+import MAN_BURN from "assets/images/AnimateMap/man_burn.png";
 import MAP_IMAGE_1 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_01.jpg";
 import MAP_IMAGE_2 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_02.jpg";
 import MAP_IMAGE_3 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_03.jpg";
@@ -82,6 +83,7 @@ import MAP_IMAGE_14 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_14
 import MAP_IMAGE_15 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_15.jpg";
 import MAP_IMAGE_16 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_16.jpg";
 import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_4096.jpg";
+import TEMPLE_BURN from "assets/images/AnimateMap/temple-2021_burn.png";
 import JOYSTICK_IMAGE from "assets/images/AnimateMap/UI/JoyStick/plate.png";
 import JOYSTICK_HANDLE_IMAGE from "assets/images/AnimateMap/UI/JoyStick/stick.png";
 import VENUE_PEOPLE from "assets/images/AnimateMap/venues/people.png";
@@ -221,4 +223,6 @@ export {
   mapZoomedLevel0,
   JOYSTICK_IMAGE,
   JOYSTICK_HANDLE_IMAGE,
+  MAN_BURN,
+  TEMPLE_BURN,
 };
