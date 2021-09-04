@@ -13,7 +13,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
-import { useWorldUsers } from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 import { LogoRF } from "pages/RegistrationFlow/LogoRF";
 
@@ -36,6 +36,8 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
     "background-image": `url(${EXTERNAL_ROOM_BACKGROUND})`,
   });
 
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+
   const containerClasses = classNames("ExternalRoom", containerVars);
 
   const venueLogoVars = useCss({
@@ -49,11 +51,8 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
 
   useEffect(() => {
     if (!redirectUrl) return;
-
-    // openUrl(redirectUrl);
+    openUrl(redirectUrl);
   }, [redirectUrl]);
-
-  const { worldUsers } = useWorldUsers();
 
   return (
     <div className={containerClasses}>
@@ -107,7 +106,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
 
             <UserList
               containerClassName="ExternalRoom__userlist"
-              users={worldUsers}
+              users={recentVenueUsers}
               limit={USER_AVATAR_LIMIT}
               activity="in here"
               hasClickableAvatars
