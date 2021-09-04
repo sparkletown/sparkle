@@ -147,15 +147,22 @@ export class CloudDataProvider
 
   private _createReplicatedVenue(room: RoomWithFullData) {
     const withoutPlate = room.title === "Temple" || room.title === "The Man";
+    let isLive = room.isLive;
+    let countUsers = room.countUsers ?? 0;
     let withoutPlateVenueState = 0;
-    if (room.title === "Temple") withoutPlateVenueState = this._theTempleState;
-    if (room.title === "The Man") withoutPlateVenueState = this._theManState;
+    if (room.title === "Temple" || room.title === "The Man") {
+      withoutPlateVenueState =
+        room.title === "The Man" ? this._theManState : this._theTempleState;
+      isLive = false;
+      countUsers = 0;
+    }
     return {
       x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
       y: (room.y_percent / 100) * 9920 + 50,
       data: {
         ...room,
-        countUsers: room.countUsers ?? 0,
+        countUsers: countUsers,
+        isLive: isLive,
         image_url: getFirebaseStorageResizedImage(room.image_url, {
           width: 256,
           height: 256,
