@@ -28,6 +28,7 @@ export class Flame extends Sprite {
     }
 
     const mc = new AnimatedSprite(textureArray);
+    mc.animationSpeed = 0.4;
     mc.anchor.set(0.5, 1);
     mc.play();
     this.addChild(mc);
