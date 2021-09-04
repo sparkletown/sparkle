@@ -62,7 +62,7 @@ export class PlayerIORoomOperator
           const y = m.getUInt(2);
           console.log(`User ${userId} joint to ${id} on position (${x},${y})`);
           const user = this.cloudDataProvider.users.getUserById(userId);
-          if (!user || Array.isArray(user)) return console.error("Bad user");
+          if (!user) return console.warn("Unknown user");
           user.x = x;
           user.y = y;
           if (this.playerId !== user.data.id)
@@ -78,7 +78,7 @@ export class PlayerIORoomOperator
           const user = this.cloudDataProvider.users.getUserByMessengerId(
             innerUserId
           );
-          if (!user || Array.isArray(user)) return console.error("Bad user");
+          if (!user) return console.warn("Unknown user");
           user.x = x;
           user.y = y;
           if (this.playerId !== user.data.id)
@@ -92,7 +92,7 @@ export class PlayerIORoomOperator
           const x = m.getUInt(1);
           const y = m.getUInt(2);
           const user = this.cloudDataProvider.users.getUserById(userId);
-          if (!user || Array.isArray(user)) return console.error("Bad user");
+          if (!user) return console.warn("Unknown user");
           user.x = x;
           user.y = y;
           if (this.playerId !== user.data.id)
@@ -107,7 +107,7 @@ export class PlayerIORoomOperator
           const user = this.cloudDataProvider.users.getUserByMessengerId(
             innerUserId
           );
-          if (!user || Array.isArray(user)) return console.error("Bad user");
+          if (!user) return console.warn("Unknown user");
           EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
         });
 
@@ -117,7 +117,7 @@ export class PlayerIORoomOperator
           const userId = m.getString(0);
           const shout = m.getString(1);
           const user = this.cloudDataProvider.users.getUserById(userId);
-          if (!user || Array.isArray(user)) return console.error("Bad user");
+          if (!user) return console.warn("Unknown user");
           EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
         });
 
@@ -127,7 +127,7 @@ export class PlayerIORoomOperator
             const userId = m.getString(0);
             console.log(`User ${userId} left from ${id}`);
             const user = this.cloudDataProvider.users.getUserById(userId);
-            if (!user || Array.isArray(user)) return console.error("Bad user");
+            if (!user) return console.warn("Unknown user");
             if (this.playerId !== user.data.id)
               EventProvider.emit(EventType.USER_LEFT, user);
           }

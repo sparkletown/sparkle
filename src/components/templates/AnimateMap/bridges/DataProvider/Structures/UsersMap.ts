@@ -73,11 +73,15 @@ export class UsersMap {
   }
 
   public getUserByInnerId(key: number) {
-    return this._mapUsersById.get(key);
+    const user = this._mapUsersById.get(key);
+    if (Array.isArray(user)) return;
+    else return user;
   }
 
   public getUserById(id: string) {
-    return this._mapUsersById.get(getIntByHash(id));
+    const user = this._mapUsersById.get(getIntByHash(id));
+    if (Array.isArray(user)) return user.find((u) => u.data.id === id);
+    else return user;
   }
 
   private _addLogicTree(id: string, key?: number): boolean {
