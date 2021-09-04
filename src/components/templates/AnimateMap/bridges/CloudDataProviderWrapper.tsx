@@ -6,18 +6,19 @@ import { AnimateMapVenue, AnyVenue } from "types/venues";
 
 import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
+import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
 import { useVenueEvents } from "hooks/events";
 import { useRecentWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { getFirebaseStorageResizedImage } from "../../../../utils/image";
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
+import EventProvider, { EventType } from "./EventProvider/EventProvider";
 
 export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
@@ -150,6 +151,23 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     //eslint-disable-next-line react-hooks/exhaustive-deps
     [user, dataProvider, firebase]
   );
+
+  useEffect(() => {
+    return firebase
+      .firestore()
+      .collection("venues")
+      .doc(venue.id)
+      .onSnapshot((doc) => {
+        if (!doc) return;
+
+        const data = doc.data();
+        EventProvider.emit(EventType.THE_MAN_STATE_CHANGED, data?.theManState);
+        EventProvider.emit(
+          EventType.THE_TEMPLE_STATE_CHANGED,
+          data?.theTempleState
+        );
+      });
+  }, [firebase, venue]);
 
   return null;
 };

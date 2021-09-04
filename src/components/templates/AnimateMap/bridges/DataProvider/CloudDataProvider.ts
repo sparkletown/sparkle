@@ -99,7 +99,30 @@ export class CloudDataProvider
       EventType.SEND_SHOUT,
       this.commonInterface.sendShoutMessage.bind(this.commonInterface)
     );
+
+    // @debt fast implementation for add new states for venue (for burning animation)
+    EventProvider.on(EventType.THE_MAN_STATE_CHANGED, (state) => {
+      if (this._theManState === state) return;
+      this._theManState = state;
+      console.log("Update The Man ", state);
+      const theMan = this.venuesData.find((v) => v.data.title === "The Man");
+      if (!theMan) return;
+      theMan.data.withoutPlateVenueState = state;
+      this.emit(DataProviderEvent.VENUE_UPDATED, theMan);
+    });
+    EventProvider.on(EventType.THE_TEMPLE_STATE_CHANGED, (state) => {
+      if (this._theTempleState === state) return;
+      this._theTempleState = state;
+      console.log("Update Temple ", state);
+      const temple = this.venuesData.find((v) => v.data.title === "Temple");
+      if (!temple) return;
+      temple.data.withoutPlateVenueState = state;
+      this.emit(DataProviderEvent.VENUE_UPDATED, temple);
+    });
   }
+
+  private _theManState = 0;
+  private _theTempleState = 0;
 
   public update(dt: number) {
     this._updateCounter += dt;
@@ -122,6 +145,28 @@ export class CloudDataProvider
   public venuesData: ReplicatedVenue[] = [];
   public firebarrelsData: ReplicatedFirebarrel[] = [];
 
+  private _createReplicatedVenue(room: RoomWithFullData) {
+    const withoutPlate = room.title === "Temple" || room.title === "The Man";
+    let withoutPlateVenueState = 0;
+    if (room.title === "Temple") withoutPlateVenueState = this._theTempleState;
+    if (room.title === "The Man") withoutPlateVenueState = this._theManState;
+    return {
+      x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+      y: (room.y_percent / 100) * 9920 + 50,
+      data: {
+        ...room,
+        countUsers: room.countUsers ?? 0,
+        image_url: getFirebaseStorageResizedImage(room.image_url, {
+          width: 256,
+          height: 256,
+          fit: "crop",
+        }),
+        withoutPlate: withoutPlate,
+        withoutPlateVenueState: withoutPlateVenueState,
+      },
+    } as ReplicatedVenue;
+  }
+
   public updateRooms(data?: RoomWithFullData[]) {
     if (!data) return;
 
@@ -137,23 +182,6 @@ export class CloudDataProvider
     this.venuesData = this.venuesData.filter(
       (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
-
-    const createReplicatedVenue = (room: RoomWithFullData) => {
-      return {
-        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-        y: (room.y_percent / 100) * 9920 + 50,
-        data: {
-          ...room,
-          countUsers: room.countUsers ?? 0,
-          image_url: getFirebaseStorageResizedImage(room.image_url, {
-            width: 256,
-            height: 256,
-            fit: "crop",
-          }),
-          withoutPlate: room.title === "Temple" || room.title === "The Man",
-        },
-      } as ReplicatedVenue;
-    };
 
     const modifiedVenues = this.venuesData
       .filter((venue) => {
@@ -178,7 +206,7 @@ export class CloudDataProvider
       .map((venue) => {
         const room = data.find((item) => item.id === venue.data.id);
         if (!room) return venue;
-        return createReplicatedVenue(room);
+        return this._createReplicatedVenue(room);
       });
     modifiedVenues.forEach((modifiedVenue) => {
       const indx = this.venuesData.findIndex(
@@ -189,7 +217,7 @@ export class CloudDataProvider
     });
 
     newVenues.forEach((room) => {
-      const vn = createReplicatedVenue(room);
+      const vn = this._createReplicatedVenue(room);
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });

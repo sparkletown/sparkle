@@ -42,11 +42,18 @@ export interface ReplicatedArtcar extends ReplicatedVenue {
   colorIndex: number;
 }
 
+export enum WithoutPlateVenueState {
+  idle,
+  burn,
+  burned,
+}
+
 export interface ReplicatedVenueData extends Room {
   id: number;
   isLive: boolean;
   countUsers: number;
   withoutPlate?: boolean;
+  withoutPlateVenueState?: WithoutPlateVenueState;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
