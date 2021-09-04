@@ -80,7 +80,7 @@ export const stubArtcarsData = () => {
     },
     {
       name: "Caranirvana Art Car",
-      link: "https://burn.sparklever.se/in/caranivana",
+      link: "https://burn.sparklever.se/in/caranirvana",
       info: "Start wearing purple, wearing purple on the Caranirvana Art Car. ",
       color: 0xff33cc,
     },
