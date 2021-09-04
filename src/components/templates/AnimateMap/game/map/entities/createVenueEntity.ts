@@ -2,7 +2,10 @@ import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  ReplicatedVenue,
+  WithoutPlateVenueState,
+} from "store/reducers/AnimateMap";
 
 import { VenueTemplate } from "types/venues";
 
@@ -59,7 +62,9 @@ const updateVenueBurnedImage = (
   positionComponent: PositionComponent
 ) => {
   // 'The Man' | 'Temple'
-  //   (spriteComponent.view as VenueBurn).setState(WithoutPlateVenueState.idle);
+  (spriteComponent.view as VenueBurn).setState(
+    replicatedVenue.data.withoutPlateVenueState ?? WithoutPlateVenueState.idle
+  );
   return Promise.all([
     new CropVenue(replicatedVenue.data.image_url)
       .setUsersCount(replicatedVenue.data.countUsers)
