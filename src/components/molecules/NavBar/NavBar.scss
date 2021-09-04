@@ -11,6 +11,9 @@ $volume-popover-width-with-sliders: 30em;
 $volume-popover-width-without-sliders: 15em;
 $simplified-view-button--height: 32px;
 $simplified-view-button--padding: 0 10px;
+$photobooth-button-margin: 140px 0px 0px;
+$photobooth-button-text-margin: 38px 0px 0px;
+$photobooth-button-background-size: 35px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -329,6 +332,26 @@ $simplified-view-button--padding: 0 10px;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
+    }
+  }
+
+  &__photobooth {
+    &-button {
+      background-color: $lighter-intermediate-grey !important;
+      margin: $photobooth-button-margin;
+      background-image: url(/assets/icons/photobooth-icon.png);
+      background-size: $photobooth-button-background-size;
+      background-position: 50% 30%;
+
+      &:hover {
+        background-color: $lighter-intermediate-grey;
+      }
+    }
+
+    &-title {
+      text-decoration: none;
+      margin: $photobooth-button-text-margin;
+      font-size: $font-size--sm;
     }
   }
 
