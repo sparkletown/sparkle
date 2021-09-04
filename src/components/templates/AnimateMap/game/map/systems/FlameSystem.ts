@@ -1,6 +1,8 @@
 import { Engine, System } from "@ash.ts/ash";
 
+// import {FLAME_JSON, FLAME_PNG} from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
+import { SpriteComponent } from "../components/SpriteComponent";
 import EntityFactory from "../entities/EntityFactory";
 
 export class FlameSystem extends System {
@@ -22,6 +24,15 @@ export class FlameSystem extends System {
 
     let entity = this.creator.engine.getEntityByName(this.ENTITY_NAME);
     if (entity) {
+      const spriteComponent = entity.get(SpriteComponent);
+      if (
+        spriteComponent &&
+        spriteComponent.view &&
+        spriteComponent.view.parent
+      ) {
+        // TODO need above all other sprites
+        spriteComponent.view.parent.addChild(spriteComponent.view);
+      }
       return;
     }
 
@@ -31,5 +42,23 @@ export class FlameSystem extends System {
       config.worldHeight / 2
     );
     entity.name = this.ENTITY_NAME;
+
+    this.loadTexture().then(() => {
+      console.log("SHOW FLAME");
+      // add animation to entity.get(SpriteComponent).view
+    });
+  }
+
+  private loadTexture(): Promise<void> {
+    return Promise.resolve();
+    // return new Promise((resolve) => {
+    //   Loader.shared.add('atlas', FLAME_JSON).add('texture', FLAME_PNG).load((resources) => {
+    //     console.log('LOADED!!!!!!!!!!!!!!!!!!!')
+    //     // resources['atlas'].texture['']
+    //     console.log(Loader.shared.resources["atlas"])
+    //
+    //     resolve();
+    //   })
+    // });
   }
 }
