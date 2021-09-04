@@ -53,6 +53,7 @@ const updateVenueBurnedImage = (
   positionComponent: PositionComponent
 ) => {
   // 'The Man' | 'Temple'
+  //   (spriteComponent.view as VenueBurn).setState(WithoutPlateVenueState.idle);
   return Promise.all([
     new CropVenue(replicatedVenue.data.image_url)
       .setUsersCount(replicatedVenue.data.countUsers)
@@ -118,14 +119,6 @@ const updateVenueImage = (
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
 ): Promise<void> => {
-  if (replicatedVenue.data.withoutPlate) {
-    return updateVenueBurnedImage(
-      replicatedVenue,
-      spriteComponent,
-      positionComponent
-    );
-  }
-
   return new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
     .setUsersCountColor(
@@ -175,11 +168,20 @@ export const updateVenueEntity = (
   node.venue.model = venue;
   node.entity.add(node.venue);
 
-  const sprite = node.entity.get(SpriteComponent);
-  if (!sprite) {
+  const spriteComponent = node.entity.get(SpriteComponent);
+  if (!spriteComponent) {
     return;
   }
-  updateVenueImage(venue, sprite, node.position);
+
+  if (node.venue.model.data.withoutPlate) {
+    return updateVenueBurnedImage(
+      node.venue.model,
+      spriteComponent,
+      node.position
+    );
+  } else {
+    return updateVenueImage(venue, spriteComponent, node.position);
+  }
 };
 
 export const createVenueEntity = (
@@ -310,11 +312,22 @@ export const createVenueEntity = (
   engine.addEntity(entity);
 
   spriteComponent.view.visible = false;
-  updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
-    if (spriteComponent && spriteComponent.view) {
-      spriteComponent.view.visible = true;
-    }
-  });
+
+  if (venue.data.withoutPlate) {
+    updateVenueBurnedImage(venue, spriteComponent, positionComponent).finally(
+      () => {
+        if (spriteComponent && spriteComponent.view) {
+          spriteComponent.view.visible = true;
+        }
+      }
+    );
+  } else {
+    updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
+      if (spriteComponent && spriteComponent.view) {
+        spriteComponent.view.visible = true;
+      }
+    });
+  }
 
   return entity;
 };

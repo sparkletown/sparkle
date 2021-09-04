@@ -35,6 +35,16 @@ export class VenueBurn extends Venue implements Animatable {
     }
   }
 
+  private getFlame(): Flame {
+    const flame = new Flame();
+    flame.scale.set(0.7);
+    flame.anchor.set(0.5);
+
+    flame.position.y = 130;
+
+    return flame;
+  }
+
   public changeState(state: WithoutPlateVenueState): void {
     this.currentState = state;
 
@@ -43,8 +53,7 @@ export class VenueBurn extends Venue implements Animatable {
         if (this.flame) {
           return;
         }
-        this.flame = new Flame();
-        this.flame.alpha = 0;
+        this.flame = this.getFlame();
         this.addChild(this.flame);
 
         new TimeoutCommand().execute().then(() => {
@@ -118,8 +127,7 @@ export class VenueBurn extends Venue implements Animatable {
         break;
       case WithoutPlateVenueState.burn:
         if (!this.flame) {
-          this.flame = new Flame();
-          this.flame.alpha = 1;
+          this.flame = this.getFlame();
           this.addChild(this.flame);
         }
         this.burned.alpha = 0;
