@@ -196,6 +196,7 @@ export class CloudDataProvider
 
         if (!room) return false;
 
+        if (room.title === "The Man" || room.title === "Temple") return false;
         return !(
           room.url === venue.data.url &&
           room.title === venue.data.title &&
