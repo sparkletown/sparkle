@@ -3,6 +3,8 @@ import { Box, Point, QuadTree } from "js-quadtree";
 import { Application, BaseTexture, Container, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
+import { WithoutPlateVenueState } from "store/reducers/AnimateMap";
+
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 
 import { MAP_IMAGE } from "../../constants/AssetConstants";
@@ -21,10 +23,12 @@ import {
 } from "../graphics/shaders/StaticShaderData";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 import { FirebarrelNode } from "../nodes/FirebarrelNode";
+import { VenueNode } from "../nodes/VenueNode";
 
 export class ViewportBackgroundSystem extends System {
   private barrels?: NodeList<FirebarrelNode>;
   private artcars?: NodeList<ArtcarNode>;
+  private venues?: NodeList<VenueNode>;
 
   private viewport: Viewport;
   private staticLightManager: ShaderDataProvider;
@@ -73,6 +77,7 @@ export class ViewportBackgroundSystem extends System {
   addToEngine(engine: Engine) {
     this.barrels = engine.getNodeList(FirebarrelNode);
     this.artcars = engine.getNodeList(ArtcarNode);
+    this.venues = engine.getNodeList(VenueNode);
     this.setup().then(() => {
       this.setupTree();
 
@@ -198,6 +203,26 @@ export class ViewportBackgroundSystem extends System {
   private _updateFilters() {
     let lightQuantity = 0;
 
+    for (let i = this.venues?.head; i; i = i?.next) {
+      if (
+        i.venue.model.data.withoutPlateVenueState !==
+        WithoutPlateVenueState.burn
+      )
+        continue;
+
+      const delta = 80;
+      const countLights = 12;
+
+      for (let j = 0; j < countLights; j++) {
+        this.lightsPos[lightQuantity * 2] =
+          i.position.x - Math.random() * delta + 50;
+        this.lightsPos[lightQuantity * 2 + 1] =
+          i.position.y - Math.random() * delta + 50;
+        this.lightsCol[lightQuantity] = 0xf6951d;
+        lightQuantity += 1;
+      }
+    }
+
     for (let i = this.barrels?.head; i; i = i?.next) {
       this.lightsPos[lightQuantity * 2] = i.position.x;
       this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
@@ -209,38 +234,12 @@ export class ViewportBackgroundSystem extends System {
     }
 
     for (let i = this.artcars?.head; i; i = i?.next) {
-      this.lightsPos[lightQuantity * 2] = i.position.x;
-      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
-      lightQuantity += 1;
-    }
-
-    for (let i = this.artcars?.head; i; i = i?.next) {
-      this.lightsPos[lightQuantity * 2] = i.position.x;
-      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
-      lightQuantity += 1;
-    }
-
-    for (let i = this.artcars?.head; i; i = i?.next) {
-      this.lightsPos[lightQuantity * 2] = i.position.x;
-      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
-      lightQuantity += 1;
-    }
-
-    for (let i = this.artcars?.head; i; i = i?.next) {
-      this.lightsPos[lightQuantity * 2] = i.position.x;
-      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
-      lightQuantity += 1;
-    }
-
-    for (let i = this.artcars?.head; i; i = i?.next) {
-      this.lightsPos[lightQuantity * 2] = i.position.x;
-      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
-      lightQuantity += 1;
+      for (let j = 0; j < 5; j++) {
+        this.lightsPos[lightQuantity * 2] = i.position.x;
+        this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+        this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+        lightQuantity += 1;
+      }
     }
 
     this.container.filters[0].uniforms.lightsPos = this.lightsPos;

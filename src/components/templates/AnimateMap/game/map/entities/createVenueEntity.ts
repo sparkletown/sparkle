@@ -2,12 +2,16 @@ import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  ReplicatedVenue,
+  WithoutPlateVenueState,
+} from "store/reducers/AnimateMap";
 
 import { VenueTemplate } from "types/venues";
 
 import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
+import { MAN_BURN, TEMPLE_BURN } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -21,6 +25,7 @@ import { FSMBase } from "../finalStateMachines/FSMBase";
 import { HoverIn } from "../graphics/HoverIn";
 import { HoverOut } from "../graphics/HoverOut";
 import { Venue } from "../graphics/Venue";
+import { VenueBurn } from "../graphics/VenueBurn";
 import { VenueHalo } from "../graphics/VenueHalo";
 import { VenueHaloAnimated } from "../graphics/VenueHaloAnimated";
 import { VenueHaloEmpty } from "../graphics/VenueHaloEmpty";
@@ -51,6 +56,75 @@ const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
   entity.add(tooltip);
 };
 
+const updateVenueBurnedImage = (
+  replicatedVenue: ReplicatedVenue,
+  spriteComponent: SpriteComponent,
+  positionComponent: PositionComponent
+) => {
+  // 'The Man' | 'Temple'
+  (spriteComponent.view as VenueBurn).setState(
+    replicatedVenue.data.withoutPlateVenueState ?? WithoutPlateVenueState.idle
+  );
+  return Promise.all([
+    new CropVenue(replicatedVenue.data.image_url)
+      .setUsersCount(replicatedVenue.data.countUsers)
+      .setWithoutPlate(replicatedVenue.data.withoutPlate)
+      .setUsersCountColor(
+        replicatedVenue.data.isLive
+          ? TOOLTIP_COLOR_ISLIVE
+          : TOOLTIP_COLOR_DEFAULT
+      )
+      .execute(),
+    new CropVenue(
+      replicatedVenue.data.title === "Temple" ? TEMPLE_BURN : MAN_BURN
+    )
+      .setUsersCount(replicatedVenue.data.countUsers)
+      .setWithoutPlate(replicatedVenue.data.withoutPlate)
+      .setUsersCountColor(
+        replicatedVenue.data.isLive
+          ? TOOLTIP_COLOR_ISLIVE
+          : TOOLTIP_COLOR_DEFAULT
+      )
+      .execute(),
+  ])
+    .then(([comm, comm1]) => {
+      const scaleSize = 4;
+      const size = GameConfig.VENUE_DEFAULT_SIZE * scaleSize;
+
+      const scale = size / comm.canvas.width;
+      positionComponent.scaleY = scale;
+      positionComponent.scaleX = scale;
+
+      const venueSprite = spriteComponent.view as VenueBurn;
+
+      if (venueSprite.main) {
+        if (venueSprite.main.children.length > 0) {
+          venueSprite.main.removeChildren(0);
+        }
+        const main = Sprite.from(comm.canvas);
+        main.anchor.set(0.5, 0.5);
+        venueSprite.main.addChild(main);
+      }
+
+      if (venueSprite.burned) {
+        if (venueSprite.burned.children.length > 0) {
+          venueSprite.burned.removeChildren(0);
+        }
+        const burned = Sprite.from(comm1.canvas);
+        burned.anchor.set(0.5, 0.5);
+        venueSprite.burned.addChild(burned);
+      }
+
+      return Promise.resolve();
+    })
+    .catch((err) => {
+      console.log("err", err);
+    })
+    .finally(() => {
+      return Promise.resolve();
+    });
+};
+
 const updateVenueImage = (
   replicatedVenue: ReplicatedVenue,
   spriteComponent: SpriteComponent,
@@ -58,13 +132,12 @@ const updateVenueImage = (
 ): Promise<void> => {
   return new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
-    .setWithoutPlate(replicatedVenue.data.withoutPlate)
     .setUsersCountColor(
       replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT
     )
     .execute()
     .then((comm: CropVenue) => {
-      const scaleSize = replicatedVenue.data.withoutPlate ? 4 : 1;
+      const scaleSize = 1;
       const size = GameConfig.VENUE_DEFAULT_SIZE * scaleSize;
       const scale = size / comm.canvas.width;
       positionComponent.scaleY = scale;
@@ -76,12 +149,7 @@ const updateVenueImage = (
       }
 
       venueSprite.main = Sprite.from(comm.canvas);
-      if (replicatedVenue.data.withoutPlate) {
-        // 1 - 0.5 / ((comm.canvas.height * 2) / comm.canvas.width)
-        venueSprite.main.anchor.set(0.5, 0.5);
-      } else {
-        venueSprite.main.anchor.set(0.5);
-      }
+      venueSprite.main.anchor.set(0.5);
       venueSprite.addChild(venueSprite.main);
       return Promise.resolve();
     })
@@ -111,11 +179,20 @@ export const updateVenueEntity = (
   node.venue.model = venue;
   node.entity.add(node.venue);
 
-  const sprite = node.entity.get(SpriteComponent);
-  if (!sprite) {
+  const spriteComponent = node.entity.get(SpriteComponent);
+  if (!spriteComponent) {
     return;
   }
-  updateVenueImage(venue, sprite, node.position);
+
+  if (node.venue.model.data.withoutPlate) {
+    return updateVenueBurnedImage(
+      node.venue.model,
+      spriteComponent,
+      node.position
+    );
+  } else {
+    return updateVenueImage(venue, spriteComponent, node.position);
+  }
 };
 
 export const createVenueEntity = (
@@ -128,7 +205,9 @@ export const createVenueEntity = (
   const venueComponent = new VenueComponent(venue, fsm);
   const positionComponent = new PositionComponent(venue.x, venue.y, 0, 0, 0);
   const spriteComponent: SpriteComponent = new SpriteComponent();
-  const sprite: Venue = new Venue();
+  const sprite: Venue | VenueBurn = venue.data.withoutPlate
+    ? new VenueBurn()
+    : new Venue();
   sprite.zIndex = -1;
   spriteComponent.view = sprite;
 
@@ -251,11 +330,22 @@ export const createVenueEntity = (
   engine.addEntity(entity);
 
   spriteComponent.view.visible = false;
-  updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
-    if (spriteComponent && spriteComponent.view) {
-      spriteComponent.view.visible = true;
-    }
-  });
+
+  if (venue.data.withoutPlate) {
+    updateVenueBurnedImage(venue, spriteComponent, positionComponent).finally(
+      () => {
+        if (spriteComponent && spriteComponent.view) {
+          spriteComponent.view.visible = true;
+        }
+      }
+    );
+  } else {
+    updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
+      if (spriteComponent && spriteComponent.view) {
+        spriteComponent.view.visible = true;
+      }
+    });
+  }
 
   return entity;
 };

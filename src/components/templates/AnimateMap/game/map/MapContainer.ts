@@ -188,7 +188,6 @@ export class MapContainer extends Container {
         SystemPriorities.move
       );
     }
-
     this._engine.addSystem(new MovementSystem(), SystemPriorities.move);
     this._engine.addSystem(
       new LineOfSightSystem(this.entityFactory),

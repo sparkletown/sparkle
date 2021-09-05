@@ -37,6 +37,7 @@ import { WaitingArtcarEnterClickComponent } from "../components/WaitingArtcarEnt
 import { WaitingVenueClickComponent } from "../components/WaitingVenueClickComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Avatar } from "../graphics/Avatar";
+import { Flame } from "../graphics/Flame";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
@@ -63,6 +64,19 @@ export default class EntityFactory {
 
   constructor(engine: Engine) {
     this.engine = engine;
+  }
+
+  public createFlame(x: number, y: number): Entity {
+    console.log("creator CREATE_FLAME");
+    const entity = new Entity();
+    const spriteComponent = new SpriteComponent();
+    spriteComponent.view = new Flame();
+    const positionComponent = new PositionComponent(x, y);
+
+    entity.add(spriteComponent).add(positionComponent);
+
+    this.engine.addEntity(entity);
+    return entity;
   }
 
   public createWaitingArtcarClick(

@@ -1,6 +1,10 @@
 import { utils } from "pixi.js";
 
-import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  ReplicatedUser,
+  ReplicatedVenue,
+  WithoutPlateVenueState,
+} from "store/reducers/AnimateMap";
 
 import { RoomPointNode } from "../DataProvider/Structures/RoomsModel";
 
@@ -12,6 +16,9 @@ export enum EventType {
   PLAYER_MODEL_READY = "EventProviderType.PLAYER_MODEL_READY",
 
   ON_REPLICATED_USER_CLICK = "EventProviderType.ON_REPLICATED_USER_CLICK",
+
+  THE_MAN_STATE_CHANGED = "EventProviderType.THE_MAN_STATE_CHANGED",
+  THE_TEMPLE_STATE_CHANGED = "EventProviderType.THE_TEMPLE_STATE_CHANGED",
 
   // UI
   UI_CONTROL_PANEL_ZOOM_IN = "EventProviderType.UI_CONTROL_PANEL_ZOOM_IN",
@@ -36,6 +43,7 @@ type OnPlayerClickCallback = (
   viewportY: number
 ) => void;
 
+type WithoutPlateStateChangedCallback = (state: WithoutPlateVenueState) => void;
 // playerio
 type UserJoinedCallback = (user: ReplicatedUser) => void;
 type UserLeftCallback = (user: ReplicatedUser) => void;
@@ -53,15 +61,23 @@ export declare interface EventProviderSingleton {
     type: EventType.PLAYER_MODEL_READY,
     callback: PlayerModelReadyCallback
   ): this;
+  on(
+    type: EventType.THE_MAN_STATE_CHANGED,
+    callback: WithoutPlateStateChangedCallback
+  ): this;
+  on(
+    type: EventType.THE_TEMPLE_STATE_CHANGED,
+    callback: WithoutPlateStateChangedCallback
+  ): this;
 
-  // UI
-  on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
-  on(type: EventType.UI_CONTROL_PANEL_ZOOM_OUT, callback: () => void): this;
-  on(type: EventType.UI_SINGLE_BUTTON_FOLLOW, callback: () => void): this;
   on(
     type: EventType.ON_REPLICATED_USER_CLICK,
     callback: OnPlayerClickCallback
   ): this;
+  // UI
+  on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
+  on(type: EventType.UI_CONTROL_PANEL_ZOOM_OUT, callback: () => void): this;
+  on(type: EventType.UI_SINGLE_BUTTON_FOLLOW, callback: () => void): this;
   // playerio
   on(type: EventType.USER_JOINED, callback: UserJoinedCallback): this;
   on(type: EventType.USER_LEFT, callback: UserLeftCallback): this;
@@ -80,6 +96,14 @@ export declare interface EventProviderSingleton {
   emit(
     type: EventType.PLAYER_MODEL_READY,
     ...params: Parameters<PlayerModelReadyCallback>
+  ): boolean;
+  emit(
+    type: EventType.THE_MAN_STATE_CHANGED,
+    ...params: Parameters<WithoutPlateStateChangedCallback>
+  ): boolean;
+  emit(
+    type: EventType.THE_TEMPLE_STATE_CHANGED,
+    ...params: Parameters<WithoutPlateStateChangedCallback>
   ): boolean;
   emit(
     type: EventType.ON_REPLICATED_USER_CLICK,
