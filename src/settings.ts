@@ -670,6 +670,8 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
+export const DEFAULT_CAMERA_ENABLED = true;
+
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;

@@ -5,6 +5,8 @@ import Video, {
   VideoTrackPublication,
 } from "twilio-video";
 
+import { DEFAULT_CAMERA_ENABLED } from "../../../settings";
+
 import { ContainerClassName } from "types/utility";
 
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
@@ -63,7 +65,7 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
       <VideoOverlayButton
         variant="camera"
         onEnabledChanged={changeVideoState}
-        defaultValue={true}
+        defaultValue={DEFAULT_CAMERA_ENABLED}
       />
     </div>
   );
