@@ -2,9 +2,9 @@ import React from "react";
 
 import { CameraMicrophoneControls } from "components/molecules/CameraMicrophoneControls";
 
-import Participant, { ParticipantProps } from "./Participant";
+import { Participant, ParticipantProps } from "./Participant";
 
-const LocalParticipant: React.FC<ParticipantProps> = ({
+export const LocalParticipant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
   profileDataId,
@@ -30,5 +30,3 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
     </Participant>
   );
 };
-
-export default LocalParticipant;

@@ -27,7 +27,9 @@ type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
 type AudioTracks = Array<Video.LocalAudioTrack | Video.RemoteAudioTrack>;
 type Track = VideoTracks[number] | AudioTracks[number];
 
-const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
+export const Participant: React.FC<
+  React.PropsWithChildren<ParticipantProps>
+> = ({
   participant,
   profileData,
   bartender,
@@ -153,5 +155,3 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     </div>
   );
 };
-
-export default Participant;

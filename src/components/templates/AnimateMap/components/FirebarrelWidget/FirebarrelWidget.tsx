@@ -11,13 +11,13 @@ import { AnimateMapVenue } from "types/venues";
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { Button } from "components/atoms/Button";
 
 import { WithId } from "../../../../../utils/id";
-import Participant from "../../../../organisms/Room/Participant";
+import { Participant } from "../../../../organisms/Room/Participant";
 
 import "./FirebarrelWidget.scss";
 
