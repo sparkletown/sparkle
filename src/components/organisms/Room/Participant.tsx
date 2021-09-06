@@ -1,11 +1,7 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Video from "twilio-video";
+
+import { DEFAULT_CAMERA_ENABLED } from "settings";
 
 import { User } from "types/User";
 
@@ -41,6 +37,8 @@ export const Participant: React.FC<
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
 
+  const [videoEnabled, setVideoEnabled] = useState(DEFAULT_CAMERA_ENABLED);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -53,6 +51,15 @@ export const Participant: React.FC<
     Array.from(trackMap.values())
       .map((publication) => publication.track)
       .filter((track) => track !== null) as AudioTracks;
+
+  useEffect(
+    () =>
+      participant.videoTracks.forEach((x) => {
+        x?.track?.on("enabled", () => setVideoEnabled(true));
+        x?.track?.on("disabled", () => setVideoEnabled(false));
+      }),
+    [participant.videoTracks]
+  );
 
   useEffect(() => {
     setVideoTracks(videoTrackpubsToTracks(participant.videoTracks));
@@ -118,23 +125,15 @@ export const Participant: React.FC<
     [audioTracks]
   );
 
-  const videos = useMemo(
-    () => (
-      <>
-        <video
-          ref={videoRef}
-          autoPlay={true}
-          className={profileData?.mirrorVideo ? "mirrored" : ""}
-        />
-        <audio ref={audioRef} autoPlay={true} />
-      </>
-    ),
-    [profileData]
-  );
-
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
-      {videos}
+      {!videoEnabled && <div className="participant--video-disabled" />}
+      <video
+        ref={videoRef}
+        autoPlay={true}
+        className={profileData?.mirrorVideo ? "mirrored" : ""}
+      />
+      <audio ref={audioRef} autoPlay={true} />
       {showIcon && (
         <div className="profile-icon">
           <UserProfilePicture

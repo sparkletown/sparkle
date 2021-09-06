@@ -12,7 +12,7 @@ import { ContainerClassName } from "types/utility";
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
 import { VideoOverlayButtonVariant } from "components/atoms/VideoOverlayButton/VideoOverlayButton";
 
-import "components/molecules/CameraMicrophoneControls/CameraMicrophoneControls.scss";
+import "./CameraMicrophoneControls.scss";
 
 export interface CameraMicrophoneControlsProps extends ContainerClassName {
   participant: Video.Participant;
@@ -36,10 +36,7 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
 
       tracks.forEach((track: AudioTrackPublication | VideoTrackPublication) => {
         const innerTrack = track.track;
-        if (!innerTrack) return;
-
-        if (enable && "enable" in innerTrack) innerTrack.enable();
-        if (!enable && "disable" in innerTrack) innerTrack.disable();
+        if (innerTrack && "enable" in innerTrack) innerTrack.enable(enable);
       });
     },
     [participant.audioTracks, participant.videoTracks]
