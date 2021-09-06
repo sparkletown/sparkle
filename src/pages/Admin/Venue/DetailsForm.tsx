@@ -9,6 +9,7 @@ import { Form } from "react-bootstrap";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
+import classNames from "classnames";
 import * as Yup from "yup";
 
 import { IS_BURN } from "secrets";
@@ -713,9 +714,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const jukeboxContainerClasses = classNames("toggle-room DetailsForm--hidden");
+
   const renderJukeboxToggle = () => {
     return (
-      <div className="toggle-room DetailsForm--hidden">
+      <div className={jukeboxContainerClasses}>
         <h4 className="italic input-header">Enable Jukebox</h4>
         <Toggler name="enableJukebox" forwardedRef={register} />
       </div>
