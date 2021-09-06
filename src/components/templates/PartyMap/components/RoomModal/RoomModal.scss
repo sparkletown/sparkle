@@ -48,21 +48,25 @@ $spacing: 20px;
     height: fit-content;
   }
 
+  &__content {
+    flex: auto;
+    margin-left: $spacing;
+  }
+
   &__btn-enter {
     width: 100%;
     margin-top: 10px;
   }
 
   &__userlist {
-    margin: $spacing 0;
+    margin-bottom: $spacing;
   }
 
   &__description {
     @include scrollbar;
 
-    margin-top: $spacing;
     margin-bottom: $spacing;
-    padding: 10px $spacing;
+    padding: 0 $spacing;
 
     background: $dark;
     border-radius: $border-radius;
