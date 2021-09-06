@@ -1,3 +1,5 @@
+import { Settings } from "./settings";
+
 import { AuditoriumSection } from "types/auditorium";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { ChatRequest } from "types/ChatRequest";
@@ -18,11 +20,6 @@ export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
 }
-
-export interface Settings {
-  showChat?: boolean;
-}
-
 export interface UserVisit {
   timeSpent: number;
 }
