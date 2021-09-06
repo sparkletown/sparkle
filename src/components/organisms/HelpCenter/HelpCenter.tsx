@@ -36,17 +36,17 @@ export const HelpCenter: React.FC = () => {
       {url ? (
         <>
           {isLoading && <LoadingPage />}
-          <div className={"HelpCenter__iframeContainer"}>
+          <div className="HelpCenter__iframeContainer">
             {!isLoading && (
               <Button
-                customClass={"HelpCenter__backButton"}
+                customClass="HelpCenter__backButton"
                 onClick={handleBackClicked}
               >
                 Back
               </Button>
             )}
             <iframe
-              className={"HelpCenter__iframe"}
+              className="HelpCenter__iframe"
               onLoad={stopLoading}
               frameBorder="0"
               src={url}

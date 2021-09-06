@@ -1,4 +1,5 @@
-@import "scss/constants.scss";
+$help-back-button-pos--top: 90px;
+$help-back-button-pos--left: 25px;
 
 .HelpCenter {
   &__iframeContainer {
@@ -9,8 +10,8 @@
 
   &__backButton {
     position: absolute;
-    top: 90px;
-    left: 25px;
+    top: $help-back-button-pos--top;
+    left: $help-back-button-pos--left;
   }
 
   &__iframe {
