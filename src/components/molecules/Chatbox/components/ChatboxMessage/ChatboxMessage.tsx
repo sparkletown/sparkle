@@ -34,10 +34,10 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   voteInPoll,
   selectThisThread,
 }) => {
-  const thisMessageTime = startOfDay(message.ts_utc.toDate());
+  const messageStartOfDay = startOfDay(message.ts_utc.toDate());
 
   const nextMessageDate = nextMessage?.ts_utc.toDate();
-  const nextMessageTime = nextMessageDate
+  const nextMessageStartOfDay = nextMessageDate
     ? startOfDay(nextMessageDate)
     : undefined;
 
@@ -58,8 +58,8 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   );
 
   const dateLabel =
-    !nextMessageTime || nextMessageTime < thisMessageTime
-      ? formatDateRelativeToNow(thisMessageTime)
+    !nextMessageStartOfDay || nextMessageStartOfDay < messageStartOfDay
+      ? formatDateRelativeToNow(messageStartOfDay)
       : undefined;
 
   return (
