@@ -34,10 +34,10 @@ export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> =
 
       tracks.forEach((track: AudioTrackPublication | VideoTrackPublication) => {
         const innerTrack = track.track;
-        if (innerTrack) {
-          if (enable && "enable" in innerTrack) innerTrack.enable();
-          else if ("disable" in innerTrack) innerTrack.disable();
-        }
+        if (!innerTrack) return;
+
+        if (enable && "enable" in innerTrack) innerTrack.enable();
+        if (!enable && "disable" in innerTrack) innerTrack.disable();
       });
     },
     [participant.audioTracks, participant.videoTracks]
