@@ -67,7 +67,6 @@ $spacing: 20px;
   }
 
   &__venue-description {
-    @include scrollbar;
     padding: $spacing--sm $spacing;
 
     background: $dark;

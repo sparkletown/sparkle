@@ -49,7 +49,7 @@ $spacing: 20px;
   }
 
   &__content {
-    flex: auto;
+    flex: 1;
     margin-left: $spacing;
   }
 
@@ -63,8 +63,6 @@ $spacing: 20px;
   }
 
   &__description {
-    @include scrollbar;
-
     margin-bottom: $spacing;
     padding: 0 $spacing;
 
@@ -80,7 +78,6 @@ $spacing: 20px;
   }
 
   &__events {
-    @include scrollbar;
     max-height: 35vh;
     overflow-y: auto;
 
