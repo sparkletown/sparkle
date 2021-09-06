@@ -9,6 +9,7 @@ import { Form } from "react-bootstrap";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
+import classNames from "classnames";
 import * as Yup from "yup";
 
 import { IS_BURN } from "secrets";
@@ -890,6 +891,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const isJazzbar = templateID === VenueTemplate.jazzbar;
+
+  const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
+    "toggle-room DetailsForm--hidden": isJazzbar,
+  });
+
+  const renderJukeboxToggle = () => {
+    return (
+      <div className={jukeboxContainerClasses}>
+        <h4 className="italic input-header">Enable Jukebox</h4>
+        <Toggler name="enableJukebox" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -1070,6 +1086,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        {renderJukeboxToggle()}
 
         <UserStatusManager
           venueId={venueId}

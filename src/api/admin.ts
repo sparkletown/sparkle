@@ -102,6 +102,7 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
     showReactions?: boolean;
+    enableJukebox?: boolean;
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
