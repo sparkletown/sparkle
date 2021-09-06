@@ -150,7 +150,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   useLayoutEffect(() => {
     if (!venue) return;
 
-    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, true));
+    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, venue?.autoPlay));
   }, [venue]);
 
   const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);

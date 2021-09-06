@@ -12,6 +12,7 @@ import {
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
@@ -177,7 +178,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     key="main-event"
                     title="main event"
                     className="iframe-video"
-                    src={`${venue.iframeUrl}?autoplay=1`}
+                    src={`${ConvertToEmbeddableUrl(
+                      venue.iframeUrl,
+                      venue?.autoPlay
+                    )}`}
                     frameBorder="0"
                     allow={IFRAME_ALLOW}
                   />

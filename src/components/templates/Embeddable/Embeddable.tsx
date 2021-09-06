@@ -4,6 +4,8 @@ import { IFRAME_ALLOW_ADVANCED } from "settings";
 
 import { EmbeddableVenue } from "types/venues";
 
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import "./Embeddable.scss";
 
 export interface EmbeddableProps {
@@ -11,7 +13,13 @@ export interface EmbeddableProps {
 }
 
 export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
-  const { iframeUrl, containerStyles, iframeStyles, iframeOptions } = venue;
+  const {
+    iframeUrl,
+    autoPlay,
+    containerStyles,
+    iframeStyles,
+    iframeOptions,
+  } = venue;
 
   if (!iframeUrl) return <p>Error: iframeUrl is missing</p>;
 
@@ -19,7 +27,7 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
     <div className="embeddable" style={containerStyles}>
       <iframe
         title="embeddable-iframe"
-        src={iframeUrl}
+        src={ConvertToEmbeddableUrl(iframeUrl, autoPlay)}
         className="embeddable__iframe"
         style={iframeStyles}
         allow={IFRAME_ALLOW_ADVANCED}
