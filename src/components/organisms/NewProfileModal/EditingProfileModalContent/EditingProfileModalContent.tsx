@@ -27,6 +27,8 @@ import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/comp
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
 
+import { useShowHide } from "../../../../hooks/useShowHide";
+
 import "./EditingProfileModalContent.scss";
 
 export interface CurrentUserProfileModalContentProps {
@@ -54,6 +56,11 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   const checkOldPassword = useCheckOldPassword();
+
+  const {
+    isShown: isChangePasswordShown,
+    show: showChangePassword,
+  } = useShowHide();
 
   const {
     register,
@@ -180,16 +187,20 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         onDeleteLink={removeLink}
         onAddLink={addLinkHandler}
       />
-      <ProfileModalChangePassword
-        containerClassName="EditingProfileModalContent__section"
-        register={register}
-        getValues={getValues}
-        errors={pick<
-          FieldErrors<UserProfileModalFormData>,
-          "oldPassword" | "newPassword" | "confirmNewPassword"
-        >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
-      />
+      {isChangePasswordShown && (
+        <ProfileModalChangePassword
+          containerClassName="EditingProfileModalContent__section"
+          register={register}
+          getValues={getValues}
+          errors={pick<
+            FieldErrors<UserProfileModalFormData>,
+            "oldPassword" | "newPassword" | "confirmNewPassword"
+          >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
+        />
+      )}
       <EditProfileModalButtons
+        isChangePasswordShown={!isChangePasswordShown}
+        onChangePasswordClick={showChangePassword}
         onCancelClick={cancelEditing}
         isSubmitting={submitState.loading}
         containerClassName="EditingProfileModalContent__edit-buttons"

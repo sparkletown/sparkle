@@ -7,7 +7,9 @@ $modal-content-margin: 1.7rem;
 $header-sections-gap: 1.5rem;
 $profile-pictures-margin: -2rem;
 
-$round-icon-size: 1.7rem;
+$narrow-button-padding: 0.65rem 0;
+
+$round-icon-size: 2.2rem;
 
 $section-gap: 0.7rem;
 $section-gap-editable: 1.5rem;
@@ -21,16 +23,6 @@ $input-gap: 1rem;
 $basic-text-info-name-bottom-margin: 4px;
 
 @mixin ProfileModalButton {
-  background-color: opaque-white(0.2);
-  font-size: 14px;
-  width: 100%;
-  &--primary {
-    background-color: $primary;
-  }
-  &--online {
-    background-color: $send-msg-online-color;
-  }
-  &--disabled {
-    background-color: opaque-white(0.1);
-  }
+  padding: $narrow-button-padding;
+  max-width: unset;
 }

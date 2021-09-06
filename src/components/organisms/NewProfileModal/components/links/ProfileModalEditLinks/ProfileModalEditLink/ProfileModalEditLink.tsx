@@ -110,7 +110,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
       <ProfileModalRoundIcon
         onClick={onDelete}
         containerClassName="ProfileModalEditLink__delete-icon"
-        icon={faTrash}
+        iconName={faTrash}
       />
     </div>
   );
