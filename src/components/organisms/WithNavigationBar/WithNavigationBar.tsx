@@ -53,7 +53,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
       <div className="navbar-margin">{children}</div>
 
       <Footer />
-      {(venue && <NewProfileModal venue={venue} />) || <Loading />}
+      {venue && <NewProfileModal venue={venue} />}
     </>
   );
 };
