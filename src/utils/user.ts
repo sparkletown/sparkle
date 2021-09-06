@@ -27,9 +27,9 @@ export const getUserLocationData = ({
     worldUserLocationsById[user.id];
 
   const isLocationMatch =
-    userLocation.lastSeenIn === venueName ||
-    userLocation.lastSeenIn === roomName ||
-    userLocation.lastSeenIn === location;
+    userLocation.lastVenueIdSeenIn === venueName ||
+    userLocation.lastVenueIdSeenIn === roomName ||
+    userLocation.lastVenueIdSeenIn === location;
 
   return {
     isLocationMatch,

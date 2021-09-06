@@ -76,7 +76,7 @@ export const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
   const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
+  const { lastVenueIdSeenIn: userLastSeenIn } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();

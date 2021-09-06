@@ -40,7 +40,7 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
 ) => {
   // @debt refactor userWithLocationToUser to optionally not require WithId, then use that here
   const {
-    lastSeenIn,
+    lastVenueIdSeenIn,
     lastSeenAt,
     ...userProfileWithoutLocation
   } = state.firebase.profile;

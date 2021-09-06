@@ -68,7 +68,7 @@ export interface UserStatus {
 }
 
 export interface UserLocation {
-  lastSeenIn: string | null;
+  lastVenueIdSeenIn: string | null;
   lastSeenAt: number;
 }
 
@@ -156,7 +156,7 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
 export const userWithLocationToUser = (
   user: WithId<UserWithLocation>
 ): WithId<User> => {
-  const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
+  const { lastVenueIdSeenIn, lastSeenAt, ...userWithoutLocation } = user;
 
   return userWithoutLocation;
 };
@@ -164,9 +164,9 @@ export const userWithLocationToUser = (
 export const extractLocationFromUser = (
   user: WithId<UserWithLocation>
 ): WithId<UserLocation> => {
-  const { lastSeenIn, lastSeenAt } = user;
+  const { lastVenueIdSeenIn, lastSeenAt } = user;
 
-  const userLocation = { lastSeenIn, lastSeenAt };
+  const userLocation = { lastVenueIdSeenIn, lastSeenAt };
 
   return withId(userLocation, user.id);
 };

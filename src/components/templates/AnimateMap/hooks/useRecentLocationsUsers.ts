@@ -46,7 +46,7 @@ export const useRecentLocationsUsers = (
               worldUserLocationsById[user.id];
 
             return (
-              userLocation.lastSeenIn === venueName &&
+              userLocation.lastVenueIdSeenIn === venueName &&
               normalizeTimestampToMilliseconds(userLocation.lastSeenAt) >
                 lastSeenThreshold
             );
