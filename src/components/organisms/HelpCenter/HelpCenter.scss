@@ -1,6 +1,18 @@
 @import "scss/constants.scss";
 
 .HelpCenter {
+  &__iframeContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__backButton {
+    position: absolute;
+    top: 90px;
+    left: 25px;
+  }
+
   &__iframe {
     width: 100%;
     height: 100%;
