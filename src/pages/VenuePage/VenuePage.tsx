@@ -15,7 +15,7 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
 } from "utils/selectors";
-import { isDefined, isTruthy } from "utils/types";
+import { isDefined } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 import {
   clearLocationData,
@@ -61,9 +61,8 @@ const TemplateWrapper = lazy(() =>
 );
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
-const hasPaidEvents = (template: VenueTemplate) => {
-  return template === VenueTemplate.jazzbar;
-};
+const checkSupportsPaidEvents = (template: VenueTemplate) =>
+  template === VenueTemplate.jazzbar;
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
@@ -209,18 +208,17 @@ export const VenuePage: React.FC = () => {
   // if (isAccessDenied) {
   //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
   // }
+  const { entrance, template, hasPaidEvents } = venue;
+  const { enteredVenueIds } = profile;
 
-  const hasEntrance = isTruthy(venue?.entrance);
-  const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+  const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
+
+  const hasEntered = enteredVenueIds?.includes(venueId);
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
-  if (
-    hasPaidEvents(venue.template) &&
-    venue.hasPaidEvents &&
-    !isUserVenueOwner
-  ) {
+  if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }
