@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from "react";
+import { isChrome } from "react-device-detect";
 import {
   BrowserRouter as Router,
   Redirect,
@@ -11,12 +12,15 @@ import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 import { tracePromise } from "utils/performance";
 import { venueLandingUrl } from "utils/url";
 
+import { useShowHide } from "hooks/useShowHide";
+
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { LoginRF } from "pages/RegistrationFlow/LoginRF";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
+import { SwitchToChromeModal } from "components/organisms/SwitchToChromeModal/SwitchToChromeModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -77,8 +81,11 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
+  const { isShown: isModalVisible, hide: hideModal } = useShowHide(!isChrome);
+
   return (
     <Router basename="/">
+      <SwitchToChromeModal show={isModalVisible} onHide={hideModal} />
       <Suspense fallback={<LoadingPage />}>
         <Switch>
           <Route path="/enter" component={EnterSubrouter} />

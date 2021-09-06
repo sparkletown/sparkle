@@ -1,0 +1,18 @@
+@import "scss/constants.scss";
+
+$chrome-modal-margin: 10% auto 0 auto;
+$chrome-modal-padding: 1.7rem;
+
+.SwitchToChromeModal {
+  & > .modal-dialog {
+    margin: $chrome-modal-margin;
+
+    & > .modal-content {
+      padding: $chrome-modal-padding;
+      text-align: center;
+    }
+  }
+  &__download {
+    background-color: $primary;
+  }
+}

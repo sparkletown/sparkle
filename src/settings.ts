@@ -97,6 +97,7 @@ export const SPARKLEVERSE_PHOTOBOOTH_URL =
   "https://burn.sparklever.se/in/outsnappedphotoboothcamp";
 export const PLAYA_LOCATION_NAME = "playa";
 export const PLAYA_TIMEZONE = "America/Los_Angeles";
+export const DOWNLOAD_CHROME_URL = "https://www.google.ru/chrome/";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
