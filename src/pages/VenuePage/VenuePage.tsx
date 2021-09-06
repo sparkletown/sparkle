@@ -136,7 +136,7 @@ export const VenuePage: React.FC = () => {
   useEffect(() => {
     if (!userId || !venueName || !venueId) return;
 
-    const getWholePath = async () => {
+    const updateWholeLocationUserPath = async () => {
       const { sovereignVenue, checkedVenueIds } = await fetchSovereignVenue(
         venueId
       );
@@ -148,7 +148,7 @@ export const VenuePage: React.FC = () => {
       updateLocationData({ userId, newLocationPath: locationPath });
     };
 
-    getWholePath();
+    updateWholeLocationUserPath();
   }, [userId, venueName, venueId]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
