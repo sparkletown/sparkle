@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { DEFAULT_SHOW_CHAT } from "settings";
 
-import { Settings } from "types/Firestore";
+import { Settings } from "types/settings";
 
 import { settingsSelector } from "utils/selectors";
 
