@@ -4,13 +4,21 @@ $border-radius: 22px;
 $spacing: 20px;
 
 .ExternalRoom {
-  height: 100%;
+  min-height: 100%;
+  padding-bottom: $spacing--xxl;
   display: flex;
   background-position: center;
   background-size: cover;
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
+  &__link {
+    max-width: 50rem;
+
+    text-align: center;
+    overflow-wrap: break-word;
+  }
 
   &__message {
     display: flex;
@@ -74,12 +82,14 @@ $spacing: 20px;
     background: $dark;
     border-radius: $border-radius;
 
-    max-height: 10vh;
+    max-height: 25vh;
+    max-width: 50rem;
     overflow-y: auto;
 
     font-size: $font-size--md;
     font-weight: $font-weight--400;
     color: opaque-white(0.6);
+    overflow-wrap: break-word;
   }
 
   &__userlist {

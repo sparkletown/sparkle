@@ -67,7 +67,12 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
         <>
           <div className="ExternalRoom__message">
             <div>This page should automatically open</div>
-            <a rel="noreferrer" href={redirectUrl} target="_blank">
+            <a
+              rel="noreferrer"
+              href={redirectUrl}
+              target="_blank"
+              className="ExternalRoom__link"
+            >
               {redirectUrl}
             </a>
 
