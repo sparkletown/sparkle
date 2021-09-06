@@ -1,13 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { DEFAULT_SHOW_CHAT } from "settings";
 
 import { Settings } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
 
-import { isTruthy } from "utils/types";
-
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
 export const settingsSelector: SparkleSelector<Settings | undefined> = (
@@ -25,24 +23,14 @@ export const useSettings: () => UseSetingsReturnType = () => {
   ]);
 
   const settings = useSelector(settingsSelector);
-  const [isLoaded, setIsLoaded] = useState<boolean | undefined>(undefined);
-
-  useEffect(() => {
-    if (isLoaded === undefined) {
-      setIsLoaded(false);
-    } else {
-      setIsLoaded(true);
-    }
-    // disabling because we should be dependent only on settings here
-  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return useMemo(
     () => ({
-      isLoaded: isTruthy(isLoaded),
+      isLoaded: isLoaded(settings),
       settings: {
         showChat: settings?.showChat ?? DEFAULT_SHOW_CHAT,
       },
     }),
-    [settings, isLoaded]
+    [settings]
   );
 };
