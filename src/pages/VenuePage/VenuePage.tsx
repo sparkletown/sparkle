@@ -22,8 +22,7 @@ import { isDefined, isTruthy } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 import {
   clearLocationData,
-  setLocationData,
-  updateCurrentLocationData,
+  updateLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
@@ -127,9 +126,9 @@ export const VenuePage: React.FC = () => {
   useInterval(() => {
     if (!userId || !userLastSeenIn) return;
 
-    updateCurrentLocationData({
+    updateLocationData({
       userId,
-      profileLocationData: userLastSeenIn,
+      newLocationPath: userLastSeenIn,
     });
   }, LOC_UPDATE_FREQ_MS);
 
@@ -146,7 +145,7 @@ export const VenuePage: React.FC = () => {
 
       const locationPath = wrapIntoSlashes(allVenues.join("/"));
 
-      setLocationData({ userId, locationPath });
+      updateLocationData({ userId, newLocationPath: locationPath });
     };
 
     getWholePath();
