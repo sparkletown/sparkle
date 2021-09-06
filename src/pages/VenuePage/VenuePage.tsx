@@ -212,8 +212,8 @@ export const VenuePage: React.FC = () => {
   const { enteredVenueIds } = profile;
 
   const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
-
   const hasEntered = enteredVenueIds?.includes(venueId);
+
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
