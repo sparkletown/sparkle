@@ -43,7 +43,8 @@ export class GameConfig {
   public static VENUE_DEFAULT_SIZE = Math.floor(
     ((GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * (4 * Math.sqrt(2))) / 4) * 1.2
   );
-  public static ACTIVE_VENUE_MIN_PEOPLE_FOR_ANIMATED_HALO = 25;
+
+  public static ARTCAR_ANGULAR_VELOCITY = 0.05;
 
   public minSpeed = 0;
   public maxSpeed = 8;
@@ -92,7 +93,7 @@ export class GameConfig {
   }
 
   public get venuesMainCircleOuterRadius(): number {
-    return this.worldWidth * 0.16;
+    return this.worldWidth * 0.17;
   }
 
   public get borderRadius(): number {
