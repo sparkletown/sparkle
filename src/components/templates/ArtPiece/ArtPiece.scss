@@ -122,6 +122,10 @@ $chat-wrapper-height: 260px;
           display: block;
           margin: 0 auto;
         }
+
+        .participant--video-disabled {
+          border-radius: $border-radius--xl;
+        }
       }
     }
   }
