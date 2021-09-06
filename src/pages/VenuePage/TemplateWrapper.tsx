@@ -39,7 +39,7 @@ export interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
-  const { areLoaded: settingsAreLoaded, settings } = useSettings();
+  const { isLoaded: settingsAreLoaded, settings } = useSettings();
 
   const shouldShowChat =
     settingsAreLoaded &&

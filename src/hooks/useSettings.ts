@@ -15,7 +15,7 @@ export const settingsSelector: SparkleSelector<Settings | undefined> = (
 ) => state.firestore.data.settings;
 
 export interface UseSetingsReturnType {
-  areLoaded: boolean;
+  isLoaded: boolean;
   settings: Required<Settings>;
 }
 
@@ -25,24 +25,24 @@ export const useSettings: () => UseSetingsReturnType = () => {
   ]);
 
   const settings = useSelector(settingsSelector);
-  const [areLoaded, setAreLoaded] = useState<boolean | undefined>(undefined);
+  const [isLoaded, setIsLoaded] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
-    if (areLoaded === undefined) {
-      setAreLoaded(false);
+    if (isLoaded === undefined) {
+      setIsLoaded(false);
     } else {
-      setAreLoaded(true);
+      setIsLoaded(true);
     }
     // disabling because we should be dependent only on settings here
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return useMemo(
     () => ({
-      areLoaded: isTruthy(areLoaded),
+      isLoaded: isTruthy(isLoaded),
       settings: {
         showChat: settings?.showChat ?? DEFAULT_SHOW_CHAT,
       },
     }),
-    [settings, areLoaded]
+    [settings, isLoaded]
   );
 };
