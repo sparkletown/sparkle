@@ -27,7 +27,6 @@ interface RoomProps {
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
-  hasChairs?: boolean;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
 }
@@ -42,7 +41,6 @@ const Room: React.FC<RoomProps> = ({
   setUserList,
   setParticipantCount,
   setSeatedAtTable,
-  hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
 }) => {

@@ -7,6 +7,7 @@ import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
+import { JukeboxMessage } from "types/jukebox";
 import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SparkleSelector } from "types/SparkleSelector";
@@ -88,6 +89,10 @@ export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsR
 export const venueChatMessagesSelector: SparkleSelector<
   WithId<VenueChatMessage>[] | undefined
 > = (state) => state.firestore.ordered.venueChatMessages;
+
+export const jukeboxMessagesSelector: SparkleSelector<
+  WithId<JukeboxMessage>[] | undefined
+> = (state) => state.firestore.ordered.venueJukeboxMessages;
 
 export const privateChatMessagesSelector: SparkleSelector<
   WithId<PrivateChatMessage>[] | undefined
