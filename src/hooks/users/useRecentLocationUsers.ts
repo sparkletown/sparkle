@@ -38,10 +38,8 @@ export const useRecentLocationUsers = ({
       worldUserLocationsById[user.id];
 
     return (
-      userLocation.lastVenueIdSeenIn &&
       venueId &&
-      userLocation.lastVenueIdSeenIn.includes &&
-      userLocation.lastVenueIdSeenIn.includes(wrapIntoSlashes(venueId))
+      userLocation?.lastVenueIdSeenIn?.includes(wrapIntoSlashes(venueId))
     );
   });
 

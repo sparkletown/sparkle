@@ -1,6 +1,7 @@
 import { Experience, User, UserLocation } from "types/User";
 
 import { WithId } from "./id";
+import { wrapIntoSlashes } from "./string";
 
 export const getUserExperience = (venueName?: string) => (
   user?: User
@@ -13,23 +14,18 @@ export const getUserExperience = (venueName?: string) => (
 export const getUserLocationData = ({
   worldUserLocationsById,
   user,
-  roomName,
-  venueName,
-  location,
+  portalVenueId,
 }: {
   worldUserLocationsById: Record<string, WithId<UserLocation>>;
   user: WithId<User>;
-  roomName: string;
-  venueName: string;
-  location: string;
+  portalVenueId: string;
 }) => {
   const userLocation: WithId<UserLocation> | undefined =
     worldUserLocationsById[user.id];
 
-  const isLocationMatch =
-    userLocation.lastVenueIdSeenIn === venueName ||
-    userLocation.lastVenueIdSeenIn === roomName ||
-    userLocation.lastVenueIdSeenIn === location;
+  const isLocationMatch = userLocation?.lastVenueIdSeenIn?.includes(
+    wrapIntoSlashes(portalVenueId)
+  );
 
   return {
     isLocationMatch,
