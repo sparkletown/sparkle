@@ -713,6 +713,15 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderJukeboxToggle = () => {
+    return (
+      <div className="toggle-room DetailsForm--hidden">
+        <h4 className="italic input-header">Enable Jukebox</h4>
+        <Toggler name="enableJukebox" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -880,6 +889,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderShowRangersToggle()}
 
         {renderRadioToggle()}
+
+        {renderJukeboxToggle()}
 
         <UserStatusManager
           className="DetailsForm--hidden"
