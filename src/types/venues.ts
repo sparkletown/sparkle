@@ -245,6 +245,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {

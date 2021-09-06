@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
 import { DEFAULT_SHOW_SCHEDULE } from "settings";
@@ -145,6 +145,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomSubtitle = room.subtitle || portalVenueSubtitle;
   const roomDescription = room.about || portalVenueDescription;
 
+  // @debt maybe refactor this, but autoFocus property working very bad.
+  const enterButtonref = useRef<HTMLButtonElement>(null);
+  useEffect(() => enterButtonref.current?.focus());
+
   return (
     <>
       <h2>{roomTitle}</h2>
@@ -160,6 +164,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
           {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
           <button
+            ref={enterButtonref}
+            autoFocus
             className="btn btn-primary room-modal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
