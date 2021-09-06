@@ -5,7 +5,7 @@ import Video, {
   VideoTrackPublication,
 } from "twilio-video";
 
-import { DEFAULT_CAMERA_ENABLED } from "../../../settings";
+import { DEFAULT_CAMERA_ENABLED } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
