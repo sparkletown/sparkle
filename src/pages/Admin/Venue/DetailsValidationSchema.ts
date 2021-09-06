@@ -147,7 +147,7 @@ export const validationSchema = Yup.object()
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
-    enableJukebox: Yup.bool().notRequired(),
+    enableJukebox: Yup.bool().notRequired().default(true),
     showShoutouts: Yup.bool().notRequired(),
     showNametags: Yup.mixed()
       .oneOf(Object.values(UsernameVisibility))
