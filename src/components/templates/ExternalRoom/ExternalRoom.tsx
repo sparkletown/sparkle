@@ -11,7 +11,7 @@ import {
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { openUrl } from "utils/url";
+import { getExtraLinkProps, openUrl } from "utils/url";
 
 import { useRecentVenueUsers } from "hooks/users";
 
@@ -67,7 +67,11 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
         <>
           <div className="ExternalRoom__message">
             <div>This page should automatically open</div>
-            <a rel="noreferrer" href={redirectUrl} target="_blank">
+            <a
+              href={redirectUrl}
+              className="ExternalRoom__link"
+              {...getExtraLinkProps(true)}
+            >
               {redirectUrl}
             </a>
 
