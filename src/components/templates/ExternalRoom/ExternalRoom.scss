@@ -2,6 +2,7 @@
 
 $border-radius: 22px;
 $spacing: 20px;
+$text-width: 50rem;
 
 .ExternalRoom {
   min-height: 100%;
@@ -14,7 +15,7 @@ $spacing: 20px;
   flex-direction: column;
 
   &__link {
-    max-width: 50rem;
+    max-width: $text-width;
 
     text-align: center;
     overflow-wrap: break-word;
@@ -35,7 +36,6 @@ $spacing: 20px;
     display: flex;
     flex-direction: column;
     max-height: 80vh;
-    max-width: 80%;
     border-radius: $border-radius;
     background: $dark;
   }
@@ -83,7 +83,7 @@ $spacing: 20px;
     border-radius: $border-radius;
 
     max-height: 25vh;
-    max-width: 50rem;
+    max-width: $text-width;
     overflow-y: auto;
 
     font-size: $font-size--md;
