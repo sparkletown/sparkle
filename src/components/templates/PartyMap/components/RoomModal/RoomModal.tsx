@@ -165,19 +165,24 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           <button
             ref={enterButtonref}
             autoFocus
-            className="btn btn-primary room-modal__btn-enter"
+            className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
             onClick={enterRoomWithSound}
           >
-            Join Room
+            Enter
           </button>
         </div>
       </div>
 
       {room.about && (
         <div className="RoomModal__description">
-          <RenderMarkdown text={roomDescription} />
+          <RenderMarkdown
+            text={roomDescription}
+            components={{
+              p: "span",
+            }}
+          />
         </div>
       )}
 
