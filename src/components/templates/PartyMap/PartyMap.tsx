@@ -1,88 +1,102 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
-import { useParams } from "react-router-dom";
+import React, { useCallback, useMemo, useState } from "react";
 
-import { RootState } from "index";
-import { createUrlSafeName } from "api/admin";
+import { COVERT_ROOM_TYPES } from "settings";
 
-import { PartyMapRoomData } from "types/PartyMapRoomData";
-import { PartyMapVenue } from "types/PartyMapVenue";
+import { Room } from "types/rooms";
+import { PartyMapVenue } from "types/venues";
 
-import { useCampPartygoers } from "hooks/useCampPartygoers";
-import { useSelector } from "hooks/useSelector";
+import {
+  eventsByStartUtcSecondsSorter,
+  isEventLiveOrFuture,
+} from "utils/event";
+
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentVenueUsers } from "hooks/users";
+import { useUser } from "hooks/useUser";
+
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import { Map, RoomModal } from "./components";
 
 import "./PartyMap.scss";
-import AnnouncementMessage from "components/molecules/AnnouncementMessage/AnnouncementMessage";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
-const partyMapVenueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
+export interface PartyMapProps {
+  venue: PartyMapVenue;
+}
 
-export const PartyMap: React.FC = () => {
-  const [isRoomModalOpen, setIsRoomModalOpen] = useState(false);
-  const [selectedRoom, setSelectedRoom] = useState<
-    PartyMapRoomData | undefined
-  >();
+export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
+  const { user, profile } = useUser();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
-  const venue = useSelector(partyMapVenueSelector);
-  const usersInCamp = useCampPartygoers(venue.name);
+  const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 
-  const attendances = useMemo(
+  const selfAndChildVenueIds = useMemo(
     () =>
-      usersInCamp
-        ? usersInCamp.reduce<Record<string, number>>((acc, value) => {
-            Object.keys(value.lastSeenIn).forEach((key) => {
-              acc[key] = (acc[key] || 0) + 1;
-            });
-            return acc;
-          }, {})
-        : {},
-    [usersInCamp]
+      relatedVenues
+        .filter(
+          (relatedVenue) =>
+            relatedVenue.parentId === venue.id || relatedVenue.id === venue.id
+        )
+        .map((childVenue) => childVenue.id),
+    [relatedVenues, venue]
   );
 
-  const modalHidden = useCallback(() => {
-    setIsRoomModalOpen(false);
+  const { events: selfAndChildVenueEvents } = useVenueEvents({
+    venueIds: selfAndChildVenueIds,
+  });
+
+  const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
+
+  const hasSelectedRoom = !!selectedRoom;
+
+  const selectedRoomEvents = useMemo(() => {
+    if (!selfAndChildVenueEvents || !selectedRoom) return [];
+
+    return selfAndChildVenueEvents
+      .filter(
+        (event) =>
+          event.room === selectedRoom.title && isEventLiveOrFuture(event)
+      )
+      .sort(eventsByStartUtcSecondsSorter);
+  }, [selfAndChildVenueEvents, selectedRoom]);
+
+  const selectRoom = useCallback((room: Room) => {
+    if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
+
+    setSelectedRoom(room);
   }, []);
 
-  const { roomTitle } = useParams();
+  const unselectRoom = useCallback(() => {
+    setSelectedRoom(undefined);
+  }, []);
 
-  useEffect(() => {
-    if (roomTitle) {
-      const partyRoom = venue?.rooms?.find(
-        (room) => createUrlSafeName(room.title) === createUrlSafeName(roomTitle)
-      );
-      if (partyRoom) {
-        setSelectedRoom(partyRoom);
-        setIsRoomModalOpen(true);
-      }
-    }
-  }, [roomTitle, setIsRoomModalOpen, setSelectedRoom, venue]);
+  if (!user || !profile) return <>Loading..</>;
 
   return (
-    <>
-      <div className="party-venue-container">
-        <Map
-          venue={venue}
-          attendances={attendances}
-          selectedRoom={selectedRoom}
-          setSelectedRoom={setSelectedRoom}
-          setIsRoomModalOpen={setIsRoomModalOpen}
-        />
-        <RoomModal
-          show={isRoomModalOpen}
-          room={selectedRoom}
-          onHide={modalHidden}
-        />
-        <AnnouncementMessage message={venue.bannerMessage} />
-        {venue?.showRangers && (
-          <div className="sparkle-fairies">
-            <SparkleFairiesPopUp />
-          </div>
-        )}
-      </div>
-    </>
+    <div className="party-venue-container">
+      <Map
+        user={user}
+        profileData={profile.data}
+        venue={venue}
+        partygoers={recentVenueUsers}
+        selectRoom={selectRoom}
+        unselectRoom={unselectRoom}
+      />
+
+      <RoomModal
+        room={selectedRoom}
+        venue={venue}
+        venueEvents={selectedRoomEvents}
+        show={hasSelectedRoom}
+        onHide={unselectRoom}
+      />
+
+      {venue.config?.showRangers && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp />
+        </div>
+      )}
+    </div>
   );
 };
-
-export default PartyMap;

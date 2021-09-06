@@ -1,18 +1,23 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback, useEffect, useState } from "react";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./AnnouncementMessage.scss";
-import { getLinkFromText } from "utils/getLinkFromText";
 
 type AnnouncementMessageProps = {
   message?: string;
 };
 
-const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
+export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   message = "",
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
+  const { isExpanded } = useChatSidebarControls();
 
   const hideAnnouncement = useCallback(() => {
     setVisibility(false);
@@ -24,18 +29,31 @@ const AnnouncementMessage: FC<AnnouncementMessageProps> = ({
     }
   }, [message]);
 
+  if (!isVisible || !message) return null;
+
   return (
-    <>
-      {isVisible && message && (
-        <div className={"announcement-container"}>
-          {getLinkFromText(message)}
-          <span className="close-button" onClick={hideAnnouncement}>
-            <FontAwesomeIcon icon={faTimesCircle} />
-          </span>
-        </div>
-      )}
-    </>
+    <div
+      aria-labelledby="announcement-container-message"
+      role="dialog"
+      className={classNames("announcement-container", {
+        centered: !isExpanded,
+      })}
+    >
+      <div className="announcement-message" id="announcement-container-message">
+        <RenderMarkdown text={message} />
+      </div>
+      <button
+        aria-label="Close announcement message"
+        className="close-button"
+        onClick={hideAnnouncement}
+      >
+        <FontAwesomeIcon icon={faTimesCircle} />
+      </button>
+    </div>
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default AnnouncementMessage;

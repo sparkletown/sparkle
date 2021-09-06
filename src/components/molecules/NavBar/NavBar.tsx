@@ -1,51 +1,49 @@
-import React, { useState, useMemo, useRef, useCallback } from "react";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
-import { useHistory } from "react-router-dom";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-
+import { useHistory } from "react-router-dom";
+import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
-
 import firebase from "firebase/app";
+import { isEmpty } from "lodash";
 
-import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
-import { isChatValid } from "validation";
+
+import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { VenueTemplate } from "types/VenueTemplate";
 
-import {
-  currentVenueSelectorData,
-  parentVenueSelector,
-  privateChatsSelector,
-  radioStationsSelector,
-} from "utils/selectors";
-import { hasElements } from "utils/types";
-import { venueInsideUrl } from "utils/url";
+import { radioStationsSelector } from "utils/selectors";
+import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
-import ChatsList from "components/molecules/ChatsList";
-import NavSearchBar from "components/molecules/NavSearchBar";
+import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
+import { BackButton } from "components/atoms/BackButton";
+import { UserAvatar } from "components/atoms/UserAvatar";
+
+import * as S from "./Navbar.styles";
 import { NavBarLogin } from "./NavBarLogin";
 
 import "./NavBar.scss";
-import * as S from "./Navbar.styles";
 import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
@@ -59,22 +57,6 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   </Popover>
 );
 
-const ChatPopover = (
-  <Popover id="popover-basic">
-    <Popover.Content>
-      <ChatsList />
-    </Popover.Content>
-  </Popover>
-);
-
-const ProfilePopover = (
-  <Popover id="profile-popover">
-    <Popover.Content>
-      <ProfilePopoverContent />
-    </Popover.Content>
-  </Popover>
-);
-
 const GiftPopover = (
   <Popover id="gift-popover">
     <Popover.Content>
@@ -83,58 +65,82 @@ const GiftPopover = (
   </Popover>
 );
 
-interface NavBarPropsType {
-  redirectionUrl?: string;
+const navBarScheduleClassName = "NavBar__schedule-dropdown";
+
+export interface NavBarPropsType {
+  hasBackButton?: boolean;
+  withSchedule?: boolean;
 }
 
-const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
-  const { user, profile } = useUser();
+export const NavBar: React.FC<NavBarPropsType> = ({
+  hasBackButton = true,
+  withSchedule = true,
+}) => {
+  const { user, userWithId } = useUser();
   const venueId = useVenueId();
-  const venue = useSelector(currentVenueSelectorData);
-  const privateChats = useSelector(privateChatsSelector);
+
   const radioStations = useSelector(radioStationsSelector);
-  const parentVenue = useSelector(parentVenueSelector);
 
-  const venueParentId = venue?.parentId;
-  const venueParentQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "venues",
-      doc: venueParentId,
-      storeAs: "parentVenue",
-    }),
-    [venueParentId]
-  );
-  useFirestoreConnect(venueParentId ? venueParentQuery : undefined);
-
-  const numberOfUnreadMessages = useMemo(() => {
-    if (!user || !privateChats) return 0;
-
-    return privateChats
-      .filter(isChatValid)
-      .filter((chat) => chat.to === user.uid && !chat.isRead).length;
-  }, [privateChats, user]);
+  const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
+    push: openUrlUsingRouter,
   } = useHistory();
+
+  const isSovereignVenue = venueId === sovereignVenueId;
+
+  const hasSovereignVenue = sovereignVenueId !== undefined;
+
+  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
+
+  const {
+    hasSelectedProfile,
+    openUserProfileModal,
+    updateUserProfileData,
+    selectedUserProfile,
+  } = useProfileModalControls();
+
+  const isSameUser = useIsCurrentUser(selectedUserProfile);
+
+  useEffect(() => {
+    if (hasSelectedProfile && isSameUser) updateUserProfileData(userWithId);
+  }, [hasSelectedProfile, isSameUser, updateUserProfileData, userWithId]);
+
+  const handleAvatarClick = useCallback(() => {
+    openUserProfileModal(userWithId);
+  }, [openUserProfileModal, userWithId]);
+
+  const shouldShowSchedule =
+    withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
-    venue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ?? []; //@debt typing does this exist?
+    currentVenue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ??
+    []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
-  const hasRadioStations = radioStations && radioStations.length;
+  const hasRadioStations = useCallback(
+    (arr: string[] | undefined): arr is string[] => !isEmpty(arr),
+    []
+  );
+
   const isSoundCloud =
-    !!hasRadioStations && RegExp("soundcloud").test(radioStations![0]);
+    hasRadioStations(radioStations) &&
+    RegExp("soundcloud").test(radioStations[0]);
 
   const sound = useMemo(
     () =>
-      radioStations && hasElements(radioStations) && !isSoundCloud
+      radioStations && hasRadioStations(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
-    [isSoundCloud, radioStations]
+    [hasRadioStations, isSoundCloud, radioStations]
   );
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
@@ -160,21 +166,27 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
-  const hideEventSchedule = useCallback(() => {
+  const hideEventSchedule = useCallback((e) => {
+    if (
+      e.target.closest(`.${navBarScheduleClassName}`) ||
+      e.target.closest(`.modal`)
+    )
+      return;
+
     setEventScheduleVisible(false);
   }, []);
 
-  const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
-    window.location.href = venueInsideUrl(parentVenueId);
-  }, [parentVenueId]);
+    if (!parentVenueId) return;
+
+    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
-    const venueLink =
-      redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
+    if (!sovereignVenueId) return;
 
-    window.location.href = venueLink;
-  }, [redirectionUrl, venueId]);
+    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [sovereignVenueId, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -185,19 +197,16 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
     []
   );
 
-  if (!venueId || !venue) return null;
-
-  const isVenueUsingPartyMap = venue.template === VenueTemplate.partymap;
+  if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? venue.name;
+  const navbarTitle = parentVenue?.name ?? currentVenue.name;
 
-  const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
+  const radioStation = hasRadioStations(radioStations) && radioStations[0];
 
-  const radioStation = !!hasRadioStations && radioStations![0];
-
-  const showNormalRadio = (venue?.showRadio && !isSoundCloud) ?? false;
-  const showSoundCloudRadio = (venue?.showRadio && isSoundCloud) ?? false;
+  const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
+  const showSoundCloudRadio =
+    (currentVenue?.showRadio && isSoundCloud) ?? false;
 
   return (
     <>
@@ -214,22 +223,36 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
               >
                 <div />
               </div>
-              <div
-                className={`nav-party-logo ${
-                  isEventScheduleVisible && "clicked"
-                }`}
-                onClick={toggleEventSchedule}
-              >
-                {navbarTitle} Schedule
-              </div>
-              <VenuePartygoers />
+              {shouldShowHomeButton && (
+                <FontAwesomeIcon
+                  icon={faHome}
+                  className="NavBar__home-icon"
+                  onClick={navigateToHomepage}
+                />
+              )}
+
+              {shouldShowSchedule ? (
+                <button
+                  aria-label="Schedule"
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
+                  onClick={toggleEventSchedule}
+                >
+                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                </button>
+              ) : (
+                <div>{navbarTitle}</div>
+              )}
+
+              <VenuePartygoers venueId={venueId} />
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar />
+                <NavSearchBar venueId={venueId} />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -244,7 +267,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {IS_BURN && venue?.showGiftATicket && (
+                {IS_BURN && currentVenue?.showGiftATicket && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
@@ -257,23 +280,6 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                   </OverlayTrigger>
                 )}
 
-                {!isVenueUsingPartyMap && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={ChatPopover}
-                    rootClose={true}
-                  >
-                    <span className="private-chat-icon">
-                      {numberOfUnreadMessages > 0 && (
-                        <div className="notification-card">
-                          {numberOfUnreadMessages}
-                        </div>
-                      )}
-                      <div className="navbar-link-message" />
-                    </span>
-                  </OverlayTrigger>
-                )}
                 {showNormalRadio && (
                   <OverlayTrigger
                     trigger="click"
@@ -285,7 +291,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                             {...{
                               volume,
                               setVolume,
-                              title: venue?.radioTitle,
+                              title: currentVenue?.radioTitle,
                             }}
                             onEnableHandler={handleRadioEnable}
                             isRadioPlaying={isRadioPlaying}
@@ -296,7 +302,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -306,7 +312,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
                 {showSoundCloudRadio && (
                   <S.RadioTrigger>
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -324,48 +330,42 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={ProfilePopover}
-                  rootClose={true}
+                <div
+                  className="navbar-links-user-avatar"
+                  onClick={handleAvatarClick}
                 >
-                  <div className="navbar-link-profile">
-                    <img
-                      src={profileImage}
-                      className="profile-icon"
-                      alt="avatar"
-                      width="40"
-                      height="40"
-                    />
-                  </div>
-                </OverlayTrigger>
+                  <UserAvatar user={userWithId} showStatus size="medium" />
+                </div>
               </div>
             )}
           </div>
         </div>
       </header>
 
-      <SchedulePageModal isVisible={isEventScheduleVisible} />
-
-      <div
-        className={`schedule-dropdown-backdrop ${
-          isEventScheduleVisible ? "show" : ""
-        }`}
-        onClick={hideEventSchedule}
-      />
-
-      {venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn">
-          <div className="back-icon" />
-          <span onClick={backToParentVenue} className="back-link">
-            Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-          </span>
+      {shouldShowSchedule && (
+        <div
+          aria-hidden={isEventScheduleVisible ? "false" : "true"}
+          className={`schedule-dropdown-backdrop ${
+            isEventScheduleVisible ? "show" : ""
+          }`}
+          onClick={hideEventSchedule}
+        >
+          <div className={navBarScheduleClassName}>
+            <NavBarSchedule
+              isVisible={isEventScheduleVisible}
+              venueId={venueId}
+            />
+          </div>
         </div>
+      )}
+
+      {/* @debt Remove back button from Navbar */}
+      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
       )}
     </>
   );
 };
-
-export default NavBar;

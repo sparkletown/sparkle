@@ -1,0 +1,47 @@
+@import "scss/constants";
+
+$map-default-size: 50px;
+
+.BackgroundSelect {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: $spacing--xl 0;
+  position: relative;
+  background-size: cover;
+  background-color: $dark;
+  background-position: center;
+  text-align: center;
+
+  &__maps-header {
+    font-size: $font-size--md;
+    font-weight: normal;
+    color: opaque-white(0.5);
+    margin: $spacing--xxl auto $spacing--md auto;
+  }
+
+  &__map-grid {
+    width: 100%;
+    display: grid;
+    grid-gap: $spacing--md;
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  &__map {
+    width: 100%;
+    padding-bottom: $map-default-size;
+    border-radius: $border-radius--lg;
+    background: $black;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    border: solid $border-radius--xxs;
+    margin-bottom: $spacing--sm;
+
+    &:hover {
+      border: $border-radius--xxs solid $white;
+      padding-bottom: $map-default-size - $border-radius--xxs;
+    }
+  }
+}

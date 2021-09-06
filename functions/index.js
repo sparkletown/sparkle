@@ -1,12 +1,11 @@
 const firebase = require("firebase");
 const admin = require("firebase-admin");
+const { passwordsMatch } = require("./auth");
 
 require("firebase/firestore");
 const functions = require("firebase-functions");
 
 const functionsConfig = functions.config();
-
-console.log("functions.config()", JSON.stringify(functionsConfig, null, 2));
 
 if (!functionsConfig) throw new Error("failed: functionsConfig missing");
 if (!functionsConfig.project)
@@ -30,23 +29,20 @@ admin.initializeApp({
   }),
 });
 
-const video = require("./video");
-const payment = require("./payment");
-const venue = require("./venue");
+const access = require("./access");
+const auth = require("./auth");
 const stats = require("./stats");
+const venue = require("./venue");
+const video = require("./video");
 
-// Case-insensitive first character for iDevices
-function lowercaseFirstChar(password) {
-  return password.charAt(0).toLowerCase() + password.substring(1);
-}
+exports.access = access;
+exports.auth = auth;
+exports.stats = stats;
+exports.venue = venue;
+exports.video = video;
 
-function passwordsMatch(submittedPassword, actualPassword) {
-  return (
-    submittedPassword === actualPassword ||
-    lowercaseFirstChar(submittedPassword) === lowercaseFirstChar(actualPassword)
-  );
-}
-
+// @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
+//   It doesn't look like anything calls it in the codebase currently?
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
     .firestore()
@@ -68,8 +64,3 @@ exports.checkPassword = functions.https.onCall(async (data) => {
       );
     });
 });
-
-exports.video = video;
-exports.payment = payment;
-exports.venue = venue;
-exports.stats = stats;

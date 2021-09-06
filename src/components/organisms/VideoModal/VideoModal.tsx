@@ -1,15 +1,19 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import "./VideoModal.scss";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import { IFRAME_ALLOW } from "settings";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
+import "./VideoModal.scss";
 
 interface PropsType {
   show: boolean;
   onHide: () => void;
   url: string;
-  caption: string;
+  caption?: string;
   autoplay?: boolean;
+  backdrop?: string | boolean;
 }
 
 const VideoModal: React.FunctionComponent<PropsType> = ({
@@ -18,6 +22,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
   url,
   caption,
   autoplay = false,
+  backdrop = "static",
 }) => {
   const closeVideoModal = () => {
     onHide();
@@ -29,7 +34,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
       onHide={closeVideoModal}
       centered={true}
       size={"xl"}
-      backdrop="static"
+      backdrop={backdrop}
     >
       <Modal.Header closeButton>
         {caption && <Modal.Title>{caption}</Modal.Title>}

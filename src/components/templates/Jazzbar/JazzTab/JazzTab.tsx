@@ -1,39 +1,43 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import React, { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
 
-import { IFRAME_ALLOW, LOC_UPDATE_FREQ_MS } from "settings";
-import { UserInfo } from "firebase/app";
+// NOTE: This functionality will probably be returned in the nearest future.
+// import { useForm } from "react-hook-form";
+import {
+  DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_SHOW_REACTIONS,
+  DEFAULT_USER_LIST_LIMIT,
+  IFRAME_ALLOW,
+} from "settings";
+
+import { updateIframeUrl } from "api/venue";
 
 import { User } from "types/User";
-import { Venue } from "types/Venue";
+import { JazzbarVenue } from "types/venues";
 
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { WithId } from "utils/id";
+import { openUrl, venueInsideUrl } from "utils/url";
 
-import {
-  EmojiReactionType,
-  Reactions,
-  TextReactionType,
-} from "utils/reactions";
+import { useExperiences } from "hooks/useExperiences";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentVenueUsers } from "hooks/users";
+import { useShowHide } from "hooks/useShowHide";
 
-import ChatDrawer from "components/organisms/ChatDrawer";
-import Room from "components/organisms/Room";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
-import TableComponent from "components/molecules/TableComponent";
+import { Jukebox } from "components/molecules/Jukebox/Jukebox";
+import { ReactionsBar } from "components/molecules/ReactionsBar";
+// NOTE: This functionality will probably be returned in the nearest future.
+// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
+import { TablesUserList } from "components/molecules/TablesUserList";
+import { UserList } from "components/molecules/UserList";
 
-import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useInterval } from "hooks/useInterval";
-import { useVenueId } from "hooks/useVenueId";
+import { BackButton } from "components/atoms/BackButton";
 
-import { addReaction } from "store/actions/Reactions";
+import Room from "../components/JazzBarRoom";
+import JazzBarTableComponent from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -41,254 +45,225 @@ import "./JazzTab.scss";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
-  venue?: Venue;
+  venue: WithId<JazzbarVenue>;
 }
 
-interface ChatOutDataType {
-  messageToTheBand: string;
-}
-
-type ReactionType =
-  | { reaction: EmojiReactionType }
-  | { reaction: TextReactionType; text: string };
-
-const createReaction = (reaction: ReactionType, user: UserInfo) => {
-  return {
-    created_at: Date.now(),
-    created_by: user.uid,
-    ...reaction,
-  };
-};
+// @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+// NOTE: This functionality will probably be returned in the nearest future.
+// interface ChatOutDataType {
+//   messageToTheBand: string;
+// }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  useFirestoreConnect(
-    venue?.name
-      ? {
-          collection: "experiences",
-          doc: venue.name,
-          storeAs: "experiences",
-        }
-      : undefined
-  );
-
-  const { user } = useUser();
-
-  const firestoreVenue = useSelector(currentVenueSelectorData);
-
-  const venueToUse = venue ? venue : firestoreVenue;
-
-  const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
-
-  // TODO: this will break memo on venueUsers (below) every 5min, does that matter?
-  const [nowMs, setNowMs] = useState(Date.now());
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
-
-  // TODO: we've memoed this now, but also maybe we can use the useCampPartygoers hook that does this sort of thing already (+rename it)?
-  const venueToUseName = venueToUse?.name;
-  const users = useSelector(partygoersSelector);
-  const venueUsers = useMemo(() => {
-    if (!users) return [];
-
-    return users.filter(
-      (user) =>
-        !!user.lastSeenIn &&
-        user.lastSeenIn[venueToUseName ?? ""] >
-          (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-    );
-  }, [nowMs, users, venueToUseName]);
-
-  const [seatedAtTable, setSeatedAtTable] = useState("");
-  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-
-  const dispatch = useDispatch();
-  const venueId = useVenueId();
-
-  const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
-    dispatch(
-      addReaction({
-        venueId,
-        reaction: createReaction({ reaction }, user),
-      })
-    );
-    setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
-  };
-
-  const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const {
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
+  } = useShowHide();
+  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+  const parentVenueId = parentVenue?.id;
+  const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
 
   useEffect(() => {
-    if (isMessageToTheBandSent) {
-      setTimeout(() => {
-        setIsMessageToTheBandSent(false);
-      }, 2000);
+    if (iframeUrl !== venue.iframeUrl) {
+      updateIframeUrl(iframeUrl, venue.id);
     }
-  }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
+  }, [iframeUrl, venue.iframeUrl, venue.id]);
 
-  const {
-    register: registerBandMessage,
-    handleSubmit: handleBandMessageSubmit,
-    reset,
-  } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
+  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    openUrl(venueInsideUrl(parentVenueId));
+  }, [parentVenueId]);
+
+  useExperiences(venue.name);
+
+  const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
+
+  const [seatedAtTable, setSeatedAtTable] = useState("");
+  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+
+  const isUserAudioMuted = !isUserAudioOn;
+
+  // NOTE: This functionality will probably be returned in the nearest future.
+
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+  // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
+
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+  // useEffect(() => {
+  //   if (isMessageToTheBandSent) {
+  //     setTimeout(() => {
+  //       setIsMessageToTheBandSent(false);
+  //     }, 2000);
+  //   }
+  // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
+
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+  // const {
+  //   register: registerBandMessage,
+  //   handleSubmit: handleBandMessageSubmit,
+  //   reset,
+  // } = useForm<ChatOutDataType>({
+  //   mode: "onSubmit",
+  // });
+
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+  // const onBandMessageSubmit = async (data: ChatOutDataType) => {
+  //   setIsMessageToTheBandSent(true);
+  //   user &&
+  //     dispatch(
+  //       addReaction({
+  //         venueId,
+  //         reaction: createReaction(
+  //           { reaction: TextReactionType, text: data.messageToTheBand },
+  //           user
+  //         ),
+  //       })
+  //     );
+  //   reset();
+  // };
+
+  const shouldShowReactions =
+    (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+  const firstTableReference = jazzbarTables[0].reference;
+
+  const shouldShowJukebox =
+    (!!seatedAtTable &&
+      venue.enableJukebox &&
+      seatedAtTable === firstTableReference) ??
+    DEFAULT_ENABLE_JUKEBOX;
+  // @debt will be needed if shoutouts are restored
+  // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
+
+  const containerClasses = classNames("music-bar", {
+    "music-bar--tableview": seatedAtTable,
   });
 
-  const onBandMessageSubmit = async (data: ChatOutDataType) => {
-    setIsMessageToTheBandSent(true);
-    user &&
-      dispatch(
-        addReaction({
-          venueId,
-          reaction: createReaction(
-            { reaction: "messageToTheBand", text: data.messageToTheBand },
-            user
-          ),
-        })
-      );
-    reset();
-  };
+  const videoContainerClasses = classNames("video-container", {
+    "video-container--seated": seatedAtTable,
+  });
 
-  if (!venueToUse) return <>Loading...</>;
+  if (!venue) return <>Loading...</>;
 
   return (
-    <>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 3,
-          flexBasis: 0,
-          overflow: "hidden",
-        }}
-        className={`scrollable-area ${seatedAtTable && "at-table"}`}
-      >
-        {venueToUse.description?.text && (
-          <div className="row">
-            <div className="col">
-              <div className="description">{venueToUse.description?.text}</div>
+    <div className={containerClasses}>
+      {venue.description?.text && (
+        <div className="row">
+          <div className="col">
+            <div className="description">
+              <RenderMarkdown text={venue.description?.text} />
             </div>
           </div>
-        )}
-        <div className="container-in-row">
-          <div className="video-wrapper">
-            {seatedAtTable && (
-              <TableHeader
-                seatedAtTable={seatedAtTable}
-                setSeatedAtTable={setSeatedAtTable}
-                venueName={venueToUse.name}
-                tables={jazzbarTables}
-              />
-            )}
-            <div
-              className={`${
-                seatedAtTable ? "participants-container" : "jazz-video"
-              }`}
-            >
-              {!venueToUse.hideVideo && (
-                <div
-                  className={`${
-                    seatedAtTable
-                      ? "participant-container video-participant"
-                      : "full-height-video"
-                  }`}
-                >
-                  <div
-                    className="iframe-container"
-                    style={{
-                      height: seatedAtTable ? "calc(100% - 55px)" : "500px",
-                    }}
-                  >
-                    {venueToUse.iframeUrl && (
-                      <iframe
-                        key="main-event"
-                        title="main event"
-                        className="youtube-video"
-                        src={`${venueToUse.iframeUrl}?autoplay=1`}
-                        frameBorder="0"
-                        allow={IFRAME_ALLOW}
-                      />
-                    )}
-                    {!venueToUse.iframeUrl && (
-                      <div className="youtube-video">
-                        Embedded Video URL not yet set up
-                      </div>
-                    )}
+        </div>
+      )}
+
+      {!seatedAtTable && parentVenue && (
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
+      )}
+
+      {!seatedAtTable && (
+        <UserList
+          users={recentVenueUsers}
+          activity={venue.activity ?? "here"}
+          limit={DEFAULT_USER_LIST_LIMIT}
+          showMoreUsersToggler
+        />
+      )}
+
+      {seatedAtTable && (
+        <TableHeader
+          seatedAtTable={seatedAtTable}
+          setSeatedAtTable={setSeatedAtTable}
+          venueName={venue.name}
+          tables={jazzbarTables}
+        />
+      )}
+
+      <div className="music-bar-content">
+        <div className={videoContainerClasses}>
+          {!venue.hideVideo && (
+            <>
+              <div className="iframe-container">
+                {iframeUrl ? (
+                  <iframe
+                    key="main-event"
+                    title="main event"
+                    className="iframe-video"
+                    src={`${iframeUrl}?autoplay=1`}
+                    frameBorder="0"
+                    allow={IFRAME_ALLOW}
+                  />
+                ) : (
+                  <div className="iframe-video">
+                    Embedded Video URL not yet set up
                   </div>
-                  <div className="call-out-band-container">
-                    <div className="emoji-container">
-                      {Reactions.map((reaction) => (
-                        <div
-                          key={reaction.name}
-                          className="reaction"
-                          onClick={() =>
-                            user && reactionClicked(user, reaction.type)
-                          }
-                          id={`send-reaction-${reaction.type}`}
-                        >
-                          <span role="img" aria-label={reaction.ariaLabel}>
-                            {reaction.text}
-                          </span>
-                        </div>
-                      ))}
-                      <div
-                        className="mute-button"
-                        onClick={() =>
-                          setIsAudioEffectDisabled((state) => !state)
-                        }
-                      >
-                        <FontAwesomeIcon
-                          className="reaction"
-                          icon={
-                            isAudioEffectDisabled ? faVolumeMute : faVolumeUp
-                          }
-                        />
-                      </div>
-                    </div>
+                )}
+              </div>
+
+              {shouldShowReactions && (
+                <div className="actions-container">
+                  <ReactionsBar
+                    venueId={venue.id}
+                    isReactionsMuted={isUserAudioMuted}
+                    toggleMute={toggleUserAudio}
+                  />
+
+                  {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
+                  {/* NOTE: This functionality will probably be returned in the nearest future. */}
+                  {/* {shouldShowShoutouts && (
                     <CallOutMessageForm
-                      onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                      ref={registerBandMessage({ required: true })}
-                      isMessageToTheBandSent={isMessageToTheBandSent}
-                      placeholder="Shout out..."
+                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                    ref={registerBandMessage({ required: true })}
+                    isMessageToTheBandSent={isMessageToTheBandSent}
+                    placeholder="Shout out..."
                     />
-                  </div>
+                  )} */}
                 </div>
               )}
-              {seatedAtTable && (
-                <Room
-                  roomName={`${venueToUse.name}-${seatedAtTable}`}
-                  venueName={venueToUse.name}
-                  setUserList={setUserList}
-                  setSeatedAtTable={setSeatedAtTable}
+
+              {shouldShowJukebox && (
+                <Jukebox
+                  recentVenueUsers={recentVenueUsers}
+                  updateIframeUrl={changeIframeUrl}
+                  venue={venue}
                 />
               )}
-            </div>
-          </div>
+
+              {!seatedAtTable && (
+                <TablesControlBar
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
+                />
+              )}
+            </>
+          )}
         </div>
-        <UserList
-          isAudioEffectDisabled={isAudioEffectDisabled}
-          users={venueUsers}
-          activity={venue?.activity ?? "here"}
-          disableSeeAll={false}
-        />
-        <div className="seated-area">
-          <TablesUserList
+        {seatedAtTable && (
+          <Room
+            roomName={`${venue.name}-${seatedAtTable}`}
+            venueName={venue.name}
+            setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
-            seatedAtTable={seatedAtTable}
-            venueName={venueToUse.name}
-            TableComponent={TableComponent}
-            joinMessage={!venueToUse?.hideVideo ?? true}
-            customTables={jazzbarTables}
+            isAudioEffectDisabled={isUserAudioMuted}
           />
-        </div>
-      </div>
-      <div className="chat-drawer">
-        <ChatDrawer
-          title={`${venueToUse.name} Chat`}
-          roomName={venueToUse.name}
-          chatInputPlaceholder="Chat to the bar"
+        )}
+        <TablesUserList
+          setSeatedAtTable={setSeatedAtTable}
+          seatedAtTable={seatedAtTable}
+          venueName={venue.name}
+          TableComponent={JazzBarTableComponent}
+          joinMessage={!venue.hideVideo ?? true}
+          customTables={jazzbarTables}
+          showOnlyAvailableTables={showOnlyAvailableTables}
         />
       </div>
-    </>
+    </div>
   );
 };
 

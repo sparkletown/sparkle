@@ -1,0 +1,62 @@
+@import "scss/constants";
+
+.chat-preview {
+  display: flex;
+  justify-content: flex-start;
+  padding: 8px 24px;
+  width: 100%;
+  align-items: center;
+  cursor: pointer;
+  color: $white;
+
+  &:hover {
+    background-color: $black;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap;
+    margin-left: 16px;
+    width: 60%;
+  }
+
+  &__username {
+    font-size: 13px;
+    opacity: 0.7;
+  }
+
+  &__text {
+    font-size: 11px;
+    opacity: 0.35;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  &__time {
+    margin-left: auto;
+    text-align: right;
+    font-size: 10px;
+    flex-shrink: 0;
+    opacity: 0.35;
+    width: 20%;
+  }
+
+  &--highlight {
+    .chat-preview__username {
+      font-weight: 500;
+      color: $white;
+      opacity: 1;
+    }
+
+    .chat-preview__text {
+      color: $white;
+      opacity: 0.7;
+    }
+
+    .chat-preview__time {
+      opacity: 0.7;
+    }
+  }
+}

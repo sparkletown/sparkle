@@ -1,4 +1,5 @@
-import { RootState } from "index";
+import { RootState } from "store";
+
 import {
   FirestoreData,
   FirestoreOrdered,

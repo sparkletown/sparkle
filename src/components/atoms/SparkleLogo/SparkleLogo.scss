@@ -1,0 +1,25 @@
+@import "scss/constants.scss";
+
+.SparkleLogo {
+  font-size: 0;
+  white-space: nowrap;
+  margin: 0 auto;
+  width: 266px;
+
+  &--small {
+    width: 150px;
+  }
+
+  &__icon,
+  &__icon-text {
+    vertical-align: middle;
+  }
+
+  &__icon {
+    width: 19%;
+  }
+
+  &__icon-text {
+    width: 81%;
+  }
+}

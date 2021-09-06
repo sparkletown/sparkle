@@ -1,14 +1,16 @@
 import firebase from "firebase/app";
 
+import { ProfileLink } from "types/User";
+
+import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
+
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 import { QuestionsFormData } from "./Questions";
-import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 
 type LocationUpdateData = {
   lastSeenAt: number;
   lastSeenIn: { [key: string]: number } | null;
-  room: string | null; // legacy
 };
 
 type KidsModeUpdateData = {
@@ -26,6 +28,7 @@ type MirrorVideoUpdateData = {
 export const updateUserProfile = (
   userId: string,
   profileData:
+    | { profileLinks: ProfileLink[] }
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData

@@ -1,0 +1,54 @@
+@import "scss/constants";
+
+.video-participant {
+  position: relative;
+
+  &--mirrored {
+    .video-participant__video {
+      transform: scale(-1, 1);
+    }
+  }
+
+  &__video {
+    height: 100%;
+    width: 100%;
+
+    pointer-events: none;
+
+    video {
+      height: inherit;
+      width: inherit;
+
+      border-radius: $border-radius--xl;
+    }
+  }
+
+  &__profile {
+    position: absolute;
+    bottom: $spacing--sm;
+    left: $spacing--sm;
+  }
+
+  &__controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+
+    padding: $spacing--sm;
+
+    & > * {
+      margin: 0 $spacing--xs;
+
+      pointer-events: auto;
+    }
+  }
+}

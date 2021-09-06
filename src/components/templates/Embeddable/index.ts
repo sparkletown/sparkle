@@ -1,0 +1,1 @@
+export { Embeddable } from "./Embeddable";

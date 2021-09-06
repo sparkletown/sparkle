@@ -1,0 +1,103 @@
+@import "scss/constants";
+
+.UserAvatar {
+  $avatar-sizes-map: (
+    small: 25px,
+    medium: 40px,
+    large: 54px,
+    full: 100%,
+  );
+  $indicator-sizes-map: (
+    small: 8px,
+    medium: 10px,
+    large: 12px,
+    full: 25%,
+  );
+
+  // NOTE: parent and img mismatch due to legacy reasons
+  $default-avatar-size: 25px;
+  $default-image-size: 100%;
+  $default-indicator-size: 8px;
+
+  @include square-size($default-avatar-size);
+  position: relative;
+
+  &:hover {
+    .UserAvatar__nametag--hover {
+      opacity: 1;
+
+      background-color: $primary;
+      padding: $spacing--xs;
+
+      transform: scale(1.5) translate(-35%, 50%);
+      box-shadow: 0 0 0 3px lighten($primary--darker, 10%),
+        0 2px 4px opaque-black(0.2);
+    }
+  }
+
+  &__image {
+    @include square-size($default-image-size);
+    border-radius: 50%;
+    vertical-align: unset;
+  }
+
+  &__status-indicator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    z-index: z(user-avatar-status-indicator);
+    display: block;
+    @include square-size($default-indicator-size);
+
+    @each $modifier, $size in $indicator-sizes-map {
+      &--#{$modifier} {
+        @include square-size($size);
+      }
+    }
+  }
+
+  &--clickable {
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  @each $modifier, $size in $avatar-sizes-map {
+    &--#{$modifier},
+    &--#{$modifier} img {
+      @include square-size($size);
+    }
+  }
+
+  &__nametag {
+    position: absolute;
+    color: $white;
+
+    opacity: 0;
+
+    min-width: 70%;
+
+    text-align: center;
+
+    margin: 0 -50% 0 auto;
+    padding: 0 $spacing--xs;
+
+    bottom: 10%;
+    left: 50%;
+
+    border-radius: $border-radius--md;
+
+    font-size: $font-size--xs;
+    line-height: 1;
+
+    background-color: opaque-black(0.4);
+    box-shadow: 0 2px 4px opaque-black(0.2);
+
+    transform: translate(-50%, 0);
+    transition: transform 400ms, padding 400ms, opacity 600ms,
+      background-color 600ms;
+  }
+}

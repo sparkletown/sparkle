@@ -1,0 +1,1 @@
+export { ScheduleVenueDescription } from "./ScheduleVenueDescription";

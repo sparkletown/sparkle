@@ -1,9 +1,7 @@
+import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
-import { CODE_CHECK_URL } from "secrets";
+
 import { VALID_URL_PROTOCOLS } from "settings";
-import { CampVenue } from "types/CampVenue";
-import { AnyVenue } from "types/Firestore";
-import { WithId } from "./id";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -13,6 +11,22 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
+const createAdminUrlHelperFor = (segment: string) => (
+  venueId?: string,
+  selectedTab?: string
+) =>
+  segment
+    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
+        segment: segment,
+        venueId: venueId,
+        selectedTab: selectedTab,
+      })
+    : generatePath("/admin-ng");
+
+export const adminNGRootUrl = createAdminUrlHelperFor("");
+export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
+export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
 };
@@ -21,16 +35,9 @@ export const venueEntranceUrl = (venueId: string, step?: number) => {
   return `/e/${step ?? 1}/${venueId}`;
 };
 
-export const venueRoomUrl = (venue: WithId<AnyVenue>, roomTitle: string) => {
-  const venueRoom = (venue as CampVenue)?.rooms.find(
-    (r) => r.title === roomTitle
-  );
-  return venueRoom ? venueRoom.url : venueInsideUrl(venue.id);
-};
-
 export const isExternalUrl = (url: string) => {
   try {
-    return new URL(url).host !== window.location.host;
+    return new URL(url, window.location.origin).host !== window.location.host;
   } catch (error) {
     Bugsnag.notify(new Error(error), (event) => {
       event.severity = "info";
@@ -44,19 +51,30 @@ export const isExternalUrl = (url: string) => {
 export const getRoomUrl = (roomUrl: string) =>
   roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
 
-export const openRoomUrl = (url: string) => {
-  openUrl(getRoomUrl(url));
+export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
+  openUrl(getRoomUrl(url), options);
 };
 
-export const openUrl = (url: string) => {
-  if (!isValidUrl(url)) {
+export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
+  openUrl(venueInsideUrl(venueId), options);
+
+export interface OpenUrlOptions {
+  customOpenRelativeUrl?: (url: string) => void;
+  customOpenExternalUrl?: (url: string) => void;
+}
+
+export const openUrl = (url: string, options?: OpenUrlOptions) => {
+  const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
+
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+  if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
         `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
       ),
       (event) => {
-        event.addMetadata("utils/url::openUrl", { url });
+        event.addMetadata("context", { func: "utils/url::openUrl", url });
       }
     );
     // @debt keep the checking in place so we can debug further, but don't block attempts to open
@@ -64,16 +82,41 @@ export const openUrl = (url: string) => {
   }
 
   if (isExternalUrl(url)) {
-    window.open(url, "_blank", "noopener,noreferrer");
+    customOpenExternalUrl
+      ? customOpenExternalUrl(url)
+      : window.open(url, "_blank", "noopener,noreferrer");
   } else {
-    // @debt Possibly use react router here with window.location.pathname.
-    window.location.href = url;
+    // @debt Is this a decent enough way to use react router here? Should we just use it always and get rid of window.location.href?
+    customOpenRelativeUrl
+      ? customOpenRelativeUrl(url)
+      : (window.location.href = url);
   }
 };
 
-export const isValidUrl = (url: string): boolean => {
+/**
+ * @deprecated This function doesn't perform a url check and returns true each time;
+ * Use isValidUrl instead if you want to validate that URL is correct
+ */
+export const isCurrentLocationValidUrl = (url: string): boolean => {
   try {
-    return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+    return VALID_URL_PROTOCOLS.includes(
+      new URL(url, window.location.origin).protocol
+    );
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
+};
+
+export const isValidUrl = (urlString: string) => {
+  if (!urlString) return false;
+
+  try {
+    const url = new URL(urlString);
+
+    return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
     if (e.name === "TypeError") {
       return false;
@@ -90,4 +133,29 @@ export const externalUrlAdditionalProps = {
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
 
-export const codeCheckUrl = (code: string) => CODE_CHECK_URL + code;
+export const getFullVenueInsideUrl = (venueId: string) =>
+  new URL(venueInsideUrl(venueId), window.location.origin).href;
+
+export const getUrlWithoutTrailingSlash = (url: string) => {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+};
+
+export const getLastUrlParam = (url: string) => {
+  return url.split("/").slice(-1);
+};
+
+export const getUrlParamFromString = (data: string) => {
+  return data.replaceAll(" ", "").toLowerCase();
+};
+
+export const getYoutubeEmbedFromUrl = (url: string) => {
+  if (url.includes("embed")) {
+    return url;
+  }
+
+  const [, urlSearchQuery] = url.split("?");
+  const youtubeVideoParams = new URLSearchParams(urlSearchQuery);
+  const { v } = Object.fromEntries(youtubeVideoParams.entries());
+
+  return `https://www.youtube.com/embed/${v}`;
+};

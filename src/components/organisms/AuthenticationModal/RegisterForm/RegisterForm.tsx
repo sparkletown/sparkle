@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
+import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { codeCheckUrl } from "utils/url";
+import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
+
+import { VenueAccessMode } from "types/VenueAcccess";
+
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 
-import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { updateUserPrivate } from "pages/Account/helpers";
+
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
+
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
@@ -33,14 +36,7 @@ interface RegisterFormData {
   backend?: string;
 }
 
-export interface CodeOfConductQuestion {
-  name: keyof CodeOfConductFormData;
-  text: string;
-  link?: string;
-}
-
 export interface RegisterData {
-  codes_used: string[];
   date_of_birth: string;
 }
 
@@ -74,7 +70,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError,
     watch,
     getValues,
-  } = useForm<RegisterFormData>({
+  } = useForm<RegisterFormData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
@@ -90,17 +86,43 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
-      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
-      if (venue.requiresEmailVerification)
-        await axios.get(codeCheckUrl(data.email));
+
+      if (venue.access === VenueAccessMode.Emails) {
+        const isEmailWhitelisted = await checkIsEmailWhitelisted({
+          venueId: venue.id,
+          email: data.email,
+        });
+
+        if (!isEmailWhitelisted.data) {
+          setError(
+            "email",
+            "validation",
+            "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
+
+      if (venue.access === VenueAccessMode.Codes) {
+        const isCodeValid = await checkIsCodeValid({
+          venueId: venue.id,
+          code: data.code,
+        });
+
+        if (!isCodeValid.data) {
+          setError(
+            "code",
+            "validation",
+            "We can't find you! Please use the code from your invitation."
+          );
+          return;
+        }
+      }
 
       const auth = await signUp(data);
-      if (
-        auth.user &&
-        (venue.requiresTicketCode || venue.requiresEmailVerification)
-      ) {
+
+      if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.email],
           date_of_birth: data.date_of_birth,
         });
       }
@@ -206,7 +228,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.requiresTicketCode && (
+        {venue.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
@@ -244,14 +266,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
               required: true,
             })}
           />
-          {/* @ts-ignore @debt term should be typed if possible */}
           {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
             <span className="input-error">Required</span>
           )}
         </div>
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
-            /* @ts-ignore @debt term should be typed if possible */
             const required = errors?.[term.name]?.type === "required";
             return (
               <div className="input-group" key={term.name}>

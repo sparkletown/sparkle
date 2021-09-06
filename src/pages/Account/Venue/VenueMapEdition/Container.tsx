@@ -1,20 +1,23 @@
 import React, {
-  useCallback,
-  useState,
-  useMemo,
   CSSProperties,
+  useCallback,
   useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
-import { DraggableSubvenue } from "./DraggableSubvenue";
-import { snapToGrid as doSnapToGrid } from "./snapToGrid";
-import update from "immutability-helper";
-import { DragItem } from "./interfaces";
-import { DEFAULT_MAP_ICON_URL } from "settings";
-import { CustomDragLayer } from "./CustomDragLayer";
 import ReactResizeDetector from "react-resize-detector";
+import update from "immutability-helper";
+
+import { DEFAULT_MAP_ICON_URL } from "settings";
+
 import { Dimensions } from "types/utility";
+
+import { CustomDragLayer } from "./CustomDragLayer";
+import { DraggableSubvenue } from "./DraggableSubvenue";
+import { DragItem } from "./interfaces";
+import { ItemTypes } from "./ItemTypes";
+import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -24,9 +27,10 @@ export interface SubVenueIconMap {
   [key: string]: {
     top: number;
     left: number;
-    url: string;
+    url?: string;
     width: number;
     height: number;
+    roomIndex?: number;
   };
 }
 
@@ -39,8 +43,8 @@ interface PropsType {
   snapToGrid?: boolean;
   iconsMap: SubVenueIconMap;
   backgroundImage: string;
-  iconImageStyle: CSSProperties;
-  draggableIconImageStyle: CSSProperties;
+  iconImageStyle?: CSSProperties; // This is not being used ATM
+  draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   onOtherIconClick?: (key: string) => void;
@@ -52,6 +56,8 @@ interface PropsType {
   rounded?: boolean;
   backgroundImageStyle?: CSSProperties;
   containerStyle?: CSSProperties;
+  lockAspectRatio?: boolean;
+  isSaving?: boolean;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -70,9 +76,16 @@ export const Container: React.FC<PropsType> = (props) => {
     otherIconsStyle,
     backgroundImageStyle,
     containerStyle,
+    lockAspectRatio,
+    isSaving,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
+  const [dragBoxId, setDragBoxId] = useState<number>(0);
+
+  const setDragItemId = useCallback((id: number) => {
+    setDragBoxId(id);
+  }, []);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
@@ -112,6 +125,7 @@ export const Container: React.FC<PropsType> = (props) => {
       }),
       {}
     );
+
     onChange && onChange(unscaledBoxes);
   }, [
     boxes,
@@ -124,6 +138,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   useMemo(() => {
     if (!imageDims) return;
+
     const copy = Object.keys(iconsMap).reduce(
       (acc, val) => ({
         ...acc,
@@ -183,7 +198,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
-    drop(item: DragItem, monitor) {
+    drop: (item: DragItem, monitor) => {
       if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;
@@ -266,6 +281,9 @@ export const Container: React.FC<PropsType> = (props) => {
             rounded={!!rounded}
             {...boxes[key]}
             onChangeSize={resizeBox(key)}
+            lockAspectRatio={lockAspectRatio}
+            onDragStart={setDragItemId}
+            isSaving={isSaving}
           />
         ))}
       </div>
@@ -273,7 +291,7 @@ export const Container: React.FC<PropsType> = (props) => {
         <CustomDragLayer
           snapToGrid={!!snapToGrid}
           rounded={!!rounded}
-          iconSize={boxes[Object.keys(boxes)[0]]} // @debt - this gets the size from the first box
+          iconSize={boxes[Object.keys(boxes)[dragBoxId]]}
         />
       )}
     </>

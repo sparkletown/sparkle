@@ -1,20 +1,28 @@
-import React from "react";
-import Bugsnag from "@bugsnag/js";
-import { CampRoomData } from "types/CampRoomData";
+import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Venue } from "types/Venue";
-import { WithId } from "utils/id";
-import "./Admin.scss";
+import Bugsnag from "@bugsnag/js";
+
 import { RoomInput, upsertRoom } from "api/admin";
-import { useUser } from "hooks/useUser";
+
+import { Room } from "types/rooms";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import { Toggler } from "components/atoms/Toggler";
+
 import VenueEventDetails from "./VenueEventDetails";
-import { useFirestoreConnect } from "react-redux-firebase";
+
+import "./Admin.scss";
 
 interface Props {
   index: number;
-  venue: WithId<Venue>;
-  room: CampRoomData;
+  venue: WithId<AnyVenue>;
+  room: Room;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
@@ -28,6 +36,7 @@ export const AdminVenueRoomDetails = ({
   setShowCreateEventModal,
   setShowDeleteEventModal,
 }: Props) => {
+  // @debt replace this with useVenueEvents or similar?
   useFirestoreConnect([
     {
       collection: "venues",
@@ -40,28 +49,28 @@ export const AdminVenueRoomDetails = ({
 
   const events = useSelector((state) => state.firestore.ordered.events);
 
-  const filteredEvents =
-    events &&
-    events.filter((e) => {
-      if (e.room === room.title) {
-        return e;
-      }
-      return null;
-    });
+  const filteredEvents = useMemo(() => {
+    if (!events) return;
+
+    return events.filter((event) => event.room === room.title);
+  }, [events, room.title]);
 
   const { user } = useUser();
   const history = useHistory();
 
+  // @debt refactor this to use useAsync / useAsyncFn or similar
   const updateRoom = async (newState: boolean) => {
     if (!user) return;
+
     try {
-      await upsertRoom(
-        { ...(room as RoomInput), isEnabled: newState },
-        venue.id,
-        user,
-        index
-      );
-      history.push(`/admin/venue/${venue.id}`);
+      const roomValues: RoomInput = {
+        ...room,
+        isEnabled: newState,
+      };
+
+      await upsertRoom(roomValues, venue.id, user, index);
+
+      history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {
@@ -111,19 +120,15 @@ export const AdminVenueRoomDetails = ({
                   }
                 </div>
                 <div className="toggle-room">
-                  <label id={"toggle-" + index} className="switch">
-                    <input
-                      type="checkbox"
-                      id={"toggle-" + index}
-                      name={"toggle-" + index}
-                      checked={room.isEnabled}
-                      onClick={() => {
-                        updateRoom(!room.isEnabled);
-                      }}
-                    />
-                    <span className="slider round"></span>
-                  </label>
-                  <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
+                  {/* @debt the onChange handler here should be useCallback'd */}
+                  <Toggler
+                    name={"toggle-" + index}
+                    toggled={room.isEnabled}
+                    onChange={() => {
+                      updateRoom(!room.isEnabled);
+                    }}
+                    label={room.isEnabled ? "Turn room Off" : "Turn room On"}
+                  />
                 </div>
               </div>
             </div>
@@ -152,7 +157,7 @@ export const AdminVenueRoomDetails = ({
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}
                       setShowDeleteEventModal={setShowDeleteEventModal}
-                      className="admin-room-list-events"
+                      containerClassName="admin-room-list-events"
                     />
                   </div>
                 );

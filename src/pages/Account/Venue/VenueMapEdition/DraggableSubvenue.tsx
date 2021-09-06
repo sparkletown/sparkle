@@ -1,35 +1,35 @@
-import React, { useEffect, CSSProperties } from "react";
-import { useDrag, DragSourceMonitor } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import React, { CSSProperties, useEffect } from "react";
+import { DragSourceMonitor, useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { Resizable } from "re-resizable";
-import { Dimensions } from "types/utility";
-import { SubVenueIconMap } from "./Container";
 
-function getStyles(
+import { Dimensions } from "types/utility";
+
+import { SubVenueIconMap } from "./Container";
+import { ItemTypes } from "./ItemTypes";
+
+const getStyles = (
   left: number,
   top: number,
   isDragging: boolean
-): React.CSSProperties {
-  return {
-    position: "absolute",
-    top,
-    left,
-    opacity: isDragging ? 0 : 1,
-    height: isDragging ? 0 : "",
-    borderRadius: "25%",
-    background: "rgba(147, 124, 99, 0.2)",
-    border: "2px solid rgba(147, 124, 99, 0.2)",
-    animation: "ripple 4s linear infinite",
-  };
-}
+): React.CSSProperties => ({
+  position: "absolute",
+  top,
+  left,
+  opacity: isDragging ? 0 : 1,
+  height: isDragging ? 0 : "",
+  background: "rgba(147, 124, 99, 0.2)",
+});
 
 export type PropsType = SubVenueIconMap[string] & {
   id: string;
-  imageStyle: CSSProperties;
+  imageStyle?: CSSProperties;
   onChangeSize?: (newSize: Dimensions) => void;
   isResizable?: boolean;
   rounded: boolean;
+  lockAspectRatio?: boolean;
+  isSaving?: boolean;
+  onDragStart?: (id: number) => void;
 };
 
 export const DraggableSubvenue: React.FC<PropsType> = (props) => {
@@ -43,6 +43,9 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     onChangeSize,
     isResizable,
     rounded,
+    lockAspectRatio = false,
+    isSaving,
+    onDragStart,
   } = props;
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: ItemTypes.SUBVENUE_ICON, id, left, top, url },
@@ -55,6 +58,12 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     preview(getEmptyImage(), { captureDraggingState: true });
   }, [preview]);
 
+  useEffect(() => {
+    if (isDragging) {
+      onDragStart && onDragStart(parseInt(id));
+    }
+  }, [id, isDragging, onDragStart]);
+
   if (isResizable) {
     return (
       <Resizable
@@ -65,36 +74,41 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
           const newHeight = height + d.height;
           onChangeSize && onChangeSize({ width: newWidth, height: newHeight });
         }}
+        lockAspectRatio={lockAspectRatio}
       >
-        <div ref={drag} style={styles.dragContainer}>
-          <div
-            style={{
-              ...styles.resizeTab,
-              top: 0,
-              left: 0,
-            }}
-          />
-          <div
-            style={{
-              ...styles.resizeTab,
-              top: 0,
-              right: 0,
-            }}
-          />
-          <div
-            style={{
-              ...styles.resizeTab,
-              bottom: 0,
-              left: 0,
-            }}
-          />
-          <div
-            style={{
-              ...styles.resizeTab,
-              bottom: 0,
-              right: 0,
-            }}
-          />
+        <div ref={!isSaving ? drag : null} style={styles.dragContainer}>
+          {!isSaving && (
+            <>
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  top: 0,
+                  left: 0,
+                }}
+              />
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  top: 0,
+                  right: 0,
+                }}
+              />
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  bottom: 0,
+                  left: 0,
+                }}
+              />
+              <div
+                style={{
+                  ...styles.resizeTab,
+                  bottom: 0,
+                  right: 0,
+                }}
+              />
+            </>
+          )}
           <div
             style={{
               ...styles.resizeableImageContainer,

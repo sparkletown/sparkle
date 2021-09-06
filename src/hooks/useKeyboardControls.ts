@@ -1,5 +1,6 @@
 import { useCallback } from "react";
 
+import { GridPosition } from "types/grid";
 import { ReactHook } from "types/utility";
 
 import { useMousetrap } from "hooks/useMousetrap";
@@ -10,21 +11,18 @@ export const MovementKeys = {
   down: ["down", "s"],
   left: ["left", "a"],
   right: ["right", "d"],
-  enter: ["enter"],
 };
-
-export const MOVEMENT_INTERVAL = 350;
 
 interface UseKeyboardControlsProps {
   venueId: string;
   totalRows: number;
   totalColumns: number;
-  isSeatTaken: (row: number, column: number) => boolean;
-  takeSeat: (row: number | null, column: number | null) => void;
-  enterSelectedRoom: () => void;
-  onMove?: () => void;
+  isSeatTaken: (gridPosition: GridPosition) => boolean;
+  takeSeat: (gridPosition: GridPosition) => Promise<void> | undefined;
 }
 
+// TODO: use e.preventDefault() or return false or similar in the keyboard handlers (check mousetrap docs) so we don't scroll on arrow key presses
+// TODO: we may also need some kind of 'centre me on the map' logic somewhere when we do this too? For large zoomed maps.
 // TODO: implement bindRef using useRef() or similar (in Camp?) then remove all withGlobalBind (default is false)
 export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   venueId,
@@ -32,39 +30,19 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   totalColumns,
   isSeatTaken,
   takeSeat,
-  enterSelectedRoom,
-  onMove,
 }) => {
   const { profile } = useUser();
   const { row, column } = profile?.data?.[venueId] ?? {};
-
-  /**
-   * enter
-   */
-  const enter = useCallback(() => {
-    if (!row || !column) return;
-
-    // TODO: implement: openRoomUrl(selectedRoom.url) ? can we do it in enterSelectedRoom?
-    enterSelectedRoom();
-  }, [row, column, enterSelectedRoom]);
-
-  useMousetrap({
-    keys: MovementKeys.enter,
-    callback: enter,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
 
   /**
    * moveUp
    */
   const moveUp = useCallback(() => {
     if (!row || !column) return;
-    if (row - 1 < 1 || isSeatTaken(row - 1, column)) return;
+    if (row - 1 < 1 || isSeatTaken({ row: row - 1, column })) return;
 
-    takeSeat(row - 1, column);
-    onMove && onMove();
-  }, [row, column, isSeatTaken, takeSeat, onMove]);
+    takeSeat({ row: row - 1, column });
+  }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.up,
@@ -78,11 +56,10 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
    */
   const moveDown = useCallback(() => {
     if (!row || !column) return;
-    if (row + 1 > totalRows || isSeatTaken(row + 1, column)) return;
+    if (row + 1 > totalRows || isSeatTaken({ row: row + 1, column })) return;
 
-    takeSeat(row + 1, column);
-    onMove && onMove();
-  }, [row, column, totalRows, isSeatTaken, takeSeat, onMove]);
+    takeSeat({ row: row + 1, column });
+  }, [row, column, totalRows, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.down,
@@ -96,11 +73,10 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
    */
   const moveLeft = useCallback(() => {
     if (!row || !column) return;
-    if (column - 1 < 1 || isSeatTaken(row, column - 1)) return;
+    if (column - 1 < 1 || isSeatTaken({ row, column: column - 1 })) return;
 
-    takeSeat(row, column - 1);
-    onMove && onMove();
-  }, [row, column, isSeatTaken, takeSeat, onMove]);
+    takeSeat({ row, column: column - 1 });
+  }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.left,
@@ -114,11 +90,11 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
    */
   const moveRight = useCallback(() => {
     if (!row || !column) return;
-    if (column + 1 > totalColumns || isSeatTaken(row, column + 1)) return;
+    if (column + 1 > totalColumns || isSeatTaken({ row, column: column + 1 }))
+      return;
 
-    takeSeat(row, column + 1);
-    onMove && onMove();
-  }, [row, column, totalColumns, isSeatTaken, takeSeat, onMove]);
+    takeSeat({ row, column: column + 1 });
+  }, [row, column, totalColumns, isSeatTaken, takeSeat]);
 
   useMousetrap({
     keys: MovementKeys.right,

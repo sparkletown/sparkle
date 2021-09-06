@@ -1,0 +1,30 @@
+@import "scss/constants";
+
+$poster-control-btn-height: 65px;
+$poster-control-btn-width: 65px;
+
+.PosterPageControl {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  height: $poster-control-btn-height;
+  width: $poster-control-btn-width;
+  margin: $spacing--xs;
+  border-radius: $border-radius--md;
+
+  background-color: $dark-grey;
+  cursor: pointer;
+
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &__label {
+    margin-top: $spacing--sm;
+    font-size: $font-size--sm;
+  }
+}

@@ -1,6 +1,6 @@
-import firebase from "firebase/app";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import firebase from "firebase/app";
 
 interface PropsType {
   displayLoginForm: () => void;
@@ -15,9 +15,13 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   closeAuthenticationModal,
 }) => {
-  const { register, handleSubmit, errors, formState, setError } = useForm<
-    PasswordResetFormData
-  >({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+  } = useForm<PasswordResetFormData>({
     mode: "onChange",
   });
 

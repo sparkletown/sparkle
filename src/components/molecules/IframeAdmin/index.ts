@@ -1,0 +1,1 @@
+export { IframeAdmin } from "./IframeAdmin";

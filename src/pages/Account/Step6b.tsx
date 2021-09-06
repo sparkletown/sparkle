@@ -1,9 +1,18 @@
 import React from "react";
-import "firebase/storage";
-import "./Account.scss";
-import { DEFAULT_VENUE, PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 import { useHistory } from "react-router-dom";
+
+import {
+  DEFAULT_VENUE,
+  PLAYA_IMAGE,
+  PLAYA_VENUE_NAME,
+  SPARKLEVERSE_LOGO_URL,
+} from "settings";
+
 import { venueInsideUrl } from "utils/url";
+
+import "firebase/storage";
+
+import "./Account.scss";
 
 const Step6 = () => {
   const history = useHistory();
@@ -25,7 +34,7 @@ const Step6 = () => {
             <div className="col-md-4 logo-container">
               <img
                 className="img-fluid logo"
-                src="/sparkleverse-logo.png"
+                src={SPARKLEVERSE_LOGO_URL}
                 alt="SparkleVerse logo"
                 title="SparkleVerse logo"
               />

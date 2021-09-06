@@ -1,6 +1,1 @@
-export { AuthenticationModal } from "./AuthenticationModal";
-
-/**
- * @deprecated use named export instead
- */
-export { default } from "./AuthenticationModal";
+export { AuthenticationModal, AuthOptions } from "./AuthenticationModal";

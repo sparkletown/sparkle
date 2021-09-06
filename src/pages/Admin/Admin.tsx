@@ -1,69 +1,62 @@
 import React, {
-  useState,
-  useEffect,
-  useRef,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
+  useState,
 } from "react";
-import { shallowEqual } from "react-redux";
 import {
   Link,
+  Redirect,
   Route,
   Switch,
-  useLocation,
-  useParams,
-  useRouteMatch,
   useHistory,
-  Redirect,
+  useLocation,
+  useRouteMatch,
 } from "react-router-dom";
-import {
-  ReduxFirestoreQuerySetting,
-  useFirestoreConnect,
-} from "react-redux-firebase";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import "firebase/storage";
 
-import {
-  PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
-  PLAYA_VENUE_NAME,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-  DEFAULT_VENUE,
-} from "settings";
 import { IS_BURN } from "secrets";
 
-import { isVenueWithRooms } from "types/CampVenue";
-import { AdminVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
-import { VenueTemplate } from "types/VenueTemplate";
+import { DEFAULT_VENUE } from "settings";
+
+import { ValidStoreAsKeys } from "types/Firestore";
+import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { makeVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
 import {
-  canHaveSubvenues,
   canBeDeleted,
-  canHaveEvents,
   canHavePlacement,
+  canHaveSubvenues,
+  sortVenues,
+  VenueSortingOptions,
 } from "utils/venue";
 
 import { useIsAdminUser } from "hooks/roles";
-import { useSelector } from "hooks/useSelector";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { Loading } from "components/molecules/Loading";
+
+import "firebase/storage";
+
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import AdminEventModal from "./AdminEventModal";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
@@ -79,27 +72,69 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const venues = useSelector(orderedVenuesSelector);
+  const { isLoading, ownedVenues } = useOwnedVenues({
+    currentVenueId: selectedVenueId,
+  });
 
-  if (!venues) return <>Loading...</>;
+  const {
+    isShown: showSortingDropdown,
+    toggle: toggleSortingDropdown,
+  } = useShowHide();
+
+  const [currentSortingOption, setCurrentSortingOption] = useState(
+    VenueSortingOptions.az
+  );
+
+  const sortedVenues = useMemo(() => {
+    return sortVenues(ownedVenues, currentSortingOption) ?? [];
+  }, [currentSortingOption, ownedVenues]);
+
+  const sortingOptions = useMemo(
+    () =>
+      Object.values(VenueSortingOptions).map((sortingOption) => (
+        <li
+          key={sortingOption}
+          className={classNames("page-container-adminsidebar__sorting-option", {
+            "page-container-adminsidebar__sorting-option--active":
+              currentSortingOption === sortingOption,
+          })}
+          onClick={() => {
+            setCurrentSortingOption(sortingOption);
+            toggleSortingDropdown();
+          }}
+        >
+          {sortingOption}
+        </li>
+      )),
+    [currentSortingOption, toggleSortingDropdown]
+  );
+
+  if (isLoading) return <Loading />;
 
   return (
     <>
-      <div className="page-container-adminsidebar-title title">My Venues</div>
+      <div className="page-container-adminsidebar-title title">
+        My Venues
+        <FontAwesomeIcon
+          className="page-container-adminsidebar-title__ellipsis"
+          icon={faEllipsisV}
+          onClick={toggleSortingDropdown}
+        />
+      </div>
       <div className="page-container-adminsidebar-top">
         <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {venues.map((venue, index) => (
+        {sortedVenues.map((venue) => (
           <li
-            key={index}
+            key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
-              canHaveSubvenues(venue) ? "camp" : ""
+              canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
-            <Link to={`/admin/venue/${venue.id}`}>{venue.name}</Link>
+            <Link to={`/admin/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms?.map((room, idx) => (
@@ -107,7 +142,7 @@ const VenueList: React.FC<VenueListProps> = ({
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
-                    <Link to={`/admin/venue/${venue.id}?roomIndex=${idx}`}>
+                    <Link to={`/admin/${venue.id}?roomIndex=${idx}`}>
                       {room.title}
                     </Link>
                   </li>
@@ -117,6 +152,14 @@ const VenueList: React.FC<VenueListProps> = ({
           </li>
         ))}
       </ul>
+
+      {showSortingDropdown && (
+        <div className="page-container-adminsidebar__sorting-dropdown">
+          <ul className="page-container-adminsidebar__sorting-list">
+            {sortingOptions}
+          </ul>
+        </div>
+      )}
     </>
   );
 };
@@ -130,11 +173,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const venueSelector = useCallback(
-    (state) => makeVenueSelector(venueId)(state),
-    [venueId]
-  );
-  const venue = useSelector(venueSelector, shallowEqual);
+  const { currentVenue } = useOwnedVenues({ currentVenueId: venueId });
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
@@ -151,19 +190,22 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   }, []);
 
   const tabs = useMemo(() => {
-    if (!venue) return [];
+    if (!currentVenue) return [];
 
     return [
       { url: matchUrl, label: "Venue Info" },
-      canHaveEvents(venue) && { url: `${matchUrl}/events`, label: "Events" },
-      canHavePlacement(venue) && {
+      {
+        url: `${matchUrl}/events`,
+        label: "Events",
+      },
+      canHavePlacement(currentVenue) && {
         url: `${matchUrl}/placement`,
         label: "Placement & Editing",
       },
     ].filter(isTruthyFilter);
-  }, [matchUrl, venue]);
+  }, [matchUrl, currentVenue]);
 
-  if (!venue) {
+  if (!currentVenue) {
     return <>{"Oops, seems we can't find your venue!"}</>;
   }
 
@@ -185,10 +227,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         <Switch>
           <Route path={`${matchUrl}/events`}>
             <EventsComponent
-              venue={venue}
-              showCreateEventModal={showCreateEventModal}
+              venue={currentVenue}
               setShowCreateEventModal={setShowCreateEventModal}
-              editedEvent={editedEvent}
+              setShowDeleteEventModal={setShowDeleteEventModal}
               setEditedEvent={setEditedEvent}
             />
           </Route>
@@ -197,11 +238,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           </Route>
           <Route path={matchUrl}>
             <VenueInfoComponent
-              venue={venue}
-              roomIndex={roomIndex}
-              showCreateEventModal={showCreateEventModal}
               setShowCreateEventModal={setShowCreateEventModal}
-              setShowDeleteEventModal={setShowDeleteEventModal}
+              venue={currentVenue}
+              roomIndex={roomIndex}
             />
           </Route>
         </Switch>
@@ -211,7 +250,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         onHide={adminEventModalOnHide}
         venueId={venueId}
         event={editedEvent}
-        template={venue.template}
+        template={currentVenue.template}
         setEditedEvent={setEditedEvent}
         setShowDeleteEventModal={setShowDeleteEventModal}
       />
@@ -225,12 +264,16 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   );
 };
 
-const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
+export type VenueInfoComponentProps = {
+  venue: WithId<AnyVenue>;
+  roomIndex?: number;
+  setShowCreateEventModal: Function;
+};
+
+const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   venue,
   roomIndex,
-  showCreateEventModal,
   setShowCreateEventModal,
-  setShowDeleteEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -252,14 +295,11 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
     );
   }, [venue]);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
-  const visitText =
-    venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
-  const editText =
-    venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
-  const deleteText =
-    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
+  const {
+    isShown: isDeleteModalVisible,
+    show: showDeleteModal,
+    hide: hideDeleteModal,
+  } = useShowHide();
 
   return (
     <>
@@ -271,57 +311,6 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
               venue={venue}
               containerStyle={{ marginTop: 20 }}
             />
-            {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
-              <>
-                <h4
-                  className="italic"
-                  style={{ fontSize: "30px", textAlign: "center" }}
-                >
-                  How your experience appears on the {PLAYA_VENUE_NAME}
-                </h4>
-                <div className="container venue-entrance-experience-container">
-                  <div
-                    className="playa-container"
-                    ref={placementDivRef}
-                    style={{ width: "100%", height: 1000, overflow: "scroll" }}
-                  >
-                    <PlayaContainer
-                      rounded
-                      interactive={false}
-                      resizable={false}
-                      iconsMap={
-                        venue.placement && venue.mapIconImageUrl
-                          ? {
-                              icon: {
-                                width: PLAYA_VENUE_SIZE,
-                                height: PLAYA_VENUE_SIZE,
-                                top: venue.placement.y,
-                                left: venue.placement.x,
-                                url: venue.mapIconImageUrl,
-                              },
-                            }
-                          : {}
-                      }
-                      coordinatesBoundary={{
-                        width: PLAYA_WIDTH,
-                        height: PLAYA_HEIGHT,
-                      }}
-                      backgroundImage={PLAYA_IMAGE}
-                      iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-                      draggableIconImageStyle={
-                        PLAYA_VENUE_STYLES.draggableIconImage
-                      }
-                      containerStyle={{
-                        width: PLAYA_WIDTH,
-                        height: PLAYA_HEIGHT,
-                      }}
-                      venueId={venue.id}
-                      otherIconsStyle={{ opacity: 0.4 }}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
           </>
         )}
       </div>
@@ -335,13 +324,13 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
             >
-              {visitText}
+              Visit space
             </Link>
             <Link
               to={`/admin/venue/edit/${venue.id}`}
               className="btn btn-block"
             >
-              {editText}
+              Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
@@ -359,15 +348,6 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
                 Edit Room
               </Link>
             )}
-            {canBeDeleted(venue) && (
-              <button
-                role="link"
-                className="btn btn-block btn-danger"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                {deleteText}
-              </button>
-            )}
             <button
               className="btn btn-primary"
               onClick={() => {
@@ -380,24 +360,31 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
             </button>
             <Link
               to={{ search: "manageUsers=true" }}
-              className="btn btn-primary"
+              className="btn btn-block btn-primary"
             >
               Manage Venue Owners
             </Link>
             {typeof roomIndex !== "number" && (
-              <div>
+              <div className="page-container-adminpanel-actions__note">
                 If you are looking to edit one of your rooms, please select the
                 room in the left hand menu
               </div>
+            )}
+            {canBeDeleted(venue) && (
+              <button
+                role="link"
+                className="btn btn-block btn-danger"
+                onClick={showDeleteModal}
+              >
+                Delete space
+              </button>
             )}
           </>
         )}
       </div>
       <VenueDeleteModal
-        show={showDeleteModal}
-        onHide={() => {
-          setShowDeleteModal(false);
-        }}
+        show={isDeleteModalVisible}
+        onHide={hideDeleteModal}
         venue={venue}
       />
       <VenueOwnersModal
@@ -405,38 +392,25 @@ const VenueInfoComponent: React.FC<AdminVenueDetailsPartProps> = ({
         onHide={onManageUsersModalHide}
         venue={venue}
       />
-      <AdminEventModal
-        show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
-        event={editedEvent}
-        template={venue.template}
-        setEditedEvent={setEditedEvent}
-        setShowDeleteEventModal={setShowDeleteEventModal}
-      />
     </>
   );
 };
 
-const Admin: React.FC = () => {
+export const Admin: React.FC = () => {
   const { user } = useUser();
   const userId = user?.uid || "";
 
   const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
-  const venuesOwnedByUserQuery = useMemo<ReduxFirestoreQuerySetting>(
-    () => ({
-      collection: "venues",
-      where: [["owners", "array-contains", userId]],
-    }),
-    [userId]
-  );
-  useFirestoreConnect(venuesOwnedByUserQuery);
+  // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
+  //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
+  useFirestoreConnect({
+    collection: "venues",
+    where: [["owners", "array-contains", userId]],
+    storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
+  });
 
-  const { venueId } = useParams();
+  const venueId = useVenueId();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
@@ -451,7 +425,7 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar hasBackButton={false}>
       <div className="admin-dashboard">
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">
@@ -469,5 +443,3 @@ const Admin: React.FC = () => {
     </WithNavigationBar>
   );
 };
-
-export default Admin;

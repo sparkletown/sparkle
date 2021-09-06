@@ -1,0 +1,142 @@
+@import "scss/constants";
+
+$poster-cell-optimal-width: 260px;
+$poster-cell-optimal-height: 195px;
+
+.PosterPage {
+  padding: $announcement-banner-height $spacing--xl 0;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    padding: $spacing--xs;
+
+    &--middle-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-flow: column;
+
+      font-size: $font-size--lg;
+      font-weight: $font-weight--500;
+    }
+
+    &--right-cell {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 $spacing--xxl;
+    }
+  }
+
+  &__headerInfo {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__posterId {
+    display: inline;
+    text-align: left;
+    font-size: $font-size--sm;
+    margin-right: $spacing--md;
+  }
+
+  &__moreInfoUrl {
+    display: inline;
+    text-align: right;
+    font-size: $font-size--sm;
+    margin-bottom: $spacing--sm;
+  }
+
+  &__title {
+    margin: 0 0 $spacing--xs;
+    text-align: center;
+  }
+
+  &__authorBox {
+    display: flex;
+    align-items: center;
+    margin: $spacing--sm 0;
+  }
+
+  &__avatar {
+    margin-right: auto;
+  }
+
+  &__author {
+    margin-left: $spacing--sm;
+    font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+    @include line-clamp-with-overflow(7);
+  }
+
+  &__contactEmail {
+    font-size: $font-size--sm;
+  }
+
+  &__categories {
+    display: flex;
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: $poster-cell-optimal-width 1fr 1fr $poster-cell-optimal-width;
+    grid-template-rows: repeat(auto-fill, $poster-cell-optimal-height);
+    gap: $spacing--xs;
+
+    grid-template-areas:
+      ".  iframe iframe ."
+      ".  iframe iframe ."
+      ".  iframe iframe ."
+      ".    .     .     ."
+      "listeners listeners listeners listeners";
+  }
+
+  &__control--stop {
+    background-color: $red;
+    color: $white;
+    opacity: 0.8;
+  }
+
+  &__iframe {
+    grid-area: iframe;
+    width: 100%;
+    // Take exactly the same amount of space as 3 participants would take
+    height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$spacing--xs});
+    border: none;
+  }
+
+  &__video-participant {
+    width: $poster-cell-optimal-width;
+    height: $poster-cell-optimal-height;
+  }
+
+  &__join-video-participants-btn {
+    width: $poster-cell-optimal-width;
+    height: $poster-cell-optimal-height;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: $white;
+    font-size: $font-size--xxl;
+
+    cursor: pointer;
+
+    border: dashed $dark-grey thin;
+    border-radius: $border-radius--md;
+
+    &:hover {
+      background-color: $dark;
+    }
+  }
+
+  // Increase specificity to override third-party lib styles
+  div.PosterPage__listeners {
+    grid-area: listeners;
+    margin-left: unset;
+    margin-right: unset;
+    margin-bottom: $spacing--lg;
+  }
+}

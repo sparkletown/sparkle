@@ -1,0 +1,1 @@
+export { PosterPageSettingsControl } from "./PosterPageSettingsControl";

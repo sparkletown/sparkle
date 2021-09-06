@@ -1,0 +1,83 @@
+@import "scss/constants.scss";
+
+$left-section-width: 360px;
+
+.Timing {
+  height: 100%;
+  display: grid;
+  grid-template-columns: $left-section-width 1fr;
+
+  &__btn {
+    display: inline-block;
+    padding: $spacing--md $spacing--lg;
+    font-weight: $font-weight--700;
+    border-radius: $border-radius--xl;
+    text-align: center;
+    font-size: $font-size--lg;
+    transition: all 400ms $transition-function;
+    color: $white;
+    transform: translateY(0);
+    background-color: $light-grey;
+    border: none;
+    line-height: 1.5;
+    height: 50px;
+
+    &:hover:enabled {
+      transform: translateY(-1px);
+      background-image: linear-gradient(
+        0deg,
+        opaque-black(0.4) 0%,
+        opaque-black(0.4) 100%
+      );
+    }
+  }
+
+  &__left {
+    &-content {
+      padding: 40px 30px 100px;
+    }
+  }
+
+  &__right {
+    background-color: $secondary--dark;
+
+    &-content {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+
+// @debt: these styles will be needed as soon as the global start/end time are added back
+// .party-heading,
+// .party-subheading {
+//   font-weight: $font-weight--300;
+//   line-height: 1;
+//   opacity: 0.6;
+// }
+
+// .party-heading {
+//   opacity: 1;
+//   display: inline-block;
+//   margin-top: $spacing--lg;
+// }
+
+// .input-left {
+//   width: 59%;
+//   margin-right: $spacing--xs;
+//   float: left;
+//   margin-top: $spacing--md;
+// }
+
+// .input-right {
+//   width: 38%;
+//   float: right;
+//   margin-top: $spacing--md;
+// }
+
+// .mb-1 {
+//   line-height: 1;
+// }

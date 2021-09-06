@@ -1,30 +1,31 @@
 import React, { CSSProperties, useMemo } from "react";
-import { Venue } from "types/Venue";
-import { WithId } from "utils/id";
-import { VenueTemplate } from "types/VenueTemplate";
-import { CampVenue } from "types/CampVenue";
-import { CampContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import {
-  IFRAME_ALLOW,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_NAME,
-  PLAYA_VENUE_STYLES,
-} from "settings";
-import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
+import { format } from "date-fns";
 
-interface AdminVenuePreview {
-  venue: WithId<Venue>;
+import { IFRAME_ALLOW } from "settings";
+
+import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
+import MapPreview from "./MapPreview";
+
+export interface AdminVenuePreviewProps {
+  venue: WithId<AnyVenue>;
   containerStyle: CSSProperties;
 }
 
+// @debt Refactor this into settings, or types/templates, or similar?
 const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.themecamp]: "Camp Info:",
   [VenueTemplate.artpiece]: "Art Piece Info:",
   [VenueTemplate.partymap]: "Party Map Info:",
 };
 
-export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
+export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   venue,
   containerStyle,
 }) => {
@@ -52,7 +53,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
                 allowFullScreen
-              ></iframe>
+              />
             </div>
           </>
         );
@@ -68,25 +69,20 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
           </div>
         );
       case VenueTemplate.partymap:
+      case VenueTemplate.animatemap:
       case VenueTemplate.themecamp:
-        const campVenue = venue as WithId<CampVenue>;
+        const partyMapVenue = venue as WithId<PartyMapVenue>;
         return (
           <div className="content-group" style={{ padding: "5px" }}>
             <span className="title" style={{ fontSize: "20px" }}>
-              This is a preview of your camp
+              This is a preview of your Space
             </span>
-            <CampContainer
-              interactive={false}
-              resizable
-              coordinatesBoundary={{
-                width: 100,
-                height: 100,
-              }}
-              iconsMap={{}}
-              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
-              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-              venue={campVenue}
+            <MapPreview
+              isEditing
+              venueId={partyMapVenue.id}
+              venueName={partyMapVenue.name}
+              mapBackground={partyMapVenue.mapBackgroundImageUrl}
+              rooms={partyMapVenue.rooms ?? []}
             />
           </div>
         );
@@ -121,13 +117,31 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               {venue.config?.landingPageConfig.subtitle}
             </span>
           </div>
-          <div style={{ padding: "5px" }}>
-            <span className="title" style={{ fontSize: "18px" }}>
+          <div
+            style={{ padding: "5px", display: "flex", alignItems: "center" }}
+          >
+            <span
+              className="title"
+              style={{
+                fontSize: "18px",
+                marginBottom: "1rem",
+                marginTop: 0,
+              }}
+            >
               Long description:
             </span>
-            <span className="content">
-              {venue.config?.landingPageConfig.description}
-            </span>
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
+          </div>
+
+          <div>
+            <span className="title">Created At:</span>
+            {venue.createdAt && format(venue.createdAt, "yyyy-MM-dd HH:mm:ss")}
+          </div>
+          <div>
+            <span className="title">Updated At:</span>
+            {venue.updatedAt && format(venue.updatedAt, "yyyy-MM-dd HH:mm:ss")}
           </div>
         </div>
         <div className="content-group" style={{ display: "flex" }}>
@@ -146,17 +160,18 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               />
             </div>
           </div>
-          <div style={{ width: "150px" }}>
+          {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}
+          {/* <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
               {PLAYA_VENUE_NAME} icon
             </div>
             <div className="content">
               <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
             </div>
-          </div>
+          </div> */}
           <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
-              Camp logo
+              Square logo
             </div>
             <div className="content">
               <img className="icon" src={venue.host?.icon} alt="icon" />

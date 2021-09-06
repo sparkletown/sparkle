@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 $side-padding: 30px;
 $primary: #7c46fb;
 $black: #000000;
@@ -16,7 +18,7 @@ $sand: #937c63;
 
 .duststorm-container {
   position: absolute;
-  z-index: 100;
+  z-index: z(duststorm-container);
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -81,7 +83,7 @@ $sand: #937c63;
   }
 
   .modal-content {
-    z-index: 220;
+    z-index: z(duststorm-modal-content);
     width: calc(100% - 20px);
     max-width: $modal-max-width;
     margin: 0 auto;
@@ -92,7 +94,7 @@ $sand: #937c63;
     border-radius: $border-radius;
     overflow: hidden;
     opacity: 1;
-    transition: all 600ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 600ms $transition-function;
     transform: translateY(100px);
     &.show {
       opacity: 1;

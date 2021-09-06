@@ -1,1 +1,1 @@
-export { default } from "./FireBarrel";
+export { FireBarrel } from "./FireBarrel";

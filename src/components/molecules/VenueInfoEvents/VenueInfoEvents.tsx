@@ -1,12 +1,17 @@
 import React from "react";
-import "./VenueInfoEvents.scss";
-import { AnyVenue } from "types/Firestore";
+
+import { PLAYA_VENUE_NAME, SPARKLE_ICON } from "settings";
+
+import { AnyVenue, VenueEvent } from "types/venues";
+
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
-import { VenueEvent } from "types/VenueEvent";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import { EventDisplay } from "../EventDisplay/EventDisplay";
-import "../EventDisplay/EventDisplay.scss";
-import { PLAYA_VENUE_NAME } from "settings";
+
+import "./VenueInfoEvents.scss";
 
 interface PropsType {
   eventsNow: VenueEvent[];
@@ -29,7 +34,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
         {futureEvents ? (
           <>
             <div className="title-container">
-              <img src="/sparkle-icon.png" alt="sparkle icon" />
+              <img src={SPARKLE_ICON} alt="sparkle icon" />
               <span
                 style={{ fontSize: 20, fontWeight: "bold", color: "yellow" }}
               >
@@ -40,9 +45,9 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
               {eventsNow.length > 0 ? (
                 <div className="events-list events-list_monday">
                   {eventsNow &&
-                    eventsNow.map((event, idx) => (
+                    eventsNow.map((event, index) => (
                       <EventDisplay
-                        key={event.name + idx}
+                        key={event.id ?? `${index}-${event.name}`}
                         event={event}
                         venue={venue}
                       />
@@ -67,7 +72,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
                         {event.name}
                       </div>
                       <div className="whatson-description-container-description">
-                        {event.description}
+                        <RenderMarkdown text={event.description} />
                       </div>
                     </React.Fragment>
                   ))}

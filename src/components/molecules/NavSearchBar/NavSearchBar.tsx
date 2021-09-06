@@ -1,162 +1,254 @@
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { RoomModal } from "components/templates/PartyMap/components";
-import { useConnectVenueUsers } from "hooks/useConnectVenueUsers";
-import { useSelector } from "hooks/useSelector";
-import React, { useCallback, useEffect, useState } from "react";
-import { CampRoomData } from "types/CampRoomData";
-import { User } from "types/User";
-import { VenueEvent } from "types/VenueEvent";
-import { WithId } from "utils/id";
-import {
-  currentVenueSelectorData,
-  venueEventsSelector,
-  venueUsersSelector,
-} from "utils/selectors";
-import { isTruthy } from "utils/types";
-import "./NavSearchBar.scss";
-import { NavSearchBarInput } from "./NavSearchBarInput";
+import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
+import { isEqual, reduce } from "lodash";
 
-interface SearchResult {
-  rooms: CampRoomData[];
-  users: readonly WithId<User>[];
-  events: VenueEvent[];
+import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
+
+import { Room } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
+
+import { WithId, WithVenueId } from "utils/id";
+import { isDefined, isTruthy } from "utils/types";
+
+import { useVenueEvents } from "hooks/events";
+import { useDebounceSearch } from "hooks/useDebounceSearch";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUsers } from "hooks/users";
+
+import { RoomModal } from "components/templates/PartyMap/components";
+
+import { EventModal } from "components/organisms/EventModal";
+
+import { Loading } from "components/molecules/Loading";
+import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSearchBarFoundEvent";
+
+import { InputField } from "components/atoms/InputField";
+
+import { NavSearchResult } from "./NavSearchResult";
+
+import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
+
+import "./NavSearchBar.scss";
+
+export interface NavSearchBarProps {
+  venueId: string;
 }
 
-const NavSearchBar = () => {
-  useConnectVenueUsers();
+export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
+  const {
+    searchInputValue,
+    searchQuery,
+    setSearchInputValue,
+    clearSearch,
+  } = useDebounceSearch();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResult, setSearchResult] = useState<SearchResult>({
-    rooms: [],
-    users: [],
-    events: [],
-  });
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
+  const onSearchInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearchInputValue(e.target.value);
+    },
+    [setSearchInputValue]
+  );
+
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
+
+  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
+    WithId<AnyVenue>
   >();
-  const [selectedRoom, setSelectedRoom] = useState<CampRoomData>();
 
-  const venue = useSelector(currentVenueSelectorData);
-  const venueUsers = useSelector(venueUsersSelector) ?? [];
-  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
+  const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  useEffect(() => {
-    if (!searchQuery) {
-      setSearchResult({
-        rooms: [],
-        users: [],
-        events: [],
-      });
-      return;
-    }
-    const venueUsersResults = Object.values(venueUsers).filter((partygoer) =>
-      partygoer.partyName?.toLowerCase()?.includes(searchQuery.toLowerCase())
+  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const enabledRelatedRooms = useMemo<Room[]>(
+    () =>
+      relatedVenues
+        .flatMap((venue) => venue.rooms ?? [])
+        .filter((room) => {
+          if (isDefined(room.type) && COVERT_ROOM_TYPES.includes(room.type)) {
+            return false;
+          }
+
+          return room.isEnabled;
+        }),
+    [relatedVenues]
+  );
+
+  const enabledRelatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
+    () =>
+      reduce(
+        enabledRelatedRooms,
+        (enabledRelatedRoomsByTitle, room) => ({
+          ...enabledRelatedRoomsByTitle,
+          [room.title]: room,
+        }),
+        {}
+      ),
+    [enabledRelatedRooms]
+  );
+
+  const { isEventsLoading, events: relatedEvents } = useVenueEvents({
+    venueIds: relatedVenueIds,
+  });
+
+  const foundRooms = useMemo<JSX.Element[]>(() => {
+    if (!searchQuery) return [];
+
+    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */
+    return (
+      enabledRelatedRooms
+        .filter((room) => room.title.toLowerCase().includes(searchQuery))
+        .map((room, index) => (
+          <NavSearchResult
+            key={`room-${room.title}-${index}`}
+            title={room.title}
+            description="Room"
+            image={room.image_url}
+            onClick={() => {
+              setSelectedRoom(room);
+              // @debt we need to find room venue (selectedRoomVenue) because of RoomModal -> useRoom -> externalRoomSlug (which accepts venueName as a parameter)
+              //  probably would be better to extend Room type with the venueId it's related to, and use it in the `externalRoomSlug` instead of venueName
+              setSelectedRoomVenue(
+                relatedVenues.find((venue) =>
+                  venue.rooms?.filter((venueRoom) => isEqual(venueRoom, room))
+                )
+              );
+
+              clearSearch();
+            }}
+          />
+        )) ?? []
     );
+  }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
 
-    const venueEventsResults = Object.values(venueEvents).filter((event) =>
-      event.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const { worldUsers } = useWorldUsers();
+  const { openUserProfileModal } = useProfileModalControls();
 
-    const roomsResults =
-      venue && venue.rooms
-        ? (venue?.rooms as CampRoomData[]).filter((room) =>
-            room.title.toLowerCase().includes(searchQuery.toLowerCase())
-          )
-        : [];
+  const foundUsers = useMemo<JSX.Element[]>(() => {
+    if (!searchQuery) return [];
 
-    setSearchResult({
-      rooms: roomsResults,
-      users: venueUsersResults,
-      events: venueEventsResults,
-    });
-  }, [searchQuery, venue, venueEvents, venueUsers]);
+    return worldUsers
+      .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
+      .map((user) => (
+        <NavSearchResult
+          key={`user-${user.id}`}
+          title={user.partyName ?? DEFAULT_PARTY_NAME}
+          user={user}
+          onClick={() => {
+            openUserProfileModal(user);
+            clearSearch();
+          }}
+        />
+      ));
+  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
+
+  const foundEvents = useMemo<JSX.Element[]>(() => {
+    if (!searchQuery) return [];
+
+    return relatedEvents
+      .filter((event) => {
+        const isEventRoomEnabled =
+          isDefined(event.room) && event.room !== ""
+            ? isDefined(enabledRelatedRoomsByTitle[event.room])
+            : true;
+
+        return (
+          isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
+        );
+      })
+      .map((event) => (
+        <NavSearchBarFoundEvent
+          key={`event-${event.id ?? event.name}`}
+          event={event}
+          enabledRelatedRooms={enabledRelatedRooms}
+          relatedVenues={relatedVenues}
+          onClick={() => {
+            setSelectedEvent(event);
+            clearSearch();
+          }}
+        />
+      ));
+  }, [
+    searchQuery,
+    relatedEvents,
+    enabledRelatedRoomsByTitle,
+    enabledRelatedRooms,
+    relatedVenues,
+    clearSearch,
+  ]);
 
   const numberOfSearchResults =
-    searchResult.rooms.length +
-    searchResult.events.length +
-    searchResult.users.length;
+    foundRooms.length + foundEvents.length + foundUsers.length;
 
-  const clearSearchQuery = useCallback(() => {
-    setSearchQuery("");
-  }, []);
+  const clearSearchIcon = (
+    <img
+      className="NavSearchBar__clear-search"
+      src={navDropdownCloseIcon}
+      alt="close button"
+      onClick={clearSearch}
+    />
+  );
+
+  const navDropdownClassnames = useMemo(
+    () =>
+      classNames("NavSearchBar__nav-dropdown", {
+        "NavSearchBar__nav-dropdown--show": isTruthy(searchQuery),
+      }),
+    [searchQuery]
+  );
 
   return (
-    <div className="nav-search-links">
-      <div className="nav-search-icon" />
-      <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
-      {isTruthy(searchQuery) && (
-        <div className="nav-search-close-icon" onClick={clearSearchQuery} />
-      )}
-      {isTruthy(numberOfSearchResults) && (
-        <>
-          <div className="nav-search-results">
-            <div className="nav-search-result-number">
-              <b>{numberOfSearchResults}</b> search results
-            </div>
-            {searchResult.rooms.map((room, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => setSelectedRoom(room)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${room.image_url})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div className="result-title">{room.title}</div>
-                    <div>Room</div>
-                  </div>
-                </div>
-              );
-            })}
-            {searchResult.events.map((event, index) => {
-              return (
-                <div className="row" key={`event-${index}`}>
-                  <div>
-                    <div>{event.name}</div>
-                    <div>Event</div>
-                  </div>
-                </div>
-              );
-            })}
-            {searchResult.users.map((user, index) => {
-              return (
-                <div
-                  className="row"
-                  key={`room-${index}`}
-                  onClick={() => setSelectedUserProfile(user)}
-                >
-                  <div
-                    className="result-avatar"
-                    style={{
-                      backgroundImage: `url(${user.pictureUrl})`,
-                    }}
-                  ></div>
-                  <div className="result-info">
-                    <div key={`user-${index}`}>{user.partyName}</div>
-                  </div>
-                </div>
-              );
-            })}
+    <div className="NavSearchBar">
+      <div className={navDropdownClassnames}>
+        <div className="NavSearchBar__nav-dropdown__title font-size--small">
+          <strong className="NavSearchBar__search-results-number">
+            {numberOfSearchResults}
+          </strong>{" "}
+          search results
+        </div>
+
+        {isLoading || isEventsLoading ? (
+          <Loading />
+        ) : (
+          <div className="NavSearchBar__search-results">
+            {foundRooms}
+            {foundEvents}
+            {foundUsers}
           </div>
-        </>
-      )}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
+        )}
+      </div>
+
+      <InputField
+        value={searchInputValue}
+        inputClassName="NavSearchBar__search-input"
+        onChange={onSearchInputChange}
+        placeholder="Search for people, rooms, events..."
+        autoComplete="off"
+        iconStart={faSearch}
+        iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
       />
+
+      {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
-        show={isTruthy(selectedRoom)}
+        show={isDefined(selectedRoom)}
         room={selectedRoom}
-        onHide={() => setSelectedRoom(undefined)}
+        venue={selectedRoomVenue}
+        onHide={hideRoomModal}
       />
+
+      {/* @debt use only one EventModal instance with state controlled with redux */}
+      {selectedEvent && (
+        <EventModal
+          event={selectedEvent}
+          show={isDefined(selectedEvent)}
+          onHide={hideEventModal}
+        />
+      )}
     </div>
   );
 };
-
-export default NavSearchBar;

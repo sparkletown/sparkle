@@ -1,29 +1,35 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
-import "firebase/functions";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-import { openUrl, venueInsideUrl } from "utils/url";
-import { WithId } from "utils/id";
-import { AnyVenue } from "types/Firestore";
-import { VenueEvent } from "types/VenueEvent";
-import { User } from "types/User";
-import "./OnlineStats.scss";
-import Fuse from "fuse.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Bugsnag from "@bugsnag/js";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { useInterval } from "hooks/useInterval";
-import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
-import { OnlineStatsData } from "types/OnlineStatsData";
-import { getRandomInt } from "utils/getRandomInt";
-import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
-import { useSelector } from "hooks/useSelector";
-import useConnectPartyGoers from "hooks/useConnectPartyGoers";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import firebase from "firebase/app";
+import Fuse from "fuse.js";
+
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
+
+import { OnlineStatsData } from "types/OnlineStatsData";
+import { User } from "types/User";
+import { AnyVenue, VenueEvent } from "types/venues";
+
 import { playaAddress } from "utils/address";
-import { currentVenueSelectorData, partygoersSelector } from "utils/selectors";
+import { getRandomInt } from "utils/getRandomInt";
+import { WithId } from "utils/id";
+import { currentVenueSelectorData } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
+import { openUrl, venueInsideUrl } from "utils/url";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
+
+import { useInterval } from "hooks/useInterval";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
+
+import "firebase/functions";
+
+import "./OnlineStats.scss";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -40,7 +46,6 @@ const PotLuckButton: React.FC<PotLuckButtonProps> = ({
   venues,
   afterSelect,
 }) => {
-  useConnectPartyGoers();
   const goToRandomVenue = useCallback(() => {
     if (!venues) return;
     const randomVenue = venues[getRandomInt(venues?.length - 1)];
@@ -70,13 +75,14 @@ const OnlineStats: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
   const venue = useSelector(currentVenueSelectorData);
-  const partygoers = useSelector(partygoersSelector) ?? [];
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
+  const venueName = venue?.name;
+  const { openUserProfileModal } = useProfileModalControls();
+
+  // @debt FIVE_MINUTES_MS is deprecated; create needed constant in settings
   useInterval(() => {
     firebase
       .functions()
@@ -93,7 +99,10 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
+    const peopleByLastSeen = peopleByLastSeenIn(
+      venueName ?? "",
+      recentVenueUsers
+    );
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
@@ -110,7 +119,7 @@ const OnlineStats: React.FC = () => {
     venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
     setVenuesWithAttendance(venuesWithAttendance);
     setLiveEvents(liveEvents);
-  }, [openVenues, partygoers, venue]);
+  }, [openVenues, recentVenueUsers, venue, venueName]);
 
   const fuseVenues = useMemo(
     () =>
@@ -127,14 +136,14 @@ const OnlineStats: React.FC = () => {
   );
   const fuseUsers = useMemo(
     () =>
-      new Fuse(partygoers, {
+      new Fuse(recentVenueUsers, {
         keys: ["partyName"],
       }),
-    [partygoers]
+    [recentVenueUsers]
   );
 
   const filteredVenues = useMemo(() => {
-    if (filterVenueText === "") return venuesWithAttendance;
+    if (!filterVenueText) return venuesWithAttendance;
     const resultOfSearch: typeof venuesWithAttendance = [];
     fuseVenues &&
       fuseVenues
@@ -144,22 +153,27 @@ const OnlineStats: React.FC = () => {
   }, [fuseVenues, filterVenueText, venuesWithAttendance]);
 
   const filteredUsers = useMemo(() => {
-    if (filterUsersText === "") return partygoers;
+    if (!filterUsersText) return recentVenueUsers;
     const resultOfSearch: WithId<User>[] = [];
     fuseUsers &&
       fuseUsers
         .search(filterUsersText)
         .forEach((a) => resultOfSearch.push(a.item));
     return resultOfSearch;
-  }, [fuseUsers, filterUsersText, partygoers]);
+  }, [fuseUsers, filterUsersText, recentVenueUsers]);
 
   const liveVenues = filteredVenues.filter(
     (venue) => venue.currentEvents.length
   );
+
   const allVenues = filteredVenues.filter(
     (venue) => !venue.currentEvents.length
   );
-  const peopleByLastSeen = peopleByLastSeenIn(partygoers, venue?.name ?? "");
+
+  const peopleByLastSeen = useMemo(
+    () => peopleByLastSeenIn(venueName ?? "", recentVenueUsers),
+    [recentVenueUsers, venueName]
+  );
 
   const popover = useMemo(
     () =>
@@ -179,6 +193,7 @@ const OnlineStats: React.FC = () => {
                     placeholder="Search venues"
                     onChange={(e) => setFilterVenueText(e.target.value)}
                     value={filterVenueText}
+                    autoComplete="off"
                   />
                   <PotLuckButton
                     venues={venuesWithAttendance.map((v) => v.venue)}
@@ -276,7 +291,7 @@ const OnlineStats: React.FC = () => {
               </div>
               <div className="users-container">
                 <div className="online-users">
-                  {partygoers.length} burners live
+                  {recentVenueUsers.length} burners live
                 </div>
                 <div className="search-container">
                   <input
@@ -285,6 +300,7 @@ const OnlineStats: React.FC = () => {
                     placeholder="Search people"
                     onChange={(e) => setFilterUsersText(e.target.value)}
                     value={filterUsersText}
+                    autoComplete="off"
                   />
                 </div>
                 <div className="people">
@@ -294,7 +310,7 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => setSelectedUserProfile(user)}
+                          onClick={() => openUserProfileModal(user)}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />
@@ -322,10 +338,11 @@ const OnlineStats: React.FC = () => {
       filterUsersText,
       filteredUsers,
       venuesWithAttendance,
-      partygoers,
+      recentVenueUsers,
       allVenues,
       liveVenues,
       peopleByLastSeen,
+      openUserProfileModal,
     ]
   );
 
@@ -335,21 +352,15 @@ const OnlineStats: React.FC = () => {
         <OverlayTrigger
           trigger="click"
           placement="bottom-end"
-          overlay={popover}
-          rootClose={!selectedUserProfile} // allows modal inside popover
+          overlay={popover} // allows modal inside popover
         >
           <span>
             <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
-            {liveEvents.length} live events / {partygoers.length} burners online
+            {liveEvents.length} live events / {recentVenueUsers.length} burners
+            online
           </span>
         </OverlayTrigger>
       )}
-      <UserProfileModal
-        zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-      />
     </>
   );
 };

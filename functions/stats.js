@@ -19,6 +19,7 @@ const eventIsNow = (event, now) => {
   );
 };
 
+// @debt This function will currently load all venues in firebase into memory.. not very efficient
 exports.getOnlineStats = functions.https.onCall(async () => {
   const now = new Date().getTime();
 
@@ -70,6 +71,7 @@ exports.getAllEvents = functions.https.onCall(async () => {
   );
 });
 
+// @debt This function will currently load all venues in firebase into memory.. not very efficient
 exports.getLiveAndFutureEvents = functions.https.onCall(async () => {
   try {
     const now = new Date().getTime();

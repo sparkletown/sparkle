@@ -1,26 +1,21 @@
-import { matchPath, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { useSearchParam } from "react-use";
 
-type VenueRoute = {
-  venueId: string;
-};
+interface ParamsTypes {
+  venueId?: string;
+}
 
-// Sometimes in a nested route we want venue ID
-const venuePaths = [
-  "/e/:step/:venueId",
-  "/in/:venueId",
-  "/v/:venueId",
-  "/admin_v2/venue/:venueId",
-];
+/**
+ * Retrieve the venueId from the URL path (/:venueId/) or the search query string (?venueId=).
+ *
+ * @see https://reactrouter.com/web/api/Hooks/useparams
+ */
 export const useVenueId: () => string | undefined = () => {
-  const history = useHistory();
+  const { venueId: urlParamVenueId } = useParams() as ParamsTypes;
 
-  for (const path of venuePaths) {
-    const match = matchPath<VenueRoute>(history.location.pathname, {
-      path,
-    });
+  // @debt this is a fallback for our legacy ?venueId=foo pattern. Once we eradicate that
+  //   from the codebase in favour of using /:venueId/ paths in the URL, we can remove this.
+  const searchParamVenueId = useSearchParam("venueId");
 
-    if (match && match.params.venueId) {
-      return match.params.venueId;
-    }
-  }
+  return urlParamVenueId ?? searchParamVenueId ?? undefined;
 };

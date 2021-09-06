@@ -1,46 +1,167 @@
-import { Venue } from "types/Venue";
+import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
+
+import { VenueInput_v2 } from "api/admin";
+
 import { User } from "types/User";
-import { isCampVenue } from "types/CampVenue";
 import {
-  SUBVENUE_TEMPLATES,
-  PLAYA_TEMPLATES,
-  PLACEABLE_VENUE_TEMPLATES,
-} from "settings";
+  AnyVenue,
+  JazzbarVenue,
+  urlFromImage,
+  VenueTemplate,
+} from "types/venues";
+
+import { FormValues } from "pages/Admin/Venue/DetailsForm";
+
+import { assertUnreachable } from "./error";
 import { WithId } from "./id";
 
-export const canHaveEvents = (venue: Venue): boolean =>
-  PLACEABLE_VENUE_TEMPLATES.includes(venue.template);
-
-export const canHaveSubvenues = (venue: Venue): boolean =>
+export const canHaveSubvenues = (venue: AnyVenue): boolean =>
   SUBVENUE_TEMPLATES.includes(venue.template);
 
-export const canBeDeleted = (venue: Venue): boolean =>
+export const canBeDeleted = (venue: AnyVenue): boolean =>
   !PLAYA_TEMPLATES.includes(venue.template);
 
-export const canHavePlacement = (venue: Venue): boolean =>
+export const canHavePlacement = (venue: AnyVenue): boolean =>
   PLAYA_TEMPLATES.includes(venue.template);
 
+export const checkIfValidVenueId = (venueId?: string): boolean => {
+  if (typeof venueId !== "string") return false;
+
+  return /[a-z0-9_]{1,250}/.test(venueId);
+};
+
+export const buildEmptyVenue = (
+  venueName: string,
+  template: VenueTemplate
+): VenueInput_v2 => {
+  const list = new DataTransfer();
+
+  const fileList = list.files;
+
+  return {
+    name: venueName,
+    subtitle: "",
+    description: "",
+    template: template,
+    bannerImageFile: fileList,
+    bannerImageUrl: "",
+    logoImageUrl: "",
+    mapBackgroundImageUrl: "",
+    logoImageFile: fileList,
+    rooms: [],
+  };
+};
+
+/**
+ * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
+ * @deprecated legacy tech debt related to Playa, soon to be removed
+ */
 export const peopleByLastSeenIn = (
-  users: Array<WithId<User>> | undefined,
-  venueName: string
+  venueName: string,
+  users?: readonly WithId<User>[]
 ) => {
   const result: { [lastSeenIn: string]: WithId<User>[] } = {};
-  for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-    if (user.lastSeenIn) {
-      if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
-      if (user.lastSeenIn && user.lastSeenIn[venueName]) {
-        result[venueName].push(user);
-      }
-    }
-  }
+  // @debt This isn't correct, but this is only used by Playa/etc, which are legacy code soon to be removed, so we don't mind
+  // for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
+  //   if (user.lastSeenIn) {
+  //     if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
+  //     if (user.lastSeenIn && user.lastSeenIn[venueName]) {
+  //       result[venueName].push(user);
+  //     }
+  //   }
+  // }
   return result;
 };
 
+/**
+ * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
+ * @deprecated legacy tech debt related to Playa, soon to be removed
+ */
 export const peopleAttending = (
   peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
-  venue: Venue
-) =>
-  [
-    venue.name,
-    ...(isCampVenue(venue) ? venue.rooms?.map((r) => r.title) : []),
-  ].flatMap((place) => peopleByLastSeenIn[place] ?? []);
+  venue: AnyVenue
+) => {
+  const rooms = venue.rooms?.map((room) => room.title) ?? [];
+
+  const locations = [venue.name, ...rooms];
+
+  return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
+};
+
+export const createJazzbar = (values: FormValues): JazzbarVenue => {
+  return {
+    template: VenueTemplate.jazzbar,
+    name: values.name || "Your Jazz Bar",
+    config: {
+      theme: {
+        primaryColor: "yellow",
+        backgroundColor: "red",
+      },
+      landingPageConfig: {
+        coverImageUrl: urlFromImage(
+          "/default-profile-pic.png",
+          values.bannerImageFile
+        ),
+        subtitle: values.subtitle || "Subtitle for your venue",
+        description: values.description || "Description of your venue",
+        presentation: [],
+        checkList: [],
+        quotations: [],
+      },
+    },
+    host: {
+      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
+    },
+    owners: [],
+    profile_questions: values.profile_questions ?? [],
+    code_of_conduct_questions: [],
+    termsAndConditions: [],
+    adultContent: values.adultContent || false,
+    width: values.width ?? 40,
+    height: values.width ?? 40,
+    // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
+    iframeUrl: "",
+    logoImageUrl: "",
+  };
+};
+
+export type WithVenue<T extends object> = T & { venue: AnyVenue };
+
+export const withVenue = <T extends object>(
+  obj: T,
+  venue: AnyVenue
+): WithVenue<T> => ({
+  ...obj,
+  venue,
+});
+
+export enum VenueSortingOptions {
+  az = "A - Z",
+  za = "Z - A",
+  newestFirst = "Newest First",
+  oldestFirst = "Oldest First",
+}
+
+export const sortVenues = (
+  venueList: WithId<AnyVenue>[],
+  sortingOption: VenueSortingOptions
+) => {
+  switch (sortingOption) {
+    case VenueSortingOptions.az:
+      return [...venueList].sort((a, b) => a.id.localeCompare(b.id));
+    case VenueSortingOptions.za:
+      return [...venueList].sort((a, b) => -1 * a.id.localeCompare(b.id));
+    case VenueSortingOptions.oldestFirst:
+      return [...venueList].sort(
+        (a, b) =>
+          (a.createdAt ?? 0) - (b.createdAt ?? 0) || a.id.localeCompare(b.id)
+      );
+    case VenueSortingOptions.newestFirst:
+      return [...venueList].sort(
+        (a, b) =>
+          (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
+      );
+    default:
+      assertUnreachable(sortingOption);
+  }
+};

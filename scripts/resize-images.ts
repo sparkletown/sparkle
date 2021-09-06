@@ -31,32 +31,28 @@
     once configured, in a terminal, run: npx ts-node resize-images.ts
 */
 
-import admin from "firebase-admin";
-import { uuid } from "uuidv4";
-import jimp from "jimp";
 import fs from "fs";
+import { resolve } from "path";
+
+import admin from "firebase-admin";
 import { GifUtil } from "gifwrap";
+import jimp from "jimp";
 import p from "phin";
+import { uuid } from "uuidv4";
 
-import { initFirebaseAdminApp } from "./lib/helpers";
+import { ACCEPTED_IMAGE_TYPES } from "../src/settings";
 
-const usage = () => {
-  const scriptName = process.argv[1];
-  const helpText = `
----------------------------------------------------------  
-${scriptName}: Backup or resize images (see code comments for further usage)
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
-Usage: node ${scriptName} PROJECT_ID
+const usage = makeScriptUsage({
+  description: "Backup or resize images (see code comments for further usage)",
+  usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
+  exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
+});
 
-Example: node ${scriptName} co-reality-map
----------------------------------------------------------
-`;
+const [projectId, credentialPath] = process.argv.slice(2);
 
-  console.log(helpText);
-  process.exit(1);
-};
-
-const [projectId] = process.argv.slice(2);
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId) {
   usage();
 }
@@ -74,16 +70,11 @@ const SELECTIVELY_PROCESS_FILE_NAME_PARTS: string[] = [
   // "HUGE_ANIMATED_GIF.gif",
 ];
 
-const ACCEPTED_MIME_TYPES = [
-  "image/png",
-  "image/jpg",
-  "image/jpeg",
-  "image/tiff",
-  "image/bmp",
-  "image/gif",
-];
-
-initFirebaseAdminApp(projectId);
+initFirebaseAdminApp(projectId, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 const backupFile = async (
   remotePath: string,
@@ -162,7 +153,7 @@ const main = async () => {
     });
     console.log("\n\n");
 
-    if (!ACCEPTED_MIME_TYPES.includes(file.metadata.contentType)) {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.metadata.contentType)) {
       console.log(
         `Skipping - ${file.metadata.contentType} Not a processible file type`
       );

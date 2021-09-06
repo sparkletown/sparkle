@@ -1,15 +1,21 @@
-import dayjs from "dayjs";
 import React from "react";
-import { VenueEvent } from "types/VenueEvent";
-import { WithId } from "utils/id";
-import { dateEventTimeFormat } from "utils/time";
+import { format } from "date-fns";
 
-interface Props {
+import { ContainerClassName } from "types/utility";
+import { VenueEvent } from "types/venues";
+
+import { eventEndTime, eventStartTime } from "utils/event";
+import { WithId } from "utils/id";
+import { formatTimeLocalised } from "utils/time";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+export interface VenueEventDetailsProps extends ContainerClassName {
   venueEvent: WithId<VenueEvent>;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
-  className: string;
+  isEditable?: boolean;
 }
 
 const VenueEventDetails = ({
@@ -17,22 +23,18 @@ const VenueEventDetails = ({
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
-  className,
-}: Props) => {
-  const startingDate = new Date(venueEvent.start_utc_seconds * 1000);
-  const endingDate = new Date(
-    (venueEvent.start_utc_seconds + 60 * venueEvent.duration_minutes) * 1000
-  );
+  containerClassName = "",
+  isEditable = false,
+}: VenueEventDetailsProps) => {
+  const startTime = formatTimeLocalised(eventStartTime(venueEvent));
+  const endTime = formatTimeLocalised(eventEndTime(venueEvent));
+  const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
+
   return (
-    <div className={className}>
-      <div className="date">
-        {`${dateEventTimeFormat(startingDate)}-${dateEventTimeFormat(
-          endingDate
-        )}
-      ${dayjs(startingDate).format("dddd MMMM Do")}`}
-      </div>
+    <div className={containerClassName}>
+      <div className="date">{`${startTime}-${endTime} ${startDay}`}</div>
       <div className="event-description">
-        <div style={!className ? { display: "none" } : {}}>
+        <div style={!containerClassName ? { display: "none" } : {}}>
           <span
             style={{ textDecoration: "underline", cursor: "pointer" }}
             onClick={() => {
@@ -43,23 +45,19 @@ const VenueEventDetails = ({
             {venueEvent.name}
           </span>
         </div>
-        {venueEvent.description}
+        <RenderMarkdown text={venueEvent.description} />
+
         {venueEvent.descriptions?.map((description, index) => (
-          <p key={index}>{description}</p>
+          <RenderMarkdown text={description} key={`${description}#${index}`} />
         ))}
       </div>
       <div className="button-container">
-        <div className="price-container">
-          {venueEvent.price > 0 && (
-            <>Individual tickets £{venueEvent.price / 100}</>
-          )}
-        </div>
-        {!className && (
-          <div className="event-payment-button-container">
+        {isEditable && (
+          <div>
             <div>
               <button
                 role="link"
-                className="btn btn-primary buy-tickets-button"
+                className="btn btn-primary"
                 onClick={() => {
                   setEditedEvent && setEditedEvent(venueEvent);
                   setShowCreateEventModal(true);
@@ -69,7 +67,7 @@ const VenueEventDetails = ({
               </button>
               <button
                 role="link"
-                className="btn btn-primary buy-tickets-button"
+                className="btn btn-primary"
                 onClick={() => {
                   setEditedEvent && setEditedEvent(venueEvent);
                   setShowDeleteEventModal(true);

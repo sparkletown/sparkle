@@ -1,28 +1,42 @@
 import React, { useState } from "react";
-import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
-import { BURN_VENUE_TEMPLATES, Template } from "settings";
-import { VenueTemplate } from "types/VenueTemplate";
 
+import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
+import { VenueTemplate } from "types/venues";
+
+import { WizardPage } from "./VenueWizard";
+
+import "./Venue.scss";
+
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
-  [VenueTemplate.zoomroom]: "/venues/venue-zoom.jpg",
-  [VenueTemplate.artpiece]: "/venues/venue-art.jpg",
+  [VenueTemplate.zoomroom]: "/venues/experience.png",
+  [VenueTemplate.artpiece]: "/venues/art-piece.png",
   [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
   [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
   [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
-  [VenueTemplate.jazzbar]: "/venues/venue-performance.jpg",
+  [VenueTemplate.jazzbar]: "/venues/music-venue.png",
   [VenueTemplate.friendship]: undefined,
-  [VenueTemplate.partymap]: "/venues/venue-camp.jpg",
+  [VenueTemplate.partymap]: "/venues/party-map.png",
+  [VenueTemplate.animatemap]: "/venues/animate-map.png",
+  [VenueTemplate.audience]: "/venues/auditorium.png",
+  [VenueTemplate.conversationspace]: "/venues/conversation-space.png",
+  [VenueTemplate.firebarrel]: "/venues/fire-barrel.png",
+  [VenueTemplate.embeddable]: "/venues/embeddable.jpg",
+  [VenueTemplate.auditorium]: "/venues/new-auditorium.png",
+  [VenueTemplate.posterhall]: undefined,
+  [VenueTemplate.posterpage]: undefined,
+  [VenueTemplate.screeningroom]: "/venues/screening-room.png",
+
+  // Legacy
+  [VenueTemplate.avatargrid]: undefined,
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
-  [VenueTemplate.audience]: "/venues/venue-performance.jpg",
-  [VenueTemplate.avatargrid]: undefined,
-  [VenueTemplate.conversationspace]: undefined,
-  [VenueTemplate.firebarrel]: undefined,
 };
 
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
-  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoom.png",
+  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoomroom.png",
   [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",
   [VenueTemplate.performancevenue]:
     "/venues/pickspace-thumbnail_performance.png",
@@ -31,13 +45,21 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: "/venues/pickspace-thumbnail_bar.png",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/pickspace-thumbnail_map.png",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
+  [VenueTemplate.animatemap]: "/venues/pickspace-thumbnail_map.png",
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
-  [VenueTemplate.avatargrid]: undefined,
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
-  [VenueTemplate.firebarrel]: undefined,
+  [VenueTemplate.firebarrel]: "/venues/pickspace-thumbnail_camp.png",
+  [VenueTemplate.embeddable]: "/venues/pickspace-thumbnail_art.png",
+  [VenueTemplate.auditorium]: "/venues/pickspace-thumbnail_auditorium.png",
+  [VenueTemplate.posterhall]: undefined,
+  [VenueTemplate.posterpage]: undefined,
+  [VenueTemplate.screeningroom]: undefined,
+
+  // Legacy
+  [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
@@ -45,7 +67,7 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
     Template | undefined
   >(state.templatePage?.template);
 
-  const templateImage = !!selectedTemplate
+  const templateImage = selectedTemplate
     ? templateImageMap[selectedTemplate.template]
     : undefined;
   const hasTemplateImage = !!templateImage;

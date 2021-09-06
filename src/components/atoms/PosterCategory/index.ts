@@ -1,0 +1,1 @@
+export { PosterCategory } from "./PosterCategory";

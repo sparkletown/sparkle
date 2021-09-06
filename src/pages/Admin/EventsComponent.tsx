@@ -1,19 +1,30 @@
 import React, { useMemo, useState } from "react";
-import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "react-redux-firebase";
-import { RoomVenueDetailsPartProps, VenueEvent } from "types/VenueEvent";
-import { WithId } from "utils/id";
-import InformationCard from "components/molecules/InformationCard";
 import Fuse from "fuse.js";
-import AdminEventModal from "./AdminEventModal";
-import AdminDeleteEvent from "./AdminDeleteEvent";
+
+import { AnyVenue, VenueEvent } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+
+import InformationCard from "components/molecules/InformationCard";
+
 import VenueEventDetails from "./VenueEventDetails";
 
-const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
+export type EventsComponentProps = {
+  venue: WithId<AnyVenue>;
+  roomIndex?: number;
+  setShowDeleteEventModal: Function;
+  setShowCreateEventModal: Function;
+  editedEvent?: WithId<VenueEvent>;
+  setEditedEvent?: Function;
+};
+
+const EventsComponent: React.FC<EventsComponentProps> = ({
   venue,
-  showCreateEventModal,
   setShowCreateEventModal,
-  editedEvent,
+  setShowDeleteEventModal,
   setEditedEvent,
 }) => {
   useFirestoreConnect([
@@ -27,7 +38,6 @@ const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
   ]);
 
   const events = useSelector((state) => state.firestore.ordered.events);
-  const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [filterPastEvents, setFilterPastEvents] = useState(false);
   const [filterText, setFilterText] = useState("");
 
@@ -90,7 +100,7 @@ const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}
                       setShowDeleteEventModal={setShowDeleteEventModal}
-                      className=""
+                      isEditable
                     />
                   </InformationCard>
                 );
@@ -107,27 +117,6 @@ const EventsComponent: React.FC<RoomVenueDetailsPartProps> = ({
           Create an Event
         </button>
       </div>
-      <AdminEventModal
-        show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent && setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
-        event={editedEvent}
-        template={venue.template}
-        setEditedEvent={setEditedEvent}
-        setShowDeleteEventModal={setShowDeleteEventModal}
-      />
-      <AdminDeleteEvent
-        show={showDeleteEventModal}
-        onHide={() => {
-          setShowDeleteEventModal(false);
-          setEditedEvent && setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
-        event={editedEvent}
-      />
     </>
   );
 };

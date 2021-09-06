@@ -1,31 +1,42 @@
+import { AuditoriumSection } from "types/auditorium";
+import { PrivateChatMessage, VenueChatMessage } from "types/chat";
+import { ChatRequest } from "types/ChatRequest";
+import { Reaction } from "types/reactions";
+import { Role } from "types/Role";
+import { ScreeningRoomVideo } from "types/screeningRoom";
+import { Table } from "types/Table";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
+
 import { WithId } from "utils/id";
+
 import { AdminRole } from "hooks/roles";
 
-import { RestrictedChatMessage, PrivateChatMessage } from "store/actions/Chat";
-import { Reaction } from "utils/reactions";
+import { ArtCar, Firebarrel } from "./animateMap";
+import { JukeboxMessage } from "./jukebox";
 
-import { CampVenue } from "./CampVenue";
-import { ChatRequest } from "./ChatRequest";
-import { PartyMapVenue } from "./PartyMapVenue";
-import { Purchase } from "./Purchase";
-import { Role } from "./Role";
-import { Table } from "./Table";
-import { User } from "./User";
-import { Venue } from "./Venue";
-import { VenueEvent } from "./VenueEvent";
-
-export type AnyVenue = Venue | PartyMapVenue | CampVenue;
-
-interface Experience {
+export interface Experience {
   reactions: Record<string, Reaction>;
-  tables: Record<string, Table>;
+  tables: Record<string, Record<string, Table>>;
 }
 
 export interface UserVisit {
   timeSpent: number;
 }
 
+export type ValidFirestoreRootCollections =
+  | "customers"
+  | "experiences"
+  | "roles"
+  | "userprivate"
+  | "users"
+  | "venues";
+
 export type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
+
+export type ValidStoreAsKeys = Exclude<
+  ValidFirestoreKeys,
+  ValidFirestoreRootCollections
+>;
 
 export interface Firestore {
   data: FirestoreData;
@@ -41,60 +52,73 @@ export interface FirestoreStatus {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
-  adminRole: AdminRole;
-  allowAllRoles: Record<string, Role>;
-  allUsers?: Record<string, User>;
-  chatUsers?: Record<string, User>;
-  currentEvent: Record<string, VenueEvent>;
+  adminRole?: AdminRole;
+  allowAllRoles?: Record<string, Role>;
+  // @debt this doesn't appear to be used by anything anymore
+  // chatUsers?: Record<string, User>;
+  currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
+  sovereignVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
-  eventPurchase: Record<string, Purchase>;
+  currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   events?: Record<string, VenueEvent>;
-  experiences: Record<string, Experience>;
-  parentVenue?: AnyVenue;
-  partygoers?: Record<string, User>;
+  experience?: Experience;
+  ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
-  privatechats: Record<string, PrivateChatMessage>;
-  reactions: Record<string, Reaction>;
-  userModalVisits?: Record<string, UserVisit>;
-  userPurchaseHistory: Record<string, Purchase>;
-  userRoles: Record<string, Role>;
-  users: Record<string, User>;
-  venueChats: Record<string, RestrictedChatMessage> | null;
-  venueEvents: Record<string, VenueEvent>;
+  reactions?: Record<string, Reaction>;
+  screeningRoomVideos: Record<string, ScreeningRoomVideo>;
+  animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
+  animatemapArtcars: Partial<Record<string, ArtCar>>;
+  // @debt this doesn't appear to be used by anything anymore
+  // userModalVisits?: Record<string, UserVisit>;
+  userRoles?: Record<string, Role>;
+  venueChatMessages?: Record<string, VenueChatMessage>;
+  venueJukeboxMessages?: Record<string, JukeboxMessage>;
+  venueEvents?: Record<string, VenueEvent>;
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
   venues?: Record<string, AnyVenue>;
-  venueUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  allUsers?: Array<WithId<User>>;
-  chatRequests?: Array<WithId<ChatRequest>>;
-  currentEvent: Array<WithId<VenueEvent>>;
-  currentVenue: Array<WithId<AnyVenue>>;
-  currentVenueEventsNG?: Array<WithId<VenueEvent>>;
-  currentVenueNG?: Array<WithId<AnyVenue>>;
-  eventPurchase: Array<WithId<Purchase>>;
-  events?: Array<WithId<VenueEvent>>;
-  experiences: Array<WithId<Experience>>;
-  parentVenue?: Array<WithId<AnyVenue>>;
-  parentVenueEvents?: Array<WithId<VenueEvent>>;
-  partygoers?: Array<WithId<User>>;
-  playaVenues?: Array<WithId<AnyVenue>>;
-  privatechats?: Array<WithId<PrivateChatMessage>>;
-  reactions: Array<WithId<Reaction>>;
+  chatRequests?: WithId<ChatRequest>[];
+  currentEvent?: WithId<VenueEvent>[];
+  currentVenue?: WithId<AnyVenue>[];
+  sovereignVenue?: WithId<AnyVenue>[];
+  currentVenueEventsNG?: WithId<VenueEvent>[];
+  currentVenueNG?: WithId<AnyVenue>[];
+  currentAuditoriumSections?: WithId<AuditoriumSection>[];
+  events?: WithId<VenueEvent>[];
+  experience: WithId<Experience>;
+  ownedVenues?: WithId<AnyVenue>[];
+  parentVenueEvents?: WithId<VenueEvent>[];
+  playaVenues?: WithId<AnyVenue>[];
+  reactions?: WithId<Reaction>[];
+  screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  statsOnlineUsers?: Array<WithId<User>>;
-  statsOpenVenues?: Array<WithId<AnyVenue>>;
-  subvenues?: WithId<AnyVenue>[];
+  animatemapFirebarrels: WithId<Firebarrel>[];
+  animatemapArtcars: WithId<ArtCar>[];
+  // @debt this doesn't appear to be used by anything anymore
+  // statsOnlineUsers?: WithId<User>[];
+  // statsOpenVenues?: WithId<AnyVenue>[];
+  // subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
-  userModalVisits?: Array<WithId<UserVisit>>;
-  userPurchaseHistory: Array<WithId<Purchase>>;
-  users: Array<WithId<User>>;
-  venueChats: Array<WithId<RestrictedChatMessage>>;
-  venueEvents: Array<WithId<VenueEvent>>;
-  venues?: Array<WithId<AnyVenue>>;
-  venueUsers?: Array<WithId<User>>;
+  userModalVisits?: WithId<UserVisit>[];
+  privateChatMessages?: WithId<PrivateChatMessage>[];
+  posterVenues?: WithId<PosterPageVenue>[];
+  venueChatMessages?: WithId<VenueChatMessage>[];
+  venueJukeboxMessages?: WithId<JukeboxMessage>[];
+  venueEvents?: WithId<VenueEvent>[];
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
+  venues?: WithId<AnyVenue>[];
 }

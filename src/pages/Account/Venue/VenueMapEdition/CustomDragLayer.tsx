@@ -1,9 +1,11 @@
-import React, { CSSProperties } from "react";
-import { XYCoord, useDragLayer } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
-import { SubvenueDragPreview } from "./SubvenueDragPreview";
-import { snapToGrid } from "./snapToGrid";
+import React from "react";
+import { useDragLayer, XYCoord } from "react-dnd";
+
 import { Dimensions } from "types/utility";
+
+import { ItemTypes } from "./ItemTypes";
+import { snapToGrid } from "./snapToGrid";
+import { SubvenueDragPreview } from "./SubvenueDragPreview";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",
@@ -15,11 +17,11 @@ const layerStyles: React.CSSProperties = {
   height: "100%",
 };
 
-function getItemStyles(
+const getItemStyles = (
   initialOffset: XYCoord | null,
   currentOffset: XYCoord | null,
   isSnapToGrid: boolean
-) {
+) => {
   if (!initialOffset || !currentOffset) {
     return {
       display: "none",
@@ -41,7 +43,7 @@ function getItemStyles(
     transform,
     WebkitTransform: transform,
   };
-}
+};
 
 export interface CustomDragLayerProps {
   snapToGrid: boolean;
@@ -65,7 +67,7 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
     isDragging: monitor.isDragging(),
   }));
 
-  function renderItem() {
+  const renderItem = () => {
     switch (itemType) {
       case ItemTypes.SUBVENUE_ICON:
         return (
@@ -84,7 +86,7 @@ export const CustomDragLayer: React.FC<CustomDragLayerProps> = (props) => {
       default:
         return null;
     }
-  }
+  };
 
   if (!isDragging) {
     return null;

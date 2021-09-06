@@ -1,18 +1,21 @@
 import React from "react";
+import classNames from "classnames";
+
+import { ContainerClassName } from "types/utility";
+
 import "./InformationCard.scss";
 
-interface PropsType {
+export interface InformationCardProps extends ContainerClassName {
   title: string;
   children: React.ReactNode;
-  className?: string;
 }
 
-const InformationCard: React.FunctionComponent<PropsType> = ({
+const InformationCard: React.FC<InformationCardProps> = ({
   title,
   children,
-  className,
+  containerClassName,
 }) => (
-  <div className={`information-card-container ${className}`}>
+  <div className={classNames("information-card-container", containerClassName)}>
     <h4 className="title">{title}</h4>
     <div className="information-card-text">{children}</div>
   </div>

@@ -35,9 +35,9 @@ hv.extension('matplotlib')
 
 # REVISIT: move to args
 # Uncomment for info logging
-# logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO)
 # Uncomment for debug logging
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
 

@@ -1,0 +1,72 @@
+@import "scss/constants.scss";
+
+$venue-room-logo-size: 34px;
+$button-size: 50px;
+$icon-size: 20px;
+$footer-width: 360px;
+
+.TabFooter {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  width: $footer-width;
+  padding: $spacing--md;
+  background-color: $black;
+  border-top: 1px solid opaque-white(0.2);
+
+  @mixin button {
+    cursor: pointer;
+    display: flex;
+    height: $button-size;
+    justify-content: center;
+    align-items: center;
+    transition: all 400ms $transition-function;
+  }
+
+  @mixin text-button {
+    @include button;
+    margin: 0 5px;
+    font-weight: $font-weight--700;
+    font-size: $font-size--lg;
+    border-radius: $border-radius--xl;
+    padding: $spacing--md $spacing--lg;
+
+    &:hover {
+      background-color: lighten($color: $primary, $amount: 10);
+    }
+  }
+
+  &__home-button {
+    @include button;
+    width: $button-size;
+    border-radius: 100%;
+    background-color: lighten($color: $saturated-black, $amount: 10);
+
+    &:hover {
+      background-color: lighten($color: $saturated-black, $amount: 20);
+    }
+  }
+
+  &__nav-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__back-button {
+    @include text-button;
+    background-color: lighten($color: $saturated-black, $amount: 10);
+  }
+
+  &__next-button {
+    @include text-button;
+    background-color: $primary;
+  }
+
+  &__home-icon {
+    width: $icon-size;
+    height: $icon-size;
+    background-size: $icon-size $icon-size;
+  }
+}

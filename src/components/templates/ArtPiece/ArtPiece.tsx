@@ -1,102 +1,102 @@
-import React, { useState } from "react";
-import "./ArtPiece.scss";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
-import { useSelector } from "hooks/useSelector";
-import InformationCard from "components/molecules/InformationCard";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import BannerMessage from "components/molecules/BannerMessage";
-import { currentVenueSelectorData } from "utils/selectors";
+import React from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
+
 import { IFRAME_ALLOW } from "settings";
+
+import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
-export const ArtPiece = () => {
-  const venue = useSelector(currentVenueSelectorData);
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import Room from "components/organisms/Room";
 
-  if (!venue) return <>Loading...</>;
+import InformationCard from "components/molecules/InformationCard";
+import { Loading } from "components/molecules/Loading";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
-  const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
+import "./ArtPiece.scss";
 
-  const aspectContainerClasses = `aspect-container ${
-    venue.videoAspect === VideoAspectRatio.SixteenNine ? "aspect-16-9" : ""
-  }`;
+const DECLARATIVE_ASPECT_RATIOS = [
+  `${VideoAspectRatio.sixteenNine}`,
+  `${VideoAspectRatio.anamorphic}`,
+  `${VideoAspectRatio.fullWidth}`,
+];
+
+const filterAspectRatioProperty: (candidate?: string) => string = (candidate) =>
+  candidate && !DECLARATIVE_ASPECT_RATIOS.includes(candidate) ? candidate : "";
+
+export interface ArtPieceProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
+  // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
+  const { name, host, config, showRangers, iframeUrl, videoAspect } =
+    venue ?? {};
+
+  const landingPageConfig = config?.landingPageConfig;
+  const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
+
+  const filteredAspect = filterAspectRatioProperty(videoAspect);
+  const customAspect = useCss({
+    "aspect-ratio": filteredAspect,
+  });
+
+  // NOTE: useful if some UI element with multiple options or free input is added for aspect ratio
+  const aspectContainerClasses = classNames({
+    "ArtPiece__aspect-container": true,
+    "mod--sixteen-nine": videoAspect === VideoAspectRatio.sixteenNine,
+    "mod--anamorphic": videoAspect === VideoAspectRatio.anamorphic,
+    "mod--width-100pp":
+      !videoAspect || videoAspect === VideoAspectRatio.fullWidth,
+    [customAspect]: true,
+  });
+
+  if (!venue) return <Loading label="Loading..." />;
 
   return (
-    <WithNavigationBar>
-      <BannerMessage venue={venue} />
-      <div className="full-page-container art-piece-container">
-        <InformationLeftColumn
-          venueLogoPath={venue?.host?.icon ?? ""}
-          isLeftColumnExpanded={isLeftColumnExpanded}
-          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-        >
-          <InformationCard title="About the venue">
-            <p className="title-sidebar">{venue.name}</p>
-            <p className="short-description-sidebar" style={{ fontSize: 18 }}>
-              {venue.config?.landingPageConfig.subtitle}
-            </p>
-            <p style={{ fontSize: 13 }}>
-              {venue.config?.landingPageConfig.description}
-            </p>
-          </InformationCard>
-        </InformationLeftColumn>
-        <div className="content">
-          <div className={aspectContainerClasses}>
-            <iframe
-              className="youtube-video"
-              title="art-piece-video"
-              src={iframeUrl}
-              frameBorder="0"
-              allow={IFRAME_ALLOW}
-              allowFullScreen
-            ></iframe>
+    <div className="ArtPiece">
+      <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationCard title="About the venue">
+          <p className="ArtPiece__title-sidebar">{name}</p>
+          <p className="ArtPiece__short-description-sidebar">
+            {landingPageConfig?.subtitle}
+          </p>
+          <div className="ArtPiece__rendered-markdown">
+            <RenderMarkdown text={landingPageConfig?.description} />
           </div>
-          <div className="video-chat-wrapper">
-            <Room
-              venueName={venue.name}
-              roomName={venue.name}
-              setUserList={() => null}
-              hasChairs={false}
-              defaultMute={true}
-            />
-          </div>
-          <div className="chat-pop-up" style={{ zIndex: 100 }}>
-            <ChatDrawer
-              title={`${venue.name ?? "Art Piece"} Chat`}
-              roomName={venue.name}
-              chatInputPlaceholder="Chat"
-              defaultShow={true}
-            />
-          </div>
+        </InformationCard>
+      </InformationLeftColumn>
+      <div className="ArtPiece__content">
+        <div className={aspectContainerClasses}>
+          <iframe
+            className="ArtPiece__youtube-video"
+            title="art-piece-video"
+            src={embeddableUrl}
+            frameBorder="0"
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
+        </div>
+        <div className="ArtPiece__video-chat-wrapper">
+          <Room
+            venueName={name}
+            roomName={name}
+            setUserList={() => null}
+            hasChairs={false}
+            defaultMute={true}
+          />
         </div>
       </div>
-      {venue?.showRangers && (
-        <div className="sparkle-fairies">
+      {showRangers && (
+        <div className="ArtPiece__sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>
       )}
-      <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal />
-        </Modal.Body>
-      </Modal>
-    </WithNavigationBar>
+    </div>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ArtPiece;

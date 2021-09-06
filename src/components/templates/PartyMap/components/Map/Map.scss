@@ -1,26 +1,27 @@
-@import "scss/constants.scss";
+@import "scss/constants";
+
 $sand: #937c63;
 $white: #ffffff;
-$room-info-bg: #005ee5;
 $border-radius: 28px;
 
-.party-map-content-container {
+.party-map-map-component {
   display: flex;
   flex-direction: row;
-  margin-top: 20;
 
-  .party-map-container {
-    width: 80%;
+  .party-map-map-content {
+    display: flex;
+    position: relative;
+    box-sizing: content-box;
 
-    .party-map-content {
-      flex: 1;
-      display: flex;
-      margin: 20px auto 20px auto;
-    }
+    flex: 1;
+    margin: 20px;
+
+    width: calc(100% - 300px);
   }
 
-  .sidebar {
-    width: 20%;
+  .party-map-map-sidebar {
+    min-width: $map-sidebar-width;
+    box-shadow: 0 0 60px 10px rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -30,22 +31,9 @@ $border-radius: 28px;
 }
 
 .party-map-background {
+  z-index: z(map-background);
   border-radius: 15px;
   height: 100%;
-}
-
-.camp-background {
-  position: absolute;
-  pointer-events: none;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #c0b170;
-  background-size: cover;
-  border-radius: 15px;
-  transition: opacity 400ms, transform 800ms cubic-bezier(0.23, 1, 0.32, 1);
-  transform: scale(1);
 }
 
 .party-map-grid-container > *:first-child {
@@ -55,7 +43,8 @@ $border-radius: 28px;
 
 .party-map-grid-container {
   position: absolute;
-  width: 80%;
+  width: 100%;
+  height: 100%;
   display: grid;
 
   &:before {
@@ -70,6 +59,7 @@ $border-radius: 28px;
   .seat-column {
     width: 100%;
     height: 100%;
+    z-index: z(map-grid);
   }
 
   .seat-row {
@@ -120,21 +110,13 @@ $border-radius: 28px;
       opacity: 0.025;
       background-color: $white;
     }
-
-    .profile-avatar {
-      background-size: cover;
-      background-position: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 100%;
-    }
   }
 
   .not-seat {
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: white;
+    background-color: $white;
     opacity: 0.025;
     border-radius: 100%;
 
@@ -158,6 +140,8 @@ $border-radius: 28px;
     opacity: 0.2;
   }
 
+  // @debt The only place this seems to be referenced is within src/components/molecules/MapPartygoerOverlay/MapPartygoerOverlay.scss
+  //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
       background-color: $primary;
@@ -171,11 +155,6 @@ $border-radius: 28px;
       background-color: $primary;
       box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
     }
-  }
-
-  .me {
-    box-shadow: 0 0 0 5px $primary;
-    animation: avatarpulse 2s infinite;
   }
 
   .chat-drawer-container {
@@ -197,232 +176,21 @@ $border-radius: 28px;
   padding: 10px;
 }
 
-.room {
-  z-index: 2;
-  &:hover {
-    // Disable temporary the background for zillowville, maybe add this as an option from the admin panel
-    // background-color: rgba($white, 0.8);
-    // box-shadow: inset 0 0 0 0 $white, 0 0 30px 30px rgba($white, 0.8);
-
-    .grid-room-btn {
-      opacity: 1;
-      transform: translateY(2px) scale(1);
-    }
-
-    .camp-venue-text {
-      opacity: 1;
-      transform: scale(1.1);
-      background-color: $room-info-bg;
-      box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
-        0 2px 4px rgba($black, 0.2);
-    }
-  }
-}
-
-.room.isUnderneath {
-  background-color: rgba($white, 0.8);
-  box-shadow: inset 0 0 0 0 $white, 0 0 30px 30px rgba($white, 0.8);
-}
-
 .sparkle-fairies {
   position: fixed;
   top: 70px;
   left: 0px;
-  z-index: 2;
+  z-index: z(left-column);
 }
+
 .info-drawer-camp {
   position: fixed;
   top: 40px;
   left: 0px;
 }
+
 .chat-pop-up {
   position: fixed;
   right: 0px;
   top: calc(#{$navbar-height} + 15px);
-}
-
-.camp-venue {
-  display: flex;
-  justify-content: center;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  &:hover {
-    .camp-venue-text {
-      display: block;
-    }
-    .camp-venue-img {
-      transform: scale(1.05);
-    }
-  }
-
-  &.clicked {
-    .camp-venue-text {
-      .camp-venue-secondinfo {
-        display: block;
-      }
-    }
-  }
-  &:active {
-    .camp-venue-img {
-      transform: scale(1);
-    }
-  }
-
-  .grid-room-btn {
-    z-index: 100;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-    opacity: 0;
-    transform: translateY(-20px) scale(0.8);
-    min-width: 100px;
-    max-width: 120px;
-  }
-
-  .grid-room-btn.isUnderneath {
-    opacity: 1;
-    transform: translateY(2px) scale(1);
-  }
-
-  .camp-venue-img {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-    img {
-      width: 100%;
-      height: 100%;
-    }
-    .camp-venue-badge {
-      height: 30px;
-      width: 30px;
-      position: absolute;
-      bottom: 10px;
-      left: 10px;
-      border-radius: 50%;
-      &.camp-venue-badge-camp {
-        background-size: 30px 30px;
-      }
-      &.camp-venue-badge-art {
-        background-size: 30px 30px;
-      }
-      &.camp-venue-badge-artist {
-        background-size: 30px 30px;
-      }
-      &.camp-venue-badge-artcar {
-        background-size: 30px 30px;
-      }
-    }
-  }
-
-  .camp-venue-text {
-    z-index: 1;
-    float: right;
-    bottom: 10px;
-    position: absolute;
-    margin: 0 auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
-    border-radius: 18px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: auto;
-    height: auto;
-    transition: height 400ms cubic-bezier(0.23, 1, 0.32, 1);
-    display: block;
-    transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
-    min-width: 150px;
-    max-width: 280px;
-
-    .camp-venue-maininfo {
-      display: flex;
-      align-items: center;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 10px;
-
-      //TODO: Rename everything to party map
-      .party-map-venue-title {
-        opacity: 1;
-        display: block;
-        line-height: 1;
-        font-size: 0.9rem;
-        font-size: 13px;
-      }
-
-      .camp-room-avatar {
-        width: 24px;
-        height: 24px;
-        background-color: rgba($black, 0.4);
-        border-radius: 12px;
-        margin-right: 4px;
-        cursor: pointer;
-        background-size: cover;
-        background-position: center;
-        box-shadow: 0 2px 4px rgba($black, 0.4);
-        &:last-child {
-          margin-right: 0px;
-        }
-
-        &.camp-room-avatar-more {
-          text-align: center;
-          line-height: 24px;
-          font-size: 0.8rem;
-          box-shadow: none;
-        }
-      }
-
-      .camp-venue-people {
-        position: relative;
-        display: block;
-        font-size: 0.9rem;
-        padding-right: 8px;
-        padding-left: 8px;
-        border-left: 1px solid rgba($black, 0.2);
-        &:before {
-          content: "";
-          display: block;
-          position: absolute;
-          width: 20px;
-          height: 20px;
-          right: -2px;
-          top: 50%;
-          transform: translateY(-50%);
-          background-repeat: no-repeat;
-          background-size: 20px 20px;
-          background-position: center;
-        }
-      }
-    }
-
-    .camp-venue-secondinfo {
-      border-top: 1px solid rgba($black, 0.2);
-      padding: 6px 10px;
-      display: none;
-      font-size: 20px;
-      .camp-venue-desc {
-        font-size: 0.7rem;
-        z-index: 2;
-        font-size: 15px;
-      }
-
-      .camp-venue-actions {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-top: 10px;
-        font-size: 0.9rem;
-        .btn-block {
-          margin-bottom: 0;
-        }
-        .btn-info {
-          background-color: rgba($black, 0.4);
-        }
-      }
-    }
-  }
 }

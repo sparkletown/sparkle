@@ -1,41 +1,127 @@
-import { VenueEvent } from "types/VenueEvent";
-import { getCurrentTimeInUTCSeconds } from "./time";
+import {
+  addMinutes,
+  areIntervalsOverlapping,
+  differenceInMinutes,
+  fromUnixTime,
+  isAfter,
+  isFuture,
+  isWithinInterval,
+} from "date-fns";
 
-export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
-  const currentTimeInSeconds = new Date().getTime() / 1000;
-  return roomEvents.find(
-    (event) =>
-      event.start_utc_seconds < currentTimeInSeconds &&
-      event.start_utc_seconds + event.duration_minutes > currentTimeInSeconds
-  );
-};
+import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
 
-export const isEventLive = (event: VenueEvent) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
+import { VenueEvent } from "types/venues";
 
-  return (
-    event.start_utc_seconds < currentTimeInUTCSeconds &&
-    event.start_utc_seconds + event.duration_minutes * 60 >
-      currentTimeInUTCSeconds
-  );
-};
+import {
+  formatUtcSecondsRelativeToNow,
+  getCurrentTimeInUTCSeconds,
+  getDayInterval,
+} from "./time";
 
-export const isEventLiveOrFuture = (event: VenueEvent) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-  return (
-    isEventLive(event) || event.start_utc_seconds > currentTimeInUTCSeconds
-  );
-};
+export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
+  roomEvents.find(isEventLive);
+
+export const isEventLive = (event: VenueEvent) =>
+  isWithinInterval(Date.now(), getEventInterval(event));
+
+export const isEventFuture = (event: VenueEvent) =>
+  isFuture(fromUnixTime(event.start_utc_seconds));
+
+export const isEventLater = (event: VenueEvent) =>
+  isEventFuture(event) &&
+  !isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);
+
+export const isEventSoon = (event: VenueEvent) =>
+  isEventFuture(event) &&
+  isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);
+
+export const isEventLiveOrFuture = (event: VenueEvent) =>
+  isEventLive(event) || isEventFuture(event);
 
 export const eventHappeningNow = (
   roomName: string,
   venueEvents: VenueEvent[]
 ) => {
-  const currentTimeInSeconds = new Date().getTime() / 1000;
+  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
+
   return venueEvents.find(
     (event) =>
       event.room === roomName &&
-      event.start_utc_seconds < currentTimeInSeconds &&
-      event.start_utc_seconds + event.duration_minutes > currentTimeInSeconds
+      event.start_utc_seconds < currentTimeInUTCSeconds &&
+      event.start_utc_seconds + event.duration_minutes > currentTimeInUTCSeconds
   );
+};
+
+export const hasEventFinished = (event: VenueEvent) =>
+  isAfter(Date.now(), eventEndTime(event));
+
+export const eventStartTime = (event: VenueEvent) =>
+  fromUnixTime(event.start_utc_seconds);
+
+export const eventEndTime = (event: VenueEvent) =>
+  addMinutes(eventStartTime(event), event.duration_minutes);
+
+export const isEventStartingSoon = (
+  event: VenueEvent,
+  rangeInMinutes: number | undefined = 60
+) => differenceInMinutes(eventStartTime(event), Date.now()) <= rangeInMinutes;
+
+export const getEventInterval = (event: VenueEvent) => ({
+  start: eventStartTime(event),
+  end: eventEndTime(event),
+});
+
+export const isEventWithinDate = (checkDate: Date | number) => (
+  event: VenueEvent
+) =>
+  areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
+
+export const isEventWithinDateAndNotFinished = (checkDate: Date | number) => (
+  event: VenueEvent
+) => isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
+
+export const getEventStatus = (event: VenueEvent) => {
+  if (isEventLive(event)) return `Happening now`;
+
+  if (hasEventFinished(event)) {
+    return `Ended`;
+  } else {
+    return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
+  }
+};
+
+export const eventsByStartUtcSecondsSorter = (a: VenueEvent, b: VenueEvent) =>
+  a.start_utc_seconds - b.start_utc_seconds;
+
+export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
+  if (a.start_utc_seconds !== b.start_utc_seconds) {
+    return eventsByStartUtcSecondsSorter(a, b);
+  }
+
+  return a.duration_minutes - b.duration_minutes;
+};
+
+export const getEventDayRange = (
+  daysInBetween: number,
+  isOneEventAndLive: boolean
+) => {
+  if (isOneEventAndLive) {
+    // add 2 days to daysInBetween to form a full timeline,
+    // if there's just 1 event and it's within today's date
+    return daysInBetween + 2;
+  }
+
+  // add 1 day to daysInBetween to form a full timeline
+  return daysInBetween + 1;
+};
+
+export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
+  const aOrderPriority = a.orderPriority ?? 0;
+  const bOrderPriority = b.orderPriority ?? 0;
+
+  if (aOrderPriority === bOrderPriority) {
+    return eventTimeComparator(a, b);
+  } else {
+    return bOrderPriority - aOrderPriority;
+  }
 };
