@@ -10,13 +10,10 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
 import { assertUnreachable } from "utils/error";
-
-import "./VideoOverlayButton.scss";
 
 export type VideoOverlayButtonVariant = "microphone" | "camera" | "audio";
 
@@ -56,10 +53,7 @@ export const VideoOverlayButton: React.FC<VideoOverlayButtonProps> = ({
   }
 
   return (
-    <div
-      className={classNames("VideoOverlayButton", containerClassName)}
-      onClick={toggle}
-    >
+    <div className={containerClassName} onClick={toggle}>
       <FontAwesomeIcon
         size="lg"
         icon={enabled ? iconEnabled : iconDisabled}
