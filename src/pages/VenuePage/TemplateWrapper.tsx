@@ -39,10 +39,11 @@ export interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
-  const settings = useSettings();
+  const { areLoaded: settingsAreLoaded, settings } = useSettings();
 
   const shouldShowChat =
-    settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template);
+    settingsAreLoaded &&
+    (settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template));
 
   let template;
   // @debt remove backButton from Navbar
