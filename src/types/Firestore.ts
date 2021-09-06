@@ -19,6 +19,10 @@ export interface Experience {
   tables: Record<string, Record<string, Table>>;
 }
 
+export interface Settings {
+  showChat?: boolean;
+}
+
 export interface UserVisit {
   timeSpent: number;
 }
@@ -67,6 +71,7 @@ export interface FirestoreData {
   ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
+  settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
