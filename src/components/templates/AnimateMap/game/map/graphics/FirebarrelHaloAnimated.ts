@@ -16,6 +16,13 @@ export class FirebarrelHaloAnimated
     return FirebarrelHalo.FIREBARELL_HALO_GREEN;
   }
 
+  setup(): void {
+    super.setup();
+    if (this.view && this.view.halo) {
+      this.view.halo.scale.set(FirebarrelHalo.SCALE * 1.2);
+    }
+  }
+
   animate(time: number) {
     if (!this.view.halo) {
       return;
@@ -36,8 +43,8 @@ export class FirebarrelHaloAnimated
       this.direction = -1;
     }
     const value =
-      FirebarrelHaloAnimated.getValue(this.time / this.duration) / 2;
-    this.view.halo.alpha = 0.3 + value;
+      FirebarrelHaloAnimated.getValue(this.time / this.duration) * 0.6;
+    this.view.halo.alpha = 0.4 + value;
   }
 
   static getValue(x: number): number {

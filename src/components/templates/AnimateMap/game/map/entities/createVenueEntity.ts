@@ -58,7 +58,8 @@ const updateVenueImage = (
     )
     .execute()
     .then((comm: CropVenue) => {
-      const size = GameConfig.VENUE_DEFAULT_SIZE;
+      const scaleSize = replicatedVenue.data.withoutPlate ? 4 : 1;
+      const size = GameConfig.VENUE_DEFAULT_SIZE * scaleSize;
       const scale = size / comm.canvas.width;
       positionComponent.scaleY = scale;
       positionComponent.scaleX = scale;
@@ -157,12 +158,16 @@ export const createVenueEntity = (
 
   let hoverEffectEntity: Entity;
   const hoverEffectDuration = 100;
-
+  const scaleSize = venue.data.withoutPlate ? 3.5 : 1;
   entity
     .add(positionComponent)
     .add(venueComponent)
     .add(spriteComponent)
-    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS))
+    .add(
+      new CollisionComponent(
+        GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * scaleSize
+      )
+    )
     .add(
       new HoverableSpriteComponent(
         () => {
