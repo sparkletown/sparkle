@@ -1,5 +1,7 @@
 import { Engine, NodeList } from "@ash.ts/ash";
+import { settings } from "pixi.js";
 
+import { GameConfig } from "../../../configs/GameConfig";
 import EntityFactory from "../entities/EntityFactory";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 
@@ -21,9 +23,9 @@ export class MotionArtcarSystem extends MotionBaseSystem {
   }
 
   update(time: number) {
+    const sec = time / settings.TARGET_FPMS / 1000;
     for (let node = this.artcars?.head; node; node = node.next) {
-      const speed = this.getArtcarDefaultSpeed();
-      node.elipse.rotation += speed * (time / 1000);
+      node.elipse.rotation += GameConfig.ARTCAR_ANGULAR_VELOCITY * sec;
 
       const oldX = node.position.x;
       const oldY = node.position.y;
