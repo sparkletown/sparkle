@@ -139,7 +139,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         >
           <button
             aria-label={formattedDay}
-            className="NavBarSchedule__weekday-button"
+            className="NavBarSchedule__weekdayButton"
           >
             {formattedDay}
           </button>
@@ -254,24 +254,24 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const isNotSovereignVenue = venueId !== sovereignVenue?.id;
   const breadcrumbSovereignVenueClasses = classNames(
-    "NavBarScheduleBreadcrumb__btn",
+    "NavBarSchedule__breadcrumbBtn",
     {
-      "NavBarScheduleBreadcrumb__btn--disabled": filterRelatedEvents,
+      "NavBarSchedule__breadcrumbBtn--disabled": filterRelatedEvents,
     }
   );
 
-  const breadcrumbVenueClasses = classNames("NavBarScheduleBreadcrumb__btn", {
-    "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
+  const breadcrumbVenueClasses = classNames("NavBarSchedule__breadcrumbBtn", {
+    "NavBarSchedule__breadcrumbBtn--disabled": !filterRelatedEvents,
   });
 
   const selectedVenue =
     (filterRelatedEvents ? venueId : sovereignVenue?.id) ?? "";
 
   return (
-    <div className="NavBarWrapper">
+    <div className="NavBarSchedule__wrapper">
       <div className={containerClasses}>
-        <NavBarBanner containerClassName="NavBarSchedule--end-to-end" />
-        <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
+        <NavBarBanner containerClassName="NavBarSchedule__endToEnd" />
+        <ul className="NavBarSchedule__weekdays NavBarSchedule__endToEnd">
           {weekdays}
         </ul>
         <div className="NavBarSchedule__breadcrumb">
@@ -294,7 +294,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         </div>
         {venueId && <ScheduleVenueDescription venueId={selectedVenue} />}
         <Toggler
-          containerClassName="NavBarSchedule__bookmarked-toggle"
+          containerClassName="NavBarSchedule__bookmarkedToggle"
           name="bookmarked-toggle"
           toggled={showPersonalisedSchedule}
           onChange={togglePersonalisedSchedule}
@@ -305,25 +305,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           isLoading={isEventsLoading}
           {...scheduleNGWithAttendees}
         />
-      </div>
-      {!isEventsLoading && (
-        <div className="NavBarWrapper__download-buttons">
-          {isShowPersonalDownloadBtn && (
+        {!isEventsLoading && (
+          <div className="NavBarSchedule__downloadButtons">
+            {isShowPersonalDownloadBtn && (
+              <Button
+                onClick={downloadPersonalEventsCalendar}
+                customClass="NavBarSchedule__downloadScheduleBtn"
+              >
+                Download your schedule
+              </Button>
+            )}
             <Button
-              onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarWrapper__download-schedule-btn"
+              onClick={downloadAllEventsCalendar}
+              customClass="NavBarSchedule__downloadScheduleBtn"
             >
-              Download your schedule
+              Download full schedule
             </Button>
-          )}
-          <Button
-            onClick={downloadAllEventsCalendar}
-            customClass="NavBarWrapper__download-schedule-btn"
-          >
-            Download full schedule
-          </Button>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
