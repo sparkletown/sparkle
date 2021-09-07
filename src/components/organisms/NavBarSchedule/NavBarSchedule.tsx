@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import {
   addDays,
@@ -33,6 +34,7 @@ import { ScheduleNG } from "components/molecules/ScheduleNG";
 // Disabled as per designs. Up for deletion if confirmied not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { Button } from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
@@ -47,6 +49,7 @@ export interface ScheduleNGDay {
 export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
+  closeEventSchedule?: Function;
   venueId: string;
 }
 
@@ -57,6 +60,7 @@ interface UserWithVenueIdProps extends WithId<User> {
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
+  closeEventSchedule = () => {},
   venueId,
 }) => {
   const { userWithId } = useUser();
@@ -238,6 +242,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           onChange={togglePersonalisedSchedule}
           label="Bookmarked events"
         />
+
+        <ButtonNG
+          className="NavBarWrapper__close-button"
+          iconName={faTimes}
+          onClick={() => closeEventSchedule()}
+        />
+
         <ScheduleNG
           showPersonalisedSchedule={showPersonalisedSchedule}
           isLoading={isEventsLoading}

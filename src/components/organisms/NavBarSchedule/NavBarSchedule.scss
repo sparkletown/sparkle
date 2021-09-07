@@ -15,6 +15,10 @@ $schedule-btn--height: 51px;
   display: flex;
   flex-direction: column;
 
+  &__close-button {
+    display: none;
+  }
+
   &__download-buttons {
     position: fixed;
     bottom: 0;
@@ -124,5 +128,30 @@ $schedule-btn--height: 51px;
   &__bookmarked-toggle {
     justify-content: left;
     padding: $spacing--sm 0px;
+  }
+}
+
+@media screen and (max-width: $media-breakpoint--md) {
+  .NavBarSchedule {
+    width: 100%;
+  }
+
+  .NavBarWrapper {
+    &__download-buttons {
+      width: 100%;
+    }
+
+    &__close-button {
+      height: 45px;
+      width: 45px;
+      display: block;
+      position: absolute;
+      right: $spacing--md;
+      z-index: $z-layer-navbar;
+
+      .ButtonNG__icon--icon-text {
+        margin-right: 0;
+      }
+    }
   }
 }
