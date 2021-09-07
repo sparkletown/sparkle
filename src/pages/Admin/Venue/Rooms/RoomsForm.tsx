@@ -216,6 +216,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
               left: values.x_percent || 0,
               top: values.y_percent || 0,
               url: imageUrl,
+              title: values.title,
             },
           }
         : {},
@@ -225,6 +226,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
       values.y_percent,
       values.width_percent,
       values.height_percent,
+      values.title,
     ]
   );
 
