@@ -26,6 +26,7 @@ interface ImageInputProps extends ContainerClassName {
   error?: FieldError;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
+  btnLabel?: string;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -40,6 +41,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   setValue,
   register,
   isInputHidden = false,
+  btnLabel = "Upload",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -117,7 +119,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
       </div>
       {isInputHidden && (
         <Button onClick={onButtonClick} variant="primary">
-          Upload banner
+          {btnLabel}
         </Button>
       )}
       {errorMessage && <span className="input-error">{errorMessage}</span>}

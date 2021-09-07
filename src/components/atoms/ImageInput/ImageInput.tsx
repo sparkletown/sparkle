@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useCallback, useState } from "react";
+import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import { Button } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -19,6 +20,8 @@ export interface ImageInputProps {
   small?: boolean;
   register: ReturnType<typeof useForm>["register"];
   nameWithUnderscore?: boolean;
+  btnLabel?: string;
+  isInputHidden?: boolean;
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
@@ -30,7 +33,11 @@ const ImageInput: React.FC<ImageInputProps> = ({
   register,
   setValue,
   nameWithUnderscore = false,
+  isInputHidden = false,
+  btnLabel = "Upload",
 }) => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const [imageUrl, setImageUrl] = useState(imgUrl);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
@@ -54,6 +61,10 @@ const ImageInput: React.FC<ImageInputProps> = ({
     [handleFileInputChange, onChange, setValue, fileName]
   );
 
+  const onButtonClick = () => {
+    inputFileRef?.current?.click();
+  };
+
   return (
     <>
       <label
@@ -61,6 +72,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           "ImageInput__container--error": !!error?.message,
           "ImageInput__container--small": small,
           "ImageInput__container--disabled": loading,
+          "ImageInput__container--hidden": isInputHidden,
         })}
         style={{
           backgroundImage: `url(${imageUrl})`,
@@ -72,6 +84,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           id={name}
           onChange={handleFileInputChangeWrapper}
           type="file"
+          ref={inputFileRef}
         />
         {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
@@ -92,6 +105,11 @@ const ImageInput: React.FC<ImageInputProps> = ({
         value={imageUrl}
         readOnly
       />
+      {isInputHidden && (
+        <Button onClick={onButtonClick} variant="primary">
+          {btnLabel}
+        </Button>
+      )}
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );

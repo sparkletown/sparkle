@@ -1,7 +1,10 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import { useCss } from "react-use";
 import classNames from "classnames";
 import { sample } from "lodash";
+
+import { DEFAULT_VENUE_BANNER } from "settings";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -11,6 +14,7 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
+import { useValidImage } from "hooks/useCheckImage";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -92,9 +96,20 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig?.bannerImageUrl ||
+      venue?.config?.landingPageConfig?.coverImageUrl,
+    DEFAULT_VENUE_BANNER
+  );
+
+  const containerVars = useCss({
+    background: `url("${validBannerImageUrl}")`,
+  });
+
   const containerClasses = classNames(
     "AllSectionPreviews",
-    `AllSectionPreviews--${auditoriumSize}`
+    `AllSectionPreviews--${auditoriumSize}`,
+    containerVars
   );
 
   return (
@@ -106,6 +121,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         />
       )}
       <div className={containerClasses}>
+        <div className="AllSectionPreviews__background" />
         {emptyBlocks}
 
         <div className="AllSectionPreviews__main">

@@ -522,7 +522,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       values.bannerImageUrl === DEFAULT_VENUE_BANNER;
     return (
       <div className="input-container">
-        <h4 className="italic input-header">Upload a banner photo</h4>
+        <h4 className="italic input-header">Upload Highlight image</h4>
         <ImageInput
           disabled={disable}
           name={"bannerImageFile"}
@@ -533,6 +533,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           setValue={setValue}
           error={errors.bannerImageFile || errors.bannerImageUrl}
           isInputHidden={isBtnOnly}
+          btnLabel="Upload Highlight image"
         />
       </div>
     );

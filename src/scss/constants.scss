@@ -155,6 +155,7 @@ $z-layer-jazz-header: 1;
 $z-layer-user-list-label: 1;
 $z-layer-embed-iframe: 1;
 $z-layer-external-message: 1;
+$z-layer-auditorium-iframe: 1;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -219,6 +220,8 @@ $z-layers: (
   art-content: $z-layer-art-content,
   // Embeddable
   embeddable-iframe: $z-layer-embed-iframe,
+  // Auditorium
+  auditorium-iframe: $z-layer-auditorium-iframe,
   // External Link
   external-message: $z-layer-external-message,
   // Unsorted

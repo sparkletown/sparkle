@@ -173,21 +173,27 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     </S.InputContainer>
   );
 
-  const renderBannerUpload = () => (
-    <S.InputContainer>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload a banner photo
-      </h4>
-      <ImageInput
-        onChange={handleBannerUpload}
-        name="bannerImage"
-        error={errors.bannerImageFile || errors.bannerImageUrl}
-        setValue={setValue}
-        register={register}
-        imgUrl={editData?.bannerImageUrl}
-      />
-    </S.InputContainer>
-  );
+  const renderBannerUpload = () => {
+    const isBtnOnly = values.bannerImageUrl === DEFAULT_VENUE_BANNER;
+
+    return (
+      <S.InputContainer>
+        <h4 className="italic" style={{ fontSize: "20px" }}>
+          Upload Highlight image
+        </h4>
+        <ImageInput
+          onChange={handleBannerUpload}
+          name="bannerImage"
+          error={errors.bannerImageFile || errors.bannerImageUrl}
+          setValue={setValue}
+          register={register}
+          imgUrl={editData?.bannerImageUrl}
+          isInputHidden={isBtnOnly}
+          btnLabel="Upload Highlight image"
+        />
+      </S.InputContainer>
+    );
+  };
 
   const renderLogoUpload = () => (
     <S.InputContainer>
