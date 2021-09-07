@@ -6,10 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
-import { currentVenueSelectorData } from "utils/selectors";
-
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -44,10 +41,7 @@ export const Questions: React.FC = () => {
     venueId,
   });
 
-  // @debt this should probably be retrieving the sovereign venue
-  // @debt replace this with useConnectCurrentVenueNG or similar?
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelectorData);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
@@ -89,12 +83,9 @@ export const Questions: React.FC = () => {
     return <NotFound fullScreen />;
   }
 
-  if (!venue && isLoaded(venue)) {
-    console.error(Questions.name, "Error: Missing venue for venueId:", venueId);
-    return <NotFound fullScreen />;
-  }
   if (!venue || isSovereignVenueLoading) {
-    return <LoadingPage />;
+    console.error(Questions.name, "Error: Missing venue for venueId:", venueId);
+    return isLoaded(venue) ? <NotFound fullScreen /> : <LoadingPage />;
   }
 
   const numberOfQuestions = sovereignVenue?.profile_questions?.length ?? 0;

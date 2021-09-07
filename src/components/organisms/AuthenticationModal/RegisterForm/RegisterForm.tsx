@@ -9,11 +9,9 @@ import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserPrivate } from "pages/Account/helpers";
@@ -58,12 +56,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venueFromSelector = useSelector(venueSelector);
   const venueId = useVenueId();
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
-  const venue = venueFromSelector ?? currentVenue;
+  const {
+    currentVenue: venue,
+    isCurrentVenueLoaded,
+  } = useConnectCurrentVenueNG(venueId);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 

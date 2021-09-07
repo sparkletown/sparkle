@@ -4,10 +4,7 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { venueSelector } from "utils/selectors";
-
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
@@ -50,12 +47,12 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     reValidateMode: "onChange",
   });
 
-  const venueFromSelector = useSelector(venueSelector);
   const venueId = useVenueId();
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
-  const venue = venueFromSelector ?? currentVenue;
+  const {
+    currentVenue: venue,
+    isCurrentVenueLoaded,
+  } = useConnectCurrentVenueNG(venueId);
+
   if (!venue) {
     return isCurrentVenueLoaded ? <NotFound fullScreen /> : <LoadingPage />;
   }
