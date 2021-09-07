@@ -10,6 +10,7 @@ import { Experience } from "types/Firestore";
 import { JukeboxMessage } from "types/jukebox";
 import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
+import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
@@ -212,3 +213,7 @@ export const animateMapEnvironmentSoundSelector: SparkleSelector<boolean> = (
 export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
   state
 ) => state.animatemap.firstEntrance;
+
+export const settingsSelector: SparkleSelector<Settings | undefined> = (
+  state
+) => state.firestore.data.settings;
