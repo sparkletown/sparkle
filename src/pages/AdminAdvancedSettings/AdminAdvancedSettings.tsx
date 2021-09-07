@@ -16,6 +16,8 @@ import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./AdminAdvancedSettings.scss";
@@ -83,7 +85,7 @@ export const AdminAdvancedSettings: React.FC = () => {
   }
 
   return (
-    <>
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
       <div className="AdminAdvancedSettings">
         <div className="AdminAdvancedSettings__options">
           {renderAdminAdvancedTabs}
@@ -104,6 +106,6 @@ export const AdminAdvancedSettings: React.FC = () => {
           onSave={navigateToDefaultTab}
         />
       )}
-    </>
+    </WithNavigationBar>
   );
 };

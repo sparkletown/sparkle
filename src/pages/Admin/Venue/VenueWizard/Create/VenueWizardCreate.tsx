@@ -37,11 +37,7 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
     );
   }
 
-  return (
-    <WithNavigationBar>
-      <Details previous={previous} dispatch={dispatch} data={state} />
-    </WithNavigationBar>
-  );
+  return <Details previous={previous} dispatch={dispatch} data={state} />;
 };
 
 export default VenueWizardCreate;

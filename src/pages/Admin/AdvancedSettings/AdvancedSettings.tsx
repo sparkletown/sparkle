@@ -21,6 +21,8 @@ import * as S from "../Admin.styles";
 
 import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
+import "./AdvancedSettings.scss";
+
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {
   title: string;
@@ -335,7 +337,11 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
         {renderRoomVisibility()}
 
-        <Button type="submit" disabled={!dirty || isSubmitting}>
+        <Button
+          className="AdvancedSettings__save-button"
+          type="submit"
+          disabled={!dirty || isSubmitting}
+        >
           Save
         </Button>
       </Form>

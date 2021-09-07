@@ -20,6 +20,8 @@ import * as S from "../Admin.styles";
 
 import { EntranceExperienceProps } from "./EntranceExperience.types";
 
+import "./EntranceExperience.scss";
+
 type ProfileQuestion = VenueInput_v2["profile_questions"];
 type CodeOfConductQuestion = VenueInput_v2["code_of_conduct_questions"];
 
@@ -138,7 +140,9 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
           </S.ItemBody>
         </S.ItemWrapper>
 
-        <Button type="submit">Save</Button>
+        <Button className="EntranceExperience__save-button" type="submit">
+          Save
+        </Button>
       </Form>
     </div>
   );

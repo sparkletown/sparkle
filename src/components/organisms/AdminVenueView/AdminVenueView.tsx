@@ -14,6 +14,8 @@ import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { WithNavigationBar } from "../WithNavigationBar";
+
 import { RunTabView } from "./components/RunTabView/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
@@ -112,7 +114,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <>
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
       <div className="AdminVenueView">
         <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
@@ -133,6 +135,6 @@ export const AdminVenueView: React.FC = () => {
         />
       )}
       {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
-    </>
+    </WithNavigationBar>
   );
 };
