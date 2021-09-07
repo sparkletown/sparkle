@@ -83,9 +83,10 @@ const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
 
-// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS in src/settings.ts + share the same code between frontend/backend
+// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
 const DEFAULT_SHOW_SHOUTOUTS = true;
+const DEFAULT_ENABLE_JUKEBOX = false;
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
@@ -229,6 +230,12 @@ const createVenueData = (data, context) => {
     venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
+  if (data.template === VenueTemplate.jazzbar) {
+    venueData.enableJukebox =
+      typeof data.enableJukebox === "boolean"
+        ? data.enableJukebox
+        : DEFAULT_ENABLE_JUKEBOX;
+  }
   // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData.showReactions =
@@ -303,6 +310,13 @@ const createVenueData_v2 = (data, context) => {
     createdAt: Date.now(),
     updatedAt: Date.now(),
   };
+
+  if (data.template === VenueTemplate.jazzbar) {
+    venueData_v2.enableJukebox =
+      typeof data.enableJukebox === "boolean"
+        ? data.enableJukebox
+        : DEFAULT_ENABLE_JUKEBOX;
+  }
 
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData_v2.showReactions =
@@ -384,6 +398,10 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
   }
 
   if (typeof data.showUserStatus === "boolean") {
