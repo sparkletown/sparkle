@@ -246,14 +246,12 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
-  autoPlay?: boolean;
   enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {
   template: VenueTemplate.embeddable;
   iframeUrl?: string;
-  autoPlay?: boolean;
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;

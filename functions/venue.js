@@ -433,10 +433,7 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showNametags = data.showNametags;
   }
 
-  if (data.autoPlay) {
-    updated.autoPlay = data.autoPlay;
-  }
-
+  updated.autoPlay = data.autoPlay ?? false;
   updated.updatedAt = Date.now();
 
   return updated;

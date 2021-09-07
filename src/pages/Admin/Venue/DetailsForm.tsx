@@ -140,7 +140,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
       bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
       parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
-      autoPlay: defaultValues?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
     },
   });
   const { user } = useUser();
@@ -652,20 +651,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
-      <label
-        htmlFor={"autoPlaycheckbox"}
-        className={`checkbox ${
-          !watch("autoPlay", false) && "checkbox-checked"
-        }`}
-      >
-        If you are embedding a video, do you want to disable autoplay?
-      </label>
-      <input
-        type="checkbox"
-        id={"autoPlaycheckbox"}
-        name={"autoPlay"}
-        defaultChecked={!values.autoPlay}
-        ref={register}
+      <h4 className="italic input-header">Autoplay your embeded video</h4>
+      <Toggler
+        name="autoPlay"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_VENUE_AUTOPLAY}
       />
     </div>
   );
