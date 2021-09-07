@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { isTruthyFilter } from "utils/filter";
+import { isTruthy } from "utils/helpers";
 
 import { useWorldUserLocation } from "./users";
 
@@ -10,7 +10,7 @@ export const useIsOnline = (userId?: string) => {
 
   return useMemo(
     () => ({
-      isOnline: !isTruthyFilter(lastSeenIn),
+      isOnline: !isTruthy(lastSeenIn),
       lastSeenIn,
     }),
     [lastSeenIn]
