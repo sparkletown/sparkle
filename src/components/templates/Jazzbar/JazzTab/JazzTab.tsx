@@ -195,10 +195,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     key="main-event"
                     title="main event"
                     className="iframe-video"
-                    src={`${convertToEmbeddableUrl({
+                    src={ convertToEmbeddableUrl({
                       url: venue.iframeUrl,
                       autoPlay: venue?.autoPlay,
-                    })}`}
+                    }) ?? "" }
                     frameBorder="0"
                     allow={IFRAME_ALLOW}
                   />
