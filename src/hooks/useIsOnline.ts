@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { isTruthy } from "utils/helpers";
+import { isTruthy } from "utils/types";
 
 import { useWorldUserLocation } from "./users";
 
