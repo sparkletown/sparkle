@@ -163,10 +163,10 @@ $loading-page-icon-transform-small-opacity: 0.4;
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
-$z-layer-navbar: 31;
 $z-layer-live-schedule: 35;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 30;
+$z-layer-navbar: $z-layer-sidebar + 1;
 $z-layer-left-column: 15;
 $z-layer-emergency-content: 15;
 
