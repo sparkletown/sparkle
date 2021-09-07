@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useHistory } from "react-router-dom";
 
 import { Room } from "types/rooms";
 
@@ -14,6 +15,8 @@ export interface UseRoomProps {
 export const useRoom = ({ room }: UseRoomProps) => {
   const roomUrl = room?.url ?? "";
 
+  const { push: openUrlUsingRouter } = useHistory();
+
   const noTrailSlashPortalUrl = roomUrl && getUrlWithoutTrailingSlash(roomUrl);
 
   const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
@@ -21,8 +24,8 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const enterRoom = useCallback(() => {
     if (!portalVenueId) return;
 
-    enterVenue(portalVenueId);
-  }, [portalVenueId]);
+    enterVenue(portalVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [portalVenueId, openUrlUsingRouter]);
 
   return {
     enterRoom,
