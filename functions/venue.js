@@ -259,6 +259,7 @@ const createVenueData = (data, context) => {
 
   if (IFRAME_TEMPLATES.includes(data.template)) {
     venueData.iframeUrl = data.iframeUrl;
+    venueData.autoPlay = data.autoPlay;
   }
 
   if (ZOOM_URL_TEMPLATES.includes(data.template)) {
@@ -432,6 +433,7 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showNametags = data.showNametags;
   }
 
+  updated.autoPlay = data.autoPlay ?? false;
   updated.updatedAt = Date.now();
 
   return updated;
