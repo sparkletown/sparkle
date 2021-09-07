@@ -1,3 +1,5 @@
+import { Settings } from "./settings";
+
 import { AuditoriumSection } from "types/auditorium";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { ChatRequest } from "types/ChatRequest";
@@ -12,12 +14,12 @@ import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
 import { ArtCar, Firebarrel } from "./animateMap";
+import { JukeboxMessage } from "./jukebox";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
 }
-
 export interface UserVisit {
   timeSpent: number;
 }
@@ -66,6 +68,7 @@ export interface FirestoreData {
   ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
+  settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
@@ -73,6 +76,7 @@ export interface FirestoreData {
   // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
+  venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
 
   /**
@@ -111,6 +115,7 @@ export interface FirestoreOrdered {
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
+  venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
 
   /**
