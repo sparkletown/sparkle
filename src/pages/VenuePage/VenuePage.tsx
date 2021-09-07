@@ -72,7 +72,7 @@ export const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
   const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
+  const { lastSeenIn: userLastSeenIn, enteredVenueIds } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -153,17 +153,12 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (
-      !venueId ||
-      !userId ||
-      !profile ||
-      profile?.enteredVenueIds?.includes(venueId)
-    ) {
+    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
       return;
     }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
-  }, [profile, userId, venueId]);
+    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
+  }, [enteredVenueIds, profile, userId, venueId]);
 
   // NOTE: User's timespent updates
 
@@ -209,7 +204,6 @@ export const VenuePage: React.FC = () => {
   //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
   // }
   const { entrance, template, hasPaidEvents } = venue;
-  const { enteredVenueIds } = profile;
 
   const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
   const hasEntered = enteredVenueIds?.includes(venueId);
