@@ -25,7 +25,7 @@ const styles: React.CSSProperties = {
 };
 export interface SubVenueIconMap {
   [key: string]: {
-    title: string;
+    title?: string;
     top: number;
     left: number;
     url?: string;
