@@ -3,7 +3,7 @@ import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
-import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
@@ -12,7 +12,8 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
-import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
+import { MAP_JSON, sounds } from "../constants/AssetConstants";
+import { stubArtcarsData } from "../constants/StubData";
 import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
@@ -367,17 +368,11 @@ export class MapContainer extends Container {
         .then(() => {
           if (this.entityFactory) {
             const self: MapContainer = this;
+            const artcars = stubArtcarsData();
             const loop = async () => {
               for (let i = 0; i < artcars.length; i++) {
                 await new Promise((resolve) => {
-                  const user: PlayerModel = new PlayerModel(
-                    `${i}${Date.now()}`,
-                    -1,
-                    artcars[i]
-                  );
-                  // user.data.id = `${i}${Date.now()}`;
-                  // user.data.avatarUrlString = artcars[i];
-                  self.entityFactory?.createArtcar(user);
+                  self.entityFactory?.createArtcar(artcars[i]);
                   setTimeout(() => {
                     resolve(true);
                   }, 30);
