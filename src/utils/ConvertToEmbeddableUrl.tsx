@@ -1,7 +1,14 @@
-export const ConvertToEmbeddableUrl = (
-  url: string | undefined,
-  autoplay: boolean = true
-) => {
+import { DEFAULT_VENUE_AUTOPLAY } from "settings";
+
+export interface ConvertToEmbeddableUrlOptions {
+  url?: string;
+  autoPlay?: boolean;
+}
+
+// @debt Replace the naive logic with use of new URL(url) which provides standard parsing before doing checks
+export const convertToEmbeddableUrl: (
+  options: ConvertToEmbeddableUrlOptions
+) => string = ({ url, autoPlay = DEFAULT_VENUE_AUTOPLAY }) => {
   if (url?.includes("youtube")) {
     url = url?.replace("watch?v=", "embed/");
   } else if (
@@ -20,7 +27,7 @@ export const ConvertToEmbeddableUrl = (
   } else {
     url = url?.includes("http") ? url : "//" + url;
   }
-  if (autoplay) {
+  if (autoPlay) {
     url += url.includes("?") ? "&" : "?";
     url += "autoplay=1";
   }
