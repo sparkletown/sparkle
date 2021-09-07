@@ -233,3 +233,11 @@ export const anyVenueEventWithIdConverter: firebase.firestore.FirestoreDataConve
     return withId(snapshot.data() as VenueEvent, snapshot.id);
   },
 };
+
+export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
+  if (!venueId) return;
+
+  return await firebase
+    .functions()
+    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+};
