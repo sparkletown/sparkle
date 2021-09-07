@@ -1,3 +1,5 @@
+import { Settings } from "./settings";
+
 import { AuditoriumSection } from "types/auditorium";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { ChatRequest } from "types/ChatRequest";
@@ -18,7 +20,6 @@ export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
 }
-
 export interface UserVisit {
   timeSpent: number;
 }
@@ -67,6 +68,7 @@ export interface FirestoreData {
   ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
+  settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
