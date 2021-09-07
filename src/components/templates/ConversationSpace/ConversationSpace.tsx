@@ -78,6 +78,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     "conversation-space-container",
     containerVars
   );
+
   return (
     <>
       <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
@@ -94,6 +95,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
         </InformationCard>
       </InformationLeftColumn>
       <div className={containerClasses}>
+        <div className="conversation-space-background" />
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}

@@ -319,3 +319,22 @@
     }
   }
 }
+
+.conversation-space-background {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: opaque-black(0.8);
+}
+
+.TableHeader {
+  &__leave-table {
+    z-index: z(jazzbar-header);
+  }
+  &__lock-button {
+    z-index: z(jazzbar-header);
+  }
+  &__topic-info {
+    z-index: z(jazzbar-header);
+  }
+}
