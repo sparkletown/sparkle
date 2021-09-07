@@ -1,7 +1,10 @@
 import { EntityStateMachine } from "@ash.ts/ash";
 
-import { ReplicatedUser } from "store/reducers/AnimateMap";
+import { ReplicatedArtcar } from "store/reducers/AnimateMap";
 
 export class ArtcarComponent {
-  constructor(public artcar: ReplicatedUser, public fsm: EntityStateMachine) {}
+  constructor(
+    public artcar: ReplicatedArtcar,
+    public fsm: EntityStateMachine
+  ) {}
 }

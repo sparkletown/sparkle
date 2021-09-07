@@ -76,7 +76,7 @@ export const _InputField: React.ForwardRefRenderFunction<
 
   return (
     <div className={containerClassNames}>
-      <div>
+      <div className="InputField__wrapper">
         <input ref={ref} className={inputClassNames} {...extraInputProps} />
 
         {iconStart &&

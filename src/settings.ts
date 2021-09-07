@@ -87,6 +87,7 @@ export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
+export const YOUTUBE_SHORT_URL_STRING = "youtu";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
@@ -668,6 +669,7 @@ export const DEFAULT_AVATARS = [
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
@@ -767,3 +769,13 @@ export const ALWAYS_EMPTY_ARRAY = [];
 Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
+
+export const DEFAULT_SHOW_CHAT = true;
+export const VENUES_WITH_CHAT_REQUIRED = [
+  VenueTemplate.conversationspace,
+  VenueTemplate.screeningroom,
+  VenueTemplate.artpiece,
+  VenueTemplate.embeddable,
+  VenueTemplate.auditorium,
+  VenueTemplate.audience,
+];
