@@ -77,14 +77,18 @@ initFirebaseAdminApp(projectId, {
       .owners?.map(
         (uid: string) => filteredUsers.find((u) => u.uid === uid)?.email ?? ""
       );
-    if (!venueOwners?.filter((owner: string) => owner.includes("@")).length) {
-      return;
-    }
+
+    // venue owners that have email
+    const filteredVenueOwners = venueOwners?.filter((owner: string) =>
+      owner.includes("@")
+    );
 
     const venueData = [
       doc.id,
       doc.data().name,
-      venueOwners.filter((owner: string) => !!owner),
+      filteredVenueOwners.length
+        ? venueOwners.filter((owner: string) => !!owner)
+        : "",
     ];
 
     const csvFormattedLine = venueData.map((s) => `"${s}"`).join(",");
