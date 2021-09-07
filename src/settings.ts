@@ -769,3 +769,13 @@ export const ALWAYS_EMPTY_ARRAY = [];
 Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
+
+export const DEFAULT_SHOW_CHAT = true;
+export const VENUES_WITH_CHAT_REQUIRED = [
+  VenueTemplate.conversationspace,
+  VenueTemplate.screeningroom,
+  VenueTemplate.artpiece,
+  VenueTemplate.embeddable,
+  VenueTemplate.auditorium,
+  VenueTemplate.audience,
+];
