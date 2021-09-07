@@ -46,6 +46,11 @@
       flex-flow: wrap;
     }
 
+    .video-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
     .video-container {
       display: flex;
       flex-direction: column;
@@ -53,6 +58,10 @@
       width: 100%;
       padding: 0 10px;
       min-height: 395px;
+
+      &--seated {
+        min-height: 600px;
+      }
 
       grid-area: video;
 
@@ -79,7 +88,8 @@
         background-color: rgb(25, 24, 26);
         width: 90%;
         overflow: hidden;
-        padding: 0 10px 5px;
+
+        padding: 0 10px 15px;
         border-radius: 0px 0px 28px 28px;
         z-index: z(user-reactions-emoji);
 
@@ -138,7 +148,8 @@
         );
         // Note: "items" grid area is used in Jazzbar room component
         grid-template-areas:
-          ".  video video ."
+          ".  video video  ."
+          ".  video video  ."
           ".  video video  ."
           "items items items items";
       }
