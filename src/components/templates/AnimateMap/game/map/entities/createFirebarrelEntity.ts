@@ -23,9 +23,9 @@ import { FirebarrelHaloAnimated } from "../graphics/FirebarrelHaloAnimated";
 import { FirebarrelHaloEmpty } from "../graphics/FirebarrelHaloEmpty";
 import { FirebarrelShouter } from "../graphics/FirebarrelShouter";
 import { FirebarrelTooltip } from "../graphics/FirebarrelTooltip";
-import { Hoverable } from "../graphics/Hoverable";
 import { HoverIn } from "../graphics/HoverIn";
 import { HoverOut } from "../graphics/HoverOut";
+import { Venue } from "../graphics/Venue";
 
 import EntityFactory from "./EntityFactory";
 
@@ -115,6 +115,7 @@ export const createFirebarrelEntity = (
   barrel: ReplicatedFirebarrel,
   creator: EntityFactory
 ): Entity => {
+  const engine = creator.engine;
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
 
@@ -157,6 +158,9 @@ export const createFirebarrelEntity = (
       }
     );
 
+  let hoverEffectEntity: Entity;
+  const hoverEffectDuration = 100;
+
   entity
     .add(barrelComponent)
     .add(new CollisionComponent(getCollisionRadius()))
@@ -171,29 +175,37 @@ export const createFirebarrelEntity = (
 
           // add increase
           const comm = entity.get(SpriteComponent);
-          const duration = 100;
           if (comm) {
-            entity.add(
+            if (hoverEffectEntity) {
+              engine.removeEntity(hoverEffectEntity);
+            }
+            hoverEffectEntity = new Entity();
+            hoverEffectEntity.add(
               new AnimationComponent(
-                new HoverIn(comm.view as Hoverable, duration),
-                duration
+                new HoverIn(comm.view as Venue, hoverEffectDuration),
+                hoverEffectDuration
               )
             );
+            engine.addEntity(hoverEffectEntity);
           }
         },
         () => {
           // remove tooltip
           removeTooltip(entity);
           // add decrease
-          const comm: SpriteComponent | null = entity.get(SpriteComponent);
-          const duration = 100;
+          const comm = entity.get(SpriteComponent);
           if (comm) {
-            entity.add(
+            if (hoverEffectEntity) {
+              engine.removeEntity(hoverEffectEntity);
+            }
+            hoverEffectEntity = new Entity();
+            hoverEffectEntity.add(
               new AnimationComponent(
-                new HoverOut(comm.view as Hoverable, duration),
-                duration
+                new HoverOut(comm.view as Venue, hoverEffectDuration),
+                hoverEffectDuration
               )
             );
+            engine.addEntity(hoverEffectEntity);
           }
         }
       )

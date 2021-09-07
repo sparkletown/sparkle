@@ -82,6 +82,7 @@ export type VenueInput = AdvancedVenueInput &
     description?: string;
     zoomUrl?: string;
     iframeUrl?: string;
+    autoPlay?: boolean;
     template: VenueTemplate;
     rooms?: Array<Room>;
     placement?: Omit<VenuePlacement, "state">;
@@ -101,6 +102,7 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
     showReactions?: boolean;
+    enableJukebox?: boolean;
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
@@ -123,6 +125,7 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  autoPlay?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

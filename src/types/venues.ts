@@ -141,6 +141,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
+  autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   placement?: VenuePlacement;
   zoomUrl?: string;
@@ -245,6 +246,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {

@@ -9,6 +9,7 @@ import { Form } from "react-bootstrap";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
+import classNames from "classnames";
 import * as Yup from "yup";
 
 import { IS_BURN } from "secrets";
@@ -21,6 +22,7 @@ import {
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_AUTOPLAY,
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
@@ -643,11 +645,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        value="https://player.vimeo.com/video/512606583?h=84853fbd28"
-      />
+      >
+        https://player.vimeo.com/video/512606583?h=84853fbd28
+      </textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
+      <h4 className="italic input-header">Autoplay your embeded video</h4>
+      <Toggler
+        name="autoPlay"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_VENUE_AUTOPLAY}
+      />
     </div>
   );
 
@@ -872,6 +881,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const isJazzbar = templateID === VenueTemplate.jazzbar;
+
+  const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
+    "toggle-room DetailsForm--hidden": isJazzbar,
+  });
+
+  const renderJukeboxToggle = () => {
+    return (
+      <div className={jukeboxContainerClasses}>
+        <h4 className="italic input-header">Enable Jukebox</h4>
+        <Toggler name="enableJukebox" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -1052,6 +1076,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        {renderJukeboxToggle()}
 
         <UserStatusManager
           venueId={venueId}
