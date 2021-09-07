@@ -18,7 +18,7 @@ $spacing: 20px;
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: $spacing;
+    padding: 0 $spacing;
     justify-content: space-between;
   }
 
@@ -67,15 +67,10 @@ $spacing: 20px;
   &__description {
     @include scrollbar;
 
-    margin-top: $spacing;
-    margin-bottom: $spacing;
     padding: 10px $spacing;
 
     background: $dark;
     border-radius: $border-radius;
-
-    max-height: 25vh;
-    overflow-y: auto;
 
     font-size: $font-size--md;
     font-weight: $font-weight--400;
