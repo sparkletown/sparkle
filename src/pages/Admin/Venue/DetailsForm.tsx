@@ -714,11 +714,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const isJazzbar = templateID === VenueTemplate.jazzbar;
-
-  const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
-    "toggle-room DetailsForm--hidden": isJazzbar,
-  });
+  const jukeboxContainerClasses = classNames("toggle-room DetailsForm--hidden");
 
   const renderJukeboxToggle = () => {
     return (
