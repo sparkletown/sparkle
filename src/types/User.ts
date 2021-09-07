@@ -58,7 +58,7 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-  lastSeenIn?: never;
+  lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
 }
 

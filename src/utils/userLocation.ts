@@ -21,7 +21,7 @@ export const updateLocationData = ({
 }: UpdateLocationDataProps) => {
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastSeenIn: newLocationPath,
+    lastVenueIdSeenIn: newLocationPath,
   });
 };
 
