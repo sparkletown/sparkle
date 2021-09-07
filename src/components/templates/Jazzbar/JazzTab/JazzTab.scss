@@ -2,7 +2,12 @@
 @import "../jazzbar-constants.scss";
 
 .music-bar {
-  margin-top: 40px;
+  padding-top: $jazz-bar-padding-top;
+  margin-top: $spacing--xxl;
+
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 
   .table-header {
     grid-area: header;
@@ -15,6 +20,13 @@
         justify-content: center;
       }
     }
+  }
+
+  &-background {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: opaque-black(0.5);
   }
 
   .music-bar-content {
@@ -67,9 +79,10 @@
         background-color: rgb(25, 24, 26);
         width: 90%;
         overflow: hidden;
-
         padding: 0 10px 5px;
         border-radius: 0px 0px 28px 28px;
+        z-index: z(user-reactions-emoji);
+
         .emoji-container {
           display: flex;
           justify-content: space-around;
@@ -104,8 +117,18 @@
   }
 
   &--tableview {
-    margin-top: 0;
+    padding-top: 0;
+    margin-top: 10;
 
+    & .TableHeader__leave-table {
+      z-index: z(jazzbar-header);
+    }
+    & .TableHeader__lock-button {
+      z-index: z(jazzbar-header);
+    }
+    & .TableHeader__topic-info {
+      z-index: z(jazzbar-header);
+    }
     .music-bar-content {
       @media (min-width: $media-breakpoint--lg) {
         grid-template-columns: $video-participant-optimal-width 1fr 1fr $video-participant-optimal-width;

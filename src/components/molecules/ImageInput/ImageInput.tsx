@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useCallback, useMemo } from "react";
+import React, { ChangeEvent, useCallback, useMemo, useRef } from "react";
+import { Button } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -12,8 +13,11 @@ import { ImageOverlay } from "components/atoms/ImageOverlay";
 
 import "firebase/functions";
 
+import "./ImageInput.scss";
+
 interface ImageInputProps extends ContainerClassName {
   disabled: boolean;
+  isInputHidden?: boolean;
   name: string;
   remoteUrlInputName?: string;
   remoteImageUrl?: string;
@@ -35,7 +39,10 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   disabled,
   setValue,
   register,
+  isInputHidden = false,
 }) => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const imageUrl = useMemo(
     () =>
       (image && image.length > 0 && URL.createObjectURL(image[0])) ||
@@ -63,17 +70,24 @@ export const ImageInput: React.FC<ImageInputProps> = ({
     [handleFileInputChange, name, remoteUrlInputName, setValue]
   );
 
+  const onButtonClick = () => {
+    inputFileRef?.current?.click();
+  };
+
+  const containerClasses = classNames(
+    "image-input default-container",
+    {
+      containerClassName,
+      "image-input default-container--hidden": isInputHidden,
+    },
+    {
+      disabled: loading,
+    }
+  );
+
   return (
     <>
-      <div
-        className={classNames(
-          `image-input default-container`,
-          containerClassName,
-          {
-            disabled: loading,
-          }
-        )}
-      >
+      <div className={containerClasses}>
         {imageUrl ? (
           <img
             className={`default-image ${imageClassName}`}
@@ -93,12 +107,19 @@ export const ImageInput: React.FC<ImageInputProps> = ({
           accept={ACCEPTED_IMAGE_TYPES}
           onChange={handleFileInputChangeWrapper}
           className="default-input"
+          ref={inputFileRef}
         />
+
         {loading && <ImageOverlay>processing...</ImageOverlay>}
         {remoteUrlInputName && (
           <input type="hidden" ref={register} name={remoteUrlInputName} />
         )}
       </div>
+      {isInputHidden && (
+        <Button onClick={onButtonClick} variant="primary">
+          Upload banner
+        </Button>
+      )}
       {errorMessage && <span className="input-error">{errorMessage}</span>}
     </>
   );

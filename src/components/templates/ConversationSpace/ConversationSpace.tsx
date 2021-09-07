@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_USER_LIST_LIMIT } from "settings";
+import { DEFAULT_USER_LIST_LIMIT, DEFAULT_VENUE_BANNER } from "settings";
 
 import { GenericVenue } from "types/venues";
 
@@ -66,12 +66,11 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig?.bannerImageUrl ||
       venue?.config?.landingPageConfig?.coverImageUrl,
-    "black"
+    DEFAULT_VENUE_BANNER
   );
 
   const containerVars = useCss({
-    background:
-      validBannerImageUrl !== "black" ? `url(${validBannerImageUrl})` : "black",
+    background: `url(${validBannerImageUrl})`,
     height: seatedAtTable ? "100%" : "auto",
   });
 

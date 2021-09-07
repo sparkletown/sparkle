@@ -3,6 +3,9 @@
 .embeddable {
   height: 100%;
   width: 100%;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 
   display: flex;
   justify-content: center;
@@ -13,6 +16,13 @@
     width: 90%;
 
     border: none;
-    background-color: $light-grey;
+    z-index: z(embeddable-iframe);
+  }
+
+  &__background {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: opaque-black(0.5);
   }
 }

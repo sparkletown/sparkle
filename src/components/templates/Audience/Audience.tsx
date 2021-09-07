@@ -12,6 +12,7 @@ import classNames from "classnames";
 import {
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
+  DEFAULT_VENUE_BANNER,
   IFRAME_ALLOW,
   REACTION_TIMEOUT,
 } from "settings";
@@ -280,19 +281,14 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     takeSeat(null, null);
   }, [takeSeat]);
 
-  console.log(venue.mapBackgroundImageUrl);
-
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig?.bannerImageUrl ||
       venue?.config?.landingPageConfig?.coverImageUrl,
-    "black"
+    DEFAULT_VENUE_BANNER
   );
 
   const containerVars = useCss({
-    background:
-      validBannerImageUrl !== "black"
-        ? `url(${validBannerImageUrl}) rgba(0,0,0, 0.7)`
-        : "black",
+    background: `url(${validBannerImageUrl})`,
   });
 
   const containerClasses = classNames("audience-container", containerVars);
@@ -382,7 +378,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               : undefined,
           }}
         >
-          <div></div>
+          <div className="audience-background" />
           <div className="audience">
             <div className="audience-overlay">
               <div

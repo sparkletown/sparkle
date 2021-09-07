@@ -11,12 +11,21 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
   background-attachment: fixed;
   background-position: center 46%;
+  background-size: cover;
 
   position: relative;
   overflow: auto;
   height: 100%;
   padding: $spacing;
   min-width: fit-content;
+
+  .audience-background {
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    background-color: opaque-black(0.5);
+    margin: -($spacing--xxl);
+  }
 
   .audience-overlay {
     position: absolute;

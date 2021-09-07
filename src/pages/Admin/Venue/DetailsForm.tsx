@@ -420,7 +420,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   setFormError,
 }) => {
   const values = watch();
-
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -516,21 +515,27 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderBannerPhotoInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Upload a banner photo</h4>
-      <ImageInput
-        disabled={disable}
-        name={"bannerImageFile"}
-        image={values.bannerImageFile}
-        remoteUrlInputName={"bannerImageUrl"}
-        remoteImageUrl={values.bannerImageUrl}
-        register={register}
-        setValue={setValue}
-        error={errors.bannerImageFile || errors.bannerImageUrl}
-      />
-    </div>
-  );
+  const renderBannerPhotoInput = () => {
+    const isBtnOnly =
+      values.bannerImageFile === DEFAULT_VENUE_BANNER ||
+      values.bannerImageUrl === DEFAULT_VENUE_BANNER;
+    return (
+      <div className="input-container">
+        <h4 className="italic input-header">Upload a banner photo</h4>
+        <ImageInput
+          disabled={disable}
+          name={"bannerImageFile"}
+          image={values.bannerImageFile}
+          remoteUrlInputName={"bannerImageUrl"}
+          remoteImageUrl={values.bannerImageUrl}
+          register={register}
+          setValue={setValue}
+          error={errors.bannerImageFile || errors.bannerImageUrl}
+          isInputHidden={isBtnOnly}
+        />
+      </div>
+    );
+  };
 
   const renderLogoInput = () => (
     <div className="input-container">

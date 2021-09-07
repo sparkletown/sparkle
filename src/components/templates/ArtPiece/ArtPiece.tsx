@@ -2,13 +2,15 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { IFRAME_ALLOW } from "settings";
+import { DEFAULT_VENUE_BANNER, IFRAME_ALLOW } from "settings";
 
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
+
+import { useValidImage } from "hooks/useCheckImage";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -56,47 +58,60 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
     [customAspect]: true,
   });
 
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig?.coverImageUrl,
+    DEFAULT_VENUE_BANNER
+  );
+  const containerVars = useCss({
+    background: `url(${validBannerImageUrl})`,
+  });
+
+  const containerClasses = classNames("ArtPiece", containerVars);
+
   if (!venue) return <Loading label="Loading..." />;
 
   return (
-    <div className="ArtPiece">
-      <InformationLeftColumn iconNameOrPath={host?.icon}>
-        <InformationCard title="About the venue">
-          <p className="ArtPiece__title-sidebar">{name}</p>
-          <p className="ArtPiece__short-description-sidebar">
-            {landingPageConfig?.subtitle}
-          </p>
-          <div className="ArtPiece__rendered-markdown">
-            <RenderMarkdown text={landingPageConfig?.description} />
+    <>
+      <div className="ArtPiece-background" />
+      <div className={containerClasses}>
+        <InformationLeftColumn iconNameOrPath={host?.icon}>
+          <InformationCard title="About the venue">
+            <p className="ArtPiece__title-sidebar">{name}</p>
+            <p className="ArtPiece__short-description-sidebar">
+              {landingPageConfig?.subtitle}
+            </p>
+            <div className="ArtPiece__rendered-markdown">
+              <RenderMarkdown text={landingPageConfig?.description} />
+            </div>
+          </InformationCard>
+        </InformationLeftColumn>
+        <div className="ArtPiece__content">
+          <div className={aspectContainerClasses}>
+            <iframe
+              className="ArtPiece__youtube-video"
+              title="art-piece-video"
+              src={embeddableUrl}
+              frameBorder="0"
+              allow={IFRAME_ALLOW}
+              allowFullScreen
+            />
           </div>
-        </InformationCard>
-      </InformationLeftColumn>
-      <div className="ArtPiece__content">
-        <div className={aspectContainerClasses}>
-          <iframe
-            className="ArtPiece__youtube-video"
-            title="art-piece-video"
-            src={embeddableUrl}
-            frameBorder="0"
-            allow={IFRAME_ALLOW}
-            allowFullScreen
-          />
+          <div className="ArtPiece__video-chat-wrapper">
+            <Room
+              venueName={name}
+              roomName={name}
+              setUserList={() => null}
+              hasChairs={false}
+              defaultMute={true}
+            />
+          </div>
         </div>
-        <div className="ArtPiece__video-chat-wrapper">
-          <Room
-            venueName={name}
-            roomName={name}
-            setUserList={() => null}
-            hasChairs={false}
-            defaultMute={true}
-          />
-        </div>
+        {showRangers && (
+          <div className="ArtPiece__sparkle-fairies">
+            <SparkleFairiesPopUp />
+          </div>
+        )}
       </div>
-      {showRangers && (
-        <div className="ArtPiece__sparkle-fairies">
-          <SparkleFairiesPopUp />
-        </div>
-      )}
-    </div>
+    </>
   );
 };

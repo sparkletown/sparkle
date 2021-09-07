@@ -150,6 +150,11 @@ $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
 $z-layer-emergency-content: 15;
+$z-layer-art-content: 5;
+$z-layer-jazz-header: 1;
+$z-layer-user-list-label: 1;
+$z-layer-embed-iframe: 1;
+$z-layer-external-message: 1;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -163,6 +168,7 @@ $z-layers: (
   admin-venue-header: -1,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
+  jazzbar-header: $z-layer-jazz-header,
   // Chat
   chatbox-chat-container: $z-layer-sidebar,
   chat-drawer-container: $z-layer-sidebar,
@@ -195,6 +201,8 @@ $z-layers: (
   // UserReactions
   user-reactions-shout: 2,
   user-reactions-emoji: 1,
+  // UserList
+  user-list-label: $z-layer-user-list-label,
   // Map
   map-room--hovered: 7,
   map-avatar: 6,
@@ -207,6 +215,12 @@ $z-layers: (
   account-profile-picture-preview: 1,
   duststorm-container: 100,
   duststorm-modal-content: 220,
+  // ArtPiece
+  art-content: $z-layer-art-content,
+  // Embeddable
+  embeddable-iframe: $z-layer-embed-iframe,
+  // External Link
+  external-message: $z-layer-external-message,
   // Unsorted
   announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,

@@ -1,9 +1,15 @@
 import React, { useEffect } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
+
+import { DEFAULT_VENUE_BANNER } from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
+
+import { useValidImage } from "hooks/useCheckImage";
 
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
@@ -16,6 +22,16 @@ export interface ExternalRoomProps {
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const redirectUrl = venue.zoomUrl;
 
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig?.coverImageUrl,
+    DEFAULT_VENUE_BANNER
+  );
+  const containerVars = useCss({
+    background: `url(${validBannerImageUrl})`,
+  });
+
+  const containerClasses = classNames("ExternalRoom", containerVars);
+
   useEffect(() => {
     if (!redirectUrl) return;
 
@@ -23,7 +39,9 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   }, [redirectUrl]);
 
   return redirectUrl ? (
-    <div className="ExternalRoom">
+    <div className={containerClasses}>
+      <div className="ExternalRoom__background" />
+
       <div className="ExternalRoom__message">
         <SparkleLogo />
         <div className="ExternalRoom__content">
