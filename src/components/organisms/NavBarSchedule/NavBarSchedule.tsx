@@ -130,7 +130,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         >
           <button
             aria-label={formattedDay}
-            className="NavBarSchedule__weekday-button"
+            className="NavBarSchedule__weekdayButton"
           >
             {formattedDay}
           </button>
@@ -225,14 +225,14 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   return (
-    <div className="NavBarWrapper">
+    <div className="NavBarSchedule__wrapper">
       <div className={containerClasses}>
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
         {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
-          containerClassName="NavBarSchedule__bookmarked-toggle"
+          containerClassName="NavBarSchedule__bookmarkedToggle"
           name="bookmarked-toggle"
           toggled={showPersonalisedSchedule}
           onChange={togglePersonalisedSchedule}
@@ -243,25 +243,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           isLoading={isEventsLoading}
           {...scheduleNGWithAttendees}
         />
-      </div>
-      {!isEventsLoading && (
-        <div className="NavBarWrapper__download-buttons">
-          {isShowPersonalDownloadBtn && (
+        {!isEventsLoading && (
+          <div className="NavBarSchedule__downloadButtons">
+            {isShowPersonalDownloadBtn && (
+              <Button
+                onClick={downloadPersonalEventsCalendar}
+                customClass="NavBarSchedule__downloadScheduleBtn"
+              >
+                Download your schedule
+              </Button>
+            )}
             <Button
-              onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarWrapper__download-schedule-btn"
+              onClick={downloadAllEventsCalendar}
+              customClass="NavBarSchedule__downloadScheduleBtn"
             >
-              Download your schedule
+              Download full schedule
             </Button>
-          )}
-          <Button
-            onClick={downloadAllEventsCalendar}
-            customClass="NavBarWrapper__download-schedule-btn"
-          >
-            Download full schedule
-          </Button>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
