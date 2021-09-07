@@ -8,12 +8,11 @@ import classNames from "classnames";
 
 import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { NotFound } from "components/atoms/NotFound";
 
 import { RunTabView } from "./components/RunTabView/RunTabView";
@@ -57,9 +56,6 @@ export const AdminVenueView: React.FC = () => {
     venueId,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
-
-  const { userId } = useUser();
-  const { isAdminUser } = useIsAdminUser(userId);
 
   // Get and pass venue to child components when working on tabs
   const {
@@ -113,12 +109,8 @@ export const AdminVenueView: React.FC = () => {
     return isCurrentVenueLoaded ? <NotFound /> : <LoadingPage />;
   }
 
-  if (!isAdminUser) {
-    return <>Forbidden</>;
-  }
-
   return (
-    <>
+    <AdminRestricted>
       <div className="AdminVenueView">
         <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
@@ -139,6 +131,6 @@ export const AdminVenueView: React.FC = () => {
         />
       )}
       {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
-    </>
+    </AdminRestricted>
   );
 };

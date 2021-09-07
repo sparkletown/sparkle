@@ -36,6 +36,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { ImageInput } from "components/molecules/ImageInput";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { NotFound } from "components/atoms/NotFound";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -100,12 +101,14 @@ export const RoomsForm: React.FC = () => {
 
   return (
     <WithNavigationBar hasBackButton={false}>
-      <RoomInnerForm
-        venueId={venueId}
-        venue={venue}
-        editingRoom={room}
-        editingRoomIndex={queryRoomIndex}
-      />
+      <AdminRestricted>
+        <RoomInnerForm
+          venueId={venueId}
+          venue={venue}
+          editingRoom={room}
+          editingRoomIndex={queryRoomIndex}
+        />
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };
