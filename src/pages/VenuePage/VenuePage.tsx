@@ -153,12 +153,17 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
+    if (
+      !venueId ||
+      !userId ||
+      !userLocation ||
+      enteredVenueIds?.includes(venueId)
+    ) {
       return;
     }
 
     void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
-  }, [enteredVenueIds, profile, userId, venueId]);
+  }, [enteredVenueIds, userLocation, userId, venueId]);
 
   // NOTE: User's timespent updates
 

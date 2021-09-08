@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
@@ -134,10 +128,6 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
   const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
-
-  useEffect(() => {
-    console.log("changed", worldUsers);
-  }, [worldUsers]);
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];

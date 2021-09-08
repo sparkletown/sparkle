@@ -100,6 +100,8 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
+export const WORLD_USERS_UPDATE_INTERVAL = 5000;
+
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
