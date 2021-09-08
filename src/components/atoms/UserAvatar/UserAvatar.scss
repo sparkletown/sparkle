@@ -37,6 +37,7 @@
 
   &__image {
     @include square-size($default-image-size);
+    object-fit: contain;
     border-radius: 50%;
     vertical-align: unset;
   }
