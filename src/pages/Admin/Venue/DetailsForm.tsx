@@ -533,7 +533,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           setValue={setValue}
           error={errors.bannerImageFile || errors.bannerImageUrl}
           isInputHidden={isBtnOnly}
-          btnLabel="Upload Highlight image"
+          text="Upload Highlight image"
         />
       </div>
     );

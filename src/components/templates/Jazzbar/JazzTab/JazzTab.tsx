@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -8,7 +7,6 @@ import {
   DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
-  DEFAULT_VENUE_BANNER,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -20,7 +18,6 @@ import { JazzbarVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
-import { useValidImage } from "hooks/useCheckImage";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentVenueUsers } from "hooks/users";
@@ -38,6 +35,7 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 
 import Room from "../components/JazzBarRoom";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
@@ -140,23 +138,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig?.bannerImageUrl ||
-      venue?.config?.landingPageConfig?.coverImageUrl,
-    DEFAULT_VENUE_BANNER
-  );
-
-  const containerVars = useCss({
-    background: `url(${validBannerImageUrl})`,
+  const containerClasses = classNames("music-bar", {
+    "music-bar--tableview": seatedAtTable,
   });
-
-  const containerClasses = classNames(
-    "music-bar",
-    {
-      "music-bar--tableview": seatedAtTable,
-    },
-    containerVars
-  );
 
   const videoContainerClasses = classNames("video-container", {
     "video-container--seated": seatedAtTable,
@@ -166,8 +150,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   return (
     <>
-      <div className="music-bar-background" />
-      <div className={containerClasses}>
+      <ContainerWithBackground
+        venue={venue}
+        containerName="music-bar"
+        className={containerClasses}
+      >
         {!seatedAtTable && parentVenue && (
           <BackButton
             onClick={backToParentVenue}
@@ -279,7 +266,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             showOnlyAvailableTables={showOnlyAvailableTables}
           />
         </div>
-      </div>
+      </ContainerWithBackground>
     </>
   );
 };

@@ -2,15 +2,13 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_BANNER, IFRAME_ALLOW } from "settings";
+import { IFRAME_ALLOW } from "settings";
 
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
-
-import { useValidImage } from "hooks/useCheckImage";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -19,6 +17,8 @@ import Room from "components/organisms/Room";
 import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 
 import "./ArtPiece.scss";
 
@@ -58,22 +58,11 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
     [customAspect]: true,
   });
 
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig?.coverImageUrl,
-    DEFAULT_VENUE_BANNER
-  );
-  const containerVars = useCss({
-    background: `url(${validBannerImageUrl})`,
-  });
-
-  const containerClasses = classNames("ArtPiece", containerVars);
-
   if (!venue) return <Loading label="Loading..." />;
 
   return (
     <>
-      <div className="ArtPiece-background" />
-      <div className={containerClasses}>
+      <ContainerWithBackground venue={venue} containerName="ArtPiece">
         <InformationLeftColumn iconNameOrPath={host?.icon}>
           <InformationCard title="About the venue">
             <p className="ArtPiece__title-sidebar">{name}</p>
@@ -111,7 +100,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
             <SparkleFairiesPopUp />
           </div>
         )}
-      </div>
+      </ContainerWithBackground>
     </>
   );
 };

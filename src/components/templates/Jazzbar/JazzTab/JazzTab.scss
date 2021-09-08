@@ -2,7 +2,6 @@
 @import "../jazzbar-constants.scss";
 
 .music-bar {
-  padding-top: $jazz-bar-padding-top;
   margin-top: $spacing--xxl;
 
   background-attachment: fixed;
@@ -22,7 +21,7 @@
     }
   }
 
-  &-background {
+  &__background {
     position: fixed;
     height: 100%;
     width: 100%;

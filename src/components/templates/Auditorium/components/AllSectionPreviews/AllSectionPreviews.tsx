@@ -1,10 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import { useCss } from "react-use";
 import classNames from "classnames";
 import { sample } from "lodash";
-
-import { DEFAULT_VENUE_BANNER } from "settings";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -14,12 +11,12 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
-import { useValidImage } from "hooks/useCheckImage";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
+import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 import { IFrame } from "components/atoms/IFrame";
 
 import { SectionPreview } from "../SectionPreview";
@@ -96,20 +93,9 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig?.bannerImageUrl ||
-      venue?.config?.landingPageConfig?.coverImageUrl,
-    DEFAULT_VENUE_BANNER
-  );
-
-  const containerVars = useCss({
-    background: `url("${validBannerImageUrl}")`,
-  });
-
   const containerClasses = classNames(
     "AllSectionPreviews",
-    `AllSectionPreviews--${auditoriumSize}`,
-    containerVars
+    `AllSectionPreviews--${auditoriumSize}`
   );
 
   return (
@@ -120,8 +106,11 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           locationName={parentVenue.name}
         />
       )}
-      <div className={containerClasses}>
-        <div className="AllSectionPreviews__background" />
+      <ContainerWithBackground
+        venue={venue}
+        containerName="AllSectionPreviews"
+        className={containerClasses}
+      >
         {emptyBlocks}
 
         <div className="AllSectionPreviews__main">
@@ -147,7 +136,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         </div>
 
         {sectionPreviews}
-      </div>
+      </ContainerWithBackground>
     </>
   );
 };

@@ -1,15 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { useCss } from "react-use";
-import classNames from "classnames";
 
-import { DEFAULT_USER_LIST_LIMIT, DEFAULT_VENUE_BANNER } from "settings";
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
-import { useValidImage } from "hooks/useCheckImage";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentVenueUsers } from "hooks/users";
@@ -27,6 +24,7 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 
 import { TABLES } from "./constants";
 
@@ -63,22 +61,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const tables = venue?.config?.tables ?? TABLES;
 
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig?.bannerImageUrl ||
-      venue?.config?.landingPageConfig?.coverImageUrl,
-    DEFAULT_VENUE_BANNER
-  );
-
-  const containerVars = useCss({
-    background: `url(${validBannerImageUrl})`,
-    height: seatedAtTable ? "100%" : "auto",
-  });
-
-  const containerClasses = classNames(
-    "conversation-space-container",
-    containerVars
-  );
-
   return (
     <>
       <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
@@ -94,8 +76,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <div className={containerClasses}>
-        <div className="conversation-space-background" />
+      <ContainerWithBackground venue={venue} containerName="conversation-space">
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}
@@ -167,7 +148,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             showMoreUsersToggler
           />
         </div>
-      </div>
+      </ContainerWithBackground>
     </>
   );
 };

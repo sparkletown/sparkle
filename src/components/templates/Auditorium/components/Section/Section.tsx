@@ -4,20 +4,18 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_BANNER } from "settings";
-
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
-import { useValidImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 import { IFrame } from "components/atoms/IFrame";
 
 import "./Section.scss";
@@ -89,23 +87,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [venueId, openUrlUsingRouter]);
 
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig?.bannerImageUrl ||
-      venue?.config?.landingPageConfig?.coverImageUrl,
-    DEFAULT_VENUE_BANNER
-  );
-
-  const containerVars = useCss({
-    background: `url("${validBannerImageUrl}")`,
-  });
-
-  const containerClasses = classNames("Section", containerVars);
-
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <div className={containerClasses}>
-      <div className="Section__background" />
+    <ContainerWithBackground venue={venue} containerName="Section">
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
@@ -127,6 +112,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
         </div>
         {seatsGrid}
       </div>
-    </div>
+    </ContainerWithBackground>
   );
 };

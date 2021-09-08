@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useCallback, useRef, useState } from "react";
-import { Button } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -8,6 +7,8 @@ import { ACCEPTED_IMAGE_TYPES } from "settings";
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
 import { ImageOverlay } from "components/atoms/ImageOverlay";
+
+import { ButtonNG } from "../ButtonNG";
 
 import "./ImageInput.scss";
 
@@ -20,7 +21,7 @@ export interface ImageInputProps {
   small?: boolean;
   register: ReturnType<typeof useForm>["register"];
   nameWithUnderscore?: boolean;
-  btnLabel?: string;
+  text?: string;
   isInputHidden?: boolean;
 }
 
@@ -34,7 +35,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   setValue,
   nameWithUnderscore = false,
   isInputHidden = false,
-  btnLabel = "Upload",
+  text = "Upload",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -72,7 +73,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           "ImageInput__container--error": !!error?.message,
           "ImageInput__container--small": small,
           "ImageInput__container--disabled": loading,
-          "ImageInput__container--hidden": isInputHidden,
+          "mod--hidden": isInputHidden,
         })}
         style={{
           backgroundImage: `url(${imageUrl})`,
@@ -106,9 +107,9 @@ const ImageInput: React.FC<ImageInputProps> = ({
         readOnly
       />
       {isInputHidden && (
-        <Button onClick={onButtonClick} variant="primary">
-          {btnLabel}
-        </Button>
+        <ButtonNG onClick={onButtonClick} variant="primary">
+          {text}
+        </ButtonNG>
       )}
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>

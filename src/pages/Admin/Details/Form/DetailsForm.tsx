@@ -174,7 +174,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderBannerUpload = () => {
-    const isBtnOnly = values.bannerImageUrl === DEFAULT_VENUE_BANNER;
+    const isButtonOnly = values.bannerImageUrl === DEFAULT_VENUE_BANNER;
 
     return (
       <S.InputContainer>
@@ -188,8 +188,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           setValue={setValue}
           register={register}
           imgUrl={editData?.bannerImageUrl}
-          isInputHidden={isBtnOnly}
-          btnLabel="Upload Highlight image"
+          isInputHidden={isButtonOnly}
+          text="Upload Highlight image"
         />
       </S.InputContainer>
     );

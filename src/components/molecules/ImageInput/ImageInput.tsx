@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useCallback, useMemo, useRef } from "react";
-import { Button } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -9,11 +8,10 @@ import { ContainerClassName } from "types/utility";
 
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { ImageOverlay } from "components/atoms/ImageOverlay";
 
 import "firebase/functions";
-
-import "./ImageInput.scss";
 
 interface ImageInputProps extends ContainerClassName {
   disabled: boolean;
@@ -26,7 +24,7 @@ interface ImageInputProps extends ContainerClassName {
   error?: FieldError;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
-  btnLabel?: string;
+  text?: string;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -41,7 +39,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   setValue,
   register,
   isInputHidden = false,
-  btnLabel = "Upload",
+  text = "Upload",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -80,11 +78,9 @@ export const ImageInput: React.FC<ImageInputProps> = ({
     "image-input default-container",
     {
       containerClassName,
-      "image-input default-container--hidden": isInputHidden,
+      "mod--hidden": isInputHidden,
     },
-    {
-      disabled: loading,
-    }
+    { disabled: loading }
   );
 
   return (
@@ -118,9 +114,9 @@ export const ImageInput: React.FC<ImageInputProps> = ({
         )}
       </div>
       {isInputHidden && (
-        <Button onClick={onButtonClick} variant="primary">
-          {btnLabel}
-        </Button>
+        <ButtonNG onClick={onButtonClick} variant="primary">
+          {text}
+        </ButtonNG>
       )}
       {errorMessage && <span className="input-error">{errorMessage}</span>}
     </>
