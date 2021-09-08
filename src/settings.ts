@@ -51,6 +51,7 @@ export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
+export const DEFAULT_VENUE_AUTOPLAY = false;
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
@@ -99,6 +100,8 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
+
+export const WORLD_USERS_UPDATE_INTERVAL = 5000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
