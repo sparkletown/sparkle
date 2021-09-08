@@ -1,10 +1,11 @@
 import React, { useCallback, useState } from "react";
+import { useToggle } from "react-use";
 
 import { useShowHide } from "hooks/useShowHide";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { Button } from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import { HelpCenterContent } from "./components/HelpCenterContent";
 
@@ -19,32 +20,30 @@ export const HelpCenter: React.FC = () => {
     hide: stopLoading,
   } = useShowHide(false);
 
+  const [isShown, toggleShown] = useToggle(false);
+
   const handleHelpClicked = useCallback(
     (url: string) => {
       startLoading();
       setUrl(url);
+      toggleShown();
     },
-    [startLoading]
+    [startLoading, toggleShown]
   );
-
-  const handleBackClicked = () => {
-    setUrl("");
-  };
 
   return (
     <>
-      {url ? (
+      {isShown && url ? (
         <>
           {isLoading && <LoadingPage />}
           <div className="HelpCenter__iframeContainer">
-            {!isLoading && (
-              <Button
-                customClass="HelpCenter__backButton"
-                onClick={handleBackClicked}
-              >
-                Back
-              </Button>
-            )}
+            <ButtonNG
+              className="HelpCenter__backButton"
+              onClick={toggleShown}
+              variant="primary"
+            >
+              Back
+            </ButtonNG>
             <iframe
               className="HelpCenter__iframe"
               onLoad={stopLoading}
