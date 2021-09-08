@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Video from "twilio-video";
 
 import { DEFAULT_CAMERA_ENABLED } from "settings";
@@ -130,15 +136,24 @@ export const Participant: React.FC<ParticipantProps> = ({
     [audioTracks]
   );
 
+  const videoAndAudio = useMemo(
+    () => (
+      <>
+        <video
+          ref={videoRef}
+          autoPlay={true}
+          className={profileData?.mirrorVideo ? "mirrored" : ""}
+        />
+        <audio ref={audioRef} autoPlay={true} />
+      </>
+    ),
+    [profileData]
+  );
+
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
       {!videoEnabled && <div className="participant--video-disabled" />}
-      <video
-        ref={videoRef}
-        autoPlay={true}
-        className={profileData?.mirrorVideo ? "mirrored" : ""}
-      />
-      <audio ref={audioRef} autoPlay={true} />
+      {videoAndAudio}
       {showIcon && (
         <div className="profile-icon">
           <UserProfilePicture
