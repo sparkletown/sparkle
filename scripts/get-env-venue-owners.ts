@@ -12,12 +12,13 @@ import {
 } from "./lib/helpers";
 
 const usage = makeScriptUsage({
-  description: "Print venue owners' email addresses.",
-  usageParams: "[CREDENTIAL_PATH] filterArray",
-  exampleParams: "[theMatchingAccountServiceKey.json] gmail.com",
+  description:
+    "Print venue owners' email addresses ignoring specified users if needed.",
+  usageParams: "[CREDENTIAL_PATH] emailSubstrToIgnore",
+  exampleParams: "[theMatchingAccountServiceKey.json] @gmail.com",
 });
 
-const [credentialPath, ...filterArray] = process.argv.slice(2);
+const [credentialPath, ...emailSubstrToIgnore] = process.argv.slice(2);
 
 if (!credentialPath) {
   usage();
@@ -29,6 +30,8 @@ if (!projectId) {
   console.error("Credential file has no project_id:", credentialPath);
   process.exit(1);
 }
+
+const outputFileName = `${projectId}-venue-owners.csv`;
 
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
@@ -55,18 +58,20 @@ initFirebaseAdminApp(projectId, {
   const venues = firestoreVenues.docs;
 
   // clear file
-  fs.writeFileSync("./venueOwners.csv", "");
+  fs.writeFileSync(outputFileName, "");
 
   const headingLine = ["Venue Id", "Venue Name", "Venue Owners"]
     .map((heading) => `"${heading}"`)
     .join(",");
 
-  fs.writeFileSync("./venueOwners.csv", `${headingLine}\n`, { flag: "a" });
-  const filteredUsers = filterArray?.length
-    ? allUsers.filter(
+  fs.writeFileSync(outputFileName, `${headingLine}\n`, { flag: "a" });
+  const filteredUsers = emailSubstrToIgnore?.length
+    ? allUsers?.filter(
         (user) =>
           user?.email?.includes("@") &&
-          !filterArray.some((filterEmail) => user?.email?.includes(filterEmail))
+          !emailSubstrToIgnore.some((substrToExclude) =>
+            user?.email?.includes(substrToExclude)
+          )
       )
     : allUsers;
 
@@ -80,23 +85,16 @@ initFirebaseAdminApp(projectId, {
 
     // venue owners that have email
     const filteredVenueOwners = venueOwners?.filter((owner: string) =>
-      owner.includes("@")
+      owner?.includes("@")
     );
 
-    const venueData = [
-      doc.id,
-      doc.data().name,
-      filteredVenueOwners.length
-        ? venueOwners.filter((owner: string) => !!owner)
-        : "",
-    ];
+    const venueData = [doc.id, doc.data().name, filteredVenueOwners ?? ""];
 
     const csvFormattedLine = venueData.map((s) => `"${s}"`).join(",");
 
-    fs.writeFileSync("./venueOwners.csv", `${csvFormattedLine}\n`, {
+    fs.writeFileSync(outputFileName, `${csvFormattedLine}\n`, {
       flag: "a",
     });
   });
-
   process.exit(0);
 })();
