@@ -1,14 +1,14 @@
 @import "scss/constants.scss";
 
-$navBarSchedule--width: 40%;
-$navBarSchedule--padding: 20px;
+$navbar-schedule-width: 40%;
+$navbar-schedule-padding: 20px;
 
-$weekday--padding: 8px 10px;
-$weekday--margin-right: 10px;
+$weekday-padding: 8px 10px;
+$weekday-margin-right: 10px;
 
-$schedule-btn--padding: 0.35em 1em;
+$schedule-btn-padding: 0.35em 1em;
 
-$schedule-btn--height: 51px;
+$schedule-btn-height: 51px;
 
 .NavBarWrapper {
   position: relative;
@@ -22,10 +22,10 @@ $schedule-btn--height: 51px;
   top: 0;
   left: 0;
   height: calc(100% - #{$footer-height});
-  width: $navBarSchedule--width;
+  width: $navbar-schedule-width;
 
   padding-top: $navbar-height;
-  padding-left: $navBarSchedule--padding;
+  padding-left: $navbar-schedule-padding;
 
   background-color: opaque-black(0.8);
   overflow: auto;
@@ -33,7 +33,7 @@ $schedule-btn--height: 51px;
   pointer-events: none;
   opacity: 0;
   backdrop-filter: blur(5px);
-  transform: translateX(-$navBarSchedule--width);
+  transform: translateX(-$navbar-schedule-width);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
 
@@ -65,8 +65,8 @@ $schedule-btn--height: 51px;
   &__weekday {
     display: inline;
     cursor: pointer;
-    padding: $weekday--padding;
-    margin-right: $weekday--margin-right;
+    padding: $weekday-padding;
+    margin-right: $weekday-margin-right;
     opacity: 0.8;
 
     &--active {
@@ -106,12 +106,12 @@ $schedule-btn--height: 51px;
     align-items: center;
     justify-content: flex-end;
     background-color: opaque-black(0.9);
-    height: $schedule-btn--height;
-    padding-left: $navBarSchedule--padding;
+    height: $schedule-btn-height;
+    padding-left: $navbar-schedule-padding;
   }
 
   // @debt: overwrites default btn btn-primary styles
-  & .NavBarWrapper__downloadScheduleBtn {
+  &__downloadScheduleBtn {
     cursor: pointer;
     opacity: 0.8;
 
@@ -119,7 +119,7 @@ $schedule-btn--height: 51px;
 
     text-shadow: 0 2px 4px opaque-black(0.3);
     box-shadow: 0 3px 6px opaque-black(0.2);
-    padding: $schedule-btn--padding;
+    padding: $schedule-btn-padding;
 
     &:hover,
     &:focus {
