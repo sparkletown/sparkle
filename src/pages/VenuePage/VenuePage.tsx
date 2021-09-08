@@ -72,7 +72,7 @@ export const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
   const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
+  const { lastSeenIn: userLastSeenIn, enteredVenueIds } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -156,14 +156,14 @@ export const VenuePage: React.FC = () => {
     if (
       !venueId ||
       !userId ||
-      !profile ||
-      profile?.enteredVenueIds?.includes(venueId)
+      !userLocation ||
+      enteredVenueIds?.includes(venueId)
     ) {
       return;
     }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
-  }, [profile, userId, venueId]);
+    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
+  }, [enteredVenueIds, userLocation, userId, venueId]);
 
   // NOTE: User's timespent updates
 
@@ -209,7 +209,6 @@ export const VenuePage: React.FC = () => {
   //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
   // }
   const { entrance, template, hasPaidEvents } = venue;
-  const { enteredVenueIds } = profile;
 
   const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
   const hasEntered = enteredVenueIds?.includes(venueId);
