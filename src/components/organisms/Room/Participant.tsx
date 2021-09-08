@@ -5,6 +5,9 @@ import { DEFAULT_CAMERA_ENABLED } from "settings";
 
 import { User } from "types/User";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
+
+import { CameraMicrophoneControls } from "components/molecules/CameraMicrophoneControls";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
@@ -23,17 +26,15 @@ type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
 type AudioTracks = Array<Video.LocalAudioTrack | Video.RemoteAudioTrack>;
 type Track = VideoTracks[number] | AudioTracks[number];
 
-export const Participant: React.FC<
-  React.PropsWithChildren<ParticipantProps>
-> = ({
+export const Participant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
   bartender,
-  children,
   defaultMute = false,
   showIcon = true,
   isAudioEffectDisabled,
 }) => {
+  const isCurrentUser = useIsCurrentUser(participant.identity);
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
 
@@ -55,6 +56,7 @@ export const Participant: React.FC<
   useEffect(
     () =>
       participant.videoTracks.forEach((x) => {
+        // Video mute handling: for user's own video
         x?.track?.on("enabled", () => setVideoEnabled(true));
         x?.track?.on("disabled", () => setVideoEnabled(false));
       }),
@@ -67,6 +69,9 @@ export const Participant: React.FC<
 
     const trackSubscribed = (track: Track) => {
       if (track.kind === "video") {
+        // Video mute handling: for other participants' videos
+        track.on("enabled", () => setVideoEnabled(true));
+        track.on("disabled", () => setVideoEnabled(false));
         setVideoTracks((videoTracks) => [...videoTracks, track]);
       } else if (track.kind === "audio") {
         setAudioTracks((audioTracks) => [...audioTracks, track]);
@@ -143,14 +148,19 @@ export const Participant: React.FC<
           />
         </div>
       )}
-      {children}
-      <div className="mute-other-container">
-        <VideoOverlayButton
-          variant="audio"
-          defaultValue={!defaultMute}
-          onEnabledChanged={changeAudioState}
+      {isCurrentUser && (
+        <CameraMicrophoneControls
+          containerClassName="mute-container"
+          participant={participant}
+          defaultMute={defaultMute}
         />
-      </div>
+      )}
+      <VideoOverlayButton
+        containerClassName={"mute-other-container"}
+        variant="audio"
+        defaultValue={!defaultMute}
+        onEnabledChanged={changeAudioState}
+      />
     </div>
   );
 };

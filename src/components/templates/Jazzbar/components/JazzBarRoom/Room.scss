@@ -22,6 +22,9 @@
         width: 100%;
         border-radius: 15px;
       }
+      .participant--video-disabled {
+        border-radius: 15px;
+      }
 
       .mirrored {
         transform: scale(-1, 1);

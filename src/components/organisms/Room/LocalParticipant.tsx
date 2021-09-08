@@ -1,7 +1,5 @@
 import React from "react";
 
-import { CameraMicrophoneControls } from "components/molecules/CameraMicrophoneControls";
-
 import { Participant, ParticipantProps } from "./Participant";
 
 export const LocalParticipant: React.FC<ParticipantProps> = ({
@@ -9,7 +7,7 @@ export const LocalParticipant: React.FC<ParticipantProps> = ({
   profileData,
   profileDataId,
   bartender,
-  defaultMute = false,
+  defaultMute,
   showIcon = true,
   isAudioEffectDisabled,
 }) => {
@@ -20,13 +18,8 @@ export const LocalParticipant: React.FC<ParticipantProps> = ({
       profileDataId={profileDataId}
       bartender={bartender}
       showIcon={showIcon}
+      defaultMute={defaultMute}
       isAudioEffectDisabled={isAudioEffectDisabled}
-    >
-      <CameraMicrophoneControls
-        containerClassName="mute-container"
-        participant={participant}
-        defaultMute={defaultMute}
-      />
-    </Participant>
+    />
   );
 };
