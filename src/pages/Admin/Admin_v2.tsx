@@ -7,10 +7,6 @@ import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
-import {
-  AuthenticationModal,
-  AuthOptions,
-} from "components/organisms/AuthenticationModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -24,6 +20,7 @@ import "./Admin.scss";
 
 dayjs.extend(advancedFormat);
 
+// @debt Rename component name and remove styled-components
 const Admin_v2: React.FC = () => {
   const { user } = useUser();
 
@@ -31,12 +28,8 @@ const Admin_v2: React.FC = () => {
 
   const { roles } = useRoles();
 
-  if (isLoading || !roles) {
+  if (user && (isLoading || !roles)) {
     return <LoadingPage />;
-  }
-
-  if (!user) {
-    return <>You need to log in first.</>;
   }
 
   return (
@@ -46,12 +39,6 @@ const Admin_v2: React.FC = () => {
           <AdminVenues venues={ownedVenues} />
         </S.ViewWrapper>
       </S.Wrapper>
-
-      <AuthenticationModal
-        show={!user}
-        onHide={() => {}}
-        showAuth={AuthOptions.login}
-      />
     </AdminRestricted>
   );
 };
