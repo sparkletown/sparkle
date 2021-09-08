@@ -98,8 +98,11 @@ $video-participant-optimal-height: 195px;
   @media (max-width: $media-breakpoint--lg) {
     &__participants {
       justify-content: space-around;
+      flex-wrap: wrap;
+
       .firebarrel-room__participant {
-        max-width: 49%;
+        max-width: 30%;
+        margin-bottom: $spacing--sm;
       }
     }
   }
@@ -133,7 +136,7 @@ $video-participant-optimal-height: 195px;
   text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   border-radius: 22px;
-  margin: 7px 16px;
+  margin: $spacing--md;
   background-color: #7c46fb;
 
   width: 95px;
