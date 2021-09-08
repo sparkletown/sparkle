@@ -48,7 +48,7 @@ export interface ScheduleNGDay {
 export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
-  closeEventSchedule?: Function;
+  closeEventSchedule?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   venueId: string;
 }
 
@@ -245,7 +245,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         <ButtonNG
           className="NavBarWrapper__close-button"
           iconName={faTimes}
-          onClick={() => closeEventSchedule()}
+          onClick={closeEventSchedule}
         />
 
         <ScheduleNG
