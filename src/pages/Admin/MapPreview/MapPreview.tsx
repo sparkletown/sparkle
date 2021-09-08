@@ -63,6 +63,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const iconsMap = useMemo(() => {
     const iconsRooms = isEditing || mapRooms.length ? mapRooms : rooms;
     return iconsRooms.map((room, index: number) => ({
+      title: room.title,
       width: room.width_percent,
       height: room.height_percent,
       top: room.y_percent,

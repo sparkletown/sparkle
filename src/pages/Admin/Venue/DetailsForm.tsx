@@ -22,6 +22,7 @@ import {
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_AUTOPLAY,
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
@@ -644,6 +645,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
+      <h4 className="italic input-header">Autoplay your embeded video</h4>
+      <Toggler
+        name="autoPlay"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_VENUE_AUTOPLAY}
+      />
     </div>
   );
 
