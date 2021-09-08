@@ -286,6 +286,10 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
+  const navigateToAdmin = useCallback(() => {
+    history.push("/admin");
+  }, [history]);
+
   useEffect(() => {
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
     const clientHeight = placementDivRef.current?.clientHeight ?? 0;
@@ -385,8 +389,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
       </div>
       <VenueDeleteModal
         show={isDeleteModalVisible}
+        onCancel={hideDeleteModal}
         onHide={hideDeleteModal}
-        venue={venue}
+        onDelete={navigateToAdmin}
+        venueId={venue.id}
+        venueName={venue.name}
       />
       <VenueOwnersModal
         visible={manageUsers}
