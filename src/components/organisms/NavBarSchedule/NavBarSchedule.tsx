@@ -33,7 +33,6 @@ import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
-import { Button } from "components/atoms/Button";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -258,19 +257,19 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       {!isEventsLoading && (
         <div className="NavBarWrapper__download-buttons">
           {isShowPersonalDownloadBtn && (
-            <Button
+            <ButtonNG
               onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarWrapper__download-schedule-btn"
+              className="NavBarWrapper__download-schedule-btn"
             >
               Download your schedule
-            </Button>
+            </ButtonNG>
           )}
-          <Button
+          <ButtonNG
             onClick={downloadAllEventsCalendar}
-            customClass="NavBarWrapper__download-schedule-btn"
+            className="NavBarWrapper__download-schedule-btn"
           >
             Download full schedule
-          </Button>
+          </ButtonNG>
         </div>
       )}
     </div>

@@ -354,7 +354,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
             <NavBarSchedule
               isVisible={isEventScheduleVisible}
               venueId={venueId}
-              closeEventSchedule={() => toggleEventSchedule()}
+              closeEventSchedule={toggleEventSchedule}
             />
           </div>
         </div>
