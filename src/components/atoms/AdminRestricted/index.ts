@@ -1,0 +1,1 @@
+export { AdminRestricted } from "./AdminRestricted";

@@ -7,7 +7,7 @@ import { IFRAME_ALLOW } from "settings";
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -41,7 +41,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
     venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
-  const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
+  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({
