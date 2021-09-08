@@ -140,7 +140,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
-  events?: WithId<VenueEvent>[]; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
+  autoPlay?: boolean;
   placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
