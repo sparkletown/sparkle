@@ -961,7 +961,7 @@ exports.scheduledFunction = functions.pubsub
 
       venueRef.update({
         recentUserCount: recentVenueUsersCount,
-        recentUsersSample: recentVenueUsersCount.slice(
+        recentUsersSample: recentVenueUsers.slice(
           0,
           Math.min(recentVenueUsersCount, 6)
         ),
