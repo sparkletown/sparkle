@@ -152,7 +152,7 @@ export const {
 const userWithLocationToUser = (
   user: WithId<UserWithLocation>
 ): WithId<User> => {
-  const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
+  const { lastVenueIdSeenIn, lastSeenAt, ...userWithoutLocation } = user;
 
   return userWithoutLocation;
 };
@@ -160,10 +160,10 @@ const userWithLocationToUser = (
 const extractLocationFromUserWithLocation = (
   user: WithId<UserWithLocation>
 ): WithId<UserLocation> => {
-  const { lastSeenIn, lastSeenAt, enteredVenueIds } = user;
+  const { lastVenueIdSeenIn, lastSeenAt, enteredVenueIds } = user;
 
   const userLocation: UserLocation = {
-    lastSeenIn,
+    lastVenueIdSeenIn,
     lastSeenAt,
     enteredVenueIds,
   };
