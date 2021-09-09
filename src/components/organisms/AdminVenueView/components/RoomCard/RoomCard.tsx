@@ -25,7 +25,7 @@ import { EventCard } from "components/organisms/AdminVenueView/components/EventC
 import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
 import { RoomIcon } from "components/organisms/AdminVenueView/components/RoomIcon/RoomIcon";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RoomCard.scss";
 
@@ -101,12 +101,14 @@ export const RoomCard: React.FC<RoomCardProps> = ({
             iconName={room.isEnabled ? faEye : faEyeSlash}
             disabled={isTogglingRoom}
             onClick={toggleRoom}
+            title={`click to ${room.isEnabled ? "hide" : "show"} room`}
           />
           <ButtonNG
             iconOnly={true}
             iconName={isRoomUnclickable ? faBan : faHandPointer}
             disabled={isTogglingClickability}
             onClick={toggleRoomClickablility}
+            title={`make room ${isRoomUnclickable ? "" : "un"}clickable`}
           />
         </div>
       </div>

@@ -1,9 +1,19 @@
-import React, { MouseEventHandler, useCallback, useMemo } from "react";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as solidBookmark,
+  faUserFriends as solidUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
+
+import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -11,18 +21,13 @@ import {
 } from "api/profile";
 
 import { Room } from "types/rooms";
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
+import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
-import {
-  enterVenue,
-  getFullVenueInsideUrl,
-  getLastUrlParam,
-  getUrlParamFromString,
-  getUrlWithoutTrailingSlash,
-  openUrl,
-} from "utils/url";
+import { isDefined } from "utils/types";
+import { enterVenue, getFullVenueInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -31,32 +36,35 @@ import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./ScheduleItemNG.scss";
 
 export interface ScheduleItemNGProps {
-  event: PersonalizedVenueEvent;
+  event: ScheduledVenueEvent;
+  isShowFullInfo: boolean;
 }
 
-export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
-  const { currentVenue: eventVenue } = useRelatedVenues({
+export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
+  event,
+  isShowFullInfo,
+}) => {
+  const { currentVenue: eventVenue, relatedVenues } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
-  const eventRoom = useMemo<Room | undefined>(
-    () =>
-      eventVenue?.rooms?.find((room) => {
-        const { room: eventRoom = "" } = event;
-        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
-        const [roomName] = getLastUrlParam(noTrailSlashUrl);
-        const roomUrlParam = getUrlParamFromString(eventRoom);
-        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
+  const relatedVenuesRooms = relatedVenues
+    ?.flatMap((venue) => venue.rooms ?? [])
+    .filter(isDefined);
 
-        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
-      }),
-    [eventVenue, event]
-  );
+  const eventRoom = useMemo<Room | undefined>(() => {
+    const { room: eventRoomTitle = "" } = event;
+
+    return relatedVenuesRooms?.find(({ title }) => {
+      return title === eventRoomTitle;
+    });
+  }, [relatedVenuesRooms, event]);
+
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
   const { enterRoom } = useRoom({
     room: eventRoom,
@@ -66,31 +74,45 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
   const isCurrentEventLive = isEventLive(event);
-  const roomUrlParam = getUrlParamFromString(event.room ?? "");
 
+  const [isEventLinkCopied, setIsEventLinkCopied] = useState(false);
   const handleCopyEventLink = useCallback(
     (e?: React.MouseEvent<HTMLButtonElement>) => {
+      // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e && e.stopPropagation();
 
-      const eventLink = getFullVenueInsideUrl(roomUrlParam);
+      const eventLink =
+        eventRoom?.url ?? getFullVenueInsideUrl(eventVenue?.id ?? "");
       navigator.clipboard.writeText(eventLink);
+      setIsEventLinkCopied(true);
+      setTimeout(
+        () => setIsEventLinkCopied(false),
+        SCHEDULE_SHOW_COPIED_TEXT_MS
+      );
     },
-    [roomUrlParam]
+    [eventRoom, eventVenue]
   );
 
   const goToEventLocation = useCallback(() => {
-    if (!eventRoom) {
-      openUrl(roomUrlParam);
-
-      return;
-    }
-
-    if (event.room) {
+    if (eventRoom) {
       enterRoom();
     } else {
       enterVenue(event.venueId);
     }
-  }, [enterRoom, event, eventRoom, roomUrlParam]);
+  }, [enterRoom, event, eventRoom]);
+
+  const enterEventVenue = useCallback(() => enterVenue(event.venueId), [
+    event.venueId,
+  ]);
+
+  const eventImage = getFirebaseStorageResizedImage(
+    eventRoom?.image_url ?? event.venueIcon,
+    {
+      fit: "crop",
+      width: 40,
+      height: 40,
+    }
+  );
 
   const infoContaier = classNames("ScheduleItemNG__info", {
     "ScheduleItemNG__info--active": isCurrentEventLive,
@@ -106,6 +128,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
     (e) => {
       if (!userId || !event.id) return;
 
+      // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e.stopPropagation();
 
       event.isSaved
@@ -121,13 +144,17 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
         <span className="ScheduleItemNG__date">
           {!isCurrentEventLive &&
             showDate &&
+            isShowFullInfo &&
             formatDateRelativeToNow(eventStartTime(event))}
         </span>
 
         <span className={timeContainer}>
           {isCurrentEventLive
             ? "Live"
-            : formatTimeLocalised(eventStartTime(event))}
+            : formatTimeLocalised(eventStartTime(event)) + "-"}
+        </span>
+        <span className="ScheduleItemNG__until ScheduleItemNG__time--end">
+          {isCurrentEventLive && "until "}
         </span>
 
         <span className="ScheduleItemNG__date ScheduleItemNG__time--end">
@@ -138,11 +165,29 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
           {formatTimeLocalised(eventEndTime(event))}
         </span>
       </div>
+
+      {isShowFullInfo && (
+        <img
+          className="ScheduleItemNG__icon"
+          src={eventImage}
+          alt="event location"
+        />
+      )}
+
       <div className="ScheduleItemNG__details">
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">
-          <span className="ScheduleItemNG__place--location">in</span>{" "}
-          {event.room || eventVenue?.name}
+          {eventRoom && (
+            <>
+              <span className="button--a" onClick={enterRoom}>
+                {event.room}
+              </span>
+              <span className="ScheduleItemNG__place--location"> in </span>
+            </>
+          )}
+          <span className="button--a" onClick={enterEventVenue}>
+            {eventVenue?.name}
+          </span>
         </div>
         {isEventExpanded && (
           <>
@@ -155,7 +200,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
                 onClick={handleCopyEventLink}
                 variant="secondary"
               >
-                Copy event link
+                {isEventLinkCopied ? "Copied!" : "Copy event link"}
               </ButtonNG>
               <ButtonNG
                 className="ScheduleItemNG__button"
@@ -169,11 +214,22 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
           </>
         )}
       </div>
-      <div className="ScheduleItemNG__bookmark" onClick={bookmarkEvent}>
-        <FontAwesomeIcon
-          icon={event.isSaved ? solidBookmark : regularBookmark}
-        />
-      </div>
+      {isCurrentEventLive && (
+        <div className="ScheduleItemNG__online">
+          <FontAwesomeIcon
+            className="ScheduleItemNG__online-icon"
+            icon={solidUsers}
+          />
+          <span>{event.liveAudience}</span>
+        </div>
+      )}
+      {isShowFullInfo && (
+        <div className="ScheduleItemNG__bookmark" onClick={bookmarkEvent}>
+          <FontAwesomeIcon
+            icon={event.isSaved ? solidBookmark : regularBookmark}
+          />
+        </div>
+      )}
     </div>
   );
 };

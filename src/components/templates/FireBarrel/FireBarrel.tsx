@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useVideoRoomState } from "hooks/twilio";
@@ -8,7 +8,7 @@ import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -45,7 +45,12 @@ export const FireBarrel: React.FC = () => {
 
     return (
       <S.Wrapper>
-        <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
+        <S.Barrel
+          src={convertToEmbeddableUrl({
+            url: venue?.iframeUrl,
+            autoPlay: true,
+          })}
+        />
 
         {/* @debt Refactor this to be less brittle/complex */}
         {seatsArray.map((_, index) => {
