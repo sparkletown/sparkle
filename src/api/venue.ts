@@ -197,3 +197,7 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
     .functions()
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
+
+export const updateVenueNG = async (venue: Partial<WithId<AnyVenue>>) => {
+  return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
+};

@@ -756,6 +756,149 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+exports.updateVenueNG = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
+  await checkUserIsOwner(data.id, context.auth.token.user_id);
+
+  const updated = {};
+  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
+  if (data.subtitle || data.subtitle === "") {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+
+  if (data.description || data.description === "") {
+    updated.config.landingPageConfig.description = data.description;
+  }
+
+  if (data.primaryColor) {
+    if (!updated.theme) {
+      updated.theme = {};
+    }
+    updated.theme.primaryColor = data.primaryColor;
+  }
+
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
+  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
+  if (data.bannerMessage) {
+    updated.bannerMessage = data.bannerMessage;
+  }
+
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.showUserStatus === "boolean") {
+    updated.showUserStatus = data.showUserStatus;
+  }
+
+  if (typeof data.showShoutouts === "boolean") {
+    updated.showShoutouts = data.showShoutouts;
+  }
+
+  if (data.userStatuses) {
+    updated.userStatuses = data.userStatuses;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
+  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
+  updated.updatedAt = Date.now();
+
+  // @debt in updateVenue we're checking/creating the updated.config object here if needed.
+  //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?
+
+  // @debt in updateVenue this is configured as:
+  //   updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl
+  //     Should they be the same? If so, which is correct?
+  if (data.bannerImageUrl) {
+    updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+
+  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
+  if (typeof data.showGrid === "boolean") {
+    updated.showGrid = data.showGrid;
+    // @debt the logic here differs from updateVenue, as data.columns is always set when present there
+    updated.columns = data.columns;
+  }
+
+  // @debt the logic here differs from updateVenue
+  if (typeof data.requiresDateOfBirth === "boolean") {
+    updated.requiresDateOfBirth = data.requiresDateOfBirth;
+  }
+
+  // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+    // @debt the logic here differs from updateVenue, as data.radioStations is always set when present there
+    updated.radioStations = [data.radioStations];
+  }
+
+  // @debt this is exactly the same as in updateVenue
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(data.id)
+    .set(updated, { merge: true });
+});
+
 exports.updateTables = functions.https.onCall((data, context) => {
   checkAuth(context);
 

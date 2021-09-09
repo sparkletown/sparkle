@@ -1,16 +1,20 @@
 @import "scss/constants.scss";
 
+$footer-height: 75px;
+
 .EditRoomForm {
   display: flex;
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
+  margin-bottom: $footer-height;
 
   &__room {
     padding: $spacing--xl;
   }
 
   &__footer {
+    height: $footer-height;
     display: flex;
     position: fixed;
     bottom: 0;

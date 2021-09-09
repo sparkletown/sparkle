@@ -14,6 +14,7 @@ import {
 } from "settings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
+import { updateVenueNG } from "api/venue";
 
 import { RoomData_v2 } from "types/rooms";
 import { VenueTemplate } from "types/venues";
@@ -58,8 +59,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     [relatedVenues, room?.url]
   );
 
-  console.log(roomVenue);
-
   const { register, handleSubmit, setValue, watch, errors } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditSchema,
@@ -97,9 +96,12 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   );
 
   const updateVenueRoom = useCallback(async () => {
-    if (!user) return;
-    //TODO: Add update venue by venueID
-  }, [user]);
+    if (!user || !roomVenue?.id) return;
+    await updateVenueNG({
+      id: roomVenue.id,
+      ...venueValues,
+    });
+  }, [roomVenue?.id, user, venueValues]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
@@ -109,6 +111,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       ...(updatedRoom as RoomInput),
       ...values,
     };
+
+    console.log("asdasd1");
 
     await upsertRoom(roomData, venueId, user, roomIndex);
     room.template && (await updateVenueRoom());
