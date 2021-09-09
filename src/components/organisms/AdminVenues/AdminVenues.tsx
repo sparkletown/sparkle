@@ -36,7 +36,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
 
   const sortingOptions = useMemo(
     () => (
-      <DropdownButton title="Sort venues">
+      <DropdownButton variant="secondary" title="Sort venues">
         {Object.values(VenueSortingOptions).map((sortingOption) => (
           <Dropdown.Item
             key={sortingOption}
