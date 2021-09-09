@@ -750,14 +750,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowRangersToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Rangers support</h4>
-      <Toggler name="showRangers" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
@@ -1073,7 +1065,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowShoutouts()}
-        {renderShowRangersToggle()}
         {renderRestrictDOBToggle()}
 
         {templateID &&

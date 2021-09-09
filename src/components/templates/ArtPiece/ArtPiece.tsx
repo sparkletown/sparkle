@@ -16,7 +16,6 @@ import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 
@@ -37,8 +36,7 @@ export interface ArtPieceProps {
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
-  const { name, host, config, showRangers, iframeUrl, videoAspect } =
-    venue ?? {};
+  const { name, host, config, iframeUrl, videoAspect } = venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
   const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
@@ -95,11 +93,6 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
             />
           </div>
         </div>
-        {showRangers && (
-          <div className="ArtPiece__sparkle-fairies">
-            <SparkleFairiesPopUp />
-          </div>
-        )}
       </ContainerWithBackground>
     </>
   );
