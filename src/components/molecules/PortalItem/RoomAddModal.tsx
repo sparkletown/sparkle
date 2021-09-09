@@ -98,13 +98,13 @@ export const RoomAddModal: React.FC<RoomAddModalProps> = ({
       <Modal.Body>
         <Form onSubmit={handleSubmit(addRoom)}>
           <Modal.Body className="RoomAddModal__body">
-            <Form.Label className="RoomAddModal__label">Room title</Form.Label>
+            <Form.Label className="RoomAddModal__label">Title</Form.Label>
             <InputField
               containerClassName="RoomAddModal__input"
               name="roomTitle"
               type="text"
               autoComplete="off"
-              placeholder="Room title"
+              placeholder="Title"
               error={errors.roomTitle}
               ref={register()}
               disabled={isLoading}
@@ -153,7 +153,7 @@ export const RoomAddModal: React.FC<RoomAddModalProps> = ({
               type="submit"
               variant="primary"
             >
-              Add room
+              Add
             </ButtonNG>
           </Modal.Footer>
         </Form>

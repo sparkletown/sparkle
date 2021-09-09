@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
-import { faPlus, faInfo } from "@fortawesome/free-solid-svg-icons";
-
-import { Portal } from "types/rooms";
+import { faInfo, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { CreateRoomResult } from "api/admin";
+
+import { Portal } from "types/rooms";
 
 import { useShowHide } from "hooks/useShowHide";
 

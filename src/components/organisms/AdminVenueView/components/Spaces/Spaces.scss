@@ -9,7 +9,8 @@ $tab-bar-height: 36px;
   flex: 1;
 
   &__rooms {
-    width: 20%;
+    width: $admin-ng-sidebar-width--normal;
+    min-width: $admin-ng-sidebar-width--min;
   }
 
   &__map {
@@ -18,7 +19,7 @@ $tab-bar-height: 36px;
     justify-content: center;
     align-items: center;
     padding: 40px;
-    height: calc(100vh - #{$tab-bar-height});
+    height: calc(100vh - 1px - #{$tab-bar-height});
   }
 
   &__upload-background-wrapper {

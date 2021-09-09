@@ -179,7 +179,6 @@ export const Spaces: React.FC<SpacesProps> = ({
               </div>
               {showAddRoom && renderAddRooms}
             </div>
-            {showAddRoom && renderAddRooms}
             <TabFooter {...tabNavigationProps} />
           </>
         )}

@@ -7,6 +7,14 @@ $denied-shape-size: 96px;
   height: calc(100vh - #{$reserved-page-height});
   width: calc(100vw);
 
+  &--allowed {
+    // In order to avoid scrollbar(s)
+    margin: 0;
+    padding: 0;
+    width: calc(100% - #{$spacing--sm});
+    height: calc(100% - #{$spacing--sm});
+  }
+
   &--forbidden {
     display: grid;
     place-items: center;

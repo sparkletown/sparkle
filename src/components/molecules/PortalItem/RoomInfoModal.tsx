@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 import { Portal } from "types/rooms";
 
@@ -39,7 +39,7 @@ export const RoomInfoModal: React.FC<VenueRoomItemInfoModalProps> = ({
         type="submit"
         onClick={() => onAdd()}
       >
-        Add room
+        Add
       </Button>
     </Modal.Footer>
   </Modal>
