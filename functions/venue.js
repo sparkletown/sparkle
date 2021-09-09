@@ -1,6 +1,7 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
+const { chunk } = require("lodash");
 
 const { addAdmin, removeAdmin } = require("./src/api/roles");
 
@@ -933,7 +934,7 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
 exports.scheduledFunction = functions.pubsub
   .schedule("every 5 minutes")
   .onRun(async () => {
-    const venues = await admin
+    const venuesPromise = admin
       .firestore()
       .collection("venues")
       .get()
@@ -941,7 +942,7 @@ exports.scheduledFunction = functions.pubsub
         return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       });
 
-    const users = await admin
+    const usersPromise = admin
       .firestore()
       .collection("users")
       .get()
@@ -949,27 +950,36 @@ exports.scheduledFunction = functions.pubsub
         return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       });
 
+    const [users, venues] = await Promise.all([usersPromise, venuesPromise]);
+
     console.log({ venues: venues.length });
     console.log({ users: users.length });
 
-    for (const venue of venues) {
-      const recentVenueUsers = users.filter(
-        (user) =>
-          user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
-      );
+    chunk(venues, 200).forEach((venuesChunk) => {
+      console.log({ venuesChunk });
+      const batch = firebase.firestore().batch();
 
-      const recentVenueUsersCount = recentVenueUsers.length;
+      venuesChunk.forEach((venue) => {
+        const recentVenueUsers = users.filter(
+          (user) =>
+            user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
+        );
 
-      const venueRef = admin.firestore().collection("venues").doc(venue.id);
-      // eslint-disable-next-line no-await-in-loop
-      await venueRef.update({
-        recentUserCount: recentVenueUsersCount,
-        recentUsersSample: recentVenueUsers.slice(
-          0,
-          Math.min(recentVenueUsersCount, 6)
-        ),
+        const recentVenueUsersCount = recentVenueUsers.length;
+
+        const venueRef = admin.firestore().collection("venues").doc(venue.id);
+
+        batch.update(venueRef, {
+          recentUserCount: recentVenueUsersCount,
+          recentUsersSample: recentVenueUsers.slice(
+            0,
+            Math.min(recentVenueUsersCount, 6)
+          ),
+        });
       });
-    }
+
+      batch.commit();
+    });
 
     return null;
   });
