@@ -92,7 +92,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
     .length;
 
-  const isShowPersonalDownloadBtn = hasSavedEvents && showPersonalisedSchedule;
+  const isShowPersonalDownloadBtn = hasSavedEvents;
 
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
