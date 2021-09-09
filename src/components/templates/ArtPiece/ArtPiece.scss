@@ -93,22 +93,19 @@ $chat-wrapper-height: 260px;
           z-index: z(global-profile-icon);
         }
 
-        .mute-container,
-        .mute-other-container {
-          cursor: pointer;
-          position: absolute;
-          text-align: center;
-          display: flex;
-          justify-content: center;
-        }
-
         .mute-container {
+          position: absolute;
           bottom: $spacing--md;
           left: 0;
           right: 0;
         }
 
         .mute-other-container {
+          cursor: pointer;
+          position: absolute;
+          text-align: center;
+          display: flex;
+          justify-content: center;
           top: $spacing--md;
           right: $spacing--md;
         }
@@ -118,6 +115,10 @@ $chat-wrapper-height: 260px;
           width: 100%;
           display: block;
           margin: 0 auto;
+        }
+
+        .participant--video-disabled {
+          border-radius: $border-radius--xl;
         }
       }
     }
