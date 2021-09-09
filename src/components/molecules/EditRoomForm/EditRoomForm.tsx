@@ -65,28 +65,29 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     validationSchema: roomEditSchema,
     defaultValues: {
       room: {
-        title: room.title,
-        url: room.url,
-        subtitle: room.subtitle,
-        about: room.about,
-        template: room.template,
-        image_url: room.image_url,
+        title: room.title ?? "",
+        url: room.url ?? "",
+        subtitle: room.subtitle ?? "",
+        about: room.about ?? "",
+        template: room.template ?? undefined,
+        image_url: room.image_url ?? "",
       },
       venue: {
-        mapBackgroundImage: roomVenue?.mapBackgroundImageUrl,
-        zoomUrl: roomVenue?.zoomUrl,
-        iframeUrl: roomVenue?.iframeUrl,
-        showGrid: roomVenue?.showGrid,
-        showReactions: roomVenue?.showReactions,
-        showShoutouts: roomVenue?.showShoutouts,
-        auditoriumColumns: roomVenue?.auditoriumColumns,
-        auditoriumRows: roomVenue?.auditoriumRows,
-        columns: roomVenue?.columns,
+        mapBackgroundImage: roomVenue?.mapBackgroundImageUrl ?? "",
+        zoomUrl: roomVenue?.zoomUrl ?? "",
+        iframeUrl: roomVenue?.iframeUrl ?? "",
+        showGrid: roomVenue?.showGrid ?? false,
+        showReactions: roomVenue?.showReactions ?? false,
+        showShoutouts: roomVenue?.showShoutouts ?? false,
+        auditoriumColumns: roomVenue?.auditoriumColumns ?? 0,
+        auditoriumRows: roomVenue?.auditoriumRows ?? 0,
+        columns: roomVenue?.columns ?? 0,
       },
     },
   });
 
-  const values = watch();
+  const values = watch("room");
+  const venueValues = watch("venue");
 
   const handleImageChange = useCallback(
     (val: string) => {
@@ -223,7 +224,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
                   register={register}
                   small
                   nameWithUnderscore
-                  imgUrl={values?.venue?.mapBackgroundImage}
+                  imgUrl={venueValues?.mapBackgroundImage}
                 />
                 {errors?.venue?.mapBackgroundImage && (
                   <span className="input-error">
@@ -290,6 +291,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
                 <Toggler name="venue.showReactions" forwardedRef={register} />
               </div>
             )}
+
           {room.template &&
             HAS_REACTIONS_TEMPLATES.includes(
               room.template as VenueTemplate
@@ -300,52 +302,48 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
               </div>
             )}
 
-          {room.template &&
-            HAS_REACTIONS_TEMPLATES.includes(room.template as VenueTemplate) &&
-            HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
-              <>
-                <div className="input-container">
-                  <h4 className="italic input-header">
-                    Number of seats columns
-                  </h4>
-                  <input
-                    defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
-                    min={5}
-                    name="venue.auditoriumColumns"
-                    type="number"
-                    ref={register}
-                    className="align-left"
-                    placeholder="Number of seats columns"
-                  />
-                  {errors?.venue?.auditoriumColumns ? (
-                    <span className="input-error">
-                      {errors?.venue?.auditoriumColumns.message}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of seats rows</h4>
-                  <input
-                    defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
-                    name="venue.auditoriumRows"
-                    type="number"
-                    ref={register}
-                    className="align-left"
-                    placeholder="Number of seats rows"
-                    min={5}
-                  />
-                  {errors?.venue?.auditoriumRows ? (
-                    <span className="input-error">
-                      {errors?.venue?.auditoriumRows.message}
-                    </span>
-                  ) : null}
-                </div>
-              </>
-            )}
+          {room.template === VenueTemplate.auditorium && (
+            <>
+              <div className="input-container">
+                <h4 className="italic input-header">Number of seats columns</h4>
+                <input
+                  defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+                  min={5}
+                  name="venue.auditoriumColumns"
+                  type="number"
+                  ref={register}
+                  className="align-left"
+                  placeholder="Number of seats columns"
+                />
+                {errors?.venue?.auditoriumColumns ? (
+                  <span className="input-error">
+                    {errors?.venue?.auditoriumColumns.message}
+                  </span>
+                ) : null}
+              </div>
+              <div className="input-container">
+                <h4 className="italic input-header">Number of seats rows</h4>
+                <input
+                  defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+                  name="venue.auditoriumRows"
+                  type="number"
+                  ref={register}
+                  className="align-left"
+                  placeholder="Number of seats rows"
+                  min={5}
+                />
+                {errors?.venue?.auditoriumRows ? (
+                  <span className="input-error">
+                    {errors?.venue?.auditoriumRows.message}
+                  </span>
+                ) : null}
+              </div>
+            </>
+          )}
 
           {room.template &&
             HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
-            values.venue.showGrid && (
+            venueValues.showGrid && (
               <>
                 <div className="input-container">
                   <h4 className="italic input-header">Number of columns</h4>
