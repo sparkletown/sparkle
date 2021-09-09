@@ -562,6 +562,8 @@ export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
+export const DEFAULT_CAMERA_ENABLED = true;
+
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
