@@ -48,7 +48,7 @@ export interface ScheduleNGDay {
 export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
-  closeEventSchedule?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
+  onClickClose?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   venueId: string;
 }
 
@@ -59,7 +59,7 @@ interface UserWithVenueIdProps extends WithId<User> {
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
-  closeEventSchedule = () => {},
+  onClickClose = () => {},
   venueId,
 }) => {
   const { userWithId } = useUser();
@@ -245,7 +245,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         <ButtonNG
           className="NavBarWrapper__close-button"
           iconName={faTimes}
-          onClick={closeEventSchedule}
+          onClick={onClickClose}
         />
 
         <ScheduleNG
