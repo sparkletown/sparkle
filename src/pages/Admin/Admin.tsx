@@ -27,7 +27,7 @@ import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { adminOGRootUrl, venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -287,7 +287,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   const navigateToAdmin = useCallback(() => {
-    history.push("/admin");
+    history.push(adminOGRootUrl);
   }, [history]);
 
   useEffect(() => {

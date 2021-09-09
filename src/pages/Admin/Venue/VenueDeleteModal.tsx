@@ -4,6 +4,7 @@ import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 
 import "./VenueDeleteModal.scss";
 
@@ -39,13 +40,9 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
           WARNING: This action cannot be undone and will permanently remove the
           space <b>{venueName}</b>!
         </div>
-        {isDeleting && (
-          <div className="centered-flex">
-            <div className="spinner-border">
-              <span className="sr-only">Loading...</span>
-            </div>
-          </div>
-        )}
+
+        {isDeleting && <LoadingSpinner />}
+
         <div className="VenueDeleteModal__buttons">
           <ButtonNG
             disabled={isDeleting}
