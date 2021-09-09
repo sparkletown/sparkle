@@ -107,8 +107,8 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <AdminRestricted>
-      <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+      <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
         </div>
@@ -129,7 +129,7 @@ export const AdminVenueView: React.FC = () => {
           />
         )}
         {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
-      </WithNavigationBar>
-    </AdminRestricted>
+      </AdminRestricted>
+    </WithNavigationBar>
   );
 };

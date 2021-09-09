@@ -78,8 +78,8 @@ export const AdminAdvancedSettings: React.FC = () => {
   }
 
   return (
-    <AdminRestricted>
-      <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+      <AdminRestricted>
         <div className="AdminAdvancedSettings">
           <div className="AdminAdvancedSettings__options">
             {renderAdminAdvancedTabs}
@@ -100,7 +100,7 @@ export const AdminAdvancedSettings: React.FC = () => {
             onSave={navigateToDefaultTab}
           />
         )}
-      </WithNavigationBar>
-    </AdminRestricted>
+      </AdminRestricted>
+    </WithNavigationBar>
   );
 };

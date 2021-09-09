@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
@@ -15,6 +15,7 @@ import { Venue_v2_AdvancedConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
 
 import * as S from "../Admin.styles";
@@ -337,13 +338,13 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
         {renderRoomVisibility()}
 
-        <Button
+        <ButtonNG
           className="AdvancedSettings__save-button"
           type="submit"
           disabled={!dirty || isSubmitting}
         >
           Save
-        </Button>
+        </ButtonNG>
       </Form>
     </div>
   );
