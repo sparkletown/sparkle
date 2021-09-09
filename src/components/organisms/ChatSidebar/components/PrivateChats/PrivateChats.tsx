@@ -81,7 +81,9 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
     [filteredUsers, scrollPageNumber, selectRecipientChat]
   );
 
-  const numberOfUsers = filteredUsers.length;
+  const userItself = 1;
+
+  const numberOfUsers = filteredUsers.length + userItself;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
   if (recipientId) {
@@ -119,7 +121,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
             )}
 
             <p className="private-chats__title-text">
-              {numberOfUsers} other online people
+              {numberOfUsers} online people
             </p>
           </>
         )}
