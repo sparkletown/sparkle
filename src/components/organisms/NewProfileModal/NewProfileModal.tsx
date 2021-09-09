@@ -52,7 +52,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  const isSameUser = useIsCurrentUser(selectedUserProfile);
+  const isSameUser = useIsCurrentUser(selectedUserProfile?.id);
 
   const openChosenUserChat = useCallback(() => {
     if (!selectedUserProfile?.id) return;
