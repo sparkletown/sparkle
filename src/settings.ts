@@ -79,11 +79,6 @@ export const GIFT_TICKET_MODAL_URL =
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
-export const PLAYA_INFO_URL =
-  "https://us02web.zoom.us/j/89955369645?pwd=VEY1VzFPemNKMEw2bHRLdDJpWnRmQT09";
-export const PLAYA_INFO_NAME = "Playa Info";
-export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
-export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
@@ -91,7 +86,6 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -115,16 +109,12 @@ export const WORLD_USERS_UPDATE_INTERVAL = 5000;
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
-// How often to refresh daypart logic
-export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
-
 // How often to refresh current time line in the schedule
 export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
-export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_UPLOAD_IMAGE_FILE_SIZE_MB = 2;
 export const MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES =
   MAX_UPLOAD_IMAGE_FILE_SIZE_MB * 1024 * 1024;
@@ -132,13 +122,11 @@ export const MAX_SELECTABLE_IMAGE_FILE_SIZE_MB = 30;
 export const MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES =
   MAX_SELECTABLE_IMAGE_FILE_SIZE_MB * 1024 * 1024;
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
-export const GIF_IMAGE_WIDTH_PX = 300;
 
 export const MIN_TABLE_CAPACITY = 2;
 export const MAX_TABLE_CAPACITY = 10;
 
 export const DOCUMENT_ID = "__name__";
-export const NUM_CHAT_UIDS_TO_LOAD = 10;
 
 export const MINIMUM_PARTYMAP_COLUMNS_COUNT = 5;
 export const MAXIMUM_PARTYMAP_COLUMNS_COUNT = 100;
@@ -429,7 +417,7 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening room",
+    name: "Screening Room",
     description: ["Add an screening room with the videos listed inside."],
   },
 ];
@@ -464,40 +452,6 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.themecamp,
     name: "Theme Camp (legacy)",
     description: ["To be removed asap"],
-  },
-  {
-    template: VenueTemplate.animatemap,
-    name: "AnimateMap",
-    description: [""],
-  },
-];
-
-// @debt Refactor this constant into types/templates or similar?
-// @debt this doesn't seem to even be used at the moment.. should it be?
-export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
-  ...BURN_VENUE_TEMPLATES,
-  {
-    template: VenueTemplate.jazzbar,
-    name: "Jazz Bar",
-    description: ["Create a jazzbar."],
-  },
-
-  {
-    template: VenueTemplate.artcar,
-    name: "Art Car",
-    description: ["Create a space on the Jam that moves around."],
-  },
-  {
-    template: VenueTemplate.performancevenue,
-    name: "Performance Venue",
-    description: [
-      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
-    ],
-  },
-  {
-    template: VenueTemplate.partymap,
-    name: "Party Map",
-    description: [""],
   },
   {
     template: VenueTemplate.animatemap,
@@ -701,11 +655,6 @@ export const FIREBASE_CONFIG = {
 export const DEFAULT_VENUE = "zilloween";
 export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
 
-// Trouble connecting? Run a local relay:
-// git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
-export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
-
-export const USE_RANDOM_AVATAR = true;
 export const RANDOM_AVATARS = [
   "avatar-01.png",
   "avatar-02.png",
@@ -735,6 +684,8 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
+
+export const DEFAULT_CAMERA_ENABLED = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 

@@ -212,7 +212,6 @@ const createVenueData = (data, context) => {
     showSchedule:
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
-    showRangers: data.showRangers || false,
     parentId: data.parentId,
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
@@ -391,10 +390,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.showBadges === "boolean") {
     updated.showBadges = data.showBadges;
-  }
-
-  if (typeof data.showRangers === "boolean") {
-    updated.showRangers = data.showRangers;
   }
 
   if (typeof data.showReactions === "boolean") {
