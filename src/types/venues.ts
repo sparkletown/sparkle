@@ -12,7 +12,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { BaseUser, UsernameVisibility, UserStatus } from "./User";
+import { User, UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -192,7 +192,7 @@ export interface BaseVenue {
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
-  recentUsersSample?: WithId<BaseUser>;
+  recentUsersSample?: WithId<User>[];
   updatedAt?: number;
 }
 

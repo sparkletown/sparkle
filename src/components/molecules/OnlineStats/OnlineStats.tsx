@@ -99,27 +99,22 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(
-      venueName ?? "",
-      recentVenueUsers
-    );
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
         currentEvents: Array<VenueEvent>;
       }) => {
-        const venueAttendance = peopleAttending(peopleByLastSeen, venue.venue);
         liveEvents.push(...venue.currentEvents);
         venuesWithAttendance.push({
           ...venue,
-          attendance: venueAttendance ? venueAttendance.length : 0,
+          attendance: 0,
         });
       }
     );
     venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
     setVenuesWithAttendance(venuesWithAttendance);
     setLiveEvents(liveEvents);
-  }, [openVenues, recentVenueUsers, venue, venueName]);
+  }, [openVenues, venue, venueName]);
 
   const fuseVenues = useMemo(
     () =>

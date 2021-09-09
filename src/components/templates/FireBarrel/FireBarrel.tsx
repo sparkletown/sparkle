@@ -24,9 +24,11 @@ export const FireBarrel: React.FC = () => {
     venueId: venue?.id,
   });
 
+  const recentUserCount = venue?.recentUserCount ?? 0;
+
   const seatCount =
-    recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
-      ? recentVenueUsers.length
+    recentUserCount > DEFAULT_BURN_BARREL_SEATS
+      ? recentUserCount
       : DEFAULT_BURN_BARREL_SEATS;
 
   const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);

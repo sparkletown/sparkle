@@ -12,7 +12,6 @@ import classNames from "classnames";
 
 import { CHAT_MESSAGE_TIMEOUT, YOUTUBE_SHORT_URL_STRING } from "settings";
 
-import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -28,13 +27,11 @@ import { InputField } from "components/atoms/InputField";
 import "./Jukebox.scss";
 
 type JukeboxTypeProps = {
-  recentVenueUsers: readonly WithId<User>[];
   updateIframeUrl: Dispatch<SetStateAction<string>>;
   venue: WithId<AnyVenue>;
 };
 
 export const Jukebox: React.FC<JukeboxTypeProps> = ({
-  recentVenueUsers,
   updateIframeUrl,
   venue,
 }) => {
@@ -45,9 +42,8 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
-  const { userId } = useUser();
-  const [filteredUser] = recentVenueUsers.filter(({ id }) => id === userId);
-  const tableRef = filteredUser?.data?.[venue.name]?.table;
+  const { userWithId } = useUser();
+  const tableRef = userWithId?.data?.[venue.name]?.table;
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,

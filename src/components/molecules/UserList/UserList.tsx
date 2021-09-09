@@ -18,7 +18,7 @@ import "./UserList.scss";
 const noop = () => {};
 
 interface UserListProps extends ContainerClassName {
-  users: readonly WithId<User>[];
+  users?: readonly WithId<User>[];
   limit?: number;
   activity?: string;
   cellClassName?: string;
@@ -29,7 +29,7 @@ interface UserListProps extends ContainerClassName {
 }
 
 export const UserList: React.FC<UserListProps> = ({
-  users,
+  users = [],
   limit,
   activity = "partying",
   containerClassName,
