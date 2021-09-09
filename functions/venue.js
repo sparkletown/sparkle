@@ -956,8 +956,9 @@ exports.scheduledFunction = functions.pubsub
       });
 
     venues.forEach((venue) => {
-      const recentVenueUsers = users.filter((user) =>
-        user.lastVenueIdSeenIn?.includes(venue.id)
+      const recentVenueUsers = users.filter(
+        (user) =>
+          user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
       );
 
       const recentVenueUsersCount = recentVenueUsers.length;
