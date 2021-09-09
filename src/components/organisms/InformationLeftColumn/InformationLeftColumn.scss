@@ -23,8 +23,8 @@
   .left-column {
     z-index: z(left-column);
 
-    position: absolute;
-    top: 50px;
+    position: fixed;
+    top: $spacing--xxl * 7;
     width: 70px;
 
     padding: 10px;

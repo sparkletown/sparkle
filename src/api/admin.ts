@@ -78,10 +78,11 @@ export type VenueInput = AdvancedVenueInput &
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
-    subtitle: string;
-    description: string;
+    subtitle?: string;
+    description?: string;
     zoomUrl?: string;
     iframeUrl?: string;
+    autoPlay?: boolean;
     template: VenueTemplate;
     rooms?: Array<Room>;
     placement?: Omit<VenuePlacement, "state">;
@@ -101,6 +102,7 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
     showReactions?: boolean;
+    enableJukebox?: boolean;
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
@@ -123,6 +125,7 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  autoPlay?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -442,7 +445,7 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + venueInsideUrl(input.venueName!),
+        : window.origin + venueInsideUrl(input.venueName),
     ...imageInputData,
   };
 

@@ -21,7 +21,7 @@ import { addReaction } from "store/actions/Reactions";
 
 import { GenericVenue } from "types/venues";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
@@ -150,7 +150,12 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   useLayoutEffect(() => {
     if (!venue) return;
 
-    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, true));
+    setIframeUrl(
+      convertToEmbeddableUrl({
+        url: venue.iframeUrl,
+        autoPlay: venue?.autoPlay,
+      })
+    );
   }, [venue]);
 
   const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);
@@ -426,6 +431,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                                 miniAvatars={venue.miniAvatars}
                                 isAudioEffectDisabled={isUserAudioMuted}
                                 showNametags={venue.showNametags}
+                                size="xlarge"
                               />
                             )}
                             {seat && !seatedPartygoer && <>+</>}

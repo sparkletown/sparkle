@@ -21,6 +21,7 @@ const VenueTemplate = {
   friendship: "friendship",
   jazzbar: "jazzbar",
   partymap: "partymap",
+  animatemap: "animatemap",
   performancevenue: "performancevenue",
   posterhall: "posterhall",
   posterpage: "posterpage",
@@ -57,6 +58,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.friendship,
   VenueTemplate.jazzbar,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
@@ -81,9 +83,10 @@ const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
 
-// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS in src/settings.ts + share the same code between frontend/backend
+// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
 const DEFAULT_SHOW_SHOUTOUTS = true;
+const DEFAULT_ENABLE_JUKEBOX = false;
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
@@ -219,12 +222,20 @@ const createVenueData = (data, context) => {
     showUserStatus:
       typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   if (data.mapBackgroundImageUrl) {
     venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
+  if (data.template === VenueTemplate.jazzbar) {
+    venueData.enableJukebox =
+      typeof data.enableJukebox === "boolean"
+        ? data.enableJukebox
+        : DEFAULT_ENABLE_JUKEBOX;
+  }
   // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData.showReactions =
@@ -248,6 +259,7 @@ const createVenueData = (data, context) => {
 
   if (IFRAME_TEMPLATES.includes(data.template)) {
     venueData.iframeUrl = data.iframeUrl;
+    venueData.autoPlay = data.autoPlay;
   }
 
   if (ZOOM_URL_TEMPLATES.includes(data.template)) {
@@ -255,6 +267,7 @@ const createVenueData = (data, context) => {
   }
 
   switch (data.template) {
+    case VenueTemplate.animatemap:
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
@@ -295,7 +308,16 @@ const createVenueData_v2 = (data, context) => {
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
     rooms: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
+
+  if (data.template === VenueTemplate.jazzbar) {
+    venueData_v2.enableJukebox =
+      typeof data.enableJukebox === "boolean"
+        ? data.enableJukebox
+        : DEFAULT_ENABLE_JUKEBOX;
+  }
 
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData_v2.showReactions =
@@ -313,12 +335,14 @@ const createVenueData_v2 = (data, context) => {
 };
 
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-const createBaseUpdateVenueData = (data, updated) => {
-  if (data.subtitle) {
+const createBaseUpdateVenueData = (data, doc) => {
+  const updated = doc.data();
+
+  if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
-  if (data.description) {
+  if (data.description || data.description === "") {
     updated.config.landingPageConfig.description = data.description;
   }
 
@@ -377,6 +401,10 @@ const createBaseUpdateVenueData = (data, updated) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
+  }
+
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -404,6 +432,11 @@ const createBaseUpdateVenueData = (data, updated) => {
   if (data.showNametags) {
     updated.showNametags = data.showNametags;
   }
+
+  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
+  updated.updatedAt = Date.now();
+
+  return updated;
 };
 
 const dataOrUpdateKey = (data, updated, key) =>
@@ -590,11 +623,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  // @debt this is exactly the same as in updateVenue_v2
-  const updated = doc.data();
-
-  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-  createBaseUpdateVenueData(data, updated);
+  const updated = createBaseUpdateVenueData(data, doc);
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.bannerImageUrl || data.subtitle || data.description) {
@@ -691,11 +720,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  // @debt this is exactly the same as in updateVenue
-  const updated = doc.data();
-
   // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-  createBaseUpdateVenueData(data, updated);
+  const updated = createBaseUpdateVenueData(data, doc);
 
   // @debt in updateVenue we're checking/creating the updated.config object here if needed.
   //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?

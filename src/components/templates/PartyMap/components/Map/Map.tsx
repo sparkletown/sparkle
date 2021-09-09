@@ -19,6 +19,7 @@ import { WithId } from "utils/id";
 import { hasElements } from "utils/types";
 import { setLocationData } from "utils/userLocation";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
@@ -69,11 +70,15 @@ export const Map: React.FC<MapProps> = ({
   );
   const rowsArray = useMemo(() => Array.from(Array(totalRows)), [totalRows]);
 
+  const [mapBackground] = useValidImage(
+    venue?.mapBackgroundImageUrl,
+    DEFAULT_MAP_BACKGROUND
+  );
+
   useEffect(() => {
+    //@debt the image is already loaded and checked inside useValidImage
     const img = new Image();
-    img.src = venue.mapBackgroundImageUrl
-      ? venue.mapBackgroundImageUrl
-      : DEFAULT_MAP_BACKGROUND;
+    img.src = mapBackground ?? DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
 
@@ -83,7 +88,7 @@ export const Map: React.FC<MapProps> = ({
 
       setTotalRows(calcRows);
     };
-  }, [venue.columns, venue.mapBackgroundImageUrl]);
+  }, [mapBackground, venue.columns]);
 
   const takeSeat = useCallback(
     (gridPosition: GridPosition) => {
@@ -228,7 +233,7 @@ export const Map: React.FC<MapProps> = ({
         <img
           width="100%"
           className="party-map-background"
-          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          src={mapBackground}
           alt=""
         />
         {hasRows && (

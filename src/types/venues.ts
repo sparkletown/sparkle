@@ -4,6 +4,8 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { WithVenueId } from "utils/id";
 
+import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -27,6 +29,7 @@ export enum VenueTemplate {
   friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
+  animatemap = "animatemap",
   performancevenue = "performancevenue",
   posterhall = "posterhall",
   posterpage = "posterpage",
@@ -55,6 +58,7 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
+  | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
@@ -65,6 +69,7 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
+  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -80,8 +85,8 @@ export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
-      subtitle: string;
-      description: string;
+      subtitle?: string;
+      description?: string;
       coverImageUrl: string;
     };
   };
@@ -136,6 +141,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
+  autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   placement?: VenuePlacement;
   zoomUrl?: string;
@@ -186,10 +192,19 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  id: string;
+  gameOptions: GameOptions;
+  relatedPartymapId: string;
+  template: VenueTemplate.animatemap;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
@@ -231,6 +246,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {
@@ -250,6 +266,15 @@ export interface PosterPageVenue extends BaseVenue {
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
   title?: string;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  template: VenueTemplate.animatemap;
+  playerioGameId: string;
+  playerioMaxPlayerPerRoom?: number;
+  playerioFrequencyUpdate?: number;
+  //@dept Right now advanced mode in develop, don't add this flag to venue!
+  playerioAdvancedMode?: boolean;
 }
 
 export interface Question {
@@ -288,7 +313,7 @@ export interface VenueConfig {
 //   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
-  subtitle: string;
+  subtitle?: string;
   description?: string;
   presentation: string[];
   bannerImageUrl?: string;
@@ -330,6 +355,8 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+  orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {
@@ -340,11 +367,13 @@ export interface VenueLocation {
 
 export interface LocationEvents {
   location: VenueLocation;
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
 }
 
-export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
+  venueIcon: string;
+  liveAudience: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

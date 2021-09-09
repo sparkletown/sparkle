@@ -1,18 +1,23 @@
 import React, { useEffect, useMemo } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import classNames from "classnames";
 
 import { UserStatus } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserStatusDropdown.scss";
 
-export interface UserStatusDropdownProps {
+export interface UserStatusDropdownProps extends ContainerClassName {
   userStatuses: UserStatus[];
+  showDropdown?: boolean;
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   userStatuses,
+  showDropdown,
+  containerClassName,
 }) => {
   const { userStatus, changeUserStatus } = useVenueUserStatuses();
 
@@ -42,12 +47,15 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   return (
     // @debt replace with our own dropdown component
-    <DropdownButton
-      id="user-status-dropdown"
-      title={userStatus.status ?? "change status"}
-      className="UserStatusDropdown"
-    >
-      {userStatusDropdownOptions}
-    </DropdownButton>
+    <div className={classNames("UserStatusDropdown", containerClassName)}>
+      <div className="UserStatusDropdown__status">
+        {userStatus.status}&nbsp;
+      </div>
+      {showDropdown && (
+        <DropdownButton id="user-status-dropdown" title={"change status"}>
+          {userStatusDropdownOptions}
+        </DropdownButton>
+      )}
+    </div>
   );
 };

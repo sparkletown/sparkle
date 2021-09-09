@@ -4,6 +4,8 @@ import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { ContainerClassName } from "types/utility";
+
 import { isDefined, isTruthy } from "utils/types";
 
 import "./InputField.scss";
@@ -31,9 +33,13 @@ const renderIcon = (
   );
 };
 
-export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
-  containerClassName?: string;
+interface InputFieldProps
+  extends React.HTMLProps<HTMLInputElement>,
+    ContainerClassName {
   inputClassName?: string;
+  errorTextClassName?: string;
+  iconStartClassName?: string;
+  iconEndClassName?: string;
   iconStart?: IconProp | JSX.Element;
   iconEnd?: IconProp | JSX.Element;
   error?: FieldError;
@@ -46,6 +52,9 @@ export const _InputField: React.ForwardRefRenderFunction<
   {
     containerClassName,
     inputClassName,
+    iconStartClassName,
+    iconEndClassName,
+    errorTextClassName,
     iconStart,
     iconEnd,
     error,
@@ -67,13 +76,25 @@ export const _InputField: React.ForwardRefRenderFunction<
 
   return (
     <div className={containerClassNames}>
-      <div>
+      <div className="InputField__wrapper">
         <input ref={ref} className={inputClassNames} {...extraInputProps} />
 
-        {iconStart && renderIcon(iconStart, "InputField__icon--start")}
-        {iconEnd && renderIcon(iconEnd, "InputField__icon--end")}
+        {iconStart &&
+          renderIcon(
+            iconStart,
+            classNames("InputField__icon--start", iconStartClassName)
+          )}
+        {iconEnd &&
+          renderIcon(
+            iconEnd,
+            classNames("InputField__icon--end", iconEndClassName)
+          )}
       </div>
-      {error && <span className="InputField__error">{error.message}</span>}
+      {error && (
+        <span className={classNames("InputField__error", errorTextClassName)}>
+          {error.message}
+        </span>
+      )}
     </div>
   );
 };
