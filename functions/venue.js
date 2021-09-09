@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const { chunk } = require("lodash");
+const { chunk, sampleSize } = require("lodash");
 
 const { addAdmin, removeAdmin } = require("./src/api/roles");
 
@@ -952,11 +952,7 @@ exports.scheduledFunction = functions.pubsub
 
     const [users, venues] = await Promise.all([usersPromise, venuesPromise]);
 
-    console.log({ venues: venues.length });
-    console.log({ users: users.length });
-
-    chunk(venues, 200).forEach((venuesChunk) => {
-      console.log({ venuesChunk: venuesChunk.length });
+    chunk(venues, 500).forEach((venuesChunk) => {
       const batch = admin.firestore().batch();
 
       venuesChunk.forEach((venue) => {
@@ -971,10 +967,7 @@ exports.scheduledFunction = functions.pubsub
 
         batch.update(venueRef, {
           recentUserCount: recentVenueUsersCount,
-          recentUsersSample: recentVenueUsers.slice(
-            0,
-            Math.min(recentVenueUsersCount, 6)
-          ),
+          recentUsersSample: sampleSize(recentVenueUsers, 6),
         });
       });
 
