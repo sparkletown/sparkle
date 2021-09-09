@@ -271,6 +271,11 @@ $z-layers: (
   }
 }
 
+@mixin circle-avatar {
+  object-fit: cover;
+  object-position: top;
+}
+
 @mixin scrollbar {
   // The standard properties
   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
