@@ -949,7 +949,7 @@ exports.scheduledFunction = functions.pubsub
         return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       });
 
-    venues.forEach((venue) => {
+    for (const venue of venues) {
       const recentVenueUsers = users.filter(
         (user) =>
           user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
@@ -958,15 +958,15 @@ exports.scheduledFunction = functions.pubsub
       const recentVenueUsersCount = recentVenueUsers.length;
 
       const venueRef = admin.firestore().collection("venues").doc(venue.id);
-
-      venueRef.update({
+      // eslint-disable-next-line no-await-in-loop
+      await venueRef.update({
         recentUserCount: recentVenueUsersCount,
         recentUsersSample: recentVenueUsers.slice(
           0,
           Math.min(recentVenueUsersCount, 6)
         ),
       });
-    });
+    }
 
     return null;
   });
