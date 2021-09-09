@@ -9,6 +9,7 @@ import { TabFooter } from "components/organisms/AdminVenueView/components/TabFoo
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { DateTimeField } from "../DateTimeField";
 import { EventsView } from "../EventsView";
 
 import "./Timing.scss";
@@ -29,45 +30,14 @@ export const Timing: React.FC<TimingProps> = ({
     <div className="Timing">
       <div className="Timing__left">
         <TabFooter {...tabNavigationProps} />
-        <div className="Timing__left-content">
-          <h2 className="mb-1">Plan your events</h2>
-
-          {/* @debt: global start/end times will be added later
-            <div>
-              <h4 className="party-heading">Global starting time</h4>
-              <h4 className="party-subheading">
-                When does your party start?
-                <br />
-                Use your local time zone, it will be automatically converted for
-                anyone visiting from around the world.
-              </h4>
-              <input
-                type="date"
-                min={dayjs().format("YYYY-MM-DD")}
-                name="start_date"
-                className="input-block input-left"
-              />
-              <input
-                type="time"
-                name="start_time"
-                className="input-block input-right"
-              />
-            </div>
-
-            <div>
-              <h4 className="party-heading">Global ending time</h4>
-              <input
-                type="date"
-                min={dayjs().format("YYYY-MM-DD")}
-                name="start_date"
-                className="input-block input-left"
-              />
-              <input
-                type="time"
-                name="start_time"
-                className="input-block input-right"
-              />
-            </div> */}
+        <div className="Timing__left--content">
+          <h2 className="Timing__left--header">Plan your events</h2>
+          <DateTimeField
+            title="Global starting time"
+            subTitle="When does your party start?"
+            name="start"
+          />
+          <DateTimeField title="Global ending time" name="end" />
         </div>
       </div>
       <div className="Timing__right">

@@ -33,8 +33,12 @@ $left-section-width: 360px;
   }
 
   &__left {
-    &-content {
+    &--content {
       padding: 40px 30px 100px;
+    }
+
+    &--header {
+      margin-bottom: 0;
     }
   }
 
@@ -50,34 +54,3 @@ $left-section-width: 360px;
     }
   }
 }
-
-// @debt: these styles will be needed as soon as the global start/end time are added back
-// .party-heading,
-// .party-subheading {
-//   font-weight: $font-weight--300;
-//   line-height: 1;
-//   opacity: 0.6;
-// }
-
-// .party-heading {
-//   opacity: 1;
-//   display: inline-block;
-//   margin-top: $spacing--lg;
-// }
-
-// .input-left {
-//   width: 59%;
-//   margin-right: $spacing--xs;
-//   float: left;
-//   margin-top: $spacing--md;
-// }
-
-// .input-right {
-//   width: 38%;
-//   float: right;
-//   margin-top: $spacing--md;
-// }
-
-// .mb-1 {
-//   line-height: 1;
-// }

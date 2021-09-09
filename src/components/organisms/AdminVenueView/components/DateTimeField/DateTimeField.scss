@@ -1,0 +1,22 @@
+@import "scss/constants.scss";
+
+.DateTimeField {
+  &__title {
+    margin: $spacing--lg 0 0;
+  }
+
+  &__subtitle {
+    font-weight: $font-weight--300;
+    color: opaque-white(0.6);
+    margin: 0;
+  }
+
+  &__container {
+    display: flex;
+    margin-top: $spacing--md;
+
+    &--date {
+      margin-right: $spacing--sm;
+    }
+  }
+}
