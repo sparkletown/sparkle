@@ -5,7 +5,6 @@ import classNames from "classnames";
 // import { useForm } from "react-hook-form";
 import {
   DEFAULT_ENABLE_JUKEBOX,
-  DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
 } from "settings";
@@ -22,6 +21,7 @@ import { openUrl, venueInsideUrl } from "utils/url";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentVenueUsers } from "hooks/users";
+import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -63,6 +63,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     toggle: toggleTablesVisibility,
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+  const { isLoaded: settingsAreLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
   const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
 
@@ -128,7 +129,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   // };
 
   const shouldShowReactions =
-    (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+    seatedAtTable && settingsAreLoaded && settings.showReactions;
   const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =
