@@ -1,21 +1,28 @@
-import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
 import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 
+import { AlgoliaSearchIndex, AlgoliaUsersSearchResult } from "types/algolia";
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
+import { useAlgoliaSearchFn } from "hooks/algolia/useAlgoliaSearchFn";
 import { useVenueEvents } from "hooks/events";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useWorldUsers } from "hooks/users";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 
@@ -126,26 +133,45 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     );
   }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
 
-  const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
 
-  const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
+  const [
+    algoliaSearchResult,
+    setAlgoliaSearchResult,
+  ] = useState<AlgoliaUsersSearchResult>();
+  const [, algoliaSearch] = useAlgoliaSearchFn();
 
-    return worldUsers
-      .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
-      .map((user) => (
+  useEffect(() => {
+    const performSearch = async () => {
+      const results = await algoliaSearch(searchQuery);
+      if (results) setAlgoliaSearchResult(results[AlgoliaSearchIndex.USERS]);
+    };
+    if (searchQuery) void performSearch();
+    else setAlgoliaSearchResult(undefined);
+  }, [algoliaSearch, searchQuery]);
+
+  const foundUsers = useMemo<JSX.Element[]>(() => {
+    if (!algoliaSearchResult) return [];
+
+    return algoliaSearchResult.hits.map((hit) => {
+      const userFields = {
+        ...hit,
+        id: hit.objectID,
+      };
+      return (
         <NavSearchResult
-          key={`user-${user.id}`}
-          title={user.partyName ?? DEFAULT_PARTY_NAME}
-          user={user}
+          key={`user-${hit.objectID}`}
+          title={hit?.partyName ?? DEFAULT_PARTY_NAME}
+          user={userFields}
           onClick={() => {
-            openUserProfileModal(user);
+            // TODO:
+            console.log(openUserProfileModal);
             clearSearch();
           }}
         />
-      ));
-  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
+      );
+    });
+  }, [algoliaSearchResult, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
