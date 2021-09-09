@@ -108,7 +108,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     selectedUserProfile,
   } = useProfileModalControls();
 
-  const isSameUser = useIsCurrentUser(selectedUserProfile);
+  const isSameUser = useIsCurrentUser(selectedUserProfile?.id);
 
   useEffect(() => {
     if (hasSelectedProfile && isSameUser) updateUserProfileData(userWithId);
