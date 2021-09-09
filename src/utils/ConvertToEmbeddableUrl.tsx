@@ -1,5 +1,12 @@
-import { DEFAULT_VENUE_AUTOPLAY } from "settings";
-
+import {
+  FACEBOOK_EMBED_URL,
+  TWITCH_EMBED_URL,
+  TWITCH_SHORT_URL,
+  VIMEO_EMBED_URL,
+  VIMEO_SHORT_EVENT_URL,
+  YOUTUBE_EMBED_URL,
+  YOUTUBE_SHORT_URL_STRING,
+} from "../settings";
 export interface ConvertToEmbeddableUrlOptions {
   url?: string;
   autoPlay?: boolean;
@@ -8,28 +15,55 @@ export interface ConvertToEmbeddableUrlOptions {
 // @debt Replace the naive logic with use of new URL(url) which provides standard parsing before doing checks
 export const convertToEmbeddableUrl: (
   options: ConvertToEmbeddableUrlOptions
-) => string = ({ url, autoPlay = DEFAULT_VENUE_AUTOPLAY }) => {
-  if (url?.includes("youtube")) {
-    url = url?.replace("watch?v=", "embed/");
+) => string = ({ url, autoPlay }) => {
+  if (!url) {
+    return "";
+  }
+
+  let urlObj = new URL(url);
+  const { host, searchParams, pathname } = urlObj;
+  const youtubeVideoId = searchParams.get("v") || pathname.slice(1);
+  const twitchVideoId = searchParams.get("video");
+  const twitchId = searchParams.get("channel") || twitchVideoId;
+  const isTwitch = host.includes(TWITCH_SHORT_URL);
+
+  if (
+    host?.includes(YOUTUBE_SHORT_URL_STRING) &&
+    !pathname?.includes("embed")
+  ) {
+    urlObj = new URL(`${YOUTUBE_EMBED_URL}${youtubeVideoId}`);
+    const params = searchParams.toString().split("&");
+    params.forEach((param) => {
+      const [key, value] = param.split("=");
+      urlObj.searchParams.set(key, value);
+    });
   } else if (
-    url?.includes("vimeo") &&
-    !url?.includes("player") &&
+    host?.includes("vimeo") &&
+    !host?.includes("player") &&
     // NOTE: If you have a scheduled live event, it gives you a different embed code
-    !url?.includes("vimeo.com/event")
+    !url?.includes(VIMEO_SHORT_EVENT_URL)
   ) {
-    url = url?.replace("vimeo.com/", "player.vimeo.com/video/");
-  } else if (
-    url?.includes("facebook.com/plugins/video.php") &&
-    !url.includes("mute=0")
-  ) {
-    url += url.includes("?") ? "&" : "?";
-    url += "mute=0";
-  } else {
-    url = url?.includes("http") ? url : "//" + url;
+    urlObj = new URL(`${VIMEO_EMBED_URL}${pathname}`);
+  } else if (pathname?.includes(FACEBOOK_EMBED_URL)) {
+    searchParams.set("mute", "0");
+  } else if (isTwitch) {
+    const id = pathname.split("/")?.slice(-1)?.[0] || twitchId || "";
+    const twitchUrlObj = new URL(TWITCH_EMBED_URL);
+    urlObj = twitchUrlObj;
+    if (pathname.includes("video") || twitchVideoId) {
+      twitchUrlObj.searchParams.set("video", id);
+    } else {
+      twitchUrlObj.searchParams.set("channel", id);
+    }
+    twitchUrlObj.searchParams.set("parent", "localhost");
   }
+
   if (autoPlay) {
-    url += url.includes("?") ? "&" : "?";
-    url += "autoplay=1";
+    const autoPlayValue = isTwitch ? "true" : "1";
+    urlObj.searchParams.set("autoplay", autoPlayValue);
+  } else {
+    urlObj.searchParams.delete("autoplay");
   }
-  return url;
+
+  return urlObj.href;
 };
