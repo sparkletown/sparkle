@@ -4,8 +4,8 @@ import React from "react";
 import { OnErrorCallback } from "@bugsnag/core";
 import Bugsnag from "@bugsnag/js";
 
-import { isBugsnagStarted } from "./init";
 import { ErrorPrompt } from "./ErrorPrompt";
+import { isBugsnagStarted } from "./init";
 
 interface BugsnagErrorBoundaryProps {
   onError?: OnErrorCallback;

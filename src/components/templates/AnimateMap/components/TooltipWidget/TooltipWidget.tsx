@@ -7,11 +7,6 @@ import { Room } from "types/rooms";
 
 import { useDispatch } from "hooks/useDispatch";
 
-// import { useSelector } from "hooks/useSelector";
-// import {
-// animateMapEventProviderSelector
-//   animateMapKeyPollSelector,
-// } from "utils/selectors";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
@@ -23,7 +18,7 @@ import "./TooltipWidget.scss";
 export interface TooltipWidgetProps {}
 
 const TOOLTIP_POOL_SIZE = 3;
-const timer = 2.5 * 1000;
+const timer = 5 * 1000;
 
 export interface TooltipWidgetItemData {
   text: string;
@@ -38,6 +33,7 @@ interface TooltipWidgetState {
   itemsData: TooltipWidgetItemData[];
 }
 
+//@debt remove this component and write another with simple handler logic
 export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
   const [state, setState] = useState({
     current: 0,
@@ -99,17 +95,17 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
     };
   });
 
-  // const keyPoll = useSelector(animateMapKeyPollSelector);
   const dispatch = useDispatch();
   useEffect(() => {
     const callback = (type: "down" | "up") => {
       if (!state.timeoutFunc) return; //reject
       if (type === "up") {
-        const current =
-          state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
-        if (!state.itemsData[current]) return; //FIXME
-        const room = state.itemsData[current].room;
-        dispatch(setAnimateMapRoom(room));
+        // const current =
+        //   state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
+        // if (!state.itemsData[current]) return; //FIXME
+        // const room = state.itemsData[current].room;
+        // openRoomUrl(room.url);
+        dispatch(setAnimateMapRoom(state.lastVenue.data as Room));
       }
     };
     KeyPoll.on(ENTER, callback);

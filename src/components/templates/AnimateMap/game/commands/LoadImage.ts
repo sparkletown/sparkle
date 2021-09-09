@@ -1,12 +1,9 @@
 import Command from "./Command";
 
 export class LoadImage implements Command {
-  public url: string;
   public image?: HTMLImageElement;
 
-  constructor(url: string) {
-    this.url = url;
-  }
+  constructor(public url?: string) {}
 
   execute(): Promise<LoadImage> {
     const img: HTMLImageElement = new Image();
@@ -28,7 +25,7 @@ export class LoadImage implements Command {
         },
         false
       );
-      img.src = this.url;
+      img.src = this.url ?? "";
     });
   }
 }

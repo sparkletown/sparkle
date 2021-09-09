@@ -13,24 +13,28 @@ export const getUserExperience = (venueName?: string) => (
 export const getUserLocationData = ({
   worldUserLocationsById,
   user,
-  childLocation,
+  roomName,
+  venueName,
   location,
 }: {
   worldUserLocationsById: Record<string, WithId<UserLocation>>;
   user: WithId<User>;
-  childLocation: string;
+  roomName: string;
+  venueName: string;
   location: string;
 }) => {
   const userLocation: WithId<UserLocation> | undefined =
     worldUserLocationsById[user.id];
 
-  const userLastSeenIn = Object.keys(userLocation.lastSeenIn)[0];
+  const userLastSeenIn =
+    Object.keys(userLocation.lastSeenIn)[0] &&
+    !!Object.keys(userLocation.lastSeenIn)[0].includes(roomName);
   const userLastSeenLocation =
+    userLocation.lastSeenIn?.[venueName] ||
+    userLocation.lastSeenIn?.[roomName] ||
     userLocation.lastSeenIn?.[location] ||
-    userLocation.lastSeenIn?.[childLocation];
-
+    Object.values(userLocation.lastSeenIn)[0];
   const isLocationMatch = userLastSeenIn && userLastSeenLocation;
-
   return {
     isLocationMatch,
     userLastSeenLocation,

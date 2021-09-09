@@ -1,14 +1,13 @@
-import firebase from "firebase/app";
-
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
+import firebase from "firebase/app";
 
 import {
   BUGSNAG_API_KEY,
   BUILD_BRANCH,
+  BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
-  BUILD_PULL_REQUESTS,
 } from "secrets";
 
 if (BUGSNAG_API_KEY) {
@@ -42,6 +41,7 @@ if (BUGSNAG_API_KEY) {
     "env/burn-staging",
     "env/github",
     "env/summit-hack",
+    "env/northwell",
   ];
 
   const releaseStage = () => {
@@ -94,11 +94,8 @@ if (BUGSNAG_API_KEY) {
       if (!currentUser) return;
 
       // Add user context to help locate related errors for support
-      event.setUser(
-        currentUser.uid,
-        currentUser.email || undefined,
-        currentUser.displayName || undefined
-      );
+      const { uid, email, displayName } = currentUser;
+      event.setUser(uid, email || undefined, displayName || undefined);
     },
   });
 }

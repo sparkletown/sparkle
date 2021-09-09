@@ -14,6 +14,7 @@ $video-participant-optimal-height: 195px;
     justify-content: center;
     justify-self: center;
     max-width: $video-participant-optimal-width;
+    min-width: 15%;
     max-height: $video-participant-optimal-height;
     border-radius: 15px;
 
@@ -35,10 +36,8 @@ $video-participant-optimal-height: 195px;
 
       .profile-icon {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 25px;
-        height: 25px;
+        bottom: $spacing--sm;
+        left: $spacing--sm;
         border-radius: 188%;
         z-index: z(jazzbar-participant-profile-icon);
       }
@@ -71,10 +70,22 @@ $video-participant-optimal-height: 195px;
     flex-direction: row;
     height: 100%;
     padding: 20px;
+    overflow-x: auto;
+
+    .firebarrel-room__exit-container {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      cursor: pointer;
+    }
 
     .firebarrel-room__participant {
       margin: 0 0.25rem;
-      width: $video-participant-optimal-width;
+      min-width: 100px;
+      //width: $video-participant-optimal-width;
     }
   }
 
@@ -90,10 +101,53 @@ $video-participant-optimal-height: 195px;
   @media (max-width: $media-breakpoint--lg) {
     &__participants {
       justify-content: space-around;
+      flex-wrap: wrap;
+
       .firebarrel-room__participant {
-        max-width: 49%;
+        max-width: 30%;
+        margin-bottom: $spacing--sm;
       }
     }
+  }
+}
+
+.firebarrel-room__exit-btn {
+  &-wrapper {
+    position: absolute;
+    top: -42px;
+    height: 42px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  &-inner {
+    background-color: rgba(0, 0, 0, 0.4);
+    margin: auto;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    height: 42px;
+
+    & .firebarrel-room__exit-btn {
+      padding: 0;
+    }
+  }
+
+  cursor: pointer;
+  opacity: 0.8;
+
+  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 22px;
+  margin: $spacing--md;
+  background-color: #7c46fb;
+
+  width: 95px;
+  height: 28px;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
   }
 }
 

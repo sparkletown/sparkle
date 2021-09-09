@@ -3,7 +3,7 @@ import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
-import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
@@ -12,7 +12,8 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
-import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
+import { MAP_JSON, sounds } from "../constants/AssetConstants";
+import { stubArtcarsData } from "../constants/StubData";
 import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
@@ -45,7 +46,6 @@ import { TooltipSystem } from "./systems/TooltipSystem";
 import { VenueSystem } from "./systems/VenueSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
-import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
 
 export class MapContainer extends Container {
   private _app: Application;
@@ -109,7 +109,7 @@ export class MapContainer extends Container {
   }
 
   private initViewport() {
-    this._viewport = new Viewport({ noTicker: true });
+    this._viewport = new Viewport({ noTicker: true, divWheel: this._app.view });
     this.addChild(this._viewport);
   }
 
@@ -225,7 +225,6 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
 
-    this._engine.addSystem(new ZoomedSpriteSystem(), SystemPriorities.render);
     this._engine.addSystem(
       new ViewportSystem(
         this._app,
@@ -235,10 +234,13 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport as Viewport),
+      new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
-    this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
+    this._engine.addSystem(
+      new FirebarrelSystem(this.entityFactory),
+      SystemPriorities.render
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -301,30 +303,18 @@ export class MapContainer extends Container {
         .execute()
         .then(() => {
           if (this.entityFactory) {
-            const firebarrels = GameInstance.instance
-              .getConfig()
-              .getFirebarrels();
-
-            if (firebarrels) {
-              for (let i = 0; i < firebarrels.length; i++) {
-                this.entityFactory.createBarrel(firebarrels[i]);
-                // this.entityFactory.createBarrel({
-                //   x: firebarrel.x,
-                //   y: firebarrel.y,
-                //   data: { url: firebarrel.id, image_url: barrels[0] },
-                // } as ReplicatedVenue);
+            GameInstance.instance.dataProvider.firebarrelsData.forEach(
+              (firebarrel) => {
+                this.entityFactory?.createFireBarrel(firebarrel);
               }
-            }
+            );
           }
         })
         .then(() => {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.getConfig()
               .playgroundMap;
-            const bots: Map<
-              string,
-              ReplicatedUser
-            > = GameInstance.instance.getState().users;
+            const bots = GameInstance.instance.getState().users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {
@@ -378,17 +368,11 @@ export class MapContainer extends Container {
         .then(() => {
           if (this.entityFactory) {
             const self: MapContainer = this;
+            const artcars = stubArtcarsData();
             const loop = async () => {
               for (let i = 0; i < artcars.length; i++) {
                 await new Promise((resolve) => {
-                  const user: PlayerModel = new PlayerModel(
-                    `${i}${Date.now()}`,
-                    -1,
-                    artcars[i]
-                  );
-                  // user.data.id = `${i}${Date.now()}`;
-                  // user.data.avatarUrlString = artcars[i];
-                  self.entityFactory?.createArtcar(user);
+                  self.entityFactory?.createArtcar(artcars[i]);
                   setTimeout(() => {
                     resolve(true);
                   }, 30);
