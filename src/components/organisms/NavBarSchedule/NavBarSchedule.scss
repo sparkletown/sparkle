@@ -26,7 +26,10 @@ $schedule-btn--height: 51px;
     background-color: opaque-black(0.9);
     height: $schedule-btn--height;
     padding-left: $NavBarSchedule--padding;
-    transition: all 400ms $transition-function;
+
+    &--show {
+      transition: all 400ms $transition-function;
+    }
   }
 
   // @debt: overwrites default btn btn-primary styles

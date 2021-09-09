@@ -224,6 +224,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
+  const navBarScheduleClasses = classNames("NavBarWrapper__download-buttons", {
+    "NavBarWrapper__download-buttons--show": isVisible,
+  });
+
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
@@ -245,7 +249,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         />
       </div>
       {!isEventsLoading && (
-        <div className="NavBarWrapper__download-buttons">
+        <div className={navBarScheduleClasses}>
           {isShowPersonalDownloadBtn && (
             <Button
               onClick={downloadPersonalEventsCalendar}
