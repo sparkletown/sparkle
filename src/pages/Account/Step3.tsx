@@ -1,10 +1,14 @@
 import React from "react";
-import "firebase/storage";
-import "./Account.scss";
-import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
-import { useUser } from "hooks/useUser";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+
+import { useUser } from "hooks/useUser";
+
+import "firebase/storage";
+
+import "./Account.scss";
 
 interface CodeOfConductFormData {
   contributeToExperience: string;
@@ -77,17 +81,13 @@ export const TEN_PRINCIPLES_LIST: PrincipleDefinition[] = [
 const Step3 = () => {
   const { user } = useUser();
   const history = useHistory();
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    watch,
-  } = useForm<CodeOfConductFormData>({
+  const { register, handleSubmit, errors, formState, watch } = useForm<
+    CodeOfConductFormData & Record<string, string>
+  >({
     mode: "onChange",
   });
 
-  const onSubmit = async (data: CodeOfConductFormData) => {
+  const onSubmit = async () => {
     if (!user) return;
     history.push(`/enter/step4`);
   };
@@ -121,8 +121,7 @@ const Step3 = () => {
                     required: true,
                   })}
                 />
-                {/* @ts-ignore @debt questions should be typed if possible */}
-                {q.name in errors && errors[q.name].type === "required" && (
+                {q.name in errors && errors?.[q.name]?.type === "required" && (
                   <span className="input-error">Required</span>
                 )}
               </div>

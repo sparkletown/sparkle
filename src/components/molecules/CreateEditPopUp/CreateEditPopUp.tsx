@@ -2,12 +2,13 @@ import React from "react";
 
 import {
   CREATE_EDIT_URL,
-  SPARKLEVERSITY_URL,
-  SPARKLEVERSE_COMMUNITY_URL,
   PLAYA_VENUE_NAME,
+  SPARKLEVERSE_COMMUNITY_URL,
+  SPARKLEVERSITY_URL,
 } from "settings";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+
 import InformationCard from "components/molecules/InformationCard";
 
 const CreateEditPopUp: React.FC = () => {

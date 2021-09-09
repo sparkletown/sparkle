@@ -5,7 +5,6 @@ import { resolve } from "path";
 import admin from "firebase-admin";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
-
 import validCodes from "./validCodes.json";
 
 const usage = makeScriptUsage({

@@ -83,27 +83,6 @@ $tab-bar-height: 36px;
     box-shadow: 0 0 0 3px $primary;
   }
 
-  &__footer {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 20%;
-    padding: $spacing--md;
-    background-color: $black;
-    border-top: 1px solid opaque-white(0.2);
-  }
-
-  &__nav-buttons {
-    display: flex;
-    width: 40%;
-  }
-
-  &__nav-button {
-    flex-shrink: 0;
-  }
-
   &__appearance {
     padding: 20px;
   }

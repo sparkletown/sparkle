@@ -1,9 +1,12 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { useVenueId } from "hooks/useVenueId";
+
+import { NewProfileModal } from "components/organisms/NewProfileModal";
 
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";
@@ -20,14 +23,18 @@ const NavBar = lazy(() =>
 
 export interface WithNavigationBarProps {
   hasBackButton?: boolean;
+  withSchedule?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
+  withSchedule = true,
   children,
 }) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
   const venueId = useVenueId();
+
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   // @debt remove backButton from Navbar
   return (
@@ -39,13 +46,14 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        */}
       <RelatedVenuesProvider venueId={venueId}>
         <Suspense fallback={<Loading />}>
-          <NavBar hasBackButton={hasBackButton} />
+          <NavBar hasBackButton={hasBackButton} withSchedule={withSchedule} />
         </Suspense>
       </RelatedVenuesProvider>
 
       <div className="navbar-margin">{children}</div>
 
       <Footer />
+      {venue && <NewProfileModal venue={venue} />}
     </>
   );
 };

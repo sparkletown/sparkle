@@ -4,17 +4,16 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import classNames from "classnames";
-
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAmbulance,
   faAngleDoubleRight,
-  faHeart,
   faEdit,
+  faHeart,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import "./InformationLeftColumn.scss";
 

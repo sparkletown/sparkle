@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useMemo } from "react";
+import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -6,42 +6,40 @@ import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
+import { hasEventFinished, isEventStartingSoon } from "utils/event";
+import { tracePromise } from "utils/performance";
+import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import {
   currentEventSelector,
   currentVenueSelector,
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
 } from "utils/selectors";
+import { isDefined } from "utils/types";
+import { venueEntranceUrl } from "utils/url";
 import {
   clearLocationData,
   setLocationData,
   updateCurrentLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
-import { venueEntranceUrl } from "utils/url";
-
-import { tracePromise } from "utils/performance";
-import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy, isDefined } from "utils/types";
-import { hasEventFinished, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
+// import { useVenueAccess } from "hooks/useVenueAccess";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
-import { useSelector } from "hooks/useSelector";
 import { useWorldUserLocation } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-// import { useVenueAccess } from "hooks/useVenueAccess";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
@@ -63,9 +61,8 @@ const TemplateWrapper = lazy(() =>
 );
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
-const hasPaidEvents = (template: VenueTemplate) => {
-  return template === VenueTemplate.jazzbar;
-};
+const checkSupportsPaidEvents = (template: VenueTemplate) =>
+  template === VenueTemplate.jazzbar;
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
@@ -75,7 +72,7 @@ export const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
   const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
+  const { lastSeenIn: userLastSeenIn, enteredVenueIds } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -159,14 +156,14 @@ export const VenuePage: React.FC = () => {
     if (
       !venueId ||
       !userId ||
-      !profile ||
-      profile?.enteredVenueIds?.includes(venueId)
+      !userLocation ||
+      enteredVenueIds?.includes(venueId)
     ) {
       return;
     }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
-  }, [profile, userId, venueId]);
+    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
+  }, [enteredVenueIds, userLocation, userId, venueId]);
 
   // NOTE: User's timespent updates
 
@@ -211,18 +208,16 @@ export const VenuePage: React.FC = () => {
   // if (isAccessDenied) {
   //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
   // }
+  const { entrance, template, hasPaidEvents } = venue;
 
-  const hasEntrance = isTruthy(venue?.entrance);
-  const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+  const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
+  const hasEntered = enteredVenueIds?.includes(venueId);
+
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
-  if (
-    hasPaidEvents(venue.template) &&
-    venue.hasPaidEvents &&
-    !isUserVenueOwner
-  ) {
+  if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }

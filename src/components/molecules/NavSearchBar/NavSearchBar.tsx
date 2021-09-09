@@ -1,37 +1,34 @@
-import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
+import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
-import {
-  DEFAULT_PARTY_NAME,
-  DEFAULT_VENUE_LOGO,
-  COVERT_ROOM_TYPES,
-} from "settings";
+import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
-import { uppercaseFirstChar } from "utils/string";
-import { formatUtcSecondsRelativeToNow } from "utils/time";
-import { isTruthy, isDefined } from "utils/types";
+import { WithId, WithVenueId } from "utils/id";
+import { isDefined, isTruthy } from "utils/types";
 
 import { useVenueEvents } from "hooks/events";
-import { useWorldUsers } from "hooks/users";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUsers } from "hooks/users";
 
 import { RoomModal } from "components/templates/PartyMap/components";
+
 import { EventModal } from "components/organisms/EventModal";
+
 import { Loading } from "components/molecules/Loading";
+import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSearchBarFoundEvent";
+
 import { InputField } from "components/atoms/InputField";
 
-import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
-
 import { NavSearchResult } from "./NavSearchResult";
+
+import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import "./NavSearchBar.scss";
 
@@ -57,7 +54,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
 
-  const [selectedRoomVenue, setSelectedRoomVenue] = useState<AnyVenue>();
+  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
+    WithId<AnyVenue>
+  >();
 
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
@@ -162,29 +161,18 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
         );
       })
-      .map((event) => {
-        const imageUrl =
-          enabledRelatedRooms.find((room) => room.title === event.room)
-            ?.image_url ??
-          relatedVenues.find((venue) => venue.id === event.venueId)?.host
-            ?.icon ??
-          DEFAULT_VENUE_LOGO;
-
-        return (
-          <NavSearchResult
-            key={`event-${event.id ?? event.name}`}
-            title={event.name}
-            description={`Event - ${uppercaseFirstChar(
-              formatUtcSecondsRelativeToNow(event.start_utc_seconds)
-            )}`}
-            image={imageUrl ?? DEFAULT_VENUE_LOGO}
-            onClick={() => {
-              setSelectedEvent(event);
-              clearSearch();
-            }}
-          />
-        );
-      });
+      .map((event) => (
+        <NavSearchBarFoundEvent
+          key={`event-${event.id ?? event.name}`}
+          event={event}
+          enabledRelatedRooms={enabledRelatedRooms}
+          relatedVenues={relatedVenues}
+          onClick={() => {
+            setSelectedEvent(event);
+            clearSearch();
+          }}
+        />
+      ));
   }, [
     searchQuery,
     relatedEvents,

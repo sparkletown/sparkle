@@ -36,32 +36,6 @@ $left-section-width: 360px;
     &-content {
       padding: 40px 30px 100px;
     }
-
-    &-bottombar {
-      position: fixed;
-      display: flex;
-      justify-content: space-between;
-      bottom: 0px;
-      width: $left-section-width;
-      padding: $spacing--md;
-      border-top: 1px solid $secondary;
-
-      &-btnright {
-        button {
-          margin-left: $spacing--md;
-        }
-      }
-
-      .btn-icon {
-        width: 50px;
-        border-radius: $border-radius--xl;
-        padding: $spacing--md;
-      }
-
-      &-btnprimary {
-        background-color: $primary;
-      }
-    }
   }
 
   &__right {

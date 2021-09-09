@@ -1,17 +1,19 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "store";
+import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
+import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
-import { TextReaction, Reaction, TextReactionType } from "types/reactions";
+import { JukeboxMessage } from "types/jukebox";
+import { Reaction, TextReaction, TextReactionType } from "types/reactions";
+import { ScreeningRoomVideo } from "types/screeningRoom";
+import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
-import { ScreeningRoomVideo } from "types/screeningRoom";
-
-import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { WithId } from "utils/id";
 
@@ -94,6 +96,10 @@ export const venueChatMessagesSelector: SparkleSelector<
   WithId<VenueChatMessage>[] | undefined
 > = (state) => state.firestore.ordered.venueChatMessages;
 
+export const jukeboxMessagesSelector: SparkleSelector<
+  WithId<JukeboxMessage>[] | undefined
+> = (state) => state.firestore.ordered.venueJukeboxMessages;
+
 export const privateChatMessagesSelector: SparkleSelector<
   WithId<PrivateChatMessage>[] | undefined
 > = (state) => state.firestore.ordered.privateChatMessages;
@@ -142,6 +148,14 @@ export const posterVenuesSelector: SparkleSelector<
 export const screeningRoomVideosSelector: SparkleSelector<
   WithId<ScreeningRoomVideo>[] | undefined
 > = (state) => state.firestore.ordered.screeningRoomVideos;
+
+export const animateMapFirebarrelsSelector: SparkleSelector<
+  WithId<Firebarrel>[] | undefined
+> = (state) => state.firestore.ordered.animatemapFirebarrels;
+
+export const animateMapArtCarsSelector: SparkleSelector<
+  WithId<ArtCar>[] | undefined
+> = (state) => state.firestore.ordered.animatemapArtcars;
 
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.
@@ -196,3 +210,15 @@ export const ownedVenuesDataSelector: SparkleSelector<
 export const ownedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined
 > = (state) => state.firestore.ordered.ownedVenues;
+
+export const animateMapEnvironmentSoundSelector: SparkleSelector<boolean> = (
+  state
+) => state.animatemap.environmentSound;
+
+export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
+  state
+) => state.animatemap.firstEntrance;
+
+export const settingsSelector: SparkleSelector<Settings | undefined> = (
+  state
+) => state.firestore.data.settings;

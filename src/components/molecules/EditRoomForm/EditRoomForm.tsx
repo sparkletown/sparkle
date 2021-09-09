@@ -137,7 +137,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           <ImageInput
             onChange={handleImageChange}
             name="image"
-            forwardRef={register}
+            setValue={setValue}
+            register={register}
             small
             nameWithUnderscore
             imgUrl={room.image_url}

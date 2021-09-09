@@ -9,32 +9,32 @@ import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
 import {
-  IFRAME_ALLOW,
-  REACTION_TIMEOUT,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
+  IFRAME_ALLOW,
+  REACTION_TIMEOUT,
 } from "settings";
-
-import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
+import { addReaction } from "store/actions/Reactions";
+
 import { GenericVenue } from "types/venues";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
 
@@ -150,7 +150,12 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   useLayoutEffect(() => {
     if (!venue) return;
 
-    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, true));
+    setIframeUrl(
+      convertToEmbeddableUrl({
+        url: venue.iframeUrl,
+        autoPlay: venue?.autoPlay,
+      })
+    );
   }, [venue]);
 
   const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);
@@ -426,6 +431,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                                 miniAvatars={venue.miniAvatars}
                                 isAudioEffectDisabled={isUserAudioMuted}
                                 showNametags={venue.showNametags}
+                                size="xlarge"
                               />
                             )}
                             {seat && !seatedPartygoer && <>+</>}

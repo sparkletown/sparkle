@@ -1,22 +1,26 @@
 import React from "react";
-import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useUser } from "hooks/useUser";
 import { useRoles } from "hooks/useRoles";
-import { useIsAdminUser } from "hooks/roles";
+import { useUser } from "hooks/useUser";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import {
   AuthenticationModal,
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
+
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import "./Admin.scss";
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+
+import "firebase/storage";
+
 import * as S from "./Admin.styles";
+
+import "./Admin.scss";
 
 dayjs.extend(advancedFormat);
 
@@ -27,8 +31,6 @@ const Admin_v2: React.FC = () => {
 
   const { roles } = useRoles();
 
-  const { isAdminUser } = useIsAdminUser(user?.uid);
-
   if (isLoading || !roles) {
     return <LoadingPage />;
   }
@@ -37,12 +39,8 @@ const Admin_v2: React.FC = () => {
     return <>You need to log in first.</>;
   }
 
-  if (!roles.includes("admin") || !isAdminUser) {
-    return <>Forbidden</>;
-  }
-
   return (
-    <>
+    <AdminRestricted>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
           <AdminVenues venues={ownedVenues} />
@@ -54,7 +52,7 @@ const Admin_v2: React.FC = () => {
         onHide={() => {}}
         showAuth={AuthOptions.login}
       />
-    </>
+    </AdminRestricted>
   );
 };
 

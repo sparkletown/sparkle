@@ -1,6 +1,9 @@
 import React, { useMemo } from "react";
+
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+
 import { TableComponentPropsType } from "types/Table";
-import { DEFAULT_PROFILE_IMAGE, DEFAULT_PARTY_NAME } from "settings";
+
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 const DEFAULT_TABLE_CAPACITY = 7;

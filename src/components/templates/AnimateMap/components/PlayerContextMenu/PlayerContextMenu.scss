@@ -1,0 +1,95 @@
+@keyframes ContextMenuPopUp {
+  from {
+    scale: 0.4;
+    rotate: 2deg;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    rotate: 0deg;
+    opacity: 1;
+  }
+}
+@keyframes ContextMenuPopDown {
+  from {
+    scale: 1;
+    rotate: 0deg;
+  }
+  to {
+    scale: 0.4;
+    rotate: 2deg;
+    opacity: 0;
+  }
+}
+
+.UIPlayerContextMenu {
+  position: absolute;
+  left: 44px;
+  text-align: left;
+  font-size: 0.9rem;
+  min-width: 100px;
+  width: max-content;
+  border-radius: 12px 12px 12px 4px;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  transform-origin: bottom left;
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  user-select: none;
+  animation-name: ContextMenuPopUp;
+  animation-duration: 0.3s;
+  animation-iteration-count: 1;
+}
+.UIPlayerContextMenuHidden {
+  position: absolute;
+  text-align: left;
+  font-size: 0.9rem;
+  min-width: 100px;
+  width: max-content;
+  border-radius: 12px 12px 12px 4px;
+  overflow: hidden;
+  transform-origin: bottom left;
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+  z-index: -1000;
+  user-select: none;
+  animation-name: ContextMenuPopDown;
+  animation-duration: 0.3s;
+  animation-iteration-count: 1;
+}
+
+.UIPlayerContextMenuHidden div {
+  pointer-events: all;
+  background: transparent;
+  padding: 0px;
+  color: white;
+  text-decoration: none;
+  border: none;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.UIPlayerContextMenu div {
+  pointer-events: all;
+  background: transparent;
+  padding: 0px;
+  color: white;
+  text-decoration: none;
+  border: none;
+  padding: 6px 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.UIPlayerContextMenu div:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: #d3d3d3;
+}
+
+.UIPlayerContextMenu div:active {
+  background: rgba(0, 0, 0, 0.1);
+  opacity: 0.5;
+}

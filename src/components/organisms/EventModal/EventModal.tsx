@@ -10,19 +10,19 @@ import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
 import {
   enterVenue,
-  openUrl,
-  getUrlWithoutTrailingSlash,
   getLastUrlParam,
   getUrlParamFromString,
+  getUrlWithoutTrailingSlash,
+  openUrl,
 } from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
-import { Button } from "components/atoms/Button";
-
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Button } from "components/atoms/Button";
 
 import "./EventModal.scss";
 

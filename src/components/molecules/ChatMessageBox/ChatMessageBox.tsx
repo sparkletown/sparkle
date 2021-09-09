@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
-import classNames from "classnames";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { EmojiData } from "emoji-mart";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { EmojiData } from "emoji-mart";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
@@ -37,6 +37,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const hasChosenThread = selectedThread !== undefined;
   const [isSendingMessage, setMessageSending] = useState(false);
 
+  // @debt replace with useDebounce
   // This logic disallows users to spam into the chat. There should be a delay, between each message
   useEffect(() => {
     if (!isSendingMessage) return;

@@ -1,32 +1,33 @@
 import React from "react";
-import { useAsyncFn } from "react-use";
+import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Modal, Form } from "react-bootstrap";
+import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
+
+import {
+  createRoom,
+  CreateRoomResult,
+  createVenue_v2,
+  RoomInput_v2,
+} from "api/admin";
 
 import { PortalTemplate } from "types/rooms";
 import { VenueTemplate } from "types/venues";
 
-import {
-  RoomInput_v2,
-  createVenue_v2,
-  createRoom,
-  CreateRoomResult,
-} from "api/admin";
-
-import { useVenueId } from "hooks/useVenueId";
-import { useUser } from "hooks/useUser";
-
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
 import {
-  venueRoomSchema,
   roomSchema,
+  venueRoomSchema,
 } from "pages/Admin/Details/ValidationSchema";
-import { InputField } from "components/atoms/InputField";
+
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { InputField } from "components/atoms/InputField";
 
 import "./RoomAddModal.scss";
 

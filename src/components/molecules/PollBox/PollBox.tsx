@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useFieldArray, useForm } from "react-hook-form";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { MAX_POLL_QUESTIONS } from "settings";
 
-import { PollValues, PollQuestion } from "types/chat";
+import { PollQuestion, PollValues } from "types/chat";
 
 import { InputField } from "components/atoms/InputField";
 

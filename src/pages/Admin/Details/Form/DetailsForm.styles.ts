@@ -1,5 +1,5 @@
-import styled from "styled-components";
 import { Form } from "react-bootstrap";
+import styled from "styled-components";
 
 export const VenueForm = styled(Form)`
   position: relative;

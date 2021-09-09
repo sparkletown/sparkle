@@ -1,21 +1,24 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { Room, RoomType } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { WithId, WithVenueId } from "utils/id";
+import { Room, RoomType } from "types/rooms";
+import { User } from "types/User";
+import { AnyVenue, VenueEvent } from "types/venues";
 
-import { useDispatch } from "hooks/useDispatch";
+import { WithId, WithVenueId } from "utils/id";
+import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
+
 import { useCustomSound } from "hooks/sounds";
+import { useDispatch } from "hooks/useDispatch";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
-
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -28,7 +31,7 @@ const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
-  venue?: AnyVenue;
+  venue?: WithId<AnyVenue>;
   room?: Room;
   venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
@@ -56,7 +59,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} centered>
       <div className="room-modal">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </div>
@@ -66,7 +69,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
 export interface RoomModalContentProps {
   room: Room;
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
@@ -89,7 +92,21 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     dispatch(retainAttendance(false));
   }, [dispatch]);
 
+  const { findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+
+  const noTrailSlashPortalUrl = getUrlWithoutTrailingSlash(room.url);
+
+  const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+
+  const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
+  const portalVenueDescription =
+    portalVenue?.config?.landingPageConfig?.description;
+
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const userList = recentRoomUsers as readonly WithId<User>[];
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
@@ -124,13 +141,19 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
+  const roomTitle = room.title || portalVenue?.name;
+  const roomSubtitle = room.subtitle || portalVenueSubtitle;
+  const roomDescription = room.about || portalVenueDescription;
+
+  // @debt maybe refactor this, but autoFocus property working very bad.
+  const enterButtonref = useRef<HTMLButtonElement>(null);
+  useEffect(() => enterButtonref.current?.focus());
+
   return (
     <>
-      <h2>{room.title}</h2>
+      <h2>{roomTitle}</h2>
 
-      {room.subtitle && (
-        <div className="room-modal__title">{room.subtitle}</div>
-      )}
+      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
@@ -141,6 +164,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
           {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
           <button
+            ref={enterButtonref}
+            autoFocus
             className="btn btn-primary room-modal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
@@ -153,7 +178,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <UserList
         containerClassName="room-modal__userlist"
-        users={recentRoomUsers}
+        users={userList}
         limit={11}
         activity="in this room"
         hasClickableAvatars
@@ -161,7 +186,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       {room.about && (
         <div className="room-modal__description">
-          <RenderMarkdown text={room.about} />
+          <RenderMarkdown text={roomDescription} />
         </div>
       )}
 

@@ -1,37 +1,36 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCaretRight,
-  faCaretDown,
-  faHome,
-} from "@fortawesome/free-solid-svg-icons";
 
-import { SPACES_PORTALS } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SPACES_PORTALS } from "settings";
 
-import { Venue_v2 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { PortalItem } from "components/molecules/PortalItem";
-import { EditRoomForm } from "components/molecules/EditRoomForm";
+
+import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
+import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
+
+import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { PortalItem } from "components/molecules/PortalItem";
 
 import "./Spaces.scss";
 
-export interface SpacesProps {
-  venue: Venue_v2;
-  onClickNext: () => void;
+export interface SpacesProps extends TabNavigationProps {
+  venue?: WithId<AnyVenue>;
 }
 
-// @debt there is no guarantee the mutable array pointed by the shared reference will remain empty
-const emptyRoomsArray: RoomData_v2[] = [];
-
-export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
+export const Spaces: React.FC<SpacesProps> = ({
+  venue,
+  ...tabNavigationProps
+}) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
   const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
 
@@ -44,10 +43,8 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
-  const history = useHistory();
-
   const hasSelectedRoom = !!selectedRoom;
-  const numberOfRooms = venue.rooms?.length ?? 0;
+  const numberOfRooms = venue?.rooms?.length ?? 0;
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
@@ -76,7 +73,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
 
   const renderVenueRooms = useMemo(
     () =>
-      venue.rooms?.map((room, index) => (
+      venue?.rooms?.map((room, index) => (
         <div
           key={`${index}-${room.title}`}
           className="Spaces__venue-room"
@@ -89,20 +86,20 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           <div className="Spaces__venue-room-title">{room.title}</div>
         </div>
       )),
-    [venue.rooms]
+    [venue?.rooms]
   );
 
   const onAdd = useCallback(
     ({ data }) => {
       const created =
-        venue.rooms?.[data?.roomIndex] ??
+        venue?.rooms?.[data?.roomIndex] ??
         (data?.rooms)[data?.roomIndex] ??
         data?.provided?.room;
       if (!created) return;
 
       setSelectedRoom(created);
     },
-    [setSelectedRoom, venue.rooms]
+    [setSelectedRoom, venue?.rooms]
   );
 
   const renderAddRooms = useMemo(
@@ -119,12 +116,8 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     [onAdd]
   );
 
-  const navigateToAdmin = useCallback(() => {
-    history.push("/admin-ng/");
-  }, [history]);
-
   const selectedRoomIndex =
-    venue.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
+    venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
     <div className="Spaces">
@@ -155,7 +148,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
                 />
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue.name} />
+                <BackgroundSelect venueName={venue?.name ?? ""} />
               )}
             </div>
 
@@ -186,39 +179,17 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
               </div>
               {showAddRoom && renderAddRooms}
             </div>
-            <div className="Spaces__footer">
-              <div className="Spaces__nav-buttons">
-                <ButtonNG
-                  className="Spaces__nav-button"
-                  onClick={navigateToAdmin}
-                  iconName={faHome}
-                  iconOnly={true}
-                  title="Home"
-                />
-                <ButtonNG
-                  className="Spaces__nav-button"
-                  onClick={navigateToAdmin}
-                >
-                  Back
-                </ButtonNG>
-                <ButtonNG
-                  className="Spaces__nav-button"
-                  onClick={onClickNext}
-                  variant="primary"
-                >
-                  Next
-                </ButtonNG>
-              </div>
-            </div>
+            {showAddRoom && renderAddRooms}
+            <TabFooter {...tabNavigationProps} />
           </>
         )}
       </div>
       <div className="Spaces__map">
         <MapPreview
           isEditing={hasSelectedRoom}
-          mapBackground={venue.mapBackgroundImageUrl}
+          mapBackground={venue?.mapBackgroundImageUrl}
           setSelectedRoom={setSelectedRoom}
-          rooms={venue.rooms ?? emptyRoomsArray}
+          rooms={venue?.rooms ?? ALWAYS_EMPTY_ARRAY}
           onMoveRoom={updateRoomPosition}
           onResizeRoom={updateRoomSize}
           selectedRoom={selectedRoom}

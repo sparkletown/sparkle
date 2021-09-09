@@ -1,16 +1,42 @@
 import React, {
   useCallback,
-  useMemo,
   useEffect,
-  useState,
+  useMemo,
   useRef,
+  useState,
 } from "react";
+import { Form } from "react-bootstrap";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { Form } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
-import "firebase/functions";
+import classNames from "classnames";
 import * as Yup from "yup";
+
+import { IS_BURN } from "secrets";
+
+import {
+  BACKGROUND_IMG_TEMPLATES,
+  BANNER_MESSAGE_TEMPLATES,
+  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
+  DEFAULT_AUDIENCE_ROWS_NUMBER,
+  DEFAULT_SHOW_SCHEDULE,
+  DEFAULT_SHOW_USER_STATUSES,
+  DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_AUTOPLAY,
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
+  HAS_GRID_TEMPLATES,
+  HAS_REACTIONS_TEMPLATES,
+  HAS_ROOMS_TEMPLATES,
+  IFRAME_TEMPLATES,
+  PLAYA_HEIGHT,
+  PLAYA_IMAGE,
+  PLAYA_VENUE_NAME,
+  PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_STYLES,
+  PLAYA_WIDTH,
+  ZOOM_URL_TEMPLATES,
+} from "settings";
 
 import {
   createUrlSafeName,
@@ -21,42 +47,21 @@ import {
 
 import { setSovereignVenue } from "store/actions/SovereignVenue";
 
-import {
-  ZOOM_URL_TEMPLATES,
-  IFRAME_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
-  PLAYA_VENUE_NAME,
-  HAS_ROOMS_TEMPLATES,
-  BANNER_MESSAGE_TEMPLATES,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-  HAS_GRID_TEMPLATES,
-  HAS_REACTIONS_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
-  DEFAULT_SHOW_SCHEDULE,
-  DEFAULT_USER_STATUS,
-  DEFAULT_SHOW_USER_STATUSES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
-} from "settings";
-
-import { IS_BURN } from "secrets";
-
-import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
-import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
+import { ExtractProps } from "types/utility";
+import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 
 import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-import { useUser } from "hooks/useUser";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useShowHide } from "hooks/useShowHide";
-import { useQuery } from "hooks/useQuery";
 import { useDispatch } from "hooks/useDispatch";
+import { useQuery } from "hooks/useQuery";
+import { useShowHide } from "hooks/useShowHide";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
+
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
@@ -64,19 +69,18 @@ import { UserStatusManager } from "components/molecules/UserStatusManager";
 
 import { Toggler } from "components/atoms/Toggler";
 
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+import "firebase/functions";
 
 import {
   editVenueCastSchema,
   validationSchema,
 } from "./DetailsValidationSchema";
-import { WizardPage } from "./VenueWizard";
-import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
+import QuestionInput from "./QuestionInput";
+import { WizardPage } from "./VenueWizard";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
-
 import "./Venue.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -102,7 +106,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 }) => {
   const defaultValues = useMemo(
     () =>
-      !!venueId
+      venueId
         ? editVenueCastSchema.cast(state.detailsPage?.venue)
         : validationSchema.cast(),
     [state.detailsPage, venueId]
@@ -133,13 +137,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     },
     defaultValues: {
       ...defaultValues,
+      logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
+      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
       parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
     },
   });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
-  const values = watch();
 
   const [formError, setFormError] = useState(false);
 
@@ -303,7 +308,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               setValue={setValue}
               state={state}
               previous={previous}
-              values={values}
               sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
@@ -379,26 +383,23 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   );
 };
 
-interface DetailsFormLeftProps {
+interface DetailsFormLeftProps
+  extends Pick<
+    ReturnType<typeof useForm>,
+    "register" | "watch" | "control" | "handleSubmit" | "setError" | "setValue"
+  > {
   venueId?: string;
   sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
-  values: FormValues;
   isSubmitting: boolean;
-  register: ReturnType<typeof useForm>["register"];
-  watch: ReturnType<typeof useForm>["watch"];
-  control: ReturnType<typeof useForm>["control"];
   onSubmit: (
     vals: Partial<FormValues>,
     userStatuses: UserStatus[],
     showUserStatuses: boolean
   ) => Promise<void>;
-  handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
-  setError: ReturnType<typeof useForm>["setError"];
   editing?: boolean;
-  setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
   setFormError: (value: boolean) => void;
 }
@@ -408,7 +409,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   sovereignVenue,
   editing,
   state,
-  values,
   isSubmitting,
   register,
   watch,
@@ -421,6 +421,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   formError,
   setFormError,
 }) => {
+  const values = watch();
+
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -525,7 +527,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         image={values.bannerImageFile}
         remoteUrlInputName={"bannerImageUrl"}
         remoteImageUrl={values.bannerImageUrl}
-        ref={register}
+        register={register}
+        setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
       />
     </div>
@@ -536,7 +539,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
-        ref={register}
+        register={register}
+        setValue={setValue}
         image={values.logoImageFile}
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}
@@ -631,19 +635,28 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         Livestream URL, or embed URL, for people to view in your venue
       </div>
       <div className="input-title">
-        (Enter an embeddable URL link. You can edit this later so you can leave
-        a placeholder for now)
+        (Enter an embeddable URL link. For now there is a placeholder video, so
+        you can edit this later.)
       </div>
+
+      {/* note: the default embedded video is the "Intro to Sparkle" video*/}
       <textarea
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        placeholder="https://youtu.be/embed/abcDEF987w"
-      />
+      >
+        https://player.vimeo.com/video/512606583?h=84853fbd28
+      </textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
+      <h4 className="italic input-header">Autoplay your embeded video</h4>
+      <Toggler
+        name="autoPlay"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_VENUE_AUTOPLAY}
+      />
     </div>
   );
 
@@ -868,6 +881,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const isJazzbar = templateID === VenueTemplate.jazzbar;
+
+  const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
+    "toggle-room DetailsForm--hidden": isJazzbar,
+  });
+
+  const renderJukeboxToggle = () => {
+    return (
+      <div className={jukeboxContainerClasses}>
+        <h4 className="italic input-header">Enable Jukebox</h4>
+        <Toggler name="enableJukebox" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -1048,6 +1076,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        {renderJukeboxToggle()}
 
         <UserStatusManager
           venueId={venueId}

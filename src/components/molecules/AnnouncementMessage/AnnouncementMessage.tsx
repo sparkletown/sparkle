@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 

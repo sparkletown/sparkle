@@ -1,0 +1,27 @@
+@import "scss/constants.scss";
+
+$venue-room-logo-size: 34px;
+$button-size: 50px;
+$icon-size: 20px;
+$footer-width: 360px;
+
+.TabFooter {
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 20%;
+  padding: $spacing--md;
+  background-color: $black;
+  border-top: 1px solid opaque-white(0.2);
+
+  &__nav-buttons {
+    display: flex;
+    width: 40%;
+  }
+
+  &__nav-button {
+    flex-shrink: 0;
+  }
+}

@@ -1,7 +1,11 @@
 import React from "react";
+
 import { IFRAME_ALLOW } from "settings";
+
 import { EntranceStepConfig } from "types/EntranceStep";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
+import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import "./WelcomeVideo.scss";
 
 interface PropsType {
@@ -29,7 +33,10 @@ export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
         <iframe
           className="video"
           title="art-piece-video"
-          src={ConvertToEmbeddableUrl(config.videoUrl, config.autoplay)}
+          src={convertToEmbeddableUrl({
+            url: config.videoUrl,
+            autoPlay: config.autoplay,
+          })}
           frameBorder="0"
           allow={IFRAME_ALLOW}
           allowFullScreen

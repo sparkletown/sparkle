@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from "react";
+import { useHistory } from "react-router-dom";
 
 import { Room } from "types/rooms";
 
-import { enterExternalRoom } from "utils/userLocation";
-import { enterVenue } from "utils/url";
 import { getExternalRoomSlug } from "utils/room";
+import { enterVenue } from "utils/url";
+import { enterExternalRoom } from "utils/userLocation";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentLocationUsers } from "hooks/users";
@@ -21,6 +22,8 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
 
   const roomUrl = room?.url ?? "";
 
+  const { push: openUrlUsingRouter } = useHistory();
+
   // @debt pass venueId taken from UseRoomProps through to useRelatedVenues
   const { relatedVenues } = useRelatedVenues({});
 
@@ -34,15 +37,17 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
     ? roomVenue.name
     : getExternalRoomSlug({ roomTitle: room?.title, venueName });
 
-  const { recentLocationUsers } = useRecentLocationUsers(roomSlug);
+  const { recentLocationUsers } = useRecentLocationUsers({
+    locationName: roomSlug,
+  });
 
   const enterRoom = useCallback(() => {
     if (!userId) return;
 
     roomVenue
-      ? enterVenue(roomVenue.id)
+      ? enterVenue(roomVenue.id, { customOpenRelativeUrl: openUrlUsingRouter })
       : enterExternalRoom({ userId, roomUrl, locationName: roomSlug });
-  }, [roomSlug, roomUrl, userId, roomVenue]);
+  }, [roomSlug, roomUrl, userId, roomVenue, openUrlUsingRouter]);
 
   return {
     enterRoom,

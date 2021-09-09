@@ -1,15 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useAsyncFn } from "react-use";
 
 import { updateVenue_v2 } from "api/admin";
 
-import { useUser } from "hooks/useUser";
 import { useFetchAssets } from "hooks/useFetchAssets";
+import { useUser } from "hooks/useUser";
 
 import { FileButton } from "components/atoms/FileButton";
 
 import "./BackgroundSelect.scss";
-import { useMemo } from "react";
 
 export interface BackgroundSelectProps {
   venueName: string;

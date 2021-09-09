@@ -1,5 +1,4 @@
-import React, { Suspense, lazy } from "react";
-
+import React, { lazy, Suspense } from "react";
 import { EmojiData } from "emoji-mart";
 
 import { tracePromise } from "utils/performance";
