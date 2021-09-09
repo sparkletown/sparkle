@@ -956,8 +956,8 @@ exports.scheduledFunction = functions.pubsub
     console.log({ users: users.length });
 
     chunk(venues, 200).forEach((venuesChunk) => {
-      console.log({ venuesChunk });
-      const batch = firebase.firestore().batch();
+      console.log({ venuesChunk: venuesChunk.length });
+      const batch = admin.firestore().batch();
 
       venuesChunk.forEach((venue) => {
         const recentVenueUsers = users.filter(
