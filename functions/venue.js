@@ -937,22 +937,16 @@ exports.scheduledFunction = functions.pubsub
       .firestore()
       .collection("venues")
       .get()
-      .then((doc) => {
-        if (!doc.exists) {
-          throw new HttpsError("not-found", `Venues do not exist`);
-        }
-        return { ...doc.data(), id: doc.id };
+      .then((snapshot) => {
+        return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       });
 
     const users = await admin
       .firestore()
       .collection("users")
       .get()
-      .then((doc) => {
-        if (!doc.exists) {
-          throw new HttpsError("not-found", `Users do not exist`);
-        }
-        return { ...doc.data(), id: doc.id };
+      .then((snapshot) => {
+        return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       });
 
     venues.forEach((venue) => {
