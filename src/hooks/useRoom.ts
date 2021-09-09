@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Room } from "types/rooms";
+import { Room, RoomData_v2 } from "types/rooms";
 
 import { getExternalRoomSlug } from "utils/room";
 import { enterVenue } from "utils/url";
@@ -12,7 +12,7 @@ import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 export interface UseRoomProps {
-  room?: Room;
+  room?: Room | RoomData_v2;
   venueName: string;
 }
 // @debt refactor useRoom to take venueId instead of venueName

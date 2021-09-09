@@ -329,6 +329,30 @@ export const updateVenue = async (
   );
 };
 
+export const updateVenueMapBackgroundImage = async (
+  venueId: string,
+  mapBackgroundImageUrl: string
+) => {
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateMapBackground")({
+      venueId,
+      mapBackgroundImageUrl,
+    })
+    .catch((error) => {
+      const msg = `[updateVenue_v2] updating venue ${venueId}`;
+      const context = {
+        location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+      });
+      throw error;
+    });
+};
+
 export const updateVenue_v2 = async (
   input: VenueInput_v2,
   user: firebase.UserInfo

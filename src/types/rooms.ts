@@ -33,7 +33,7 @@ export interface RoomData_v2 {
   title?: string;
   subtitle?: string;
   url?: string;
-  description?: string;
+  about?: string;
   x_percent?: number;
   y_percent?: number;
   width_percent?: number;
