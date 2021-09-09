@@ -952,7 +952,7 @@ exports.scheduledFunction = functions.pubsub
 
     const [users, venues] = await Promise.all([usersPromise, venuesPromise]);
 
-    chunk(venues, 500).forEach((venuesChunk) => {
+    chunk(venues, 250).forEach((venuesChunk) => {
       const batch = admin.firestore().batch();
 
       venuesChunk.forEach((venue) => {
