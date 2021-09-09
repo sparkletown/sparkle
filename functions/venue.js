@@ -949,6 +949,9 @@ exports.scheduledFunction = functions.pubsub
         return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       });
 
+    console.log({ venues: venues.length });
+    console.log({ users: users.length });
+
     for (const venue of venues) {
       const recentVenueUsers = users.filter(
         (user) =>
