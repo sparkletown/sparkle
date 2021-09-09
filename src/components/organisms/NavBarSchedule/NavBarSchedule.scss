@@ -18,7 +18,6 @@ $schedule-btn--height: 51px;
   &__download-buttons {
     position: fixed;
     bottom: 0;
-    width: 40%;
     z-index: z(navbar-schedule-download);
     display: flex;
     align-items: center;
@@ -26,9 +25,11 @@ $schedule-btn--height: 51px;
     background-color: opaque-black(0.9);
     height: $schedule-btn--height;
     padding-left: $NavBarSchedule--padding;
+    transform: translateX(-$NavBarSchedule--width);
 
     &--show {
       transition: all 400ms $transition-function;
+      transform: translateY(0);
     }
   }
 
