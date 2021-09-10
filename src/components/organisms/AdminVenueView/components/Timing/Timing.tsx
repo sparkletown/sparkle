@@ -35,7 +35,7 @@ export const Timing: React.FC<TimingProps> = ({
 
   const [, handleVenueUpdate] = useAsyncFn(async () => {
     if (!venue?.name || !user) return;
-    // TODO: fix startTime/endTime updating for venue
+
     updateVenue_v2(
       {
         start_utc_seconds: startUtcSeconds,
