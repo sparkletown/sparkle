@@ -193,6 +193,7 @@ export interface BaseVenue {
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: WithId<User>[];
+  recentUsersSampleSize?: number;
   updatedAt?: number;
 }
 

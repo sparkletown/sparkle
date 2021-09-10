@@ -931,27 +931,28 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });
 
-exports.scheduledFunction = functions.pubsub
+exports.aggregateUsersLocationsInVenue = functions.pubsub
   .schedule("every 5 minutes")
   .onRun(async () => {
     const venuesPromise = admin
       .firestore()
       .collection("venues")
       .get()
-      .then((snapshot) => {
-        return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      });
+      .then((snapshot) =>
+        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
 
     const usersPromise = admin
       .firestore()
       .collection("users")
       .get()
-      .then((snapshot) => {
-        return snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-      });
+      .then((snapshot) =>
+        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
 
     const [users, venues] = await Promise.all([usersPromise, venuesPromise]);
 
+    // NOTE: Chunk users into batch commit to faster the operation
     chunk(venues, 250).forEach((venuesChunk) => {
       const batch = admin.firestore().batch();
 
@@ -967,7 +968,10 @@ exports.scheduledFunction = functions.pubsub
 
         batch.update(venueRef, {
           recentUserCount: recentVenueUsersCount,
-          recentUsersSample: sampleSize(recentVenueUsers, 6),
+          recentUsersSample: sampleSize(
+            recentVenueUsers,
+            venue.recentUsersSampleSize ?? 6
+          ),
         });
       });
 
