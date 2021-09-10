@@ -29,7 +29,6 @@ import {
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
@@ -98,9 +97,6 @@ export const VenuePage: React.FC = () => {
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
-
-  // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
-  useFirestoreConnect("venues");
 
   const userId = user?.uid;
 
