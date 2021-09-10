@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 
 import { IFRAME_ALLOW } from "settings";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import "./VideoModal.scss";
 

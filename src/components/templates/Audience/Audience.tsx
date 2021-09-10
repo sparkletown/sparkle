@@ -21,7 +21,7 @@ import { addReaction } from "store/actions/Reactions";
 
 import { GenericVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";

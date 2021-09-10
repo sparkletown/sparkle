@@ -15,7 +15,7 @@ import { CHAT_MESSAGE_TIMEOUT } from "settings";
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { isValidUrl } from "utils/url";
 

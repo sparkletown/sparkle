@@ -4,7 +4,7 @@ import { IFRAME_ALLOW_ADVANCED } from "settings";
 
 import { EmbeddableVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import "./Embeddable.scss";
 

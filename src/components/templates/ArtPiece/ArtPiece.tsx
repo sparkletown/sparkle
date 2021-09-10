@@ -7,7 +7,7 @@ import { IFRAME_ALLOW } from "settings";
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";

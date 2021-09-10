@@ -13,7 +13,7 @@ import {
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
