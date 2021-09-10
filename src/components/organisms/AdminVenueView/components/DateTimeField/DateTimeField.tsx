@@ -1,6 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { getDateTimeFromUtc } from "utils/time";
+import { getDateTimeFromUtc, getUtcFromDateTime } from "utils/time";
 
 import "./DateTimeField.scss";
 
@@ -21,10 +21,16 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
 }) => {
   const { date, time } = getDateTimeFromUtc(dateTimeValue);
 
-  // TODO: set dateTime correctly
-  const onDateTimeChange = useCallback(() => {
-    handleDateTimeChange(dateTimeValue ?? 0);
-  }, [handleDateTimeChange, dateTimeValue]);
+  const [dateValue, setDateValue] = useState(date);
+  const [timeValue, setTimeValue] = useState(time);
+  const handleDateChange = useCallback((e) => setDateValue(e.target.value), []);
+  const handleTimeChange = useCallback((e) => setTimeValue(e.target.value), []);
+
+  useEffect(() => {
+    const dateTime = getUtcFromDateTime(`${dateValue} ${timeValue}`);
+
+    handleDateTimeChange(dateTime);
+  }, [dateValue, timeValue, handleDateTimeChange]);
 
   return (
     <>
@@ -37,14 +43,14 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
           type="date"
           name={`${name}_date`}
           className="DateTimeField__container--date"
-          value={date}
-          onChange={onDateTimeChange}
+          value={dateValue}
+          onChange={handleDateChange}
         />
         <input
           type="time"
           name={`${name}_time`}
-          value={time}
-          onChange={onDateTimeChange}
+          value={timeValue}
+          onChange={handleTimeChange}
         />
       </div>
     </>

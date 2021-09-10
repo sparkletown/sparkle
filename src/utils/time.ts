@@ -274,3 +274,6 @@ export const getDateTimeFromUtc = (utcSeconds: number | undefined) => {
     time,
   };
 };
+
+export const getUtcFromDateTime = (dateTimeValue: string) =>
+  getUnixTime(new Date(dateTimeValue));

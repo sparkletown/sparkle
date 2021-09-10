@@ -28,21 +28,23 @@ export const Timing: React.FC<TimingProps> = ({
   ...tabNavigationProps
 }) => {
   const { user } = useUser();
-  const [startTime, setStartTime] = useState(venue?.start_utc_seconds);
-  const [endTime, setEndTime] = useState(venue?.end_utc_seconds);
+  const [startUtcSeconds, setStartUtcSeconds] = useState(
+    venue?.start_utc_seconds
+  );
+  const [endUtcSeconds, setEndUtcSeconds] = useState(venue?.end_utc_seconds);
 
   const [, handleVenueUpdate] = useAsyncFn(async () => {
     if (!venue?.name || !user) return;
     // TODO: fix startTime/endTime updating for venue
     updateVenue_v2(
       {
-        start_utc_seconds: startTime,
-        end_utc_seconds: endTime,
+        start_utc_seconds: startUtcSeconds,
+        end_utc_seconds: endUtcSeconds,
         name: venue?.name,
       },
       user
     );
-  }, [venue, user, startTime, endTime]);
+  }, [venue, user, startUtcSeconds, endUtcSeconds]);
 
   if (!venue) {
     return <LoadingPage />;
@@ -61,14 +63,14 @@ export const Timing: React.FC<TimingProps> = ({
             title="Global starting time"
             subTitle="When does your party start?"
             name="start"
-            dateTimeValue={startTime}
-            handleDateTimeChange={setStartTime}
+            dateTimeValue={startUtcSeconds}
+            handleDateTimeChange={setStartUtcSeconds}
           />
           <DateTimeField
             title="Global ending time"
             name="end"
-            dateTimeValue={endTime}
-            handleDateTimeChange={setEndTime}
+            dateTimeValue={endUtcSeconds}
+            handleDateTimeChange={setEndUtcSeconds}
           />
         </div>
       </div>
