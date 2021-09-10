@@ -1,17 +1,12 @@
 import firebase from "firebase/app";
 
-import { ProfileLink } from "types/User";
+import { ProfileLink, UserLocation } from "types/User";
 
 import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
 import { QuestionsFormData } from "./Questions";
-
-type LocationUpdateData = {
-  lastSeenAt: number;
-  lastSeenIn: { [key: string]: number } | null;
-};
 
 type KidsModeUpdateData = {
   kidsMode: boolean;
@@ -35,7 +30,7 @@ export const updateUserProfile = (
     | AnonModeUpdateData
     | KidsModeUpdateData
     | MirrorVideoUpdateData
-    | ((ProfileFormData & QuestionsFormData) | LocationUpdateData)
+    | ((ProfileFormData & QuestionsFormData) | UserLocation)
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;

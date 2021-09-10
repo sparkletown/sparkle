@@ -42,7 +42,7 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
 ) => {
   // @debt refactor userWithLocationToUser to optionally not require WithId, then use that here
   const {
-    lastSeenIn,
+    lastVenueIdSeenIn,
     lastSeenAt,
     ...userProfileWithoutLocation
   } = state.firebase.profile;
@@ -58,11 +58,6 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
 export const currentVenueSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
 > = (state) => state.firestore.ordered.currentVenue?.[0];
-
-// @debt can we merge this with currentVenueSelector and just use 1 canonical version?
-export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.currentVenue;
 
 export const currentEventSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined

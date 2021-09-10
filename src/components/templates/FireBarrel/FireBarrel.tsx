@@ -21,7 +21,7 @@ const DEFAULT_BURN_BARREL_SEATS = 8;
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName: venue?.name,
+    venueId: venue?.id,
   });
 
   const seatCount =
