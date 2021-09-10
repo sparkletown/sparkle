@@ -26,7 +26,7 @@ export const ReactionPage: React.FC = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
   const { recentVenueUsers } = useRecentVenueUsers({
-    venueName: currentVenue?.name,
+    venueId: currentVenue?.id,
   });
   const { messagesToDisplay: venueChatMessages } = useVenueChat(venueId);
 

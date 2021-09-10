@@ -4,6 +4,8 @@ import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
+import { fetchSovereignVenue } from "api/venue";
+
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -15,12 +17,12 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
 } from "utils/selectors";
+import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 import {
   clearLocationData,
-  setLocationData,
-  updateCurrentLocationData,
+  updateLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
@@ -72,7 +74,8 @@ export const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
   const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn, enteredVenueIds } = userLocation ?? {};
+  const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
+    userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -123,18 +126,30 @@ export const VenuePage: React.FC = () => {
   useInterval(() => {
     if (!userId || !userLastSeenIn) return;
 
-    updateCurrentLocationData({
+    updateLocationData({
       userId,
-      profileLocationData: userLastSeenIn,
+      newLocationPath: userLastSeenIn,
     });
   }, LOC_UPDATE_FREQ_MS);
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !venueName) return;
+    if (!userId || !venueName || !venueId) return;
 
-    setLocationData({ userId, locationName: venueName });
-  }, [userId, venueName]);
+    const updateWholeLocationUserPath = async () => {
+      const { sovereignVenue, checkedVenueIds } = await fetchSovereignVenue(
+        venueId
+      );
+
+      const allVenues = [...checkedVenueIds, sovereignVenue.id].reverse();
+
+      const locationPath = wrapIntoSlashes(allVenues.join("/"));
+
+      updateLocationData({ userId, newLocationPath: locationPath });
+    };
+
+    updateWholeLocationUserPath();
+  }, [userId, venueName, venueId]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
