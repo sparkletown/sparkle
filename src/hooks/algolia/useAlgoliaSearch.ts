@@ -14,34 +14,34 @@ import { useAlgoliaSearchContext } from "hooks/algolia/context";
 
 export const useAlgoliaSearch = (
   venueId: string | undefined,
-  searchQuery: string
+  searchQuery: string | undefined
 ) => {
   const context = useAlgoliaSearchContext();
 
   const state = useAsync(async (): Promise<
     AlgoliaUsersSearchResult | undefined
   > => {
-    if (context?.client && venueId) {
-      const indexes = algoliaSearchIndexes;
-      const { results } = await context.client.search(
-        indexes.map((indexName) => ({
-          indexName,
-          query: searchQuery,
-          params: {
-            filters: `${propName<UserWithLocation>(
-              "enteredVenueIds"
-            )}: ${venueId}`,
-          },
-        }))
-      );
+    if (!context?.client || !venueId || !searchQuery) return undefined;
 
-      const indexNameToResults = Object.assign(
-        {},
-        ...indexes.map((indexName, i) => ({ [indexName]: results[i] }))
-      );
+    const indexes = algoliaSearchIndexes;
+    const { results } = await context.client.search(
+      indexes.map((indexName) => ({
+        indexName,
+        query: searchQuery,
+        params: {
+          filters: `${propName<UserWithLocation>(
+            "enteredVenueIds"
+          )}: ${venueId}`,
+        },
+      }))
+    );
 
-      return indexNameToResults[AlgoliaSearchIndex.USERS];
-    } else return undefined;
+    const indexNameToResults = Object.assign(
+      {},
+      ...indexes.map((indexName, i) => ({ [indexName]: results[i] }))
+    );
+
+    return indexNameToResults[AlgoliaSearchIndex.USERS];
   }, [context?.client, searchQuery, venueId]);
 
   useEffect(() => {
