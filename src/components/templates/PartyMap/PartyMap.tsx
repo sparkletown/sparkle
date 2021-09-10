@@ -34,16 +34,9 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   const hasSelectedRoom = !!selectedRoom;
 
-  const [portalVenueId] = useMemo(
-    () => getLastUrlParam(selectedRoom?.url ?? ""),
-    [selectedRoom]
-  );
+  const [portalVenueId] = getLastUrlParam(selectedRoom?.url ?? "");
 
-  const venueId = useMemo(() => (hasSelectedRoom ? portalVenueId : venue.id), [
-    venue,
-    hasSelectedRoom,
-    portalVenueId,
-  ]);
+  const venueId = hasSelectedRoom ? portalVenueId : venue.id;
 
   const { relatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
