@@ -28,7 +28,6 @@ import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -144,7 +143,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
-  const { isLoaded: settingsAreLoaded, settings } = useSettings();
 
   const isUserAudioMuted = !isUserAudioOn;
 
@@ -319,8 +317,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
       seated: userSeated,
     });
 
-    const shouldShowReactions = settingsAreLoaded && settings.showReactions;
-
     // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
     const renderReactionsContainer = () => (
       <>
@@ -390,7 +386,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                   />
                 </div>
 
-                {shouldShowReactions && (
+                {venue.showReactions && (
                   <div className={reactionContainerClassnames}>
                     {userSeated
                       ? renderReactionsContainer()
@@ -471,7 +467,5 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     isSeat,
     partygoersBySeat,
     takeSeat,
-    settings.showReactions,
-    settingsAreLoaded,
   ]);
 };
