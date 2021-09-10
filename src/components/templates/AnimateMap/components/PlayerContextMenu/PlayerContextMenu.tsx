@@ -15,9 +15,8 @@ export const UIPlayerClickHandler: React.FC<UIContextMenuProps> = () => {
   const { openUserProfileModal } = useProfileModalControls();
 
   const viewProfileHandler = useCallback(
-    (user: ReplicatedUser, viewportX: number, viewportY: number) => {
-      openUserProfileModal(user.data);
-    },
+    (user: ReplicatedUser, viewportX: number, viewportY: number) =>
+      openUserProfileModal(user.data.id),
     [openUserProfileModal]
   );
 

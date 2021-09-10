@@ -75,7 +75,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const openProfileModal = useCallback(() => openUserProfileModal(user), [
+  const openProfileModal = useCallback(() => openUserProfileModal(user?.id), [
     openUserProfileModal,
     user,
   ]);

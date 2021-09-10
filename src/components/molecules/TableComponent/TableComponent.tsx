@@ -47,7 +47,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           usersSeatedAtTable.length >= 0 &&
           usersSeatedAtTable.map((user) => (
             <img
-              onClick={() => openUserProfileModal(user)}
+              onClick={() => openUserProfileModal(user.id)}
               key={user.id}
               className="profile-icon table-participant-picture"
               src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}

@@ -110,9 +110,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     if (hasSelectedProfile && isSameUser) updateUserProfileData(userWithId);
   }, [hasSelectedProfile, isSameUser, updateUserProfileData, userWithId]);
 
-  const handleAvatarClick = useCallback(() => {
-    openUserProfileModal(userWithId);
-  }, [openUserProfileModal, userWithId]);
+  const handleAvatarClick = useCallback(
+    () => openUserProfileModal(userWithId?.id),
+    [openUserProfileModal, userWithId]
+  );
 
   const shouldShowSchedule =
     withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);

@@ -32,10 +32,10 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   const timestamp = ts_utc.toMillis();
 
   const openAuthorProfile = useCallback(
-    (event) => {
+    async (event) => {
       if (event.target.closest(`.${deleteIconClass}`)) return;
 
-      openUserProfileModal(author);
+      await openUserProfileModal(author.id);
     },
     [openUserProfileModal, author]
   );
