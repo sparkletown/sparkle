@@ -17,7 +17,7 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
   subTitle,
   name,
   dateTimeValue,
-  handleDateTimeChange,
+  onChange,
 }) => {
   const { date, time } = getDateTimeFromUtc(dateTimeValue);
 
@@ -29,8 +29,8 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
   useEffect(() => {
     const dateTime = getUtcFromDateTime(`${dateValue} ${timeValue}`);
 
-    handleDateTimeChange(dateTime);
-  }, [dateValue, timeValue, handleDateTimeChange]);
+    onChange(dateTime);
+  }, [dateValue, timeValue, onChange]);
 
   return (
     <>

@@ -11,12 +11,12 @@
     margin: 0;
   }
 
+  &__date {
+    margin-right: $spacing--sm;
+  }
+
   &__container {
     display: flex;
     margin-top: $spacing--md;
-
-    &__date {
-      margin-right: $spacing--sm;
-    }
   }
 }
