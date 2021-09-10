@@ -11,11 +11,9 @@ export const useRoomRecentUsersList = ({
   eventList,
   venueId,
 }: UseRoomRecentUsersListProps) => {
-  const roomSlugs =
-    eventList &&
-    eventList.map((el) => `${el.venueId.trim()}/${el.room?.trim()}`);
+  const portalVenueIds = eventList?.map((event) => event.venueId);
   const { recentLocationUsers } = useVisitedLocationsUser({
-    locationNames: roomSlugs,
+    portalVenueIds,
   });
   const formattedUsers = recentLocationUsers.filter((x) => !!x.length);
   return formattedUsers;

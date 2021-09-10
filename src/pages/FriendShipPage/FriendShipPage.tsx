@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -18,7 +18,7 @@ import "./FriendShipPage.scss";
 
 export const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
 
   if (!venue) return <>Loading...</>;
 
@@ -54,6 +54,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
           >
             <TablesUserList
               venueName={venue.name}
+              venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
               TableComponent={TableComponent}
@@ -67,6 +68,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
+                  venueId={venue.id}
                   tables={FRIENDSHIP_CUSTOM_TABLES}
                 />
                 <Room
