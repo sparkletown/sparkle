@@ -19,9 +19,10 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "baseUrl": "./src",
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "downlevelIteration": true,
   },
   "include": [
     "src"
-, "src/utils/.tsx"  ]
+  ]
 }

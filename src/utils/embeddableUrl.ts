@@ -8,11 +8,14 @@ import {
   YOUTUBE_SHORT_URL_STRING,
 } from "settings";
 
-const setParamsIteratively = (urlObject: URL, urlParams?: string[]) => {
-  urlParams?.forEach((param) => {
-    const [key, value] = param.split("=");
+const withParameters = (urlObject: URL, urlParams?: URLSearchParams) => {
+  if (!urlParams) {
+    return;
+  }
+
+  for (const [key, value] of urlParams.entries()) {
     urlObject.searchParams.set(key, value);
-  });
+  }
 };
 
 const withAutoPlay = ({
@@ -29,20 +32,40 @@ const withAutoPlay = ({
   }
 };
 
+type ConvertYoutubeUrlOptions = {
+  searchParams: URLSearchParams;
+  pathname: string;
+};
+
+const getYoutubeUrl = ({
+  searchParams,
+  pathname,
+}: ConvertYoutubeUrlOptions) => {
+  const youtubeVideoId = searchParams.get("v") || pathname.slice(1);
+  const youtubeStartTime =
+    searchParams.get("start") || searchParams.get("t") || "0";
+
+  const youtubeUrlObj = new URL(`${YOUTUBE_EMBED_URL}${youtubeVideoId}`);
+  withParameters(youtubeUrlObj, searchParams);
+  youtubeUrlObj.searchParams.set("start", youtubeStartTime);
+
+  return youtubeUrlObj;
+};
+
 type ConvertTwitchUrlOptions = {
   pathname: string;
   twitchId?: string | null;
-  twitchVideoId?: string | null;
-  urlParameters?: string[];
+  urlParameters: URLSearchParams;
 };
 
 const convertTwitchUrl: (options: ConvertTwitchUrlOptions) => string = ({
   pathname,
-  twitchId,
-  twitchVideoId,
   urlParameters,
 }) => {
+  const twitchVideoId = urlParameters.get("video");
+  const twitchId = urlParameters.get("channel") || twitchVideoId;
   const id = pathname.split("/")?.slice(-1)?.[0] || twitchId || "";
+
   const twitchUrl = new URL(TWITCH_EMBED_URL);
 
   if (pathname.includes("video") || twitchVideoId) {
@@ -51,7 +74,7 @@ const convertTwitchUrl: (options: ConvertTwitchUrlOptions) => string = ({
     twitchUrl.searchParams.set("channel", id);
   }
 
-  setParamsIteratively(twitchUrl, urlParameters);
+  withParameters(twitchUrl, urlParameters);
   twitchUrl.searchParams.set("parent", "localhost");
 
   return twitchUrl.href;
@@ -69,27 +92,23 @@ export const convertToEmbeddableUrl: (
     return "";
   }
 
-  let urlObject = new URL(urlString);
+  const urlObject = new URL(urlString);
   const { host, searchParams, pathname } = urlObject;
-  const youtubeVideoId = searchParams.get("v") || pathname.slice(1);
-  const youtubeStartTime =
-    searchParams.get("start") || searchParams.get("t") || "0";
-  const twitchVideoId = searchParams.get("video");
-  const urlParameters = searchParams.toString().split("&");
+
   const urlAutoPlayValue =
     searchParams.get("autoplay") === "1" ||
     searchParams.get("autoplay") === "true"
       ? searchParams.get("autoplay")
       : false;
-  const twitchId = searchParams.get("channel") || twitchVideoId;
+
+  withAutoPlay({ urlObject, autoPlay: autoPlay && urlAutoPlayValue });
+
   const isTwitch = host.includes(TWITCH_SHORT_URL);
 
   if (isTwitch) {
     return convertTwitchUrl({
-      twitchId,
-      twitchVideoId,
       pathname,
-      urlParameters,
+      urlParameters: searchParams,
     });
   }
 
@@ -97,9 +116,9 @@ export const convertToEmbeddableUrl: (
     host?.includes(YOUTUBE_SHORT_URL_STRING) &&
     !pathname?.includes("embed")
   ) {
-    urlObject = new URL(`${YOUTUBE_EMBED_URL}${youtubeVideoId}`);
-    setParamsIteratively(urlObject, urlParameters);
-    urlObject.searchParams.set("start", youtubeStartTime);
+    const youtubeUrl = getYoutubeUrl({ pathname, searchParams });
+
+    return youtubeUrl.href;
   }
 
   if (
@@ -108,14 +127,14 @@ export const convertToEmbeddableUrl: (
     // NOTE: If you have a scheduled live event, it gives you a different embed code
     !urlString?.includes(VIMEO_SHORT_EVENT_URL)
   ) {
-    urlObject = new URL(`${VIMEO_EMBED_URL}${pathname}`);
+    const vimeoUrlObject = new URL(`${VIMEO_EMBED_URL}${pathname}`);
+
+    return vimeoUrlObject.href;
   }
 
   if (pathname?.includes(FACEBOOK_EMBED_URL)) {
     searchParams.set("mute", "0");
   }
-
-  withAutoPlay({ urlObject, autoPlay: autoPlay && urlAutoPlayValue });
 
   return urlObject.href;
 };
