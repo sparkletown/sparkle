@@ -733,6 +733,14 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
 
+  if (data.start_utc_seconds) {
+    updated.start_utc_seconds = data.start_utc_seconds;
+  }
+
+  if (data.end_utc_seconds) {
+    updated.end_utc_seconds = data.end_utc_seconds;
+  }
+
   // @debt aside from the data.columns part, this is exactly the same as in updateVenue
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
