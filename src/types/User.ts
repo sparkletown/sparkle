@@ -55,7 +55,7 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-  lastSeenIn?: never;
+  lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
 }
 
@@ -65,7 +65,7 @@ export interface UserStatus {
 }
 
 export interface UserLocation {
-  lastSeenIn: { [key: string]: number };
+  lastVenueIdSeenIn: string | null;
   lastSeenAt: number;
   enteredVenueIds?: string[];
 }

@@ -78,7 +78,6 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     .oneOf(Object.values(UsernameVisibility))
     .notRequired(),
   showRadio: Yup.bool().notRequired(),
-  showRangers: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
@@ -106,7 +105,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      showRangers: venue.showRangers,
       bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
@@ -316,13 +314,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         />
 
         {renderShowNametags()}
-
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.showRangers}
-          name="showRangers"
-          title="Show Rangers support"
-        />
 
         <ToggleElement
           forwardRef={register}
