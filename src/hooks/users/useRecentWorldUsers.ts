@@ -15,6 +15,7 @@ export interface RecentWorldUsersData {
   isRecentWorldUsersLoaded: boolean;
   recentWorldUsers: readonly WithId<User>[];
   worldUserLocationsById: Record<string, WithId<UserLocation>>;
+  numberOnlineUsers: number;
 }
 
 // @debt the only difference between this and useRecentLocationUsers is that useRecentWorldUsers checks
@@ -63,5 +64,6 @@ export const useRecentWorldUsers = (): RecentWorldUsersData => {
     isRecentWorldUsersLoaded,
     worldUserLocationsById,
     recentWorldUsers,
+    numberOnlineUsers: recentWorldUsers.length ?? 0,
   };
 };

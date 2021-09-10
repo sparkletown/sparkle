@@ -36,7 +36,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
 
   const { privateChatPreviews } = usePrivateChatPreviews();
   const onlineUsers = useOnlineUsersToDisplay();
-  const { selectRecipientChat } = useChatSidebarControls();
+  const { selectRecipientChat, numberOnlineUsers } = useChatSidebarControls();
 
   const privateChatUserIds = useMemo(
     () =>
@@ -81,9 +81,9 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
     [filteredUsers, scrollPageNumber, selectRecipientChat]
   );
 
-  const userItself = 1;
-
-  const numberOfUsers = filteredUsers.length + userItself;
+  const numberOfUsers = userSearchQuery
+    ? filteredUsers.length
+    : numberOnlineUsers;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
   if (recipientId) {

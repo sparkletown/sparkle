@@ -14,6 +14,7 @@ import {
 } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
+import { useRecentWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -21,6 +22,7 @@ import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
+  const { numberOnlineUsers } = useRecentWorldUsers();
   const isExpanded = useSelector(chatVisibilitySelector);
   const chatSettings = useSelector(selectedChatSettingsSelector);
 
@@ -61,6 +63,7 @@ export const useChatSidebarControls = () => {
   return {
     isExpanded,
     chatSettings,
+    numberOnlineUsers,
 
     expandSidebar,
     selectVenueChat,

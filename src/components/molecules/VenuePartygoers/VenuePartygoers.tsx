@@ -16,9 +16,7 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
     currentVenueId: venueId,
   });
 
-  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
-
-  const numberOfRecentWorldUsers = recentWorldUsers.length;
+  const { numberOnlineUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 
   const title = useMemo<string>(() => {
     if (isLoading || !isRecentWorldUsersLoaded) return "";
@@ -28,13 +26,13 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
       currentVenue?.attendeesTitle ??
       "attendees";
 
-    return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
+    return `${numberOnlineUsers} ${attendeesTitle} online`;
   }, [
     isLoading,
     isRecentWorldUsersLoaded,
     parentVenue?.attendeesTitle,
     currentVenue?.attendeesTitle,
-    numberOfRecentWorldUsers,
+    numberOnlineUsers,
   ]);
 
   return <div className="venue-partygoers-container">{title}</div>;
