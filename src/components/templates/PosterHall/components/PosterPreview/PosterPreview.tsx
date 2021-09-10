@@ -64,7 +64,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   const { recentLocationUsers } = useRecentLocationUsers({
-    locationName: posterVenue.name,
+    venueId: posterVenue.id,
   });
 
   const userCount = recentLocationUsers.length;

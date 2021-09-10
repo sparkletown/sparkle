@@ -30,9 +30,9 @@ export interface RecentLocationUsersData {
  *   Can we cleanly refactor them into a single hook somehow to de-duplicate the logic?
  */
 export const useVisitedLocationsUser = ({
-  locationNames,
+  portalVenueIds,
 }: {
-  locationNames?: string[];
+  portalVenueIds?: string[];
 }): RecentLocationUsersData => {
   const lastSeenThreshold = useUserLastSeenThreshold();
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
@@ -45,34 +45,26 @@ export const useVisitedLocationsUser = ({
       isSuccess,
       data: { worldUsers, worldUserLocationsById } = {},
     }) => {
-      if (!worldUsers || !worldUserLocationsById || !locationNames)
+      if (!worldUsers || !worldUserLocationsById || !portalVenueIds)
         return { isSuccess, recentLocationUsers: [] };
 
-      const recentLocationUsers = locationNames?.map((location) => {
-        const [parentLocation, childLocation] = location.split("/");
+      const recentLocationUsers = portalVenueIds?.map((portalVenueId) => {
         const result = worldUsers
           .filter((user) => {
-            const {
-              isLocationMatch,
-              userLastSeenLocation,
-            } = getUserLocationData({
+            const { isLocationMatch, lastSeenAt } = getUserLocationData({
               worldUserLocationsById,
               user,
-              location,
-              roomName: childLocation.trim(),
-              venueName: parentLocation.trim(),
+              portalVenueId,
             });
 
             return (
               isLocationMatch &&
-              normalizeTimestampToMilliseconds(userLastSeenLocation) >
-                lastSeenThreshold
+              normalizeTimestampToMilliseconds(lastSeenAt) > lastSeenThreshold
             );
           })
           .map((user) => ({
             ...user,
-            venueId: parentLocation,
-            portalId: childLocation,
+            portalId: portalVenueId,
           }));
         return result;
       });
