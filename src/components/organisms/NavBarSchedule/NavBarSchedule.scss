@@ -16,6 +16,7 @@ $schedule-btn--height: 51px;
   flex-direction: column;
 
   &__download-buttons {
+    width: $NavBarSchedule--width;
     position: fixed;
     bottom: 0;
     z-index: z(navbar-schedule-download);
@@ -29,7 +30,7 @@ $schedule-btn--height: 51px;
 
     &--show {
       transition: all 400ms $transition-function;
-      transform: translateY(0);
+      transform: translateX(0);
     }
   }
 
