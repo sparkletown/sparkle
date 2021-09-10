@@ -57,8 +57,8 @@ export const Timing: React.FC<TimingProps> = ({
           {...tabNavigationProps}
           handleVenueUpdate={handleVenueUpdate}
         />
-        <div className="Timing__left--content">
-          <h2 className="Timing__left--header">Plan your events</h2>
+        <div className="Timing__content">
+          <h2 className="Timing__header">Plan your events</h2>
           <DateTimeField
             title="Global starting time"
             subTitle="When does your party start?"

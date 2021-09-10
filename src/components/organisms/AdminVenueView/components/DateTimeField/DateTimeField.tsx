@@ -9,7 +9,7 @@ export interface DateFieldProps {
   subTitle?: string;
   name: string;
   dateTimeValue?: number;
-  handleDateTimeChange: (args: number) => void;
+  onChange: (value: number) => void;
 }
 
 export const DateTimeField: React.FC<DateFieldProps> = ({
@@ -42,7 +42,7 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
         <input
           type="date"
           name={`${name}_date`}
-          className="DateTimeField__container--date"
+          className="DateTimeField__date"
           value={dateValue}
           onChange={handleDateChange}
         />
