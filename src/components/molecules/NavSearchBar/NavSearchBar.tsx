@@ -1,24 +1,17 @@
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
 import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 
-import { AlgoliaSearchIndex, AlgoliaUsersSearchResult } from "types/algolia";
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
-import { useAlgoliaSearchFn } from "hooks/algolia/useAlgoliaSearchFn";
+import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useVenueEvents } from "hooks/events";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -135,25 +128,12 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const [
-    algoliaSearchResult,
-    setAlgoliaSearchResult,
-  ] = useState<AlgoliaUsersSearchResult>();
-  const [, algoliaSearch] = useAlgoliaSearchFn();
-
-  useEffect(() => {
-    const performSearch = async () => {
-      const results = await algoliaSearch(searchQuery);
-      if (results) setAlgoliaSearchResult(results[AlgoliaSearchIndex.USERS]);
-    };
-    if (searchQuery) void performSearch();
-    else setAlgoliaSearchResult(undefined);
-  }, [algoliaSearch, searchQuery]);
+  const algoliaSearchState = useAlgoliaSearch(venueId, searchQuery);
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!algoliaSearchResult) return [];
+    if (!algoliaSearchState.value) return [];
 
-    return algoliaSearchResult.hits.map((hit) => {
+    return algoliaSearchState.value.hits.map((hit) => {
       const userFields = {
         ...hit,
         id: hit.objectID,
@@ -171,7 +151,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         />
       );
     });
-  }, [algoliaSearchResult, clearSearch, openUserProfileModal]);
+  }, [algoliaSearchState.value, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];

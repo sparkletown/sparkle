@@ -1,6 +1,6 @@
 import { SearchResponse } from "@algolia/client-search";
 
-import { BaseUser } from "types/User";
+import { UserWithLocation } from "types/User";
 
 export enum AlgoliaSearchIndex {
   USERS = "algolia-users",
@@ -11,7 +11,10 @@ export const algoliaSearchIndexes: AlgoliaSearchIndex[] = Object.values(
 );
 
 export type AlgoliaUsersSearchResult = SearchResponse<
-  Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode">
+  Pick<
+    UserWithLocation,
+    "partyName" | "pictureUrl" | "anonMode" | "enteredVenueIds"
+  >
 >;
 
 export type AlgoliaSearchResult = Record<
