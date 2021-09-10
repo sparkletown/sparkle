@@ -20,6 +20,7 @@ import { openRoomUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
+import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
