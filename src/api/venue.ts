@@ -9,6 +9,8 @@ import { AnyVenue } from "types/venues";
 import { WithId, withId } from "utils/id";
 import { asArray } from "utils/types";
 
+import { VenueInput } from "./admin";
+
 export const getVenueCollectionRef = () =>
   firebase.firestore().collection("venues");
 
@@ -198,6 +200,15 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
 
-export const updateVenueNG = async (venue: Partial<WithId<AnyVenue>>) => {
+export const updateVenueNG = async (venue: Partial<WithId<VenueInput>>) => {
+  console.log(venue.mapBackgroundImageFile);
+
+  // const storageRef = firebase.storage().ref();
+  // const uploadFileRef = storageRef.child(
+  //   `assets/mapBackgrounds/venues/${venue.id}/mapBackground.jpg`
+  // );
+  // await uploadFileRef.put(file);
+  // const downloadUrl = await uploadFileRef.getDownloadURL();
+  // downloadUrl
   return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
 };

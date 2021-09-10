@@ -88,20 +88,31 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   const values = watch("room");
   const venueValues = watch("venue");
 
-  const handleImageChange = useCallback(
+  const changeRoomImageUrl = useCallback(
     (val: string) => {
-      setValue("image_url", val, false);
+      setValue("room.image_url", val, false);
     },
     [setValue]
   );
 
+  const changeBackgroundImageUrl = useCallback(
+    (val: string) => {
+      setValue("venue.mapBackgroundImage", val, false);
+    },
+    [setValue]
+  );
+
+  console.log(venueValues);
+
   const updateVenueRoom = useCallback(async () => {
+    console.log("1", roomVenue);
+
     if (!user || !roomVenue?.id) return;
     await updateVenueNG({
       id: roomVenue.id,
       ...venueValues,
     });
-  }, [roomVenue?.id, user, venueValues]);
+  }, [roomVenue, user, venueValues]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
@@ -112,9 +123,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       ...values,
     };
 
-    console.log("asdasd1");
-
     await upsertRoom(roomData, venueId, user, roomIndex);
+    console.log(room.template);
     room.template && (await updateVenueRoom());
 
     onEdit && onEdit();
@@ -201,7 +211,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
           <Form.Label>Room image</Form.Label>
           <ImageInput
-            onChange={handleImageChange}
+            onChange={changeRoomImageUrl}
             name="room.image"
             setValue={setValue}
             register={register}
@@ -222,7 +232,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
               <>
                 <Form.Label>Room background</Form.Label>
                 <ImageInput
-                  onChange={handleImageChange}
+                  onChange={changeBackgroundImageUrl}
                   name="venue.mapBackgroundImage"
                   setValue={setValue}
                   register={register}
