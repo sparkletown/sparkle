@@ -763,6 +763,8 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
   const updated = {};
+  updated.updatedAt = Date.now();
+
   // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
@@ -792,6 +794,14 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.entrance) {
     updated.entrance = data.entrance;
+  }
+
+  if (typeof data.zoomUrl === "string") {
+    updated.zoomUrl = data.zoomUrl;
+  }
+
+  if (typeof data.iframeUrl === "string") {
+    updated.iframeUrl = data.iframeUrl;
   }
 
   if (data.mapBackgroundImageUrl) {
@@ -860,38 +870,31 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
-  updated.updatedAt = Date.now();
 
-  // @debt in updateVenue we're checking/creating the updated.config object here if needed.
-  //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?
-
-  // @debt in updateVenue this is configured as:
-  //   updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl
-  //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
 
-  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
-    // @debt the logic here differs from updateVenue, as data.columns is always set when present there
+  }
+
+  if (typeof data.columns === "number") {
     updated.columns = data.columns;
   }
 
-  // @debt the logic here differs from updateVenue
   if (typeof data.requiresDateOfBirth === "boolean") {
     updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
-  // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
-    // @debt the logic here differs from updateVenue, as data.radioStations is always set when present there
+  }
+
+  if (data.radioStations) {
     updated.radioStations = [data.radioStations];
   }
 
-  // @debt this is exactly the same as in updateVenue
   admin
     .firestore()
     .collection("venues")

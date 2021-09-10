@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -54,15 +54,15 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venueId });
 
+  console.log("123", relatedVenues);
+
   const roomVenue = useMemo(
     () => relatedVenues.find((venue) => room?.url?.endsWith(`/${venue.id}`)),
     [relatedVenues, room?.url]
   );
 
-  const { register, handleSubmit, setValue, watch, errors } = useForm({
-    reValidateMode: "onChange",
-    validationSchema: roomEditSchema,
-    defaultValues: {
+  const defaultValues = useMemo(
+    () => ({
       room: {
         title: room.title ?? "",
         url: room.url ?? "",
@@ -82,8 +82,33 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
         auditoriumRows: roomVenue?.auditoriumRows ?? 0,
         columns: roomVenue?.columns ?? 0,
       },
-    },
+    }),
+    [
+      room.about,
+      room.image_url,
+      room.subtitle,
+      room.template,
+      room.title,
+      room.url,
+      roomVenue?.auditoriumColumns,
+      roomVenue?.auditoriumRows,
+      roomVenue?.columns,
+      roomVenue?.iframeUrl,
+      roomVenue?.mapBackgroundImageUrl,
+      roomVenue?.showGrid,
+      roomVenue?.showReactions,
+      roomVenue?.showShoutouts,
+      roomVenue?.zoomUrl,
+    ]
+  );
+
+  const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
+    reValidateMode: "onChange",
+    validationSchema: roomEditSchema,
+    defaultValues,
   });
+
+  useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch("room");
   const venueValues = watch("venue");
@@ -105,13 +130,14 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   console.log(venueValues);
 
   const updateVenueRoom = useCallback(async () => {
-    console.log("1", roomVenue);
-
     if (!user || !roomVenue?.id) return;
-    await updateVenueNG({
-      id: roomVenue.id,
-      ...venueValues,
-    });
+    await updateVenueNG(
+      {
+        id: roomVenue.id,
+        ...venueValues,
+      },
+      user
+    );
   }, [roomVenue, user, venueValues]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {

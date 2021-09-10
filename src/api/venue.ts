@@ -9,8 +9,6 @@ import { AnyVenue } from "types/venues";
 import { WithId, withId } from "utils/id";
 import { asArray } from "utils/types";
 
-import { VenueInput } from "./admin";
-
 export const getVenueCollectionRef = () =>
   firebase.firestore().collection("venues");
 
@@ -200,15 +198,23 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
 
-export const updateVenueNG = async (venue: Partial<WithId<VenueInput>>) => {
-  console.log(venue.mapBackgroundImageFile);
+type Asd = Partial<WithId<AnyVenue>> & {
+  mapBackgroundImage_url?: string;
+  mapBackgroundImage_file?: FileList;
+};
 
-  // const storageRef = firebase.storage().ref();
-  // const uploadFileRef = storageRef.child(
-  //   `assets/mapBackgrounds/venues/${venue.id}/mapBackground.jpg`
-  // );
-  // await uploadFileRef.put(file);
-  // const downloadUrl = await uploadFileRef.getDownloadURL();
-  // downloadUrl
+export const updateVenueNG = async (venue: Asd, user: firebase.UserInfo) => {
+  const file = venue.mapBackgroundImage_file?.[0];
+  if (file) {
+    const storageRef = firebase.storage().ref();
+    const fileExtension = file.name.split(".").pop();
+    const uploadFileRef = storageRef.child(
+      `users/${user.uid}/venues/${venue.id}/mapBackground.${fileExtension}`
+    );
+    await uploadFileRef.put(file);
+    const downloadUrl = await uploadFileRef.getDownloadURL();
+    venue.mapBackgroundImageUrl = downloadUrl;
+  }
+
   return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
 };
