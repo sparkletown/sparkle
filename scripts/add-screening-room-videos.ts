@@ -52,7 +52,7 @@ const appBatch = app.firestore().batch();
   const screeningRoomVideosData = fs
     .readFileSync(screeningVideosDataPath, "utf-8")
     .split(/\r?\n/)
-    .map((line) => line.split(",").map((dataString) => dataString.trim()));
+    .map((line) => line.split("\t").map((dataString) => dataString.trim()));
 
   // Remove the namings row
   screeningRoomVideosData.shift();
