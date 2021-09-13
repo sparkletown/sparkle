@@ -33,7 +33,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
         <span>
           {people.map((user, idx) => (
             <img
-              onClick={() => openUserProfileModal(user.id)}
+              onClick={() => openUserProfileModal(user)}
               key={`${user.room}-${idx}`}
               className="profile-icon"
               src={

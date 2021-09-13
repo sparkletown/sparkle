@@ -139,8 +139,8 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           key={`user-${user.id}`}
           title={user.partyName ?? DEFAULT_PARTY_NAME}
           user={user}
-          onClick={async () => {
-            await openUserProfileModal(user.id);
+          onClick={() => {
+            openUserProfileModal(user);
             clearSearch();
           }}
         />

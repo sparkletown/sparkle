@@ -70,7 +70,7 @@ export const UserList: React.FC<UserListProps> = ({
             user={user}
             containerClassName="UserList__avatar"
             onClick={
-              hasClickableAvatars ? () => openUserProfileModal(user.id) : noop
+              hasClickableAvatars ? () => openUserProfileModal(user) : noop
             }
           />
         </div>

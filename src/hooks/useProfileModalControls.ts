@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import firebase from "firebase/app";
 
 import { updateUserProfileDataAction } from "store/actions/UserProfile";
 
@@ -24,16 +23,11 @@ export const useProfileModalControls = () => {
   );
 
   const openUserProfileModal = useCallback(
-    async (userId?: string) => {
-      // We can only open the modal when we actually have a userId
-      if (!userId) return;
+    (userProfile?: WithId<User>) => {
+      // We can only open the modal when we actually have a userProfile
+      if (!userProfile) return;
 
-      const firestore = firebase.firestore();
-      const userDoc = await firestore.collection("users").doc(userId).get();
-
-      const user = userDoc.data() as WithId<User>;
-
-      updateUserProfileData(user);
+      updateUserProfileData(userProfile);
     },
     [updateUserProfileData]
   );
