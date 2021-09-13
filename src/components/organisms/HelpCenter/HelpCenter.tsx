@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { useToggle } from "react-use";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -20,26 +19,30 @@ export const HelpCenter: React.FC = () => {
     hide: stopLoading,
   } = useShowHide(false);
 
-  const [isShown, toggleShown] = useToggle(false);
+  const {
+    isShown: isFrameShown,
+    show: showFrame,
+    hide: hideFrame,
+  } = useShowHide(false);
 
   const handleHelpClicked = useCallback(
     (url: string) => {
       startLoading();
       setUrl(url);
-      toggleShown();
+      showFrame();
     },
-    [startLoading, toggleShown]
+    [startLoading, showFrame]
   );
 
   return (
     <>
-      {isShown && url ? (
+      {isFrameShown && url ? (
         <>
           {isLoading && <LoadingPage />}
           <div className="HelpCenter__iframeContainer">
             <ButtonNG
               className="HelpCenter__backButton"
-              onClick={toggleShown}
+              onClick={hideFrame}
               variant="primary"
             >
               Back

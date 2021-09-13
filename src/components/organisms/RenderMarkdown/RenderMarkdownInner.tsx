@@ -51,16 +51,38 @@ const _RenderMarkdownInner: React.FC<RenderMarkdownProps> = ({
 
   if (!text) return null;
 
+  const checkIsLinkInternal = (link: string) => {
+    const currentDomain = window.location.host;
+    return link.includes(currentDomain);
+  };
+
+  const parseText = (text: string) => {
+    const regex = /(.*|.*\n)(http[^\s]*)(.*)|(.*)/g;
+    return Array.from(text.matchAll(regex));
+  };
+
   return (
-    <ReactMarkdown
-      remarkPlugins={REMARK_PLUGINS}
-      rehypePlugins={REHYPE_PLUGINS}
-      linkTarget="_blank"
-      allowedElements={allowedElements}
-      components={components}
-    >
-      {text}
-    </ReactMarkdown>
+    <div>
+      {parseText(text).map((match) =>
+        match[4].length ? (
+          <div key={match[2]}>
+            {match[1].replace("/n", " ")}
+            <ReactMarkdown
+              remarkPlugins={REMARK_PLUGINS}
+              rehypePlugins={REHYPE_PLUGINS}
+              linkTarget={checkIsLinkInternal(match[2]) ? "_self" : "_blank"}
+              allowedElements={allowedElements}
+              components={components}
+            >
+              {match[2]}
+            </ReactMarkdown>
+            {match[3]}
+          </div>
+        ) : (
+          <div>{match[4]}</div>
+        )
+      )}
+    </div>
   );
 };
 
