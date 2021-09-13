@@ -341,6 +341,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         <ButtonNG
           className="AdvancedSettings__save-button"
           type="submit"
+          loading={isSubmitting}
           disabled={!dirty || isSubmitting}
         >
           Save
