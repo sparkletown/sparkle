@@ -1,17 +1,15 @@
+import Bugsnag from "@bugsnag/js";
 import { MaybeDrafted } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import firebase from "firebase/app";
+import { isEqual } from "lodash";
 
-// import { isEqual } from "lodash";
-import {
-  extractLocationFromUser,
-  User,
-  UserLocation,
-  UserWithLocation,
-  userWithLocationToUser,
-} from "types/User";
+import { WORLD_USERS_UPDATE_INTERVAL } from "settings";
+
+import { User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId, withId } from "utils/id";
+import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 export interface WorldUsersApiArgs {
   relatedLocationIds: string[];
@@ -68,7 +66,7 @@ export const worldUsersApi = createApi({
         { relatedLocationIds, currentUserId },
         { updateCachedData, cacheEntryRemoved }
       ) => {
-        // Used to hold the changes queued from the snapshot listener so that we can proces them in batches
+        // Used to hold the changes queued from the snapshot listener so that we can process them in batches
         const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 
         const processQueuedChanges = () => {
@@ -89,10 +87,9 @@ export const worldUsersApi = createApi({
           );
         };
 
-        // TODO: move this interval into a proper const/config value somewhere
         const processQueuedChangesIntervalId = setInterval(
           processQueuedChanges,
-          5000
+          WORLD_USERS_UPDATE_INTERVAL
         );
 
         const worldUsersQuery = firebase
@@ -129,10 +126,8 @@ export const worldUsersApi = createApi({
         // Wait until the data no longer needs to be kept in our redux cache
         await cacheEntryRemoved;
 
-        // Unsubscribe the firestore query snapshot listener
         unsubscribeListener();
 
-        // Clear the interval for processing the queued changes
         clearInterval(processQueuedChangesIntervalId);
 
         // Make sure we process any last remaining queued changes
@@ -151,26 +146,57 @@ export const {
   useQuerySubscription: useWorldUsersQuerySubscription,
 } = worldUsersApi.endpoints.worldUsers;
 
+const notifyOnDocProcessingError = (
+  modificationType: firebase.firestore.DocumentChangeType,
+  userId: string,
+  msg: string
+) => {
+  const message =
+    `[worldUsersApi::snapshot::${modificationType}] ` +
+    `Snapshot was '${modificationType}' yet ` +
+    msg +
+    " This should not happen.";
+  console.warn(message);
+  Bugsnag.notify(message, (event) => {
+    event.addMetadata("context", {
+      location: `api/worldUsers::snapshot::${modificationType}`,
+      userId,
+      message,
+    });
+  });
+};
+
 const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
   change: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>
 ) => {
   // @debt validate/typecast this properly so we don't have to use 'as' to hack the types here
   const user: UserWithLocation = change.doc.data() as UserWithLocation;
   const userId: string = change.doc.id;
-  const userWithId: WithId<UserWithLocation> = withId(user, userId);
+  const userWithLocation: WithId<UserWithLocation> = withId(user, userId);
 
-  const userWithoutLocation: WithId<User> = userWithLocationToUser(userWithId);
+  const userWithoutLocation: WithId<User> = withId(
+    omitLocationFromUser(userWithLocation),
+    userId
+  );
 
-  const userLocation: WithId<UserLocation> = extractLocationFromUser(
-    userWithId
+  const userLocation: WithId<UserLocation> = withId(
+    extractLocationFromUser(userWithLocation),
+    userId
+  );
+
+  const existingUserIndex = draft.worldUsers.findIndex(
+    (existingUser) => existingUser.id === userWithLocation.id
   );
 
   switch (change.type) {
     case "added": {
-      // TODO: theoretically I believe it should never be possible for a duplicate user to end up here from
-      //   this, but I wonder if we should err on the side of caution and combine the added/modified cases to
-      //   always try and find the existing user first? A little extra overhead for potentially a little
-      //   more safety.
+      if (existingUserIndex !== -1) {
+        notifyOnDocProcessingError(
+          change.type,
+          userId,
+          `an existing user with the same userId=${userId} was found.`
+        );
+      }
       draft.worldUsers.push(userWithoutLocation);
       draft.worldUsersById[userId] = userWithoutLocation;
       draft.worldUserLocationsById[userId] = userLocation;
@@ -179,42 +205,21 @@ const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
     }
 
     case "modified": {
-      const existingUserIndex = draft.worldUsers.findIndex(
-        (existingUser) => existingUser.id === userWithId.id
-      );
-
       if (existingUserIndex !== -1) {
-        // TODO: It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
-        //   so it might be beneficial to check it with a deep compare here first, and only modify the draft if the data has actually changed
-        draft.worldUsers[existingUserIndex] = userWithoutLocation;
-        // if (isEqual(draft.worldUsers[existingUserIndex], userWithoutLocation)) {
-        //   // console.warn(
-        //   //   `[worldUsersApi::snapshot::modified] userId=${userWithId.id} userWithoutLocation matches data within worldUsers. We shouldn't need to update the draft here`
-        //   // );
-        // } else {
-        //   draft.worldUsers[existingUserIndex] = userWithoutLocation;
-        // }
+        if (!isEqual(draft.worldUsers[existingUserIndex], userWithoutLocation))
+          draft.worldUsers[existingUserIndex] = userWithoutLocation;
       } else {
-        // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe just combine the logic
-        //   for added/modified to handle it gracefully if it occurs. It's an edgecase and implies redux store
-        //   corruption IMO. Shouldn't be possible if our update logic here is correct I don't believe.
-        console.warn(
-          `[worldUsersApi::snapshot::modified] Snapshot was 'modified' yet couldn't find index for userId=${userWithId.id}. This shouldn't happen.`
+        notifyOnDocProcessingError(
+          change.type,
+          userId,
+          `couldn't find index for userId=${userId}.`
         );
       }
 
-      // TODO: It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
-      //   so it might be beneficial to check it with a deep compare here first, and only modify the draft if the data has actually changed
-      draft.worldUsersById[userId] = userWithoutLocation;
-      // if (isEqual(draft.worldUsersById[userId], userWithoutLocation)) {
-      //   // console.warn(
-      //   //   `[worldUsersApi::snapshot::modified] userId=${userWithId.id} userWithoutLocation matches data within worldUsersById. We shouldn't need to update the draft here`
-      //   // );
-      // } else {
-      //   draft.worldUsersById[userId] = userWithoutLocation;
-      // }
+      if (!isEqual(draft.worldUsersById[userId], userWithoutLocation))
+        draft.worldUsersById[userId] = userWithoutLocation;
 
-      // TODO: It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
+      // @debt It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
       //   so it might be beneficial to check it with a deep compare here first, and only modify the draft if the data has actually changed.
       //   Though in this particular case, the userLocation is almost always the thing that will be changing, so the extra comparisons here
       //   might be more 'costly' than just always updating this.
@@ -234,18 +239,16 @@ const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
 
     case "removed": {
       const existingUserIndex = draft.worldUsers.findIndex(
-        (existingUser) => existingUser.id === userWithId.id
+        (existingUser) => existingUser.id === userWithLocation.id
       );
 
       if (existingUserIndex !== -1) {
         draft.worldUsers.splice(existingUserIndex, 1);
       } else {
-        // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe it's fine that the
-        //  user didn't exist in our redux store, since we were just going to remove them anyway. It's an
-        //  edgecase and implies redux store corruption IMO. Shouldn't be possible if our update logic here
-        //  is correct I don't believe.
-        console.warn(
-          `[worldUsersApi::snapshot::removed] Snapshot was 'removed' yet couldn't find index for userId=${userWithId.id}. This shouldn't happen.`
+        notifyOnDocProcessingError(
+          change.type,
+          userId,
+          `couldn't find index for userId=${userWithLocation.id}.`
         );
       }
 
