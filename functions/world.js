@@ -89,13 +89,6 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     updatedAt: Date.now(),
-    config: {
-      landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
-        subtitle: data.subtitle,
-        description: data.description,
-      },
-    },
     ...(data.bannerImageUrl && { host: { icon: data.logoImageUrl } }),
     ...(data.logoImageUrl && { host: { icon: data.logoImageUrl } }),
     ...(data.rooms && { rooms: data.rooms }),
@@ -107,6 +100,12 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     }),
     ...(data.entrance && { entrance: data.entrance }),
   };
+
+  if (data.bannerImageUrl || data.subtitle || data.description) {
+    worldData.config = {
+      landingPageConfig: {},
+    };
+  }
 
   if (typeof data.bannerImageUrl === "string") {
     worldData.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
