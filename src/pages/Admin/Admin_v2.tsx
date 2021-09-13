@@ -6,7 +6,7 @@ import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 
-import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
+import { AdminVenues } from "components/organisms/AdminVenues";
 import {
   AuthenticationModal,
   AuthOptions,

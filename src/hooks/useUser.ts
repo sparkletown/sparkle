@@ -4,16 +4,18 @@ import { isEqual } from "lodash";
 
 import { RootState } from "store";
 
-import { User } from "types/User";
+import { User, UserLocation } from "types/User";
 
 import { WithId, withId } from "utils/id";
 import { authSelector, profileSelector } from "utils/selectors";
+import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 import { useSelector } from "hooks/useSelector";
 
 export interface UseUserResult {
   user?: FirebaseReducer.AuthState;
   profile?: FirebaseReducer.Profile<User>;
+  userLocation?: UserLocation;
   userWithId?: WithId<User>;
   userId?: string;
 }
@@ -25,13 +27,21 @@ export const useUser = (): UseUserResult => {
     return !auth.isEmpty ? auth : undefined;
   }, isEqual);
 
-  const profile = useSelector((state: RootState) => {
+  const profileWithLocation = useSelector((state: RootState) => {
     const profile = profileSelector(state);
 
     return !profile.isEmpty ? profile : undefined;
   }, isEqual);
 
   const userId = user?.uid;
+
+  const profile = profileWithLocation
+    ? omitLocationFromUser(profileWithLocation)
+    : undefined;
+
+  const userLocation = profileWithLocation
+    ? extractLocationFromUser(profileWithLocation)
+    : undefined;
 
   const userWithId = useMemo(() => {
     if (!userId || !profile) return;
@@ -43,9 +53,10 @@ export const useUser = (): UseUserResult => {
     () => ({
       user,
       profile,
+      userLocation,
       userWithId,
       userId,
     }),
-    [user, profile, userId, userWithId]
+    [user, profile, userLocation, userWithId, userId]
   );
 };

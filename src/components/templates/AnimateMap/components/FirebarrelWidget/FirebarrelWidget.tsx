@@ -8,16 +8,16 @@ import { getTwilioVideoToken } from "api/video";
 import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
 
+import { WithId } from "utils/id";
+
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
+import { Participant } from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { Button } from "components/atoms/Button";
-
-import { WithId } from "../../../../../utils/id";
-import Participant from "../../../../organisms/Room/Participant";
 
 import "./FirebarrelWidget.scss";
 

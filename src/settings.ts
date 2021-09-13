@@ -71,11 +71,6 @@ export const GIFT_TICKET_MODAL_URL =
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
-export const PLAYA_INFO_URL =
-  "https://us02web.zoom.us/j/89955369645?pwd=VEY1VzFPemNKMEw2bHRLdDJpWnRmQT09";
-export const PLAYA_INFO_NAME = "Playa Info";
-export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
-export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
@@ -83,11 +78,16 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
+export const TWITCH_SHORT_URL = "twitch.tv";
+export const TWITCH_EMBED_URL = "https://player.twitch.tv";
+export const FACEBOOK_EMBED_URL = "plugins/video.php";
+export const VIMEO_SHORT_EVENT_URL = "vimeo.com/event";
+export const VIMEO_EMBED_URL = "https://player.vimeo.com/video";
+export const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
 export const YOUTUBE_SHORT_URL_STRING = "youtu";
 
 // How often to refresh events schedule
@@ -101,12 +101,11 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
+export const WORLD_USERS_UPDATE_INTERVAL = 5000;
+
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
-
-// How often to refresh daypart logic
-export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
 // How often to refresh current time line in the schedule
 export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
@@ -114,7 +113,6 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
-export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_UPLOAD_IMAGE_FILE_SIZE_MB = 2;
 export const MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES =
   MAX_UPLOAD_IMAGE_FILE_SIZE_MB * 1024 * 1024;
@@ -122,13 +120,11 @@ export const MAX_SELECTABLE_IMAGE_FILE_SIZE_MB = 30;
 export const MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES =
   MAX_SELECTABLE_IMAGE_FILE_SIZE_MB * 1024 * 1024;
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
-export const GIF_IMAGE_WIDTH_PX = 300;
 
 export const MIN_TABLE_CAPACITY = 2;
 export const MAX_TABLE_CAPACITY = 10;
 
 export const DOCUMENT_ID = "__name__";
-export const NUM_CHAT_UIDS_TO_LOAD = 10;
 
 export const MINIMUM_PARTYMAP_COLUMNS_COUNT = 5;
 export const MAXIMUM_PARTYMAP_COLUMNS_COUNT = 100;
@@ -310,68 +306,6 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
 ];
 
 // @debt Refactor this constant into types/templates or similar?
-// @debt this doesn't seem to even be used at the moment.. should it be?
-export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
-  {
-    template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
-    name: "Experience",
-    description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
-    ],
-  },
-  {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp",
-    description: [
-      "Add your camp to the Jam in the form of a clickable map; then add tents, bars, domes and other spaces to your camp map.",
-    ],
-  },
-  {
-    template: VenueTemplate.artpiece,
-    name: "Art Piece",
-    description: [
-      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
-    ],
-  },
-  {
-    template: VenueTemplate.jazzbar,
-    name: "Music Venue",
-    description: [
-      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
-    ],
-  },
-  {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description: [
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    ],
-  },
-  {
-    template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: ["Add an NEW auditorium with an embedded video and sections"],
-  },
-  {
-    template: VenueTemplate.firebarrel,
-    name: "Fire Barrel",
-    description: ["Huddle around a fire barrel with your close friends"],
-  },
-  {
-    template: VenueTemplate.embeddable,
-    name: "Embeddable",
-    description: [
-      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
-    ],
-  },
-  {
-    template: VenueTemplate.screeningroom,
-    name: "Screening room",
-    description: ["Add an screening room with the videos listed inside."],
-  },
-];
-
-// @debt Refactor this constant into types/templates or similar?
 export const ALL_VENUE_TEMPLATES: Array<Template> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -401,40 +335,6 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.themecamp,
     name: "Theme Camp (legacy)",
     description: ["To be removed asap"],
-  },
-  {
-    template: VenueTemplate.animatemap,
-    name: "AnimateMap",
-    description: [""],
-  },
-];
-
-// @debt Refactor this constant into types/templates or similar?
-// @debt this doesn't seem to even be used at the moment.. should it be?
-export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
-  ...BURN_VENUE_TEMPLATES,
-  {
-    template: VenueTemplate.jazzbar,
-    name: "Jazz Bar",
-    description: ["Create a jazzbar."],
-  },
-
-  {
-    template: VenueTemplate.artcar,
-    name: "Art Car",
-    description: ["Create a space on the Jam that moves around."],
-  },
-  {
-    template: VenueTemplate.performancevenue,
-    name: "Performance Venue",
-    description: [
-      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
-    ],
-  },
-  {
-    template: VenueTemplate.partymap,
-    name: "Party Map",
-    description: [""],
   },
   {
     template: VenueTemplate.animatemap,
@@ -638,11 +538,6 @@ export const FIREBASE_CONFIG = {
 export const DEFAULT_VENUE = "zilloween";
 export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
 
-// Trouble connecting? Run a local relay:
-// git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
-export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
-
-export const USE_RANDOM_AVATAR = true;
 export const RANDOM_AVATARS = [
   "avatar-01.png",
   "avatar-02.png",
@@ -672,6 +567,8 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
+
+export const DEFAULT_CAMERA_ENABLED = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 

@@ -4,7 +4,7 @@ import { IFRAME_ALLOW } from "settings";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import "./WelcomeVideo.scss";
 

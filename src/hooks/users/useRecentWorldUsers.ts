@@ -2,7 +2,7 @@ import { skipToken } from "@reduxjs/toolkit/dist/query/react";
 
 import { useWorldUsersQueryState } from "store/api/worldUsers";
 
-import { User } from "types/User";
+import { User, UserLocation } from "types/User";
 
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
@@ -14,6 +14,7 @@ import { useWorldUsersContext } from "./useWorldUsers";
 export interface RecentWorldUsersData {
   isRecentWorldUsersLoaded: boolean;
   recentWorldUsers: readonly WithId<User>[];
+  worldUserLocationsById: Record<string, WithId<UserLocation>>;
 }
 
 // @debt the only difference between this and useRecentLocationUsers is that useRecentWorldUsers checks
@@ -31,6 +32,7 @@ export const useRecentWorldUsers = (): RecentWorldUsersData => {
 
   const {
     isSuccess: isRecentWorldUsersLoaded,
+    worldUserLocationsById,
     recentWorldUsers,
   } = useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
     selectFromResult: ({
@@ -38,7 +40,7 @@ export const useRecentWorldUsers = (): RecentWorldUsersData => {
       data: { worldUsers, worldUserLocationsById } = {},
     }) => {
       if (!worldUsers || !worldUserLocationsById)
-        return { isSuccess, recentWorldUsers: [] };
+        return { isSuccess, recentWorldUsers: [], worldUserLocationsById: {} };
 
       const recentWorldUsers = worldUsers.filter((user) => {
         const userLocation = worldUserLocationsById[user.id];
@@ -51,6 +53,7 @@ export const useRecentWorldUsers = (): RecentWorldUsersData => {
 
       return {
         isSuccess,
+        worldUserLocationsById,
         recentWorldUsers,
       };
     },
@@ -58,6 +61,7 @@ export const useRecentWorldUsers = (): RecentWorldUsersData => {
 
   return {
     isRecentWorldUsersLoaded,
+    worldUserLocationsById,
     recentWorldUsers,
   };
 };
