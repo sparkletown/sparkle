@@ -71,7 +71,6 @@ export const VenuePage: React.FC = () => {
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile, userLocation } = useUser();
-  console.log(userLocation);
   const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
     userLocation ?? {};
 
