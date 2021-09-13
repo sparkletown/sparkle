@@ -65,30 +65,27 @@ initFirebaseAdminApp(projectId, {
     .join(",");
 
   fs.writeFileSync(outputFileName, `${headingLine}\n`, { flag: "a" });
+
+  const existingUsers = allUsers.filter((user) => user.email?.includes("@"));
   const filteredUsers = emailSubstrToIgnore?.length
-    ? allUsers?.filter(
+    ? existingUsers.filter(
         (user) =>
-          user?.email?.includes("@") &&
           !emailSubstrToIgnore.some((substrToExclude) =>
             user?.email?.includes(substrToExclude)
           )
       )
-    : allUsers;
+    : existingUsers;
 
   venues.forEach((doc) => {
     if (!doc.exists) return;
+
     const venueOwners = doc
       .data()
       .owners?.map(
         (uid: string) => filteredUsers.find((u) => u.uid === uid)?.email ?? ""
-      );
-
-    // venue owners that have email
-    const filteredVenueOwners = venueOwners?.filter((owner: string) =>
-      owner?.includes("@")
-    );
-
-    const venueData = [doc.id, doc.data().name, filteredVenueOwners ?? ""];
+      )
+      .filter((owner: string) => owner);
+    const venueData = [doc.id, doc.data().name, venueOwners ?? ""];
 
     const csvFormattedLine = venueData.map((s) => `"${s}"`).join(",");
 
@@ -96,5 +93,7 @@ initFirebaseAdminApp(projectId, {
       flag: "a",
     });
   });
+
+  console.log("Venue owners are successfully extracted to", outputFileName);
   process.exit(0);
 })();
