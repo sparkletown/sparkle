@@ -33,7 +33,7 @@ import { NavBarBanner } from "components/molecules/NavBarScheduleWeather";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
-import { Button } from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
@@ -308,19 +308,21 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         {!isEventsLoading && (
           <div className="NavBarSchedule__downloadButtons">
             {isShowPersonalDownloadBtn && (
-              <Button
+              <ButtonNG
                 onClick={downloadPersonalEventsCalendar}
-                customClass="NavBarSchedule__downloadScheduleBtn"
+                className="NavBarSchedule__downloadScheduleBtn"
+                variant="primary"
               >
                 Download your schedule
-              </Button>
+              </ButtonNG>
             )}
-            <Button
+            <ButtonNG
               onClick={downloadAllEventsCalendar}
-              customClass="NavBarSchedule__downloadScheduleBtn"
+              className="NavBarSchedule__downloadScheduleBtn"
+              variant="primary"
             >
               Download full schedule
-            </Button>
+            </ButtonNG>
           </div>
         )}
       </div>
