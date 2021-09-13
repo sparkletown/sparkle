@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -10,12 +10,10 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { updateIframeUrl } from "api/venue";
-
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
@@ -65,12 +63,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const parentVenueId = parentVenue?.id;
   const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
-
-  useEffect(() => {
-    if (iframeUrl !== venue.iframeUrl) {
-      updateIframeUrl(iframeUrl, venue.id);
-    }
-  }, [iframeUrl, venue.iframeUrl, venue.id]);
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
