@@ -127,6 +127,20 @@ export interface VenueInput_v2
   autoPlay?: boolean;
 }
 
+export interface WorldProps {
+  id: string;
+  name: string;
+  description?: string;
+  subtitle?: string;
+  bannerImageFile?: FileList;
+  bannerImageUrl?: string;
+  logoImageFile?: FileList;
+  logoImageUrl?: string;
+  rooms?: Room[];
+  mapBackgroundImageFile?: FileList;
+  mapBackgroundImageUrl?: string;
+}
+
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
   VenueImageUrls;
 
@@ -317,6 +331,32 @@ export const createVenue_v2 = async (
   );
 };
 
+export const createWorld = async (
+  world: WorldProps,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
+  const worldResponse = await firebase
+    .functions()
+    .httpsCallable("world-createWorld")(firestoreVenueInput);
+  const worldId = worldResponse?.data;
+  await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    ...firestoreVenueInput,
+    worldId,
+  });
+};
+
+export const updateWorld = async (
+  world: WorldProps,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
+  return await firebase.functions().httpsCallable("world-updateWorld")(
+    firestoreVenueInput
+  );
+};
+
+// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 export const updateVenue = async (
   input: WithId<VenueInput>,
   user: firebase.UserInfo

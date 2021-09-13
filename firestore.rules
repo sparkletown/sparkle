@@ -91,5 +91,14 @@ service cloud.firestore {
       allow read: if request.auth.uid != null;
       allow write: if false;
     }
+    match /worlds/{worldId} {
+      allow create: if request.auth.uid in role('admin').users;
+
+      function world() {
+        return get(/databases/$(database)/documents/worlds/$(worldId)).data
+      }
+
+      allow update,delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+    }
   }
 }

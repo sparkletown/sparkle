@@ -309,6 +309,7 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    worldId: data.worldId,
   };
 
   if (data.template === VenueTemplate.jazzbar) {
