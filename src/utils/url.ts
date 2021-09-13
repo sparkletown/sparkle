@@ -147,15 +147,3 @@ export const getLastUrlParam = (url: string) => {
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
 };
-
-export const getYoutubeEmbedFromUrl = (url: string) => {
-  if (url.includes("embed")) {
-    return url;
-  }
-
-  const [, urlSearchQuery] = url.split("?");
-  const youtubeVideoParams = new URLSearchParams(urlSearchQuery);
-  const { v } = Object.fromEntries(youtubeVideoParams.entries());
-
-  return `https://www.youtube.com/embed/${v}`;
-};
