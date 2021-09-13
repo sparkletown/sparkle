@@ -16,7 +16,7 @@ import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVen
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
-import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
@@ -167,7 +167,7 @@ export const Spaces: React.FC<SpacesProps> = ({
     <div className="Spaces">
       <div className="Spaces__rooms">
         {selectedRoom ? (
-          <EditRoomForm
+          <SpaceEditForm
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}

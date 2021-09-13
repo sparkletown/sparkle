@@ -29,9 +29,9 @@ import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { Toggler } from "components/atoms/Toggler";
 
-import "./EditRoomForm.scss";
+import "./SpaceEditForm.scss";
 
-interface EditRoomFormProps {
+interface SpaceEditFormProps {
   room: RoomData_v2;
   updatedRoom: RoomData_v2;
   roomIndex: number;
@@ -40,7 +40,7 @@ interface EditRoomFormProps {
   onEdit?: () => void;
 }
 
-export const EditRoomForm: React.FC<EditRoomFormProps> = ({
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   room,
   updatedRoom,
   roomIndex,
@@ -62,12 +62,15 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
   const {
     loading: isLoadingRoomVenue,
+    error: roomVenueError,
     value: roomVenue,
   } = useAsync(async () => {
     if (!roomVenueId) return;
 
     return await fetchVenue(roomVenueId);
   }, [roomVenueId]);
+
+  console.log(roomVenue);
 
   const defaultValues = useMemo(
     () => ({
@@ -121,6 +124,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   const values = watch("room");
   const venueValues = watch("venue");
 
+  console.log(venueValues);
+
   const changeRoomImageUrl = useCallback(
     (val: string) => {
       setValue("room.image_url", val, false);
@@ -134,8 +139,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     },
     [setValue]
   );
-
-  console.log(venueValues);
 
   const updateVenueRoom = useCallback(async () => {
     if (!user || !roomVenueId) return;
@@ -189,8 +192,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
-      <div className="EditRoomForm">
-        <div className="EditRoomForm__room">
+      <div className="SpaceEditForm">
+        <div className="SpaceEditForm__room">
           <Form.Label>Room type</Form.Label>
           <InputField
             name="room.template"
@@ -261,11 +264,14 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             )}
           </div>
 
-          {isLoadingRoomVenue && (
-            <div className="EditRoomForm__loading-indicator">
-              <Spinner animation="border" role="status" />
-              <span>Loading....</span>
-            </div>
+          {!roomVenue && roomVenueError && (
+            <>
+              <div>
+                The venue linked to this portal could not be fetched properly.
+                Make sure it is a child of this world and try again.
+              </div>
+              <div>{roomVenueError.message}</div>
+            </>
           )}
 
           {!isLoadingRoomVenue && !!roomVenue && (
@@ -283,7 +289,10 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
                       register={register}
                       small
                       nameWithUnderscore
-                      imgUrl={venueValues?.mapBackgroundImage}
+                      imgUrl={
+                        roomVenue?.mapBackgroundImageUrl ??
+                        venueValues.mapBackgroundImage
+                      }
                     />
                     {errors?.venue?.mapBackgroundImage && (
                       <span className="input-error">
@@ -452,7 +461,14 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           {error && <div>Error: {error}</div>}
         </div>
 
-        <div className="EditRoomForm__footer">
+        {isLoadingRoomVenue && (
+          <div className="SpaceEditForm__loading-indicator">
+            <Spinner animation="border" role="status" />
+            <span>Loading venue information...</span>
+          </div>
+        )}
+
+        <div className="SpaceEditForm__footer">
           <Button onClick={handleBackClick}>Back</Button>
           <Button
             className="confirm-button"
