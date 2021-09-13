@@ -62,13 +62,11 @@ export const Timing: React.FC<TimingProps> = ({
           <DateTimeField
             title="Global starting time"
             subTitle="When does your party start?"
-            name="start"
             dateTimeValue={startUtcSeconds}
             onChange={setStartUtcSeconds}
           />
           <DateTimeField
             title="Global ending time"
-            name="end"
             dateTimeValue={endUtcSeconds}
             onChange={setEndUtcSeconds}
           />

@@ -7,7 +7,6 @@ import "./DateTimeField.scss";
 export interface DateFieldProps {
   title: string;
   subTitle?: string;
-  name: string;
   dateTimeValue?: number;
   onChange: (value: number) => void;
 }
@@ -15,7 +14,6 @@ export interface DateFieldProps {
 export const DateTimeField: React.FC<DateFieldProps> = ({
   title,
   subTitle,
-  name,
   dateTimeValue,
   onChange,
 }) => {
@@ -33,7 +31,7 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
   }, [dateValue, timeValue, onChange]);
 
   return (
-    <label className="DateTimeField__title">
+    <div className="DateTimeField__title">
       {title}
       {subTitle && <p className="DateTimeField__subtitle">{subTitle}</p>}
       <div className="DateTimeField__container">
@@ -45,6 +43,6 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
         />
         <input type="time" value={timeValue} onChange={handleTimeChange} />
       </div>
-    </label>
+    </div>
   );
 };
