@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { generateId } from "utils/id";
 import { getDateTimeFromUtc, getUtcFromDateTime } from "utils/time";
 
 import "./DateTimeField.scss";
@@ -34,7 +33,7 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
   }, [dateValue, timeValue, onChange]);
 
   return (
-    <label className="DateTimeField__title" id={generateId(name)}>
+    <label className="DateTimeField__title">
       {title}
       {subTitle && <p className="DateTimeField__subtitle">{subTitle}</p>}
       <div className="DateTimeField__container">
