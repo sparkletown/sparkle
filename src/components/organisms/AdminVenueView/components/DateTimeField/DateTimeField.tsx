@@ -34,25 +34,19 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
 
   return (
     <>
-      <label className="DateTimeField__title" htmlFor={`${name}_date`}>
+      <label className="DateTimeField__title">
         {title}
+        {subTitle && <p className="DateTimeField__subtitle">{subTitle}</p>}
+        <div className="DateTimeField__container">
+          <input
+            type="date"
+            className="DateTimeField__date"
+            value={dateValue}
+            onChange={handleDateChange}
+          />
+          <input type="time" value={timeValue} onChange={handleTimeChange} />
+        </div>
       </label>
-      {subTitle && <p className="DateTimeField__subtitle">{subTitle}</p>}
-      <div className="DateTimeField__container">
-        <input
-          type="date"
-          name={`${name}_date`}
-          className="DateTimeField__date"
-          value={dateValue}
-          onChange={handleDateChange}
-        />
-        <input
-          type="time"
-          name={`${name}_time`}
-          value={timeValue}
-          onChange={handleTimeChange}
-        />
-      </div>
     </>
   );
 };
