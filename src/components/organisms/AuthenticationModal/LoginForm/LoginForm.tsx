@@ -76,6 +76,12 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           "validation",
           `Error checking ticket: ${error.message}`
         );
+      } else if (error.code === "auth/user-not-found") {
+        setError(
+          "backend",
+          "firebase",
+          "Account not found. Please contact the event organizer."
+        );
       } else {
         setError("backend", "firebase", error.message);
       }
