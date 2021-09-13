@@ -19,6 +19,7 @@ import { WithId, WithVenueId } from "utils/id";
 import { openRoomUrl } from "utils/url";
 
 import { useRoom } from "hooks/useRoom";
+import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
@@ -33,7 +34,6 @@ interface RoomCardProps {
   room: Room;
   index: number;
   venueId: string;
-  venueName: string;
   events?: WithVenueId<WithId<VenueEvent>>[];
 }
 
@@ -41,12 +41,15 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   room,
   index,
   venueId,
-  venueName,
   events,
 }) => {
   const { user } = useUser();
 
-  const { recentRoomUsers } = useRoom({ room, venueName });
+  const { portalVenueId } = useRoom({ room });
+
+  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
+    venueId: portalVenueId,
+  });
 
   const isRoomUnclickable = room.type === RoomType.unclickable;
 

@@ -136,7 +136,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const venueId = venue.id;
 
   const { userId, userWithId } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const baseColumns =
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
