@@ -4,7 +4,7 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
@@ -53,7 +53,7 @@ export const CodeOfConduct: React.FC = () => {
   // @debt this should probably be retrieving the sovereign venue
   // @debt replace this with useConnectCurrentVenueNG or similar?
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>
