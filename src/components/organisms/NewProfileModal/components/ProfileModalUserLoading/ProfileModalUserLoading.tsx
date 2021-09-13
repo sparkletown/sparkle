@@ -6,6 +6,7 @@ import { FalseyValue } from "styled-components";
 import { User } from "types/User";
 
 import { WithId, withId } from "utils/id";
+import { wait } from "utils/promise";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -30,6 +31,7 @@ export const ProfileModalUserLoading: React.FC<ProfileModalUserLoadingProps> = (
       if (!userId) return;
       const firestore = firebase.firestore();
       const userDoc = await firestore.collection("users").doc(userId).get();
+      await wait(1000);
 
       const user = userDoc.data() as User;
       return withId(user, userId);
@@ -42,12 +44,17 @@ export const ProfileModalUserLoading: React.FC<ProfileModalUserLoadingProps> = (
     void fetchUser();
   }, [fetchUser]);
 
+  // a separate promise state here no to show spinner on profile save
+  const [refreshState, refresh] = useAsyncFn(async () => {
+    await fetchUser();
+  });
+
   return (
     <>
-      {!fetchUserState.loading &&
-      !fetchUserState.error &&
-      fetchUserState.value ? (
-        <>{render(fetchUserState.value, fetchUser as () => Promise<void>)}</>
+      {fetchUserState.value &&
+      (refreshState.loading ||
+        (!fetchUserState.loading && !fetchUserState.error)) ? (
+        <>{render(fetchUserState.value, refresh)}</>
       ) : (
         <div className={"ProfileModalUserLoading"}>
           {fetchUserState.loading ? (

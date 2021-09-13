@@ -7,7 +7,6 @@ import { useHistory } from "react-router-dom";
 import { PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY } from "settings";
 
 import { UserProfileModalFormData } from "types/profileModal";
-import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -19,6 +18,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ProfileModalUserLoading } from "components/organisms/NewProfileModal/components/ProfileModalUserLoading";
+import { ProfileModalUserLoadingProps } from "components/organisms/NewProfileModal/components/ProfileModalUserLoading/ProfileModalUserLoading";
 import { EditingProfileModalContent } from "components/organisms/NewProfileModal/EditingProfileModalContent";
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModalContent";
 
@@ -77,8 +77,8 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     );
   }, [closeUserProfileModal, isSubmitting, turnOffEditMode]);
 
-  const renderBody = useCallback(
-    (user: WithId<User>, refreshUser: () => void) => {
+  const renderBody: ProfileModalUserLoadingProps["render"] = useCallback(
+    (user, refreshUser) => {
       const handleSubmitWrapper: (
         inner: OnSubmit<UserProfileModalFormData>
       ) => OnSubmit<UserProfileModalFormData> = (
@@ -87,7 +87,8 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
         startSubmitting();
         try {
           await inner(data);
-          refreshUser();
+          await refreshUser();
+          turnOffEditMode();
         } finally {
           stopSubmitting();
         }
@@ -99,6 +100,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
             user={user}
             venue={venue}
             onCancelEditing={turnOffEditMode}
+            isSubmitting={isSubmitting}
             handleSubmitWrapper={handleSubmitWrapper}
           />
         ) : (
@@ -120,6 +122,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     [
       editMode,
       isCurrentUser,
+      isSubmitting,
       logout,
       openChosenUserChat,
       startSubmitting,

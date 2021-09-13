@@ -1,7 +1,6 @@
 import React, { useCallback } from "react";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import { useAsyncFn } from "react-use";
 import { pick, uniq } from "lodash";
 
 import {
@@ -33,15 +32,17 @@ export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
+  isSubmitting: boolean;
   handleSubmitWrapper: (
     handler: OnSubmit<UserProfileModalFormData>
   ) => OnSubmit<UserProfileModalFormData>;
 }
 
 export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
-  venue,
   user,
+  venue,
   onCancelEditing,
+  isSubmitting,
   handleSubmitWrapper,
 }) => {
   const { questions, answers } = useProfileQuestions(user, venue.id);
@@ -104,7 +105,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     [setValue]
   );
 
-  const [submitState, onSubmit] = useAsyncFn(
+  const onSubmit = useCallback(
     async (data: UserProfileModalFormData) => {
       if (!firebaseUser) return;
 
@@ -139,13 +140,10 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       if (changedFields.length > 0) {
         await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
       }
-
-      onCancelEditing();
     },
     [
       formState.dirtyFields,
       firebaseUser,
-      onCancelEditing,
       checkOldPassword,
       setError,
       clearError,
@@ -191,7 +189,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       />
       <EditProfileModalButtons
         onCancelClick={cancelEditing}
-        isSubmitting={submitState.loading}
+        isSubmitting={isSubmitting}
         containerClassName="EditingProfileModalContent__edit-buttons"
       />
     </form>
