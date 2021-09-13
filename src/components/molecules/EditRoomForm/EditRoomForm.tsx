@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
+import { useAsync, useAsyncFn } from "react-use";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
@@ -14,7 +14,7 @@ import {
 } from "settings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
-import { updateVenueNG } from "api/venue";
+import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { RoomData_v2 } from "types/rooms";
 import { VenueTemplate } from "types/venues";
@@ -54,12 +54,20 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venueId });
 
-  console.log("123", relatedVenues);
-
-  const roomVenue = useMemo(
-    () => relatedVenues.find((venue) => room?.url?.endsWith(`/${venue.id}`)),
+  const roomVenueId = useMemo(
+    () =>
+      relatedVenues.find((venue) => room?.url?.endsWith(`/${venue.id}`))?.id,
     [relatedVenues, room?.url]
   );
+
+  const {
+    loading: isLoadingRoomVenue,
+    value: roomVenue,
+  } = useAsync(async () => {
+    if (!roomVenueId) return;
+
+    return await fetchVenue(roomVenueId);
+  }, [roomVenueId]);
 
   const defaultValues = useMemo(
     () => ({
@@ -130,15 +138,15 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   console.log(venueValues);
 
   const updateVenueRoom = useCallback(async () => {
-    if (!user || !roomVenue?.id) return;
+    if (!user || !roomVenueId) return;
     await updateVenueNG(
       {
-        id: roomVenue.id,
+        id: roomVenueId,
         ...venueValues,
       },
       user
     );
-  }, [roomVenue, user, venueValues]);
+  }, [roomVenueId, user, venueValues]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
@@ -235,182 +243,205 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             ref={register()}
           />
 
-          <Form.Label>Room image</Form.Label>
-          <ImageInput
-            onChange={changeRoomImageUrl}
-            name="room.image"
-            setValue={setValue}
-            register={register}
-            small
-            nameWithUnderscore
-            imgUrl={room.image_url}
-          />
-          {errors?.room?.image_url && (
-            <span className="input-error">
-              {errors?.room?.image_url.message}
-            </span>
+          <div>
+            <Form.Label>Room image</Form.Label>
+            <ImageInput
+              onChange={changeRoomImageUrl}
+              name="room.image"
+              setValue={setValue}
+              register={register}
+              small
+              nameWithUnderscore
+              imgUrl={room.image_url}
+            />
+            {errors?.room?.image_url && (
+              <span className="input-error">
+                {errors?.room?.image_url.message}
+              </span>
+            )}
+          </div>
+
+          {isLoadingRoomVenue && (
+            <div className="EditRoomForm__loading-indicator">
+              <Spinner animation="border" role="status" />
+              <span>Loading....</span>
+            </div>
           )}
 
-          {room.template &&
-            BACKGROUND_IMG_TEMPLATES.includes(
-              room.template as VenueTemplate
-            ) && (
-              <>
-                <Form.Label>Room background</Form.Label>
-                <ImageInput
-                  onChange={changeBackgroundImageUrl}
-                  name="venue.mapBackgroundImage"
-                  setValue={setValue}
-                  register={register}
-                  small
-                  nameWithUnderscore
-                  imgUrl={venueValues?.mapBackgroundImage}
-                />
-                {errors?.venue?.mapBackgroundImage && (
-                  <span className="input-error">
-                    {errors?.venue?.mapBackgroundImage.message}
-                  </span>
-                )}
-              </>
-            )}
-
-          {room.template &&
-            IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
-              <>
-                <Form.Label>Livestream URL</Form.Label>
-                <InputField
-                  name="venue.iframeUrl"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Livestream URL"
-                  error={errors?.venue?.iframeUrl}
-                  ref={register()}
-                />
-                {errors?.venue?.iframeUrl && (
-                  <span className="input-error">
-                    {errors?.venue?.iframeUrl}
-                  </span>
-                )}
-              </>
-            )}
-
-          {room.template &&
-            ZOOM_URL_TEMPLATES.includes(room.template as VenueTemplate) && (
-              <div>
-                <Form.Label>URL</Form.Label>
-                <InputField
-                  name="venue.zoomUrl"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="URL"
-                  error={errors?.venue?.zoomUrl}
-                  ref={register()}
-                />
-                {errors?.venue?.zoomUrl && (
-                  <span className="input-error">
-                    {errors?.venue?.zoomUrl.message}
-                  </span>
-                )}
-              </div>
-            )}
-
-          {room.template &&
-            HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
-              <div className="toggle-room">
-                <h4 className="italic input-header">Show grid layout</h4>
-                <Toggler name="venue.showGrid" forwardedRef={register} />
-              </div>
-            )}
-
-          {room.template &&
-            HAS_REACTIONS_TEMPLATES.includes(
-              room.template as VenueTemplate
-            ) && (
-              <div className="toggle-room">
-                <h4 className="italic input-header">Show reactions</h4>
-                <Toggler name="venue.showReactions" forwardedRef={register} />
-              </div>
-            )}
-
-          {room.template &&
-            HAS_REACTIONS_TEMPLATES.includes(
-              room.template as VenueTemplate
-            ) && (
-              <div className="toggle-room">
-                <h4 className="italic input-header">Show shoutouts</h4>
-                <Toggler name="venue.showShoutouts" forwardedRef={register} />
-              </div>
-            )}
-
-          {room.template === VenueTemplate.auditorium && (
+          {!isLoadingRoomVenue && !!roomVenue && (
             <>
-              <div className="input-container">
-                <h4 className="italic input-header">Number of seats columns</h4>
-                <input
-                  defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
-                  min={5}
-                  name="venue.auditoriumColumns"
-                  type="number"
-                  ref={register}
-                  className="align-left"
-                  placeholder="Number of seats columns"
-                />
-                {errors?.venue?.auditoriumColumns ? (
-                  <span className="input-error">
-                    {errors?.venue?.auditoriumColumns.message}
-                  </span>
-                ) : null}
-              </div>
-              <div className="input-container">
-                <h4 className="italic input-header">Number of seats rows</h4>
-                <input
-                  defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
-                  name="venue.auditoriumRows"
-                  type="number"
-                  ref={register}
-                  className="align-left"
-                  placeholder="Number of seats rows"
-                  min={5}
-                />
-                {errors?.venue?.auditoriumRows ? (
-                  <span className="input-error">
-                    {errors?.venue?.auditoriumRows.message}
-                  </span>
-                ) : null}
-              </div>
+              {room.template &&
+                BACKGROUND_IMG_TEMPLATES.includes(
+                  room.template as VenueTemplate
+                ) && (
+                  <>
+                    <Form.Label>Room background</Form.Label>
+                    <ImageInput
+                      onChange={changeBackgroundImageUrl}
+                      name="venue.mapBackgroundImage"
+                      setValue={setValue}
+                      register={register}
+                      small
+                      nameWithUnderscore
+                      imgUrl={venueValues?.mapBackgroundImage}
+                    />
+                    {errors?.venue?.mapBackgroundImage && (
+                      <span className="input-error">
+                        {errors?.venue?.mapBackgroundImage.message}
+                      </span>
+                    )}
+                  </>
+                )}
+
+              {room.template &&
+                IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
+                  <>
+                    <Form.Label>Livestream URL</Form.Label>
+                    <InputField
+                      name="venue.iframeUrl"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="Livestream URL"
+                      error={errors?.venue?.iframeUrl}
+                      ref={register()}
+                    />
+                    {errors?.venue?.iframeUrl && (
+                      <span className="input-error">
+                        {errors?.venue?.iframeUrl}
+                      </span>
+                    )}
+                  </>
+                )}
+
+              {room.template &&
+                ZOOM_URL_TEMPLATES.includes(room.template as VenueTemplate) && (
+                  <div>
+                    <Form.Label>URL</Form.Label>
+                    <InputField
+                      name="venue.zoomUrl"
+                      type="text"
+                      autoComplete="off"
+                      placeholder="URL"
+                      error={errors?.venue?.zoomUrl}
+                      ref={register()}
+                    />
+                    {errors?.venue?.zoomUrl && (
+                      <span className="input-error">
+                        {errors?.venue?.zoomUrl.message}
+                      </span>
+                    )}
+                  </div>
+                )}
+
+              {room.template &&
+                HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
+                  <div className="toggle-room">
+                    <h4 className="italic input-header">Show grid layout</h4>
+                    <Toggler name="venue.showGrid" forwardedRef={register} />
+                  </div>
+                )}
+
+              {room.template &&
+                HAS_REACTIONS_TEMPLATES.includes(
+                  room.template as VenueTemplate
+                ) && (
+                  <div className="toggle-room">
+                    <h4 className="italic input-header">Show reactions</h4>
+                    <Toggler
+                      name="venue.showReactions"
+                      forwardedRef={register}
+                    />
+                  </div>
+                )}
+
+              {room.template &&
+                HAS_REACTIONS_TEMPLATES.includes(
+                  room.template as VenueTemplate
+                ) && (
+                  <div className="toggle-room">
+                    <h4 className="italic input-header">Show shoutouts</h4>
+                    <Toggler
+                      name="venue.showShoutouts"
+                      forwardedRef={register}
+                    />
+                  </div>
+                )}
+
+              {room.template === VenueTemplate.auditorium && (
+                <>
+                  <div className="input-container">
+                    <h4 className="italic input-header">
+                      Number of seats columns
+                    </h4>
+                    <input
+                      defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+                      min={5}
+                      name="venue.auditoriumColumns"
+                      type="number"
+                      ref={register}
+                      className="align-left"
+                      placeholder="Number of seats columns"
+                    />
+                    {errors?.venue?.auditoriumColumns ? (
+                      <span className="input-error">
+                        {errors?.venue?.auditoriumColumns.message}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="input-container">
+                    <h4 className="italic input-header">
+                      Number of seats rows
+                    </h4>
+                    <input
+                      defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+                      name="venue.auditoriumRows"
+                      type="number"
+                      ref={register}
+                      className="align-left"
+                      placeholder="Number of seats rows"
+                      min={5}
+                    />
+                    {errors?.venue?.auditoriumRows ? (
+                      <span className="input-error">
+                        {errors?.venue?.auditoriumRows.message}
+                      </span>
+                    ) : null}
+                  </div>
+                </>
+              )}
+
+              {room.template &&
+                HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
+                venueValues.showGrid && (
+                  <>
+                    <div className="input-container">
+                      <h4 className="italic input-header">Number of columns</h4>
+                      <input
+                        defaultValue={1}
+                        name="venue.columns"
+                        type="number"
+                        ref={register}
+                        className="align-left"
+                        placeholder={`Number of grid columns`}
+                      />
+                      {errors?.venue?.columns ? (
+                        <span className="input-error">
+                          {errors?.venue?.columns.message}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="input-container">
+                      <h4 className="italic input-header">Number of rows</h4>
+                      <div>
+                        Not editable. The number of rows is derived from the
+                        number of specified columns and the width:height ratio
+                        of the party map, to keep the two aligned.
+                      </div>
+                    </div>
+                  </>
+                )}
             </>
           )}
-
-          {room.template &&
-            HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
-            venueValues.showGrid && (
-              <>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of columns</h4>
-                  <input
-                    defaultValue={1}
-                    name="venue.columns"
-                    type="number"
-                    ref={register}
-                    className="align-left"
-                    placeholder={`Number of grid columns`}
-                  />
-                  {errors?.venue?.columns ? (
-                    <span className="input-error">
-                      {errors?.venue?.columns.message}
-                    </span>
-                  ) : null}
-                </div>
-                <div className="input-container">
-                  <h4 className="italic input-header">Number of rows</h4>
-                  <div>
-                    Not editable. The number of rows is derived from the number
-                    of specified columns and the width:height ratio of the party
-                    map, to keep the two aligned.
-                  </div>
-                </div>
-              </>
-            )}
 
           <Button
             disabled={isUpdating || isDeleting}

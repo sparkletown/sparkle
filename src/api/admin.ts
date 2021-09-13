@@ -126,6 +126,7 @@ export interface VenueInput_v2
   template?: VenueTemplate;
   iframeUrl?: string;
   autoPlay?: boolean;
+  parentId?: string;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -134,6 +135,7 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
+    parentId?: string;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
@@ -287,6 +289,7 @@ const createFirestoreVenueInput_v2 = async (
     ),
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
+    parentId: input.parentId ?? "",
   };
 
   return firestoreVenueInput;

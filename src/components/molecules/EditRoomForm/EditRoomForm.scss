@@ -10,7 +10,17 @@ $footer-height: 75px;
   margin-bottom: $footer-height;
 
   &__room {
+    display: flex;
+    flex-direction: column;
     padding: $spacing--xl;
+  }
+
+  &__loading-indicator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
   }
 
   &__footer {

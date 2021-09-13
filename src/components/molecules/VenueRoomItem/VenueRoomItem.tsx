@@ -78,7 +78,10 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     // TS doesn't work properly with const statements and won't 'know' that this is already checked.
     // That's why this is inline instead of isVenuePortal
     if (template !== RoomTemplate.external) {
-      const venueData = buildEmptyVenue(roomValues.venueName, template);
+      const venueData = {
+        ...buildEmptyVenue(roomValues.venueName, template),
+        parentId: venueId,
+      };
 
       await createVenue_v2(venueData, user);
     }
