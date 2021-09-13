@@ -35,7 +35,6 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
                   <EmergencyViewRoom
                     key={room.title}
                     room={room}
-                    venueName={venue.name}
                     isLive={isRoomLive}
                   />
                 );

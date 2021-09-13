@@ -15,7 +15,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { playaAddress } from "utils/address";
 import { getRandomInt } from "utils/getRandomInt";
 import { WithId } from "utils/id";
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
 import { openUrl, venueInsideUrl } from "utils/url";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
@@ -76,8 +76,8 @@ const OnlineStats: React.FC = () => {
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
 
-  const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+  const venue = useSelector(currentVenueSelector);
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue?.id });
 
   const venueName = venue?.name;
   const { openUserProfileModal } = useProfileModalControls();
