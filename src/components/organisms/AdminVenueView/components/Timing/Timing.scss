@@ -5,7 +5,6 @@ $left-section-width: 360px;
 .Timing {
   height: 100%;
   display: grid;
-  align-items: start;
   grid-template-columns: $left-section-width 1fr;
 
   &__btn {
