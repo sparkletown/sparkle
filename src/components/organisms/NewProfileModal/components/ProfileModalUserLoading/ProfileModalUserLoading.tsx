@@ -6,7 +6,6 @@ import { FalseyValue } from "styled-components";
 import { User } from "types/User";
 
 import { WithId, withId } from "utils/id";
-import { wait } from "utils/promise";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -31,7 +30,6 @@ export const ProfileModalUserLoading: React.FC<ProfileModalUserLoadingProps> = (
       if (!userId) return;
       const firestore = firebase.firestore();
       const userDoc = await firestore.collection("users").doc(userId).get();
-      await wait(1000);
 
       const user = userDoc.data() as User;
       return withId(user, userId);
