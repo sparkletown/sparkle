@@ -1,11 +1,7 @@
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
-
 import { useUser } from "./useUser";
 
-export const useIsCurrentUser = (otherUser?: WithId<User>) => {
+export const useIsCurrentUser = (otherUserId?: string) => {
   const { userWithId: user } = useUser();
 
-  return otherUser?.id === user?.id;
+  return otherUserId === user?.id;
 };

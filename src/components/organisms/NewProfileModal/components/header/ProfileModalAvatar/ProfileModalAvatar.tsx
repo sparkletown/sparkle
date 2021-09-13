@@ -38,7 +38,7 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   setPictureUrl,
   containerClassName,
 }: ProfileModalAvatarProps) => {
-  const isCurrentUser = useIsCurrentUser(user);
+  const isCurrentUser = useIsCurrentUser(user.id);
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");

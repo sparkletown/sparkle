@@ -24,7 +24,7 @@ export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
   user,
 }) => {
   const { isOnline } = useIsOnline(user.id);
-  const isCurrentUser = useIsCurrentUser(user);
+  const isCurrentUser = useIsCurrentUser(user.id);
 
   return (
     <>

@@ -30,7 +30,7 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const { lastSeenIn } = useIsOnline(user.id);
-  const isCurrentUser = useIsCurrentUser(user);
+  const isCurrentUser = useIsCurrentUser(user.id);
   const { user: firebaseUser } = useUser();
 
   const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
