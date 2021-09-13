@@ -4,54 +4,55 @@ const functions = require("firebase-functions");
 const { checkAuth } = require("./src/utils/assert");
 
 const checkIsAdmin = async (uid) => {
-  await admin
-    .firestore()
-    .collection("roles")
-    .doc("admin")
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `'admin' doc doesn't exist.`);
-      }
-      const admins = doc.data();
+  try {
+    const adminDoc = await admin
+      .firestore()
+      .collection("roles")
+      .doc("admin")
+      .get();
 
-      if (admins.users && admins.users.includes(uid)) return;
+    if (!adminDoc.exists) {
+      throw new HttpsError("not-found", `'admin' doc doesn't exist.`);
+    }
+    const admins = adminDoc.data();
 
-      throw new HttpsError("permission-denied", `User is not an admin`);
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining world ${worldId}: ${err.toString()}`
-      );
-    });
+    if (admins.users && admins.users.includes(uid)) return;
+
+    throw new HttpsError("permission-denied", `User is not an admin`);
+  } catch (error) {
+    throw new HttpsError(
+      "internal",
+      `Error occurred obtaining world ${worldId}: ${err.toString()}`
+    );
+  }
 };
 
 const checkIsWorldOwner = async (worldId, uid) => {
-  await admin
-    .firestore()
-    .collection("worlds")
-    .doc(worldId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `World ${worldId} does not exist`);
-      }
-      const world = doc.data();
+  try {
+    const worldDoc = await admin
+      .firestore()
+      .collection("worlds")
+      .doc(worldId)
+      .get();
 
-      if (world.owners && world.owners.includes(uid)) return;
+    if (!worldDoc || !worldDoc.exists) {
+      throw new HttpsError("not-found", `World ${worldId} does not exist`);
+    }
 
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${worldId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining world ${worldId}: ${err.toString()}`
-      );
-    });
+    const world = worldDoc.data();
+
+    if (world.owners && world.owners.includes(uid)) return;
+
+    throw new HttpsError(
+      "permission-denied",
+      `User is not an owner of ${worldId}`
+    );
+  } catch (error) {
+    throw new HttpsError(
+      "internal",
+      `Error occurred obtaining world ${worldId}: ${error.toString()}`
+    );
+  }
 };
 
 exports.createWorld = functions.https.onCall(async (data, context) => {

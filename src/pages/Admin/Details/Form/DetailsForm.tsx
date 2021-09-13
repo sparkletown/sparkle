@@ -9,7 +9,7 @@ import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
-import { venueLandingUrl } from "utils/url";
+import { adminNGRootUrl, adminNGVenueUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
@@ -42,10 +42,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       try {
         if (venueId) {
           await updateVenue_v2(world, user);
-          history.push("/admin-ng");
+          history.push(adminNGRootUrl());
         } else {
           await createWorld(world, user);
-          history.push(`/admin-ng/venue/${world.id}`);
+          history.push(adminNGVenueUrl(world.id));
         }
       } catch (e) {
         console.error(e);
