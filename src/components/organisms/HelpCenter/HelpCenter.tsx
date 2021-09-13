@@ -19,30 +19,27 @@ export const HelpCenter: React.FC = () => {
     hide: stopLoading,
   } = useShowHide(false);
 
-  const {
-    isShown: isFrameShown,
-    show: showFrame,
-    hide: hideFrame,
-  } = useShowHide(false);
-
   const handleHelpClicked = useCallback(
     (url: string) => {
       startLoading();
       setUrl(url);
-      showFrame();
     },
-    [startLoading, showFrame]
+    [startLoading]
   );
+
+  const handleBackClicked = () => {
+    setUrl("");
+  };
 
   return (
     <>
-      {isFrameShown && url ? (
+      {url ? (
         <>
           {isLoading && <LoadingPage />}
           <div className="HelpCenter__iframeContainer">
             <ButtonNG
               className="HelpCenter__backButton"
-              onClick={hideFrame}
+              onClick={handleBackClicked}
               variant="primary"
             >
               Back
