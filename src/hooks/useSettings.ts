@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { DEFAULT_SHOW_CHAT } from "settings";
+import { DEFAULT_SHOW_CHAT, DEFAULT_SHOW_REACTIONS } from "settings";
 
 import { Settings } from "types/settings";
 
@@ -25,6 +25,7 @@ export const useSettings: () => UseSetingsReturnType = () => {
       isLoaded: isLoaded(settings),
       settings: {
         showChat: settings?.showChat ?? DEFAULT_SHOW_CHAT,
+        showReactions: settings?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       },
     }),
     [settings]
