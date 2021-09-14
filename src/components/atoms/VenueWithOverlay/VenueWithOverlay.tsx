@@ -9,14 +9,14 @@ import { WithId } from "utils/id";
 
 import { useValidImage } from "hooks/useCheckImage";
 
-type ContainerWithBackgroundProps = {
+type VenueWithOverlayProps = {
   containerName: string;
   className?: string;
   venue: WithId<AnyVenue> | EmbeddableVenue;
   style?: React.CSSProperties;
 };
 
-export const ContainerWithBackground: React.FC<ContainerWithBackgroundProps> = ({
+export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
   children,
   containerName,
   venue,

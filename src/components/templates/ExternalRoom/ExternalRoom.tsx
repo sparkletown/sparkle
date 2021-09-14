@@ -5,8 +5,8 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./ExternalRoom.scss";
 
@@ -24,7 +24,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   }, [redirectUrl]);
 
   return redirectUrl ? (
-    <ContainerWithBackground venue={venue} containerName="ExternalRoom">
+    <VenueWithOverlay venue={venue} containerName="ExternalRoom">
       <div className="ExternalRoom__message">
         <SparkleLogo />
         <div className="ExternalRoom__content">
@@ -53,7 +53,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
           </h4>
         </div>
       </div>
-    </ContainerWithBackground>
+    </VenueWithOverlay>
   ) : (
     <div className="ExternalRoom__message">
       <p>Venue {venue.name} should redirect to a URL, but none was set.</p>

@@ -36,7 +36,7 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import Room from "../components/JazzBarRoom";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
@@ -151,7 +151,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   return (
     <>
-      <ContainerWithBackground
+      <VenueWithOverlay
         venue={venue}
         containerName="music-bar"
         className={containerClasses}
@@ -273,7 +273,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             showOnlyAvailableTables={showOnlyAvailableTables}
           />
         </div>
-      </ContainerWithBackground>
+      </VenueWithOverlay>
     </>
   );
 };

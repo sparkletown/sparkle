@@ -17,7 +17,7 @@ import Room from "components/organisms/Room";
 import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
 
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./ArtPiece.scss";
 
@@ -60,7 +60,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
 
   return (
     <>
-      <ContainerWithBackground venue={venue} containerName="ArtPiece">
+      <VenueWithOverlay venue={venue} containerName="ArtPiece">
         <InformationLeftColumn iconNameOrPath={host?.icon}>
           <InformationCard title="About the venue">
             <p className="ArtPiece__title-sidebar">{name}</p>
@@ -93,7 +93,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
             />
           </div>
         </div>
-      </ContainerWithBackground>
+      </VenueWithOverlay>
     </>
   );
 };

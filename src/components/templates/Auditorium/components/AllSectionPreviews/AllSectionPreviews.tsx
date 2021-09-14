@@ -16,8 +16,8 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 import { IFrame } from "components/atoms/IFrame";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
 
@@ -106,7 +106,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           locationName={parentVenue.name}
         />
       )}
-      <ContainerWithBackground
+      <VenueWithOverlay
         venue={venue}
         containerName="AllSectionPreviews"
         className={containerClasses}
@@ -136,7 +136,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         </div>
 
         {sectionPreviews}
-      </ContainerWithBackground>
+      </VenueWithOverlay>
     </>
   );
 };

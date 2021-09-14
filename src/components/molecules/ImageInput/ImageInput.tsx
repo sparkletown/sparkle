@@ -70,18 +70,13 @@ export const ImageInput: React.FC<ImageInputProps> = ({
     [handleFileInputChange, name, remoteUrlInputName, setValue]
   );
 
-  const onButtonClick = () => {
-    inputFileRef?.current?.click();
-  };
+  const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
-  const containerClasses = classNames(
-    "image-input default-container",
-    {
-      containerClassName,
-      "mod--hidden": isInputHidden,
-    },
-    { disabled: loading }
-  );
+  const containerClasses = classNames("image-input default-container", {
+    containerClassName,
+    "mod--hidden": isInputHidden,
+    disabled: loading,
+  });
 
   return (
     <>

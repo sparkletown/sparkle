@@ -24,7 +24,7 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { TABLES } from "./constants";
 
@@ -76,7 +76,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <ContainerWithBackground venue={venue} containerName="conversation-space">
+      <VenueWithOverlay venue={venue} containerName="conversation-space">
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}
@@ -139,7 +139,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             showMoreUsersToggler
           />
         </div>
-      </ContainerWithBackground>
+      </VenueWithOverlay>
     </>
   );
 };

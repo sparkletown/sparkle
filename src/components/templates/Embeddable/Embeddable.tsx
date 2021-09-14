@@ -6,7 +6,7 @@ import { EmbeddableVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Embeddable.scss";
 
@@ -26,7 +26,7 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
   if (!iframeUrl) return <p>Error: iframeUrl is missing</p>;
 
   return (
-    <ContainerWithBackground
+    <VenueWithOverlay
       venue={venue}
       containerName="embeddable"
       style={containerStyles}
@@ -40,6 +40,6 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
         allowFullScreen
         {...iframeOptions}
       />
-    </ContainerWithBackground>
+    </VenueWithOverlay>
   );
 };

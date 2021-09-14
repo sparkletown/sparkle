@@ -36,7 +36,7 @@ import { usePartygoersbySeat } from "components/templates/PartyMap/components/Ma
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
-import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Audience.scss";
 
@@ -362,10 +362,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return (
       <>
-        <ContainerWithBackground
-          containerName="audience-container"
-          venue={venue}
-        >
+        <VenueWithOverlay containerName="audience-container" venue={venue}>
           <div className="audience">
             <div className="audience-overlay">
               <div
@@ -442,7 +439,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               }
             )}
           </div>
-        </ContainerWithBackground>
+        </VenueWithOverlay>
       </>
     );
   }, [

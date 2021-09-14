@@ -62,9 +62,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
     [handleFileInputChange, onChange, setValue, fileName]
   );
 
-  const onButtonClick = () => {
-    inputFileRef?.current?.click();
-  };
+  const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
   return (
     <>
