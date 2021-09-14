@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import { isPartyMapVenue } from "types/venues";
 
-import { adminCreateSpaceUrl } from "utils/url";
+import { ADMIN_CREATE_SPACE_URL } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -68,7 +68,7 @@ export const AdminDashboard: React.FC = () => {
             <div className="AdminDashboard__header-title">Admin Dashboard</div>
             {sortingOptions}
           </div>
-          <ButtonNG variant="primary" isLink linkTo={adminCreateSpaceUrl}>
+          <ButtonNG variant="primary" isLink linkTo={ADMIN_CREATE_SPACE_URL}>
             Create a new space
           </ButtonNG>
         </div>

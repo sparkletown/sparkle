@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
-import { adminCreateSpaceUrl } from "utils/url";
+import { ADMIN_CREATE_SPACE_URL } from "utils/url";
 
 import { Admin } from "pages/Admin/Admin";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
@@ -63,7 +63,7 @@ export const AdminSubrouter: React.FC = () => {
         </Provided>
       </Route>
 
-      <Route path={adminCreateSpaceUrl}>
+      <Route path={ADMIN_CREATE_SPACE_URL}>
         <Provided withWorldUsers>
           <VenueWizardV2 />
         </Provided>
