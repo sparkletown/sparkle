@@ -31,9 +31,9 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   } = useProfileModalControls();
 
   const {
-    isShown: canShowModal,
-    hide: instantHide,
-    show: setCanShowModal,
+    isShown: isModalShown,
+    hide: hideModal,
+    show: showModal,
   } = useShowHide(true);
 
   const {
@@ -45,7 +45,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   const hideHandler = useCallback(async () => {
     if (isSubmitting) return;
 
-    instantHide();
+    hideModal();
     // when closeUserProfileModal is called modal hide animation starts
     // but selectedUserId is immediately undefined and while the modal is sliding away
     // an error message from ProfileModalFetchUser is shown
@@ -53,9 +53,9 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     // This is to fix that.
     setTimeout(() => {
       closeUserProfileModal();
-      setCanShowModal();
+      showModal();
     }, REACT_BOOTSTRAP_MODAL_HIDE_DURATION);
-  }, [closeUserProfileModal, instantHide, isSubmitting, setCanShowModal]);
+  }, [closeUserProfileModal, hideModal, isSubmitting, showModal]);
 
   const handleSubmitWrapper: (
     inner: OnSubmit<UserProfileModalFormData>
@@ -87,7 +87,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   return (
     <Modal
       className="ProfileModal"
-      show={hasSelectedProfile && canShowModal}
+      show={hasSelectedProfile && isModalShown}
       onHide={hideHandler}
     >
       <Modal.Body className="ProfileModal__body">

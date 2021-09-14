@@ -17,8 +17,6 @@ import { useShowHide } from "hooks/useShowHide";
 import { EditingProfileModalContent } from "../EditingProfileModalContent";
 import { ProfileModalContent } from "../ProfileModalContent";
 
-import "./NewProfileModalBody.scss";
-
 export interface NewProfileModalBodyProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
