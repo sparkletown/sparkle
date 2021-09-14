@@ -15,6 +15,7 @@ import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
 
+import { ImageOverlay } from "components/atoms/ImageOverlay";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "firebase/storage";
@@ -37,7 +38,7 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   setPictureUrl,
   containerClassName,
 }: ProfileModalAvatarProps) => {
-  const isCurrentUser = useIsCurrentUser(user);
+  const isCurrentUser = useIsCurrentUser(user.id);
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -81,15 +82,12 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
           showStatus={!isCurrentUser}
         />
         {editMode && (
-          <div
-            className={classNames("ProfileModalAvatar__upload-new", {
-              "ProfileModalAvatar__upload-new--uploading":
-                uploadingState.loading,
-            })}
+          <ImageOverlay
+            disabled={uploadingState.loading}
             onClick={uploadProfilePic}
           >
             {uploadingState.loading ? "Uploading..." : "Upload new"}
-          </div>
+          </ImageOverlay>
         )}
       </div>
       <input

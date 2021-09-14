@@ -38,7 +38,6 @@ export const useAuditoriumSection = ({
 }: UseAuditoriumSectionProps) => {
   const {
     id: venueId,
-    name: venueName,
     auditoriumColumns: venueColumnsCount,
     auditoriumRows: venueRowsCount,
   } = venue;
@@ -48,7 +47,7 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;

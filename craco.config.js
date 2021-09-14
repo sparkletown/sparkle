@@ -14,5 +14,15 @@ module.exports = {
       lodash: path.resolve(__dirname, "node_modules/lodash"),
       "lodash-es": path.resolve(__dirname, "node_modules/lodash"),
     },
+    configure: webpackConfig => {
+      webpackConfig.module.rules
+        .find(i => i.oneOf !== undefined)
+        .oneOf
+        .unshift({
+          test: /\.(glsl)$/,
+          loader: "ts-shader-loader"
+        });
+      return webpackConfig;
+    },
   },
 };

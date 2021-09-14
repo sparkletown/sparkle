@@ -78,10 +78,11 @@ export type VenueInput = AdvancedVenueInput &
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
-    subtitle: string;
-    description: string;
+    subtitle?: string;
+    description?: string;
     zoomUrl?: string;
     iframeUrl?: string;
+    autoPlay?: boolean;
     template: VenueTemplate;
     rooms?: Array<Room>;
     placement?: Omit<VenuePlacement, "state">;
@@ -94,13 +95,13 @@ export type VenueInput = AdvancedVenueInput &
     bannerMessage?: string;
     parentId?: string;
     owners?: string[];
-    showRangers?: boolean;
     chatTitle?: string;
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
     showReactions?: boolean;
+    enableJukebox?: boolean;
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
@@ -123,6 +124,9 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  autoPlay?: boolean;
+  start_utc_seconds?: number;
+  end_utc_seconds?: number;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

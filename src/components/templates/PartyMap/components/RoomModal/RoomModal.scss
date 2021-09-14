@@ -65,7 +65,6 @@ $spacing: 20px;
   }
 
   &__description {
-    @include scrollbar;
     margin-top: $spacing;
     margin-bottom: $spacing;
     padding: 10px $spacing;

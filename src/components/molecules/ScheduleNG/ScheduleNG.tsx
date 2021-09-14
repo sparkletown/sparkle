@@ -1,6 +1,6 @@
 import React from "react";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { Loading } from "components/molecules/Loading";
 import { ScheduleEventListNG } from "components/molecules/ScheduleEventListNG";
@@ -8,7 +8,7 @@ import { ScheduleEventListNG } from "components/molecules/ScheduleEventListNG";
 import "./ScheduleNG.scss";
 
 export interface ScheduleNGProps {
-  daysEvents: PersonalizedVenueEvent[];
+  daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
   isLoading: boolean;
   showPersonalisedSchedule: boolean;

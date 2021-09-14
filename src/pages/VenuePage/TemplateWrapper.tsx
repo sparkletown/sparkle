@@ -1,14 +1,18 @@
 import React, { Suspense } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 
+import { VENUES_WITH_CHAT_REQUIRED } from "settings";
+
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { ReactionsProvider } from "hooks/reactions";
+import { useSettings } from "hooks/useSettings";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
+import { AnimateMap } from "components/templates/AnimateMap";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
@@ -24,7 +28,6 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { NewProfileModal } from "components/organisms/NewProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
@@ -36,6 +39,11 @@ export interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
+  const { isLoaded: settingsAreLoaded, settings } = useSettings();
+
+  const shouldShowChat =
+    settingsAreLoaded &&
+    (settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template));
 
   let template;
   // @debt remove backButton from Navbar
@@ -59,6 +67,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       template = <PartyMap venue={venue} />;
+      break;
+
+    case VenueTemplate.animatemap:
+      template = <AnimateMap venue={venue} />;
       break;
 
     case VenueTemplate.artpiece:
@@ -136,8 +148,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 
-        <ChatSidebar venue={venue} />
-        <NewProfileModal venue={venue} />
+        {shouldShowChat && <ChatSidebar venue={venue} />}
       </WithNavigationBar>
     </ReactionsProvider>
   );

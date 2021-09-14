@@ -22,8 +22,13 @@ import {
 export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
   roomEvents.find(isEventLive);
 
-export const isEventLive = (event: VenueEvent) =>
-  isWithinInterval(Date.now(), getEventInterval(event));
+export const isEventLive = (event: VenueEvent) => {
+  if (!event?.start_utc_seconds) {
+    return false;
+  }
+
+  return isWithinInterval(Date.now(), getEventInterval(event));
+};
 
 export const isEventFuture = (event: VenueEvent) =>
   isFuture(fromUnixTime(event.start_utc_seconds));

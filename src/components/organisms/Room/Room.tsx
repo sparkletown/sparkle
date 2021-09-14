@@ -18,8 +18,8 @@ import { stopLocalTrack } from "utils/twilio";
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "./LocalParticipant";
-import Participant from "./Participant";
+import { LocalParticipant } from "./LocalParticipant";
+import { Participant } from "./Participant";
 import VideoErrorModal from "./VideoErrorModal";
 
 import "./Room.scss";
