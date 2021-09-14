@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
@@ -21,7 +15,6 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 import { radioStationsSelector } from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
-import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -97,21 +90,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
-  const {
-    hasSelectedProfile,
-    openUserProfileModal,
-    updateUserProfileData,
-    selectedUserProfile,
-  } = useProfileModalControls();
-
-  const isSameUser = useIsCurrentUser(selectedUserProfile?.id);
-
-  useEffect(() => {
-    if (hasSelectedProfile && isSameUser) updateUserProfileData(userWithId);
-  }, [hasSelectedProfile, isSameUser, updateUserProfileData, userWithId]);
+  const { openUserProfileModal } = useProfileModalControls();
 
   const handleAvatarClick = useCallback(() => {
-    openUserProfileModal(userWithId);
+    openUserProfileModal(userWithId?.id);
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
