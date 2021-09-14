@@ -12,6 +12,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
+import { TimingSpaceEvent } from "components/organisms/TimingSpaceEvent";
 
 import { Checkbox } from "components/atoms/Checkbox";
 
@@ -66,6 +67,25 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     [events, setShowCreateEventModal, setEditedEvent]
   );
 
+  const renderedSpaces = useMemo(() => {
+    const spaces = [...new Set(events?.map((event) => event.room))];
+    const setSpaceEvent = (space: string) =>
+      events?.filter((event) => event.room === space) ?? [];
+
+    return spaces?.map(
+      (space) =>
+        space && (
+          <TimingSpaceEvent
+            key={space}
+            spaceName={space}
+            spaceEvents={setSpaceEvent(space)}
+            setShowCreateEventModal={setShowCreateEventModal}
+            setEditedEvent={setEditedEvent}
+          />
+        )
+    );
+  }, [events, setShowCreateEventModal, setEditedEvent]);
+
   return (
     <>
       <div className="EventsView">
@@ -79,7 +99,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           />
         </div>
         <div className="EventsView__content">
-          {renderedEvents}
+          {showSplittedEvents ? renderedSpaces : renderedEvents}
           {!hasVenueEvents && (
             <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
