@@ -1,5 +1,6 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
+const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
 
@@ -65,8 +66,8 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     config: {
       landingPageConfig: {
         coverImageUrl: data.bannerImageUrl,
-        subtitle: data.subtitle,
-        description: data.description,
+        subtitle: data.subtitle ?? "",
+        description: data.description ?? "",
       },
     },
     host: {
@@ -84,6 +85,15 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
+
+  const worldId = data.id;
+
+  if (!worldId) {
+    throw new HttpsError(
+      "not-found",
+      `worldId is missing and the update can not be executed.`
+    );
+  }
 
   await checkIsWorldOwner(worldId, context.auth.token.user_id);
   await checkIsAdmin(context.auth.token.user_id);

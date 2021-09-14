@@ -129,8 +129,7 @@ export interface VenueInput_v2
   end_utc_seconds?: number;
 }
 
-export interface WorldProps {
-  id: string;
+export interface WorldFormInput {
   name: string;
   description?: string;
   subtitle?: string;
@@ -138,9 +137,25 @@ export interface WorldProps {
   bannerImageUrl?: string;
   logoImageFile?: FileList;
   logoImageUrl?: string;
-  rooms?: Room[];
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
+}
+
+export interface World {
+  name: string;
+  config: {
+    landingPageConfig: {
+      coverImageUrl: string;
+      subtitle?: string;
+      description?: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -334,7 +349,7 @@ export const createVenue_v2 = async (
 };
 
 export const createWorld = async (
-  world: WorldProps,
+  world: WorldFormInput,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
@@ -349,7 +364,7 @@ export const createWorld = async (
 };
 
 export const updateWorld = async (
-  world: WorldProps,
+  world: WithId<WorldFormInput>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
