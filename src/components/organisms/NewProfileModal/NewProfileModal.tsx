@@ -10,6 +10,8 @@ import { WithId } from "utils/id";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 
+import { ProfileModalUserLoadingProps } from "components/organisms/NewProfileModal/components/ProfileModalFetchUser/ProfileModalFetchUser";
+
 import { ProfileModalFetchUser } from "./components/ProfileModalFetchUser";
 import { NewProfileModalBody } from "./NewProfileModalBody";
 
@@ -50,6 +52,19 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     }, REACT_BOOTSTRAP_MODAL_HIDE_DURATION);
   }, [closeUserProfileModal, instantHide, isSubmitted, setCanShowModal]);
 
+  const renderBody: ProfileModalUserLoadingProps["children"] = useCallback(
+    (user, refreshUser) => (
+      <NewProfileModalBody
+        user={user}
+        venue={venue}
+        refreshUser={refreshUser}
+        submitState={submitState}
+        closeUserProfileModal={closeUserProfileModal}
+      />
+    ),
+    [closeUserProfileModal, submitState, venue]
+  );
+
   return (
     <Modal
       className="ProfileModal"
@@ -58,15 +73,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     >
       <Modal.Body className="ProfileModal__body">
         <ProfileModalFetchUser userId={selectedUserId}>
-          {(user, refreshUser) => (
-            <NewProfileModalBody
-              user={user}
-              venue={venue}
-              refreshUser={refreshUser}
-              submitState={submitState}
-              closeUserProfileModal={closeUserProfileModal}
-            />
-          )}
+          {renderBody}
         </ProfileModalFetchUser>
       </Modal.Body>
     </Modal>
