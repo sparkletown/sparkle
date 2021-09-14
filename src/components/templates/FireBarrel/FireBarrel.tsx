@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useVideoRoomState } from "hooks/twilio";
@@ -8,7 +8,7 @@ import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -21,7 +21,7 @@ const DEFAULT_BURN_BARREL_SEATS = 8;
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName: venue?.name,
+    venueId: venue?.id,
   });
 
   const seatCount =

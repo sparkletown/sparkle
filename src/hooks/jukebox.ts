@@ -77,7 +77,6 @@ const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
     () => partitionMessagesFromReplies(jukeboxMessages),
     [jukeboxMessages]
   );
-
   return useMemo(
     () =>
       messages
