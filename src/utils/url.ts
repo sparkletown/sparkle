@@ -26,6 +26,7 @@ const createAdminUrlHelperFor = (segment: string) => (
 export const adminNGRootUrl = createAdminUrlHelperFor("");
 export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
 export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const ADMIN_CREATE_SPACE_URL = "/admin-ng/create/venue";
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
