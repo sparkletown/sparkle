@@ -21,7 +21,7 @@ import { addReaction } from "store/actions/Reactions";
 
 import { GenericVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
@@ -138,7 +138,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const venueId = venue.id;
 
   const { userId, userWithId } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const baseColumns =
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;

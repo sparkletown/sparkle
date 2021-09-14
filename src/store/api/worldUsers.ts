@@ -9,6 +9,7 @@ import { WORLD_USERS_UPDATE_INTERVAL } from "settings";
 import { User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId, withId } from "utils/id";
+import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 export interface WorldUsersApiArgs {
   relatedLocationIds: string[];
@@ -145,32 +146,6 @@ export const {
   useQuerySubscription: useWorldUsersQuerySubscription,
 } = worldUsersApi.endpoints.worldUsers;
 
-// @debt Not sure if the validations are too 'heavyweight' for this, but object destructuring seemed to work
-//  here, whereas the validations seemed to hang my browser tab. There might also be something wrong with the
-//  validation rules leading to infinite recursion or similar?
-// @debt refactor userWithLocationToUser to optionally not require WithId, then use that in profileSelector
-const userWithLocationToUser = (
-  user: WithId<UserWithLocation>
-): WithId<User> => {
-  const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
-
-  return userWithoutLocation;
-};
-
-const extractLocationFromUserWithLocation = (
-  user: WithId<UserWithLocation>
-): WithId<UserLocation> => {
-  const { lastSeenIn, lastSeenAt, enteredVenueIds } = user;
-
-  const userLocation: UserLocation = {
-    lastSeenIn,
-    lastSeenAt,
-    enteredVenueIds,
-  };
-
-  return withId(userLocation, user.id);
-};
-
 const notifyOnDocProcessingError = (
   modificationType: firebase.firestore.DocumentChangeType,
   userId: string,
@@ -199,12 +174,14 @@ const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
   const userId: string = change.doc.id;
   const userWithLocation: WithId<UserWithLocation> = withId(user, userId);
 
-  const userWithoutLocation: WithId<User> = userWithLocationToUser(
-    userWithLocation
+  const userWithoutLocation: WithId<User> = withId(
+    omitLocationFromUser(userWithLocation),
+    userId
   );
 
-  const userLocation: WithId<UserLocation> = extractLocationFromUserWithLocation(
-    userWithLocation
+  const userLocation: WithId<UserLocation> = withId(
+    extractLocationFromUser(userWithLocation),
+    userId
   );
 
   const existingUserIndex = draft.worldUsers.findIndex(

@@ -7,7 +7,7 @@ import { DEFAULT_VENUE_BANNER, IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useValidImage } from "hooks/useCheckImage";

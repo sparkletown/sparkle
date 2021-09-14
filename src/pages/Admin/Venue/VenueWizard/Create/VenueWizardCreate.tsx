@@ -40,11 +40,9 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   }
 
   return (
-    <WithNavigationBar>
-      <AdminRestricted>
-        <Details previous={previous} dispatch={dispatch} data={state} />
-      </AdminRestricted>
-    </WithNavigationBar>
+    <AdminRestricted>
+      <Details previous={previous} dispatch={dispatch} data={state} />
+    </AdminRestricted>
   );
 };
 
