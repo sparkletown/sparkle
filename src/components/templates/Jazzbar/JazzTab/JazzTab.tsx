@@ -43,6 +43,8 @@ import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
 
+const emptyUsersList: WithId<User>[] = [];
+
 interface JazzProps {
   setUserList: (value: User[]) => void;
   venue: WithId<JazzbarVenue>;
@@ -167,7 +169,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
       {!seatedAtTable && (
         <UserList
-          users={venue.recentUsersSample}
+          users={venue.recentUsersSample ?? emptyUsersList}
           activity={venue.activity ?? "here"}
           limit={DEFAULT_USER_LIST_LIMIT}
           showMoreUsersToggler
