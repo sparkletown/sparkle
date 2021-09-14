@@ -2,7 +2,6 @@ import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
 import { VenueInput_v2 } from "api/admin";
 
-import { User } from "types/User";
 import {
   AnyVenue,
   JazzbarVenue,
@@ -50,42 +49,6 @@ export const buildEmptyVenue = (
     logoImageFile: fileList,
     rooms: [],
   };
-};
-
-/**
- * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
- * @deprecated legacy tech debt related to Playa, soon to be removed
- */
-export const peopleByLastSeenIn = (
-  venueName: string,
-  users?: readonly WithId<User>[]
-) => {
-  const result: { [lastSeenIn: string]: WithId<User>[] } = {};
-  // @debt This isn't correct, but this is only used by Playa/etc, which are legacy code soon to be removed, so we don't mind
-  // for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-  //   if (user.lastSeenIn) {
-  //     if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
-  //     if (user.lastSeenIn && user.lastSeenIn[venueName]) {
-  //       result[venueName].push(user);
-  //     }
-  //   }
-  // }
-  return result;
-};
-
-/**
- * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
- * @deprecated legacy tech debt related to Playa, soon to be removed
- */
-export const peopleAttending = (
-  peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
-  venue: AnyVenue
-) => {
-  const rooms = venue.rooms?.map((room) => room.title) ?? [];
-
-  const locations = [venue.name, ...rooms];
-
-  return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
 };
 
 export const createJazzbar = (values: FormValues): JazzbarVenue => {
