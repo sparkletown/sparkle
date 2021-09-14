@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -45,7 +45,7 @@ export const Questions: React.FC = () => {
   // @debt this should probably be retrieving the sovereign venue
   // @debt replace this with useConnectCurrentVenueNG or similar?
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
