@@ -14,6 +14,8 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
+import { WithNavigationBar } from "../WithNavigationBar";
+
 import { RunTabView } from "./components/RunTabView/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
@@ -105,27 +107,29 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <AdminRestricted>
-      <div className="AdminVenueView">
-        <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
-      </div>
-      {selectedTab === AdminVenueTab.spaces && (
-        <Spaces
-          onClickHome={navigateToHome}
-          onClickBack={navigateToHome}
-          onClickNext={navigateToTiming}
-          venue={venue}
-        />
-      )}
-      {selectedTab === AdminVenueTab.timing && (
-        <Timing
-          onClickHome={navigateToHome}
-          onClickBack={navigateToSpaces}
-          onClickNext={navigateToRun}
-          venue={venue}
-        />
-      )}
-      {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
-    </AdminRestricted>
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+      <AdminRestricted>
+        <div className="AdminVenueView">
+          <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
+        </div>
+        {selectedTab === AdminVenueTab.spaces && (
+          <Spaces
+            onClickHome={navigateToHome}
+            onClickBack={navigateToHome}
+            onClickNext={navigateToTiming}
+            venue={venue}
+          />
+        )}
+        {selectedTab === AdminVenueTab.timing && (
+          <Timing
+            onClickHome={navigateToHome}
+            onClickBack={navigateToSpaces}
+            onClickNext={navigateToRun}
+            venue={venue}
+          />
+        )}
+        {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
+      </AdminRestricted>
+    </WithNavigationBar>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 // Hooks
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -15,10 +15,14 @@ import { useUser } from "hooks/useUser";
 import EntranceInput from "pages/Admin/Venue/EntranceInput";
 import QuestionInput from "pages/Admin/Venue/QuestionInput";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 // Styles
 import * as S from "../Admin.styles";
 
 import { EntranceExperienceProps } from "./EntranceExperience.types";
+
+import "./EntranceExperience.scss";
 
 type ProfileQuestion = VenueInput_v2["profile_questions"];
 type CodeOfConductQuestion = VenueInput_v2["code_of_conduct_questions"];
@@ -138,7 +142,9 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
           </S.ItemBody>
         </S.ItemWrapper>
 
-        <Button type="submit">Save</Button>
+        <ButtonNG className="EntranceExperience__save-button" type="submit">
+          Save
+        </ButtonNG>
       </Form>
     </div>
   );

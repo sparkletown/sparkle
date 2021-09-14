@@ -115,7 +115,6 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
-  showRangers?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -176,10 +175,10 @@ export interface BaseVenue {
   };
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
+  end_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
   showShoutouts?: boolean;
@@ -305,7 +304,6 @@ export interface VenueConfig {
   landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
-  showRangers?: boolean;
   tables?: Table[];
 }
 
