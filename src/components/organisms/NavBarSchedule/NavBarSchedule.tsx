@@ -32,7 +32,7 @@ import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
-import { Button } from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
@@ -130,7 +130,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         >
           <button
             aria-label={formattedDay}
-            className="NavBarSchedule__weekdayButton"
+            className="NavBarSchedule__weekday-button"
           >
             {formattedDay}
           </button>
@@ -232,7 +232,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
-          containerClassName="NavBarSchedule__bookmarkedToggle"
+          containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"
           toggled={showPersonalisedSchedule}
           onChange={togglePersonalisedSchedule}
@@ -244,21 +244,23 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           {...scheduleNGWithAttendees}
         />
         {!isEventsLoading && (
-          <div className="NavBarSchedule__downloadButtons">
+          <div className="NavBarSchedule__download-buttons">
             {isShowPersonalDownloadBtn && (
-              <Button
+              <ButtonNG
                 onClick={downloadPersonalEventsCalendar}
-                customClass="NavBarSchedule__downloadScheduleBtn"
+                className="NavBarSchedule__download-schedule-button"
+                variant="primary"
               >
                 Download your schedule
-              </Button>
+              </ButtonNG>
             )}
-            <Button
+            <ButtonNG
               onClick={downloadAllEventsCalendar}
-              customClass="NavBarSchedule__downloadScheduleBtn"
+              className="NavBarSchedule__download-schedule-button"
+              variant="primary"
             >
               Download full schedule
-            </Button>
+            </ButtonNG>
           </div>
         )}
       </div>
