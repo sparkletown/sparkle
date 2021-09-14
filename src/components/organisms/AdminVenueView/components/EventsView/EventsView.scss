@@ -9,8 +9,15 @@
   box-shadow: box-shadow--large();
   overflow: scroll;
 
-  &__title {
+  &__header {
     margin: $spacing--lg;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__title {
+    margin: 0;
     font-weight: $font-weight--500;
     font-size: $font-size--xl;
   }

@@ -13,6 +13,8 @@ import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 
+import { Checkbox } from "components/atoms/Checkbox";
+
 import "./EventsView.scss";
 
 export type EventsViewProps = {
@@ -22,6 +24,10 @@ export type EventsViewProps = {
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   useConnectVenueEvents(venueId);
+  const {
+    isShown: showSplittedEvents,
+    toggle: toggleSplittedEvents,
+  } = useShowHide();
 
   const events = useSelector(venueEventsNGSelector);
 
@@ -64,7 +70,15 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   return (
     <>
       <div className="EventsView">
-        <h4 className="EventsView__title">Events Schedule</h4>
+        <div className="EventsView__header">
+          <h4 className="EventsView__title">Events Schedule</h4>
+          <Checkbox
+            checked={showSplittedEvents}
+            onChange={toggleSplittedEvents}
+            label="Split into rooms"
+            containerClassName="EventsView__checkbox"
+          />
+        </div>
         <div className="EventsView__content">
           {renderedEvents}
           {!hasVenueEvents && (
