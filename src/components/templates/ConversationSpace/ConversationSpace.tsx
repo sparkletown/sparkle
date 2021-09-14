@@ -83,16 +83,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             locationName={parentVenue.name}
           />
         )}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 3,
-            flexBasis: 0,
-            overflow: "hidden",
-          }}
-          className={`scrollable-area ${seatedAtTable && "at-table"}`}
-        >
+        <div className={`scrollable-area ${seatedAtTable && "at-table"}`}>
           {venue.description?.text && (
             <div className="row">
               <div className="col">

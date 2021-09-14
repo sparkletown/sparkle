@@ -19,7 +19,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
-  .audience-background {
+  &__background {
     position: fixed;
     height: 100%;
     width: 100%;

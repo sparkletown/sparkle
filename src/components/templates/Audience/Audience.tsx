@@ -6,13 +6,11 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import {
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
-  DEFAULT_VENUE_BANNER,
   IFRAME_ALLOW,
   REACTION_TIMEOUT,
 } from "settings";
@@ -28,7 +26,6 @@ import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
 
-import { useValidImage } from "hooks/useCheckImage";
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
@@ -38,6 +35,8 @@ import { usePartygoersbySeat } from "components/templates/PartyMap/components/Ma
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
+import { ContainerWithBackground } from "components/atoms/ContainerWithBackground/ContainerWithBackground";
 
 import "./Audience.scss";
 
@@ -286,18 +285,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     takeSeat(null, null);
   }, [takeSeat]);
 
-  const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig?.bannerImageUrl ||
-      venue?.config?.landingPageConfig?.coverImageUrl,
-    DEFAULT_VENUE_BANNER
-  );
-
-  const containerVars = useCss({
-    background: `url(${validBannerImageUrl})`,
-  });
-
-  const containerClasses = classNames("audience-container", containerVars);
-
   // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
@@ -375,15 +362,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return (
       <>
-        <div
-          className={containerClasses}
-          style={{
-            backgroundImage: venue.mapBackgroundImageUrl
-              ? `url(${venue.mapBackgroundImageUrl})`
-              : undefined,
-          }}
+        <ContainerWithBackground
+          containerName="audience-container"
+          venue={venue}
         >
-          <div className="audience-background" />
           <div className="audience">
             <div className="audience-overlay">
               <div
@@ -460,7 +442,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               }
             )}
           </div>
-        </div>
+        </ContainerWithBackground>
       </>
     );
   }, [
@@ -483,6 +465,5 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     isSeat,
     partygoersBySeat,
     takeSeat,
-    containerClasses,
   ]);
 };

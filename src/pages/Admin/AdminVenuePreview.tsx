@@ -1,12 +1,16 @@
 import React, { CSSProperties, useMemo } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 import { format } from "date-fns";
 
-import { IFRAME_ALLOW } from "settings";
+import { DEFAULT_VENUE_BANNER, IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
+
+import { useValidImage } from "hooks/useCheckImage";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -93,6 +97,21 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
 
   const venueTypeText = infoTextByVenue[venue.template] ?? "Experience Info:";
 
+  const [validBannerImageUrl] = useValidImage(
+    venue.config?.landingPageConfig.bannerImageUrl ??
+      venue.config?.landingPageConfig.coverImageUrl,
+    DEFAULT_VENUE_BANNER
+  );
+
+  const imageVars = useCss({
+    background:
+      validBannerImageUrl === DEFAULT_VENUE_BANNER
+        ? validBannerImageUrl
+        : `url(${validBannerImageUrl})`,
+  });
+
+  const imageClasses = classNames("icon", imageVars);
+
   return (
     <div style={containerStyle}>
       <div className="venue-preview">
@@ -150,14 +169,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               Banner photo
             </div>
             <div className="content">
-              <img
-                className="icon"
-                src={
-                  venue.config?.landingPageConfig.bannerImageUrl ??
-                  venue.config?.landingPageConfig.coverImageUrl
-                }
-                alt="icon"
-              />
+              <div className={imageClasses} />
             </div>
           </div>
           {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}
