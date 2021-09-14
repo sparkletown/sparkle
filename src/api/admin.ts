@@ -125,6 +125,8 @@ export interface VenueInput_v2
   template?: VenueTemplate;
   iframeUrl?: string;
   autoPlay?: boolean;
+  start_utc_seconds?: number;
+  end_utc_seconds?: number;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

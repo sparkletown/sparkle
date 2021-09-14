@@ -144,14 +144,13 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           title={hit?.partyName ?? DEFAULT_PARTY_NAME}
           user={userFields}
           onClick={() => {
-            // TODO:
-            console.log(openUserProfileModal);
+            openUserProfileModal(hit.objectID);
             clearSearch();
           }}
         />
       );
     });
-  }, [algoliaSearchState.value, clearSearch, openUserProfileModal]);
+  }, [algoliaSearchState.value, openUserProfileModal, clearSearch]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
