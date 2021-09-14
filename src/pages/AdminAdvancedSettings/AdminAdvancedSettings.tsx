@@ -14,6 +14,8 @@ import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -76,27 +78,29 @@ export const AdminAdvancedSettings: React.FC = () => {
   }
 
   return (
-    <AdminRestricted>
-      <div className="AdminAdvancedSettings">
-        <div className="AdminAdvancedSettings__options">
-          {renderAdminAdvancedTabs}
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+      <AdminRestricted>
+        <div className="AdminAdvancedSettings">
+          <div className="AdminAdvancedSettings__options">
+            {renderAdminAdvancedTabs}
+          </div>
         </div>
-      </div>
-      {selectedTab === AdminAdvancedTab.basicInfo && <VenueWizard />}
-      {selectedTab === AdminAdvancedTab.entranceExperience && (
-        <EntranceExperience
-          // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
-          venue={venue as Venue_v2}
-          sovereignVenue={sovereignVenue}
-          onSave={navigateToDefaultTab}
-        />
-      )}
-      {selectedTab === AdminAdvancedTab.advancedMapSettings && (
-        <AdvancedSettings
-          venue={venue as Venue_v2}
-          onSave={navigateToDefaultTab}
-        />
-      )}
-    </AdminRestricted>
+        {selectedTab === AdminAdvancedTab.basicInfo && <VenueWizard />}
+        {selectedTab === AdminAdvancedTab.entranceExperience && (
+          <EntranceExperience
+            // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
+            venue={venue as Venue_v2}
+            sovereignVenue={sovereignVenue}
+            onSave={navigateToDefaultTab}
+          />
+        )}
+        {selectedTab === AdminAdvancedTab.advancedMapSettings && (
+          <AdvancedSettings
+            venue={venue as Venue_v2}
+            onSave={navigateToDefaultTab}
+          />
+        )}
+      </AdminRestricted>
+    </WithNavigationBar>
   );
 };
