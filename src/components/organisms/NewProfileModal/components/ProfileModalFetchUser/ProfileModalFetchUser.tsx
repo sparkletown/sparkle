@@ -34,10 +34,8 @@ export const ProfileModalFetchUser: React.FC<ProfileModalFetchUserProps> = ({
   if (!user)
     return (
       <div className="ProfileModalFetchUser">
-        <div>
-          Oops, an error occurred while trying to load user data.{"\n"}
-          Please contact our support team.
-        </div>
+        Oops, an error occurred while trying to load user data.{"\n"}
+        Please contact our support team.
       </div>
     );
 
