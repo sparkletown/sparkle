@@ -116,9 +116,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderVenueName = () => (
     <S.InputContainer hasError={!!errors?.name}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Name your party
-      </h4>
+      <h4 className="italic">Name your party</h4>
       <input
         disabled={disable || !!venueId}
         name="name"
@@ -139,9 +137,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderSubtitle = () => (
     <S.InputContainer hasError={!!errors?.subtitle}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Party subtitle
-      </h4>
+      <h4 className="italic">Party subtitle</h4>
       <input
         disabled={disable}
         name={"subtitle"}
@@ -157,9 +153,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderDescription = () => (
     <S.InputContainer hasError={!!errors?.description}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Party description
-      </h4>
+      <h4 className="italic">Party description</h4>
       <textarea
         disabled={disable}
         name={"description"}
@@ -173,14 +167,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     </S.InputContainer>
   );
 
-  const renderBannerUpload = () => {
+  const renderHighlightImageUpload = () => {
     const isButtonOnly = values.bannerImageUrl === DEFAULT_VENUE_BANNER;
 
     return (
       <S.InputContainer>
-        <h4 className="italic" style={{ fontSize: "20px" }}>
-          Upload Highlight image
-        </h4>
+        <h4 className="italic">Upload Highlight image</h4>
         <ImageInput
           onChange={handleBannerUpload}
           name="bannerImage"
@@ -197,9 +189,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderLogoUpload = () => (
     <S.InputContainer>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload your logo
-      </h4>
+      <h4 className="italic">Upload your logo</h4>
       <ImageInput
         onChange={handleLogoUpload}
         name="logoImage"
@@ -245,7 +235,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderVenueName()}
         {renderSubtitle()}
         {renderDescription()}
-        {renderBannerUpload()}
+        {renderHighlightImageUpload()}
         {renderLogoUpload()}
       </S.FormInnerWrapper>
 

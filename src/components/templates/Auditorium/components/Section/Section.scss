@@ -23,13 +23,6 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
-  &__background {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background-color: opaque-black(0.8);
-  }
-
   &__reactions {
     display: flex;
     flex-direction: column;

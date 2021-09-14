@@ -33,14 +33,20 @@ export const ContainerWithBackground: React.FC<ContainerWithBackgroundProps> = (
     background: `url("${validBannerImageUrl}")`,
   });
 
-  const containerClasses = classNames(
-    { [containerName]: containerName, [className]: className },
-    containerVars
-  );
+  const containerClasses = classNames(containerName, className, containerVars);
+
+  const overlayVars = useCss({
+    position: "fixed",
+    height: "100%",
+    width: "100%",
+    background: "rgba(0,0,0, 0.8)",
+  });
+
+  const overlayClasses = classNames(`${containerName}__overlay`, overlayVars);
 
   return (
     <div className={containerClasses} style={style}>
-      <div className={`${containerName}__background`} />
+      <div className={overlayClasses} />
       {children}
     </div>
   );

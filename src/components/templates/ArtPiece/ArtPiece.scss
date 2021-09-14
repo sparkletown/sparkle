@@ -14,13 +14,6 @@ $chat-wrapper-height: 260px;
   background-position: center;
   background-size: cover;
 
-  &__background {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background-color: opaque-black(0.5);
-  }
-
   &__title-sidebar {
     font-size: $font-size--xl;
     font-weight: $font-weight--700;

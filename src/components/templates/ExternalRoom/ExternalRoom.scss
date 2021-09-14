@@ -40,11 +40,4 @@
     font-style: normal;
     font-weight: $font-weight--500;
   }
-
-  &__background {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    background-color: opaque-black(0.8);
-  }
 }
