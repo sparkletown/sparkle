@@ -22,28 +22,24 @@ import "./NewProfileModalBody.scss";
 export interface NewProfileModalBodyProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
-  refreshUser: () => Promise<void>;
-  submitState: ReturnType<typeof useShowHide>;
   closeUserProfileModal: () => void;
+  isSubmitting: boolean;
+  handleSubmitWrapper: (
+    handler: OnSubmit<UserProfileModalFormData>
+  ) => OnSubmit<UserProfileModalFormData>;
 }
 
 export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
   user,
   venue,
-  refreshUser,
-  submitState,
+  isSubmitting,
   closeUserProfileModal,
+  handleSubmitWrapper,
 }: NewProfileModalBodyProps) => {
   const firebase = useFirebase();
   const history = useHistory();
 
   const isCurrentUser = useIsCurrentUser(user.id);
-
-  const {
-    isShown: isSubmitting,
-    show: startSubmitting,
-    hide: stopSubmitting,
-  } = submitState;
 
   const {
     isShown: editMode,
@@ -63,22 +59,6 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     selectRecipientChat(user.id);
     closeUserProfileModal();
   }, [user.id, selectRecipientChat, closeUserProfileModal]);
-
-  const handleSubmitWrapper: (
-    inner: OnSubmit<UserProfileModalFormData>
-  ) => OnSubmit<UserProfileModalFormData> = useCallback(
-    (inner: OnSubmit<UserProfileModalFormData>) => async (data) => {
-      startSubmitting();
-      try {
-        await inner(data);
-        await refreshUser();
-        turnOffEditMode();
-      } finally {
-        stopSubmitting();
-      }
-    },
-    [refreshUser, startSubmitting, stopSubmitting, turnOffEditMode]
-  );
 
   return isCurrentUser ? (
     editMode ? (

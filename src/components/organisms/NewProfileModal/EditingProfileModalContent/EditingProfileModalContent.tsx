@@ -140,10 +140,13 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       if (changedFields.length > 0) {
         await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
       }
+
+      onCancelEditing();
     },
     [
-      formState.dirtyFields,
       firebaseUser,
+      formState.dirtyFields,
+      onCancelEditing,
       checkOldPassword,
       setError,
       clearError,

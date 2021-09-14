@@ -1,8 +1,10 @@
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
+import { OnSubmit } from "react-hook-form";
 
 import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
 
+import { UserProfileModalFormData } from "types/profileModal";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -10,7 +12,7 @@ import { WithId } from "utils/id";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 
-import { ProfileModalUserLoadingProps } from "components/organisms/NewProfileModal/components/ProfileModalFetchUser/ProfileModalFetchUser";
+import { ProfileModalFetchUserProps } from "components/organisms/NewProfileModal/components/ProfileModalFetchUser/ProfileModalFetchUser";
 
 import { ProfileModalFetchUser } from "./components/ProfileModalFetchUser";
 import { NewProfileModalBody } from "./NewProfileModalBody";
@@ -34,11 +36,14 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     show: setCanShowModal,
   } = useShowHide(true);
 
-  const submitState = useShowHide();
-  const { isShown: isSubmitted } = submitState;
+  const {
+    isShown: isSubmitting,
+    show: startSubmitting,
+    hide: stopSubmitting,
+  } = useShowHide();
 
   const hideHandler = useCallback(async () => {
-    if (isSubmitted) return;
+    if (isSubmitting) return;
 
     instantHide();
     // when closeUserProfileModal is called modal hide animation starts
@@ -50,19 +55,33 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
       closeUserProfileModal();
       setCanShowModal();
     }, REACT_BOOTSTRAP_MODAL_HIDE_DURATION);
-  }, [closeUserProfileModal, instantHide, isSubmitted, setCanShowModal]);
+  }, [closeUserProfileModal, instantHide, isSubmitting, setCanShowModal]);
 
-  const renderBody: ProfileModalUserLoadingProps["children"] = useCallback(
-    (user, refreshUser) => (
+  const handleSubmitWrapper: (
+    inner: OnSubmit<UserProfileModalFormData>
+  ) => OnSubmit<UserProfileModalFormData> = useCallback(
+    (inner: OnSubmit<UserProfileModalFormData>) => async (data) => {
+      startSubmitting();
+      try {
+        await inner(data);
+      } finally {
+        stopSubmitting();
+      }
+    },
+    [startSubmitting, stopSubmitting]
+  );
+
+  const renderBody: ProfileModalFetchUserProps["children"] = useCallback(
+    (user) => (
       <NewProfileModalBody
         user={user}
         venue={venue}
-        refreshUser={refreshUser}
-        submitState={submitState}
+        isSubmitting={isSubmitting}
+        handleSubmitWrapper={handleSubmitWrapper}
         closeUserProfileModal={closeUserProfileModal}
       />
     ),
-    [closeUserProfileModal, submitState, venue]
+    [closeUserProfileModal, handleSubmitWrapper, isSubmitting, venue]
   );
 
   return (
