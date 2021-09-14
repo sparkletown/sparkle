@@ -21,7 +21,7 @@ import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
 
-import { MapBackgroundPlaceholder } from "../MapBackgroundPlaceholder";
+import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import "./VenueRoomsEditor.scss";
 
