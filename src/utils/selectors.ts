@@ -18,6 +18,7 @@ import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 
 import {
+  makeDataSelector,
   makeIsRequestedSelector,
   makeIsRequestingSelector,
   makeOrderedSelector,
@@ -169,9 +170,9 @@ export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
 
-export const currentModalUserSelector: SparkleSelector<
-  WithId<User>[] | undefined
-> = makeOrderedSelector("currentModalUser");
+export const currentModalUserDataSelector: SparkleSelector<
+  User | undefined
+> = makeDataSelector("currentModalUser");
 
 export const userProfileSelector: SparkleSelector<string | undefined> = (
   state
