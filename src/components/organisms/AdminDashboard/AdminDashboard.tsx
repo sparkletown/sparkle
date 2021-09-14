@@ -1,10 +1,10 @@
 import React, { useMemo, useState } from "react";
-import { Button, Dropdown, DropdownButton } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 import classNames from "classnames";
 
 import { isPartyMapVenue } from "types/venues";
 
+import { adminCreateSpaceUrl } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -13,6 +13,7 @@ import { AdminVenueCard } from "components/molecules/AdminVenueCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./AdminDashboard.scss";
 
@@ -63,13 +64,13 @@ export const AdminDashboard: React.FC = () => {
     <AdminRestricted>
       <div className="AdminDashboard">
         <div className="AdminDashboard__header">
-          <div className="AdminDashboard__header--left">
+          <div className="AdminDashboard__header-content">
             <div className="AdminDashboard__header-title">Admin Dashboard</div>
             {sortingOptions}
           </div>
-          <Button as={Link} to="/admin-ng/create/venue">
+          <ButtonNG variant="primary" isLink linkTo={adminCreateSpaceUrl}>
             Create a new space
-          </Button>
+          </ButtonNG>
         </div>
         <div
           className={classNames("AdminDashboard__cards", {

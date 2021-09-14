@@ -14,12 +14,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
 
-    &--left {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    }
+  &__header-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   &__header-title {
