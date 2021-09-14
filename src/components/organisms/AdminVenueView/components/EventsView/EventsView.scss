@@ -10,15 +10,19 @@
   overflow: scroll;
 
   &__header {
-    margin: $spacing--lg;
+    margin: $spacing--xl $spacing--xxl;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
+  &__checkbox {
+    font-size: $font-size--lg;
+  }
+
   &__title {
     margin: 0;
-    font-weight: $font-weight--500;
+    font-weight: $font-weight--700;
     font-size: $font-size--xl;
   }
 

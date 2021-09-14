@@ -24,10 +24,6 @@ export type EventsViewProps = {
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   useConnectVenueEvents(venueId);
-  const {
-    isShown: showSplittedEvents,
-    toggle: toggleSplittedEvents,
-  } = useShowHide();
 
   const events = useSelector(venueEventsNGSelector);
 
@@ -43,6 +39,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     hide: setHideDeleteEventModal,
   } = useShowHide();
 
+  const {
+    isShown: showSplittedEvents,
+    toggle: toggleSplittedEvents,
+  } = useShowHide();
+
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   const adminEventModalOnHide = useCallback(() => {
@@ -54,16 +55,14 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
 
   const renderedEvents = useMemo(
     () =>
-      events?.map((event) => {
-        return (
-          <TimingEvent
-            event={event}
-            setShowCreateEventModal={setShowCreateEventModal}
-            setEditedEvent={setEditedEvent}
-            key={event.id}
-          />
-        );
-      }),
+      events?.map((event) => (
+        <TimingEvent
+          event={event}
+          setShowCreateEventModal={setShowCreateEventModal}
+          setEditedEvent={setEditedEvent}
+          key={event.id}
+        />
+      )),
     [events, setShowCreateEventModal, setEditedEvent]
   );
 
@@ -75,8 +74,8 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           <Checkbox
             checked={showSplittedEvents}
             onChange={toggleSplittedEvents}
-            label="Split into rooms"
-            containerClassName="EventsView__checkbox"
+            label="Split by Space"
+            labelClassName="EventsView__checkbox"
           />
         </div>
         <div className="EventsView__content">
