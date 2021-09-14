@@ -13,7 +13,7 @@ $variants-enum: (
   ("secondary", $white, opaque-white(0.2), opaque-white(0.25)),
   ("white", $primary--live, $white, $white),
   ("dark", $white, opaque-black(0.4), opaque-black(0.6)),
-  ("danger", $white, $input--invalid, darken($input--invalid, 10%))
+  ("danger", $white, $input--invalid, lighten($input--invalid, 10%))
 );
 
 @function calc-size-by-factor($factor) {
