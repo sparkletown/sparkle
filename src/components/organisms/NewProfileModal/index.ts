@@ -1,1 +1,1 @@
-export { NewProfileModal } from "./NewProfileModal";
+export { NewProfileModal } from "components/organisms/NewProfileModal/instantShow";

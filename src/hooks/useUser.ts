@@ -35,13 +35,21 @@ export const useUser = (): UseUserResult => {
 
   const userId = user?.uid;
 
-  const profile = profileWithLocation
-    ? omitLocationFromUser(profileWithLocation)
-    : undefined;
+  const profile = useMemo(
+    () =>
+      profileWithLocation
+        ? omitLocationFromUser(profileWithLocation)
+        : undefined,
+    [profileWithLocation]
+  );
 
-  const userLocation = profileWithLocation
-    ? extractLocationFromUser(profileWithLocation)
-    : undefined;
+  const userLocation = useMemo(
+    () =>
+      profileWithLocation
+        ? extractLocationFromUser(profileWithLocation)
+        : undefined,
+    [profileWithLocation]
+  );
 
   const userWithId = useMemo(() => {
     if (!userId || !profile) return;

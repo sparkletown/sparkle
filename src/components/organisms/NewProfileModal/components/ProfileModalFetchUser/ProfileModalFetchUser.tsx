@@ -9,19 +9,19 @@ import { WithId, withId } from "utils/id";
 
 import { Loading } from "components/molecules/Loading";
 
-import "./ProfileModalUserLoading.scss";
+import "components/organisms/NewProfileModal/components/ProfileModalFetchUser/ProfileModalFetchUser.scss";
 
 export interface ProfileModalUserLoadingProps {
   userId: string | undefined;
-  render: (
+  children: (
     user: WithId<User>,
     refreshUser: () => Promise<void>
   ) => React.ReactElement | FalseyValue | "";
 }
 
-export const ProfileModalUserLoading: React.FC<ProfileModalUserLoadingProps> = ({
+export const ProfileModalFetchUser: React.FC<ProfileModalUserLoadingProps> = ({
   userId,
-  render,
+  children,
 }: ProfileModalUserLoadingProps) => {
   const firebase = useFirebase();
 
@@ -52,9 +52,9 @@ export const ProfileModalUserLoading: React.FC<ProfileModalUserLoadingProps> = (
       {fetchUserState.value &&
       (refreshState.loading ||
         (!fetchUserState.loading && !fetchUserState.error)) ? (
-        <>{render(fetchUserState.value, refresh)}</>
+        <>{children(fetchUserState.value, refresh)}</>
       ) : (
-        <div className={"ProfileModalUserLoading"}>
+        <div className="ProfileModalFetchUser">
           {fetchUserState.loading ? (
             <Loading />
           ) : (
