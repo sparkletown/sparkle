@@ -13,7 +13,6 @@ export const NavBarLogin: FC = () => {
   return (
     <div
       className="log-in-button"
-      style={{ marginTop: "20px" }}
       onClick={() => history.push(venueEntranceUrl(venueId ?? DEFAULT_VENUE))}
     >
       Log in

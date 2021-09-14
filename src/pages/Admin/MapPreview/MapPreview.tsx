@@ -21,6 +21,8 @@ import {
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
 
+import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
+
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import Legend from "components/atoms/Legend";
 
@@ -119,6 +121,10 @@ const MapPreview: React.FC<MapPreviewProps> = ({
       roomIndex += 1;
     }
   }, [rooms, user, venueId]);
+
+  if (!mapBackground) {
+    return <MapBackgroundPlaceholder />;
+  }
 
   return (
     <DndProvider backend={HTML5Backend}>
