@@ -112,6 +112,7 @@ $font-size--xxl: 30px;
 $font-size--xxxl: 50px;
 
 // Placeholders, until we can find meaningful names for them
+$font-weight--bolder: bolder;
 $font-weight--300: 300;
 $font-weight--400: 400;
 $font-weight--500: 500;
@@ -279,7 +280,8 @@ $z-layers: (
   scrollbar-width: thin;
 
   // The webkit properties
-  @see https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+  @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
   &::-webkit-scrollbar-corner {
     background-color: $black;
   }

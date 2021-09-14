@@ -1,8 +1,14 @@
 @import "scss/constants.scss";
 
-.AdminVenues {
+.AdminDashboard {
   width: 100%;
-  height: 100%;
+  display: grid;
+  height: 100vh;
+  grid-template-columns: auto;
+  padding: $spacing--lg;
+
+  position: relative;
+  overflow-y: scroll;
 
   &__header {
     display: flex;
@@ -17,15 +23,15 @@
   }
 
   &__header-title {
-    font-size: 2em;
-    font-weight: bolder;
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--bolder;
     align-self: center;
     padding-right: $spacing--md;
   }
 
-  &__title {
-    font-size: 2em;
-    font-weight: bolder;
+  &__welcome-message {
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--bolder;
   }
 
   &__cards {
