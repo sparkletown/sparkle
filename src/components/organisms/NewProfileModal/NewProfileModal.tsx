@@ -12,9 +12,10 @@ import { WithId } from "utils/id";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 
-import { ProfileModalFetchUserProps } from "components/organisms/NewProfileModal/components/ProfileModalFetchUser/ProfileModalFetchUser";
+import { useCurrentModalUser } from "components/organisms/NewProfileModal/useCurrentModalUser";
 
-import { ProfileModalFetchUser } from "./components/ProfileModalFetchUser";
+import { Loading } from "components/molecules/Loading";
+
 import { NewProfileModalBody } from "./NewProfileModalBody";
 
 import "./NewProfileModal.scss";
@@ -71,18 +72,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     [startSubmitting, stopSubmitting]
   );
 
-  const renderBody: ProfileModalFetchUserProps["children"] = useCallback(
-    (user) => (
-      <NewProfileModalBody
-        user={user}
-        venue={venue}
-        isSubmitting={isSubmitting}
-        handleSubmitWrapper={handleSubmitWrapper}
-        closeUserProfileModal={closeUserProfileModal}
-      />
-    ),
-    [closeUserProfileModal, handleSubmitWrapper, isSubmitting, venue]
-  );
+  const [user, isLoaded] = useCurrentModalUser(selectedUserId);
 
   return (
     <Modal
@@ -91,9 +81,27 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
       onHide={hideHandler}
     >
       <Modal.Body className="ProfileModal__body">
-        <ProfileModalFetchUser userId={selectedUserId}>
-          {renderBody}
-        </ProfileModalFetchUser>
+        {isLoaded && user && (
+          <NewProfileModalBody
+            user={user}
+            venue={venue}
+            isSubmitting={isSubmitting}
+            handleSubmitWrapper={handleSubmitWrapper}
+            closeUserProfileModal={closeUserProfileModal}
+          />
+        )}
+        {!user && (
+          <div className="ProfileModalFetchUser">
+            {!isLoaded ? (
+              <Loading />
+            ) : (
+              <div>
+                Oops, an error occurred while trying to load user data.{"\n"}
+                Please contact our support team.
+              </div>
+            )}
+          </div>
+        )}
       </Modal.Body>
     </Modal>
   );

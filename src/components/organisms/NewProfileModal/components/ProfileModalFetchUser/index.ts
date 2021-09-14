@@ -1,1 +1,0 @@
-export { ProfileModalFetchUser } from "./ProfileModalFetchUser";
