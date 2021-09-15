@@ -18,6 +18,7 @@ import { propName, userProfileModalFormProp as formProp } from "utils/propName";
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 import { useProfileQuestions } from "hooks/useProfileQuestions";
+import { useShowHide } from "hooks/useShowHide";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -50,6 +51,11 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   const checkOldPassword = useCheckOldPassword();
+
+  const {
+    isShown: isChangePasswordShown,
+    show: showChangePassword,
+  } = useShowHide();
 
   const {
     register,
@@ -176,16 +182,20 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         onDeleteLink={removeLink}
         onAddLink={addLinkHandler}
       />
-      <ProfileModalChangePassword
-        containerClassName="EditingProfileModalContent__section"
-        register={register}
-        getValues={getValues}
-        errors={pick<
-          FieldErrors<UserProfileModalFormData>,
-          "oldPassword" | "newPassword" | "confirmNewPassword"
-        >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
-      />
+      {isChangePasswordShown && (
+        <ProfileModalChangePassword
+          containerClassName="EditingProfileModalContent__section"
+          register={register}
+          getValues={getValues}
+          errors={pick<
+            FieldErrors<UserProfileModalFormData>,
+            "oldPassword" | "newPassword" | "confirmNewPassword"
+          >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
+        />
+      )}
       <EditProfileModalButtons
+        isChangePasswordShown={!isChangePasswordShown}
+        onChangePasswordClick={showChangePassword}
         onCancelClick={cancelEditing}
         isSubmitting={isSubmitting}
         containerClassName="EditingProfileModalContent__edit-buttons"
