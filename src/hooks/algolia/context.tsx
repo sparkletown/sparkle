@@ -5,12 +5,13 @@ import React, {
   useMemo,
 } from "react";
 import algoliasearch, { SearchClient, SearchIndex } from "algoliasearch/lite";
+import { keyBy } from "lodash";
 
 import { ALGOLIA_API_SEARCH_KEY } from "secrets";
 
 import { ALGOLIA_APP_ID } from "settings";
 
-import { AlgoliaSearchIndex, algoliaSearchIndexes } from "types/algolia";
+import { AlgoliaSearchIndex } from "types/algolia";
 
 export interface AlgoliaSearchContextState {
   client: SearchClient;
@@ -19,15 +20,14 @@ export interface AlgoliaSearchContextState {
 
 const initState = (appId: string, key: string): AlgoliaSearchContextState => {
   const client = algoliasearch(appId, key);
-  const indices = Object.assign(
-    {},
-    ...algoliaSearchIndexes.map((indexName: AlgoliaSearchIndex) => {
-      const index = client.initIndex(indexName);
-      return {
-        [indexName]: index,
-      };
-    })
-  );
+  const list = Object.values(
+    AlgoliaSearchIndex
+  ).map((indexName: AlgoliaSearchIndex) => client.initIndex(indexName));
+
+  const indices = keyBy(list, "indexName") as Record<
+    AlgoliaSearchIndex,
+    SearchIndex
+  >;
 
   return { client, indices };
 };

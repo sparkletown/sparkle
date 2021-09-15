@@ -6,10 +6,6 @@ export enum AlgoliaSearchIndex {
   USERS = "algolia-users",
 }
 
-export const algoliaSearchIndexes: AlgoliaSearchIndex[] = Object.values(
-  AlgoliaSearchIndex
-);
-
 export type AlgoliaUsersSearchResult = SearchResponse<
   Pick<
     UserWithLocation,

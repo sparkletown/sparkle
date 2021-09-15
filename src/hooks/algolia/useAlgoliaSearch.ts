@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useAsync } from "react-use";
+import { keyBy } from "lodash";
 
-import { algoliaSearchIndexes, AlgoliaSearchResult } from "types/algolia";
+import { AlgoliaSearchResult } from "types/algolia";
 import { UserWithLocation } from "types/User";
 
 import { propName } from "utils/propName";
@@ -14,13 +15,13 @@ export const useAlgoliaSearch = (
 ) => {
   const context = useAlgoliaSearchContext();
 
-  const state = useAsync(async (): Promise<AlgoliaSearchResult | undefined> => {
-    if (!context?.client || !venueId || !searchQuery) return undefined;
+  const state = useAsync(async () => {
+    if (!context?.client || !context?.indices || !venueId || !searchQuery)
+      return;
 
-    const indexes = algoliaSearchIndexes;
     const { results } = await context.client.search(
-      indexes.map((indexName) => ({
-        indexName,
+      Object.values(context.indices).map((index) => ({
+        indexName: index.indexName,
         query: searchQuery,
         params: {
           filters: `${propName<UserWithLocation>(
@@ -30,11 +31,8 @@ export const useAlgoliaSearch = (
       }))
     );
 
-    return Object.assign(
-      {},
-      ...indexes.map((indexName, i) => ({ [indexName]: results[i] }))
-    );
-  }, [context?.client, searchQuery, venueId]);
+    return keyBy(results, "index") as AlgoliaSearchResult;
+  }, [context?.client, context?.indices, searchQuery, venueId]);
 
   useEffect(() => {
     if (state.error) {
