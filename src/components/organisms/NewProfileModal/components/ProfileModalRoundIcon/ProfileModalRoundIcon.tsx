@@ -3,9 +3,8 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-
-import { ButtonNG } from "../../../../atoms/ButtonNG";
 
 import "./ProfileModalRoundIcon.scss";
 

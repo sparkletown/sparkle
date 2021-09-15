@@ -17,6 +17,7 @@ import { propName, userProfileModalFormProp as formProp } from "utils/propName";
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 import { useProfileQuestions } from "hooks/useProfileQuestions";
+import { useShowHide } from "hooks/useShowHide";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -25,8 +26,6 @@ import { ProfileModalEditBasicInfo } from "components/organisms/NewProfileModal/
 import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
-
-import { useShowHide } from "../../../../hooks/useShowHide";
 
 import "./EditingProfileModalContent.scss";
 

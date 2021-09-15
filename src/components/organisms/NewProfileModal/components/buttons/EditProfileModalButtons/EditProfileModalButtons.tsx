@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
-import { ButtonNG } from "../../../../../atoms/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./EditProfileModalButtons.scss";
 

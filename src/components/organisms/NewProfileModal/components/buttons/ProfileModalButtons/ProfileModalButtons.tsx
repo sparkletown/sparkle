@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useIsOnline } from "hooks/useIsOnline";
 
-import { ButtonNG } from "../../../../../atoms/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./ProfileModalButtons.scss";
 
