@@ -6,6 +6,7 @@ import { AlgoliaSearchResult } from "types/algolia";
 import { UserWithLocation } from "types/User";
 
 import { propName } from "utils/propName";
+import { isBlank } from "utils/string";
 
 import { useAlgoliaSearchContext } from "hooks/algolia/context";
 
@@ -16,7 +17,13 @@ export const useAlgoliaSearch = (
   const context = useAlgoliaSearchContext();
 
   const state = useAsync(async () => {
-    if (!context?.client || !context?.indices || !venueId || !searchQuery)
+    if (
+      !context?.client ||
+      !context?.indices ||
+      !venueId ||
+      !searchQuery ||
+      isBlank(searchQuery)
+    )
       return;
 
     const { results } = await context.client.search(
