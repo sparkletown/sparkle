@@ -40,10 +40,23 @@ export const TimingSpaceEvent: React.FC<TimingSpaceEventProps> = ({
     [spaceEvents, setShowCreateEventModal, setEditedEvent]
   );
 
+  const spaceNameTitle = useMemo(() => {
+    if (!spaceEvents.length) {
+      return "nothing scheduled";
+    }
+
+    if (spaceEvents.length === 1) {
+      return "1 experience";
+    }
+
+    return `${spaceEvents.length} experiences`;
+  }, [spaceEvents.length]);
+
   return (
     <div className="TimingSpaceEvent" onClick={toggleSelectedSpace}>
       <div className="TimingSpaceEvent__header">
-        {spaceName} - {spaceEvents.length} experience(s)
+        <span className="TimingSpaceEvent__title">{spaceName}</span>{" "}
+        <span className="TimingSpaceEvent__subTitle">{spaceNameTitle}</span>
       </div>
       {selectedSpace && (
         <div className="TimingSpaceEvent__content">{renderedSpaceEvents}</div>
