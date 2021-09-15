@@ -32,7 +32,6 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
-import { useWorldUserLocation } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -71,8 +70,7 @@ export const VenuePage: React.FC = () => {
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
-  const { user, profile } = useUser();
-  const { userLocation } = useWorldUserLocation(user?.uid);
+  const { user, profile, userLocation } = useUser();
   const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
     userLocation ?? {};
 
@@ -164,17 +162,12 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (
-      !venueId ||
-      !userId ||
-      !userLocation ||
-      enteredVenueIds?.includes(venueId)
-    ) {
+    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
       return;
     }
 
     void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
-  }, [enteredVenueIds, userLocation, userId, venueId]);
+  }, [enteredVenueIds, userLocation, userId, venueId, profile]);
 
   // NOTE: User's timespent updates
 

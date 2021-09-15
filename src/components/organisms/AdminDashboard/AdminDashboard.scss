@@ -1,8 +1,14 @@
 @import "scss/constants.scss";
 
-.admin-venue {
+.AdminDashboard {
   width: 100%;
-  height: 100%;
+  display: grid;
+  height: 100vh;
+  grid-template-columns: auto;
+  padding: $spacing--lg;
+
+  position: relative;
+  overflow-y: scroll;
 
   &__header {
     display: flex;
@@ -10,9 +16,22 @@
     justify-content: space-between;
   }
 
-  &__title {
-    font-size: 2em;
-    font-weight: bolder;
+  &__header-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__header-title {
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--500;
+    align-self: center;
+    padding-right: $spacing--md;
+  }
+
+  &__welcome-message {
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--500;
   }
 
   &__cards {
