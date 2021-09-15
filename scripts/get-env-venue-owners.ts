@@ -13,7 +13,7 @@ import {
 
 const usage = makeScriptUsage({
   description:
-    "Print venue owners' email addresses ignoring specified users if needed.",
+    "Print venue owners' email addresses ignoring specified users if needed",
   usageParams: "[CREDENTIAL_PATH] emailSubstrToIgnore",
   exampleParams: "[theMatchingAccountServiceKey.json] @gmail.com",
 });
