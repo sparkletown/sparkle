@@ -21,6 +21,7 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 import { radioStationsSelector } from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
@@ -84,6 +85,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const { currentVenue: ownedVenue } = useOwnedVenues({
+    currentVenueId: venueId,
+  });
+
+  // when Admin is displayed, owned venues are used
+  const hasVenue = !!(currentVenue || ownedVenue);
   const parentVenueId = parentVenue?.id;
 
   const {
@@ -237,21 +245,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {venueId && currentVenue && `${navbarTitle} `}
+                  {venueId && hasVenue && navbarTitle}{" "}
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                venueId && currentVenue && <div>{navbarTitle}</div>
+                venueId && hasVenue && <div>{navbarTitle}</div>
               )}
 
-              {venueId && currentVenue && <VenuePartygoers venueId={venueId} />}
+              {venueId && hasVenue && <VenuePartygoers venueId={venueId} />}
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
-                {venueId && currentVenue && <NavSearchBar venueId={venueId} />}
+                {venueId && hasVenue && <NavSearchBar venueId={venueId} />}
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
