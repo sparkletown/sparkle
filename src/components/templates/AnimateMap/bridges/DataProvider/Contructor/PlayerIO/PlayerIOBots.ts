@@ -3,6 +3,7 @@ import { throttle } from "lodash";
 import { getRandomInt } from "utils/getRandomInt";
 
 import { connection } from "../../../../vendors/playerio/PlayerIO";
+import { CloudDataProvider } from "../../CloudDataProvider";
 
 import { getIntByHash } from "./utils/getIntByHash";
 import { getRandomBotId } from "./utils/getRandomBotId";
@@ -14,17 +15,23 @@ const world_width = 9920;
 const world_height = 9920;
 
 export class PlayerIOBots {
-  constructor(readonly playerioGameId: string) {}
+  constructor(
+    readonly cloudDataProvider: CloudDataProvider,
+    readonly playerioGameId: string,
+    readonly playerioAdvancedMode?: boolean
+  ) {}
 
   private _bots: Bot[] = [];
 
   addBot() {
     this._bots.push(
       new Bot(
+        this.cloudDataProvider,
         this.playerioGameId,
         getRandomBotId(28),
         getRandomInt(world_width),
-        getRandomInt(world_height)
+        getRandomInt(world_height),
+        this.playerioAdvancedMode
       )
     );
   }
@@ -45,10 +52,12 @@ class Bot {
   private _shortId = getIntByHash(this.id);
 
   constructor(
+    readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
     readonly id: string,
     public x: number,
-    public y: number
+    public y: number,
+    readonly playerioAdvancedMode?: boolean
   ) {
     this._throttledUpdatePosition = throttle(
       this._updatePosition.bind(this),
@@ -56,12 +65,9 @@ class Bot {
     );
 
     this._playerio = new PlayerIODataProvider(
-      this.playerioGameId,
-      id,
-      (connection) => {
-        this._playerioConnection = connection;
-        if (this._closed) this.closeConnection();
-      }
+      cloudDataProvider,
+      playerioGameId,
+      id
     );
   }
 

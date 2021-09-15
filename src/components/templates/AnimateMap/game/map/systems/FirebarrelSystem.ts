@@ -1,65 +1,127 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { InteractionManager } from "pixi.js";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
-import {
-  AnimateMapActionTypes,
-  setAnimateMapFireBarrel,
-} from "store/actions/AnimateMap";
-
-import { GameInstance } from "../../GameInstance";
-import { Barrel } from "../graphics/Barrel";
-import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { BarrelNode } from "../nodes/BarrelNode";
+import { AnimateMapActionTypes } from "../../../../../../store/actions/AnimateMap";
+import { GameConfig } from "../../../configs/GameConfig";
+import EntityFactory from "../entities/EntityFactory";
+import { FirebarrelCamIcon } from "../graphics/FirebarrelCamIcon";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { PlayerNode } from "../nodes/PlayerNode";
+import { ViewportNode } from "../nodes/ViewportNode";
 
 export class FirebarrelSystem extends System {
-  private bots?: NodeList<AvatarTuningNode>;
   private player?: NodeList<PlayerNode>;
-  private barrels?: NodeList<BarrelNode>;
+  private firebarrels?: NodeList<FirebarrelNode>;
+  private viewport?: NodeList<ViewportNode>;
+  private zoomLevelCurrent = -1;
+  private zoomLevelUpdated = false;
 
-  private _unsubscribeSetPointer!: () => void;
+  private _unsubscribeFirebarrelSet!: () => void;
+  private _unsubscribeFirebarrelEnter!: () => void;
+  private _unsubscribeFirebarrelExit!: () => void;
+
+  private creator: EntityFactory;
+  private waitingEnterFirebarrelId?: number;
+  private WAITING_ENTER_FIREBARREL_TIMEOUT = 15000;
+  private SHOUTER_ON = false;
+
+  constructor(creator: EntityFactory) {
+    super();
+    this.creator = creator;
+  }
 
   addToEngine(engine: Engine) {
-    this.bots = engine.getNodeList(AvatarTuningNode);
-    this.player = engine.getNodeList(PlayerNode);
-    this.barrels = engine.getNodeList(BarrelNode);
+    this.firebarrels = engine.getNodeList(FirebarrelNode);
+    this.firebarrels?.nodeAdded.add(this.handleFirebarrelAdded);
 
-    this._unsubscribeSetPointer = subscribeActionAfter(
-      AnimateMapActionTypes.SET_POINTER,
+    this.viewport = engine.getNodeList(ViewportNode);
+    this.viewport.nodeAdded.add(this.handleViewportAdded);
+
+    this._unsubscribeFirebarrelEnter = subscribeActionAfter(
+      AnimateMapActionTypes.ENTER_FIREBARREL,
       () => {
-        const renderer = GameInstance.instance.getRenderer();
-        const map = GameInstance.instance.getMapContainer();
-
-        if (renderer && map) {
-          const interaction = renderer.plugins
-            .interaction as InteractionManager;
-          const pointer = interaction.mouse.global;
-          const hitTest = interaction.hitTest(pointer, map);
-
-          const target = Array.isArray(hitTest) ? hitTest[0] : hitTest;
-
-          if (target instanceof Barrel) {
-            GameInstance.instance
-              .getStore()
-              .dispatch(setAnimateMapFireBarrel(target.name));
+        clearTimeout(this.waitingEnterFirebarrelId);
+        // this.creator.enterFirebarrel(barrelId);
+      }
+    );
+    this._unsubscribeFirebarrelSet = subscribeActionAfter(
+      AnimateMapActionTypes.SET_FIREBARREL,
+      () => {
+        this.waitingEnterFirebarrelId = setTimeout(() => {
+          if (this.player) {
+            this.creator.exitFirebarrel();
+            console.log("exit firebarrel 2");
           }
-        }
+        }, this.WAITING_ENTER_FIREBARREL_TIMEOUT);
+      }
+    );
+    this._unsubscribeFirebarrelExit = subscribeActionAfter(
+      AnimateMapActionTypes.EXIT_FIREBARREL,
+      () => {
+        this.creator.exitFirebarrel();
+        console.log("exit firebarrel 1");
       }
     );
   }
 
   removeFromEngine(engine: Engine) {
-    this._unsubscribeSetPointer();
+    this.firebarrels?.nodeAdded.remove(this.handleFirebarrelAdded);
+    this.firebarrels = undefined;
 
-    this.bots = undefined;
-    this.player = undefined;
-    this.barrels = undefined;
+    this.viewport?.nodeAdded.remove(this.handleViewportAdded);
+    this.viewport = undefined;
   }
 
   update(time: number) {
-    if (!this.player?.head || !this.barrels?.head) {
-      return;
+    if (this.zoomLevelUpdated) {
+      this.zoomLevelUpdated = false;
+      for (let node = this.firebarrels?.head; node; node = node.next) {
+        this.updateFirebarrel(node);
+      }
+    }
+
+    if (this.SHOUTER_ON) {
+      for (let node = this.firebarrels?.head; node; node = node.next) {
+        node.shouter.currentTime += time;
+        if (node.shouter.currentTime >= node.shouter.timeOut) {
+          node.shouter.currentTime = 0;
+          this.creator.createShout(
+            node.position.x,
+            node.position.y - node.collision.radius,
+            "Join Firebarrel Video chat!"
+          );
+        }
+      }
     }
   }
+
+  private updateFirebarrel(node: FirebarrelNode): void {
+    node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
+    const usersCount = node.firebarrel.model.data.connectedUsers
+      ? node.firebarrel.model.data.connectedUsers.length
+      : 0;
+    if (usersCount) {
+      node.firebarrel.fsm.changeState(node.firebarrel.HALO_ANIMATED);
+    } else {
+      node.firebarrel.fsm.changeState(node.firebarrel.HALO);
+    }
+
+    const camIcon = node.entity.get(FirebarrelCamIcon);
+    if (camIcon && camIcon.view.camIcon) {
+      camIcon.view.camIcon.visible =
+        this.viewport?.head?.viewport.zoomLevel !==
+        GameConfig.ZOOM_LEVEL_FLYING;
+    }
+  }
+
+  private handleViewportAdded = (node: ViewportNode): void => {
+    if (this.zoomLevelCurrent !== node.viewport.zoomLevel) {
+      this.zoomLevelCurrent = node.viewport.zoomLevel;
+      this.zoomLevelUpdated = true;
+    }
+  };
+
+  private handleFirebarrelAdded = (node: FirebarrelNode): void => {
+    this.updateFirebarrel(node);
+  };
 }

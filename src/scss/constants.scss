@@ -34,7 +34,7 @@ $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 $concrete--dark: #9f9fa0;
 $black: #000000;
-$white: #fff;
+$white: #ffffff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
@@ -68,6 +68,7 @@ $map-sidebar-width: 20%;
 $chat-sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
+$reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
 $admin-spaces-sidebar-width: 20%;
@@ -150,6 +151,7 @@ $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
 $z-layer-announcement-banner: 15;
+$z-layer-emergency-content: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -175,6 +177,8 @@ $z-layers: (
   user-search-results: 380,
   chat-poll-text: 0,
   chat-poll-text-background: -1,
+  // Emergency Page
+  emergency-content: $z-layer-emergency-content,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,
@@ -238,28 +242,6 @@ $z-layers: (
   @return 0 10px 30px 0 rgba($black, $transparency);
 }
 
-@mixin scrollbar {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
-  }
-}
-
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
 @mixin line-clamp($line-count: 1) {
   display: -webkit-box;
@@ -290,5 +272,39 @@ $z-layers: (
   &:hover {
     color: $hover-color;
     text-decoration: underline $hover-color;
+  }
+}
+
+@mixin scrollbar {
+  // The standard properties
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+  scrollbar-color: opaque-white(0.3) $black;
+  scrollbar-width: thin;
+
+  // The webkit properties
+  // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
+  &::-webkit-scrollbar-corner {
+    background-color: $black;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: $border-radius--xs;
+    background-color: $black;
+  }
+
+  &::-webkit-scrollbar {
+    @include square-size($spacing--sm);
+    background-color: opaque-black(0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $border-radius--xs;
+    background-color: opaque-white(0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: opaque-white(0.5);
   }
 }

@@ -48,16 +48,15 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           className="recipient-chat__back-icon"
           size="sm"
         />
-        <UserAvatar user={recipient} showStatus />
+        <UserAvatar user={recipient} showStatus size="small" />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <div className="recipient-chat__chatbox">
-        <Chatbox
-          messages={messagesToDisplay}
-          sendMessage={sendMessageToSelectedRecipient}
-          sendThreadReply={sendThreadReply}
-        />
-      </div>
+      <Chatbox
+        containerClassName="recipient-chat__chatbox"
+        messages={messagesToDisplay}
+        sendMessage={sendMessageToSelectedRecipient}
+        sendThreadReply={sendThreadReply}
+      />
     </div>
   );
 };

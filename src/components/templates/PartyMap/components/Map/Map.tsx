@@ -17,8 +17,8 @@ import { PartyMapVenue } from "types/venues";
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { hasElements } from "utils/types";
-import { setLocationData } from "utils/userLocation";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
@@ -51,7 +51,6 @@ export const Map: React.FC<MapProps> = ({
   unselectRoom,
 }) => {
   const venueId = venue.id;
-  const venueName = venue.name;
   const userUid = user?.uid;
   const showGrid = venue.showGrid;
 
@@ -62,18 +61,22 @@ export const Map: React.FC<MapProps> = ({
   const [totalRows, setTotalRows] = useState<number>(0);
   const hasRows = totalRows > 0;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
   const columnsArray = useMemo(
     () => Array.from(Array<JSX.Element>(totalColumns)),
     [totalColumns]
   );
   const rowsArray = useMemo(() => Array.from(Array(totalRows)), [totalRows]);
 
+  const [mapBackground] = useValidImage(
+    venue?.mapBackgroundImageUrl,
+    DEFAULT_MAP_BACKGROUND
+  );
+
   useEffect(() => {
+    //@debt the image is already loaded and checked inside useValidImage
     const img = new Image();
-    img.src = venue.mapBackgroundImageUrl
-      ? venue.mapBackgroundImageUrl
-      : DEFAULT_MAP_BACKGROUND;
+    img.src = mapBackground ?? DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
 
@@ -83,13 +86,11 @@ export const Map: React.FC<MapProps> = ({
 
       setTotalRows(calcRows);
     };
-  }, [venue.columns, venue.mapBackgroundImageUrl]);
+  }, [mapBackground, venue.columns]);
 
   const takeSeat = useCallback(
     (gridPosition: GridPosition) => {
       if (!userUid) return;
-
-      setLocationData({ userId: userUid, locationName: venueName });
 
       return setGridData({
         venueId,
@@ -97,7 +98,7 @@ export const Map: React.FC<MapProps> = ({
         gridData: gridPosition,
       });
     },
-    [userUid, venueId, venueName]
+    [userUid, venueId]
   );
 
   const currentPosition = profileData?.[venue.id];
@@ -228,7 +229,7 @@ export const Map: React.FC<MapProps> = ({
         <img
           width="100%"
           className="party-map-background"
-          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          src={mapBackground}
           alt=""
         />
         {hasRows && (

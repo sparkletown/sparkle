@@ -7,7 +7,7 @@ import { makeUpdateBanner } from "api/bannerAdmin";
 
 import { venueInsideUrl } from "utils/url";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 
 import "./RunTabToolbar.scss";

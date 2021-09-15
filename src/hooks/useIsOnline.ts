@@ -1,15 +1,16 @@
 import { useMemo } from "react";
-import { isEmpty } from "lodash";
+
+import { isTruthy } from "utils/types";
 
 import { useWorldUserLocation } from "./users";
 
 export const useIsOnline = (userId?: string) => {
   const { userLocation } = useWorldUserLocation(userId);
-  const lastSeenIn = userLocation?.lastSeenIn;
+  const lastSeenIn = userLocation?.lastVenueIdSeenIn;
 
   return useMemo(
     () => ({
-      isOnline: !isEmpty(lastSeenIn),
+      isOnline: !isTruthy(lastSeenIn),
       lastSeenIn,
     }),
     [lastSeenIn]

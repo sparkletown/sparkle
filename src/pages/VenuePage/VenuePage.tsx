@@ -4,6 +4,8 @@ import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
+import { fetchSovereignVenue } from "api/venue";
+
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -15,23 +17,21 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
 } from "utils/selectors";
-import { isDefined, isTruthy } from "utils/types";
+import { wrapIntoSlashes } from "utils/string";
+import { isDefined } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 import {
   clearLocationData,
-  setLocationData,
-  updateCurrentLocationData,
+  updateLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
-import { useWorldUserLocation } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -61,9 +61,8 @@ const TemplateWrapper = lazy(() =>
 );
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
-const hasPaidEvents = (template: VenueTemplate) => {
-  return template === VenueTemplate.jazzbar;
-};
+const checkSupportsPaidEvents = (template: VenueTemplate) =>
+  template === VenueTemplate.jazzbar;
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
@@ -71,9 +70,9 @@ export const VenuePage: React.FC = () => {
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
-  const { user, profile } = useUser();
-  const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
+  const { user, profile, userLocation } = useUser();
+  const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
+    userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -96,9 +95,6 @@ export const VenuePage: React.FC = () => {
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
-
-  // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
-  useFirestoreConnect("venues");
 
   const userId = user?.uid;
 
@@ -124,18 +120,30 @@ export const VenuePage: React.FC = () => {
   useInterval(() => {
     if (!userId || !userLastSeenIn) return;
 
-    updateCurrentLocationData({
+    updateLocationData({
       userId,
-      profileLocationData: userLastSeenIn,
+      newLocationPath: userLastSeenIn,
     });
   }, LOC_UPDATE_FREQ_MS);
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !venueName) return;
+    if (!userId || !venueName || !venueId) return;
 
-    setLocationData({ userId, locationName: venueName });
-  }, [userId, venueName]);
+    const updateWholeLocationUserPath = async () => {
+      const { sovereignVenue, checkedVenueIds } = await fetchSovereignVenue(
+        venueId
+      );
+
+      const allVenues = [...checkedVenueIds, sovereignVenue.id].reverse();
+
+      const locationPath = wrapIntoSlashes(allVenues.join("/"));
+
+      updateLocationData({ userId, newLocationPath: locationPath });
+    };
+
+    updateWholeLocationUserPath();
+  }, [userId, venueName, venueId]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
@@ -154,17 +162,12 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (
-      !venueId ||
-      !userId ||
-      !profile ||
-      profile?.enteredVenueIds?.includes(venueId)
-    ) {
+    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
       return;
     }
 
-    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
-  }, [profile, userId, venueId]);
+    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
+  }, [enteredVenueIds, userLocation, userId, venueId, profile]);
 
   // NOTE: User's timespent updates
 
@@ -209,18 +212,16 @@ export const VenuePage: React.FC = () => {
   // if (isAccessDenied) {
   //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
   // }
+  const { entrance, template, hasPaidEvents } = venue;
 
-  const hasEntrance = isTruthy(venue?.entrance);
-  const hasEntered = profile?.enteredVenueIds?.includes(venueId);
+  const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
+  const hasEntered = enteredVenueIds?.includes(venueId);
+
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
-  if (
-    hasPaidEvents(venue.template) &&
-    venue.hasPaidEvents &&
-    !isUserVenueOwner
-  ) {
+  if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
     if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }

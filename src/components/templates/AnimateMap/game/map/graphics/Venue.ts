@@ -1,5 +1,8 @@
 import { Sprite } from "pixi.js";
 
-export class Venue extends Sprite {
-  public venue?: Sprite;
+import { Hoverable } from "./Hoverable";
+
+export class Venue extends Sprite implements Hoverable {
+  public halo?: Sprite;
+  public main?: Sprite;
 }

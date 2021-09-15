@@ -12,6 +12,8 @@ import { UserReactions } from "components/molecules/UserReactions";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
+import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
+
 import "./UserProfilePicture.scss";
 
 // @debt This miniAvatars/'random avatar url' feature is currently disabled, it might be legacy code to be deleted?
@@ -55,6 +57,7 @@ export interface UserProfilePictureProp extends ContainerClassName {
    * @deprecated Note: This feature is currently disabled.
    */
   miniAvatars?: boolean;
+  size?: UserAvatarSize;
 }
 
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
@@ -64,6 +67,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition = "right",
   showNametags,
   showStatus = false,
+  size,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
 }) => {
@@ -71,9 +75,9 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const openProfileModal = useCallback(() => openUserProfileModal(user), [
+  const openProfileModal = useCallback(() => openUserProfileModal(user?.id), [
     openUserProfileModal,
-    user,
+    user?.id,
   ]);
 
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
@@ -117,6 +121,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         containerClassName="UserProfilePicture__avatar"
         showNametag={showNametags}
         showStatus={showStatus}
+        size={size}
       />
 
       {userId && (

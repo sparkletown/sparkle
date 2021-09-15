@@ -40,7 +40,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     currentVenueId: venue?.id,
   });
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue?.id });
 
   const {
     isShown: showOnlyAvailableTables,
@@ -107,6 +107,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
+                  venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
                 />
@@ -134,6 +135,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
               venueName={venue.name}
+              venueId={venue.id}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}

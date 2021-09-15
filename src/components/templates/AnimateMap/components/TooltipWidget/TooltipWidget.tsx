@@ -7,11 +7,6 @@ import { Room } from "types/rooms";
 
 import { useDispatch } from "hooks/useDispatch";
 
-// import { useSelector } from "hooks/useSelector";
-// import {
-// animateMapEventProviderSelector
-//   animateMapKeyPollSelector,
-// } from "utils/selectors";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
@@ -23,7 +18,7 @@ import "./TooltipWidget.scss";
 export interface TooltipWidgetProps {}
 
 const TOOLTIP_POOL_SIZE = 3;
-const timer = 2.5 * 1000;
+const timer = 5 * 1000;
 
 export interface TooltipWidgetItemData {
   text: string;
@@ -38,6 +33,7 @@ interface TooltipWidgetState {
   itemsData: TooltipWidgetItemData[];
 }
 
+//@debt remove this component and write another with simple handler logic
 export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
   const [state, setState] = useState({
     current: 0,
@@ -67,10 +63,9 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
       const current = state.current;
       const next = state.current === TOOLTIP_POOL_SIZE - 1 ? 0 : current + 1;
       const prev = state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : current - 1;
-      const title = venue.data.url.slice(4);
-      state.itemsData[current].text = title;
+      state.itemsData[current].text = venue.data.title;
       state.itemsData[current].room = {
-        title: title,
+        title: venue.data.title,
         subtitle: "Subtitle ",
         url: venue.data.url,
         about: "about text #",
@@ -79,7 +74,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
         width_percent: 5,
         height_percent: 5,
         isEnabled: true,
-        image_url: venue.data.imageUrlString,
+        image_url: venue.data.image_url,
       };
       state.itemsData[current].status = "active";
       state.itemsData[next].status = null;
@@ -100,17 +95,17 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
     };
   });
 
-  // const keyPoll = useSelector(animateMapKeyPollSelector);
   const dispatch = useDispatch();
   useEffect(() => {
     const callback = (type: "down" | "up") => {
       if (!state.timeoutFunc) return; //reject
       if (type === "up") {
-        const current =
-          state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
-        if (!state.itemsData[current]) return; //FIXME
-        const room = state.itemsData[current].room;
-        dispatch(setAnimateMapRoom(room));
+        // const current =
+        //   state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
+        // if (!state.itemsData[current]) return; //FIXME
+        // const room = state.itemsData[current].room;
+        // openRoomUrl(room.url);
+        dispatch(setAnimateMapRoom(state.lastVenue.data as Room));
       }
     };
     KeyPoll.on(ENTER, callback);

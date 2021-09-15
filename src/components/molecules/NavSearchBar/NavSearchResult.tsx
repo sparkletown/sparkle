@@ -37,6 +37,7 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
           user={user}
           showStatus
           containerClassName="NavSearchResult__avatar"
+          size="small"
         />
       ) : (
         <div className="NavSearchResult__image" style={imageStyles} />
