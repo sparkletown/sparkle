@@ -5,6 +5,7 @@ import { isEqual, reduce } from "lodash";
 
 import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 
+import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
@@ -131,9 +132,10 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const algoliaSearchState = useAlgoliaSearch(venueId, searchQuery);
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!algoliaSearchState.value) return [];
+    const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
+    if (!usersResults) return [];
 
-    return algoliaSearchState.value.hits.map((hit) => {
+    return usersResults.hits.map((hit) => {
       const userFields = {
         ...hit,
         id: hit.objectID,

@@ -1,11 +1,7 @@
 import { useEffect } from "react";
 import { useAsync } from "react-use";
 
-import {
-  AlgoliaSearchIndex,
-  algoliaSearchIndexes,
-  AlgoliaUsersSearchResult,
-} from "types/algolia";
+import { algoliaSearchIndexes, AlgoliaSearchResult } from "types/algolia";
 import { UserWithLocation } from "types/User";
 
 import { propName } from "utils/propName";
@@ -18,9 +14,7 @@ export const useAlgoliaSearch = (
 ) => {
   const context = useAlgoliaSearchContext();
 
-  const state = useAsync(async (): Promise<
-    AlgoliaUsersSearchResult | undefined
-  > => {
+  const state = useAsync(async (): Promise<AlgoliaSearchResult | undefined> => {
     if (!context?.client || !venueId || !searchQuery) return undefined;
 
     const indexes = algoliaSearchIndexes;
@@ -36,12 +30,10 @@ export const useAlgoliaSearch = (
       }))
     );
 
-    const indexNameToResults = Object.assign(
+    return Object.assign(
       {},
       ...indexes.map((indexName, i) => ({ [indexName]: results[i] }))
     );
-
-    return indexNameToResults[AlgoliaSearchIndex.USERS];
   }, [context?.client, searchQuery, venueId]);
 
   useEffect(() => {
