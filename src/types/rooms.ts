@@ -39,6 +39,7 @@ export interface RoomData_v2 {
   width_percent?: number;
   height_percent?: number;
   isEnabled?: boolean;
+  isLabelHidden?: boolean;
   image_url?: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;

@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -47,6 +47,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       description: room.description,
       template: room.template,
       image_url: room.image_url,
+      isLabelHidden: room.isLabelHidden,
     },
   });
 
@@ -85,6 +86,16 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
+
+  const labelOptions = useMemo(() => {
+    const LABELS = ["Count and names", "No label"];
+
+    return LABELS.map((label) => (
+      <option key={label} value={label}>
+        {label}
+      </option>
+    ));
+  }, []);
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -144,6 +155,12 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           {errors.image_url && (
             <span className="input-error">{errors.image_url.message}</span>
           )}
+
+          <Form.Label>Label Appearance (for individual space)</Form.Label>
+          <select name="isLabelHidden" id="isLabelHidden" ref={register}>
+            <option selected>Select a label option</option>
+            {labelOptions}
+          </select>
 
           <Button
             disabled={isUpdating || isDeleting}
