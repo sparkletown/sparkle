@@ -28,10 +28,6 @@ export const SPARKLE_PRIVACY_POLICY =
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
-export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
-export const SPARKLEVERSE_PRIVACY_POLICY =
-  "https://sparklever.se/privacy-policy/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
