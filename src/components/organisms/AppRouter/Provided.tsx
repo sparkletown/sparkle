@@ -39,10 +39,10 @@ export const Provided: React.FC<ProvidedProps> = ({
     : EmptyProvider;
 
   return (
-    <MaybeWorldUsersProvider venueId={venueId}>
-      <MaybeRelatedVenuesProvider venue={venue}>
+    <MaybeRelatedVenuesProvider venue={venue}>
+      <MaybeWorldUsersProvider venueId={venueId}>
         {children}
-      </MaybeRelatedVenuesProvider>
-    </MaybeWorldUsersProvider>
+      </MaybeWorldUsersProvider>
+    </MaybeRelatedVenuesProvider>
   );
 };
