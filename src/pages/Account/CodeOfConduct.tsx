@@ -4,8 +4,6 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { IS_BURN } from "secrets";
-
 import { currentVenueSelector } from "utils/selectors";
 import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
 
@@ -41,29 +39,6 @@ export interface CodeOfConductQuestion {
   text: string;
   link?: string;
 }
-
-/**
- * @debt remove this along with Playa cleanup
- * @deprecated
- */
-const BURN_CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
-  {
-    name: "commonDecency",
-    text:
-      "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
-  },
-  {
-    name: "tenPrinciples",
-    text:
-      "I agree to abide by the Ten Principles of Burning Man at the online burn",
-    link: "https://burningman.org/culture/philosophical-center/10-principles/",
-  },
-  {
-    name: "termsAndConditions",
-    text: "I agree to SparkleVerse's Terms and Conditions",
-    link: "https://sparklever.se/terms-and-conditions",
-  },
-];
 
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
@@ -130,9 +105,7 @@ export const CodeOfConduct: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const codeOfConductQuestions = IS_BURN
-    ? BURN_CODE_OF_CONDUCT_QUESTIONS
-    : venue?.code_of_conduct_questions ?? [];
+  const codeOfConductQuestions = venue?.code_of_conduct_questions ?? [];
 
   return (
     <div className="CodeOfConduct page-container">
