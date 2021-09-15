@@ -18,6 +18,7 @@ export interface DefaultAvatarsProps extends ContainerClassName {
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
   avatarClassName?: string;
+  avatarPictureClassName?: string;
 }
 
 export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
@@ -25,6 +26,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   onAvatarClick,
   isLoadingExternal,
   avatarClassName,
+  avatarPictureClassName,
   containerClassName,
 }) => {
   const firebase = useFirebase();
@@ -71,12 +73,20 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
       >
         <img
           src={avatar}
-          className="DefaultAvatars__picture-preview profile-icon"
+          className={classNames(
+            "DefaultAvatars__picture-preview profile-icon",
+            avatarPictureClassName
+          )}
           alt={`default avatar ${index}`}
         />
       </button>
     ));
-  }, [avatarClassName, defaultAvatars, uploadDefaultAvatar]);
+  }, [
+    avatarClassName,
+    avatarPictureClassName,
+    defaultAvatars,
+    uploadDefaultAvatar,
+  ]);
 
   const isLoading =
     (isSovereignVenueLoading || isLoadingCustomAvatars) &&
