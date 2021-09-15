@@ -1,5 +1,8 @@
 @import "../../../profileModalStyles";
 
-button.ProfileModalButtons__button {
+.ProfileModalButtons {
   @include ProfileModalButton;
+  &--online {
+    background-color: $send-msg-online-color;
+  }
 }
