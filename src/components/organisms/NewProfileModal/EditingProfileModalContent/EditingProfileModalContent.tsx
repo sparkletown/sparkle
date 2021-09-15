@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
-import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
+import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
+import { useAsyncFn } from "react-use";
 import { pick, uniq } from "lodash";
 
 import {
@@ -32,18 +33,12 @@ export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
-  isSubmitting: boolean;
-  handleSubmitWrapper: (
-    handler: OnSubmit<UserProfileModalFormData>
-  ) => OnSubmit<UserProfileModalFormData>;
 }
 
 export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
   user,
   venue,
   onCancelEditing,
-  isSubmitting,
-  handleSubmitWrapper,
 }) => {
   const { questions, answers } = useProfileQuestions(user, venue.id);
   const firebaseUser = useFirebase().auth()?.currentUser;
@@ -105,7 +100,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     [setValue]
   );
 
-  const onSubmit = useCallback(
+  const [{ loading: isSubmitting }, onSubmit] = useAsyncFn(
     async (data: UserProfileModalFormData) => {
       if (!firebaseUser) return;
 
@@ -154,7 +149,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   return (
-    <form onSubmit={handleSubmit(handleSubmitWrapper(onSubmit))}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <ProfileModalEditBasicInfo
         venueId={venue.id}
         user={user}
