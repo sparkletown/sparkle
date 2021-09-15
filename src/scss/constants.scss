@@ -280,7 +280,8 @@ $z-layers: (
   scrollbar-width: thin;
 
   // The webkit properties
-  @see https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+  // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
   &::-webkit-scrollbar-corner {
     background-color: $black;
   }
