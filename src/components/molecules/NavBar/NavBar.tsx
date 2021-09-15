@@ -14,11 +14,7 @@ import { isEmpty } from "lodash";
 
 import { IS_BURN } from "secrets";
 
-import {
-  ALLOW_NO_VENUE,
-  DEFAULT_SHOW_SCHEDULE,
-  PLAYA_VENUE_ID,
-} from "settings";
+import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -201,14 +197,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []
   );
 
-  if (!ALLOW_NO_VENUE && !(venueId && currentVenue)) {
-    console.warn(
-      NavBar.name,
-      `aborted display because of missing id (${venueId}) or venue (${currentVenue})`
-    );
-    return null;
-  }
-
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? currentVenue?.name;
 
@@ -249,20 +237,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                  {venueId && currentVenue && `${navbarTitle} `}
+                  <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                <div>{navbarTitle}</div>
+                venueId && currentVenue && <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers venueId={venueId ?? ""} />
+              {venueId && currentVenue && <VenuePartygoers venueId={venueId} />}
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar venueId={venueId ?? ""} />
+                {venueId && currentVenue && <NavSearchBar venueId={venueId} />}
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger

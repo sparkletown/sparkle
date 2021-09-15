@@ -37,6 +37,8 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
@@ -198,7 +200,11 @@ export const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
-    return <NotFound />;
+    return (
+      <WithNavigationBar hasBackButton>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
   if (!venue || !venueId) {

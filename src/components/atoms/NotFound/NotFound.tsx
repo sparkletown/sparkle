@@ -1,11 +1,11 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
 import TV_IMAGE from "assets/images/old-tv-404.png";
-import SPARKLEVERSE_LANDSCAPE from "assets/images/sparkleverse-logo.png";
+import SPARKLEVERSE_LANDSCAPE from "assets/images/Sparkle_logo_white_yellow.png";
 
 import "./NotFound.scss";
 
@@ -15,7 +15,6 @@ export interface NotFoundProps {
 
 export const NotFound: React.FC<NotFoundProps> = ({ fullScreen }) => {
   const history = useHistory();
-  const navigateBack = useCallback(() => history.goBack(), [history]);
   const componentClasses = classNames({
     NotFound: true,
     "NotFound--full-screen": fullScreen,
@@ -38,7 +37,7 @@ export const NotFound: React.FC<NotFoundProps> = ({ fullScreen }) => {
         <ButtonNG
           className="NotFound__button"
           variant="primary"
-          onClick={navigateBack}
+          onClick={history.goBack}
         >
           Go Back
         </ButtonNG>

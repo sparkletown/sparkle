@@ -662,9 +662,6 @@ Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
 
-// NOTE: flag for components that display Not Found screen or use some mitigation when no venueId or no venue exists
-export const ALLOW_NO_VENUE: boolean = true;
-
 export const DEFAULT_SHOW_CHAT = true;
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,
