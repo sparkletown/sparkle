@@ -106,6 +106,10 @@ export const AdminVenueView: React.FC = () => {
     return <LoadingPage />;
   }
 
+  if (!venue) {
+    return null;
+  }
+
   return (
     <WithNavigationBar hasBackButton={false} withSchedule={false}>
       <AdminRestricted>

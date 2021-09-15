@@ -12,7 +12,7 @@ import {
   VenueTemplate,
 } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithWorldId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
@@ -333,7 +333,7 @@ export const createVenue = async (
 };
 
 export const createVenue_v2 = async (
-  input: VenueInput_v2,
+  input: WithWorldId<VenueInput_v2>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
@@ -343,9 +343,10 @@ export const createVenue_v2 = async (
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")(
-    firestoreVenueInput
-  );
+  return await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    ...firestoreVenueInput,
+    worldId: input.worldId,
+  });
 };
 
 export const createWorld = async (

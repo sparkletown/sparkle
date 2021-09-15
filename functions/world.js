@@ -23,7 +23,7 @@ const checkIsAdmin = async (uid) => {
   } catch (error) {
     throw new HttpsError(
       "internal",
-      `Error occurred obtaining world ${worldId}: ${err.toString()}`
+      `Error occurred obtaining world ${worldId}: ${error.toString()}`
     );
   }
 };
@@ -100,7 +100,6 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     updatedAt: Date.now(),
-    ...(data.bannerImageUrl && { host: { icon: data.logoImageUrl } }),
     ...(data.logoImageUrl && { host: { icon: data.logoImageUrl } }),
     ...(data.rooms && { rooms: data.rooms }),
     ...(data.code_of_conduct_questions && {
