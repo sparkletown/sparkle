@@ -1,12 +1,14 @@
 import React from "react";
+import { useCss } from "react-use";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { format } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
-  DEFAULT_VENUE_BANNER,
+  DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
 } from "settings";
@@ -46,7 +48,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
-    DEFAULT_VENUE_BANNER
+    DEFAULT_LANDING_BANNER
   );
 
   const [validLogoUrl] = useValidImage(venue?.host?.icon, DEFAULT_VENUE_LOGO);
@@ -69,19 +71,20 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
   const { user } = useUser();
 
-  return (
-    <div className="container venue-entrance-experience-container">
-      <div
-        className="header"
-        style={{
-          background: `linear-gradient(
+  const containerVars = useCss({
+    background: `linear-gradient(
             0deg,
             rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
           ), url(${validBannerImageUrl}`,
-          backgroundSize: "cover",
-        }}
-      >
+    backgroundSize: "cover",
+  });
+
+  const containerClasses = classNames("header", containerVars);
+
+  return (
+    <div className="container venue-entrance-experience-container">
+      <div className={containerClasses}>
         <div className="venue-host">
           <div className="host-icon-container">
             <img className="host-icon" src={validLogoUrl} alt="host" />
