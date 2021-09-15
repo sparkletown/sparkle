@@ -87,6 +87,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
           <LinkButton
             href={banner.buttonUrl}
             className="AnnouncementMessage__action-button"
+            onClick={hideAnnouncementMessage}
           >
             {banner?.buttonDisplayText}
           </LinkButton>
