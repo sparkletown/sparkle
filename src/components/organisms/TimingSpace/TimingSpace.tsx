@@ -8,9 +8,9 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEvent } from "components/organisms/TimingEvent";
 
-import "./TimingSpaceEvent.scss";
+import "./TimingSpace.scss";
 
-export type TimingSpaceEventProps = {
+export type TimingSpaceProps = {
   spaceName: string;
   spaceEvents: WithId<VenueEvent>[];
   setEditedEvent: React.Dispatch<
@@ -19,7 +19,7 @@ export type TimingSpaceEventProps = {
   setShowCreateEventModal: () => void;
 };
 
-export const TimingSpaceEvent: React.FC<TimingSpaceEventProps> = ({
+export const TimingSpace: React.FC<TimingSpaceProps> = ({
   spaceName,
   spaceEvents,
   setShowCreateEventModal,
@@ -53,13 +53,13 @@ export const TimingSpaceEvent: React.FC<TimingSpaceEventProps> = ({
   }, [spaceEvents.length]);
 
   return (
-    <div className="TimingSpaceEvent" onClick={toggleSelectedSpace}>
-      <div className="TimingSpaceEvent__header">
-        <span className="TimingSpaceEvent__title">{spaceName}</span>{" "}
-        <span className="TimingSpaceEvent__subTitle">{spaceNameTitle}</span>
+    <div className="TimingSpace" onClick={toggleSelectedSpace}>
+      <div className="TimingSpace__header">
+        <span className="TimingSpace__name">{spaceName}</span>
+        <span className="TimingSpace__title">{spaceNameTitle}</span>
       </div>
       {selectedSpace && (
-        <div className="TimingSpaceEvent__content">{renderedSpaceEvents}</div>
+        <div className="TimingSpace__content">{renderedSpaceEvents}</div>
       )}
     </div>
   );

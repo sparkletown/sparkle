@@ -12,7 +12,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
-import { TimingSpaceEvent } from "components/organisms/TimingSpaceEvent";
+import { TimingSpace } from "components/organisms/TimingSpace";
 
 import { Checkbox } from "components/atoms/Checkbox";
 
@@ -75,7 +75,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     return spaces?.map(
       (space) =>
         space && (
-          <TimingSpaceEvent
+          <TimingSpace
             key={space}
             spaceName={space}
             spaceEvents={setSpaceEvent(space)}

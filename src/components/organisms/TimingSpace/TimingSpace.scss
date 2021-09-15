@@ -1,19 +1,19 @@
 @import "scss/constants.scss";
 
-.TimingSpaceEvent {
+.TimingSpace {
   margin: 0 $spacing--xxl $spacing--xl;
 
   &__header {
     cursor: pointer;
   }
 
-  &__title {
+  &__name {
     font-weight: $font-weight--500;
     font-size: $font-size--lg;
     line-height: 19px;
   }
 
-  &__subTitle {
+  &__title {
     font-size: $font-size--md;
     line-height: 17px;
     color: opaque-white(0.7);
