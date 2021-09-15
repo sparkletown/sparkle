@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { User, UsernameVisibility } from "types/User";
+import { BaseUser, UsernameVisibility } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -20,8 +20,12 @@ import "./UserAvatar.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
+export type UserAvatarUserFields = WithId<
+  Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode" | "status">
+>;
+
 export interface UserAvatarProps extends ContainerClassName {
-  user?: WithId<User>;
+  user?: UserAvatarUserFields;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;

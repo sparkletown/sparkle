@@ -23,12 +23,12 @@ import Step5 from "pages/Account/Step5";
 import Step6a from "pages/Account/Step6a";
 import Step6b from "pages/Account/Step6b";
 import { Admin } from "pages/Admin/Admin";
-import Admin_v2 from "pages/Admin/Admin_v2";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
+import { AdminDashboard } from "pages/AdminDashboard";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import VenuePage from "pages/VenuePage";
@@ -79,7 +79,7 @@ const AppRouter = () => {
         <Route path="/admin/:venueId" component={Admin} />
 
         <Route path="/admin" component={Admin} />
-        <Route path="/admin-ng" component={Admin_v2} />
+        <Route path="/admin-ng" component={AdminDashboard} />
 
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
