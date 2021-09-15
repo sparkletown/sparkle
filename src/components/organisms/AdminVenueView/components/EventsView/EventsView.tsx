@@ -69,7 +69,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
 
   const renderedSpaces = useMemo(() => {
     const spaces = [...new Set(events?.map((event) => event.room))];
-    const setSpaceEvent = (space: string) =>
+    const setSpaceEvents = (space: string) =>
       events?.filter((event) => event.room === space) ?? [];
 
     return spaces?.map(
@@ -78,7 +78,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           <TimingSpace
             key={space}
             spaceName={space}
-            spaceEvents={setSpaceEvent(space)}
+            spaceEvents={setSpaceEvents(space)}
             setShowCreateEventModal={setShowCreateEventModal}
             setEditedEvent={setEditedEvent}
           />

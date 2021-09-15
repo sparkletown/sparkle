@@ -8,6 +8,8 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEvent } from "components/organisms/TimingEvent";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import "./TimingSpace.scss";
 
 export type TimingSpaceProps = {
@@ -55,8 +57,16 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
   return (
     <div className="TimingSpace" onClick={toggleSelectedSpace}>
       <div className="TimingSpace__header">
-        <span className="TimingSpace__name">{spaceName}</span>
-        <span className="TimingSpace__title">{spaceNameTitle}</span>
+        <span>
+          <span className="TimingSpace__name">{spaceName}</span>
+          <span className="TimingSpace__title">{spaceNameTitle}</span>
+        </span>
+        <ButtonNG
+          className="TimingSpace__createButton"
+          onClick={setShowCreateEventModal}
+        >
+          Add experience
+        </ButtonNG>
       </div>
       {selectedSpace && (
         <div className="TimingSpace__content">{renderedSpaceEvents}</div>
