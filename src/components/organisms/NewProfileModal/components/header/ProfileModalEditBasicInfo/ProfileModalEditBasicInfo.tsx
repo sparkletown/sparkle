@@ -20,7 +20,6 @@ import "./ProfileModalEditBasicInfo.scss";
 
 export interface ProfileModalEditBasicInfoProps extends ContainerClassName {
   user: WithId<User>;
-  venueId: string;
   register: ReturnType<typeof useForm>["register"];
   setValue: ReturnType<typeof useForm>["setValue"];
   watch: ReturnType<typeof useForm>["watch"];
@@ -29,7 +28,6 @@ export interface ProfileModalEditBasicInfoProps extends ContainerClassName {
 
 export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps> = ({
   user,
-  venueId,
   register,
   setValue,
   watch,
@@ -90,7 +88,6 @@ export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps>
           { "ProfileModalEditBasicInfo--hidden": !isShowDefaults }
         )}
         avatarClassName="ProfileModalEditBasicInfo__avatar"
-        venueId={venueId}
         onAvatarClick={setPictureUrl}
       />
     </div>

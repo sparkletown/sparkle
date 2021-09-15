@@ -32,11 +32,9 @@ import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import "./NavSearchBar.scss";
 
-export interface NavSearchBarProps {
-  venueId: string;
-}
+export interface NavSearchBarProps {}
 
-export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
+export const NavSearchBar: React.FC<NavSearchBarProps> = () => {
   const {
     searchInputValue,
     searchQuery,
@@ -61,9 +59,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
+  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues();
 
   const enabledRelatedRooms = useMemo<Room[]>(
     () =>

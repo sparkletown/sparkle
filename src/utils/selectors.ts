@@ -135,6 +135,10 @@ export const posterVenuesSelector: SparkleSelector<
   WithId<PosterPageVenue>[] | undefined
 > = (state) => state.firestore.ordered.posterVenues;
 
+export const relatedVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.relatedVenues;
+
 export const screeningRoomVideosSelector: SparkleSelector<
   WithId<ScreeningRoomVideo>[] | undefined
 > = (state) => state.firestore.ordered.screeningRoomVideos;

@@ -165,3 +165,45 @@ export const sortVenues = (
       assertUnreachable(sortingOption);
   }
 };
+
+export interface GetSovereignVenueOptions {
+  previouslyCheckedVenueIds?: readonly string[];
+  maxDepth?: number;
+}
+
+export interface GetSovereignVenueReturn {
+  sovereignVenue: WithId<AnyVenue>;
+  checkedVenueIds: readonly string[];
+}
+
+export const getSovereignVenue = (
+  venueId: string,
+  venues: WithId<AnyVenue>[],
+  options?: GetSovereignVenueOptions
+): GetSovereignVenueReturn => {
+  const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
+
+  const venue = venues.find((venue) => venue.id === venueId);
+
+  if (!venue) throw new Error(`The '${venueId}' venue doesn't exist`);
+
+  if (!venue.parentId)
+    return {
+      sovereignVenue: venue,
+      checkedVenueIds: previouslyCheckedVenueIds,
+    };
+
+  if (previouslyCheckedVenueIds.includes(venueId))
+    throw new Error(
+      `Circular reference detected. '${venueId}' has already been checked`
+    );
+
+  if (maxDepth && maxDepth <= 0)
+    throw new Error("Maximum depth reached before finding the sovereignVenue.");
+
+  return getSovereignVenue(venue.parentId, venues, {
+    ...options,
+    previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
+    maxDepth: maxDepth ? maxDepth - 1 : undefined,
+  });
+};

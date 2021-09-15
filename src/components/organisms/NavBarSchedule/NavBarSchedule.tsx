@@ -77,7 +77,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ venueId, userEventIds });
+  } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -228,7 +228,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     <div className="NavBarWrapper">
       <div className={containerClasses}>
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+        {/* {<ScheduleVenueDescription />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
