@@ -234,7 +234,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar />
+                <NavSearchBar venueId={venueId} />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger

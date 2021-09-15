@@ -33,9 +33,11 @@ import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import "./NavSearchBar.scss";
 
-export interface NavSearchBarProps {}
+export interface NavSearchBarProps {
+  venueId: string;
+}
 
-export const NavSearchBar: React.FC<NavSearchBarProps> = () => {
+export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const {
     searchInputValue,
     searchQuery,
