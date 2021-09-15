@@ -45,8 +45,6 @@ import {
   VenueInput,
 } from "api/admin";
 
-import { setSovereignVenue } from "store/actions/SovereignVenue";
-
 import { UserStatus } from "types/User";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
@@ -55,7 +53,6 @@ import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-import { useDispatch } from "hooks/useDispatch";
 import { useQuery } from "hooks/useQuery";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
@@ -115,7 +112,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
 
-  const dispatch = useDispatch();
   const { sovereignVenueId, sovereignVenue } = useRelatedVenues();
 
   const {
@@ -210,17 +206,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 template: sovereignVenue.template,
               },
               user
-            ).then(() => {
-              if (sovereignVenue) {
-                dispatch(
-                  setSovereignVenue({
-                    ...sovereignVenue,
-                    userStatuses,
-                    showUserStatus: showUserStatuses,
-                  })
-                );
-              }
-            });
+            );
         } else
           await createVenue(
             {
@@ -244,15 +230,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [
-      user,
-      formError,
-      venueId,
-      history,
-      sovereignVenueId,
-      sovereignVenue,
-      dispatch,
-    ]
+    [user, formError, venueId, history, sovereignVenueId, sovereignVenue]
   );
 
   const iconsMap = useMemo(
