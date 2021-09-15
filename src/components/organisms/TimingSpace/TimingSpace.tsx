@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { VenueEvent } from "types/venues";
 
@@ -29,6 +29,14 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 }) => {
   const { isShown: selectedSpace, toggle: toggleSelectedSpace } = useShowHide();
 
+  const handleCreateButtonClick = useCallback(
+    (e) => {
+      e.stopPropagation();
+      setShowCreateEventModal();
+    },
+    [setShowCreateEventModal]
+  );
+
   const renderedSpaceEvents = useMemo(
     () =>
       spaceEvents?.map((event) => (
@@ -55,15 +63,15 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
   }, [spaceEvents.length]);
 
   return (
-    <div className="TimingSpace" onClick={toggleSelectedSpace}>
-      <div className="TimingSpace__header">
+    <div className="TimingSpace">
+      <div className="TimingSpace__header" onClick={toggleSelectedSpace}>
         <span>
           <span className="TimingSpace__name">{spaceName}</span>
           <span className="TimingSpace__title">{spaceNameTitle}</span>
         </span>
         <ButtonNG
           className="TimingSpace__createButton"
-          onClick={setShowCreateEventModal}
+          onClick={handleCreateButtonClick}
         >
           Add experience
         </ButtonNG>
