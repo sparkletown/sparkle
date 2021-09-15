@@ -140,7 +140,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           title={user.partyName ?? DEFAULT_PARTY_NAME}
           user={user}
           onClick={() => {
-            openUserProfileModal(user);
+            openUserProfileModal(user.id);
             clearSearch();
           }}
         />

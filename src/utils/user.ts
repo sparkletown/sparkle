@@ -1,4 +1,6 @@
-import { Experience, User, UserLocation } from "types/User";
+import { omit, pick } from "lodash";
+
+import { Experience, User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId } from "./id";
 import { wrapIntoSlashes } from "./string";
@@ -32,3 +34,9 @@ export const getUserLocationData = ({
     ...userLocation,
   };
 };
+
+export const omitLocationFromUser = <T extends UserWithLocation>(user: T) =>
+  omit(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");
+
+export const extractLocationFromUser = <T extends UserWithLocation>(user: T) =>
+  pick(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");

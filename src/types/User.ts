@@ -57,6 +57,7 @@ export interface BaseUser {
 export interface User extends BaseUser {
   lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
+  enteredVenueIds?: never;
 }
 
 export interface UserStatus {
