@@ -57,8 +57,8 @@ import { createJazzbar } from "utils/venue";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useQuery } from "hooks/useQuery";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -116,7 +116,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const parentIdQuery = queryParams.get("parentId");
 
   const dispatch = useDispatch();
-  const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
+  const { sovereignVenueId, sovereignVenue } = useRelatedVenues();
 
   const {
     watch,
