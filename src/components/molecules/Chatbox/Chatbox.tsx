@@ -61,10 +61,9 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     setActiveOption(undefined);
   }, []);
 
-  // @debt createPoll should be returning Promise; make sense to use useAsync here
   const onPollSubmit = useCallback(
-    (data) => {
-      createPoll(data);
+    async (data) => {
+      await createPoll(data);
       unselectOption();
     },
     [createPoll, unselectOption]
@@ -101,8 +100,8 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   }, [messages, renderedMessagesCount, deleteMessage, voteInPoll]);
 
   const onReplyToThread = useCallback(
-    ({ replyText, threadId }) => {
-      sendThreadReply({ replyText, threadId });
+    async ({ replyText, threadId }) => {
+      await sendThreadReply({ replyText, threadId });
       unselectOption();
       closeThread();
     },
@@ -135,7 +134,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         {selectedThread && (
           <ChatboxThreadControls
             text="replying to"
-            threadAuthor={selectedThread.author.partyName}
+            threadAuthor={selectedThread.from.partyName}
             closeThread={closeThread}
           />
         )}

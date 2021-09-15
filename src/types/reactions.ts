@@ -1,5 +1,7 @@
 import { ChatMessage } from "types/chat";
+import { ChatUser } from "types/User";
 
+import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
 export enum EmojiReactionType {
@@ -21,7 +23,7 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 
 interface BaseReaction {
   created_at: number;
-  created_by: string;
+  created_by: WithId<ChatUser>;
   reaction: unknown;
 }
 

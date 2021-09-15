@@ -3,19 +3,15 @@ import { isEqual } from "lodash";
 
 import { sendJukeboxMessage } from "api/jukebox";
 
-import { JukeboxMessage, SendJukeboxMessage } from "types/jukebox";
+import { JukeboxMessage } from "types/chat";
+import { SendJukeboxMessage } from "types/jukebox";
 
-import {
-  getBaseMessageToDisplay,
-  partitionMessagesFromReplies,
-} from "utils/chat";
+import { buildMessage, partitionMessagesFromReplies } from "utils/chat";
 import { WithId } from "utils/id";
-import { buildJukeboxMessage } from "utils/jukebox";
 import { jukeboxMessagesSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useWorldUsersByIdWorkaround } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -39,14 +35,13 @@ export const useJukeboxChat = ({
 };
 
 const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
-  const { userId } = useUser();
+  const { userWithId } = useUser();
 
   const sendJukeboxMsg: SendJukeboxMessage = useCallback(
     async ({ message }) => {
-      if (!venueId || !userId || !tableId) return;
+      if (!venueId || !userWithId || !tableId) return;
 
-      const processedMessage = buildJukeboxMessage<JukeboxMessage>({
-        from: userId,
+      const processedMessage = buildMessage<JukeboxMessage>(userWithId, {
         text: message,
         tableId,
       });
@@ -56,7 +51,7 @@ const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
         message: processedMessage,
       });
     },
-    [venueId, userId, tableId]
+    [venueId, userWithId, tableId]
   );
 
   return {
@@ -65,9 +60,6 @@ const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
 };
 
 const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
-  const { worldUsersById } = useWorldUsersByIdWorkaround();
-  const { userId } = useUser();
-
   useConnectVenueJukeboxMessages(venueId, tableId);
 
   const jukeboxMessages =
@@ -77,25 +69,7 @@ const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
     () => partitionMessagesFromReplies(jukeboxMessages),
     [jukeboxMessages]
   );
-  return useMemo(
-    () =>
-      messages
-        .map((message) => {
-          const displayMessage = getBaseMessageToDisplay<
-            WithId<JukeboxMessage>
-          >({
-            message,
-            usersById: worldUsersById,
-            myUserId: userId,
-          });
-
-          if (!displayMessage) return undefined;
-
-          return displayMessage;
-        })
-        .filter(isTruthy),
-    [userId, worldUsersById, messages]
-  );
+  return useMemo(() => messages.filter(isTruthy), [messages]);
 };
 
 const useConnectVenueJukeboxMessages = (

@@ -3,7 +3,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { BaseMessageToDisplay } from "types/chat";
+import { ChatMessage, DeleteMessage } from "types/chat";
 
 import { formatTimeLocalised } from "utils/time";
 
@@ -16,8 +16,8 @@ import "./ChatMessageInfo.scss";
 const deleteIconClass = "ChatMessageInfo__delete-icon";
 
 export interface ChatMessageInfoProps {
-  message: BaseMessageToDisplay;
-  deleteMessage?: () => void;
+  message: ChatMessage;
+  deleteMessage?: () => Promise<void>;
   reversed?: boolean;
 }
 
@@ -26,7 +26,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   deleteMessage,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, author } = message;
+  const { ts_utc, from } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
   const timestamp = ts_utc.toMillis();
@@ -35,9 +35,9 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
     (event) => {
       if (event.target.closest(`.${deleteIconClass}`)) return;
 
-      openUserProfileModal(author.id);
+      openUserProfileModal(from.id);
     },
-    [openUserProfileModal, author.id]
+    [openUserProfileModal, from.id]
   );
 
   const containerClasses = classNames("ChatMessageInfo", {
@@ -46,8 +46,8 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   return (
     <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={author} showStatus />
-      <span className="ChatMessageInfo__author">{author.partyName}</span>
+      <UserAvatar user={from} showStatus />
+      <span className="ChatMessageInfo__author">{from.partyName}</span>
       <span className="ChatMessageInfo__time">
         {formatTimeLocalised(timestamp)}
       </span>

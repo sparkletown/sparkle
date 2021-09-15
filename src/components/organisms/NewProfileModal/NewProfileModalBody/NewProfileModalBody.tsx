@@ -54,9 +54,9 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
   const { selectRecipientChat } = useChatSidebarControls();
 
   const openChosenUserChat = useCallback(() => {
-    selectRecipientChat(user.id);
+    selectRecipientChat(user);
     closeUserProfileModal();
-  }, [user.id, selectRecipientChat, closeUserProfileModal]);
+  }, [selectRecipientChat, user, closeUserProfileModal]);
 
   return isCurrentUser ? (
     editMode ? (

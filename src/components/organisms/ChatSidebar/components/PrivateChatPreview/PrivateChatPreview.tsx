@@ -2,14 +2,16 @@ import React from "react";
 import classNames from "classnames";
 import { formatDistanceToNow } from "date-fns";
 
-import { PreviewChatMessageToDisplay } from "types/chat";
+import { PreviewChatMessage } from "types/chat";
+
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./PrivateChatPreview.scss";
 
 export interface PrivateChatPreviewProps {
-  message: PreviewChatMessageToDisplay;
+  message: PreviewChatMessage;
   onClick?: () => void;
 }
 
@@ -17,7 +19,9 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
   message,
   onClick,
 }) => {
-  const { isRead, isMine, counterPartyUser, text, ts_utc } = message;
+  const isMine = useIsCurrentUser(message.from.id);
+
+  const { isRead, counterPartyUser, text, ts_utc } = message;
 
   const timestamp = ts_utc.toMillis();
 
