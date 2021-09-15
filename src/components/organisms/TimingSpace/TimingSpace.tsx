@@ -32,6 +32,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
   const handleCreateButtonClick = useCallback(
     (e) => {
       e.stopPropagation();
+
       setShowCreateEventModal();
     },
     [setShowCreateEventModal]
