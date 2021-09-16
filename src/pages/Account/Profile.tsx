@@ -3,8 +3,6 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { IS_BURN } from "secrets";
-
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { useUser } from "hooks/useUser";
@@ -64,7 +62,7 @@ export const Profile: React.FC = () => {
         ? `/account/questions?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
-      history.push(IS_BURN ? `/enter/step3` : nextUrl);
+      history.push(nextUrl);
     },
     [history, returnUrl, user, venueId]
   );
