@@ -107,6 +107,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   if (!venue) {
+    // @debt replace null with a `NotFound` component for better UX
     return null;
   }
 
