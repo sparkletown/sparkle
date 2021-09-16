@@ -26,6 +26,12 @@ interface EditRoomFormProps {
   onEdit?: () => void;
 }
 
+export const labelOptions = LABEL_VISIBILITY_OPTIONS.map((option) => (
+  <option key={option.label} value={option.value}>
+    {option.label}
+  </option>
+));
+
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   room,
   updatedRoom,
@@ -86,12 +92,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
-
-  const labelOptions = LABEL_VISIBILITY_OPTIONS.map((option) => (
-    <option key={option.label} value={option.value}>
-      {option.label}
-    </option>
-  ));
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>

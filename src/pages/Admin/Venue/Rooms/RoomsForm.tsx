@@ -33,6 +33,7 @@ import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { labelOptions } from "components/molecules/EditRoomForm/EditRoomForm";
 import { ImageInput } from "components/molecules/ImageInput";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -339,14 +340,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
-                    <div className="input-title">Is label hidden?</div>
-                    {/* TODO: cupdate component */}
-                    <Toggler
+                    <div className="input-title">Label Appearance</div>
+                    <select
                       name="visibility"
-                      forwardedRef={register}
-                      disabled={disable}
-                    />
+                      id="visibility"
+                      ref={register}
+                      className="EditRoomForm__dropdown"
+                    >
+                      {labelOptions}
+                    </select>
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
