@@ -5,7 +5,6 @@ import {
   APP_ID,
   AUTH_DOMAIN,
   BUCKET_URL,
-  IS_BURN,
   MEASUREMENT_ID,
   PROJECT_ID,
 } from "secrets";
@@ -29,23 +28,13 @@ export const SPARKLE_PRIVACY_POLICY =
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
-export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
-export const SPARKLEVERSE_PRIVACY_POLICY =
-  "https://sparklever.se/privacy-policy/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
-export const HOMEPAGE_URL = IS_BURN
-  ? SPARKLEVERSE_HOMEPAGE_URL
-  : SPARKLE_HOMEPAGE_URL;
+export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
 
-export const TERMS_AND_CONDITIONS_URL = IS_BURN
-  ? SPARKLEVERSE_TERMS_AND_CONDITIONS_URL
-  : SPARKLE_TERMS_AND_CONDITIONS_URL;
+export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
 
-export const PRIVACY_POLICY = IS_BURN
-  ? SPARKLEVERSE_PRIVACY_POLICY
-  : SPARKLE_PRIVACY_POLICY;
+export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
@@ -537,7 +526,7 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
+export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
