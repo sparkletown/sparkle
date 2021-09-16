@@ -14,6 +14,7 @@ import {
 
 import {
   buildMessage,
+  filterMessagesWithUserObject,
   getMessageReplies,
   partitionMessagesFromReplies,
 } from "utils/chat";
@@ -95,7 +96,9 @@ const useChatMessages = (venueId?: string) => {
   useConnectVenueChatMessages(venueId);
 
   const chatMessages =
-    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
+    filterMessagesWithUserObject<VenueChatMessage>(
+      useSelector(venueChatMessagesSelector, isEqual)
+    ) ?? noMessages;
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 

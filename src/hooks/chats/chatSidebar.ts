@@ -6,10 +6,10 @@ import {
   setVenueChatTabOpened,
 } from "store/actions/Chat";
 
-import {ChatUser} from "types/User";
+import { ChatUser } from "types/chat";
 import { AnyVenue } from "types/venues";
 
-import {WithId} from "utils/id";
+import { WithId } from "utils/id";
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,

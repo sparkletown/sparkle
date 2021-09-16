@@ -60,8 +60,6 @@ export interface User extends BaseUser {
   enteredVenueIds?: never;
 }
 
-export type ChatUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
-
 export interface UserStatus {
   status: string;
   color: string;

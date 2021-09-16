@@ -6,7 +6,11 @@ import { sendJukeboxMessage } from "api/jukebox";
 import { JukeboxMessage } from "types/chat";
 import { SendJukeboxMessage } from "types/jukebox";
 
-import { buildMessage, partitionMessagesFromReplies } from "utils/chat";
+import {
+  buildMessage,
+  filterMessagesWithUserObject,
+  partitionMessagesFromReplies,
+} from "utils/chat";
 import { WithId } from "utils/id";
 import { jukeboxMessagesSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
@@ -63,7 +67,9 @@ const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
   useConnectVenueJukeboxMessages(venueId, tableId);
 
   const jukeboxMessages =
-    useSelector(jukeboxMessagesSelector, isEqual) ?? noMessages;
+    filterMessagesWithUserObject<JukeboxMessage>(
+      useSelector(jukeboxMessagesSelector, isEqual)
+    ) ?? noMessages;
 
   const { messages } = useMemo(
     () => partitionMessagesFromReplies(jukeboxMessages),

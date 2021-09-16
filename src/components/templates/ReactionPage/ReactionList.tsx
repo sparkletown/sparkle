@@ -11,10 +11,6 @@ import {
   Reaction,
 } from "types/reactions";
 
-import { withId } from "utils/id";
-
-import { useWorldUsersByIdWorkaround } from "hooks/users";
-
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 export interface ReactionListProps {
@@ -63,7 +59,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
         </div>
       );
     });
-  }, [chatMessages, reactions, worldUsersById]);
+  }, [chatMessages, reactions]);
 
   return (
     <>

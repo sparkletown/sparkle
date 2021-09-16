@@ -5,13 +5,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
-import { ChatUser, User } from "types/User";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
 export enum ChatMessageType {
   poll = "poll",
 }
+
+export type ChatUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
 
 export type BaseChatMessage = {
   from: WithId<ChatUser>;

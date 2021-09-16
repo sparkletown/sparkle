@@ -1,5 +1,4 @@
-import { ChatMessage } from "types/chat";
-import { ChatUser } from "types/User";
+import { ChatMessage, ChatUser } from "types/chat";
 
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -116,7 +115,7 @@ export const EmojiReactionsMap: Map<
 > = EMOJI_REACTIONS.reduce(reactionsDataMapReducer, new Map());
 
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
-  reaction.created_by === userId;
+  reaction.created_by.id === userId;
 
 export const isBaseReaction = (r: unknown): r is BaseReaction =>
   typeof r === "object" && isTruthy(r) && r.hasOwnProperty("reaction");

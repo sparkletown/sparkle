@@ -7,12 +7,12 @@ import {
 } from "api/chat";
 
 import {
+  ChatUser,
   DeleteMessage,
   PrivateChatMessage,
   SendChatReply,
   SendMessage,
 } from "types/chat";
-import { ChatUser } from "types/User";
 
 import {
   buildMessage,

@@ -3,7 +3,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ChatMessage, DeleteMessage } from "types/chat";
+import { ChatMessage } from "types/chat";
 
 import { formatTimeLocalised } from "utils/time";
 

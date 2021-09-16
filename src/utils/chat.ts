@@ -1,15 +1,16 @@
 import firebase from "firebase/app";
-import { pick } from "lodash";
+import { has, isString, pick } from "lodash";
 
 import {
   BaseChatMessage,
   ChatMessage,
   ChatMessageType,
+  ChatUser,
   PollMessage,
   PreviewChatMessage,
   PrivateChatMessage,
 } from "types/chat";
-import { ChatUser, User } from "types/User";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -36,9 +37,23 @@ export const buildMessage = <T extends ChatMessage>(
   message: Pick<T, Exclude<keyof T, "ts_utc" | "from">>
 ) => ({
   ...message,
-  from: pick(from, "partyName", "pictureUrl", "anonMode") as WithId<ChatUser>,
+  from: pickChatUserFromUser(from),
   ts_utc: firebase.firestore.Timestamp.now(),
 });
+
+export const pickChatUserFromUser = (user: WithId<User>) =>
+  pick(user, "id", "partyName", "pictureUrl", "anonMode") as WithId<ChatUser>;
+
+export const messageContainsUserObject = <T extends ChatMessage>(
+  message: WithId<T>
+) => {
+  if (isString(message.from)) return false;
+  return has(message, "id");
+};
+
+export const filterMessagesWithUserObject = <T extends ChatMessage>(
+  messages: WithId<T>[] | undefined
+) => messages?.filter(messageContainsUserObject);
 
 export interface PartitionMessagesFromRepliesReturn<T extends object> {
   messages: WithId<T>[];
