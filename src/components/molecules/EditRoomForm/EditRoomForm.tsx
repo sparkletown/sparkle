@@ -5,7 +5,7 @@ import { useAsyncFn } from "react-use";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
-import { LABEL_OPTIONS, RoomData_v2, SHOW_LABEL_OPTIONS } from "types/rooms";
+import { LABEL_VISIBILITY_OPTIONS, RoomData_v2 } from "types/rooms";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -67,7 +67,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
       ...values,
-      isLabelHidden: `${values.isLabelHidden}` === LABEL_OPTIONS.NONE,
     };
 
     await upsertRoom(roomData, venueId, user, roomIndex);
@@ -88,7 +87,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
-  const labelOptions = SHOW_LABEL_OPTIONS.map((option) => (
+  const labelOptions = LABEL_VISIBILITY_OPTIONS.map((option) => (
     <option key={option.label} value={option.value}>
       {option.label}
     </option>

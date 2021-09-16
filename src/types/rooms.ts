@@ -1,5 +1,5 @@
 import { SoundConfigReference } from "./sounds";
-import { VenueTemplate } from "./venues";
+import { RoomVisibility, VenueTemplate } from "./venues";
 
 export enum RoomType {
   unclickable = "UNCLICKABLE",
@@ -20,7 +20,7 @@ export interface Room {
   width_percent: number;
   height_percent: number;
   isEnabled: boolean;
-  isLabelHidden?: boolean;
+  isLabelHidden?: RoomVisibility;
   image_url: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;
@@ -39,7 +39,7 @@ export interface RoomData_v2 {
   width_percent?: number;
   height_percent?: number;
   isEnabled?: boolean;
-  isLabelHidden?: boolean;
+  isLabelHidden?: RoomVisibility;
   image_url?: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;
@@ -52,12 +52,12 @@ export enum RoomTemplate {
 
 export type VenueRoomTemplate = VenueTemplate | RoomTemplate;
 
-export enum LABEL_OPTIONS {
-  COUNT = "count/name",
-  NONE = "none",
-}
+type LabelOption = { label: string; value: string };
 
-export const SHOW_LABEL_OPTIONS: { label: string; value: string }[] = [
-  { label: "Count and names", value: LABEL_OPTIONS.COUNT },
-  { label: "No label", value: LABEL_OPTIONS.NONE },
+export const LABEL_VISIBILITY_OPTIONS: LabelOption[] = [
+  { label: "Count & names", value: RoomVisibility.nameCount },
+  { label: "On Hover", value: RoomVisibility.hover },
+  { label: "Count only", value: RoomVisibility.count },
+  { label: "No Label", value: RoomVisibility.none },
+  { label: "Unclickable", value: RoomVisibility.unclickable },
 ];
