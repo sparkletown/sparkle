@@ -39,7 +39,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-// import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
@@ -205,10 +204,6 @@ export const VenuePage: React.FC = () => {
   if (!profile) {
     return <LoadingPage />;
   }
-
-  // if (isAccessDenied) {
-  //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
-  // }
 
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
