@@ -19,6 +19,7 @@ import {
   chatSort,
   getMessageReplies,
   partitionMessagesFromReplies,
+  pickChatUserFromUser,
 } from "utils/chat";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -38,7 +39,7 @@ export const useRecipientChat = (recipient: WithId<ChatUser>) => {
       const privateChatMessage = buildMessage<PrivateChatMessage>(userWithId, {
         text: message,
         isQuestion,
-        to: recipient,
+        to: pickChatUserFromUser(recipient),
       });
 
       return sendPrivateMessage(privateChatMessage);

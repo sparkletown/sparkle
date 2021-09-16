@@ -26,7 +26,7 @@ service cloud.firestore {
       allow read,write: if request.auth.uid == userId;
     }
     match /privatechats/{userId}/{restOfPath=**} {
-      allow create: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
+      allow create: if request.auth.uid != null && request.resource.data.from.id == request.auth.uid;
       allow read: if request.auth.uid != null && userId == request.auth.uid;
       allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'isRead');
     }
