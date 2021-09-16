@@ -19,6 +19,9 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
+export * from "./url-settings";
+export * from "./use-settings-defaults";
+
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
@@ -164,8 +167,6 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
 
 export const ACCEPTED_IMAGE_TYPES =
   "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
-
-export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
@@ -668,7 +669,6 @@ Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
 
-export const DEFAULT_SHOW_CHAT = true;
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,
   VenueTemplate.screeningroom,

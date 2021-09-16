@@ -6,7 +6,9 @@ import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
+import { ADMIN_V3_ROOT_URL } from "settings";
+
+import { adminNGVenueUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
@@ -83,7 +85,7 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const navigateToHome = useCallback(() => history.push(adminNGRootUrl()), [
+  const navigateToHome = useCallback(() => history.push(ADMIN_V3_ROOT_URL), [
     history,
   ]);
 

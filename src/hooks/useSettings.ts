@@ -1,6 +1,10 @@
 import { useMemo } from "react";
 
-import { DEFAULT_SHOW_CHAT } from "settings";
+import {
+  DEFAULT_SETTING_ADMIN_V1,
+  DEFAULT_SETTING_ADMIN_V3,
+  DEFAULT_SETTING_SHOW_CHAT,
+} from "settings";
 
 import { Settings } from "types/settings";
 
@@ -8,6 +12,7 @@ import { settingsSelector } from "utils/selectors";
 
 import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
+
 export interface UseSetingsReturnType {
   isLoaded: boolean;
   settings: Required<Settings>;
@@ -20,13 +25,20 @@ export const useSettings: () => UseSetingsReturnType = () => {
 
   const settings = useSelector(settingsSelector);
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    const {
+      showChat = DEFAULT_SETTING_SHOW_CHAT,
+      adminV1 = DEFAULT_SETTING_ADMIN_V1,
+      adminV3 = DEFAULT_SETTING_ADMIN_V3,
+    } = settings ?? {};
+
+    return {
       isLoaded: isLoaded(settings),
       settings: {
-        showChat: settings?.showChat ?? DEFAULT_SHOW_CHAT,
+        showChat,
+        adminV1,
+        adminV3,
       },
-    }),
-    [settings]
-  );
+    };
+  }, [settings]);
 };

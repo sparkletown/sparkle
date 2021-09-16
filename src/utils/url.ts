@@ -1,7 +1,11 @@
 import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
-import { VALID_URL_PROTOCOLS } from "settings";
+import {
+  ADMIN_V3_ADVANCED_URL,
+  ADMIN_V3_VENUE_URL,
+  VALID_URL_PROTOCOLS,
+} from "settings";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -11,22 +15,11 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
-const createAdminUrlHelperFor = (segment: string) => (
-  venueId?: string,
-  selectedTab?: string
-) =>
-  segment
-    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
-        segment: segment,
-        venueId: venueId,
-        selectedTab: selectedTab,
-      })
-    : generatePath("/admin-ng");
+export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_VENUE_URL, { venueId, selectedTab });
 
-export const adminNGRootUrl = createAdminUrlHelperFor("");
-export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
-export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
-export const ADMIN_CREATE_SPACE_URL = "/admin-ng/create/venue";
+export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_ADVANCED_URL, { venueId, selectedTab });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
