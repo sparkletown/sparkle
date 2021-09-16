@@ -1,0 +1,1 @@
+export { NewProfileModalBody } from "./NewProfileModalBody";

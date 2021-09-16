@@ -25,9 +25,9 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
     .map(
       (venue) =>
         !!venue?.rooms?.length && (
-          <>
-            <span className="EmergencyView_venue">{venue.name}</span>
-            <div key={venue.id} className="EmergencyView_content">
+          <div key={venue.id}>
+            <span className="EmergencyView__venue">{venue.name}</span>
+            <div key={venue.id} className="EmergencyView__content">
               {venue?.rooms?.map((room) => {
                 const isRoomLive = isRoomHasLiveEvent(room.title);
 
@@ -35,13 +35,12 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
                   <EmergencyViewRoom
                     key={room.title}
                     room={room}
-                    venueName={venue.name}
                     isLive={isRoomLive}
                   />
                 );
               })}
             </div>
-          </>
+          </div>
         )
     )
     .filter((venue) => !!venue);

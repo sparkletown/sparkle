@@ -5,7 +5,7 @@ import { IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -49,7 +49,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               <iframe
                 className="iframe-preview"
                 title="art-piece-video"
-                src={ConvertToEmbeddableUrl(venue.iframeUrl)}
+                src={convertToEmbeddableUrl({ url: venue.iframeUrl })}
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
                 allowFullScreen

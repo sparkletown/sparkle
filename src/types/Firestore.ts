@@ -1,3 +1,5 @@
+import { Settings } from "./settings";
+
 import { AuditoriumSection } from "types/auditorium";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { ChatRequest } from "types/ChatRequest";
@@ -5,6 +7,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -12,12 +15,12 @@ import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
 import { ArtCar, Firebarrel } from "./animateMap";
+import { JukeboxMessage } from "./jukebox";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
 }
-
 export interface UserVisit {
   timeSpent: number;
 }
@@ -61,11 +64,13 @@ export interface FirestoreData {
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
+  currentModalUser?: User;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
+  settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
@@ -73,6 +78,7 @@ export interface FirestoreData {
   // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
+  venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
 
   /**
@@ -91,6 +97,7 @@ export interface FirestoreOrdered {
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
+  currentModalUser?: WithId<User>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
@@ -111,6 +118,7 @@ export interface FirestoreOrdered {
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
+  venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
 
   /**

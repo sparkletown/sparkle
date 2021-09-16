@@ -16,12 +16,12 @@ import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { VenueComponent } from "../components/VenueComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
+import { HoverIn } from "../graphics/HoverIn";
+import { HoverOut } from "../graphics/HoverOut";
 import { Venue } from "../graphics/Venue";
 import { VenueHalo } from "../graphics/VenueHalo";
 import { VenueHaloAnimated } from "../graphics/VenueHaloAnimated";
 import { VenueHaloEmpty } from "../graphics/VenueHaloEmpty";
-import { VenueHoverIn } from "../graphics/VenueHoverIn";
-import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
 import EntityFactory from "./EntityFactory";
 
@@ -49,31 +49,41 @@ const updateVenueImage = (
   replicatedVenue: ReplicatedVenue,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
-) => {
-  new CropVenue(replicatedVenue.data.image_url)
+): Promise<void> => {
+  return new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
+    .setWithoutPlate(replicatedVenue.data.withoutPlate)
     .setUsersCountColor(
       replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT
     )
     .execute()
     .then((comm: CropVenue) => {
-      const size = GameConfig.VENUE_DEFAULT_SIZE;
+      const scaleSize = replicatedVenue.data.withoutPlate ? 4 : 1;
+      const size = GameConfig.VENUE_DEFAULT_SIZE * scaleSize;
       const scale = size / comm.canvas.width;
       positionComponent.scaleY = scale;
       positionComponent.scaleX = scale;
 
       const venueSprite = spriteComponent.view as Venue;
-      if (venueSprite.venue) {
-        venueSprite.venue.parent?.removeChild(venueSprite.venue);
+      if (venueSprite.main) {
+        venueSprite.main.parent?.removeChild(venueSprite.main);
       }
 
-      venueSprite.venue = Sprite.from(comm.canvas);
-      venueSprite.venue.anchor.set(0.5);
-      venueSprite.addChild(venueSprite.venue);
+      venueSprite.main = Sprite.from(comm.canvas);
+      if (replicatedVenue.data.withoutPlate) {
+        // 1 - 0.5 / ((comm.canvas.height * 2) / comm.canvas.width)
+        venueSprite.main.anchor.set(0.5, 0.5);
+      } else {
+        venueSprite.main.anchor.set(0.5);
+      }
+      venueSprite.addChild(venueSprite.main);
       return Promise.resolve();
     })
     .catch((err) => {
       console.log("err", err);
+    })
+    .finally(() => {
+      return Promise.resolve();
     });
 };
 
@@ -148,12 +158,16 @@ export const createVenueEntity = (
 
   let hoverEffectEntity: Entity;
   const hoverEffectDuration = 100;
-
+  const scaleSize = venue.data.withoutPlate ? 3.5 : 1;
   entity
     .add(positionComponent)
     .add(venueComponent)
     .add(spriteComponent)
-    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS))
+    .add(
+      new CollisionComponent(
+        GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * scaleSize
+      )
+    )
     .add(
       new HoverableSpriteComponent(
         () => {
@@ -173,7 +187,7 @@ export const createVenueEntity = (
             hoverEffectEntity = new Entity();
             hoverEffectEntity.add(
               new AnimationComponent(
-                new VenueHoverIn(comm.view as Venue, hoverEffectDuration),
+                new HoverIn(comm.view as Venue, hoverEffectDuration),
                 hoverEffectDuration
               )
             );
@@ -192,7 +206,7 @@ export const createVenueEntity = (
             hoverEffectEntity = new Entity();
             hoverEffectEntity.add(
               new AnimationComponent(
-                new VenueHoverOut(comm.view as Venue, hoverEffectDuration),
+                new HoverOut(comm.view as Venue, hoverEffectDuration),
                 hoverEffectDuration
               )
             );
@@ -223,7 +237,12 @@ export const createVenueEntity = (
 
   engine.addEntity(entity);
 
-  updateVenueImage(venue, spriteComponent, positionComponent);
+  spriteComponent.view.visible = false;
+  updateVenueImage(venue, spriteComponent, positionComponent).finally(() => {
+    if (spriteComponent && spriteComponent.view) {
+      spriteComponent.view.visible = true;
+    }
+  });
 
   return entity;
 };

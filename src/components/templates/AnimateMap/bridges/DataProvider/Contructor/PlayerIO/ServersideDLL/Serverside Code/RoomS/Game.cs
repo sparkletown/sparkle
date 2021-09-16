@@ -93,6 +93,12 @@ namespace BurningMan {
 		public override void UserJoined(Player player) {
 			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send speakers positions
 			ScheduleCallback(delegate () { player.Send(messageForPlayer); }, 50);
+			ScheduleCallback(delegate () { 
+				foreach(KeyValuePair<ulong, Position<uint, uint>> entry in usersPositions)
+                {
+					player.Send(MessagesTypesEnum.newUserJoined, entry.Key.ToString(), entry.Value.x, entry.Value.y); 
+                }
+			}, 5000);
 
 			speakers.Add(player.Id);
 			ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));

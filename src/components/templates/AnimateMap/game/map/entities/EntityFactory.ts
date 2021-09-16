@@ -3,24 +3,23 @@ import { Sprite } from "pixi.js";
 
 import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
 import {
+  ReplicatedArtcar,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
-import { Point } from "types/utility";
-
+import { GameConfig } from "../../../configs/GameConfig";
+import { ImageToCanvas } from "../../commands/ImageToCanvas";
+import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
-import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
-import { BarrelComponent } from "../components/BarrelComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
-import { EllipseComponent } from "../components/EllipseComponent";
-import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
+import { FirebarrelComponent } from "../components/FirebarrelComponent";
 import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
 import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
@@ -34,13 +33,15 @@ import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
+import { WaitingArtcarEnterClickComponent } from "../components/WaitingArtcarEnterClickComponent";
 import { WaitingVenueClickComponent } from "../components/WaitingVenueClickComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Avatar } from "../graphics/Avatar";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
+import { ArtcarNode } from "../nodes/ArtcarNode";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { JoystickNode } from "../nodes/JoystickNode";
 import { KeyboardNode } from "../nodes/KeyboardNode";
 import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
@@ -49,8 +50,12 @@ import { VenueNode } from "../nodes/VenueNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 import { WaitingVenueClickNode } from "../nodes/WaitingVenueClickNode";
 
+import { createArtcarEntity } from "./createArtcarEntity";
 import { createBotEntity } from "./createBotEntity";
-import { createFirebarrelEntity } from "./createFirebarrelEntity";
+import {
+  createFirebarrelEntity,
+  updateFirebarrelEntity,
+} from "./createFirebarrelEntity";
 import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
@@ -58,6 +63,43 @@ export default class EntityFactory {
 
   constructor(engine: Engine) {
     this.engine = engine;
+  }
+
+  public createWaitingArtcarClick(
+    artcar: ReplicatedArtcar
+  ): Entity | undefined {
+    const nodes = this.engine.getNodeList(WaitingVenueClickNode);
+    while (nodes.head) {
+      this.engine.removeEntity(nodes.head.entity);
+    }
+
+    const venueNode = this.getArtcarNode(artcar.data.id);
+    if (!venueNode) {
+      return undefined;
+    }
+
+    const tooltip = new TooltipComponent("", 50);
+    tooltip.view = new VenueTooltipEnter(
+      venueNode.artcar.artcar.data.title,
+      0x6943f5
+    );
+
+    const spriteComponent = new SpriteComponent();
+    spriteComponent.view = new Sprite();
+
+    const entity = new Entity()
+      .add(new WaitingArtcarEnterClickComponent(artcar))
+      .add(new DeadComponent(250))
+      .add(spriteComponent)
+      .add(venueNode.position)
+      .add(tooltip);
+
+    this.engine.addEntity(entity);
+
+    // removeAllTooltip on this venue
+    venueNode.entity.remove(TooltipComponent);
+
+    return entity;
   }
 
   public createWaitingVenueClick(venue: ReplicatedVenue): Entity | undefined {
@@ -191,6 +233,22 @@ export default class EntityFactory {
     nodelist.head.entity.add(comm ? comm : nodelist.head.keyboard);
   }
 
+  public createShout(x: number, y: number, text: string): Entity {
+    console.log("CREATE SHOUT");
+    // TODO refactoring
+    const spriteComponent = new SpriteComponent();
+    const view = new Sprite();
+    view.position.set(x, y);
+
+    const entity = new Entity()
+      .add(new DeadComponent(100))
+      .add(new BubbleComponent(text))
+      .add(new PositionComponent(x, y))
+      .add(spriteComponent);
+    this.engine.addEntity(entity);
+    return entity;
+  }
+
   public createBubble(userId: string, text: string): Entity | null {
     const bot = this.getBotNode(userId);
     const player = this.getPlayerNode();
@@ -209,12 +267,6 @@ export default class EntityFactory {
   }
 
   public createPlayer(user: ReplicatedUser): Entity {
-    const pictureUrls = [user.data.pictureUrl];
-
-    // if (!Array.isArray(pictureUrls)) {
-    //   pictureUrls = [pictureUrls];
-    // }
-
     // HACK
     user.data.cycle = avatarCycles[0];
 
@@ -222,7 +274,7 @@ export default class EntityFactory {
     const motionControl = new MotionControlSwitchComponent();
     const collision: CollisionComponent = new CollisionComponent(0);
 
-    const scale = 0.2;
+    const scale = 0.36;
 
     const entity: Entity = new Entity();
     const fsm: FSMBase = new FSMBase(entity);
@@ -264,109 +316,72 @@ export default class EntityFactory {
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(new ViewportFollowComponent());
 
-    fsm.changeState("flying");
+    fsm.changeState(player.FLYING);
     this.engine.addEntity(entity);
 
-    const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
+    const url = user.data.pictureUrl;
     const sprite: Avatar = new Avatar();
-    new RoundAvatar(url)
-      .execute()
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
 
-        // avatar
-        sprite.avatar = Sprite.from(comm.canvas);
-        sprite.avatar.anchor.set(0.5);
-        sprite.addChild(sprite.avatar);
+    if (GameConfig.AVATAR_TEXTURE_USE_WITHOUT_PREPROCESSING) {
+      new LoadImage(url)
+        .execute()
+        .then((comm) => {
+          if (comm.image) {
+            return new ImageToCanvas(comm.image).execute();
+          } else {
+            return Promise.reject();
+          }
+        })
+        .then((comm) => {
+          if (comm.canvas) {
+            // avatar
+            sprite.avatar = Sprite.from(comm.canvas);
+            sprite.avatar.anchor.set(0.5);
+            sprite.addChild(sprite.avatar);
+          }
+        })
+        .catch((error) => {})
+        .finally(() => {
+          const spriteComponent: SpriteComponent = new SpriteComponent();
+          spriteComponent.view = sprite;
+          entity.add(spriteComponent);
+        });
+    } else {
+      new RoundAvatar(url)
+        .execute()
+        .then((comm: RoundAvatar) => {
+          if (!comm.canvas) return Promise.reject();
 
-        return Promise.resolve(comm);
-      })
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
+          // avatar
+          sprite.avatar = Sprite.from(comm.canvas);
+          sprite.avatar.anchor.set(0.5);
+          sprite.addChild(sprite.avatar);
 
-        const spriteComponent: SpriteComponent = new SpriteComponent();
-        spriteComponent.view = sprite;
-        entity.add(spriteComponent);
-      });
+          return Promise.resolve(comm);
+        })
+        .catch(() => {})
+        .finally(() => {
+          const spriteComponent: SpriteComponent = new SpriteComponent();
+          spriteComponent.view = sprite;
+          entity.add(spriteComponent);
+        });
+    }
 
     return entity;
   }
 
-  public createArtcar(user: ReplicatedUser): Entity {
-    const pictureUrls = [user.data.pictureUrl];
+  public createArtcar(user: ReplicatedArtcar): Entity {
+    return createArtcarEntity(user, this);
+  }
 
-    // if (!Array.isArray(pictureUrls)) {
-    //   pictureUrls = [pictureUrls];
-    // }
-
-    const scale = 0.3;
-
-    const config = GameInstance.instance.getConfig();
-    const innerRadius = config.venuesMainCircleOuterRadius;
-    const outerRadius = config.borderRadius;
-    const worldCenter: Point = config.worldCenter;
-
-    const angle = this.getRandomNumber(0, 360) * (Math.PI / 180);
-    const radiusX = this.getRandomNumber(innerRadius, outerRadius);
-    const radiusY = this.getRandomNumber(innerRadius, outerRadius);
-
-    user.x = worldCenter.x + Math.cos(angle) * radiusX;
-    user.y = worldCenter.y + Math.sin(angle) * radiusY;
-
-    const entity: Entity = new Entity();
-    const fsm: FSMBase = new FSMBase(entity);
-    fsm
-      .createState("moving")
-      .add(MovementComponent)
-      .withInstance(new MovementComponent())
-      .add(EllipseComponent)
-      .withInstance(
-        new EllipseComponent(
-          worldCenter.x,
-          worldCenter.y,
-          radiusX,
-          radiusY,
-          angle
-        )
-      );
-
-    entity
-      .add(new ArtcarComponent(user, fsm))
-      .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-      .add(new HoverableSpriteComponent());
-
-    fsm.changeState("moving");
-    this.engine.addEntity(entity);
-
-    const img: HTMLImageElement = new Image();
-    const canvas: HTMLCanvasElement = document.createElement("canvas");
-    const context: CanvasRenderingContext2D = canvas.getContext(
-      "2d"
-    ) as CanvasRenderingContext2D;
-    new Promise((resolve) => {
-      img.addEventListener("load", () => {
-        canvas.width = img.height;
-        canvas.height = img.width;
-        const x = canvas.width / 2;
-        const y = canvas.height / 2;
-        const width = img.width;
-        const height = img.height;
-        context.translate(x, y);
-        context.rotate(1.5708);
-        context.drawImage(img, -width / 2, -height / 2, width, height);
-        context.rotate(-1.5708);
-        context.translate(-x, -y);
-
-        resolve(true);
-      });
-      img.src = pictureUrls[0] ?? "";
-    }).then(() => {
-      const spriteComponent: SpriteComponent = new SpriteComponent();
-      spriteComponent.view = Sprite.from(canvas);
-      entity.add(spriteComponent);
-    });
-
-    return entity;
+  public getArtcarNode(id: number): ArtcarNode | undefined {
+    const nodes = this.engine.getNodeList(ArtcarNode);
+    for (let node = nodes.head; node; node = node.next) {
+      if (node.artcar.artcar.data.id === id) {
+        return node;
+      }
+    }
+    return undefined;
   }
 
   public updatePlayerTuning(node: PlayerNode) {
@@ -451,6 +466,8 @@ export default class EntityFactory {
   }
 
   public createFireBarrel(barrel: ReplicatedFirebarrel): Entity {
+    const node = this.getFirebarrelNode(barrel.data.id);
+    if (node) return node.entity;
     return createFirebarrelEntity(barrel, this);
   }
 
@@ -468,7 +485,7 @@ export default class EntityFactory {
         .getStore()
         .dispatch(setAnimateMapFireBarrel(firebarrelId));
 
-      playerNode.entity.add(firebarrelNode.barrel);
+      playerNode.entity.add(firebarrelNode.firebarrel);
       playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);
 
       const x1 = firebarrelNode.position.x;
@@ -476,7 +493,7 @@ export default class EntityFactory {
       const x2 = playerNode.position.x;
       const y2 = playerNode.position.y;
       const d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-      const r = firebarrelNode.collision.radius / d;
+      const r = (firebarrelNode.collision.radius * 1.6) / d;
 
       const x3 =
         r * x2 + (1 - r) * x1 ||
@@ -500,7 +517,7 @@ export default class EntityFactory {
     if (!playerNode) {
       return;
     }
-    const barrelComponent = playerNode.entity.remove(BarrelComponent);
+    const barrelComponent = playerNode.entity.remove(FirebarrelComponent);
     playerNode.player.fsm.changeState(playerNode.player.FLYING);
     playerNode.entity.add(playerNode.player);
 
@@ -518,6 +535,8 @@ export default class EntityFactory {
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
+    const node = this.getVenueNode(venue);
+    if (node) return node.entity;
     return createVenueEntity(venue, this);
   }
 
@@ -572,10 +591,12 @@ export default class EntityFactory {
       playerEntity?.remove(ViewportFollowComponent);
   }
 
-  public getFirebarrelNode(id: string): BarrelNode | undefined {
-    const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
+  public getFirebarrelNode(id: string): FirebarrelNode | undefined {
+    const nodes: NodeList<FirebarrelNode> = this.engine.getNodeList(
+      FirebarrelNode
+    );
     for (let node = nodes.head; node; node = node.next) {
-      if (node.barrel.model.data.id === id) {
+      if (node.firebarrel.model.data.id === id) {
         return node;
       }
     }
@@ -593,6 +614,6 @@ export default class EntityFactory {
       return;
     }
 
-    // TODO: update image, coords, etc
+    updateFirebarrelEntity(firebarrel, this);
   }
 }

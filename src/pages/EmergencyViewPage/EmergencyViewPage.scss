@@ -8,37 +8,37 @@ $tab-item-room-width: 180px;
 
 // hide landing page content
 .venue-entrance-experience-container {
-  height: 0px;
+  height: 0;
 }
 
 .EmergencyView {
-  width: 100%;
-  height: auto;
   background-color: opaque-black(0.8);
-  position: relative;
   display: flex;
   flex-direction: column;
   z-index: z(emergency-content);
-  height: 100%;
+  position: absolute;
+  height: calc(100vh - #{$reserved-page-height});
+  width: 100%;
 
-  &__banner {
-    position: absolute;
-    height: calc(100vh - #{$navbar-height});
-    width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
+  overflow: auto;
 
-  &_main {
-    margin-bottom: $spacing--xxl;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+
+  &__main {
+    margin-top: -($spacing--xxl * 2);
+    padding: $spacing--xxl * 2 $tab-item-height 0px $tab-item-height;
   }
 
   &__weekdays {
     display: flex;
     flex-wrap: wrap;
-    margin: $spacing--xxl;
+    background-color: opaque-black(0.8);
+    margin: 0 (-$tab-item-height);
+    padding: $spacing--xxl;
 
-    &__column {
+    &-column {
       width: 33%;
       display: flex;
       flex-direction: column;
@@ -51,91 +51,98 @@ $tab-item-room-width: 180px;
     }
   }
 
-  &_tabs {
+  &__tabs {
     display: flex;
-    margin: 0 auto;
-    width: 15%;
-    justify-content: space-around;
+    width: 100%;
+    justify-content: center;
     font-size: $font-size--xl;
     font-weight: 900;
-    margin-top: $spacing--xl;
+    margin: 0 auto;
     cursor: pointer;
+    z-index: 15;
+    background-color: opaque-black(0.8);
+  }
 
-    &_item {
-      height: $tab-item-height;
+  &__item {
+    height: $tab-item-height;
+    margin: $spacing--md;
 
-      &--active {
-        border-bottom: $border-radius--xs solid $primary--live;
-      }
+    &--active {
+      border-bottom: $border-radius--xs solid $primary--live;
     }
   }
 
-  &_venue {
+  &__venue {
     margin: $spacing--lg;
     font-weight: 900;
     font-size: $font-size--lg;
   }
 
-  &_content {
+  &__content {
     display: flex;
+    flex-wrap: wrap;
+    background-color: opaque-black(0.8);
+    margin: (-$font-size--xl) (-$tab-item-height) 0px (-$tab-item-height);
+    padding: $font-size--xl $spacing--xxl $tab-item-height $spacing--xxl;
+  }
 
-    &_room {
-      height: $tab-item-room-height;
-      width: $tab-item-room-width;
-      border-radius: $border-radius--md;
-      background-color: opaque-white(0.2);
+  &__room {
+    min-height: $tab-item-room-height;
+    width: $tab-item-room-width;
+    border-radius: $border-radius--md;
+    background-color: opaque-white(0.2);
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+    margin: $spacing--lg;
+    cursor: default;
+    padding: $spacing--sm;
+  }
+
+  &__body {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    justify-content: space-between;
+    text-align: center;
+
+    &-image {
+      max-width: $tab-item-image-size;
+      max-height: $tab-item-image-size;
+      padding: $spacing--xs;
+    }
+  }
+
+  &__info {
+    display: flex;
+    width: 90%;
+
+    &-status {
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: $spacing--lg;
-      cursor: default;
+      background-color: $primary--live;
+      border-radius: $border-radius--md;
       padding: $spacing--sm;
+      width: $spacing--xxl * 2;
+      height: $spacing--xxl;
+      align-items: center;
+      justify-content: center;
+    }
 
-      &_info {
-        display: flex;
-        width: 90%;
+    &-audience {
+      display: flex;
+      background-color: opaque-white(0.2);
+      border-radius: $border-radius--md;
+      padding: $spacing--sm;
+      width: $spacing--xxl * 2;
+      height: $spacing--xxl;
+      justify-content: space-around;
+      margin-left: auto;
 
-        &_status {
-          display: flex;
-          background-color: $primary--live;
-          border-radius: $border-radius--md;
-          padding: $spacing--sm;
-          width: $spacing--xxl * 2;
-          height: $spacing--xxl;
-          align-items: center;
-          justify-content: center;
-        }
-
-        &_audience {
-          display: flex;
-          background-color: opaque-white(0.2);
-          border-radius: $border-radius--md;
-          padding: $spacing--sm;
-          width: $spacing--xxl * 2;
-          height: $spacing--xxl;
-          justify-content: space-around;
-          margin-left: auto;
-
-          span {
-            font-size: $font-size--sm;
-          }
-        }
-      }
-
-      &_body {
-        margin: auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        cursor: pointer;
-        justify-content: space-between;
-        text-align: center;
-
-        &_image {
-          max-width: $tab-item-image-size;
-          max-height: $tab-item-image-size;
-          padding: $spacing--xs;
-        }
+      span {
+        font-size: $font-size--sm;
       }
     }
   }

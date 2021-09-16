@@ -1,6 +1,9 @@
-import { Experience, User, UserLocation } from "types/User";
+import { omit, pick } from "lodash";
+
+import { Experience, User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId } from "./id";
+import { wrapIntoSlashes } from "./string";
 
 export const getUserExperience = (venueName?: string) => (
   user?: User
@@ -13,26 +16,27 @@ export const getUserExperience = (venueName?: string) => (
 export const getUserLocationData = ({
   worldUserLocationsById,
   user,
-  childLocation,
-  location,
+  portalVenueId,
 }: {
   worldUserLocationsById: Record<string, WithId<UserLocation>>;
   user: WithId<User>;
-  childLocation: string;
-  location: string;
+  portalVenueId: string;
 }) => {
   const userLocation: WithId<UserLocation> | undefined =
     worldUserLocationsById[user.id];
 
-  const userLastSeenIn = Object.keys(userLocation.lastSeenIn)[0];
-  const userLastSeenLocation =
-    userLocation.lastSeenIn?.[location] ||
-    userLocation.lastSeenIn?.[childLocation];
-
-  const isLocationMatch = userLastSeenIn && userLastSeenLocation;
+  const isLocationMatch = userLocation?.lastVenueIdSeenIn?.includes(
+    wrapIntoSlashes(portalVenueId)
+  );
 
   return {
     isLocationMatch,
-    userLastSeenLocation,
+    ...userLocation,
   };
 };
+
+export const omitLocationFromUser = <T extends UserWithLocation>(user: T) =>
+  omit(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");
+
+export const extractLocationFromUser = <T extends UserWithLocation>(user: T) =>
+  pick(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");

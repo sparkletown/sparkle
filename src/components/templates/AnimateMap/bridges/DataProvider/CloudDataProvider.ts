@@ -10,13 +10,11 @@ import {
 } from "store/reducers/AnimateMap";
 
 import { Firebarrel } from "types/animateMap";
-import { Room } from "types/rooms";
 
-import { WithVenue } from "utils/venue";
+import { getFirebaseStorageResizedImage } from "utils/image";
 
 import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
-import { getFirebaseStorageResizedImage } from "../../../../../utils/image";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 import EventProvider, { EventType } from "../EventProvider/EventProvider";
@@ -31,7 +29,15 @@ import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import playerModel from "./Structures/PlayerModel";
 
-const FREQUENCY_UPDATE = 0.005; //per second
+interface CloudDataProviderSetting {
+  playerId: string;
+  userAvatarUrl?: string;
+  firebase: ExtendedFirebaseInstance;
+  playerioGameId: string;
+  playerioMaxPlayerPerRoom: number;
+  playerioFrequencyUpdate: number;
+  playerioAdvancedMode?: boolean;
+}
 
 /**
  * Dirty class, for initiating all general data bridge logic
@@ -40,7 +46,7 @@ export class CloudDataProvider
   extends utils.EventEmitter
   implements DataProvider {
   private _updateCounter = 0;
-  private _maxUpdateCounter = 1 / FREQUENCY_UPDATE;
+  private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
 
   readonly player: PlayerDataProvider;
   readonly users: UsersDataProvider;
@@ -49,48 +55,45 @@ export class CloudDataProvider
   /**
    * Update frequency (per second)
    */
-  private _frequencyUpdate = FREQUENCY_UPDATE;
   get frequencyUpdate() {
-    return this._frequencyUpdate;
+    return this.settings.playerioFrequencyUpdate;
   }
 
   set frequencyUpdate(value) {
-    this._frequencyUpdate = value;
+    this.settings.playerioFrequencyUpdate = value;
     this._maxUpdateCounter = 1 / value;
   }
 
   private _testBots;
 
-  constructor(
-    readonly playerId: string,
-    readonly userAvatarUrl: string | undefined,
-    firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId: string,
-    readonly playerioAdvancedMode: boolean
-  ) {
+  constructor(readonly settings: CloudDataProviderSetting) {
     super();
+
+    this.settings = { ...settings };
 
     this._testBots = new PlayerIOBots(
       this,
-      this.playerioGameId,
-      this.playerioAdvancedMode
+      this.settings.playerioGameId,
+      this.settings.playerioAdvancedMode
     );
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
-    playerModel.data.pictureUrl = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
-    playerModel.data.id = playerId;
+    playerModel.data.pictureUrl =
+      this.settings.userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
+    playerModel.data.id = this.settings.playerId;
 
     this.commonInterface = new CommonLinker(
       new PlayerIODataProvider(
         this,
-        playerioGameId ?? "",
-        playerId,
-        playerioAdvancedMode,
-        (connection) => {}
-      ), //TODO: remove callback
-      new FirebaseDataProvider(firebase)
+        this.settings.playerioGameId,
+        this.settings.playerId
+      ),
+      new FirebaseDataProvider(this.settings.firebase)
     );
-    this.player = new PlayerDataProvider(playerId, this.commonInterface);
+    this.player = new PlayerDataProvider(
+      this.settings.playerId,
+      this.commonInterface
+    );
     this.users = new UsersDataProvider(this.commonInterface);
     EventProvider.on(
       EventType.SEND_SHOUT,
@@ -112,12 +115,6 @@ export class CloudDataProvider
     this.player.release();
   }
 
-  // player provider
-  // public async initPlayerPositionAsync(x: number, y: number) {
-  //   //TODO: REWORK
-  //   return this.player.initPositionAsync(x, y);
-  // }
-
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
   }
@@ -125,9 +122,7 @@ export class CloudDataProvider
   public venuesData: ReplicatedVenue[] = [];
   public firebarrelsData: ReplicatedFirebarrel[] = [];
 
-  public updateRooms(
-    data: RoomWithFullData<WithVenue<Room> | Room>[] | undefined
-  ) {
+  public updateRooms(data?: RoomWithFullData[]) {
     if (!data) return;
 
     const newVenues = data.filter(
@@ -143,7 +138,24 @@ export class CloudDataProvider
       (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
 
-    const existedVenues = this.venuesData
+    const createReplicatedVenue = (room: RoomWithFullData) => {
+      return {
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
+        data: {
+          ...room,
+          countUsers: room.countUsers ?? 0,
+          image_url: getFirebaseStorageResizedImage(room.image_url, {
+            width: 256,
+            height: 256,
+            fit: "crop",
+          }),
+          withoutPlate: room.title === "Temple" || room.title === "The Man",
+        },
+      } as ReplicatedVenue;
+    };
+
+    const modifiedVenues = this.venuesData
       .filter((venue) => {
         const room = data.find((room) => room.id === venue.data.id);
 
@@ -154,8 +166,8 @@ export class CloudDataProvider
           room.title === venue.data.title &&
           room.subtitle === venue.data.subtitle &&
           getFirebaseStorageResizedImage(room.image_url, {
-            width: 100,
-            height: 100,
+            width: 256,
+            height: 256,
             fit: "crop",
           }) === venue.data.image_url &&
           room.isLive === venue.data.isLive &&
@@ -166,50 +178,22 @@ export class CloudDataProvider
       .map((venue) => {
         const room = data.find((item) => item.id === venue.data.id);
         if (!room) return venue;
-        const vn = {
-          x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-          y: (room.y_percent / 100) * 9920 + 50,
-          data: {
-            ...room,
-            countUsers: room.countUsers ?? 0,
-            image_url: getFirebaseStorageResizedImage(room.image_url, {
-              width: 100,
-              height: 100,
-              fit: "crop",
-            }),
-          },
-        } as ReplicatedVenue;
-        return vn;
+        return createReplicatedVenue(room);
       });
-    existedVenues.forEach((venue) => {
-      this.emit(DataProviderEvent.VENUE_UPDATED, venue);
+    modifiedVenues.forEach((modifiedVenue) => {
+      const indx = this.venuesData.findIndex(
+        (venue) => venue.data.id === modifiedVenue.data.id
+      );
+      if (indx >= 0) this.venuesData[indx] = modifiedVenue;
+      this.emit(DataProviderEvent.VENUE_UPDATED, modifiedVenue);
     });
 
     newVenues.forEach((room) => {
-      const countUsers = "countUsers" in room ? room.countUsers : 0;
-      const vn = {
-        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-        y: (room.y_percent / 100) * 9920 + 50,
-        data: {
-          ...room,
-          countUsers: countUsers,
-          image_url: getFirebaseStorageResizedImage(room.image_url, {
-            width: 100,
-            height: 100,
-            fit: "crop",
-          }),
-        },
-      } as ReplicatedVenue;
+      const vn = createReplicatedVenue(room);
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
-    // const fff = this.venuesData.filter(item => item.data.countUsers);
-    // eslint-disable-next-line no-debugger
-    // debugger;
   }
-
-  // public usersData: ReplicatedUser[] = []
-  private countersForVenue = new Map<string, number>();
 
   private isUpdateUsersLocked = false;
 
@@ -237,8 +221,8 @@ export class CloudDataProvider
           partyName: user.partyName,
           messengerId: getIntByHash(user.id),
           pictureUrl: getFirebaseStorageResizedImage(user.pictureUrl ?? "", {
-            width: 100,
-            height: 100,
+            width: 64,
+            height: 64,
             fit: "crop",
           }),
           dotColor: 0xabfcfb,
@@ -291,6 +275,8 @@ export class CloudDataProvider
           firebarrel.iconSrc === existFirebarrel.data.iconSrc &&
           firebarrel.trackSrc === existFirebarrel.data.trackSrc &&
           firebarrel.isLocked === existFirebarrel.data.isLocked &&
+          firebarrel.connectedUsers?.length ===
+            existFirebarrel.data.connectedUsers?.length &&
           firebarrel.maxUserCount === existFirebarrel.data.maxUserCount
         );
       })
@@ -310,6 +296,10 @@ export class CloudDataProvider
       });
 
     existFirebarrels.forEach((firebarrel) => {
+      const index = this.firebarrelsData.findIndex(
+        (fb) => fb.data.id === firebarrel.data.id
+      );
+      this.firebarrelsData[index] = firebarrel;
       this.emit(DataProviderEvent.FIREBARREL_UPDATED, firebarrel);
     });
 

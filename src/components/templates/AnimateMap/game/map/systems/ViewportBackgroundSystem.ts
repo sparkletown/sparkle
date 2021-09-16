@@ -19,10 +19,12 @@ import {
   ShaderDataProvider,
   staticLightData,
 } from "../graphics/shaders/StaticShaderData";
-import { BarrelNode } from "../nodes/BarrelNode";
+import { ArtcarNode } from "../nodes/ArtcarNode";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 
 export class ViewportBackgroundSystem extends System {
-  private barrels?: NodeList<BarrelNode>;
+  private barrels?: NodeList<FirebarrelNode>;
+  private artcars?: NodeList<ArtcarNode>;
 
   private viewport: Viewport;
   private staticLightManager: ShaderDataProvider;
@@ -31,7 +33,8 @@ export class ViewportBackgroundSystem extends System {
   private readonly mapLOD_0: Sprite;
   private sunKeyFramer: KeyFramer = sunKeyFramer;
   private moonKeyFramer: KeyFramer = moonKeyFramer;
-  private lightsPos = new Float32Array(512);
+  private lightsPos = new Float32Array(260);
+  private lightsCol = new Int32Array(130);
   private initialized = false;
   private worldDivision = 0;
   private worldTileWidth = 0;
@@ -68,7 +71,8 @@ export class ViewportBackgroundSystem extends System {
   }
 
   addToEngine(engine: Engine) {
-    this.barrels = engine.getNodeList(BarrelNode);
+    this.barrels = engine.getNodeList(FirebarrelNode);
+    this.artcars = engine.getNodeList(ArtcarNode);
     this.setup().then(() => {
       this.setupTree();
 
@@ -103,6 +107,8 @@ export class ViewportBackgroundSystem extends System {
   }
 
   removeFromEngine(engine: Engine) {
+    this.barrels = undefined;
+    this.artcars = undefined;
     if (this.mapLOD_0.children.length) {
       this.mapLOD_0.removeChildren();
       this.currentVisibleTiles.clear();
@@ -195,10 +201,50 @@ export class ViewportBackgroundSystem extends System {
     for (let i = this.barrels?.head; i; i = i?.next) {
       this.lightsPos[lightQuantity * 2] = i.position.x;
       this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.firebarrel.model.data.connectedUsers
+        ?.length
+        ? 0xf6951d
+        : 0xf6951d;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
+      lightQuantity += 1;
+    }
+
+    for (let i = this.artcars?.head; i; i = i?.next) {
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsCol[lightQuantity] = i.artcar.artcar.color;
       lightQuantity += 1;
     }
 
     this.container.filters[0].uniforms.lightsPos = this.lightsPos;
+    this.container.filters[0].uniforms.lightsCol = this.lightsCol;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
     this.container.filters[0].uniforms.zoom = this.viewport.scale.x;
     this.container.filters[0].uniforms.frame = [

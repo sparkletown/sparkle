@@ -16,11 +16,12 @@ const EmergencyViewTabs: React.FC<EmergencyViewTabsProps> = ({
   updateTab,
 }) => {
   const tabClasses = (tabId: number) =>
-    classNames("EmergencyView_tabs_item", {
-      "EmergencyView_tabs_item--active": tabId === selectedTab,
+    classNames("EmergencyView__item", {
+      "EmergencyView__item--active": tabId === selectedTab,
     });
+
   return (
-    <div className="EmergencyView_tabs">
+    <div className="EmergencyView__tabs">
       {tabs.map((tab) => {
         const classNameValue = tabClasses(tab.id);
 

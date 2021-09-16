@@ -12,8 +12,8 @@ import { stopLocalTrack } from "utils/twilio";
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
-import Participant from "components/organisms/Room/Participant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
+import { Participant } from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import "./Room.scss";
@@ -27,7 +27,6 @@ interface RoomProps {
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
-  hasChairs?: boolean;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
 }
@@ -42,7 +41,6 @@ const Room: React.FC<RoomProps> = ({
   setUserList,
   setParticipantCount,
   setSeatedAtTable,
-  hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
 }) => {

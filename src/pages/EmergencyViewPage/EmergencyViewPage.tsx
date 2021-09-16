@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -31,9 +33,9 @@ import EmergencyViewTabs from "./EmergencyViewTabs";
 
 import "./EmergencyViewPage.scss";
 
-export const emptyPersonalizedSchedule = {};
-
 dayjs.extend(advancedFormat);
+
+export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
@@ -90,12 +92,8 @@ export const EmergencyViewPage: React.FC = () => {
         if (!dailyEvents.length) {
           return null;
         }
-
         return (
-          <div
-            className="EmergencyView__weekdays__column"
-            key={day.toISOString()}
-          >
+          <div className="EmergencyView__weekdays-column" key={day.getTime()}>
             <ScheduleEventSubListNG
               events={eventsFilledWithPriority}
               title={`Events on ${formatDateRelativeToNow(day)}`}
@@ -112,6 +110,12 @@ export const EmergencyViewPage: React.FC = () => {
     DEFAULT_VENUE_BANNER
   );
 
+  const containerVars = useCss({
+    "background-image": `url(${validBannerImageUrl})`,
+  });
+
+  const containerClasses = classNames("EmergencyView", containerVars);
+
   if (venueRequestStatus && !venue && !venueId) {
     return <>This venue does not exist</>;
   }
@@ -121,16 +125,10 @@ export const EmergencyViewPage: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar withSchedule={false}>
-      <div
-        className="EmergencyView__banner"
-        style={{
-          backgroundImage: `url(${validBannerImageUrl})`,
-        }}
-      ></div>
-      <div className="EmergencyView">
+    <WithNavigationBar withSchedule={false} hasBackButton={false}>
+      <div className={containerClasses}>
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
-        <div className="EmergencyView_main">
+        <div className="EmergencyView__main">
           {!selectedTab ? (
             <EmergencyViewPageRooms
               descendantVenues={descendantVenues}

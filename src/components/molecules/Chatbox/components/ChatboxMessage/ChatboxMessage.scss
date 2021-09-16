@@ -1,0 +1,11 @@
+@import "scss/constants.scss";
+
+.ChatboxMessage {
+  &__date-label {
+    align-self: center;
+    color: $light-grey--lightest;
+    padding-top: $spacing--md;
+    padding-bottom: $spacing--xs;
+    user-select: none;
+  }
+}

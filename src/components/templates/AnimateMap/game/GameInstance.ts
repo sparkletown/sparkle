@@ -4,6 +4,7 @@ import {
   Loader,
   LoaderResource,
   Renderer,
+  settings,
 } from "pixi.js";
 import { Store } from "redux";
 import { subscribeActionAfter } from "redux-subscribe-action";
@@ -128,15 +129,17 @@ export class GameInstance {
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
-      return new TimeoutCommand(1000)
-        .execute()
-        .then(() => {
-          return new WaitClickForHeroCreation().execute();
-        })
-        .then(async (command: WaitClickForHeroCreation) => {
-          await this._play(command.clickPoint);
-          this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
-        });
+      return (
+        new TimeoutCommand(1000)
+          .execute()
+          // .then(() => {
+          //   return new WaitClickForHeroCreation().execute();
+          // })
+          .then(async (command: WaitClickForHeroCreation) => {
+            await this._play(command.clickPoint);
+            this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
+          })
+      );
     }
   }
 
@@ -160,7 +163,7 @@ export class GameInstance {
     const position = this._mapContainer?.entityFactory?.getPlayerNode()
       ?.position;
     if (position) this.dataProvider.setPlayerPosition(position.x, position.y);
-    this.dataProvider.update(dt);
+    this.dataProvider.update(dt / settings.TARGET_FPMS);
     this._mapContainer?.update(dt);
     if (Date.now() % 200 === 0) {
       //TODO: can find better decision? Possibly resize on rerender?
@@ -219,6 +222,7 @@ export class GameInstance {
 
     EventProvider.on(EventType.USER_JOINED, (user: ReplicatedUser) => {
       console.log(`- ${user} join to room`);
+      this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
     EventProvider.on(EventType.USER_LEFT, (user: ReplicatedUser) => {

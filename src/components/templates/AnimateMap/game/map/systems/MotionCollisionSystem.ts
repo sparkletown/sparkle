@@ -1,12 +1,15 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { MovementComponent } from "../components/MovementComponent";
 import { PositionComponent } from "../components/PositionComponent";
 import EntityFactory from "../entities/EntityFactory";
-import { BarrelNode } from "../nodes/BarrelNode";
+import { ArtcarNode } from "../nodes/ArtcarNode";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
 import { VenueNode } from "../nodes/VenueNode";
@@ -15,7 +18,8 @@ export class MotionCollisionSystem extends System {
   private player?: NodeList<PlayerNode>;
   private colliders?: NodeList<MotionCollidedNode>;
   private venues?: NodeList<VenueNode>;
-  private barrels?: NodeList<BarrelNode>;
+  private artcars?: NodeList<ArtcarNode>;
+  private barrels?: NodeList<FirebarrelNode>;
 
   private creator: EntityFactory;
 
@@ -28,25 +32,42 @@ export class MotionCollisionSystem extends System {
     this.player = engine.getNodeList(PlayerNode);
     this.colliders = engine.getNodeList(MotionCollidedNode);
     this.venues = engine.getNodeList(VenueNode);
-    this.barrels = engine.getNodeList(BarrelNode);
+    this.artcars = engine.getNodeList(ArtcarNode);
+    this.barrels = engine.getNodeList(FirebarrelNode);
   }
 
   removeFromEngine(engine: Engine) {
     this.player = undefined;
     this.colliders = undefined;
     this.venues = undefined;
+    this.artcars = undefined;
     this.barrels = undefined;
   }
 
   update(time: number) {
     const playgroundMap = GameInstance.instance.getConfig().playgroundMap;
 
+    if (!this.colliders || !this.colliders.head) {
+      return;
+    }
+
     if (
-      this.colliders &&
-      this.colliders.head &&
-      (this.colliders.head.movement.velocityX !== 0 ||
-        this.colliders.head.movement.velocityY !== 0)
+      this.colliders.head.movement.velocityX === 0 &&
+      this.colliders.head.movement.velocityY === 0
     ) {
+      for (let node = this.artcars?.head; node; node = node?.next) {
+        if (this.artcarHittingOnThePlayer(node, this.colliders?.head)) {
+          this.creator.createWaitingArtcarClick(node.artcar.artcar);
+
+          GameInstance.instance.eventProvider.emit(
+            EventType.ON_VENUE_COLLISION,
+            node.artcar.artcar as ReplicatedVenue
+          );
+
+          break;
+        }
+      }
+    } else {
       if (
         this.collidePlaygroudnBounds(
           time,
@@ -90,6 +111,26 @@ export class MotionCollisionSystem extends System {
             EventType.ON_VENUE_COLLISION,
             node.venue.model
           );
+          break;
+        }
+      }
+
+      for (let node = this.artcars?.head; node; node = node.next) {
+        if (
+          this.collideObject(
+            this.colliders.head,
+            previousX,
+            previousY,
+            node.position,
+            node.collision
+          )
+        ) {
+          this.creator.createWaitingArtcarClick(node.artcar.artcar);
+
+          // GameInstance.instance.eventProvider.emit(
+          //     EventType.ON_VENUE_COLLISION,
+          //     node.venue.model
+          // );
           break;
         }
       }
@@ -177,7 +218,19 @@ export class MotionCollisionSystem extends System {
     return collide;
   }
 
-  public collideObject(
+  private artcarHittingOnThePlayer(
+    artcarNode: ArtcarNode,
+    playerNode: MotionCollidedNode
+  ): boolean {
+    const x1 = artcarNode.position.x;
+    const y1 = artcarNode.position.y;
+    const x2 = playerNode.position.x;
+    const y2 = playerNode.position.y;
+    const distance = Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    return distance <= artcarNode.collision.radius;
+  }
+
+  private collideObject(
     player: MotionCollidedNode,
     previousX: number,
     previousY: number,
