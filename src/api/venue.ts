@@ -198,12 +198,15 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
 
-type Asd = Partial<WithId<AnyVenue>> & {
+type VenueInputForm = Partial<WithId<AnyVenue>> & {
   mapBackgroundImage_url?: string;
   mapBackgroundImage_file?: FileList;
 };
 
-export const updateVenueNG = async (venue: Asd, user: firebase.UserInfo) => {
+export const updateVenueNG = async (
+  venue: VenueInputForm,
+  user: firebase.UserInfo
+) => {
   const file = venue.mapBackgroundImage_file?.[0];
   if (file) {
     const storageRef = firebase.storage().ref();
