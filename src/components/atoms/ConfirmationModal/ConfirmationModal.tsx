@@ -50,24 +50,18 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <Modal
-      className="confirmation-modal"
+      className="ConfirmationModal"
       show={isShown}
       onHide={hide}
       centered={centered}
     >
       <Modal.Body>
         <div>
-          {hasHeader && <h3 className="confirm-header">{header}</h3>}
-          <div className="confirm-message">{message}</div>
-          <div className="confirmation-buttons">
-            <ButtonNG className="cancel-button" onClick={cancel}>
-              {no}
-            </ButtonNG>
-            <ButtonNG
-              className="confirm-button"
-              variant="primary"
-              onClick={confirm}
-            >
+          {hasHeader && <Modal.Title>{header}</Modal.Title>}
+          <div className="ConfirmationModal__message">{message}</div>
+          <div className="ConfirmationModal__buttons">
+            <ButtonNG onClick={cancel}>{no}</ButtonNG>
+            <ButtonNG variant="primary" onClick={confirm}>
               {yes}
             </ButtonNG>
           </div>
