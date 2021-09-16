@@ -27,9 +27,9 @@ export const HelpCenter: React.FC = () => {
     [startLoading]
   );
 
-  const handleBackClicked = () => {
+  const handleBackClicked = useCallback(() => {
     setUrl("");
-  };
+  }, []);
 
   return (
     <>
