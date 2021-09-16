@@ -18,6 +18,9 @@ src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/Ser
 # account keys
 /scripts/*.json
 
+# script output files
+/scripts/*.csv
+
 # misc
 .DS_Store
 .env
