@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import firebase from "firebase/app";
+import React, { useEffect, useState } from "react";
+
+import { updateIframeUrl } from "api/venue";
 
 import { AnyVenue } from "types/venues";
 
@@ -20,18 +21,12 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
     setIframeUrl(venue?.iframeUrl || "");
   }, [venue]);
 
-  // @debt refactor this into api/*
-  const updateIframeUrl = (iframeUrl: string) => {
-    firebase
-      .functions()
-      .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl })
-      .catch((e) => setError(e.toString()));
-  };
-
   const saveIframeUrl = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    updateIframeUrl(iframeUrl);
+    updateIframeUrl(iframeUrl, venueId).catch((err) =>
+      setError(err.toString())
+    );
   };
 
   return (

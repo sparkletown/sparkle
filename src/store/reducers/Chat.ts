@@ -1,5 +1,6 @@
 import { ChatActions, ChatActionTypes } from "store/actions/Chat";
-import { ChatTypes, ChatSettings } from "types/chat";
+
+import { ChatSettings, ChatTypes } from "types/chat";
 
 export type ChatState = {
   isChatSidebarVisible: boolean;

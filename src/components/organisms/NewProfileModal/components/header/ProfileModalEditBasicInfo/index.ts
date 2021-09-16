@@ -1,0 +1,1 @@
+export { ProfileModalEditBasicInfo } from "./ProfileModalEditBasicInfo";

@@ -1,31 +1,35 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
-import "firebase/functions";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-
-import { AnyVenue, VenueEvent } from "types/venues";
-import { User } from "types/User";
-
-import { openUrl, venueInsideUrl } from "utils/url";
-import { WithId } from "utils/id";
-import "./OnlineStats.scss";
-import Fuse from "fuse.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Bugsnag from "@bugsnag/js";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useInterval } from "hooks/useInterval";
-import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
-import { OnlineStatsData } from "types/OnlineStatsData";
-import { getRandomInt } from "utils/getRandomInt";
-import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
-import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
-import { playaAddress } from "utils/address";
-import { currentVenueSelectorData } from "utils/selectors";
-import { FIVE_MINUTES_MS } from "utils/time";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import firebase from "firebase/app";
+import Fuse from "fuse.js";
 
+import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
+
+import { OnlineStatsData } from "types/OnlineStatsData";
+import { User } from "types/User";
+import { AnyVenue, VenueEvent } from "types/venues";
+
+import { playaAddress } from "utils/address";
+import { getRandomInt } from "utils/getRandomInt";
+import { WithId } from "utils/id";
+import { currentVenueSelector } from "utils/selectors";
+import { FIVE_MINUTES_MS } from "utils/time";
+import { openUrl, venueInsideUrl } from "utils/url";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
+
+import { useInterval } from "hooks/useInterval";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
+
+import "firebase/functions";
+
+import "./OnlineStats.scss";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -72,8 +76,8 @@ const OnlineStats: React.FC = () => {
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
 
-  const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+  const venue = useSelector(currentVenueSelector);
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue?.id });
 
   const venueName = venue?.name;
   const { openUserProfileModal } = useProfileModalControls();
@@ -306,7 +310,7 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => openUserProfileModal(user)}
+                          onClick={() => openUserProfileModal(user.id)}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
@@ -6,18 +6,16 @@ import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import {
-  isEventLiveOrFuture,
   eventsByStartUtcSecondsSorter,
+  isEventLiveOrFuture,
 } from "utils/event";
 
-import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentVenueUsers } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import { Map, RoomModal } from "./components";
-
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import "./PartyMap.scss";
 
@@ -27,7 +25,7 @@ export interface PartyMapProps {
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 
@@ -91,12 +89,6 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />
-
-      {venue.config?.showRangers && (
-        <div className="sparkle-fairies">
-          <SparkleFairiesPopUp />
-        </div>
-      )}
     </div>
   );
 };

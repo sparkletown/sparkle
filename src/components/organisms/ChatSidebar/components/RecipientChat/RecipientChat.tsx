@@ -1,33 +1,27 @@
 import React, { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
-
-import { Chatbox } from "components/molecules/Chatbox";
-import { UserAvatar } from "components/atoms/UserAvatar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
+
+import { Chatbox } from "components/molecules/Chatbox";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
-import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 export interface RecipientChatProps {
   recipientId: string;
-  venue: WithId<AnyVenue>;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
-  venue,
 }) => {
   const {
     messagesToDisplay,
     recipient,
 
     sendMessageToSelectedRecipient,
-    deleteMessage,
     markMessageRead,
     sendThreadReply,
   } = useRecipientChat(recipientId);
@@ -54,18 +48,15 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           className="recipient-chat__back-icon"
           size="sm"
         />
-        <UserAvatar user={recipient} showStatus />
+        <UserAvatar user={recipient} showStatus size="small" />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <div className="recipient-chat__chatbox">
-        <Chatbox
-          messages={messagesToDisplay}
-          sendMessage={sendMessageToSelectedRecipient}
-          deleteMessage={deleteMessage}
-          sendThreadReply={sendThreadReply}
-          venue={venue}
-        />
-      </div>
+      <Chatbox
+        containerClassName="recipient-chat__chatbox"
+        messages={messagesToDisplay}
+        sendMessage={sendMessageToSelectedRecipient}
+        sendThreadReply={sendThreadReply}
+      />
     </div>
   );
 };

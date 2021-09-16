@@ -1,9 +1,9 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch,
-  Redirect,
 } from "react-router-dom";
 
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
@@ -15,8 +15,9 @@ import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
 import { Provided } from "components/organisms/AppRouter/Provided";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
@@ -66,6 +67,14 @@ const VenuePage = lazy(() =>
   )
 );
 
+const EmergencyViewPage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::EmergencyViewPage", () =>
+    import("pages/EmergencyViewPage").then(({ EmergencyViewPage }) => ({
+      default: EmergencyViewPage,
+    }))
+  )
+);
+
 export const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
@@ -74,7 +83,11 @@ export const AppRouter: React.FC = () => {
           <Route path="/enter" component={EnterSubrouter} />
           <Route path="/account" component={AccountSubrouter} />
           <Route path="/admin" component={AdminSubrouter} />
-          <Route path="/admin-ng" component={AdminSubrouter} />
+          <Route path="/admin-ng">
+            <Provided withRelatedVenues>
+              <AdminSubrouter />
+            </Provided>
+          </Route>
 
           <Route
             path="/login/:venueId/:customToken"
@@ -99,6 +112,12 @@ export const AppRouter: React.FC = () => {
               <VenuePage />
             </Provided>
           </Route>
+          <Route path="/m/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <EmergencyViewPage />
+            </Provided>
+          </Route>
+
           <Route path="/version" component={VersionPage} />
 
           <Route

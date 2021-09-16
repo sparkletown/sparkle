@@ -1,13 +1,13 @@
 import React from "react";
 
-// Typings
-import { DetailsPreviewProps } from "./DetailsPreview.types";
-
-// Styles
-import * as S from "./DetailsPreview.styles";
 import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+// Styles
+import * as S from "./DetailsPreview.styles";
+// Typings
+import { DetailsPreviewProps } from "./DetailsPreview.types";
 
 const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,
@@ -18,7 +18,7 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
 }) => {
   const renderLogo = () => (
     <S.Logo
-      backgroundImage={!!logoImageUrl ? logoImageUrl : DEFAULT_VENUE_LOGO}
+      backgroundImage={logoImageUrl ? logoImageUrl : DEFAULT_VENUE_LOGO}
     />
   );
 
@@ -38,9 +38,7 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   return (
     <S.Wrapper>
       <S.PreviewCard
-        backgroundImage={
-          !!bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER
-        }
+        backgroundImage={bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER}
       >
         {renderLogo()}
         {renderName()}

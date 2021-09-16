@@ -22,6 +22,9 @@
         width: 100%;
         border-radius: 15px;
       }
+      .participant--video-disabled {
+        border-radius: 15px;
+      }
 
       .mirrored {
         transform: scale(-1, 1);
@@ -29,10 +32,8 @@
 
       .profile-icon {
         position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 25px;
-        height: 25px;
+        bottom: $spacing--sm;
+        left: $spacing--sm;
         border-radius: 188%;
         z-index: z(jazzbar-participant-profile-icon);
       }
@@ -42,12 +43,10 @@
         bottom: 10px;
         left: 0;
         right: 0;
-        text-align: center;
-        display: flex;
-        justify-content: center;
       }
 
       .mute-other-container {
+        cursor: pointer;
         position: absolute;
         top: 10px;
         right: 10px;

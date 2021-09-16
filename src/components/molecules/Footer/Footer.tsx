@@ -5,6 +5,7 @@ import {
   PRIVACY_POLICY,
   TERMS_AND_CONDITIONS_URL,
 } from "settings";
+
 import { getExtraLinkProps } from "utils/url";
 
 import "./Footer.scss";

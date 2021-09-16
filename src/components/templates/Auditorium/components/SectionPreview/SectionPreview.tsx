@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { SECTION_PREVIEW_USER_DISPLAY_COUNT } from "settings";
 
-import { AuditoriumVenue } from "types/venues";
 import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumVenue } from "types/venues";
 
-import { WithId } from "utils/id";
 import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
+import { WithId } from "utils/id";
 
 import { useRecentVenueUsers } from "hooks/users";
 
@@ -28,7 +28,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const sectionCapacity = getSectionCapacity(venue, section);
 

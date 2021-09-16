@@ -170,11 +170,29 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/summit-hack" ]; then
               ENV=sparkle-summit-hack
             fi
+            if [ $CIRCLE_BRANCH = "env/northwell" ]; then
+              ENV=sparkle-northwell
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
-            # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
-            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+            COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' | sort | xargs md5sum | md5sum | awk '{ print $1 }')
+            STORED_HASH=$(./node_modules/.bin/firebase functions:config:get checksum.fileshash --token "$FIREBASE_TOKEN" | tr -d '"')
+
+            echo -e "Computed hash over *.js, *.json files:\t$COMPUTED_HASH"
+            echo -e "Stored hash:\t$STORED_HASH"
+
+            if [ "$COMPUTED_HASH" == "$STORED_HASH" ]
+            then
+              echo "Functions haven't changed. Nothing to deploy."
+            else
+              echo "Functions changed. Deploying..."
+              # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
+              ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+
+              echo "Saving new hash $COMPUTED_HASH"
+              ./node_modules/.bin/firebase functions:config:set checksum.fileshash=$COMPUTED_HASH --token "$FIREBASE_TOKEN"
+            fi
 
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
 
@@ -350,6 +368,12 @@ jobs:
               TARGET=sparkle-summit-hack
               RELEASE_STAGE=env/summit-hack
             fi
+            if [ $CIRCLE_BRANCH = "env/northwell" ]; then
+              PREFIX=NORTHWELL_
+              ENV=sparkle-northwell
+              TARGET=sparkle-northwell
+              RELEASE_STAGE=env/northwell
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -415,6 +439,7 @@ workflows:
                 - env/burn-staging
                 - env/github
                 - env/summit-hack
+                - env/northwell
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -448,6 +473,7 @@ workflows:
                 - env/burn-staging
                 - env/github
                 - env/summit-hack
+                - env/northwell
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

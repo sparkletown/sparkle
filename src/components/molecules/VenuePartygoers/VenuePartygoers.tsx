@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
-import { useRecentWorldUsers } from "hooks/users";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentWorldUsers } from "hooks/users";
 
 import "./VenuePartygoers.scss";
 

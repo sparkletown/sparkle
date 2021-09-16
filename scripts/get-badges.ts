@@ -7,7 +7,6 @@ import { chunk } from "lodash";
 import fs from "fs";
 import { UserVisit } from "../src/types/Firestore";
 import { User } from "../src/types/User";
-
 import { WithId, withId } from "../src/utils/id";
 import { formatSecondsAsHHMMSS } from "../src/utils/time";
 

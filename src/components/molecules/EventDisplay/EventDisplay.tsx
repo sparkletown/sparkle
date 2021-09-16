@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
-import { AnyVenue, VenueEvent } from "types/venues";
 import { Room } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";
@@ -64,9 +64,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
         </div>
         <div className="schedule-event-info-room">
           {event.room && room && venue ? (
-            <EnterRoomButton room={room} venue={venue}>
-              {buttonText}
-            </EnterRoomButton>
+            <EnterRoomButton room={room}>{buttonText}</EnterRoomButton>
           ) : (
             <div>{buttonText}</div>
           )}
@@ -78,15 +76,13 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
 
 interface EnterRoomButtonProps {
   room: Room;
-  venue: WithId<AnyVenue>;
 }
 
 const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
   room,
-  venue,
   children,
 }) => {
-  const { enterRoom } = useRoom({ room, venueName: venue.name });
+  const { enterRoom } = useRoom({ room });
 
   return <div onClick={enterRoom}>{children}</div>;
 };

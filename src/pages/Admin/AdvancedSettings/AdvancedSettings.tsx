@@ -1,7 +1,7 @@
 import React from "react";
-import * as Yup from "yup";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
 import {
   MAXIMUM_PARTYMAP_COLUMNS_COUNT,
@@ -10,16 +10,19 @@ import {
 
 import { updateVenue_v2 } from "api/admin";
 
-import { Venue_v2_AdvancedConfig } from "types/venues";
 import { UsernameVisibility } from "types/User";
+import { Venue_v2_AdvancedConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
+
+import * as S from "../Admin.styles";
 
 import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
-import * as S from "../Admin.styles";
+import "./AdvancedSettings.scss";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {
@@ -78,7 +81,6 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     .oneOf(Object.values(UsernameVisibility))
     .notRequired(),
   showRadio: Yup.bool().notRequired(),
-  showRangers: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
@@ -106,7 +108,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      showRangers: venue.showRangers,
       bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
@@ -319,13 +320,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
         <ToggleElement
           forwardRef={register}
-          isChecked={values.showRangers}
-          name="showRangers"
-          title="Show Rangers support"
-        />
-
-        <ToggleElement
-          forwardRef={register}
           isChecked={values.requiresDateOfBirth}
           name="requiresDateOfBirth"
           title="Require date of birth on register"
@@ -335,9 +329,14 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
         {renderRoomVisibility()}
 
-        <Button type="submit" disabled={!dirty || isSubmitting}>
+        <ButtonNG
+          className="AdvancedSettings__save-button"
+          type="submit"
+          loading={isSubmitting}
+          disabled={!dirty || isSubmitting}
+        >
           Save
-        </Button>
+        </ButtonNG>
       </Form>
     </div>
   );

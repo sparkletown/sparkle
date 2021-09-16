@@ -1,25 +1,25 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChevronLeft,
   faLock,
   faLockOpen,
-  faChevronLeft,
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 
-import { User } from "types/User";
 import { Table } from "types/Table";
-
-import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useShowHide } from "hooks/useShowHide";
+import { User } from "types/User";
 
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { Toggler } from "components/atoms/Toggler";
 
@@ -30,6 +30,7 @@ import "./TableHeader.scss";
 export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
+  venueId: string;
   venueName: string;
   tables: Table[];
 }
@@ -37,13 +38,14 @@ export interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
+  venueId,
   venueName,
   tables,
 }) => {
   const { user, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(

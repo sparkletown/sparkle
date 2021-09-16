@@ -1,10 +1,10 @@
 import React from "react";
 import classNames from "classnames";
 
-import "./SparkleLogo.scss";
-
 import logo from "assets/icons/sparkle-nav-logo.png";
 import textLogo from "assets/icons/sparkle-nav-logo-text.png";
+
+import "./SparkleLogo.scss";
 
 export interface SparkleLogoProps
   extends React.DetailedHTMLProps<

@@ -1,5 +1,5 @@
-import Bugsnag from "@bugsnag/js";
 import { generatePath } from "react-router";
+import Bugsnag from "@bugsnag/js";
 
 import { VALID_URL_PROTOCOLS } from "settings";
 
@@ -11,15 +11,22 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
-export const adminNGVenueUrl = (venueId?: string) =>
-  generatePath("/admin-ng/venue/:venueId?", {
-    venueId: venueId,
-  });
+const createAdminUrlHelperFor = (segment: string) => (
+  venueId?: string,
+  selectedTab?: string
+) =>
+  segment
+    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
+        segment: segment,
+        venueId: venueId,
+        selectedTab: selectedTab,
+      })
+    : generatePath("/admin-ng");
 
-export const adminNGSettigsUrl = (venueId?: string) =>
-  generatePath("/admin-ng/advanced-settings/:venueId?", {
-    venueId: venueId,
-  });
+export const adminNGRootUrl = createAdminUrlHelperFor("");
+export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
+export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const ADMIN_CREATE_SPACE_URL = "/admin-ng/create/venue";
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
@@ -60,7 +67,8 @@ export interface OpenUrlOptions {
 export const openUrl = (url: string, options?: OpenUrlOptions) => {
   const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
 
-  if (!isValidUrl(url)) {
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+  if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
@@ -86,11 +94,30 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
   }
 };
 
-export const isValidUrl = (url: string): boolean => {
+/**
+ * @deprecated This function doesn't perform a url check and returns true each time;
+ * Use isValidUrl instead if you want to validate that URL is correct
+ */
+export const isCurrentLocationValidUrl = (url: string): boolean => {
   try {
     return VALID_URL_PROTOCOLS.includes(
       new URL(url, window.location.origin).protocol
     );
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
+};
+
+export const isValidUrl = (urlString: string) => {
+  if (!urlString) return false;
+
+  try {
+    const url = new URL(urlString);
+
+    return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
     if (e.name === "TypeError") {
       return false;

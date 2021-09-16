@@ -1,10 +1,11 @@
 import React, { FC } from "react";
 import { useHistory } from "react-router-dom";
 
+import { DEFAULT_VENUE } from "settings";
+
 import { venueEntranceUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
-import { DEFAULT_VENUE } from "settings";
 
 export const NavBarLogin: FC = () => {
   const history = useHistory();
@@ -12,7 +13,6 @@ export const NavBarLogin: FC = () => {
   return (
     <div
       className="log-in-button"
-      style={{ marginTop: "20px" }}
       onClick={() => history.push(venueEntranceUrl(venueId ?? DEFAULT_VENUE))}
     >
       Log in

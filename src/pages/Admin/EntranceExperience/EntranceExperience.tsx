@@ -1,22 +1,28 @@
 import React, { useCallback } from "react";
+import { Form } from "react-bootstrap";
+// Hooks
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+
 import { updateVenue_v2, VenueInput_v2 } from "api/admin";
+
+// Typings
+import { Question, Venue_v2_EntranceConfig } from "types/venues";
+
+import { useUser } from "hooks/useUser";
 
 // Pages
 import EntranceInput from "pages/Admin/Venue/EntranceInput";
 import QuestionInput from "pages/Admin/Venue/QuestionInput";
 
-// Hooks
-import { useForm } from "react-hook-form";
-import { useUser } from "hooks/useUser";
-
-// Typings
-import { Question, Venue_v2_EntranceConfig } from "types/venues";
-import { EntranceExperienceProps } from "./EntranceExperience.types";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 // Styles
 import * as S from "../Admin.styles";
-import { Button, Form } from "react-bootstrap";
+
+import { EntranceExperienceProps } from "./EntranceExperience.types";
+
+import "./EntranceExperience.scss";
 
 type ProfileQuestion = VenueInput_v2["profile_questions"];
 type CodeOfConductQuestion = VenueInput_v2["code_of_conduct_questions"];
@@ -136,7 +142,9 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
           </S.ItemBody>
         </S.ItemWrapper>
 
-        <Button type="submit">Save</Button>
+        <ButtonNG className="EntranceExperience__save-button" type="submit">
+          Save
+        </ButtonNG>
       </Form>
     </div>
   );

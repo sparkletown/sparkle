@@ -1,88 +1,100 @@
-import React, { useState } from "react";
-import {
-  GIF_RESIZER_URL,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  ACCEPTED_IMAGE_TYPES,
-} from "settings";
+import React, { ChangeEvent, useCallback, useState } from "react";
+import { FieldError, useForm } from "react-hook-form";
+import classNames from "classnames";
 
-// Typings
-import { ImageInputProps } from "./ImageInput.types";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-// Styles
-import * as S from "./ImageInput.styles";
+import { useImageInputCompression } from "hooks/useImageInputCompression";
+
+import { ImageOverlay } from "components/atoms/ImageOverlay";
+
+import "./ImageInput.scss";
+
+export interface ImageInputProps {
+  onChange?: (url: string) => void;
+  name: string;
+  imgUrl?: string;
+  error?: FieldError;
+  setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  small?: boolean;
+  register: ReturnType<typeof useForm>["register"];
+  nameWithUnderscore?: boolean;
+}
 
 const ImageInput: React.FC<ImageInputProps> = ({
   onChange = () => {},
-  customClass,
   name,
   imgUrl,
   error,
-  small,
-  forwardRef,
+  small = false,
+  register,
+  setValue,
   nameWithUnderscore = false,
 }) => {
   const [imageUrl, setImageUrl] = useState(imgUrl);
-  const [imageSizeError, setImageSizeError] = useState(false);
-
-  const handleOnChange = (files: FileList | null) => {
-    if (!files) return;
-
-    if (files[0].size < MAX_IMAGE_FILE_SIZE_BYTES) {
-      const url = URL.createObjectURL(files[0]);
-
-      setImageSizeError(false);
-      setImageUrl(url);
-
-      return onChange(url);
-    }
-
-    setImageSizeError(true);
-  };
-
-  const imageError =
-    error?.message ||
-    `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`;
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
 
+  const {
+    loading,
+    errorMessage,
+    handleFileInputChange,
+  } = useImageInputCompression(register, error?.message, fileName);
+
+  const handleFileInputChangeWrapper = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const [url, compressedFile] = await handleFileInputChange(event);
+      if (!compressedFile || !url) return;
+
+      setImageUrl(url);
+      setValue(fileName, [compressedFile], false);
+      onChange(url);
+    },
+    [handleFileInputChange, onChange, setValue, fileName]
+  );
+
   return (
     <>
-      <S.Wrapper
-        small={small}
-        hasError={!!error?.message}
-        backgroundImage={imageUrl}
-        as="label"
+      <label
+        className={classNames("ImageInput__container", {
+          "ImageInput__container--error": !!error?.message,
+          "ImageInput__container--small": small,
+          "ImageInput__container--disabled": loading,
+        })}
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+        }}
       >
         <input
           accept={ACCEPTED_IMAGE_TYPES}
-          className={customClass}
           hidden
           id={name}
-          name={fileName}
-          onChange={(event) => handleOnChange(event.target.files)}
-          ref={forwardRef}
+          onChange={handleFileInputChangeWrapper}
           type="file"
         />
+        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
-        <S.UploadButton isHidden={!!imageUrl}>Upload</S.UploadButton>
-      </S.Wrapper>
+        <span
+          className={classNames("ImageInput__upload-button", {
+            "ImageInput__upload-button--small": small,
+            "ImageInput__upload-button--hidden": !!imageUrl,
+          })}
+        >
+          Upload
+        </span>
+      </label>
 
       <input
         type="hidden"
         name={fileUrl}
-        ref={forwardRef}
+        ref={register}
         value={imageUrl}
         readOnly
       />
-      {(error?.message || imageSizeError) && <S.Error>{imageError}</S.Error>}
+      {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );
-};
-
-ImageInput.defaultProps = {
-  small: false,
-  customClass: "",
 };
 
 export default ImageInput;

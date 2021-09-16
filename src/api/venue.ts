@@ -6,7 +6,7 @@ import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 
 import { AnyVenue } from "types/venues";
 
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 import { asArray } from "utils/types";
 
 export const getVenueCollectionRef = () =>
@@ -188,4 +188,12 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
 
     return withId(snapshot.data() as AnyVenue, snapshot.id);
   },
+};
+
+export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
+  if (!venueId) return;
+
+  return await firebase
+    .functions()
+    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };

@@ -1,13 +1,13 @@
-import { useState, useMemo, useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 
 import { DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT } from "settings";
 
-import { isTruthy } from "utils/types";
 import { screeningRoomVideosSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
+import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
 const emptyScreeningRoomVideosArray: never[] = [];

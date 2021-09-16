@@ -1,6 +1,9 @@
 import React, { useMemo } from "react";
+
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+
 import { TableComponentPropsType } from "types/Table";
-import { DEFAULT_PROFILE_IMAGE, DEFAULT_PARTY_NAME } from "settings";
+
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 const DEFAULT_TABLE_CAPACITY = 7;
@@ -30,7 +33,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
         <span>
           {people.map((user, idx) => (
             <img
-              onClick={() => openUserProfileModal(user)}
+              onClick={() => openUserProfileModal(user.id)}
               key={`${user.room}-${idx}`}
               className="profile-icon"
               src={

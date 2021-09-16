@@ -1,11 +1,22 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Video from "twilio-video";
 
+import { DEFAULT_CAMERA_ENABLED } from "settings";
+
 import { User } from "types/User";
+
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
+
+import { CameraMicrophoneControls } from "components/molecules/CameraMicrophoneControls";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
+import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
 
 export interface ParticipantProps {
   bartender?: User;
@@ -21,18 +32,19 @@ type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
 type AudioTracks = Array<Video.LocalAudioTrack | Video.RemoteAudioTrack>;
 type Track = VideoTracks[number] | AudioTracks[number];
 
-const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
+export const Participant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
   bartender,
-  children,
   defaultMute = false,
   showIcon = true,
   isAudioEffectDisabled,
 }) => {
+  const isCurrentUser = useIsCurrentUser(participant.identity);
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
-  const [muted, setMuted] = useState(defaultMute);
+
+  const [videoEnabled, setVideoEnabled] = useState(DEFAULT_CAMERA_ENABLED);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -47,12 +59,25 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
       .map((publication) => publication.track)
       .filter((track) => track !== null) as AudioTracks;
 
+  useEffect(
+    () =>
+      participant.videoTracks.forEach((x) => {
+        // Video mute handling: for user's own video
+        x?.track?.on("enabled", () => setVideoEnabled(true));
+        x?.track?.on("disabled", () => setVideoEnabled(false));
+      }),
+    [participant.videoTracks]
+  );
+
   useEffect(() => {
     setVideoTracks(videoTrackpubsToTracks(participant.videoTracks));
     setAudioTracks(audioTrackpubsToTracks(participant.audioTracks));
 
     const trackSubscribed = (track: Track) => {
       if (track.kind === "video") {
+        // Video mute handling: for other participants' videos
+        track.on("enabled", () => setVideoEnabled(true));
+        track.on("disabled", () => setVideoEnabled(false));
         setVideoTracks((videoTracks) => [...videoTracks, track]);
       } else if (track.kind === "audio") {
         setAudioTracks((audioTracks) => [...audioTracks, track]);
@@ -97,21 +122,21 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     }
   }, [audioTracks]);
 
-  useEffect(() => {
-    if (muted) {
-      const audioTrack = audioTracks[0];
-      if (audioTrack) {
-        audioTrack.detach();
+  const changeAudioState = useCallback(
+    (enable: boolean) => {
+      if (!enable) {
+        audioTracks?.[0]?.detach();
+      } else {
+        const audioTrack = audioTracks[0];
+        if (audioTrack && audioRef.current) {
+          audioTrack.attach(audioRef.current);
+        }
       }
-    } else {
-      const audioTrack = audioTracks[0];
-      if (audioTrack && audioRef.current) {
-        audioTrack.attach(audioRef.current);
-      }
-    }
-  }, [participant, muted, audioTracks]);
+    },
+    [audioTracks]
+  );
 
-  const videos = useMemo(
+  const videoAndAudio = useMemo(
     () => (
       <>
         <video
@@ -127,7 +152,8 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
 
   return (
     <div className={`col participant ${bartender ? "bartender" : ""}`}>
-      {videos}
+      {!videoEnabled && <div className="participant--video-disabled" />}
+      {videoAndAudio}
       {showIcon && (
         <div className="profile-icon">
           <UserProfilePicture
@@ -137,18 +163,19 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           />
         </div>
       )}
-      {children}
-      <div className="mute-other-container">
-        <div onClick={() => setMuted(!muted)} id="mute-myself">
-          <FontAwesomeIcon
-            size="lg"
-            icon={muted ? faVolumeMute : faVolumeUp}
-            color={muted ? "red" : undefined}
-          />
-        </div>
-      </div>
+      {isCurrentUser && (
+        <CameraMicrophoneControls
+          containerClassName="mute-container"
+          participant={participant}
+          defaultMute={defaultMute}
+        />
+      )}
+      <VideoOverlayButton
+        containerClassName={"mute-other-container"}
+        variant="audio"
+        defaultValue={!defaultMute}
+        onEnabledChanged={changeAudioState}
+      />
     </div>
   );
 };
-
-export default Participant;

@@ -1,50 +1,36 @@
-import {
-  differenceInMinutes,
-  endOfDay,
-  getUnixTime,
-  max,
-  min,
-  startOfDay,
-} from "date-fns";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
-import { MyPersonalizedSchedule } from "types/User";
+import { MyPersonalizedSchedule, User } from "types/User";
+import { AnyVenue, ScheduledVenueEvent, VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
-import { eventEndTime, eventStartTime } from "utils/event";
+import { WithId, WithVenueId } from "utils/id";
 import { arrayIncludes } from "utils/types";
 
+interface UserWithVenueIdProps extends WithId<User> {
+  venueId?: string;
+}
 export interface PrepareForScheduleProps {
-  day: Date;
   usersEvents: MyPersonalizedSchedule;
-  isForCalendarFile?: boolean;
+  relatedVenues: WithId<AnyVenue>[];
+  recentRoomUsers?: UserWithVenueIdProps[];
+  index?: number;
 }
 
 export const prepareForSchedule = ({
-  day,
   usersEvents,
-  isForCalendarFile = false,
+  relatedVenues = [],
+  recentRoomUsers,
+  index = 0,
 }: PrepareForScheduleProps) => (
   event: WithVenueId<VenueEvent>
-): PersonalizedVenueEvent => {
-  const startOfEventToShow = isForCalendarFile
-    ? eventStartTime(event)
-    : max([eventStartTime(event), startOfDay(day)]);
-
-  const endOfEventToShow = isForCalendarFile
-    ? eventEndTime(event)
-    : min([eventEndTime(event), endOfDay(day)]);
-
+): ScheduledVenueEvent => {
   return {
     ...event,
-    start_utc_seconds: getUnixTime(startOfEventToShow),
-    duration_minutes: differenceInMinutes(endOfEventToShow, startOfEventToShow),
     isSaved: arrayIncludes(usersEvents[event.venueId], event.id),
+    venueIcon:
+      relatedVenues.find((venue) => venue.id === event.venueId)?.host?.icon ??
+      DEFAULT_VENUE_LOGO,
+    liveAudience: recentRoomUsers?.length ?? 0,
+    orderPriority: event.orderPriority ?? 0,
   };
 };
-
-export const buildLocationString = (event: WithVenueId<VenueEvent>) =>
-  `${event.venueId}#${event.room ?? ""}`;
-
-export const extractLocation = (locationStr: string) =>
-  locationStr.split("#", 2);

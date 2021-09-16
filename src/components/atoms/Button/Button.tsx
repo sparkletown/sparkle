@@ -16,6 +16,7 @@ export interface ButtonProps extends LinkProps {
   onClick?: () => void;
   type?: "button" | "reset" | "submit";
   disabled?: boolean;
+  notPrimary?: boolean;
 }
 
 export const AppButton: React.FC<ButtonProps> = ({
@@ -37,13 +38,13 @@ export const AppButton: React.FC<ButtonProps> = ({
       </div>
     );
 
-  if (isLink) {
+  if (isLink && linkTo) {
     return (
       <S.Button
         as={Link}
         className={customClass}
         style={customStyle}
-        to={linkTo!}
+        to={linkTo}
       >
         {children}
       </S.Button>

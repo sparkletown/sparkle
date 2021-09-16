@@ -3,24 +3,29 @@ import React, { useMemo } from "react";
 import { DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
 
 import { Room } from "types/rooms";
-import { PartyMapVenue } from "types/venues";
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
 
 import { useRoom } from "hooks/useRoom";
+import { useRecentVenueUsers } from "hooks/users";
 
 import "./RoomAttendance.scss";
 
 type RoomAttendanceProps = {
-  venue: PartyMapVenue;
   room: Room;
   maxVisible?: number;
 };
 
 export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
-  venue,
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {
-  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
+  const { portalVenueId } = useRoom({ room });
+
+  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
+    venueId: portalVenueId,
+  });
 
   const numberOfExtraUsersInRoom = Math.max(
     recentRoomUsers.length - maxVisible,
@@ -28,10 +33,11 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   );
   const hasExtraUsersInRoom = numberOfExtraUsersInRoom > 0;
 
+  const userList = recentRoomUsers as readonly WithId<User>[];
   // @debt use a default image when user.pictureUrl is undefined
   const userAvatars = useMemo(
     () =>
-      recentRoomUsers.slice(0, maxVisible).map((user) => (
+      userList.slice(0, maxVisible).map((user) => (
         <div key={`user-avatar-${user.id}`}>
           <div
             className="attendance-avatar"
@@ -39,7 +45,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
           />
         </div>
       )),
-    [maxVisible, recentRoomUsers]
+    [maxVisible, userList]
   );
 
   return (

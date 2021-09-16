@@ -1,0 +1,24 @@
+@import "scss/constants.scss";
+
+.ScheduleEventListNG {
+  margin-bottom: $spacing--lg;
+}
+
+.ScheduleEventSubListNG {
+  &__title {
+    margin-bottom: $spacing--lg;
+
+    font-size: $font-size--xl;
+    font-weight: $font-weight--700;
+    line-height: $spacing--xl;
+  }
+
+  &__button {
+    width: max-content;
+    margin: $spacing--sm auto;
+
+    font-size: $font-size--md;
+    line-height: $spacing--lg;
+    text-decoration: underline;
+  }
+}

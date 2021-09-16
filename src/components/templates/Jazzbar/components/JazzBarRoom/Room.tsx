@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
-import { User } from "types/User";
-
 import { getTwilioVideoToken } from "api/video";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
-import Participant from "components/organisms/Room/Participant";
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { User } from "types/User";
 
-import { useUser } from "hooks/useUser";
+import { stopLocalTrack } from "utils/twilio";
+
 import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
+
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
+import { Participant } from "components/organisms/Room/Participant";
+import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import "./Room.scss";
 
@@ -25,7 +27,6 @@ interface RoomProps {
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
-  hasChairs?: boolean;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
 }
@@ -40,7 +41,6 @@ const Room: React.FC<RoomProps> = ({
   setUserList,
   setParticipantCount,
   setSeatedAtTable,
-  hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
 }) => {
@@ -93,9 +93,8 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     return () => {
       if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+        room.localParticipant.tracks.forEach((trackPublication) => {
+          stopLocalTrack(trackPublication.track);
         });
         room.disconnect();
       }
@@ -175,9 +174,8 @@ const Room: React.FC<RoomProps> = ({
 
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+        localRoom.localParticipant.tracks.forEach((trackPublication) => {
+          stopLocalTrack(trackPublication.track);
         });
         localRoom.disconnect();
       }
@@ -236,7 +234,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 
@@ -261,7 +259,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 

@@ -1,8 +1,13 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { User } from "types/User";
-import { WithId } from "utils/id";
+import {
+  faPoll,
+  faQuestion,
+  IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
+
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
 
 export enum ChatMessageType {
   poll = "poll",
@@ -44,8 +49,6 @@ export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
-  // @debt remove this from Types. It should be decided in the in-component level
-  canBeDeleted?: boolean;
 };
 
 export type MessageToDisplay<

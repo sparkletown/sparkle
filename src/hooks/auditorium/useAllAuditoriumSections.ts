@@ -8,9 +8,9 @@ import { WithId } from "utils/id";
 import { currentAuditoriumSectionsSelector } from "utils/selectors";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
-import { useSelector } from "../useSelector";
-import { useFirestoreConnect, isLoaded } from "../useFirestoreConnect";
+import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
 import { useRecentVenueUsers } from "../users";
+import { useSelector } from "../useSelector";
 import { useShowHide } from "../useShowHide";
 
 export const useConnectAllAuditoriumSections = (venueId?: string) => {
@@ -41,7 +41,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
 

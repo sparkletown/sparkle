@@ -1,12 +1,12 @@
 import { useCallback, useMemo } from "react";
 
-import { setGridData } from "api/profile";
-
 import {
+  REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
-  REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
 } from "settings";
+
+import { setGridData } from "api/profile";
 
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
@@ -16,14 +16,14 @@ import {
   getAuditoriumSeatedUsers,
   getVideoSizeInSeats,
 } from "utils/auditorium";
-import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
 import { WithId } from "utils/id";
+import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
 
-import { useSelector } from "../useSelector";
 import { isLoaded } from "../useFirestoreConnect";
-import { useRecentVenueUsers } from "../users";
-import { useUser } from "../useUser";
 import { useGetUserByPosition } from "../useGetUserByPosition";
+import { useRecentVenueUsers } from "../users";
+import { useSelector } from "../useSelector";
+import { useUser } from "../useUser";
 
 import { useConnectAllAuditoriumSections } from "./useAllAuditoriumSections";
 
@@ -38,7 +38,6 @@ export const useAuditoriumSection = ({
 }: UseAuditoriumSectionProps) => {
   const {
     id: venueId,
-    name: venueName,
     auditoriumColumns: venueColumnsCount,
     auditoriumRows: venueRowsCount,
   } = venue;
@@ -48,7 +47,7 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
