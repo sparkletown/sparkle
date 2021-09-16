@@ -36,7 +36,7 @@ $create-button-width: 136px;
     margin-top: $spacing--md;
 
     & > .TimingEvent:nth-of-type(odd) {
-      background-color: #19181a;
+      background-color: $secondary--dark;
     }
   }
 }

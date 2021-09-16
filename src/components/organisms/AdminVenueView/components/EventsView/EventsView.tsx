@@ -60,6 +60,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         <TimingEvent
           event={event}
           setShowCreateEventModal={setShowCreateEventModal}
+          // @debt these need to be renamed as a proper callback props onSomething
           setEditedEvent={setEditedEvent}
           key={event.id}
         />

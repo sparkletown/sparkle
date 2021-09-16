@@ -29,7 +29,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 }) => {
   const { isShown: selectedSpace, toggle: toggleSelectedSpace } = useShowHide();
 
-  const handleCreateButtonClick = useCallback(
+  const onClickCreateButton = useCallback(
     (e) => {
       e.stopPropagation();
 
@@ -44,6 +44,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
         <TimingEvent
           event={event}
           setShowCreateEventModal={setShowCreateEventModal}
+          // @debt these need to be renamed as a proper callback props onSomething
           setEditedEvent={setEditedEvent}
           key={event.id}
         />
@@ -72,7 +73,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
         </span>
         <ButtonNG
           className="TimingSpace__createButton"
-          onClick={handleCreateButtonClick}
+          onClick={onClickCreateButton}
         >
           Add experience
         </ButtonNG>
