@@ -9,6 +9,7 @@ $footer-width: 360px;
   display: flex;
   position: fixed;
   bottom: 0;
+  margin-bottom: $footer-height;
   flex-direction: row;
   justify-content: space-between;
   width: $footer-width;

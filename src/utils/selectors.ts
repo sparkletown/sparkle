@@ -12,12 +12,13 @@ import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
-import { User } from "types/User";
+import { User, UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import {
+  makeDataSelector,
   makeIsRequestedSelector,
   makeIsRequestingSelector,
   makeOrderedSelector,
@@ -37,17 +38,11 @@ export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
  *
  * @param state the Redux store
  */
-export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
-  state
-) => {
+export const profileSelector: SparkleSelector<
+  FirebaseReducer.Profile<UserWithLocation>
+> = (state) => {
   // @debt refactor userWithLocationToUser to optionally not require WithId, then use that here
-  const {
-    lastVenueIdSeenIn,
-    lastSeenAt,
-    ...userProfileWithoutLocation
-  } = state.firebase.profile;
-
-  return userProfileWithoutLocation;
+  return state.firebase.profile;
 };
 
 /**
@@ -174,9 +169,14 @@ export const currentAuditoriumSectionsSelector: SparkleSelector<
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
-export const userProfileSelector: SparkleSelector<WithId<User> | undefined> = (
+
+export const currentModalUserDataSelector: SparkleSelector<
+  User | undefined
+> = makeDataSelector("currentModalUser");
+
+export const userProfileSelector: SparkleSelector<string | undefined> = (
   state
-) => state.userProfile.userProfile;
+) => state.userProfile.userId;
 
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state

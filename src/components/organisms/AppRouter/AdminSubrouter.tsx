@@ -1,13 +1,15 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
+import { ADMIN_CREATE_SPACE_URL } from "utils/url";
+
 import { Admin } from "pages/Admin/Admin";
-import AdminV2 from "pages/Admin/Admin_v2";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 
+import { AdminDashboard } from "components/organisms/AdminDashboard";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 import { Provided } from "./Provided";
@@ -61,7 +63,7 @@ export const AdminSubrouter: React.FC = () => {
         </Provided>
       </Route>
 
-      <Route path="/admin-ng/create/venue">
+      <Route path={ADMIN_CREATE_SPACE_URL}>
         <Provided withWorldUsers>
           <VenueWizardV2 />
         </Provided>
@@ -75,7 +77,7 @@ export const AdminSubrouter: React.FC = () => {
 
       <Route path="/admin-ng">
         <Provided withWorldUsers>
-          <AdminV2 />
+          <AdminDashboard />
         </Provided>
       </Route>
     </Switch>
