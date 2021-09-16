@@ -18,6 +18,7 @@
 
   &__checkbox {
     font-size: $font-size--lg;
+    user-select: none;
   }
 
   &__title {
