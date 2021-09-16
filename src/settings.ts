@@ -642,6 +642,8 @@ export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
 export const EVENTS_PREVIEW_LIST_LENGTH = 50;
 
+export const ALGOLIA_APP_ID = "RMJ2K10PCV";
+
 // Set these to have images uploaded to Firebase Storage served off of Imgix
 // @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf
 export const FIREBASE_STORAGE_IMAGES_ORIGIN =
