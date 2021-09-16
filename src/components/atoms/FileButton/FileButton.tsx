@@ -45,6 +45,7 @@ export const FileButton: React.FC<FileButtonProps> = ({
         hidden
         type="file"
         id="fileButton"
+        accept=".png, .jpg, .jpeg"
         disabled={isDisabled}
         onChange={handleChange}
       />

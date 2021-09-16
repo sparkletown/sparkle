@@ -275,7 +275,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           <div key={`${room.title}-${index}`}>{renderSelectedRoom(index)}</div>
         ) : (
           <div
-            className="Container__room-preview"
+            className="VenueRoomsEditor__room-preview"
             style={{
               top: `${room.y_percent}%`,
               left: `${room.x_percent}%`,
@@ -286,14 +286,14 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
             onClick={() => !selectedRoom && setSelectedRoom(room)}
           >
             <img
-              className={classNames("Container__room-image", {
-                "Container__room-image--disabled": !room.isEnabled,
+              className={classNames("VenueRoomsEditor__room-image", {
+                "VenueRoomsEditor__room-image--disabled": !room.isEnabled,
               })}
               src={room.image_url}
               alt={`${ROOM_TAXON.lower} logo`}
               title={room.title}
             />
-            <div className="Container__room-title">{room.title}</div>
+            <div className="VenueRoomsEditor__room-title">{room.title}</div>
           </div>
         )
       ),
@@ -310,13 +310,14 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
       {!backgroundImage ? (
         <MapBackgroundPlaceholder />
       ) : (
-        <img
-          alt="draggable background "
-          className={`Container__background-image ${backgroundImageClassName}`}
-          src={backgroundImage}
-        />
+        <div className="VenueRoomsEditor__background-image-wrapper">
+          <img
+            alt="draggable background "
+            className={`VenueRoomsEditor__background-image ${backgroundImageClassName}`}
+            src={backgroundImage}
+          />
+        </div>
       )}
-
       {backgroundImage && renderRoomsPreview}
     </div>
   );
