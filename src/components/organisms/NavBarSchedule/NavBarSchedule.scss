@@ -110,7 +110,6 @@ $schedule-button-height: 51px;
     padding-left: $navbar-schedule-padding;
   }
 
-  // @debt: overwrites default btn btn-primary styles
   &__download-schedule-button {
     opacity: 0.8;
     margin-right: $spacing--sm;
