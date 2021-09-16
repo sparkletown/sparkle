@@ -47,7 +47,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       description: room.description,
       template: room.template,
       image_url: room.image_url,
-      isLabelHidden: room.isLabelHidden ?? undefined,
+      visibility: room.visibility ?? undefined,
     },
   });
 
@@ -154,8 +154,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
           <Form.Label>Label Appearance (for individual space)</Form.Label>
           <select
-            name="isLabelHidden"
-            id="isLabelHidden"
+            name="visibility"
+            id="visibility"
             ref={register}
             className="EditRoomForm__dropdown"
           >

@@ -20,7 +20,7 @@ export interface Room {
   width_percent: number;
   height_percent: number;
   isEnabled: boolean;
-  isLabelHidden?: RoomVisibility;
+  visibility?: RoomVisibility;
   image_url: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;
@@ -39,7 +39,7 @@ export interface RoomData_v2 {
   width_percent?: number;
   height_percent?: number;
   isEnabled?: boolean;
-  isLabelHidden?: RoomVisibility;
+  visibility?: RoomVisibility;
   image_url?: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;
@@ -55,7 +55,7 @@ export type VenueRoomTemplate = VenueTemplate | RoomTemplate;
 type LabelOption = { label: string; value: string };
 
 export const LABEL_VISIBILITY_OPTIONS: LabelOption[] = [
-  { label: "Count & names", value: RoomVisibility.nameCount },
+  { label: "Always", value: RoomVisibility.nameCount },
   { label: "On Hover", value: RoomVisibility.hover },
   { label: "Count only", value: RoomVisibility.count },
   { label: "No Label", value: RoomVisibility.none },

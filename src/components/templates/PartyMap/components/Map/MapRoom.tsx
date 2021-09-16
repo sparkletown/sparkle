@@ -38,11 +38,24 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
-  const isUnclickable = room.type === RoomType.unclickable;
+  const isUnclickable =
+    room.visibility === RoomVisibility.unclickable ||
+    room.type === RoomType.unclickable;
   const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
-  const isLabelHidden = room.isLabelHidden ?? false;
+  const isLabelHidden =
+    (room.visibility === RoomVisibility.none ||
+      room.visibility === RoomVisibility.unclickable) ??
+    false;
   const shouldShowLabel = !isCovertRoom && !isLabelHidden;
+  const shouldBeClickable = !isCovertRoom && !isUnclickable;
+
+  const roomLabelConditions =
+    room.visibility === RoomVisibility.nameCount ||
+    (room.visibility === RoomVisibility.count && hasRecentRoomUsers);
+  const venueLabelConditions =
+    venue.roomVisibility === RoomVisibility.nameCount ||
+    (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers);
 
   const dispatch = useDispatch();
 
@@ -61,14 +74,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     "maproom--unclickable": isUnclickable,
     "maproom--iframe": isMapFrame,
     "maproom--always-show-label":
-      shouldShowLabel &&
-      (venue.roomVisibility === RoomVisibility.nameCount ||
-        (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
+      shouldShowLabel && (roomLabelConditions || venueLabelConditions),
   });
 
   const titleClasses = classNames("maproom__title", {
     "maproom__title--count":
-      !isCovertRoom && venue.roomVisibility === RoomVisibility.count,
+      !isCovertRoom &&
+      (room.visibility === RoomVisibility.count ||
+        venue.roomVisibility === RoomVisibility.count),
   });
 
   const roomInlineStyles = useMemo(
@@ -102,9 +115,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <button
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={isCovertRoom ? noop : selectRoomWithSound}
-      onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
-      onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
+      onClick={shouldBeClickable ? selectRoomWithSound : noop}
+      onMouseEnter={shouldBeClickable ? handleRoomHovered : noop}
+      onMouseLeave={shouldBeClickable ? handleRoomUnhovered : noop}
     >
       {isMapFrame ? (
         <iframe
