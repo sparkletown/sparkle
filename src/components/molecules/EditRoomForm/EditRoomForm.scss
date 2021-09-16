@@ -10,6 +10,17 @@
     padding: $spacing--xl;
   }
 
+  &__dropdown {
+    appearance: none;
+    border-radius: $border-radius--xl;
+    color: $white;
+    background-color: opaque-white(0.12);
+    padding: $spacing--md $spacing--xl $spacing--md $spacing--md;
+    text-align: center;
+    width: 100%;
+    margin-bottom: $spacing--xl;
+  }
+
   &__footer {
     display: flex;
     position: fixed;

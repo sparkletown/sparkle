@@ -51,3 +51,13 @@ export enum RoomTemplate {
 }
 
 export type VenueRoomTemplate = VenueTemplate | RoomTemplate;
+
+export enum LABEL_OPTIONS {
+  COUNT = "count/name",
+  NONE = "none",
+}
+
+export const SHOW_LABEL_OPTIONS: { label: string; value: string }[] = [
+  { label: "Count and names", value: LABEL_OPTIONS.COUNT },
+  { label: "No label", value: LABEL_OPTIONS.NONE },
+];

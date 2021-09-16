@@ -1,11 +1,11 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
-import { RoomData_v2 } from "types/rooms";
+import { LABEL_OPTIONS, RoomData_v2, SHOW_LABEL_OPTIONS } from "types/rooms";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -47,7 +47,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       description: room.description,
       template: room.template,
       image_url: room.image_url,
-      isLabelHidden: room.isLabelHidden,
+      isLabelHidden: room.isLabelHidden ?? undefined,
     },
   });
 
@@ -67,6 +67,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
       ...values,
+      isLabelHidden: `${values.isLabelHidden}` === LABEL_OPTIONS.NONE,
     };
 
     await upsertRoom(roomData, venueId, user, roomIndex);
@@ -87,15 +88,11 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
-  const labelOptions = useMemo(() => {
-    const LABELS = ["Count and names", "No label"];
-
-    return LABELS.map((label) => (
-      <option key={label} value={label}>
-        {label}
-      </option>
-    ));
-  }, []);
+  const labelOptions = SHOW_LABEL_OPTIONS.map((option) => (
+    <option key={option.label} value={option.value}>
+      {option.label}
+    </option>
+  ));
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -157,8 +154,12 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           )}
 
           <Form.Label>Label Appearance (for individual space)</Form.Label>
-          <select name="isLabelHidden" id="isLabelHidden" ref={register}>
-            <option selected>Select a label option</option>
+          <select
+            name="isLabelHidden"
+            id="isLabelHidden"
+            ref={register}
+            className="EditRoomForm__dropdown"
+          >
             {labelOptions}
           </select>
 
