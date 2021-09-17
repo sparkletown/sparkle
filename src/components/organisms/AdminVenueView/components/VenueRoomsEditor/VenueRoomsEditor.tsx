@@ -268,6 +268,12 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
     ]
   );
 
+  const backgroundImageClass = `VenueRoomsEditor__background-image ${backgroundImageClassName}`;
+  const roomImageClass = (room: RoomData_v2) =>
+    classNames("VenueRoomsEditor__room-image", {
+      "VenueRoomsEditor__room-image--disabled": !room.isEnabled,
+    });
+
   const renderRoomsPreview = useMemo(
     () =>
       rooms.map((room, index) =>
@@ -286,9 +292,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
             onClick={() => !selectedRoom && setSelectedRoom(room)}
           >
             <img
-              className={classNames("VenueRoomsEditor__room-image", {
-                "VenueRoomsEditor__room-image--disabled": !room.isEnabled,
-              })}
+              className={roomImageClass(room)}
               src={room.image_url}
               alt={`${ROOM_TAXON.lower} logo`}
               title={room.title}
@@ -312,8 +316,8 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
       ) : (
         <div className="VenueRoomsEditor__background-image-wrapper">
           <img
-            alt="draggable background "
-            className={`VenueRoomsEditor__background-image ${backgroundImageClassName}`}
+            alt="draggable background"
+            className={backgroundImageClass}
             src={backgroundImage}
           />
         </div>

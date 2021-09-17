@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
+import { ACCEPTED_IMAGE_TYPES } from "settings";
+
 import "./FileButton.scss";
 
 export interface FileButtonProps {
@@ -45,7 +47,7 @@ export const FileButton: React.FC<FileButtonProps> = ({
         hidden
         type="file"
         id="fileButton"
-        accept=".png, .jpg, .jpeg"
+        accept={ACCEPTED_IMAGE_TYPES}
         disabled={isDisabled}
         onChange={handleChange}
       />
