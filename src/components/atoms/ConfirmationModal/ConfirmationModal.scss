@@ -1,8 +1,8 @@
 @import "scss/constants.scss";
 
 .ConfirmationModal {
-  &__header {
-    //
+  .modal-content {
+    background: $modal-background--confirm;
   }
 
   &__message {

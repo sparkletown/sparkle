@@ -1,7 +1,9 @@
-import React, { FC, useCallback, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { useCallback, useState } from "react";
+import { Modal } from "react-bootstrap";
 
 import { isTruthy } from "utils/types";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./ConfirmationModal.scss";
 
@@ -11,6 +13,7 @@ interface ConfirmationModalProps {
   message: string;
   cancelBtnLabel?: string;
   saveBtnLabel?: string;
+  centered?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
   containerClassName?: string;
@@ -22,20 +25,21 @@ interface ConfirmationModalProps {
   isCentered?: boolean;
 }
 
-export const ConfirmationModal: FC<ConfirmationModalProps> = ({
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   show,
   header,
   message,
+  centered = true,
   onConfirm,
   onCancel,
   cancelBtnLabel = "No",
   saveBtnLabel = "Yes",
-  containerClassName = "ConfirmationModal",
-  headerClassName = "ConfirmationModal__header",
-  messageClassName = "ConfirmationModal__message",
-  buttonsContainerClassName = "ConfirmationModal__buttons",
-  buttonClassName = "ConfirmationModal__button-confirm",
-  cancelButtonClassName = "ConfirmationModal__button-cancel",
+  containerClassName = "",
+  headerClassName = "",
+  messageClassName = "",
+  buttonsContainerClassName = "",
+  buttonClassName = "",
+  cancelButtonClassName = "",
   isCentered = false,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -56,21 +60,28 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
 
   const hasHeader = isTruthy(header);
 
+  const containerClasses = `ConfirmationModal ${containerClassName}`;
+  const headerClasses = `ConfirmationModal__header ${headerClassName}`;
+  const messageClasses = `ConfirmationModal__message ${messageClassName}`;
+  const buttonsContainerClasses = `ConfirmationModal__buttons ${buttonsContainerClassName}`;
+  const buttonClasses = `ConfirmationModal__button-confirm ${buttonClassName}`;
+  const cancelButtonClasses = `ConfirmationModal__button-cancel ${cancelButtonClassName}`;
+
   const isShown = show !== undefined ? show : isVisible;
 
   return (
     <Modal show={isShown} onHide={hide} centered={isCentered}>
       <Modal.Body>
-        <div className={containerClassName}>
-          {hasHeader && <h2 className={headerClassName}>{header}</h2>}
-          <div className={messageClassName}>{message}</div>
-          <div className={buttonsContainerClassName}>
-            <Button className={cancelButtonClassName} onClick={cancel}>
+        <div className={containerClasses}>
+          {hasHeader && <h2 className={headerClasses}>{header}</h2>}
+          <div className={messageClasses}>{message}</div>
+          <div className={buttonsContainerClasses}>
+            <ButtonNG className={cancelButtonClasses} onClick={cancel}>
               {cancelBtnLabel}
-            </Button>
-            <Button className={buttonClassName} onClick={confirm}>
+            </ButtonNG>
+            <ButtonNG className={buttonClasses} onClick={confirm}>
               {saveBtnLabel}
-            </Button>
+            </ButtonNG>
           </div>
         </div>
       </Modal.Body>
