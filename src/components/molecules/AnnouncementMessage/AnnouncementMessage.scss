@@ -16,8 +16,11 @@ $announce-box-shadow: 0px 2px 20px 5px;
   height: auto;
   transition: left 0.1s linear;
   padding: $spacing 0;
-  border-bottom-left-radius: $border-radius--xl;
-  border-bottom-right-radius: $border-radius--xl;
+  border-radius: 0px 0px $border-radius--xl $border-radius--xl;
+  border: 1px solid opaque-white(0.4);
+  box-sizing: border-box;
+  box-shadow: $announce-box-shadow opaque-white(0.35);
+  backdrop-filter: blur(50px);
   text-align: center;
 
   &--user {
@@ -35,10 +38,6 @@ $announce-box-shadow: 0px 2px 20px 5px;
     top: 50%;
     left: 30%;
     transform: translate(-50%, -50%);
-    border: 1px solid opaque-white(0.4);
-    box-sizing: border-box;
-    box-shadow: $announce-box-shadow opaque-white(0.35);
-    backdrop-filter: blur(50px);
 
     border-radius: 16px;
   }
