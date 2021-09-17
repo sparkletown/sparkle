@@ -1,6 +1,4 @@
 import React, { useEffect } from "react";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { Banner } from "types/banner";
@@ -97,9 +95,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
           <span
             className="AnnouncementMessage__close-button"
             onClick={hideAnnouncementMessage}
-          >
-            <FontAwesomeIcon icon={faTimesCircle} />
-          </span>
+          />
         )}
       </div>
     </>

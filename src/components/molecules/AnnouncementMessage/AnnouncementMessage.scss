@@ -5,15 +5,19 @@ $close-icon-width: 20px;
 $message-margin: $spacing + $close-icon-width + 5px;
 $action-button-height: 30px;
 $action-button-padding: 6px;
+$announce-box-shadow: 0px 2px 20px 5px;
 
 .AnnouncementMessage {
   display: block;
   position: relative;
-  background: $primary;
+  background: $announcement-background;
   width: $announcement-container-width;
+  min-height: $announcement-container-height;
+  height: auto;
   transition: left 0.1s linear;
   padding: $spacing 0;
-  border-radius: $border-radius--xl;
+  border-bottom-left-radius: $border-radius--xl;
+  border-bottom-right-radius: $border-radius--xl;
   text-align: center;
 
   &--user {
@@ -25,11 +29,18 @@ $action-button-padding: 6px;
   }
 
   &--fullscreen {
-    top: 35%;
-    left: 35%;
     position: fixed;
     z-index: z(announcement-banner);
-    width: $announcement-container-width-fullscreen;
+    border-radius: $border-radius--xl;
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    border: 1px solid opaque-white(0.4);
+    box-sizing: border-box;
+    box-shadow: $announce-box-shadow opaque-white(0.35);
+    backdrop-filter: blur(50px);
+
+    border-radius: 16px;
   }
 
   &__default-text {
@@ -38,16 +49,24 @@ $action-button-padding: 6px;
 
   &__title {
     font-size: $font-size--xl;
+    margin-bottom: 0px;
+    margin-top: $spacing--xl;
   }
 
   &__content {
     font-size: $font-size--md;
-    margin: 0 $message-margin;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+
+    p {
+      margin-bottom: 0px;
+    }
   }
 
   &__action-button {
     display: inline-block;
-    background-color: $primary--darker;
+    background-color: $primary--live;
     min-width: $announce-button-width;
     min-height: $action-button-height;
     font-size: $font-size--md;
@@ -60,6 +79,9 @@ $action-button-padding: 6px;
     position: absolute;
     top: $spacing;
     right: $spacing;
+    background: url("/assets/icons/close-icon.svg");
+    height: 20px;
+    width: 20px;
     &:focus,
     &:hover {
       color: var(--primary-color);
