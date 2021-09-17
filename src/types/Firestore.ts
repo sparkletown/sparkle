@@ -7,6 +7,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -63,6 +64,7 @@ export interface FirestoreData {
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
+  currentModalUser?: User;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
@@ -95,6 +97,7 @@ export interface FirestoreOrdered {
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
+  currentModalUser?: WithId<User>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
