@@ -1,24 +1,23 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ContainerClassName } from "types/utility";
-
 import { CenterContent } from "components/atoms/CenterContent";
 
 import "./ImageOverlay.scss";
 
-export interface ImageOverlayProps
-  extends ContainerClassName,
-    React.HTMLProps<HTMLDivElement> {
+export interface ImageOverlayProps extends React.HTMLProps<HTMLDivElement> {
   disabled?: boolean;
 }
 
-export const ImageOverlay: React.FC<
-  React.PropsWithChildren<ImageOverlayProps>
-> = ({ disabled, children, containerClassName, ...rest }) => {
+export const ImageOverlay: React.FC<ImageOverlayProps> = ({
+  disabled,
+  children,
+  className,
+  ...rest
+}) => {
   return (
     <CenterContent
-      containerClassName={classNames("ImageOverlay", containerClassName, {
+      className={classNames("ImageOverlay", className, {
         "ImageOverlay--disabled": disabled,
       })}
       {...rest}

@@ -4,6 +4,7 @@
   display: flex;
   position: fixed;
   bottom: 0;
+  margin-bottom: $footer-height;
   flex-direction: row;
   justify-content: space-between;
   padding: $spacing--md;

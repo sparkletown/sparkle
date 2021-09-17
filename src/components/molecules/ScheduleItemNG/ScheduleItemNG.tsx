@@ -68,7 +68,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
   const { enterRoom } = useRoom({
     room: eventRoom,
-    venueName: eventVenue?.name ?? "",
   });
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))

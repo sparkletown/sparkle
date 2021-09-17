@@ -23,9 +23,11 @@ const createAdminUrlHelperFor = (segment: string) => (
       })
     : generatePath("/admin-ng");
 
+export const adminOGRootUrl = generatePath("/admin");
 export const adminNGRootUrl = createAdminUrlHelperFor("");
 export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
 export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const ADMIN_CREATE_SPACE_URL = "/admin-ng/create/venue";
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
@@ -146,16 +148,4 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
-};
-
-export const getYoutubeEmbedFromUrl = (url: string) => {
-  if (url.includes("embed")) {
-    return url;
-  }
-
-  const [, urlSearchQuery] = url.split("?");
-  const youtubeVideoParams = new URLSearchParams(urlSearchQuery);
-  const { v } = Object.fromEntries(youtubeVideoParams.entries());
-
-  return `https://www.youtube.com/embed/${v}`;
 };

@@ -6,7 +6,7 @@ import { WithId } from "utils/id";
 import { useRecentLocationUsers } from "hooks/users";
 
 export interface UseRecentVenueUsersProps {
-  venueName?: string;
+  venueId?: string;
 }
 
 export interface RecentVenueUsersData {
@@ -14,15 +14,14 @@ export interface RecentVenueUsersData {
   isRecentVenueUsersLoaded: boolean;
 }
 
-// @debt refactor this to use venueId as soon as we refactor location tracking to use venueId instead of venueName
 export const useRecentVenueUsers: ReactHook<
   UseRecentVenueUsersProps,
   RecentVenueUsersData
-> = ({ venueName }) => {
+> = ({ venueId }) => {
   const {
     recentLocationUsers,
     isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers({ locationName: venueName });
+  } = useRecentLocationUsers({ venueId });
 
   return {
     recentVenueUsers: recentLocationUsers as readonly WithId<User>[],

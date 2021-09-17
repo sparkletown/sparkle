@@ -53,7 +53,6 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
             key={index}
             index={index}
             venueId={venue.id}
-            venueName={venue.name}
             room={room}
             events={groupedEvents[room.title]}
           />

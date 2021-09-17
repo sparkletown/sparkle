@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useVideoRoomState } from "hooks/twilio";
@@ -21,7 +21,7 @@ const DEFAULT_BURN_BARREL_SEATS = 8;
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName: venue?.name,
+    venueId: venue?.id,
   });
 
   const seatCount =

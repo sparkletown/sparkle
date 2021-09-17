@@ -35,9 +35,9 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
     (event) => {
       if (event.target.closest(`.${deleteIconClass}`)) return;
 
-      openUserProfileModal(author);
+      openUserProfileModal(author.id);
     },
-    [openUserProfileModal, author]
+    [openUserProfileModal, author.id]
   );
 
   const containerClasses = classNames("ChatMessageInfo", {

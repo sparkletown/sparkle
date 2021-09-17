@@ -5,7 +5,6 @@ import {
   APP_ID,
   AUTH_DOMAIN,
   BUCKET_URL,
-  IS_BURN,
   MEASUREMENT_ID,
   PROJECT_ID,
 } from "secrets";
@@ -37,23 +36,13 @@ export const SPARKLE_PRIVACY_POLICY =
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
-export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
-export const SPARKLEVERSE_PRIVACY_POLICY =
-  "https://sparklever.se/privacy-policy/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
-export const HOMEPAGE_URL = IS_BURN
-  ? SPARKLEVERSE_HOMEPAGE_URL
-  : SPARKLE_HOMEPAGE_URL;
+export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
 
-export const TERMS_AND_CONDITIONS_URL = IS_BURN
-  ? SPARKLEVERSE_TERMS_AND_CONDITIONS_URL
-  : SPARKLE_TERMS_AND_CONDITIONS_URL;
+export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
 
-export const PRIVACY_POLICY = IS_BURN
-  ? SPARKLEVERSE_PRIVACY_POLICY
-  : SPARKLE_PRIVACY_POLICY;
+export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
@@ -90,6 +79,12 @@ export const SPARKLEVERSE_COMMUNITY_URL =
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
+export const TWITCH_SHORT_URL = "twitch.tv";
+export const TWITCH_EMBED_URL = "https://player.twitch.tv";
+export const FACEBOOK_EMBED_URL = "plugins/video.php";
+export const VIMEO_SHORT_EVENT_URL = "vimeo.com/event";
+export const VIMEO_EMBED_URL = "https://player.vimeo.com/video";
+export const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
 export const YOUTUBE_SHORT_URL_STRING = "youtu";
 
 // How often to refresh events schedule
@@ -653,7 +648,7 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
+export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -764,11 +759,13 @@ export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
 export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
 
-export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
+export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
 export const EVENTS_PREVIEW_LIST_LENGTH = 50;
+
+export const ALGOLIA_APP_ID = "RMJ2K10PCV";
 
 // Set these to have images uploaded to Firebase Storage served off of Imgix
 // @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf
