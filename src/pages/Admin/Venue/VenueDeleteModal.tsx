@@ -8,7 +8,7 @@ import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 
 import "./VenueDeleteModal.scss";
 
-interface VenueDeleteModalProps {
+export interface VenueDeleteModalProps {
   venueId?: string;
   venueName: string;
   show: boolean;
