@@ -45,7 +45,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
       </div>
       <div className="RunTabView__main">
         <div className="RunTabView__toolbar RunTabView--spacing">
-          <RunTabToolbar venueId={venueId} />
+          <RunTabToolbar venueId={venueId} venueName={venue.name} />
         </div>
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
