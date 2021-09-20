@@ -11,8 +11,9 @@ $denied-shape-size: 96px;
     // In order to avoid scrollbar(s)
     margin: 0;
     padding: 0;
-    width: calc(100% - #{$spacing--sm});
-    height: calc(100% - #{$spacing--sm});
+    // in case there are other considerations, calc can help, example:
+    //width: calc(100% - #{$spacing--xs});
+    //height: calc(100% - #{$spacing--xs});
   }
 
   &--forbidden {

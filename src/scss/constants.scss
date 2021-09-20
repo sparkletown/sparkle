@@ -76,9 +76,9 @@ $announcement-banner-height: 50px;
 $admin-ng-sidebar-width--normal: 20%;
 $admin-ng-sidebar-width--min: 360px;
 $admin-ng-tab-footer-height--max: 64px;
-$admin-ng-tab-bar-height: 36px;
+$admin-ng-tab-bar-height: 30px;
 $admin-ng-panel-height: calc(
-  100vh - 1px - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
+  100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
 
 $avatarSize: max(4vh, 3vw);
