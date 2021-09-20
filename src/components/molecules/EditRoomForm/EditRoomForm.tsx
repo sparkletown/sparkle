@@ -6,6 +6,7 @@ import { useAsyncFn } from "react-use";
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
 import { LABEL_VISIBILITY_OPTIONS, RoomData_v2 } from "types/rooms";
+import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -24,6 +25,7 @@ interface EditRoomFormProps {
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  venueVisibility: RoomVisibility | undefined;
 }
 
 export const labelOptions = LABEL_VISIBILITY_OPTIONS.map((option) => (
@@ -39,6 +41,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   onBackClick,
   onDelete,
   onEdit,
+  venueVisibility,
 }) => {
   const { user } = useUser();
 
@@ -53,7 +56,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       description: room.description,
       template: room.template,
       image_url: room.image_url,
-      visibility: room.visibility ?? undefined,
+      visibility: room.visibility ?? venueVisibility,
     },
   });
 
@@ -152,7 +155,9 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             <span className="input-error">{errors.image_url.message}</span>
           )}
 
-          <Form.Label>Label Appearance (for individual space)</Form.Label>
+          <Form.Label>
+            Change label appearance (overrides global settings)
+          </Form.Label>
           <select
             name="visibility"
             id="visibility"

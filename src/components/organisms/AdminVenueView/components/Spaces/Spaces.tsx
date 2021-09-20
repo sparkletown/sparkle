@@ -168,6 +168,7 @@ export const Spaces: React.FC<SpacesProps> = ({
       <div className="Spaces__rooms">
         {selectedRoom ? (
           <EditRoomForm
+            venueVisibility={venue?.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
