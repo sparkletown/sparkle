@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ChatUser } from "types/chat";
+import { DisplayUser } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -15,7 +15,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
 export interface RecipientChatProps {
-  recipient: WithId<ChatUser>;
+  recipient: WithId<DisplayUser>;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {

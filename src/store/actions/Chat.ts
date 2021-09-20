@@ -1,6 +1,6 @@
 import {
   ChatTypes,
-  ChatUser,
+  DisplayUser,
   PrivateChatSettings,
   VenueChatSettings,
 } from "types/chat";
@@ -44,7 +44,7 @@ export const setVenueChatTabOpened = (): SetVenueChatTabOpenedAction => ({
 });
 
 export const setPrivateChatTabOpened = (
-  recipient: WithId<ChatUser> | undefined
+  recipient: WithId<DisplayUser> | undefined
 ): SetPrivateChatTabOpenedAction => ({
   type: ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED,
   payload: {

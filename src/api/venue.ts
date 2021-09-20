@@ -1,10 +1,10 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { ChatUser } from "types/chat";
+import { DisplayUser } from "types/chat";
 import { AnyVenue } from "types/venues";
 
-import { pickChatUserFromUser } from "utils/chat";
+import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
 export const getVenueCollectionRef = () =>
@@ -80,23 +80,51 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
 
-export const setAuditoriumSectionSeat = async (
-  user: WithId<ChatUser>,
+const getUserInSectionRef = (
+  userId: string,
   venueId: string,
-  sectionId: string,
-  row: number,
-  column: number
-) => {
-  return firebase
+  sectionId: string
+) =>
+  firebase
     .firestore()
     .collection("venues")
     .doc(venueId)
     .collection("sections")
     .doc(sectionId)
     .collection("seatedUsers")
-    .doc(user.id)
+    .doc(userId);
+
+export const unsetAuditoriumSectionSeat = async (
+  userId: string,
+  venueId: string,
+  sectionId: string
+) => {
+  return getUserInSectionRef(userId, venueId, sectionId)
+    .delete()
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/venue::unsetAuditoriumSectionSeat",
+          venueId,
+          sectionId,
+          userId,
+        });
+      });
+
+      throw err;
+    });
+};
+
+export const setAuditoriumSectionSeat = async (
+  user: WithId<DisplayUser>,
+  venueId: string,
+  sectionId: string,
+  row: number,
+  column: number
+) => {
+  return getUserInSectionRef(user.id, venueId, sectionId)
     .update({
-      ...pickChatUserFromUser(user),
+      ...pickDisplayUserFromUser(user),
       row,
       column,
     })

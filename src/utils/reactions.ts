@@ -1,4 +1,4 @@
-import { ChatUser } from "types/chat";
+import { DisplayUser } from "types/chat";
 import {
   EmojiReactionsMap,
   EmojiReactionType,
@@ -8,7 +8,7 @@ import {
   TextReactionType,
 } from "types/reactions";
 
-import { pickChatUserFromUser } from "utils/chat";
+import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";
 
 export type CreateReactionReactionProps =
@@ -17,20 +17,20 @@ export type CreateReactionReactionProps =
 
 export const createEmojiReaction = (
   emojiReaction: EmojiReactionType,
-  user: WithId<ChatUser>
+  user: WithId<DisplayUser>
 ): Reaction => createReaction({ reaction: emojiReaction }, user);
 
 export const createTextReaction = (
   text: string,
-  user: WithId<ChatUser>
+  user: WithId<DisplayUser>
 ): Reaction => createReaction({ reaction: TextReactionType, text }, user);
 
 export const createReaction = (
   reaction: CreateReactionReactionProps,
-  user: WithId<ChatUser>
+  user: WithId<DisplayUser>
 ): Reaction => ({
   created_at: Date.now(),
-  created_by: pickChatUserFromUser(user),
+  created_by: pickDisplayUserFromUser(user),
   ...reaction,
 });
 

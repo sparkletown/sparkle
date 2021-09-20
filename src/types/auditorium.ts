@@ -1,12 +1,12 @@
-import { ChatUser } from "types/chat";
+import { DisplayUser } from "types/chat";
 
 import { WithId } from "utils/id";
 
 export interface AuditoriumSection {
   rowsCount?: number;
   columnsCount?: number;
-  seatedUsersSample?: WithId<ChatUser>[];
-  seatedUsersCount?: WithId<ChatUser>[];
+  seatedUsersSample?: WithId<DisplayUser>[];
+  seatedUsersCount?: WithId<DisplayUser>[];
   isVip?: boolean;
 }
 

@@ -5,7 +5,7 @@ import {
   BaseChatMessage,
   ChatMessage,
   ChatMessageType,
-  ChatUser,
+  DisplayUser,
   PollMessage,
   PreviewChatMessage,
   PrivateChatMessage,
@@ -33,15 +33,17 @@ export const getPreviewChatMessage = ({
 });
 
 export const buildMessage = <T extends ChatMessage>(
-  fromUser: WithId<ChatUser>,
+  fromUser: WithId<DisplayUser>,
   message: Pick<T, Exclude<keyof T, "timestamp" | "fromUser">>
 ) => ({
   ...message,
-  fromUser: pickChatUserFromUser(fromUser),
+  fromUser: pickDisplayUserFromUser(fromUser),
   timestamp: firebase.firestore.Timestamp.now(),
 });
 
-export const pickChatUserFromUser = (user: WithId<User>): WithId<ChatUser> =>
+export const pickDisplayUserFromUser = (
+  user: WithId<User>
+): WithId<DisplayUser> =>
   pick(user, "id", "partyName", "pictureUrl", "anonMode");
 
 export const isNewSchemaMessage = <T extends ChatMessage>(

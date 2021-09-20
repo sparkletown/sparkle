@@ -1,4 +1,4 @@
-import { ChatMessage, ChatUser } from "types/chat";
+import { ChatMessage, DisplayUser } from "types/chat";
 
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -22,7 +22,7 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 
 interface BaseReaction {
   created_at: number;
-  created_by: WithId<ChatUser>;
+  created_by: WithId<DisplayUser>;
   reaction: unknown;
 }
 
