@@ -4,6 +4,7 @@ const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { chunk, sampleSize } = require("lodash");
+const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 
@@ -18,10 +19,12 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
         snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
       );
 
+    const date3HoursBefore = Date.now() - hoursToMilliseconds(3);
+
     const usersPromise = admin
       .firestore()
       .collection("users")
-      .where(["lastSeenAt", ""])
+      .where(["lastSeenAt", "<", date3HoursBefore.toString()])
       .get()
       .then((snapshot) =>
         snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
