@@ -139,7 +139,7 @@ export const chatMessageAsTextReaction = (
   message: ChatMessage
 ): TextReaction => ({
   created_at: message.ts_utc.toMillis() / 1000,
-  created_by: message.from,
+  created_by: message.fromUser,
   reaction: TextReactionType,
   text: message.text,
 });

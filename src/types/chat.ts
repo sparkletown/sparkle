@@ -16,7 +16,7 @@ export enum ChatMessageType {
 export type ChatUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
 
 export type BaseChatMessage = {
-  from: WithId<ChatUser>;
+  fromUser: WithId<ChatUser>;
   text: string;
   ts_utc: firebase.firestore.Timestamp;
   threadId?: string;

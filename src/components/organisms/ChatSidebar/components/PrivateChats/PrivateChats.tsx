@@ -52,10 +52,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
     () =>
       privateChatPreviews
         // NOTE: Filter out self
-        .filter((chatMessage) => chatMessage.from !== chatMessage.to)
+        .filter((chatMessage) => chatMessage.fromUser !== chatMessage.to)
         .map((chatMessage) => (
           <PrivateChatPreview
-            key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
+            key={`${chatMessage.ts_utc}-${chatMessage.fromUser}-${chatMessage.to}`}
             message={chatMessage}
             onClick={() => selectRecipientChat(chatMessage.counterPartyUser)}
           />

@@ -33,11 +33,11 @@ export const getPreviewChatMessage = ({
 });
 
 export const buildMessage = <T extends ChatMessage>(
-  from: WithId<ChatUser>,
-  message: Pick<T, Exclude<keyof T, "ts_utc" | "from">>
+  fromUser: WithId<ChatUser>,
+  message: Pick<T, Exclude<keyof T, "ts_utc" | "fromUser">>
 ) => ({
   ...message,
-  from: pickChatUserFromUser(from),
+  fromUser: pickChatUserFromUser(fromUser),
   ts_utc: firebase.firestore.Timestamp.now(),
 });
 
@@ -47,9 +47,9 @@ export const pickChatUserFromUser = (user: WithId<User>): WithId<ChatUser> =>
 export const messageContainsUserObject = <T extends ChatMessage>(
   message: WithId<T>
 ) => {
-  if (isString(message.from)) return false;
-  
-  return has(message, "id");
+  if (!("fromUser" in message) || isString(message.fromUser)) return false;
+
+  return has(message.fromUser, "id");
 };
 
 export const filterMessagesWithUserObject = <T extends ChatMessage>(

@@ -29,7 +29,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
 
   useEffect(() => {
     const unreadCounterpartyMessages = messagesToDisplay.filter(
-      (message) => !message.isRead && message.from.id === recipient.id
+      (message) => !message.isRead && message.fromUser.id === recipient.id
     );
 
     if (unreadCounterpartyMessages.length > 0) {

@@ -92,7 +92,8 @@ const useNumberOfUnreadChats = () => {
   return useMemo(
     () =>
       privateChatPreviews.filter(
-        (chatPreview) => !chatPreview.isRead && chatPreview.from.id !== userId
+        (chatPreview) =>
+          !chatPreview.isRead && chatPreview.fromUser.id !== userId
       ).length,
     [privateChatPreviews, userId]
   );

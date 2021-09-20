@@ -19,7 +19,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
   message,
   onClick,
 }) => {
-  const isMine = useIsCurrentUser(message.from.id);
+  const isMine = useIsCurrentUser(message.fromUser.id);
 
   const { isRead, counterPartyUser, text, ts_utc } = message;
 

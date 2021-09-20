@@ -26,7 +26,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   deleteMessage,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, from } = message;
+  const { ts_utc, fromUser } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
   const timestamp = ts_utc.toMillis();
@@ -35,9 +35,9 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
     (event) => {
       if (event.target.closest(`.${deleteIconClass}`)) return;
 
-      openUserProfileModal(from.id);
+      openUserProfileModal(fromUser.id);
     },
-    [openUserProfileModal, from.id]
+    [openUserProfileModal, fromUser.id]
   );
 
   const containerClasses = classNames("ChatMessageInfo", {
@@ -46,8 +46,8 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   return (
     <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={from} showStatus />
-      <span className="ChatMessageInfo__author">{from.partyName}</span>
+      <UserAvatar user={fromUser} showStatus />
+      <span className="ChatMessageInfo__author">{fromUser.partyName}</span>
       <span className="ChatMessageInfo__time">
         {formatTimeLocalised(timestamp)}
       </span>

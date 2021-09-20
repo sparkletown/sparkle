@@ -86,7 +86,8 @@ export const useRecipientChat = (recipient: WithId<ChatUser>) => {
         .filter(
           (message) =>
             message.deleted !== true &&
-            (message.to.id === recipient.id || message.from.id === recipient.id)
+            (message.to.id === recipient.id ||
+              message.fromUser.id === recipient.id)
         )
         .sort(chatSort),
     [privateChatMessages, recipient.id]

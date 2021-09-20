@@ -134,7 +134,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         {selectedThread && (
           <ChatboxThreadControls
             text="replying to"
-            threadAuthor={selectedThread.from.partyName}
+            threadAuthor={selectedThread.fromUser.partyName}
             closeThread={closeThread}
           />
         )}

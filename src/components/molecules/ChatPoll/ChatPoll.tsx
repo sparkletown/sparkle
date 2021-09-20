@@ -35,7 +35,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   const { userId } = useUser();
   const { id, poll, votes } = pollMessage;
   const { questions, topic } = poll;
-  const isMine = useIsCurrentUser(pollMessage.from.id);
+  const isMine = useIsCurrentUser(pollMessage.fromUser.id);
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
