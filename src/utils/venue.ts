@@ -122,6 +122,7 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
     // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
     iframeUrl: "",
     logoImageUrl: "",
+    worldId: "",
   };
 };
 
