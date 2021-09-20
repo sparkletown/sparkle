@@ -9,9 +9,21 @@
   box-shadow: box-shadow--large();
   overflow: scroll;
 
+  &__header {
+    margin: $spacing--xl $spacing--xxl;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__checkbox {
+    font-size: $font-size--lg;
+    user-select: none;
+  }
+
   &__title {
-    margin: $spacing--lg;
-    font-weight: $font-weight--500;
+    margin: 0;
+    font-weight: $font-weight--700;
     font-size: $font-size--xl;
   }
 
