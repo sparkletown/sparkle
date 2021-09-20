@@ -13,15 +13,15 @@ import { AuditoriumVenue } from "types/venues";
 
 import {
   convertToCartesianCoordinate,
-  getAuditoriumSeatedUsers,
   getVideoSizeInSeats,
 } from "utils/auditorium";
 import { WithId } from "utils/id";
 import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
 
+import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
+
 import { isLoaded } from "../useFirestoreConnect";
 import { useGetUserByPosition } from "../useGetUserByPosition";
-import { useRecentVenueUsers } from "../users";
 import { useSelector } from "../useSelector";
 import { useUser } from "../useUser";
 
@@ -47,8 +47,6 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
-
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
 
@@ -65,11 +63,7 @@ export const useAuditoriumSection = ({
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
 
-  const seatedUsers = getAuditoriumSeatedUsers({
-    auditoriumUsers: recentVenueUsers,
-    venueId,
-    sectionId,
-  });
+  const seatedUsers = useAuditoriumSeatedUsers(venueId, sectionId);
 
   const isUserSeated = useMemo(
     () => seatedUsers.some((seatedUser) => seatedUser.id === userId),

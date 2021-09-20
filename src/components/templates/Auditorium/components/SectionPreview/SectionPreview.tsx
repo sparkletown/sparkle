@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -8,10 +8,10 @@ import { SECTION_PREVIEW_USER_DISPLAY_COUNT } from "settings";
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
+import { getSectionCapacity } from "utils/auditorium";
 import { WithId } from "utils/id";
 
-import { useRecentVenueUsers } from "hooks/users";
+import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -28,23 +28,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
-
   const sectionCapacity = getSectionCapacity(venue, section);
 
   const sectionId = section.id;
   const venueId = venue.id;
 
-  // @debt refactor this into a hook that more efficiently encapsultes the required selector logic + uses selector to memoise
-  const seatedUsers = useMemo(
-    () =>
-      getAuditoriumSeatedUsers({
-        auditoriumUsers: recentVenueUsers,
-        venueId,
-        sectionId,
-      }),
-    [recentVenueUsers, venueId, sectionId]
-  );
+  const seatedUsers = useAuditoriumSeatedUsers(venueId, sectionId);
 
   const seatedUsersCount = seatedUsers.length;
 

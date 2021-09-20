@@ -3,10 +3,12 @@ import { useHistory } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
 
-import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
+import { getSectionCapacity } from "utils/auditorium";
 import { WithId } from "utils/id";
 import { currentAuditoriumSectionsSelector } from "utils/selectors";
 import { getUrlWithoutTrailingSlash } from "utils/url";
+
+import { findAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
 
 import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
 import { useRecentVenueUsers } from "../users";
@@ -61,11 +63,11 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
     return sections.filter((section) => {
       const sectionCapacity = getSectionCapacity(venue, section);
-      const seatedUsers = getAuditoriumSeatedUsers({
+      const seatedUsers = findAuditoriumSeatedUsers(
+        recentVenueUsers,
         venueId,
-        auditoriumUsers: recentVenueUsers,
-        sectionId: section.id,
-      });
+        section.id
+      );
 
       return seatedUsers.length < sectionCapacity;
     });
