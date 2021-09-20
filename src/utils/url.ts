@@ -23,6 +23,7 @@ const createAdminUrlHelperFor = (segment: string) => (
       })
     : generatePath("/admin-ng");
 
+export const adminOGRootUrl = generatePath("/admin");
 export const adminNGRootUrl = createAdminUrlHelperFor("");
 export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
 export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");

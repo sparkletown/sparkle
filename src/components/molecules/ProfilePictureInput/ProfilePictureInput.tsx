@@ -11,7 +11,6 @@ import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvata
 import "./ProfilePictureInput.scss";
 
 export interface ProfilePictureInputProps {
-  venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: firebase.UserInfo;
   errors: ReturnType<typeof useForm>["errors"];
@@ -20,7 +19,6 @@ export interface ProfilePictureInputProps {
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
-  venueId,
   setValue,
   user,
   errors,
@@ -99,7 +97,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <DefaultAvatars
-        venueId={venueId}
         onAvatarClick={setPictureUrl}
         isLoadingExternal={hasError}
       />

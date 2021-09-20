@@ -14,7 +14,7 @@ import {
 
 import {
   buildMessage,
-  getBaseMessageToDisplay,
+  filterNewSchemaMessages,
   getMessageReplies,
   partitionMessagesFromReplies,
 } from "utils/chat";
@@ -24,7 +24,6 @@ import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useWorldUsersByIdWorkaround } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -47,25 +46,24 @@ export const useVenueChat = (venueId?: string) => {
 };
 
 const useChatActions = (venueId?: string) => {
-  const { userId } = useUser();
+  const { userWithId } = useUser();
 
   const sendMessage: SendMessage = useCallback(
     async ({ message, isQuestion }) => {
-      if (!venueId || !userId) return;
+      if (!venueId || !userWithId) return;
 
-      const processedMessage = buildMessage<VenueChatMessage>({
-        from: userId,
+      const processedMessage = buildMessage<VenueChatMessage>(userWithId, {
         text: message,
         ...(isQuestion && { isQuestion }),
       });
 
       return sendVenueMessage({ venueId, message: processedMessage });
     },
-    [venueId, userId]
+    [venueId, userWithId]
   );
 
   const deleteMessage: DeleteMessage = useCallback(
-    (messageId: string) => {
+    async (messageId: string) => {
       if (!venueId) return;
 
       return deleteVenueMessage({ venueId, messageId });
@@ -75,17 +73,16 @@ const useChatActions = (venueId?: string) => {
 
   const sendThreadReply: SendChatReply = useCallback(
     async ({ replyText, threadId }) => {
-      if (!venueId || !userId) return;
+      if (!venueId || !userWithId) return;
 
-      const threadReply = buildMessage<VenueChatMessage>({
-        from: userId,
+      const threadReply = buildMessage<VenueChatMessage>(userWithId, {
         text: replyText,
         threadId,
       });
 
       return sendVenueMessage({ venueId, message: threadReply });
     },
-    [venueId, userId]
+    [venueId, userWithId]
   );
 
   return {
@@ -96,13 +93,12 @@ const useChatActions = (venueId?: string) => {
 };
 
 const useChatMessages = (venueId?: string) => {
-  const { worldUsersById } = useWorldUsersByIdWorkaround();
-  const { userId } = useUser();
-
   useConnectVenueChatMessages(venueId);
 
   const chatMessages =
-    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
+    filterNewSchemaMessages<VenueChatMessage>(
+      useSelector(venueChatMessagesSelector, isEqual)
+    ) ?? noMessages;
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
@@ -111,13 +107,13 @@ const useChatMessages = (venueId?: string) => {
       chatMessages.filter(
         (message) =>
           message.deleted !== true &&
-          message.ts_utc.seconds > venueChatAgeThresholdSec
+          message.timestamp.seconds > venueChatAgeThresholdSec
       ),
     [chatMessages, venueChatAgeThresholdSec]
   );
 
   const { messages, allMessagesReplies } = useMemo(
-    () => partitionMessagesFromReplies(filteredMessages),
+    () => partitionMessagesFromReplies<VenueChatMessage>(filteredMessages),
     [filteredMessages]
   );
 
@@ -125,33 +121,18 @@ const useChatMessages = (venueId?: string) => {
     () =>
       messages
         .map((message) => {
-          const displayMessage = getBaseMessageToDisplay<
-            WithId<VenueChatMessage>
-          >({
-            message,
-            usersById: worldUsersById,
-            myUserId: userId,
-          });
-
-          if (!displayMessage) return undefined;
-
           const messageReplies = getMessageReplies<VenueChatMessage>({
             messageId: message.id,
             allReplies: allMessagesReplies,
-          })
-            .map((reply) =>
-              getBaseMessageToDisplay<WithId<VenueChatMessage>>({
-                message: reply,
-                usersById: worldUsersById,
-                myUserId: userId,
-              })
-            )
-            .filter(isTruthy);
+          }).filter(isTruthy);
 
-          return { ...displayMessage, replies: messageReplies };
+          return {
+            ...message,
+            replies: messageReplies,
+          };
         })
         .filter(isTruthy),
-    [userId, worldUsersById, messages, allMessagesReplies]
+    [messages, allMessagesReplies]
   );
 };
 
@@ -162,7 +143,7 @@ const useConnectVenueChatMessages = (venueId?: string) => {
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "chats" }],
-          orderBy: ["ts_utc", "desc"],
+          orderBy: ["timestamp", "desc"],
           storeAs: "venueChatMessages",
         }
       : undefined
