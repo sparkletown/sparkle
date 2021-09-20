@@ -7,7 +7,7 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
-import { useRecentLocationUsers, useWorldUsers } from "hooks/users";
+import { useWorldUsers } from "hooks/users";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -63,11 +63,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [worldUsers, authorName]
   );
 
-  const { recentLocationUsers } = useRecentLocationUsers({
-    venueId: posterVenue.id,
-  });
-
-  const userCount = recentLocationUsers.length;
+  const userCount = posterVenue.recentUserCount ?? 0;
   const hasUsers = userCount > 0;
   const userCountText = `${userCount} ${
     userCount === 1 ? "current visitor" : "current visitors"

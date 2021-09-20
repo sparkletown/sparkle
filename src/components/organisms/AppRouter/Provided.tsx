@@ -1,5 +1,6 @@
 import React from "react";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import {
   RelatedVenuesProvider,
   RelatedVenuesProviderProps,
@@ -27,6 +28,8 @@ export const Provided: React.FC<ProvidedProps> = ({
 }) => {
   const venueId = useVenueId();
 
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
   const MaybeRelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = withRelatedVenues
     ? RelatedVenuesProvider
     : EmptyProvider;
@@ -36,10 +39,10 @@ export const Provided: React.FC<ProvidedProps> = ({
     : EmptyProvider;
 
   return (
-    <MaybeWorldUsersProvider venueId={venueId}>
-      <MaybeRelatedVenuesProvider venueId={venueId}>
+    <MaybeRelatedVenuesProvider venue={venue}>
+      <MaybeWorldUsersProvider venueId={venueId}>
         {children}
-      </MaybeRelatedVenuesProvider>
-    </MaybeWorldUsersProvider>
+      </MaybeWorldUsersProvider>
+    </MaybeRelatedVenuesProvider>
   );
 };
