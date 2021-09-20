@@ -144,12 +144,12 @@ export const findSovereignVenue = (
   venueId: string,
   venues: WithId<AnyVenue>[],
   options?: FindSovereignVenueOptions
-): FindSovereignVenueReturn => {
+): FindSovereignVenueReturn | undefined => {
   const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
 
   const venue = venues.find((venue) => venue.id === venueId);
 
-  if (!venue) throw new Error(`The '${venueId}' venue doesn't exist`);
+  if (!venue) return undefined;
 
   if (!venue.parentId)
     return {
