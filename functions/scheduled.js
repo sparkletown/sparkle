@@ -6,6 +6,49 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { chunk, sampleSize } = require("lodash");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
+const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
+
+exports.updateUserCountInAuditoriumSections = functions.pubsub
+  .schedule("every 5 seconds")
+  .onRun(async () => {
+    const firestore = admin.firestore();
+    const auditoriums = await firestore
+      .collection("venues")
+      .where("template", "==", "auditorium")
+      .get()
+      .then((snapshot) =>
+        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+      );
+
+    const batch = admin.firestore().batch();
+    auditoriums.forEach((auditorium) =>
+      auditorium.sections
+        .filter((section) => section.seatedUsers?.length > 0)
+        .forEach((section) =>
+          batch.update(
+            firestore
+              .collection("venues")
+              .doc(auditorium.id)
+              .collection("sections")
+              .doc(section.id),
+            {
+              seatedUsersCount: section.seatedUsers.length,
+              seatedUsersSample: section.seatedUsers.splice(
+                0,
+                SECTION_PREVIEW_USER_DISPLAY_COUNT
+              ),
+            }
+          )
+        )
+    );
+
+    batch.commit().catch((error) => {
+      throw new HttpsError(
+        "internal",
+        `Commit batch of auditoriums sections update. Error: ${error}`
+      );
+    });
+  });
 
 exports.aggregateUsersLocationsInVenue = functions.pubsub
   .schedule("every 5 minutes")
