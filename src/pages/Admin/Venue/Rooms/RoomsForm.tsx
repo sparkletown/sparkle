@@ -340,7 +340,9 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    <div className="input-title">Label Appearance</div>
+                    <div className="input-title">
+                      Change label appearance (overrides global settings)
+                    </div>
                     <select
                       name="visibility"
                       id="visibility"
