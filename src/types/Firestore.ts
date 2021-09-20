@@ -63,6 +63,7 @@ export interface FirestoreData {
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   currentModalUser?: User;
+  currentEvent?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
   relatedVenues?: Record<string, AnyVenue>;
@@ -84,6 +85,7 @@ export interface FirestoreOrdered {
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
   currentModalUser?: WithId<User>[];
+  currentEvent?: WithId<VenueEvent>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
