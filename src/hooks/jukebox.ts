@@ -88,7 +88,7 @@ const useConnectVenueJukeboxMessages = (
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "jukeboxMessages" }],
-          orderBy: ["ts_utc", "asc"],
+          orderBy: ["timestamp", "asc"],
           storeAs: "venueJukeboxMessages",
         }
       : undefined

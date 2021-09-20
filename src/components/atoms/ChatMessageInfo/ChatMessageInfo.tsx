@@ -26,10 +26,10 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   deleteMessage,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, fromUser } = message;
+  const { timestamp, fromUser } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
-  const timestamp = ts_utc.toMillis();
+  const timestampMillis = timestamp.toMillis();
 
   const openAuthorProfile = useCallback(
     (event) => {
@@ -49,7 +49,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       <UserAvatar user={fromUser} showStatus />
       <span className="ChatMessageInfo__author">{fromUser.partyName}</span>
       <span className="ChatMessageInfo__time">
-        {formatTimeLocalised(timestamp)}
+        {formatTimeLocalised(timestampMillis)}
       </span>
       {deleteMessage && (
         <FontAwesomeIcon

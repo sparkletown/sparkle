@@ -19,7 +19,7 @@ export const usePrivateChatPreviews = () => {
     () =>
       privateChatMessages.reduce<PreviewChatMessageMap>((acc, message) => {
         if (!userId) return acc;
-        const { fromUser, toUser, ts_utc } = message;
+        const { fromUser, toUser, timestamp } = message;
 
         // Either `from` author or `to` author is Me. Filter me out
         const counterPartyUser = fromUser.id === userId ? toUser : fromUser;
@@ -31,7 +31,7 @@ export const usePrivateChatPreviews = () => {
           const previousMessage = acc[counterPartyUser.id];
 
           // If the message is older, replace it with the more recent one
-          if (previousMessage.ts_utc > ts_utc) return acc;
+          if (previousMessage.timestamp > timestamp) return acc;
 
           return {
             ...acc,

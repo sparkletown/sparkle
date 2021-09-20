@@ -18,7 +18,7 @@ export type ChatUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
 export type BaseChatMessage = {
   fromUser: WithId<ChatUser>;
   text: string;
-  ts_utc: firebase.firestore.Timestamp;
+  timestamp: firebase.firestore.Timestamp;
   threadId?: string;
   deleted?: boolean;
   isQuestion?: boolean;

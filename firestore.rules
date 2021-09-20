@@ -37,7 +37,7 @@ service cloud.firestore {
       allow read: if true;
 
       function venueData() {
-        return get(/databases/$(database)/documents/venues/$(venue)).data
+        return get(/databases/$(database)/documents/venues/$(venue)).data;
       }
 
       match /events/{event} {

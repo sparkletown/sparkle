@@ -17,7 +17,7 @@ import { WithId } from "utils/id";
 export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   a: BaseChatMessage,
   b: BaseChatMessage
-) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
+) => b.timestamp.valueOf().localeCompare(a.timestamp.valueOf());
 
 export interface GetPreviewChatMessageProps {
   message: WithId<PrivateChatMessage>;
@@ -34,11 +34,11 @@ export const getPreviewChatMessage = ({
 
 export const buildMessage = <T extends ChatMessage>(
   fromUser: WithId<ChatUser>,
-  message: Pick<T, Exclude<keyof T, "ts_utc" | "fromUser">>
+  message: Pick<T, Exclude<keyof T, "timestamp" | "fromUser">>
 ) => ({
   ...message,
   fromUser: pickChatUserFromUser(fromUser),
-  ts_utc: firebase.firestore.Timestamp.now(),
+  timestamp: firebase.firestore.Timestamp.now(),
 });
 
 export const pickChatUserFromUser = (user: WithId<User>): WithId<ChatUser> =>
@@ -47,7 +47,7 @@ export const pickChatUserFromUser = (user: WithId<User>): WithId<ChatUser> =>
 export const isNewSchemaMessage = <T extends ChatMessage>(
   message: WithId<T>
 ) => {
-  if (!("fromUser" in message)) return false;
+  if (!("fromUser" in message && "timestamp" in message)) return false;
   if ("to" in message && !("toUser" in message)) return false;
 
   return has(message.fromUser, "id");

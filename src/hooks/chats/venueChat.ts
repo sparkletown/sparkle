@@ -107,7 +107,7 @@ const useChatMessages = (venueId?: string) => {
       chatMessages.filter(
         (message) =>
           message.deleted !== true &&
-          message.ts_utc.seconds > venueChatAgeThresholdSec
+          message.timestamp.seconds > venueChatAgeThresholdSec
       ),
     [chatMessages, venueChatAgeThresholdSec]
   );
@@ -143,7 +143,7 @@ const useConnectVenueChatMessages = (venueId?: string) => {
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "chats" }],
-          orderBy: ["ts_utc", "desc"],
+          orderBy: ["timestamp", "desc"],
           storeAs: "venueChatMessages",
         }
       : undefined

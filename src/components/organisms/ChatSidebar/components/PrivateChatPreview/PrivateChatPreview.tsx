@@ -21,9 +21,9 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
 }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
 
-  const { isRead, counterPartyUser, text, ts_utc } = message;
+  const { isRead, counterPartyUser, text, timestamp } = message;
 
-  const timestamp = ts_utc.toMillis();
+  const timestampMillis = timestamp.toMillis();
 
   const containerClasses = classNames("chat-preview", {
     "chat-preview--highlight": !isRead && !isMine,
@@ -39,7 +39,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
         <div className="chat-preview__text">{text}</div>
       </div>
       <div className="chat-preview__time">
-        {formatDistanceToNow(timestamp, { addSuffix: true })}
+        {formatDistanceToNow(timestampMillis, { addSuffix: true })}
       </div>
     </div>
   );
