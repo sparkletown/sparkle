@@ -14,7 +14,6 @@ import {
 } from "utils/image";
 
 import { useIsOnline } from "hooks/useIsOnline";
-import { useVenueId } from "hooks/useVenueId";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
@@ -53,15 +52,13 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showStatus,
   size,
 }) => {
-  const venueId = useVenueId();
-
   const { isOnline } = useIsOnline(user?.id);
 
   const {
     userStatus,
     venueUserStatuses,
     isStatusEnabledForVenue,
-  } = useVenueUserStatuses(venueId, user);
+  } = useVenueUserStatuses(user);
 
   const avatarSrc = useMemo((): string => {
     const url = user?.anonMode

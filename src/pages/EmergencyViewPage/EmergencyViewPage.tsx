@@ -53,7 +53,6 @@ export const EmergencyViewPage: React.FC = () => {
     liveAndFutureEvents,
     firstScheduleDate,
   } = useVenueScheduleEvents({
-    venueId,
     userEventIds,
   });
 

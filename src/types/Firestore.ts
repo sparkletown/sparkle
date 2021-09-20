@@ -72,6 +72,7 @@ export interface FirestoreData {
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
+  relatedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -110,6 +111,7 @@ export interface FirestoreOrdered {
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
+  relatedVenues?: WithId<AnyVenue>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   // @debt this doesn't appear to be used by anything anymore
