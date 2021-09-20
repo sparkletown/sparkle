@@ -166,21 +166,21 @@ export const sortVenues = (
   }
 };
 
-export interface GetSovereignVenueOptions {
+export interface FindSovereignVenueOptions {
   previouslyCheckedVenueIds?: readonly string[];
   maxDepth?: number;
 }
 
-export interface GetSovereignVenueReturn {
+export interface FindSovereignVenueReturn {
   sovereignVenue: WithId<AnyVenue>;
   checkedVenueIds: readonly string[];
 }
 
-export const getSovereignVenue = (
+export const findSovereignVenue = (
   venueId: string,
   venues: WithId<AnyVenue>[],
-  options?: GetSovereignVenueOptions
-): GetSovereignVenueReturn => {
+  options?: FindSovereignVenueOptions
+): FindSovereignVenueReturn => {
   const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
 
   const venue = venues.find((venue) => venue.id === venueId);
@@ -201,7 +201,7 @@ export const getSovereignVenue = (
   if (maxDepth && maxDepth <= 0)
     throw new Error("Maximum depth reached before finding the sovereignVenue.");
 
-  return getSovereignVenue(venue.parentId, venues, {
+  return findSovereignVenue(venue.parentId, venues, {
     ...options,
     previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
     maxDepth: maxDepth ? maxDepth - 1 : undefined,

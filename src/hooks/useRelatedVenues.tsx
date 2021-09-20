@@ -4,7 +4,7 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { relatedVenuesSelector } from "utils/selectors";
-import { getSovereignVenue } from "utils/venue";
+import { findSovereignVenue } from "utils/venue";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -16,7 +16,7 @@ export interface RelatedVenuesContextState {
 
   sovereignVenue?: WithId<AnyVenue>;
   sovereignVenueId?: string;
-  checkedVenueIds?: readonly string[];
+  sovereignVenueDescendantIds?: readonly string[];
 
   relatedVenues: WithId<AnyVenue>[];
   descendantVenues: WithId<AnyVenue>[];
@@ -63,11 +63,12 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   const sovereignVenueSearchResult = useMemo(() => {
     if (!venueId || !hasRelatedVenues) return;
 
-    return getSovereignVenue(venueId, relatedVenues);
+    return findSovereignVenue(venueId, relatedVenues);
   }, [venueId, relatedVenues, hasRelatedVenues]);
 
   const sovereignVenue = sovereignVenueSearchResult?.sovereignVenue;
-  const checkedVenueIds = sovereignVenueSearchResult?.checkedVenueIds;
+  const sovereignVenueDescendantIds =
+    sovereignVenueSearchResult?.checkedVenueIds;
   const sovereignVenueId = sovereignVenue?.id;
 
   const relatedVenueIds = useMemo(
@@ -95,7 +96,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
       sovereignVenue,
       sovereignVenueId,
-      checkedVenueIds,
+      sovereignVenueDescendantIds,
 
       relatedVenues,
       relatedVenueIds,
@@ -111,7 +112,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
       findVenueInRelatedVenues,
       sovereignVenue,
       sovereignVenueId,
-      checkedVenueIds,
+      sovereignVenueDescendantIds,
     ]
   );
 

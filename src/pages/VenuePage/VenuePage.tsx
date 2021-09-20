@@ -125,18 +125,21 @@ export const VenuePage: React.FC = () => {
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { sovereignVenueId, checkedVenueIds } = useRelatedVenues();
+  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !sovereignVenueId || !checkedVenueIds) return;
+    if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
 
-    const allVenues = [...checkedVenueIds, sovereignVenueId].reverse();
+    const allVenueIds = [
+      ...sovereignVenueDescendantIds,
+      sovereignVenueId,
+    ].reverse();
 
-    const locationPath = wrapIntoSlashes(allVenues.join("/"));
+    const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
 
     updateLocationData({ userId, newLocationPath: locationPath });
-  }, [userId, sovereignVenueId, checkedVenueIds]);
+  }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 

@@ -45,19 +45,6 @@ export const setVenueLiveStatus = async ({
     .finally(onFinish);
 };
 
-export interface FetchSovereignVenueOptions {
-  previouslyCheckedVenueIds?: readonly string[];
-  maxDepth?: number;
-}
-
-export const fetchVenue = async (
-  venueId: string
-): Promise<WithId<AnyVenue> | undefined> =>
-  getVenueRef(venueId)
-    .withConverter(anyVenueWithIdConverter)
-    .get()
-    .then((docSnapshot) => docSnapshot.data());
-
 /**
  * Convert Venue objects between the app/firestore formats (@debt:, including validation).
  */
