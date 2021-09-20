@@ -1,15 +1,15 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 
+import { ALWAYS_EMPTY_ARRAY } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { relatedVenuesSelector } from "utils/selectors";
 import { findSovereignVenue } from "utils/venue";
 
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
+import { isEmpty, isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
-
-const emptyArray: never[] = [];
 
 export interface RelatedVenuesContextState {
   isLoading: boolean;
@@ -56,15 +56,14 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   });
 
   // @debt rewrite this the way users are implemented, but without the batching
-  const relatedVenues = useSelector(relatedVenuesSelector) ?? emptyArray;
-
-  const hasRelatedVenues = relatedVenues.length > 0;
+  const rawRelatedVenues = useSelector(relatedVenuesSelector);
+  const relatedVenues = rawRelatedVenues ?? ALWAYS_EMPTY_ARRAY;
 
   const sovereignVenueSearchResult = useMemo(() => {
-    if (!venueId || !hasRelatedVenues) return;
+    if (!venueId || isEmpty(relatedVenues)) return;
 
     return findSovereignVenue(venueId, relatedVenues);
-  }, [venueId, relatedVenues, hasRelatedVenues]);
+  }, [venueId, relatedVenues]);
 
   const sovereignVenue = sovereignVenueSearchResult?.sovereignVenue;
   const sovereignVenueDescendantIds =

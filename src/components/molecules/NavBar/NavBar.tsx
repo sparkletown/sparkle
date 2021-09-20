@@ -216,7 +216,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers venueId={venueId} />
+              <VenuePartygoers />
             </div>
 
             {!user && <NavBarLogin />}
