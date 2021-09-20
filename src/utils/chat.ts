@@ -48,6 +48,7 @@ export const messageContainsUserObject = <T extends ChatMessage>(
   message: WithId<T>
 ) => {
   if (isString(message.from)) return false;
+  
   return has(message, "id");
 };
 
