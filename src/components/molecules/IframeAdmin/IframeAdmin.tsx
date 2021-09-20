@@ -11,8 +11,6 @@ interface IframeAdminProps {
   venue: AnyVenue;
 }
 
-// @debt This component is almost exactly the same as BannerAdmin, we should refactor them both to use the same generic base component
-//   BannerAdmin is the 'canonical example' to follow when we do this
 export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
