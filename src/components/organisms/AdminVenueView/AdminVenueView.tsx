@@ -106,6 +106,11 @@ export const AdminVenueView: React.FC = () => {
     return <LoadingPage />;
   }
 
+  if (!venue) {
+    // @debt replace null with a `NotFound` component for better UX
+    return null;
+  }
+
   return (
     <WithNavigationBar hasBackButton={false} withSchedule={false}>
       <AdminRestricted>
