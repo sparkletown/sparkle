@@ -13,6 +13,8 @@ import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import "./EventsView.scss";
 
 export type EventsViewProps = {
@@ -62,8 +64,8 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   );
 
   return (
-    <>
-      <div className="EventsView">
+    <div className="EventsView">
+      <div className="EventsView__container">
         <h4 className="EventsView__title">Events Schedule</h4>
         <div className="EventsView__content">
           {renderedEvents}
@@ -82,10 +84,10 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
       </div>
 
       {hasVenueEvents && (
-        <div className="create-button">
-          <button className="btn btn-primary" onClick={setShowCreateEventModal}>
+        <div className="EventsView__create">
+          <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
             Create an Event
-          </button>
+          </ButtonNG>
         </div>
       )}
 
@@ -116,6 +118,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           event={editedEvent}
         />
       )}
-    </>
+    </div>
   );
 };
