@@ -25,7 +25,7 @@ export type BaseChatMessage = {
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
-  to: WithId<ChatUser>;
+  toUser: WithId<ChatUser>;
   isRead?: boolean;
 };
 

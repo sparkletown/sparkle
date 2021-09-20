@@ -14,7 +14,7 @@ import {
 
 import {
   buildMessage,
-  filterMessagesWithUserObject,
+  filterNewSchemaMessages,
   getMessageReplies,
   partitionMessagesFromReplies,
 } from "utils/chat";
@@ -96,7 +96,7 @@ const useChatMessages = (venueId?: string) => {
   useConnectVenueChatMessages(venueId);
 
   const chatMessages =
-    filterMessagesWithUserObject<VenueChatMessage>(
+    filterNewSchemaMessages<VenueChatMessage>(
       useSelector(venueChatMessagesSelector, isEqual)
     ) ?? noMessages;
 

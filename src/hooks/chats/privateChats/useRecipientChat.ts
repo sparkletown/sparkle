@@ -39,7 +39,7 @@ export const useRecipientChat = (recipient: WithId<ChatUser>) => {
       const privateChatMessage = buildMessage<PrivateChatMessage>(userWithId, {
         text: message,
         isQuestion,
-        to: pickChatUserFromUser(recipient),
+        toUser: pickChatUserFromUser(recipient),
       });
 
       return sendPrivateMessage(privateChatMessage);
@@ -70,7 +70,7 @@ export const useRecipientChat = (recipient: WithId<ChatUser>) => {
       if (!userWithId) return;
 
       const threadReply = buildMessage<PrivateChatMessage>(userWithId, {
-        to: recipient,
+        toUser: recipient,
         text: replyText,
         threadId,
       });
@@ -86,7 +86,7 @@ export const useRecipientChat = (recipient: WithId<ChatUser>) => {
         .filter(
           (message) =>
             message.deleted !== true &&
-            (message.to.id === recipient.id ||
+            (message.toUser.id === recipient.id ||
               message.fromUser.id === recipient.id)
         )
         .sort(chatSort),

@@ -19,10 +19,10 @@ export const usePrivateChatPreviews = () => {
     () =>
       privateChatMessages.reduce<PreviewChatMessageMap>((acc, message) => {
         if (!userId) return acc;
-        const { fromUser, to, ts_utc } = message;
+        const { fromUser, toUser, ts_utc } = message;
 
         // Either `from` author or `to` author is Me. Filter me out
-        const counterPartyUser = fromUser.id === userId ? to : fromUser;
+        const counterPartyUser = fromUser.id === userId ? toUser : fromUser;
 
         // Filter out not existent users
         if (!counterPartyUser) return acc;

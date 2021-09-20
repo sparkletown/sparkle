@@ -8,7 +8,7 @@ import { SendJukeboxMessage } from "types/jukebox";
 
 import {
   buildMessage,
-  filterMessagesWithUserObject,
+  filterNewSchemaMessages,
   partitionMessagesFromReplies,
 } from "utils/chat";
 import { WithId } from "utils/id";
@@ -67,7 +67,7 @@ const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
   useConnectVenueJukeboxMessages(venueId, tableId);
 
   const jukeboxMessages =
-    filterMessagesWithUserObject<JukeboxMessage>(
+    filterNewSchemaMessages<JukeboxMessage>(
       useSelector(jukeboxMessagesSelector, isEqual)
     ) ?? noMessages;
 

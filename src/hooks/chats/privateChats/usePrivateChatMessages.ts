@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { PrivateChatMessage } from "types/chat";
 
-import { filterMessagesWithUserObject } from "utils/chat";
+import { filterNewSchemaMessages } from "utils/chat";
 import { WithId } from "utils/id";
 import { privateChatMessagesSelector } from "utils/selectors";
 
@@ -20,7 +20,7 @@ export const usePrivateChatMessages = () => {
   return useMemo(
     () => ({
       privateChatMessages:
-        filterMessagesWithUserObject<PrivateChatMessage>(privateChatMessages) ??
+        filterNewSchemaMessages<PrivateChatMessage>(privateChatMessages) ??
         noMessages,
       isUserPrivateChatsLoaded: isLoaded(privateChatMessages),
     }),

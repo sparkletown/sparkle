@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { has, isString, pick } from "lodash";
+import { has, pick } from "lodash";
 
 import {
   BaseChatMessage,
@@ -44,17 +44,18 @@ export const buildMessage = <T extends ChatMessage>(
 export const pickChatUserFromUser = (user: WithId<User>): WithId<ChatUser> =>
   pick(user, "id", "partyName", "pictureUrl", "anonMode");
 
-export const messageContainsUserObject = <T extends ChatMessage>(
+export const isNewSchemaMessage = <T extends ChatMessage>(
   message: WithId<T>
 ) => {
-  if (!("fromUser" in message) || isString(message.fromUser)) return false;
+  if (!("fromUser" in message)) return false;
+  if ("to" in message && !("toUser" in message)) return false;
 
   return has(message.fromUser, "id");
 };
 
-export const filterMessagesWithUserObject = <T extends ChatMessage>(
+export const filterNewSchemaMessages = <T extends ChatMessage>(
   messages: WithId<T>[] | undefined
-) => messages?.filter(messageContainsUserObject);
+) => messages?.filter(isNewSchemaMessage);
 
 export interface PartitionMessagesFromRepliesReturn<T extends object> {
   messages: WithId<T>[];
