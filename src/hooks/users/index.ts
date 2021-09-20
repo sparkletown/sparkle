@@ -6,5 +6,4 @@ export {
   useWorldUsersByIdWorkaround,
 } from "./useWorldUsersById";
 export { useRecentWorldUsers } from "./useRecentWorldUsers";
-export { useRecentLocationUsers } from "./useRecentLocationUsers";
 export { useRecentVenueUsers } from "./useRecentVenueUsers";

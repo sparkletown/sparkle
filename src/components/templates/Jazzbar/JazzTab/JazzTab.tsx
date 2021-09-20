@@ -4,6 +4,7 @@ import classNames from "classnames";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import {
+  ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
@@ -19,7 +20,6 @@ import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -54,8 +54,6 @@ interface JazzProps {
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
-
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
@@ -162,7 +160,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
       {!seatedAtTable && (
         <UserList
-          users={recentVenueUsers}
+          users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
           activity={venue.activity ?? "here"}
           limit={DEFAULT_USER_LIST_LIMIT}
           showMoreUsersToggler
@@ -227,11 +225,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               )}
 
               {shouldShowJukebox && (
-                <Jukebox
-                  recentVenueUsers={recentVenueUsers}
-                  updateIframeUrl={changeIframeUrl}
-                  venue={venue}
-                />
+                <Jukebox updateIframeUrl={changeIframeUrl} venue={venue} />
               )}
 
               {!seatedAtTable && (

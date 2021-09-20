@@ -80,7 +80,7 @@ const venueRooms: VenueRooms[] = [
 ];
 
 interface SpacesProps extends TabNavigationProps {
-  venue?: WithId<AnyVenue>;
+  venue: WithId<AnyVenue>;
 }
 
 const emptyRoomsArray: RoomData_v2[] = [];
@@ -101,6 +101,7 @@ export const Spaces: React.FC<SpacesProps> = ({
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
+  const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue?.rooms?.length ?? 0;
 
@@ -155,9 +156,10 @@ export const Spaces: React.FC<SpacesProps> = ({
           text={venueRoom.text}
           template={venueRoom.template}
           icon={venueRoom.icon}
+          worldId={worldId}
         />
       )),
-    []
+    [worldId]
   );
 
   const selectedRoomIndex =

@@ -17,6 +17,7 @@ type RoomAttendanceProps = {
   maxVisible?: number;
 };
 
+// @debt remove this component in favor of UserList
 export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,

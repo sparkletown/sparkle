@@ -18,8 +18,8 @@ import { VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 import { openRoomUrl } from "utils/url";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
@@ -47,9 +47,10 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 
   const { portalVenueId } = useRoom({ room });
 
-  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
-    venueId: portalVenueId,
+  const { findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venueId,
   });
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
   const isRoomUnclickable = room.type === RoomType.unclickable;
 
@@ -87,7 +88,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({
         <Card.Title className="RoomCard__title">{room.title}</Card.Title>
         <div className="RoomCard__counter">
           <FontAwesomeIcon icon={faUserFriends} />
-          {recentRoomUsers.length}
+          {portalVenue?.recentUserCount}
         </div>
         <div className="RoomCard__type">{room.template}</div>
         <div className="RoomCard__link">
