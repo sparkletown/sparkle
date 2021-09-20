@@ -196,7 +196,7 @@ export interface BaseVenue {
   recentUsersSample?: WithId<User>[];
   recentUsersSampleSize?: number;
   updatedAt?: number;
-  worldId: string;
+  worldId?: string;
 }
 
 export interface GenericVenue extends BaseVenue {
