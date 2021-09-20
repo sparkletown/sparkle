@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import { makeUpdateBanner } from "api/bannerAdmin";
+import { updateBanner } from "api/bannerAdmin";
 
 import { Banner } from "types/banner";
 import { AnyVenue } from "types/venues";
@@ -23,8 +23,6 @@ interface BannerAdminProps {
   onClose?: () => void;
 }
 
-// @debt This component is almost exactly the same as IframeAdmin, we should refactor them both to use the same generic base component
-//   BannerAdmin is the 'canonical example' to follow when we do this
 export const BannerAdmin: React.FC<BannerAdminProps> = ({
   venueId,
   venue,
@@ -56,7 +54,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
     async (banner?: Banner) => {
       if (!venueId) return;
 
-      await makeUpdateBanner({ venueId, banner });
+      await updateBanner({ venueId, banner });
       onClose && onClose();
     },
     [venueId, onClose]

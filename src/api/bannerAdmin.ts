@@ -3,17 +3,17 @@ import firebase from "firebase/app";
 
 import { Banner } from "types/banner";
 
-export interface MakeUpdateBannerProps {
+export interface UpdateBannerProps {
   venueId: string;
   banner?: Banner;
   onError?: (errorMsg: string) => void;
 }
 
-export const makeUpdateBanner = async ({
+export const updateBanner = async ({
   venueId,
   banner,
   onError = () => {},
-}: MakeUpdateBannerProps): Promise<void> => {
+}: UpdateBannerProps): Promise<void> => {
   const params = {
     venueId,
     banner: banner ?? firebase.firestore.FieldValue.delete(),
@@ -25,7 +25,7 @@ export const makeUpdateBanner = async ({
     .catch((e) => {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("context", {
-          location: "api/bannerAdmin::makeUpdateBanner",
+          location: "api/bannerAdmin::updateBanner",
           venueId,
           banner,
         });

@@ -4,7 +4,7 @@ import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-import { makeUpdateBanner } from "api/bannerAdmin";
+import { updateBanner } from "api/bannerAdmin";
 
 import { venueInsideUrl } from "utils/url";
 
@@ -45,11 +45,11 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
 
   const [
     { loading: isUpdatingBanner, error },
-    updateBanner,
+    updateBannerAsync,
   ] = useAsyncFn(async () => {
     if (!venueId) return;
     const bannerMessage = getValues().message;
-    await makeUpdateBanner({ venueId, banner: { content: bannerMessage } });
+    await updateBanner({ venueId, banner: { content: bannerMessage } });
   }, [getValues, venueId]);
 
   return (
@@ -68,7 +68,7 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
           disabled={isUpdatingBanner}
           iconName={faPaperPlane}
           iconOnly={true}
-          onClick={updateBanner}
+          onClick={updateBannerAsync}
         />
         {error && <ErrorMessage name={error.message} message={error.message} />}
       </form>

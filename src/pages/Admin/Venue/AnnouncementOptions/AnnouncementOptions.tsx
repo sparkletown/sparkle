@@ -2,9 +2,9 @@ import React from "react";
 
 import { Banner } from "types/banner";
 
-import { Button } from "components/atoms/Button";
+import { AnnouncementStatus } from "pages/Admin/Venue/AnnouncementStatus";
 
-import { AnnouncementStatus } from "../AnnouncementStatus";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./AnnouncementOptions.scss";
 
@@ -23,9 +23,9 @@ export const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = ({
         <AnnouncementStatus banner={banner} />
       </div>
       <div className="AnnouncementOptions__right-side">
-        <Button onClick={onEdit} customClass="AnnouncementOptions__edit-button">
+        <ButtonNG onClick={onEdit} className="AnnouncementOptions__edit-button">
           Edit
-        </Button>
+        </ButtonNG>
       </div>
     </div>
   );

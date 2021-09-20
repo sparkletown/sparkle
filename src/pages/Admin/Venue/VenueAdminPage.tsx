@@ -1,5 +1,7 @@
 import React from "react";
 
+import { IFRAME_TEMPLATES } from "settings";
+
 import {
   isCurrentVenueNGRequestedSelector,
   isCurrentVenueNGRequestingSelector,
@@ -13,10 +15,10 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
-import { NewProfileModal } from "components/organisms/NewProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { IframeAdmin } from "components/molecules/IframeAdmin";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AnnouncementOptions } from "./AnnouncementOptions";
@@ -34,7 +36,6 @@ export const VenueAdminPage: React.FC = () => {
     show: showBannerAdmin,
     hide: hideBannerAdmin,
   } = useShowHide();
-
   const isVenueOwner = useIsUserVenueOwner();
   const isVenueLoading = venueRequestingStatus || !venueRequestStatus;
   const isLoggedIn = profile && user;
@@ -57,6 +58,8 @@ export const VenueAdminPage: React.FC = () => {
     );
   }
 
+  const isIframeVenue = IFRAME_TEMPLATES.includes(venue.template);
+
   return (
     <WithNavigationBar>
       <div className="VenueAdminPage">
@@ -74,7 +77,7 @@ export const VenueAdminPage: React.FC = () => {
 
         {!isBannerAdminVisibile && (
           <>
-            <AnnouncementMessage banner={venue?.banner} />
+            <AnnouncementMessage banner={venue.banner} />
 
             <AnnouncementOptions
               banner={venue.banner}
@@ -83,7 +86,7 @@ export const VenueAdminPage: React.FC = () => {
           </>
         )}
       </div>
-      <NewProfileModal venue={venue} />
+      {isIframeVenue && <IframeAdmin venueId={venueId} venue={venue} />}
     </WithNavigationBar>
   );
 };

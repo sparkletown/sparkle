@@ -12,33 +12,37 @@ $announce-box-shadow: 0px 2px 20px 5px;
   position: relative;
   background: $announcement-background;
   width: $announcement-container-width;
-  min-height: $announcement-container-height;
   height: auto;
   transition: left 0.1s linear;
   padding: $spacing 0;
-  border-radius: 0px 0px $border-radius--xl $border-radius--xl;
-  border: 1px solid opaque-white(0.4);
-  box-sizing: border-box;
-  box-shadow: $announce-box-shadow opaque-white(0.35);
   backdrop-filter: blur(50px);
   text-align: center;
+
+  &--admin {
+    border-radius: $border-radius--xl;
+    background: $primary;
+  }
 
   &--user {
     left: 0;
     right: 0;
     margin: 0 auto;
     position: absolute;
+    min-height: $announcement-container-height;
     z-index: z(announcement-banner);
+    border-radius: 0px 0px $border-radius--xl $border-radius--xl;
+    border: 1px solid opaque-white(0.4);
+    border-top: none;
+    box-sizing: border-box;
+    box-shadow: $announce-box-shadow opaque-white(0.35);
   }
 
   &--fullscreen {
     position: fixed;
+    border: 1px solid opaque-white(0.4);
     z-index: z(announcement-banner);
     border-radius: $border-radius--xl;
-    top: 50%;
-    left: 30%;
-    transform: translate(-50%, -50%);
-
+    top: 40%;
     border-radius: 16px;
   }
 
@@ -71,6 +75,10 @@ $announce-box-shadow: 0px 2px 20px 5px;
     font-size: $font-size--md;
     font-weight: $font-weight--500;
     padding: $action-button-padding $spacing--lg;
+
+    &-admin {
+      background-color: $primary--darker;
+    }
   }
 
   &__close-button {
@@ -93,7 +101,7 @@ $announce-box-shadow: 0px 2px 20px 5px;
     left: 0;
     right: 0;
     width: 100%;
-    z-index: z(announcement);
+    z-index: z(announcement-banner);
     display: flex;
     justify-content: center;
     align-items: flex-start;

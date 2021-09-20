@@ -1,5 +1,4 @@
 import React from "react";
-import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
@@ -7,24 +6,17 @@ import { Banner } from "types/banner";
 
 import { isDefined } from "utils/types";
 
+import { getStatusIcon, getStatusText } from "./statusHelpers";
+
 import "./AnnouncementStatus.scss";
 
 export interface AnnouncementStatusProps {
   banner?: Banner;
 }
 
-const ENABLED__TEXT = "enabled";
-const DISABLED__TEXT = "disabled";
-
 export const AnnouncementStatus: React.FC<AnnouncementStatusProps> = ({
   banner,
 }) => {
-  const fullscreenImg = banner?.isFullScreen ? faCheck : faTimes;
-  const closeImg = banner?.isForceFunnel ? faCheck : faTimes;
-
-  const fullscreenText = banner?.isFullScreen ? ENABLED__TEXT : DISABLED__TEXT;
-  const forceText = banner?.isForceFunnel ? ENABLED__TEXT : DISABLED__TEXT;
-
   const urlText = banner?.isActionButton ? banner?.buttonUrl : "blank";
 
   const urlTextClasses = classNames("AnnouncementStatus__url-text", {
@@ -38,23 +30,26 @@ export const AnnouncementStatus: React.FC<AnnouncementStatusProps> = ({
       <div className="AnnouncementStatus__buttons">
         <span className="AnnouncementStatus__checkbox">
           <FontAwesomeIcon
-            icon={fullscreenImg}
+            icon={getStatusIcon(banner?.isFullScreen)}
             className="AnnouncementStatus__img"
           />
-          Fullscreen {fullscreenText}
+          Fullscreen {getStatusText(banner?.isFullScreen)}
         </span>
 
         <span className="AnnouncementStatus__checkbox">
           <FontAwesomeIcon
-            icon={closeImg}
+            icon={getStatusIcon(banner?.isForceFunnel)}
             className="AnnouncementStatus__img"
           />
-          Force funnel {forceText}
+          Force funnel {getStatusText(banner?.isForceFunnel)}
         </span>
       </div>
 
       <div className="AnnouncementStatus__url">
-        URL: <span className={urlTextClasses}>{urlText}</span>
+        URL:{" "}
+        <a className={urlTextClasses} href={urlText}>
+          {urlText}
+        </a>
       </div>
     </div>
   );

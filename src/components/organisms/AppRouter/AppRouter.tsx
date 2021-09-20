@@ -103,7 +103,7 @@ export const AppRouter: React.FC = () => {
           </Route>
           <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
           <Route path="/in/:venueId/admin">
-            <Provided withRelatedVenues withWorldUsers>
+            <Provided withWorldUsers withRelatedVenues>
               <VenueAdminPage />
             </Provided>
           </Route>
