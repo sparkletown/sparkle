@@ -41,8 +41,8 @@ export const buildMessage = <T extends ChatMessage>(
   ts_utc: firebase.firestore.Timestamp.now(),
 });
 
-export const pickChatUserFromUser = (user: WithId<User>) =>
-  pick(user, "id", "partyName", "pictureUrl", "anonMode") as WithId<ChatUser>;
+export const pickChatUserFromUser = (user: WithId<User>): WithId<ChatUser> =>
+  pick(user, "id", "partyName", "pictureUrl", "anonMode");
 
 export const messageContainsUserObject = <T extends ChatMessage>(
   message: WithId<T>
