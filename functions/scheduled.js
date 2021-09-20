@@ -32,7 +32,7 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
     chunk(venues, 250).forEach((venuesChunk) => {
       const batch = admin.firestore().batch();
 
-      venuesChunk.forEach((venue) => {
+      for (const venue of venuesChunk) {
         const recentVenueUsers = users.filter(
           (user) =>
             user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
@@ -50,7 +50,7 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
               DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE
           ),
         });
-      });
+      }
 
       batch.commit().catch((error) => {
         throw new HttpsError(
@@ -59,6 +59,4 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
         );
       });
     });
-
-    return null;
   });
