@@ -4,9 +4,13 @@ import { RootState } from "store";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
+import {
+  ChatSettings,
+  JukeboxMessage,
+  PrivateChatMessage,
+  VenueChatMessage,
+} from "types/chat";
 import { Experience } from "types/Firestore";
-import { JukeboxMessage } from "types/jukebox";
 import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";

@@ -1,7 +1,11 @@
 import { Settings } from "./settings";
 
 import { AuditoriumSection } from "types/auditorium";
-import { PrivateChatMessage, VenueChatMessage } from "types/chat";
+import {
+  JukeboxMessage,
+  PrivateChatMessage,
+  VenueChatMessage,
+} from "types/chat";
 import { ChatRequest } from "types/ChatRequest";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
@@ -15,7 +19,6 @@ import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
 import { ArtCar, Firebarrel } from "./animateMap";
-import { JukeboxMessage } from "./jukebox";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
