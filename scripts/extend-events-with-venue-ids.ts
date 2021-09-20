@@ -4,6 +4,8 @@ import { resolve } from "path";
 
 import admin from "firebase-admin";
 
+import { chunk } from "lodash";
+
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
 const usage = makeScriptUsage({
@@ -68,28 +70,40 @@ const fetchSovereignVenue = async (
 };
 
 (async () => {
-  // // @debt This function will currently load all venues in firebase into memory.. not very efficient
   const venuesCollection = admin.firestore().collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
-  venueDocs.forEach(async (doc) => {
-    const venueId = doc.id;
-    const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
-    const sovereignVenueId = sovereignVenue.id;
+  // const batch = admin.firestore().batch();
+  chunk(venueDocs, 250).forEach(async (venueDocsChunk) => {
+    venueDocsChunk.forEach(async (venueDoc) => {
+      const venueId = venueDoc.id;
+      const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
+      const sovereignVenueId = sovereignVenue.id;
 
-    const events = await venuesCollection
-      .doc(venueId)
-      .collection("events")
-      .get();
+      // batch.update(venueDoc.ref, { worldId: sovereignVenueId });
 
-    events.forEach((eventDoc) => {
-      const venueData = {
-        venueId,
-        sovereignVenueId,
-      };
+      await venueDoc.ref.update({ worldId: sovereignVenueId });
 
-      console.log(`updating event "${eventDoc.data().name}"`, venueData);
-      eventDoc.ref.update(venueData);
+      // const events = await venuesCollection
+      //   .doc(venueId)
+      //   .collection("events")
+      //   .get();
+
+      // events.forEach((eventDoc) => {
+      //   const venueData = {
+      //     venueId,
+      //     sovereignVenueId,
+      //   };
+
+      //   console.log(`updating event "${eventDoc.data().name}"`, venueData);
+      //   eventDoc.ref.update(venueData);
+      // });
     });
   });
+
+  // batch.commit().catch((error) => {
+  //   throw new Error(
+  //     `Commit batch of recent users of venues failed. Error: ${error}`
+  //   );
+  // });
 })();
