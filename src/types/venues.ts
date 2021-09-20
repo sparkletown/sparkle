@@ -2,7 +2,7 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -12,7 +12,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UsernameVisibility, UserStatus } from "./User";
+import { User, UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -192,6 +192,9 @@ export interface BaseVenue {
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
   createdAt?: number;
+  recentUserCount?: number;
+  recentUsersSample?: WithId<User>[];
+  recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
 }
