@@ -106,7 +106,6 @@ export interface Venue_v2_Base {
 
 export interface Venue_v2_AdvancedConfig {
   attendeesTitle?: string;
-  bannerMessage?: string;
   chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
@@ -151,7 +150,6 @@ export interface BaseVenue {
   radioTitle?: string;
   dustStorm?: boolean;
   activity?: string;
-  bannerMessage?: string; // @deprecated + @debt was used as banner message previously to banner
   banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;

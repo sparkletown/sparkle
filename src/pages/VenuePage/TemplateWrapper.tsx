@@ -145,7 +145,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <WorldUsersProvider venueId={venue.id}>
-      <RelatedVenuesProvider venueId={venue.id}>
+      <RelatedVenuesProvider venue={venue}>
         <ReactionsProvider venueId={venue.id}>
           <WithNavigationBar hasBackButton={hasBackButton}>
             <AnnouncementMessage banner={venue.banner} isAnnouncementUserView />

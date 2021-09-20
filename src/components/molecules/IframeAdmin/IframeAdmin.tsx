@@ -33,9 +33,7 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
         <div className="col">
           <form>
             <div className="form-group">
-              <label htmlFor="bannerMessage">
-                iframe URL for {venue?.name}:
-              </label>
+              <label>iframe URL for {venue?.name}:</label>
 
               <input
                 type="text"

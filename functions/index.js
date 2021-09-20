@@ -34,7 +34,7 @@ const auth = require("./auth");
 const stats = require("./stats");
 const venue = require("./venue");
 const video = require("./video");
-const sheduled = require("./sheduled");
+const sheduled = require("./scheduled");
 const world = require("./world");
 
 exports.access = access;

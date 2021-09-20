@@ -372,11 +372,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
-  if (data.bannerMessage) {
-    updated.bannerMessage = data.bannerMessage;
-  }
-
   if (data.parentId) {
     updated.parentId = data.parentId;
   }

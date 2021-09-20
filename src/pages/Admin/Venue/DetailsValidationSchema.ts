@@ -155,7 +155,6 @@ export const validationSchema = Yup.object()
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
-    bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
     enableJukebox: Yup.bool().notRequired(),

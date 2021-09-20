@@ -14,7 +14,6 @@ import * as Yup from "yup";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  BANNER_MESSAGE_TEMPLATES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
   DEFAULT_SHOW_SCHEDULE,
@@ -429,25 +428,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         error={errors.logoImageFile || errors.logoImageUrl}
       />
     </div>
-  );
-
-  const renderAnnouncementInput = () => (
-    <>
-      <h4 className="italic input-header">
-        Show an announcement in the venue (or leave blank for none)
-      </h4>
-      <input
-        type="text"
-        disabled={disable}
-        name="bannerMessage"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Enter your announcement"
-      />
-      {errors.bannerMessage && (
-        <span className="input-error">{errors.bannerMessage.message}</span>
-      )}
-    </>
   );
 
   const renderAttendeesTitleInput = () => (
@@ -883,10 +863,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
         {renderBannerPhotoInput()}
         {renderLogoInput()}
-
-        {templateID &&
-          BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
-          renderAnnouncementInput()}
 
         {/* ATTENDEES (multiple) TITLE */}
         {renderAttendeesTitleInput()}
