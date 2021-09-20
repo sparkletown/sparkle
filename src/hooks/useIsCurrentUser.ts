@@ -1,7 +1,7 @@
 import { useUser } from "./useUser";
 
 export const useIsCurrentUser = (otherUserId?: string) => {
-  const { userWithId: user } = useUser();
+  const { userId } = useUser();
 
-  return otherUserId === user?.id;
+  return otherUserId === userId;
 };
