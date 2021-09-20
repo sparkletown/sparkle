@@ -34,12 +34,14 @@ const auth = require("./auth");
 const stats = require("./stats");
 const venue = require("./venue");
 const video = require("./video");
+const world = require("./world");
 
 exports.access = access;
 exports.auth = auth;
 exports.stats = stats;
 exports.venue = venue;
 exports.video = video;
+exports.world = world;
 
 // @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
 //   It doesn't look like anything calls it in the codebase currently?

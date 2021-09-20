@@ -5,16 +5,11 @@ import { useHistory } from "react-router-dom";
 
 import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
-import {
-  createUrlSafeName,
-  createVenue_v2,
-  updateVenue_v2,
-  VenueInput_v2,
-} from "api/admin";
+import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
-import { venueLandingUrl } from "utils/url";
+import { adminNGRootUrl, adminNGVenueUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
@@ -38,19 +33,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const onSubmit = useCallback(
+  const setWorld = useCallback(
     async (vals: FormValues) => {
       if (!user) return;
 
-      try {
-        // unfortunately the typing is off for react-hook-forms.
-        if (venueId) await updateVenue_v2(vals as VenueInput_v2, user);
-        else await createVenue_v2(vals as VenueInput_v2, user);
+      const world = { ...vals, id: createUrlSafeName(vals.name) };
 
-        if (vals.name) {
-          history.push(`/admin-ng/venue/${createUrlSafeName(vals.name)}`);
+      try {
+        if (venueId) {
+          await updateVenue_v2(world, user);
+          history.push(adminNGRootUrl());
         } else {
-          history.push("/admin-ng");
+          await createWorld(world, user);
+          history.push(adminNGVenueUrl(world.id));
         }
       } catch (e) {
         console.error(e);
@@ -218,7 +213,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
+    <Form onSubmit={handleSubmit(setWorld)} onChange={handleOnChange}>
       <S.FormInnerWrapper>
         <input
           type="hidden"

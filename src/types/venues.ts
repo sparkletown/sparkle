@@ -193,6 +193,7 @@ export interface BaseVenue {
   showUserStatus?: boolean;
   createdAt?: number;
   updatedAt?: number;
+  worldId: string;
 }
 
 export interface GenericVenue extends BaseVenue {
