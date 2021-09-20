@@ -3,6 +3,7 @@ import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { PortalEditType } from "types/settings";
 import { Dimensions, Position } from "types/utility";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -219,9 +220,10 @@ export const Spaces: React.FC<SpacesProps> = ({
       </div>
       <div className="Spaces__map">
         <MapPreview
+          editType={PortalEditType.single}
           isEditing={hasSelectedRoom}
           mapBackground={venue?.mapBackgroundImageUrl}
-          setSelectedRoom={setSelectedRoom}
+          onSelectRoom={setSelectedRoom}
           rooms={venue?.rooms ?? emptyRoomsArray}
           onMoveRoom={updateRoomPosition}
           onResizeRoom={updateRoomSize}

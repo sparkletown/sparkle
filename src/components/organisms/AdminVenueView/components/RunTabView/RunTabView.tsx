@@ -1,12 +1,11 @@
 import React from "react";
 import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
+import { PortalEditType } from "types/settings";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { adminNGSettingsUrl } from "utils/url";
-
-import MapPreview from "pages/Admin/MapPreview";
 
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
@@ -15,6 +14,8 @@ import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunT
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+
+import { MapPreview } from "../MapPreview";
 
 import "./RunTabView.scss";
 
@@ -50,11 +51,10 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
             isEditing
-            venueId={venue.id}
-            venueName={venue.name}
-            mapBackground={venue.mapBackgroundImageUrl}
-            rooms={venue.rooms ?? []}
-          />
+            editType={PortalEditType.multiple}
+            mapBackground={venue?.mapBackgroundImageUrl}
+            rooms={venue?.rooms ?? []}
+          />{" "}
         </div>
         <div className="RunTabView__cards RunTabView--spacing">
           <RunTabRooms venue={venue} />

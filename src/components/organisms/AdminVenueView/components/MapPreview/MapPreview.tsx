@@ -3,6 +3,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
 import { RoomData_v2 } from "types/rooms";
+import { PortalEditType } from "types/settings";
 import { Dimensions, Position } from "types/utility";
 
 import { useCheckImage } from "hooks/useCheckImage";
@@ -17,7 +18,8 @@ export interface MapPreviewProps {
   rooms: RoomData_v2[];
   isEditing: boolean;
   selectedRoom?: RoomData_v2;
-  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  onSelectRoom?: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  editType?: PortalEditType;
   onResizeRoom?: (size: Dimensions) => void;
   onMoveRoom?: (position: Position) => void;
 }
@@ -25,10 +27,11 @@ export interface MapPreviewProps {
 export const MapPreview: React.FC<MapPreviewProps> = ({
   mapBackground,
   rooms,
+  editType = PortalEditType.multiple,
   onMoveRoom,
   onResizeRoom,
   selectedRoom,
-  setSelectedRoom,
+  onSelectRoom,
 }) => {
   const iconsMap: RoomIcon[] = useMemo(() => {
     return rooms.map((room, index: number) => ({
@@ -53,9 +56,10 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
           interactive
           resizable
           lockAspectRatio
+          editType={editType}
           rooms={rooms}
           selectedRoom={selectedRoom}
-          setSelectedRoom={setSelectedRoom}
+          onSelectRoom={onSelectRoom}
           backgroundImage={hasMapBackground ? mapBackground : undefined}
           roomIcons={iconsMap}
           coordinatesBoundary={{

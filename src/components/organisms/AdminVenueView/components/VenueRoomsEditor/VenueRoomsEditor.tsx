@@ -9,11 +9,18 @@ import React, {
 } from "react";
 import { useDrop } from "react-dnd";
 import ReactResizeDetector from "react-resize-detector";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 import update from "immutability-helper";
 
+import { RoomInput_v2, updateRoom } from "api/admin";
+
 import { RoomData_v2 } from "types/rooms";
+import { PortalEditType } from "types/settings";
 import { Dimensions, Position } from "types/utility";
+
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
 import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
@@ -22,6 +29,8 @@ import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
 
 import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./VenueRoomsEditor.scss";
 
@@ -67,8 +76,9 @@ export interface VenueRoomsEditorProps {
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   rooms: RoomData_v2[];
-  selectedRoom: RoomData_v2 | undefined;
-  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  selectedRoom?: RoomData_v2 | undefined;
+  editType?: PortalEditType;
+  onSelectRoom?: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
 }
 
 export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
@@ -85,10 +95,15 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   lockAspectRatio,
   rooms,
   selectedRoom,
-  setSelectedRoom,
+  onSelectRoom,
+  editType = PortalEditType.multiple,
   onResize,
   onMove,
 }) => {
+  const { user } = useUser();
+
+  const venueId = useVenueId();
+
   const roomIconsArray = useMemo(() => roomIcons ?? [], [roomIcons]);
 
   const [boxes, setBoxes] = useState<RoomIconsMap>({});
@@ -265,7 +280,41 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
     ]
   );
 
-  const renderRoomsPreview = useMemo(
+  const renderAllRoomsPreview = useMemo(() => {
+    return rooms.map((_, index) => (
+      <>
+        <DraggableSubvenue
+          isResizable={resizable}
+          id={index.toString()}
+          imageStyle={iconImageStyle}
+          rounded={!!rounded}
+          {...boxes[index]}
+          onChangeSize={resizeBox(index.toString())}
+          lockAspectRatio={lockAspectRatio}
+        />
+        {imageDims && interactive && (
+          <CustomDragLayer
+            snapToGrid={!!snapToGrid}
+            rounded={!!rounded}
+            iconSize={boxes[Object.keys(boxes)[index]]}
+          />
+        )}
+      </>
+    ));
+  }, [
+    boxes,
+    iconImageStyle,
+    imageDims,
+    interactive,
+    lockAspectRatio,
+    resizable,
+    resizeBox,
+    rooms,
+    rounded,
+    snapToGrid,
+  ]);
+
+  const renderSelectedRoomsPreview = useMemo(
     () =>
       rooms.map((room, index) =>
         room === selectedRoom ? (
@@ -280,7 +329,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
               height: `${room.height_percent}%`,
             }}
             key={`${room.title}-${index}`}
-            onClick={() => !selectedRoom && setSelectedRoom(room)}
+            onClick={() => !selectedRoom && onSelectRoom?.(room)}
           >
             <img
               className={classNames("Container__room-image", {
@@ -294,8 +343,34 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           </div>
         )
       ),
-    [renderSelectedRoom, rooms, selectedRoom, setSelectedRoom]
+    [renderSelectedRoom, rooms, selectedRoom, onSelectRoom]
   );
+
+  const [{ loading: isSaving }, saveRoomPositions] = useAsyncFn(async () => {
+    if (!user || !venueId) return;
+
+    const updatedRooms = Object.values(boxes);
+
+    // Remove after forEach implementation is added.
+    let roomIndex = 0;
+
+    // Ideally this should be using forEach and promise all to send all of the requests at once, instead of 1 by 1
+    // Using forEach will also allow us to use the index param and get rid of roomIndex and it's incremention
+    for (const { left, top, width, height } of updatedRooms) {
+      const room: RoomInput_v2 = {
+        ...rooms[roomIndex],
+        x_percent: left,
+        y_percent: top,
+        width_percent: width,
+        height_percent: height,
+      };
+
+      // Requests are triggered one by one instead of bulk at once.
+      await updateRoom(room, venueId, user, roomIndex);
+
+      roomIndex += 1;
+    }
+  }, [boxes, rooms, user, venueId]);
 
   return (
     <div ref={drop} style={{ ...styles, ...containerStyle }}>
@@ -314,7 +389,16 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
         />
       )}
 
-      {backgroundImage && renderRoomsPreview}
+      {backgroundImage && editType === "single" && renderSelectedRoomsPreview}
+      {backgroundImage && editType === "multiple" && renderAllRoomsPreview}
+      <ButtonNG
+        className="MapPreview__save-button"
+        disabled={isSaving}
+        loading={isSaving}
+        onClick={saveRoomPositions}
+      >
+        Save rooms
+      </ButtonNG>
     </div>
   );
 };
