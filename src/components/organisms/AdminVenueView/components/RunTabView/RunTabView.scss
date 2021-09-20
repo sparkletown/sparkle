@@ -18,7 +18,6 @@
 
   &__map {
     border-radius: $border-radius--xl;
-    overflow: hidden;
 
     > * {
       margin: -1px; // to avoid border artefacts
