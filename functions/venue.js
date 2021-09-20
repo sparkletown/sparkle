@@ -309,6 +309,7 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    worldId: data.worldId,
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -706,6 +707,13 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
 
   // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();

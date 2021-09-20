@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-import { DEFAULT_USER_LIST_LIMIT } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFAULT_USER_LIST_LIMIT } from "settings";
 
 import { GenericVenue } from "types/venues";
 
@@ -9,7 +9,6 @@ import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -40,8 +39,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   const { parentVenue, parentVenueId } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
-
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue?.id });
 
   const {
     isShown: showOnlyAvailableTables,
@@ -135,7 +132,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             />
           </div>
           <UserList
-            users={recentVenueUsers}
+            users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             activity={venue?.activity ?? "here"}
             limit={DEFAULT_USER_LIST_LIMIT}
             showMoreUsersToggler

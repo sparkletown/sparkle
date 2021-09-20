@@ -361,7 +361,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               }}
               style={{ marginBottom: 10, width: "100%" }}
             >
-              Create an Event
+              Add experience
             </button>
             <Link
               to={{ search: "manageUsers=true" }}

@@ -109,7 +109,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       <Modal show={show} onHide={onHide} className="TimingEventModal">
         <Modal.Body>
           <div className="form-container">
-            <h2>Create an event</h2>
+            <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <select

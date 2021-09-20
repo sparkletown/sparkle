@@ -37,8 +37,6 @@ import {
   VenueInput,
 } from "api/admin";
 
-import { setSovereignVenue } from "store/actions/SovereignVenue";
-
 import { UserStatus } from "types/User";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -46,10 +44,9 @@ import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-import { useDispatch } from "hooks/useDispatch";
 import { useQuery } from "hooks/useQuery";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
 
 import { ImageInput } from "components/molecules/ImageInput";
@@ -102,8 +99,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
 
-  const dispatch = useDispatch();
-  const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
+  const { sovereignVenueId, sovereignVenue } = useRelatedVenues();
 
   const {
     watch,
@@ -197,17 +193,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 template: sovereignVenue.template,
               },
               user
-            ).then(() => {
-              if (sovereignVenue) {
-                dispatch(
-                  setSovereignVenue({
-                    ...sovereignVenue,
-                    userStatuses,
-                    showUserStatus: showUserStatuses,
-                  })
-                );
-              }
-            });
+            );
         } else
           await createVenue(
             {
@@ -231,15 +217,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [
-      user,
-      formError,
-      venueId,
-      history,
-      sovereignVenueId,
-      sovereignVenue,
-      dispatch,
-    ]
+    [user, formError, venueId, history, sovereignVenueId, sovereignVenue]
   );
 
   useEffect(() => {
