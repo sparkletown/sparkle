@@ -4,6 +4,7 @@ import classNames from "classnames";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import {
+  ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
@@ -40,8 +41,6 @@ import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
-
-const emptyUsersList: WithId<User>[] = [];
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
@@ -161,7 +160,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
       {!seatedAtTable && (
         <UserList
-          users={venue.recentUsersSample ?? emptyUsersList}
+          users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
           activity={venue.activity ?? "here"}
           limit={DEFAULT_USER_LIST_LIMIT}
           showMoreUsersToggler

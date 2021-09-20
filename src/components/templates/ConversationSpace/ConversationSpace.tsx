@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from "react";
 
-import { DEFAULT_USER_LIST_LIMIT } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFAULT_USER_LIST_LIMIT } from "settings";
 
-import { User } from "types/User";
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -28,8 +27,6 @@ import { BackButton } from "components/atoms/BackButton";
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
-
-const emptyUsersList: WithId<User>[] = [];
 
 export interface ConversationSpaceProps {
   venue: WithId<GenericVenue>;
@@ -143,7 +140,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             />
           </div>
           <UserList
-            users={venue.recentUsersSample ?? emptyUsersList}
+            users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             activity={venue?.activity ?? "here"}
             limit={DEFAULT_USER_LIST_LIMIT}
             showMoreUsersToggler

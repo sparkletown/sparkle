@@ -1,10 +1,7 @@
 import React from "react";
 
-import { SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
 import { useVenueChat } from "hooks/chats/venueChat";
@@ -18,8 +15,6 @@ import { UserList } from "components/molecules/UserList";
 import { ReactionList } from "./ReactionList";
 
 import "./ReactionPage.scss";
-
-const emptyUsersList: WithId<User>[] = [];
 
 const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
   ? reactionsSelector
@@ -59,7 +54,7 @@ export const ReactionPage: React.FC = () => {
 
         <div className="col-4">
           <UserList
-            users={currentVenue?.recentUsersSample ?? emptyUsersList}
+            users={currentVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             showEvenWhenNoUsers
           />
         </div>
