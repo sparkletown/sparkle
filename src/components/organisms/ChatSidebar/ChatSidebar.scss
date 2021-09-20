@@ -1,6 +1,11 @@
 @import "scss/constants";
 
 $header-height: 45px;
+$reserved-page-height: $navbar-height + $footer-height;
+
+// NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
+$media-width--mobile-min: 768px;
+$media-width--mobile-max: 1024px;
 
 .chat-sidebar {
   transform: translateX(100%);
@@ -8,10 +13,10 @@ $header-height: 45px;
   position: fixed;
   display: flex;
   flex-flow: column;
-  top: 66px;
+  top: $navbar-height;
   right: 0;
   width: $chat-sidebar-width;
-  height: calc(100vh - 96px);
+  height: calc(100vh - #{$reserved-page-height});
   background-color: $saturated-black;
   z-index: z(sidebar);
 
@@ -19,7 +24,7 @@ $header-height: 45px;
     transform: translateX(0);
     transition: transform 0.3s;
     background-color: rgba($saturated-black, 0.9);
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    box-shadow: -10px 0 40px opaque-black(0.5);
   }
 
   &__header {
@@ -43,12 +48,12 @@ $header-height: 45px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-bottom: rgba(0, 0, 0, 0) thin solid;
-    color: rgba(255, 255, 255, 0.6);
+    border-bottom: thin solid opaque-black(0);
+    color: opaque-white(0.6);
 
     &:focus,
     &:hover {
-      color: rgba(255, 255, 255, 0.7);
+      color: opaque-white(0.7);
     }
 
     &--selected {
@@ -65,15 +70,14 @@ $header-height: 45px;
 
   &__controller {
     color: $white;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 13px;
-    height: 45px;
     background-color: $secondary;
-    border-radius: 16px 0 0 16px;
     cursor: pointer;
+
+    border: none;
+    padding: 0 $spacing--lg;
+    height: $header-height;
+    border-radius: $border-radius--lg 0 0 $border-radius--lg;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -86,8 +90,9 @@ $header-height: 45px;
       background-color: $lighter-intermediate-grey;
     }
 
-    &__second-icon {
-      margin-left: 5px;
+    svg:nth-child(2) {
+      margin-left: 2 * $spacing--xs;
+      margin-right: -1 * $spacing--xs;
     }
   }
 
@@ -95,5 +100,25 @@ $header-height: 45px;
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
+  }
+
+  @media only screen and (min-width: $media-width--mobile-min) and (max-width: $media-width--mobile-max) {
+    &--expanded {
+      width: 100%;
+    }
+
+    &__tabs {
+      padding-left: $header-height;
+    }
+
+    &--expanded &__controller {
+      transform: translateX(0);
+      border-radius: 0 $border-radius--lg $border-radius--lg 0;
+    }
+
+    &--collapsed &__controller {
+      transform: translateX(-100%);
+      border-radius: $border-radius--lg 0 0 $border-radius--lg;
+    }
   }
 }
