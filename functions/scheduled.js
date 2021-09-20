@@ -8,7 +8,7 @@ const { chunk, sampleSize } = require("lodash");
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 
-exports.updateUserCountInAuditoriumSections = functions.pubsub
+exports.updateSeatedUsersCountInAuditorium = functions.pubsub
   .schedule("every 5 seconds")
   .onRun(async () => {
     const firestore = admin.firestore();

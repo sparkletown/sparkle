@@ -1,8 +1,10 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+import { ChatUser } from "types/chat";
 import { AnyVenue } from "types/venues";
 
+import { pickChatUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
 export const getVenueCollectionRef = () =>
@@ -76,4 +78,38 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   return await firebase
     .functions()
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+};
+
+export const setAuditoriumSectionSeat = async (
+  user: WithId<ChatUser>,
+  venueId: string,
+  sectionId: string,
+  row: number,
+  column: number
+) => {
+  return firebase
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .doc(sectionId)
+    .collection("seatedUsers")
+    .doc(user.id)
+    .update({
+      ...pickChatUserFromUser(user),
+      row,
+      column,
+    })
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/venue::setAuditoriumSectionSeat",
+          venueId,
+          sectionId,
+          user,
+        });
+      });
+
+      throw err;
+    });
 };
