@@ -21,6 +21,7 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
     const usersPromise = admin
       .firestore()
       .collection("users")
+      .where(["lastSeenAt", ""])
       .get()
       .then((snapshot) =>
         snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))

@@ -47,6 +47,7 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers } = useRecentVenueUsers({ venueId });
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
@@ -66,6 +67,7 @@ export const useAuditoriumSection = ({
   const screenWidthInSeats = videoWidthInSeats;
 
   const seatedUsers = getAuditoriumSeatedUsers({
+    // @debt should be replaced with a subcollection
     auditoriumUsers: recentVenueUsers,
     venueId,
     sectionId,
