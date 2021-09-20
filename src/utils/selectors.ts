@@ -1,13 +1,16 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "store";
-import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
+import {
+  ChatSettings,
+  JukeboxMessage,
+  PrivateChatMessage,
+  VenueChatMessage,
+} from "types/chat";
 import { Experience } from "types/Firestore";
-import { JukeboxMessage } from "types/jukebox";
 import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";
@@ -18,6 +21,7 @@ import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 
 import {
+  makeDataSelector,
   makeIsRequestedSelector,
   makeIsRequestingSelector,
   makeOrderedSelector,
@@ -134,6 +138,10 @@ export const posterVenuesSelector: SparkleSelector<
   WithId<PosterPageVenue>[] | undefined
 > = (state) => state.firestore.ordered.posterVenues;
 
+export const relatedVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.relatedVenues;
+
 export const screeningRoomVideosSelector: SparkleSelector<
   WithId<ScreeningRoomVideo>[] | undefined
 > = (state) => state.firestore.ordered.screeningRoomVideos;
@@ -146,18 +154,6 @@ export const animateMapArtCarsSelector: SparkleSelector<
   WithId<ArtCar>[] | undefined
 > = (state) => state.firestore.ordered.animatemapArtcars;
 
-/**
- * Selector to retrieve sovereignVenueId state from the Redux store.
- *
- * @param state the Redux store
- *
- * @see SovereignVenueState
- * @see RootState
- */
-export const sovereignVenueSelector: SparkleSelector<SovereignVenueState> = (
-  state
-) => state.sovereignVenue;
-
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
@@ -168,9 +164,14 @@ export const currentAuditoriumSectionsSelector: SparkleSelector<
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
-export const userProfileSelector: SparkleSelector<WithId<User> | undefined> = (
+
+export const currentModalUserDataSelector: SparkleSelector<
+  User | undefined
+> = makeDataSelector("currentModalUser");
+
+export const userProfileSelector: SparkleSelector<string | undefined> = (
   state
-) => state.userProfile.userProfile;
+) => state.userProfile.userId;
 
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state

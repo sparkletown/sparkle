@@ -18,7 +18,6 @@ import { WithId } from "utils/id";
 import { currentVenueSelector } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
 import { openUrl, venueInsideUrl } from "utils/url";
-import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -99,27 +98,22 @@ const OnlineStats: React.FC = () => {
   useEffect(() => {
     const liveEvents: Array<VenueEvent> = [];
     const venuesWithAttendance: AttendanceVenueEvent[] = [];
-    const peopleByLastSeen = peopleByLastSeenIn(
-      venueName ?? "",
-      recentVenueUsers
-    );
     openVenues.forEach(
       (venue: {
         venue: WithId<AnyVenue>;
         currentEvents: Array<VenueEvent>;
       }) => {
-        const venueAttendance = peopleAttending(peopleByLastSeen, venue.venue);
         liveEvents.push(...venue.currentEvents);
         venuesWithAttendance.push({
           ...venue,
-          attendance: venueAttendance ? venueAttendance.length : 0,
+          attendance: 0,
         });
       }
     );
     venuesWithAttendance.sort((a, b) => b.attendance - a.attendance);
     setVenuesWithAttendance(venuesWithAttendance);
     setLiveEvents(liveEvents);
-  }, [openVenues, recentVenueUsers, venue, venueName]);
+  }, [openVenues, venue, venueName]);
 
   const fuseVenues = useMemo(
     () =>
@@ -170,11 +164,6 @@ const OnlineStats: React.FC = () => {
     (venue) => !venue.currentEvents.length
   );
 
-  const peopleByLastSeen = useMemo(
-    () => peopleByLastSeenIn(venueName ?? "", recentVenueUsers),
-    [recentVenueUsers, venueName]
-  );
-
   const popover = useMemo(
     () =>
       loaded ? (
@@ -212,9 +201,6 @@ const OnlineStats: React.FC = () => {
                         </h5>
                         <div className="venues-container">
                           {liveVenues.map(({ venue, currentEvents }, index) => {
-                            const attendance =
-                              peopleAttending(peopleByLastSeen, venue)
-                                ?.length ?? 0;
                             return (
                               <div className="venue-card" key={index}>
                                 <div className="img-container">
@@ -226,11 +212,6 @@ const OnlineStats: React.FC = () => {
                                   />
                                 </div>
                                 <span className="venue-name">{venue.name}</span>
-                                {attendance > 0 && (
-                                  <span className="venue-people">
-                                    <b>{attendance}</b> people in this room
-                                  </span>
-                                )}
                                 {ENABLE_PLAYA_ADDRESS && venue.placement && (
                                   <span className="venue-address">
                                     Address:{" "}
@@ -310,7 +291,7 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => openUserProfileModal(user)}
+                          onClick={() => openUserProfileModal(user.id)}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />
@@ -341,7 +322,6 @@ const OnlineStats: React.FC = () => {
       recentVenueUsers,
       allVenues,
       liveVenues,
-      peopleByLastSeen,
       openUserProfileModal,
     ]
   );

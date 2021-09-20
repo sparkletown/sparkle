@@ -39,9 +39,9 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
-  const recipientId =
+  const recipient =
     chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
-      ? chatSettings.recipientId
+      ? chatSettings.recipient
       : undefined;
 
   const containerStyles = classNames("chat-sidebar", {
@@ -113,7 +113,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       {isExpanded && (
         <div role="tabpanel" className="chat-sidebar__tab-content">
           {isVenueChat && <VenueChat venue={venue} />}
-          {isPrivateChat && <PrivateChats recipientId={recipientId} />}
+          {isPrivateChat && <PrivateChats recipient={recipient} />}
         </div>
       )}
     </div>

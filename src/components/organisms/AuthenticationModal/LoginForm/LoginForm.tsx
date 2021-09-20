@@ -77,7 +77,11 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           `Error checking ticket: ${error.message}`
         );
       } else {
-        setError("backend", "firebase", error.message);
+        setError(
+          "backend",
+          "firebase",
+          "Please check your email or password or contact your event organizer"
+        );
       }
     }
   };

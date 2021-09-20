@@ -6,8 +6,10 @@ import {
   setVenueChatTabOpened,
 } from "store/actions/Chat";
 
+import { ChatUser } from "types/chat";
 import { AnyVenue } from "types/venues";
 
+import { WithId } from "utils/id";
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
@@ -47,13 +49,13 @@ export const useChatSidebarControls = () => {
 
   const selectPrivateChat = useCallback(() => {
     expandSidebar();
-    dispatch(setPrivateChatTabOpened());
+    dispatch(setPrivateChatTabOpened(undefined));
   }, [dispatch, expandSidebar]);
 
   const selectRecipientChat = useCallback(
-    (recipientId: string) => {
+    (recipient: WithId<ChatUser>) => {
       expandSidebar();
-      dispatch(setPrivateChatTabOpened(recipientId));
+      dispatch(setPrivateChatTabOpened(recipient));
     },
     [dispatch, expandSidebar]
   );
@@ -84,15 +86,14 @@ export const useChatSidebarInfo = (venue: AnyVenue) => {
 };
 
 const useNumberOfUnreadChats = () => {
-  const { user } = useUser();
+  const { userId } = useUser();
   const { privateChatPreviews } = usePrivateChatPreviews();
-
-  const userId = user?.uid;
 
   return useMemo(
     () =>
       privateChatPreviews.filter(
-        (chatPreview) => !chatPreview.isRead && chatPreview.from !== userId
+        (chatPreview) =>
+          !chatPreview.isRead && chatPreview.fromUser.id !== userId
       ).length,
     [privateChatPreviews, userId]
   );
