@@ -1,13 +1,13 @@
 @import "scss/constants.scss";
 
-$footer-height: 75px;
+$spaces-footer-height: 75px;
 
 .SpaceEditForm {
   display: flex;
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: $footer-height;
+  margin-bottom: $spaces-footer-height;
 
   &__room {
     display: flex;
@@ -24,7 +24,7 @@ $footer-height: 75px;
   }
 
   &__footer {
-    height: $footer-height;
+    height: $spaces-footer-height;
     display: flex;
     position: fixed;
     bottom: 0;
