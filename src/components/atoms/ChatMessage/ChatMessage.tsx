@@ -7,6 +7,7 @@ import { DeleteMessage, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -27,9 +28,10 @@ export const ChatMessage: React.FC<ChatProps> = ({
   deleteMessage,
   selectThisThread,
 }) => {
-  const { text, replies, id, isMine, isQuestion } = message;
+  const isMine = useIsCurrentUser(message.fromUser.id);
+  const { text, replies, id, isQuestion } = message;
 
-  const deleteThisMessage = useCallback(() => deleteMessage?.(id), [
+  const deleteThisMessage = useCallback(async () => deleteMessage?.(id), [
     deleteMessage,
     id,
   ]);
@@ -44,12 +46,14 @@ export const ChatMessage: React.FC<ChatProps> = ({
   const renderedReplies = useMemo(
     () =>
       replies?.map((reply) => {
+        const deleteReplyMessage = async () => deleteMessage?.(reply.id);
+
         return (
           <div key={reply.id} className="ChatMessage__reply">
             <RenderMarkdown text={reply.text} allowHeadings={false} />
             <ChatMessageInfo
               message={reply}
-              deleteMessage={deleteMessage && (() => deleteMessage(reply.id))}
+              deleteMessage={deleteMessage && deleteReplyMessage}
             />
           </div>
         );

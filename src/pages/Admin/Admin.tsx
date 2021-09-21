@@ -27,7 +27,7 @@ import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { adminOGRootUrl, venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -286,6 +286,10 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
+  const navigateToAdmin = useCallback(() => {
+    history.push(adminOGRootUrl);
+  }, [history]);
+
   useEffect(() => {
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
     const clientHeight = placementDivRef.current?.clientHeight ?? 0;
@@ -357,7 +361,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               }}
               style={{ marginBottom: 10, width: "100%" }}
             >
-              Create an Event
+              Add experience
             </button>
             <Link
               to={{ search: "manageUsers=true" }}
@@ -385,8 +389,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
       </div>
       <VenueDeleteModal
         show={isDeleteModalVisible}
+        onCancel={hideDeleteModal}
         onHide={hideDeleteModal}
-        venue={venue}
+        onDelete={navigateToAdmin}
+        venueId={venue.id}
+        venueName={venue.name}
       />
       <VenueOwnersModal
         visible={manageUsers}

@@ -18,6 +18,7 @@ import { VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 import { openRoomUrl } from "utils/url";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 import { useUser } from "hooks/useUser";
 
@@ -33,7 +34,6 @@ interface RoomCardProps {
   room: Room;
   index: number;
   venueId: string;
-  venueName: string;
   events?: WithVenueId<WithId<VenueEvent>>[];
 }
 
@@ -41,12 +41,16 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   room,
   index,
   venueId,
-  venueName,
   events,
 }) => {
   const { user } = useUser();
 
-  const { recentRoomUsers } = useRoom({ room, venueName });
+  const { portalVenueId } = useRoom({ room });
+
+  const { findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
   const isRoomUnclickable = room.type === RoomType.unclickable;
 
@@ -84,7 +88,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({
         <Card.Title className="RoomCard__title">{room.title}</Card.Title>
         <div className="RoomCard__counter">
           <FontAwesomeIcon icon={faUserFriends} />
-          {recentRoomUsers.length}
+          {portalVenue?.recentUserCount}
         </div>
         <div className="RoomCard__type">{room.template}</div>
         <div className="RoomCard__link">

@@ -212,7 +212,6 @@ const createVenueData = (data, context) => {
     showSchedule:
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
-    showRangers: data.showRangers || false,
     parentId: data.parentId,
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
@@ -311,6 +310,7 @@ const createVenueData_v2 = (data, context) => {
     createdAt: Date.now(),
     updatedAt: Date.now(),
     parentId: data.parentId || "",
+    worldId: data.worldId,
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -392,10 +392,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.showBadges === "boolean") {
     updated.showBadges = data.showBadges;
-  }
-
-  if (typeof data.showRangers === "boolean") {
-    updated.showRangers = data.showRangers;
   }
 
   if (typeof data.showReactions === "boolean") {
@@ -713,6 +709,13 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
   // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -732,6 +735,14 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+
+  if (data.start_utc_seconds) {
+    updated.start_utc_seconds = data.start_utc_seconds;
+  }
+
+  if (data.end_utc_seconds) {
+    updated.end_utc_seconds = data.end_utc_seconds;
   }
 
   // @debt aside from the data.columns part, this is exactly the same as in updateVenue

@@ -32,7 +32,7 @@ import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
-import { Button } from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
@@ -77,7 +77,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ venueId, userEventIds });
+  } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -225,10 +225,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   return (
-    <div className="NavBarWrapper">
+    <div className="NavBarSchedule__wrapper">
       <div className={containerClasses}>
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+        {/* {<ScheduleVenueDescription />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
@@ -243,25 +243,27 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           isLoading={isEventsLoading}
           {...scheduleNGWithAttendees}
         />
-      </div>
-      {!isEventsLoading && (
-        <div className="NavBarWrapper__download-buttons">
-          {isShowPersonalDownloadBtn && (
-            <Button
-              onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarWrapper__download-schedule-btn"
+        {!isEventsLoading && (
+          <div className="NavBarSchedule__download-buttons">
+            {isShowPersonalDownloadBtn && (
+              <ButtonNG
+                onClick={downloadPersonalEventsCalendar}
+                className="NavBarSchedule__download-schedule-button"
+                variant="primary"
+              >
+                Download your schedule
+              </ButtonNG>
+            )}
+            <ButtonNG
+              onClick={downloadAllEventsCalendar}
+              className="NavBarSchedule__download-schedule-button"
+              variant="primary"
             >
-              Download your schedule
-            </Button>
-          )}
-          <Button
-            onClick={downloadAllEventsCalendar}
-            customClass="NavBarWrapper__download-schedule-btn"
-          >
-            Download full schedule
-          </Button>
-        </div>
-      )}
+              Download full schedule
+            </ButtonNG>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

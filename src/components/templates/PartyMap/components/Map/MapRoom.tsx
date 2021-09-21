@@ -10,6 +10,7 @@ import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { RoomAttendance } from "../RoomAttendance";
@@ -29,8 +30,15 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
-  const hasRecentRoomUsers = recentRoomUsers.length > 0;
+  const { portalVenueId } = useRoom({ room });
+
+  const { findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+
+  const hasRecentRoomUsers =
+    portalVenue?.recentUserCount && portalVenue?.recentUserCount > 0;
 
   const isUnclickable = room.type === RoomType.unclickable;
   const isMapFrame = room.type === RoomType.mapFrame;
@@ -115,7 +123,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
-          <RoomAttendance venue={venue} room={room} />
+          <RoomAttendance room={room} />
         </div>
       )}
     </button>

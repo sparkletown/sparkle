@@ -10,9 +10,8 @@ import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useIsOnline } from "hooks/useIsOnline";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 
@@ -26,11 +25,10 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   user,
   containerClassName,
 }) => {
-  const venueId = useVenueId();
-  const { sovereignVenue } = useSovereignVenue({ venueId });
+  const { sovereignVenue } = useRelatedVenues();
 
   const { lastSeenIn } = useIsOnline(user.id);
-  const isCurrentUser = useIsCurrentUser(user);
+  const isCurrentUser = useIsCurrentUser(user.id);
   const { user: firebaseUser } = useUser();
 
   const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;

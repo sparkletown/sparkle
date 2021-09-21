@@ -23,6 +23,8 @@ $input--invalid: #dc3545;
 $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
+$modal-background--confirm: #232225;
+
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
 $almost-black: $secondary--darkest;
@@ -137,10 +139,6 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 $image-input-border--error: 2px solid red;
-
-$venue-rooms-editor-background-placeholder-box-shadow: 0px 6px 12px
-  opaque-black(0.25);
-$venue-rooms-editor-background: #292c33;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
@@ -279,7 +277,8 @@ $z-layers: (
   scrollbar-width: thin;
 
   // The webkit properties
-  @see https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+  // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
   &::-webkit-scrollbar-corner {
     background-color: $black;
   }

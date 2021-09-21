@@ -29,12 +29,14 @@ export interface VenueRoomItemProps {
   icon: string;
   text: string;
   template?: VenueRoomTemplate;
+  worldId: string;
 }
 
 export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   icon,
   text,
   template,
+  worldId,
 }) => {
   const {
     isShown: isModalVisible,
@@ -83,11 +85,11 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
         parentId: venueId,
       };
 
-      await createVenue_v2(venueData, user);
+      await createVenue_v2({ ...venueData, worldId }, user);
     }
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, isVenuePortal, template, user, venueId]);
+  }, [getValues, hideModal, isVenuePortal, template, user, venueId, worldId]);
 
   return (
     <>

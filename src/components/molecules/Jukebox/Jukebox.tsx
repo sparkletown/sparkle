@@ -10,13 +10,13 @@ import React, {
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
-import { CHAT_MESSAGE_TIMEOUT, YOUTUBE_SHORT_URL_STRING } from "settings";
+import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { getYoutubeEmbedFromUrl, isValidUrl } from "utils/url";
+import { isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -28,13 +28,11 @@ import { InputField } from "components/atoms/InputField";
 import "./Jukebox.scss";
 
 type JukeboxTypeProps = {
-  recentVenueUsers: readonly WithId<User>[];
   updateIframeUrl: Dispatch<SetStateAction<string>>;
   venue: WithId<AnyVenue>;
 };
 
 export const Jukebox: React.FC<JukeboxTypeProps> = ({
-  recentVenueUsers,
   updateIframeUrl,
   venue,
 }) => {
@@ -45,9 +43,8 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
-  const { userId } = useUser();
-  const [filteredUser] = recentVenueUsers.filter(({ id }) => id === userId);
-  const tableRef = filteredUser?.data?.[venue.name]?.table;
+  const { userWithId } = useUser();
+  const tableRef = userWithId?.data?.[venue.name]?.table;
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
@@ -59,18 +56,12 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   useEffect(() => {
     const [lastMessage] = messagesToDisplay.slice(-1);
-    let urlToEmbed = lastMessage?.text;
-
-    if (
-      urlToEmbed?.includes(YOUTUBE_SHORT_URL_STRING) &&
-      isValidUrl(urlToEmbed)
-    ) {
-      urlToEmbed = getYoutubeEmbedFromUrl(lastMessage?.text);
+    if (!isValidUrl(lastMessage?.text)) {
+      return;
     }
+    const urlToEmbed = convertToEmbeddableUrl({ url: lastMessage?.text });
 
-    if (isValidUrl(urlToEmbed)) {
-      updateIframeUrl(urlToEmbed);
-    }
+    updateIframeUrl(urlToEmbed);
   }, [messagesToDisplay, updateIframeUrl]);
 
   const sendMessageToChat = handleSubmit(async ({ jukeboxMessage }) => {
@@ -117,9 +108,9 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <div key={msg.id} className="Jukebox__chat-messages">
             <span
               className="Jukebox__chat-author button--a"
-              onClick={() => openUserProfileModal(msg.author)}
+              onClick={() => openUserProfileModal(msg.fromUser.id)}
             >
-              {msg.author.partyName}
+              {msg.fromUser.partyName}
             </span>{" "}
             <span>
               {isUrl && "changed video source to "}

@@ -28,13 +28,15 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  // @debt should be replaced with a subcollection
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const sectionCapacity = getSectionCapacity(venue, section);
 
   const sectionId = section.id;
   const venueId = venue.id;
 
+  // @debt should be replaced with a subcollection
   // @debt refactor this into a hook that more efficiently encapsultes the required selector logic + uses selector to memoise
   const seatedUsers = useMemo(
     () =>

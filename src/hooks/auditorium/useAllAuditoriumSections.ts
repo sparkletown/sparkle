@@ -41,7 +41,8 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  // @debt should be replaced with a subcollection
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
 
@@ -63,6 +64,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       const sectionCapacity = getSectionCapacity(venue, section);
       const seatedUsers = getAuditoriumSeatedUsers({
         venueId,
+        // @debt should be replaced with a subcollection
         auditoriumUsers: recentVenueUsers,
         sectionId: section.id,
       });

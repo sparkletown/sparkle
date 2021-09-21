@@ -11,13 +11,12 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 export interface WorldUsersContextState {
   isSovereignVenueIdLoading: boolean;
   sovereignVenueId?: string;
-  sovereignVenueIdError?: string;
 
   worldUsersApiArgs?: WorldUsersApiArgs;
 }
@@ -36,11 +35,8 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
 }) => {
   const {
     sovereignVenueId,
-    isSovereignVenueLoading,
-    errorMsg: sovereignVenueIdError,
-  } = useSovereignVenue({
-    venueId,
-  });
+    isLoading: isSovereignVenueLoading,
+  } = useRelatedVenues();
 
   const { userId } = useUser();
 
@@ -69,16 +65,9 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
       venueId,
       isSovereignVenueIdLoading: isSovereignVenueLoading,
       sovereignVenueId,
-      sovereignVenueIdError,
       worldUsersApiArgs,
     }),
-    [
-      venueId,
-      isSovereignVenueLoading,
-      sovereignVenueId,
-      sovereignVenueIdError,
-      worldUsersApiArgs,
-    ]
+    [venueId, isSovereignVenueLoading, sovereignVenueId, worldUsersApiArgs]
   );
 
   return (

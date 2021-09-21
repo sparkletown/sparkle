@@ -38,7 +38,6 @@ export const useAuditoriumSection = ({
 }: UseAuditoriumSectionProps) => {
   const {
     id: venueId,
-    name: venueName,
     auditoriumColumns: venueColumnsCount,
     auditoriumRows: venueRowsCount,
   } = venue;
@@ -48,7 +47,8 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  // @debt should be replaced with a subcollection
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
@@ -67,6 +67,7 @@ export const useAuditoriumSection = ({
   const screenWidthInSeats = videoWidthInSeats;
 
   const seatedUsers = getAuditoriumSeatedUsers({
+    // @debt should be replaced with a subcollection
     auditoriumUsers: recentVenueUsers,
     venueId,
     sectionId,

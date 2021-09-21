@@ -1,12 +1,17 @@
 import { Settings } from "./settings";
 
 import { AuditoriumSection } from "types/auditorium";
-import { PrivateChatMessage, VenueChatMessage } from "types/chat";
+import {
+  JukeboxMessage,
+  PrivateChatMessage,
+  VenueChatMessage,
+} from "types/chat";
 import { ChatRequest } from "types/ChatRequest";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -14,7 +19,6 @@ import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
 import { ArtCar, Firebarrel } from "./animateMap";
-import { JukeboxMessage } from "./jukebox";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
@@ -63,10 +67,12 @@ export interface FirestoreData {
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
+  currentModalUser?: User;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
+  relatedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -78,12 +84,6 @@ export interface FirestoreData {
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
-
-  /**
-   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
-   * @debt Refactor all places that rely on this, then remove it from the codebase
-   */
-  venues?: Record<string, AnyVenue>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -95,6 +95,7 @@ export interface FirestoreOrdered {
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
+  currentModalUser?: WithId<User>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
@@ -104,6 +105,7 @@ export interface FirestoreOrdered {
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
+  relatedVenues?: WithId<AnyVenue>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   // @debt this doesn't appear to be used by anything anymore
@@ -117,10 +119,4 @@ export interface FirestoreOrdered {
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
-
-  /**
-   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
-   * @debt Refactor all places that rely on this, then remove it from the codebase
-   */
-  venues?: WithId<AnyVenue>[];
 }
