@@ -65,7 +65,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
       )}
 
       <p className="private-chats__title-text">
-        {numberOfUsers} other online people
+        {numberOfUsers} online people. Here is a handful of other online people:
       </p>
 
       {renderedUsers}
