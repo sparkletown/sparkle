@@ -149,3 +149,16 @@ export const getLastUrlParam = (url: string) => {
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
 };
+
+export const resolveUrlPath: (path: string) => string = (path) => {
+  const base = window.location.href;
+  try {
+    return new URL(path, base).href;
+  } catch (error) {
+    Bugsnag.notify(new Error(error), (event) => {
+      event.severity = "info";
+      event.addMetadata("utils::url::resolveUrlPath", { path, base });
+    });
+    return "";
+  }
+};
