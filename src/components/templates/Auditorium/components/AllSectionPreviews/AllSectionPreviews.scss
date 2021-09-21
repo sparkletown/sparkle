@@ -17,6 +17,10 @@ $all-section-previews-bottom-spacing: 50px;
   grid-auto-rows: $section-height;
   grid-auto-columns: minmax($section-min-width, 1fr);
 
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+
   &--extra-small {
     grid-template-areas:
       "empty-1 empty-1  main  main  main  main empty-2 empty-2"
