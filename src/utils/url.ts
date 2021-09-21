@@ -2,8 +2,8 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
-  ADMIN_V3_ADVANCED_URL,
-  ADMIN_V3_VENUE_URL,
+  ADMIN_V3_ADVANCED_PARAM_URL,
+  ADMIN_V3_VENUE_PARAM_URL,
   VALID_URL_PROTOCOLS,
 } from "settings";
 
@@ -16,10 +16,10 @@ export const venueInsideUrl = (venueId: string) => {
 };
 
 export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_VENUE_URL, { venueId, selectedTab });
+  generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
 
 export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_ADVANCED_URL, { venueId, selectedTab });
+  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;

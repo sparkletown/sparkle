@@ -1,5 +1,6 @@
 export interface Settings {
   showChat?: boolean;
-  adminV1?: boolean;
-  adminV3?: boolean;
+  enableAdmin1?: boolean;
+  enableAdmin3?: boolean;
+  adminVersion?: number | string;
 }

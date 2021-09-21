@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import {
+  ADMIN_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ROOT_URL,
   DEFAULT_REDIRECT_URL,
@@ -93,7 +94,7 @@ const EmergencyViewPage = lazy(() =>
 export const AppRouter: React.FC = () => {
   const {
     isLoaded,
-    settings: { adminV1, adminV3 },
+    settings: { enableAdmin1, enableAdmin3, adminVersion },
   } = useSettings();
 
   if (!isLoaded) return <LoadingPage />;
@@ -105,11 +106,26 @@ export const AppRouter: React.FC = () => {
           <Route path="/enter" component={EnterSubrouter} />
           <Route path="/account" component={AccountSubrouter} />
 
-          {adminV1 && (
-            <Route path={ADMIN_V1_ROOT_URL} component={AdminV1Subrouter} />
+          <Route path={ADMIN_ROOT_URL}>
+            <Redirect
+              to={
+                // currently only two are supported, so anything other than explicit 3 defaults to 1
+                adminVersion === 3 || adminVersion === "3"
+                  ? ADMIN_V3_ROOT_URL
+                  : ADMIN_V1_ROOT_URL
+              }
+            />
+          </Route>
+
+          {enableAdmin1 && (
+            <Route path={ADMIN_V1_ROOT_URL}>
+              <Provided withRelatedVenues>
+                <AdminV1Subrouter />
+              </Provided>
+            </Route>
           )}
 
-          {adminV3 && (
+          {enableAdmin3 && (
             <Route path={ADMIN_V3_ROOT_URL}>
               <Provided withRelatedVenues>
                 <AdminV3Subrouter />

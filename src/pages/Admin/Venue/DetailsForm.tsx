@@ -13,6 +13,7 @@ import classNames from "classnames";
 import * as Yup from "yup";
 
 import {
+  ADMIN_V1_ROOT_URL,
   BACKGROUND_IMG_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
@@ -205,8 +206,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           );
 
         vals.name
-          ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
-          : history.push(`/admin`);
+          ? history.push(
+              `${ADMIN_V1_ROOT_URL}/${createUrlSafeName(venueId ?? vals.name)}`
+            )
+          : history.push(ADMIN_V1_ROOT_URL);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {

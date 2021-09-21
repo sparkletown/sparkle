@@ -1,8 +1,9 @@
 import { useMemo } from "react";
 
 import {
-  DEFAULT_SETTING_ADMIN_V1,
-  DEFAULT_SETTING_ADMIN_V3,
+  DEFAULT_SETTING_ADMIN_VERSION,
+  DEFAULT_SETTING_ENABLE_ADMIN_V1,
+  DEFAULT_SETTING_ENABLE_ADMIN_V3,
   DEFAULT_SETTING_SHOW_CHAT,
 } from "settings";
 
@@ -28,16 +29,18 @@ export const useSettings: () => UseSetingsReturnType = () => {
   return useMemo(() => {
     const {
       showChat = DEFAULT_SETTING_SHOW_CHAT,
-      adminV1 = DEFAULT_SETTING_ADMIN_V1,
-      adminV3 = DEFAULT_SETTING_ADMIN_V3,
+      enableAdmin1 = DEFAULT_SETTING_ENABLE_ADMIN_V1,
+      enableAdmin3 = DEFAULT_SETTING_ENABLE_ADMIN_V3,
+      adminVersion = DEFAULT_SETTING_ADMIN_VERSION,
     } = settings ?? {};
 
     return {
       isLoaded: isLoaded(settings),
       settings: {
         showChat,
-        adminV1,
-        adminV3,
+        enableAdmin1,
+        enableAdmin3,
+        adminVersion,
       },
     };
   }, [settings]);

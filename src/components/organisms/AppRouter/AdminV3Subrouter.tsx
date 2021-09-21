@@ -2,11 +2,11 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import {
-  ADMIN_V3_ADVANCED_URL,
+  ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_CREATE_URL,
-  ADMIN_V3_EDIT_URL,
+  ADMIN_V3_EDIT_PARAM_URL,
   ADMIN_V3_ROOT_URL,
-  ADMIN_V3_VENUE_URL,
+  ADMIN_V3_VENUE_PARAM_URL,
 } from "settings";
 
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
@@ -19,13 +19,13 @@ import { Provided } from "./Provided";
 
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>
-    <Route path={ADMIN_V3_VENUE_URL}>
+    <Route path={ADMIN_V3_VENUE_PARAM_URL}>
       <Provided withWorldUsers>
         <AdminVenueView />
       </Provided>
     </Route>
 
-    <Route path={ADMIN_V3_ADVANCED_URL}>
+    <Route path={ADMIN_V3_ADVANCED_PARAM_URL}>
       <Provided withWorldUsers>
         <AdminAdvancedSettings />
       </Provided>
@@ -37,7 +37,7 @@ export const AdminV3Subrouter: React.FC = () => (
       </Provided>
     </Route>
 
-    <Route path={ADMIN_V3_EDIT_URL}>
+    <Route path={ADMIN_V3_EDIT_PARAM_URL}>
       <Provided withWorldUsers>
         <VenueWizardV2 />
       </Provided>
