@@ -15,7 +15,7 @@ import {
 } from "settings";
 
 import { tracePromise } from "utils/performance";
-import { venueLandingUrl } from "utils/url";
+import { resolveAdminRootUrl, venueLandingUrl } from "utils/url";
 
 import { useSettings } from "hooks/useSettings";
 
@@ -92,12 +92,12 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
-  const {
-    isLoaded,
-    settings: { enableAdmin1, enableAdmin3, adminVersion },
-  } = useSettings();
+  const { isLoaded, settings } = useSettings();
 
   if (!isLoaded) return <LoadingPage />;
+
+  const { enableAdmin1, enableAdmin3 } = settings;
+  const adminRootUrl = resolveAdminRootUrl(settings);
 
   return (
     <Router basename="/">
@@ -107,14 +107,7 @@ export const AppRouter: React.FC = () => {
           <Route path="/account" component={AccountSubrouter} />
 
           <Route path={ADMIN_ROOT_URL}>
-            <Redirect
-              to={
-                // currently only two are supported, so anything other than explicit 3 defaults to 1
-                adminVersion === 3 || adminVersion === "3"
-                  ? ADMIN_V3_ROOT_URL
-                  : ADMIN_V1_ROOT_URL
-              }
-            />
+            <Redirect to={adminRootUrl} />
           </Route>
 
           {enableAdmin1 && (
