@@ -4,8 +4,6 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useWorldUserLocation } from "hooks/users";
-
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RunTabUserInfo.scss";
@@ -15,10 +13,7 @@ export interface RunTabUserInfoProps {
 }
 
 export const RunTabUserInfo: React.FC<RunTabUserInfoProps> = ({ user }) => {
-  const { userLocation } = useWorldUserLocation(user?.id);
-  const userLastSeenIn = userLocation?.lastVenueIdSeenIn;
-
-  const location = userLastSeenIn ? Object.keys(userLastSeenIn)?.[0] : "";
+  const location = user.lastVenueIdSeenIn;
 
   return (
     <div key={user.id} className="RunTabUserInfo">
