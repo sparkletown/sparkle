@@ -1,8 +1,13 @@
-.venue-delete-modal-container {
+.VenueDeleteModal {
   padding: 20px;
   align-items: center;
 
   h2.centered {
     text-align: center;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
   }
 }

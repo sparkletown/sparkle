@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
-import { IS_BURN } from "secrets";
-
 import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
@@ -22,7 +20,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
@@ -46,14 +43,6 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
-
-const GiftPopover = (
-  <Popover id="gift-popover">
-    <Popover.Content>
-      <GiftTicketModal />
     </Popover.Content>
   </Popover>
 );
@@ -227,7 +216,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers venueId={venueId} />
+              <VenuePartygoers />
             </div>
 
             {!user && <NavBarLogin />}
@@ -245,19 +234,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   >
                     <span className="tickets-icon">
                       <FontAwesomeIcon icon={faTicketAlt} />
-                    </span>
-                  </OverlayTrigger>
-                )}
-
-                {IS_BURN && currentVenue?.showGiftATicket && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={GiftPopover}
-                    rootClose={true}
-                  >
-                    <span className="private-chat-icon">
-                      <div className="navbar-link-gift" />
                     </span>
                   </OverlayTrigger>
                 )}

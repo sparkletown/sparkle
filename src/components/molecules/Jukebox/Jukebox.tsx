@@ -12,7 +12,6 @@ import classNames from "classnames";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
@@ -29,13 +28,11 @@ import { InputField } from "components/atoms/InputField";
 import "./Jukebox.scss";
 
 type JukeboxTypeProps = {
-  recentVenueUsers: readonly WithId<User>[];
   updateIframeUrl: Dispatch<SetStateAction<string>>;
   venue: WithId<AnyVenue>;
 };
 
 export const Jukebox: React.FC<JukeboxTypeProps> = ({
-  recentVenueUsers,
   updateIframeUrl,
   venue,
 }) => {
@@ -46,9 +43,8 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
-  const { userId } = useUser();
-  const [filteredUser] = recentVenueUsers.filter(({ id }) => id === userId);
-  const tableRef = filteredUser?.data?.[venue.name]?.table;
+  const { userWithId } = useUser();
+  const tableRef = userWithId?.data?.[venue.name]?.table;
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
@@ -112,9 +108,9 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <div key={msg.id} className="Jukebox__chat-messages">
             <span
               className="Jukebox__chat-author button--a"
-              onClick={() => openUserProfileModal(msg.author.id)}
+              onClick={() => openUserProfileModal(msg.fromUser.id)}
             >
-              {msg.author.partyName}
+              {msg.fromUser.partyName}
             </span>{" "}
             <span>
               {isUrl && "changed video source to "}

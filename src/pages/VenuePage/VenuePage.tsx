@@ -4,8 +4,6 @@ import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
-import { fetchSovereignVenue } from "api/venue";
-
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -32,6 +30,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -39,7 +38,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-// import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
@@ -126,24 +124,21 @@ export const VenuePage: React.FC = () => {
     });
   }, LOC_UPDATE_FREQ_MS);
 
+  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
+
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !venueName || !venueId) return;
+    if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
 
-    const updateWholeLocationUserPath = async () => {
-      const { sovereignVenue, checkedVenueIds } = await fetchSovereignVenue(
-        venueId
-      );
+    const allVenueIds = [
+      ...sovereignVenueDescendantIds,
+      sovereignVenueId,
+    ].reverse();
 
-      const allVenues = [...checkedVenueIds, sovereignVenue.id].reverse();
+    const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
 
-      const locationPath = wrapIntoSlashes(allVenues.join("/"));
-
-      updateLocationData({ userId, newLocationPath: locationPath });
-    };
-
-    updateWholeLocationUserPath();
-  }, [userId, venueName, venueId]);
+    updateLocationData({ userId, newLocationPath: locationPath });
+  }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
@@ -209,9 +204,6 @@ export const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  // if (isAccessDenied) {
-  //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
-  // }
   const { entrance, template, hasPaidEvents } = venue;
 
   const hasEntrance = Array.isArray(entrance) && entrance.length > 0;

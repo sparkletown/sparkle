@@ -5,7 +5,6 @@ import {
   APP_ID,
   AUTH_DOMAIN,
   BUCKET_URL,
-  IS_BURN,
   MEASUREMENT_ID,
   PROJECT_ID,
 } from "secrets";
@@ -32,23 +31,13 @@ export const SPARKLE_PRIVACY_POLICY =
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
-export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklever.se/terms-and-conditions";
-export const SPARKLEVERSE_PRIVACY_POLICY =
-  "https://sparklever.se/privacy-policy/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
-export const HOMEPAGE_URL = IS_BURN
-  ? SPARKLEVERSE_HOMEPAGE_URL
-  : SPARKLE_HOMEPAGE_URL;
+export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
 
-export const TERMS_AND_CONDITIONS_URL = IS_BURN
-  ? SPARKLEVERSE_TERMS_AND_CONDITIONS_URL
-  : SPARKLE_TERMS_AND_CONDITIONS_URL;
+export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
 
-export const PRIVACY_POLICY = IS_BURN
-  ? SPARKLEVERSE_PRIVACY_POLICY
-  : SPARKLE_PRIVACY_POLICY;
+export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
@@ -537,7 +526,7 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
+export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -653,6 +642,8 @@ export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
 export const EVENTS_PREVIEW_LIST_LENGTH = 50;
+
+export const ALGOLIA_APP_ID = "RMJ2K10PCV";
 
 // Set these to have images uploaded to Firebase Storage served off of Imgix
 // @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf

@@ -33,9 +33,9 @@ import EmergencyViewTabs from "./EmergencyViewTabs";
 
 import "./EmergencyViewPage.scss";
 
-export const emptyPersonalizedSchedule = {};
-
 dayjs.extend(advancedFormat);
+
+export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
@@ -53,7 +53,6 @@ export const EmergencyViewPage: React.FC = () => {
     liveAndFutureEvents,
     firstScheduleDate,
   } = useVenueScheduleEvents({
-    venueId,
     userEventIds,
   });
 

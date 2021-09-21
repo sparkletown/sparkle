@@ -1,10 +1,7 @@
 import React, { useMemo } from "react";
 
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
-
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { UserAvatarUserFields } from "components/atoms/UserAvatar/UserAvatar";
 
 import "./NavSearchResult.scss";
 
@@ -12,7 +9,7 @@ export interface NavSearchResultProps {
   title: string;
   description?: string;
   image?: string;
-  user?: WithId<User>;
+  user?: UserAvatarUserFields;
   onClick?: (e?: React.MouseEvent) => void;
 }
 
