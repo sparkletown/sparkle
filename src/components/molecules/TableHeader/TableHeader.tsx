@@ -45,6 +45,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const { user, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers } = useRecentVenueUsers({ venueId });
   const { isShown, show, hide } = useShowHide();
 
@@ -70,6 +71,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
+  // @debt should be replaced with a subcollection
   const currentTableHasSeatedUsers = useMemo(
     () =>
       !!recentVenueUsers.find(
