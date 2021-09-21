@@ -9,7 +9,7 @@ import {
   startOfToday,
 } from "date-fns";
 
-import { PLATFORM_BRAND_NAME } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
 import { User } from "types/User";
 import { ScheduledVenueEvent } from "types/venues";
@@ -105,6 +105,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         });
       }
     };
+
+    if (dayDifference <= 0) return ALWAYS_EMPTY_ARRAY;
 
     return range(dayDifference).map((dayIndex) => {
       const day = addDays(firstScheduleDate, dayIndex);
