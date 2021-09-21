@@ -28,6 +28,7 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
+import { Tooltip } from "components/atoms/Tooltip";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import * as S from "./Navbar.styles";
@@ -203,15 +204,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               )}
 
               {shouldShowSchedule ? (
-                <button
-                  aria-label="Schedule"
-                  className={`nav-party-logo ${
-                    isEventScheduleVisible && "clicked"
-                  }`}
-                  onClick={toggleEventSchedule}
-                >
-                  {navbarTitle} <span className="schedule-text">Schedule</span>
-                </button>
+                <Tooltip label="AdminVenues.create.button">
+                  <button
+                    aria-label="Schedule"
+                    className={`nav-party-logo ${
+                      isEventScheduleVisible && "clicked"
+                    }`}
+                    onClick={toggleEventSchedule}
+                  >
+                    {navbarTitle}{" "}
+                    <span className="schedule-text">Schedule</span>
+                  </button>
+                </Tooltip>
               ) : (
                 <div>{navbarTitle}</div>
               )}

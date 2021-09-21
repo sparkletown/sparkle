@@ -1,0 +1,18 @@
+@import "scss/constants";
+
+.tooltipmain__label {
+  display: none;
+
+  &--visible {
+    position: absolute;
+    display: flex;
+    min-height: 30px;
+    min-width: 200px;
+    height: 30px;
+    width: auto;
+    justify-content: center;
+    align-items: center;
+    background: $secondary--lightest;
+    border-radius: 24px;
+  }
+}
