@@ -4,8 +4,8 @@ export const VALID_URL_PROTOCOLS = Object.freeze(["http:", "https:"]);
 
 // Root admin URLs
 export const ADMIN_ROOT_URL = "/admin";
-export const ADMIN_V1_ROOT_URL = "/admin1";
-export const ADMIN_V3_ROOT_URL = "/admin3";
+export const ADMIN_V1_ROOT_URL = "/a1";
+export const ADMIN_V3_ROOT_URL = "/a3";
 
 // V1 URLs
 export const ADMIN_V1_CREATE_URL = `${ADMIN_V1_ROOT_URL}/venue/creation`;
