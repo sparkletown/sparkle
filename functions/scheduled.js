@@ -89,7 +89,7 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
           recentUserCount: recentVenueUsersCount,
           recentUsersSample: sampleSize(
             recentVenueUsers,
-            venue.recentUsersSampleSize ??
+            venue.recentUsersSampleSize ||
               DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE
           ),
         });
