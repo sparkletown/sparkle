@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
@@ -15,7 +14,6 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useRecentVenueUsers } from "hooks/users";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -102,15 +100,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
-  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
-    venueId: portalVenueId,
-  });
-
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const userList = recentRoomUsers as readonly WithId<User>[];
+  const userList = portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
