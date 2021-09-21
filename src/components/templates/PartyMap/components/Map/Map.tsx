@@ -37,7 +37,6 @@ interface MapProps {
   user: FirebaseReducer.AuthState;
   profileData?: UserExperienceData;
   venue: PartyMapVenue;
-  partygoers: readonly WithId<User>[];
   selectRoom: (room: Room) => void;
   unselectRoom: () => void;
 }
@@ -46,7 +45,6 @@ export const Map: React.FC<MapProps> = ({
   user,
   profileData = {},
   venue,
-  partygoers,
   selectRoom,
   unselectRoom,
 }) => {
@@ -61,6 +59,7 @@ export const Map: React.FC<MapProps> = ({
   const [totalRows, setTotalRows] = useState<number>(0);
   const hasRows = totalRows > 0;
 
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
   const columnsArray = useMemo(
     () => Array.from(Array<JSX.Element>(totalColumns)),
@@ -171,7 +170,8 @@ export const Map: React.FC<MapProps> = ({
 
   const getUserBySeat = useGetUserByPositionOld({
     venueId,
-    positionedUsers: partygoers,
+    // @debt should be replaced with a subcollection
+    positionedUsers: recentVenueUsers,
   });
 
   const isSeatTaken = (gridPosition: GridPosition) =>
@@ -193,6 +193,7 @@ export const Map: React.FC<MapProps> = ({
     withMiniAvatars: venue.miniAvatars,
     rows: totalRows,
     columns: totalColumns,
+    // @debt should be replaced with a subcollection
     partygoers: recentVenueUsers,
   });
 
