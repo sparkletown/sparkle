@@ -1,10 +1,6 @@
-import {
-  ChatTypes,
-  DisplayUser,
-  PrivateChatSettings,
-  VenueChatSettings,
-} from "types/chat";
+import { ChatTypes, PrivateChatSettings, VenueChatSettings } from "types/chat";
 import { ReduxAction } from "types/redux";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 

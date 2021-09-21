@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { DisplayUser } from "types/chat";
+import { DisplayUser } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { pickDisplayUserFromUser } from "utils/chat";

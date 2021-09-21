@@ -5,18 +5,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
-import { GridPosition } from "types/grid";
-import { User } from "types/User";
+import { DisplayUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 
 export enum ChatMessageType {
   poll = "poll",
 }
-
-export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
-
-export type GridSeatedUser = DisplayUser & Partial<GridPosition>;
 
 export type BaseChatMessage = {
   fromUser: WithId<DisplayUser>;

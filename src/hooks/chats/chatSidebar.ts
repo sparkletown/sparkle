@@ -6,7 +6,7 @@ import {
   setVenueChatTabOpened,
 } from "store/actions/Chat";
 
-import { DisplayUser } from "types/chat";
+import { DisplayUser } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";

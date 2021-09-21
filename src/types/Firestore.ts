@@ -2,7 +2,6 @@ import { Settings } from "./settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import {
-  GridSeatedUser,
   JukeboxMessage,
   PrivateChatMessage,
   VenueChatMessage,
@@ -12,7 +11,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { User } from "types/User";
+import { GridSeatedUser, User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";

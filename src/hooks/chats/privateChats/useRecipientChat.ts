@@ -8,11 +8,11 @@ import {
 
 import {
   DeleteMessage,
-  DisplayUser,
   PrivateChatMessage,
   SendChatReply,
   SendMessage,
 } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import {
   buildMessage,

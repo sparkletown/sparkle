@@ -4,7 +4,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { PRIVATE_CHAT_NEXT_RENDER_SIZE } from "settings";
 
-import { DisplayUser } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 

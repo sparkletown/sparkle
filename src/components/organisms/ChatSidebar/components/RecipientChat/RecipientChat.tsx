@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DisplayUser } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 

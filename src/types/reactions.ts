@@ -1,4 +1,5 @@
-import { ChatMessage, DisplayUser } from "types/chat";
+import { ChatMessage } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";

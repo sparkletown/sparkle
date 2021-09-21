@@ -1,4 +1,3 @@
-import { DisplayUser } from "types/chat";
 import {
   EmojiReactionsMap,
   EmojiReactionType,
@@ -7,6 +6,7 @@ import {
   ReactionData,
   TextReactionType,
 } from "types/reactions";
+import { DisplayUser } from "types/User";
 
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";

@@ -5,12 +5,11 @@ import {
   BaseChatMessage,
   ChatMessage,
   ChatMessageType,
-  DisplayUser,
   PollMessage,
   PreviewChatMessage,
   PrivateChatMessage,
 } from "types/chat";
-import { User } from "types/User";
+import { DisplayUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 

@@ -2,6 +2,8 @@
 
 import * as Yup from "yup";
 
+import { GridPosition } from "types/grid";
+
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
   bartender: User;
@@ -59,6 +61,10 @@ export interface User extends BaseUser {
   lastSeenAt?: never;
   enteredVenueIds?: never;
 }
+
+export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
+
+export type GridSeatedUser = DisplayUser & Partial<GridPosition>;
 
 export interface UserStatus {
   status: string;

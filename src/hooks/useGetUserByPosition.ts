@@ -1,9 +1,8 @@
 import { useCallback, useMemo } from "react";
 import { pick } from "lodash";
 
-import { GridSeatedUser } from "types/chat";
 import { GridPosition } from "types/grid";
-import { User } from "types/User";
+import { GridSeatedUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
