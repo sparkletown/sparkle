@@ -18,6 +18,11 @@ export enum AuditoriumSize {
   EXTRALARGE = "extra-large",
 }
 
+export type AuditoriumSectionPath = {
+  venueId: string;
+  sectionId: string;
+};
+
 export const AuditoriumEmptyBlocksCount: Record<AuditoriumSize, number> = {
   [AuditoriumSize.EXTRASMALL]: 4,
   [AuditoriumSize.SMALL]: 4,

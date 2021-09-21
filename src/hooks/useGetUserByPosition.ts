@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from "react";
-import { pick } from "lodash";
 
 import { GridPosition } from "types/grid";
 import { GridSeatedUser, User } from "types/User";
@@ -29,8 +28,10 @@ export const useGetUserByPositionOld: (
 
         return {
           ...user,
-          row,
-          column,
+          position: {
+            row,
+            column,
+          },
         };
       })
     : [];
@@ -45,7 +46,7 @@ export const useGetUserByPosition = (
     () =>
       gridSeatedUsers.reduce<Map<string, WithId<GridSeatedUser>>>(
         (acc, user) => {
-          const { row, column } = pick(user, "row", "column");
+          const { row, column } = user.position;
 
           if (!isDefined(row) || !isDefined(column)) return acc;
 
@@ -60,6 +61,7 @@ export const useGetUserByPosition = (
       ),
     [gridSeatedUsers]
   );
+
   return useCallback(
     ({ row, column }) =>
       seatedUsersByHash.get(getPositionHash({ row, column })),

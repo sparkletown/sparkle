@@ -3,71 +3,72 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
-const { chunk, sampleSize, flatMap } = require("lodash");
+const { chunk, sampleSize, groupBy } = require("lodash");
 const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 
 exports.updateSeatedUsersCountInAuditorium = functions.pubsub
-  .schedule("every 5 seconds")
+  .schedule("every 5 minutes")
   .onRun(async () => {
     const batch = admin.firestore().batch();
 
     const firestore = admin.firestore();
-    const auditoriums = await firestore
+    const bySectionByAuditorium = await firestore
       .collection("venues")
       .where("template", "==", "auditorium")
-      .get();
+      .collectionGroup("seatedSectionUsers")
+      .get()
+      .then(({ docs }) => {
+        const seatedUsers = docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
-    const sectionsArray = await Promise.all(
-      auditoriums.docs.map(({ ref }) => ref.collection("sections").get())
-    );
-
-    await Promise.all(
-      flatMap(sectionsArray, (sections, auditoriumIndex) => {
-        return sections.docs.map((sectionDoc) =>
-          sectionDoc.ref
-            .collection("seatedUsers")
-            .get()
-            .then((seatedUsersSnapshot) => {
-              const seatedUsers = seatedUsersSnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id,
-              }));
-              if (seatedUsers.length <= 0) return undefined;
-
-              const venueId = auditoriums.docs[auditoriumIndex].id;
-              const sectionId = sectionDoc.id;
-
-              const seatedUsersCount = seatedUsers.length;
-              const seatedUsersSample = seatedUsers.splice(
-                0,
-                SECTION_PREVIEW_USER_DISPLAY_COUNT
-              );
-              console.log(
-                `[scheduled-updateSeatedUsersCountInAuditorium] /venues/${venueId}/sections/${sectionId}:`
-              );
-              console.log(
-                `{\n\tseatedUsersCount: ${seatedUsersCount},\n\tseatedUsersSample: ${seatedUsersSample.map(
-                  (u) => u.id
-                )}\n}`
-              );
-              return batch.update(
-                firestore
-                  .collection("venues")
-                  .doc(venueId)
-                  .collection("sections")
-                  .doc(sectionId),
-                {
-                  seatedUsersCount,
-                  seatedUsersSample,
-                }
-              );
-            })
+        const byAuditorium = groupBy(
+          seatedUsers,
+          (seatedUser) => seatedUser.path.venueId
         );
-      })
-    );
+        const bySectionByAuditorium = {};
+        for (const auditoriumId in byAuditorium) {
+          bySectionByAuditorium[auditoriumId] = groupBy(
+            byAuditorium[auditoriumId],
+            (seatedUser) => seatedUser.path.sectionId
+          );
+        }
+
+        return bySectionByAuditorium;
+      });
+
+    Object.entries(bySectionByAuditorium).forEach(([venueId, bySection]) => {
+      Object.entries(bySection).forEach(([sectionId, seatedUsers]) => {
+        if (seatedUsers.length <= 0) return;
+
+        const seatedUsersCount = seatedUsers.length;
+        const seatedUsersSample = seatedUsers.splice(
+          0,
+          SECTION_PREVIEW_USER_DISPLAY_COUNT
+        );
+
+        console.log(
+          `[scheduled-updateSeatedUsersCountInAuditorium] /venues/${venueId}/sections/${sectionId}:`
+        );
+        console.log(
+          `{\n\tseatedUsersCount: ${seatedUsersCount},\n\tseatedUsersSample: ${seatedUsersSample.map(
+            (u) => u.id
+          )}\n}`
+        );
+        batch.update(
+          firestore
+            .collection("venues")
+            .doc(venueId)
+            .collection("sections")
+            .doc(sectionId),
+          {
+            seatedUsersCount,
+            seatedUsersSample,
+          }
+        );
+      });
+    });
 
     return batch.commit();
   });

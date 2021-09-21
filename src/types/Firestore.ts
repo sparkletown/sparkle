@@ -11,7 +11,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { GridSeatedUser, User } from "types/User";
+import { AuditoriumSeatedUser, User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -67,7 +67,9 @@ export interface FirestoreData {
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
-  currentAuditoriumSectionSeatedUsers?: Partial<Record<string, GridSeatedUser>>;
+  currentAuditoriumSeatedSectionUsers?: Partial<
+    Record<string, AuditoriumSeatedUser>
+  >;
   currentModalUser?: User;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
@@ -96,7 +98,7 @@ export interface FirestoreOrdered {
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
-  currentAuditoriumSectionSeatedUsers?: WithId<GridSeatedUser>[];
+  currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentModalUser?: WithId<User>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;

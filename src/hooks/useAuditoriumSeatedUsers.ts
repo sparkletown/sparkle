@@ -35,10 +35,10 @@ const useConnectAuditoriumSectionSeatedUsers = (
         subcollections: [
           { collection: "sections", doc: sectionId },
           {
-            collection: "seatedUsers",
+            collection: "seatedSectionUsers",
           },
         ],
-        storeAs: "currentAuditoriumSectionSeatedUsers",
+        storeAs: "currentAuditoriumSeatedSectionUsers",
       },
     ];
   });

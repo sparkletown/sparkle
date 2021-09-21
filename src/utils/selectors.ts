@@ -15,7 +15,7 @@ import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
-import { DisplayUser, User, UserWithLocation } from "types/User";
+import { AuditoriumSeatedUser, User, UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -166,12 +166,12 @@ export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
 > = (state) => state.firestore.data.currentAuditoriumSections;
 
 export const currentAuditoriumSectionSeatedUsersSelector: SparkleSelector<
-  WithId<DisplayUser>[] | undefined
-> = makeOrderedSelector("currentAuditoriumSectionSeatedUsers");
+  WithId<AuditoriumSeatedUser>[] | undefined
+> = makeOrderedSelector("currentAuditoriumSeatedSectionUsers");
 
 export const currentAuditoriumSectionSeatedUsersByIdSelector: SparkleSelector<
-  Partial<Record<string, DisplayUser>> | undefined
-> = makeDataSelector("currentAuditoriumSectionSeatedUsers");
+  Partial<Record<string, AuditoriumSeatedUser>> | undefined
+> = makeDataSelector("currentAuditoriumSeatedSectionUsers");
 
 export const currentModalUserDataSelector: SparkleSelector<
   User | undefined
