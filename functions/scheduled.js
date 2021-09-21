@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
-const { chunk, sampleSize } = require("lodash");
+const { chunk, sampleSize, flatMap } = require("lodash");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
@@ -11,43 +11,64 @@ const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 exports.updateSeatedUsersCountInAuditorium = functions.pubsub
   .schedule("every 5 seconds")
   .onRun(async () => {
+    const batch = admin.firestore().batch();
+
     const firestore = admin.firestore();
     const auditoriums = await firestore
       .collection("venues")
       .where("template", "==", "auditorium")
-      .get()
-      .then((snapshot) =>
-        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-      );
+      .get();
 
-    const batch = admin.firestore().batch();
-    auditoriums.forEach((auditorium) =>
-      auditorium.sections
-        .filter((section) => section.seatedUsers?.length > 0)
-        .forEach((section) =>
-          batch.update(
-            firestore
-              .collection("venues")
-              .doc(auditorium.id)
-              .collection("sections")
-              .doc(section.id),
-            {
-              seatedUsersCount: section.seatedUsers.length,
-              seatedUsersSample: section.seatedUsers.splice(
-                0,
-                SECTION_PREVIEW_USER_DISPLAY_COUNT
-              ),
-            }
-          )
-        )
+    const sectionsArray = await Promise.all(
+      auditoriums.docs.map(({ ref }) => ref.collection("sections").get())
     );
 
-    batch.commit().catch((error) => {
-      throw new HttpsError(
-        "internal",
-        `Commit batch of auditoriums sections update. Error: ${error}`
-      );
-    });
+    await Promise.all(
+      flatMap(sectionsArray, (sections, auditoriumIndex) => {
+        return sections.docs.map((sectionDoc) =>
+          sectionDoc.ref
+            .collection("seatedUsers")
+            .get()
+            .then((seatedUsersSnapshot) => {
+              const seatedUsers = seatedUsersSnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+              }));
+              if (seatedUsers.length <= 0) return undefined;
+
+              const venueId = auditoriums.docs[auditoriumIndex].id;
+              const sectionId = sectionDoc.id;
+
+              const seatedUsersCount = seatedUsers.length;
+              const seatedUsersSample = seatedUsers.splice(
+                0,
+                SECTION_PREVIEW_USER_DISPLAY_COUNT
+              );
+              console.log(
+                `[scheduled-updateSeatedUsersCountInAuditorium] /venues/${venueId}/sections/${sectionId}:`
+              );
+              console.log(
+                `{\n\tseatedUsersCount: ${seatedUsersCount},\n\tseatedUsersSample: ${seatedUsersSample.map(
+                  (u) => u.id
+                )}\n}`
+              );
+              return batch.update(
+                firestore
+                  .collection("venues")
+                  .doc(venueId)
+                  .collection("sections")
+                  .doc(sectionId),
+                {
+                  seatedUsersCount,
+                  seatedUsersSample,
+                }
+              );
+            })
+        );
+      })
+    );
+
+    return batch.commit();
   });
 
 exports.aggregateUsersLocationsInVenue = functions.pubsub
