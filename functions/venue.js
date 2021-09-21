@@ -766,20 +766,12 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   const updated = {};
   updated.updatedAt = Date.now();
 
-  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
   if (data.description || data.description === "") {
     updated.config.landingPageConfig.description = data.description;
-  }
-
-  if (data.primaryColor) {
-    if (!updated.theme) {
-      updated.theme = {};
-    }
-    updated.theme.primaryColor = data.primaryColor;
   }
 
   if (data.logoImageUrl) {
@@ -803,15 +795,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.iframeUrl === "string") {
     updated.iframeUrl = data.iframeUrl;
-  }
-
-  if (data.mapBackgroundImageUrl) {
-    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-  }
-
-  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
-  if (data.bannerMessage) {
-    updated.bannerMessage = data.bannerMessage;
   }
 
   if (data.parentId) {

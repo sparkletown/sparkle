@@ -70,8 +70,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     return await fetchVenue(roomVenueId);
   }, [roomVenueId]);
 
-  console.log(roomVenue);
-
   const defaultValues = useMemo(
     () => ({
       room: {
@@ -124,8 +122,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const values = watch("room");
   const venueValues = watch("venue");
 
-  console.log(venueValues);
-
   const changeRoomImageUrl = useCallback(
     (val: string) => {
       setValue("room.image_url", val, false);
@@ -161,7 +157,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     };
 
     await upsertRoom(roomData, venueId, user, roomIndex);
-    console.log(room.template);
     room.template && (await updateVenueRoom());
 
     onEdit && onEdit();
