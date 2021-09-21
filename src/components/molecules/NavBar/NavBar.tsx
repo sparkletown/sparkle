@@ -204,18 +204,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               )}
 
               {shouldShowSchedule ? (
-                <Tooltip label="AdminVenues.create.button">
-                  <button
-                    aria-label="Schedule"
-                    className={`nav-party-logo ${
-                      isEventScheduleVisible && "clicked"
-                    }`}
-                    onClick={toggleEventSchedule}
+                <button
+                  aria-label="Schedule"
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
+                  onClick={toggleEventSchedule}
+                >
+                  {navbarTitle}{" "}
+                  <Tooltip
+                    id="schedule-text__tooltip"
+                    label="NavBar.schedule-button"
                   >
-                    {navbarTitle}{" "}
                     <span className="schedule-text">Schedule</span>
-                  </button>
-                </Tooltip>
+                  </Tooltip>
+                </button>
               ) : (
                 <div>{navbarTitle}</div>
               )}
@@ -264,11 +267,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
-                    />
+                    <Tooltip
+                      id="navbar-link-radio__tooltip"
+                      label="NavBar.radio-button"
+                    >
+                      <button
+                        className={`profile-icon navbar-link-radio ${
+                          volume === 0 && "off"
+                        }`}
+                      />
+                    </Tooltip>
                   </OverlayTrigger>
                 )}
 
@@ -292,12 +300,17 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-                <div
-                  className="navbar-links-user-avatar"
-                  onClick={handleAvatarClick}
+                <Tooltip
+                  id="navbar-link-radio__tooltip"
+                  label="NavBar.avatar-button"
                 >
-                  <UserAvatar user={userWithId} showStatus size="medium" />
-                </div>
+                  <div
+                    className="navbar-links-user-avatar"
+                    onClick={handleAvatarClick}
+                  >
+                    <UserAvatar user={userWithId} showStatus size="medium" />
+                  </div>
+                </Tooltip>
               </div>
             )}
           </div>
