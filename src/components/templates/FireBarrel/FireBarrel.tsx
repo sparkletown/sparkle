@@ -20,6 +20,7 @@ const DEFAULT_BURN_BARREL_SEATS = 8;
 // @debt refactor this to pass in venue as a prop
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
     venueId: venue?.id,
   });
@@ -55,6 +56,7 @@ export const FireBarrel: React.FC = () => {
         />
 
         {/* @debt Refactor this to be less brittle/complex */}
+        {/* @debt should be replaced with a subcollection */}
         {seatsArray.map((_, index) => {
           const partyPerson = recentVenueUsers[index] ?? null;
 
