@@ -75,3 +75,7 @@ $avatar-size: 20px;
     width: $avatar-size;
   }
 }
+
+.VenueWithOverlay {
+  margin: -($spacing--md);
+}

@@ -9,6 +9,8 @@ import { WithId } from "utils/id";
 
 import { useValidImage } from "hooks/useCheckImage";
 
+import "./VenueWithOverlay.scss";
+
 type VenueWithOverlayProps = {
   containerName: string;
   className?: string;
@@ -35,18 +37,9 @@ export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
 
   const containerClasses = classNames(containerName, className, containerVars);
 
-  const overlayVars = useCss({
-    position: "fixed",
-    height: "100%",
-    width: "100%",
-    background: "rgba(0,0,0, 0.8)",
-  });
-
-  const overlayClasses = classNames(`${containerName}__overlay`, overlayVars);
-
   return (
     <div className={containerClasses} style={style}>
-      <div className={overlayClasses} />
+      <div className="VenueWithOverlay" />
       {children}
     </div>
   );

@@ -19,10 +19,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
-  &__overlay {
-    margin: -($spacing--xxl);
-  }
-
   .audience-overlay {
     position: absolute;
 
@@ -158,5 +154,9 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
     .not-seat {
       background-color: rgba(0, 0, 0, 0);
     }
+  }
+
+  .VenueWithOverlay {
+    margin: -($spacing--xxl);
   }
 }
