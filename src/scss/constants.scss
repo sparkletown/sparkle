@@ -23,6 +23,8 @@ $input--invalid: #dc3545;
 $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
+$modal-background--confirm: #232225;
+
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
 $almost-black: $secondary--darkest;
@@ -65,7 +67,7 @@ $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 $send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
-$chat-sidebar-width: 360px;
+$chat-sidebar-width: 300px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;

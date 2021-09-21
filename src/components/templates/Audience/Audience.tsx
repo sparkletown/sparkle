@@ -136,6 +136,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const venueId = venue.id;
 
   const { userId, userWithId } = useUser();
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const baseColumns =
@@ -200,6 +201,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
 
+  // @debt should be replaced with a subcollection
   const seatedVenueUsers = useMemo(() => {
     if (!venueId) return [];
 

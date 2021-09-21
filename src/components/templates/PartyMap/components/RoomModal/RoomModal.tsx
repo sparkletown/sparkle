@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
@@ -15,7 +14,6 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useRecentVenueUsers } from "hooks/users";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -60,7 +58,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide} centered>
-      <div className="room-modal">
+      <div className="RoomModal">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </div>
     </Modal>
@@ -102,15 +100,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
-  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
-    venueId: portalVenueId,
-  });
-
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const userList = recentRoomUsers as readonly WithId<User>[];
+  const userList = portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
@@ -157,12 +151,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     <>
       <h2>{roomTitle}</h2>
 
-      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
+      {roomSubtitle && <div className="RoomModal__title">{roomSubtitle}</div>}
 
-      <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyles} />
+      <div className="RoomModal__main">
+        <div className="RoomModal__icon" style={iconStyles} />
 
-        <div className="room-modal__content">
+        <div className="RoomModal__content">
           {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
 
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
@@ -170,7 +164,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           <button
             ref={enterButtonref}
             autoFocus
-            className="btn btn-primary room-modal__btn-enter"
+            className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
             onClick={enterRoomWithSound}
@@ -181,7 +175,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       </div>
 
       <UserList
-        containerClassName="room-modal__userlist"
+        containerClassName="RoomModal__userlist"
         users={userList}
         limit={11}
         activity="in this room"
@@ -189,14 +183,19 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       />
 
       {room.about && (
-        <div className="room-modal__description">
-          <RenderMarkdown text={roomDescription} />
+        <div className="RoomModal__description">
+          <RenderMarkdown
+            text={roomDescription}
+            components={{
+              p: "span",
+            }}
+          />
         </div>
       )}
 
       {showRoomEvents && (
-        <div className="room-modal__events">
-          <div className="room-modal__title">Room Schedule</div>
+        <div className="RoomModal__events">
+          <div className="RoomModal__title">Room Schedule</div>
 
           {renderedRoomEvents}
         </div>
