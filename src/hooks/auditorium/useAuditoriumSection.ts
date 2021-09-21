@@ -1,12 +1,16 @@
 import { useCallback, useMemo } from "react";
 
 import {
+  ALWAYS_EMPTY_ARRAY,
   REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
 } from "settings";
 
-import { setGridData } from "api/profile";
+import {
+  setAuditoriumSectionSeat,
+  unsetAuditoriumSectionSeat,
+} from "api/venue";
 
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
@@ -66,39 +70,38 @@ export const useAuditoriumSection = ({
   const seatedUsers = useAuditoriumSeatedUsers(venueId, sectionId);
 
   const isUserSeated = useMemo(
-    () => seatedUsers.some((seatedUser) => seatedUser.id === userId),
+    () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
     [seatedUsers, userId]
   );
 
-  const getUserBySeat = useGetUserByPosition({
-    venueId,
-    positionedUsers: seatedUsers,
-  });
+  const getUserBySeat = useGetUserByPosition(seatedUsers ?? ALWAYS_EMPTY_ARRAY);
 
   const takeSeat: (
     gridPosition: GridPosition
   ) => Promise<void> | undefined = useCallback(
     ({ row, column }: GridPosition) => {
-      if (!sectionId || !venueId || !userId) return;
+      if (!sectionId || !venueId || !userWithId) return;
 
-      return setGridData({
+      return setAuditoriumSectionSeat(
+        userWithId,
         venueId,
-        userId,
-        gridData: { sectionId, row, column },
-      });
+        sectionId,
+        row,
+        column
+      );
     },
-    [sectionId, venueId, userId]
+    [sectionId, venueId, userWithId]
   );
 
   const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
-    if (!venueId || !userId) return;
+    if (!venueId || !userId || !sectionId) return;
 
-    return setGridData({ venueId, userId, gridData: undefined });
-  }, [venueId, userId]);
+    return unsetAuditoriumSectionSeat(userId, venueId, sectionId);
+  }, [venueId, userId, sectionId]);
 
   const checkIfSeat = useCallback(
     ({ row, column }: GridPosition) => {
-      const covertedRowCoordinate = convertToCartesianCoordinate({
+      const convertedRowCoordinate = convertToCartesianCoordinate({
         index: row,
         totalAmount: baseRowsCount,
       });
@@ -108,7 +111,7 @@ export const useAuditoriumSection = ({
       });
 
       const isInVideoRow =
-        Math.abs(covertedRowCoordinate) <= screenHeightInSeats / 2;
+        Math.abs(convertedRowCoordinate) <= screenHeightInSeats / 2;
       const isInVideoColumn =
         Math.abs(convertedColumnCoordinate) <= screenWidthInSeats / 2;
 

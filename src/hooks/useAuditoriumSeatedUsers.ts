@@ -1,9 +1,13 @@
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { emptyArray } from "utils/selectors";
+import {
+  currentAuditoriumSectionSeatedUsersSelector,
+  emptyArray,
+} from "utils/selectors";
 
-import { useRecentVenueUsers } from "hooks/users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
 
 export const findAuditoriumSeatedUsers = (
   recentVenueUsers: readonly WithId<User>[],
@@ -17,11 +21,34 @@ export const findAuditoriumSeatedUsers = (
     : emptyArray;
 };
 
+const useConnectAuditoriumSectionSeatedUsers = (
+  venueId: string | undefined,
+  sectionId: string | undefined
+) => {
+  useFirestoreConnect(() => {
+    if (!venueId || !sectionId) return [];
+
+    return [
+      {
+        collection: "venues",
+        doc: venueId,
+        subcollections: [
+          { collection: "sections", doc: sectionId },
+          {
+            collection: "seatedUsers",
+          },
+        ],
+        storeAs: "currentAuditoriumSectionSeatedUsers",
+      },
+    ];
+  });
+};
+
 export const useAuditoriumSeatedUsers = (
   venueId: string | undefined,
   sectionId: string | undefined
 ) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
+  useConnectAuditoriumSectionSeatedUsers(venueId, sectionId);
 
-  return findAuditoriumSeatedUsers(recentVenueUsers, venueId, sectionId);
+  return useSelector(currentAuditoriumSectionSeatedUsersSelector);
 };

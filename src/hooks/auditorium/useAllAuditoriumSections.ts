@@ -8,10 +8,7 @@ import { WithId } from "utils/id";
 import { currentAuditoriumSectionsSelector } from "utils/selectors";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
-import { findAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
-
 import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
-import { useRecentVenueUsers } from "../users";
 import { useSelector } from "../useSelector";
 import { useShowHide } from "../useShowHide";
 
@@ -43,8 +40,6 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
-
   const sections = useSelector(currentAuditoriumSectionsSelector);
 
   const enterSection = useCallback(
@@ -63,15 +58,10 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
     return sections.filter((section) => {
       const sectionCapacity = getSectionCapacity(venue, section);
-      const seatedUsers = findAuditoriumSeatedUsers(
-        recentVenueUsers,
-        venueId,
-        section.id
-      );
 
-      return seatedUsers.length < sectionCapacity;
+      return (section?.seatedUsersCount ?? 0) < sectionCapacity;
     });
-  }, [recentVenueUsers, venue, venueId, sections]);
+  }, [venue, sections]);
 
   return useMemo(
     () => ({

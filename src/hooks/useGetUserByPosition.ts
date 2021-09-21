@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from "react";
+import { pick } from "lodash";
 
+import { GridSeatedUser } from "types/chat";
 import { GridPosition } from "types/grid";
 import { User } from "types/User";
 
-import { getPositionHash } from "utils/grid";
 import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
 
@@ -12,43 +13,57 @@ export interface UseGetUserByPositionProps {
   venueId?: string;
 }
 
-export type GetUserByPostion = (
+export type GetUserByPosition = (
   gridPosition: GridPosition
-) => WithId<User> | undefined;
+) => WithId<GridSeatedUser> | undefined;
 
-export const useGetUserByPosition: (
+const getPositionHash = ({ row, column }: GridPosition): string => {
+  return `${row}|${column}`;
+};
+
+export const useGetUserByPositionOld: (
   props: UseGetUserByPositionProps
-) => GetUserByPostion = ({ positionedUsers, venueId }) => {
-  const seatedUsersByHash: Map<string, WithId<User>> = useMemo(
-    () =>
-      positionedUsers.reduce<Map<string, WithId<User>>>((acc, user) => {
-        if (!venueId) return acc;
-        const gridData = user.data?.[venueId];
+) => GetUserByPosition = ({ positionedUsers, venueId }) => {
+  const gridSeatedUsers = venueId
+    ? positionedUsers.map((user) => {
+        const { row, column } = user.data?.[venueId] ?? {};
 
-        if (
-          !gridData ||
-          !isDefined(gridData.row) ||
-          !isDefined(gridData.column)
-        )
-          return acc;
-
-        const { row, column } = gridData;
-
-        const positionHash = getPositionHash({
+        return {
+          ...user,
           row,
           column,
-        });
+        };
+      })
+    : [];
 
-        return acc.set(positionHash, user);
-      }, new Map()),
-    [positionedUsers, venueId]
+  return useGetUserByPosition(gridSeatedUsers);
+};
+
+export const useGetUserByPosition = (
+  gridSeatedUsers: WithId<GridSeatedUser>[]
+): GetUserByPosition => {
+  const seatedUsersByHash: Map<string, WithId<GridSeatedUser>> = useMemo(
+    () =>
+      gridSeatedUsers.reduce<Map<string, WithId<GridSeatedUser>>>(
+        (acc, user) => {
+          const { row, column } = pick(user, "row", "column");
+
+          if (!isDefined(row) || !isDefined(column)) return acc;
+
+          const positionHash = getPositionHash({
+            row,
+            column,
+          });
+
+          return acc.set(positionHash, user);
+        },
+        new Map()
+      ),
+    [gridSeatedUsers]
   );
-
-  const getUserByPosition: GetUserByPostion = useCallback(
+  return useCallback(
     ({ row, column }) =>
       seatedUsersByHash.get(getPositionHash({ row, column })),
     [seatedUsersByHash]
   );
-
-  return getUserByPosition;
 };

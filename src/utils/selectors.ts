@@ -6,6 +6,7 @@ import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
 import {
   ChatSettings,
+  DisplayUser,
   JukeboxMessage,
   PrivateChatMessage,
   VenueChatMessage,
@@ -164,6 +165,14 @@ export const currentAuditoriumSectionsSelector: SparkleSelector<
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
+
+export const currentAuditoriumSectionSeatedUsersSelector: SparkleSelector<
+  WithId<DisplayUser>[] | undefined
+> = makeOrderedSelector("currentAuditoriumSectionSeatedUsers");
+
+export const currentAuditoriumSectionSeatedUsersByIdSelector: SparkleSelector<
+  Partial<Record<string, DisplayUser>> | undefined
+> = makeDataSelector("currentAuditoriumSectionSeatedUsers");
 
 export const currentModalUserDataSelector: SparkleSelector<
   User | undefined

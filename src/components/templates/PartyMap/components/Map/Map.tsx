@@ -19,7 +19,7 @@ import { WithId } from "utils/id";
 import { hasElements } from "utils/types";
 
 import { useValidImage } from "hooks/useCheckImage";
-import { useGetUserByPosition } from "hooks/useGetUserByPosition";
+import { useGetUserByPositionOld } from "hooks/useGetUserByPosition";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
 
@@ -169,7 +169,7 @@ export const Map: React.FC<MapProps> = ({
     [checkForRoomHit, takeSeat]
   );
 
-  const getUserBySeat = useGetUserByPosition({
+  const getUserBySeat = useGetUserByPositionOld({
     venueId,
     positionedUsers: partygoers,
   });

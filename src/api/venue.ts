@@ -123,7 +123,7 @@ export const setAuditoriumSectionSeat = async (
   column: number
 ) => {
   return getUserInSectionRef(user.id, venueId, sectionId)
-    .update({
+    .set({
       ...pickDisplayUserFromUser(user),
       row,
       column,

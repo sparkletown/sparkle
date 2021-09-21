@@ -6,8 +6,8 @@ export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
   bartender: User;
   table?: string | null;
-  row?: number | null;
-  column?: number | null;
+  row?: number;
+  column?: number;
   sectionId?: string;
 }
 

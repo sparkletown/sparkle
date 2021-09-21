@@ -4,7 +4,7 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { GetUserByPostion } from "hooks/useGetUserByPosition";
+import { GetUserByPosition } from "hooks/useGetUserByPosition";
 
 import { MapCell } from "components/molecules/MapCell";
 
@@ -14,7 +14,7 @@ export interface MapGridProps {
   userUid?: string;
   columnsArray: JSX.Element[];
   rowsArray: JSX.Element[];
-  getUserBySeat: GetUserByPostion;
+  getUserBySeat: GetUserByPosition;
   onSeatClick: (
     row: number,
     column: number,
