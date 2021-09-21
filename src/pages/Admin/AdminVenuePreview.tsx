@@ -107,7 +107,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
     background:
       validBannerImageUrl === DEFAULT_VENUE_BANNER
         ? validBannerImageUrl
-        : `url(${validBannerImageUrl})`,
+        : `url("${validBannerImageUrl}")`,
   });
 
   const imageClasses = classNames("icon", imageVars);

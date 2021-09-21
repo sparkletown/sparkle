@@ -110,7 +110,7 @@ export const EmergencyViewPage: React.FC = () => {
   );
 
   const containerVars = useCss({
-    "background-image": `url(${validBannerImageUrl})`,
+    "background-image": `url("${validBannerImageUrl}")`,
   });
 
   const containerClasses = classNames("EmergencyView", containerVars);

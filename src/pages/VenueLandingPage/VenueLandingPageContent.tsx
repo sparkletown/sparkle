@@ -76,7 +76,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
             0deg,
             rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
-          ), url(${validBannerImageUrl})`,
+          ), url("${validBannerImageUrl}")`,
     backgroundSize: "cover",
   });
 
