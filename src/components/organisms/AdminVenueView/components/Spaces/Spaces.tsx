@@ -8,6 +8,7 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useFetchAssets } from "hooks/useFetchAssets";
 import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
@@ -101,6 +102,12 @@ export const Spaces: React.FC<SpacesProps> = ({
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
+  const {
+    assets: mapBackgrounds,
+    isLoading: isLoadingBackgrounds,
+    error: errorFetchBackgrounds,
+  } = useFetchAssets("mapBackgrounds");
+
   const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue?.rooms?.length ?? 0;
@@ -193,7 +200,12 @@ export const Spaces: React.FC<SpacesProps> = ({
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue?.name ?? ""} />
+                <BackgroundSelect
+                  isLoadingBackgrounds={isLoadingBackgrounds}
+                  mapBackgrounds={mapBackgrounds}
+                  venueName={venue.name}
+                  error={errorFetchBackgrounds}
+                />
               )}
             </div>
 
