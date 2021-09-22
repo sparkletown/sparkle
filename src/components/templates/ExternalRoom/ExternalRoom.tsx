@@ -24,7 +24,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   }, [redirectUrl]);
 
   return redirectUrl ? (
-    <VenueWithOverlay venue={venue} containerName="ExternalRoom">
+    <VenueWithOverlay venue={venue} containerClassNames="ExternalRoom">
       <div className="ExternalRoom__message">
         <SparkleLogo />
         <div className="ExternalRoom__content">

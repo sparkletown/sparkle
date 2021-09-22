@@ -60,7 +60,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
 
   return (
     <>
-      <VenueWithOverlay venue={venue} containerName="ArtPiece">
+      <VenueWithOverlay venue={venue} containerClassNames="ArtPiece">
         <InformationLeftColumn iconNameOrPath={host?.icon}>
           <InformationCard title="About the venue">
             <p className="ArtPiece__title-sidebar">{name}</p>

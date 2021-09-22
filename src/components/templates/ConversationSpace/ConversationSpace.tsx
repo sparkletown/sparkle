@@ -73,7 +73,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <VenueWithOverlay venue={venue} containerName="conversation-space">
+      <VenueWithOverlay venue={venue} containerClassNames="conversation-space">
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}

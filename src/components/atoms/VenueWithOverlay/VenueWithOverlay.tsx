@@ -12,17 +12,15 @@ import { useValidImage } from "hooks/useCheckImage";
 import "./VenueWithOverlay.scss";
 
 type VenueWithOverlayProps = {
-  containerName: string;
-  className?: string;
+  containerClassNames: string;
   venue: WithId<AnyVenue> | EmbeddableVenue;
   style?: React.CSSProperties;
 };
 
 export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
   children,
-  containerName,
+  containerClassNames,
   venue,
-  className = "",
   style,
 }) => {
   const [validBannerImageUrl] = useValidImage(
@@ -35,7 +33,7 @@ export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
     background: `url("${validBannerImageUrl}")`,
   });
 
-  const containerClasses = classNames(containerName, className, containerVars);
+  const containerClasses = classNames(containerClassNames, containerVars);
 
   return (
     <div className={containerClasses} style={style}>

@@ -144,8 +144,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     <>
       <VenueWithOverlay
         venue={venue}
-        containerName="music-bar"
-        className={containerClasses}
+        containerClassNames={`music-bar ${containerClasses}`}
       >
         {!seatedAtTable && parentVenue && (
           <BackButton

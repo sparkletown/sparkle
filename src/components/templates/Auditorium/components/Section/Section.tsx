@@ -90,7 +90,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <VenueWithOverlay venue={venue} containerName="Section">
+    <VenueWithOverlay venue={venue} containerClassNames="Section">
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">

@@ -28,7 +28,7 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
   return (
     <VenueWithOverlay
       venue={venue}
-      containerName="embeddable"
+      containerClassNames="embeddable"
       style={containerStyles}
     >
       <iframe

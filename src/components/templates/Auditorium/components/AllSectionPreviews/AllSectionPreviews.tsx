@@ -108,8 +108,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
       )}
       <VenueWithOverlay
         venue={venue}
-        containerName="AllSectionPreviews"
-        className={containerClasses}
+        containerClassNames={`AllSectionPreviews ${containerClasses}`}
       >
         {emptyBlocks}
 

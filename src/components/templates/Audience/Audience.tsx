@@ -364,7 +364,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return (
       <>
-        <VenueWithOverlay containerName="audience-container" venue={venue}>
+        <VenueWithOverlay
+          containerClassNames="audience-container"
+          venue={venue}
+        >
           <div className="audience">
             <div className="audience-overlay">
               <div
