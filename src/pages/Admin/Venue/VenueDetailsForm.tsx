@@ -141,6 +141,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
       showUserStatuses: boolean
     ) => {
       if (!user || formError) return;
+      
       try {
         // unfortunately the typing is off for react-hook-forms.
         if (venueId) {
