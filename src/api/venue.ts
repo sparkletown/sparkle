@@ -1,6 +1,8 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+import { AuditoriumSectionPath } from "types/auditorium";
+import { GridPosition } from "types/grid";
 import { AuditoriumSeatedUser, DisplayUser } from "types/User";
 import { AnyVenue } from "types/venues";
 
@@ -80,33 +82,28 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
 
-const getUserInSectionRef = (
-  userId: string,
-  venueId: string,
-  sectionId: string
-) =>
+const getUserInSectionRef = (userId: string, path: AuditoriumSectionPath) =>
   firebase
     .firestore()
     .collection("venues")
-    .doc(venueId)
+    .doc(path.venueId)
     .collection("sections")
-    .doc(sectionId)
+    .doc(path.sectionId)
     .collection("seatedSectionUsers")
     .doc(userId);
 
 export const unsetAuditoriumSectionSeat = async (
   userId: string,
-  venueId: string,
-  sectionId: string
+  path: AuditoriumSectionPath
 ) => {
-  return getUserInSectionRef(userId, venueId, sectionId)
+  return getUserInSectionRef(userId, path)
     .delete()
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
           location: "api/venue::unsetAuditoriumSectionSeat",
-          venueId,
-          sectionId,
+          venueId: path.venueId,
+          sectionId: path.sectionId,
           userId,
         });
       });
@@ -117,31 +114,23 @@ export const unsetAuditoriumSectionSeat = async (
 
 export const setAuditoriumSectionSeat = async (
   user: WithId<DisplayUser>,
-  venueId: string,
-  sectionId: string,
-  row: number,
-  column: number
+  position: GridPosition,
+  path: AuditoriumSectionPath
 ) => {
   const data: AuditoriumSeatedUser = {
     ...pickDisplayUserFromUser(user),
-    position: {
-      row,
-      column,
-    },
-    path: {
-      venueId,
-      sectionId,
-    },
+    position,
+    path,
   };
 
-  return getUserInSectionRef(user.id, venueId, sectionId)
+  return getUserInSectionRef(user.id, path)
     .set(data)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
           location: "api/venue::setAuditoriumSectionSeat",
-          venueId,
-          sectionId,
+          venueId: path.venueId,
+          sectionId: path.sectionId,
           user,
         });
       });

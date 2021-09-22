@@ -84,10 +84,14 @@ export const useAuditoriumSection = ({
 
       return setAuditoriumSectionSeat(
         userWithId,
-        venueId,
-        sectionId,
-        row,
-        column
+        {
+          row,
+          column,
+        },
+        {
+          venueId,
+          sectionId,
+        }
       );
     },
     [sectionId, venueId, userWithId]
@@ -96,7 +100,7 @@ export const useAuditoriumSection = ({
   const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
     if (!venueId || !userId || !sectionId) return;
 
-    return unsetAuditoriumSectionSeat(userId, venueId, sectionId);
+    return unsetAuditoriumSectionSeat(userId, { venueId, sectionId });
   }, [venueId, userId, sectionId]);
 
   const checkIfSeat = useCallback(
