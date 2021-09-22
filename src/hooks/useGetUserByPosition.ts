@@ -19,26 +19,6 @@ const getPositionHash = ({ row, column }: GridPosition): string => {
   return `${row}|${column}`;
 };
 
-export const useGetUserByPositionOld: (
-  props: UseGetUserByPositionProps
-) => GetUserByPosition = ({ positionedUsers, venueId }) => {
-  const gridSeatedUsers = venueId
-    ? positionedUsers.map((user) => {
-        const { row, column } = user.data?.[venueId] ?? {};
-
-        return {
-          ...user,
-          position: {
-            row,
-            column,
-          },
-        };
-      })
-    : [];
-
-  return useGetUserByPosition(gridSeatedUsers);
-};
-
 export const useGetUserByPosition = (
   gridSeatedUsers: WithId<GridSeatedUser>[]
 ): GetUserByPosition => {
