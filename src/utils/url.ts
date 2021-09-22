@@ -157,7 +157,7 @@ export const resolveUrlPath: (path: string) => string = (path) => {
   } catch (error) {
     Bugsnag.notify(new Error(error), (event) => {
       event.severity = "info";
-      event.addMetadata("utils::url::resolveUrlPath", { path, base });
+      event.addMetadata("utils/url::resolveUrlPath", { path, base });
     });
     return "";
   }
