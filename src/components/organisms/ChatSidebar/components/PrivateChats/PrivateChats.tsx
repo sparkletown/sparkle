@@ -1,20 +1,12 @@
-import React, { useCallback, useMemo, useState } from "react";
-import InfiniteScroll from "react-infinite-scroll-component";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
-import { PRIVATE_CHAT_NEXT_RENDER_SIZE } from "settings";
+import React, { useMemo } from "react";
 
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
-import { useOnlineUsersToDisplay } from "hooks/chats/privateChats/useOnlineUsersToDisplay";
 import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
-
-import { Loading } from "components/molecules/Loading";
-
-import { InputField } from "components/atoms/InputField";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 
@@ -25,28 +17,10 @@ export interface PrivateChatsProps {
 }
 
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
-  const [userSearchQuery, setUserSearchQuery] = useState("");
-  const [scrollPageNumber, setScrollPageNumber] = useState(1);
-
-  const onInputChange = useCallback((e) => {
-    setUserSearchQuery(e.target.value);
-    setScrollPageNumber(1);
-  }, []);
-
-  const showNextPage = useCallback(
-    () => setScrollPageNumber(scrollPageNumber + 1),
-    [setScrollPageNumber, scrollPageNumber]
-  );
+  const { sovereignVenue } = useRelatedVenues();
 
   const { privateChatPreviews } = usePrivateChatPreviews();
-  const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
-
-  const privateChatUserIds = useMemo(
-    () =>
-      privateChatPreviews.map((chatPreview) => chatPreview.counterPartyUser.id),
-    [privateChatPreviews]
-  );
 
   const renderedPrivateChatPreviews = useMemo(
     () =>
@@ -63,29 +37,19 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
     [privateChatPreviews, selectRecipientChat]
   );
 
-  const filteredUsers = useMemo(() => {
-    if (userSearchQuery.length)
-      return onlineUsers.filter((user) =>
-        user.partyName?.toLowerCase().includes(userSearchQuery.toLowerCase())
-      );
-    return onlineUsers.filter((user) => !privateChatUserIds.includes(user.id));
-  }, [onlineUsers, privateChatUserIds, userSearchQuery]);
-
   const renderedUsers = useMemo(
     () =>
-      filteredUsers
-        .slice(0, scrollPageNumber * PRIVATE_CHAT_NEXT_RENDER_SIZE)
-        .map((user) => (
-          <OnlineUser
-            key={user.id}
-            user={user}
-            onClick={() => selectRecipientChat(user)}
-          />
-        )),
-    [filteredUsers, scrollPageNumber, selectRecipientChat]
+      sovereignVenue?.recentUsersSample?.map((user) => (
+        <OnlineUser
+          key={user.id}
+          user={user}
+          onClick={() => selectRecipientChat(user)}
+        />
+      )),
+    [sovereignVenue?.recentUsersSample, selectRecipientChat]
   );
 
-  const numberOfUsers = filteredUsers.length;
+  const numberOfUsers = sovereignVenue?.recentUserCount;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
   if (recipient) {
@@ -94,42 +58,17 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
 
   return (
     <div className="private-chats" id="private_chats_scrollable_div">
-      <InfiniteScroll
-        dataLength={renderedUsers.length}
-        hasMore={renderedUsers.length < filteredUsers.length}
-        next={showNextPage}
-        scrollableTarget="private_chats_scrollable_div"
-        loader={Loading}
-      >
-        <InputField
-          containerClassName="private-chats__search"
-          placeholder="Search for online people"
-          value={userSearchQuery}
-          onChange={onInputChange}
-          iconStart={faSearch}
-          autoComplete="off"
-        />
+      {hasChatPreviews && (
+        <div className="private-chats__previews">
+          {renderedPrivateChatPreviews}
+        </div>
+      )}
 
-        {userSearchQuery ? (
-          <p className="private-chats__title-text">
-            {numberOfUsers} search results
-          </p>
-        ) : (
-          <>
-            {hasChatPreviews && (
-              <div className="private-chats__previews">
-                {renderedPrivateChatPreviews}
-              </div>
-            )}
+      <p className="private-chats__title-text">
+        {numberOfUsers} online people. Here is a handful of other online people:
+      </p>
 
-            <p className="private-chats__title-text">
-              {numberOfUsers} other online people
-            </p>
-          </>
-        )}
-
-        {renderedUsers}
-      </InfiniteScroll>
+      {renderedUsers}
     </div>
   );
 };

@@ -6,12 +6,12 @@ import { User } from "types/User";
 import { WithId, withId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio";
-import { useWorldUsersByIdWorkaround } from "hooks/users";
+import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 export const usePosterVideo = (venueId: string) => {
   const { userId } = useUser();
-  const { worldUsersById } = useWorldUsersByIdWorkaround();
+  const { worldUsersById } = useWorldUsersById();
 
   const {
     participants,
