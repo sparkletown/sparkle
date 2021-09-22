@@ -1,31 +1,16 @@
-import { User } from "types/User";
+import { AuditoriumSectionPath } from "types/auditorium";
 
-import { WithId } from "utils/id";
-import {
-  currentAuditoriumSectionSeatedUsersSelector,
-  emptyArray,
-} from "utils/selectors";
+import { currentAuditoriumSectionSeatedUsersSelector } from "utils/selectors";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
-export const findAuditoriumSeatedUsers = (
-  recentVenueUsers: readonly WithId<User>[],
-  venueId: string | undefined,
-  sectionId: string | undefined
-) => {
-  return sectionId && venueId
-    ? recentVenueUsers.filter(
-        (user) => user.data?.[venueId]?.sectionId === sectionId
-      )
-    : emptyArray;
-};
-
 const useConnectAuditoriumSectionSeatedUsers = (
-  venueId: string | undefined,
-  sectionId: string | undefined
+  path: Partial<AuditoriumSectionPath>
 ) => {
   useFirestoreConnect(() => {
+    const { venueId, sectionId } = path;
+
     if (!venueId || !sectionId) return [];
 
     return [
@@ -45,10 +30,9 @@ const useConnectAuditoriumSectionSeatedUsers = (
 };
 
 export const useAuditoriumSeatedUsers = (
-  venueId: string | undefined,
-  sectionId: string | undefined
+  path: Partial<AuditoriumSectionPath>
 ) => {
-  useConnectAuditoriumSectionSeatedUsers(venueId, sectionId);
+  useConnectAuditoriumSectionSeatedUsers(path);
 
   return useSelector(currentAuditoriumSectionSeatedUsersSelector);
 };

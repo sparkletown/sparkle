@@ -57,9 +57,10 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     if (!sections) return;
 
     return sections.filter((section) => {
+      const seatedUsersCount = section?.seatedUsersCount ?? 0;
       const sectionCapacity = getSectionCapacity(venue, section);
 
-      return (section?.seatedUsersCount ?? 0) < sectionCapacity;
+      return seatedUsersCount < sectionCapacity;
     });
   }, [venue, sections]);
 
