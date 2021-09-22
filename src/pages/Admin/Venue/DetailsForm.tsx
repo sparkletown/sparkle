@@ -21,7 +21,6 @@ import {
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
-  DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
@@ -121,7 +120,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     defaultValues: {
       ...defaultValues,
       logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
-      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
+      bannerImageUrl: defaultValues?.bannerImageUrl ?? "",
       parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
     },
   });
@@ -397,9 +396,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderBannerPhotoInput = () => {
-    const isBtnOnly =
-      values.bannerImageFile === DEFAULT_VENUE_BANNER ||
-      values.bannerImageUrl === DEFAULT_VENUE_BANNER;
     return (
       <div className="input-container">
         <h4 className="italic input-header">Upload Highlight image</h4>
@@ -412,7 +408,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           register={register}
           setValue={setValue}
           error={errors.bannerImageFile || errors.bannerImageUrl}
-          isInputHidden={isBtnOnly}
+          isInputHidden={!values.bannerImageUrl}
           text="Upload Highlight image"
         />
       </div>

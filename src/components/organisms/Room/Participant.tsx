@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import classNames from "classnames";
 import Video from "twilio-video";
 
 import { DEFAULT_CAMERA_ENABLED } from "settings";
@@ -151,7 +152,7 @@ export const Participant: React.FC<ParticipantProps> = ({
   );
 
   return (
-    <div className={`col participant${bartender ? " bartender" : ""}`}>
+    <div className={classNames("col participant ", { bartender })}>
       {!videoEnabled && <div className="participant--video-disabled" />}
       {videoAndAudio}
       {showIcon && (

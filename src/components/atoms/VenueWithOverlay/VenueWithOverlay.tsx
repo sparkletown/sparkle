@@ -1,7 +1,7 @@
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_BANNER } from "settings";
+import { DEFAULT_VENUE_BANNER_COLOR } from "settings";
 
 import { AnyVenue, EmbeddableVenue } from "types/venues";
 
@@ -28,7 +28,7 @@ export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig?.coverImageUrl ||
       venue?.config?.landingPageConfig?.bannerImageUrl,
-    DEFAULT_VENUE_BANNER
+    DEFAULT_VENUE_BANNER_COLOR
   );
 
   const containerVars = useCss({

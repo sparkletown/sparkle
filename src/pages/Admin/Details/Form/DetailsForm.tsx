@@ -3,7 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
-import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
 
@@ -92,7 +92,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         { name: editData?.name },
         { subtitle: editData?.subtitle },
         { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl ?? DEFAULT_VENUE_BANNER },
+        { bannerImageUrl: editData?.bannerImageUrl ?? "" },
         { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
         { showGrid: editData?.showGrid },
       ]);
@@ -163,8 +163,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderHighlightImageUpload = () => {
-    const isButtonOnly = values.bannerImageUrl === DEFAULT_VENUE_BANNER;
-
     return (
       <S.InputContainer>
         <h4 className="italic">Upload Highlight image</h4>
@@ -175,7 +173,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           setValue={setValue}
           register={register}
           imgUrl={editData?.bannerImageUrl}
-          isInputHidden={isButtonOnly}
+          isInputHidden={!values.bannerImageUrl}
           text="Upload Highlight image"
         />
       </S.InputContainer>

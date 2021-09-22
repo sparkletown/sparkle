@@ -21,6 +21,10 @@ $all-section-previews-bottom-spacing: 50px;
   background-position: center;
   background-size: cover;
 
+  .VenueWithOverlay {
+    margin: -($spacing--md);
+  }
+
   &--extra-small {
     grid-template-areas:
       "empty-1 empty-1  main  main  main  main empty-2 empty-2"

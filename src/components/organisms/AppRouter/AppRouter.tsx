@@ -82,7 +82,11 @@ export const AppRouter: React.FC = () => {
         <Switch>
           <Route path="/enter" component={EnterSubrouter} />
           <Route path="/account" component={AccountSubrouter} />
-          <Route path="/admin" component={AdminSubrouter} />
+          <Route path="/admin">
+            <Provided withRelatedVenues>
+              <AdminSubrouter />
+            </Provided>
+          </Route>
           <Route path="/admin-ng">
             <Provided withRelatedVenues>
               <AdminSubrouter />

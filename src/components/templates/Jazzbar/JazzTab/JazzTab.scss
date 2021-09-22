@@ -8,6 +8,10 @@
   background-position: center;
   background-size: cover;
 
+  .VenueWithOverlay {
+    margin: 0;
+  }
+
   .table-header {
     grid-area: header;
     justify-content: center;

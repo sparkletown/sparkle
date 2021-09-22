@@ -3,7 +3,7 @@ import { useCss } from "react-use";
 import classNames from "classnames";
 import { format } from "date-fns";
 
-import { DEFAULT_VENUE_BANNER, IFRAME_ALLOW } from "settings";
+import { DEFAULT_VENUE_BANNER_COLOR, IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
@@ -100,14 +100,11 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   const [validBannerImageUrl] = useValidImage(
     venue.config?.landingPageConfig.bannerImageUrl ??
       venue.config?.landingPageConfig.coverImageUrl,
-    DEFAULT_VENUE_BANNER
+    DEFAULT_VENUE_BANNER_COLOR
   );
 
   const imageVars = useCss({
-    background:
-      validBannerImageUrl === DEFAULT_VENUE_BANNER
-        ? validBannerImageUrl
-        : `url("${validBannerImageUrl}")`,
+    background: `url("${validBannerImageUrl}")`,
   });
 
   const imageClasses = classNames("icon", imageVars);

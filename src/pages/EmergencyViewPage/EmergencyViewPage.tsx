@@ -5,7 +5,7 @@ import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { DEFAULT_VENUE_BANNER } from "settings";
+import { DEFAULT_VENUE_BANNER_COLOR } from "settings";
 
 import {
   eventTimeAndOrderComparator,
@@ -106,7 +106,7 @@ export const EmergencyViewPage: React.FC = () => {
 
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
-    DEFAULT_VENUE_BANNER
+    DEFAULT_VENUE_BANNER_COLOR
   );
 
   const containerVars = useCss({

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_BANNER_COLOR, DEFAULT_VENUE_LOGO } from "settings";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -38,7 +38,9 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   return (
     <S.Wrapper>
       <S.PreviewCard
-        backgroundImage={bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER}
+        backgroundImage={
+          bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER_COLOR
+        }
       >
         {renderLogo()}
         {renderName()}
