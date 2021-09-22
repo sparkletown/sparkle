@@ -6,20 +6,23 @@ import { Room } from "types/rooms";
 
 import { getFirebaseStorageResizedImage } from "utils/image";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 type EmergencyViewRoomProps = {
   room: Room;
-  venueName: string;
   isLive: boolean;
 };
 
 const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   room,
-  venueName,
   isLive,
 }) => {
-  const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const { enterRoom, portalVenueId } = useRoom({ room });
+
+  const { findVenueInRelatedVenues } = useRelatedVenues({});
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+
   const roomImage = getFirebaseStorageResizedImage(room.image_url, {
     fit: "crop",
     width: 100,
@@ -32,7 +35,7 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
         {isLive && <span className="EmergencyView__info-status">Live</span>}
         <div className="EmergencyView__info-audience">
           <FontAwesomeIcon icon={faUserFriends} size="sm" />
-          <span>{recentRoomUsers.length}</span>
+          <span>{portalVenue?.recentUserCount}</span>
         </div>
       </div>
       <div className="EmergencyView__body" onClick={enterRoom}>

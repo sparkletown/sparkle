@@ -1,5 +1,6 @@
-import { ChatMessage } from "types/chat";
+import { ChatMessage, ChatUser } from "types/chat";
 
+import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
 export enum EmojiReactionType {
@@ -21,7 +22,7 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 
 interface BaseReaction {
   created_at: number;
-  created_by: string;
+  created_by: WithId<ChatUser>;
   reaction: unknown;
 }
 
@@ -114,7 +115,7 @@ export const EmojiReactionsMap: Map<
 > = EMOJI_REACTIONS.reduce(reactionsDataMapReducer, new Map());
 
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
-  reaction.created_by === userId;
+  reaction.created_by.id === userId;
 
 export const isBaseReaction = (r: unknown): r is BaseReaction =>
   typeof r === "object" && isTruthy(r) && r.hasOwnProperty("reaction");
@@ -137,8 +138,8 @@ export const isReaction = (r: unknown): r is Reaction =>
 export const chatMessageAsTextReaction = (
   message: ChatMessage
 ): TextReaction => ({
-  created_at: message.ts_utc.toMillis() / 1000,
-  created_by: message.from,
+  created_at: message.timestamp.toMillis() / 1000,
+  created_by: message.fromUser,
   reaction: TextReactionType,
   text: message.text,
 });

@@ -83,9 +83,10 @@ const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
 
-// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS in src/settings.ts + share the same code between frontend/backend
+// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
 const DEFAULT_SHOW_SHOUTOUTS = true;
+const DEFAULT_ENABLE_JUKEBOX = false;
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
@@ -211,7 +212,6 @@ const createVenueData = (data, context) => {
     showSchedule:
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
-    showRangers: data.showRangers || false,
     parentId: data.parentId,
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
@@ -229,6 +229,12 @@ const createVenueData = (data, context) => {
     venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
+  if (data.template === VenueTemplate.jazzbar) {
+    venueData.enableJukebox =
+      typeof data.enableJukebox === "boolean"
+        ? data.enableJukebox
+        : DEFAULT_ENABLE_JUKEBOX;
+  }
   // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData.showReactions =
@@ -252,6 +258,7 @@ const createVenueData = (data, context) => {
 
   if (IFRAME_TEMPLATES.includes(data.template)) {
     venueData.iframeUrl = data.iframeUrl;
+    venueData.autoPlay = data.autoPlay;
   }
 
   if (ZOOM_URL_TEMPLATES.includes(data.template)) {
@@ -302,7 +309,15 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    worldId: data.worldId,
   };
+
+  if (data.template === VenueTemplate.jazzbar) {
+    venueData_v2.enableJukebox =
+      typeof data.enableJukebox === "boolean"
+        ? data.enableJukebox
+        : DEFAULT_ENABLE_JUKEBOX;
+  }
 
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData_v2.showReactions =
@@ -378,12 +393,12 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showBadges = data.showBadges;
   }
 
-  if (typeof data.showRangers === "boolean") {
-    updated.showRangers = data.showRangers;
-  }
-
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
   }
 
   if (typeof data.showUserStatus === "boolean") {
@@ -414,6 +429,7 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showNametags = data.showNametags;
   }
 
+  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
   return updated;
@@ -692,6 +708,13 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
   // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -711,6 +734,14 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+
+  if (data.start_utc_seconds) {
+    updated.start_utc_seconds = data.start_utc_seconds;
+  }
+
+  if (data.end_utc_seconds) {
+    updated.end_utc_seconds = data.end_utc_seconds;
   }
 
   // @debt aside from the data.columns part, this is exactly the same as in updateVenue

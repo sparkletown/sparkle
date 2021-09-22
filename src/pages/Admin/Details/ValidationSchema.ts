@@ -17,7 +17,7 @@ import {
   VenueInput,
 } from "api/admin";
 
-import { isValidUrl } from "utils/url";
+import { isCurrentLocationValidUrl } from "utils/url";
 
 import "firebase/functions";
 
@@ -118,7 +118,12 @@ const venueNameSchema = Yup.string()
 export const roomUrlSchema = Yup.string()
   .required("Url is required!")
   .min(3, ({ min }) => mustBeMinimum("Url", min))
-  .test("url validation", "Please enter a valid URL", isValidUrl);
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+  .test(
+    "url validation",
+    "Please enter a valid URL",
+    isCurrentLocationValidUrl
+  );
 
 export interface VenueRoomSchema {
   template?: string;

@@ -1,9 +1,7 @@
-// @debt Refactor this constant into settings, or types/templates, or similar?
-// @debt remove reference to legacy 'Theme Camp' here, both should probably just
-//  display the same text as themecamp is now essentially just an alias of partymap
 import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { FieldErrors, useForm } from "react-hook-form";
+import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
@@ -13,6 +11,7 @@ import {
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_AUTOPLAY,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -30,8 +29,6 @@ import { createJazzbar } from "utils/venue";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import EntranceInput from "pages/Admin/Venue/EntranceInput";
-import QuestionInput from "pages/Admin/Venue/QuestionInput";
 import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 import { VenueDetailsFormErrors } from "pages/Admin/Venue/VenueDetailsFormErrors";
 import { WizardPage } from "pages/Admin/Venue/VenueWizard";
@@ -42,6 +39,18 @@ import { UserStatusManager } from "components/molecules/UserStatusManager";
 
 import { Toggler } from "components/atoms/Toggler";
 
+import "firebase/functions";
+
+import EntranceInput from "./EntranceInput";
+import QuestionInput from "./QuestionInput";
+
+// @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
+import "../Admin.scss";
+import "./Venue.scss";
+
+// @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt remove reference to legacy 'Theme Camp' here, both should probably just
+//  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",
@@ -315,6 +324,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
+      <h4 className="italic input-header">Autoplay your embeded video</h4>
+      <Toggler
+        name="autoPlay"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_VENUE_AUTOPLAY}
+      />
     </div>
   );
 
@@ -539,6 +554,21 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
+  const isJazzbar = templateID === VenueTemplate.jazzbar;
+
+  const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
+    "toggle-room DetailsForm--hidden": isJazzbar,
+  });
+
+  const renderJukeboxToggle = () => {
+    return (
+      <div className={jukeboxContainerClasses}>
+        <h4 className="italic input-header">Enable Jukebox</h4>
+        <Toggler name="enableJukebox" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -719,6 +749,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        {renderJukeboxToggle()}
 
         <UserStatusManager
           venueId={venueId}

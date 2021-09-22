@@ -16,7 +16,7 @@ export interface RunTabUserInfoProps {
 
 export const RunTabUserInfo: React.FC<RunTabUserInfoProps> = ({ user }) => {
   const { userLocation } = useWorldUserLocation(user?.id);
-  const userLastSeenIn = userLocation?.lastSeenIn;
+  const userLastSeenIn = userLocation?.lastVenueIdSeenIn;
 
   const location = userLastSeenIn ? Object.keys(userLastSeenIn)?.[0] : "";
 

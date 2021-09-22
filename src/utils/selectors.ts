@@ -1,21 +1,27 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "store";
-import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
+import {
+  ChatSettings,
+  JukeboxMessage,
+  PrivateChatMessage,
+  VenueChatMessage,
+} from "types/chat";
 import { Experience } from "types/Firestore";
 import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
+import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
-import { User } from "types/User";
+import { User, UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import {
+  makeDataSelector,
   makeIsRequestedSelector,
   makeIsRequestingSelector,
   makeOrderedSelector,
@@ -35,17 +41,11 @@ export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
  *
  * @param state the Redux store
  */
-export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
-  state
-) => {
+export const profileSelector: SparkleSelector<
+  FirebaseReducer.Profile<UserWithLocation>
+> = (state) => {
   // @debt refactor userWithLocationToUser to optionally not require WithId, then use that here
-  const {
-    lastSeenIn,
-    lastSeenAt,
-    ...userProfileWithoutLocation
-  } = state.firebase.profile;
-
-  return userProfileWithoutLocation;
+  return state.firebase.profile;
 };
 
 /**
@@ -56,11 +56,6 @@ export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
 export const currentVenueSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
 > = (state) => state.firestore.ordered.currentVenue?.[0];
-
-// @debt can we merge this with currentVenueSelector and just use 1 canonical version?
-export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.currentVenue;
 
 export const currentEventSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
@@ -93,6 +88,10 @@ export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsR
 export const venueChatMessagesSelector: SparkleSelector<
   WithId<VenueChatMessage>[] | undefined
 > = (state) => state.firestore.ordered.venueChatMessages;
+
+export const jukeboxMessagesSelector: SparkleSelector<
+  WithId<JukeboxMessage>[] | undefined
+> = (state) => state.firestore.ordered.venueJukeboxMessages;
 
 export const privateChatMessagesSelector: SparkleSelector<
   WithId<PrivateChatMessage>[] | undefined
@@ -129,15 +128,16 @@ export const venueEventsSelector: SparkleSelector<
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;
 
-export const userModalVisitsSelector = (state: RootState) =>
-  state.firestore.ordered.userModalVisits;
-
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
 
 export const posterVenuesSelector: SparkleSelector<
   WithId<PosterPageVenue>[] | undefined
 > = (state) => state.firestore.ordered.posterVenues;
+
+export const relatedVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.relatedVenues;
 
 export const screeningRoomVideosSelector: SparkleSelector<
   WithId<ScreeningRoomVideo>[] | undefined
@@ -151,18 +151,6 @@ export const animateMapArtCarsSelector: SparkleSelector<
   WithId<ArtCar>[] | undefined
 > = (state) => state.firestore.ordered.animatemapArtcars;
 
-/**
- * Selector to retrieve sovereignVenueId state from the Redux store.
- *
- * @param state the Redux store
- *
- * @see SovereignVenueState
- * @see RootState
- */
-export const sovereignVenueSelector: SparkleSelector<SovereignVenueState> = (
-  state
-) => state.sovereignVenue;
-
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
@@ -173,9 +161,14 @@ export const currentAuditoriumSectionsSelector: SparkleSelector<
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
-export const userProfileSelector: SparkleSelector<WithId<User> | undefined> = (
+
+export const currentModalUserDataSelector: SparkleSelector<
+  User | undefined
+> = makeDataSelector("currentModalUser");
+
+export const userProfileSelector: SparkleSelector<string | undefined> = (
   state
-) => state.userProfile.userProfile;
+) => state.userProfile.userId;
 
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state
@@ -212,3 +205,7 @@ export const animateMapEnvironmentSoundSelector: SparkleSelector<boolean> = (
 export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
   state
 ) => state.animatemap.firstEntrance;
+
+export const settingsSelector: SparkleSelector<Settings | undefined> = (
+  state
+) => state.firestore.data.settings;

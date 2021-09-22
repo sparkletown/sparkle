@@ -21,7 +21,7 @@ import { addReaction } from "store/actions/Reactions";
 
 import { GenericVenue } from "types/venues";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
@@ -136,7 +136,8 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const venueId = venue.id;
 
   const { userId, userWithId } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  // @debt should be replaced with a subcollection
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const baseColumns =
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
@@ -150,7 +151,12 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   useLayoutEffect(() => {
     if (!venue) return;
 
-    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, true));
+    setIframeUrl(
+      convertToEmbeddableUrl({
+        url: venue.iframeUrl,
+        autoPlay: venue?.autoPlay,
+      })
+    );
   }, [venue]);
 
   const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);
@@ -195,6 +201,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
 
+  // @debt should be replaced with a subcollection
   const seatedVenueUsers = useMemo(() => {
     if (!venueId) return [];
 

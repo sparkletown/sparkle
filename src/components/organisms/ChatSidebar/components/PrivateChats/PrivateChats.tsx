@@ -4,6 +4,10 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { PRIVATE_CHAT_NEXT_RENDER_SIZE } from "settings";
 
+import { ChatUser } from "types/chat";
+
+import { WithId } from "utils/id";
+
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useOnlineUsersToDisplay } from "hooks/chats/privateChats/useOnlineUsersToDisplay";
 import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
@@ -17,10 +21,10 @@ import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
-  recipientId?: string;
+  recipient: WithId<ChatUser> | undefined;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
   const [scrollPageNumber, setScrollPageNumber] = useState(1);
 
@@ -48,12 +52,12 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
     () =>
       privateChatPreviews
         // NOTE: Filter out self
-        .filter((chatMessage) => chatMessage.from !== chatMessage.to)
+        .filter((chatMessage) => chatMessage.fromUser !== chatMessage.toUser)
         .map((chatMessage) => (
           <PrivateChatPreview
-            key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
+            key={`${chatMessage.timestamp}-${chatMessage.fromUser}-${chatMessage.toUser}`}
             message={chatMessage}
-            onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
+            onClick={() => selectRecipientChat(chatMessage.counterPartyUser)}
           />
         )),
     [privateChatPreviews, selectRecipientChat]
@@ -75,7 +79,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
           <OnlineUser
             key={user.id}
             user={user}
-            onClick={() => selectRecipientChat(user.id)}
+            onClick={() => selectRecipientChat(user)}
           />
         )),
     [filteredUsers, scrollPageNumber, selectRecipientChat]
@@ -84,8 +88,8 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const numberOfUsers = filteredUsers.length;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
-  if (recipientId) {
-    return <RecipientChat recipientId={recipientId} />;
+  if (recipient) {
+    return <RecipientChat recipient={recipient} />;
   }
 
   return (

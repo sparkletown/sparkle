@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useVideoRoomState } from "hooks/twilio";
@@ -8,7 +8,7 @@ import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -20,13 +20,16 @@ const DEFAULT_BURN_BARREL_SEATS = 8;
 // @debt refactor this to pass in venue as a prop
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName: venue?.name,
+    venueId: venue?.id,
   });
 
+  const recentUserCount = venue?.recentUserCount ?? 0;
+
   const seatCount =
-    recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
-      ? recentVenueUsers.length
+    recentUserCount > DEFAULT_BURN_BARREL_SEATS
+      ? recentUserCount
       : DEFAULT_BURN_BARREL_SEATS;
 
   const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
@@ -45,9 +48,15 @@ export const FireBarrel: React.FC = () => {
 
     return (
       <S.Wrapper>
-        <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
+        <S.Barrel
+          src={convertToEmbeddableUrl({
+            url: venue?.iframeUrl,
+            autoPlay: true,
+          })}
+        />
 
         {/* @debt Refactor this to be less brittle/complex */}
+        {/* @debt should be replaced with a subcollection */}
         {seatsArray.map((_, index) => {
           const partyPerson = recentVenueUsers[index] ?? null;
 

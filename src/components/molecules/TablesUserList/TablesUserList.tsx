@@ -59,6 +59,7 @@ const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
 
 export interface TablesUserListProps {
   venueName: string;
+  venueId: string;
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
   customTables: Table[];
@@ -70,6 +71,7 @@ export interface TablesUserListProps {
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
   venueName,
+  venueId,
   setSeatedAtTable,
   seatedAtTable,
   customTables,
@@ -93,8 +95,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const [videoRoom, setVideoRoom] = useState("");
 
   const { user, profile } = useUser();
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName,
+    venueId,
   });
   const experience = useSelector(experienceSelector);
 
@@ -115,6 +118,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       if (!user) return;
 
       const doc = `users/${user.uid}`;
+      // @debt should be replaced with a subcollection
       const existingData = recentVenueUsers.find((u) => u.id === user.uid)
         ?.data;
 

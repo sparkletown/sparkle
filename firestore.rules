@@ -5,7 +5,7 @@ function isUpdateRestrictedToField(request, field) {
 }
 
 function role(name) {
-  return get(/databases/$(database)/documents/roles/$(name)).data
+  return get(/databases/$(database)/documents/roles/$(name)).data;
 }
 
 service cloud.firestore {
@@ -26,7 +26,7 @@ service cloud.firestore {
       allow read,write: if request.auth.uid == userId;
     }
     match /privatechats/{userId}/{restOfPath=**} {
-      allow create: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
+      allow create: if request.auth.uid != null && request.resource.data.fromUser.id == request.auth.uid;
       allow read: if request.auth.uid != null && userId == request.auth.uid;
       allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'isRead');
     }
@@ -37,7 +37,7 @@ service cloud.firestore {
       allow read: if true;
 
       function venueData() {
-        return get(/databases/$(database)/documents/venues/$(venue)).data
+        return get(/databases/$(database)/documents/venues/$(venue)).data;
       }
 
       match /events/{event} {
@@ -45,6 +45,11 @@ service cloud.firestore {
         allow write: if request.auth.uid in venueData().owners;
       }
       match /chats/{restOfPath=**} {
+        allow read,create: if request.auth.uid != null;
+        allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
+          isUpdateRestrictedToField(request, 'deleted');
+      }
+      match /jukeboxMessages/{restOfPath=**} {
         allow read,create: if request.auth.uid != null;
         allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
           isUpdateRestrictedToField(request, 'deleted');
@@ -78,9 +83,22 @@ service cloud.firestore {
       allow read: if request.auth.uid != null;
       allow write: if false;
     }
+    match /settings/{settingId} {
+      allow read: if request.auth.uid != null;
+      allow write: if false;
+    }
     match /sounds/{soundId} {
       allow read: if request.auth.uid != null;
       allow write: if false;
+    }
+    match /worlds/{worldId} {
+      allow create: if request.auth.uid in role('admin').users;
+
+      function world() {
+        return get(/databases/$(database)/documents/worlds/$(worldId)).data
+      }
+
+      allow update,delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
     }
   }
 }

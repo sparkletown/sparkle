@@ -2,7 +2,7 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -12,7 +12,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UsernameVisibility, UserStatus } from "./User";
+import { User, UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -115,7 +115,6 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
-  showRangers?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -141,6 +140,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
+  autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   placement?: VenuePlacement;
   zoomUrl?: string;
@@ -175,10 +175,10 @@ export interface BaseVenue {
   };
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
+  end_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
   showShoutouts?: boolean;
@@ -192,7 +192,11 @@ export interface BaseVenue {
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
   createdAt?: number;
+  recentUserCount?: number;
+  recentUsersSample?: WithId<User>[];
+  recentUsersSampleSize?: number;
   updatedAt?: number;
+  worldId: string;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -245,6 +249,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {
@@ -303,7 +308,6 @@ export interface VenueConfig {
   landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
-  showRangers?: boolean;
   tables?: Table[];
 }
 
