@@ -60,6 +60,10 @@ service cloud.firestore {
       match /accessgranted/{userId} {
         allow read, write: if false;
       }
+      match /recentSeatedUsers/{userId} {
+        allow read: if request.auth.uid != null;
+        allow write: if request.auth.uid == userId;
+      }
       match /sections/{sectionId} {
         allow read: if request.auth.uid != null;
         allow write: if request.auth.uid in venueData().owners;

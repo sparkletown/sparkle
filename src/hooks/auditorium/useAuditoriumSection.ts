@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from "react";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
@@ -74,7 +73,7 @@ export const useAuditoriumSection = ({
     [seatedUsers, userId]
   );
 
-  const getUserBySeat = useGetUserByPosition(seatedUsers ?? ALWAYS_EMPTY_ARRAY);
+  const getUserBySeat = useGetUserByPosition(seatedUsers);
 
   const takeSeat: (
     gridPosition: GridPosition

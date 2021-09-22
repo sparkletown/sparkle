@@ -1,4 +1,4 @@
-import { DisplayUser } from "types/User";
+import { DisplayUser, GridSeatedUser } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -29,4 +29,7 @@ export const AuditoriumEmptyBlocksCount: Record<AuditoriumSize, number> = {
   [AuditoriumSize.MEDIUM]: 2,
   [AuditoriumSize.LARGE]: 2,
   [AuditoriumSize.EXTRALARGE]: 0,
+};
+export type AuditoriumSeatedUser = GridSeatedUser & {
+  path: AuditoriumSectionPath;
 };

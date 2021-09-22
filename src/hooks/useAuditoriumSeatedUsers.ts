@@ -1,7 +1,6 @@
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { AuditoriumSectionPath } from "types/auditorium";
-import { AuditoriumSeatedUser } from "types/User";
+import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 
 import { WithId } from "utils/id";
 import { currentAuditoriumSectionSeatedUsersSelector } from "utils/selectors";

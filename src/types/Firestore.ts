@@ -1,6 +1,6 @@
 import { Settings } from "./settings";
 
-import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
 import {
   JukeboxMessage,
   PrivateChatMessage,
@@ -10,7 +10,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { AuditoriumSeatedUser, User } from "types/User";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";

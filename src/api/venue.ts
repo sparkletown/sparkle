@@ -1,9 +1,9 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { AuditoriumSectionPath } from "types/auditorium";
+import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
-import { AuditoriumSeatedUser, DisplayUser } from "types/User";
+import { DisplayUser } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { pickDisplayUserFromUser } from "utils/chat";
@@ -117,14 +117,14 @@ export const setAuditoriumSectionSeat = async (
   position: GridPosition,
   path: AuditoriumSectionPath
 ) => {
-  const data: AuditoriumSeatedUser = {
+  const seatedUserData: AuditoriumSeatedUser = {
     ...pickDisplayUserFromUser(user),
     position,
     path,
   };
 
   return getUserInSectionRef(user.id, path)
-    .set(data)
+    .set(seatedUserData)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {

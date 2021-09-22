@@ -2,7 +2,6 @@
 
 import * as Yup from "yup";
 
-import { AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
 
 export interface Experience {
@@ -67,10 +66,6 @@ export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
 
 export type GridSeatedUser = DisplayUser & {
   position: Partial<GridPosition>;
-};
-
-export type AuditoriumSeatedUser = GridSeatedUser & {
-  path: AuditoriumSectionPath;
 };
 
 export interface UserStatus {
