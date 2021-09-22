@@ -4,13 +4,14 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { AuditoriumVenue } from "types/venues";
+import { AuditoriumVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
@@ -30,7 +31,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const { iframeUrl, id: venueId } = venue;
 
-  const { sectionId } = useParams<{ sectionId?: string }>();
+  const { sectionId } = useParams<{ sectionId: string }>();
   const { push: openUrlUsingRouter } = useHistory();
 
   const {
@@ -52,6 +53,14 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     venue,
     sectionId,
   });
+
+  const seatedUserData = {
+    venueId,
+    template: VenueTemplate.auditorium,
+    venueSpecificData: { sectionId },
+  };
+
+  useUpdateRecentSeatedUsers(isUserSeated ? seatedUserData : undefined);
 
   // Ensure the user leaves their seat when they leave the section
   // @debt We should handle/enforce this on the backend somehow

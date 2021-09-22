@@ -1,8 +1,12 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
+import { GridPosition } from "types/grid";
+import { DisplayUser } from "types/User";
 import { AnyVenue } from "types/venues";
 
+import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
 export const getVenueCollectionRef = () =>
@@ -76,4 +80,61 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   return await firebase
     .functions()
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+};
+
+const getUserInSectionRef = (userId: string, path: AuditoriumSectionPath) =>
+  firebase
+    .firestore()
+    .collection("venues")
+    .doc(path.venueId)
+    .collection("sections")
+    .doc(path.sectionId)
+    .collection("seatedSectionUsers")
+    .doc(userId);
+
+export const unsetAuditoriumSectionSeat = async (
+  userId: string,
+  path: AuditoriumSectionPath
+) => {
+  return getUserInSectionRef(userId, path)
+    .delete()
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/venue::unsetAuditoriumSectionSeat",
+          venueId: path.venueId,
+          sectionId: path.sectionId,
+          userId,
+        });
+      });
+
+      throw err;
+    });
+};
+
+export const setAuditoriumSectionSeat = async (
+  user: WithId<DisplayUser>,
+  position: GridPosition,
+  path: AuditoriumSectionPath
+) => {
+  const seatedUserData: AuditoriumSeatedUser = {
+    ...pickDisplayUserFromUser(user),
+    position,
+    path,
+  };
+
+  return getUserInSectionRef(user.id, path)
+    .set(seatedUserData)
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/venue::setAuditoriumSectionSeat",
+          venueId: path.venueId,
+          sectionId: path.sectionId,
+          user,
+        });
+      });
+
+      throw err;
+    });
 };
