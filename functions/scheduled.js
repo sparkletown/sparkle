@@ -16,8 +16,6 @@ exports.updateSeatedUsersCountInAuditorium = functions.pubsub
 
     const firestore = admin.firestore();
     const bySectionByAuditorium = await firestore
-      .collection("venues")
-      .where("template", "==", "auditorium")
       .collectionGroup("seatedSectionUsers")
       .get()
       .then(({ docs }) => {
