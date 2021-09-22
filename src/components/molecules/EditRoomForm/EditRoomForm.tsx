@@ -3,9 +3,11 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
+import { LABEL_VISIBILITY_OPTIONS } from "settings";
+
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
-import { LABEL_VISIBILITY_OPTIONS, RoomData_v2 } from "types/rooms";
+import { RoomData_v2 } from "types/rooms";
 import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
@@ -15,6 +17,7 @@ import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 
 import "./EditRoomForm.scss";
 
@@ -158,14 +161,18 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           <Form.Label>
             Change label appearance (overrides global settings)
           </Form.Label>
-          <select
+          <PortalVisibility
+            register={register}
+            className="EditRoomForm__dropdown"
+          />
+          {/* <select
             name="visibility"
             id="visibility"
             ref={register}
             className="EditRoomForm__dropdown"
           >
             {labelOptions}
-          </select>
+          </select> */}
 
           <Button
             disabled={isUpdating || isDeleting}

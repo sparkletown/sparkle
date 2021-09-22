@@ -17,8 +17,6 @@ import { RoomAttendance } from "../RoomAttendance";
 
 import "./MapRoom.scss";
 
-const noop = () => {};
-
 export interface MapRoomProps {
   venue: PartyMapVenue;
   room: Room;
@@ -117,9 +115,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <button
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={shouldBeClickable ? selectRoomWithSound : noop}
-      onMouseEnter={shouldBeClickable ? handleRoomHovered : noop}
-      onMouseLeave={shouldBeClickable ? handleRoomUnhovered : noop}
+      onClick={shouldBeClickable ? selectRoomWithSound : undefined}
+      onMouseEnter={shouldBeClickable ? handleRoomHovered : undefined}
+      onMouseLeave={shouldBeClickable ? handleRoomUnhovered : undefined}
     >
       {isMapFrame ? (
         <iframe
