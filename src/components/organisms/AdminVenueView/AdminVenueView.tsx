@@ -112,7 +112,11 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar
+      hasBackButton={false}
+      withSchedule={false}
+      withPhotobooth={false}
+    >
       <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>

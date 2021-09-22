@@ -35,6 +35,7 @@ export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
 export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
 
 export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
+export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
