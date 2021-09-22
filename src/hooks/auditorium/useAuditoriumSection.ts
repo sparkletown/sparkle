@@ -67,7 +67,7 @@ export const useAuditoriumSection = ({
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
 
-  const seatedUsers = useAuditoriumSeatedUsers({ venueId, sectionId });
+  const [seatedUsers] = useAuditoriumSeatedUsers({ venueId, sectionId });
 
   const isUserSeated = useMemo(
     () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
