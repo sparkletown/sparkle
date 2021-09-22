@@ -9,7 +9,6 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useIsOnline } from "hooks/useIsOnline";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
@@ -27,11 +26,10 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
 }) => {
   const { sovereignVenue } = useRelatedVenues();
 
-  const { lastSeenIn } = useIsOnline(user.id);
+  const lastSeenIn = user.lastVenueIdSeenIn;
   const isCurrentUser = useIsCurrentUser(user.id);
-  const { user: firebaseUser } = useUser();
 
-  const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
+  const { user: firebaseUser } = useUser();
 
   const userStatus =
     sovereignVenue?.showUserStatus && sovereignVenue?.userStatuses?.[0];
@@ -57,11 +55,11 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
           />
         </div>
       )}
-      {lastVenue && !isCurrentUser && (
+      {lastSeenIn && !isCurrentUser && (
         <div>
           <span>last seen in</span>{" "}
           <span className="ProfileModalBasicTextInfo--underlined">
-            {lastVenue}
+            {lastSeenIn}
           </span>
         </div>
       )}
