@@ -81,7 +81,11 @@ export const AppRouter: React.FC = () => {
       <Suspense fallback={<LoadingPage />}>
         <Switch>
           <Route path="/enter" component={EnterSubrouter} />
-          <Route path="/account" component={AccountSubrouter} />
+          <Route path="/account">
+            <Provided withRelatedVenues>
+              <AccountSubrouter />
+            </Provided>
+          </Route>
           <Route path="/admin">
             <Provided withRelatedVenues>
               <AdminSubrouter />

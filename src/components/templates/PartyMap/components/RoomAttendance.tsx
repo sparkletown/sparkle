@@ -1,14 +1,11 @@
 import React, { useMemo } from "react";
 
-import { DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
 
 import { Room } from "types/rooms";
-import { User } from "types/User";
 
-import { WithId } from "utils/id";
-
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useRecentVenueUsers } from "hooks/users";
 
 import "./RoomAttendance.scss";
 
@@ -24,17 +21,19 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
 }) => {
   const { portalVenueId } = useRoom({ room });
 
-  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
-    venueId: portalVenueId,
-  });
+  const { findVenueInRelatedVenues } = useRelatedVenues();
+
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+
+  const numberOfUsersInRoom = portalVenue?.recentUserCount ?? 0;
 
   const numberOfExtraUsersInRoom = Math.max(
-    recentRoomUsers.length - maxVisible,
+    numberOfUsersInRoom - maxVisible,
     0
   );
   const hasExtraUsersInRoom = numberOfExtraUsersInRoom > 0;
 
-  const userList = recentRoomUsers as readonly WithId<User>[];
+  const userList = portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
   // @debt use a default image when user.pictureUrl is undefined
   const userAvatars = useMemo(
     () =>
