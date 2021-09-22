@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useAsync } from "react-use";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
@@ -7,7 +8,7 @@ import { getUserRef } from "api/profile";
 import { AlgoliaSearchIndex } from "types/algolia";
 import { User } from "types/User";
 
-import { WithId, withId } from "utils/id";
+import { withId } from "utils/id";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
@@ -39,14 +40,13 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
 
   const owners = venue?.owners ?? ALWAYS_EMPTY_ARRAY;
 
-  const [admins, setAdmins] = useState<WithId<User>[]>(ALWAYS_EMPTY_ARRAY);
-
-  useEffect(() => {
-    Promise.all(owners.map((owner) => getUserRef(owner).get())).then((docs) => {
-      const admins = docs.map((doc) => withId(doc.data() as User, doc.id));
-      setAdmins(admins);
-    });
-  }, [owners]);
+  const { value: admins = ALWAYS_EMPTY_ARRAY } = useAsync(
+    async () =>
+      Promise.all(owners.map((owner) => getUserRef(owner).get())).then((docs) =>
+        docs.map((doc) => withId(doc.data() as User, doc.id))
+      ),
+    [owners]
+  );
 
   const algoliaSearchState = useAlgoliaSearch(
     venueId,
