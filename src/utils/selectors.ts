@@ -128,9 +128,6 @@ export const venueEventsSelector: SparkleSelector<
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;
 
-export const userModalVisitsSelector = (state: RootState) =>
-  state.firestore.ordered.userModalVisits;
-
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
 
