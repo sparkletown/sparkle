@@ -10,6 +10,10 @@ import { WithId } from "utils/id";
 import { useUser } from "hooks/useUser";
 
 import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
+import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
+import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
+import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -51,14 +55,14 @@ export const Timing: React.FC<TimingProps> = ({
   }
 
   return (
-    <div className="Timing">
-      <div className="Timing__left">
+    <AdminPanel className="Timing">
+      <AdminSidebar>
+        <AdminSidebarTitle>Plan your events</AdminSidebarTitle>
         <TabFooter
           {...tabNavigationProps}
           handleVenueUpdate={handleVenueUpdate}
         />
         <div className="Timing__content">
-          <h2 className="Timing__header">Plan your events</h2>
           <DateTimeField
             title="Global starting time"
             subTitle="When does your party start?"
@@ -71,12 +75,10 @@ export const Timing: React.FC<TimingProps> = ({
             onChange={setEndUtcSeconds}
           />
         </div>
-      </div>
-      <div className="Timing__right">
-        <div className="Timing__right-content">
-          <EventsView venueId={venue.id} venue={venue} />
-        </div>
-      </div>
-    </div>
+      </AdminSidebar>
+      <AdminShowcase className="Timing__events-wrapper">
+        <EventsView venueId={venue.id} venue={venue} />
+      </AdminShowcase>
+    </AdminPanel>
   );
 };

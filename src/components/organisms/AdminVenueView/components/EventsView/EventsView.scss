@@ -1,13 +1,16 @@
 @import "scss/constants.scss";
 
 .EventsView {
-  background-color: $black;
-  position: relative;
-  height: 75%;
+  padding: 5vh;
   width: 85%;
-  border-radius: $border-radius--xl;
-  box-shadow: box-shadow--large();
-  overflow: scroll;
+
+  &__container {
+    height: 60vh;
+    background-color: $black;
+    border-radius: $border-radius--xl;
+    box-shadow: box-shadow--large();
+    overflow-y: scroll;
+  }
 
   &__header {
     margin: $spacing--xl $spacing--xxl;
@@ -108,15 +111,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
-}
 
-.create-button {
-  width: 85%;
-  margin-top: $spacing--sm;
-
-  .btn {
-    width: 200px;
-    display: inline;
-    float: right;
+  &__create {
+    margin-top: $spacing--sm;
+    display: flex;
+    justify-content: flex-end;
   }
 }
