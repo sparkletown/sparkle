@@ -7,10 +7,6 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
-import { useWorldUsers } from "hooks/users";
-
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
-
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
@@ -55,13 +51,6 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   const authorList = authors?.join(", ");
-
-  const { worldUsers } = useWorldUsers();
-
-  const presenterUser = useMemo(
-    () => worldUsers.find((user) => user.partyName === authorName),
-    [worldUsers, authorName]
-  );
 
   const userCount = posterVenue.recentUserCount ?? 0;
   const hasUsers = userCount > 0;
@@ -123,13 +112,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       <div className="PosterPreview__categories">{renderedCategories}</div>
 
       <div className="PosterPreview__authorBox">
-        {presenterUser && (
-          <UserProfilePicture
-            containerClassName="PosterPreview__avatar"
-            user={presenterUser}
-            showStatus
-          />
-        )}
+        {authorName}
 
         <span className="PosterPreview__author">
           {authorList ?? authorName}

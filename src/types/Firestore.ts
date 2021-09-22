@@ -1,12 +1,11 @@
 import { Settings } from "./settings";
 
-import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
 import {
   JukeboxMessage,
   PrivateChatMessage,
   VenueChatMessage,
 } from "types/chat";
-import { ChatRequest } from "types/ChatRequest";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
@@ -59,27 +58,23 @@ export interface FirestoreStatus {
 export interface FirestoreData {
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
-  // @debt this doesn't appear to be used by anything anymore
-  // chatUsers?: Record<string, User>;
-  currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
-  sovereignVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
+  currentAuditoriumSeatedSectionUsers?: Partial<
+    Record<string, AuditoriumSeatedUser>
+  >;
   currentModalUser?: User;
-  events?: Record<string, VenueEvent>;
+  currentEvent?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
-  playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   relatedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
   animatemapArtcars: Partial<Record<string, ArtCar>>;
-  // @debt this doesn't appear to be used by anything anymore
-  // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
@@ -88,19 +83,17 @@ export interface FirestoreData {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  chatRequests?: WithId<ChatRequest>[];
-  currentEvent?: WithId<VenueEvent>[];
   currentVenue?: WithId<AnyVenue>[];
-  sovereignVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
+  currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentModalUser?: WithId<User>[];
+  currentEvent?: WithId<VenueEvent>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
   parentVenueEvents?: WithId<VenueEvent>[];
-  playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
@@ -108,12 +101,6 @@ export interface FirestoreOrdered {
   relatedVenues?: WithId<AnyVenue>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
-  // @debt this doesn't appear to be used by anything anymore
-  // statsOnlineUsers?: WithId<User>[];
-  // statsOpenVenues?: WithId<AnyVenue>[];
-  // subvenues?: WithId<AnyVenue>[];
-  subvenueEvents?: WithId<VenueEvent>[];
-  userModalVisits?: WithId<UserVisit>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
