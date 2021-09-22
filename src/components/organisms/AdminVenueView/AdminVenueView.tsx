@@ -16,7 +16,7 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import { WithNavigationBar } from "../WithNavigationBar";
 
-import { RunTabView } from "./components/RunTabView/RunTabView";
+import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
 
@@ -133,7 +133,14 @@ export const AdminVenueView: React.FC = () => {
             venue={venue}
           />
         )}
-        {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
+        {selectedTab === AdminVenueTab.run && (
+          <RunTabView
+            onClickHome={navigateToHome}
+            onClickBack={navigateToTiming}
+            onClickNext={navigateToHome}
+            venue={venue}
+          />
+        )}
       </AdminRestricted>
     </WithNavigationBar>
   );
