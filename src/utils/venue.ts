@@ -9,7 +9,7 @@ import {
   VenueTemplate,
 } from "types/venues";
 
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
