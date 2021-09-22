@@ -5,8 +5,6 @@ import * as Yup from "yup";
 import { GridPosition } from "types/grid";
 
 export interface Experience {
-  // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
-  bartender: User;
   table?: string | null;
   row?: number;
   column?: number;
