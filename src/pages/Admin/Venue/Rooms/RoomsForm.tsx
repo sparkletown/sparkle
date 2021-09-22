@@ -33,11 +33,11 @@ import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
-import { labelOptions } from "components/molecules/EditRoomForm/EditRoomForm";
 import { ImageInput } from "components/molecules/ImageInput";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import RoomDeleteModal from "./RoomDeleteModal";
@@ -343,14 +343,10 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     <div className="input-title">
                       Change label appearance (overrides global settings)
                     </div>
-                    <select
-                      name="visibility"
-                      id="visibility"
-                      ref={register}
+                    <PortalVisibility
+                      register={register}
                       className="EditRoomForm__dropdown"
-                    >
-                      {labelOptions}
-                    </select>
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">

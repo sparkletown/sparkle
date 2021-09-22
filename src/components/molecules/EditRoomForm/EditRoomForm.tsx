@@ -3,8 +3,6 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import { LABEL_VISIBILITY_OPTIONS } from "settings";
-
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
 import { RoomData_v2 } from "types/rooms";
@@ -30,12 +28,6 @@ interface EditRoomFormProps {
   onEdit?: () => void;
   venueVisibility: RoomVisibility | undefined;
 }
-
-export const labelOptions = LABEL_VISIBILITY_OPTIONS.map((option) => (
-  <option key={option.label} value={option.value}>
-    {option.label}
-  </option>
-));
 
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   room,
@@ -165,14 +157,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             register={register}
             className="EditRoomForm__dropdown"
           />
-          {/* <select
-            name="visibility"
-            id="visibility"
-            ref={register}
-            className="EditRoomForm__dropdown"
-          >
-            {labelOptions}
-          </select> */}
 
           <Button
             disabled={isUpdating || isDeleting}
