@@ -1,7 +1,16 @@
 import Bugsnag from "@bugsnag/js";
 import { MaybeDrafted } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
-import firebase from "firebase/app";
+import {
+  collection,
+  DocumentChange,
+  DocumentChangeType,
+  DocumentData,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { firestore } from "firebaseServices";
 import { isEqual } from "lodash";
 
 import { WORLD_USERS_UPDATE_INTERVAL } from "settings";
@@ -67,7 +76,7 @@ export const worldUsersApi = createApi({
         { updateCachedData, cacheEntryRemoved }
       ) => {
         // Used to hold the changes queued from the snapshot listener so that we can process them in batches
-        const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
+        const queuedChanges: DocumentChange<DocumentData>[] = [];
 
         const processQueuedChanges = () => {
           if (queuedChanges.length === 0) return;
@@ -92,14 +101,14 @@ export const worldUsersApi = createApi({
           WORLD_USERS_UPDATE_INTERVAL
         );
 
-        const worldUsersQuery = firebase
-          .firestore()
-          .collection("users")
-          .where("enteredVenueIds", "array-contains-any", relatedLocationIds);
+        const worldUsersQuery = query(
+          collection(firestore, "users"),
+          where("enteredVenueIds", "array-contains-any", relatedLocationIds)
+        );
 
         let hasLoadedDataInitially = false;
 
-        const unsubscribeListener = worldUsersQuery.onSnapshot((snapshot) => {
+        const unsubscribeListener = onSnapshot(worldUsersQuery, (snapshot) => {
           const snapshotSize = snapshot.size;
 
           // NOTE: Don't delay the update of the first load.
@@ -147,7 +156,7 @@ export const {
 } = worldUsersApi.endpoints.worldUsers;
 
 const notifyOnDocProcessingError = (
-  modificationType: firebase.firestore.DocumentChangeType,
+  modificationType: DocumentChangeType,
   userId: string,
   msg: string
 ) => {
@@ -167,7 +176,7 @@ const notifyOnDocProcessingError = (
 };
 
 const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
-  change: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>
+  change: DocumentChange<DocumentData>
 ) => {
   // @debt validate/typecast this properly so we don't have to use 'as' to hack the types here
   const user: UserWithLocation = change.doc.data() as UserWithLocation;

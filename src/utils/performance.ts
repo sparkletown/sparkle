@@ -1,4 +1,5 @@
-import firebase from "firebase/app";
+import { trace as performanceTrace } from "firebase/performance";
+import { performance } from "firebaseServices";
 
 export {
   unstable_trace as traceReactScheduler,
@@ -87,7 +88,7 @@ export const createPerformanceTrace = (
   const { startNow = false, attributes, metrics } = options ?? {};
 
   // Create a new Trace instance
-  const trace = firebase.performance().trace(traceName);
+  const trace = performanceTrace(performance, traceName);
 
   // Configure our starting attributes
   if (attributes !== undefined) {

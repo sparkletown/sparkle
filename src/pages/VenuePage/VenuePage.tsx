@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
+import { useFirestoreDocData } from "reactfire";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
@@ -100,6 +101,10 @@ export const VenuePage: React.FC = () => {
   const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
+
+  const { status, data } = useFirestoreDocData(`settings`);
+
+  console.log({ status, data });
 
   useEffect(() => {
     if (!venue) return;

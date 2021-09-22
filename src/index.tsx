@@ -4,9 +4,9 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { FirebaseAppProvider, FirestoreProvider } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
@@ -40,12 +40,8 @@ import { AppRouter } from "components/organisms/AppRouter";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "./wdyr";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/performance";
 
+import { auth, firebaseApp, firestore } from "./firebaseServices";
 import * as serviceWorker from "./serviceWorker";
 
 import { theme } from "theme/theme";
@@ -64,25 +60,13 @@ if (LOGROCKET_APP_ID) {
   });
 }
 
-const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
-firebaseApp.analytics();
-firebaseApp.auth();
-firebaseApp.firestore();
-const firebaseFunctions = firebase.functions();
-firebase.performance();
-
-// Enable the functions emulator when running in development
-if (process.env.NODE_ENV === "development") {
-  firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
-}
-
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
 
 const rrfProps = {
-  firebase,
+  firebase: firebaseApp,
   config: rrfConfig,
   dispatch: store.dispatch,
   createFirestoreInstance,
@@ -167,7 +151,7 @@ if (BUGSNAG_API_KEY) {
       BUILD_PULL_REQUESTS,
     },
     onError: (event) => {
-      const { currentUser } = firebase.auth();
+      const { currentUser } = auth;
 
       if (!currentUser) return;
 
@@ -225,16 +209,20 @@ traceReactScheduler("initial render", performance.now(), () => {
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
-              <AuthIsLoaded>
-                <AlgoliaSearchProvider>
-                  <CustomSoundsProvider
-                    loadingComponent={<LoadingPage />}
-                    waitTillConfigLoaded
-                  >
-                    <AppRouter />
-                  </CustomSoundsProvider>
-                </AlgoliaSearchProvider>
-              </AuthIsLoaded>
+              <FirebaseAppProvider firebaseConfig={FIREBASE_CONFIG}>
+                <FirestoreProvider sdk={firestore}>
+                  <AuthIsLoaded>
+                    <AlgoliaSearchProvider>
+                      <CustomSoundsProvider
+                        loadingComponent={<LoadingPage />}
+                        waitTillConfigLoaded
+                      >
+                        <AppRouter />
+                      </CustomSoundsProvider>
+                    </AlgoliaSearchProvider>
+                  </AuthIsLoaded>
+                </FirestoreProvider>
+              </FirebaseAppProvider>
             </ReactReduxFirebaseProvider>
           </ReduxStoreProvider>
         </DndProvider>
