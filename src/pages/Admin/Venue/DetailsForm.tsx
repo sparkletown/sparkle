@@ -395,25 +395,23 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderBannerPhotoInput = () => {
-    return (
-      <div className="input-container">
-        <h4 className="italic input-header">Upload Highlight image</h4>
-        <ImageInput
-          disabled={disable}
-          name={"bannerImageFile"}
-          image={values.bannerImageFile}
-          remoteUrlInputName={"bannerImageUrl"}
-          remoteImageUrl={values.bannerImageUrl}
-          register={register}
-          setValue={setValue}
-          error={errors.bannerImageFile || errors.bannerImageUrl}
-          isInputHidden={!values.bannerImageUrl}
-          text="Upload Highlight image"
-        />
-      </div>
-    );
-  };
+  const renderHighlightImageInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">Upload Highlight image</h4>
+      <ImageInput
+        disabled={disable}
+        name={"bannerImageFile"}
+        image={values.bannerImageFile}
+        remoteUrlInputName={"bannerImageUrl"}
+        remoteImageUrl={values.bannerImageUrl}
+        register={register}
+        setValue={setValue}
+        error={errors.bannerImageFile || errors.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
+      />
+    </div>
+  );
 
   const renderLogoInput = () => (
     <div className="input-container">
@@ -883,7 +881,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderDescriptionInput()}
         {renderRestrictToAdultsInput()}
 
-        {renderBannerPhotoInput()}
+        {renderHighlightImageInput()}
         {renderLogoInput()}
 
         {templateID &&

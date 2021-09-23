@@ -35,13 +35,11 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
     </S.Description>
   );
 
+  const previewImage = bannerImageUrl ?? DEFAULT_VENUE_BANNER_COLOR;
+
   return (
     <S.Wrapper>
-      <S.PreviewCard
-        backgroundImage={
-          bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER_COLOR
-        }
-      >
+      <S.PreviewCard backgroundImage={previewImage}>
         {renderLogo()}
         {renderName()}
         {renderDescription()}

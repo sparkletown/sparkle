@@ -162,23 +162,21 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     </S.InputContainer>
   );
 
-  const renderHighlightImageUpload = () => {
-    return (
-      <S.InputContainer>
-        <h4 className="italic">Upload Highlight image</h4>
-        <ImageInput
-          onChange={handleBannerUpload}
-          name="bannerImage"
-          error={errors.bannerImageFile || errors.bannerImageUrl}
-          setValue={setValue}
-          register={register}
-          imgUrl={editData?.bannerImageUrl}
-          isInputHidden={!values.bannerImageUrl}
-          text="Upload Highlight image"
-        />
-      </S.InputContainer>
-    );
-  };
+  const renderHighlightImageUpload = () => (
+    <S.InputContainer>
+      <h4 className="italic">Upload Highlight image</h4>
+      <ImageInput
+        onChange={handleBannerUpload}
+        name="bannerImage"
+        error={errors.bannerImageFile || errors.bannerImageUrl}
+        setValue={setValue}
+        register={register}
+        imgUrl={editData?.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
+      />
+    </S.InputContainer>
+  );
 
   const renderLogoUpload = () => (
     <S.InputContainer>
