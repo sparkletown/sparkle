@@ -146,7 +146,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       </Modal>
       <div className="VenueRoomItem" onClick={showModal}>
         <img
-          alt={`${ROOM_TAXON.lower}-icon-${icon}`}
+          alt={`${ROOM_TAXON.lower} icon ${icon}`}
           src={icon}
           className="VenueRoomItem__room-icon"
         />

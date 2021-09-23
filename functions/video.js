@@ -18,7 +18,7 @@ exports.getTwilioToken = functions.https.onCall((data, context) => {
   if (!data || !data.identity || !data.room) {
     throw new HttpsError(
       "invalid-argument",
-      "identity or " + ROOM_TAXON.lower + " data missing"
+      `identity or ${ROOM_TAXON.lower} data missing`
     );
   }
 

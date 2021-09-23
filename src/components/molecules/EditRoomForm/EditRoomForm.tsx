@@ -133,7 +133,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             ref={register()}
           />
 
-          <Form.Label>{ROOM_TAXON.capital} image:</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
           <ImageInput
             onChange={handleImageChange}
             name="image"

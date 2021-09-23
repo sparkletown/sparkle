@@ -248,8 +248,9 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
               >
                 <div className="scrollable-content">
                   <h4 className="italic">
-                    {`${editingRoom ? "Edit your" : "Add a"} ` +
-                      ROOM_TAXON.lower}
+                    {`${editingRoom ? "Edit your" : "Add a"} ${
+                      ROOM_TAXON.lower
+                    }`}
                   </h4>
                   <p className="small light" style={{ marginBottom: "2rem" }}>
                     You can update everything in this form at a later date on
@@ -257,7 +258,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                   </p>
                   <div className="input-container">
                     <div className="input-title">
-                      Name your {ROOM_TAXON.capital}
+                      Name your {ROOM_TAXON.lower}
                     </div>
                     <input
                       disabled={disable}

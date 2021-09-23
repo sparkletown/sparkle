@@ -7,9 +7,3 @@ export const ROOM_TAXON = Object.freeze({
   lower: "portal",
   upper: "PORTAL",
 });
-
-export const ROOMS_TAXON = Object.freeze({
-  capital: "Portals",
-  lower: "portals",
-  upper: "PORTALS",
-});
