@@ -16,12 +16,6 @@ interface ConfirmationModalProps {
   centered?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
-  containerClassName?: string;
-  headerClassName?: string;
-  messageClassName?: string;
-  buttonsContainerClassName?: string;
-  buttonClassName?: string;
-  cancelButtonClassName?: string;
   isCentered?: boolean;
 }
 
@@ -33,12 +27,6 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onCancel,
   cancelBtnLabel = "No",
   saveBtnLabel = "Yes",
-  containerClassName = "",
-  headerClassName = "",
-  messageClassName = "",
-  buttonsContainerClassName = "",
-  buttonClassName = "",
-  cancelButtonClassName = "",
   isCentered = false,
 }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -59,30 +47,17 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   const hasHeader = isTruthy(header);
 
-  const containerClasses = `ConfirmationModal ${containerClassName}`;
-  const headerClasses = `ConfirmationModal__header ${headerClassName}`;
-  const messageClasses = `ConfirmationModal__message ${messageClassName}`;
-  const buttonsContainerClasses = `ConfirmationModal__buttons ${buttonsContainerClassName}`;
-  const buttonClasses = `ConfirmationModal__button-confirm ${buttonClassName}`;
-  const cancelButtonClasses = `ConfirmationModal__button-cancel ${cancelButtonClassName}`;
-
   const isShown = show !== undefined ? show : isVisible;
 
   return (
     <Modal show={isShown} onHide={hide} centered={isCentered}>
       <Modal.Body>
-        <div className={containerClasses}>
-          {hasHeader && <h2 className={headerClasses}>{header}</h2>}
-          <div className={messageClasses}>{message}</div>
-          <div className={buttonsContainerClasses}>
-            <ButtonNG className={cancelButtonClasses} onClick={cancel}>
-              {cancelBtnLabel}
-            </ButtonNG>
-            <ButtonNG
-              className={buttonClasses}
-              variant="danger"
-              onClick={confirm}
-            >
+        <div className="ConfirmationModal">
+          {hasHeader && <h4>{header}</h4>}
+          <div className="ConfirmationModal__message">{message}</div>
+          <div className="ConfirmationModal__buttons">
+            <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
+            <ButtonNG variant="danger" onClick={confirm}>
               {saveBtnLabel}
             </ButtonNG>
           </div>

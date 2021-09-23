@@ -9,18 +9,7 @@
 
   &__buttons {
     display: flex;
-    justify-content: space-around;
-
-    &-confirm {
-      width: 50%;
-    }
-
-    &-cancel {
-      background-image: none;
-      background-color: $black;
-      border: solid $white 1px;
-      border-color: $white;
-      width: 50%;
-    }
+    width: 70%;
+    margin: 0 auto;
   }
 }
