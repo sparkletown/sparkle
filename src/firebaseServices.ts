@@ -1,13 +1,13 @@
 import { initializeAnalytics } from "firebase/analytics";
-import { initializeApp } from "firebase/app";
 import { initializeAuth } from "firebase/auth";
+import firebase from "firebase/compat/app";
 import { initializeFirestore } from "firebase/firestore";
-import { connectFunctionsEmulator, getFunctions, ht } from "firebase/functions";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 import { initializePerformance } from "firebase/performance";
 
 import { FIREBASE_CONFIG } from "settings";
 
-export const firebaseApp = initializeApp(FIREBASE_CONFIG);
+export const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 export const analytics = initializeAnalytics(firebaseApp);
 export const performance = initializePerformance(firebaseApp);
 export const auth = initializeAuth(firebaseApp);

@@ -1,5 +1,5 @@
 import { FirebaseReducer } from "react-redux-firebase";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { User } from "types/User";
 

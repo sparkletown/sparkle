@@ -3,7 +3,7 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { isEmpty } from "lodash";
 
 import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";

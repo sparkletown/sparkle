@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 

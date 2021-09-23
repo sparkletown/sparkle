@@ -1,5 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import noop from "lodash/noop";
 
 import { PollVoteBase, PrivateChatMessage, VenueChatMessage } from "types/chat";

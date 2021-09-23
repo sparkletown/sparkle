@@ -6,7 +6,7 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 

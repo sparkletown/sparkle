@@ -1,5 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { omit } from "lodash";
 
 import { Room, RoomData_v2 } from "types/rooms";

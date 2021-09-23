@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 

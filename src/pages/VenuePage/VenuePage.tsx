@@ -1,8 +1,10 @@
 import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
-import { useFirestoreDocData } from "reactfire";
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { firebaseApp } from "firebaseServices";
 
+// import { firestore } from "firebaseServices";
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -102,9 +104,14 @@ export const VenuePage: React.FC = () => {
 
   const event = currentEvent?.[0];
 
-  const { status, data } = useFirestoreDocData(`settings`);
+  const settingsRef = firebaseApp.firestore().collection("settings");
 
-  console.log({ status, data });
+  // const settingsRef = collection(firestore, "settings");
+
+  const { ...allData } = useFirestoreCollectionData(settingsRef);
+  console.log({ ...allData });
+
+  // console.log({ observable });
 
   useEffect(() => {
     if (!venue) return;

@@ -73,7 +73,7 @@
     "react-switch": "^5.0.1",
     "react-use": "^17.2.3",
     "react-webcam": "^5.2.0",
-    "reactfire": "^4.2.0",
+    "reactfire": "^3.0.0",
     "read": "^1.0.7",
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.8",

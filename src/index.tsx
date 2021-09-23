@@ -4,7 +4,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
-import { FirebaseAppProvider, FirestoreProvider } from "reactfire";
+import { FirebaseAppProvider } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
@@ -24,8 +24,6 @@ import {
   MIXPANEL_PROJECT_TOKEN,
 } from "secrets";
 
-import { FIREBASE_CONFIG } from "settings";
-
 import { store } from "store";
 
 import { traceReactScheduler } from "utils/performance";
@@ -40,8 +38,14 @@ import { AppRouter } from "components/organisms/AppRouter";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "./wdyr";
+import "firebase/compat/app";
+import "firebase/compat/analytics";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import "firebase/compat/functions";
+import "firebase/compat/performance";
 
-import { auth, firebaseApp, firestore } from "./firebaseServices";
+import { auth, firebaseApp } from "./firebaseServices";
 import * as serviceWorker from "./serviceWorker";
 
 import { theme } from "theme/theme";
@@ -208,22 +212,20 @@ traceReactScheduler("initial render", performance.now(), () => {
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
-            <ReactReduxFirebaseProvider {...rrfProps}>
-              <FirebaseAppProvider firebaseConfig={FIREBASE_CONFIG}>
-                <FirestoreProvider sdk={firestore}>
-                  <AuthIsLoaded>
-                    <AlgoliaSearchProvider>
-                      <CustomSoundsProvider
-                        loadingComponent={<LoadingPage />}
-                        waitTillConfigLoaded
-                      >
-                        <AppRouter />
-                      </CustomSoundsProvider>
-                    </AlgoliaSearchProvider>
-                  </AuthIsLoaded>
-                </FirestoreProvider>
-              </FirebaseAppProvider>
-            </ReactReduxFirebaseProvider>
+            <FirebaseAppProvider firebaseApp={firebaseApp}>
+              <ReactReduxFirebaseProvider {...rrfProps}>
+                <AuthIsLoaded>
+                  <AlgoliaSearchProvider>
+                    <CustomSoundsProvider
+                      loadingComponent={<LoadingPage />}
+                      waitTillConfigLoaded
+                    >
+                      <AppRouter />
+                    </CustomSoundsProvider>
+                  </AlgoliaSearchProvider>
+                </AuthIsLoaded>
+              </ReactReduxFirebaseProvider>
+            </FirebaseAppProvider>
           </ReduxStoreProvider>
         </DndProvider>
       </ThemeProvider>

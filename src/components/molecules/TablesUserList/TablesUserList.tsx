@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import {
   ALLOWED_EMPTY_TABLES_NUMBER,

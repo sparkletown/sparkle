@@ -1,5 +1,5 @@
 import { useInterval } from "react-use";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL } from "settings";
 
