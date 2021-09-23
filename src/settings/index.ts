@@ -9,6 +9,13 @@ import {
   PROJECT_ID,
 } from "secrets";
 
+import {
+  ROOM_TAXON,
+  SCREENING_ROOM_TAXON,
+  SPACE_TAXON,
+  ZOOM_ROOM_TAXON,
+} from "settings/taxonomy";
+
 import { RoomType } from "types/rooms";
 import { VenueTemplate } from "types/venues";
 
@@ -17,6 +24,8 @@ import { FIVE_MINUTES_MS } from "utils/time";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
+
+export * from "./taxonomy";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -226,13 +235,15 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
     name: "Conversation Space",
-    description: ["A room of tables in which to talk and make merry."],
+    description: [
+      `A ${SPACE_TAXON.lower} of tables in which to talk and make merry.`,
+    ],
   },
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+      `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
     ],
   },
   {
@@ -289,8 +300,10 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening Room",
-    description: ["Add an screening room with the videos listed inside."],
+    name: SCREENING_ROOM_TAXON.title,
+    description: [
+      `Add an screening ${ROOM_TAXON.lower} with the videos listed inside.`,
+    ],
   },
 ];
 
@@ -403,8 +416,7 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.zoomroom,
     name: "Experience",
-    description:
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    description: `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
     icon: "/venues/pickspace-thumbnail_zoom.png",
   },
   {

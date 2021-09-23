@@ -27,6 +27,7 @@ import {
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
+  ZOOM_ROOM_TAXON,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
@@ -492,8 +493,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
       <div style={{ fontSize: "16px" }}>
-        Please post a URL to, for example, a Zoom room, Twitch stream, other
-        Universe, or any interesting thing out there on the open web.
+        Please post a URL to, for example, a {ZOOM_ROOM_TAXON.capital}, Twitch
+        stream, other Universe, or any interesting thing out there on the open
+        web.
       </div>
       <textarea
         disabled={disable}

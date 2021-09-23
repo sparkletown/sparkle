@@ -2,6 +2,8 @@ import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
+import { ROOM_TAXON } from "settings";
+
 import { Room, RoomData_v2 } from "types/rooms";
 
 import "./RoomDeleteModal.scss";
@@ -49,16 +51,16 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
   return (
     <Modal show={show} onHide={closeDeleteModal}>
       <div className="room-delete-modal-container">
-        <h2 className="centered">Delete room</h2>
+        <h2 className="centered">Delete {ROOM_TAXON.lower}</h2>
         <div className="secondary-action">
-          WARNING: Permanently removes this room from SparkleVerse
+          WARNING: Permanently removes this {ROOM_TAXON.lower} from SparkleVerse
         </div>
         {!deleted && (
           <>
             <div className="input-group">
               <span className="info">
                 WARNING: This action cannot be undone! Are you sure you wish to
-                delete room: <em>{room.title}</em>?
+                delete {ROOM_TAXON.lower}: <em>{room.title}</em>?
               </span>
             </div>
             {deleting && (
@@ -90,7 +92,7 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
         {deleted && (
           <div className="input-group">
             <span className="info">
-              Room {room.title} has been permanently deleted.
+              {ROOM_TAXON.capital} {room.title} has been permanently deleted.
             </span>
             <button
               className="btn btn-primary btn-block btn-centered"

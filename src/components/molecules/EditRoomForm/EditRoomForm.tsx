@@ -3,6 +3,8 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
+import { ROOM_TAXON } from "settings";
+
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
 import { RoomData_v2 } from "types/rooms";
@@ -90,28 +92,28 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="EditRoomForm">
         <div className="EditRoomForm__room">
-          <Form.Label>Room type</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} type</Form.Label>
           <InputField
             name="template"
             type="text"
             autoComplete="off"
-            placeholder="Room template"
+            placeholder={`${ROOM_TAXON.capital} template`}
             error={errors.template}
             ref={register()}
             disabled
           />
 
-          <Form.Label>Room name</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} name</Form.Label>
           <InputField
             name="title"
             type="text"
             autoComplete="off"
-            placeholder="Room name"
+            placeholder={`${ROOM_TAXON.capital} name`}
             error={errors.title}
             ref={register()}
           />
 
-          <Form.Label>Room tagline</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} tagline</Form.Label>
           <InputField
             name="description"
             type="text"
@@ -121,17 +123,17 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             ref={register()}
           />
 
-          <Form.Label>Room url</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} url</Form.Label>
           <InputField
             name="url"
             type="text"
             autoComplete="off"
-            placeholder="Room url"
+            placeholder={`${ROOM_TAXON.capital} url`}
             error={errors.url}
             ref={register()}
           />
 
-          <Form.Label>Room image:</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} image:</Form.Label>
           <ImageInput
             onChange={handleImageChange}
             name="image"
@@ -149,7 +151,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             disabled={isUpdating || isDeleting}
             onClick={deleteSelectedRoom}
           >
-            Delete room
+            Delete {ROOM_TAXON.lower}
           </Button>
           {error && <div>Error: {error}</div>}
         </div>

@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { ALWAYS_EMPTY_ARRAY, DEFAULT_SHOW_SCHEDULE } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_SCHEDULE,
+  ROOM_TAXON,
+} from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -178,7 +182,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         containerClassName="RoomModal__userlist"
         users={userList}
         limit={11}
-        activity="in this room"
+        activity={`in this ${ROOM_TAXON.lower}`}
         hasClickableAvatars
       />
 
@@ -195,7 +199,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       {showRoomEvents && (
         <div className="RoomModal__events">
-          <div className="RoomModal__title">Room Schedule</div>
+          <div className="RoomModal__title">{ROOM_TAXON.capital} Schedule</div>
 
           {renderedRoomEvents}
         </div>

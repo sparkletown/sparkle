@@ -6,6 +6,8 @@ import * as Yup from "yup";
 import {
   MAXIMUM_PARTYMAP_COLUMNS_COUNT,
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
+  ROOM_TAXON,
+  ROOMS_TAXON,
 } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
@@ -204,11 +206,12 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     <S.ItemWrapper>
       <S.ItemHeader>
         <S.TitleWrapper>
-          <S.ItemTitle>Room appearance</S.ItemTitle>
+          <S.ItemTitle>{ROOM_TAXON.capital} appearance</S.ItemTitle>
         </S.TitleWrapper>
 
         <S.ItemSubtitle>
-          Choose how you&apos;d like your rooms to appear on the map
+          Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the
+          map
         </S.ItemSubtitle>
       </S.ItemHeader>
 

@@ -3,7 +3,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
-import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
+import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME, ROOM_TAXON } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
@@ -106,7 +106,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           <NavSearchResult
             key={`room-${room.title}-${index}`}
             title={room.title}
-            description="Room"
+            description={ROOM_TAXON.capital}
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);

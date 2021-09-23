@@ -20,7 +20,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, ROOM_TAXON } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
@@ -342,7 +342,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 to={`/admin/venue/rooms/${venue.id}`}
                 className="btn btn-block"
               >
-                Add a Room
+                Add a {ROOM_TAXON.capital}
               </Link>
             )}
             {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
@@ -350,7 +350,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
               >
-                Edit Room
+                Edit {ROOM_TAXON.capital}
               </Link>
             )}
             <button
@@ -372,7 +372,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             {typeof roomIndex !== "number" && (
               <div className="page-container-adminpanel-actions__note">
                 If you are looking to edit one of your rooms, please select the
-                room in the left hand menu
+                {ROOM_TAXON.lower} in the left hand menu
               </div>
             )}
             {canBeDeleted(venue) && (

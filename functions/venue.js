@@ -6,6 +6,7 @@ const { addAdmin, removeAdmin } = require("./src/api/roles");
 
 const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const { ROOM_TAXON } = require("./taxonomy.js");
 
 const PLAYA_VENUE_ID = "jamonline";
 
@@ -547,7 +548,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   //if the room exists under the same name, find it
   const index = rooms.findIndex((val) => val.title === room.title);
   if (index === -1) {
-    throw new HttpsError("not-found", "Room does not exist");
+    throw new HttpsError("not-found", `${ROOM_TAXON.capital} does not exist`);
   } else {
     docData.rooms.splice(index, 1);
   }

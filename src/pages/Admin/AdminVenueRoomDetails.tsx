@@ -2,6 +2,8 @@ import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
+import { ROOM_TAXON } from "settings";
+
 import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
@@ -98,7 +100,7 @@ export const AdminVenueRoomDetails = ({
                 <img
                   className="banner-image"
                   src={room.image_url}
-                  alt="room icon"
+                  alt={`${ROOM_TAXON.lower} icon`}
                 />
               </div>
               <div>
@@ -115,7 +117,7 @@ export const AdminVenueRoomDetails = ({
                       to={`/admin/venue/rooms/${venue.id}?roomIndex=${index}`}
                       className="btn btn-block"
                     >
-                      Edit Room
+                      Edit {ROOM_TAXON.capital}
                     </Link>
                   }
                 </div>
@@ -127,7 +129,11 @@ export const AdminVenueRoomDetails = ({
                     onChange={() => {
                       updateRoom(!room.isEnabled);
                     }}
-                    label={room.isEnabled ? "Turn room Off" : "Turn room On"}
+                    label={
+                      room.isEnabled
+                        ? `Turn ${ROOM_TAXON.lower} Off`
+                        : `Turn ${ROOM_TAXON.lower} On`
+                    }
                   />
                 </div>
               </div>

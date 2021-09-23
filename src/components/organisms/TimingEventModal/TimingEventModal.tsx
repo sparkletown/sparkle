@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
-import { HAS_ROOMS_TEMPLATES } from "settings";
+import { HAS_ROOMS_TEMPLATES, ROOM_TAXON } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -122,7 +122,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     selected={true}
                     className="input-group__dropdown__hidden"
                   >
-                    Select a room...
+                    Select a {ROOM_TAXON.lower}...
                   </option>
                   {roomOptions}
                 </select>

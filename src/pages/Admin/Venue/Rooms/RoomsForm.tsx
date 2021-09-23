@@ -12,6 +12,7 @@ import {
   PLAYA_ICON_SIDE_PERCENTAGE,
   PLAYA_IMAGE,
   PLAYA_VENUE_STYLES,
+  ROOM_TAXON,
 } from "settings";
 
 import { RoomInput, upsertRoom } from "api/admin";
@@ -246,21 +247,24 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="scrollable-content">
-                  <h4 className="italic">{`${
-                    editingRoom ? "Edit your" : "Add a"
-                  } room`}</h4>
+                  <h4 className="italic">
+                    {`${editingRoom ? "Edit your" : "Add a"} ` +
+                      ROOM_TAXON.lower}
+                  </h4>
                   <p className="small light" style={{ marginBottom: "2rem" }}>
                     You can update everything in this form at a later date on
                     the edit page
                   </p>
                   <div className="input-container">
-                    <div className="input-title">Name your Room</div>
+                    <div className="input-title">
+                      Name your {ROOM_TAXON.capital}
+                    </div>
                     <input
                       disabled={disable}
                       name="title"
                       ref={register}
                       className="align-left"
-                      placeholder={`My room title`}
+                      placeholder={`My ${ROOM_TAXON.lower} title`}
                     />
                     {errors.title && (
                       <span className="input-error">
@@ -271,8 +275,8 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
 
                   <div className="input-container">
                     <div className="input-title">
-                      Upload an image for how your room should appear on the
-                      Space map
+                      Upload an image for how your {ROOM_TAXON.lower} should
+                      appear on the Space map
                     </div>
                     <ImageInput
                       disabled={disable}
@@ -287,13 +291,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="input-container">
-                    <div className="input-title">Give your room a subtitle</div>
+                    <div className="input-title">
+                      Give your {ROOM_TAXON.lower} a subtitle
+                    </div>
                     <input
                       name="subtitle"
                       disabled={disable}
                       ref={register}
                       className="align-left"
-                      placeholder={`My room subtitle`}
+                      placeholder={`My ${ROOM_TAXON.lower} subtitle`}
                     />
                     {errors.subtitle && (
                       <span className="input-error">
@@ -302,13 +308,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="input-container">
-                    <div className="input-title">About your room</div>
+                    <div className="input-title">
+                      About your {ROOM_TAXON.lower}
+                    </div>
                     <textarea
                       disabled={disable}
                       name={"about"}
                       ref={register}
                       className="wide-input-block input-centered align-left"
-                      placeholder={"Describe your room in detail"}
+                      placeholder={`Describe your ${ROOM_TAXON.lower} in detail`}
                     />
                     {errors.about && (
                       <span className="input-error">
@@ -317,13 +325,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="input-container">
-                    <div className="input-title">The room url</div>
+                    <div className="input-title">
+                      The {ROOM_TAXON.lower} url
+                    </div>
                     <input
                       disabled={disable}
                       name={"url"}
                       ref={register}
                       className="wide-input-block align-left"
-                      placeholder={"The url this room will redirect to"}
+                      placeholder={`The url this ${ROOM_TAXON.lower} will redirect to`}
                     />
                     {errors.url && (
                       <span className="input-error">{errors.url.message}</span>
@@ -361,7 +371,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                         className="btn btn-danger"
                         onClick={() => setShowDeleteModal(true)}
                       >
-                        Delete room
+                        Delete {ROOM_TAXON.lower}
                       </button>
                     )}
                   </div>
@@ -393,7 +403,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             className="italic"
             style={{ textAlign: "center", fontSize: "22px" }}
           >
-            Position your room in the Space
+            Position your {ROOM_TAXON.lower} in the Space
           </h4>
           <p>
             First upload or select the icon you would like to appear in your
@@ -451,7 +461,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     </div>
   ) : (
     <button className="btn btn-primary" type="submit">
-      {editing ? "Update room" : "Create room"}
+      {editing ? `Update ${ROOM_TAXON.lower}` : `Create ${ROOM_TAXON.lower}`}
     </button>
   );
 };

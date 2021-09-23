@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { ROOM_TAXON } from "settings";
+
 import { Room } from "types/rooms";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
@@ -33,7 +35,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
               to={`/admin/venue/rooms/${venue.id}`}
               className="btn btn-block"
             >
-              Add a Room
+              Add a {ROOM_TAXON.capital}
             </Link>
           )}
         </div>
