@@ -10,6 +10,8 @@ import { WithVenueId } from "utils/id";
 export const getUserRef = (userId: string) =>
   firebase.firestore().collection("users").doc(userId);
 
+export const getUser = (userId: string) => getUserRef(userId).get();
+
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userId: string;

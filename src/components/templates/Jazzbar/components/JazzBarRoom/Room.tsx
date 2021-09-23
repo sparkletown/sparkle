@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
-import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
+import { getUser } from "api/profile";
 import { getTwilioVideoToken } from "api/video";
 
+import { ParticipantWithUser } from "types/rooms";
+
+import { logIfCannotFindExistingParticipant } from "utils/room";
 import { stopLocalTrack } from "utils/twilio";
 
-import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
@@ -42,12 +44,9 @@ const Room: React.FC<RoomProps> = ({
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");
-  const [participants, setParticipants] = useState<Array<Video.Participant>>(
-    []
-  );
+  const [participants, setParticipants] = useState<ParticipantWithUser[]>([]);
 
   const { user, profile } = useUser();
-  const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
@@ -125,34 +124,22 @@ const Room: React.FC<RoomProps> = ({
 
     let localRoom: Video.Room;
 
-    const participantConnected = (participant: Video.Participant) => {
+    const participantConnected = async (participant: Video.Participant) => {
+      const user = await getUser(participant.identity);
       setParticipants((prevParticipants) => [
-        // Hopefully prevents duplicate users in the participant list
-        ...prevParticipants.filter((p) => p.identity !== participant.identity),
-        participant,
+        ...prevParticipants.filter(
+          (p) => p.participant.identity !== participant.identity
+        ),
+        { participant, user },
       ]);
     };
 
     const participantDisconnected = (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
-        if (!prevParticipants.find((p) => p === participant)) {
-          // @debt Remove when root issue found and fixed
-          console.error(
-            "Could not find disconnnected participant:",
-            participant
-          );
-          Bugsnag.notify(
-            new Error("Could not find disconnnected participant"),
-            (event) => {
-              const { identity, sid } = participant;
-              event.addMetadata("Room::participantDisconnected", {
-                identity,
-                sid,
-              });
-            }
-          );
-        }
-        return prevParticipants.filter((p) => p !== participant);
+        logIfCannotFindExistingParticipant(prevParticipants, participant);
+        return prevParticipants.filter(
+          (p) => p.participant.identity !== participant.identity
+        );
       });
     };
 
@@ -181,10 +168,6 @@ const Room: React.FC<RoomProps> = ({
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
 
-  const profileData = room
-    ? worldUsersById[room.localParticipant.identity]
-    : undefined;
-
   const [sidedVideoParticipants, otherVideoParticipants] = useMemo(() => {
     const sidedVideoParticipants = participants.slice(
       0,
@@ -206,16 +189,19 @@ const Room: React.FC<RoomProps> = ({
         }
 
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div
+            key={participant.participant.identity}
+            className="jazzbar-room__participant"
+          >
             <Participant
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
+              participant={participant.participant}
+              profileData={participant.user}
+              profileDataId={participant.user.id}
             />
           </div>
         );
       }),
-    [sidedVideoParticipants, worldUsersById]
+    [sidedVideoParticipants]
   );
 
   const otherVideos = useMemo(
@@ -226,32 +212,35 @@ const Room: React.FC<RoomProps> = ({
         }
 
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div
+            key={participant.participant.identity}
+            className="jazzbar-room__participant"
+          >
             <Participant
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
+              participant={participant.participant}
+              profileData={participant.user}
+              profileDataId={participant.user.id}
             />
           </div>
         );
       }),
-    [otherVideoParticipants, worldUsersById]
+    [otherVideoParticipants]
   );
 
   const myVideo = useMemo(() => {
-    return room && profileData ? (
+    return room && profile ? (
       <div className="jazzbar-room__participant">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
-          profileData={profileData}
+          profileData={profile}
           profileDataId={room.localParticipant.identity}
           defaultMute={defaultMute}
           isAudioEffectDisabled={isAudioEffectDisabled}
         />
       </div>
     ) : null;
-  }, [room, profileData, defaultMute, isAudioEffectDisabled]);
+  }, [room, profile, defaultMute, isAudioEffectDisabled]);
 
   if (!token) return null;
 
