@@ -380,11 +380,18 @@ export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   liveAudience: number;
 }
 
+export interface VenueTablePath {
+  venueId: string;
+  tableReference: string;
+}
+
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
   venueId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
+    : T extends VenueTemplate.jazzbar
+    ? Pick<VenueTablePath, "tableReference">
     : never;
 };
 

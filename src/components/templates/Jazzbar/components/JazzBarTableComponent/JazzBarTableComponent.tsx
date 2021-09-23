@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -18,7 +18,6 @@ import "./JazzBarTableComponent.scss";
 export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
-  experienceName,
   imageSize = 50,
   table,
   tableLocked,
@@ -26,14 +25,8 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
   const { openUserProfileModal } = useProfileModalControls();
   const venue = useSelector(currentVenueSelector);
   const locked = tableLocked(table.reference);
-  const usersSeatedAtTable = useMemo(
-    () =>
-      users.filter((u) => u.data?.[experienceName]?.table === table.reference),
-    [users, experienceName, table]
-  );
 
-  const numberOfSeatsLeft =
-    table.capacity && table.capacity - usersSeatedAtTable.length;
+  const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
 
   return (
@@ -44,7 +37,7 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
         </div>
         <div className="table-number">{table.title}</div>
 
-        {usersSeatedAtTable.map((user) => (
+        {users.map((user) => (
           <img
             onClick={() => openUserProfileModal(user.id)}
             key={user.id}
@@ -59,10 +52,10 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
           />
         ))}
 
-        {usersSeatedAtTable &&
+        {users &&
           table.capacity &&
-          table.capacity - usersSeatedAtTable.length >= 0 &&
-          [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
+          table.capacity - users.length >= 0 &&
+          [...Array(table.capacity - users.length)].map((e, i) => (
             <span
               key={i}
               onClick={() => onJoinClicked(table.reference, locked)}

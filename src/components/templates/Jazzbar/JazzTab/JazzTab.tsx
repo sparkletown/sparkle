@@ -71,7 +71,7 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
 
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
-  const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
@@ -223,7 +223,11 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
               )}
 
               {shouldShowJukebox && (
-                <Jukebox updateIframeUrl={changeIframeUrl} venue={venue} />
+                <Jukebox
+                  updateIframeUrl={changeIframeUrl}
+                  venue={venue}
+                  tableRef={seatedAtTable}
+                />
               )}
 
               {!seatedAtTable && (
@@ -239,7 +243,7 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
         {seatedAtTable && (
           <Room
             roomName={`${venue.name}-${seatedAtTable}`}
-            venueName={venue.name}
+            venueId={venue.id}
             setSeatedAtTable={setSeatedAtTable}
             isAudioEffectDisabled={isUserAudioMuted}
           />
@@ -247,7 +251,6 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
         <TablesUserList
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
-          venueName={venue.name}
           venueId={venue.id}
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}

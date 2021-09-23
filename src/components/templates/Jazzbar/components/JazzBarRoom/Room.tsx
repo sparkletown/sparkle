@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 
 import { getUser } from "api/profile";
+import { unsetTableSeat } from "api/venue";
 import { useTwilioVideoToken } from "api/video";
 
 import { ParticipantWithUser } from "types/rooms";
@@ -22,7 +22,7 @@ const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
 interface RoomProps {
   roomName: string;
-  venueName: string;
+  venueId: string;
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
@@ -36,7 +36,7 @@ interface RoomProps {
 // It needs to get deleted in the future
 const Room: React.FC<RoomProps> = ({
   roomName,
-  venueName,
+  venueId,
   setParticipantCount,
   setSeatedAtTable,
   defaultMute,
@@ -46,8 +46,7 @@ const Room: React.FC<RoomProps> = ({
   const [videoError, setVideoError] = useState<string>("");
   const [participants, setParticipants] = useState<ParticipantWithUser[]>([]);
 
-  const { user, profile } = useUser();
-  const firebase = useFirebase();
+  const { userId, profile } = useUser();
 
   useEffect(
     () => setParticipantCount && setParticipantCount(participants.length),
@@ -62,7 +61,7 @@ const Room: React.FC<RoomProps> = ({
   };
 
   const { value: token } = useTwilioVideoToken({
-    userId: user?.uid,
+    userId,
     roomName,
   });
 
@@ -91,27 +90,11 @@ const Room: React.FC<RoomProps> = ({
   }, [room]);
 
   const leaveSeat = useCallback(async () => {
-    if (!user || !profile) return;
-    const doc = `users/${user.uid}`;
-    const existingData = profile.data;
-    const update = {
-      data: {
-        ...existingData,
-        [venueName]: {
-          table: null,
-          videoRoom: null,
-        },
-      },
-    };
-    const firestore = firebase.firestore();
-    await firestore
-      .doc(doc)
-      .update(update)
-      .catch(() => {
-        firestore.doc(doc).set(update);
-      });
-    setSeatedAtTable && setSeatedAtTable("");
-  }, [firebase, profile, setSeatedAtTable, user, venueName]);
+    if (!userId || !venueId) return;
+    await unsetTableSeat(userId, { venueId });
+
+    setSeatedAtTable?.("");
+  }, [setSeatedAtTable, userId, venueId]);
 
   useEffect(() => {
     if (!token) return;

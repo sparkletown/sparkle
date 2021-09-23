@@ -14,7 +14,6 @@ import "./TableComponent.scss";
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
-  experienceName,
   imageSize = 50,
   table,
   tableLocked,
@@ -22,11 +21,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   const { openUserProfileModal } = useProfileModalControls();
   const venue = useSelector(currentVenueSelector);
   const locked = tableLocked(table.reference);
-  const usersSeatedAtTable = users.filter(
-    (u) => u.data?.[experienceName]?.table === table.reference
-  );
-  const numberOfSeatsLeft =
-    table.capacity && table.capacity - usersSeatedAtTable.length;
+  const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
   return (
     <div className={`table-component-container ${table.reference}`}>
@@ -42,9 +37,9 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
         </div>
         <div className="table-number">{table.title}</div>
 
-        {usersSeatedAtTable &&
-          usersSeatedAtTable.length >= 0 &&
-          usersSeatedAtTable.map((user) => (
+        {users &&
+          users.length >= 0 &&
+          users.map((user) => (
             <img
               onClick={() => openUserProfileModal(user.id)}
               key={user.id}
@@ -58,10 +53,10 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
               height={imageSize}
             />
           ))}
-        {usersSeatedAtTable &&
+        {users &&
           table.capacity &&
-          table.capacity - usersSeatedAtTable.length >= 0 &&
-          [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
+          table.capacity - users.length >= 0 &&
+          [...Array(table.capacity - users.length)].map((e, i) => (
             <span
               key={i}
               onClick={() => onJoinClicked(table.reference, locked)}

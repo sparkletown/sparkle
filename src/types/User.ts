@@ -4,15 +4,6 @@ import * as Yup from "yup";
 
 import { GridPosition } from "types/grid";
 
-export interface Experience {
-  table?: string | null;
-}
-
-// @debt typing I think this is correct from Room.tsx, need to confirm
-// @debt This should probably be Partial<Record<string, Experience>> as otherwise it implies that an entry exists
-//   for literally any arbitrary string
-export type UserExperienceData = Record<string, Experience>;
-
 // Store all things related to video chat where they can't be tampered with by other users
 export type VideoState = {
   inRoomOwnedBy?: string;
@@ -33,7 +24,6 @@ export interface BaseUser {
   anonMode?: boolean;
   mirrorVideo?: boolean;
   status?: string;
-  data?: UserExperienceData;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   profileLinks?: ProfileLink[];
 

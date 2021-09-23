@@ -112,7 +112,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               {seatedAtTable && (
                 <div className="participants-container">
                   <Room
-                    venueName={venue.name}
+                    venueId={venue.id}
                     roomName={`${venue.name}-${seatedAtTable}`}
                   />
                 </div>
@@ -130,7 +130,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
-              venueName={venue.name}
               venueId={venue.id}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}

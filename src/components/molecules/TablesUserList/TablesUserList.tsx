@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
-import firebase from "firebase/app";
+import { groupBy } from "lodash";
 
 import {
   ALLOWED_EMPTY_TABLES_NUMBER,
@@ -9,15 +9,16 @@ import {
   DEFAULT_TABLE_ROWS,
 } from "settings";
 
+import { setTableSeat } from "api/venue";
+
 import { Table, TableComponentPropsType } from "types/Table";
-import { User } from "types/User";
+import { VenueTablePath } from "types/venues";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
-import { getUserExperience } from "utils/user";
 
-import { useRecentVenueUsers } from "hooks/users";
+import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
@@ -41,27 +42,14 @@ const createTable = (i: number): Table => {
   };
 };
 
-// @debt Remove this eslint-disable + fix the any type properly + move to api/* or remove outright
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const firestoreUpdate = (doc: string, update: any) => {
-  const firestore = firebase.firestore();
-  firestore
-    .doc(doc)
-    .update(update)
-    .catch(() => {
-      firestore.doc(doc).set(update);
-    });
-};
-
 const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
   createTable(i)
 );
 
 export interface TablesUserListProps {
-  venueName: string;
   venueId: string;
   setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string;
+  seatedAtTable: string | undefined;
   customTables: Table[];
   showOnlyAvailableTables?: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
@@ -70,7 +58,6 @@ export interface TablesUserListProps {
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
-  venueName,
   venueId,
   setSeatedAtTable,
   seatedAtTable,
@@ -93,63 +80,49 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
-  const { user, profile } = useUser();
-  // @debt should be replaced with a subcollection
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueId,
-  });
+  const { userId } = useUser();
   const experience = useSelector(experienceSelector);
 
   const tables: Table[] = customTables || defaultTables;
 
-  const { table: userTable } = getUserExperience(venueName)(profile) ?? {};
+  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
+    venueId
+  );
+
+  const useTableReference = seatedTableUsers.find((u) => u.id === userId)
+    ?.tableReference;
 
   useEffect(() => {
-    userTable ? setSeatedAtTable(userTable) : setSeatedAtTable("");
-  }, [setSeatedAtTable, userTable]);
+    useTableReference
+      ? setSeatedAtTable(useTableReference)
+      : setSeatedAtTable("");
+  }, [setSeatedAtTable, useTableReference]);
 
-  const isSeatedAtTable = seatedAtTable !== "";
+  const isSeatedAtTable = !!seatedAtTable;
 
-  // @debt can we refactor this to make use of makeUpdateUserGridLocation ?
-  // @debt refactor this into api/* layer or similar?
   const takeSeat = useCallback(
-    (table: string) => {
-      if (!user) return;
+    async (table: string) => {
+      if (!userId) return;
 
-      const doc = `users/${user.uid}`;
-      // @debt should be replaced with a subcollection
-      const existingData = recentVenueUsers.find((u) => u.id === user.uid)
-        ?.data;
-
-      const update = {
-        data: {
-          ...existingData,
-          [venueName]: {
-            table,
-          },
-        },
-      };
-
-      firestoreUpdate(doc, update);
+      await setTableSeat(userId, {
+        venueId,
+        tableReference: table,
+      });
     },
-    [recentVenueUsers, user, venueName]
+    [userId, venueId]
   );
 
-  const usersAtTableReducer = useCallback(
-    (obj: Record<string, WithId<User>[]>, table: Table) => ({
-      ...obj,
-      [table.reference]: recentVenueUsers.filter(
-        (user: User) =>
-          getUserExperience(venueName)(user)?.table === table.reference
-      ),
-    }),
-    [recentVenueUsers, venueName]
-  );
+  const usersSeatedAtTables: Record<
+    string,
+    WithId<VenueTablePath>[]
+  > = useMemo(() => {
+    const tableReferences = tables.map((t) => t.reference);
 
-  const usersSeatedAtTables = useMemo(
-    () => tables.reduce(usersAtTableReducer, {}),
-    [tables, usersAtTableReducer]
-  );
+    const filteredUsers = seatedTableUsers.filter((user) =>
+      tableReferences.includes(user.tableReference)
+    );
+    return groupBy(filteredUsers, (user) => user.tableReference);
+  }, [seatedTableUsers, tables]);
 
   const isFullTable = useCallback(
     (table: Table) => {
@@ -173,10 +146,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const onAcceptJoinMessage = useCallback(
-    (table: string) => {
+    async (table: string) => {
       window.scrollTo(0, 0);
       hideJoinMessage();
-      takeSeat(table);
+      await takeSeat(table);
       setSeatedAtTable(table);
     },
     [hideJoinMessage, setSeatedAtTable, takeSeat]
@@ -217,30 +190,28 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         )
       : tables;
 
-    return tablesToShow.map((table: Table, index: number) => (
+    return tablesToShow.map((table: Table) => (
       <TableComponent
         key={table.reference}
         // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
-        experienceName={venueName}
-        users={recentVenueUsers}
+        users={usersSeatedAtTables[table.reference]}
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
       />
     ));
   }, [
-    TableComponent,
     isSeatedAtTable,
-    onJoinClicked,
-    recentVenueUsers,
-    tableLocked,
-    tables,
     showOnlyAvailableTables,
+    tables,
     isFullTable,
-    venueName,
+    tableLocked,
+    TableComponent,
+    usersSeatedAtTables,
+    onJoinClicked,
   ]);
 
-  if (!isRecentVenueUsersLoaded) return <Loading />;
+  if (!isSeatedTableUsersLoaded) return <Loading />;
 
   return (
     <>

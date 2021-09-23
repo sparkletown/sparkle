@@ -35,7 +35,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                 <div className="title">{venue.name}</div>
                 <div className="subtitle">{venue.name}</div>
                 <div className="wrapper">
-                  <Room venueName={venue.name} roomName="friendship" />
+                  <Room venueId={venue.id} roomName="friendship" />
                 </div>
               </div>
               <div className="col-4">{/* <ChatBox room="friendship" /> */}</div>
@@ -49,7 +49,6 @@ export const FriendShipPage: React.FunctionComponent = () => {
             }`}
           >
             <TablesUserList
-              venueName={venue.name}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
@@ -67,7 +66,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                   venueId={venue.id}
                   tables={FRIENDSHIP_CUSTOM_TABLES}
                 />
-                <Room venueName={venue.name} roomName={seatedAtTable} />
+                <Room venueId={venue.id} roomName={seatedAtTable} />
               </div>
             )}
           </div>
