@@ -72,7 +72,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const [seatedTableUsers] = useSeatedTableUsers(venueId);
   const currentTableHasSeatedUsers = seatedTableUsers.some(
-    (x) => x.tableReference === seatedAtTable
+    (user) => user.path.tableReference === seatedAtTable
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
@@ -86,7 +86,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       const update = {
         tables: { ...allTables, [seatedAtTable]: { locked } },
       };
-      firestoreUpdate(doc, update);
+      void firestoreUpdate(doc, update);
     },
     [venueName, allTables, seatedAtTable]
   );

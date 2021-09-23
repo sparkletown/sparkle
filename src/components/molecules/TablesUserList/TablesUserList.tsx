@@ -12,7 +12,7 @@ import {
 import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
-import { VenueTablePath } from "types/venues";
+import { TableSeatedUser } from "types/User";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
@@ -80,7 +80,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const [joiningTable, setJoiningTable] = useState("");
 
-  const { userId } = useUser();
+  const { userWithId } = useUser();
   const experience = useSelector(experienceSelector);
 
   const tables: Table[] = customTables || defaultTables;
@@ -89,8 +89,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     venueId
   );
 
-  const useTableReference = seatedTableUsers.find((u) => u.id === userId)
-    ?.tableReference;
+  const useTableReference = seatedTableUsers.find(
+    (u) => u.id === userWithId?.id
+  )?.path?.tableReference;
 
   useEffect(() => {
     useTableReference
@@ -102,26 +103,26 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const takeSeat = useCallback(
     async (table: string) => {
-      if (!userId) return;
+      if (!userWithId) return;
 
-      await setTableSeat(userId, {
+      await setTableSeat(userWithId, {
         venueId,
         tableReference: table,
       });
     },
-    [userId, venueId]
+    [userWithId, venueId]
   );
 
   const usersSeatedAtTables: Record<
     string,
-    WithId<VenueTablePath>[]
+    WithId<TableSeatedUser>[]
   > = useMemo(() => {
     const tableReferences = tables.map((t) => t.reference);
 
     const filteredUsers = seatedTableUsers.filter((user) =>
-      tableReferences.includes(user.tableReference)
+      tableReferences.includes(user.path.tableReference)
     );
-    return groupBy(filteredUsers, (user) => user.tableReference);
+    return groupBy(filteredUsers, (user) => user.path.tableReference);
   }, [seatedTableUsers, tables]);
 
   const isFullTable = useCallback(

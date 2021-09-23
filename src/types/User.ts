@@ -3,6 +3,7 @@
 import * as Yup from "yup";
 
 import { GridPosition } from "types/grid";
+import { VenueTablePath } from "types/venues";
 
 // Store all things related to video chat where they can't be tampered with by other users
 export type VideoState = {
@@ -51,6 +52,10 @@ export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
 
 export type GridSeatedUser = DisplayUser & {
   position: Partial<GridPosition>;
+};
+
+export type TableSeatedUser = DisplayUser & {
+  path: VenueTablePath;
 };
 
 export interface UserStatus {

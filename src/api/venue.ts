@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
-import { DisplayUser } from "types/User";
+import { DisplayUser, TableSeatedUser } from "types/User";
 import { AnyVenue, VenueTablePath } from "types/venues";
 
 import { pickDisplayUserFromUser } from "utils/chat";
@@ -120,14 +120,6 @@ export const unsetAuditoriumSectionSeat = async (
     });
 };
 
-export const setTableSeat = async (userId: string, path: VenueTablePath) =>
-  getUserSeatedTableRef(userId, path.venueId).set(path);
-
-export const unsetTableSeat = async (
-  userId: string,
-  { venueId }: Pick<VenueTablePath, "venueId">
-) => getUserSeatedTableRef(userId, venueId).delete();
-
 export const setAuditoriumSectionSeat = async (
   user: WithId<DisplayUser>,
   position: GridPosition,
@@ -154,3 +146,19 @@ export const setAuditoriumSectionSeat = async (
       throw err;
     });
 };
+
+export const setTableSeat = async (
+  user: WithId<DisplayUser>,
+  path: VenueTablePath
+) => {
+  const data: TableSeatedUser = {
+    ...pickDisplayUserFromUser(user),
+    path,
+  };
+  return getUserSeatedTableRef(user.id, path.venueId).set(data);
+};
+
+export const unsetTableSeat = async (
+  userId: string,
+  { venueId }: Pick<VenueTablePath, "venueId">
+) => getUserSeatedTableRef(userId, venueId).delete();

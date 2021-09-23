@@ -1,6 +1,6 @@
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { VenueTablePath } from "types/venues";
+import { TableSeatedUser } from "types/User";
 
 import { WithId } from "utils/id";
 import { currentSeatedTableUsersSelector } from "utils/selectors";
@@ -10,7 +10,7 @@ import { useSelector } from "hooks/useSelector";
 
 export const useSeatedTableUsers = (
   venueId: string | undefined
-): [WithId<VenueTablePath>[], boolean] => {
+): [WithId<TableSeatedUser>[], boolean] => {
   useConnectSeatedTableUsers(venueId);
 
   const seatedTableUsers = useSelector(currentSeatedTableUsersSelector);
@@ -27,7 +27,7 @@ const useConnectSeatedTableUsers = (venueId: string | undefined) => {
         collection: "venues",
         doc: venueId,
         subcollections: [{ collection: "sections" }],
-        storeAs: "seatedTableUsers",
+        storeAs: "currentSeatedTableUsers",
       },
     ];
   });
