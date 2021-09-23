@@ -27,6 +27,7 @@ import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditForm.scss";
@@ -79,7 +80,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         about: room.about ?? "",
         template: room.template ?? undefined,
         image_url: room.image_url ?? "",
-        visibility: room.visibility ?? roomVenue?.roomVisibility ?? "",
+        visibility: room.visibility ?? roomVenue?.roomVisibility,
       },
       venue: {
         mapBackgroundImage: roomVenue?.mapBackgroundImageUrl ?? "",
@@ -261,6 +262,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </span>
             )}
           </div>
+
+          <Form.Label>
+            Change label appearance (overrides global settings)
+          </Form.Label>
+          <PortalVisibility name="room.visibility" register={register} />
 
           {!roomVenue && roomVenueError && (
             <>

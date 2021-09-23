@@ -15,6 +15,11 @@ export const getVenueCollectionRef = () =>
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
 
+export const fetchVenue = async (venueId: string) => {
+  const venueDoc = await getVenueRef(venueId).get();
+  return venueDoc.data() as AnyVenue;
+};
+
 export interface SetVenueLiveStatusProps {
   venueId: string;
   isLive: boolean;
