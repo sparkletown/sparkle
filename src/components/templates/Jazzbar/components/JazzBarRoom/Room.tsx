@@ -3,7 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 
 import { getUser } from "api/profile";
-import { getTwilioVideoToken } from "api/video";
+import { useTwilioVideoToken } from "api/video";
 
 import { ParticipantWithUser } from "types/rooms";
 
@@ -47,7 +47,6 @@ const Room: React.FC<RoomProps> = ({
   const [participants, setParticipants] = useState<ParticipantWithUser[]>([]);
 
   const { user, profile } = useUser();
-  const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
   useEffect(
@@ -62,15 +61,10 @@ const Room: React.FC<RoomProps> = ({
     return originalMessage;
   };
 
-  // @debt refactor this to use useAsync or similar?
-  useEffect(() => {
-    if (!user) return;
-
-    getTwilioVideoToken({
-      userId: user.uid,
-      roomName,
-    }).then(setToken);
-  }, [firebase, roomName, user]);
+  const { value: token } = useTwilioVideoToken({
+    userId: user?.uid,
+    roomName,
+  });
 
   const connectToVideoRoom = () => {
     if (!token) return;

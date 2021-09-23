@@ -32,25 +32,6 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
     [users, experienceName, table]
   );
 
-  const renderedUsersSeatedAtTable = useMemo(
-    () =>
-      usersSeatedAtTable.map((user) => (
-        <img
-          onClick={() => openUserProfileModal(user.id)}
-          key={user.id}
-          className="profile-icon table-participant-picture"
-          src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
-          title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
-          alt={`${
-            (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
-          } profile`}
-          width={imageSize}
-          height={imageSize}
-        />
-      )),
-    [usersSeatedAtTable, imageSize, openUserProfileModal]
-  );
-
   const numberOfSeatsLeft =
     table.capacity && table.capacity - usersSeatedAtTable.length;
   const full = numberOfSeatsLeft === 0;
@@ -63,9 +44,20 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
         </div>
         <div className="table-number">{table.title}</div>
 
-        {usersSeatedAtTable &&
-          usersSeatedAtTable.length >= 0 &&
-          renderedUsersSeatedAtTable}
+        {usersSeatedAtTable.map((user) => (
+          <img
+            onClick={() => openUserProfileModal(user.id)}
+            key={user.id}
+            className="profile-icon table-participant-picture"
+            src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
+            title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
+            alt={`${
+              (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
+            } profile`}
+            width={imageSize}
+            height={imageSize}
+          />
+        ))}
 
         {usersSeatedAtTable &&
           table.capacity &&

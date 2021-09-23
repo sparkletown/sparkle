@@ -10,7 +10,7 @@ import {
   VideoTrack,
 } from "twilio-video";
 
-import { getTwilioVideoToken } from "api/video";
+import { useTwilioVideoToken } from "api/video";
 
 import {
   appendTrack,
@@ -171,20 +171,7 @@ export const useVideoRoomState = ({
   roomName,
   activeParticipantByDefault = true,
 }: UseVideoRoomStateProps) => {
-  const [token, setToken] = useState<string>();
-
-  useEffect(() => {
-    if (!userId || !!token || !roomName) return;
-
-    getTwilioVideoToken({
-      userId,
-      roomName,
-    }).then((token) => {
-      if (!token) return;
-
-      setToken(token);
-    });
-  }, [userId, roomName, token]);
+  const { value: token } = useTwilioVideoToken({ userId, roomName });
 
   const [room, setRoom] = useState<Room>();
   const [participants, setParticipants] = useState<

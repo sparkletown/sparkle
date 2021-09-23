@@ -3,7 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
-import { getTwilioVideoToken } from "api/video";
+import { useTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
@@ -56,7 +56,6 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   const { user } = useUser();
   const { worldUsersById } = useWorldUsersById();
-  const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
   const userFriendlyVideoError = (originalMessage: string) => {
@@ -86,17 +85,10 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     return room ? [...participants.map((p) => worldUsersById[p.identity])] : [];
   };
 
-  // @debt refactor this to use useAsync or similar?
-  useEffect(() => {
-    if (!user) return;
-
-    getTwilioVideoToken({
-      userId: user.uid,
-      roomName,
-    }).then((token) => {
-      setToken(token);
-    });
-  }, [firebase, roomName, user]);
+  const { value: token } = useTwilioVideoToken({
+    userId: user?.uid,
+    roomName,
+  });
 
   const convertRemoteParticipantToLocal = (
     localParticipant: Video.LocalParticipant | undefined,
