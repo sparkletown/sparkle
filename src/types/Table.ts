@@ -18,7 +18,6 @@ export interface TableComponentPropsType {
   experienceName: string;
   users: readonly WithId<User>[];
   tableCapacity?: number;
-  onJoinClicked: (table: string, locked: boolean, videoRoom: string) => void;
-  nameOfVideoRoom: string;
+  onJoinClicked: (table: string, locked: boolean) => void;
   imageSize?: number;
 }

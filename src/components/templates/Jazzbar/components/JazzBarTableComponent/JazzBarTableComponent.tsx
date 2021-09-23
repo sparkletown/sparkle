@@ -18,7 +18,6 @@ import "./JazzBarTableComponent.scss";
 export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
-  nameOfVideoRoom,
   experienceName,
   imageSize = 50,
   table,
@@ -74,9 +73,7 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
           [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
             <span
               key={i}
-              onClick={() =>
-                onJoinClicked(table.reference, locked, nameOfVideoRoom)
-              }
+              onClick={() => onJoinClicked(table.reference, locked)}
               id={`join-table-${venue?.name}-${table.reference}`}
               className="add-participant-button"
             >

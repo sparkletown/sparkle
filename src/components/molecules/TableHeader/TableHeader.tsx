@@ -124,7 +124,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         ...existingData,
         [venueName]: {
           table: null,
-          videoRoom: null,
         },
       },
     };

@@ -92,7 +92,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   } = useShowHide(false);
 
   const [joiningTable, setJoiningTable] = useState("");
-  const [videoRoom, setVideoRoom] = useState("");
 
   const { user, profile } = useUser();
   // @debt should be replaced with a subcollection
@@ -127,14 +126,13 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
           ...existingData,
           [venueName]: {
             table,
-            videoRoom,
           },
         },
       };
 
       firestoreUpdate(doc, update);
     },
-    [recentVenueUsers, user, venueName, videoRoom]
+    [recentVenueUsers, user, venueName]
   );
 
   const usersAtTableReducer = useCallback(
@@ -190,12 +188,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const onJoinClicked = useCallback(
-    (table: string, locked: boolean, videoRoom: string) => {
+    (table: string, locked: boolean) => {
       if (locked) {
         showLockedMessage();
       } else {
         setJoiningTable(table);
-        setVideoRoom(videoRoom);
         joinMessage ? showJoinMessage() : onAcceptJoinMessage(table);
       }
     },
@@ -229,8 +226,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
-        // @debt should this be using the table.reference (rather than index) for nameOfVideoRoom?
-        nameOfVideoRoom={`${venueName}-table${index + 1}`}
       />
     ));
   }, [

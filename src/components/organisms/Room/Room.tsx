@@ -110,7 +110,6 @@ const Room: React.FC<RoomProps> = ({
         ...existingData,
         [venueName]: {
           table: null,
-          videoRoom: null,
         },
       },
     };

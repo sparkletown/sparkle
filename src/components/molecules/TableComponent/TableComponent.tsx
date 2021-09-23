@@ -14,7 +14,6 @@ import "./TableComponent.scss";
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
-  nameOfVideoRoom,
   experienceName,
   imageSize = 50,
   table,
@@ -65,9 +64,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
             <span
               key={i}
-              onClick={() =>
-                onJoinClicked(table.reference, locked, nameOfVideoRoom)
-              }
+              onClick={() => onJoinClicked(table.reference, locked)}
               id={`join-table-${venue?.name}-${table.reference}`}
               className="add-participant-button"
             >
