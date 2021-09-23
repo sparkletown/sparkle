@@ -19,6 +19,7 @@ const WorldUsersContext = createContext<WorldUsersContextState | undefined>(
 
 export interface WorldUsersProviderProps {
   venueId?: string;
+  worldId: string;
 }
 
 export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({

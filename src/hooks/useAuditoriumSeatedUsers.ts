@@ -1,43 +1,32 @@
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
+
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 
+import { auditoriumSeatedUserConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { currentAuditoriumSectionSeatedUsersSelector } from "utils/selectors";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+export const useAuditoriumSeatedUsers = ({
+  venueId,
+  sectionId,
+}: AuditoriumSectionPath): WithId<AuditoriumSeatedUser>[] => {
+  const firestore = useFirestore();
+  const relatedVenuesRef = firestore
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .doc(sectionId)
+    .collection("seatedSectionUsers")
+    .withConverter(auditoriumSeatedUserConverter);
 
-const useConnectAuditoriumSectionSeatedUsers = (
-  path: Partial<AuditoriumSectionPath>
-) => {
-  useFirestoreConnect(() => {
-    const { venueId, sectionId } = path;
+  // const settingsRef = collection(firestore, "settings");
 
-    if (!venueId || !sectionId) return [];
-
-    return [
-      {
-        collection: "venues",
-        doc: venueId,
-        subcollections: [
-          { collection: "sections", doc: sectionId },
-          {
-            collection: "seatedSectionUsers",
-          },
-        ],
-        storeAs: "currentAuditoriumSeatedSectionUsers",
-      },
-    ];
+  const { data: users } = useFirestoreCollectionData<
+    WithId<AuditoriumSeatedUser>
+  >(relatedVenuesRef, {
+    initialData: ALWAYS_EMPTY_ARRAY,
   });
-};
 
-export const useAuditoriumSeatedUsers = (
-  path: Partial<AuditoriumSectionPath>
-): [WithId<AuditoriumSeatedUser>[], boolean] => {
-  useConnectAuditoriumSectionSeatedUsers(path);
-
-  const users = useSelector(currentAuditoriumSectionSeatedUsersSelector);
-
-  return [users ?? ALWAYS_EMPTY_ARRAY, isLoaded(users)];
+  return users;
 };

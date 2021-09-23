@@ -8,9 +8,10 @@ import {
 import { WorldUsersProvider, WorldUsersProviderProps } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
 
-export type EmptyProviderProps = Partial<
-  RelatedVenuesProviderProps & WorldUsersProviderProps
->;
+import { LoadingPage } from "components/molecules/LoadingPage";
+
+export type EmptyProviderProps = RelatedVenuesProviderProps &
+  WorldUsersProviderProps;
 
 const EmptyProvider: React.FC<EmptyProviderProps> = ({ children }) => {
   return <>{children}</>;
@@ -28,7 +29,10 @@ export const Provided: React.FC<ProvidedProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const {
+    currentVenue: venue,
+    isCurrentVenueLoaded,
+  } = useConnectCurrentVenueNG(venueId);
 
   const MaybeRelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = withRelatedVenues
     ? RelatedVenuesProvider
@@ -38,9 +42,16 @@ export const Provided: React.FC<ProvidedProps> = ({
     ? WorldUsersProvider
     : EmptyProvider;
 
+  if (!isCurrentVenueLoaded) return <LoadingPage />;
+
+  if (!venue?.worldId) {
+    console.error("Venue worldId is missing in the current venue object");
+    return null;
+  }
+
   return (
-    <MaybeRelatedVenuesProvider venue={venue}>
-      <MaybeWorldUsersProvider venueId={venueId}>
+    <MaybeRelatedVenuesProvider venueId={venueId} worldId={venue.worldId}>
+      <MaybeWorldUsersProvider venueId={venueId} worldId={venue.worldId}>
         {children}
       </MaybeWorldUsersProvider>
     </MaybeRelatedVenuesProvider>
