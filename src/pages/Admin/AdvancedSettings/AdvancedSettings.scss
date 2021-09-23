@@ -1,6 +1,21 @@
 @import "scss/constants";
 
+$form-field-spacing: 10px;
+
 .AdvancedSettings {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+
+  &__form-container {
+    width: 50%;
+  }
+
+  &__form-field {
+    padding: $form-field-spacing 0;
+  }
+
   &__save-button {
     margin-bottom: $footer-height;
   }
