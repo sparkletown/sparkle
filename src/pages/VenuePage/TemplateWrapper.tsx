@@ -110,7 +110,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.firebarrel:
-      template = <FireBarrel />;
+      template = <FireBarrel venue={venue} />;
       break;
 
     case VenueTemplate.posterhall:

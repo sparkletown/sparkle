@@ -55,8 +55,10 @@ export enum RoomTemplate {
   external = "external",
 }
 
-export type ParticipantWithUser = {
-  participant: Video.Participant;
+export type ParticipantWithUser<
+  T extends Video.Participant = Video.Participant
+> = {
+  participant: T;
   user: WithId<DisplayUser>;
 };
 

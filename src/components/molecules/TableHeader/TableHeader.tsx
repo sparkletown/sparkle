@@ -17,7 +17,6 @@ import { Table } from "types/Table";
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
-import { useRecentVenueUsers } from "hooks/users";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
@@ -47,8 +46,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   const { userId, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
-  // @debt should be replaced with a subcollection
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(
@@ -104,7 +101,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       setIsCurrentTableLocked(false);
     }
   }, [
-    recentVenueUsers,
     seatedAtTable,
     isCurrentTableLocked,
     currentTableHasSeatedUsers,

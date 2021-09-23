@@ -1,11 +1,12 @@
 import React, { useMemo, useState } from "react";
 
+import { AnyVenue } from "types/venues";
+
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { currentVenueSelector } from "utils/selectors";
+import { WithId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio";
-import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
+import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
@@ -17,9 +18,11 @@ import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-// @debt refactor this to pass in venue as a prop
-export const FireBarrel: React.FC = () => {
-  const venue = useSelector(currentVenueSelector);
+export interface FireBarrelProps {
+  venue: WithId<AnyVenue>;
+}
+
+export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   // @debt should be replaced with a subcollection
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
     venueId: venue?.id,
@@ -36,12 +39,11 @@ export const FireBarrel: React.FC = () => {
   const { userId, userWithId } = useUser();
 
   const { room, participants } = useVideoRoomState({
-    userId,
+    user: userWithId,
     roomName: venue?.name,
   });
 
   const [videoError, setVideoError] = useState<string>("");
-  const { worldUsersById } = useWorldUsersById();
 
   return useMemo(() => {
     if (!isRecentVenueUsersLoaded || !userWithId) return <LoadingPage />;
@@ -79,13 +81,9 @@ export const FireBarrel: React.FC = () => {
           }
 
           if (participants.length && !!participants[index]) {
-            const participant = participants[index];
-            const participantUserData = worldUsersById[
-              participant.identity
-            ] && {
-              ...worldUsersById[participant.identity],
-              id: participant.identity,
-            };
+            const { participant, user: participantUserData } = participants[
+              index
+            ];
 
             return (
               <S.Chair key={participant.identity}>
@@ -117,7 +115,6 @@ export const FireBarrel: React.FC = () => {
     participants,
     room,
     userId,
-    worldUsersById,
     videoError,
     venue,
     isRecentVenueUsersLoaded,
