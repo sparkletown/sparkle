@@ -27,6 +27,7 @@ import {
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
+  ROOMS_TAXON,
   ZOOM_ROOM_TAXON,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -694,7 +695,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderRoomAppearanceSelect = () => (
     <>
       <h4 className="italic input-header">
-        Choose how you&apos;d like your rooms to appear on the map
+        Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the map
       </h4>
       <div className="input-container">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
@@ -994,7 +995,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       </div>
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
-          You&apos;ll be able to add rooms to your theme camp on the next page
+          You&apos;ll be able to add {ROOMS_TAXON.lower} to your theme camp on
+          the next page
         </div>
       )}
       {formError && (

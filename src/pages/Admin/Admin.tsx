@@ -20,7 +20,7 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { DEFAULT_VENUE, ROOM_TAXON } from "settings";
+import { DEFAULT_VENUE, ROOM_TAXON, ROOMS_TAXON } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
@@ -371,7 +371,8 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             </Link>
             {typeof roomIndex !== "number" && (
               <div className="page-container-adminpanel-actions__note">
-                If you are looking to edit one of your rooms, please select the
+                If you are looking to edit one of your {ROOMS_TAXON.lower},
+                please select the
                 {ROOM_TAXON.lower} in the left hand menu
               </div>
             )}

@@ -11,6 +11,7 @@ import {
 
 import {
   ROOM_TAXON,
+  ROOMS_TAXON,
   SCREENING_ROOM_TAXON,
   SPACE_TAXON,
   ZOOM_ROOM_TAXON,
@@ -250,14 +251,14 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [
-      "An explorable party map into which you can place all your party rooms.",
+      `An explorable party map into which you can place all your party ${ROOMS_TAXON.lower}.`,
     ],
   },
   {
     template: VenueTemplate.animatemap,
     name: "Animate Map",
     description: [
-      "An explorable party map into which you can place all your party rooms.",
+      `An explorable party map into which you can place all your party ${ROOMS_TAXON.lower}.`,
     ],
   },
   {
