@@ -6,7 +6,6 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio";
-import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
@@ -23,30 +22,24 @@ export interface FireBarrelProps {
 }
 
 export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
-  // @debt should be replaced with a subcollection
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueId: venue?.id,
-  });
-
-  const recentUserCount = venue?.recentUserCount ?? 0;
-
-  const seatCount =
-    recentUserCount > DEFAULT_BURN_BARREL_SEATS
-      ? recentUserCount
-      : DEFAULT_BURN_BARREL_SEATS;
-
-  const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
   const { userId, userWithId } = useUser();
 
-  const { room, participants } = useVideoRoomState({
+  const { room, participants, participantsLoading } = useVideoRoomState({
     user: userWithId,
     roomName: venue?.name,
   });
 
+  const seatCount =
+    participants.length > DEFAULT_BURN_BARREL_SEATS
+      ? participants.length
+      : DEFAULT_BURN_BARREL_SEATS;
+
+  const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
+
   const [videoError, setVideoError] = useState<string>("");
 
   return useMemo(() => {
-    if (!isRecentVenueUsersLoaded || !userWithId) return <LoadingPage />;
+    if (!participantsLoading || !userWithId) return <LoadingPage />;
 
     return (
       <S.Wrapper>
@@ -57,16 +50,15 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
           })}
         />
 
-        {/* @debt Refactor this to be less brittle/complex */}
-        {/* @debt should be replaced with a subcollection */}
         {seatsArray.map((_, index) => {
-          const partyPerson = recentVenueUsers[index] ?? null;
+          const { participant, user: participantUserData } =
+            participants?.[index] ?? {};
 
-          const isMe = partyPerson?.id === userId;
-
-          if (!recentVenueUsers[index]) {
+          if (!participantUserData) {
             return <S.Chair key={index} isEmpty />;
           }
+
+          const isMe = participantUserData.id === userId;
 
           if (!!room && isMe) {
             return (
@@ -81,10 +73,6 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
           }
 
           if (participants.length && !!participants[index]) {
-            const { participant, user: participantUserData } = participants[
-              index
-            ];
-
             return (
               <S.Chair key={participant.identity}>
                 <LocalParticipant
@@ -109,14 +97,13 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
       </S.Wrapper>
     );
   }, [
-    seatsArray,
-    recentVenueUsers,
+    participantsLoading,
     userWithId,
-    participants,
-    room,
-    userId,
+    venue?.iframeUrl,
+    seatsArray,
     videoError,
-    venue,
-    isRecentVenueUsersLoaded,
+    participants,
+    userId,
+    room,
   ]);
 };

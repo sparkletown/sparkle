@@ -235,23 +235,21 @@ export const useVideoRoomState = ({
     []
   );
 
-  useEffect(() => {
+  const { loading: roomLoading } = useAsync(async () => {
     if (!token || !roomName) return;
 
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
-    connect(token, {
+    await connect(token, {
       name: roomName,
       video: isActiveParticipant,
       audio: isActiveParticipant,
       enableDscp: true,
     }).then(setRoom);
+  }, [roomName, token, isActiveParticipant]);
 
-    return () => {
-      disconnect();
-    };
-  }, [disconnect, roomName, token, isActiveParticipant]);
+  useEffect(() => () => disconnect(), [disconnect]);
 
-  useAsync(async () => {
+  const { loading: participantsLoading } = useAsync(async () => {
     if (!room || !user) return;
 
     room.on("participantConnected", participantConnected);
@@ -297,6 +295,7 @@ export const useVideoRoomState = ({
 
     room,
     participants,
+    participantsLoading: participantsLoading || roomLoading,
 
     disconnect,
     becomeActiveParticipant,
