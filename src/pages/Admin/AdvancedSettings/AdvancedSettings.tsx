@@ -111,6 +111,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
+      roomVisibility: venue.roomVisibility,
     },
   });
 
