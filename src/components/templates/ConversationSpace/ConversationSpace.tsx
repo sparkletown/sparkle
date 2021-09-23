@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 
 import { ALWAYS_EMPTY_ARRAY, DEFAULT_USER_LIST_LIMIT } from "settings";
 
-import { GenericVenue } from "types/venues";
+import { GenericVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
@@ -10,6 +10,7 @@ import { openUrl, venueInsideUrl } from "utils/url";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -44,7 +45,12 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     toggle: toggleTablesVisibility,
   } = useShowHide();
 
-  const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateRecentSeatedTableUsers(
+    VenueTemplate.conversationspace,
+    seatedAtTable && venue?.id
+  );
 
   useExperiences(venue?.name);
 

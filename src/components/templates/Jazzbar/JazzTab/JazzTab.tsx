@@ -11,7 +11,7 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { JazzbarVenue } from "types/venues";
+import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
@@ -20,6 +20,7 @@ import { openUrl, venueInsideUrl } from "utils/url";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -72,6 +73,12 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateRecentSeatedTableUsers(
+    VenueTemplate.jazzbar,
+    seatedAtTable && venue?.id
+  );
+
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;

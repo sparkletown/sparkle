@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 
+import { VenueTemplate } from "types/venues";
+
 import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
+import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 // import ChatBox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
@@ -19,6 +22,11 @@ import "./FriendShipPage.scss";
 export const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const venue = useSelector(currentVenueSelector);
+
+  useUpdateRecentSeatedTableUsers(
+    VenueTemplate.friendship,
+    seatedAtTable && venue?.id
+  );
 
   if (!venue) return <>Loading...</>;
 

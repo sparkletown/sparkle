@@ -385,13 +385,18 @@ export interface VenueTablePath {
   tableReference: string;
 }
 
+export type TableSeatedUsersVenuesTemplates =
+  | VenueTemplate.jazzbar
+  | VenueTemplate.conversationspace
+  | VenueTemplate.friendship;
+
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
   venueId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
-    : T extends VenueTemplate.jazzbar
-    ? Pick<VenueTablePath, "tableReference">
+    : T extends TableSeatedUsersVenuesTemplates
+    ? {}
     : never;
 };
 

@@ -89,15 +89,15 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     venueId
   );
 
-  const useTableReference = seatedTableUsers.find(
+  const userTableReference = seatedTableUsers.find(
     (u) => u.id === userWithId?.id
   )?.path?.tableReference;
 
   useEffect(() => {
-    useTableReference
-      ? setSeatedAtTable(useTableReference)
+    userTableReference
+      ? setSeatedAtTable(userTableReference)
       : setSeatedAtTable("");
-  }, [setSeatedAtTable, useTableReference]);
+  }, [setSeatedAtTable, userTableReference]);
 
   const isSeatedAtTable = !!seatedAtTable;
 
