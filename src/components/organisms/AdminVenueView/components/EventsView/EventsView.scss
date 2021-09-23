@@ -6,7 +6,7 @@
 
   &__container {
     height: 60vh;
-    background-color: $black;
+    background-color: $primary-content-under;
     border-radius: $border-radius--xl;
     box-shadow: box-shadow--large();
     overflow-y: scroll;
@@ -52,7 +52,7 @@
 
       &-start {
         font-weight: $font-weight--700;
-        color: $white;
+        color: $primary-content-over;
         margin-top: $spacing--xl;
       }
     }
@@ -60,7 +60,7 @@
     &__details {
       &-name {
         font-weight: $font-weight--700;
-        color: $white;
+        color: $primary-content-over;
         font-size: $spacing--lg;
       }
 
@@ -95,10 +95,10 @@
       justify-content: center;
       align-items: center;
       margin: auto;
-      background-color: $primary;
+      background-color: $primary-accent-under;
 
       &__icon {
-        color: $white;
+        color: $primary-content-over;
       }
     }
   }

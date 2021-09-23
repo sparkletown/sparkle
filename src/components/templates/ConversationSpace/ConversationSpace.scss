@@ -29,7 +29,7 @@
 
     .table-header {
       background: $dark;
-      color: $white;
+      color: $primary-content-over;
       padding: 10px 20px;
       border-radius: 22px 22px 0 0;
     }
@@ -217,7 +217,7 @@
         margin-left: 10px;
         width: 100px;
         &[type="submit"]:disabled {
-          color: rgba($white, 0.2);
+          color: rgba($primary-content-over, 0.2);
           background-color: rgba(green, 0.5);
         }
       }
@@ -259,7 +259,7 @@
   }
 
   .seated-area {
-    border: 0px solid $white;
+    border: 0px solid $primary-content-over;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;

@@ -8,7 +8,7 @@ $avatarUrl: var(--user-profile-picture-avatar-url, none);
   min-width: $avatarSize;
   min-height: $avatarSize;
 
-  background-color: $black;
+  background-color: $primary-content-under;
   background-image: $avatarUrl;
   background-position: center;
   background-size: cover;

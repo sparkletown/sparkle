@@ -51,7 +51,7 @@
   .quotation-container {
     display: flex;
     flex-direction: column;
-    color: $white;
+    color: $primary-content-over;
     align-items: center;
     margin-bottom: 10px;
 
@@ -72,16 +72,16 @@
     width: 40%;
     margin: auto;
     background: $light-green;
-    color: $black;
+    color: $primary-content-under;
 
     .toast-header {
       background: $dark-green;
-      color: $black;
+      color: $primary-content-under;
       display: flex;
       justify-content: space-between;
 
       button {
-        color: $black;
+        color: $primary-content-under;
         opacity: 0.7;
         margin: 0;
         outline: none;
@@ -111,7 +111,7 @@
     object-fit: cover;
 
     .secret-password-form-wrapper {
-      background: rgba($black, 0.75);
+      background: rgba($primary-content-under, 0.75);
       padding: 20px;
       width: 250px;
       margin-right: 40px;
@@ -178,7 +178,7 @@
   }
   .date {
     font-size: 15px;
-    color: $white;
+    color: $primary-content-over;
     margin-bottom: 5px;
   }
   .event-description {

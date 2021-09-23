@@ -38,11 +38,11 @@ $expand--width: 40px;
     background-color: $secondary--schedule-event-users;
 
     &:hover {
-      background-color: $white;
+      background-color: $primary-content-over;
     }
 
     .ScheduleEvent__bookmark {
-      color: $black;
+      color: $primary-content-under;
     }
   }
 
@@ -90,15 +90,15 @@ $expand--width: 40px;
   }
 
   &--live {
-    background-color: $primary--live;
-    color: $white;
+    background-color: $primary-accent-under;
+    color: $primary-content-over;
 
     &:hover {
       background-color: $primary--live-hover;
     }
 
     .ScheduleEvent__bookmark {
-      color: $white;
+      color: $primary-content-over;
     }
   }
 
@@ -174,7 +174,7 @@ $expand--width: 40px;
     }
 
     &--live {
-      color: $white;
+      color: $primary-content-over;
     }
   }
 

@@ -27,8 +27,8 @@
     transform: translateY(0);
     cursor: pointer;
     padding: $spacing--xs $spacing--sm;
-    background: $black;
-    color: $white;
+    background: $primary-content-under;
+    color: $primary-content-over;
 
     &:hover {
       background-color: opaque-white(0.5);

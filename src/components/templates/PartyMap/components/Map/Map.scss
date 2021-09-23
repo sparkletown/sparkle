@@ -1,7 +1,6 @@
 @import "scss/constants";
 
 $sand: #937c63;
-$white: #ffffff;
 $border-radius: 28px;
 
 .party-map-map-component {
@@ -108,7 +107,7 @@ $border-radius: 28px;
 
     .avatar {
       opacity: 0.025;
-      background-color: $white;
+      background-color: $primary-content-over;
     }
   }
 
@@ -116,7 +115,7 @@ $border-radius: 28px;
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: $white;
+    background-color: $primary-content-over;
     opacity: 0.025;
     border-radius: 100%;
 
@@ -144,16 +143,19 @@ $border-radius: 28px;
   //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
-      background-color: $primary;
-      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+      background-color: $primary-accent-under;
+      box-shadow: 0 0 0 3px $primary-accent-under,
+        0 0 20px rgba($primary-accent-under, 0.65);
     }
     50% {
-      background-color: lighten($primary, 10%);
-      box-shadow: 0 0 0 3px $primary, 0 0 20px 10px rgba($primary, 0.65);
+      background-color: lighten($primary-accent-under, 10%);
+      box-shadow: 0 0 0 3px $primary-accent-under,
+        0 0 20px 10px rgba($primary-accent-under, 0.65);
     }
     100% {
-      background-color: $primary;
-      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+      background-color: $primary-accent-under;
+      box-shadow: 0 0 0 3px $primary-accent-under,
+        0 0 20px rgba($primary-accent-under, 0.65);
     }
   }
 

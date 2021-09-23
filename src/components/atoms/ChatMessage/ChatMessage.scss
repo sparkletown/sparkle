@@ -32,7 +32,7 @@ $reply-icon-radius: 20px;
 
     .ChatMessage__bulb {
       text-align: right;
-      background-color: $primary;
+      background-color: $primary-accent-under;
       border-radius: $my-text-border-radius;
     }
 
@@ -99,7 +99,7 @@ $reply-icon-radius: 20px;
   }
 
   &__reply-icon {
-    color: $white;
+    color: $primary-content-over;
     display: flex;
     opacity: 0;
     justify-content: center;

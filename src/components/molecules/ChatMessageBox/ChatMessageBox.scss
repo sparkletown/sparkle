@@ -36,7 +36,7 @@
     align-items: center;
     margin-left: $spacing--md;
 
-    background-color: $primary;
+    background-color: $primary-accent-under;
 
     &:disabled {
       background-color: $saturated-black;
@@ -44,7 +44,7 @@
   }
 
   &__submit-button-icon {
-    color: $white;
+    color: $primary-content-over;
   }
 
   &__emoji-picker {

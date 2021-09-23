@@ -10,9 +10,6 @@ $large-shadow: box-shadow--large(0.34);
 $login-max-width: 540px;
 $login-wide-max-width: 1140px;
 
-$black: #000000;
-$white: #fff;
-
 $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
 $dark: #1a1d24;
@@ -33,18 +30,18 @@ $page-max-width: 1240px;
     height: 30px;
     width: 30px;
     border-radius: 15px;
-    background-color: rgba($white, 0.12);
-    box-shadow: 0 0 0 2px rgba($white, 0.4);
+    background-color: rgba($primary-content-over, 0.12);
+    box-shadow: 0 0 0 2px rgba($primary-content-over, 0.4);
   }
   &:hover {
     &:before {
-      box-shadow: 0 0 0 2px rgba($white, 1);
+      box-shadow: 0 0 0 2px rgba($primary-content-over, 1);
     }
   }
   &.checkbox-checked {
     &:before {
       background-color: $primaryColor;
-      box-shadow: 0 0 0 2px rgba($white, 0);
+      box-shadow: 0 0 0 2px rgba($primary-content-over, 0);
       background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
@@ -131,7 +128,7 @@ $page-max-width: 1240px;
       width: $login-max-width;
       margin: 0 auto;
       padding: $side-padding;
-      background-color: $black;
+      background-color: $primary-content-under;
       box-shadow: $large-shadow;
       text-align: center;
       border-radius: $border-radius;
@@ -145,7 +142,7 @@ $page-max-width: 1240px;
       font-weight: 900;
       font-style: italic;
       font-size: 2em;
-      color: $white;
+      color: $primary-content-over;
     }
   }
 }
@@ -206,7 +203,7 @@ $page-max-width: 1240px;
     //border: solid 1px black;
     font-weight: bolder;
     color: black;
-    text-shadow: 1px 1px $white;
+    text-shadow: 1px 1px $primary-content-over;
   }
   .enter-the-burn {
     position: absolute;
@@ -226,7 +223,7 @@ $page-max-width: 1240px;
     max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $black;
+    background-color: $primary-content-under;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -278,7 +275,7 @@ $page-max-width: 1240px;
     max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $black;
+    background-color: $primary-content-under;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -292,7 +289,7 @@ $page-max-width: 1240px;
       height: 130px;
       transition: all 400ms $transition-function;
       &:hover {
-        box-shadow: 0 0 0 4px rgba($white, 0.62);
+        box-shadow: 0 0 0 4px rgba($primary-content-over, 0.62);
         background-color: lighten($dark, 4%);
       }
     }
@@ -303,7 +300,7 @@ $page-max-width: 1240px;
     max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $black;
+    background-color: $primary-content-under;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -376,7 +373,7 @@ $page-max-width: 1240px;
   max-width: $modal-max-width;
   margin: 0 auto;
   padding: 20px 0 0 0;
-  background-color: $black;
+  background-color: $primary-content-under;
   box-shadow: $large-shadow;
   text-align: left;
   border-radius: $border-radius;
@@ -389,7 +386,7 @@ $page-max-width: 1240px;
     align-items: center; /* Align Items Vertically */
     justify-content: space-around;
     margin-bottom: 2rem;
-    border-bottom: 1px solid rgba($white, 0.2);
+    border-bottom: 1px solid rgba($primary-content-over, 0.2);
     overflow-x: auto;
     overflow-y: hidden;
     button {
@@ -397,7 +394,7 @@ $page-max-width: 1240px;
       border: none;
       display: block;
       position: relative;
-      color: $white;
+      color: $primary-content-over;
       text-align: center;
       padding: 4px 10px;
       opacity: 0.7;
@@ -416,7 +413,7 @@ $page-max-width: 1240px;
           height: 2px;
           border-radius: 4px;
           width: 100%;
-          background-color: $white;
+          background-color: $primary-content-over;
           left: 0;
           bottom: -1px;
         }

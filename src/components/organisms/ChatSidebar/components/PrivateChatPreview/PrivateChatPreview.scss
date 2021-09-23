@@ -7,10 +7,10 @@
   width: 100%;
   align-items: center;
   cursor: pointer;
-  color: $white;
+  color: $primary-content-over;
 
   &:hover {
-    background-color: $black;
+    background-color: $primary-content-under;
   }
 
   &__content {
@@ -46,12 +46,12 @@
   &--highlight {
     .chat-preview__username {
       font-weight: 500;
-      color: $white;
+      color: $primary-content-over;
       opacity: 1;
     }
 
     .chat-preview__text {
-      color: $white;
+      color: $primary-content-over;
       opacity: 0.7;
     }
 

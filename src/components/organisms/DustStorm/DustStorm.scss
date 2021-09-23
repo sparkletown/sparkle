@@ -2,8 +2,6 @@
 
 $side-padding: 30px;
 $primary: #7c46fb;
-$black: #000000;
-$white: #fff;
 
 $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
@@ -88,7 +86,7 @@ $sand: #937c63;
     max-width: $modal-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $black;
+    background-color: $primary-content-under;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;

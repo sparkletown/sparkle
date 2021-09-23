@@ -50,7 +50,7 @@ $playa-profile-name-size: 60px;
         height: $playa-avatar-size * 1.5;
       }
       &.they {
-        border: 2px solid $white;
+        border: 2px solid $primary-content-over;
         background: $sand;
         .avatar-name-container {
           top: -9px;
@@ -90,7 +90,7 @@ $playa-profile-name-size: 60px;
         }
       }
       &.they {
-        border: 2px solid $white;
+        border: 2px solid $primary-content-over;
         background: $sand;
       }
     }
@@ -184,7 +184,7 @@ $playa-profile-name-size: 60px;
       align-items: center;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
-      color: $white;
+      color: $primary-content-over;
       overflow: hidden;
       white-space: nowrap;
       padding: 3px 8px;
@@ -203,7 +203,7 @@ $playa-profile-name-size: 60px;
       height: $playa-mode-badge-size / 2;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
-      color: $white;
+      color: $primary-content-over;
       overflow: hidden;
       white-space: nowrap;
       padding: 3px;
@@ -217,7 +217,7 @@ $playa-profile-name-size: 60px;
       border-radius: 50%;
       width: $playa-mode-badge-size;
       height: $playa-mode-badge-size;
-      background-color: $white;
+      background-color: $primary-content-over;
       z-index: 1;
       overflow: hidden;
 
@@ -502,7 +502,7 @@ $playa-profile-name-size: 60px;
       font-size: 0.8rem;
       padding-right: 18px;
       padding-left: 8px;
-      border-left: 1px solid rgba($black, 0.2);
+      border-left: 1px solid rgba($primary-content-under, 0.2);
       &:before {
         content: "";
         display: block;
@@ -541,7 +541,7 @@ $playa-profile-name-size: 60px;
   }
 
   .playa-venue-secondinfo {
-    border-top: 1px solid rgba($black, 0.2);
+    border-top: 1px solid rgba($primary-content-under, 0.2);
     padding: 6px 10px;
     display: none;
     .playa-venue-desc {
@@ -558,7 +558,7 @@ $playa-profile-name-size: 60px;
         margin-bottom: 0;
       }
       .btn-info {
-        background-color: rgba($black, 0.4);
+        background-color: rgba($primary-content-under, 0.4);
       }
     }
   }
@@ -620,9 +620,9 @@ $playa-profile-name-size: 60px;
 }
 .link-button {
   display: inline-block;
-  color: $white !important;
+  color: $primary-content-over !important;
   padding: 10px;
-  border: solid 1px $white;
+  border: solid 1px $primary-content-over;
   font-size: 13px;
   text-decoration: none !important;
 }
@@ -744,7 +744,7 @@ $playa-profile-name-size: 60px;
       width: 60%;
       left: 20%;
       height: 1px;
-      background-color: rgba($black, 0.3);
+      background-color: rgba($primary-content-under, 0.3);
       top: 50%;
     }
     .playa-controls-zoom-in,

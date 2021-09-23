@@ -32,7 +32,7 @@ $preview-margin: 30px;
   }
 
   .page-container-left {
-    background-color: $black;
+    background-color: $primary-content-under;
     padding-top: $navbar-height;
     overflow-y: auto;
     height: 100%;
@@ -59,8 +59,8 @@ $preview-margin: 30px;
       padding: 10px 14px;
       display: flex;
       justify-content: space-between;
-      background-color: $black;
-      border-top: 1px solid rgba($white, 0.2);
+      background-color: $primary-content-under;
+      border-top: 1px solid rgba($primary-content-over, 0.2);
 
       .btn {
         float: right;
@@ -70,7 +70,7 @@ $preview-margin: 30px;
   }
 
   &.preview {
-    background-color: $black;
+    background-color: $primary-content-under;
     overflow: auto;
     flex-direction: column;
     margin-top: $navbar-height;
@@ -85,7 +85,7 @@ $preview-margin: 30px;
   .venue-preview {
     flex: 1;
     margin: $preview-margin;
-    background-color: $black;
+    background-color: $primary-content-under;
     border-radius: 20px;
     overflow: auto;
     border: 2px solid gray;
@@ -134,12 +134,12 @@ $preview-margin: 30px;
   transition: all 400ms $transition-function;
 
   &:hover {
-    box-shadow: 0 0 0 4px rgba($white, 0.62);
+    box-shadow: 0 0 0 4px rgba($primary-content-over, 0.62);
     background-color: lighten($dark, 4%);
   }
 
   &.selected {
-    box-shadow: 0 0 0 4px $primary;
+    box-shadow: 0 0 0 4px $primary-accent-under;
     background-color: lighten($dark, 4%);
 
     .pickspace-thumbnail {
@@ -153,7 +153,7 @@ $preview-margin: 30px;
     width: 120px;
     height: 120px;
     margin-right: 20px;
-    background-color: $black;
+    background-color: $primary-content-under;
     border-radius: $border-radius;
     display: flex;
     align-items: center;
@@ -240,20 +240,20 @@ $preview-margin: 30px;
     height: 30px;
     width: 30px;
     border-radius: 15px;
-    background-color: rgba($white, 0.12);
-    box-shadow: 0 0 0 2px rgba($white, 0.4);
+    background-color: rgba($primary-content-over, 0.12);
+    box-shadow: 0 0 0 2px rgba($primary-content-over, 0.4);
   }
 
   &:hover {
     &:before {
-      box-shadow: 0 0 0 2px rgba($white, 1);
+      box-shadow: 0 0 0 2px rgba($primary-content-over, 1);
     }
   }
 
   &.checkbox-checked {
     &:before {
       background-color: $primaryColor;
-      box-shadow: 0 0 0 2px rgba($white, 0);
+      box-shadow: 0 0 0 2px rgba($primary-content-over, 0);
       background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
