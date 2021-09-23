@@ -110,6 +110,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showRadio: venue.showRadio,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
+      roomVisibility: venue.roomVisibility,
     },
   });
 
