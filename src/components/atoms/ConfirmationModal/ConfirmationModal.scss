@@ -1,9 +1,7 @@
 @import "scss/constants.scss";
 
 .ConfirmationModal {
-  .modal-content {
-    background: $modal-background--confirm;
-  }
+  text-align: center;
 
   &__message {
     padding: 10px 0 30px 0;

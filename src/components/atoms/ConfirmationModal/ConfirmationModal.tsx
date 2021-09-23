@@ -29,7 +29,6 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   show,
   header,
   message,
-  centered = true,
   onConfirm,
   onCancel,
   cancelBtnLabel = "No",
@@ -79,7 +78,11 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             <ButtonNG className={cancelButtonClasses} onClick={cancel}>
               {cancelBtnLabel}
             </ButtonNG>
-            <ButtonNG className={buttonClasses} onClick={confirm}>
+            <ButtonNG
+              className={buttonClasses}
+              variant="danger"
+              onClick={confirm}
+            >
               {saveBtnLabel}
             </ButtonNG>
           </div>

@@ -10,7 +10,7 @@ import { AnyVenue } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { Button } from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { InputField } from "components/atoms/InputField";
@@ -84,23 +84,13 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   return (
     <div className="BannerAdmin">
       <form onSubmit={handleSubmit(saveBanner)}>
-        <InputField
-          ref={register}
-          name="title"
-          placeholder="Please type your announcement title. (optional)"
-          defaultValue={venue?.banner?.title}
-          containerClassName="BannerAdmin__input-container"
-          inputClassName="BannerAdmin__input-text"
-          autoComplete="off"
-        />
-
         <div className="form-group">
           <textarea
             ref={register({ required: true })}
             name="content"
             defaultValue={venue?.banner?.content}
             className="BannerAdmin__input-text"
-            placeholder="Please type your announcement content"
+            placeholder="Please type your announcement"
           />
           {errors.content && errors.content.type === "required" && (
             <span className="input-error">Display content is required</span>
@@ -161,20 +151,21 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         />
 
         <div className="BannerAdmin__button-container">
-          <Button
-            customClass="BannerAdmin__button BannerAdmin__button--close"
+          <ButtonNG
+            className="BannerAdmin__button BannerAdmin__button--close"
             onClick={clearBanner}
             disabled={isUpdatingBanner}
           >
-            Clear
-          </Button>
-          <Button
-            customClass="BannerAdmin__button"
+            Clear banner
+          </ButtonNG>
+          <ButtonNG
+            className="BannerAdmin__button"
             type="submit"
             disabled={isUpdatingBanner}
+            variant="primary"
           >
             Save
-          </Button>
+          </ButtonNG>
         </div>
       </form>
 
@@ -184,16 +175,11 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         onCancel={hideBannerChangeModal}
         header={"Erase your beautiful work?"}
         message={"Are you sure?"}
-        saveBtnLabel="Clear & Save"
+        saveBtnLabel="Yes, clear"
         cancelBtnLabel="Cancel"
-        containerClassName={"ConfirmationModal"}
         headerClassName={"BannerAdminModal__header"}
         messageClassName={"BannerAdminModal__message"}
         buttonsContainerClassName={"BannerAdminModal__buttons"}
-        buttonClassName={"BannerAdminModal__button"}
-        cancelButtonClassName={
-          "BannerAdminModal__button BannerAdminModal__button--cancel"
-        }
         isCentered
       />
     </div>

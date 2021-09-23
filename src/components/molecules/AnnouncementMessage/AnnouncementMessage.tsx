@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import classNames from "classnames";
 
-import { Banner } from "types/banner";
-
 import { isDefined } from "utils/types";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useShowHide } from "hooks/useShowHide";
+import { useVenueId } from "hooks/useVenueId";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -14,19 +14,21 @@ import { LinkButton } from "components/atoms/LinkButton";
 import "./AnnouncementMessage.scss";
 
 export interface AnnouncementMessageProps {
-  banner?: Banner;
   isAnnouncementUserView?: boolean;
 }
 
 export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
-  banner,
   isAnnouncementUserView = false,
 }) => {
   const {
-    isShown: isAnnouncementMessageVisible,
     show: showAnnouncementMessage,
     hide: hideAnnouncementMessage,
   } = useShowHide();
+
+  const venueId = useVenueId();
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
+  const { banner } = venue ?? {};
 
   useEffect(() => {
     if (isDefined(banner?.content)) {
@@ -34,22 +36,20 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     }
   }, [banner, showAnnouncementMessage]);
 
-  const isWithButton =
-    banner?.buttonDisplayText && banner?.buttonUrl && banner?.isActionButton;
+  const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
 
-  const isAnnouncementCloseable =
-    isAnnouncementUserView && !banner?.isForceFunnel;
+  const isAnnouncementCloseable = !banner?.isForceFunnel;
 
   const containerClasses = classNames("AnnouncementMessage__container", {
     "AnnouncementMessage__container--centered": banner?.isFullScreen,
     "AnnouncementMessage__container--admin": !isAnnouncementUserView,
+    "AnnouncementMessage__container--withButton": isWithButton,
   });
 
   const announcementMessageClasses = classNames("AnnouncementMessage", {
-    "AnnouncementMessage--fullscreen":
-      banner?.isFullScreen && isAnnouncementUserView,
-    "AnnouncementMessage--user": isAnnouncementUserView,
-    "AnnouncementMessage--admin": !isAnnouncementUserView,
+    AnnouncementMessage__fullscreen: banner?.isFullScreen,
+    "AnnouncementMessage__fullscreen--admin":
+      banner?.isFullScreen && !isAnnouncementUserView,
   });
 
   const actionButtonClasses = classNames("AnnouncementMessage__action-button", {
@@ -71,26 +71,24 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       </div>
     );
 
-  if (!isAnnouncementMessageVisible) return null;
+  if (!banner?.content) return null;
 
   return (
     <>
       <div className={containerClasses} onClick={handleBannerModalClose} />
 
       <div className={announcementMessageClasses}>
-        <h2 className="AnnouncementMessage__title">{banner?.title}</h2>
-
         <div className="AnnouncementMessage__content">
-          <RenderMarkdown text={banner?.content} />
+          <RenderMarkdown text={banner.content} />
         </div>
 
-        {isWithButton && banner?.buttonUrl && (
+        {isWithButton && banner.buttonUrl && (
           <LinkButton
-            href={banner?.buttonUrl}
+            href={banner.buttonUrl}
             className={actionButtonClasses}
             onClick={hideAnnouncementMessage}
           >
-            {banner?.buttonDisplayText}
+            {banner.buttonDisplayText}
           </LinkButton>
         )}
 

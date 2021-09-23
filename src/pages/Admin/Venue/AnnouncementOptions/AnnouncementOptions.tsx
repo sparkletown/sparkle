@@ -23,7 +23,11 @@ export const AnnouncementOptions: React.FC<AnnouncementOptionsProps> = ({
         <AnnouncementStatus banner={banner} />
       </div>
       <div className="AnnouncementOptions__right-side">
-        <ButtonNG onClick={onEdit} className="AnnouncementOptions__edit-button">
+        <ButtonNG
+          onClick={onEdit}
+          className="AnnouncementOptions__edit-button"
+          variant="white"
+        >
           Edit
         </ButtonNG>
       </div>
