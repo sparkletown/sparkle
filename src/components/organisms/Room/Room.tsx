@@ -124,7 +124,7 @@ const Room: React.FC<RoomProps> = ({
 
     let localRoom: Video.Room;
 
-    const participantConnected = (participant: Video.Participant) => {
+    const participantConnected = async (participant: Video.Participant) => {
       setParticipants((prevParticipants) => [
         // Hopefully prevents duplicate users in the participant list
         ...prevParticipants.filter((p) => p.identity !== participant.identity),
