@@ -5,8 +5,6 @@ import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
-import { User } from "types/User";
-
 import { stopLocalTrack } from "utils/twilio";
 
 import { useWorldUsersById } from "hooks/users";
@@ -23,7 +21,6 @@ const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 interface RoomProps {
   roomName: string;
   venueName: string;
-  setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
@@ -31,14 +28,13 @@ interface RoomProps {
   isAudioEffectDisabled: boolean;
 }
 
-// @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
+// @debt THIS COMPONENT IS THE COPY OF components/molecules/Room
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
 const Room: React.FC<RoomProps> = ({
   roomName,
   venueName,
-  setUserList,
   setParticipantCount,
   setSeatedAtTable,
   defaultMute,
@@ -181,15 +177,6 @@ const Room: React.FC<RoomProps> = ({
       }
     };
   }, [roomName, token, setParticipantCount]);
-
-  useEffect(() => {
-    if (!room) return;
-
-    setUserList([
-      ...participants.map((p) => worldUsersById[p.identity]),
-      worldUsersById[room.localParticipant.identity],
-    ]);
-  }, [participants, setUserList, worldUsersById, room]);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works

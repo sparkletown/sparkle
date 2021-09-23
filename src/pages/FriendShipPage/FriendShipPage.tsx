@@ -35,11 +35,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                 <div className="title">{venue.name}</div>
                 <div className="subtitle">{venue.name}</div>
                 <div className="wrapper">
-                  <Room
-                    venueName={venue.name}
-                    roomName="friendship"
-                    setUserList={() => null}
-                  />
+                  <Room venueName={venue.name} roomName="friendship" />
                 </div>
               </div>
               <div className="col-4">{/* <ChatBox room="friendship" /> */}</div>
@@ -71,11 +67,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                   venueId={venue.id}
                   tables={FRIENDSHIP_CUSTOM_TABLES}
                 />
-                <Room
-                  venueName={venue.name}
-                  roomName={seatedAtTable}
-                  setUserList={() => null}
-                />
+                <Room venueName={venue.name} roomName={seatedAtTable} />
               </div>
             )}
           </div>

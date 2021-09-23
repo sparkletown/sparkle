@@ -84,7 +84,6 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
           <Room
             venueName={name}
             roomName={name}
-            setUserList={() => null}
             hasChairs={false}
             defaultMute={true}
           />

@@ -11,7 +11,6 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
@@ -43,7 +42,6 @@ import { JAZZBAR_TABLES } from "./constants";
 import "./JazzTab.scss";
 
 interface JazzProps {
-  setUserList: (value: User[]) => void;
   venue: WithId<JazzbarVenue>;
 }
 
@@ -53,7 +51,7 @@ interface JazzProps {
 //   messageToTheBand: string;
 // }
 
-const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
+const Jazz: React.FC<JazzProps> = ({ venue }) => {
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
@@ -242,7 +240,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           <Room
             roomName={`${venue.name}-${seatedAtTable}`}
             venueName={venue.name}
-            setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
             isAudioEffectDisabled={isUserAudioMuted}
           />

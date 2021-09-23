@@ -11,8 +11,6 @@ import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
-import { User } from "types/User";
-
 import { stopLocalTrack } from "utils/twilio";
 
 import { useWorldUsersById } from "hooks/users";
@@ -27,7 +25,6 @@ import "./Room.scss";
 interface RoomProps {
   roomName: string;
   venueName: string;
-  setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
@@ -38,7 +35,6 @@ interface RoomProps {
 const Room: React.FC<RoomProps> = ({
   roomName,
   venueName,
-  setUserList,
   setParticipantCount,
   setSeatedAtTable,
   hasChairs = true,
@@ -180,15 +176,6 @@ const Room: React.FC<RoomProps> = ({
       }
     };
   }, [roomName, token, setParticipantCount]);
-
-  useEffect(() => {
-    if (!room) return;
-
-    setUserList([
-      ...participants.map((p) => worldUsersById[p.identity]),
-      worldUsersById[room.localParticipant.identity],
-    ]);
-  }, [participants, setUserList, worldUsersById, room]);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works

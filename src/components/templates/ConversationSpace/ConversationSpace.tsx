@@ -114,7 +114,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   <Room
                     venueName={venue.name}
                     roomName={`${venue.name}-${seatedAtTable}`}
-                    setUserList={() => {}}
                   />
                 </div>
               )}
