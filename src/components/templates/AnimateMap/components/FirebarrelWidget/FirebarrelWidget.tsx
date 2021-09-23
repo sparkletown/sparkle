@@ -239,21 +239,6 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participants, worldUsersById]);
 
-  const getIsUserBartender = (userIdentity?: string) => {
-    if (!userIdentity) return;
-    return worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender;
-  };
-
-  // Ordering of participants:
-  // 1. Me
-  // 2. Bartender, if found (only one allowed)
-  // 3. Rest of the participants, in order
-
-  // Only allow the first bartender to appear as bartender
-  const userIdentity = room?.localParticipant?.identity;
-
-  const meIsBartender = getIsUserBartender(userIdentity);
-
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
 
@@ -281,10 +266,6 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           return null;
         }
 
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
           <div
             key={participant.identity}
@@ -294,12 +275,11 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
               participant={participant}
               profileData={worldUsersById[participant.identity]}
               profileDataId={participant.identity}
-              bartender={bartender}
             />
           </div>
         );
       }),
-    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [sidedVideoParticipants, worldUsersById]
   );
 
   const otherVideos = useMemo(
@@ -309,10 +289,6 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           return null;
         }
 
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
           <div
             key={participant.identity}
@@ -322,12 +298,11 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
               participant={participant}
               profileData={worldUsersById[participant.identity]}
               profileDataId={participant.identity}
-              bartender={bartender}
             />
           </div>
         );
       }),
-    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [otherVideoParticipants, worldUsersById]
   );
 
   const myVideo = useMemo(() => {
@@ -338,13 +313,12 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           participant={room.localParticipant}
           profileData={profileData}
           profileDataId={room.localParticipant.identity}
-          bartender={meIsBartender}
           defaultMute={defaultMute}
           isAudioEffectDisabled={isAudioEffectDisabled}
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
+  }, [room, profileData, defaultMute, isAudioEffectDisabled]);
 
   const onExitClick = useCallback(() => {
     const users = getUserList(

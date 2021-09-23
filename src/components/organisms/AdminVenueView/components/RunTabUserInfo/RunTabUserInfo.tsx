@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ChatUser } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -9,7 +9,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./RunTabUserInfo.scss";
 
 export interface RunTabUserInfoProps {
-  user: WithId<ChatUser>;
+  user: WithId<DisplayUser>;
 }
 
 export const RunTabUserInfo: React.FC<RunTabUserInfoProps> = ({ user }) => {

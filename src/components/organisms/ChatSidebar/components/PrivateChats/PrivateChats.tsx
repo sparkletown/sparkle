@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { ChatUser } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -13,7 +13,7 @@ import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
-  recipient: WithId<ChatUser> | undefined;
+  recipient: WithId<DisplayUser> | undefined;
 }
 
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
