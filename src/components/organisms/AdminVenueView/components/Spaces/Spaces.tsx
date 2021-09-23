@@ -13,11 +13,16 @@ import { useShowHide } from "hooks/useShowHide";
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
+import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
+import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
+
+import { AdminShowcase } from "../AdminShowcase";
 
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
@@ -80,7 +85,7 @@ const venueRooms: VenueRooms[] = [
 ];
 
 interface SpacesProps extends TabNavigationProps {
-  venue?: WithId<AnyVenue>;
+  venue: WithId<AnyVenue>;
 }
 
 const emptyRoomsArray: RoomData_v2[] = [];
@@ -101,6 +106,7 @@ export const Spaces: React.FC<SpacesProps> = ({
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
+  const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue?.rooms?.length ?? 0;
 
@@ -155,17 +161,18 @@ export const Spaces: React.FC<SpacesProps> = ({
           text={venueRoom.text}
           template={venueRoom.template}
           icon={venueRoom.icon}
+          worldId={worldId}
         />
       )),
-    []
+    [worldId]
   );
 
   const selectedRoomIndex =
     venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
-    <div className="Spaces">
-      <div className="Spaces__rooms">
+    <AdminPanel className="Spaces">
+      <AdminSidebar>
         {selectedRoom ? (
           <EditRoomForm
             room={selectedRoom}
@@ -177,9 +184,8 @@ export const Spaces: React.FC<SpacesProps> = ({
           />
         ) : (
           <>
-            <div className="Spaces__background">
-              <div className="Spaces__title">Build your spaces</div>
-            </div>
+            <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
+            <TabFooter {...tabNavigationProps} />
             <div>
               <div
                 className="Spaces__venue-rooms"
@@ -194,7 +200,6 @@ export const Spaces: React.FC<SpacesProps> = ({
                 <BackgroundSelect venueName={venue?.name ?? ""} />
               )}
             </div>
-
             <div>
               <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
                 <div>{numberOfRooms} Rooms</div>
@@ -213,11 +218,10 @@ export const Spaces: React.FC<SpacesProps> = ({
               />
             </div>
             {showAddRoom && renderAddRooms}
-            <TabFooter {...tabNavigationProps} />
           </>
         )}
-      </div>
-      <div className="Spaces__map">
+      </AdminSidebar>
+      <AdminShowcase className="Spaces__map">
         <MapPreview
           isEditing={hasSelectedRoom}
           mapBackground={venue?.mapBackgroundImageUrl}
@@ -227,7 +231,7 @@ export const Spaces: React.FC<SpacesProps> = ({
           onResizeRoom={updateRoomSize}
           selectedRoom={selectedRoom}
         />
-      </div>
-    </div>
+      </AdminShowcase>
+    </AdminPanel>
   );
 };

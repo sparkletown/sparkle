@@ -1,23 +1,14 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 
-import {
-  useWorldUsersQuery,
-  useWorldUsersQueryState,
-  WorldUsersApiArgs,
-} from "store/api/worldUsers";
+import { useWorldUsersQuery, WorldUsersApiArgs } from "store/api/worldUsers";
 
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
-
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 export interface WorldUsersContextState {
   isSovereignVenueIdLoading: boolean;
   sovereignVenueId?: string;
-  sovereignVenueIdError?: string;
 
   worldUsersApiArgs?: WorldUsersApiArgs;
 }
@@ -36,11 +27,8 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
 }) => {
   const {
     sovereignVenueId,
-    isSovereignVenueLoading,
-    errorMsg: sovereignVenueIdError,
-  } = useSovereignVenue({
-    venueId,
-  });
+    isLoading: isSovereignVenueLoading,
+  } = useRelatedVenues();
 
   const { userId } = useUser();
 
@@ -69,16 +57,9 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
       venueId,
       isSovereignVenueIdLoading: isSovereignVenueLoading,
       sovereignVenueId,
-      sovereignVenueIdError,
       worldUsersApiArgs,
     }),
-    [
-      venueId,
-      isSovereignVenueLoading,
-      sovereignVenueId,
-      sovereignVenueIdError,
-      worldUsersApiArgs,
-    ]
+    [venueId, isSovereignVenueLoading, sovereignVenueId, worldUsersApiArgs]
   );
 
   return (
@@ -98,33 +79,4 @@ export const useWorldUsersContext = (): WorldUsersContextState => {
   }
 
   return worldUsersState;
-};
-
-export interface WorldUsersData {
-  isWorldUsersLoaded: boolean;
-  worldUsers: readonly WithId<User>[];
-}
-
-// TODO:
-//   https://redux-toolkit.js.org/rtk-query/api/created-api/overview#react-hooks
-//   https://redux-toolkit.js.org/rtk-query/api/created-api/hooks
-//   https://redux-toolkit.js.org/rtk-query/api/created-api/hooks#usequerystate
-export const useWorldUsers = (): WorldUsersData => {
-  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
-
-  const { isSuccess: isWorldUsersLoaded, worldUsers } = useWorldUsersQueryState(
-    worldUsersApiArgs ?? skipToken,
-    {
-      selectFromResult: (result) => ({
-        isSuccess: result.isSuccess,
-        worldUsers: result.data?.worldUsers ?? [],
-      }),
-    }
-  );
-
-  return {
-    isWorldUsersLoaded,
-    worldUsers,
-  };
 };

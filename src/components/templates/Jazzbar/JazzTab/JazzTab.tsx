@@ -4,7 +4,9 @@ import classNames from "classnames";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
 import {
+  ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_SHOW_REACTIONS,
   DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
 } from "settings";
@@ -18,8 +20,6 @@ import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRecentVenueUsers } from "hooks/users";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -36,7 +36,7 @@ import { UserList } from "components/molecules/UserList";
 import { BackButton } from "components/atoms/BackButton";
 
 import Room from "../components/JazzBarRoom";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -54,14 +54,11 @@ interface JazzProps {
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
-
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
   const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
 
@@ -121,7 +118,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   // };
 
   const shouldShowReactions =
-    seatedAtTable && areSettingsLoaded && settings.showReactions;
+    (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
   const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =
@@ -163,7 +160,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
       {!seatedAtTable && (
         <UserList
-          users={recentVenueUsers}
+          users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
           activity={venue.activity ?? "here"}
           limit={DEFAULT_USER_LIST_LIMIT}
           showMoreUsersToggler
@@ -228,11 +225,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               )}
 
               {shouldShowJukebox && (
-                <Jukebox
-                  recentVenueUsers={recentVenueUsers}
-                  updateIframeUrl={changeIframeUrl}
-                  venue={venue}
-                />
+                <Jukebox updateIframeUrl={changeIframeUrl} venue={venue} />
               )}
 
               {!seatedAtTable && (

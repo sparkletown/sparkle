@@ -42,8 +42,8 @@ export const sendPrivateMessage = async (
 ): Promise<void> => {
   const batch = firebase.firestore().batch();
 
-  const authorRef = getUserChatsCollectionRef(message.from).doc();
-  const recipientRef = getUserChatsCollectionRef(message.to).doc();
+  const authorRef = getUserChatsCollectionRef(message.fromUser.id).doc();
+  const recipientRef = getUserChatsCollectionRef(message.toUser.id).doc();
 
   batch.set(authorRef, message);
   batch.set(recipientRef, message);

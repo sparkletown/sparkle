@@ -39,16 +39,17 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
 
   const logout = useCallback(async () => {
     await firebase.auth().signOut();
+    closeUserProfileModal();
 
     history.push(venue.id ? venueLandingUrl(venue.id) : "/");
-  }, [firebase, history, venue.id]);
+  }, [closeUserProfileModal, firebase, history, venue.id]);
 
   const { selectRecipientChat } = useChatSidebarControls();
 
   const openChosenUserChat = useCallback(() => {
-    selectRecipientChat(user.id);
+    selectRecipientChat(user);
     closeUserProfileModal();
-  }, [user.id, selectRecipientChat, closeUserProfileModal]);
+  }, [selectRecipientChat, user, closeUserProfileModal]);
 
   return isCurrentUser ? (
     editMode ? (

@@ -6,7 +6,6 @@ export const LocalParticipant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
   profileDataId,
-  bartender,
   defaultMute,
   showIcon = true,
   isAudioEffectDisabled,
@@ -16,7 +15,6 @@ export const LocalParticipant: React.FC<ParticipantProps> = ({
       participant={participant}
       profileData={profileData}
       profileDataId={profileDataId}
-      bartender={bartender}
       showIcon={showIcon}
       defaultMute={defaultMute}
       isAudioEffectDisabled={isAudioEffectDisabled}
