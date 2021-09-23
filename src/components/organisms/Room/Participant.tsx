@@ -19,7 +19,6 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
 
 export interface ParticipantProps {
-  bartender?: User;
   defaultMute?: boolean;
   participant: Video.Participant;
   profileData: User;
@@ -35,7 +34,6 @@ type Track = VideoTracks[number] | AudioTracks[number];
 export const Participant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
-  bartender,
   defaultMute = false,
   showIcon = true,
   isAudioEffectDisabled,
@@ -151,7 +149,7 @@ export const Participant: React.FC<ParticipantProps> = ({
   );
 
   return (
-    <div className={`col participant ${bartender ? "bartender" : ""}`}>
+    <div className={"col participant"}>
       {!videoEnabled && <div className="participant--video-disabled" />}
       {videoAndAudio}
       {showIcon && (

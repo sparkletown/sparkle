@@ -1,1 +1,1 @@
-export { default } from "./JazzBarTableComponent";
+export { JazzBarTableComponent } from "./JazzBarTableComponent";

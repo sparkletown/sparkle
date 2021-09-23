@@ -68,17 +68,23 @@ $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 $send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
-$chat-sidebar-width: 360px;
+$chat-sidebar-width: 300px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
-$admin-spaces-sidebar-width: 20%;
 $announcement-container-width-admin: 600px;
 $announcement-container-width: 470px;
 $announcement-container-height: 140px;
 $announcement-banner-admin-height: 55px;
+$admin-ng-sidebar-width--normal: 20%;
+$admin-ng-sidebar-width--min: 360px;
+$admin-ng-tab-footer-height--max: 64px;
+$admin-ng-tab-bar-height: 30px;
+$admin-ng-panel-height: calc(
+  100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
+);
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
