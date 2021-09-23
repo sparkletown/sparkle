@@ -26,7 +26,7 @@ interface EditRoomFormProps {
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
-  venueVisibility: RoomVisibility | undefined;
+  venueVisibility?: RoomVisibility;
 }
 
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({

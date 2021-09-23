@@ -5,7 +5,7 @@ import { LABEL_VISIBILITY_OPTIONS } from "settings";
 
 import "./PortalVisibility.scss";
 
-interface PortalVisibilityProps {
+export interface PortalVisibilityProps {
   register: ReturnType<typeof useForm>["register"];
 }
 
