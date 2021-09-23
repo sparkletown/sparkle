@@ -1,12 +1,7 @@
-import {
-  PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_TEMPLATES,
-  SUBVENUE_TEMPLATES,
-} from "settings";
+import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
 import { VenueInput_v2 } from "api/admin";
 
-import { User } from "types/User";
 import {
   AnyVenue,
   JazzbarVenue,
@@ -14,12 +9,10 @@ import {
   VenueTemplate,
 } from "types/venues";
 
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 
+import { assertUnreachable } from "./error";
 import { WithId } from "./id";
-
-export const canHaveEvents = (venue: AnyVenue): boolean =>
-  PLACEABLE_VENUE_TEMPLATES.includes(venue.template);
 
 export const canHaveSubvenues = (venue: AnyVenue): boolean =>
   SUBVENUE_TEMPLATES.includes(venue.template);
@@ -58,42 +51,6 @@ export const buildEmptyVenue = (
   };
 };
 
-/**
- * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
- * @deprecated legacy tech debt related to Playa, soon to be removed
- */
-export const peopleByLastSeenIn = (
-  venueName: string,
-  users?: readonly WithId<User>[]
-) => {
-  const result: { [lastSeenIn: string]: WithId<User>[] } = {};
-  // @debt This isn't correct, but this is only used by Playa/etc, which are legacy code soon to be removed, so we don't mind
-  // for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-  //   if (user.lastSeenIn) {
-  //     if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
-  //     if (user.lastSeenIn && user.lastSeenIn[venueName]) {
-  //       result[venueName].push(user);
-  //     }
-  //   }
-  // }
-  return result;
-};
-
-/**
- * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
- * @deprecated legacy tech debt related to Playa, soon to be removed
- */
-export const peopleAttending = (
-  peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
-  venue: AnyVenue
-) => {
-  const rooms = venue.rooms?.map((room) => room.title) ?? [];
-
-  const locations = [venue.name, ...rooms];
-
-  return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
-};
-
 export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
@@ -128,5 +85,89 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
     // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
     iframeUrl: "",
     logoImageUrl: "",
+    worldId: "",
   };
+};
+
+export type WithVenue<T extends object> = T & { venue: AnyVenue };
+
+export const withVenue = <T extends object>(
+  obj: T,
+  venue: AnyVenue
+): WithVenue<T> => ({
+  ...obj,
+  venue,
+});
+
+export enum VenueSortingOptions {
+  az = "A - Z",
+  za = "Z - A",
+  newestFirst = "Newest First",
+  oldestFirst = "Oldest First",
+}
+
+export const sortVenues = (
+  venueList: WithId<AnyVenue>[],
+  sortingOption: VenueSortingOptions
+) => {
+  switch (sortingOption) {
+    case VenueSortingOptions.az:
+      return [...venueList].sort((a, b) => a.id.localeCompare(b.id));
+    case VenueSortingOptions.za:
+      return [...venueList].sort((a, b) => -1 * a.id.localeCompare(b.id));
+    case VenueSortingOptions.oldestFirst:
+      return [...venueList].sort(
+        (a, b) =>
+          (a.createdAt ?? 0) - (b.createdAt ?? 0) || a.id.localeCompare(b.id)
+      );
+    case VenueSortingOptions.newestFirst:
+      return [...venueList].sort(
+        (a, b) =>
+          (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
+      );
+    default:
+      assertUnreachable(sortingOption);
+  }
+};
+
+export interface FindSovereignVenueOptions {
+  previouslyCheckedVenueIds?: readonly string[];
+  maxDepth?: number;
+}
+
+export interface FindSovereignVenueReturn {
+  sovereignVenue: WithId<AnyVenue>;
+  checkedVenueIds: readonly string[];
+}
+
+export const findSovereignVenue = (
+  venueId: string,
+  venues: WithId<AnyVenue>[],
+  options?: FindSovereignVenueOptions
+): FindSovereignVenueReturn | undefined => {
+  const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
+
+  const venue = venues.find((venue) => venue.id === venueId);
+
+  if (!venue) return undefined;
+
+  if (!venue.parentId)
+    return {
+      sovereignVenue: venue,
+      checkedVenueIds: previouslyCheckedVenueIds,
+    };
+
+  if (previouslyCheckedVenueIds.includes(venueId))
+    throw new Error(
+      `Circular reference detected. '${venueId}' has already been checked`
+    );
+
+  if (maxDepth && maxDepth <= 0)
+    throw new Error("Maximum depth reached before finding the sovereignVenue.");
+
+  return findSovereignVenue(venue.parentId, venues, {
+    ...options,
+    previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
+    maxDepth: maxDepth ? maxDepth - 1 : undefined,
+  });
 };

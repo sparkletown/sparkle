@@ -6,11 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
-import { currentVenueSelectorData } from "utils/selectors";
-
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -35,24 +31,19 @@ export const Questions: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const { user, userWithId } = useUser();
+  const { user } = useUser();
 
   const venueId = useVenueId();
-  const { sovereignVenue, isSovereignVenueLoading } = useSovereignVenue({
-    venueId,
-  });
+  const {
+    sovereignVenue,
+    currentVenue: venue,
+    isLoading: isSovereignVenueLoading,
+  } = useRelatedVenues({ currentVenueId: venueId });
 
   // @debt this should probably be retrieving the sovereign venue
-  // @debt replace this with useConnectCurrentVenueNG or similar?
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelectorData);
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
-    // @ts-ignore @debt Figure a way to type this properly
-    defaultValues: {
-      ...userWithId,
-    },
   });
 
   const proceed = useCallback(() => {

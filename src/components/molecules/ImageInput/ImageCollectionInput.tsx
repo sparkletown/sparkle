@@ -4,16 +4,17 @@ import firebase from "firebase/app";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
+import { ContainerClassName } from "types/utility";
+
 import "firebase/functions";
 
-interface ImageInputProps {
+interface ImageInputProps extends ContainerClassName {
   collectionPath: string;
   disabled: boolean;
   imageUrl?: string;
   image?: FileList;
   fieldName: string;
   register: ReturnType<typeof useForm>["register"];
-  containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
   imageType: string;
@@ -129,12 +130,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
             )}
         </div>
       </div>
-      <input
-        type="hidden"
-        name={`${fieldName}Url`}
-        ref={register}
-        value={imageUrlForPreview}
-      />
+      <input type="hidden" name={`${fieldName}Url`} ref={register} />
       {error?.message && <span className="input-error">{error.message}</span>}
       {hasImageCollections && (
         <div style={{ marginTop: 10, fontSize: "16px" }}>

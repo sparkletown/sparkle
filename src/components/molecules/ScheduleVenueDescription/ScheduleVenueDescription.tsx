@@ -4,24 +4,20 @@ import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ScheduleVenueDescription.scss";
 
-export interface ScheduleVenueDescriptionProps {
-  venueId: string;
-}
+export const ScheduleVenueDescription: FC = () => {
+  const { sovereignVenue } = useRelatedVenues();
 
-export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
-  venueId,
-}) => {
-  const { sovereignVenue } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
-
-  const venueIcon = sovereignVenue?.host?.icon ?? DEFAULT_VENUE_LOGO;
+  const [venueIcon] = useValidImage(
+    sovereignVenue?.host?.icon,
+    DEFAULT_VENUE_LOGO
+  );
 
   const containerCssVars = useCss({
     "--venue-picture--background-image": `url(${venueIcon})`,

@@ -4,19 +4,13 @@ import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import {
-  BaseMessageToDisplay,
-  DeleteMessage,
-  PollMessage,
-  PollQuestion,
-  PollVoteBase,
-} from "types/chat";
-import { AnyVenue } from "types/venues";
+import { DeleteMessage, PollMessage, PollQuestion } from "types/chat";
 
 import { WithId } from "utils/id";
 
-import { useRoles } from "hooks/useRoles";
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUser } from "hooks/useUser";
+import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -28,48 +22,33 @@ import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
-  venue: WithId<AnyVenue>;
-  deletePollMessage: DeleteMessage;
-  voteInPoll: (pollVote: PollVoteBase) => void;
+  pollMessage: WithId<PollMessage>;
+  deletePollMessage?: DeleteMessage;
+  voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
-  venue,
   voteInPoll,
   deletePollMessage,
 }) => {
   const { userId } = useUser();
-  const { userRoles } = useRoles();
-
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-  const owners = venue.owners;
-
-  const { id, poll, votes, isMine } = pollMessage;
+  const { id, poll, votes } = pollMessage;
   const { questions, topic } = poll;
-
-  const canBeDeleted: boolean = useMemo(() => {
-    if (!userId || !owners.length) return false;
-
-    return isAdmin && owners.includes(userId);
-  }, [isAdmin, userId, owners]);
+  const isMine = useIsCurrentUser(pollMessage.fromUser.id);
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
     : false;
 
-  const message = useMemo(() => ({ ...pollMessage, canBeDeleted }), [
-    pollMessage,
-    canBeDeleted,
-  ]);
+  const message = useMemo(() => ({ ...pollMessage }), [pollMessage]);
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
   });
 
   const [{ loading: isVoting }, handleVote] = useAsyncFn(
-    async (question) =>
+    (question) =>
       voteInPoll({
         questionId: question.id,
         pollId: id,
@@ -145,10 +124,10 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     return renderQuestions;
   };
 
-  const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
-    id,
-    deletePollMessage,
-  ]);
+  const deleteThisPollMessage = useCallback(
+    async () => deletePollMessage?.(id),
+    [id, deletePollMessage]
+  );
 
   return (
     <div className={containerStyles}>
@@ -167,7 +146,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteThisPollMessage}
+        deleteMessage={deletePollMessage && deleteThisPollMessage}
       />
     </div>
   );

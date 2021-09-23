@@ -58,7 +58,6 @@
   }
 
   &__search-results {
-    @include scrollbar;
     overflow-y: auto;
     max-height: $search-results-height--max;
   }

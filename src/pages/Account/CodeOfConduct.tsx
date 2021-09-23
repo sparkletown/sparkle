@@ -4,9 +4,7 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { IS_BURN } from "secrets";
-
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
@@ -42,54 +40,23 @@ export interface CodeOfConductQuestion {
   link?: string;
 }
 
-/**
- * @debt remove this along with Playa cleanup
- * @deprecated
- */
-const BURN_CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
-  {
-    name: "commonDecency",
-    text:
-      "I will endeavor not to create indecent experiences or content, and understand my actions may be subject to review and possible disciplinary action",
-  },
-  {
-    name: "tenPrinciples",
-    text:
-      "I agree to abide by the Ten Principles of Burning Man at the online burn",
-    link: "https://burningman.org/culture/philosophical-center/10-principles/",
-  },
-  {
-    name: "termsAndConditions",
-    text: "I agree to SparkleVerse's Terms and Conditions",
-    link: "https://sparklever.se/terms-and-conditions",
-  },
-];
-
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
   const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
-  const { user, userWithId } = useUser();
+  const { user } = useUser();
 
   const venueId = useVenueId();
 
   // @debt this should probably be retrieving the sovereign venue
   // @debt replace this with useConnectCurrentVenueNG or similar?
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    watch,
-  } = useForm<CodeOfConductFormData>({
+  const { register, handleSubmit, errors, formState, watch } = useForm<
+    CodeOfConductFormData & Record<string, boolean>
+  >({
     mode: "onChange",
-    // @ts-ignore @debt Figure a way to type this properly
-    defaultValues: {
-      ...userWithId,
-    },
   });
 
   const proceed = useCallback(() => {
@@ -138,9 +105,7 @@ export const CodeOfConduct: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const codeOfConductQuestions = IS_BURN
-    ? BURN_CODE_OF_CONDUCT_QUESTIONS
-    : venue?.code_of_conduct_questions ?? [];
+  const codeOfConductQuestions = venue?.code_of_conduct_questions ?? [];
 
   return (
     <div className="CodeOfConduct page-container">
@@ -153,8 +118,6 @@ export const CodeOfConduct: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="form">
             {codeOfConductQuestions.map((question) => (
               <div className="input-group" key={question.name}>
-                {/* @debt we should probably be rendering the question.name here as a label */}
-                {/*<strong>{question.name}</strong>*/}
                 <label
                   htmlFor={question.name}
                   className={`checkbox ${
@@ -177,12 +140,9 @@ export const CodeOfConduct: React.FC = () => {
                     required: true,
                   })}
                 />
-                {
-                  /* @ts-ignore @debt questions should be typed if possible */
-                  errors[question.name]?.type === "required" && (
-                    <span className="input-error">Required</span>
-                  )
-                }
+                {errors[question.name]?.type === "required" && (
+                  <span className="input-error">Required</span>
+                )}
               </div>
             ))}
 

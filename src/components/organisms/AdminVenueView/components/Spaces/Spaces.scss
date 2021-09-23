@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-$venue-room-logo-size: 34px;
+$venue-room-logo-size: 36px;
 $button-size: 50px;
 $icon-size: 20px;
 
@@ -8,20 +8,19 @@ $icon-size: 20px;
   display: flex;
   flex: 1;
 
-  &__rooms {
-    width: 20%;
+  .MapPreview {
+    width: calc(100% - 1px);
+    height: calc(100% - 1px);
+    margin: 0;
   }
 
   &__map {
-    width: 80%;
     background-color: $secondary--dark;
     justify-content: center;
     align-items: center;
-    padding: 40px;
-  }
-
-  &__background {
-    padding: 20px;
+    padding: $spacing--lg;
+    margin: 0;
+    max-height: $admin-ng-panel-height;
   }
 
   &__upload-background-wrapper {
@@ -73,90 +72,12 @@ $icon-size: 20px;
   }
 
   &__venue-room-logo {
-    height: $venue-room-logo-size;
-    width: $venue-room-logo-size;
+    @include square-size($venue-room-logo-size);
     margin-right: $spacing--md;
     background-size: contain;
     background-position: center;
     border-radius: $border-radius--xs;
     box-shadow: 0 0 0 3px $primary;
-  }
-
-  &__footer {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 20%;
-    padding: $spacing--md;
-    background-color: $black;
-    border-top: 1px solid opaque-white(0.2);
-  }
-
-  &__home-button {
-    cursor: pointer;
-    display: flex;
-    width: $button-size;
-    height: $button-size;
-    border-radius: 100%;
-    justify-content: center;
-    align-items: center;
-    transition: all 400ms $transition-function;
-    background-color: lighten($color: $saturated-black, $amount: 10);
-
-    &:hover {
-      background-color: lighten($color: $saturated-black, $amount: 20);
-    }
-  }
-
-  &__nav-buttons {
-    display: flex;
-    flex-direction: row;
-  }
-
-  &__back-button {
-    cursor: pointer;
-    display: flex;
-    height: $button-size;
-    font-weight: $font-weight--400;
-    font-size: $font-size--xs;
-    border-radius: $border-radius--xl;
-    justify-content: center;
-    align-items: center;
-    padding: $spacing--md $spacing--lg;
-    margin: 0 5px;
-    transition: all 400ms $transition-function;
-    background-color: lighten($color: $saturated-black, $amount: 10);
-
-    &:hover {
-      background-color: lighten($color: $saturated-black, $amount: 20);
-    }
-  }
-
-  &__next-button {
-    cursor: pointer;
-    display: flex;
-    height: $button-size;
-    font-weight: $font-weight--400;
-    font-size: $font-size--xs;
-    border-radius: $border-radius--xl;
-    justify-content: center;
-    align-items: center;
-    padding: $spacing--md $spacing--lg;
-    margin: 0 5px;
-    transition: all 400ms $transition-function;
-    background-color: $primary;
-
-    &:hover {
-      background-color: lighten($color: $primary, $amount: 10);
-    }
-  }
-
-  &__home-icon {
-    width: $icon-size;
-    height: $icon-size;
-    background-size: $icon-size $icon-size;
   }
 
   &__appearance {

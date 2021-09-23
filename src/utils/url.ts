@@ -11,17 +11,23 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
-export const adminNGRootUrl = () => generatePath("/admin-ng");
-export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(`/admin-ng/venue/:venueId?/:selectedTab?`, {
-    venueId,
-    selectedTab,
-  });
-export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(`/admin-ng/advanced-settings/:venueId?/:selectedTab?`, {
-    venueId,
-    selectedTab,
-  });
+const createAdminUrlHelperFor = (segment: string) => (
+  venueId?: string,
+  selectedTab?: string
+) =>
+  segment
+    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
+        segment: segment,
+        venueId: venueId,
+        selectedTab: selectedTab,
+      })
+    : generatePath("/admin-ng");
+
+export const adminOGRootUrl = generatePath("/admin");
+export const adminNGRootUrl = createAdminUrlHelperFor("");
+export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
+export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const ADMIN_CREATE_SPACE_URL = "/admin-ng/create/venue";
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
@@ -62,7 +68,8 @@ export interface OpenUrlOptions {
 export const openUrl = (url: string, options?: OpenUrlOptions) => {
   const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
 
-  if (!isValidUrl(url)) {
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+  if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
@@ -88,11 +95,30 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
   }
 };
 
-export const isValidUrl = (url: string): boolean => {
+/**
+ * @deprecated This function doesn't perform a url check and returns true each time;
+ * Use isValidUrl instead if you want to validate that URL is correct
+ */
+export const isCurrentLocationValidUrl = (url: string): boolean => {
   try {
     return VALID_URL_PROTOCOLS.includes(
       new URL(url, window.location.origin).protocol
     );
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
+};
+
+export const isValidUrl = (urlString: string) => {
+  if (!urlString) return false;
+
+  try {
+    const url = new URL(urlString);
+
+    return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
     if (e.name === "TypeError") {
       return false;
@@ -122,4 +148,17 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
+};
+
+export const resolveUrlPath: (path: string) => string = (path) => {
+  const base = window.location.href;
+  try {
+    return new URL(path, base).href;
+  } catch (error) {
+    Bugsnag.notify(new Error(error), (event) => {
+      event.severity = "info";
+      event.addMetadata("utils/url::resolveUrlPath", { path, base });
+    });
+    return "";
+  }
 };

@@ -1,12 +1,13 @@
-import { User } from "types/User";
+import { User, UserLocation } from "types/User";
 import { ReactHook } from "types/utility";
 
 import { WithId } from "utils/id";
+import { wrapIntoSlashes } from "utils/string";
 
-import { useRecentLocationUsers } from "hooks/users";
+import { useRecentWorldUsers } from "./useRecentWorldUsers";
 
 export interface UseRecentVenueUsersProps {
-  venueName?: string;
+  venueId?: string;
 }
 
 export interface RecentVenueUsersData {
@@ -14,18 +15,28 @@ export interface RecentVenueUsersData {
   isRecentVenueUsersLoaded: boolean;
 }
 
-// @debt refactor this to use venueId as soon as we refactor location tracking to use venueId instead of venueName
 export const useRecentVenueUsers: ReactHook<
   UseRecentVenueUsersProps,
   RecentVenueUsersData
-> = ({ venueName }) => {
+> = ({ venueId }) => {
   const {
-    recentLocationUsers,
-    isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers(venueName);
+    recentWorldUsers,
+    worldUserLocationsById,
+    isRecentWorldUsersLoaded,
+  } = useRecentWorldUsers();
+
+  const recentLocationUsers = recentWorldUsers.filter((user) => {
+    const userLocation: WithId<UserLocation> | undefined =
+      worldUserLocationsById[user.id];
+
+    return (
+      venueId &&
+      userLocation?.lastVenueIdSeenIn?.includes(wrapIntoSlashes(venueId))
+    );
+  });
 
   return {
-    recentVenueUsers: recentLocationUsers,
-    isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
+    recentVenueUsers: recentLocationUsers as readonly WithId<User>[],
+    isRecentVenueUsersLoaded: isRecentWorldUsersLoaded,
   };
 };

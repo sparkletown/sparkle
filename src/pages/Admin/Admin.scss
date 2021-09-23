@@ -2,6 +2,12 @@
 
 $page-max-width: 1240px;
 
+$sorting-dropdown--width: 60%;
+$sorting-dropdown--left: calc(100% - #{$sorting-dropdown--width});
+$sorting-dropdown--top: 40px;
+
+$sorting-option--font-size: 0.8rem;
+
 .admin-dashboard {
   overflow: hidden;
   height: 100%;
@@ -27,6 +33,7 @@ $page-max-width: 1240px;
     background-color: $black;
     border-bottom: 1px solid rgba($white, 0.2);
     box-shadow: box-shadow--large(0.62);
+
     .navbar-container {
       position: relative;
       width: 100%;
@@ -35,6 +42,7 @@ $page-max-width: 1240px;
       max-width: $page-max-width;
       padding: 0 20px;
     }
+
     .sparkleverse-logo_navbar {
       width: 200px;
       height: 48px;
@@ -62,34 +70,76 @@ $page-max-width: 1240px;
       top: 0;
       left: 0;
       overflow: auto;
-      scrollbar-width: thin;
 
       background-image: $admin-gradient;
+
+      &__sorting-dropdown {
+        position: absolute;
+        top: $sorting-dropdown--top;
+        left: $sorting-dropdown--left;
+        width: $sorting-dropdown--width;
+        background: $room-card-background;
+        border-radius: $border-radius--lg;
+        padding: $spacing--lg $spacing--sm;
+      }
+
+      &__sorting-list {
+        list-style-type: none;
+        font-size: $sorting-option--font-size;
+        margin-bottom: 0;
+      }
+
+      &__sorting-option {
+        &:hover {
+          color: var(--primary-color);
+          cursor: pointer;
+        }
+
+        &--active {
+          color: $primary--lightest;
+        }
+      }
 
       .page-container-adminsidebar-title {
         background: rgba($black, 0.15);
         padding: 14px;
+
+        &__ellipsis {
+          float: right;
+
+          &:hover {
+            cursor: pointer;
+            color: $light-grey--lightest;
+          }
+        }
       }
+
       .page-container-adminsidebar-top {
         padding: 14px;
         text-align: center;
         width: 100%;
+
         .btn {
           width: 100%;
         }
       }
+
       ul.page-container-adminsidebar-venueslist {
         list-style-type: none;
+
         li {
           position: relative;
           padding: 14px;
           cursor: pointer;
+
           &:hover {
             background: rgba($black, 0.15);
           }
+
           &.selected {
             background: rgba($black, 0.3);
           }
+
           &.camp {
             &:after {
               position: absolute;
@@ -102,18 +152,22 @@ $page-max-width: 1240px;
               background-size: 20px 20px;
               transition: all 400ms $transition-function;
             }
+
             ul.page-container-adminsidebar-subvenueslist {
               list-style-type: none;
               display: block;
+
               li {
                 text-indent: 20px;
                 opacity: 0.5;
               }
             }
+
             &.selected {
               &:after {
                 transform: rotate(180deg);
               }
+
               // ul.page-container-adminsidebar-subvenueslist {
               //   display: block;
               // }
@@ -122,6 +176,7 @@ $page-max-width: 1240px;
         }
       }
     }
+
     .page-container-adminpanel {
       height: 100%;
       max-height: 100%;
@@ -133,6 +188,7 @@ $page-max-width: 1240px;
       .page-container-adminpanel-tabs {
         background: rgba($white, 0.15);
         display: flex;
+
         .page-container-adminpanel-tab {
           position: relative;
           padding: 14px 40px;
@@ -142,8 +198,10 @@ $page-max-width: 1240px;
           &:hover {
             opacity: 1;
           }
+
           &.selected {
             opacity: 1;
+
             &:after {
               content: "";
               position: absolute;
@@ -157,6 +215,7 @@ $page-max-width: 1240px;
           }
         }
       }
+
       .page-container-adminpanel-venuepage {
         height: 100%;
         max-height: 100%;
@@ -188,11 +247,13 @@ $page-max-width: 1240px;
             flex-direction: row;
             margin-top: 5px;
             justify-content: flex-start;
+
             .search-event-input {
               margin-left: 15px;
               margin-right: 10px;
             }
           }
+
           .venue-header {
             position: absolute;
             top: 0;
@@ -203,6 +264,7 @@ $page-max-width: 1240px;
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
+
             &:after {
               content: "";
               position: absolute;
@@ -219,6 +281,7 @@ $page-max-width: 1240px;
               );
             }
           }
+
           .venue-preview {
             margin: 15px;
             border: 4px solid rgba($white, 0.2);
@@ -244,34 +307,43 @@ $page-max-width: 1240px;
             .heading {
               text-align: center;
             }
+
             .heading-group {
               margin-top: 20px;
+
               .title {
                 margin-right: 10px;
               }
             }
+
             .content-group {
               margin-top: 20px;
+
               .title {
                 margin-right: 20px;
                 width: 100px;
               }
+
               .banner {
                 width: 100%;
               }
+
               .icon {
                 width: 100px;
               }
             }
           }
         }
+
         .page-container-adminpanel-actions {
           padding-right: 40px;
           padding-top: 20px;
+
           &__note {
             margin-bottom: 12px;
           }
         }
+
         .page-container-adminpanel-sidebar {
           background-image: $admin-gradient;
           overflow-x: hidden;
@@ -336,7 +408,7 @@ $page-max-width: 1240px;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #ccc;
+      background-color: #cccccc;
       -webkit-transition: 0.4s;
       transition: 0.4s;
 
@@ -356,22 +428,28 @@ $page-max-width: 1240px;
       &.round {
         border-radius: 34px;
       }
+
       &.round:before {
         border-radius: 50%;
       }
     }
   }
+
   .rooms-list-container {
     margin: 20px;
+
     .room-stats {
       display: flex;
       justify-content: space-between;
     }
+
     .rooms-counter {
       align-self: center;
     }
+
     .add-rooms-button {
     }
+
     .venue-room-details {
       background: #1a1d24;
       border-radius: 50px;
@@ -381,6 +459,7 @@ $page-max-width: 1240px;
       .venue-content {
         display: flex;
         justify-content: space-between;
+
         .sub-content {
         }
       }
@@ -389,15 +468,19 @@ $page-max-width: 1240px;
         display: flex;
         justify-content: space-between;
         margin-bottom: 20px;
+
         h4 {
           font-size: 30px;
         }
+
         .room-options {
           display: flex;
           justify-content: space-between;
           flex-direction: column;
+
           .edit-room {
           }
+
           .toggle-room {
             align-self: center;
           }
@@ -405,27 +488,33 @@ $page-max-width: 1240px;
       }
     }
   }
+
   .banner {
     border-radius: 25px;
     overflow: hidden;
     height: 100%;
+
     .banner-image {
       height: 70px;
       width: 70px;
     }
   }
+
   .rooms-events-list {
     margin-top: 25px;
+
     .admin-room-list-events {
       display: flex;
       justify-content: space-between;
     }
+
     .event-description {
       &:first-child {
         display: block;
       }
     }
   }
+
   .room-disabled {
     color: #8a8b8e;
   }

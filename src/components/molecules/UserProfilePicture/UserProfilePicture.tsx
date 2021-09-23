@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import { User, UsernameVisibility } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -10,6 +11,8 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { UserReactions } from "components/molecules/UserReactions";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
+
+import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
@@ -44,10 +47,9 @@ import "./UserProfilePicture.scss";
 //   return DEFAULT_PROFILE_IMAGE;
 // };
 
-export interface UserProfilePictureProp {
+export interface UserProfilePictureProp extends ContainerClassName {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
-  containerClassName?: string;
   reactionPosition?: "left" | "right";
   showNametags?: UsernameVisibility;
   showStatus?: boolean;
@@ -55,6 +57,7 @@ export interface UserProfilePictureProp {
    * @deprecated Note: This feature is currently disabled.
    */
   miniAvatars?: boolean;
+  size?: UserAvatarSize;
 }
 
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
@@ -64,6 +67,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition = "right",
   showNametags,
   showStatus = false,
+  size,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
 }) => {
@@ -71,9 +75,9 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const openProfileModal = useCallback(() => openUserProfileModal(user), [
+  const openProfileModal = useCallback(() => openUserProfileModal(user?.id), [
     openUserProfileModal,
-    user,
+    user?.id,
   ]);
 
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
@@ -117,6 +121,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         containerClassName="UserProfilePicture__avatar"
         showNametag={showNametags}
         showStatus={showStatus}
+        size={size}
       />
 
       {userId && (

@@ -3,10 +3,11 @@ import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { MessageToDisplay } from "types/chat";
+import { DeleteMessage, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -18,7 +19,7 @@ import "./ChatMessage.scss";
 
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
-  deleteMessage: (messageId: string) => void;
+  deleteMessage?: DeleteMessage;
   selectThisThread: () => void;
 }
 
@@ -27,9 +28,10 @@ export const ChatMessage: React.FC<ChatProps> = ({
   deleteMessage,
   selectThisThread,
 }) => {
-  const { text, replies, id, isMine, isQuestion } = message;
+  const isMine = useIsCurrentUser(message.fromUser.id);
+  const { text, replies, id, isQuestion } = message;
 
-  const deleteThisMessage = useCallback(() => deleteMessage(id), [
+  const deleteThisMessage = useCallback(async () => deleteMessage?.(id), [
     deleteMessage,
     id,
   ]);
@@ -43,15 +45,19 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const renderedReplies = useMemo(
     () =>
-      replies?.map((reply) => (
-        <div key={reply.id} className="ChatMessage__reply">
-          <RenderMarkdown text={reply.text} allowHeadings={false} />
-          <ChatMessageInfo
-            message={reply}
-            deleteMessage={() => deleteMessage(reply.id)}
-          />
-        </div>
-      )),
+      replies?.map((reply) => {
+        const deleteReplyMessage = async () => deleteMessage?.(reply.id);
+
+        return (
+          <div key={reply.id} className="ChatMessage__reply">
+            <RenderMarkdown text={reply.text} allowHeadings={false} />
+            <ChatMessageInfo
+              message={reply}
+              deleteMessage={deleteMessage && deleteReplyMessage}
+            />
+          </div>
+        );
+      }),
     [replies, deleteMessage]
   );
 
@@ -100,7 +106,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteThisMessage}
+        deleteMessage={deleteMessage && deleteThisMessage}
       />
     </div>
   );

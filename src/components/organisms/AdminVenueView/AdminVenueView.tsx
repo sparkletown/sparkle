@@ -8,12 +8,15 @@ import classNames from "classnames";
 
 import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+
+import { WithNavigationBar } from "../WithNavigationBar";
+
+import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
 
@@ -28,6 +31,12 @@ export enum AdminVenueTab {
 export interface AdminVenueViewRouteParams {
   venueId?: string;
   selectedTab?: AdminVenueTab;
+}
+
+export interface TabNavigationProps {
+  onClickHome: () => void;
+  onClickBack: () => void;
+  onClickNext: () => void;
 }
 
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
@@ -48,9 +57,6 @@ export const AdminVenueView: React.FC = () => {
     venueId,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
-
-  const { userId } = useUser();
-  const { isAdminUser } = useIsAdminUser(userId);
 
   // Get and pass venue to child components when working on tabs
   const {
@@ -100,31 +106,42 @@ export const AdminVenueView: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (!isAdminUser) {
-    return <>Forbidden</>;
+  if (!venue) {
+    // @debt replace null with a `NotFound` component for better UX
+    return null;
   }
 
   return (
-    <>
-      <div className="AdminVenueView">
-        <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
-      </div>
-      {selectedTab === AdminVenueTab.spaces && (
-        <Spaces
-          onClickHome={navigateToHome}
-          onClickNext={navigateToTiming}
-          venue={venue}
-        />
-      )}
-      {selectedTab === AdminVenueTab.timing && (
-        <Timing
-          onClickBack={navigateToSpaces}
-          onClickHome={navigateToHome}
-          onClickNext={navigateToRun}
-          venue={venue}
-        />
-      )}
-      {selectedTab === AdminVenueTab.run && <div>Run</div>}
-    </>
+    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+      <AdminRestricted>
+        <div className="AdminVenueView">
+          <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
+        </div>
+        {selectedTab === AdminVenueTab.spaces && (
+          <Spaces
+            onClickHome={navigateToHome}
+            onClickBack={navigateToHome}
+            onClickNext={navigateToTiming}
+            venue={venue}
+          />
+        )}
+        {selectedTab === AdminVenueTab.timing && (
+          <Timing
+            onClickHome={navigateToHome}
+            onClickBack={navigateToSpaces}
+            onClickNext={navigateToRun}
+            venue={venue}
+          />
+        )}
+        {selectedTab === AdminVenueTab.run && (
+          <RunTabView
+            onClickHome={navigateToHome}
+            onClickBack={navigateToTiming}
+            onClickNext={navigateToHome}
+            venue={venue}
+          />
+        )}
+      </AdminRestricted>
+    </WithNavigationBar>
   );
 };

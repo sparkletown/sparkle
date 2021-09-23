@@ -4,26 +4,23 @@ import { useHistory } from "react-router-dom";
 import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
-
-import { IS_BURN } from "secrets";
+import { isEmpty } from "lodash";
 
 import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { radioStationsSelector } from "utils/selectors";
-import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
@@ -50,29 +47,17 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   </Popover>
 );
 
-const ProfilePopover = (
-  <Popover id="profile-popover">
-    <Popover.Content className="NavBar__profile-popover">
-      <ProfilePopoverContent />
-    </Popover.Content>
-  </Popover>
-);
-
-const GiftPopover = (
-  <Popover id="gift-popover">
-    <Popover.Content>
-      <GiftTicketModal />
-    </Popover.Content>
-  </Popover>
-);
-
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
   hasBackButton?: boolean;
+  withSchedule?: boolean;
 }
 
-export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
+export const NavBar: React.FC<NavBarPropsType> = ({
+  hasBackButton = true,
+  withSchedule = true,
+}) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
 
@@ -94,8 +79,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
+  const { openUserProfileModal } = useProfileModalControls();
+
+  const handleAvatarClick = useCallback(() => {
+    openUserProfileModal(userWithId?.id);
+  }, [openUserProfileModal, userWithId]);
+
   const shouldShowSchedule =
-    currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+    withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -106,16 +97,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
-  const hasRadioStations = radioStations && radioStations.length;
+  const hasRadioStations = useCallback(
+    (arr: string[] | undefined): arr is string[] => !isEmpty(arr),
+    []
+  );
+
   const isSoundCloud =
-    !!hasRadioStations && RegExp("soundcloud").test(radioStations![0]);
+    hasRadioStations(radioStations) &&
+    RegExp("soundcloud").test(radioStations[0]);
 
   const sound = useMemo(
     () =>
-      radioStations && hasElements(radioStations) && !isSoundCloud
+      radioStations && hasRadioStations(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
-    [isSoundCloud, radioStations]
+    [hasRadioStations, isSoundCloud, radioStations]
   );
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
@@ -177,7 +173,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? currentVenue.name;
 
-  const radioStation = !!hasRadioStations && radioStations![0];
+  const radioStation = hasRadioStations(radioStations) && radioStations[0];
 
   const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio =
@@ -220,7 +216,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers venueId={venueId} />
+              <VenuePartygoers />
             </div>
 
             {!user && <NavBarLogin />}
@@ -238,19 +234,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   >
                     <span className="tickets-icon">
                       <FontAwesomeIcon icon={faTicketAlt} />
-                    </span>
-                  </OverlayTrigger>
-                )}
-
-                {IS_BURN && currentVenue?.showGiftATicket && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={GiftPopover}
-                    rootClose={true}
-                  >
-                    <span className="private-chat-icon">
-                      <div className="navbar-link-gift" />
                     </span>
                   </OverlayTrigger>
                 )}
@@ -305,15 +288,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={ProfilePopover}
-                  rootClose={true}
+                <div
+                  className="navbar-links-user-avatar"
+                  onClick={handleAvatarClick}
                 >
                   <UserAvatar user={userWithId} showStatus size="medium" />
-                </OverlayTrigger>
+                </div>
               </div>
             )}
           </div>

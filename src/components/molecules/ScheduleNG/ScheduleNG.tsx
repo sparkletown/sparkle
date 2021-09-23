@@ -1,14 +1,15 @@
-import React, { useMemo } from "react";
+import React from "react";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { Loading } from "components/molecules/Loading";
-import { ScheduleItemNG } from "components/molecules/ScheduleItemNG";
+import { ScheduleEventListNG } from "components/molecules/ScheduleEventListNG";
 
 import "./ScheduleNG.scss";
 
 export interface ScheduleNGProps {
-  daysEvents: PersonalizedVenueEvent[];
+  daysEvents: ScheduledVenueEvent[];
+  scheduleDate: Date;
   isLoading: boolean;
   showPersonalisedSchedule: boolean;
 }
@@ -17,16 +18,9 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   daysEvents,
   isLoading,
   showPersonalisedSchedule,
+  scheduleDate,
 }) => {
   const hasEvents = daysEvents.length > 0;
-
-  const eventsRows = useMemo(
-    () =>
-      daysEvents.map((event) => (
-        <ScheduleItemNG key={event.id} event={event} />
-      )),
-    [daysEvents]
-  );
 
   if (isLoading) {
     return (
@@ -44,7 +38,10 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
           {showPersonalisedSchedule ? "No saved events" : "No events scheduled"}
         </div>
       ) : (
-        eventsRows
+        <ScheduleEventListNG
+          daysEvents={daysEvents}
+          scheduleDate={scheduleDate}
+        />
       )}
     </div>
   );

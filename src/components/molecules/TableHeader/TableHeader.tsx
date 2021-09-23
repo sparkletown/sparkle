@@ -30,6 +30,7 @@ import "./TableHeader.scss";
 export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
+  venueId: string;
   venueName: string;
   tables: Table[];
 }
@@ -37,13 +38,15 @@ export interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
+  venueId,
   venueName,
   tables,
 }) => {
   const { user, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  // @debt should be replaced with a subcollection
+  const { recentVenueUsers } = useRecentVenueUsers({ venueId });
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(
@@ -68,6 +71,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
+  // @debt should be replaced with a subcollection
   const currentTableHasSeatedUsers = useMemo(
     () =>
       !!recentVenueUsers.find(

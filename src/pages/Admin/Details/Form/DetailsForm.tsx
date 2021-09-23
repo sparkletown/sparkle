@@ -1,22 +1,15 @@
 import React, { useCallback, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-// Hooks
 import { useHistory } from "react-router-dom";
 
-// API
-import {
-  createUrlSafeName,
-  createVenue_v2,
-  updateVenue_v2,
-  VenueInput_v2,
-} from "api/admin";
+import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
-// Typings
+import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
+
 import { VenueTemplate } from "types/venues";
 
-// Utils | Settings | Constants | Helpers
-import { venueLandingUrl } from "utils/url";
+import { adminNGRootUrl, adminNGVenueUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
@@ -26,16 +19,12 @@ import {
   setBannerURL,
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
-// Reducer
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
-// Components
 import ImageInput from "components/atoms/ImageInput";
 
-// Validation schemas
 import { validationSchema_v2 } from "../ValidationSchema";
 
-// Stylings
 import * as S from "./DetailsForm.styles";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
@@ -44,19 +33,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const onSubmit = useCallback(
+  const setWorld = useCallback(
     async (vals: FormValues) => {
       if (!user) return;
 
-      try {
-        // unfortunately the typing is off for react-hook-forms.
-        if (venueId) await updateVenue_v2(vals as VenueInput_v2, user);
-        else await createVenue_v2(vals as VenueInput_v2, user);
+      const world = { ...vals, id: createUrlSafeName(vals.name) };
 
-        if (vals.name) {
-          history.push(`/admin-ng/venue/${createUrlSafeName(vals.name)}`);
+      try {
+        if (venueId) {
+          await updateVenue_v2(world, user);
+          history.push(adminNGRootUrl());
         } else {
-          history.push("/admin-ng");
+          await createWorld(world, user);
+          history.push(adminNGVenueUrl(world.id));
         }
       } catch (e) {
         console.error(e);
@@ -72,6 +61,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     setValue,
     errors,
     handleSubmit,
+    triggerValidation,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
@@ -102,16 +92,22 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         { name: editData?.name },
         { subtitle: editData?.subtitle },
         { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl },
-        { logoImageUrl: editData?.logoImageUrl },
+        { bannerImageUrl: editData?.bannerImageUrl ?? DEFAULT_VENUE_BANNER },
+        { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
         { showGrid: editData?.showGrid },
       ]);
     }
-  }, [editData, setValue, values.columns, venueId]);
+  }, [editData, setValue, venueId]);
 
-  const handleBannerUpload = (url: string) => setBannerURL(dispatch, url);
+  const handleBannerUpload = (url: string) => {
+    setBannerURL(dispatch, url);
+    void triggerValidation();
+  };
 
-  const handleLogoUpload = (url: string) => setSquareLogoUrl(dispatch, url);
+  const handleLogoUpload = (url: string) => {
+    setSquareLogoUrl(dispatch, url);
+    void triggerValidation();
+  };
 
   const renderVenueName = () => (
     <S.InputContainer hasError={!!errors?.name}>
@@ -181,7 +177,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         onChange={handleBannerUpload}
         name="bannerImage"
         error={errors.bannerImageFile || errors.bannerImageUrl}
-        forwardRef={register}
+        setValue={setValue}
+        register={register}
         imgUrl={editData?.bannerImageUrl}
       />
     </S.InputContainer>
@@ -197,7 +194,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         name="logoImage"
         small
         error={errors.logoImageFile || errors.logoImageUrl}
-        forwardRef={register}
+        setValue={setValue}
+        register={register}
         imgUrl={editData?.logoImageUrl}
       />
     </S.InputContainer>
@@ -215,7 +213,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
+    <Form onSubmit={handleSubmit(setWorld)} onChange={handleOnChange}>
       <S.FormInnerWrapper>
         <input
           type="hidden"

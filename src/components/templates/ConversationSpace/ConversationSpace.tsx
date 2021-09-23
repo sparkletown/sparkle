@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-import { DEFAULT_USER_LIST_LIMIT } from "settings";
+import { ALWAYS_EMPTY_ARRAY, DEFAULT_USER_LIST_LIMIT } from "settings";
 
 import { GenericVenue } from "types/venues";
 
@@ -9,7 +9,6 @@ import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -39,8 +38,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   const { parentVenue, parentVenueId } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
-
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const {
     isShown: showOnlyAvailableTables,
@@ -107,6 +104,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
+                  venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
                 />
@@ -134,6 +132,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
               venueName={venue.name}
+              venueId={venue.id}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
@@ -141,7 +140,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             />
           </div>
           <UserList
-            users={recentVenueUsers}
+            users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             activity={venue?.activity ?? "here"}
             limit={DEFAULT_USER_LIST_LIMIT}
             showMoreUsersToggler

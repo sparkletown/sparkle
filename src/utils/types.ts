@@ -1,8 +1,5 @@
 export const isTruthy = <T>(item: T): item is NonNullable<T> => !!item;
 
-export const hasElements = <T>(array?: T[] | null): boolean =>
-  isTruthy(array?.length);
-
 export const notEmpty = <T>(
   value: T | null | undefined
 ): value is NonNullable<T> => value !== null && value !== undefined;
@@ -29,3 +26,5 @@ export const arrayIncludes = <T>(arr?: T[], element?: T | null): boolean => {
 
   return arr.includes(element);
 };
+
+export const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www\.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w\-_]*)?\??[-+=&;%@.\w_]*#?[.!/\\\w]*)?)/;

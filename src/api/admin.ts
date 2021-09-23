@@ -1,5 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import firebase, { UserInfo } from "firebase/app";
+import firebase from "firebase/app";
 import { omit } from "lodash";
 
 import { Room, RoomData_v2 } from "types/rooms";
@@ -12,7 +12,7 @@ import {
   VenueTemplate,
 } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithWorldId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
@@ -21,7 +21,7 @@ export interface EventInput {
   start_date: string;
   start_time: string;
   duration_hours: number;
-  duration_minutes: number;
+  duration_minutes?: number;
   host: string;
   room?: string;
 }
@@ -78,10 +78,11 @@ export type VenueInput = AdvancedVenueInput &
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
-    subtitle: string;
-    description: string;
+    subtitle?: string;
+    description?: string;
     zoomUrl?: string;
     iframeUrl?: string;
+    autoPlay?: boolean;
     template: VenueTemplate;
     rooms?: Array<Room>;
     placement?: Omit<VenuePlacement, "state">;
@@ -94,13 +95,13 @@ export type VenueInput = AdvancedVenueInput &
     bannerMessage?: string;
     parentId?: string;
     owners?: string[];
-    showRangers?: boolean;
     chatTitle?: string;
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
     showReactions?: boolean;
+    enableJukebox?: boolean;
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
@@ -123,6 +124,38 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  autoPlay?: boolean;
+  start_utc_seconds?: number;
+  end_utc_seconds?: number;
+}
+
+export interface WorldFormInput {
+  name: string;
+  description?: string;
+  subtitle?: string;
+  bannerImageFile?: FileList;
+  bannerImageUrl?: string;
+  logoImageFile?: FileList;
+  logoImageUrl?: string;
+  mapBackgroundImageFile?: FileList;
+  mapBackgroundImageUrl?: string;
+}
+
+export interface World {
+  name: string;
+  config: {
+    landingPageConfig: {
+      coverImageUrl: string;
+      subtitle?: string;
+      description?: string;
+    };
+  };
+  host: {
+    icon: string;
+  };
+  owners: string[];
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -162,7 +195,10 @@ export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   return owners;
 };
 
-const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
+const createFirestoreVenueInput = async (
+  input: VenueInput,
+  user: firebase.UserInfo
+) => {
   const storageRef = firebase.storage().ref();
 
   const urlVenueName = createUrlSafeName(input.name);
@@ -229,7 +265,7 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
 
 const createFirestoreVenueInput_v2 = async (
   input: VenueInput_v2,
-  user: UserInfo
+  user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
 
@@ -286,14 +322,20 @@ const createFirestoreVenueInput_v2 = async (
   return firestoreVenueInput;
 };
 
-export const createVenue = async (input: VenueInput, user: UserInfo) => {
+export const createVenue = async (
+  input: VenueInput,
+  user: firebase.UserInfo
+) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
   return await firebase.functions().httpsCallable("venue-createVenue")(
     firestoreVenueInput
   );
 };
 
-export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
+export const createVenue_v2 = async (
+  input: WithWorldId<VenueInput_v2>,
+  user: firebase.UserInfo
+) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
     {
       ...input,
@@ -301,14 +343,41 @@ export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")(
+  return await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    ...firestoreVenueInput,
+    worldId: input.worldId,
+  });
+};
+
+export const createWorld = async (
+  world: WorldFormInput,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
+  const worldResponse = await firebase
+    .functions()
+    .httpsCallable("world-createWorld")(firestoreVenueInput);
+  const worldId = worldResponse?.data;
+  await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    ...firestoreVenueInput,
+    worldId,
+  });
+};
+
+export const updateWorld = async (
+  world: WithId<WorldFormInput>,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
+  return await firebase.functions().httpsCallable("world-updateWorld")(
     firestoreVenueInput
   );
 };
 
+// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 export const updateVenue = async (
   input: WithId<VenueInput>,
-  user: UserInfo
+  user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
 
@@ -317,7 +386,10 @@ export const updateVenue = async (
   );
 };
 
-export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
+export const updateVenue_v2 = async (
+  input: VenueInput_v2,
+  user: firebase.UserInfo
+) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
   return firebase
@@ -341,7 +413,7 @@ export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
 const createFirestoreRoomInput = async (
   input: RoomInput,
   venueId: string,
-  user: UserInfo
+  user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
 
@@ -388,7 +460,7 @@ const createFirestoreRoomInput = async (
 const createFirestoreRoomInput_v2 = async (
   input: RoomInput_v2,
   venueId: string,
-  user: UserInfo
+  user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
 
@@ -430,7 +502,7 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + venueInsideUrl(input.venueName!),
+        : window.origin + venueInsideUrl(input.venueName),
     ...imageInputData,
   };
 
@@ -440,7 +512,7 @@ const createFirestoreRoomInput_v2 = async (
 export const upsertRoom = async (
   input: RoomInput,
   venueId: string,
-  user: UserInfo,
+  user: firebase.UserInfo,
   roomIndex?: number
 ) => {
   const firestoreVenueInput = await createFirestoreRoomInput(
@@ -488,7 +560,7 @@ export const deleteRoom = async (venueId: string, room: RoomData_v2) => {
 export const updateRoom = async (
   input: RoomInput_v2,
   venueId: string,
-  user: UserInfo,
+  user: firebase.UserInfo,
   roomIndex: number
 ) => {
   const firestoreVenueInput = await createFirestoreRoomInput_v2(
@@ -506,7 +578,7 @@ export const updateRoom = async (
 
 export const bulkUpdateRooms = async (
   venueId: string,
-  user: UserInfo,
+  user: firebase.UserInfo,
   rooms: RoomInput_v2[]
 ) => {
   const test = rooms.map((firestoreVenueInput, index) => {
@@ -523,7 +595,7 @@ export const bulkUpdateRooms = async (
 export const createRoom = async (
   input: RoomInput_v2,
   venueId: string,
-  user: UserInfo
+  user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreRoomInput_v2(
     input,

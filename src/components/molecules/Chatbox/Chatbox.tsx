@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import classNames from "classnames";
 import { isEqual } from "lodash";
 
 import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
@@ -11,19 +12,16 @@ import {
   SendChatReply,
   SendMessage,
 } from "types/chat";
-import { AnyVenue } from "types/venues";
+import { ContainerClassName } from "types/utility";
 
-import { checkIfPollMessage } from "utils/chat";
 import { WithId } from "utils/id";
 
 import { useVenuePoll } from "hooks/useVenuePoll";
 
+import { ChatboxMessage } from "components/molecules/Chatbox/components/ChatboxMessage";
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
-import { ChatPoll } from "components/molecules/ChatPoll";
 import { Loading } from "components/molecules/Loading";
 import { PollBox } from "components/molecules/PollBox";
-
-import { ChatMessage } from "components/atoms/ChatMessage";
 
 import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
@@ -31,22 +29,21 @@ import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 import "./Chatbox.scss";
 
-export interface ChatboxProps {
+export interface ChatboxProps extends ContainerClassName {
   messages: WithId<MessageToDisplay>[];
-  venue: WithId<AnyVenue>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
-  deleteMessage: DeleteMessage;
+  deleteMessage?: DeleteMessage;
   displayPoll?: boolean;
 }
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
-  venue,
   sendMessage,
   sendThreadReply,
   deleteMessage,
   displayPoll: isDisplayedPoll,
+  containerClassName,
 }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
 
@@ -64,10 +61,9 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     setActiveOption(undefined);
   }, []);
 
-  // @debt createPoll should be returning Promise; make sense to use useAsync here
   const onPollSubmit = useCallback(
-    (data) => {
-      createPoll(data);
+    async (data) => {
+      await createPoll(data);
       unselectOption();
     },
     [createPoll, unselectOption]
@@ -89,34 +85,23 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     setRenderedMessagesCount(getNextMessagesRenderCount(renderedMessagesCount));
   }, [getNextMessagesRenderCount, renderedMessagesCount]);
 
-  const renderedMessages = useMemo(
-    () =>
-      messages
-        .slice(0, renderedMessagesCount)
-        .map((message) =>
-          checkIfPollMessage(message) ? (
-            <ChatPoll
-              key={message.id}
-              pollMessage={message}
-              deletePollMessage={deleteMessage}
-              voteInPoll={voteInPoll}
-              venue={venue}
-            />
-          ) : (
-            <ChatMessage
-              key={message.id}
-              message={message}
-              deleteMessage={deleteMessage}
-              selectThisThread={() => setSelectedThread(message)}
-            />
-          )
-        ),
-    [messages, renderedMessagesCount, deleteMessage, voteInPoll, venue]
-  );
+  const renderedMessages = useMemo(() => {
+    const messagesToRender = messages.slice(0, renderedMessagesCount);
+    return messagesToRender.map((message, i) => (
+      <ChatboxMessage
+        key={message.id}
+        message={message}
+        nextMessage={messagesToRender?.[i + 1]}
+        deleteMessage={deleteMessage}
+        voteInPoll={voteInPoll}
+        selectThisThread={() => setSelectedThread(message)}
+      />
+    ));
+  }, [messages, renderedMessagesCount, deleteMessage, voteInPoll]);
 
   const onReplyToThread = useCallback(
-    ({ replyText, threadId }) => {
-      sendThreadReply({ replyText, threadId });
+    async ({ replyText, threadId }) => {
+      await sendThreadReply({ replyText, threadId });
       unselectOption();
       closeThread();
     },
@@ -124,7 +109,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   );
 
   return (
-    <div className="Chatbox">
+    <div className={classNames("Chatbox", containerClassName)}>
       <div
         className="Chatbox__messages"
         ref={scrollableComponentRef}
@@ -149,7 +134,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         {selectedThread && (
           <ChatboxThreadControls
             text="replying to"
-            threadAuthor={selectedThread.author.partyName}
+            threadAuthor={selectedThread.fromUser.partyName}
             closeThread={closeThread}
           />
         )}

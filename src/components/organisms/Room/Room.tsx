@@ -13,11 +13,13 @@ import { getTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
 
+import { stopLocalTrack } from "utils/twilio";
+
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "./LocalParticipant";
-import Participant from "./Participant";
+import { LocalParticipant } from "./LocalParticipant";
+import { Participant } from "./Participant";
 import VideoErrorModal from "./VideoErrorModal";
 
 import "./Room.scss";
@@ -92,8 +94,7 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (room && room.localParticipant.state === "connected") {
         room.localParticipant.tracks.forEach((trackPublication) => {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          stopLocalTrack(trackPublication.track);
         });
         room.disconnect();
       }
@@ -174,8 +175,7 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach((trackPublication) => {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          stopLocalTrack(trackPublication.track);
         });
         localRoom.disconnect();
       }
@@ -190,22 +190,6 @@ const Room: React.FC<RoomProps> = ({
       worldUsersById[room.localParticipant.identity],
     ]);
   }, [participants, setUserList, worldUsersById, room]);
-
-  const getIsUserBartender = (userIdentity?: string) => {
-    if (!userIdentity) return;
-
-    return worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender;
-  };
-
-  // Ordering of participants:
-  // 1. Me
-  // 2. Bartender, if found (only one allowed)
-  // 3. Rest of the participants, in order
-
-  // Only allow the first bartender to appear as bartender
-  const userIdentity = room?.localParticipant?.identity;
-
-  const meIsBartender = getIsUserBartender(userIdentity);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
@@ -230,18 +214,11 @@ const Room: React.FC<RoomProps> = ({
           participant={room.localParticipant}
           profileData={profileData}
           profileDataId={room.localParticipant.identity}
-          bartender={meIsBartender}
           defaultMute={defaultMute}
         />
       </div>
     ) : null;
-  }, [
-    meIsBartender,
-    room,
-    profileData,
-    defaultMute,
-    participantContainerClassName,
-  ]);
+  }, [room, profileData, defaultMute, participantContainerClassName]);
 
   const othersComponents = useMemo(
     () =>
@@ -249,10 +226,6 @@ const Room: React.FC<RoomProps> = ({
         if (!participant) {
           return null;
         }
-
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
 
         return (
           <div
@@ -264,18 +237,11 @@ const Room: React.FC<RoomProps> = ({
               participant={participant}
               profileData={worldUsersById[participant.identity]}
               profileDataId={participant.identity}
-              bartender={bartender}
             />
           </div>
         );
       }),
-    [
-      meIsBartender,
-      participants,
-      roomName,
-      worldUsersById,
-      participantContainerClassName,
-    ]
+    [participants, worldUsersById, participantContainerClassName]
   );
 
   const emptyComponents = useMemo(

@@ -4,7 +4,7 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { TableComponentPropsType } from "types/Table";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
@@ -15,7 +15,7 @@ import "./JazzBarTableComponent.scss";
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
-const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   nameOfVideoRoom,
@@ -25,7 +25,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   tableLocked,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
-  const venue = useSelector(currentVenueSelectorData);
+  const venue = useSelector(currentVenueSelector);
   const locked = tableLocked(table.reference);
   const usersSeatedAtTable = useMemo(
     () =>
@@ -37,7 +37,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     () =>
       usersSeatedAtTable.map((user) => (
         <img
-          onClick={() => openUserProfileModal(user)}
+          onClick={() => openUserProfileModal(user.id)}
           key={user.id}
           className="profile-icon table-participant-picture"
           src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
@@ -87,5 +87,3 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     </div>
   );
 };
-
-export default TableComponent;

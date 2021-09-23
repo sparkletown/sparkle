@@ -10,9 +10,16 @@
 
 # production
 /build
+src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/ServersideDLL/Serverside Code/RoomS/obj
+src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/ServersideDLL/Serverside Code/RoomS/bin
+src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/ServersideDLL/Serverside Code/RoomZ/obj
+src/components/templates/AnimateMap/bridges/DataProvider/Contructor/PlayerIO/ServersideDLL/Serverside Code/RoomZ/bin
 
 # account keys
 /scripts/*.json
+
+# script output files
+/scripts/*.csv
 
 # misc
 .DS_Store

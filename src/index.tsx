@@ -10,6 +10,7 @@ import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
+import { activatePolyFills } from "polyfills";
 import { createFirestoreInstance } from "redux-firestore";
 import { ThemeProvider } from "styled-components";
 
@@ -25,9 +26,12 @@ import {
 
 import { FIREBASE_CONFIG } from "settings";
 
+import { store } from "store";
+
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
 
+import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
@@ -42,9 +46,7 @@ import "firebase/firestore";
 import "firebase/functions";
 import "firebase/performance";
 
-import { activatePolyFills } from "./polyfills";
 import * as serviceWorker from "./serviceWorker";
-import { store } from "./store";
 
 import { theme } from "theme/theme";
 
@@ -117,6 +119,7 @@ if (BUGSNAG_API_KEY) {
     "env/burn-staging",
     "env/github",
     "env/summit-hack",
+    "env/northwell",
   ];
 
   const releaseStage = () => {
@@ -223,12 +226,14 @@ traceReactScheduler("initial render", performance.now(), () => {
           <ReduxStoreProvider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <AuthIsLoaded>
-                <CustomSoundsProvider
-                  loadingComponent={<LoadingPage />}
-                  waitTillConfigLoaded
-                >
-                  <AppRouter />
-                </CustomSoundsProvider>
+                <AlgoliaSearchProvider>
+                  <CustomSoundsProvider
+                    loadingComponent={<LoadingPage />}
+                    waitTillConfigLoaded
+                  >
+                    <AppRouter />
+                  </CustomSoundsProvider>
+                </AlgoliaSearchProvider>
               </AuthIsLoaded>
             </ReactReduxFirebaseProvider>
           </ReduxStoreProvider>

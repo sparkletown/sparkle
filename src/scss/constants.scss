@@ -13,12 +13,17 @@ $secondary--light: #6a6a6a;
 $secondary: #333035;
 $secondary--dark: #19181a;
 $secondary--darkest: #090909;
+$secondary--live: #1a1d24;
 
 $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
 $input--invalid: #dc3545;
+$input--invalid-focus: #ff7384;
+$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
+
+$modal-background--confirm: #232225;
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
@@ -31,7 +36,7 @@ $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 $concrete--dark: #9f9fa0;
 $black: #000000;
-$white: #fff;
+$white: #ffffff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
@@ -48,6 +53,7 @@ $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
+$room-card-background: #323232;
 
 $gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
@@ -58,13 +64,22 @@ $danger-gradient: linear-gradient(
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
+$send-msg-online-color: #78b553;
+
 $map-sidebar-width: 20%;
-$chat-sidebar-width: 360px;
+$chat-sidebar-width: 300px;
 $navbar-height: 66px;
 $footer-height: 30px;
+$reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
-$admin-spaces-sidebar-width: 20%;
+$admin-ng-sidebar-width--normal: 20%;
+$admin-ng-sidebar-width--min: 360px;
+$admin-ng-tab-footer-height--max: 64px;
+$admin-ng-tab-bar-height: 30px;
+$admin-ng-panel-height: calc(
+  100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
+);
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
@@ -118,14 +133,27 @@ $media-breakpoint--xl: 1200px;
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
-$ScheduleNG--padding: 20px;
+$image-overlay-padding: 0.3rem;
+$image-overlay-backdrop-filter: blur(10px);
+
+$image-input-padding: 2.5em 0;
+$image-input-padding--small: 2.5em;
+$image-input-upload-button-padding: 0.7em 4.2em;
+$image-input-upload-button-padding--small: 0.7em 2em;
+$image-input-upload-button-transition: transform 0.2s ease-in-out,
+  background-color 0.2s ease-in-out;
+$image-input-upload-button-background: #462a87;
+$image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
+$image-input-border--error: 2px solid red;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
+$z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
+$z-layer-emergency-content: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -151,10 +179,13 @@ $z-layers: (
   user-search-results: 380,
   chat-poll-text: 0,
   chat-poll-text-background: -1,
+  // Emergency Page
+  emergency-content: $z-layer-emergency-content,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
+  navbar-schedule-download: $z-layer-live-schedule-download,
   navbar: $z-layer-navbar,
   navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,
@@ -211,28 +242,6 @@ $z-layers: (
   @return 0 10px 30px 0 rgba($black, $transparency);
 }
 
-@mixin scrollbar {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
-  }
-}
-
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
 @mixin line-clamp($line-count: 1) {
   display: -webkit-box;
@@ -254,4 +263,48 @@ $z-layers: (
   min-width: $min;
   max-height: $max;
   max-width: $max;
+}
+
+@mixin link-style($color, $hover-color: $color) {
+  color: $color;
+  text-decoration: underline $color;
+
+  &:hover {
+    color: $hover-color;
+    text-decoration: underline $hover-color;
+  }
+}
+
+@mixin scrollbar {
+  // The standard properties
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+  scrollbar-color: opaque-white(0.3) $black;
+  scrollbar-width: thin;
+
+  // The webkit properties
+  // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
+  &::-webkit-scrollbar-corner {
+    background-color: $black;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: $border-radius--xs;
+    background-color: $black;
+  }
+
+  &::-webkit-scrollbar {
+    @include square-size($spacing--sm);
+    background-color: opaque-black(0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $border-radius--xs;
+    background-color: opaque-white(0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: opaque-white(0.5);
+  }
 }

@@ -1,9 +1,6 @@
-import React, { useCallback, useMemo, useState } from "react";
-import firebase from "firebase/app";
+import React, { useMemo, useState } from "react";
 
-import { VideoState } from "types/User";
-
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useVideoRoomState } from "hooks/twilio";
@@ -11,12 +8,10 @@ import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-
-import LocalParticipant from "../Playa/Video/LocalParticipant";
-import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 
 import * as S from "./FireBarrel.styled";
 
@@ -25,66 +20,44 @@ const DEFAULT_BURN_BARREL_SEATS = 8;
 // @debt refactor this to pass in venue as a prop
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
+  // @debt should be replaced with a subcollection
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName: venue?.name,
+    venueId: venue?.id,
   });
 
-  const chairs =
-    recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
-      ? recentVenueUsers.length
+  const recentUserCount = venue?.recentUserCount ?? 0;
+
+  const seatCount =
+    recentUserCount > DEFAULT_BURN_BARREL_SEATS
+      ? recentUserCount
       : DEFAULT_BURN_BARREL_SEATS;
 
-  const { userId, profile, userWithId } = useUser();
+  const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
+  const { userId, userWithId } = useUser();
 
   const { room, participants } = useVideoRoomState({
     userId,
     roomName: venue?.name,
   });
 
-  const chairsArray = Array.from(Array(chairs));
-
   const [videoError, setVideoError] = useState<string>("");
   const { worldUsersById } = useWorldUsersById();
-
-  const updateVideoState = useCallback(
-    (update: VideoState) => {
-      if (!userId) return;
-
-      firebase.firestore().doc(`users/${userId}`).update({ video: update });
-    },
-    [userId]
-  );
-
-  const leave = useCallback(() => {
-    if (profile) {
-      profile.video = {};
-    }
-    updateVideoState({});
-  }, [profile, updateVideoState]);
-
-  const removeParticipant = useCallback(
-    (uid: string) => {
-      if (!profile?.video) return;
-      const removed = profile.video.removedParticipantUids || [];
-      if (!removed.includes(uid)) {
-        removed.push(uid);
-      }
-      updateVideoState({
-        ...profile.video,
-        removedParticipantUids: removed,
-      });
-    },
-    [updateVideoState, profile]
-  );
 
   return useMemo(() => {
     if (!isRecentVenueUsersLoaded || !userWithId) return <LoadingPage />;
 
     return (
       <S.Wrapper>
-        <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
+        <S.Barrel
+          src={convertToEmbeddableUrl({
+            url: venue?.iframeUrl,
+            autoPlay: true,
+          })}
+        />
 
-        {chairsArray.map((_, index) => {
+        {/* @debt Refactor this to be less brittle/complex */}
+        {/* @debt should be replaced with a subcollection */}
+        {seatsArray.map((_, index) => {
           const partyPerson = recentVenueUsers[index] ?? null;
 
           const isMe = partyPerson?.id === userId;
@@ -97,13 +70,9 @@ export const FireBarrel: React.FC = () => {
             return (
               <S.Chair key={userId}>
                 <LocalParticipant
-                  showLeave={false}
                   participant={room.localParticipant}
-                  user={userWithId}
-                  isHost={false}
-                  leave={leave}
-                  useFontAwesome
-                  showName={false}
+                  profileData={userWithId}
+                  profileDataId={userWithId?.id}
                 />
               </S.Chair>
             );
@@ -120,18 +89,16 @@ export const FireBarrel: React.FC = () => {
 
             return (
               <S.Chair key={participant.identity}>
-                <RemoteParticipant
+                <LocalParticipant
                   participant={participant}
-                  user={participantUserData}
-                  isHost={false}
-                  showHostControls={false}
-                  remove={() => removeParticipant(participant.identity)}
+                  profileData={participantUserData}
+                  profileDataId={participantUserData.id}
                 />
               </S.Chair>
             );
           }
 
-          return <React.Fragment key={index}></React.Fragment>;
+          return <React.Fragment key={index} />;
         })}
 
         <VideoErrorModal
@@ -144,12 +111,10 @@ export const FireBarrel: React.FC = () => {
       </S.Wrapper>
     );
   }, [
-    chairsArray,
+    seatsArray,
     recentVenueUsers,
     userWithId,
-    leave,
     participants,
-    removeParticipant,
     room,
     userId,
     worldUsersById,

@@ -7,11 +7,13 @@ import { getTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
 
+import { stopLocalTrack } from "utils/twilio";
+
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
-import Participant from "components/organisms/Room/Participant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
+import { Participant } from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import "./Room.scss";
@@ -25,7 +27,6 @@ interface RoomProps {
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
-  hasChairs?: boolean;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
 }
@@ -40,7 +41,6 @@ const Room: React.FC<RoomProps> = ({
   setUserList,
   setParticipantCount,
   setSeatedAtTable,
-  hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
 }) => {
@@ -94,8 +94,7 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (room && room.localParticipant.state === "connected") {
         room.localParticipant.tracks.forEach((trackPublication) => {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          stopLocalTrack(trackPublication.track);
         });
         room.disconnect();
       }
@@ -176,8 +175,7 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach((trackPublication) => {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          stopLocalTrack(trackPublication.track);
         });
         localRoom.disconnect();
       }
@@ -192,22 +190,6 @@ const Room: React.FC<RoomProps> = ({
       worldUsersById[room.localParticipant.identity],
     ]);
   }, [participants, setUserList, worldUsersById, room]);
-
-  const getIsUserBartender = (userIdentity?: string) => {
-    if (!userIdentity) return;
-
-    return worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender;
-  };
-
-  // Ordering of participants:
-  // 1. Me
-  // 2. Bartender, if found (only one allowed)
-  // 3. Rest of the participants, in order
-
-  // Only allow the first bartender to appear as bartender
-  const userIdentity = room?.localParticipant?.identity;
-
-  const meIsBartender = getIsUserBartender(userIdentity);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
@@ -236,22 +218,17 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
           <div key={participant.identity} className="jazzbar-room__participant">
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
               profileDataId={participant.identity}
-              bartender={bartender}
             />
           </div>
         );
       }),
-    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [sidedVideoParticipants, worldUsersById]
   );
 
   const otherVideos = useMemo(
@@ -261,22 +238,17 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
           <div key={participant.identity} className="jazzbar-room__participant">
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
               profileDataId={participant.identity}
-              bartender={bartender}
             />
           </div>
         );
       }),
-    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [otherVideoParticipants, worldUsersById]
   );
 
   const myVideo = useMemo(() => {
@@ -287,13 +259,12 @@ const Room: React.FC<RoomProps> = ({
           participant={room.localParticipant}
           profileData={profileData}
           profileDataId={room.localParticipant.identity}
-          bartender={meIsBartender}
           defaultMute={defaultMute}
           isAudioEffectDisabled={isAudioEffectDisabled}
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
+  }, [room, profileData, defaultMute, isAudioEffectDisabled]);
 
   if (!token) return null;
 

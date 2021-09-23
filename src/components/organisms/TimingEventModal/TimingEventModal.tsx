@@ -72,7 +72,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         description: data.description,
         start_utc_seconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        duration_minutes: data.duration_hours * 60 + data.duration_minutes,
+        duration_minutes:
+          data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
@@ -108,7 +109,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       <Modal show={show} onHide={onHide} className="TimingEventModal">
         <Modal.Body>
           <div className="form-container">
-            <h2>Create an event</h2>
+            <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <select

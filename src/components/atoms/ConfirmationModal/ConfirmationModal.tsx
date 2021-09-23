@@ -1,7 +1,9 @@
-import React, { FC, useCallback, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import React, { useCallback, useState } from "react";
+import { Modal } from "react-bootstrap";
 
 import { isTruthy } from "utils/types";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./ConfirmationModal.scss";
 
@@ -9,14 +11,20 @@ interface ConfirmationModalProps {
   show?: boolean;
   header?: string;
   message: string;
+  no?: string;
+  yes?: string;
+  centered?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
 }
 
-export const ConfirmationModal: FC<ConfirmationModalProps> = ({
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   show,
   header,
   message,
+  no = "No",
+  yes = "Yes",
+  centered = true,
   onConfirm,
   onCancel,
 }) => {
@@ -41,18 +49,21 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   const isShown = show !== undefined ? show : isVisible;
 
   return (
-    <Modal show={isShown} onHide={hide}>
+    <Modal
+      className="ConfirmationModal"
+      show={isShown}
+      onHide={hide}
+      centered={centered}
+    >
       <Modal.Body>
-        <div className="confirmation-modal">
-          {hasHeader && <h2 className="confirm-header">{header}</h2>}
-          <div className="confirm-message">{message}</div>
-          <div className="confirmation-buttons">
-            <Button className="cancel-button" onClick={cancel}>
-              No
-            </Button>
-            <Button className="confirm-button" onClick={confirm}>
-              Yes
-            </Button>
+        <div>
+          {hasHeader && <Modal.Title>{header}</Modal.Title>}
+          <div className="ConfirmationModal__message">{message}</div>
+          <div className="ConfirmationModal__buttons">
+            <ButtonNG onClick={cancel}>{no}</ButtonNG>
+            <ButtonNG variant="primary" onClick={confirm}>
+              {yes}
+            </ButtonNG>
           </div>
         </div>
       </Modal.Body>
