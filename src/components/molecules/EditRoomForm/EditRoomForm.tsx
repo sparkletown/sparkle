@@ -153,10 +153,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           <Form.Label>
             Change label appearance (overrides global settings)
           </Form.Label>
-          <PortalVisibility
-            register={register}
-            className="EditRoomForm__dropdown"
-          />
+          <PortalVisibility register={register} />
 
           <Button
             disabled={isUpdating || isDeleting}

@@ -343,10 +343,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     <div className="input-title">
                       Change label appearance (overrides global settings)
                     </div>
-                    <PortalVisibility
-                      register={register}
-                      className="EditRoomForm__dropdown"
-                    />
+                    <PortalVisibility register={register} />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
