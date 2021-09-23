@@ -92,41 +92,41 @@ export const worldUsersApi = createApi({
           WORLD_USERS_UPDATE_INTERVAL
         );
 
-        const worldUsersQuery = firebase
-          .firestore()
-          .collection("users")
-          .where("enteredVenueIds", "array-contains-any", relatedLocationIds);
+        // const worldUsersQuery = firebase
+        //   .firestore()
+        //   .collection("users")
+        //   .where("enteredVenueIds", "array-contains-any", relatedLocationIds);
 
-        let hasLoadedDataInitially = false;
+        // let hasLoadedDataInitially = false;
 
-        const unsubscribeListener = worldUsersQuery.onSnapshot((snapshot) => {
-          const snapshotSize = snapshot.size;
+        // const unsubscribeListener = worldUsersQuery.onSnapshot((snapshot) => {
+        //   const snapshotSize = snapshot.size;
 
-          // NOTE: Don't delay the update of the first load.
-          if (snapshotSize > 1 && !hasLoadedDataInitially) {
-            updateCachedData((draft) => {
-              snapshot.docChanges().forEach(processUserDocChange(draft));
-            });
+        //   // NOTE: Don't delay the update of the first load.
+        //   if (snapshotSize > 1 && !hasLoadedDataInitially) {
+        //     updateCachedData((draft) => {
+        //       snapshot.docChanges().forEach(processUserDocChange(draft));
+        //     });
 
-            hasLoadedDataInitially = true;
-            return;
-          }
+        //     hasLoadedDataInitially = true;
+        //     return;
+        //   }
 
-          snapshot.docChanges().forEach((change) => {
-            if (change.doc.id === currentUserId) {
-              updateCachedData((draft) => {
-                processUserDocChange(draft)(change);
-              });
-            } else {
-              queuedChanges.push(change);
-            }
-          });
-        });
+        //   snapshot.docChanges().forEach((change) => {
+        //     if (change.doc.id === currentUserId) {
+        //       updateCachedData((draft) => {
+        //         processUserDocChange(draft)(change);
+        //       });
+        //     } else {
+        //       queuedChanges.push(change);
+        //     }
+        //   });
+        // });
 
         // Wait until the data no longer needs to be kept in our redux cache
         await cacheEntryRemoved;
 
-        unsubscribeListener();
+        // unsubscribeListener();
 
         clearInterval(processQueuedChangesIntervalId);
 
