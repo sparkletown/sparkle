@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./TabFooter.scss";
 
@@ -22,17 +23,25 @@ export const TabFooter: React.FC<TabFooterProps> = ({
   }, [onClickNext, handleVenueUpdate]);
 
   return (
-    <div className="TabFooter">
-      <div className="TabFooter__home-button" onClick={onClickHome}>
-        <FontAwesomeIcon icon={faHome} size={"lg"} />
-      </div>
+    <div className="TabFooter TabFooter__footer">
       <div className="TabFooter__nav-buttons">
-        <div className={"TabFooter__back-button"} onClick={onClickBack}>
+        <ButtonNG
+          className="TabFooter__nav-button"
+          onClick={onClickHome}
+          iconName={faHome}
+          iconOnly={true}
+          title="Home"
+        />
+        <ButtonNG className="TabFooter__nav-button" onClick={onClickBack}>
           Back
-        </div>
-        <div className="TabFooter__next-button" onClick={handleClickNext}>
+        </ButtonNG>
+        <ButtonNG
+          className="TabFooter__nav-button"
+          onClick={handleClickNext}
+          variant="primary"
+        >
           Next
-        </div>
+        </ButtonNG>
       </div>
     </div>
   );

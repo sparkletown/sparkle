@@ -14,6 +14,7 @@ import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingSpace } from "components/organisms/TimingSpace";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
 
 import "./EventsView.scss";
@@ -88,8 +89,8 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   }, [events, setShowCreateEventModal, setEditedEvent]);
 
   return (
-    <>
-      <div className="EventsView">
+    <div className="EventsView">
+      <div className="EventsView__container">
         <div className="EventsView__header">
           <h4 className="EventsView__title">Events Schedule</h4>
           <Checkbox
@@ -116,10 +117,10 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
       </div>
 
       {hasVenueEvents && (
-        <div className="create-button">
-          <button className="btn btn-primary" onClick={setShowCreateEventModal}>
-            Add experience
-          </button>
+        <div className="EventsView__create">
+          <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
+            Create an Event
+          </ButtonNG>
         </div>
       )}
 
@@ -150,6 +151,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           event={editedEvent}
         />
       )}
-    </>
+    </div>
   );
 };
