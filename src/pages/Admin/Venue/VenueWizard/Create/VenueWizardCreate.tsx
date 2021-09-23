@@ -11,8 +11,6 @@ import {
 } from "components/organisms/AuthenticationModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
-import { AdminRestricted } from "components/atoms/AdminRestricted";
-
 import { VenueWizardCreateProps } from "./VenueWizardCreate.types";
 
 const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
@@ -39,11 +37,7 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
     );
   }
 
-  return (
-    <AdminRestricted>
-      <Details previous={previous} dispatch={dispatch} data={state} />
-    </AdminRestricted>
-  );
+  return <Details previous={previous} dispatch={dispatch} data={state} />;
 };
 
 export default VenueWizardCreate;

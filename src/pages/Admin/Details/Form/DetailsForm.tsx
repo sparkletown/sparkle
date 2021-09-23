@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from "react";
-import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
@@ -21,6 +20,7 @@ import {
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
 import { validationSchema_v2 } from "../ValidationSchema";
@@ -213,7 +213,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(setWorld)} onChange={handleOnChange}>
+    <S.FormWrapper onSubmit={handleSubmit(setWorld)} onChange={handleOnChange}>
       <S.FormInnerWrapper>
         <input
           type="hidden"
@@ -228,7 +228,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           className="small light"
           style={{ marginBottom: "2rem", fontSize: "16px" }}
         >
-          You can change anything except for the name of your venue later
+          You can change anything except for the name of your space later
         </p>
 
         {renderVenueName()}
@@ -239,11 +239,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       </S.FormInnerWrapper>
 
       <S.FormFooter>
-        <Button disabled={isSubmitting || !dirty} type="submit">
-          {venueId ? "Update Venue" : "Create Venue"}
-        </Button>
+        <ButtonNG
+          variant="primary"
+          disabled={isSubmitting || !dirty}
+          type="submit"
+        >
+          {venueId ? "Update Space" : "Create Space"}
+        </ButtonNG>
       </S.FormFooter>
-    </Form>
+    </S.FormWrapper>
   );
 };
 
