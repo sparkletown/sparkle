@@ -301,9 +301,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     if (!venue || !userWithId || !venueId) return null;
 
-    const userSeated =
-      typeof userWithId.data?.[venueId]?.row === "number" &&
-      typeof userWithId.data?.[venueId]?.row === "number";
+    // const userSeated =
+    //   typeof userWithId.data?.[venueId]?.row === "number" &&
+    //   typeof userWithId.data?.[venueId]?.row === "number";
 
     const translateRow = (untranslatedRowIndex: number) =>
       untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
@@ -312,10 +312,11 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
     const reactionContainerClassnames = classNames("reaction-container", {
-      seated: userSeated,
+      // seated: userSeated,
     });
 
     // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
+    // eslint-disable-next-line
     const renderReactionsContainer = () => (
       <>
         <ReactionsBar
@@ -386,9 +387,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
                 {venue.showReactions && (
                   <div className={reactionContainerClassnames}>
-                    {userSeated
-                      ? renderReactionsContainer()
-                      : renderInstructions()}
+                    {/*/!*{userSeated*!/*/}
+                    {/*/!*  ? renderReactionsContainer()*!/*/}
+                    {/*  : renderInstructions()}*/}
+                    {renderInstructions()}
                   </div>
                 )}
               </div>

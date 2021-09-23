@@ -6,8 +6,6 @@ import { GridPosition } from "types/grid";
 
 export interface Experience {
   table?: string | null;
-  row?: number;
-  column?: number;
 }
 
 // @debt typing I think this is correct from Room.tsx, need to confirm
