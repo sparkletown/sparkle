@@ -47,6 +47,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
+      roomVisibility: venue.roomVisibility,
     },
   });
 
