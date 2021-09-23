@@ -1,6 +1,23 @@
 @import "scss/constants.scss";
 
+$help-back-button-pos--top: 90px;
+$help-back-button-pos--left: 25px;
+$help-back-button-max-width: 100px;
+
 .HelpCenter {
+  &__iframeContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  &__backButton {
+    position: absolute;
+    top: $help-back-button-pos--top;
+    left: $help-back-button-pos--left;
+    max-width: $help-back-button-max-width;
+  }
+
   &__iframe {
     width: 100%;
     height: 100%;

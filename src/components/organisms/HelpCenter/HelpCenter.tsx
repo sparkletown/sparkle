@@ -4,6 +4,8 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import { HelpCenterContent } from "./components/HelpCenterContent";
 
 import "components/organisms/HelpCenter/HelpCenter.scss";
@@ -25,18 +27,31 @@ export const HelpCenter: React.FC = () => {
     [startLoading]
   );
 
+  const handleBackClicked = useCallback(() => {
+    setUrl("");
+  }, []);
+
   return (
     <>
       {url ? (
         <>
           {isLoading && <LoadingPage />}
-          <iframe
-            className={"HelpCenter__iframe"}
-            onLoad={stopLoading}
-            frameBorder="0"
-            src={url}
-            title="Help Center"
-          />
+          <div className="HelpCenter__iframeContainer">
+            <ButtonNG
+              className="HelpCenter__backButton"
+              onClick={handleBackClicked}
+              variant="primary"
+            >
+              Back
+            </ButtonNG>
+            <iframe
+              className="HelpCenter__iframe"
+              onLoad={stopLoading}
+              frameBorder="0"
+              src={url}
+              title="Help Center"
+            />
+          </div>
         </>
       ) : (
         <HelpCenterContent onHelpClicked={handleHelpClicked} />

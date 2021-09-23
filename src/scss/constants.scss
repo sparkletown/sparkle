@@ -234,7 +234,8 @@ $z-layers: (
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
   venuepage-preview-indication: 1,
-  map-preview-header: 5
+  map-preview-header: 5,
+  loading-page: 1
 );
 
 @function z($layer) {
