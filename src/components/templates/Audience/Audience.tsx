@@ -26,6 +26,7 @@ import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
 
 import { useDispatch } from "hooks/useDispatch";
+import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -140,6 +141,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const { isLoaded: areSettingsLoaded, settings } = useSettings();
 
   const isUserAudioMuted = !isUserAudioOn;
 
@@ -315,43 +317,51 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
       seated: userSeated,
     });
 
-    // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
-    const renderReactionsContainer = () => (
-      <>
-        <ReactionsBar
-          venueId={venueId}
-          leaveSeat={leaveSeat}
-          isReactionsMuted={isUserAudioMuted}
-          toggleMute={toggleUserAudio}
-        />
+    const shouldShowReactions = areSettingsLoaded && settings.showReactions;
 
-        {venue.showShoutouts && (
-          //  @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
-          <div className="shout-container">
-            <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
-              <input
-                name="text"
-                className="text"
-                placeholder="Shout out to the crowd"
-                ref={register({ required: true })}
-                disabled={isShoutSent}
-                autoComplete="off"
-              />
-              <input
-                className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
-                type="submit"
-                id={`send-shout-out-${venue.name}`}
-                value={isShoutSent ? "Sent!" : "Send"}
-                disabled={isShoutSent}
-              />
-            </form>
-          </div>
-        )}
-      </>
-    );
+    // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
+    const renderReactionsContainer = () => {
+      return (
+        shouldShowReactions && (
+          <>
+            <ReactionsBar
+              venueId={venueId}
+              leaveSeat={leaveSeat}
+              isReactionsMuted={isUserAudioMuted}
+              toggleMute={toggleUserAudio}
+            />
+
+            {venue.showShoutouts && (
+              //  @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+              <div className="shout-container">
+                <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
+                  <input
+                    name="text"
+                    className="text"
+                    placeholder="Shout out to the crowd"
+                    ref={register({ required: true })}
+                    disabled={isShoutSent}
+                    autoComplete="off"
+                  />
+                  <input
+                    className={`shout-button ${
+                      isShoutSent ? "btn-success" : ""
+                    } `}
+                    type="submit"
+                    id={`send-shout-out-${venue.name}`}
+                    value={isShoutSent ? "Sent!" : "Send"}
+                    disabled={isShoutSent}
+                  />
+                </form>
+              </div>
+            )}
+          </>
+        )
+      );
+    };
 
     const renderInstructions = () => (
-      <div className="instructions">
+      <div className={reactionContainerClassnames}>
         Welcome! Click on an empty seat to claim it!
       </div>
     );
@@ -383,14 +393,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                     allowFullScreen
                   />
                 </div>
-
-                {venue.showReactions && (
-                  <div className={reactionContainerClassnames}>
-                    {userSeated
-                      ? renderReactionsContainer()
-                      : renderInstructions()}
-                  </div>
-                )}
+                {userSeated ? renderReactionsContainer() : renderInstructions()}
               </div>
             </div>
 
@@ -469,5 +472,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     isSeat,
     // partygoersBySeat,
     takeSeat,
+    settings.showReactions,
+    areSettingsLoaded,
   ]);
 };
