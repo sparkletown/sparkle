@@ -7,19 +7,19 @@ import {
 } from "api/chat";
 
 import {
-  ChatUser,
   DeleteMessage,
   PrivateChatMessage,
   SendChatReply,
   SendMessage,
 } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import {
   buildMessage,
   chatSort,
   getMessageReplies,
   partitionMessagesFromReplies,
-  pickChatUserFromUser,
+  pickDisplayUserFromUser,
 } from "utils/chat";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -28,7 +28,7 @@ import { useUser } from "hooks/useUser";
 
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
-export const useRecipientChat = (recipient: WithId<ChatUser>) => {
+export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   const { privateChatMessages } = usePrivateChatMessages();
   const { userWithId } = useUser();
 
@@ -39,7 +39,7 @@ export const useRecipientChat = (recipient: WithId<ChatUser>) => {
       const privateChatMessage = buildMessage<PrivateChatMessage>(userWithId, {
         text: message,
         isQuestion,
-        toUser: pickChatUserFromUser(recipient),
+        toUser: pickDisplayUserFromUser(recipient),
       });
 
       return sendPrivateMessage(privateChatMessage);

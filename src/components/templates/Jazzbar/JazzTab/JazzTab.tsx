@@ -37,7 +37,7 @@ import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import Room from "../components/JazzBarRoom";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 

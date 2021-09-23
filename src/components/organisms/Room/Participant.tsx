@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import classNames from "classnames";
 import Video from "twilio-video";
 
 import { DEFAULT_CAMERA_ENABLED } from "settings";
@@ -20,7 +19,6 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
 
 export interface ParticipantProps {
-  bartender?: User;
   defaultMute?: boolean;
   participant: Video.Participant;
   profileData: User;
@@ -36,7 +34,6 @@ type Track = VideoTracks[number] | AudioTracks[number];
 export const Participant: React.FC<ParticipantProps> = ({
   participant,
   profileData,
-  bartender,
   defaultMute = false,
   showIcon = true,
   isAudioEffectDisabled,
@@ -152,7 +149,7 @@ export const Participant: React.FC<ParticipantProps> = ({
   );
 
   return (
-    <div className={classNames("col participant ", { bartender })}>
+    <div className={"col participant"}>
       {!videoEnabled && <div className="participant--video-disabled" />}
       {videoAndAudio}
       {showIcon && (

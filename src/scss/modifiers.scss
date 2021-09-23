@@ -27,6 +27,10 @@ $spacing-map: (
     height: 0;
   }
 
+  &--error {
+    color: $red;
+  }
+
   &--anamorphic {
     aspect-ratio: 2.39;
   }
