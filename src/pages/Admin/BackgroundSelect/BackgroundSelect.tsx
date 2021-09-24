@@ -12,11 +12,13 @@ import "./BackgroundSelect.scss";
 
 export interface BackgroundSelectProps {
   venueName: string;
+  worldId: string;
   mapBackground?: string;
 }
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   venueName,
+  worldId,
   mapBackground,
 }) => {
   const { user } = useUser();
@@ -33,6 +35,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
       return await updateVenue_v2(
         {
+          worldId: worldId,
           name: venueName,
           ...(hasCustomBackground && { mapBackgroundImageFile: file }),
           mapBackgroundImageUrl: url,
@@ -40,7 +43,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         user
       );
     },
-    [user, venueName]
+    [user, venueName, worldId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;

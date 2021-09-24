@@ -83,6 +83,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
             </span>
             <MapPreview
               isEditing
+              worldId={partyMapVenue.worldId}
               venueId={partyMapVenue.id}
               venueName={partyMapVenue.name}
               mapBackground={partyMapVenue.mapBackgroundImageUrl}
