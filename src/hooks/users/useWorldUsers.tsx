@@ -1,15 +1,7 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 
-import {
-  useWorldUsersQuery,
-  useWorldUsersQueryState,
-  WorldUsersApiArgs,
-} from "store/api/worldUsers";
-
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
+import { useWorldUsersQuery, WorldUsersApiArgs } from "store/api/worldUsers";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -87,33 +79,4 @@ export const useWorldUsersContext = (): WorldUsersContextState => {
   }
 
   return worldUsersState;
-};
-
-export interface WorldUsersData {
-  isWorldUsersLoaded: boolean;
-  worldUsers: readonly WithId<User>[];
-}
-
-// TODO:
-//   https://redux-toolkit.js.org/rtk-query/api/created-api/overview#react-hooks
-//   https://redux-toolkit.js.org/rtk-query/api/created-api/hooks
-//   https://redux-toolkit.js.org/rtk-query/api/created-api/hooks#usequerystate
-export const useWorldUsers = (): WorldUsersData => {
-  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
-
-  const { isSuccess: isWorldUsersLoaded, worldUsers } = useWorldUsersQueryState(
-    worldUsersApiArgs ?? skipToken,
-    {
-      selectFromResult: (result) => ({
-        isSuccess: result.isSuccess,
-        worldUsers: result.data?.worldUsers ?? [],
-      }),
-    }
-  );
-
-  return {
-    isWorldUsersLoaded,
-    worldUsers,
-  };
 };

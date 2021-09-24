@@ -1,10 +1,6 @@
-import {
-  ChatTypes,
-  ChatUser,
-  PrivateChatSettings,
-  VenueChatSettings,
-} from "types/chat";
+import { ChatTypes, PrivateChatSettings, VenueChatSettings } from "types/chat";
 import { ReduxAction } from "types/redux";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -44,7 +40,7 @@ export const setVenueChatTabOpened = (): SetVenueChatTabOpenedAction => ({
 });
 
 export const setPrivateChatTabOpened = (
-  recipient: WithId<ChatUser> | undefined
+  recipient: WithId<DisplayUser> | undefined
 ): SetPrivateChatTabOpenedAction => ({
   type: ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED,
   payload: {

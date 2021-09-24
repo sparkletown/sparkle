@@ -165,3 +165,16 @@ export const resolveAdminRootUrl: (settings: Partial<Settings>) => string = ({
   // No versions are enabled, just return the default even if it fails with 401, 403, 404
   return ADMIN_ROOT_URL;
 };
+
+export const resolveUrlPath: (path: string) => string = (path) => {
+  const base = window.location.href;
+  try {
+    return new URL(path, base).href;
+  } catch (error) {
+    Bugsnag.notify(new Error(error), (event) => {
+      event.severity = "info";
+      event.addMetadata("utils/url::resolveUrlPath", { path, base });
+    });
+    return "";
+  }
+};

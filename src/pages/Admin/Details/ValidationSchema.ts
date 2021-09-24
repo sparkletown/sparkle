@@ -31,7 +31,7 @@ export interface SchemaShape {
   subtitle?: string;
   description?: string;
 
-  bannerImageUrl: string;
+  bannerImageUrl?: string;
   logoImageUrl: string;
 }
 
@@ -99,7 +99,7 @@ export const validationSchema_v2 = Yup.object()
       message: mustBeMinimum("Description", 3),
     }),
 
-    bannerImageUrl: Yup.string().required("Banner is required!"),
+    bannerImageUrl: Yup.string(),
     logoImageUrl: Yup.string().required("Logo is required!"),
   })
   .required();

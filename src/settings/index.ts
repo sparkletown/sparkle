@@ -20,6 +20,7 @@ import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export * from "./url-settings";
 export * from "./use-settings-defaults";
+export * from "./portal-settings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -41,7 +42,8 @@ export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
-export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
@@ -94,6 +96,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 5000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -635,7 +638,6 @@ export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
-export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
 
 export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 

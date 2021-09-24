@@ -1,6 +1,6 @@
 import { Settings } from "./settings";
 
-import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
 import {
   JukeboxMessage,
   PrivateChatMessage,
@@ -62,6 +62,9 @@ export interface FirestoreData {
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
+  currentAuditoriumSeatedSectionUsers?: Partial<
+    Record<string, AuditoriumSeatedUser>
+  >;
   currentModalUser?: User;
   currentEvent?: Record<string, VenueEvent>;
   experience?: Experience;
@@ -84,6 +87,7 @@ export interface FirestoreOrdered {
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
+  currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentModalUser?: WithId<User>[];
   currentEvent?: WithId<VenueEvent>[];
   events?: WithId<VenueEvent>[];

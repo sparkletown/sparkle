@@ -1,19 +1,9 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
-import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
-import Bugsnag from "@bugsnag/js";
+import { FieldErrors, useForm } from "react-hook-form";
 import classNames from "classnames";
-import * as Yup from "yup";
 
 import {
-  ADMIN_V1_ROOT_URL,
   BACKGROUND_IMG_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
@@ -22,8 +12,6 @@ import {
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
-  DEFAULT_VENUE_BANNER,
-  DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -31,24 +19,19 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import {
-  createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
-} from "api/admin";
+import { createUrlSafeName } from "api/admin";
 
 import { UserStatus } from "types/User";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
-import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-import { useQuery } from "hooks/useQuery";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
+
+import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
+import { VenueDetailsFormErrors } from "pages/Admin/Venue/VenueDetailsFormErrors";
+import { WizardPage } from "pages/Admin/Venue/VenueWizard";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
@@ -58,23 +41,12 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "firebase/functions";
 
-import {
-  editVenueCastSchema,
-  validationSchema,
-} from "./DetailsValidationSchema";
 import EntranceInput from "./EntranceInput";
 import QuestionInput from "./QuestionInput";
-import { WizardPage } from "./VenueWizard";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
-
-export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
-
-interface DetailsFormProps extends WizardPage {
-  venueId?: string;
-}
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 // @debt remove reference to legacy 'Theme Camp' here, both should probably just
@@ -84,188 +56,7 @@ const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.partymap]: "Party Map",
 };
 
-export const DetailsForm: React.FC<DetailsFormProps> = ({
-  previous,
-  state,
-  venueId,
-}) => {
-  const defaultValues = useMemo(
-    () =>
-      venueId
-        ? editVenueCastSchema.cast(state.detailsPage?.venue)
-        : validationSchema.cast(),
-    [state.detailsPage, venueId]
-  );
-
-  const queryParams = useQuery();
-  const parentIdQuery = queryParams.get("parentId");
-
-  const { sovereignVenueId, sovereignVenue } = useRelatedVenues();
-
-  const {
-    watch,
-    formState,
-    register,
-    setValue,
-    control,
-    handleSubmit,
-    errors,
-    setError,
-  } = useForm<FormValues>({
-    mode: "onSubmit",
-    reValidateMode: "onChange",
-    validationSchema: validationSchema,
-    validationContext: {
-      template: state.templatePage?.template,
-      editing: !!venueId,
-    },
-    defaultValues: {
-      ...defaultValues,
-      logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
-      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
-      parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
-    },
-  });
-  const { user } = useUser();
-  const history = useHistory();
-  const { isSubmitting } = formState;
-
-  const [formError, setFormError] = useState(false);
-
-  //register the icon position data
-  useEffect(() => {
-    register("placement");
-  }, [register]);
-
-  const placementDivRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const clientWidth = placementDivRef.current?.clientWidth ?? 0;
-    const clientHeight = placementDivRef.current?.clientHeight ?? 0;
-
-    placementDivRef.current?.scrollTo(
-      (state?.detailsPage?.venue.placement?.x ?? 0) - clientWidth / 2,
-      (state?.detailsPage?.venue.placement?.y ?? 0) - clientHeight / 2
-    );
-  }, [state]);
-
-  // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
-  // @debt refactor this to use useAsync or useAsyncFn as appropriate
-  const onSubmit = useCallback(
-    async (
-      vals: Partial<FormValues>,
-      userStatuses: UserStatus[],
-      showUserStatuses: boolean
-    ) => {
-      if (!user || formError) return;
-      try {
-        // unfortunately the typing is off for react-hook-forms.
-        if (venueId) {
-          await updateVenue(
-            {
-              ...(vals as VenueInput),
-              id: venueId,
-              userStatuses,
-              showUserStatus: showUserStatuses,
-            },
-            user
-          );
-
-          //@debt Create separate function that updates the userStatuses separately by venue id.
-          if (
-            sovereignVenueId &&
-            sovereignVenue &&
-            sovereignVenueId !== venueId
-          )
-            await updateVenue(
-              {
-                id: sovereignVenueId,
-                name: sovereignVenue.name,
-                subtitle:
-                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
-                description:
-                  sovereignVenue.config?.landingPageConfig.description ?? "",
-                adultContent: sovereignVenue.adultContent ?? false,
-                profile_questions: sovereignVenue.profile_questions,
-                code_of_conduct_questions:
-                  sovereignVenue.code_of_conduct_questions,
-                userStatuses,
-                showUserStatus: showUserStatuses,
-                template: sovereignVenue.template,
-              },
-              user
-            );
-        } else
-          await createVenue(
-            {
-              ...vals,
-              userStatuses,
-              showUserStatus: showUserStatuses,
-            } as VenueInput,
-            user
-          );
-
-        vals.name
-          ? history.push(
-              `${ADMIN_V1_ROOT_URL}/${createUrlSafeName(venueId ?? vals.name)}`
-            )
-          : history.push(ADMIN_V1_ROOT_URL);
-      } catch (e) {
-        setFormError(true);
-        Bugsnag.notify(e, (event) => {
-          event.addMetadata("Admin::Venue::DetailsForm::onSubmit", {
-            venueId,
-            vals,
-          });
-        });
-      }
-    },
-    [user, formError, venueId, history, sovereignVenueId, sovereignVenue]
-  );
-
-  useEffect(() => {
-    if (!previous || isTruthy(state.templatePage)) return;
-
-    previous();
-  }, [previous, state.templatePage]);
-
-  if (!state.templatePage) {
-    // In reality users should never actually see this, since the useEffect above should navigate us back to ?page=1
-    return <>Error: state.templatePage not defined.</>;
-  }
-
-  // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
-  return (
-    <div className="page page--admin admin-dashboard">
-      <div className="page-side page-side--admin">
-        <div className="page-container-left page-container-left">
-          <div className="page-container-left-content">
-            <DetailsFormLeft
-              venueId={venueId}
-              setValue={setValue}
-              state={state}
-              previous={previous}
-              sovereignVenue={sovereignVenue}
-              isSubmitting={isSubmitting}
-              register={register}
-              watch={watch}
-              onSubmit={onSubmit}
-              editing={!!venueId}
-              formError={formError}
-              setFormError={setFormError}
-              control={control}
-              handleSubmit={handleSubmit}
-              errors={errors}
-              setError={setError}
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-interface DetailsFormLeftProps
+interface VenueDetailsSubFormProps
   extends Pick<
     ReturnType<typeof useForm>,
     "register" | "watch" | "control" | "handleSubmit" | "setError" | "setValue"
@@ -286,7 +77,7 @@ interface DetailsFormLeftProps
   setFormError: (value: boolean) => void;
 }
 
-const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   venueId,
   sovereignVenue,
   editing,
@@ -304,7 +95,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   setFormError,
 }) => {
   const values = watch();
-
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -400,9 +190,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderBannerPhotoInput = () => (
+  const renderHighlightImageInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Upload a banner photo</h4>
+      <h4 className="italic input-header">Upload Highlight image</h4>
       <ImageInput
         disabled={disable}
         name={"bannerImageFile"}
@@ -412,6 +202,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         register={register}
         setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
       />
     </div>
   );
@@ -622,6 +414,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     <div className="toggle-room">
       <h4 className="italic input-header">Show shoutouts</h4>
       <Toggler name="showShoutouts" forwardedRef={register} />
+    </div>
+  );
+
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderShowRangersToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show Rangers support</h4>
+      <Toggler name="showRangers" forwardedRef={register} />
     </div>
   );
 
@@ -884,7 +684,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderDescriptionInput()}
         {renderRestrictToAdultsInput()}
 
-        {renderBannerPhotoInput()}
+        {renderHighlightImageInput()}
         {renderLogoInput()}
 
         {templateID &&
@@ -941,6 +741,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowShoutouts()}
+        {renderShowRangersToggle()}
         {renderRestrictDOBToggle()}
 
         {templateID &&
@@ -977,6 +778,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderRoomAppearanceSelect()}
       </div>
 
+      <VenueDetailsFormErrors errors={errors} />
+
       <div className="page-container-left-bottombar">
         {previous ? (
           <button className="btn btn-primary nav-btn" onClick={previous}>
@@ -996,22 +799,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
           You&apos;ll be able to add rooms to your theme camp on the next page
-        </div>
-      )}
-      {formError && (
-        <div className="input-error">
-          <div>One or more errors occurred when saving the form:</div>
-          {Object.keys(errors).map((fieldName, index) => (
-            <div key={index}>
-              <span>Error in {fieldName}:</span>
-              <ErrorMessage
-                errors={errors}
-                name={fieldName}
-                as="span"
-                key={fieldName}
-              />
-            </div>
-          ))}
         </div>
       )}
     </form>

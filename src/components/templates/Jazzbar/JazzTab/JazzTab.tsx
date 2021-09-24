@@ -34,9 +34,10 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import Room from "../components/JazzBarRoom";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -140,80 +141,83 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   if (!venue) return <>Loading...</>;
 
   return (
-    <div className={containerClasses}>
-      {venue.description?.text && (
-        <div className="row">
-          <div className="col">
-            <div className="description">
-              <RenderMarkdown text={venue.description?.text} />
+    <>
+      <VenueWithOverlay
+        venue={venue}
+        containerClassNames={`music-bar ${containerClasses}`}
+      >
+        {!seatedAtTable && parentVenue && (
+          <BackButton
+            onClick={backToParentVenue}
+            locationName={parentVenue.name}
+          />
+        )}
+
+        {!seatedAtTable && (
+          <UserList
+            users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            activity={venue.activity ?? "here"}
+            limit={DEFAULT_USER_LIST_LIMIT}
+            showMoreUsersToggler
+          />
+        )}
+
+        {seatedAtTable && (
+          <TableHeader
+            seatedAtTable={seatedAtTable}
+            setSeatedAtTable={setSeatedAtTable}
+            venueName={venue.name}
+            tables={jazzbarTables}
+            venueId={venue.id}
+          />
+        )}
+        {venue.description?.text && (
+          <div className="row">
+            <div className="col">
+              <div className="description">
+                <RenderMarkdown text={venue.description?.text} />
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {!seatedAtTable && parentVenue && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
-      )}
+        <div className="music-bar-content">
+          <div className={videoContainerClasses}>
+            {!venue.hideVideo && (
+              <>
+                <div className="iframe-container">
+                  {iframeUrl ? (
+                    <iframe
+                      key="main-event"
+                      title="main event"
+                      className="iframe-video"
+                      src={
+                        convertToEmbeddableUrl({
+                          url: venue.iframeUrl,
+                          autoPlay: venue?.autoPlay,
+                        }) ?? ""
+                      }
+                      frameBorder="0"
+                      allow={IFRAME_ALLOW}
+                    />
+                  ) : (
+                    <div className="iframe-video">
+                      Embedded Video URL not yet set up
+                    </div>
+                  )}
+                </div>
 
-      {!seatedAtTable && (
-        <UserList
-          users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-          activity={venue.activity ?? "here"}
-          limit={DEFAULT_USER_LIST_LIMIT}
-          showMoreUsersToggler
-        />
-      )}
+                {shouldShowReactions && (
+                  <div className="actions-container">
+                    <ReactionsBar
+                      venueId={venue.id}
+                      isReactionsMuted={isUserAudioMuted}
+                      toggleMute={toggleUserAudio}
+                    />
 
-      {seatedAtTable && (
-        <TableHeader
-          seatedAtTable={seatedAtTable}
-          setSeatedAtTable={setSeatedAtTable}
-          venueId={venue.id}
-          venueName={venue.name}
-          tables={jazzbarTables}
-        />
-      )}
-
-      <div className="music-bar-content">
-        <div className={videoContainerClasses}>
-          {!venue.hideVideo && (
-            <>
-              <div className="iframe-container">
-                {iframeUrl ? (
-                  <iframe
-                    key="main-event"
-                    title="main event"
-                    className="iframe-video"
-                    src={
-                      convertToEmbeddableUrl({
-                        url: venue.iframeUrl,
-                        autoPlay: venue?.autoPlay,
-                      }) ?? ""
-                    }
-                    frameBorder="0"
-                    allow={IFRAME_ALLOW}
-                  />
-                ) : (
-                  <div className="iframe-video">
-                    Embedded Video URL not yet set up
-                  </div>
-                )}
-              </div>
-
-              {shouldShowReactions && (
-                <div className="actions-container">
-                  <ReactionsBar
-                    venueId={venue.id}
-                    isReactionsMuted={isUserAudioMuted}
-                    toggleMute={toggleUserAudio}
-                  />
-
-                  {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
-                  {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                  {/* {shouldShowShoutouts && (
+                    {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
+                    {/* NOTE: This functionality will probably be returned in the nearest future. */}
+                    {/* {shouldShowShoutouts && (
                     <CallOutMessageForm
                     onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                     ref={registerBandMessage({ required: true })}
@@ -221,44 +225,44 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     placeholder="Shout out..."
                     />
                   )} */}
-                </div>
-              )}
+                  </div>
+                )}
+                {shouldShowJukebox && (
+                  <Jukebox updateIframeUrl={changeIframeUrl} venue={venue} />
+                )}
 
-              {shouldShowJukebox && (
-                <Jukebox updateIframeUrl={changeIframeUrl} venue={venue} />
-              )}
-
-              {!seatedAtTable && (
-                <TablesControlBar
-                  containerClassName="ControlBar__container"
-                  onToggleAvailableTables={toggleTablesVisibility}
-                  showOnlyAvailableTables={showOnlyAvailableTables}
-                />
-              )}
-            </>
+                {!seatedAtTable && (
+                  <TablesControlBar
+                    containerClassName="ControlBar__container"
+                    onToggleAvailableTables={toggleTablesVisibility}
+                    showOnlyAvailableTables={showOnlyAvailableTables}
+                  />
+                )}
+              </>
+            )}
+          </div>
+          {seatedAtTable && (
+            <Room
+              roomName={`${venue.name}-${seatedAtTable}`}
+              venueName={venue.name}
+              setUserList={setUserList}
+              setSeatedAtTable={setSeatedAtTable}
+              isAudioEffectDisabled={isUserAudioMuted}
+            />
           )}
-        </div>
-        {seatedAtTable && (
-          <Room
-            roomName={`${venue.name}-${seatedAtTable}`}
-            venueName={venue.name}
-            setUserList={setUserList}
+          <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
-            isAudioEffectDisabled={isUserAudioMuted}
+            seatedAtTable={seatedAtTable}
+            venueName={venue.name}
+            TableComponent={JazzBarTableComponent}
+            joinMessage={!venue.hideVideo ?? true}
+            customTables={jazzbarTables}
+            showOnlyAvailableTables={showOnlyAvailableTables}
+            venueId={venue.id}
           />
-        )}
-        <TablesUserList
-          setSeatedAtTable={setSeatedAtTable}
-          seatedAtTable={seatedAtTable}
-          venueName={venue.name}
-          venueId={venue.id}
-          TableComponent={JazzBarTableComponent}
-          joinMessage={!venue.hideVideo ?? true}
-          customTables={jazzbarTables}
-          showOnlyAvailableTables={showOnlyAvailableTables}
-        />
-      </div>
-    </div>
+        </div>
+      </VenueWithOverlay>
+    </>
   );
 };
 

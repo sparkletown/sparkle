@@ -24,17 +24,15 @@ import { GenericVenue } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { createTextReaction } from "utils/reactions";
-import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
-import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
-import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
-
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Audience.scss";
 
@@ -111,21 +109,21 @@ const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
 // But it takes up the same amount of space.
 
-const capacity = (auditoriumSize: number, columns: number, rows: number) =>
-  (columns - 1 + auditoriumSize * 2) * (rows + auditoriumSize * 2) * 0.75;
+// const capacity = (auditoriumSize: number, columns: number, rows: number) =>
+//   (columns - 1 + auditoriumSize * 2) * (rows + auditoriumSize * 2) * 0.75;
 
-// Never let the auditorium get more than 80% full
-const requiredAuditoriumSize = (
-  occupants: number,
-  columns: number,
-  rows: number
-) => {
-  let size = 0;
-  while (size < 10 && capacity(size, columns, rows) * 0.8 < occupants) {
-    size++;
-  }
-  return size;
-};
+// // Never let the auditorium get more than 80% full
+// const requiredAuditoriumSize = (
+//   occupants: number,
+//   columns: number,
+//   rows: number
+// ) => {
+//   let size = 0;
+//   while (size < 10 && capacity(size, columns, rows) * 0.8 < occupants) {
+//     size++;
+//   }
+//   return size;
+// };
 
 export interface AudienceProps {
   venue: WithId<GenericVenue>;
@@ -137,7 +135,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
   const { userId, userWithId } = useUser();
   // @debt should be replaced with a subcollection
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
+  // const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
   const baseColumns =
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
@@ -196,33 +194,33 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   // Auditorium size 0 is DEFAULT_COLUMNS_NUMBER x DEFAULT_ROWS_NUMBER
   // Size 1 is (DEFAULT_ROWS_NUMBER*2) x (DEFAULT_COLUMNS_NUMBER+2)
   // Size 2 is (DEFAULT_ROWS_NUMBER*4) x (DEFAULT_COLUMNS_NUMBER+4) and so on
-  const [auditoriumSize, setAuditoriumSize] = useState(0);
+  const [auditoriumSize] = useState(0);
 
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
 
   // @debt should be replaced with a subcollection
-  const seatedVenueUsers = useMemo(() => {
-    if (!venueId) return [];
+  // const seatedVenueUsers = useMemo(() => {
+  //   if (!venueId) return [];
+  //
+  //   return recentVenueUsers.filter((user) => {
+  //     const { row, column } = user.data?.[venueId] ?? {};
+  //     return isDefined(row) && isDefined(column);
+  //   });
+  // }, [recentVenueUsers, venueId]);
 
-    return recentVenueUsers.filter((user) => {
-      const { row, column } = user.data?.[venueId] ?? {};
-      return isDefined(row) && isDefined(column);
-    });
-  }, [recentVenueUsers, venueId]);
+  // const { partygoersBySeat } = usePartygoersbySeat({
+  //   venueId,
+  //   partygoers: seatedVenueUsers,
+  // });
 
-  const { partygoersBySeat } = usePartygoersbySeat({
-    venueId,
-    partygoers: seatedVenueUsers,
-  });
+  // const seatedVenueUsersCount = seatedVenueUsers.length;
 
-  const seatedVenueUsersCount = seatedVenueUsers.length;
-
-  useEffect(() => {
-    setAuditoriumSize(
-      requiredAuditoriumSize(seatedVenueUsersCount, baseColumns, baseRows)
-    );
-  }, [baseColumns, baseRows, seatedVenueUsersCount]);
+  // useEffect(() => {
+  //   setAuditoriumSize(
+  //     requiredAuditoriumSize(seatedVenueUsersCount, baseColumns, baseRows)
+  //   );
+  // }, [baseColumns, baseRows, seatedVenueUsersCount]);
 
   const rowsForSizedAuditorium = baseRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = baseColumns + auditoriumSize * 2;
@@ -362,13 +360,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return (
       <>
-        <div
-          className="audience-container"
-          style={{
-            backgroundImage: venue.mapBackgroundImageUrl
-              ? `url(${venue.mapBackgroundImageUrl})`
-              : undefined,
-          }}
+        <VenueWithOverlay
+          containerClassNames="audience-container"
+          venue={venue}
         >
           <div className="audience">
             <div className="audience-overlay">
@@ -410,11 +404,11 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                         const isOnRight = column >= 0;
                         const seat = isSeat(row, column);
 
-                        const seatedPartygoer = partygoersBySeat?.[row]?.[
-                          column
-                        ]
-                          ? partygoersBySeat[row][column]
-                          : null;
+                        // const seatedPartygoer = partygoersBySeat?.[row]?.[
+                        //   column
+                        // ]
+                        //   ? partygoersBySeat[row][column]
+                        //   : null;
 
                         return (
                           <div
@@ -422,13 +416,14 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                             className={seat ? "seat" : "not-seat"}
                             onClick={() =>
                               seat &&
-                              seatedPartygoer === null &&
+                              // seatedPartygoer === null &&
                               takeSeat(row, column)
                             }
                           >
-                            {seat && seatedPartygoer && (
+                            {seat && (
+                              // seatedPartygoer &&
                               <UserProfilePicture
-                                user={seatedPartygoer}
+                                // user={seatedPartygoer}
                                 reactionPosition={isOnRight ? "left" : "right"}
                                 miniAvatars={venue.miniAvatars}
                                 isAudioEffectDisabled={isUserAudioMuted}
@@ -436,7 +431,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                                 size="xlarge"
                               />
                             )}
-                            {seat && !seatedPartygoer && <>+</>}
+                            {seat && (
+                              // !seatedPartygoer &&
+                              <>+</>
+                            )}
                           </div>
                         );
                       }
@@ -446,7 +444,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               }
             )}
           </div>
-        </div>
+        </VenueWithOverlay>
       </>
     );
   }, [
@@ -467,7 +465,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     register,
     isShoutSent,
     isSeat,
-    partygoersBySeat,
+    // partygoersBySeat,
     takeSeat,
   ]);
 };

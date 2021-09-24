@@ -46,6 +46,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
+    "chat-sidebar--collapsed": !isExpanded,
   });
 
   const venueChatTabStyles = classNames("chat-sidebar__tab", {
@@ -76,11 +77,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           ) : (
             <>
               <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon
-                className="chat-sidebar__controller__second-icon"
-                icon={faCommentDots}
-                size="lg"
-              />
+              <FontAwesomeIcon icon={faCommentDots} size="lg" />
             </>
           )}
         </button>

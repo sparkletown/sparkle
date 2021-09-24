@@ -71,13 +71,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   return (
     <div className="party-venue-container">
-      <Map
-        user={user}
-        profileData={profile.data}
-        venue={venue}
-        selectRoom={selectRoom}
-        unselectRoom={unselectRoom}
-      />
+      <Map user={user} venue={venue} selectRoom={selectRoom} />
 
       <RoomModal
         room={selectedRoom}

@@ -15,7 +15,7 @@ import "./JazzBarTableComponent.scss";
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
-const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   nameOfVideoRoom,
@@ -87,5 +87,3 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     </div>
   );
 };
-
-export default TableComponent;

@@ -3,11 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
-import {
-  ADMIN_V3_ROOT_URL,
-  DEFAULT_VENUE_BANNER,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
 
 import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
 
@@ -96,7 +92,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         { name: editData?.name },
         { subtitle: editData?.subtitle },
         { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl ?? DEFAULT_VENUE_BANNER },
+        { bannerImageUrl: editData?.bannerImageUrl ?? "" },
         { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
         { showGrid: editData?.showGrid },
       ]);
@@ -115,9 +111,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderVenueName = () => (
     <S.InputContainer hasError={!!errors?.name}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Name your party
-      </h4>
+      <h4 className="italic">Name your party</h4>
       <input
         disabled={disable || !!venueId}
         name="name"
@@ -138,9 +132,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderSubtitle = () => (
     <S.InputContainer hasError={!!errors?.subtitle}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Party subtitle
-      </h4>
+      <h4 className="italic">Party subtitle</h4>
       <input
         disabled={disable}
         name={"subtitle"}
@@ -156,9 +148,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderDescription = () => (
     <S.InputContainer hasError={!!errors?.description}>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Party description
-      </h4>
+      <h4 className="italic">Party description</h4>
       <textarea
         disabled={disable}
         name={"description"}
@@ -172,11 +162,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     </S.InputContainer>
   );
 
-  const renderBannerUpload = () => (
+  const renderHighlightImageUpload = () => (
     <S.InputContainer>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload a banner photo
-      </h4>
+      <h4 className="italic">Upload Highlight image</h4>
       <ImageInput
         onChange={handleBannerUpload}
         name="bannerImage"
@@ -184,15 +172,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         setValue={setValue}
         register={register}
         imgUrl={editData?.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
       />
     </S.InputContainer>
   );
 
   const renderLogoUpload = () => (
     <S.InputContainer>
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload your logo
-      </h4>
+      <h4 className="italic">Upload your logo</h4>
       <ImageInput
         onChange={handleLogoUpload}
         name="logoImage"
@@ -238,7 +226,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderVenueName()}
         {renderSubtitle()}
         {renderDescription()}
-        {renderBannerUpload()}
+        {renderHighlightImageUpload()}
         {renderLogoUpload()}
       </S.FormInnerWrapper>
 
