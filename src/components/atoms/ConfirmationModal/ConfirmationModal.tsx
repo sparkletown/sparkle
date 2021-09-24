@@ -52,9 +52,14 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const isShown = show !== undefined ? show : isVisible;
 
   return (
-    <Modal show={isShown} onHide={hide} centered={isCentered}>
+    <Modal
+      className="ConfirmationModal"
+      show={isShown}
+      onHide={hide}
+      centered={isCentered}
+    >
       <Modal.Body>
-        <div className="ConfirmationModal">
+        <div>
           {hasHeader && <h4>{header}</h4>}
           <div className="ConfirmationModal__message">{message}</div>
           <div className="ConfirmationModal__buttons">

@@ -21,7 +21,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   isAnnouncementUserView = false,
 }) => {
   const {
-    isShown,
+    isShown: isAnnouncementMessageShown,
     show: showAnnouncementMessage,
     hide: hideAnnouncementMessage,
   } = useShowHide();
@@ -49,6 +49,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   const announcementMessageClasses = classNames("AnnouncementMessage", {
     AnnouncementMessage__fullscreen: banner?.isFullScreen,
+    AnnouncementMessage__admin: !isAnnouncementUserView,
     "AnnouncementMessage__fullscreen--admin":
       banner?.isFullScreen && !isAnnouncementUserView,
   });
@@ -59,7 +60,6 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   const handleBannerModalClose = () => {
     if (banner?.isForceFunnel) return;
-    console.log("????");
     hideAnnouncementMessage();
   };
 
@@ -72,7 +72,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       </div>
     );
 
-  if (!banner?.content || !isShown) return null;
+  if (!banner?.content || !isAnnouncementMessageShown) return null;
 
   return (
     <>
