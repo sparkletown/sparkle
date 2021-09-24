@@ -149,7 +149,7 @@ export const Participant: React.FC<ParticipantProps> = ({
   );
 
   return (
-    <div className={"col participant"}>
+    <div className="col participant">
       {!videoEnabled && <div className="participant--video-disabled" />}
       {videoAndAudio}
       {showIcon && (

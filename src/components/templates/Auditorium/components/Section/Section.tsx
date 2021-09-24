@@ -17,6 +17,7 @@ import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Section.scss";
 
@@ -54,13 +55,11 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     sectionId,
   });
 
-  const seatedUserData = {
+  useUpdateRecentSeatedUsers(
+    VenueTemplate.auditorium,
     venueId,
-    template: VenueTemplate.auditorium,
-    venueSpecificData: { sectionId },
-  };
-
-  useUpdateRecentSeatedUsers(isUserSeated ? seatedUserData : undefined);
+    isUserSeated && { sectionId }
+  );
 
   // Ensure the user leaves their seat when they leave the section
   // @debt We should handle/enforce this on the backend somehow
@@ -98,7 +97,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <div className="Section">
+    <VenueWithOverlay venue={venue} containerClassNames="Section">
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
@@ -120,6 +119,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
         </div>
         {seatsGrid}
       </div>
-    </div>
+    </VenueWithOverlay>
   );
 };

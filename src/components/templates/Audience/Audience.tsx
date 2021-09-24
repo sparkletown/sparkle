@@ -32,6 +32,8 @@ import { useUser } from "hooks/useUser";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+
 import "./Audience.scss";
 
 interface ChatOutDataType {
@@ -301,9 +303,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     if (!venue || !userWithId || !venueId) return null;
 
-    const userSeated =
-      typeof userWithId.data?.[venueId]?.row === "number" &&
-      typeof userWithId.data?.[venueId]?.row === "number";
+    // const userSeated =
+    //   typeof userWithId.data?.[venueId]?.row === "number" &&
+    //   typeof userWithId.data?.[venueId]?.row === "number";
 
     const translateRow = (untranslatedRowIndex: number) =>
       untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
@@ -312,10 +314,11 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
       untranslatedColumnIndex - Math.floor(columnsForSizedAuditorium / 2);
 
     const reactionContainerClassnames = classNames("reaction-container", {
-      seated: userSeated,
+      // seated: userSeated,
     });
 
     // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
+    // eslint-disable-next-line
     const renderReactionsContainer = () => (
       <>
         <ReactionsBar
@@ -358,13 +361,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return (
       <>
-        <div
-          className="audience-container"
-          style={{
-            backgroundImage: venue.mapBackgroundImageUrl
-              ? `url(${venue.mapBackgroundImageUrl})`
-              : undefined,
-          }}
+        <VenueWithOverlay
+          containerClassNames="audience-container"
+          venue={venue}
         >
           <div className="audience">
             <div className="audience-overlay">
@@ -386,9 +385,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
                 {venue.showReactions && (
                   <div className={reactionContainerClassnames}>
-                    {userSeated
-                      ? renderReactionsContainer()
-                      : renderInstructions()}
+                    {/*/!*{userSeated*!/*/}
+                    {/*/!*  ? renderReactionsContainer()*!/*/}
+                    {/*  : renderInstructions()}*/}
+                    {renderInstructions()}
                   </div>
                 )}
               </div>
@@ -446,7 +446,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               }
             )}
           </div>
-        </div>
+        </VenueWithOverlay>
       </>
     );
   }, [
