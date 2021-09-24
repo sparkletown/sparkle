@@ -13,15 +13,6 @@ $user-list-cell-size: 30px;
     }
   }
 
-  &__toggler-text {
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      color: $primaryColor;
-    }
-  }
-
   &__avatars {
     display: flex;
     flex-wrap: wrap;
