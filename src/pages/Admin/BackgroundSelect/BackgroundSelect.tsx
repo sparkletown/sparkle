@@ -59,18 +59,12 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   );
 
   const renderMapBackgrounds = useMemo(
-    () =>
-      mapBackgrounds.map((mapBackground, index) =>
-        renderBackground(mapBackground, index)
-      ),
+    () => mapBackgrounds.map(renderBackground),
     [mapBackgrounds, renderBackground]
   );
 
   const renderDefaultBackgrounds = useMemo(
-    () =>
-      DEFAULT_BACKGROUNDS.map((mapBackground, index) =>
-        renderBackground(mapBackground, index)
-      ),
+    () => DEFAULT_BACKGROUNDS.map(renderBackground),
     [renderBackground]
   );
 
