@@ -26,7 +26,7 @@ $message-margin: $spacing + $close-icon-width + 5px;
   .close-button {
     background: transparent;
     border: none;
-    color: $primary-content--over;
+    color: $primary-accent--over;
     cursor: pointer;
     position: absolute;
     top: $spacing;

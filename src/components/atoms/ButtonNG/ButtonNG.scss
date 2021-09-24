@@ -25,7 +25,7 @@ $variants-enum: (
   ("dark", $primary-content--over, opaque-black(0.4), opaque-black(0.6)),
   (
     "danger",
-    $primary-content--over,
+    $primary-accent--over,
     $input--invalid,
     lighten($input--invalid, 10%)
   )
