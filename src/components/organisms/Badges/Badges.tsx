@@ -9,7 +9,7 @@ import {
   FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
 } from "settings";
 
-import { getUser } from "api/profile";
+import { getUserRef } from "api/profile";
 
 import { UserVisit } from "types/Firestore";
 import { ContainerClassName } from "types/utility";
@@ -35,7 +35,7 @@ export const Badges: React.FC<
   const firestore = useFirestore();
 
   const fetchAllVenues = useCallback(async () => {
-    const userSnapshot = await getUser(user.id);
+    const userSnapshot = await getUserRef(user.id).get();
     const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
 
     const visits: WithId<UserVisit>[] =

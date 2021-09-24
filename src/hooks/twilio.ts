@@ -295,7 +295,7 @@ export const useVideoRoomState = ({
 
     room,
     participants,
-    participantsLoading: participantsLoading || roomLoading,
+    roomLoading: participantsLoading || roomLoading,
 
     disconnect,
     becomeActiveParticipant,

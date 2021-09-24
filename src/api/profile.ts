@@ -2,15 +2,21 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { AnyGridData } from "types/grid";
-import { ProfileLink } from "types/User";
+import { ProfileLink, User } from "types/User";
 import { VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 export const getUserRef = (userId: string) =>
   firebase.firestore().collection("users").doc(userId);
 
-export const getUser = (userId: string) => getUserRef(userId).get();
+export const getUser = async (userId: string): Promise<WithId<User>> => {
+  const snapshot = await getUserRef(userId).get();
+  return {
+    ...snapshot.data(),
+    id: snapshot.id,
+  };
+};
 
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;

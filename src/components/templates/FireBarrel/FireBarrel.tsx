@@ -24,7 +24,7 @@ export interface FireBarrelProps {
 export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   const { userId, userWithId } = useUser();
 
-  const { room, participants, participantsLoading } = useVideoRoomState({
+  const { room, participants } = useVideoRoomState({
     user: userWithId,
     roomName: venue?.name,
   });
@@ -39,7 +39,7 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   const [videoError, setVideoError] = useState<string>("");
 
   return useMemo(() => {
-    if (!participantsLoading || !userWithId) return <LoadingPage />;
+    if (!userWithId) return <LoadingPage />;
 
     return (
       <S.Wrapper>
@@ -97,7 +97,6 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
       </S.Wrapper>
     );
   }, [
-    participantsLoading,
     userWithId,
     venue?.iframeUrl,
     seatsArray,

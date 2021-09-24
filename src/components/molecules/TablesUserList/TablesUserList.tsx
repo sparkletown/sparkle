@@ -129,7 +129,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     (table: Table) => {
       const numberOfSeatsLeft =
         table.capacity &&
-        table.capacity - usersSeatedAtTables[table.reference].length;
+        table.capacity - (usersSeatedAtTables?.[table.reference]?.length ?? 0);
       return numberOfSeatsLeft === 0;
     },
     [usersSeatedAtTables]
@@ -138,7 +138,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const tableLocked = useCallback(
     (tableReference: string) => {
       // Empty tables are never locked
-      if (!usersSeatedAtTables[tableReference].length) return false;
+      if (!usersSeatedAtTables?.[tableReference]?.length) return false;
 
       // Locked state is in the experience record
       return isTruthy(experience?.tables?.[tableReference]?.locked);
@@ -175,7 +175,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const emptyTables = useMemo(
     () =>
-      tables.filter((table) => !usersSeatedAtTables[table.reference].length),
+      tables.filter((table) => !usersSeatedAtTables?.[table.reference]?.length),
     [tables, usersSeatedAtTables]
   );
 
@@ -195,7 +195,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       <TableComponent
         key={table.reference}
         // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
-        users={usersSeatedAtTables[table.reference]}
+        users={usersSeatedAtTables?.[table.reference] ?? []}
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}

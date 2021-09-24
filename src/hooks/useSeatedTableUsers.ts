@@ -26,7 +26,7 @@ const useConnectSeatedTableUsers = (venueId: string | undefined) => {
       {
         collection: "venues",
         doc: venueId,
-        subcollections: [{ collection: "sections" }],
+        subcollections: [{ collection: "seatedTableUsers" }],
         storeAs: "currentSeatedTableUsers",
       },
     ];
