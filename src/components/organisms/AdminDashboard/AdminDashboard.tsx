@@ -2,9 +2,10 @@ import React, { useMemo, useState } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import classNames from "classnames";
 
+import { ADMIN_V3_CREATE_URL } from "settings";
+
 import { isPartyMapVenue } from "types/venues";
 
-import { ADMIN_CREATE_SPACE_URL } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -68,7 +69,7 @@ export const AdminDashboard: React.FC = () => {
             <div className="AdminDashboard__header-title">Admin Dashboard</div>
             {sortingOptions}
           </div>
-          <ButtonNG variant="primary" isLink linkTo={ADMIN_CREATE_SPACE_URL}>
+          <ButtonNG variant="primary" isLink linkTo={ADMIN_V3_CREATE_URL}>
             Create a new space
           </ButtonNG>
         </div>
