@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from "react";
+import React, { ChangeEvent, useCallback, useRef, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -7,6 +7,8 @@ import { ACCEPTED_IMAGE_TYPES } from "settings";
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
 import { ImageOverlay } from "components/atoms/ImageOverlay";
+
+import { ButtonNG } from "../ButtonNG";
 
 import "./ImageInput.scss";
 
@@ -19,6 +21,8 @@ export interface ImageInputProps {
   small?: boolean;
   register: ReturnType<typeof useForm>["register"];
   nameWithUnderscore?: boolean;
+  text?: string;
+  isInputHidden?: boolean;
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
@@ -30,7 +34,11 @@ const ImageInput: React.FC<ImageInputProps> = ({
   register,
   setValue,
   nameWithUnderscore = false,
+  isInputHidden = false,
+  text = "Upload",
 }) => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const [imageUrl, setImageUrl] = useState(imgUrl);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
@@ -54,6 +62,8 @@ const ImageInput: React.FC<ImageInputProps> = ({
     [handleFileInputChange, onChange, setValue, fileName]
   );
 
+  const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
+
   return (
     <>
       <label
@@ -61,6 +71,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           "ImageInput__container--error": !!error?.message,
           "ImageInput__container--small": small,
           "ImageInput__container--disabled": loading,
+          "mod--hidden": isInputHidden,
         })}
         style={{
           backgroundImage: `url(${imageUrl})`,
@@ -72,6 +83,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           id={name}
           onChange={handleFileInputChangeWrapper}
           type="file"
+          ref={inputFileRef}
         />
         {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
@@ -92,6 +104,11 @@ const ImageInput: React.FC<ImageInputProps> = ({
         value={imageUrl}
         readOnly
       />
+      {isInputHidden && (
+        <ButtonNG onClick={onButtonClick} variant="primary">
+          {text}
+        </ButtonNG>
+      )}
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );

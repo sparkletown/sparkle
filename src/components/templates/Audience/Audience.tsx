@@ -32,6 +32,8 @@ import { useUser } from "hooks/useUser";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+
 import "./Audience.scss";
 
 interface ChatOutDataType {
@@ -358,13 +360,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return (
       <>
-        <div
-          className="audience-container"
-          style={{
-            backgroundImage: venue.mapBackgroundImageUrl
-              ? `url(${venue.mapBackgroundImageUrl})`
-              : undefined,
-          }}
+        <VenueWithOverlay
+          containerClassNames="audience-container"
+          venue={venue}
         >
           <div className="audience">
             <div className="audience-overlay">
@@ -446,7 +444,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               }
             )}
           </div>
-        </div>
+        </VenueWithOverlay>
       </>
     );
   }, [
