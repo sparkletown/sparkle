@@ -51,7 +51,7 @@
   .quotation-container {
     display: flex;
     flex-direction: column;
-    color: $primary-content-over;
+    color: $primary-content--over;
     align-items: center;
     margin-bottom: 10px;
 
@@ -178,7 +178,7 @@
   }
   .date {
     font-size: 15px;
-    color: $primary-content-over;
+    color: $primary-content--over;
     margin-bottom: 5px;
   }
   .event-description {

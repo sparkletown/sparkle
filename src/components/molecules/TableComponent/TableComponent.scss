@@ -58,7 +58,7 @@
     background: $dark;
     border-radius: 22px;
     min-height: 30px;
-    color: $primary-content-over;
+    color: $primary-content--over;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -115,14 +115,14 @@
     transition: all 400ms $transition-function;
     font-size: 2rem;
     &:hover {
-      background-color: $primary-content-over;
+      background-color: $primary-content--over;
       transform: scale(1.05) rotate(90deg);
       color: rgba(black, 0.7);
-      box-shadow: 2px 0px 10px rgba($primary-content-over, 0.6);
+      box-shadow: 2px 0px 10px rgba($primary-content--over, 0.6);
     }
     &:active {
       transform: scale(0.95) rotate(90deg);
-      box-shadow: 2px 0px 10px rgba($primary-content-over, 0.2);
+      box-shadow: 2px 0px 10px rgba($primary-content--over, 0.2);
     }
   }
 }

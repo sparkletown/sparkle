@@ -25,7 +25,7 @@ $upload-button-max-width: 300px;
     padding: $spacing--lg 50px;
     margin: $spacing--lg 0;
     font-weight: $font-weight--700;
-    color: $primary-content-over;
+    color: $primary-content--over;
     background-color: transparent;
 
     &:hover {
@@ -50,7 +50,7 @@ $upload-button-max-width: 300px;
   &__image {
     width: $profile-picture-size--lg;
     height: $profile-picture-size--lg;
-    border: 3px solid $primary-content-over;
+    border: 3px solid $primary-content--over;
 
     &--small {
       width: $profile-picture-size--sm;

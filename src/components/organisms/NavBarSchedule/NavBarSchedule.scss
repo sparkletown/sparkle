@@ -53,10 +53,10 @@ $schedule-button-height: 51px;
   &__weekday-button {
     border: none;
     background: inherit;
-    color: $primary-content-over;
+    color: $primary-content--over;
 
     &:focus {
-      color: $primary-content-over;
+      color: $primary-content--over;
       opacity: 1;
       outline: none;
     }

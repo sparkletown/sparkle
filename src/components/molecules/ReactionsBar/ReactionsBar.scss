@@ -28,7 +28,7 @@
     cursor: pointer;
     padding: $spacing--xs $spacing--sm;
     background: $primary-content-under;
-    color: $primary-content-over;
+    color: $primary-content--over;
 
     &:hover {
       background-color: opaque-white(0.5);

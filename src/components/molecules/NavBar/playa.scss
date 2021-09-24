@@ -22,7 +22,7 @@ $sand: #937c63;
   width: 100%;
   height: 66px;
   background-color: rgba($primary-content-under, 0.2);
-  border-bottom: 1px solid rgba($primary-content-over, 0.2);
+  border-bottom: 1px solid rgba($primary-content--over, 0.2);
   box-shadow: box-shadow--large(0.1);
   backdrop-filter: blur(5px);
   background-color: $primary-content-under;
@@ -112,7 +112,7 @@ $sand: #937c63;
         &.navbar-link-schedule {
           width: auto;
           background-image: $gradient;
-          color: $primary-content-over;
+          color: $primary-content--over;
           line-height: 42px;
           padding: 0 10px;
           font-size: 0.9rem;

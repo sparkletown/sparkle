@@ -107,7 +107,7 @@ $border-radius: 28px;
 
     .avatar {
       opacity: 0.025;
-      background-color: $primary-content-over;
+      background-color: $primary-content--over;
     }
   }
 
@@ -115,7 +115,7 @@ $border-radius: 28px;
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: $primary-content-over;
+    background-color: $primary-content--over;
     opacity: 0.025;
     border-radius: 100%;
 

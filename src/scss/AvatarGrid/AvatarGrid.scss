@@ -36,11 +36,11 @@
 //
 //  &.btn-primary {
 //    background-color: $primary-accent-under;
-//    color: $primary-content-over;
+//    color: $primary-content--over;
 //    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 //
 //    &:hover {
-//      color: $primary-content-over;
+//      color: $primary-content--over;
 //      background-color: darken($primary-accent-under, 5%);
 //    }
 //  }
@@ -82,8 +82,8 @@
 //      color: rgba($primary-content-under, 0.6);
 //    }
 //    &:disabled {
-//      background-color: rgba($primary-content-over, 0.1);
-//      color: rgba($primary-content-over, 0.6);
+//      background-color: rgba($primary-content--over, 0.1);
+//      color: rgba($primary-content--over, 0.6);
 //    }
 //  }
 //  &.btn-block {
@@ -94,6 +94,6 @@
 //    cursor: not-allowed;
 //    background-color: $primary-content-under;
 //    box-shadow: none;
-//    color: rgba($primary-content-over, 0.6);
+//    color: rgba($primary-content--over, 0.6);
 //  }
 //}

@@ -35,8 +35,8 @@ $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 $concrete--dark: #9f9fa0;
 $primary-content-under: #000000;
-$primary-accent-over: #ffffff;
-$primary-content-over: #ffffff;
+$primary-accent--over: #ffffff;
+$primary-content--over: #ffffff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
@@ -236,7 +236,7 @@ $z-layers: (
 }
 
 @function opaque-white($opacity: 0.1) {
-  @return rgba($primary-content-over, $opacity);
+  @return rgba($primary-content--over, $opacity);
 }
 
 @function opaque-black($opacity: 0.1) {

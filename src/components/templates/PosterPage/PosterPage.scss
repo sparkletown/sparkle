@@ -94,7 +94,7 @@ $poster-cell-optimal-height: 195px;
 
   &__control--stop {
     background-color: $red;
-    color: $primary-content-over;
+    color: $primary-content--over;
     opacity: 0.8;
   }
 
@@ -119,7 +119,7 @@ $poster-cell-optimal-height: 195px;
     justify-content: center;
     align-items: center;
 
-    color: $primary-content-over;
+    color: $primary-content--over;
     font-size: $font-size--xxl;
 
     cursor: pointer;

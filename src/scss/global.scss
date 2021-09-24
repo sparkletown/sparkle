@@ -24,7 +24,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   background-color: $primary-content-under;
-  color: $primary-content-over;
+  color: $primary-content--over;
   display: flex;
   justify-content: center;
   font-family: "Rubik", sans-serif;
@@ -86,7 +86,7 @@ h6 {
 // Buttons
 
 button:focus {
-  outline: 1px dotted $primary-content-over;
+  outline: 1px dotted $primary-content--over;
 }
 
 button.btn,
@@ -102,7 +102,7 @@ input.btn {
 
   background-color: rgba($primary-accent-under, 0.24);
   transition: all 400ms $transition-function;
-  color: $primary-content-over;
+  color: $primary-content--over;
   transform: translateY(0);
 
   &:hover {
@@ -111,7 +111,7 @@ input.btn {
   }
 
   &.btn-primary {
-    color: $primary-content-over;
+    color: $primary-content--over;
     background-image: $gradient;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
@@ -121,7 +121,7 @@ input.btn {
   }
 
   &.btn-secondary {
-    color: $primary-content-over;
+    color: $primary-content--over;
     background-color: rgba(124, 70, 251, 0.4);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
@@ -131,7 +131,7 @@ input.btn {
   }
 
   &.btn-danger {
-    color: $primary-content-over;
+    color: $primary-content--over;
     background: $danger-gradient;
     border-color: rgba(0, 0, 0, 0);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
@@ -159,13 +159,13 @@ input.btn {
 
   &.disabled,
   &[type="submit"]:disabled {
-    color: rgba($primary-content-over, 0.5);
-    background-color: rgba($primary-content-over, 0.15);
+    color: rgba($primary-content--over, 0.5);
+    background-color: rgba($primary-content--over, 0.15);
 
     &.btn-primary {
-      color: rgba($primary-content-over, 0.5);
+      color: rgba($primary-content--over, 0.5);
       background-image: none;
-      background-color: rgba($primary-content-over, 0.15);
+      background-color: rgba($primary-content--over, 0.15);
     }
   }
 }
@@ -232,7 +232,7 @@ button.btn {
   }
 
   &.disabled {
-    color: rgba($primary-content-over, 0.2);
+    color: rgba($primary-content--over, 0.2);
     background-image: linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.2) 0%,
@@ -248,7 +248,7 @@ textarea {
   -webkit-appearance: none;
   border: none;
   outline: none;
-  background-color: rgba($primary-content-over, 0.12);
+  background-color: rgba($primary-content--over, 0.12);
   width: 100%;
   position: relative;
   cursor: pointer;
@@ -256,7 +256,7 @@ textarea {
   padding: 12px;
   border-radius: 22px;
   text-align: center;
-  color: $primary-content-over;
+  color: $primary-content--over;
 
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -266,11 +266,11 @@ textarea {
   }
 
   &:hover {
-    background-color: rgba($primary-content-over, 0.16);
+    background-color: rgba($primary-content--over, 0.16);
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba($primary-content-over, 1);
+    box-shadow: 0 0 0 2px rgba($primary-content--over, 1);
   }
 
   &[type="checkbox"]:focus {
@@ -359,12 +359,12 @@ textarea {
   border-radius: 10px;
   padding: $spacer * 0.25 $spacer * 0.75;
   background: $primary-content-under;
-  color: $primary-content-over;
+  color: $primary-content--over;
 
   &.positioned {
     position: absolute;
     opacity: 0.5;
-    background: $primary-content-over;
+    background: $primary-content--over;
     color: $primary-content-under;
   }
 
@@ -381,7 +381,7 @@ textarea {
 
 a,
 .button--a {
-  color: $primary-content-over;
+  color: $primary-content--over;
   text-decoration: underline;
 
   &:hover {
@@ -514,7 +514,7 @@ h4 {
   .youtube-video {
     transition: all 0.1s linear;
     background-color: $dark;
-    color: $primary-content-over;
+    color: $primary-content--over;
   }
 }
 
@@ -663,22 +663,22 @@ input.btn.btn-primary.btn-success {
   border: 1px solid $light-grey;
   background-image: linear-gradient(
     0deg,
-    rgba($primary-content-over, 0.05) 0%,
-    rgba($primary-content-over, 0.05) 100%
+    rgba($primary-content--over, 0.05) 0%,
+    rgba($primary-content--over, 0.05) 100%
   );
 
   .chatbox-container {
     background: $primary-content-under;
     background-image: linear-gradient(
       0deg,
-      rgba($primary-content-over, 0.05) 0%,
-      rgba($primary-content-over, 0.05) 100%
+      rgba($primary-content--over, 0.05) 0%,
+      rgba($primary-content--over, 0.05) 100%
     );
 
     .bubble {
       padding: 10px;
       border-radius: 10px;
-      color: $primary-content-over;
+      color: $primary-content--over;
 
       &.global {
         background: $dark;

@@ -28,7 +28,7 @@
     text-align: center;
     align-self: center;
     cursor: pointer;
-    color: rgba($primary-content-over, 0.6);
+    color: rgba($primary-content--over, 0.6);
     text-decoration: none;
     padding: $spacing--sm $spacing--xl;
 
@@ -41,11 +41,11 @@
     }
 
     &:hover {
-      color: $primary-content-over;
+      color: $primary-content--over;
     }
 
     &--selected {
-      color: $primary-content-over;
+      color: $primary-content--over;
       background-color: $primary-accent-under;
     }
   }

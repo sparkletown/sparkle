@@ -38,7 +38,7 @@ $expand--width: 40px;
     background-color: $secondary--schedule-event-users;
 
     &:hover {
-      background-color: $primary-content-over;
+      background-color: $primary-content--over;
     }
 
     .ScheduleEvent__bookmark {
@@ -91,14 +91,14 @@ $expand--width: 40px;
 
   &--live {
     background-color: $primary-accent-under;
-    color: $primary-content-over;
+    color: $primary-content--over;
 
     &:hover {
       background-color: $primary--live-hover;
     }
 
     .ScheduleEvent__bookmark {
-      color: $primary-content-over;
+      color: $primary-content--over;
     }
   }
 
@@ -174,7 +174,7 @@ $expand--width: 40px;
     }
 
     &--live {
-      color: $primary-content-over;
+      color: $primary-content--over;
     }
   }
 

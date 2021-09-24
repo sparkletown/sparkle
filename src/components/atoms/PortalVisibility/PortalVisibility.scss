@@ -3,7 +3,7 @@
 .PortalVisibility {
   appearance: none;
   border-radius: $border-radius--xl;
-  color: $primary-content-over;
+  color: $primary-content--over;
   background-color: opaque-white(0.12);
   padding: $spacing--md $spacing--xl $spacing--md $spacing--md;
   text-align: center;
@@ -16,7 +16,7 @@
   }
 
   option {
-    color: $primary-content-over;
+    color: $primary-content--over;
     background-color: $secondary--dark;
   }
 }

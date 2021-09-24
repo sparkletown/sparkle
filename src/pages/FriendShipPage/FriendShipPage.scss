@@ -32,7 +32,7 @@
     .bar-container {
       background: $dark;
       border-radius: 22px;
-      color: $primary-content-over;
+      color: $primary-content--over;
 
       .title {
         font-size: 25px;
@@ -58,7 +58,7 @@
   }
 
   .chatbox-container {
-    color: $primary-content-over;
+    color: $primary-content--over;
     max-height: 100vh;
     margin-bottom: 30px;
     margin-left: 20px;
@@ -80,7 +80,7 @@
   .at-table {
     padding: 10px;
     background: $dark;
-    color: $primary-content-over;
+    color: $primary-content--over;
     border-radius: 22px;
 
     .private-table-title {
@@ -108,7 +108,7 @@
   }
 
   .wrapper {
-    color: $primary-content-over;
+    color: $primary-content--over;
   }
 
   .table-container {

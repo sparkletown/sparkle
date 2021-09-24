@@ -60,7 +60,7 @@ $preview-margin: 30px;
       display: flex;
       justify-content: space-between;
       background-color: $primary-content-under;
-      border-top: 1px solid rgba($primary-content-over, 0.2);
+      border-top: 1px solid rgba($primary-content--over, 0.2);
 
       .btn {
         float: right;
@@ -134,7 +134,7 @@ $preview-margin: 30px;
   transition: all 400ms $transition-function;
 
   &:hover {
-    box-shadow: 0 0 0 4px rgba($primary-content-over, 0.62);
+    box-shadow: 0 0 0 4px rgba($primary-content--over, 0.62);
     background-color: lighten($dark, 4%);
   }
 
@@ -240,20 +240,20 @@ $preview-margin: 30px;
     height: 30px;
     width: 30px;
     border-radius: 15px;
-    background-color: rgba($primary-content-over, 0.12);
-    box-shadow: 0 0 0 2px rgba($primary-content-over, 0.4);
+    background-color: rgba($primary-content--over, 0.12);
+    box-shadow: 0 0 0 2px rgba($primary-content--over, 0.4);
   }
 
   &:hover {
     &:before {
-      box-shadow: 0 0 0 2px rgba($primary-content-over, 1);
+      box-shadow: 0 0 0 2px rgba($primary-content--over, 1);
     }
   }
 
   &.checkbox-checked {
     &:before {
       background-color: $primaryColor;
-      box-shadow: 0 0 0 2px rgba($primary-content-over, 0);
+      box-shadow: 0 0 0 2px rgba($primary-content--over, 0);
       background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
