@@ -55,13 +55,11 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     sectionId,
   });
 
-  const seatedUserData = {
+  useUpdateRecentSeatedUsers(
+    VenueTemplate.auditorium,
     venueId,
-    template: VenueTemplate.auditorium,
-    venueSpecificData: { sectionId },
-  };
-
-  useUpdateRecentSeatedUsers(isUserSeated ? seatedUserData : undefined);
+    isUserSeated && { sectionId }
+  );
 
   // Ensure the user leaves their seat when they leave the section
   // @debt We should handle/enforce this on the backend somehow

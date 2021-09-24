@@ -6,7 +6,7 @@ export interface AuditoriumSection {
   rowsCount?: number;
   columnsCount?: number;
   seatedUsersSample?: WithId<DisplayUser>[];
-  seatedUsersCount?: WithId<DisplayUser>[];
+  seatedUsersCount?: number;
   isVip?: boolean;
 }
 

@@ -65,8 +65,8 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
           "/default-profile-pic.png",
           values.bannerImageFile
         ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
+        subtitle: values.subtitle || "Subtitle for your space",
+        description: values.description || "Description of your space",
         presentation: [],
         checkList: [],
         quotations: [],
