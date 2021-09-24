@@ -36,11 +36,6 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
 
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
-  if (!venue?.worldId) {
-    console.error("Venue worldId is missing in the current venue object");
-    return null;
-  }
-
   // @debt remove backButton from Navbar
   return (
     <>
@@ -49,7 +44,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId} worldId={venue.worldId}>
+      <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
         <Suspense fallback={<Loading />}>
           <NavBar hasBackButton={hasBackButton} withSchedule={withSchedule} />
         </Suspense>

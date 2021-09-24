@@ -33,7 +33,7 @@ const RelatedVenuesContext = createContext<
 
 export interface RelatedVenuesProviderProps {
   venueId?: string;
-  worldId: string;
+  worldId?: string;
 }
 
 export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
@@ -44,7 +44,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   const firestore = useFirestore();
   const relatedVenuesRef = firestore
     .collection("venues")
-    .where("worldId", "==", worldId)
+    .where("worldId", "==", worldId ?? "")
     .withConverter(venueConverter);
 
   const { data: relatedVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
