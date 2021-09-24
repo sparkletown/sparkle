@@ -18,6 +18,8 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
+export * from "./portal-settings";
+
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
