@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from "react";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
@@ -27,6 +28,8 @@ import { validationSchema_v2 } from "../ValidationSchema";
 
 import * as S from "./DetailsForm.styles";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
+
+import "./DetailsForm.scss";
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const history = useHistory();
@@ -213,7 +216,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   return (
-    <S.FormWrapper onSubmit={handleSubmit(setWorld)} onChange={handleOnChange}>
+    <Form
+      className="DetailsForm"
+      onSubmit={handleSubmit(setWorld)}
+      onChange={handleOnChange}
+    >
       <S.FormInnerWrapper>
         <input
           type="hidden"
@@ -247,7 +254,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           {venueId ? "Update Space" : "Create Space"}
         </ButtonNG>
       </S.FormFooter>
-    </S.FormWrapper>
+    </Form>
   );
 };
 

@@ -9,11 +9,6 @@ export const FormInnerWrapper = styled.div`
   padding: 1em 5em;
 `;
 
-export const FormWrapper = styled.form`
-  height: 100vh;
-  overflow-y: scroll;
-`;
-
 export const FormFooter = styled.div`
   display: flex;
   padding: 1em 3em;
