@@ -165,10 +165,11 @@ $loading-page-icon-transform-small-opacity: 0.4;
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-live-schedule: 35;
 $z-layer-live-schedule-download: 25;
-$z-layer-sidebar: 30;
+$z-layer-sidebar: 25;
 $z-layer-navbar: $z-layer-sidebar + 1;
 $z-layer-left-column: 15;
 $z-layer-emergency-content: 15;
+$z-layer-user-dropdown: 40;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -204,6 +205,7 @@ $z-layers: (
   navbar: $z-layer-navbar,
   navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,
+  navbar-user-dropdown: $z-layer-user-dropdown,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
@@ -304,6 +306,12 @@ $z-layers: (
     background-color: $black;
   }
 
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($white, 0.5);
+  }
+}
+
+@mixin gray-scrollbar {
   &::-webkit-scrollbar-track {
     border-radius: $border-radius--xs;
     background-color: $black;

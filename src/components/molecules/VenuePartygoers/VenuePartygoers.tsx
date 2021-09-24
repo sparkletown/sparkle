@@ -16,7 +16,7 @@ export const VenuePartygoers: React.FC = () => {
 
   return (
     <div className="VenuePartygoers__container">
-      <span className="VenuePartygoers__users-count">{userCount}</span> burners
+      <span className="VenuePartygoers__users-count">{userCount}</span> people
       here
     </div>
   );

@@ -5,12 +5,16 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { Dropdown, OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import {
-  faExternalLinkAlt,
+  faCog,
+  faEye,
+  faInfoCircle,
+  faSearch,
   faTicketAlt,
+  faUser,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,6 +29,7 @@ import {
   BM_PARENT_ID,
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
+  HELP_CENTER_URL,
   IS_SIMPLE_MUTE_BUTTON,
   LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
   LS_KEY_RADIO_VOLUME,
@@ -48,6 +53,7 @@ import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -55,7 +61,6 @@ import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicket
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
-import { PlayaTime } from "components/molecules/PlayaTime";
 import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
@@ -113,7 +118,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   withSchedule = true,
   hasSchedule = true,
 }) => {
-  const { user, userWithId } = useUser();
+  const { profile, user, userWithId } = useUser();
   const venueId = useVenueId();
 
   const radioStations = useSelector(radioStationsSelector);
@@ -126,6 +131,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
+
+  const { isShown: isDropdownShown, toggle: toggleDropdownShown } = useShowHide(
+    false
+  );
+
+  const { isShown: isSearchShown, toggle: toggleSearchShown } = useShowHide();
+
+  const [isFocus, setIsFocus] = useState(false);
 
   // Disabled caret back button on navBar
   // const isSovereignVenue = venueId === sovereignVenueId;
@@ -251,6 +264,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
+  const scheduleArrowClasses = classNames({
+    "arrow-up": isEventScheduleVisible,
+    "arrow-down": !isEventScheduleVisible,
+  });
+
+  const dropdownArrowClasses = classNames({
+    "arrow-up": isDropdownShown,
+    "arrow-down": !isDropdownShown,
+  });
+
   const hideEventSchedule = useCallback((e) => {
     if (
       e.target.closest(`.${navBarScheduleClassName}`) ||
@@ -286,6 +309,19 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const showRadio = showNormalRadio || showSoundCloudRadio;
 
+  const onFocus = () => setIsFocus(true);
+
+  const onBlur = () => {
+    setIsFocus(false);
+    toggleSearchShown();
+  };
+
+  const onMouseLeave = () => {
+    if (isFocus) return;
+
+    toggleSearchShown();
+  };
+
   return (
     <>
       <header>
@@ -300,20 +336,26 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   onClick={navigateToHomepage}
                 />
               )} */}
-              <div
-                className="NavBar__sparkle-logo"
-                onClick={navigateToHomepage}
-              />
-              {shouldShowSchedule ? (
-                <div
-                  aria-label="Schedule"
-                  className={scheduleBtnClasses}
-                  onClick={toggleEventSchedule}
-                />
-              ) : (
-                <div>{navbarTitle}</div>
-              )}
-
+              <div className="nav-sparkle-logo">
+                <div onClick={navigateToHomepage}></div>
+              </div>
+              <div className="nav-clickable" onClick={toggleEventSchedule}>
+                <p className="NavBar__venue-id">{venueId}</p>
+                {shouldShowSchedule ? (
+                  <div className="nav-schedule-wrapper">
+                    <ButtonNG
+                      aria-label="Schedule"
+                      className={scheduleBtnClasses}
+                      onClick={toggleEventSchedule}
+                    >
+                      What&apos;s On
+                    </ButtonNG>
+                  </div>
+                ) : (
+                  <div>{navbarTitle}</div>
+                )}
+                <div className={scheduleArrowClasses}></div>
+              </div>
               <div
                 className="NavBar__photobooth-button nav-schedule"
                 onClick={() => openUrlInNewTab(SPARKLEVERSE_PHOTOBOOTH_URL)}
@@ -321,18 +363,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 <p className="NavBar__photobooth-title">Photobooth</p>
               </div>
 
-              <div className="navbar-links__simplified-view">
+              <div className="navbar-links__simple-view">
                 <a
-                  className="navbar-links__simplified-view-a"
+                  className="navbar-links__simple-view-a"
                   href={`/m/${venueId}`}
                   target="_blank"
                   rel="noreferrer"
                 >
-                  <ButtonNG className="navbar-links__simplified-view-button">
-                    <span className="navbar-links__simplified-view-text">
-                      Simplified View &nbsp;
+                  <ButtonNG className="navbar-links__simple-view-button">
+                    <FontAwesomeIcon icon={faEye} />
+                    <span className="navbar-links__simple-view-text">
+                      &nbsp; Simple View
                     </span>
-                    <FontAwesomeIcon icon={faExternalLinkAlt} />
                   </ButtonNG>
                 </a>
               </div>
@@ -343,11 +385,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
             {user && (
               <div className="navbar-links">
                 <div className="NavBar__playa-info">
-                  <PlayaTime />
-                  <div className="NavBar__separator">-</div>
                   <VenuePartygoers />
                 </div>
-                <NavSearchBar venueId={venueId ?? ""} />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -374,6 +413,31 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     </span>
                   </OverlayTrigger>
                 )}
+
+                <div
+                  className="navbar-search"
+                  onMouseEnter={toggleSearchShown}
+                  onMouseLeave={onMouseLeave}
+                >
+                  {isSearchShown && (
+                    <NavSearchBar
+                      venueId={venueId ?? ""}
+                      onFocus={onFocus}
+                      onBlur={onBlur}
+                    />
+                  )}
+                  <ButtonNG
+                    className="NavBar__menu-link"
+                    iconOnly
+                    iconSize="1x"
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </ButtonNG>
+                </div>
+
+                <ButtonNG className="NavBar__menu-link" iconOnly iconSize="1x">
+                  <img src={RadioIcon} alt="radio icon" />
+                </ButtonNG>
 
                 {showRadio && (
                   <OverlayTrigger
@@ -433,7 +497,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 )}
                 <div
                   className="navbar-links-user-avatar"
-                  onClick={handleAvatarClick}
+                  onClick={toggleDropdownShown}
                 >
                   <UserAvatar
                     user={userWithId}
@@ -441,7 +505,44 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     containerClassName="NavBar__user-avatar"
                     size="small"
                   />
+                  <div className={dropdownArrowClasses}></div>
                 </div>
+                {isDropdownShown && (
+                  <Dropdown className="navbar-dropdown">
+                    <Dropdown.Item className="navbar-dropdown-item" disabled>
+                      Hello {profile?.partyName}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="navbar-dropdown-item"
+                      onClick={handleAvatarClick}
+                    >
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        className="navbar-dropdown-item-icon"
+                      />
+                      Profile
+                    </Dropdown.Item>
+                    <Dropdown.Item className="navbar-dropdown-item">
+                      <FontAwesomeIcon
+                        icon={faCog}
+                        className="navbar-dropdown-item-icon"
+                      />
+                      Account
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="navbar-dropdown-item"
+                      href={HELP_CENTER_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <FontAwesomeIcon
+                        icon={faInfoCircle}
+                        className="navbar-dropdown-item-icon"
+                      />
+                      Help
+                    </Dropdown.Item>
+                  </Dropdown>
+                )}
               </div>
             )}
           </div>

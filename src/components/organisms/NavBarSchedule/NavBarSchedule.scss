@@ -48,12 +48,14 @@ $schedule-btn--height: 51px;
 .NavBarSchedule {
   position: fixed;
   z-index: z(navbar-schedule);
-  top: 0;
+  top: $navbar-height;
   left: 0;
-  height: calc(100% - #{$schedule-btn--height} - #{$footer-height});
+  height: calc(
+    100% - #{$schedule-btn--height} - #{$footer-height} - #{$navbar-height}
+  );
   width: $sidebar-schedule-width;
 
-  padding: $navbar-height $spacing--md 0;
+  padding: 0 $spacing--md;
 
   background-color: opaque-black(0.8);
   overflow: auto;
