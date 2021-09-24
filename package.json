@@ -135,7 +135,6 @@
     "lodash": "^4.17.15",
     "logrocket": "^1.0.14",
     "logrocket-react": "^4.0.1",
-    "mixpanel-browser": "^2.40.0",
     "mousetrap": "^1.6.5",
     "npm-force-resolutions": "0.0.3",
     "pixi-viewport": "~4.24.0",

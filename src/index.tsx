@@ -10,7 +10,6 @@ import BugsnagPluginReact from "@bugsnag/plugin-react";
 import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
 import { activatePolyFills } from "polyfills";
 import { createFirestoreInstance } from "redux-firestore";
 import { ThemeProvider } from "styled-components";
@@ -188,7 +187,10 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   : React.Fragment;
 
 if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
+  // @ts-ignore I will add declaration reference soon
+  window.mixpanel.init(MIXPANEL_PROJECT_TOKEN, {
+    batch_requests: true,
+  });
 }
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
@@ -210,7 +212,8 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
     }
 
     if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
+      // @ts-ignore I will add declaration reference soon
+      window.mixpanel.identify(email);
     }
   }, [auth]);
 

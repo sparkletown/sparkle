@@ -28,7 +28,6 @@ import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useInterval } from "hooks/useInterval";
-import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
@@ -64,7 +63,6 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const mixpanel = useMixpanel();
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
@@ -172,12 +170,13 @@ export const VenuePage: React.FC = () => {
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
-      mixpanel.track("VenuePage loaded", {
+      // @ts-ignore I will add declaration reference soon
+      window.mixpanel.track("VenuePage loaded", {
         venueId,
         template: venueTemplate,
       });
     }
-  }, [user, profile, venueId, venueTemplate, mixpanel]);
+  }, [user, profile, venueId, venueTemplate]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
