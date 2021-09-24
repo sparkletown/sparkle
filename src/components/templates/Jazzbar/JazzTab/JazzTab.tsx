@@ -7,7 +7,6 @@ import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_SHOW_REACTIONS,
-  DEFAULT_USER_LIST_LIMIT,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -160,10 +159,9 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
 
         {!seatedAtTable && (
           <UserList
-            users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={venue.recentUserCount ?? 0}
             activity={venue.activity ?? "here"}
-            limit={DEFAULT_USER_LIST_LIMIT}
-            showMoreUsersToggler
           />
         )}
 

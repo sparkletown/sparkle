@@ -6,10 +6,18 @@ import {
   Switch,
 } from "react-router-dom";
 
-import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
+import {
+  ADMIN_ROOT_URL,
+  ADMIN_V1_ROOT_URL,
+  ADMIN_V3_ROOT_URL,
+  DEFAULT_REDIRECT_URL,
+  SPARKLEVERSE_HOMEPAGE_URL,
+} from "settings";
 
 import { tracePromise } from "utils/performance";
-import { venueLandingUrl } from "utils/url";
+import { resolveAdminRootUrl, venueLandingUrl } from "utils/url";
+
+import { useSettings } from "hooks/useSettings";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
@@ -27,10 +35,18 @@ const AccountSubrouter = lazy(() =>
   )
 );
 
-const AdminSubrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminSubrouter", () =>
-    import("./AdminSubrouter").then(({ AdminSubrouter }) => ({
-      default: AdminSubrouter,
+const AdminV1Subrouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
+    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
+      default: AdminV1Subrouter,
+    }))
+  )
+);
+
+const AdminV3Subrouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AdminV3Subrouter", () =>
+    import("./AdminV3Subrouter").then(({ AdminV3Subrouter }) => ({
+      default: AdminV3Subrouter,
     }))
   )
 );
@@ -76,26 +92,44 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
+  const { isLoaded, settings } = useSettings();
+
+  if (!isLoaded) return <LoadingPage />;
+
+  const { enableAdmin1, enableAdmin3 } = settings;
+  const adminRootUrl = resolveAdminRootUrl(settings);
+
   return (
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
           <Route path="/enter" component={EnterSubrouter} />
+
           <Route path="/account">
             <Provided withRelatedVenues>
               <AccountSubrouter />
             </Provided>
           </Route>
-          <Route path="/admin">
-            <Provided withRelatedVenues>
-              <AdminSubrouter />
-            </Provided>
+
+          <Route path={ADMIN_ROOT_URL}>
+            <Redirect to={adminRootUrl} />
           </Route>
-          <Route path="/admin-ng">
-            <Provided withRelatedVenues>
-              <AdminSubrouter />
-            </Provided>
-          </Route>
+
+          {enableAdmin1 && (
+            <Route path={ADMIN_V1_ROOT_URL}>
+              <Provided withRelatedVenues>
+                <AdminV1Subrouter />
+              </Provided>
+            </Route>
+          )}
+
+          {enableAdmin3 && (
+            <Route path={ADMIN_V3_ROOT_URL}>
+              <Provided withRelatedVenues>
+                <AdminV3Subrouter />
+              </Provided>
+            </Route>
+          )}
 
           <Route
             path="/login/:venueId/:customToken"
