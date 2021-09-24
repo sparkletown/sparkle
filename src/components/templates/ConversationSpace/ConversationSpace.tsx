@@ -23,6 +23,7 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { TABLES } from "./constants";
 
@@ -72,23 +73,14 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <div className="conversation-space-container">
+      <VenueWithOverlay venue={venue} containerClassNames="conversation-space">
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}
             locationName={parentVenue.name}
           />
         )}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 3,
-            flexBasis: 0,
-            overflow: "hidden",
-          }}
-          className={`scrollable-area ${seatedAtTable && "at-table"}`}
-        >
+        <div className={`scrollable-area ${seatedAtTable && "at-table"}`}>
           {venue.description?.text && (
             <div className="row">
               <div className="col">
@@ -146,7 +138,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             showMoreUsersToggler
           />
         </div>
-      </div>
+      </VenueWithOverlay>
     </>
   );
 };
