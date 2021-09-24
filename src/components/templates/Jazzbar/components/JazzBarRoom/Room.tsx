@@ -91,6 +91,7 @@ const Room: React.FC<RoomProps> = ({
 
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
+
     await unsetTableSeat(userId, { venueId });
 
     setSeatedAtTable?.("");

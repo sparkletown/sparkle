@@ -90,8 +90,10 @@ const Room: React.FC<RoomProps> = ({
   }, [room]);
 
   const leaveSeat = useCallback(async () => {
-    if (!userId) return;
+    if (!userId || !venueId) return;
+
     await unsetTableSeat(userId, { venueId });
+
     setSeatedAtTable?.("");
   }, [setSeatedAtTable, userId, venueId]);
 
