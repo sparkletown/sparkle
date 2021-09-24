@@ -11,13 +11,14 @@ import {
 
 import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
-import { ScheduledVenueEvent } from "types/venues";
+import { AnyVenue, ScheduledVenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
+import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
@@ -45,12 +46,12 @@ export interface ScheduleNGDay {
 export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
-  venueId: string;
+  venue: WithId<AnyVenue>;
 }
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
-  venueId,
+  venue,
 }) => {
   const { userWithId } = useUser();
   const userEventIds =
@@ -73,6 +74,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
+
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(
+    venue.id !== sovereignVenue?.id
+  );
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
@@ -151,17 +156,36 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       eventTimeAndOrderComparator
     );
 
+    const currentVenueId = venue?.id?.toLowerCase();
+
+    const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
+      ({ isSaved, venueId }) =>
+        isSaved && venueId?.toLowerCase() === currentVenueId
+    );
+
+    const currentVenueEvents = eventsFilledWithPriority.filter(
+      ({ venueId }) => venueId?.toLowerCase() === currentVenueId
+    );
+
+    const personalisedSchedule = filterRelatedEvents
+      ? currentVenueBookMarkEvents
+      : eventsFilledWithPriority.filter((event) => event.isSaved);
+
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        ? personalisedSchedule
+        : filterRelatedEvents
+        ? currentVenueEvents
         : eventsFilledWithPriority,
     };
   }, [
-    liveAndFutureEvents,
-    selectedDayIndex,
-    showPersonalisedSchedule,
     firstScheduleDate,
+    selectedDayIndex,
+    liveAndFutureEvents,
+    venue?.id,
+    filterRelatedEvents,
+    showPersonalisedSchedule,
   ]);
 
   const { findVenueInRelatedVenues } = useRelatedVenues();
@@ -205,6 +229,18 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
+  const isNotSovereignVenue = venue.id !== sovereignVenue?.id;
+  const breadcrumbSovereignVenueClasses = classNames(
+    "NavBarScheduleBreadcrumb__btn",
+    {
+      "NavBarScheduleBreadcrumb__btn--disabled": filterRelatedEvents,
+    }
+  );
+
+  const breadcrumbVenueClasses = classNames("NavBarScheduleBreadcrumb__btn", {
+    "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
+  });
+
   return (
     <div className="NavBarSchedule__wrapper">
       <div className={containerClasses}>
@@ -212,6 +248,24 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         {/* {<ScheduleVenueDescription />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+        <div className="NavBarSchedule__breadcrumb">
+          <label>Events on: </label>
+          <button
+            onClick={() => setFilterRelatedEvents(false)}
+            className={breadcrumbSovereignVenueClasses}
+          >
+            {sovereignVenue?.name}
+          </button>
+          /
+          {isNotSovereignVenue && (
+            <button
+              onClick={() => setFilterRelatedEvents(true)}
+              className={breadcrumbVenueClasses}
+            >
+              {venue?.name}
+            </button>
+          )}
+        </div>
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"
