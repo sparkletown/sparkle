@@ -12,73 +12,51 @@ import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 import { AdminDashboard } from "components/organisms/AdminDashboard";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
-import { Provided } from "./Provided";
-
 export const AdminSubrouter: React.FC = () => {
   return (
     <Switch>
       {/* Admin OG */}
 
       <Route path="/admin/venue/rooms/:venueId">
-        <Provided withWorldUsers>
-          <RoomsForm />
-        </Provided>
+        <RoomsForm />
       </Route>
 
       <Route path="/admin/venue/creation">
-        <Provided withWorldUsers>
-          <VenueWizard />
-        </Provided>
+        <VenueWizard />
       </Route>
 
       <Route path="/admin/venue/edit/:venueId">
-        <Provided withWorldUsers>
-          <VenueWizard />
-        </Provided>
+        <VenueWizard />
       </Route>
 
       <Route path="/admin/:venueId">
-        <Provided withWorldUsers>
-          <Admin />
-        </Provided>
+        <Admin />
       </Route>
 
       <Route path="/admin">
-        <Provided withWorldUsers>
-          <Admin />
-        </Provided>
+        <Admin />
       </Route>
 
       {/* Admin NG */}
 
       <Route path="/admin-ng/venue/:venueId?/:selectedTab?">
-        <Provided withWorldUsers>
-          <AdminVenueView />
-        </Provided>
+        <AdminVenueView />
       </Route>
 
       <Route path="/admin-ng/advanced-settings/:venueId?/:selectedTab?">
-        <Provided withWorldUsers>
-          <AdminAdvancedSettings />
-        </Provided>
+        <AdminAdvancedSettings />
       </Route>
 
       <Route path={ADMIN_CREATE_SPACE_URL}>
-        <Provided withWorldUsers>
-          <VenueWizardV2 />
-        </Provided>
+        <VenueWizardV2 />
       </Route>
 
       <Route path="/admin-ng/edit/:venueId">
-        <Provided withWorldUsers>
-          <VenueWizardV2 />
-        </Provided>
+        <VenueWizardV2 />
       </Route>
 
       <Route path="/admin-ng">
-        <Provided withWorldUsers>
-          <AdminDashboard />
-        </Provided>
+        <AdminDashboard />
       </Route>
     </Switch>
   );
