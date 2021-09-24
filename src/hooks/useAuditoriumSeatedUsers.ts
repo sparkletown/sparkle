@@ -20,8 +20,6 @@ export const useAuditoriumSeatedUsers = ({
     .collection("seatedSectionUsers")
     .withConverter(auditoriumSeatedUserConverter);
 
-  // const settingsRef = collection(firestore, "settings");
-
   const { data: users } = useFirestoreCollectionData<
     WithId<AuditoriumSeatedUser>
   >(relatedVenuesRef, {
