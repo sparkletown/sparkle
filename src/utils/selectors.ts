@@ -15,7 +15,7 @@ import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
-import { User, UserWithLocation } from "types/User";
+import { TableSeatedUser, User, UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -169,6 +169,14 @@ export const currentAuditoriumSectionSeatedUsersSelector: SparkleSelector<
 export const currentAuditoriumSectionSeatedUsersByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSeatedUser>> | undefined
 > = makeDataSelector("currentAuditoriumSeatedSectionUsers");
+
+export const currentSeatedTableUsersSelector: SparkleSelector<
+  WithId<TableSeatedUser>[] | undefined
+> = makeOrderedSelector("currentSeatedTableUsers");
+
+export const currentSeatedTableUsersByIdSelector: SparkleSelector<
+  Record<string, TableSeatedUser> | undefined
+> = makeDataSelector("currentSeatedTableUsers");
 
 export const currentModalUserDataSelector: SparkleSelector<
   User | undefined
