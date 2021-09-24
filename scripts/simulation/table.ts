@@ -33,7 +33,7 @@ export const DEFAULT_CONV_TABLE_INFOS: TableInfo[] = generateMultipleTablesFor(
 export const simTable: (options: SimContext) => Promise<void> = async (
   options
 ) => {
-  const { userRefs, conf, stop, template } = options;
+  const { userRefs, usersById, conf, stop, template } = options;
 
   const impatience = conf.table?.impatience ?? DEFAULT_TABLE_IMPATIENCE;
   const affinity =
@@ -102,7 +102,14 @@ export const simTable: (options: SimContext) => Promise<void> = async (
 
           // TODO: add logic checking for already taken seats
 
-          await takeSeat({ ...options, ...table, row, col, userRef });
+          await takeSeat({
+            ...options,
+            ...table,
+            row,
+            col,
+            userRef,
+            user: usersById[userRef.id],
+          });
           seated[userId] = true;
         })
       );

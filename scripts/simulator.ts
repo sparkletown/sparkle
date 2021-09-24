@@ -55,7 +55,7 @@ const main: (options: RunContext<SimConfig>) => Promise<MainResult> = async (
     { ...conf.log, critical: true },
     actualEnsureBotUsers
   );
-  const userRefs = await ensureBotUsers(options);
+  const { userRefs, usersById } = await ensureBotUsers(options);
 
   if (shouldRunNone) {
     return { userRefs };
@@ -90,6 +90,7 @@ const main: (options: RunContext<SimConfig>) => Promise<MainResult> = async (
   const simulatorContext: SimContext = {
     ...options,
     userRefs,
+    usersById,
     chatsRef,
     reactionsRef,
     template,

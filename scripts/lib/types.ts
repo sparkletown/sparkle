@@ -137,6 +137,7 @@ type FullSimContext = RunContext<SimConfig> & {
   reactionsRef: CollectionReference;
   template: string;
   userRefs: DocumentReference[];
+  usersById: Record<string, WithId<BotUser>>;
   venueId: string;
   venueName: string;
   venueRef: DocumentReference;
@@ -220,3 +221,10 @@ export interface TruncatedVenueType {
   updatedAt?: number;
   worldId: string;
 }
+
+export type BotUser = {
+  partyName: string;
+  pictureUrl: string;
+  bot: true;
+  botUserScriptTag: string;
+};

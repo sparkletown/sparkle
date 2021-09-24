@@ -3,19 +3,26 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import * as faker from "faker";
 import admin from "firebase-admin";
+import { keyBy } from "lodash";
 
 import { getUsersRef } from "./collections";
-import { getVenueName } from "./documents";
+import {
+  getSeatedSectionUserRef,
+  getSeatedTableUserRef,
+  getVenueName,
+} from "./documents";
 import { checkTypeUser } from "./guards";
 import { FieldValue, wrapIntoSlashes } from "./helpers";
 import { withErrorReporter } from "./log";
 import {
+  BotUser,
   CollectionReference,
   DocumentReference,
   DocumentSnapshot,
   QueryDocumentSnapshot,
   SimContext,
   TableInfo,
+  WithId,
 } from "./types";
 import {
   generateRandomReaction,
@@ -76,19 +83,21 @@ export const enterVenue: (
 export const takeSeatInAudience: (
   options: {
     userRef: DocumentReference;
+    user: BotUser;
     row: number;
     col: number;
-    sec?: string;
+    sectionId?: string;
   } & SimContext<"venueRef" | "stats" | "log" | "sovereignVenue">
 ) => Promise<void> = async (options) => {
   const {
     userRef,
+    user,
     venueRef,
     stats,
     log,
     row,
     col,
-    sec,
+    sectionId,
     sovereignVenue,
   } = options;
   const venueId = venueRef.id;
@@ -115,20 +124,33 @@ export const takeSeatInAudience: (
     userRef
       .update({ lastSeenAt: now, lastVenueIdSeenIn: locationPath })
       .then(() => (stats.writes = increment(stats.writes))),
-    userRef
-      .update({
-        [`data.${venueId}`]: sec
-          ? { row, column: col, sectionId: sec }
-          : { row, column: col },
-      })
-      .then(() => (stats.writes = increment(stats.writes))),
+    (sectionId
+      ? getSeatedSectionUserRef({
+          venueId,
+          sectionId,
+          userId: userRef.id,
+        }).then((ref) =>
+          ref.set({
+            ...user,
+            position: {
+              row: row,
+              column: col,
+            },
+            path: {
+              venueId,
+              sectionId,
+            },
+          })
+        )
+      : Promise.resolve()
+    ).then(() => (stats.writes = increment(stats.writes))),
   ]);
 
   stats.relocations = increment(stats.relocations);
 
-  if (sec) {
+  if (sectionId) {
     log(
-      chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,sec)}: ({yellow ${row}},{yellow ${col}},{green ${sec}})`
+      chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,sec)}: ({yellow ${row}},{yellow ${col}},{green ${sectionId}})`
     );
   } else {
     log(
@@ -140,6 +162,7 @@ export const takeSeatInAudience: (
 export const takeSeatAtTable: (
   options: {
     userRef: DocumentReference;
+    user: BotUser;
   } & TableInfo &
     SimContext<
       "venueRef" | "venueId" | "venueName" | "stats" | "log" | "sovereignVenue"
@@ -149,12 +172,14 @@ export const takeSeatAtTable: (
 
   const {
     userRef,
+    user,
+    venueId,
     venueName,
     stats,
     log,
     row,
     col,
-    ref,
+    ref: tableReference,
     idx,
     sovereignVenue,
   } = options;
@@ -174,28 +199,34 @@ export const takeSeatAtTable: (
     userRef
       .update({ lastSeenAt: now, lastVenueIdSeenIn: locationPath })
       .then(() => (stats.writes = increment(stats.writes))),
-    userRef
-      .update({
-        [`data.${venueName}`]: {
-          col,
-          row,
-          table: ref,
-          videoRoom: vid,
-        },
-      })
+    getSeatedTableUserRef({ venueId, userId: userRef.id })
+      .then((ref) =>
+        ref.set({
+          ...user,
+          path: {
+            venueId,
+            tableReference,
+          },
+        })
+      )
       .then(() => (stats.writes = increment(stats.writes))),
   ]);
 
   stats.relocations = increment(stats.relocations);
 
   log(
-    chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,ref,vid)}: ({yellow ${row}},{yellow ${col}},{green ${ref}},{green ${vid}})`
+    chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,ref,vid)}: ({yellow ${row}},{yellow ${col}},{green ${tableReference}},{green ${vid}})`
   );
 };
 
 export const ensureBotUsers: (
   options: SimContext<"conf" | "log" | "stats" | "stop">
-) => Promise<DocumentReference[]> = async ({ conf, log, stats, stop }) => {
+) => Promise<Pick<SimContext, "userRefs" | "usersById">> = async ({
+  conf,
+  log,
+  stats,
+  stop,
+}) => {
   const { scriptTag, count } = conf.user ?? {};
   assert.ok(
     scriptTag,
@@ -212,13 +243,16 @@ export const ensureBotUsers: (
     chalk`{inverse NOTE} Ensuring references to {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
   );
 
-  const candidates = Array.from({ length: count }, (_, i) => ({
-    id: generateUserId({ scriptTag, index: i }),
-    partyName: faker.name.findName(),
-    pictureUrl: faker.internet.avatar(),
-    bot: true,
-    botUserScriptTag: scriptTag,
-  }));
+  const candidates: WithId<BotUser>[] = Array.from(
+    { length: count },
+    (_, i) => ({
+      id: generateUserId({ scriptTag, index: i }),
+      partyName: faker.name.findName(),
+      pictureUrl: faker.internet.avatar(),
+      bot: true,
+      botUserScriptTag: scriptTag,
+    })
+  );
 
   // flag that will not let loop going on when user pressed CTRL+C
   let isStopped = false;
@@ -281,7 +315,10 @@ export const ensureBotUsers: (
     chalk`{greenBright.inverse DONE} Ensured  references to {yellow ${resultUserRefs.length}} users with {magenta scriptTag} {green ${scriptTag}}.`
   );
 
-  return resultUserRefs;
+  return {
+    userRefs: resultUserRefs,
+    usersById: keyBy(candidates, "id"),
+  };
 };
 
 export const removeBotUsers: (

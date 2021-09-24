@@ -24,6 +24,28 @@ export const getVenueRef: (
   return;
 };
 
+export const getSeatedSectionUserRef: (
+  options: SimContext<"venueId"> & { userId: string; sectionId: string }
+) => Promise<DocumentReference> = async ({ venueId, userId, sectionId }) =>
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .doc(sectionId)
+    .collection("seatedSectionUsers")
+    .doc(userId);
+
+export const getSeatedTableUserRef: (
+  options: SimContext<"venueId"> & { userId: string }
+) => Promise<DocumentReference> = async ({ venueId, userId }) =>
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("seatedTableUsers")
+    .doc(userId);
+
 export const findUser: (options: {
   partyName: string;
   scriptTag?: string;

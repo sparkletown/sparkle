@@ -25,7 +25,7 @@ export const DEFAULT_GRID_SIZE: GridSize = {
 export const simSeat: (options: SimContext) => Promise<void> = async (
   options
 ) => {
-  const { userRefs, conf, stop } = options;
+  const { userRefs, usersById, conf, stop } = options;
 
   const impatience = conf.seat?.impatience ?? DEFAULT_SEAT_IMPATIENCE;
   const affinity =
@@ -53,6 +53,7 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
     ...(await getVenueGridSize(options)),
     ...conf.venue,
   };
+
   const sectionRefs: DocumentReference[] = await (
     await getSectionsRef(options)
   ).listDocuments();
@@ -82,7 +83,7 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
             return;
           }
 
-          const sec = pickValueFrom(sectionRefs)?.id;
+          const sectionId = pickValueFrom(sectionRefs)?.id;
 
           const row = faker.datatype.number({
             min: grid.minRow,
@@ -95,7 +96,14 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
 
           // TODO: add logic checking for already taken seats
 
-          await takeSeat({ ...options, userRef, row, col, sec });
+          await takeSeat({
+            ...options,
+            userRef,
+            user: usersById[userRef.id],
+            row,
+            col,
+            sectionId,
+          });
           seated[userId] = true;
         })
       );
