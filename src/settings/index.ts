@@ -14,9 +14,30 @@ import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import asteroid from "assets/backgrounds/Asteroid.jpg";
+import bigIsland from "assets/backgrounds/BigIsland.jpg";
+import corridor from "assets/backgrounds/Corridor.jpg";
+import cubes from "assets/backgrounds/Cubes.jpg";
+import earth from "assets/backgrounds/Earth.jpg";
+import field from "assets/backgrounds/Field.jpg";
+import fireSide from "assets/backgrounds/FireSide.jpg";
+import floatyCity from "assets/backgrounds/FloatyCity.jpg";
+import halloween from "assets/backgrounds/Halloween.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
+
+export const DEFAULT_BACKGROUNDS = [
+  asteroid,
+  bigIsland,
+  corridor,
+  cubes,
+  earth,
+  field,
+  fireSide,
+  floatyCity,
+  halloween,
+];
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =

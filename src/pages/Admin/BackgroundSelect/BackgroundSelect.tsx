@@ -1,5 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useAsyncFn } from "react-use";
+
+import { DEFAULT_BACKGROUNDS } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -29,12 +31,10 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
     async (url: string, file?: FileList) => {
       if (!user) return;
 
-      const hasCustomBackground = !!(file && file.length);
-
       return await updateVenue_v2(
         {
           name: venueName,
-          ...(hasCustomBackground && { mapBackgroundImageFile: file }),
+          mapBackgroundImageFile: file,
           mapBackgroundImageUrl: url,
         },
         user
@@ -45,18 +45,33 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
 
+  const renderBackground = useCallback(
+    (mapBackground: string, index: number) => (
+      <button
+        className="BackgroundSelect__map"
+        disabled={isUploading}
+        style={{ backgroundImage: `url(${mapBackground})` }}
+        key={index}
+        onClick={() => uploadMapBackground(mapBackground)}
+      />
+    ),
+    [isUploading, uploadMapBackground]
+  );
+
   const renderMapBackgrounds = useMemo(
     () =>
-      mapBackgrounds.map((mapBackground, index) => (
-        <button
-          className="BackgroundSelect__map"
-          disabled={isUploading}
-          style={{ backgroundImage: `url(${mapBackground})` }}
-          key={index}
-          onClick={() => uploadMapBackground(mapBackground)}
-        />
-      )),
-    [isUploading, mapBackgrounds, uploadMapBackground]
+      mapBackgrounds.map((mapBackground, index) =>
+        renderBackground(mapBackground, index)
+      ),
+    [mapBackgrounds, renderBackground]
+  );
+
+  const renderDefaultBackgrounds = useMemo(
+    () =>
+      DEFAULT_BACKGROUNDS.map((mapBackground, index) =>
+        renderBackground(mapBackground, index)
+      ),
+    [renderBackground]
   );
 
   return (
@@ -72,11 +87,13 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         <h3 className="BackgroundSelect__maps-header">
           Or select one of our map backgrounds
         </h3>
-        {isLoadingBackgrounds && <div>Loading maps...</div>}
 
         <div className="BackgroundSelect__map-grid">
+          {renderDefaultBackgrounds}
           {hasBackgrounds && renderMapBackgrounds}
         </div>
+
+        {isLoadingBackgrounds && <div>Loading maps...</div>}
 
         {error && (
           <>

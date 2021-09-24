@@ -181,9 +181,6 @@ export type PlacementInput = {
   height: number;
 };
 
-// add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-const randomPrefix = () => Math.random().toString();
-
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
@@ -298,7 +295,7 @@ const createFirestoreVenueInput_v2 = async (
     const file = fileArr[0];
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix()}-${file.name}`
+      `users/${user.uid}/venues/${urlVenueName}/background.${file.type}`
     );
 
     await uploadFileRef.put(file);
