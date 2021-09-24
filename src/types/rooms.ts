@@ -5,7 +5,7 @@ import { DisplayUser } from "types/User";
 import { WithId } from "utils/id";
 
 import { SoundConfigReference } from "./sounds";
-import { VenueTemplate } from "./venues";
+import { RoomVisibility, VenueTemplate } from "./venues";
 
 export enum RoomType {
   unclickable = "UNCLICKABLE",
@@ -26,7 +26,7 @@ export interface Room {
   width_percent: number;
   height_percent: number;
   isEnabled: boolean;
-  isLabelHidden?: boolean;
+  visibility?: RoomVisibility;
   image_url: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;
@@ -45,6 +45,7 @@ export interface RoomData_v2 {
   width_percent?: number;
   height_percent?: number;
   isEnabled?: boolean;
+  visibility?: RoomVisibility;
   image_url?: string;
   enterSound?: SoundConfigReference;
   template?: VenueRoomTemplate;
