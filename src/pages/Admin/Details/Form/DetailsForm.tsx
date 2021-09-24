@@ -4,13 +4,13 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
 
 import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
-import { adminNGRootUrl, adminNGVenueUrl, venueLandingUrl } from "utils/url";
+import { adminNGVenueUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
@@ -45,7 +45,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       try {
         if (venueId) {
           await updateVenue_v2(world, user);
-          history.push(adminNGRootUrl());
+          history.push(ADMIN_V3_ROOT_URL);
         } else {
           await createWorld(world, user);
           history.push(adminNGVenueUrl(world.id));

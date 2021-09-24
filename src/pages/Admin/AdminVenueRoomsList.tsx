@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { ADMIN_V1_ROOMS_URL } from "settings";
+
 import { Room } from "types/rooms";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
@@ -30,7 +32,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
         <div className="add-room-button">
           {canHaveSubvenues(venue) && (
             <Link
-              to={`/admin/venue/rooms/${venue.id}`}
+              to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
               className="btn btn-block"
             >
               Add a Room
