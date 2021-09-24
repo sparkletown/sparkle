@@ -1,5 +1,7 @@
 import * as admin from "firebase-admin";
 
+import { FetchSovereignVenueReturn } from "./fetch";
+
 // re-export type definitions to decrease declaration verbosity in other files
 // and for some reason, ESLint thinks they're unused, thus the disable comments
 //
@@ -138,6 +140,7 @@ type FullSimContext = RunContext<SimConfig> & {
   venueId: string;
   venueName: string;
   venueRef: DocumentReference;
+  sovereignVenue: FetchSovereignVenueReturn;
 };
 
 export type SimContext<
@@ -159,3 +162,61 @@ export type TableInfo = {
   row: number;
   ref: string;
 };
+
+export type WithId<T extends object> = T & { id: string };
+
+export interface TruncatedVenueType {
+  parentId?: string;
+  name: string;
+  host?: {
+    icon: string;
+  };
+  owners: string[];
+  iframeUrl?: string;
+  autoPlay?: boolean;
+  zoomUrl?: string;
+  mapBackgroundImageUrl?: string;
+  placementRequests?: string;
+  radioStations?: string[];
+  radioTitle?: string;
+  dustStorm?: boolean;
+  activity?: string;
+  bannerMessage?: string;
+  miniAvatars?: boolean;
+  adultContent?: boolean;
+  samlAuthProviderId?: string;
+  showAddress?: boolean;
+  showGiftATicket?: boolean;
+  columns?: number;
+  rows?: number;
+  nightCycle?: boolean;
+  hasPaidEvents?: boolean;
+  profileAvatars?: boolean;
+  hideVideo?: boolean;
+  showSchedule?: boolean;
+  showGrid?: boolean;
+  width: number;
+  height: number;
+  description?: {
+    text: string;
+  };
+  showLearnMoreLink?: boolean;
+  start_utc_seconds?: number;
+  end_utc_seconds?: number;
+  attendeesTitle?: string;
+  requiresDateOfBirth?: boolean;
+  ticketUrl?: string;
+  chatTitle?: string;
+  showReactions?: boolean;
+  showShoutouts?: boolean;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
+  showRadio?: boolean;
+  showBadges?: boolean;
+  showUserStatus?: boolean;
+  createdAt?: number;
+  recentUserCount?: number;
+  recentUsersSampleSize?: number;
+  updatedAt?: number;
+  worldId: string;
+}

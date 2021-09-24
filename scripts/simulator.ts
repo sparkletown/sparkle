@@ -18,6 +18,7 @@ import {
 } from "./lib/bot";
 import { getChatlinesRef, getReactionsRef } from "./lib/collections";
 import { getVenueName, getVenueRef, getVenueTemplate } from "./lib/documents";
+import { fetchSovereignVenue } from "./lib/fetch";
 import { withErrorReporter } from "./lib/log";
 import { run } from "./lib/runner";
 import {
@@ -84,6 +85,8 @@ const main: (options: RunContext<SimConfig>) => Promise<MainResult> = async (
     chalk`${main.name}(): venue with {magenta venue.id}: {green ${venueId}} has invalid {magenta venue.name}: {red ${venueName}}`
   );
 
+  const sovereignVenue = await fetchSovereignVenue(venueId);
+
   const simulatorContext: SimContext = {
     ...options,
     userRefs,
@@ -93,6 +96,7 @@ const main: (options: RunContext<SimConfig>) => Promise<MainResult> = async (
     venueId: venueRef.id,
     venueName,
     venueRef,
+    sovereignVenue,
   };
 
   const simulations = [];

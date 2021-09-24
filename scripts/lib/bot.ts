@@ -7,7 +7,7 @@ import admin from "firebase-admin";
 import { getUsersRef } from "./collections";
 import { getVenueName } from "./documents";
 import { checkTypeUser } from "./guards";
-import { FieldValue } from "./helpers";
+import { FieldValue, wrapIntoSlashes } from "./helpers";
 import { withErrorReporter } from "./log";
 import {
   CollectionReference,
@@ -28,11 +28,12 @@ import {
 export const enterVenue: (
   options: {
     userRef: DocumentReference;
-  } & SimContext<"venueRef" | "venueId" | "stats" | "log">
+  } & SimContext<"venueRef" | "venueId" | "stats" | "log" | "sovereignVenue">
 ) => Promise<void | undefined> = async ({
   userRef,
   venueRef,
   venueId,
+  sovereignVenue,
   log,
   stats,
 }) => {
@@ -59,7 +60,11 @@ export const enterVenue: (
     chalk`{inverse NOTE} User {green ${userId}} entering venue {green ${candidateId}}...`
   );
 
-  await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(candidateId) });
+  await userRef.update({
+    enteredVenueIds: FieldValue.arrayUnion(
+      ...[candidateId, sovereignVenue.sovereignVenue.id]
+    ),
+  });
   stats.entered = increment(stats.entered);
   stats.writes = increment(stats.writes);
 
@@ -74,9 +79,18 @@ export const takeSeatInAudience: (
     row: number;
     col: number;
     sec?: string;
-  } & SimContext<"venueRef" | "stats" | "log">
+  } & SimContext<"venueRef" | "stats" | "log" | "sovereignVenue">
 ) => Promise<void> = async (options) => {
-  const { userRef, venueRef, stats, log, row, col, sec } = options;
+  const {
+    userRef,
+    venueRef,
+    stats,
+    log,
+    row,
+    col,
+    sec,
+    sovereignVenue,
+  } = options;
   const venueId = venueRef.id;
   const venueName = await getVenueName(options);
 
@@ -86,13 +100,20 @@ export const takeSeatInAudience: (
     );
   }
 
+  const allVenueIds = [
+    ...sovereignVenue.checkedVenueIds,
+    sovereignVenue.sovereignVenue.id,
+  ].reverse();
+
+  const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
+
   await enterVenue({ ...options, venueId });
 
   const now = Date.now();
 
   await Promise.all([
     userRef
-      .update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } })
+      .update({ lastSeenAt: now, lastVenueIdSeenIn: locationPath })
       .then(() => (stats.writes = increment(stats.writes))),
     userRef
       .update({
@@ -120,19 +141,38 @@ export const takeSeatAtTable: (
   options: {
     userRef: DocumentReference;
   } & TableInfo &
-    SimContext<"venueRef" | "venueId" | "venueName" | "stats" | "log">
+    SimContext<
+      "venueRef" | "venueId" | "venueName" | "stats" | "log" | "sovereignVenue"
+    >
 ) => Promise<void> = async (options) => {
   await enterVenue(options);
 
-  const { userRef, venueName, stats, log, row, col, ref, idx } = options;
+  const {
+    userRef,
+    venueName,
+    stats,
+    log,
+    row,
+    col,
+    ref,
+    idx,
+    sovereignVenue,
+  } = options;
 
   const now = Date.now();
 
   const vid = `${venueName}-table${idx}`;
 
+  const allVenueIds = [
+    ...sovereignVenue.checkedVenueIds,
+    sovereignVenue.sovereignVenue.id,
+  ].reverse();
+
+  const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
+
   await Promise.all([
     userRef
-      .update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } })
+      .update({ lastSeenAt: now, lastVenueIdSeenIn: locationPath })
       .then(() => (stats.writes = increment(stats.writes))),
     userRef
       .update({
@@ -286,7 +326,9 @@ export const addBotReaction: (
   options: {
     reactionsRef: CollectionReference;
     userRef: DocumentReference;
-  } & SimContext<"venueRef" | "venueId" | "conf" | "stats" | "log">
+  } & SimContext<
+    "venueRef" | "venueId" | "conf" | "stats" | "log" | "sovereignVenue"
+  >
 ) => Promise<void> = async (options) => {
   const { reactionsRef, userRef, conf, log, stats } = options;
   const snap = await userRef.get();
@@ -384,7 +426,9 @@ export const removeBotReactions: (
 export const sendBotVenueMessage: (
   options: {
     userRef: DocumentReference;
-  } & SimContext<"venueRef" | "chatsRef" | "conf" | "log" | "stats">
+  } & SimContext<
+    "venueRef" | "chatsRef" | "conf" | "log" | "stats" | "sovereignVenue"
+  >
 ) => Promise<void> = async (options) => {
   const { chatsRef, userRef, venueRef, conf, log, stats } = options;
   const snap = await userRef.get();
