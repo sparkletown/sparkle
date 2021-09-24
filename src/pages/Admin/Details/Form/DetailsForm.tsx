@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
@@ -21,12 +22,14 @@ import {
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
 import { validationSchema_v2 } from "../ValidationSchema";
 
-import * as S from "./DetailsForm.styles";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
+
+import "./DetailsForm.scss";
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const history = useHistory();
@@ -110,29 +113,29 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   const renderVenueName = () => (
-    <S.InputContainer hasError={!!errors?.name}>
-      <h4 className="italic">Name your party</h4>
+    <div className="DetailsForm__input-container">
+      <h4 className="italic">Name your space</h4>
       <input
         disabled={disable || !!venueId}
         name="name"
         ref={register}
         className="align-left"
-        placeholder="My Party Name"
+        placeholder="My Space Name"
         style={{ cursor: nameDisabled ? "disabled" : "text" }}
       />
       {errors.name ? (
         <span className="input-error">{errors.name.message}</span>
       ) : urlSafeName ? (
-        <S.InputInfo>
-          The URL of your party will be: <b>{urlSafeName}</b>
-        </S.InputInfo>
+        <span className="DetailsForm__input-info">
+          The URL of your space will be: <b>{urlSafeName}</b>
+        </span>
       ) : null}
-    </S.InputContainer>
+    </div>
   );
 
   const renderSubtitle = () => (
-    <S.InputContainer hasError={!!errors?.subtitle}>
-      <h4 className="italic">Party subtitle</h4>
+    <div className="DetailsForm__input-container">
+      <h4 className="italic">Space subtitle</h4>
       <input
         disabled={disable}
         name={"subtitle"}
@@ -143,12 +146,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       {errors.subtitle && (
         <span className="input-error">{errors.subtitle.message}</span>
       )}
-    </S.InputContainer>
+    </div>
   );
 
   const renderDescription = () => (
-    <S.InputContainer hasError={!!errors?.description}>
-      <h4 className="italic">Party description</h4>
+    <div className="DetailsForm__input-container">
+      <h4 className="italic">Space description</h4>
       <textarea
         disabled={disable}
         name={"description"}
@@ -159,11 +162,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       {errors.description && (
         <span className="input-error">{errors.description.message}</span>
       )}
-    </S.InputContainer>
+    </div>
   );
 
   const renderHighlightImageUpload = () => (
-    <S.InputContainer>
+    <div className="DetailsForm__input-container">
       <h4 className="italic">Upload Highlight image</h4>
       <ImageInput
         onChange={handleBannerUpload}
@@ -175,11 +178,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         isInputHidden={!values.bannerImageUrl}
         text="Upload Highlight image"
       />
-    </S.InputContainer>
+    </div>
   );
 
   const renderLogoUpload = () => (
-    <S.InputContainer>
+    <div className="DetailsForm__input-container">
       <h4 className="italic">Upload your logo</h4>
       <ImageInput
         onChange={handleLogoUpload}
@@ -190,7 +193,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         register={register}
         imgUrl={editData?.logoImageUrl}
       />
-    </S.InputContainer>
+    </div>
   );
 
   const handleOnChange = () => {
@@ -204,9 +207,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     });
   };
 
+  const formStyles = classNames({ DetailsForm__edit: venueId });
+
   return (
-    <Form onSubmit={handleSubmit(setWorld)} onChange={handleOnChange}>
-      <S.FormInnerWrapper>
+    <Form
+      className={formStyles}
+      onSubmit={handleSubmit(setWorld)}
+      onChange={handleOnChange}
+    >
+      <div className="DetailsForm__wrapper">
         <input
           type="hidden"
           name="template"
@@ -214,13 +223,13 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           ref={register}
         />
         <h4 className="italic" style={{ fontSize: "30px" }}>
-          {venueId ? "Edit your party" : "Create your party"}
+          {venueId ? "Edit your space" : "Create your space"}
         </h4>
         <p
           className="small light"
           style={{ marginBottom: "2rem", fontSize: "16px" }}
         >
-          You can change anything except for the name of your venue later
+          You can change anything except for the name of your space later
         </p>
 
         {renderVenueName()}
@@ -228,13 +237,18 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderDescription()}
         {renderHighlightImageUpload()}
         {renderLogoUpload()}
-      </S.FormInnerWrapper>
+      </div>
 
-      <S.FormFooter>
-        <Button disabled={isSubmitting || !dirty} type="submit">
-          {venueId ? "Update Venue" : "Create Venue"}
-        </Button>
-      </S.FormFooter>
+      <div className="DetailsForm__footer">
+        <ButtonNG
+          variant="primary"
+          disabled={isSubmitting || !dirty}
+          type="submit"
+          loading={isSubmitting}
+        >
+          {venueId ? "Update Space" : "Create Space"}
+        </ButtonNG>
+      </div>
     </Form>
   );
 };
