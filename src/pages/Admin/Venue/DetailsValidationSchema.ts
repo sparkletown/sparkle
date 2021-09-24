@@ -95,7 +95,7 @@ export const validationSchema = Yup.object()
     attendeesTitle: Yup.string().notRequired().default("Guests"),
     chatTitle: Yup.string().notRequired().default("Party"),
 
-    bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
+    bannerImageUrl: Yup.string(),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     zoomUrl: Yup.string().when(
       "$template.template",

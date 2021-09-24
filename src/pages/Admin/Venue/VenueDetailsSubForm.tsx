@@ -95,7 +95,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   setFormError,
 }) => {
   const values = watch();
-
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -191,9 +190,9 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderBannerPhotoInput = () => (
+  const renderHighlightImageInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Upload a banner photo</h4>
+      <h4 className="italic input-header">Upload Highlight image</h4>
       <ImageInput
         disabled={disable}
         name={"bannerImageFile"}
@@ -203,6 +202,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         register={register}
         setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
       />
     </div>
   );
@@ -683,7 +684,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderDescriptionInput()}
         {renderRestrictToAdultsInput()}
 
-        {renderBannerPhotoInput()}
+        {renderHighlightImageInput()}
         {renderLogoInput()}
 
         {templateID &&

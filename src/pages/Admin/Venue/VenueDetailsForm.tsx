@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
-import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import {
   createUrlSafeName,
@@ -85,7 +85,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
     defaultValues: {
       ...defaultValues,
       logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
-      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
+      bannerImageUrl: defaultValues?.bannerImageUrl ?? "",
       parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
     },
   });
