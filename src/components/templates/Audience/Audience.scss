@@ -11,6 +11,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
   background-attachment: fixed;
   background-position: center 46%;
+  background-size: cover;
 
   position: relative;
   overflow: auto;
@@ -48,7 +49,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
           height: 100%;
           border: 1px black;
           border-radius: 15px;
-          box-shadow: 2px 2px 20px $light;
         }
       }
 
@@ -64,7 +64,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
         border-bottom-left-radius: 20px;
         border-bottom-right-radius: 20px;
-        box-shadow: 2px 2px 20px $light;
         background-color: #1a1d24;
 
         .shout-container {
@@ -155,5 +154,9 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
     .not-seat {
       background-color: rgba(0, 0, 0, 0);
     }
+  }
+
+  .VenueWithOverlay {
+    margin: -($spacing--xxl);
   }
 }
