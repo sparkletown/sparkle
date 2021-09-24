@@ -17,47 +17,33 @@ export const AdminSubrouter: React.FC = () => {
     <Switch>
       {/* Admin OG */}
 
-      <Route path="/admin/venue/rooms/:venueId">
-        <RoomsForm />
-      </Route>
+      <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
 
-      <Route path="/admin/venue/creation">
-        <VenueWizard />
-      </Route>
+      <Route path="/admin/venue/creation" component={VenueWizard} />
 
-      <Route path="/admin/venue/edit/:venueId">
-        <VenueWizard />
-      </Route>
+      <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
-      <Route path="/admin/:venueId">
-        <Admin />
-      </Route>
+      <Route path="/admin/:venueId" component={Admin} />
 
-      <Route path="/admin">
-        <Admin />
-      </Route>
+      <Route path="/admin" component={Admin} />
 
       {/* Admin NG */}
 
-      <Route path="/admin-ng/venue/:venueId?/:selectedTab?">
-        <AdminVenueView />
-      </Route>
+      <Route
+        path="/admin-ng/venue/:venueId?/:selectedTab?"
+        component={AdminVenueView}
+      />
 
-      <Route path="/admin-ng/advanced-settings/:venueId?/:selectedTab?">
-        <AdminAdvancedSettings />
-      </Route>
+      <Route
+        path="/admin-ng/advanced-settings/:venueId?/:selectedTab?"
+        component={AdminAdvancedSettings}
+      />
 
-      <Route path={ADMIN_CREATE_SPACE_URL}>
-        <VenueWizardV2 />
-      </Route>
+      <Route path={ADMIN_CREATE_SPACE_URL} component={VenueWizardV2} />
 
-      <Route path="/admin-ng/edit/:venueId">
-        <VenueWizardV2 />
-      </Route>
+      <Route path="/admin-ng/edit/:venueId" component={VenueWizardV2} />
 
-      <Route path="/admin-ng">
-        <AdminDashboard />
-      </Route>
+      <Route path="/admin-ng" component={AdminDashboard} />
     </Switch>
   );
 };
