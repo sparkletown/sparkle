@@ -1,5 +1,6 @@
 import { FirebaseReducer } from "react-redux-firebase";
-import firebase from "firebase/app";
+
+import { getUserRef } from "api/profile";
 
 import { User } from "types/User";
 
@@ -11,13 +12,9 @@ export const updateProfileEnteredVenueIds = async (
   venueId: string
 ) => {
   const enteredVenueIds = prevEnteredVenueIds ? [...prevEnteredVenueIds] : [];
-  if (!enteredVenueIds.includes(venueId)) {
+  if (!enteredVenueIds.includes(venueId) && userId) {
     enteredVenueIds.push(venueId);
-    await firebase
-      .firestore()
-      .collection("users")
-      .doc(userId)
-      .update({ enteredVenueIds });
+    await getUserRef(userId).update({ enteredVenueIds });
   }
 };
 
