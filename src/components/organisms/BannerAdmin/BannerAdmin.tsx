@@ -178,6 +178,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         saveBtnLabel="Yes, clear"
         cancelBtnLabel="Cancel"
         isCentered
+        confirmVariant="danger"
       />
     </div>
   );

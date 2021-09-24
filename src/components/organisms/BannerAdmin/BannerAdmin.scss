@@ -49,21 +49,3 @@
     opacity: 20%;
   }
 }
-
-.BannerAdminModal {
-  text-align: center;
-
-  &__header {
-    font-size: $font-size--xl;
-    margin: 0;
-  }
-
-  &__message {
-    padding: $spacing--md 0 $spacing--xl;
-  }
-
-  &__buttons {
-    display: flex;
-    justify-content: space-around;
-  }
-}

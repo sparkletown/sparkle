@@ -9,7 +9,6 @@ $announce-box-shadow: 0px 2px 20px 5px;
 
 .AnnouncementMessage {
   display: block;
-  position: relative;
   background: $announcement-background;
   width: $announcement-container-width;
   height: auto;
@@ -42,8 +41,9 @@ $announce-box-shadow: 0px 2px 20px 5px;
     border-radius: 16px;
 
     &--admin {
-      top: 35%;
-      position: absolute;
+      position: relative;
+      left: 0;
+      top: 0;
     }
   }
 
@@ -112,9 +112,8 @@ $announce-box-shadow: 0px 2px 20px 5px;
 
     &--admin {
       position: relative;
-      position: absolute;
       height: 210px;
-      top: 130px;
+      top: 0;
     }
 
     &--canceled {

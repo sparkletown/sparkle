@@ -21,6 +21,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   isAnnouncementUserView = false,
 }) => {
   const {
+    isShown,
     show: showAnnouncementMessage,
     hide: hideAnnouncementMessage,
   } = useShowHide();
@@ -58,7 +59,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   const handleBannerModalClose = () => {
     if (banner?.isForceFunnel) return;
-
+    console.log("????");
     hideAnnouncementMessage();
   };
 
@@ -71,33 +72,33 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       </div>
     );
 
-  if (!banner?.content) return null;
+  if (!banner?.content || !isShown) return null;
 
   return (
     <>
-      <div className={containerClasses} onClick={handleBannerModalClose} />
+      <div className={containerClasses} onClick={handleBannerModalClose}>
+        <div className={announcementMessageClasses}>
+          <div className="AnnouncementMessage__content">
+            <RenderMarkdown text={banner.content} />
+          </div>
 
-      <div className={announcementMessageClasses}>
-        <div className="AnnouncementMessage__content">
-          <RenderMarkdown text={banner.content} />
+          {isWithButton && banner.buttonUrl && (
+            <LinkButton
+              href={banner.buttonUrl}
+              className={actionButtonClasses}
+              onClick={hideAnnouncementMessage}
+            >
+              {banner.buttonDisplayText}
+            </LinkButton>
+          )}
+
+          {isAnnouncementCloseable && (
+            <span
+              className="AnnouncementMessage__close-button"
+              onClick={handleBannerModalClose}
+            />
+          )}
         </div>
-
-        {isWithButton && banner.buttonUrl && (
-          <LinkButton
-            href={banner.buttonUrl}
-            className={actionButtonClasses}
-            onClick={hideAnnouncementMessage}
-          >
-            {banner.buttonDisplayText}
-          </LinkButton>
-        )}
-
-        {isAnnouncementCloseable && (
-          <span
-            className="AnnouncementMessage__close-button"
-            onClick={hideAnnouncementMessage}
-          />
-        )}
       </div>
     </>
   );

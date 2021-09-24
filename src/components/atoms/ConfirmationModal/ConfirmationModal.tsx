@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import { isTruthy } from "utils/types";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { ButtonVariant } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./ConfirmationModal.scss";
 
@@ -11,9 +12,9 @@ interface ConfirmationModalProps {
   show?: boolean;
   header?: string;
   message: string;
+  confirmVariant?: ButtonVariant;
   cancelBtnLabel?: string;
   saveBtnLabel?: string;
-  centered?: boolean;
   onConfirm: () => void;
   onCancel?: () => void;
   isCentered?: boolean;
@@ -28,6 +29,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   cancelBtnLabel = "No",
   saveBtnLabel = "Yes",
   isCentered = false,
+  confirmVariant = "primary",
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -57,7 +59,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           <div className="ConfirmationModal__message">{message}</div>
           <div className="ConfirmationModal__buttons">
             <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
-            <ButtonNG variant="danger" onClick={confirm}>
+            <ButtonNG variant={confirmVariant} onClick={confirm}>
               {saveBtnLabel}
             </ButtonNG>
           </div>
