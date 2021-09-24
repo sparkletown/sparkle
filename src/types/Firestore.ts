@@ -10,7 +10,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { User } from "types/User";
+import { TableSeatedUser, User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -65,11 +65,11 @@ export interface FirestoreData {
   currentAuditoriumSeatedSectionUsers?: Partial<
     Record<string, AuditoriumSeatedUser>
   >;
+  currentSeatedTableUsers?: Record<string, TableSeatedUser>;
   currentModalUser?: User;
   currentEvent?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
-  relatedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -88,6 +88,7 @@ export interface FirestoreOrdered {
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
   currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
+  currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
   currentEvent?: WithId<VenueEvent>[];
   events?: WithId<VenueEvent>[];
@@ -98,7 +99,6 @@ export interface FirestoreOrdered {
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  relatedVenues?: WithId<AnyVenue>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];

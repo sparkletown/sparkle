@@ -1,3 +1,9 @@
+import Video from "twilio-video";
+
+import { DisplayUser } from "types/User";
+
+import { WithId } from "utils/id";
+
 import { SoundConfigReference } from "./sounds";
 import { RoomVisibility, VenueTemplate } from "./venues";
 
@@ -49,5 +55,12 @@ export interface RoomData_v2 {
 export enum RoomTemplate {
   external = "external",
 }
+
+export type ParticipantWithUser<
+  T extends Video.Participant = Video.Participant
+> = {
+  participant: T;
+  user: WithId<DisplayUser>;
+};
 
 export type VenueRoomTemplate = VenueTemplate | RoomTemplate;

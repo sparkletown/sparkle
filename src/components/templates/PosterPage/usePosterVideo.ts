@@ -1,38 +1,25 @@
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
 import { User } from "types/User";
 
-import { WithId, withId } from "utils/id";
+import { WithId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio";
-import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 export const usePosterVideo = (venueId: string) => {
-  const { userId } = useUser();
-  const { worldUsersById } = useWorldUsersById();
+  const { userId, userWithId } = useUser();
 
   const {
     participants,
     becomeActiveParticipant,
     becomePassiveParticipant,
   } = useVideoRoomState({
-    userId,
+    user: userWithId,
     roomName: venueId,
     activeParticipantByDefault: false,
   });
-
-  const getUserById = useCallback(
-    (id: string) => {
-      const user = worldUsersById[id];
-
-      if (!user) return;
-
-      return withId(user, id);
-    },
-    [worldUsersById]
-  );
 
   const { passiveListeners, activeParticipants } = useMemo(
     () =>
@@ -43,9 +30,7 @@ export const usePosterVideo = (venueId: string) => {
           user: WithId<User>;
         }[];
       }>(
-        (acc, participant) => {
-          const user = getUserById(participant.identity);
-
+        (acc, { participant, user }) => {
           if (!user) return acc;
 
           // If participant is not broadcasting video, put them into passiveListeners
@@ -69,7 +54,7 @@ export const usePosterVideo = (venueId: string) => {
           activeParticipants: [],
         }
       ),
-    [participants, getUserById]
+    [participants]
   );
 
   const isMeActiveParticipant = useMemo(

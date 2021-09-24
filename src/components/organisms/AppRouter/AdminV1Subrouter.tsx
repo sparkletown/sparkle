@@ -13,38 +13,12 @@ import { Admin } from "pages/Admin/Admin";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 
-import { Provided } from "./Provided";
-
 export const AdminV1Subrouter: React.FC = () => (
   <Switch>
-    <Route path={ADMIN_V1_ROOMS_PARAM_URL}>
-      <Provided withWorldUsers>
-        <RoomsForm />
-      </Provided>
-    </Route>
-
-    <Route path={ADMIN_V1_CREATE_URL}>
-      <Provided withWorldUsers>
-        <VenueWizard />
-      </Provided>
-    </Route>
-
-    <Route path={ADMIN_V1_EDIT_PARAM_URL}>
-      <Provided withWorldUsers>
-        <VenueWizard />
-      </Provided>
-    </Route>
-
-    <Route path={ADMIN_V1_VENUE_PARAM_URL}>
-      <Provided withWorldUsers>
-        <Admin />
-      </Provided>
-    </Route>
-
-    <Route path={ADMIN_V1_ROOT_URL}>
-      <Provided withWorldUsers>
-        <Admin />
-      </Provided>
-    </Route>
+    <Route path={ADMIN_V1_ROOMS_PARAM_URL} component={RoomsForm} />
+    <Route path={ADMIN_V1_CREATE_URL} component={VenueWizard} />
+    <Route path={ADMIN_V1_EDIT_PARAM_URL} component={VenueWizard} />
+    <Route path={ADMIN_V1_VENUE_PARAM_URL} component={Admin} />
+    <Route path={ADMIN_V1_ROOT_URL} component={Admin} />
   </Switch>
 );

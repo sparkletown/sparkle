@@ -16,7 +16,7 @@ export interface JazzbarProps {
 export const Jazzbar: React.FC<JazzbarProps> = ({ venue }) => {
   return (
     <JazzBarSkeletonPage>
-      <JazzTab venue={venue} setUserList={() => null} />
+      <JazzTab venue={venue} />
     </JazzBarSkeletonPage>
   );
 };
