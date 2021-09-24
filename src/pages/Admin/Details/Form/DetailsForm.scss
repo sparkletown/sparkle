@@ -3,4 +3,29 @@
 .DetailsForm {
   height: 100vh;
   overflow-y: scroll;
+
+  &__wrapper {
+    padding: 1em 5em;
+  }
+
+  &__footer {
+    display: flex;
+    padding: 1em 5em;
+    justify-content: end;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  &__input {
+    &-info {
+      margin-top: 0.2rem;
+      opacity: 0.8;
+      font-size: 0.8em;
+    }
+
+    &-container {
+      margin-top: 15px;
+      position: relative;
+    }
+  }
 }

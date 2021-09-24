@@ -26,7 +26,6 @@ import ImageInput from "components/atoms/ImageInput";
 
 import { validationSchema_v2 } from "../ValidationSchema";
 
-import * as S from "./DetailsForm.styles";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
 import "./DetailsForm.scss";
@@ -113,7 +112,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   const renderVenueName = () => (
-    <S.InputContainer hasError={!!errors?.name}>
+    <div className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Name your space
       </h4>
@@ -128,15 +127,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       {errors.name ? (
         <span className="input-error">{errors.name.message}</span>
       ) : urlSafeName ? (
-        <S.InputInfo>
+        <span className="DetailsForm__input-info">
           The URL of your space will be: <b>{urlSafeName}</b>
-        </S.InputInfo>
+        </span>
       ) : null}
-    </S.InputContainer>
+    </div>
   );
 
   const renderSubtitle = () => (
-    <S.InputContainer hasError={!!errors?.subtitle}>
+    <div className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Space subtitle
       </h4>
@@ -150,11 +149,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       {errors.subtitle && (
         <span className="input-error">{errors.subtitle.message}</span>
       )}
-    </S.InputContainer>
+    </div>
   );
 
   const renderDescription = () => (
-    <S.InputContainer hasError={!!errors?.description}>
+    <div className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Space description
       </h4>
@@ -168,11 +167,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       {errors.description && (
         <span className="input-error">{errors.description.message}</span>
       )}
-    </S.InputContainer>
+    </div>
   );
 
   const renderBannerUpload = () => (
-    <S.InputContainer>
+    <div className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload a banner photo
       </h4>
@@ -184,11 +183,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         register={register}
         imgUrl={editData?.bannerImageUrl}
       />
-    </S.InputContainer>
+    </div>
   );
 
   const renderLogoUpload = () => (
-    <S.InputContainer>
+    <div className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload your logo
       </h4>
@@ -201,7 +200,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         register={register}
         imgUrl={editData?.logoImageUrl}
       />
-    </S.InputContainer>
+    </div>
   );
 
   const handleOnChange = () => {
@@ -221,7 +220,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       onSubmit={handleSubmit(setWorld)}
       onChange={handleOnChange}
     >
-      <S.FormInnerWrapper>
+      <div className="DetailsForm__wrapper">
         <input
           type="hidden"
           name="template"
@@ -243,9 +242,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderDescription()}
         {renderBannerUpload()}
         {renderLogoUpload()}
-      </S.FormInnerWrapper>
+      </div>
 
-      <S.FormFooter>
+      <div className="DetailsForm__footer">
         <ButtonNG
           variant="primary"
           disabled={isSubmitting || !dirty}
@@ -254,7 +253,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         >
           {venueId ? "Update Space" : "Create Space"}
         </ButtonNG>
-      </S.FormFooter>
+      </div>
     </Form>
   );
 };
