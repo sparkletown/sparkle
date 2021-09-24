@@ -105,7 +105,7 @@ export const AppRouter: React.FC = () => {
           {/*<Route path="/login" component={Login} />*/}
 
           <Route path="/v/:venueId">
-            <Provided withWorldUsers withRelatedVenues>
+            <Provided withRelatedVenues>
               <VenueLandingPage />
             </Provided>
           </Route>
@@ -116,12 +116,12 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
           <Route path="/in/:venueId">
-            <Provided withWorldUsers withRelatedVenues>
+            <Provided withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
           <Route path="/m/:venueId">
-            <Provided withWorldUsers withRelatedVenues>
+            <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>
           </Route>
