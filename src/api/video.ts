@@ -34,7 +34,7 @@ export const useTwilioVideoToken = ({
 
         throw err;
       });
-  });
+  }, [roomName, userId]);
 
 export interface GetAgoraTokenProps {
   channelName: string;

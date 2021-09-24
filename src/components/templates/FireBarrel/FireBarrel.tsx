@@ -49,7 +49,6 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
             autoPlay: true,
           })}
         />
-
         {seatsArray.map((_, index) => {
           const { participant, user: participantUserData } =
             participants?.[index] ?? {};

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAsync } from "react-use";
-import firebase from "firebase/app";
 import {
   AudioTrack,
   connect,
@@ -209,7 +208,7 @@ export const useVideoRoomState = ({
   } = useShowHide(activeParticipantByDefault);
 
   const participantConnected = useCallback(
-    async (participant: RemoteParticipant) => {
+    async (participant: RemoteParticipant | LocalParticipant) => {
       const user = await getUser(participant.identity);
 
       setParticipants((prevParticipants) => [
@@ -255,32 +254,8 @@ export const useVideoRoomState = ({
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
 
-    const remoteParticipants = Array.from(room.participants.values());
-    const remoteUsers: WithId<User>[] = await firebase
-      .firestore()
-      .collection("users")
-      .where(
-        firebase.firestore.FieldPath.documentId(),
-        "in",
-        remoteParticipants.map((p) => p.identity)
-      )
-      .get()
-      .then(({ docs }) => docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-
-    const remoteParticipantsWithUsers = remoteUsers.map((user, i) => ({
-      participant: remoteParticipants[i],
-      user,
-    }));
-
-    const localParticipantWithUser = {
-      participant: room.localParticipant,
-      user,
-    };
-
-    setParticipants(
-      room.localParticipant
-        ? [localParticipantWithUser, ...remoteParticipantsWithUsers]
-        : remoteParticipantsWithUsers
+    [room.localParticipant, ...room.participants.values()].forEach(
+      participantConnected
     );
 
     // Do we need `.off`? It looks like it's not in the docs
