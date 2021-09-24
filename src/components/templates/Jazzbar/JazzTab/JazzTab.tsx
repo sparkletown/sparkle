@@ -11,8 +11,7 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { User } from "types/User";
-import { JazzbarVenue } from "types/venues";
+import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
@@ -21,6 +20,7 @@ import { openUrl, venueInsideUrl } from "utils/url";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -44,7 +44,6 @@ import { JAZZBAR_TABLES } from "./constants";
 import "./JazzTab.scss";
 
 interface JazzProps {
-  setUserList: (value: User[]) => void;
   venue: WithId<JazzbarVenue>;
 }
 
@@ -54,7 +53,7 @@ interface JazzProps {
 //   messageToTheBand: string;
 // }
 
-const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
+const Jazz: React.FC<JazzProps> = ({ venue }) => {
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
@@ -74,7 +73,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
-  const [seatedAtTable, setSeatedAtTable] = useState("");
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateRecentSeatedTableUsers(
+    VenueTemplate.jazzbar,
+    seatedAtTable && venue?.id
+  );
+
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
@@ -228,7 +233,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
                 {shouldShowJukebox && (
-                  <Jukebox updateIframeUrl={changeIframeUrl} venue={venue} />
+                  <Jukebox
+                    updateIframeUrl={changeIframeUrl}
+                    venue={venue}
+                    tableRef={seatedAtTable}
+                  />
                 )}
 
                 {!seatedAtTable && (
@@ -244,8 +253,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           {seatedAtTable && (
             <Room
               roomName={`${venue.name}-${seatedAtTable}`}
-              venueName={venue.name}
-              setUserList={setUserList}
+              venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
               isAudioEffectDisabled={isUserAudioMuted}
             />
@@ -253,12 +261,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           <TablesUserList
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
-            venueName={venue.name}
+            venueId={venue.id}
             TableComponent={JazzBarTableComponent}
             joinMessage={!venue.hideVideo ?? true}
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
-            venueId={venue.id}
           />
         </div>
       </VenueWithOverlay>
