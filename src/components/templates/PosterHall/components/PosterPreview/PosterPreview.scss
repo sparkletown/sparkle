@@ -2,7 +2,7 @@
 
 $poster-preview-height: 300px;
 $poster-preview-width: 300px;
-$active-poster-shadows: 0 10px 20px 0 rgba($primary-accent-under, 0.56);
+$active-poster-shadows: 0 10px 20px 0 rgba($primary-accent--under, 0.56);
 
 .PosterPreview {
   display: flex;
@@ -30,12 +30,12 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary-accent-under, 0.56);
   }
 
   &--live {
-    border-color: $primary-accent-under;
+    border-color: $primary-accent--under;
     box-shadow: $active-poster-shadows;
 
     &:hover {
       background-color: $lighter-intermediate-grey;
-      border-color: $primary-accent-under;
+      border-color: $primary-accent--under;
     }
   }
 

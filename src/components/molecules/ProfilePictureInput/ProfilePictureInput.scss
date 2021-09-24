@@ -21,7 +21,7 @@ $upload-button-max-width: 300px;
     display: flex;
     align-items: center;
     border-radius: $border-radius--xl;
-    border: solid $primary-accent-under;
+    border: solid $primary-accent--under;
     padding: $spacing--lg 50px;
     margin: $spacing--lg 0;
     font-weight: $font-weight--700;
@@ -35,7 +35,7 @@ $upload-button-max-width: 300px;
         rgba(0, 0, 0, 0.6) 0%,
         rgba(0, 0, 0, 0.6) 100%
       );
-      background-color: darken($primary-accent-under, 20%);
+      background-color: darken($primary-accent--under, 20%);
     }
   }
 }

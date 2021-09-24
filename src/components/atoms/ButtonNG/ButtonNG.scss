@@ -12,13 +12,13 @@ $variants-enum: (
   (
     "primary",
     $primary-content--over,
-    $primary-accent-under,
+    $primary-accent--under,
     $primary--live-hover
   ),
   ("secondary", $primary-content--over, opaque-white(0.2), opaque-white(0.25)),
   (
     "white",
-    $primary-accent-under,
+    $primary-accent--under,
     $primary-content--over,
     $primary-content--over
   ),

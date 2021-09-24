@@ -139,7 +139,7 @@ $preview-margin: 30px;
   }
 
   &.selected {
-    box-shadow: 0 0 0 4px $primary-accent-under;
+    box-shadow: 0 0 0 4px $primary-accent--under;
     background-color: lighten($dark, 4%);
 
     .pickspace-thumbnail {

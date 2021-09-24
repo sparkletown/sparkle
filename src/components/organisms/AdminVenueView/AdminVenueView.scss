@@ -35,7 +35,7 @@
 
     &--selected {
       color: $primary-content--over;
-      background-color: $primary-accent-under;
+      background-color: $primary-accent--under;
     }
 
     @media (max-width: $media-breakpoint--lg) {

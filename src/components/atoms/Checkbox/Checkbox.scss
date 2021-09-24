@@ -28,7 +28,7 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
 
   &__native-input {
     &:checked ~ .Checkbox__custom-input {
-      background-color: $primary-accent-under;
+      background-color: $primary-accent--under;
 
       .Checkbox__tick-icon {
         opacity: 1;
@@ -41,7 +41,7 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
         &::after {
           left: $toggler-circle-moving-delta;
 
-          background-color: $primary-accent-under;
+          background-color: $primary-accent--under;
         }
       }
     }

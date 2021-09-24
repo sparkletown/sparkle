@@ -3,14 +3,14 @@
 .initial-form {
   .create-account-button {
     border-radius: $border-radius--sm;
-    box-shadow: inset 0 0 0 3px $primary-accent-under !important;
-    background-color: $primary-accent-under !important;
+    box-shadow: inset 0 0 0 3px $primary-accent--under !important;
+    background-color: $primary-accent--under !important;
     color: white !important;
 
     &:focus,
     &:hover {
       background-color: darken(
-        $color: $primary-accent-under,
+        $color: $primary-accent--under,
         $amount: 20%
       ) !important;
     }
@@ -22,13 +22,13 @@
   }
 
   .login-button {
-    box-shadow: inset 0 0 0 3px $primary-accent-under !important;
+    box-shadow: inset 0 0 0 3px $primary-accent--under !important;
     color: white !important;
     background: none !important;
     border-radius: $border-radius--sm;
     &:focus,
     &:hover {
-      background-color: darken($color: $primary-accent-under, $amount: 20%);
+      background-color: darken($color: $primary-accent--under, $amount: 20%);
       opacity: 0.8;
     }
   }

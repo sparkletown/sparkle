@@ -93,7 +93,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
     width: $current-timeline-delimeter--width;
     height: $timeline-delimeter--height;
     left: calc(#{$current-time--position} * 1px);
-    background-color: $primary-accent-under;
+    background-color: $primary-accent--under;
   }
 
   &__no-events {

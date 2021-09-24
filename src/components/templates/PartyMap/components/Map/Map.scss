@@ -143,19 +143,19 @@ $border-radius: 28px;
   //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
-      background-color: $primary-accent-under;
-      box-shadow: 0 0 0 3px $primary-accent-under,
-        0 0 20px rgba($primary-accent-under, 0.65);
+      background-color: $primary-accent--under;
+      box-shadow: 0 0 0 3px $primary-accent--under,
+        0 0 20px rgba($primary-accent--under, 0.65);
     }
     50% {
-      background-color: lighten($primary-accent-under, 10%);
-      box-shadow: 0 0 0 3px $primary-accent-under,
-        0 0 20px 10px rgba($primary-accent-under, 0.65);
+      background-color: lighten($primary-accent--under, 10%);
+      box-shadow: 0 0 0 3px $primary-accent--under,
+        0 0 20px 10px rgba($primary-accent--under, 0.65);
     }
     100% {
-      background-color: $primary-accent-under;
-      box-shadow: 0 0 0 3px $primary-accent-under,
-        0 0 20px rgba($primary-accent-under, 0.65);
+      background-color: $primary-accent--under;
+      box-shadow: 0 0 0 3px $primary-accent--under,
+        0 0 20px rgba($primary-accent--under, 0.65);
     }
   }
 

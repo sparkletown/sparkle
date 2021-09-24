@@ -40,7 +40,7 @@ $EventModal--padding-top: 40px;
 
   // @debt we need to transform the rule to `&__button { ... }` once `<Button />` styles stop appearing later than the styles from this file
   & .EventModal__button {
-    background-color: $primary-accent-under;
+    background-color: $primary-accent--under;
 
     &:hover {
       background-color: $primary--live-hover;

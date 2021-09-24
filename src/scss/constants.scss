@@ -1,10 +1,13 @@
 $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
 
+$primary-accent--over: #ffffff;
+$primary-content--over: #ffffff;
+
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
 $primary--live-hover: #8755fb;
-$primary-accent-under: #7c46fb;
+$primary-accent--under: #7c46fb;
 $primary--darker: #3f247d;
 
 $secondary--lightest: #868686;
@@ -35,8 +38,6 @@ $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 $concrete--dark: #9f9fa0;
 $primary-content-under: #000000;
-$primary-accent--over: #ffffff;
-$primary-content--over: #ffffff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
@@ -51,14 +52,14 @@ $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba($primary-accent-under, 0.35);
+$chat-busy: rgba($primary-accent--under, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
 $room-card-background: #323232;
 
 $gradient: linear-gradient(
   124deg,
   #00f6d5 0%,
-  $primary-accent-under 50%,
+  $primary-accent--under 50%,
   #e15ada 100%
 );
 $danger-gradient: linear-gradient(

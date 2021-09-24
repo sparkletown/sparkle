@@ -50,7 +50,7 @@ h6 {
   line-height: 1.2;
 
   &.primary {
-    color: $primary-accent-under;
+    color: $primary-accent--under;
   }
 
   &.italic {
@@ -100,14 +100,14 @@ input.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: rgba($primary-accent-under, 0.24);
+  background-color: rgba($primary-accent--under, 0.24);
   transition: all 400ms $transition-function;
   color: $primary-content--over;
   transform: translateY(0);
 
   &:hover {
     transform: translateY(-1px);
-    background-color: rgba($primary-accent-under, 0.18);
+    background-color: rgba($primary-accent--under, 0.18);
   }
 
   &.btn-primary {
@@ -116,7 +116,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: darken($primary-accent-under, 14%);
+      background-color: darken($primary-accent--under, 14%);
     }
   }
 
@@ -213,7 +213,7 @@ button.btn {
   &.btn-primary {
     // Background image has to be set to 'none' because by default the Button has gradient image
     background-image: none;
-    background-color: $primary-accent-under;
+    background-color: $primary-accent--under;
 
     &:hover {
       background-image: none;

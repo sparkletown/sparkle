@@ -27,9 +27,9 @@ $label-visible: flex;
     .maproom__label {
       display: $label-visible;
 
-      background-color: $primary-accent-under;
+      background-color: $primary-accent--under;
       opacity: 1;
-      box-shadow: 0 0 0 3px lighten($primary-accent-under, 10%),
+      box-shadow: 0 0 0 3px lighten($primary-accent--under, 10%),
         0 2px 4px rgba($primary-content-under, 0.2);
     }
 
@@ -107,7 +107,7 @@ $label-visible: flex;
     backdrop-filter: blur(8px);
 
     font-size: 0.9rem;
-    background-color: darken($primary-accent-under, 50%);
+    background-color: darken($primary-accent--under, 50%);
     opacity: 0.5;
   }
 

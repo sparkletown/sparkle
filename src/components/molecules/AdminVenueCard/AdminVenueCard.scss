@@ -62,7 +62,7 @@ $admin-venue-card-button-margin: 5px 0;
   }
 
   &__button {
-    background-color: $primary-accent-under;
+    background-color: $primary-accent--under;
     padding: 0.5rem;
     border-radius: 16px;
     text-align: center;
@@ -71,7 +71,7 @@ $admin-venue-card-button-margin: 5px 0;
 
     &:hover {
       color: $primary-content--over;
-      background-color: darken($primary-accent-under, 5%);
+      background-color: darken($primary-accent--under, 5%);
       box-shadow: 0 2px 30px rgba(124, 70, 251, 0.6);
       text-decoration: none;
     }
