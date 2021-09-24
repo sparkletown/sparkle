@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
 
@@ -95,7 +95,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         { name: editData?.name },
         { subtitle: editData?.subtitle },
         { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl ?? DEFAULT_VENUE_BANNER },
+        { bannerImageUrl: editData?.bannerImageUrl ?? "" },
         { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
         { showGrid: editData?.showGrid },
       ]);
@@ -114,9 +114,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderVenueName = () => (
     <div className="DetailsForm__input-container">
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Name your space
-      </h4>
+      <h4 className="italic">Name your space</h4>
       <input
         disabled={disable || !!venueId}
         name="name"
@@ -137,9 +135,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderSubtitle = () => (
     <div className="DetailsForm__input-container">
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Space subtitle
-      </h4>
+      <h4 className="italic">Space subtitle</h4>
       <input
         disabled={disable}
         name={"subtitle"}
@@ -155,9 +151,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const renderDescription = () => (
     <div className="DetailsForm__input-container">
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Space description
-      </h4>
+      <h4 className="italic">Space description</h4>
       <textarea
         disabled={disable}
         name={"description"}
@@ -171,11 +165,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     </div>
   );
 
-  const renderBannerUpload = () => (
+  const renderHighlightImageUpload = () => (
     <div className="DetailsForm__input-container">
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload a banner photo
-      </h4>
+      <h4 className="italic">Upload Highlight image</h4>
       <ImageInput
         onChange={handleBannerUpload}
         name="bannerImage"
@@ -183,15 +175,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         setValue={setValue}
         register={register}
         imgUrl={editData?.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
       />
     </div>
   );
 
   const renderLogoUpload = () => (
     <div className="DetailsForm__input-container">
-      <h4 className="italic" style={{ fontSize: "20px" }}>
-        Upload your logo
-      </h4>
+      <h4 className="italic">Upload your logo</h4>
       <ImageInput
         onChange={handleLogoUpload}
         name="logoImage"
@@ -243,7 +235,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderVenueName()}
         {renderSubtitle()}
         {renderDescription()}
-        {renderBannerUpload()}
+        {renderHighlightImageUpload()}
         {renderLogoUpload()}
       </div>
 

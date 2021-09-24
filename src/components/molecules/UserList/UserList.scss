@@ -7,6 +7,10 @@ $user-list-cell-size: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    &-text {
+      z-index: z(user-list-label);
+    }
   }
 
   &__toggler-text {
