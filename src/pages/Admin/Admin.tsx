@@ -426,7 +426,7 @@ export const Admin: React.FC = () => {
   // @debt deliberately returning AdminRestricted before redirect as to keep original logic/behavior. Ideally they'd be in reverse
   if (!user) {
     return (
-      <WithNavigationBar hasBackButton={false}>
+      <WithNavigationBar>
         <AdminRestricted>
           <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
         </AdminRestricted>
@@ -435,7 +435,7 @@ export const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
+    <WithNavigationBar>
       <AdminRestricted>
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">

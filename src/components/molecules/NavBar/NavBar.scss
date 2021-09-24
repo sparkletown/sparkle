@@ -274,7 +274,7 @@ $photobooth-button-background-size: 35px;
   }
 
   &__photobooth {
-    &-button {
+    &--button {
       position: absolute;
       top: 130px;
       left: -($spacing--lg);
@@ -292,7 +292,7 @@ $photobooth-button-background-size: 35px;
       }
     }
 
-    &-title {
+    &--title {
       text-decoration: none;
       margin: $photobooth-button-text-margin;
       font-size: $font-size--sm;

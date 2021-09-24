@@ -29,8 +29,8 @@ export interface WithNavigationBarProps {
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
-  withSchedule = true,
-  withPhotobooth = true,
+  withSchedule,
+  withPhotobooth,
   children,
 }) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
