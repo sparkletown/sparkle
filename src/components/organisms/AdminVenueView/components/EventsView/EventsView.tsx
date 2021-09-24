@@ -12,6 +12,10 @@ import { useShowHide } from "hooks/useShowHide";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
+import { TimingSpace } from "components/organisms/TimingSpace";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { Checkbox } from "components/atoms/Checkbox";
 
 import "./EventsView.scss";
 
@@ -37,6 +41,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     hide: setHideDeleteEventModal,
   } = useShowHide();
 
+  const {
+    isShown: showSplittedEvents,
+    toggle: toggleSplittedEvents,
+  } = useShowHide();
+
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   const adminEventModalOnHide = useCallback(() => {
@@ -48,25 +57,51 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
 
   const renderedEvents = useMemo(
     () =>
-      events?.map((event) => {
-        return (
-          <TimingEvent
-            event={event}
-            setShowCreateEventModal={setShowCreateEventModal}
-            setEditedEvent={setEditedEvent}
-            key={event.id}
-          />
-        );
-      }),
+      events?.map((event) => (
+        <TimingEvent
+          event={event}
+          setShowCreateEventModal={setShowCreateEventModal}
+          // @debt these need to be renamed as a proper callback props onSomething
+          setEditedEvent={setEditedEvent}
+          key={event.id}
+        />
+      )),
     [events, setShowCreateEventModal, setEditedEvent]
   );
 
+  const renderedSpaces = useMemo(() => {
+    const spaces = [...new Set(events?.map((event) => event.room))];
+    const getSpaceEvents = (space: string) =>
+      events?.filter((event) => event.room === space) ?? [];
+
+    return spaces?.map(
+      (space) =>
+        space && (
+          <TimingSpace
+            key={space}
+            spaceName={space}
+            spaceEvents={getSpaceEvents(space)}
+            setShowCreateEventModal={setShowCreateEventModal}
+            setEditedEvent={setEditedEvent}
+          />
+        )
+    );
+  }, [events, setShowCreateEventModal, setEditedEvent]);
+
   return (
-    <>
-      <div className="EventsView">
-        <h4 className="EventsView__title">Events Schedule</h4>
+    <div className="EventsView">
+      <div className="EventsView__container">
+        <div className="EventsView__header">
+          <h4 className="EventsView__title">Events Schedule</h4>
+          <Checkbox
+            checked={showSplittedEvents}
+            onChange={toggleSplittedEvents}
+            label="Split by Space"
+            labelClassName="EventsView__checkbox"
+          />
+        </div>
         <div className="EventsView__content">
-          {renderedEvents}
+          {showSplittedEvents ? renderedSpaces : renderedEvents}
           {!hasVenueEvents && (
             <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
@@ -74,7 +109,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
                 className="btn btn-primary"
                 onClick={setShowCreateEventModal}
               >
-                Create an Event
+                Add experience
               </button>
             </div>
           )}
@@ -82,10 +117,10 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
       </div>
 
       {hasVenueEvents && (
-        <div className="create-button">
-          <button className="btn btn-primary" onClick={setShowCreateEventModal}>
+        <div className="EventsView__create">
+          <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
             Create an Event
-          </button>
+          </ButtonNG>
         </div>
       )}
 
@@ -116,6 +151,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           event={editedEvent}
         />
       )}
-    </>
+    </div>
   );
 };

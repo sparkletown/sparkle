@@ -1,1 +1,0 @@
-export { MapPartygoerOverlay } from "./MapPartygoerOverlay";

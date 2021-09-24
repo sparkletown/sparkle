@@ -2,6 +2,8 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+import { AuditoriumSectionPath } from "types/auditorium";
+
 import { WithId, WithVenueId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
@@ -296,6 +298,8 @@ export enum RoomVisibility {
   hover = "hover",
   count = "count",
   nameCount = "count/name",
+  none = "none",
+  unclickable = "unclickable",
 }
 
 export interface VenueConfig {
@@ -376,6 +380,19 @@ export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;
   liveAudience: number;
+}
+
+export type RecentSeatedUserData<T extends VenueTemplate> = {
+  template: T;
+  venueId: string;
+  venueSpecificData: T extends VenueTemplate.auditorium
+    ? Pick<AuditoriumSectionPath, "sectionId">
+    : never;
+};
+
+export interface RecentSeatedUserTimestamp<T extends VenueTemplate>
+  extends RecentSeatedUserData<T> {
+  lastSittingTimeMs: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

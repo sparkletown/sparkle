@@ -3,7 +3,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "store";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
-import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
 import {
   ChatSettings,
   JukeboxMessage,
@@ -128,9 +128,6 @@ export const venueEventsSelector: SparkleSelector<
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;
 
-export const userModalVisitsSelector = (state: RootState) =>
-  state.firestore.ordered.userModalVisits;
-
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
 
@@ -164,6 +161,14 @@ export const currentAuditoriumSectionsSelector: SparkleSelector<
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
+
+export const currentAuditoriumSectionSeatedUsersSelector: SparkleSelector<
+  WithId<AuditoriumSeatedUser>[] | undefined
+> = makeOrderedSelector("currentAuditoriumSeatedSectionUsers");
+
+export const currentAuditoriumSectionSeatedUsersByIdSelector: SparkleSelector<
+  Partial<Record<string, AuditoriumSeatedUser>> | undefined
+> = makeDataSelector("currentAuditoriumSeatedSectionUsers");
 
 export const currentModalUserDataSelector: SparkleSelector<
   User | undefined

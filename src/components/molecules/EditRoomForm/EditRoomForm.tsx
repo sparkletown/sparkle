@@ -6,6 +6,7 @@ import { useAsyncFn } from "react-use";
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
 import { RoomData_v2 } from "types/rooms";
+import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -14,6 +15,7 @@ import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 
 import "./EditRoomForm.scss";
 
@@ -24,6 +26,7 @@ interface EditRoomFormProps {
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  venueVisibility?: RoomVisibility;
 }
 
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
@@ -33,6 +36,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   onBackClick,
   onDelete,
   onEdit,
+  venueVisibility,
 }) => {
   const { user } = useUser();
 
@@ -47,6 +51,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       description: room.description,
       template: room.template,
       image_url: room.image_url,
+      visibility: room.visibility ?? venueVisibility,
     },
   });
 
@@ -144,6 +149,11 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           {errors.image_url && (
             <span className="input-error">{errors.image_url.message}</span>
           )}
+
+          <Form.Label>
+            Change label appearance (overrides global settings)
+          </Form.Label>
+          <PortalVisibility register={register} />
 
           <Button
             disabled={isUpdating || isDeleting}

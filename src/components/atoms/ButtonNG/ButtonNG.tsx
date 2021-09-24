@@ -1,11 +1,15 @@
-import React, { CSSProperties } from "react";
-import { Link } from "react-router-dom";
+import React, { CSSProperties, useCallback, useMemo } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { getExtraLinkProps } from "utils/url";
+import {
+  externalUrlAdditionalProps,
+  getExtraLinkProps,
+  resolveUrlPath,
+} from "utils/url";
 
 import "./ButtonNG.scss";
 
@@ -59,6 +63,27 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconSize = "1x",
   title,
 }) => {
+  const history = useHistory();
+
+  const handleClick = useCallback(() => {
+    if (disabled) return;
+
+    if (linkTo) {
+      if (newTab) {
+        window.open(
+          linkTo,
+          externalUrlAdditionalProps.target,
+          externalUrlAdditionalProps.rel
+        );
+      } else history.push(linkTo);
+    }
+
+    // NOTE: with both linkTo/onClick, this serves as callback e.g. to show modal popup after opening new window
+    onClick?.();
+  }, [onClick, linkTo, newTab, disabled, history]);
+
+  const resolvedUrl = useMemo(() => linkTo && resolveUrlPath(linkTo), [linkTo]);
+
   const parentClasses = classNames({
     "ButtonNG ButtonNG__link": isLink,
     "ButtonNG ButtonNG__button": !isLink,
@@ -116,9 +141,9 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       className={parentClasses}
       style={style}
       type={type}
-      onClick={onClick}
+      onClick={handleClick}
       disabled={disabled}
-      title={title}
+      title={title ?? resolvedUrl}
     >
       {iconName && (
         <FontAwesomeIcon

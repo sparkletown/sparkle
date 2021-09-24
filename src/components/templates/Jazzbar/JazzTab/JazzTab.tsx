@@ -36,7 +36,7 @@ import { UserList } from "components/molecules/UserList";
 import { BackButton } from "components/atoms/BackButton";
 
 import Room from "../components/JazzBarRoom";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 

@@ -1,0 +1,16 @@
+@import "scss/constants";
+
+.AdminPanel {
+  height: $admin-ng-panel-height;
+  overflow: hidden;
+
+  @media (max-width: $media-breakpoint--lg) {
+    align-items: center;
+  }
+
+  @media (max-width: $media-breakpoint--md) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+}

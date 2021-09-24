@@ -38,6 +38,7 @@ export const DEFAULT_BACKGROUNDS = [
   floatyCity,
   halloween,
 ];
+export * from "./portal-settings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -112,6 +113,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 5000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -655,7 +657,6 @@ export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
-export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
 
 export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 

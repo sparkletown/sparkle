@@ -26,6 +26,10 @@ $spacing-map: (
     visibility: hidden;
   }
 
+  &--error {
+    color: $red;
+  }
+
   &--anamorphic {
     aspect-ratio: 2.39;
   }

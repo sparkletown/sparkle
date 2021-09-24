@@ -7,7 +7,6 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useIsOnline } from "hooks/useIsOnline";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -23,14 +22,15 @@ export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
   onClick,
   user,
 }) => {
-  const { isOnline } = useIsOnline(user.id);
   const isCurrentUser = useIsCurrentUser(user.id);
 
   return (
     <ButtonNG
-      variant={!isCurrentUser && !isOnline ? "primary" : "secondary"}
+      // @debt temporarily disable is online functionality
+      variant={!isCurrentUser ? "primary" : "secondary"}
       className={classNames("ProfileModalButtons", containerClassName, {
-        "ProfileModalButtons--online": !isCurrentUser && isOnline,
+        // @debt temporarily disable is online functionality
+        // "ProfileModalButtons--online": !isCurrentUser && isOnline,
       })}
       onClick={onClick}
     >
