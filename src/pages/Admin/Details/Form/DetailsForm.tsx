@@ -250,6 +250,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           variant="primary"
           disabled={isSubmitting || !dirty}
           type="submit"
+          loading={isSubmitting}
         >
           {venueId ? "Update Space" : "Create Space"}
         </ButtonNG>
