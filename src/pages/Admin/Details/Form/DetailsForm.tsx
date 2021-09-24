@@ -2,6 +2,7 @@ import React, { useCallback, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 
 import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
@@ -214,9 +215,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     });
   };
 
+  const formStyles = classNames({ DetailsForm__edit: venueId });
+
   return (
     <Form
-      className="DetailsForm"
+      className={formStyles}
       onSubmit={handleSubmit(setWorld)}
       onChange={handleOnChange}
     >

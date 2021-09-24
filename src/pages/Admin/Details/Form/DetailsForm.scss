@@ -1,8 +1,9 @@
 @import "scss/constants";
 
 .DetailsForm {
-  height: 100vh;
-  overflow-y: scroll;
+  &__edit {
+    margin-bottom: $footer-height;
+  }
 
   &__wrapper {
     padding: 1em 5em;
