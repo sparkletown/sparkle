@@ -70,7 +70,6 @@ export interface FirestoreData {
   currentEvent?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
-  relatedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
   settings?: Settings;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -100,7 +99,6 @@ export interface FirestoreOrdered {
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  relatedVenues?: WithId<AnyVenue>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
