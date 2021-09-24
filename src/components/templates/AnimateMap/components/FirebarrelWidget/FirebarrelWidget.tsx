@@ -44,6 +44,10 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   );
 
   const { user } = useUser();
+
+  // TODO: nordbeavers team should rework
+  // how useWorldUsersById stuff used to work here
+
   // const { worldUsersById } = useWorldUsersById();
   // const firebase = useFirebase();
 
