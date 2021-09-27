@@ -231,10 +231,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {withPhotobooth && (
               <div
-                className="NavBar__photobooth--button nav-schedule"
+                className="NavBar__photobooth-button nav-schedule"
                 onClick={handlePhotoboothRedirect}
               >
-                <p className="NavBar__photobooth--title">Photobooth</p>
+                <p className="NavBar__photobooth-title">Photobooth</p>
               </div>
             )}
 
