@@ -124,7 +124,7 @@ export const EmergencyViewPage: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar withSchedule={false} hasBackButton={false}>
+    <WithNavigationBar>
       <div className={containerClasses}>
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
         <div className="EmergencyView__main">
