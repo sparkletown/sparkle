@@ -1,49 +1,54 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
-const { HttpsError } = require("firebase-functions/lib/providers/https");
+/* eslint-disable @typescript-eslint/no-explicit-any,@typescript-eslint/ban-ts-comment */
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import {
+  CallableContext,
+  HttpsError,
+} from "firebase-functions/lib/providers/https";
 
-const { addAdmin, removeAdmin } = require("./src/api/roles");
+import { addAdmin, removeAdmin } from "./src/api/roles";
 
-const { checkAuth } = require("./src/utils/assert");
-const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+import { assertValidAuth } from "./src/utils/assert";
+import { checkIfValidVenueId, getVenueId } from "./src/utils/venue";
+import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 
 const PLAYA_VENUE_ID = "jamonline";
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
-const VenueTemplate = {
-  artcar: "artcar",
-  artpiece: "artpiece",
-  audience: "audience",
-  conversationspace: "conversationspace",
-  embeddable: "embeddable",
-  firebarrel: "firebarrel",
-  friendship: "friendship",
-  jazzbar: "jazzbar",
-  partymap: "partymap",
-  animatemap: "animatemap",
-  performancevenue: "performancevenue",
-  posterhall: "posterhall",
-  posterpage: "posterpage",
-  screeningroom: "screeningroom",
-  themecamp: "themecamp",
-  zoomroom: "zoomroom",
+enum VenueTemplate {
+  artcar = "artcar",
+  artpiece = "artpiece",
+  audience = "audience",
+  conversationspace = "conversationspace",
+  embeddable = "embeddable",
+  firebarrel = "firebarrel",
+  friendship = "friendship",
+  jazzbar = "jazzbar",
+  partymap = "partymap",
+  animatemap = "animatemap",
+  performancevenue = "performancevenue",
+  posterhall = "posterhall",
+  posterpage = "posterpage",
+  screeningroom = "screeningroom",
+  themecamp = "themecamp",
+  zoomroom = "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
-  avatargrid: "avatargrid",
+  avatargrid = "avatargrid",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
-  preplaya: "preplaya",
+  preplaya = "preplaya",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
-  playa: "playa",
-};
+  playa = "playa",
+}
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
 
@@ -94,17 +99,15 @@ const PlacementState = {
   Hidden: "HIDDEN",
 };
 
-const checkUserIsOwner = async (venueId, uid) => {
+const checkUserIsOwner = async (venueId: string, uid: string) => {
   await admin
     .firestore()
     .collection("venues")
     .doc(venueId)
     .get()
     .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
+      const venue = getDocData(doc, "Venue");
+
       if (venue.owners && venue.owners.includes(uid)) return;
 
       if (venue.parentId) {
@@ -114,14 +117,18 @@ const checkUserIsOwner = async (venueId, uid) => {
           .doc(venue.parentId)
           .get();
 
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+        const parentVenue = getDocData(
+          doc,
+          `Venue ${venueId} references missing parent`
+        );
+
+        if (
+          !(
+            parentVenue &&
+            parentVenue.owners &&
+            parentVenue.owners.includes(uid)
+          )
+        ) {
           throw new HttpsError(
             "permission-denied",
             `User is not an owner of ${venueId} nor parent ${venue.parentId}`
@@ -143,7 +150,11 @@ const checkUserIsOwner = async (venueId, uid) => {
 };
 
 // @debt extract this into a new functions/chat backend script file
-const checkIfUserHasVoted = async (venueId, pollId, userId) => {
+const checkIfUserHasVoted = async (
+  venueId: string,
+  pollId: string,
+  userId: string
+) => {
   await admin
     .firestore()
     .collection("venues")
@@ -152,13 +163,10 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     .doc(pollId)
     .get()
     .then((doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Poll ${pollId} does not exist`);
-      }
+      const poll = getDocData(doc, "Poll");
 
-      const poll = doc.data();
-
-      return poll.votes.some(
+      return poll?.votes.some(
+        // @ts-ignore
         ({ userId: existingUserId }) => userId === existingUserId
       );
     })
@@ -171,7 +179,7 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
 };
 
 // @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
-const createVenueData = (data, context) => {
+const createVenueData = (data: any, context: CallableContext) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
       "invalid-argument",
@@ -179,12 +187,12 @@ const createVenueData = (data, context) => {
     );
   }
 
-  let owners = [context.auth.token.user_id];
+  let owners = [context.auth?.token.user_id];
   if (data.owners) {
     owners = [...owners, ...data.owners];
   }
 
-  const venueData = {
+  const venueData: any = {
     template: data.template,
     name: data.name,
     config: {
@@ -286,7 +294,7 @@ const createVenueData = (data, context) => {
 };
 
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
-const createVenueData_v2 = (data, context) => {
+const createVenueData_v2 = (data: any, context: CallableContext) => {
   const venueData_v2 = {
     name: data.name,
     config: {
@@ -302,7 +310,7 @@ const createVenueData_v2 = (data, context) => {
     host: {
       icon: data.logoImageUrl,
     },
-    owners: [context.auth.token.user_id],
+    owners: [context.auth?.token.user_id],
     showGrid: data.showGrid || false,
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
@@ -335,8 +343,8 @@ const createVenueData_v2 = (data, context) => {
 };
 
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-const createBaseUpdateVenueData = (data, doc) => {
-  const updated = doc.data();
+const createBaseUpdateVenueData = (data: any, doc: any) => {
+  const updated = doc.data() as any;
 
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
@@ -435,19 +443,19 @@ const createBaseUpdateVenueData = (data, doc) => {
   return updated;
 };
 
-const dataOrUpdateKey = (data, updated, key) =>
+const dataOrUpdateKey = (data: any, updated: any, key: string) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
   (updated &&
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
 
-exports.addVenueOwner = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const addVenueOwner = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   const { venueId, newOwnerId } = data;
 
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth?.token.user_id);
 
   await admin
     .firestore()
@@ -462,33 +470,35 @@ exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   await addAdmin(newOwnerId);
 });
 
-exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const removeVenueOwner = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
 
-  const { venueId, ownerId } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+    const { venueId, ownerId } = data;
+    await checkUserIsOwner(venueId, context.auth?.token.user_id);
 
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .update({
-      owners: admin.firestore.FieldValue.arrayRemove(ownerId),
-    });
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .update({
+        owners: admin.firestore.FieldValue.arrayRemove(ownerId),
+      });
 
-  // If a user is not an owner of any venue,
-  // remove the user from the list of admins
-  const snap = await admin
-    .firestore()
-    .collection("venues")
-    .where("owners", "array-contains", ownerId)
-    .get();
-  if (snap.empty) removeAdmin(ownerId);
-});
+    // If a user is not an owner of any venue,
+    // remove the user from the list of admins
+    const snap = await admin
+      .firestore()
+      .collection("venues")
+      .where("owners", "array-contains", ownerId)
+      .get();
+    if (snap.empty) removeAdmin(ownerId);
+  }
+);
 
 // @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
-exports.createVenue = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const createVenue = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   // @debt this should be typed
   const venueData = createVenueData(data, context);
@@ -500,8 +510,8 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 });
 
 // @debt this should be de-duplicated + aligned with createVenue to ensure they both cover all needed cases
-exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const createVenue_v2 = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   const venueData = createVenueData_v2(data, context);
   const venueId = getVenueId(data.name);
@@ -511,16 +521,14 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   return venueData;
 });
 
-exports.upsertRoom = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const upsertRoom = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
   const { venueId, roomIndex, room } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth?.token.user_id);
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const docData = doc.data();
+  const docData = getDocData(doc, "Venue");
+
   let rooms = docData.rooms;
 
   if (typeof roomIndex !== "number") {
@@ -529,22 +537,20 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
     rooms[roomIndex] = room;
   }
 
-  admin.firestore().collection("venues").doc(venueId).update({ rooms });
+  return admin.firestore().collection("venues").doc(venueId).update({ rooms });
 });
 
-exports.deleteRoom = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const deleteRoom = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
   const { venueId, room } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth?.token.user_id);
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const docData = doc.data();
+  const docData = getDocData(doc, "Venue");
   const rooms = docData.rooms;
 
   //if the room exists under the same name, find it
+  // @ts-ignore
   const index = rooms.findIndex((val) => val.title === room.title);
   if (index === -1) {
     throw new HttpsError("not-found", "Room does not exist");
@@ -552,72 +558,21 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
     docData.rooms.splice(index, 1);
   }
 
-  admin.firestore().collection("venues").doc(venueId).update(docData);
-});
-
-// @debt this is legacy functionality related to the Playa template, and should be cleaned up along with it
-exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
-  checkAuth(context);
-
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-
-  const doc = await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
-  }
-  const updated = doc.data();
-  updated.dustStorm = !updated.dustStorm;
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .update(updated);
-
-  // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
-  // Fetch the doc again, in case anything changed meanwhile.
-  // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
-  // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
-  if (updated.dustStorm) {
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    await wait(50 * 1000);
-    const doc = await admin
-      .firestore()
-      .collection("venues")
-      .doc(PLAYA_VENUE_ID)
-      .get();
-
-    if (doc && doc.exists) {
-      const updated = doc.data();
-      updated.dustStorm = false;
-      admin
-        .firestore()
-        .collection("venues")
-        .doc(PLAYA_VENUE_ID)
-        .update(updated);
-    }
-  }
+  return admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
-exports.updateVenue = functions.https.onCall(async (data, context) => {
+export const updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id || getVenueId(data.name);
-  checkAuth(context);
+  assertValidAuth(context);
 
   // @debt updateVenue_v2 uses checkUserIsAdminOrOwner rather than checkUserIsOwner. Should these be the same? Which is correct?
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth?.token.user_id);
 
   // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-  // @debt this is exactly the same as in updateVenue_v2
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
+  checkDoc(doc, "Venue");
 
   const updated = createBaseUpdateVenueData(data, doc);
 
@@ -701,12 +656,12 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
-exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
+export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
-  checkAuth(context);
+  assertValidAuth(context);
 
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth?.token.user_id);
 
   if (!data.worldId) {
     throw new HttpsError(
@@ -719,9 +674,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
   // @debt this is exactly the same as in updateVenue
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
+  checkDoc(doc, "Venue");
 
   // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
   const updated = createBaseUpdateVenueData(data, doc);
@@ -767,8 +720,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
-exports.updateTables = functions.https.onCall((data, context) => {
-  checkAuth(context);
+export const updateTables = functions.https.onCall((data, context) => {
+  assertValidAuth(context);
 
   const isValidVenueId = checkIfValidVenueId(data.venueId);
 
@@ -781,9 +734,7 @@ exports.updateTables = functions.https.onCall((data, context) => {
   return admin.firestore().runTransaction(async (transaction) => {
     const venueDoc = await transaction.get(venueRef);
 
-    if (!venueDoc.exists) {
-      throw new HttpsError("not-found", `venue ${venueId} does not exist`);
-    }
+    checkDoc(venueDoc, "Venue");
 
     const venueTables = [...data.tables];
 
@@ -804,31 +755,32 @@ exports.updateTables = functions.https.onCall((data, context) => {
   });
 });
 
-exports.deleteVenue = functions.https.onCall(async (data, context) => {
+export const deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.id);
-  checkAuth(context);
+  assertValidAuth(context);
 
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth?.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
 
 // @debt extract this into a new functions/chat backend script file
-exports.voteInPoll = functions.https.onCall(
+export const voteInPoll = functions.https.onCall(
   async ({ venueId, pollVote }, context) => {
-    checkAuth(context);
+    assertValidAuth(context);
 
     const { pollId, questionId } = pollVote;
 
+    const userId = context.auth?.token.user_id;
     try {
-      await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);
+      await checkIfUserHasVoted(venueId, pollId, context.auth?.token.user_id);
 
       const newVote = {
         questionId,
-        userId: context.auth.token.user_id,
+        userId,
       };
 
-      admin
+      return admin
         .firestore()
         .collection("venues")
         .doc(venueId)
@@ -839,7 +791,7 @@ exports.voteInPoll = functions.https.onCall(
         });
     } catch (error) {
       throw new HttpsError(
-        "has-voted",
+        "unknown",
         `User ${userId} has voted in ${pollId} Poll`,
         error
       );
@@ -847,59 +799,57 @@ exports.voteInPoll = functions.https.onCall(
   }
 );
 
-exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.placement = {
-    x: dataOrUpdateKey(data.placement, updated.placement, "x"),
-    y: dataOrUpdateKey(data.placement, updated.placement, "y"),
-    state: PlacementState.AdminPlaced,
-  };
-
-  updated.width = data.width;
-  updated.height = data.height;
-
-  const addressText = dataOrUpdateKey(
-    data.placement,
-    updated.placement,
-    "addressText"
-  );
-  const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
-
-  if (addressText) {
-    updated.placement.addressText = addressText;
-  }
-  if (notes) {
-    updated.placement.notes = notes;
-  }
-
-  admin.firestore().collection("venues").doc(venueId).update(updated);
-});
-
-exports.adminHideVenue = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.placement.state = PlacementState.Hidden;
-  admin.firestore().collection("venues").doc(venueId).update(updated);
-});
-
-exports.adminUpdateBannerMessage = functions.https.onCall(
+export const adminUpdatePlacement = functions.https.onCall(
   async (data, context) => {
-    await checkUserIsOwner(data.venueId, context.auth.token.user_id);
+    const venueId = data.id;
+    assertValidAuth(context);
+    await checkUserIsOwner(PLAYA_VENUE_ID, context.auth?.token.user_id);
+    const doc = await admin.firestore().collection("venues").doc(venueId).get();
+
+    const updated = getDocData(doc, "Venue");
+
+    updated.placement = {
+      x: dataOrUpdateKey(data.placement, updated.placement, "x"),
+      y: dataOrUpdateKey(data.placement, updated.placement, "y"),
+      state: PlacementState.AdminPlaced,
+    };
+
+    updated.width = data.width;
+    updated.height = data.height;
+
+    const addressText = dataOrUpdateKey(
+      data.placement,
+      updated.placement,
+      "addressText"
+    );
+    const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
+
+    if (addressText) {
+      updated.placement.addressText = addressText;
+    }
+    if (notes) {
+      updated.placement.notes = notes;
+    }
+
+    return admin.firestore().collection("venues").doc(venueId).update(updated);
+  }
+);
+
+export const adminHideVenue = functions.https.onCall(async (data, context) => {
+  const venueId = data.id;
+  assertValidAuth(context);
+  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth?.token.user_id);
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+
+  const updated = getDocData(doc, "Venue");
+
+  updated.placement.state = PlacementState.Hidden;
+  return admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
+export const adminUpdateBannerMessage = functions.https.onCall(
+  async (data, context) => {
+    await checkUserIsOwner(data.venueId, context.auth?.token.user_id);
     await admin
       .firestore()
       .collection("venues")
@@ -908,40 +858,67 @@ exports.adminUpdateBannerMessage = functions.https.onCall(
   }
 );
 
-exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
-  const { venueId, iframeUrl } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .update({ iframeUrl: iframeUrl || null });
-});
-
-exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
-  const user = (
-    await admin.firestore().collection("users").doc(userId).get()
-  ).data();
-
-  return user;
-});
-
-exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
-
-  const isValidVenueId = checkIfValidVenueId(data.venueId);
-
-  if (!isValidVenueId) {
-    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+export const adminUpdateIframeUrl = functions.https.onCall(
+  async (data, context) => {
+    const { venueId, iframeUrl } = data;
+    await checkUserIsOwner(venueId, context.auth?.token.user_id);
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .update({ iframeUrl: iframeUrl || null });
   }
+);
 
-  if (typeof data.isLive !== "boolean") {
-    throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+export const getOwnerData = functions.https.onCall(async ({ userId }) =>
+  (await admin.firestore().collection("users").doc(userId).get()).data()
+);
+
+export const setVenueLiveStatus = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
+
+    const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+    if (!isValidVenueId) {
+      throw new HttpsError(
+        "invalid-argument",
+        `venueId is not a valid venue id`
+      );
+    }
+
+    if (typeof data.isLive !== "boolean") {
+      throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+    }
+
+    const update = {
+      isLive: Boolean(data.isLive),
+    };
+
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(data.venueId)
+      .update(update);
   }
+);
 
-  const update = {
-    isLive: Boolean(data.isLive),
-  };
+const checkDoc = (
+  doc: DocumentSnapshot | undefined,
+  prefix = "Document",
+  predicate: () => boolean = () => false
+) => {
+  if (!doc || !doc.exists || !predicate()) {
+    throw new HttpsError("not-found", `${prefix} ${doc?.id} not found`);
+  }
+};
 
-  await admin.firestore().collection("venues").doc(data.venueId).update(update);
-});
+const getDocData = (
+  doc: DocumentSnapshot | undefined,
+  prefix = "Document"
+): any => {
+  const docData = doc?.data();
+  checkDoc(doc, prefix, () => Boolean(docData));
+
+  return docData;
+};
