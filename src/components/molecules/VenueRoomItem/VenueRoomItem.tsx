@@ -81,8 +81,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     // That's why this is inline instead of isVenuePortal
     if (template !== RoomTemplate.external) {
       const venueData = {
-        ...buildEmptyVenue(roomValues.venueName, template),
-        parentId: venueId,
+        ...buildEmptyVenue(roomValues.venueName, template, venueId),
       };
 
       await createVenue_v2({ ...venueData, worldId }, user);

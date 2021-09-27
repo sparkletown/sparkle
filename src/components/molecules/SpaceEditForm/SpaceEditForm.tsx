@@ -25,6 +25,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
@@ -458,12 +459,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             </>
           )}
 
-          <Button
+          <ButtonNG
+            variant="danger"
+            loading={isUpdating || isDeleting}
             disabled={isUpdating || isDeleting}
             onClick={deleteSelectedRoom}
           >
             Delete room
-          </Button>
+          </ButtonNG>
           {error && <div>Error: {error}</div>}
         </div>
 

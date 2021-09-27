@@ -31,7 +31,8 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
 
 export const buildEmptyVenue = (
   venueName: string,
-  template: VenueTemplate
+  template: VenueTemplate,
+  parentId: string
 ): VenueInput_v2 => {
   const list = new DataTransfer();
 
@@ -48,6 +49,7 @@ export const buildEmptyVenue = (
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
+    parentId,
   };
 };
 
