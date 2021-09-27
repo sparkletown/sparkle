@@ -103,6 +103,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               <div className="input-group dropdown-container">
                 <SpacesDropdown
                   venueSpaces={venue.rooms ?? []}
+                  venueId={venueId ?? ""}
                   setValue={setValue}
                   fieldName="room"
                   defaultSpace={event?.room ?? ""}
