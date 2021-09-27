@@ -1,11 +1,16 @@
 import { useInterval } from "react-use";
 import firebase from "firebase/app";
+import { FalseyValue } from "styled-components";
 
-import { VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL } from "settings";
+import {
+  ALWAYS_EMPTY_OBJECT,
+  VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL,
+} from "settings";
 
 import {
   RecentSeatedUserData,
   RecentSeatedUserTimestamp,
+  TableSeatedUsersVenuesTemplates,
   VenueTemplate,
 } from "types/venues";
 
@@ -14,17 +19,19 @@ import { getCurrentTimeInMilliseconds } from "utils/time";
 import { useUser } from "hooks/useUser";
 
 export const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
-  data: RecentSeatedUserData<T> | undefined
+  template: T,
+  venueId: string | undefined,
+  venueSpecificData: RecentSeatedUserData<T>["venueSpecificData"] | FalseyValue
 ) => {
   const { userId } = useUser();
 
   useInterval(() => {
-    if (!data) return;
-
-    const venueId = data.venueId;
+    if (!venueSpecificData || !venueId) return;
 
     const withTimestamp: RecentSeatedUserTimestamp<T> = {
-      ...data,
+      template,
+      venueId,
+      venueSpecificData,
       lastSittingTimeMs: getCurrentTimeInMilliseconds(),
     };
 
@@ -36,4 +43,11 @@ export const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
       .doc(userId)
       .set(withTimestamp);
   }, VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL);
+};
+
+export const useUpdateRecentSeatedTableUsers = (
+  template: TableSeatedUsersVenuesTemplates,
+  venueId: string | undefined
+) => {
+  useUpdateRecentSeatedUsers(template, venueId, ALWAYS_EMPTY_OBJECT);
 };

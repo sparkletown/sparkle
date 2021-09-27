@@ -104,8 +104,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const userList = portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
-
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
@@ -176,10 +174,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <UserList
         containerClassName="RoomModal__userlist"
-        users={userList}
-        limit={11}
+        usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        userCount={portalVenue?.recentUserCount ?? 0}
         activity="in this room"
-        hasClickableAvatars
       />
 
       {room.about && (
