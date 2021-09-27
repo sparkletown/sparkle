@@ -1,89 +1,97 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-
-const { HttpsError } = require("firebase-functions/lib/providers/https");
-
-const { fetchAuthConfig } = require("./src/api/auth");
-const { addAdmin } = require("./src/api/roles");
-
-const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
-const { createOAuth2Client } = require("./src/utils/auth");
-const { getJson, postJson } = require("./src/utils/fetch");
+import * as functions from "firebase-functions";
+import * as express from "express";
+import * as admin from "firebase-admin";
+import { Request, HttpsError } from "firebase-functions/lib/providers/https";
+import { fetchAuthConfig } from "./src/api/auth";
+import { addAdmin } from "./src/api/roles";
+import { assertValidUrl, assertValidVenueId } from "./src/utils/assert";
+import { createOAuth2Client } from "./src/utils/oauth";
+import { getJson, postJson } from "./src/utils/fetch";
 
 // @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely...?)
 // Case-insensitive first character for iDevices
-const lowercaseFirstChar = (password) =>
+const lowercaseFirstChar = (password: string) =>
   password.charAt(0).toLowerCase() + password.substring(1);
 
 // @debt refactor passwordsMatch into utils/*
-exports.passwordsMatch = (submittedPassword, actualPassword) =>
+export const passwordsMatch = (
+  submittedPassword: string,
+  actualPassword: string
+) =>
   submittedPassword.trim() === actualPassword.trim() ||
   lowercaseFirstChar(submittedPassword.trim()) ===
     lowercaseFirstChar(actualPassword.trim());
 
-exports.getCustomAuthConfig = functions.https.onCall(async (data) => {
+export const getCustomAuthConfig = functions.https.onCall(async (data) => {
   const { venueId } = data;
 
   assertValidVenueId(venueId, "venueId");
 
-  const { customAuthName, customAuthConnectPath } = await fetchAuthConfig(
-    venueId
-  ).catch(() => ({}));
-
-  return { customAuthName, customAuthConnectPath };
+  return await fetchAuthConfig(venueId).catch(() => ({}));
 });
+
+type ConnecxtI4AOAuthQueryType = {
+  venueId: string;
+  returnOrigin: string;
+  code?: string;
+};
 
 /**
  * Redirect the user to the authentication consent screen.
  *
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
-exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
-  const { venueId, returnOrigin } = req.query;
+exports.connectI4AOAuth = functions.https.onRequest(
+  async (req: Request, res: express.Response) => {
+    const { venueId, returnOrigin } = req.query as ConnecxtI4AOAuthQueryType;
 
-  assertValidVenueId(venueId, "venueId");
-  assertValidUrl(returnOrigin, "returnOrigin");
+    assertValidVenueId(venueId, "venueId");
+    assertValidUrl(returnOrigin, "returnOrigin");
 
-  const authConfig = await fetchAuthConfig(venueId);
+    const authConfig = await fetchAuthConfig(venueId);
 
-  const {
-    validReturnOrigins,
-    scope,
-    tokenHost,
-    revokePath: revokePathWithoutRedirect,
-  } = authConfig;
+    const {
+      validReturnOrigins,
+      scope,
+      tokenHost,
+      revokePath: revokePathWithoutRedirect,
+    } = authConfig;
 
-  if (!validReturnOrigins.includes(returnOrigin)) {
-    throw new HttpsError(
-      "invalid-argument",
-      "returnOrigin is not an allowed origin"
+    if (!validReturnOrigins.includes(returnOrigin)) {
+      throw new HttpsError(
+        "invalid-argument",
+        "returnOrigin is not an allowed origin"
+      );
+    }
+
+    // Construct the platform URL that the revoke endpoint will redirect back to
+    const revokeReturnUrl = new URL(`/v/${venueId}`, returnOrigin).toString();
+    const revokePathWithRedirectUrl = new URL(
+      revokePathWithoutRedirect,
+      tokenHost
     );
+    revokePathWithRedirectUrl.searchParams.set("redirect_uri", revokeReturnUrl);
+    const revokePath = `${revokePathWithRedirectUrl.pathname}${revokePathWithRedirectUrl.search}`;
+
+    const authClient = createOAuth2Client({ ...authConfig, revokePath });
+
+    // Construct the platform URL that the auth code will be returned to
+    const authCodeReturnUrl = new URL(
+      "/auth/connect/i4a/handler",
+      returnOrigin
+    );
+    authCodeReturnUrl.searchParams.set("venueId", venueId);
+    authCodeReturnUrl.searchParams.set("returnOrigin", returnOrigin);
+
+    const authorizeUrl = authClient.authorizeURL({
+      redirect_uri: authCodeReturnUrl.toString(),
+      scope,
+    });
+
+    functions.logger.log("Redirecting to authorize URL:", authorizeUrl);
+    res.redirect(authorizeUrl);
   }
-
-  // Construct the platform URL that the revoke endpoint will redirect back to
-  const revokeReturnUrl = new URL(`/v/${venueId}`, returnOrigin).toString();
-  const revokePathWithRedirectUrl = new URL(
-    revokePathWithoutRedirect,
-    tokenHost
-  );
-  revokePathWithRedirectUrl.searchParams.set("redirect_uri", revokeReturnUrl);
-  const revokePath = `${revokePathWithRedirectUrl.pathname}${revokePathWithRedirectUrl.search}`;
-
-  const authClient = createOAuth2Client({ ...authConfig, revokePath });
-
-  // Construct the platform URL that the auth code will be returned to
-  const authCodeReturnUrl = new URL("/auth/connect/i4a/handler", returnOrigin);
-  authCodeReturnUrl.searchParams.set("venueId", venueId);
-  authCodeReturnUrl.searchParams.set("returnOrigin", returnOrigin);
-
-  const authorizeUrl = authClient.authorizationCode.authorizeURL({
-    redirect_uri: authCodeReturnUrl.toString(),
-    scope,
-  });
-
-  functions.logger.log("Redirecting to authorize URL:", authorizeUrl);
-  res.redirect(authorizeUrl);
-});
+);
 
 /**
  * Exchanges a given auth code passed in the 'code' URL query parameter for an access token,
@@ -91,7 +99,11 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
  * finally returns a custom Firebase auth token that the frontend can use to login as this user.
  */
 exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
-  const { venueId, returnOrigin, code: authCode } = req.query;
+  const {
+    venueId,
+    returnOrigin,
+    code: authCode,
+  } = req.query as ConnecxtI4AOAuthQueryType;
 
   assertValidVenueId(venueId, "venueId");
   assertValidUrl(returnOrigin, "returnOrigin");
@@ -121,13 +133,13 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   const authClient = createOAuth2Client(authConfig);
 
   functions.logger.log("Received auth code:", authCode);
-  const results = await authClient.authorizationCode.getToken({
+  const results = await authClient.getToken({
     code: authCode,
     redirect_uri: "http://localhost:3000/in/foo", // TODO: what do we want to use here?
   });
   functions.logger.log("Auth code exchange result received:", results);
 
-  const { access_token: accessToken } = results;
+  const { access_token: accessToken } = results.token;
 
   // Retrieve the user's I4A User ID
   const { id: i4aUserId } = await getJson(i4aOAuthUserInfoUrl, {

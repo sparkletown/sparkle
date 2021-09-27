@@ -2,7 +2,7 @@ import firebase from "firebase";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 
-import * as _auth from "./auth.js";
+import * as _auth from "./auth";
 import * as _access from "./access";
 import * as _stats from "./stats";
 import * as _venue from "./venue";
@@ -43,27 +43,3 @@ export const venue = _venue;
 export const video = _video;
 export const scheduled = _scheduled;
 export const world = _world;
-
-// @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
-//   It doesn't look like anything calls it in the codebase currently?
-export const checkPassword = functions.https.onCall(async (data) => {
-  await firebase
-    .firestore()
-    .doc(`venues/${data.venue}`)
-    .get()
-    .then((doc) => {
-      if (
-        doc &&
-        doc.exists &&
-        doc.data() &&
-        doc.data()?.password &&
-        _auth.passwordsMatch(data.password, doc.data()?.password)
-      ) {
-        return "OK";
-      }
-      throw new functions.https.HttpsError(
-        "unauthenticated",
-        "Password incorrect"
-      );
-    });
-});

@@ -21,11 +21,11 @@
     // "plugin:@typescript-eslint/recommended-requiring-type-checking", // @debt enable this + fix the issues in a standalone PR
   ],
   "rules": {
-    // @debt uncomment one by one and fix them in separate PRs
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/adjacent-overload-signatures": "error",
     "@typescript-eslint/ban-ts-comment": "warn",
+    // @debt enable one by one and fix them in separate PRs
     "@typescript-eslint/ban-types": "off",
     "@typescript-eslint/no-array-constructor": "off",
     "@typescript-eslint/no-empty-function": "off",

@@ -17,7 +17,8 @@
     "outDir": "lib",
     "sourceMap": true,
     "noFallthroughCasesInSwitch": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "baseUrl": "."
   },
   "compileOnSave": true,
   "include": ["src", "./*.ts"]

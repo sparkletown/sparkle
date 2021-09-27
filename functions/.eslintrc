@@ -22,6 +22,11 @@
   "rules": {
     //    "quotes": ["error", "double"],
     "@typescript-eslint/no-var-requires": "warn",
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-extra-non-null-assertion": "warn",
+    "@typescript-eslint/ban-ts-comment": "warn",
+
+    "@typescript-eslint/explicit-module-boundary-types": "off",
 
     "import/no-unresolved": "off",
 

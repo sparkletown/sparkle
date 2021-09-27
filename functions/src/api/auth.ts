@@ -1,27 +1,34 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { HttpsError } from "firebase-functions/lib/providers/https";
 
-const { HttpsError } = require("firebase-functions/lib/providers/https");
+import { AuthConfig, AuthConfigSchema } from "../types/auth";
 
-const { AuthConfigSchema } = require("../types/auth");
+import { checkIfValidVenueId } from "../utils/venue";
 
-const { checkIfValidVenueId } = require("../utils/venue");
-
-const getAuthConfigsCollectionRef = () =>
+export const getAuthConfigsCollectionRef = () =>
   admin.firestore().collection("authConfigs");
 
-const getAuthConfigRef = (venueId) =>
+export const getAuthConfigRef = (venueId: string) =>
   getAuthConfigsCollectionRef().doc(venueId);
 
 // TODO: do we need to implement finding the sovereign venue to implement this properly..? Probably should..
-const fetchAuthConfig = async (venueId) => {
+export const fetchAuthConfig = async (venueId: string) => {
   if (!checkIfValidVenueId(venueId)) {
     throw new HttpsError("invalid-argument", "venueId is invalid");
   }
 
   const authConfigDoc = await getAuthConfigRef(venueId).get();
 
-  return AuthConfigSchema.validate(authConfigDoc.data()).catch((error) => {
+  let result: AuthConfig | undefined;
+  let error: any;
+
+  try {
+    result = await AuthConfigSchema.validate(authConfigDoc.data());
+  } catch (err) {
+    error = err;
+  }
+  if (!result) {
     // Log the specific error details for further investigation
     functions.logger.error(
       "AuthConfigSchema validation failed",
@@ -34,9 +41,7 @@ const fetchAuthConfig = async (venueId) => {
       "internal",
       "venueId is invalid, venue is not configured to use this auth method, or auth configuration is broken"
     );
-  });
-};
+  }
 
-exports.getAuthConfigsCollectionRef = getAuthConfigsCollectionRef;
-exports.getAuthConfigRef = getAuthConfigRef;
-exports.fetchAuthConfig = fetchAuthConfig;
+  return result;
+};
