@@ -7,7 +7,7 @@ import { Dimensions, Position } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { venueRooms } from "utils/room";
+import { venueSpacesList } from "utils/room";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -98,12 +98,12 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const renderAddRooms = useMemo(
     () =>
-      venueRooms.map((venueRoom, index) => (
+      venueSpacesList.map((venueSpace, index) => (
         <VenueRoomItem
-          key={`${venueRoom.text}-${index}`}
-          text={venueRoom.text}
-          template={venueRoom.template}
-          icon={venueRoom.icon}
+          key={`${venueSpace.text}-${index}`}
+          text={venueSpace.text}
+          template={venueSpace.template}
+          icon={venueSpace.icon}
           worldId={worldId}
         />
       )),

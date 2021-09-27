@@ -51,13 +51,13 @@ export const logIfCannotFindExistingParticipant = (
   }
 };
 
-export interface VenueRooms {
+export interface VenueSpace {
   text: string;
   template?: VenueRoomTemplate;
   icon: string;
 }
 
-export const venueRooms: VenueRooms[] = [
+export const venueSpacesList: VenueSpace[] = [
   {
     text: "Conversation Space",
     icon: RoomIconConversation,

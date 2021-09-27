@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
@@ -10,7 +10,7 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
-import { venueRooms } from "utils/room";
+import { venueSpacesList } from "utils/room";
 
 import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
 
@@ -94,32 +94,49 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     [onHide, venueId, template, event]
   );
 
-  const spaceOptions = useMemo(
-    () =>
-      (venue.rooms ?? []).map((room) => {
-        const venueRoom = venueRooms.find(
-          (venueRoom) => venueRoom.template === room.template
-        );
+  const [dropdownValue, setDropdownValue] = useState<string>();
 
-        return (
-          <ReactBootstrapDropdown.Item
-            key={room.title}
-            onClick={() => setValue("room", room.title)}
-            className="TimingEventModal__dropdownItem"
-          >
-            {venueRoom?.icon && (
-              <img
-                alt={`room-icon-${venueRoom?.icon}`}
-                src={venueRoom?.icon}
-                className="TimingEventModal__dropdownItem-icon"
-              />
-            )}
-            {room.title}
-          </ReactBootstrapDropdown.Item>
-        );
-      }),
-    [venue.rooms, setValue]
-  );
+  const renderDropdown = useMemo(() => {
+    const fieldName = "room";
+
+    const spaceOptions = (venue.rooms ?? []).map((room) => {
+      const venueSpaceIcon = venueSpacesList.find(
+        (venueRoom) => venueRoom.template === room.template
+      )?.icon;
+
+      return (
+        <ReactBootstrapDropdown.Item
+          key={room.title}
+          onClick={() => {
+            setDropdownValue(room.title);
+            setValue(fieldName, room.title);
+          }}
+          className="TimingEventModal__dropdownItem"
+        >
+          {venueSpaceIcon && (
+            <img
+              alt={`room-icon-${venueSpaceIcon}`}
+              src={venueSpaceIcon}
+              className="TimingEventModal__dropdownItem-icon"
+            />
+          )}
+          {room.title}
+        </ReactBootstrapDropdown.Item>
+      );
+    });
+
+    return (
+      <div>
+        {dropdownValue}
+        <Dropdown
+          id={fieldName}
+          title="Select a space"
+          options={spaceOptions}
+          containerClassName="TimingEventModal__dropdown"
+        />
+      </div>
+    );
+  }, [venue.rooms, setValue, dropdownValue, setDropdownValue]);
 
   return (
     <>
@@ -129,12 +146,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
-                <Dropdown
-                  id="room"
-                  title="Select a space"
-                  options={spaceOptions}
-                  containerClassName="TimingEventModal__dropdown"
-                />
+                {renderDropdown}
                 {errors.room && (
                   <span className="input-error">{errors.room.message}</span>
                 )}
