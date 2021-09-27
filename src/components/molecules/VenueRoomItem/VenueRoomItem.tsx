@@ -7,7 +7,7 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
 
-import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { VenueTemplate } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
@@ -16,10 +16,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import {
-  roomSchema,
-  venueRoomSchema,
-} from "pages/Admin/Details/ValidationSchema";
+import { venueRoomSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -28,7 +25,7 @@ import "./VenueRoomItem.scss";
 export interface VenueRoomItemProps {
   icon: string;
   text: string;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
   worldId: string;
 }
 
@@ -48,10 +45,8 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
   const venueId = useVenueId();
 
-  const isVenuePortal = template !== RoomTemplate.external;
-
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema: isVenuePortal ? venueRoomSchema : roomSchema,
+    validationSchema: venueRoomSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -65,9 +60,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const roomUrl = isVenuePortal
-      ? window.origin + venueInsideUrl(roomValues.venueName)
-      : roomValues.roomUrl;
+    const roomUrl = window.origin + venueInsideUrl(roomValues.venueName);
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
@@ -77,16 +70,12 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       template,
     };
 
-    // TS doesn't work properly with const statements and won't 'know' that this is already checked.
-    // That's why this is inline instead of isVenuePortal
-    if (template !== RoomTemplate.external) {
-      const venueData = buildEmptyVenue(roomValues.venueName, template);
+    const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-      await createVenue_v2({ ...venueData, worldId }, user);
-    }
+    await createVenue_v2({ ...venueData, worldId }, user);
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, isVenuePortal, template, user, venueId, worldId]);
+  }, [getValues, hideModal, template, user, venueId, worldId]);
 
   return (
     <>
@@ -104,35 +93,18 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               disabled={isLoading}
             />
 
-            {isVenuePortal && (
-              <>
-                <Form.Label>Venue name</Form.Label>
-                <InputField
-                  name="venueName"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Venue name"
-                  error={errors.venueName}
-                  ref={register()}
-                  disabled={isLoading}
-                />
-              </>
-            )}
-
-            {!isVenuePortal && (
-              <>
-                <Form.Label>Room url</Form.Label>
-                <InputField
-                  name="roomUrl"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Room url"
-                  error={errors.roomUrl}
-                  ref={register()}
-                  disabled={isLoading}
-                />
-              </>
-            )}
+            <>
+              <Form.Label>Venue name</Form.Label>
+              <InputField
+                name="venueName"
+                type="text"
+                autoComplete="off"
+                placeholder="Venue name"
+                error={errors.venueName}
+                ref={register()}
+                disabled={isLoading}
+              />
+            </>
 
             <Button disabled={isLoading} title="Add room" type="submit">
               Add room
