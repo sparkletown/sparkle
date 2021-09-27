@@ -43,7 +43,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
@@ -77,17 +76,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         className="AdvancedSettings__form-container"
         onSubmit={handleSubmit(updateAdvancedSettings)}
       >
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>Venue announcement</Form.Label>
-          <InputField
-            name="bannerMessage"
-            autoComplete="off"
-            placeholder="Enter your announcement"
-            error={errors.bannerMessage}
-            ref={register}
-          />
-        </div>
-
         <div className="AdvancedSettings__form-field">
           <Form.Label>
             Title of your venues attendees (For example: guests, attendees,
