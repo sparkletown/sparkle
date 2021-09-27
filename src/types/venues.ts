@@ -22,29 +22,43 @@ import { VideoAspectRatio } from "./VideoAspectRatio";
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  artcar = "artcar",
   artpiece = "artpiece",
-  audience = "audience",
   auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
-  friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
   animatemap = "animatemap",
-  performancevenue = "performancevenue",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
-  themecamp = "themecamp",
   zoomroom = "zoomroom",
 
   /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
+   */
+  audience = "audience",
+  /**
+   * @deprecated Legacy template removed
+   */
+  artcar = "artcar",
+  /**
+   * @deprecated Legacy template removed
+   */
+  friendship = "friendship",
+  /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
+  themecamp = "themecamp",
+  /**
+   * @deprecated Legacy template removed
+   */
+  performancevenue = "performancevenue",
+  /**
+   * @deprecated Legacy template removed
+   */
   avatargrid = "avatargrid",
-
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
