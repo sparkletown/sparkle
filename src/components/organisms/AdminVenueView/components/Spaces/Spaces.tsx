@@ -2,11 +2,12 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { venueRooms } from "utils/room";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -24,65 +25,7 @@ import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
 
-import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
-import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
-import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
-import RoomIconExperience from "assets/icons/icon-room-experience.svg";
-import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
-import RoomIconMap from "assets/icons/icon-room-map.svg";
-import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
-
 import "./Spaces.scss";
-
-interface VenueRooms {
-  text: string;
-  template?: VenueRoomTemplate;
-  icon: string;
-}
-
-const venueRooms: VenueRooms[] = [
-  {
-    text: "Conversation Space",
-    icon: RoomIconConversation,
-    template: VenueTemplate.conversationspace,
-  },
-  {
-    text: "Auditorium",
-    icon: RoomIconAuditorium,
-    template: VenueTemplate.audience,
-  },
-  {
-    text: "Music Bar",
-    icon: RoomIconMusicBar,
-    template: VenueTemplate.jazzbar,
-  },
-  {
-    text: "Burn Firebarrel",
-    icon: RoomIconBurnBarrel,
-    template: VenueTemplate.firebarrel,
-  },
-  {
-    text: "Art Piece",
-    icon: RoomIconArtPiece,
-    template: VenueTemplate.artpiece,
-  },
-  {
-    text: "Experience",
-    icon: RoomIconExperience,
-    template: VenueTemplate.zoomroom,
-  },
-  {
-    text: "External link",
-    icon: RoomIconExternalLink,
-    template: RoomTemplate.external,
-  },
-  {
-    text: "Map",
-    icon: RoomIconMap,
-    template: VenueTemplate.partymap,
-  },
-];
 
 interface SpacesProps extends TabNavigationProps {
   venue: WithId<AnyVenue>;
