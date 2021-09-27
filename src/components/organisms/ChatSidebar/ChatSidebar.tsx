@@ -3,6 +3,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faCommentDots,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -30,6 +31,8 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
     toggleSidebar,
+    togglePrivateChatSidebar,
+    newPrivateMessageRecived,
     chatSettings,
     selectVenueChat,
     selectPrivateChat,
@@ -77,10 +80,37 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           ) : (
             <>
               <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon icon={faCommentDots} size="lg" />
+              <div className="chat-sidebar__controller-wrapper">
+                <FontAwesomeIcon icon={faCommentDots} size="lg" />
+                <span className="chat-sidebar__controller-text">Chat</span>
+              </div>
             </>
           )}
         </button>
+        {!isExpanded && (
+          <button
+            aria-label={isExpanded ? "Hide chat" : "Show chat"}
+            className="chat-sidebar__controller chat-sidebar__private-chat"
+            onClick={togglePrivateChatSidebar}
+          >
+            {isExpanded ? (
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                <div className="chat-sidebar__controller-wrapper">
+                  <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                  <span className="chat-sidebar__controller-text">
+                    Messages
+                  </span>
+                  {newPrivateMessageRecived > 0 && (
+                    <div className="chat-sidebar__controller--new-message"></div>
+                  )}
+                </div>
+              </>
+            )}
+          </button>
+        )}
 
         {isExpanded && (
           <div className="chat-sidebar__tabs" role="tablist">

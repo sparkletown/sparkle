@@ -24,6 +24,10 @@ $media-width--mobile-max: 1024px;
     transition: transform 0.3s;
     background-color: rgba($saturated-black, 0.9);
     box-shadow: -10px 0 40px opaque-black(0.5);
+
+    & .chat-sidebar__controller {
+      width: auto;
+    }
   }
 
   &__header {
@@ -73,8 +77,10 @@ $media-width--mobile-max: 1024px;
     cursor: pointer;
 
     border: none;
-    padding: 0 $spacing--lg;
-    height: $header-height;
+    padding: 0 $spacing--sm;
+    width: 100px;
+    height: 55px;
+    margin-top: 10px;
     border-radius: $border-radius--lg 0 0 $border-radius--lg;
 
     display: flex;
@@ -85,6 +91,18 @@ $media-width--mobile-max: 1024px;
     top: 0;
     transform: translateX(-100%);
 
+    &-text {
+      font-size: $font-size--md;
+    }
+
+    &-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
     &:hover {
       background-color: $lighter-intermediate-grey;
     }
@@ -93,12 +111,27 @@ $media-width--mobile-max: 1024px;
       margin-left: 2 * $spacing--xs;
       margin-right: -1 * $spacing--xs;
     }
+
+    &--new-message {
+      background-color: $red;
+      height: 12px;
+      width: 12px;
+      border: 2px solid $secondary;
+      position: absolute;
+      border-radius: $border-radius--max;
+      right: 6px;
+      bottom: 10px;
+    }
   }
 
   &__tab-content {
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
+  }
+
+  &__private-chat {
+    margin-top: $spacing--xl * 3;
   }
 
   @media only screen and (min-width: $media-width--mobile-min) and (max-width: $media-width--mobile-max) {
@@ -111,6 +144,7 @@ $media-width--mobile-max: 1024px;
     }
 
     &--expanded &__controller {
+      width: 100%;
       transform: translateX(0);
       border-radius: 0 $border-radius--lg $border-radius--lg 0;
     }
