@@ -12,7 +12,7 @@ import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
 import update from "immutability-helper";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
@@ -66,9 +66,9 @@ export interface VenueRoomsEditorProps {
   backgroundImageClassName?: string;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
-  rooms: RoomData_v2[];
-  selectedRoom: RoomData_v2 | undefined;
-  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  rooms: Room[];
+  selectedRoom: Room | undefined;
+  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
 }
 
 export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
