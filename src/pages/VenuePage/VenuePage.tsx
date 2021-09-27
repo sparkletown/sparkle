@@ -170,7 +170,6 @@ export const VenuePage: React.FC = () => {
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
-      // @ts-ignore I will add declaration reference soon
       window.mixpanel.track("VenuePage loaded", {
         venueId,
         template: venueTemplate,

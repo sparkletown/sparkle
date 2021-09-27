@@ -187,7 +187,6 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   : React.Fragment;
 
 if (MIXPANEL_PROJECT_TOKEN) {
-  // @ts-ignore I will add declaration reference soon
   window.mixpanel.init(MIXPANEL_PROJECT_TOKEN, {
     batch_requests: true,
   });
@@ -212,7 +211,6 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
     }
 
     if (MIXPANEL_PROJECT_TOKEN) {
-      // @ts-ignore I will add declaration reference soon
       window.mixpanel.identify(email);
     }
   }, [auth]);
