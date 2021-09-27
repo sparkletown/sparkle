@@ -7,11 +7,13 @@
 
   &__background-image-wrapper {
     width: 100%;
-    height: 95vh;
+    height: 100%;
   }
 
   &__background-image {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   &__room-image {

@@ -29,6 +29,7 @@ import "./VenueRoomsEditor.scss";
 
 const styles: React.CSSProperties = {
   width: "100%",
+  height: "100%",
   position: "relative",
 };
 
