@@ -13,6 +13,7 @@ import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
+import { Loading } from "components/molecules/Loading";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -37,6 +38,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const {
     auditoriumSection,
+    isAuditoriumSectionLoaded,
 
     baseRowsCount,
     baseColumnsCount,
@@ -93,6 +95,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
     enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [venueId, openUrlUsingRouter]);
+
+  if (!isAuditoriumSectionLoaded) {
+    return <Loading label="Loading section data" />;
+  }
 
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 

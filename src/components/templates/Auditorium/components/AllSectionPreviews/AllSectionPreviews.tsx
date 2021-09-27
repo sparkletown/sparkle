@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { useRouteMatch } from "react-router";
+import { Redirect, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { sample } from "lodash";
 
@@ -12,6 +13,8 @@ import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+
+import { Loading } from "components/molecules/Loading";
 
 import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
@@ -30,7 +33,10 @@ export interface SectionPreviewsProps {
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   venue,
 }) => {
+  const match = useRouteMatch();
   const { push: openUrlUsingRouter } = useHistory();
+
+  console.log({ match });
 
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,
@@ -39,6 +45,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   const {
     auditoriumSections,
+    isAuditoriumSectionsLoaded,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
     enterSection,
@@ -46,6 +53,8 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   } = useAllAuditoriumSections(venue);
 
   const sectionsCount = auditoriumSections.length;
+  const hasOnlyOneSection = sectionsCount === 1;
+  const [firstSection] = auditoriumSections;
 
   const auditoriumSize = chooseAuditoriumSize(sectionsCount);
 
@@ -97,6 +106,14 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     "AllSectionPreviews",
     `AllSectionPreviews--${auditoriumSize}`
   );
+
+  if (!isAuditoriumSectionsLoaded) {
+    return <Loading label="Loading sections" />;
+  }
+
+  if (hasOnlyOneSection) {
+    return <Redirect to={`${match.url}/section/${firstSection.id}`} />;
+  }
 
   return (
     <>
