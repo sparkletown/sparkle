@@ -1,9 +1,16 @@
-const firebase = require("firebase");
-const admin = require("firebase-admin");
-const { passwordsMatch } = require("./auth");
+import firebase from "firebase";
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
 
-require("firebase/firestore");
-const functions = require("firebase-functions");
+import * as _auth from "./auth.js";
+import * as _access from "./access";
+import * as _stats from "./stats";
+import * as _venue from "./venue";
+import * as _video from "./video";
+import * as _scheduled from "./scheduled";
+import * as _world from "./world";
+
+import "firebase/firestore";
 
 const functionsConfig = functions.config();
 
@@ -29,25 +36,17 @@ admin.initializeApp({
   }),
 });
 
-const access = require("./access");
-const auth = require("./auth");
-const stats = require("./stats");
-const venue = require("./venue");
-const video = require("./video");
-const scheduled = require("./scheduled");
-const world = require("./world");
-
-exports.access = access;
-exports.auth = auth;
-exports.stats = stats;
-exports.venue = venue;
-exports.video = video;
-exports.scheduled = scheduled;
-exports.world = world;
+export const access = _access;
+export const auth = _auth;
+export const stats = _stats;
+export const venue = _venue;
+export const video = _video;
+export const scheduled = _scheduled;
+export const world = _world;
 
 // @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
 //   It doesn't look like anything calls it in the codebase currently?
-exports.checkPassword = functions.https.onCall(async (data) => {
+export const checkPassword = functions.https.onCall(async (data) => {
   await firebase
     .firestore()
     .doc(`venues/${data.venue}`)
@@ -58,7 +57,7 @@ exports.checkPassword = functions.https.onCall(async (data) => {
         doc.exists &&
         doc.data() &&
         doc.data()?.password &&
-        passwordsMatch(data.password, doc.data()?.password)
+        _auth.passwordsMatch(data.password, doc.data()?.password)
       ) {
         return "OK";
       }

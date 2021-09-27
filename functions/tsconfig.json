@@ -1,15 +1,16 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "allowJs": true,
-    "noImplicitAny": false,
+    "allowJs": true, //TODO: make it false when all files are .ts
+    "noImplicitAny": false, //TODO: make it false when all files are .ts
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+
+    "esModuleInterop": false, //TODO: make it true when all files are .ts
+
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
+    "module": "commonjs", //TODO: make it "esnext" when all files are .ts
     "moduleResolution": "node",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
