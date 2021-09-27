@@ -1,11 +1,14 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
-const { HttpsError } = require("firebase-functions/lib/providers/https");
-const { uuid } = require("uuidv4");
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { HttpsError } from "firebase-functions/lib/providers/https";
+import { uuid } from "uuidv4";
+import { passwordsMatch } from "./auth";
 
-const { passwordsMatch } = require("./auth");
-
-const checkIsValidToken = async (venueId, uid, token) => {
+const checkIsValidToken = async (
+  venueId: string,
+  uid: string,
+  token: string
+) => {
   if (!venueId || !uid || !token) return false;
 
   const venueRef = admin.firestore().collection("venues").doc(venueId);
@@ -47,7 +50,30 @@ const checkIsValidToken = async (venueId, uid, token) => {
     });
 };
 
-const getAccessDoc = async (venueId, method) => {
+type PasswordAccessDoc = {
+  password: string;
+};
+
+type EmailsAccessDoc = {
+  emails: string[];
+};
+
+type CodesAccessDoc = {
+  codes: string[];
+};
+
+type GetAccessDocReturnType<T> = T extends "Password"
+  ? PasswordAccessDoc
+  : T extends "Emails"
+  ? EmailsAccessDoc
+  : T extends "Codes"
+  ? CodesAccessDoc
+  : never;
+
+const getAccessDoc = async <T extends "Password" | "Emails" | "Codes">(
+  venueId: string,
+  method: T
+) => {
   if (!venueId || !method) {
     return undefined;
   }
@@ -56,49 +82,58 @@ const getAccessDoc = async (venueId, method) => {
   if (!venue.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
   }
-  const accessDoc = await venue.ref.collection("access").doc(method).get();
-  return accessDoc;
+
+  const result = await venue.ref.collection("access").doc(method).get();
+  if (!result || !result.exists) return undefined;
+
+  return result.data() as GetAccessDocReturnType<typeof method> | undefined;
 };
 
-const isValidPassword = async (venueId, password) => {
+const isValidPassword = async (venueId: string, password: string) => {
   if (!venueId || !password) return false;
 
   const access = await getAccessDoc(venueId, "Password");
 
-  if (!access || !access.exists || !access.data().password) {
+  if (!access || !access.password) {
     return false;
   }
 
-  return passwordsMatch(access.data().password, password);
+  return passwordsMatch(access.password, password);
 };
 
-const isValidEmail = async (venueId, email) => {
+const isValidEmail = async (venueId: string, email: string) => {
   if (!venueId || !email) return false;
 
   const access = await getAccessDoc(venueId, "Emails");
 
-  if (!access || !access.exists || !access.data().emails) {
+  if (!access || !access.emails) {
     return false;
   }
 
-  console.log(access.data().emails);
+  console.log(access.emails);
 
-  return access.data().emails.includes(email.trim().toLowerCase());
+  return access.emails.includes(email.trim().toLowerCase());
 };
 
-const isValidCode = async (venueId, code) => {
+const isValidCode = async (venueId: string, code: string) => {
   if (!venueId || !code) return false;
 
   const access = await getAccessDoc(venueId, "Codes");
 
-  if (!access || !access.exists || !access.data().codes) {
+  if (!access || !access.codes) {
     return false;
   }
 
-  return access.data().codes.includes(code.trim());
+  return access.codes.includes(code.trim());
 };
 
-const createToken = async (venueId, uid, password, email, code) => {
+const createToken = async (
+  venueId: string,
+  uid: string,
+  password: string,
+  email: string,
+  code: string
+) => {
   if (!venueId || !uid || (!password && !email && !code)) return undefined;
 
   const venueRef = admin.firestore().collection("venues").doc(venueId);
@@ -139,15 +174,15 @@ const createToken = async (venueId, uid, password, email, code) => {
     });
 };
 
-exports.checkIsEmailWhitelisted = functions.https.onCall(async (data) =>
+export const checkIsEmailWhitelisted = functions.https.onCall(async (data) =>
   isValidEmail(data.venueId, data.email)
 );
 
-exports.checkIsCodeValid = functions.https.onCall(async (data) =>
+export const checkIsCodeValid = functions.https.onCall(async (data) =>
   isValidCode(data.venueId, data.code)
 );
 
-exports.checkAccess = functions.https.onCall(async (data, context) => {
+export const checkAccess = functions.https.onCall(async (data, context) => {
   if (!data || !context) return { token: undefined };
 
   if (
@@ -164,6 +199,8 @@ exports.checkAccess = functions.https.onCall(async (data, context) => {
     isValidEmail(data.venueId, data.email),
     isValidCode(data.venueId, data.code),
   ]);
+
+  if (!context?.auth?.uid) return { token: undefined };
 
   if (isPasswordValid || isEmailValid || isCodeValid) {
     const token = await createToken(
