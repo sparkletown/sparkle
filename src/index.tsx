@@ -4,6 +4,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { FirebaseAppProvider } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import firebase from "firebase/app";
@@ -224,18 +225,20 @@ traceReactScheduler("initial render", performance.now(), () => {
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
-            <ReactReduxFirebaseProvider {...rrfProps}>
-              <AuthIsLoaded>
-                <AlgoliaSearchProvider>
-                  <CustomSoundsProvider
-                    loadingComponent={<LoadingPage />}
-                    waitTillConfigLoaded
-                  >
-                    <AppRouter />
-                  </CustomSoundsProvider>
-                </AlgoliaSearchProvider>
-              </AuthIsLoaded>
-            </ReactReduxFirebaseProvider>
+            <FirebaseAppProvider firebaseApp={firebaseApp}>
+              <ReactReduxFirebaseProvider {...rrfProps}>
+                <AuthIsLoaded>
+                  <AlgoliaSearchProvider>
+                    <CustomSoundsProvider
+                      loadingComponent={<LoadingPage />}
+                      waitTillConfigLoaded
+                    >
+                      <AppRouter />
+                    </CustomSoundsProvider>
+                  </AlgoliaSearchProvider>
+                </AuthIsLoaded>
+              </ReactReduxFirebaseProvider>
+            </FirebaseAppProvider>
           </ReduxStoreProvider>
         </DndProvider>
       </ThemeProvider>

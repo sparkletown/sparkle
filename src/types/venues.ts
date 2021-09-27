@@ -383,11 +383,23 @@ export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   liveAudience: number;
 }
 
+export interface VenueTablePath {
+  venueId: string;
+  tableReference: string;
+}
+
+export type TableSeatedUsersVenuesTemplates =
+  | VenueTemplate.jazzbar
+  | VenueTemplate.conversationspace
+  | VenueTemplate.friendship;
+
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
   venueId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
+    : T extends TableSeatedUsersVenuesTemplates
+    ? {}
     : never;
 };
 

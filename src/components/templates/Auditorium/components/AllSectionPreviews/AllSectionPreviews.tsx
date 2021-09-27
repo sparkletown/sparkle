@@ -17,6 +17,7 @@ import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
 
@@ -105,7 +106,10 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           locationName={parentVenue.name}
         />
       )}
-      <div className={containerClasses}>
+      <VenueWithOverlay
+        venue={venue}
+        containerClassNames={`AllSectionPreviews ${containerClasses}`}
+      >
         {emptyBlocks}
 
         <div className="AllSectionPreviews__main">
@@ -131,7 +135,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         </div>
 
         {sectionPreviews}
-      </div>
+      </VenueWithOverlay>
     </>
   );
 };

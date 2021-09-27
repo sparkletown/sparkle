@@ -18,7 +18,9 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export * from "./portal-settings";
+export * from "./urlSettings";
+export * from "./useSettingsDefaults";
+export * from "./portalSettings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -40,7 +42,8 @@ export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
-export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
@@ -156,8 +159,6 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
 
 export const ACCEPTED_IMAGE_TYPES =
   "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
-
-export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
@@ -661,7 +662,6 @@ Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
 
-export const DEFAULT_SHOW_CHAT = true;
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,
   VenueTemplate.screeningroom,

@@ -44,7 +44,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venue={venue}>
+      <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
         <Suspense fallback={<Loading />}>
           <NavBar hasBackButton={hasBackButton} withSchedule={withSchedule} />
         </Suspense>

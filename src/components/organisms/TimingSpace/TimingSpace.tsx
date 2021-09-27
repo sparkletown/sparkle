@@ -29,14 +29,9 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 }) => {
   const { isShown: selectedSpace, toggle: toggleSelectedSpace } = useShowHide();
 
-  const onClickCreateButton = useCallback(
-    (e) => {
-      e.stopPropagation();
-
-      setShowCreateEventModal();
-    },
-    [setShowCreateEventModal]
-  );
+  const onClickCreateButton = useCallback(() => setShowCreateEventModal(), [
+    setShowCreateEventModal,
+  ]);
 
   const renderedSpaceEvents = useMemo(
     () =>

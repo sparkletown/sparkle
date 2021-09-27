@@ -187,7 +187,8 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
       </div>
 
       <UserList
-        users={passiveListeners}
+        usersSample={passiveListeners}
+        userCount={passiveListeners.length}
         activity="listening"
         containerClassName="PosterPage__listeners"
       />
