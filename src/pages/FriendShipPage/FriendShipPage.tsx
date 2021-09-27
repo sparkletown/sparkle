@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 
+import { VenueTemplate } from "types/venues";
+
 import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
+import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 // import ChatBox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
@@ -20,10 +23,15 @@ export const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const venue = useSelector(currentVenueSelector);
 
+  useUpdateRecentSeatedTableUsers(
+    VenueTemplate.friendship,
+    seatedAtTable && venue?.id
+  );
+
   if (!venue) return <>Loading...</>;
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar hasBackButton withSchedule withPhotobooth>
       <div className="friendship-container">
         <div className="title">
           <h1>{venue.name}</h1>
@@ -35,11 +43,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                 <div className="title">{venue.name}</div>
                 <div className="subtitle">{venue.name}</div>
                 <div className="wrapper">
-                  <Room
-                    venueName={venue.name}
-                    roomName="friendship"
-                    setUserList={() => null}
-                  />
+                  <Room venueId={venue.id} roomName="friendship" />
                 </div>
               </div>
               <div className="col-4">{/* <ChatBox room="friendship" /> */}</div>
@@ -53,7 +57,6 @@ export const FriendShipPage: React.FunctionComponent = () => {
             }`}
           >
             <TablesUserList
-              venueName={venue.name}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
@@ -71,11 +74,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                   venueId={venue.id}
                   tables={FRIENDSHIP_CUSTOM_TABLES}
                 />
-                <Room
-                  venueName={venue.name}
-                  roomName={seatedAtTable}
-                  setUserList={() => null}
-                />
+                <Room venueId={venue.id} roomName={seatedAtTable} />
               </div>
             )}
           </div>

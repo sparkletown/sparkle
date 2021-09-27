@@ -92,7 +92,6 @@ export type VenueInput = AdvancedVenueInput &
     columns?: number;
     width?: number;
     height?: number;
-    bannerMessage?: string;
     parentId?: string;
     owners?: string[];
     chatTitle?: string;
@@ -390,7 +389,7 @@ export const updateVenue = async (
 };
 
 export const updateVenue_v2 = async (
-  input: VenueInput_v2,
+  input: WithWorldId<VenueInput_v2>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);

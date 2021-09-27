@@ -1,0 +1,29 @@
+// For more info @see ./scripts/simulator/simulator.config.json5.example
+
+
+{
+  credentials: "./simulator/simulator.credentials.json",
+  projectId: "simulator-project",
+
+  // with keepAlive set to false, script will exit as soon as its job is done
+  keepAlive: false,
+
+  // empty array means no simulations will run, if this field is missing, all simulations will run by default
+  simulate: [],
+
+  log: {
+    stack: true,
+    verbose: true,
+  },
+
+  user: {
+    count: 99,
+    // false is set so no missing users are created, that's counter to the purpose of this script
+    createMissing: false,
+    scriptTag: 'bot',
+  },
+
+  venue: {
+    id: 'venue id',
+  },
+}

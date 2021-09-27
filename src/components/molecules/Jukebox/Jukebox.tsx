@@ -20,7 +20,6 @@ import { isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useUser } from "hooks/useUser";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -30,10 +29,12 @@ import "./Jukebox.scss";
 type JukeboxTypeProps = {
   updateIframeUrl: Dispatch<SetStateAction<string>>;
   venue: WithId<AnyVenue>;
+  tableRef: string | undefined;
 };
 
 export const Jukebox: React.FC<JukeboxTypeProps> = ({
   updateIframeUrl,
+  tableRef,
   venue,
 }) => {
   const { register, handleSubmit, watch, reset } = useForm<{
@@ -43,8 +44,6 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
-  const { userWithId } = useUser();
-  const tableRef = userWithId?.data?.[venue.name]?.table;
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,

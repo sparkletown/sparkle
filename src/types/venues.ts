@@ -8,6 +8,7 @@ import { WithId, WithVenueId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
+import { Banner } from "./banner";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -103,11 +104,11 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  worldId: string;
 }
 
 export interface Venue_v2_AdvancedConfig {
   attendeesTitle?: string;
-  bannerMessage?: string;
   chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
@@ -152,7 +153,7 @@ export interface BaseVenue {
   radioTitle?: string;
   dustStorm?: boolean;
   activity?: string;
-  bannerMessage?: string;
+  banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
@@ -382,11 +383,23 @@ export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   liveAudience: number;
 }
 
+export interface VenueTablePath {
+  venueId: string;
+  tableReference: string;
+}
+
+export type TableSeatedUsersVenuesTemplates =
+  | VenueTemplate.jazzbar
+  | VenueTemplate.conversationspace
+  | VenueTemplate.friendship;
+
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
   venueId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
+    : T extends TableSeatedUsersVenuesTemplates
+    ? {}
     : never;
 };
 

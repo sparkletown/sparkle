@@ -110,7 +110,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.firebarrel:
-      template = <FireBarrel />;
+      template = <FireBarrel venue={venue} />;
       break;
 
     case VenueTemplate.posterhall:
@@ -143,8 +143,12 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar hasBackButton={hasBackButton}>
-        <AnnouncementMessage message={venue.bannerMessage} />
+      <WithNavigationBar
+        hasBackButton={hasBackButton}
+        withPhotobooth
+        withSchedule
+      >
+        <AnnouncementMessage isAnnouncementUserView />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 
