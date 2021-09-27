@@ -1,13 +1,21 @@
 import React, { CSSProperties, useMemo } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
+import { format } from "date-fns";
+
+import { DEFAULT_VENUE_BANNER_COLOR, IFRAME_ALLOW } from "settings";
+
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
+
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { IFRAME_ALLOW, PLAYA_IMAGE, PLAYA_VENUE_STYLES } from "settings";
+
+import { useValidImage } from "hooks/useCheckImage";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
+import MapPreview from "./MapPreview";
 
 export interface AdminVenuePreviewProps {
   venue: WithId<AnyVenue>;
@@ -45,7 +53,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               <iframe
                 className="iframe-preview"
                 title="art-piece-video"
-                src={ConvertToEmbeddableUrl(venue.iframeUrl)}
+                src={convertToEmbeddableUrl({ url: venue.iframeUrl })}
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
                 allowFullScreen
@@ -65,6 +73,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
           </div>
         );
       case VenueTemplate.partymap:
+      case VenueTemplate.animatemap:
       case VenueTemplate.themecamp:
         const partyMapVenue = venue as WithId<PartyMapVenue>;
         return (
@@ -72,18 +81,12 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
             <span className="title" style={{ fontSize: "20px" }}>
               This is a preview of your Space
             </span>
-            <PartyMapContainer
-              interactive={false}
-              resizable
-              coordinatesBoundary={{
-                width: 100,
-                height: 100,
-              }}
-              iconsMap={{}}
-              backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
-              iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-              draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-              venue={partyMapVenue}
+            <MapPreview
+              isEditing
+              venueId={partyMapVenue.id}
+              venueName={partyMapVenue.name}
+              mapBackground={partyMapVenue.mapBackgroundImageUrl}
+              rooms={partyMapVenue.rooms ?? []}
             />
           </div>
         );
@@ -93,6 +96,18 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   }, [venue]);
 
   const venueTypeText = infoTextByVenue[venue.template] ?? "Experience Info:";
+
+  const [validBannerImageUrl] = useValidImage(
+    venue.config?.landingPageConfig.bannerImageUrl ??
+      venue.config?.landingPageConfig.coverImageUrl,
+    DEFAULT_VENUE_BANNER_COLOR
+  );
+
+  const imageVars = useCss({
+    background: `url("${validBannerImageUrl}")`,
+  });
+
+  const imageClasses = classNames("icon", imageVars);
 
   return (
     <div style={containerStyle}>
@@ -135,6 +150,15 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               text={venue.config?.landingPageConfig.description}
             />
           </div>
+
+          <div>
+            <span className="title">Created At:</span>
+            {venue.createdAt && format(venue.createdAt, "yyyy-MM-dd HH:mm:ss")}
+          </div>
+          <div>
+            <span className="title">Updated At:</span>
+            {venue.updatedAt && format(venue.updatedAt, "yyyy-MM-dd HH:mm:ss")}
+          </div>
         </div>
         <div className="content-group" style={{ display: "flex" }}>
           <div style={{ width: "150px" }}>
@@ -142,14 +166,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               Banner photo
             </div>
             <div className="content">
-              <img
-                className="icon"
-                src={
-                  venue.config?.landingPageConfig.bannerImageUrl ??
-                  venue.config?.landingPageConfig.coverImageUrl
-                }
-                alt="icon"
-              />
+              <div className={imageClasses} />
             </div>
           </div>
           {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}

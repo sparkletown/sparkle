@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { checkIsEmailWhitelisted } from "api/auth";
+import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -14,10 +14,11 @@ import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 
-import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { updateUserPrivate } from "pages/Account/helpers";
+
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
+
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
@@ -33,12 +34,6 @@ interface RegisterFormData {
   code: string;
   date_of_birth: string;
   backend?: string;
-}
-
-export interface CodeOfConductQuestion {
-  name: keyof CodeOfConductFormData;
-  text: string;
-  link?: string;
 }
 
 export interface RegisterData {
@@ -75,7 +70,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError,
     watch,
     getValues,
-  } = useForm<RegisterFormData>({
+  } = useForm<RegisterFormData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
@@ -103,6 +98,22 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             "email",
             "validation",
             "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
+
+      if (venue.access === VenueAccessMode.Codes) {
+        const isCodeValid = await checkIsCodeValid({
+          venueId: venue.id,
+          code: data.code,
+        });
+
+        if (!isCodeValid.data) {
+          setError(
+            "code",
+            "validation",
+            "We can't find you! Please use the code from your invitation."
           );
           return;
         }
@@ -255,14 +266,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
               required: true,
             })}
           />
-          {/* @ts-ignore @debt term should be typed if possible */}
           {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
             <span className="input-error">Required</span>
           )}
         </div>
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
-            /* @ts-ignore @debt term should be typed if possible */
             const required = errors?.[term.name]?.type === "required";
             return (
               <div className="input-group" key={term.name}>

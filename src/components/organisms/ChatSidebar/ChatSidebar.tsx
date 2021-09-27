@@ -1,24 +1,24 @@
 import React from "react";
-import classNames from "classnames";
-import { isEqual } from "lodash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faChevronRight,
   faChevronLeft,
+  faChevronRight,
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
-
-import {
-  useChatSidebarControls,
-  useChatSidebarInfo,
-} from "hooks/chats/chatSidebar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { isEqual } from "lodash";
 
 import { ChatTypes } from "types/chat";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { VenueChat, PrivateChats } from "./components";
+import {
+  useChatSidebarControls,
+  useChatSidebarInfo,
+} from "hooks/chats/chatSidebar";
+
+import { PrivateChats, VenueChat } from "./components";
 
 import "./ChatSidebar.scss";
 
@@ -39,13 +39,14 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
-  const recipientId =
+  const recipient =
     chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
-      ? chatSettings.recipientId
+      ? chatSettings.recipient
       : undefined;
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
+    "chat-sidebar--collapsed": !isExpanded,
   });
 
   const venueChatTabStyles = classNames("chat-sidebar__tab", {
@@ -76,11 +77,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           ) : (
             <>
               <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon
-                className="chat-sidebar__controller__second-icon"
-                icon={faCommentDots}
-                size="lg"
-              />
+              <FontAwesomeIcon icon={faCommentDots} size="lg" />
             </>
           )}
         </button>
@@ -113,9 +110,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       {isExpanded && (
         <div role="tabpanel" className="chat-sidebar__tab-content">
           {isVenueChat && <VenueChat venue={venue} />}
-          {isPrivateChat && (
-            <PrivateChats recipientId={recipientId} venue={venue} />
-          )}
+          {isPrivateChat && <PrivateChats recipient={recipient} />}
         </div>
       )}
     </div>

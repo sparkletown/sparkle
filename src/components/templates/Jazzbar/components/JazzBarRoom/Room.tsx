@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
-import Bugsnag from "@bugsnag/js";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Video from "twilio-video";
 
-import { User } from "types/User";
+import { getUser } from "api/profile";
+import { unsetTableSeat } from "api/venue";
+import { useTwilioVideoToken } from "api/video";
 
-import { getTwilioVideoToken } from "api/video";
+import { ParticipantWithUser } from "types/rooms";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
-import Participant from "components/organisms/Room/Participant";
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { logIfCannotFindExistingParticipant } from "utils/room";
+import { stopLocalTrack } from "utils/twilio";
 
 import { useUser } from "hooks/useUser";
-import { useWorldUsersById } from "hooks/users";
+
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
+import { Participant } from "components/organisms/Room/Participant";
+import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import "./Room.scss";
 
@@ -20,40 +22,31 @@ const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
 interface RoomProps {
   roomName: string;
-  venueName: string;
-  setUserList: (val: User[]) => void;
+  venueId: string;
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
-  hasChairs?: boolean;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
 }
 
-// @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
+// @debt THIS COMPONENT IS THE COPY OF components/molecules/Room
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
 const Room: React.FC<RoomProps> = ({
   roomName,
-  venueName,
-  setUserList,
+  venueId,
   setParticipantCount,
   setSeatedAtTable,
-  hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");
-  const [participants, setParticipants] = useState<Array<Video.Participant>>(
-    []
-  );
+  const [participants, setParticipants] = useState<ParticipantWithUser[]>([]);
 
-  const { user, profile } = useUser();
-  const { worldUsersById } = useWorldUsersById();
-  const [token, setToken] = useState<string>();
-  const firebase = useFirebase();
+  const { userId, profile } = useUser();
 
   useEffect(
     () => setParticipantCount && setParticipantCount(participants.length),
@@ -67,15 +60,10 @@ const Room: React.FC<RoomProps> = ({
     return originalMessage;
   };
 
-  // @debt refactor this to use useAsync or similar?
-  useEffect(() => {
-    if (!user) return;
-
-    getTwilioVideoToken({
-      userId: user.uid,
-      roomName,
-    }).then(setToken);
-  }, [firebase, roomName, user]);
+  const { value: token } = useTwilioVideoToken({
+    userId,
+    roomName,
+  });
 
   const connectToVideoRoom = () => {
     if (!token) return;
@@ -93,9 +81,8 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     return () => {
       if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+        room.localParticipant.tracks.forEach((trackPublication) => {
+          stopLocalTrack(trackPublication.track);
         });
         room.disconnect();
       }
@@ -103,61 +90,34 @@ const Room: React.FC<RoomProps> = ({
   }, [room]);
 
   const leaveSeat = useCallback(async () => {
-    if (!user || !profile) return;
-    const doc = `users/${user.uid}`;
-    const existingData = profile.data;
-    const update = {
-      data: {
-        ...existingData,
-        [venueName]: {
-          table: null,
-          videoRoom: null,
-        },
-      },
-    };
-    const firestore = firebase.firestore();
-    await firestore
-      .doc(doc)
-      .update(update)
-      .catch(() => {
-        firestore.doc(doc).set(update);
-      });
-    setSeatedAtTable && setSeatedAtTable("");
-  }, [firebase, profile, setSeatedAtTable, user, venueName]);
+    if (!userId || !venueId) return;
+
+    await unsetTableSeat(userId, { venueId });
+
+    setSeatedAtTable?.("");
+  }, [setSeatedAtTable, userId, venueId]);
 
   useEffect(() => {
     if (!token) return;
 
     let localRoom: Video.Room;
 
-    const participantConnected = (participant: Video.Participant) => {
+    const participantConnected = async (participant: Video.Participant) => {
+      const user = await getUser(participant.identity);
       setParticipants((prevParticipants) => [
-        // Hopefully prevents duplicate users in the participant list
-        ...prevParticipants.filter((p) => p.identity !== participant.identity),
-        participant,
+        ...prevParticipants.filter(
+          (p) => p.participant.identity !== participant.identity
+        ),
+        { participant, user },
       ]);
     };
 
     const participantDisconnected = (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
-        if (!prevParticipants.find((p) => p === participant)) {
-          // @debt Remove when root issue found and fixed
-          console.error(
-            "Could not find disconnnected participant:",
-            participant
-          );
-          Bugsnag.notify(
-            new Error("Could not find disconnnected participant"),
-            (event) => {
-              const { identity, sid } = participant;
-              event.addMetadata("Room::participantDisconnected", {
-                identity,
-                sid,
-              });
-            }
-          );
-        }
-        return prevParticipants.filter((p) => p !== participant);
+        logIfCannotFindExistingParticipant(prevParticipants, participant);
+        return prevParticipants.filter(
+          (p) => p.participant.identity !== participant.identity
+        );
       });
     };
 
@@ -175,46 +135,16 @@ const Room: React.FC<RoomProps> = ({
 
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach(function (trackPublication) {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+        localRoom.localParticipant.tracks.forEach((trackPublication) => {
+          stopLocalTrack(trackPublication.track);
         });
         localRoom.disconnect();
       }
     };
   }, [roomName, token, setParticipantCount]);
 
-  useEffect(() => {
-    if (!room) return;
-
-    setUserList([
-      ...participants.map((p) => worldUsersById[p.identity]),
-      worldUsersById[room.localParticipant.identity],
-    ]);
-  }, [participants, setUserList, worldUsersById, room]);
-
-  const getIsUserBartender = (userIdentity?: string) => {
-    if (!userIdentity) return;
-
-    return worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender;
-  };
-
-  // Ordering of participants:
-  // 1. Me
-  // 2. Bartender, if found (only one allowed)
-  // 3. Rest of the participants, in order
-
-  // Only allow the first bartender to appear as bartender
-  const userIdentity = room?.localParticipant?.identity;
-
-  const meIsBartender = getIsUserBartender(userIdentity);
-
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
-
-  const profileData = room
-    ? worldUsersById[room.localParticipant.identity]
-    : undefined;
 
   const [sidedVideoParticipants, otherVideoParticipants] = useMemo(() => {
     const sidedVideoParticipants = participants.slice(
@@ -236,22 +166,20 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div
+            key={participant.participant.identity}
+            className="jazzbar-room__participant"
+          >
             <Participant
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
-              bartender={bartender}
+              participant={participant.participant}
+              profileData={participant.user}
+              profileDataId={participant.user.id}
             />
           </div>
         );
       }),
-    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [sidedVideoParticipants]
   );
 
   const otherVideos = useMemo(
@@ -261,39 +189,36 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div
+            key={participant.participant.identity}
+            className="jazzbar-room__participant"
+          >
             <Participant
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
-              bartender={bartender}
+              participant={participant.participant}
+              profileData={participant.user}
+              profileDataId={participant.user.id}
             />
           </div>
         );
       }),
-    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [otherVideoParticipants]
   );
 
   const myVideo = useMemo(() => {
-    return room && profileData ? (
+    return room && profile ? (
       <div className="jazzbar-room__participant">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
-          profileData={profileData}
+          profileData={profile}
           profileDataId={room.localParticipant.identity}
-          bartender={meIsBartender}
           defaultMute={defaultMute}
           isAudioEffectDisabled={isAudioEffectDisabled}
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
+  }, [room, profile, defaultMute, isAudioEffectDisabled]);
 
   if (!token) return null;
 

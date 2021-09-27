@@ -1,21 +1,24 @@
 import { useCallback, useMemo } from "react";
 
 import {
+  setChatSidebarVisibility,
+  setPrivateChatTabOpened,
+  setVenueChatTabOpened,
+} from "store/actions/Chat";
+
+import { DisplayUser } from "types/User";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
 } from "utils/selectors";
 
-import {
-  setPrivateChatTabOpened,
-  setVenueChatTabOpened,
-  setChatSidebarVisibility,
-} from "store/actions/Chat";
-
-import { AnyVenue } from "types/venues";
-
-import { useSelector } from "hooks/useSelector";
 import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+
 import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
 export const useChatSidebarControls = () => {
@@ -46,13 +49,13 @@ export const useChatSidebarControls = () => {
 
   const selectPrivateChat = useCallback(() => {
     expandSidebar();
-    dispatch(setPrivateChatTabOpened());
+    dispatch(setPrivateChatTabOpened(undefined));
   }, [dispatch, expandSidebar]);
 
   const selectRecipientChat = useCallback(
-    (recipientId: string) => {
+    (recipient: WithId<DisplayUser>) => {
       expandSidebar();
-      dispatch(setPrivateChatTabOpened(recipientId));
+      dispatch(setPrivateChatTabOpened(recipient));
     },
     [dispatch, expandSidebar]
   );
@@ -83,15 +86,14 @@ export const useChatSidebarInfo = (venue: AnyVenue) => {
 };
 
 const useNumberOfUnreadChats = () => {
-  const { user } = useUser();
+  const { userId } = useUser();
   const { privateChatPreviews } = usePrivateChatPreviews();
-
-  const userId = user?.uid;
 
   return useMemo(
     () =>
       privateChatPreviews.filter(
-        (chatPreview) => !chatPreview.isRead && chatPreview.from !== userId
+        (chatPreview) =>
+          !chatPreview.isRead && chatPreview.fromUser.id !== userId
       ).length,
     [privateChatPreviews, userId]
   );

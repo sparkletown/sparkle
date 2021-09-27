@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
+
 import { MIN_TABLE_CAPACITY } from "settings";
+
 import { Table } from "types/Table";
 
 export interface UpdateVenueTableProps {

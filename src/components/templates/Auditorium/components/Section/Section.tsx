@@ -1,21 +1,23 @@
-import React, { useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router";
-import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
+import classNames from "classnames";
 
-import { AuditoriumVenue } from "types/venues";
+import { AuditoriumVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
+import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useShowHide } from "hooks/useShowHide";
+import { useUpdateRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Section.scss";
 
@@ -30,7 +32,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const { iframeUrl, id: venueId } = venue;
 
-  const { sectionId } = useParams<{ sectionId?: string }>();
+  const { sectionId } = useParams<{ sectionId: string }>();
   const { push: openUrlUsingRouter } = useHistory();
 
   const {
@@ -52,6 +54,12 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     venue,
     sectionId,
   });
+
+  useUpdateRecentSeatedUsers(
+    VenueTemplate.auditorium,
+    venueId,
+    isUserSeated && { sectionId }
+  );
 
   // Ensure the user leaves their seat when they leave the section
   // @debt We should handle/enforce this on the backend somehow
@@ -89,12 +97,12 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <div className="Section">
+    <VenueWithOverlay venue={venue} containerClassNames="Section">
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>
-            <IFrame containerClassname="Section__iframe" src={iframeUrl} />
+            <IFrame containerClassName="Section__iframe" src={iframeUrl} />
             <div className="Section__reactions">
               {isUserSeated ? (
                 <ReactionsBar
@@ -111,6 +119,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
         </div>
         {seatsGrid}
       </div>
-    </div>
+    </VenueWithOverlay>
   );
 };

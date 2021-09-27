@@ -11,10 +11,6 @@ import {
   Reaction,
 } from "types/reactions";
 
-import { withId } from "utils/id";
-
-import { useWorldUsersByIdWorkaround } from "hooks/users";
-
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 export interface ReactionListProps {
@@ -28,9 +24,6 @@ export const ReactionList: React.FC<ReactionListProps> = ({
   chatMessages,
   small = false,
 }) => {
-  // @debt see comments in useWorldUsersByIdWorkaround
-  const { worldUsersById } = useWorldUsersByIdWorkaround();
-
   const allReactions = useMemo(() => {
     const chatsAsBandMessages =
       chatMessages?.map(chatMessageAsTextReaction) ?? [];
@@ -41,22 +34,16 @@ export const ReactionList: React.FC<ReactionListProps> = ({
     ].sort((a, b) => b.created_at - a.created_at);
 
     return allReactionsSorted.map((message) => {
-      const messageSender = worldUsersById[message.created_by];
-      const messageSenderWithId =
-        messageSender !== undefined
-          ? withId(messageSender, message.created_by)
-          : undefined;
-
-      const messageSenderName = messageSender?.anonMode
+      const messageSenderName = message.created_by?.anonMode
         ? DEFAULT_PARTY_NAME
-        : messageSender?.partyName ?? DEFAULT_PARTY_NAME;
+        : message.created_by?.partyName ?? DEFAULT_PARTY_NAME;
 
       return (
         <div
           className="message"
           key={`${message.created_by}-${message.created_at}`}
         >
-          <UserProfilePicture user={messageSenderWithId} />
+          <UserProfilePicture user={message.created_by} />
 
           <div className="partyname-bubble">{messageSenderName}</div>
 
@@ -72,7 +59,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
         </div>
       );
     });
-  }, [chatMessages, reactions, worldUsersById]);
+  }, [chatMessages, reactions]);
 
   return (
     <>

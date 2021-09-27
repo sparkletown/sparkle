@@ -1,24 +1,29 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { User } from "types/User";
-import { WithId } from "utils/id";
+import {
+  faPoll,
+  faQuestion,
+  IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
+
+import { DisplayUser, User } from "types/User";
+
+import { WithId } from "utils/id";
 
 export enum ChatMessageType {
   poll = "poll",
 }
 
 export type BaseChatMessage = {
-  from: string;
+  fromUser: WithId<DisplayUser>;
   text: string;
-  ts_utc: firebase.firestore.Timestamp;
-  deleted?: boolean;
+  timestamp: firebase.firestore.Timestamp;
   threadId?: string;
+  deleted?: boolean;
   isQuestion?: boolean;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
-  to: string;
+  toUser: WithId<DisplayUser>;
   isRead?: boolean;
 };
 
@@ -30,6 +35,10 @@ export type PollMessage = BaseChatMessage & {
   votes: PollVote[];
 };
 
+export type JukeboxMessage = BaseChatMessage & {
+  tableId: string;
+};
+
 export type PollVoteBase = {
   questionId: number;
   pollId: string;
@@ -39,19 +48,14 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
+export type ChatMessage =
+  | PrivateChatMessage
+  | VenueChatMessage
+  | PollMessage
+  | JukeboxMessage;
 
-export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
-  author: WithId<User>;
-  isMine: boolean;
-  // @debt remove this from Types. It should be decided in the in-component level
-  canBeDeleted?: boolean;
-};
-
-export type MessageToDisplay<
-  T extends ChatMessage = ChatMessage
-> = BaseMessageToDisplay<T> & {
-  replies: WithId<BaseMessageToDisplay<T>>[];
+export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
+  replies: WithId<T>[];
 };
 
 export interface SendMessageProps {
@@ -59,30 +63,22 @@ export interface SendMessageProps {
   isQuestion?: boolean;
 }
 
-export type SendMessage = (
-  sendMessageProps: SendMessageProps
-) => Promise<void> | undefined;
+export type SendMessage = (sendMessageProps: SendMessageProps) => Promise<void>;
 
-export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
+export type DeleteMessage = (messageId: string) => Promise<void>;
 
 export interface SendChatReplyProps {
   replyText: string;
   threadId: string;
 }
 
-export type SendChatReply = (
-  props: SendChatReplyProps
-) => Promise<void> | undefined;
+export type SendChatReply = (props: SendChatReplyProps) => Promise<void>;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
 };
 
 export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
-
-export type PreviewChatMessageToDisplay = PreviewChatMessage & {
-  isMine: boolean;
-};
 
 export enum ChatTypes {
   WORLD_CHAT = "WORLD_CHAT",
@@ -92,7 +88,7 @@ export enum ChatTypes {
 
 export type PrivateChatSettings = {
   openedChatType: ChatTypes.PRIVATE_CHAT;
-  recipientId?: string;
+  recipient?: WithId<DisplayUser>;
 };
 
 export type VenueChatSettings = {

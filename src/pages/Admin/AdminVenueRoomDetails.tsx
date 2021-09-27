@@ -2,14 +2,18 @@ import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
-import { AnyVenue } from "types/venues";
-import { Room } from "types/rooms";
-import { WithId } from "utils/id";
+import { ADMIN_V1_ROOMS_URL, ADMIN_V1_ROOT_URL } from "settings";
 
 import { RoomInput, upsertRoom } from "api/admin";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
+
+import { Room } from "types/rooms";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 import { Toggler } from "components/atoms/Toggler";
 
@@ -68,7 +72,7 @@ export const AdminVenueRoomDetails = ({
 
       await upsertRoom(roomValues, venue.id, user, index);
 
-      history.push(`/admin/${venue.id}`);
+      history.push(`${ADMIN_V1_ROOT_URL}/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {
@@ -110,7 +114,7 @@ export const AdminVenueRoomDetails = ({
                 <div className="edit-room">
                   {
                     <Link
-                      to={`/admin/venue/rooms/${venue.id}?roomIndex=${index}`}
+                      to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${index}`}
                       className="btn btn-block"
                     >
                       Edit Room
@@ -155,7 +159,7 @@ export const AdminVenueRoomDetails = ({
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}
                       setShowDeleteEventModal={setShowDeleteEventModal}
-                      className="admin-room-list-events"
+                      containerClassName="admin-room-list-events"
                     />
                   </div>
                 );

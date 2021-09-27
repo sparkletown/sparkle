@@ -3,15 +3,12 @@ import {
   UserProfileActionTypes,
 } from "store/actions/UserProfile";
 
-import { User } from "types/User";
-import { WithId } from "utils/id";
-
 export type UserProfileState = {
-  userProfile?: WithId<User>;
+  userId?: string;
 };
 
 const initialState: UserProfileState = {
-  userProfile: undefined,
+  userId: undefined,
 };
 
 export const userProfileReducer = (
@@ -19,9 +16,9 @@ export const userProfileReducer = (
   action: UserProfileActions
 ): UserProfileState => {
   switch (action.type) {
-    case UserProfileActionTypes.UPDATE_USER_PROFILE_DATA:
-      const { userProfile } = action.payload;
-      return { ...state, userProfile };
+    case UserProfileActionTypes.UPDATE_USER_PROFILE_ID:
+      const { userId } = action.payload;
+      return { userId };
 
     default:
       return state;

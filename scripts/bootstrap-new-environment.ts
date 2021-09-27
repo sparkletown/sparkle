@@ -1,5 +1,4 @@
 #!/usr/bin/env node -r esm -r ts-node/register
-
 import { resolve } from "path";
 
 // @debt We seemingly can't import these types currently because the module loader fails to find a transient dependency
@@ -10,7 +9,6 @@ import { resolve } from "path";
 // import { PartyMapVenue, VenueTemplate } from "../src/types/venues";
 //
 // import { WithoutId } from "../src/utils/id";
-
 import { AdminRole } from "../src/hooks/roles";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
@@ -49,19 +47,21 @@ const bootstrapVenueData = {
   template: "partymap",
   name: "Bootstrap",
   host: {
-    icon: "/sparkle-logo.png",
+    icon: "/assets/Default_Venue_Logo.png",
   },
   config: {
     landingPageConfig: {
       subtitle: "Simplifying your environment setup!",
       description: "For easily bootstrapping new environments",
-      coverImageUrl: "/sparkle-header.png",
+      coverImageUrl: "/assets/Default_Venue_Banner.png",
     },
     theme: {
       primaryColor: "#bc271a",
     },
   },
   owners: [],
+  createdAt: Date.now(),
+  updatedAt: Date.now(),
 };
 
 app

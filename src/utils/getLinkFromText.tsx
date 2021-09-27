@@ -1,9 +1,9 @@
 import React from "react";
 
-import { isExternalUrl, getExtraLinkProps } from "./url";
+import { getExtraLinkProps, isExternalUrl } from "./url";
 
 export const getLinkFromText = (text: string) => {
-  const urlRegex = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
+  const urlRegex = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/g;
   return text.split(" ").map((word, index) => {
     if (new RegExp(urlRegex).test(word)) {
       const extraProps = getExtraLinkProps(isExternalUrl(word));

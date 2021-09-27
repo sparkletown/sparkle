@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 
 import { VenueEvent } from "types/venues";
 
-import { withId, WithId, withVenueId, WithVenueId } from "utils/id";
+import { WithId, withId, WithVenueId, withVenueId } from "utils/id";
 import { asArray } from "utils/types";
 
 import { getVenueRef } from "./venue";

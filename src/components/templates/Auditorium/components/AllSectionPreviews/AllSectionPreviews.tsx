@@ -1,13 +1,13 @@
-import React, { useMemo, useCallback } from "react";
-import classNames from "classnames";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 import { sample } from "lodash";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { WithId } from "utils/id";
 import { chooseAuditoriumSize } from "utils/auditorium";
+import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
@@ -17,6 +17,7 @@ import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
 
@@ -105,13 +106,16 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           locationName={parentVenue.name}
         />
       )}
-      <div className={containerClasses}>
+      <VenueWithOverlay
+        venue={venue}
+        containerClassNames={`AllSectionPreviews ${containerClasses}`}
+      >
         {emptyBlocks}
 
         <div className="AllSectionPreviews__main">
           <IFrame
             src={venue.iframeUrl}
-            containerClassname="AllSectionPreviews__iframe-overlay"
+            containerClassName="AllSectionPreviews__iframe-overlay"
             iframeClassname="AllSectionPreviews__iframe"
           />
           <div className="AllSectionPreviews__welcome-text">{venue.title}</div>
@@ -131,7 +135,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         </div>
 
         {sectionPreviews}
-      </div>
+      </VenueWithOverlay>
     </>
   );
 };

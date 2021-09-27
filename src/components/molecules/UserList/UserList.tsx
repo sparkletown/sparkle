@@ -1,58 +1,42 @@
-import React from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useMemo } from "react";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
-import { useShowHide } from "hooks/useShowHide";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
-import { useMemo } from "react";
 
 const noop = () => {};
 
-interface UserListProps {
-  users: readonly WithId<User>[];
-  limit?: number;
+interface UserListProps extends ContainerClassName {
+  usersSample: readonly WithId<User>[];
+  userCount: number;
   activity?: string;
-  containerClassName?: string;
   cellClassName?: string;
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
-  showMoreUsersToggler?: boolean;
   showTitle?: boolean;
 }
 
 export const UserList: React.FC<UserListProps> = ({
-  users,
-  limit,
+  usersSample,
+  userCount,
   activity = "partying",
   containerClassName,
   cellClassName,
   hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
-  showMoreUsersToggler = true,
   showTitle = true,
 }) => {
-  const { isShown: isExpanded, toggle: toggleExpanded } = useShowHide(false);
-
-  const usersSanitized = users.filter(
-    (user) => !user.anonMode && user.partyName && user.id
-  );
-
-  const usersToDisplay = isExpanded
-    ? usersSanitized
-    : usersSanitized?.slice(0, limit);
-
-  const userCount = usersSanitized.length;
-
-  const hasExcessiveUserCount = limit !== undefined && userCount > limit;
+  const hasExcessiveUserCount = userCount > usersSample.length;
 
   const label = `${userCount} ${
     userCount === 1 ? "person" : "people"
@@ -65,18 +49,18 @@ export const UserList: React.FC<UserListProps> = ({
 
   const renderedUserAvatars = useMemo(
     () =>
-      usersToDisplay.map((user) => (
+      usersSample.map((user) => (
         <div key={user.id} className={cellClasses}>
           <UserAvatar
             user={user}
             containerClassName="UserList__avatar"
             onClick={
-              hasClickableAvatars ? () => openUserProfileModal(user) : noop
+              hasClickableAvatars ? () => openUserProfileModal(user.id) : noop
             }
           />
         </div>
       )),
-    [usersToDisplay, cellClasses, hasClickableAvatars, openUserProfileModal]
+    [usersSample, cellClasses, hasClickableAvatars, openUserProfileModal]
   );
 
   if (!showEvenWhenNoUsers && userCount < 1) return null;
@@ -84,13 +68,7 @@ export const UserList: React.FC<UserListProps> = ({
   return (
     <div className={containerClasses}>
       <div className="UserList__label">
-        {showTitle && <p>{label}</p>}
-
-        {showMoreUsersToggler && hasExcessiveUserCount && (
-          <p className="UserList__toggler-text" onClick={toggleExpanded}>
-            See {isExpanded ? "less" : "all"}
-          </p>
-        )}
+        {showTitle && <p className="UserList__label-text">{label}</p>}
       </div>
 
       <div className="UserList__avatars">

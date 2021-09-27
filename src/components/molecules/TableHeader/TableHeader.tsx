@@ -1,25 +1,26 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChevronLeft,
   faLock,
   faLockOpen,
-  faChevronLeft,
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 
-import { User } from "types/User";
-import { Table } from "types/Table";
+import { unsetTableSeat } from "api/venue";
 
-import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useShowHide } from "hooks/useShowHide";
+import { Table } from "types/Table";
 
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+
+import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
+import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { Toggler } from "components/atoms/Toggler";
 
@@ -30,6 +31,7 @@ import "./TableHeader.scss";
 export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
+  venueId: string;
   venueName: string;
   tables: Table[];
 }
@@ -37,13 +39,13 @@ export interface TableHeaderProps {
 export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
+  venueId,
   venueName,
   tables,
 }) => {
-  const { user, profile } = useUser();
+  const { userId, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(
@@ -68,12 +70,9 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
-  const currentTableHasSeatedUsers = useMemo(
-    () =>
-      !!recentVenueUsers.find(
-        (user: User) => user.data?.[venueName]?.table === seatedAtTable
-      ),
-    [venueName, recentVenueUsers, seatedAtTable]
+  const [seatedTableUsers] = useSeatedTableUsers(venueId);
+  const currentTableHasSeatedUsers = seatedTableUsers.some(
+    (user) => user.path.tableReference === seatedAtTable
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
@@ -87,7 +86,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       const update = {
         tables: { ...allTables, [seatedAtTable]: { locked } },
       };
-      firestoreUpdate(doc, update);
+      void firestoreUpdate(doc, update);
     },
     [venueName, allTables, seatedAtTable]
   );
@@ -102,7 +101,6 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
       setIsCurrentTableLocked(false);
     }
   }, [
-    recentVenueUsers,
     seatedAtTable,
     isCurrentTableLocked,
     currentTableHasSeatedUsers,
@@ -111,23 +109,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
 
   // @debt This should be extracted into the api layer
   const leaveSeat = useCallback(async () => {
-    if (!user || !profile) return;
-
-    const doc = `users/${user.uid}`;
-    const existingData = profile.data;
-    const update = {
-      data: {
-        ...existingData,
-        [venueName]: {
-          table: null,
-          videoRoom: null,
-        },
-      },
-    };
-    await firestoreUpdate(doc, update);
-
+    if (!userId || !profile) return;
+    await unsetTableSeat(userId, { venueId });
     setSeatedAtTable("");
-  }, [user, profile, venueName, setSeatedAtTable]);
+  }, [userId, profile, venueId, setSeatedAtTable]);
 
   useEffect(() => {
     window.addEventListener("beforeunload", leaveSeat);

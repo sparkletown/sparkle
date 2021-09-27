@@ -7,18 +7,18 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
 
+import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
+
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
-import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
-
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useShowHide } from "hooks/useShowHide";
 
 import {
-  venueRoomSchema,
   roomSchema,
+  venueRoomSchema,
 } from "pages/Admin/Details/ValidationSchema";
 
 import { InputField } from "components/atoms/InputField";
@@ -29,12 +29,14 @@ export interface VenueRoomItemProps {
   icon: string;
   text: string;
   template?: VenueRoomTemplate;
+  worldId: string;
 }
 
 export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   icon,
   text,
   template,
+  worldId,
 }) => {
   const {
     isShown: isModalVisible,
@@ -80,11 +82,11 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     if (template !== RoomTemplate.external) {
       const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-      await createVenue_v2(venueData, user);
+      await createVenue_v2({ ...venueData, worldId }, user);
     }
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, isVenuePortal, template, user, venueId]);
+  }, [getValues, hideModal, isVenuePortal, template, user, venueId, worldId]);
 
   return (
     <>

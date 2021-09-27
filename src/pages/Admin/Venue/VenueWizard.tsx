@@ -1,16 +1,24 @@
-import React, { useMemo, useCallback, useReducer, useEffect } from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import "./Venue.scss";
-import { TemplateForm } from "./TemplateForm";
-import { DetailsForm } from "./DetailsForm";
-import { Redirect, useHistory } from "react-router-dom";
-import { useQuery } from "hooks/useQuery";
-import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
+import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
+import { Redirect, useHistory } from "react-router-dom";
+
+import { ALL_VENUE_TEMPLATES, DEFAULT_VENUE, Template } from "settings";
+
 import { AnyVenue } from "types/venues";
-import { useUser } from "hooks/useUser";
+
 import { venueInsideUrl } from "utils/url";
+
+import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+import { VenueDetailsForm } from "pages/Admin/Venue/VenueDetailsForm";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { TemplateForm } from "./TemplateForm";
+
+import "./Venue.scss";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -26,6 +34,7 @@ interface WizardFormState {
     venue: AnyVenue;
   };
 }
+
 type WizardActions =
   | {
       type: "SUBMIT_TEMPLATE_PAGE";
@@ -101,7 +110,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   // @debt replace this with LoadingPage or Loading as appropriate
   if (!state.detailsPage) return <div>Loading...</div>;
 
-  return <DetailsForm venueId={venueId} state={state} />;
+  return <VenueDetailsForm venueId={venueId} state={state} />;
 };
 
 const VenueWizardCreate: React.FC = () => {
@@ -138,7 +147,7 @@ const VenueWizardCreate: React.FC = () => {
       case 1:
         return <TemplateForm next={next} state={state} />;
       case 2:
-        return <DetailsForm previous={previous} state={state} />;
+        return <VenueDetailsForm previous={previous} state={state} />;
       default:
         return <TemplateForm next={next} state={state} />;
     }

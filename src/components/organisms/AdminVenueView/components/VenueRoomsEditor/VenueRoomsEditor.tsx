@@ -1,25 +1,27 @@
 import React, {
-  useCallback,
-  useState,
-  useMemo,
   CSSProperties,
   Dispatch,
   SetStateAction,
+  useCallback,
   useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { useDrop } from "react-dnd";
-import update from "immutability-helper";
 import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
+import update from "immutability-helper";
 
-import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
+import { Dimensions, Position } from "types/utility";
 
+import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
+import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
 import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
-import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
-import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
+
+import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import "./VenueRoomsEditor.scss";
 
@@ -49,7 +51,7 @@ interface PortalSize {
 export interface VenueRoomsEditorProps {
   snapToGrid?: boolean;
   roomIcons?: RoomIcon[];
-  backgroundImage: string;
+  backgroundImage?: string;
   iconImageStyle?: CSSProperties; // This is not being used ATM
   draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   roomIconsMap?: RoomIconsMap;
@@ -61,7 +63,7 @@ export interface VenueRoomsEditorProps {
   onMove?: (position: Position) => void;
   otherIconsStyle?: CSSProperties;
   rounded?: boolean;
-  backgroundImageStyle?: CSSProperties;
+  backgroundImageClassName?: string;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   rooms: RoomData_v2[];
@@ -78,7 +80,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   interactive,
   resizable,
   rounded,
-  backgroundImageStyle,
+  backgroundImageClassName,
   containerStyle,
   lockAspectRatio,
   rooms,
@@ -210,7 +212,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
-    drop(item: DragItem, monitor) {
+    drop: (item: DragItem, monitor) => {
       if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;
@@ -302,14 +304,15 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
         handleHeight
         onResize={(width, height) => setImageDims({ width, height })}
       />
-      <img
-        alt="draggable background "
-        style={{
-          width: "100%",
-          ...backgroundImageStyle,
-        }}
-        src={backgroundImage}
-      />
+      {!backgroundImage ? (
+        <MapBackgroundPlaceholder />
+      ) : (
+        <img
+          alt="draggable background "
+          className={`Container__background-image ${backgroundImageClassName}`}
+          src={backgroundImage}
+        />
+      )}
 
       {backgroundImage && renderRoomsPreview}
     </div>

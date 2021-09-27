@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
-import { Room } from "types/rooms";
-import { canHaveSubvenues } from "utils/venue";
-import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
-import { WithId } from "utils/id";
 import { Link } from "react-router-dom";
-import AdminEventModal from "./AdminEventModal";
+
+import { ADMIN_V1_ROOMS_URL } from "settings";
+
+import { Room } from "types/rooms";
+import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
+
+import { WithId } from "utils/id";
+import { canHaveSubvenues } from "utils/venue";
+
 import AdminDeleteEvent from "./AdminDeleteEvent";
+import AdminEventModal from "./AdminEventModal";
+import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
 
 interface Props {
   venue: WithId<AnyVenue>;
@@ -27,7 +32,7 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
         <div className="add-room-button">
           {canHaveSubvenues(venue) && (
             <Link
-              to={`/admin/venue/rooms/${venue.id}`}
+              to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
               className="btn btn-block"
             >
               Add a Room

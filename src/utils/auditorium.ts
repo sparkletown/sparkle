@@ -4,14 +4,11 @@ import {
   SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
 } from "settings";
 
-import { AuditoriumSection } from "types/auditorium";
-import { AuditoriumVenue } from "types/venues";
-import { AuditoriumSize } from "types/auditorium";
+import { AuditoriumSection, AuditoriumSize } from "types/auditorium";
 import { User } from "types/User";
+import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "./id";
-
-const emptyFilteredUsers: WithId<User>[] = [];
 
 export interface ConvertCoordinateProps {
   index: number;
@@ -81,14 +78,3 @@ export interface GetSeatedUsersProps {
   venueId?: string;
   sectionId?: string;
 }
-
-export const getAuditoriumSeatedUsers = ({
-  auditoriumUsers,
-  venueId,
-  sectionId,
-}: GetSeatedUsersProps) =>
-  venueId && sectionId
-    ? auditoriumUsers.filter(
-        (user) => user.data?.[venueId]?.sectionId === sectionId
-      )
-    : emptyFilteredUsers;

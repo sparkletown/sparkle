@@ -1,29 +1,31 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ErrorMessage, useForm } from "react-hook-form";
 import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { ErrorMessage, useForm } from "react-hook-form";
-
+import useAsync from "react-use/lib/useAsync";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
 import {
+  ADMIN_V1_ROOT_URL,
   ALL_VENUE_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_ICON_SIDE_PERCENTAGE,
-  PLAYA_VENUE_STYLES,
   HAS_ROOMS_TEMPLATES,
+  PLAYA_ICON_SIDE_PERCENTAGE,
+  PLAYA_IMAGE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 
-import { upsertRoom, RoomInput } from "api/admin";
+import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { PartyMapVenue, AnyVenue } from "types/venues";
+import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { withId } from "utils/id";
+import { venueInsideUrl } from "utils/url";
 
-import { useUser } from "hooks/useUser";
 import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
@@ -33,51 +35,50 @@ import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
+import RoomDeleteModal from "./RoomDeleteModal";
 import { validationSchema } from "./RoomsValidationSchema";
 
 import "../Venue.scss";
-
-import RoomDeleteModal from "./RoomDeleteModal";
 
 export const RoomsForm: React.FC = () => {
   const venueId = useVenueId();
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<PartyMapVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  useEffect(() => {
+  const { loading: isLoading, value: venue } = useAsync(async () => {
     if (!venueId) return history.replace("/admin");
 
-    const fetchVenueFromAPI = async () => {
-      const venueSnapshot = await firestore
-        .collection("venues")
-        .doc(venueId)
-        .get();
+    const venueSnapshot = await firestore
+      .collection("venues")
+      .doc(venueId)
+      .get();
 
-      if (!venueSnapshot.exists) return history.replace("/admin");
+    if (!venueSnapshot.exists) return history.replace("/admin");
 
-      const data = venueSnapshot.data() as AnyVenue;
-      //find the template
-      const template = ALL_VENUE_TEMPLATES.find(
-        (template) => data.template === template.template
-      );
+    const data = venueSnapshot.data() as AnyVenue;
+    //find the template
+    const template = ALL_VENUE_TEMPLATES.find(
+      (template) => data.template === template.template
+    );
 
-      if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
-        history.replace("/admin");
-      }
-      setVenue(data as PartyMapVenue);
-    };
-    fetchVenueFromAPI();
-  }, [firestore, venueId, history]);
+    if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
+      history.replace("/admin");
+    }
+
+    return data as PartyMapVenue;
+  }, [firestore, history, venueId]);
 
   const room = useMemo(() => {
     if (
@@ -91,6 +92,8 @@ export const RoomsForm: React.FC = () => {
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
+  if (isLoading) return <LoadingPage />;
+
   if (!venue || !venueId) return null;
 
   if (!user) {
@@ -99,12 +102,14 @@ export const RoomsForm: React.FC = () => {
 
   return (
     <WithNavigationBar hasBackButton={false}>
-      <RoomInnerForm
-        venueId={venueId}
-        venue={venue}
-        editingRoom={room}
-        editingRoomIndex={queryRoomIndex}
-      />
+      <AdminRestricted>
+        <RoomInnerForm
+          venueId={venueId}
+          venue={venue}
+          editingRoom={room}
+          editingRoomIndex={queryRoomIndex}
+        />
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };
@@ -137,7 +142,10 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     reValidateMode: "onChange",
     validationSchema: validationSchema,
     validationContext: { editing: !!editingRoom },
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      url: defaultValues.url ?? venueInsideUrl(venueId),
+    },
   });
 
   const { user } = useUser();
@@ -158,7 +166,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
           ...vals,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
-        history.push(`/admin/${venueId}`);
+        history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
@@ -213,6 +221,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
               left: values.x_percent || 0,
               top: values.y_percent || 0,
               url: imageUrl,
+              title: values.title,
             },
           }
         : {},
@@ -222,6 +231,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
       values.y_percent,
       values.width_percent,
       values.height_percent,
+      values.title,
     ]
   );
 
@@ -273,7 +283,8 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       remoteUrlInputName={"image_url"}
                       remoteImageUrl={values.image_url}
                       containerClassName="input-square-container"
-                      ref={register}
+                      register={register}
+                      setValue={setValue}
                       error={errors.image_file || errors.image_url}
                     />
                   </div>
@@ -330,13 +341,10 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
-                    <div className="input-title">Is label hidden?</div>
-                    <Toggler
-                      name="isLabelHidden"
-                      forwardedRef={register}
-                      disabled={disable}
-                    />
+                    <div className="input-title">
+                      Change label appearance (overrides global settings)
+                    </div>
+                    <PortalVisibility register={register} />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">

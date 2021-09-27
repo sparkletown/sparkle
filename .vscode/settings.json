@@ -7,6 +7,9 @@
   "[javascript]": {
     "editor.tabSize": 2
   },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
   "eslint.workingDirectories": ["./src"],
   "eslint.validate": [
     "javascript",
@@ -18,9 +21,5 @@
     "editor.tabSize": 2
   },
   "typescript.tsdk": "./node_modules/typescript/lib",
-  "editor.tabSize": 2,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  "editor.tabSize": 2
 }

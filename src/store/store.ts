@@ -1,20 +1,21 @@
-import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
 import {
+  actionTypes as reactReduxFirebaseActionTypes,
   FirebaseReducer,
   firebaseReducer,
   getFirebase,
-  actionTypes as reactReduxFirebaseActionTypes,
 } from "react-redux-firebase";
-import {
-  firestoreReducer,
-  constants as reduxFirestoreConstants,
-} from "redux-firestore";
+import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
 import LogRocket from "logrocket";
+import {
+  constants as reduxFirestoreConstants,
+  firestoreReducer,
+} from "redux-firestore";
+import subscribeActionMiddleware from "redux-subscribe-action";
 
 import { Firestore } from "types/Firestore";
 import { UserWithLocation } from "types/User";
 
-import { worldUsersApi } from "./api";
+import { AnimateMapActionTypes } from "./actions/AnimateMap";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
@@ -24,7 +25,6 @@ export const rootReducer = combineReducers({
   firestore: firestoreReducer as Reducer<Firestore>,
   ...VenueTemplateReducers,
   ...MiscReducers,
-  [worldUsersApi.reducerPath]: worldUsersApi.reducer,
 });
 
 export const initialState: Readonly<{}> = {};
@@ -73,10 +73,13 @@ export const store = configureStore({
           ...Object.keys(reduxFirestoreConstants.actionTypes).map(
             (type) => `${reduxFirestoreConstants.actionsPrefix}/${type}`
           ),
+
+          // Ignore all redux-animatemap action types
+          ...Object.values(AnimateMapActionTypes),
         ],
 
         // Ignore all react-redux-firebase and redux-firestore data stored in Redux
-        ignoredPaths: ["firebase", "firestore"],
+        ignoredPaths: ["firebase", "firestore", "animatemap"],
       },
 
       thunk: {
@@ -88,7 +91,6 @@ export const store = configureStore({
         },
       },
     })
-      .concat(worldUsersApi.middleware)
       .concat(
         /**
          * Note: LogRocket middleware needs to be last to be able to capture everything correctly
@@ -98,7 +100,8 @@ export const store = configureStore({
          */
         LogRocket.reduxMiddleware() as ReturnType<typeof getDefaultMiddleware>
         // reduxMiddlewareTiming
-      ),
+      )
+      .concat(subscribeActionMiddleware),
 
   /**
    * @see https://redux-toolkit.js.org/api/configureStore#devtools

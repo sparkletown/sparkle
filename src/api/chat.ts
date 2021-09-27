@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import noop from "lodash/noop";
 
-import { VenueChatMessage, PrivateChatMessage, PollVoteBase } from "types/chat";
+import { PollVoteBase, PrivateChatMessage, VenueChatMessage } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
@@ -42,8 +42,8 @@ export const sendPrivateMessage = async (
 ): Promise<void> => {
   const batch = firebase.firestore().batch();
 
-  const authorRef = getUserChatsCollectionRef(message.from).doc();
-  const recipientRef = getUserChatsCollectionRef(message.to).doc();
+  const authorRef = getUserChatsCollectionRef(message.fromUser.id).doc();
+  const recipientRef = getUserChatsCollectionRef(message.toUser.id).doc();
 
   batch.set(authorRef, message);
   batch.set(recipientRef, message);

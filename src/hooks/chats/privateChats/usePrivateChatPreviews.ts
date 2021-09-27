@@ -2,78 +2,62 @@ import { useMemo } from "react";
 
 import { PreviewChatMessageMap } from "types/chat";
 
-import { useWorldUsersById } from "hooks/users";
+import { chatSort, getPreviewChatMessage } from "utils/chat";
+
 import { useUser } from "hooks/useUser";
+
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
-import {
-  chatSort,
-  getPreviewChatMessage,
-  getPreviewChatMessageToDisplay,
-} from "../../../utils/chat";
-import { withId } from "../../../utils/id";
-
 export const usePrivateChatPreviews = () => {
-  const { user } = useUser();
-  const { worldUsersById } = useWorldUsersById();
+  const { userId } = useUser();
   const {
     privateChatMessages,
     isUserPrivateChatsLoaded,
   } = usePrivateChatMessages();
 
-  const userId = user?.uid;
-
-  const privateChatPreviewsMap = useMemo(
+  const privateChatPreviewsMap: PreviewChatMessageMap = useMemo(
     () =>
       privateChatMessages.reduce<PreviewChatMessageMap>((acc, message) => {
         if (!userId) return acc;
-
-        const { from: fromUserId, to: toUserId } = message;
+        const { fromUser, toUser, timestamp } = message;
 
         // Either `from` author or `to` author is Me. Filter me out
-        const counterPartyUserId =
-          fromUserId === userId ? toUserId : fromUserId;
-
-        const counterPartyUser = worldUsersById[counterPartyUserId];
+        const counterPartyUser = fromUser.id === userId ? toUser : fromUser;
 
         // Filter out not existent users
         if (!counterPartyUser) return acc;
 
-        if (counterPartyUserId in acc) {
-          const previousMessage = acc[counterPartyUserId];
+        if (counterPartyUser.id in acc) {
+          const previousMessage = acc[counterPartyUser.id];
 
           // If the message is older, replace it with the more recent one
-          if (previousMessage.ts_utc > message.ts_utc) return acc;
+          if (previousMessage.timestamp > timestamp) return acc;
 
           return {
             ...acc,
-            [counterPartyUserId]: getPreviewChatMessage({
+            [counterPartyUser.id]: getPreviewChatMessage({
               message,
-              user: withId(counterPartyUser, counterPartyUserId),
+              user: counterPartyUser,
             }),
           };
         }
 
         return {
           ...acc,
-          [counterPartyUserId]: getPreviewChatMessage({
+          [counterPartyUser.id]: getPreviewChatMessage({
             message,
-            user: withId(counterPartyUser, counterPartyUserId),
+            user: counterPartyUser,
           }),
         };
       }, {}),
-    [privateChatMessages, userId, worldUsersById]
+    [privateChatMessages, userId]
   );
 
   return useMemo(
     () => ({
-      privateChatPreviews: Object.values(privateChatPreviewsMap)
-        .sort(chatSort)
-        .map((message) =>
-          getPreviewChatMessageToDisplay({ message, myUserId: userId })
-        ),
+      privateChatPreviews: Object.values(privateChatPreviewsMap).sort(chatSort),
       isPrivateChatPreviewsLoaded: isUserPrivateChatsLoaded,
     }),
-    [privateChatPreviewsMap, userId, isUserPrivateChatsLoaded]
+    [privateChatPreviewsMap, isUserPrivateChatsLoaded]
   );
 };

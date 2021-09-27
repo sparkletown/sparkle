@@ -1,31 +1,37 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCaretRight,
-  faCaretDown,
-  faHome,
-} from "@fortawesome/free-solid-svg-icons";
+
+import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { Dimensions, Position } from "types/utility";
+import { AnyVenue, VenueTemplate } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { VenueTemplate, Venue_v2 } from "types/venues";
-import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
-import { Dimensions, Position } from "types/utility";
-
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
-import { VenueRoomItem } from "components/molecules/VenueRoomItem";
-import { EditRoomForm } from "components/molecules/EditRoomForm";
-import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
-import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
-import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
+import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
+import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
+import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
+import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
+
+import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { VenueRoomItem } from "components/molecules/VenueRoomItem";
+
+import { AdminShowcase } from "../AdminShowcase";
+
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
+import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
+import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
+import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
 import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
+import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 
 import "./Spaces.scss";
 
@@ -52,7 +58,7 @@ const venueRooms: VenueRooms[] = [
     template: VenueTemplate.jazzbar,
   },
   {
-    text: "Burn Barrel",
+    text: "Burn Firebarrel",
     icon: RoomIconBurnBarrel,
     template: VenueTemplate.firebarrel,
   },
@@ -78,14 +84,16 @@ const venueRooms: VenueRooms[] = [
   },
 ];
 
-export interface SpacesProps {
-  venue: Venue_v2;
-  onClickNext: () => void;
+interface SpacesProps extends TabNavigationProps {
+  venue: WithId<AnyVenue>;
 }
 
 const emptyRoomsArray: RoomData_v2[] = [];
 
-export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
+export const Spaces: React.FC<SpacesProps> = ({
+  venue,
+  ...tabNavigationProps
+}) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
   const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
 
@@ -98,10 +106,9 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
-  const history = useHistory();
-
+  const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
-  const numberOfRooms = venue.rooms?.length ?? 0;
+  const numberOfRooms = venue?.rooms?.length ?? 0;
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
@@ -130,7 +137,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
 
   const renderVenueRooms = useMemo(
     () =>
-      venue.rooms?.map((room, index) => (
+      venue?.rooms?.map((room, index) => (
         <div
           key={`${index}-${room.title}`}
           className="Spaces__venue-room"
@@ -143,7 +150,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           <div className="Spaces__venue-room-title">{room.title}</div>
         </div>
       )),
-    [venue.rooms]
+    [venue?.rooms]
   );
 
   const renderAddRooms = useMemo(
@@ -154,23 +161,21 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           text={venueRoom.text}
           template={venueRoom.template}
           icon={venueRoom.icon}
+          worldId={worldId}
         />
       )),
-    []
+    [worldId]
   );
 
-  const navigateToAdmin = useCallback(() => {
-    history.push("/admin-ng/");
-  }, [history]);
-
   const selectedRoomIndex =
-    venue.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
+    venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
-    <div className="Spaces">
-      <div className="Spaces__rooms">
+    <AdminPanel className="Spaces">
+      <AdminSidebar>
         {selectedRoom ? (
           <EditRoomForm
+            venueVisibility={venue?.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
@@ -180,9 +185,8 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           />
         ) : (
           <>
-            <div className="Spaces__background">
-              <div className="Spaces__title">Build your spaces</div>
-            </div>
+            <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
+            <TabFooter {...tabNavigationProps} />
             <div>
               <div
                 className="Spaces__venue-rooms"
@@ -194,10 +198,9 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue.name} />
+                <BackgroundSelect venueName={venue?.name ?? ""} />
               )}
             </div>
-
             <div>
               <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
                 <div>{numberOfRooms} Rooms</div>
@@ -216,33 +219,20 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
               />
             </div>
             {showAddRoom && renderAddRooms}
-            <div className="Spaces__footer">
-              <div className="Spaces__home-button" onClick={navigateToAdmin}>
-                <FontAwesomeIcon icon={faHome} />
-              </div>
-              <div className="Spaces__nav-buttons">
-                <div className="Spaces__back-button" onClick={navigateToAdmin}>
-                  Back
-                </div>
-                <div className="Spaces__next-button" onClick={onClickNext}>
-                  Next
-                </div>
-              </div>
-            </div>
           </>
         )}
-      </div>
-      <div className="Spaces__map">
+      </AdminSidebar>
+      <AdminShowcase className="Spaces__map">
         <MapPreview
           isEditing={hasSelectedRoom}
-          mapBackground={venue.mapBackgroundImageUrl}
+          mapBackground={venue?.mapBackgroundImageUrl}
           setSelectedRoom={setSelectedRoom}
-          rooms={venue.rooms ?? emptyRoomsArray}
+          rooms={venue?.rooms ?? emptyRoomsArray}
           onMoveRoom={updateRoomPosition}
           onResizeRoom={updateRoomSize}
           selectedRoom={selectedRoom}
         />
-      </div>
-    </div>
+      </AdminShowcase>
+    </AdminPanel>
   );
 };

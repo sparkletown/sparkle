@@ -1,5 +1,6 @@
 import { ChatActions, ChatActionTypes } from "store/actions/Chat";
-import { ChatTypes, ChatSettings } from "types/chat";
+
+import { ChatSettings, ChatTypes } from "types/chat";
 
 export type ChatState = {
   isChatSidebarVisible: boolean;
@@ -32,11 +33,11 @@ export const chatReducer = (
     }
 
     case ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED: {
-      const { openedChatType, recipientId } = action.payload;
+      const { openedChatType, recipient } = action.payload;
 
       return {
         ...state,
-        settings: { openedChatType, recipientId },
+        settings: { openedChatType, recipient },
       };
     }
 

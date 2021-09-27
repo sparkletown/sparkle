@@ -1,22 +1,19 @@
 import { ReduxAction } from "types/redux";
 
-import { User } from "types/User";
-import { WithId } from "utils/id";
-
 export enum UserProfileActionTypes {
-  UPDATE_USER_PROFILE_DATA = "UPDATE_USER_PROFILE_DATA",
+  UPDATE_USER_PROFILE_ID = "UPDATE_USER_PROFILE_ID",
 }
 
 export type UpdateUserProfileDataAction = ReduxAction<
-  UserProfileActionTypes.UPDATE_USER_PROFILE_DATA,
-  { userProfile?: WithId<User> }
+  UserProfileActionTypes.UPDATE_USER_PROFILE_ID,
+  { userId?: string }
 >;
 
-export const updateUserProfileData = (
-  userProfile?: WithId<User>
+export const updateUserProfileDataAction = (
+  userId?: string
 ): UpdateUserProfileDataAction => ({
-  type: UserProfileActionTypes.UPDATE_USER_PROFILE_DATA,
-  payload: { userProfile },
+  type: UserProfileActionTypes.UPDATE_USER_PROFILE_ID,
+  payload: { userId },
 });
 
 export type UserProfileActions = UpdateUserProfileDataAction;

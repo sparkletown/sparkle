@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+
+.Timing {
+  display: grid;
+  grid-template-columns: auto 1fr;
+
+  &__events-wrapper {
+    display: grid;
+    place-items: center;
+    padding: $spacing--lg;
+    background-color: $secondary--dark;
+    align-items: start;
+  }
+}

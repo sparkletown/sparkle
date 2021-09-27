@@ -4,9 +4,9 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { useSelector } from "hooks/useSelector";
-
 import { venueSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -77,7 +77,11 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           `Error checking ticket: ${error.message}`
         );
       } else {
-        setError("backend", "firebase", error.message);
+        setError(
+          "backend",
+          "firebase",
+          "Please check your email or password or contact your event organizer"
+        );
       }
     }
   };

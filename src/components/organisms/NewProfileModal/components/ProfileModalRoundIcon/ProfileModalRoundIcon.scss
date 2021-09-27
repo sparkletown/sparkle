@@ -1,0 +1,5 @@
+@import "../../profileModalStyles";
+
+.ProfileModalRoundIcon {
+  @include square-size($round-icon-size);
+}

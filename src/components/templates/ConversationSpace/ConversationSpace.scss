@@ -1,7 +1,12 @@
 @import "scss/constants";
 
 // @debt Are all of the jazzbar / emoji related styles actually needed/used here?
-.conversation-space-container {
+.conversation-space {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+
   .userlist-container {
     margin-left: 80px;
   }
@@ -78,6 +83,12 @@
   }
 
   .scrollable-area {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 3;
+    flex-basis: 0;
+    overflow: hidden;
+
     .description {
       font-weight: 700;
       text-align: center;
@@ -313,5 +324,17 @@
         }
       }
     }
+  }
+}
+
+.TableHeader {
+  &__leave-table {
+    z-index: z(jazzbar-header);
+  }
+  &__lock-button {
+    z-index: z(jazzbar-header);
+  }
+  &__topic-info {
+    z-index: z(jazzbar-header);
   }
 }

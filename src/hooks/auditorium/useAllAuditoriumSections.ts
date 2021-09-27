@@ -3,14 +3,13 @@ import { useHistory } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
 
-import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
+import { getSectionCapacity } from "utils/auditorium";
 import { WithId } from "utils/id";
 import { currentAuditoriumSectionsSelector } from "utils/selectors";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
+import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
 import { useSelector } from "../useSelector";
-import { useFirestoreConnect, isLoaded } from "../useFirestoreConnect";
-import { useRecentVenueUsers } from "../users";
 import { useShowHide } from "../useShowHide";
 
 export const useConnectAllAuditoriumSections = (venueId?: string) => {
@@ -41,8 +40,6 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
-
   const sections = useSelector(currentAuditoriumSectionsSelector);
 
   const enterSection = useCallback(
@@ -60,16 +57,12 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     if (!sections) return;
 
     return sections.filter((section) => {
+      const seatedUsersCount = section?.seatedUsersCount ?? 0;
       const sectionCapacity = getSectionCapacity(venue, section);
-      const seatedUsers = getAuditoriumSeatedUsers({
-        venueId,
-        auditoriumUsers: recentVenueUsers,
-        sectionId: section.id,
-      });
 
-      return seatedUsers.length < sectionCapacity;
+      return seatedUsersCount < sectionCapacity;
     });
-  }, [recentVenueUsers, venue, venueId, sections]);
+  }, [venue, sections]);
 
   return useMemo(
     () => ({

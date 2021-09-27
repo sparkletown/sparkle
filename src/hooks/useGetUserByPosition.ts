@@ -1,10 +1,9 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
-import { User } from "types/User";
 import { GridPosition } from "types/grid";
+import { GridSeatedUser, User } from "types/User";
 
 import { WithId } from "utils/id";
-import { getPositionHash } from "utils/grid";
 import { isDefined } from "utils/types";
 
 export interface UseGetUserByPositionProps {
@@ -12,43 +11,40 @@ export interface UseGetUserByPositionProps {
   venueId?: string;
 }
 
-export type GetUserByPostion = (
+export type GetUserByPosition = (
   gridPosition: GridPosition
-) => WithId<User> | undefined;
+) => WithId<GridSeatedUser> | undefined;
 
-export const useGetUserByPosition: (
-  props: UseGetUserByPositionProps
-) => GetUserByPostion = ({ positionedUsers, venueId }) => {
-  const seatedUsersByHash: Map<string, WithId<User>> = useMemo(
+const getPositionHash = ({ row, column }: GridPosition): string => {
+  return `${row}|${column}`;
+};
+
+export const useGetUserByPosition = (
+  gridSeatedUsers: WithId<GridSeatedUser>[]
+): GetUserByPosition => {
+  const seatedUsersByHash: Map<string, WithId<GridSeatedUser>> = useMemo(
     () =>
-      positionedUsers.reduce<Map<string, WithId<User>>>((acc, user) => {
-        if (!venueId) return acc;
-        const gridData = user.data?.[venueId];
+      gridSeatedUsers.reduce<Map<string, WithId<GridSeatedUser>>>(
+        (acc, user) => {
+          const { row, column } = user.position;
 
-        if (
-          !gridData ||
-          !isDefined(gridData.row) ||
-          !isDefined(gridData.column)
-        )
-          return acc;
+          if (!isDefined(row) || !isDefined(column)) return acc;
 
-        const { row, column } = gridData;
+          const positionHash = getPositionHash({
+            row,
+            column,
+          });
 
-        const positionHash = getPositionHash({
-          row,
-          column,
-        });
-
-        return acc.set(positionHash, user);
-      }, new Map()),
-    [positionedUsers, venueId]
+          return acc.set(positionHash, user);
+        },
+        new Map()
+      ),
+    [gridSeatedUsers]
   );
 
-  const getUserByPosition: GetUserByPostion = useCallback(
+  return useCallback(
     ({ row, column }) =>
       seatedUsersByHash.get(getPositionHash({ row, column })),
     [seatedUsersByHash]
   );
-
-  return getUserByPosition;
 };
