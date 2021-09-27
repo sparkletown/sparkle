@@ -175,6 +175,7 @@ export const Spaces: React.FC<SpacesProps> = ({
       <AdminSidebar>
         {selectedRoom ? (
           <SpaceEditForm
+            venueVisibility={venue.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}

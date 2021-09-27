@@ -17,7 +17,7 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { RoomData_v2 } from "types/rooms";
-import { VenueTemplate } from "types/venues";
+import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -39,12 +39,14 @@ interface SpaceEditFormProps {
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  venueVisibility?: RoomVisibility;
 }
 
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   room,
   updatedRoom,
   roomIndex,
+  venueVisibility,
   onBackClick,
   onDelete,
   onEdit,
@@ -80,7 +82,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         about: room.about ?? "",
         template: room.template ?? undefined,
         image_url: room.image_url ?? "",
-        visibility: room.visibility ?? roomVenue?.roomVisibility,
+        visibility: room.visibility ?? venueVisibility,
       },
       venue: {
         mapBackgroundImage: roomVenue?.mapBackgroundImageUrl ?? "",
@@ -107,11 +109,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       roomVenue?.columns,
       roomVenue?.iframeUrl,
       roomVenue?.mapBackgroundImageUrl,
-      roomVenue?.roomVisibility,
       roomVenue?.showGrid,
       roomVenue?.showReactions,
       roomVenue?.showShoutouts,
       roomVenue?.zoomUrl,
+      venueVisibility,
     ]
   );
 
