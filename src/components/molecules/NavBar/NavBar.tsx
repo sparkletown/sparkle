@@ -71,7 +71,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
@@ -151,6 +150,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
     setEventScheduleVisible(false);
   }, []);
+
+  const parentVenueId = parentVenue?.id;
 
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
