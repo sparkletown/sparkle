@@ -57,8 +57,8 @@ exports.checkPassword = functions.https.onCall(async (data) => {
         doc &&
         doc.exists &&
         doc.data() &&
-        doc.data().password &&
-        passwordsMatch(data.password, doc.data().password)
+        doc.data()?.password &&
+        passwordsMatch(data.password, doc.data()?.password)
       ) {
         return "OK";
       }

@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "co-reality-map",
+    "default": "co-reality-staging",
     "staging": "co-reality-staging",
     "prod": "co-reality-map",
     "sparkleverse": "sparkle-verse",
