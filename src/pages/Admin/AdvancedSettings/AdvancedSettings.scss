@@ -1,7 +1,5 @@
 @import "scss/constants";
 
-$form-field-spacing: 10px;
-
 .AdvancedSettings {
   display: flex;
   flex-direction: column;
@@ -13,7 +11,7 @@ $form-field-spacing: 10px;
   }
 
   &__form-field {
-    padding: $form-field-spacing 0;
+    padding: $spacing--sm 0;
   }
 
   &__save-button {
