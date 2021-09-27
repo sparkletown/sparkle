@@ -3,7 +3,7 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import * as faker from "faker";
 import admin from "firebase-admin";
-import { keyBy } from "lodash";
+import { chunk, keyBy } from "lodash";
 
 import { getUsersRef } from "./collections";
 import {
@@ -11,14 +11,12 @@ import {
   getSeatedTableUserRef,
   getVenueName,
 } from "./documents";
-import { checkTypeUser } from "./guards";
 import { FieldValue, wrapIntoSlashes } from "./helpers";
 import { withErrorReporter } from "./log";
 import {
   BotUser,
   CollectionReference,
   DocumentReference,
-  DocumentSnapshot,
   QueryDocumentSnapshot,
   SimContext,
   TableInfo,
@@ -39,7 +37,7 @@ export const enterVenue: (
 ) => Promise<void | undefined> = async ({
   userRef,
   venueRef,
-  venueId,
+  venueId: passedVenueId,
   sovereignVenue,
   log,
   stats,
@@ -49,34 +47,34 @@ export const enterVenue: (
 
   if (!user) {
     return log(
-      chalk`{yellow.inverse WARN} No user with id {green ${userId}} that can enter venue {green ${venueId}}.`
+      chalk`{yellow.inverse WARN} No user with id {green ${userId}} that can enter venue {green ${passedVenueId}}.`
     );
   }
 
-  const candidateId = venueId ?? venueRef?.id;
+  const venueId = passedVenueId ?? venueRef?.id;
   assert.ok(
-    candidateId,
+    venueId,
     `${enterVenue.name}(): One of {magenta venueId} and {magenta venueRef} is required.`
   );
 
-  if (user.enteredVenueIds?.includes(candidateId)) {
+  if (user.enteredVenueIds?.includes(venueId)) {
     return; // already in venue
   }
 
   log(
-    chalk`{inverse NOTE} User {green ${userId}} entering venue {green ${candidateId}}...`
+    chalk`{inverse NOTE} User {green ${userId}} entering venue {green ${venueId}}...`
   );
 
   await userRef.update({
     enteredVenueIds: FieldValue.arrayUnion(
-      ...[candidateId, sovereignVenue.sovereignVenue.id]
+      ...[venueId, sovereignVenue.sovereignVenue.id]
     ),
   });
   stats.entered = increment(stats.entered);
   stats.writes = increment(stats.writes);
 
   log(
-    chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${candidateId}}.`
+    chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${venueId}}.`
   );
 };
 
@@ -263,52 +261,29 @@ export const ensureBotUsers: (
 
   const resultUserRefs: DocumentReference[] = [];
 
-  for (const candidate of candidates) {
-    if (isStopped) {
-      break;
-    }
-    const id = candidate.id;
-    const userRef = await usersRef.doc(id);
+  chunk(candidates, 250).map(async (candidatesChunk) => {
+    const batch = admin.firestore().batch();
 
-    const userSnap = await userRef.get();
-    if (!userSnap.exists) {
-      if (conf.user?.createMissing ?? true) {
-        log(
-          chalk`{yellow.inverse WARN} User {green ${id}} doesn't exist, creating...`
-        );
-
-        await userRef.set(candidate);
-        resultUserRefs.push(userRef);
-
-        stats.writes = increment(stats.writes);
-        (stats.users ??= {}).created = increment(stats.users.created);
-        log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
+    for (const candidate of candidatesChunk) {
+      if (isStopped) {
+        break;
       }
-      continue;
-    }
+      const id = candidate.id;
+      const userRef = await usersRef.doc(id);
 
-    const user = userSnap.data();
-    if (checkTypeUser(user)) {
-      log(chalk`{inverse NOTE} Found valid user {green ${id}}.`);
+      batch.set(userRef, candidate);
       resultUserRefs.push(userRef);
-      continue;
+
+      stats.writes = increment(stats.writes);
+      (stats.users ??= {}).updated = increment(stats.users.updated);
+      log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
+
+      // just so that busy loop doesn't mess with other async stuff, like the stop signal
+      // unless the stop signal isn't being maintained i.e. keepAlive is false
     }
-
-    log(
-      chalk`{yellow.inverse WARN} Found invalid user {green ${id}}, updating...`
-    );
-
-    await userRef.update(candidate);
-    resultUserRefs.push(userRef);
-
-    stats.writes = increment(stats.writes);
-    (stats.users ??= {}).updated = increment(stats.users.updated);
-    log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
-
-    // just so that busy loop doesn't mess with other async stuff, like the stop signal
-    // unless the stop signal isn't being maintained i.e. keepAlive is false
+    await batch.commit();
     await sleep(10);
-  }
+  });
 
   (stats.users ??= {}).count = resultUserRefs.length;
   log(
@@ -324,39 +299,19 @@ export const ensureBotUsers: (
 export const removeBotUsers: (
   options: SimContext<"userRefs" | "conf" | "log" | "stats">
 ) => Promise<void> = async ({ userRefs, conf, log, stats }) => {
-  const remove = withErrorReporter(conf.log, (userRef: DocumentReference) => {
-    const promise = userRef.delete();
-    promise.then(() => {
+  chunk(userRefs, 250).map(async (userRefsChunk) => {
+    const batch = admin.firestore().batch();
+
+    for (const userRef of userRefsChunk) {
+      batch.delete(userRef);
       log(
         chalk`{green.inverse DONE} Removed  user with id {green ${userRef.id}}.`
       );
       (stats.users ??= {}).removed = increment(stats.users.removed);
-    });
-    return promise;
+    }
+
+    await batch.commit();
   });
-
-  for (const userRef of userRefs) {
-    const userId = userRef.id;
-
-    const snap: DocumentSnapshot = await userRef.get();
-    if (!snap.exists) {
-      log(
-        chalk`{yellow.inverse WARN} No user with id {green ${userId}} exists that can be removed.`
-      );
-      continue;
-    }
-
-    const user = await snap.data();
-    if (user?.bot !== true) {
-      log(
-        chalk`{yellow.inverse WARN} User with id {green ${userId}} isn't marked as bot. Not removing.`
-      );
-      continue;
-    }
-
-    log(chalk`{inverse NOTE} Removing user with id {green ${userId}}...`);
-    await remove(userRef);
-  }
 };
 
 export const addBotReaction: (
