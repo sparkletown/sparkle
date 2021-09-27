@@ -3,10 +3,7 @@ import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  SECTION_PREVIEW_USER_DISPLAY_COUNT,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -66,10 +63,9 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
       </div>
 
       <UserList
-        users={section.seatedUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        usersSample={section.seatedUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        userCount={section.seatedUsersCount ?? 0}
         showTitle={false}
-        limit={SECTION_PREVIEW_USER_DISPLAY_COUNT}
-        showMoreUsersToggler={false}
         cellClassName="SectionPreview__avatar"
       />
     </div>

@@ -54,7 +54,8 @@ export const ReactionPage: React.FC = () => {
 
         <div className="col-4">
           <UserList
-            users={currentVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            usersSample={currentVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={currentVenue?.recentUserCount ?? 0}
             showEvenWhenNoUsers
           />
         </div>

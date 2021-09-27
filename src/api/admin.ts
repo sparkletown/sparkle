@@ -92,7 +92,6 @@ export type VenueInput = AdvancedVenueInput &
     columns?: number;
     width?: number;
     height?: number;
-    bannerMessage?: string;
     parentId?: string;
     owners?: string[];
     chatTitle?: string;

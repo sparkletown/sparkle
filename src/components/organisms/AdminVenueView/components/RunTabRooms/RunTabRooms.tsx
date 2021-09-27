@@ -1,6 +1,8 @@
 import React, { useMemo } from "react";
 import { groupBy } from "lodash";
 
+import { ADMIN_V1_ROOMS_URL } from "settings";
+
 import { Room } from "types/rooms";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
@@ -39,7 +41,7 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
           {venueWithRooms && (
             <ButtonNG
               isLink={true}
-              linkTo={`/admin/venue/rooms/${venue.id}`}
+              linkTo={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
               variant="primary"
             >
               Add a Room

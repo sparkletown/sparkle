@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 
-import { ALWAYS_EMPTY_ARRAY, DEFAULT_USER_LIST_LIMIT } from "settings";
+import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
 
@@ -136,10 +136,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             />
           </div>
           <UserList
-            users={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={venue.recentUserCount ?? 0}
             activity={venue?.activity ?? "here"}
-            limit={DEFAULT_USER_LIST_LIMIT}
-            showMoreUsersToggler
           />
         </div>
       </VenueWithOverlay>
