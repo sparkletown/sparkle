@@ -31,7 +31,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
   if (!venue) return <>Loading...</>;
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar hasBackButton withSchedule withPhotobooth>
       <div className="friendship-container">
         <div className="title">
           <h1>{venue.name}</h1>

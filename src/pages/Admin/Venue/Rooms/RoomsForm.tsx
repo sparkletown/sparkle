@@ -101,7 +101,7 @@ export const RoomsForm: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
+    <WithNavigationBar>
       <AdminRestricted>
         <RoomInnerForm
           venueId={venueId}

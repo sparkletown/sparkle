@@ -45,6 +45,7 @@ export const Timing: React.FC<TimingProps> = ({
         start_utc_seconds: startUtcSeconds,
         end_utc_seconds: endUtcSeconds,
         name: venue?.name,
+        worldId: venue?.worldId,
       },
       user
     );

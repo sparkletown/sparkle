@@ -104,6 +104,7 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  worldId: string;
 }
 
 export interface Venue_v2_AdvancedConfig {

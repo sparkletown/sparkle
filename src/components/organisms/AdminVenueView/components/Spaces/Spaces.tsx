@@ -198,7 +198,10 @@ export const Spaces: React.FC<SpacesProps> = ({
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue?.name ?? ""} />
+                <BackgroundSelect
+                  worldId={venue.worldId}
+                  venueName={venue?.name ?? ""}
+                />
               )}
             </div>
             <div>
