@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
-import * as express from "express";
 import * as admin from "firebase-admin";
-import { Request, HttpsError } from "firebase-functions/lib/providers/https";
+import { HttpsError } from "firebase-functions/lib/providers/https";
 import { fetchAuthConfig } from "./src/api/auth";
 import { addAdmin } from "./src/api/roles";
 import { assertValidUrl, assertValidVenueId } from "./src/utils/assert";
@@ -41,57 +40,62 @@ type ConnecxtI4AOAuthQueryType = {
  *
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
-export const connectI4AOAuth = functions.https.onRequest(
-  async (req: Request, res: express.Response) => {
-    const { venueId, returnOrigin } = req.query as ConnecxtI4AOAuthQueryType;
+export const connectI4AOAuth = functions.https.onRequest(async (req, res) => {
+  const { venueId, returnOrigin } = req.query as ConnecxtI4AOAuthQueryType;
 
-    assertValidVenueId(venueId, "venueId");
-    assertValidUrl(returnOrigin, "returnOrigin");
+  assertValidVenueId(venueId, "venueId");
+  assertValidUrl(returnOrigin, "returnOrigin");
 
-    const authConfig = await fetchAuthConfig(venueId);
+  const authConfig = await fetchAuthConfig(venueId);
 
-    const {
-      validReturnOrigins,
-      scope,
-      tokenHost,
-      revokePath: revokePathWithoutRedirect,
-    } = authConfig;
+  const {
+    validReturnOrigins,
+    scope,
+    tokenHost,
+    revokePath: revokePathWithoutRedirect,
+  } = authConfig;
 
-    if (!validReturnOrigins.includes(returnOrigin)) {
-      throw new HttpsError(
-        "invalid-argument",
-        "returnOrigin is not an allowed origin"
-      );
-    }
-
-    // Construct the platform URL that the revoke endpoint will redirect back to
-    const revokeReturnUrl = new URL(`/v/${venueId}`, returnOrigin).toString();
-    const revokePathWithRedirectUrl = new URL(
-      revokePathWithoutRedirect,
-      tokenHost
+  if (!validReturnOrigins.includes(returnOrigin)) {
+    throw new HttpsError(
+      "invalid-argument",
+      "returnOrigin is not an allowed origin"
     );
-    revokePathWithRedirectUrl.searchParams.set("redirect_uri", revokeReturnUrl);
-    const revokePath = `${revokePathWithRedirectUrl.pathname}${revokePathWithRedirectUrl.search}`;
-
-    const authClient = createOAuth2Client({ ...authConfig, revokePath });
-
-    // Construct the platform URL that the auth code will be returned to
-    const authCodeReturnUrl = new URL(
-      "/auth/connect/i4a/handler",
-      returnOrigin
-    );
-    authCodeReturnUrl.searchParams.set("venueId", venueId);
-    authCodeReturnUrl.searchParams.set("returnOrigin", returnOrigin);
-
-    const authorizeUrl = authClient.authorizeURL({
-      redirect_uri: authCodeReturnUrl.toString(),
-      scope,
-    });
-
-    functions.logger.log("Redirecting to authorize URL:", authorizeUrl);
-    res.redirect(authorizeUrl);
   }
-);
+
+  // Construct the platform URL that the revoke endpoint will redirect back to
+  const revokeReturnUrl = new URL(`/v/${venueId}`, returnOrigin).toString();
+  const revokePathWithRedirectUrl = new URL(
+    revokePathWithoutRedirect,
+    tokenHost
+  );
+  revokePathWithRedirectUrl.searchParams.set("redirect_uri", revokeReturnUrl);
+  const revokePath = `${revokePathWithRedirectUrl.pathname}${revokePathWithRedirectUrl.search}`;
+
+  const authClient = createOAuth2Client({ ...authConfig, revokePath });
+
+  // Construct the platform URL that the auth code will be returned to
+  const authCodeReturnUrl = new URL("/auth/connect/i4a/handler", returnOrigin);
+  authCodeReturnUrl.searchParams.set("venueId", venueId);
+  authCodeReturnUrl.searchParams.set("returnOrigin", returnOrigin);
+
+  const authorizeUrl = authClient.authorizeURL({
+    redirect_uri: authCodeReturnUrl.toString(),
+    scope,
+  });
+
+  functions.logger.log("Redirecting to authorize URL:", authorizeUrl);
+  res.redirect(authorizeUrl);
+});
+
+type I4UserMeetingInfo = {
+  email: string;
+  meeting_ids: number[];
+  event_ids: number[];
+};
+
+type I4UserInfo = {
+  id: string;
+};
 
 /**
  * Exchanges a given auth code passed in the 'code' URL query parameter for an access token,
@@ -143,7 +147,7 @@ export const connectI4AOAuthHandler = functions.https.onRequest(
     const { access_token: accessToken } = results.token;
 
     // Retrieve the user's I4A User ID
-    const { id: i4aUserId } = await getJson(i4aOAuthUserInfoUrl, {
+    const { id: i4aUserId } = await getJson<I4UserInfo>(i4aOAuthUserInfoUrl, {
       Authorization: `Bearer ${accessToken}`,
     });
 
@@ -153,10 +157,13 @@ export const connectI4AOAuthHandler = functions.https.onRequest(
       throw new HttpsError("internal", "failed to retrieve i4aUserId");
     }
 
-    const checkedMeetingResult = await postJson(i4aGetUserMeetingInfoUrl, {
-      apiKey: i4aApiKey,
-      ams_id: i4aUserId,
-    });
+    const checkedMeetingResult = await postJson<I4UserMeetingInfo>(
+      i4aGetUserMeetingInfoUrl,
+      {
+        apiKey: i4aApiKey,
+        ams_id: i4aUserId,
+      }
+    );
 
     functions.logger.log("Checked Meeting Result:", checkedMeetingResult);
 

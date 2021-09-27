@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "allowJs": true, //TODO: make it false when all files are .ts
-    "noImplicitAny": false, //TODO: make it false when all files are .ts
+    "noImplicitAny": true,
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
 

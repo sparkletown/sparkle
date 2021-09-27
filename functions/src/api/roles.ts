@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
  *
  * @param {string} adminId
  */
-export const removeAdmin = async (adminId) => {
+export const removeAdmin = async (adminId: string) => {
   await admin
     .firestore()
     .collection("roles")
@@ -18,7 +18,7 @@ export const removeAdmin = async (adminId) => {
  *
  * @param {string} newAdminId
  */
-export const addAdmin = async (newAdminId) => {
+export const addAdmin = async (newAdminId: string) => {
   await admin
     .firestore()
     .collection("roles")

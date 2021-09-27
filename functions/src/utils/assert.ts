@@ -1,12 +1,15 @@
 import * as functions from "firebase-functions";
-import { HttpsError } from "firebase-functions/lib/providers/https";
+import {
+  HttpsError,
+  CallableContext,
+} from "firebase-functions/lib/providers/https";
 
 import { isValidUrl } from "./url";
 import { checkIfValidVenueId } from "./venue";
 
 const PROJECT_ID: string = functions.config().project.id;
 
-export const assertValidAuth = (context) => {
+export const assertValidAuth = (context: CallableContext) => {
   if (!context.auth || !context.auth.token) {
     throw new HttpsError("unauthenticated", "Please log in");
   }

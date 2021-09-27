@@ -1,5 +1,15 @@
 import { AuthorizationCode } from "simple-oauth2";
 
+type CreateOAuth2ClientProps = {
+  clientId: string;
+  clientSecret: string;
+  tokenHost: string;
+  tokenPath: string;
+  revokePath: string;
+  authorizeHost: string;
+  authorizePath: string;
+};
+
 /**
  * Create a configured simple-oauth2 client.
  *
@@ -13,7 +23,7 @@ export const createOAuth2Client = ({
   revokePath,
   authorizeHost,
   authorizePath,
-}) => {
+}: CreateOAuth2ClientProps) => {
   const credentials = {
     client: {
       id: clientId,
