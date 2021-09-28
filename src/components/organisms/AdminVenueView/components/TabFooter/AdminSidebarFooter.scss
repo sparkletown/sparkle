@@ -28,16 +28,16 @@
 
   &__button {
     flex-shrink: 0;
-    flex-grow: 1;
+    flex-grow: 4;
 
     &--larger {
-      flex-grow: 1.5;
-      flex-shrink: 0;
+      flex-grow: 4;
+      flex-shrink: 0.25;
     }
 
     &--smaller {
-      flex-shrink: 0.75;
-      flex-grow: 0;
+      flex-shrink: 4;
+      flex-grow: 1;
     }
 
     &--same-size {

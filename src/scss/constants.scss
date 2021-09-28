@@ -147,7 +147,7 @@ $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 $image-input-border--error: 2px solid red;
 
 // NOTE: Magic number determined empirically to fill the footer space in default case
-$admin-ng-sidebar-footer-buttons-width--magic-number: 12.5rem;
+$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
 $admin-ng-sidebar-width--normal: 30vw;
 $admin-ng-sidebar-width--min: $admin-ng-sidebar-footer-buttons-width--magic-number;
 $admin-ng-sidebar-width--max: 30vw;
