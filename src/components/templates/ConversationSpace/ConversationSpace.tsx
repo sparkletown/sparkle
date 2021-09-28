@@ -10,7 +10,7 @@ import { openUrl, venueInsideUrl } from "utils/url";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -48,7 +48,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
 
-  useUpdateRecentSeatedTableUsers(
+  useUpdateTableRecentSeatedUsers(
     VenueTemplate.conversationspace,
     seatedAtTable && venue?.id
   );

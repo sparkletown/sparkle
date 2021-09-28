@@ -60,7 +60,6 @@ const removeDanglingSeatedUsers = async () => {
             break;
           case "jazzbar":
           case "conversationspace":
-          case "friendship":
             batch.delete(
               firestore
                 .collection("venues")
