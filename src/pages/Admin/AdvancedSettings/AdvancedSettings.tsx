@@ -64,7 +64,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         ...data,
       },
       user
-    );
+    ).catch((e) => console.error(AdvancedSettings.name, e));
 
     onSave();
   };
