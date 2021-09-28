@@ -3,8 +3,7 @@
 .ScheduleItem {
   display: flex;
   padding: 10px 16px;
-  margin-top: 10px;
-  margin: 10px -16px 0px -16px;
+
   &:hover {
     background: $dark;
   }
