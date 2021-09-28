@@ -14,6 +14,12 @@ import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import defaultAvatar1 from "assets/avatars/default-profile-pic-1.png";
+import defaultAvatar2 from "assets/avatars/default-profile-pic-2.png";
+import defaultAvatar3 from "assets/avatars/default-profile-pic-3.png";
+import defaultAvatar4 from "assets/avatars/default-profile-pic-4.png";
+import defaultAvatar5 from "assets/avatars/default-profile-pic-5.png";
+import defaultAvatar6 from "assets/avatars/default-profile-pic-6.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
@@ -550,12 +556,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
-  "/avatars/default-profile-pic-5.png",
-  "/avatars/default-profile-pic-6.png",
+  defaultAvatar1,
+  defaultAvatar2,
+  defaultAvatar3,
+  defaultAvatar4,
+  defaultAvatar5,
+  defaultAvatar6,
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
