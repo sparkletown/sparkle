@@ -1,12 +1,16 @@
 import React, { CSSProperties, useMemo } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 import { format } from "date-fns";
 
-import { IFRAME_ALLOW } from "settings";
+import { DEFAULT_VENUE_BANNER_COLOR, IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
+
+import { useValidImage } from "hooks/useCheckImage";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -79,6 +83,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
             </span>
             <MapPreview
               isEditing
+              worldId={partyMapVenue.worldId}
               venueId={partyMapVenue.id}
               venueName={partyMapVenue.name}
               mapBackground={partyMapVenue.mapBackgroundImageUrl}
@@ -92,6 +97,18 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   }, [venue]);
 
   const venueTypeText = infoTextByVenue[venue.template] ?? "Experience Info:";
+
+  const [validBannerImageUrl] = useValidImage(
+    venue.config?.landingPageConfig.bannerImageUrl ??
+      venue.config?.landingPageConfig.coverImageUrl,
+    DEFAULT_VENUE_BANNER_COLOR
+  );
+
+  const imageVars = useCss({
+    background: `url("${validBannerImageUrl}")`,
+  });
+
+  const imageClasses = classNames("icon", imageVars);
 
   return (
     <div style={containerStyle}>
@@ -150,14 +167,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               Banner photo
             </div>
             <div className="content">
-              <img
-                className="icon"
-                src={
-                  venue.config?.landingPageConfig.bannerImageUrl ??
-                  venue.config?.landingPageConfig.coverImageUrl
-                }
-                alt="icon"
-              />
+              <div className={imageClasses} />
             </div>
           </div>
           {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}

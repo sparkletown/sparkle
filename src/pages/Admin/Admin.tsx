@@ -20,14 +20,20 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { DEFAULT_VENUE } from "settings";
+import {
+  ADMIN_V1_CREATE_URL,
+  ADMIN_V1_EDIT_URL,
+  ADMIN_V1_ROOMS_URL,
+  ADMIN_V1_ROOT_URL,
+  DEFAULT_VENUE,
+} from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { adminOGRootUrl, venueInsideUrl } from "utils/url";
+import { venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -119,7 +125,7 @@ const VenueList: React.FC<VenueListProps> = ({
         />
       </div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin/venue/creation" className="btn btn-primary">
+        <Link to={ADMIN_V1_CREATE_URL} className="btn btn-primary">
           Create a venue
         </Link>
       </div>
@@ -131,7 +137,7 @@ const VenueList: React.FC<VenueListProps> = ({
               canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
-            <Link to={`/admin/${venue.id}`}>{venue.name}</Link>
+            <Link to={`${ADMIN_V1_ROOT_URL}/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms?.map((room, idx) => (
@@ -139,7 +145,9 @@ const VenueList: React.FC<VenueListProps> = ({
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
-                    <Link to={`/admin/${venue.id}?roomIndex=${idx}`}>
+                    <Link
+                      to={`${ADMIN_V1_ROOT_URL}/${venue.id}?roomIndex=${idx}`}
+                    >
                       {room.title}
                     </Link>
                   </li>
@@ -287,7 +295,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   const navigateToAdmin = useCallback(() => {
-    history.push(adminOGRootUrl);
+    history.push(ADMIN_V1_ROOT_URL);
   }, [history]);
 
   useEffect(() => {
@@ -332,14 +340,14 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               Visit space
             </Link>
             <Link
-              to={`/admin/venue/edit/${venue.id}`}
+              to={`${ADMIN_V1_EDIT_URL}/${venue.id}`}
               className="btn btn-block"
             >
               Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
-                to={`/admin/venue/rooms/${venue.id}`}
+                to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
                 className="btn btn-block"
               >
                 Add a Room
@@ -347,7 +355,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             )}
             {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
               <Link
-                to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
+                to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
               >
                 Edit Room
@@ -426,7 +434,7 @@ export const Admin: React.FC = () => {
   // @debt deliberately returning AdminRestricted before redirect as to keep original logic/behavior. Ideally they'd be in reverse
   if (!user) {
     return (
-      <WithNavigationBar hasBackButton={false}>
+      <WithNavigationBar>
         <AdminRestricted>
           <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
         </AdminRestricted>
@@ -435,7 +443,7 @@ export const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
+    <WithNavigationBar>
       <AdminRestricted>
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">

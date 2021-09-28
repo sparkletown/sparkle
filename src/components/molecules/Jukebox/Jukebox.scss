@@ -8,6 +8,7 @@ $jukebox-chat-max-height: 150px;
     width: 100%;
     height: 35%;
     margin: $spacing--lg;
+    z-index: z(jukebox-content);
   }
 
   &__chat {

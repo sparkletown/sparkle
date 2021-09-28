@@ -1,4 +1,4 @@
-import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import * as ActionTypes from "./actionTypes";
 import {
@@ -10,7 +10,7 @@ import {
 } from "./types";
 
 export const initialState = {
-  bannerImageUrl: DEFAULT_VENUE_BANNER,
+  bannerImageUrl: "",
   logoImageUrl: DEFAULT_VENUE_LOGO,
   name: "",
   subtitle: "",

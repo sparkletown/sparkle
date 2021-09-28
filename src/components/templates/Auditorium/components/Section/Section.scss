@@ -15,6 +15,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 .Section {
   background-attachment: fixed;
   background-position: center;
+  background-size: cover;
 
   position: relative;
   overflow: auto;

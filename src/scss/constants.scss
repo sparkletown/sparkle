@@ -27,6 +27,7 @@ $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
 $modal-background--confirm: #232225;
+$announcement-background: rgba(39, 35, 34, 0.9);
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
@@ -79,6 +80,10 @@ $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
+$announcement-container-width-admin: 600px;
+$announcement-container-width: 470px;
+$announcement-container-height: 140px;
+$announcement-banner-admin-height: 55px;
 $admin-ng-sidebar-width--normal: 20%;
 $admin-ng-sidebar-width--min: 360px;
 $admin-ng-tab-footer-height--max: 64px;
@@ -112,8 +117,10 @@ $spacing--md: 12px;
 $spacing--lg: 16px;
 $spacing--xl: 24px;
 $spacing--xxl: 30px;
+$spacing--xxxl: 40px;
 
 $submit-button-diameter: 44px;
+$announce-button-width: 136px;
 
 $font-size--xxs: 10px;
 $font-size--xs: 11px;
@@ -159,7 +166,16 @@ $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
+$z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
+$z-layer-art-content: 5;
+$z-layer-on-top-bg: 1;
+$z-layer-jazz-header: $z-layer-on-top-bg;
+$z-layer-user-list-label: $z-layer-on-top-bg;
+$z-layer-embed-iframe: $z-layer-on-top-bg;
+$z-layer-external-message: $z-layer-on-top-bg;
+$z-layer-auditorium-iframe: $z-layer-on-top-bg;
+$z-layer-jukebox: $z-layer-on-top-bg;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -173,6 +189,8 @@ $z-layers: (
   admin-venue-header: -1,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
+  jazzbar-header: $z-layer-jazz-header,
+  jukebox-content: $z-layer-jukebox,
   // Chat
   chatbox-chat-container: $z-layer-sidebar,
   chat-drawer-container: $z-layer-sidebar,
@@ -205,6 +223,8 @@ $z-layers: (
   // UserReactions
   user-reactions-shout: 2,
   user-reactions-emoji: 1,
+  // UserList
+  user-list-label: $z-layer-user-list-label,
   // Map
   map-room--hovered: 7,
   map-avatar: 6,
@@ -217,8 +237,17 @@ $z-layers: (
   account-profile-picture-preview: 1,
   duststorm-container: 100,
   duststorm-modal-content: 220,
+  // Announcement banner
+  announcement-banner: $z-layer-announcement-banner,
+  // ArtPiece
+  art-content: $z-layer-art-content,
+  // Embeddable
+  embeddable-iframe: $z-layer-embed-iframe,
+  // Auditorium
+  auditorium-iframe: $z-layer-auditorium-iframe,
+  // External Link
+  external-message: $z-layer-external-message,
   // Unsorted
-  announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,

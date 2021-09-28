@@ -108,7 +108,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
       roomVisibility: venue.roomVisibility,
@@ -125,6 +124,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     updateVenue_v2(
       {
         name: venue.name,
+        worldId: venue.worldId,
         ...data,
       },
       user
@@ -223,32 +223,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     </S.ItemWrapper>
   );
 
-  const renderAnnouncementInput = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Venue announcement</S.ItemTitle>
-        </S.TitleWrapper>
-        <S.ItemSubtitle>
-          Show an announcement in the venue (or leave blank for none)
-        </S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control
-          name="bannerMessage"
-          placeholder="Enter your announcement"
-          ref={register}
-          custom
-          type="text"
-        />
-        {errors.bannerMessage && (
-          <span className="input-error">{errors.bannerMessage.message}</span>
-        )}
-      </S.ItemBody>
-    </S.ItemWrapper>
-  );
-
   const renderAttendeesTitleInput = () => (
     <S.ItemWrapper>
       <S.ItemHeader>
@@ -304,7 +278,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       <h1>Advanced settings</h1>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-        {renderAnnouncementInput()}
         {renderAttendeesTitleInput()}
         {renderChatTitleInput()}
 

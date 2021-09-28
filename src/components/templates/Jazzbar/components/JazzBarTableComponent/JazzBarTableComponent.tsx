@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -18,8 +18,6 @@ import "./JazzBarTableComponent.scss";
 export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
-  nameOfVideoRoom,
-  experienceName,
   imageSize = 50,
   table,
   tableLocked,
@@ -27,33 +25,8 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
   const { openUserProfileModal } = useProfileModalControls();
   const venue = useSelector(currentVenueSelector);
   const locked = tableLocked(table.reference);
-  const usersSeatedAtTable = useMemo(
-    () =>
-      users.filter((u) => u.data?.[experienceName]?.table === table.reference),
-    [users, experienceName, table]
-  );
 
-  const renderedUsersSeatedAtTable = useMemo(
-    () =>
-      usersSeatedAtTable.map((user) => (
-        <img
-          onClick={() => openUserProfileModal(user.id)}
-          key={user.id}
-          className="profile-icon table-participant-picture"
-          src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
-          title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
-          alt={`${
-            (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
-          } profile`}
-          width={imageSize}
-          height={imageSize}
-        />
-      )),
-    [usersSeatedAtTable, imageSize, openUserProfileModal]
-  );
-
-  const numberOfSeatsLeft =
-    table.capacity && table.capacity - usersSeatedAtTable.length;
+  const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;
 
   return (
@@ -64,19 +37,28 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
         </div>
         <div className="table-number">{table.title}</div>
 
-        {usersSeatedAtTable &&
-          usersSeatedAtTable.length >= 0 &&
-          renderedUsersSeatedAtTable}
+        {users.map((user) => (
+          <img
+            onClick={() => openUserProfileModal(user.id)}
+            key={user.id}
+            className="profile-icon table-participant-picture"
+            src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
+            title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
+            alt={`${
+              (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
+            } profile`}
+            width={imageSize}
+            height={imageSize}
+          />
+        ))}
 
-        {usersSeatedAtTable &&
+        {users &&
           table.capacity &&
-          table.capacity - usersSeatedAtTable.length >= 0 &&
-          [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
+          table.capacity - users.length >= 0 &&
+          [...Array(table.capacity - users.length)].map((e, i) => (
             <span
               key={i}
-              onClick={() =>
-                onJoinClicked(table.reference, locked, nameOfVideoRoom)
-              }
+              onClick={() => onJoinClicked(table.reference, locked)}
               id={`join-table-${venue?.name}-${table.reference}`}
               className="add-participant-button"
             >
