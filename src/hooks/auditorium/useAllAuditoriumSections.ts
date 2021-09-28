@@ -41,6 +41,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
+  console.log(sections);
 
   const enterSection = useCallback(
     (sectionId: string) => {

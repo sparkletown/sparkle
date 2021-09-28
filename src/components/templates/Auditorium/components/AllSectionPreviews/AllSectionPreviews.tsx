@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import { useEffectOnce } from "react-use";
 import classNames from "classnames";
+import firebase from "firebase/app";
 import { sample } from "lodash";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
@@ -32,6 +34,11 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 }) => {
   const { push: openUrlUsingRouter } = useHistory();
 
+  useEffectOnce(() => {
+    firebase
+      .functions()
+      .httpsCallable("scheduled-updateSeatedUsersCountInAuditorium")();
+  });
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,
   });

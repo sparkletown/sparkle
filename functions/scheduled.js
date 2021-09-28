@@ -7,8 +7,8 @@ const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
-const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 5000;
-const BATCH_MAX_OPS = 250;
+const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 60 * 1000;
+const BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
   const firestore = admin.firestore();
@@ -21,10 +21,11 @@ const removeDanglingSeatedUsers = async () => {
     .where("lastSittingTimeMs", "<", expiredSittingTimeMs)
     .get();
 
+  let removedUsersCount = 0;
   return Promise.all(
-    chunk(recentSeatedUsers, BATCH_MAX_OPS).map((useDocsBatch) => {
+    chunk(recentSeatedUsers, BATCH_MAX_OPS / 2).map((userDocsBatch) => {
       const batch = firestore.batch();
-      useDocsBatch.forEach((userDoc) => {
+      userDocsBatch.forEach((userDoc) => {
         const seatedUserData = userDoc.data();
         const userId = userDoc.id;
         const venueId = seatedUserData.venueId;
@@ -36,10 +37,7 @@ const removeDanglingSeatedUsers = async () => {
             .collection("recentSeatedUsers")
             .doc(userId)
         );
-        console.log(
-          "[scheduled-updateSeatedUsersCountInAuditorium] " +
-            `Deleted /venues/${venueId}/recentSeatedUsers/${userId}`
-        );
+        removedUsersCount += 1;
 
         switch (seatedUserData.template) {
           case "auditorium":
@@ -52,11 +50,6 @@ const removeDanglingSeatedUsers = async () => {
                 .collection("seatedSectionUsers")
                 .doc(userId)
             );
-            console.log(
-              "[scheduled-updateSeatedUsersCountInAuditorium] " +
-                `Deleted from ${seatedUserData.template} /venues/${venueId}/sections/` +
-                `${seatedUserData.venueSpecificData.sectionId}/seatedSectionUsers/${userId}`
-            );
             break;
           case "jazzbar":
           case "conversationspace":
@@ -68,10 +61,6 @@ const removeDanglingSeatedUsers = async () => {
                 .collection("seatedTableUsers")
                 .doc(userId)
             );
-            console.log(
-              "[scheduled-updateSeatedUsersCountInAuditorium] " +
-                `Deleted from ${seatedUserData.template} /venues/${venueId}/seatedTableUsers/${userId}`
-            );
             break;
           default:
             console.warn(
@@ -82,14 +71,18 @@ const removeDanglingSeatedUsers = async () => {
       });
       return batch.commit();
     })
-  );
+  ).then(() => console.log(`Removed ${removedUsersCount} dangling users`));
 };
 
-exports.updateSeatedUsersCountInAuditorium = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
+exports.updateSeatedUsersCountInAuditorium = functions.https.onCall(
+  async () => {
+    // functions.pubsub
+    // .schedule("every 5 minutes")
+    // .onRun(async () => {
+    await removeDanglingSeatedUsers();
+
     const firestore = admin.firestore();
-    let batches = [firestore.batch()];
+    let batches = [{ batch: firestore.batch(), updatesCount: 0 }];
 
     const bySectionByAuditorium = await firestore
       .collectionGroup("seatedSectionUsers")
@@ -112,30 +105,29 @@ exports.updateSeatedUsersCountInAuditorium = functions.pubsub
         return bySectionByAuditorium;
       });
 
+    let updatedSectionsCount = 0;
     Object.entries(bySectionByAuditorium).forEach(([venueId, bySection]) => {
       Object.entries(bySection).forEach(([sectionId, seatedUsers]) => {
-        if (seatedUsers.length <= 0) return;
-
+        console.log(
+          `/venues/${venueId}/sections/${sectionId}/seatedSectionUsers length ${seatedUsers.length}`
+        );
         const seatedUsersCount = seatedUsers.length;
         const seatedUsersSample = seatedUsers.splice(
           0,
           SECTION_PREVIEW_USER_DISPLAY_COUNT
         );
 
-        console.log(
-          `[scheduled-updateSeatedUsersCountInAuditorium] /venues/${venueId}/sections/${sectionId}:`
-        );
-        console.log(
-          `{\n\tseatedUsersCount: ${seatedUsersCount},\n\tseatedUsersSample: ${seatedUsersSample.map(
-            (u) => u.id
-          )}\n}`
-        );
-        let batch = batches[batches.length - 1];
-        if (batch._ops.length === BATCH_MAX_OPS) {
+        let { batch, updatesCount } = batches.pop();
+        if (updatesCount === BATCH_MAX_OPS) {
+          batches.push({ batch, updatesCount });
+
           batch = firestore.batch();
-          batches.push(batch);
+          updatesCount = 0;
         }
 
+        batches.push({ batch, updatesCount: updatesCount + 1 });
+
+        updatedSectionsCount += 1;
         batch.update(
           firestore
             .collection("venues")
@@ -150,9 +142,10 @@ exports.updateSeatedUsersCountInAuditorium = functions.pubsub
       });
     });
 
-    await Promise.all(batches.map((b) => b.commit()));
-    return await removeDanglingSeatedUsers();
-  });
+    console.log(`Updated ${updatedSectionsCount} sections`);
+    return await Promise.all(batches.map(({ batch }) => batch.commit()));
+  }
+);
 
 exports.aggregateUsersLocationsInVenue = functions.pubsub
   .schedule("every 5 minutes")

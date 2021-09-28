@@ -8,6 +8,7 @@ import {
   makeScriptUsage,
   parseCredentialFile,
 } from "./lib/helpers";
+import { DocumentData, QueryDocumentSnapshot } from "./lib/types";
 
 const sleep: (ms: number) => Promise<void> = (ms) => {
   return new Promise((resolve) => {
@@ -16,14 +17,14 @@ const sleep: (ms: number) => Promise<void> = (ms) => {
 };
 
 const usage = makeScriptUsage({
-  description: "Update users recent seat time for auditorium",
-  usageParams: "{venueId} {credentials_path}",
-  exampleParams: "myauditorium co-reality-staging-30f7b0b5de9a.json",
+  description: "Update users recent seat time for all auditoriums",
+  usageParams: "/path/to/credentials.json",
+  exampleParams: "co-reality-staging-30f7b0b5de9a.json",
 });
 
-const [venueId, credentialPath] = process.argv.slice(2);
+const [credentialPath] = process.argv.slice(2);
 
-if (!venueId || !credentialPath) {
+if (!credentialPath) {
   usage();
   process.exit(1);
 }
@@ -46,64 +47,50 @@ process.on("SIGINT", () => {
 
 const app = initFirebaseAdminApp(projectId, { credentialPath });
 
+const now = Date.now();
+
 (async () => {
-  const venueDoc = await app
+  const { docs: userDocs } = await app
     .firestore()
-    .collection("venues")
-    .doc(venueId)
+    .collectionGroup("seatedSectionUsers")
     .get();
 
-  if (!venueDoc || !venueDoc.exists) {
-    console.log(`Venue ${venueId} does not exist. Exiting...`);
-    return;
-  }
-
-  const { docs: sectionDocs } = await venueDoc.ref.collection("sections").get();
-
-  console.log(`Found ${sectionDocs.length} sections...`);
-  await sleep(500);
-
-  const usersDocArray = await Promise.all(
-    sectionDocs.map((s) =>
-      s.ref
-        .collection("seatedSectionUsers")
-        .get()
-        .then(({ docs }) => ({ docs, sectionId: s.id }))
-    )
-  );
-  const userDocs = usersDocArray.flatMap(({ sectionId, docs }) =>
-    docs.map((user) => ({ user, sectionId }))
-  );
-
-  console.log(`Found ${userDocs.length} users...\n`);
+  console.log(`Found ${userDocs.length} seated users in auditoriums...`);
   await sleep(500);
 
   await Promise.all(
-    chunk(userDocs, 500).map((userDocsChunk) => {
-      const batch = app.firestore().batch();
-      userDocsChunk.forEach(({ user, sectionId }) => {
-        const withTimestamp = {
-          template: "auditorium",
-          venueId,
-          venueSpecificData: {
-            sectionId,
-          },
-          lastSittingTimeMs: Date.now(),
-        };
+    chunk(userDocs, 500).map(
+      (userDocsChunk: QueryDocumentSnapshot<DocumentData>[]) => {
+        const batch = app.firestore().batch();
+        userDocsChunk.forEach((userDoc) => {
+          const { path } = userDoc.data();
+          const { sectionId, venueId } = path;
+          if (!sectionId || !venueId)
+            console.warn(`Invalid path in user ${userDoc.id}`);
 
-        batch.set(
-          app
-            .firestore()
-            .collection("venues")
-            .doc(venueId)
-            .collection("recentSeatedUsers")
-            .doc(user.id),
-          withTimestamp
-        );
-      });
+          const withTimestamp = {
+            template: "auditorium",
+            venueId,
+            venueSpecificData: {
+              sectionId,
+            },
+            lastSittingTimeMs: now,
+          };
 
-      console.log(`Staging ${userDocsChunk.length} users for update...`);
-      return batch.commit();
-    })
+          batch.set(
+            app
+              .firestore()
+              .collection("venues")
+              .doc(venueId)
+              .collection("recentSeatedUsers")
+              .doc(userDoc.id),
+            withTimestamp
+          );
+        });
+
+        console.log(`Staging ${userDocsChunk.length} users for update...`);
+        return batch.commit();
+      }
+    )
   );
 })();
