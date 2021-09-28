@@ -2,7 +2,7 @@
 
 .ScheduleItem {
   display: flex;
-  padding: 10px 16px;
+  padding: 10px $spacing--lg;
 
   &:hover {
     background: $dark;

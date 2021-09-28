@@ -196,11 +196,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       )}
 
       {showRoomEvents && (
-        <div className="RoomModal__events">
+        <>
           <div className="RoomModal__title">Room Schedule</div>
-
-          {renderedRoomEvents}
-        </div>
+          <div className="RoomModal__events">{renderedRoomEvents}</div>
+        </>
       )}
     </>
   );
