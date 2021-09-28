@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -33,12 +33,17 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 }) => {
   const [spaceValue, setSpaceValue] = useState<string>(defaultSpace);
 
+  const getSpaceIcon = useCallback(
+    (spaceTemplate) =>
+      venueSpacesList.find(
+        (venueSpace) => venueSpace.template === spaceTemplate
+      )?.icon,
+    []
+  );
+
   const spaceOptions = useMemo(() => {
     const options = venueSpaces.map((space) => {
-      const venueSpaceIcon = venueSpacesList.find(
-        (venueSpace) => venueSpace.template === space.template
-      )?.icon;
-
+      const spaceIcon = getSpaceIcon(space.template);
       return (
         <ReactBootstrapDropdown.Item
           key={space.title}
@@ -49,8 +54,8 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           className="SpacesDropdown__item"
         >
           <img
-            alt={`space-icon-${venueSpaceIcon}`}
-            src={venueSpaceIcon}
+            alt={`space-icon-${spaceIcon}`}
+            src={spaceIcon}
             className="SpacesDropdown__item-icon"
           />
           {space.title}
@@ -73,27 +78,25 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     );
 
     return [...options, createSpaceOption];
-  }, [venueSpaces, setValue, fieldName, venueId]);
+  }, [venueSpaces, setValue, fieldName, venueId, getSpaceIcon]);
 
   const renderSpaceValue = useMemo(() => {
     if (!spaceValue) return;
 
     const space = venueSpaces.find((space) => space.title === spaceValue);
-    const venueSpaceIcon = venueSpacesList.find(
-      (venueSpace) => venueSpace.template === space?.template
-    )?.icon;
+    const spaceIcon = getSpaceIcon(space?.template);
 
     return (
       <span className="SpacesDropdown__value">
         <img
-          alt={`space-icon-${venueSpaceIcon}`}
-          src={venueSpaceIcon}
+          alt={`space-icon-${spaceIcon}`}
+          src={spaceIcon}
           className="SpacesDropdown__item-icon"
         />
         {spaceValue}
       </span>
     );
-  }, [venueSpaces, spaceValue]);
+  }, [venueSpaces, spaceValue, getSpaceIcon]);
 
   return (
     <div className={classNames("SpacesDropdown", containerClassName)}>
