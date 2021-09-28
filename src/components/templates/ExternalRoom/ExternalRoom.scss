@@ -15,10 +15,11 @@ $text-width: 50rem;
   flex-direction: column;
 
   &__container {
+    margin-top: $spacing--xl;
     display: flex;
     flex-direction: column;
     align-items: center;
-    z-index: 15;
+    z-index: z(external-message);
   }
 
   &__link {

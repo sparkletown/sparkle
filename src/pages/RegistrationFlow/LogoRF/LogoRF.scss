@@ -1,10 +1,31 @@
 @import "scss/constants.scss";
 
+$logo-icon-top-margin: 50px;
+$logo-icon-right-margin: 6px;
+$logo-icon-right-height: 19px;
+
 .LogoRF {
   padding: 0;
+  display: flex;
 
-  &,
   &__logo {
-    @include square-size(96px);
+    &-small {
+      &--left-top {
+        margin-right: -($spacing--lg);
+        width: $spacing--lg;
+        height: $spacing--xl;
+      }
+      &--left-bottom {
+        margin-top: $logo-icon-top-margin;
+        width: $spacing--lg;
+        height: $spacing--xl;
+        margin-right: -($logo-icon-right-margin);
+      }
+      &--right-top {
+        margin-left: -($logo-icon-right-margin);
+        height: $logo-icon-right-height;
+        width: $spacing--md;
+      }
+    }
   }
 }

@@ -25,7 +25,7 @@ export interface ExternalRoomProps {
 }
 
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
-  const redirectUrl = venue.zoomUrl ?? "test";
+  const redirectUrl = venue.zoomUrl;
 
   const venueLogoVars = useCss({
     "background-image": `url(${venue.host?.icon})`,
