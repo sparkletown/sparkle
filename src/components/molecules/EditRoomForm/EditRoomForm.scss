@@ -6,20 +6,12 @@
   flex-direction: column;
   justify-content: space-between;
 
-  &__room {
+  &__content {
     padding: $spacing--xl;
   }
 
-  &__footer {
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    flex-direction: row;
-    justify-content: space-between;
-    width: $admin-ng-sidebar-width--normal;
-    padding: $spacing--md;
-    margin-bottom: $footer-height;
-    background-color: $black;
-    border-top: 1px solid opaque-white(0.2);
+  .AdminSidebarFooter__buttons {
+    // NOTE: Magic number determined empirically to fill the footer space in just this one case
+    width: 2 * $admin-ng-sidebar-footer-buttons-width--magic-number - 1;
   }
 }

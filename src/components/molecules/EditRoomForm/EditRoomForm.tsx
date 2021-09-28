@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
@@ -13,13 +13,17 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/TabFooter";
+import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/TabFooter/AdminSidebarFooter";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 
 import "./EditRoomForm.scss";
 
-interface EditRoomFormProps {
+interface EditRoomFormProps extends AdminSidebarFooterProps {
   room: RoomData_v2;
   updatedRoom: RoomData_v2;
   roomIndex: number;
@@ -37,6 +41,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   onDelete,
   onEdit,
   venueVisibility,
+  ...sidebarFooterProps
 }) => {
   const { user } = useUser();
 
@@ -92,88 +97,90 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   }, [onBackClick, roomIndex]);
 
   return (
-    <Form onSubmit={handleSubmit(updateSelectedRoom)}>
-      <div className="EditRoomForm">
-        <div className="EditRoomForm__room">
-          <Form.Label>Room type</Form.Label>
-          <InputField
-            name="template"
-            type="text"
-            autoComplete="off"
-            placeholder="Room template"
-            error={errors.template}
-            ref={register()}
-            disabled
-          />
+    <Form className="EditRoomForm" onSubmit={handleSubmit(updateSelectedRoom)}>
+      <AdminSidebarFooter
+        {...sidebarFooterProps}
+        onClickCancel={handleBackClick}
+      >
+        <ButtonNG
+          className="AdminSidebarFooter__button--larger"
+          type="submit"
+          variant="primary"
+          disabled={isUpdating || isDeleting}
+        >
+          Save changes
+        </ButtonNG>
+      </AdminSidebarFooter>
+      <div className="EditRoomForm__content">
+        <Form.Label>Room type</Form.Label>
+        <InputField
+          name="template"
+          type="text"
+          autoComplete="off"
+          placeholder="Room template"
+          error={errors.template}
+          ref={register()}
+          disabled
+        />
 
-          <Form.Label>Room name</Form.Label>
-          <InputField
-            name="title"
-            type="text"
-            autoComplete="off"
-            placeholder="Room name"
-            error={errors.title}
-            ref={register()}
-          />
+        <Form.Label>Room name</Form.Label>
+        <InputField
+          name="title"
+          type="text"
+          autoComplete="off"
+          placeholder="Room name"
+          error={errors.title}
+          ref={register()}
+        />
 
-          <Form.Label>Room tagline</Form.Label>
-          <InputField
-            name="description"
-            type="text"
-            autoComplete="off"
-            placeholder="Description"
-            error={errors.description}
-            ref={register()}
-          />
+        <Form.Label>Room tagline</Form.Label>
+        <InputField
+          name="description"
+          type="text"
+          autoComplete="off"
+          placeholder="Description"
+          error={errors.description}
+          ref={register()}
+        />
 
-          <Form.Label>Room url</Form.Label>
-          <InputField
-            name="url"
-            type="text"
-            autoComplete="off"
-            placeholder="Room url"
-            error={errors.url}
-            ref={register()}
-          />
+        <Form.Label>Room url</Form.Label>
+        <InputField
+          name="url"
+          type="text"
+          autoComplete="off"
+          placeholder="Room url"
+          error={errors.url}
+          ref={register()}
+        />
 
-          <Form.Label>Room image:</Form.Label>
-          <ImageInput
-            onChange={handleImageChange}
-            name="image"
-            setValue={setValue}
-            register={register}
-            small
-            nameWithUnderscore
-            imgUrl={room.image_url}
-          />
-          {errors.image_url && (
-            <span className="input-error">{errors.image_url.message}</span>
-          )}
+        <Form.Label>Room image:</Form.Label>
+        <ImageInput
+          onChange={handleImageChange}
+          name="image"
+          setValue={setValue}
+          register={register}
+          small
+          nameWithUnderscore
+          imgUrl={room.image_url}
+        />
+        {errors.image_url && (
+          <span className="input-error">{errors.image_url.message}</span>
+        )}
 
-          <Form.Label>
-            Change label appearance (overrides global settings)
-          </Form.Label>
-          <PortalVisibility register={register} />
+        <Form.Label>
+          Change label appearance (overrides global settings)
+        </Form.Label>
+        <PortalVisibility register={register} />
 
-          <Button
-            disabled={isUpdating || isDeleting}
-            onClick={deleteSelectedRoom}
-          >
-            Delete room
-          </Button>
-          {error && <div>Error: {error}</div>}
-        </div>
-
-        <div className="EditRoomForm__footer">
-          <Button onClick={handleBackClick}>Back</Button>
-          <Button
-            className="confirm-button"
-            type="submit"
-            disabled={isUpdating || isDeleting}
-          >
-            Save changes
-          </Button>
-        </div>
+        <ButtonNG
+          disabled={isUpdating || isDeleting}
+          loading={isUpdating || isDeleting}
+          onClick={deleteSelectedRoom}
+          variant="danger"
+        >
+          Delete room
+        </ButtonNG>
+        {error && <div>Error: {error}</div>}
       </div>
     </Form>
   );

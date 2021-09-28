@@ -12,12 +12,12 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
-import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/TabFooter";
+import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/TabFooter/AdminSidebarFooter";
 
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
@@ -84,7 +84,7 @@ const venueRooms: VenueRooms[] = [
   },
 ];
 
-interface SpacesProps extends TabNavigationProps {
+interface SpacesProps extends AdminSidebarFooterProps {
   venue: WithId<AnyVenue>;
 }
 
@@ -92,7 +92,7 @@ const emptyRoomsArray: RoomData_v2[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({
   venue,
-  ...tabNavigationProps
+  ...sidebarFooterProps
 }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
   const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
@@ -182,11 +182,12 @@ export const Spaces: React.FC<SpacesProps> = ({
             onBackClick={clearSelectedRoom}
             onDelete={clearSelectedRoom}
             onEdit={clearSelectedRoom}
+            onClickHome={sidebarFooterProps.onClickHome}
           />
         ) : (
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
-            <TabFooter {...tabNavigationProps} />
+            <AdminSidebarFooter {...sidebarFooterProps} />
             <div>
               <div
                 className="Spaces__venue-rooms"
