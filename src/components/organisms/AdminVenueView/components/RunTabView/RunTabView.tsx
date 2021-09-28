@@ -62,6 +62,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
             isEditing
+            worldId={venue.worldId}
             venueId={venue.id}
             venueName={venue.name}
             mapBackground={venue.mapBackgroundImageUrl}

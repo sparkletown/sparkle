@@ -83,7 +83,7 @@ export const AdminAdvancedSettings: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar>
       <AdminRestricted>
         <div className="AdminAdvancedSettings">
           <div className="AdminAdvancedSettings__options">
