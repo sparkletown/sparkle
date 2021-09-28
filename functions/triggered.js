@@ -4,8 +4,8 @@ const functions = require("firebase-functions");
 
 exports.incrementSectionsCount = functions.firestore
   .document("venues/{venueId}/sections/{sectionId}")
-  .onCreate((change, context) => {
-    const venueRef = admin
+  .onCreate(async (change, context) => {
+    const venueRef = await admin
       .firestore()
       .collection("venues")
       .doc(context.params.venueId);
@@ -17,8 +17,8 @@ exports.incrementSectionsCount = functions.firestore
 
 exports.decrementSectionsCount = functions.firestore
   .document("venues/{venueId}/sections/{sectionId}")
-  .onDelete((change, context) => {
-    const venueRef = admin
+  .onDelete(async (change, context) => {
+    const venueRef = await admin
       .firestore()
       .collection("venues")
       .doc(context.params.venueId);
