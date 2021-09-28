@@ -77,6 +77,7 @@ const now = Date.now();
             lastSittingTimeMs: now,
           };
 
+          console.log(userDoc.id);
           batch.set(
             app
               .firestore()

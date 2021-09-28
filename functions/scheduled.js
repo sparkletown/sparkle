@@ -2,7 +2,14 @@ const admin = require("firebase-admin");
 
 const functions = require("firebase-functions");
 
-const { chunk, sampleSize, groupBy } = require("lodash");
+const {
+  chunk,
+  sampleSize,
+  groupBy,
+  uniq,
+  differenceWith,
+  flatten,
+} = require("lodash");
 const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
@@ -74,17 +81,17 @@ const removeDanglingSeatedUsers = async () => {
   ).then(() => console.log(`Removed ${removedUsersCount} dangling users`));
 };
 
-exports.updateSeatedUsersCountInAuditorium = functions.https.onCall(
-  async () => {
-    // functions.pubsub
-    // .schedule("every 5 minutes")
-    // .onRun(async () => {
+exports.updateSeatedUsersCountInAuditorium =
+  // functions.https.onCall(async () => {
+  functions.pubsub.schedule("every 5 minutes").onRun(async () => {
     await removeDanglingSeatedUsers();
 
     const firestore = admin.firestore();
-    let batches = [{ batch: firestore.batch(), updatesCount: 0 }];
+    let updateOccupiedPromises = [
+      { batch: firestore.batch(), updatesCount: 0 },
+    ];
 
-    const bySectionByAuditorium = await firestore
+    const { bySectionByAuditorium, allOccupiedSectionIds } = await firestore
       .collectionGroup("seatedSectionUsers")
       .get()
       .then(({ docs }) => {
@@ -102,32 +109,83 @@ exports.updateSeatedUsersCountInAuditorium = functions.https.onCall(
           );
         }
 
-        return bySectionByAuditorium;
+        const allOccupiedSectionIds = uniq(
+          seatedUsers.map((u) => u.path.sectionId)
+        );
+
+        return { bySectionByAuditorium, allOccupiedSectionIds };
       });
 
-    let updatedSectionsCount = 0;
+    const { docs: auditoriums } = await admin
+      .firestore()
+      .collection("venues")
+      .where("template", "==", "auditorium")
+      .get();
+
+    const allSectionIds = flatten(
+      await Promise.all(
+        auditoriums.map((auditorium) =>
+          auditorium.ref
+            .collection("sections")
+            .get()
+            .then(({ docs: sections }) =>
+              sections.map((s) => ({ sectionId: s.id, venueId: auditorium.id }))
+            )
+        )
+      )
+    );
+
+    const allEmptySectionIds = differenceWith(
+      allSectionIds,
+      allOccupiedSectionIds,
+      ({ sectionId }, otherSectionId) => sectionId === otherSectionId
+    );
+
+    let updateEmptySectionsCount = 0;
+    const updateEmptyPromises = chunk(allEmptySectionIds, BATCH_MAX_OPS).map(
+      (emptySections) => {
+        const batch = firestore.batch();
+
+        emptySections.forEach(({ sectionId, venueId }) => {
+          updateEmptySectionsCount += 1;
+
+          batch.update(
+            firestore
+              .collection("venues")
+              .doc(venueId)
+              .collection("sections")
+              .doc(sectionId),
+            {
+              seatedUsersCount: 0,
+              seatedUsersSample: [],
+            }
+          );
+        });
+
+        return batch.commit();
+      }
+    );
+
+    let updatedOccupiedSectionsCount = 0;
     Object.entries(bySectionByAuditorium).forEach(([venueId, bySection]) => {
       Object.entries(bySection).forEach(([sectionId, seatedUsers]) => {
-        console.log(
-          `/venues/${venueId}/sections/${sectionId}/seatedSectionUsers length ${seatedUsers.length}`
-        );
         const seatedUsersCount = seatedUsers.length;
         const seatedUsersSample = seatedUsers.splice(
           0,
           SECTION_PREVIEW_USER_DISPLAY_COUNT
         );
 
-        let { batch, updatesCount } = batches.pop();
+        let { batch, updatesCount } = updateOccupiedPromises.pop();
         if (updatesCount === BATCH_MAX_OPS) {
-          batches.push({ batch, updatesCount });
+          updateOccupiedPromises.push({ batch, updatesCount });
 
           batch = firestore.batch();
           updatesCount = 0;
         }
 
-        batches.push({ batch, updatesCount: updatesCount + 1 });
+        updateOccupiedPromises.push({ batch, updatesCount: updatesCount + 1 });
 
-        updatedSectionsCount += 1;
+        updatedOccupiedSectionsCount += 1;
         batch.update(
           firestore
             .collection("venues")
@@ -142,10 +200,15 @@ exports.updateSeatedUsersCountInAuditorium = functions.https.onCall(
       });
     });
 
-    console.log(`Updated ${updatedSectionsCount} sections`);
-    return await Promise.all(batches.map(({ batch }) => batch.commit()));
-  }
-);
+    console.log(
+      `Updated ${updatedOccupiedSectionsCount} occupied sections and ${updateEmptySectionsCount} empty sections`
+    );
+
+    return await Promise.all([
+      updateOccupiedPromises.map(({ batch }) => batch.commit()),
+      ...updateEmptyPromises,
+    ]);
+  });
 
 exports.aggregateUsersLocationsInVenue = functions.pubsub
   .schedule("every 5 minutes")
