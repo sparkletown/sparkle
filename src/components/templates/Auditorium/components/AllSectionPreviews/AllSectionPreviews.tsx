@@ -36,8 +36,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const match = useRouteMatch();
   const { push: openUrlUsingRouter } = useHistory();
 
-  console.log({ match });
-
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,
   });
@@ -52,7 +50,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     availableSections,
   } = useAllAuditoriumSections(venue);
 
-  const sectionsCount = auditoriumSections.length;
+  const sectionsCount = venue.sectionsCount ?? 0;
   const hasOnlyOneSection = sectionsCount === 1;
   const [firstSection] = auditoriumSections;
 
@@ -111,7 +109,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     return <Loading label="Loading sections" />;
   }
 
-  if (hasOnlyOneSection) {
+  if (hasOnlyOneSection && firstSection) {
     return <Redirect to={`${match.url}/section/${firstSection.id}`} />;
   }
 

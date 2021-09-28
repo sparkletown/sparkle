@@ -10,6 +10,7 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
@@ -29,12 +30,20 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
+  const { parentVenue } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+  const parentVenueId = parentVenue?.id;
+
   const isUserAudioMuted = !isUserAudioOn;
 
   const { iframeUrl, id: venueId } = venue;
 
   const { sectionId } = useParams<{ sectionId: string }>();
-  const { push: openUrlUsingRouter } = useHistory();
+  const {
+    push: openUrlUsingRouter,
+    replace: replaceUrlUsingRouter,
+  } = useHistory();
 
   const {
     auditoriumSection,
@@ -90,11 +99,27 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
+  const sectionsCount = venue.sectionsCount ?? 0;
+  const hasOnlyOneSection = sectionsCount === 1;
+
   const backToMain = useCallback(() => {
     if (!venueId) return;
 
+    if (hasOnlyOneSection && parentVenueId) {
+      return enterVenue(parentVenueId, {
+        // NOTE: Replace URL here to get rid of /section/sectionId in the URL
+        customOpenExternalUrl: replaceUrlUsingRouter,
+      });
+    }
+
     enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [venueId, openUrlUsingRouter]);
+  }, [
+    venueId,
+    openUrlUsingRouter,
+    replaceUrlUsingRouter,
+    hasOnlyOneSection,
+    parentVenueId,
+  ]);
 
   if (!isAuditoriumSectionLoaded) {
     return <Loading label="Loading section data" />;
@@ -104,7 +129,12 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   return (
     <VenueWithOverlay venue={venue} containerClassNames="Section">
-      <BackButton onClick={backToMain} locationName="overview" />
+      <BackButton
+        onClick={backToMain}
+        locationName={
+          hasOnlyOneSection && parentVenue ? parentVenue.name : "overview"
+        }
+      />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>
