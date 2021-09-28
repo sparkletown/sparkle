@@ -4,21 +4,23 @@ $nav-container-width: 96px;
 $nav-container-height: 66px;
 $nav-btn-hover-background: #8e5ffc;
 $nav-btn-border-radius: 10px;
-$nav-schedule-btn-padding: 7px 27px;
+$nav-schedule-btn-padding: $spacing--sm $spacing--xxl;
 $menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
 $volume-popover-width-with-sliders: 30em;
 $volume-popover-width-without-sliders: 15em;
-$simple-view-button-height: 32px;
-$simple-view-button-padding: 7px 10px;
-$arrow-margin: 0 11px;
-$arrow-height: 8px;
-$arrow-width: 14px;
-$dropdown-item-width: 173px;
-$dropdown-item-padding: 15px 22px 0 22px;
+$simple-view-button-height: $spacing--xxl;
+$simple-view-button-padding: $spacing--sm $spacing--md;
+$arrow-margin: 0 $spacing--md;
+$arrow-height: $spacing--sm;
+$arrow-width: $spacing--md;
+$dropdown-item-width: 170px;
+$dropdown-item-padding: $spacing--lg $spacing--xl 0 $spacing--xl;
 $photobooth-button-margin: 140px 0px 0px;
 $photobooth-button-text-margin: 38px 0px 0px;
 $photobooth-button-background-size: 35px;
+$venue-id-font-size: $font-size--xl;
+$venue-id-margin: $spacing--lg;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -227,19 +229,6 @@ $photobooth-button-background-size: 35px;
   }
 }
 
-.nav-clickable {
-  display: flex;
-  align-items: center;
-  border-left: 1px solid $secondary;
-  border-right: 1px solid $secondary;
-  margin: 0;
-
-  &:hover {
-    background-color: $secondary--live;
-    cursor: pointer;
-  }
-}
-
 .arrow-down,
 .arrow-up {
   height: $arrow-height;
@@ -250,49 +239,6 @@ $photobooth-button-background-size: 35px;
 
 .arrow-up {
   transform: rotate(180deg);
-}
-
-.navbar-dropdown {
-  position: fixed;
-  top: $navbar-height;
-  right: $spacing--xl;
-  background: $secondary--live;
-  border-radius: $border-radius--lg;
-  padding-bottom: $spacing--xl;
-  z-index: z(navbar-user-dropdown);
-
-  &-item a {
-    text-decoration: none;
-  }
-
-  &-item {
-    text-decoration: none;
-    font-family: "Rubik", sans-serif;
-    font-weight: 400;
-    font-size: 1rem;
-    padding: $dropdown-item-padding;
-    width: $dropdown-item-width;
-
-    &:first-child {
-      border-bottom: 1px solid $secondary--light;
-      padding-bottom: $spacing--md;
-      margin-bottom: $spacing--xs;
-      color: $light-grey--lightest;
-    }
-
-    &:hover {
-      background: $secondary--live;
-      color: $primaryColor;
-    }
-
-    &:focus {
-      background: $secondary--live;
-    }
-
-    &-icon {
-      margin-right: $spacing--md;
-    }
-  }
 }
 
 .schedule-text {
@@ -335,14 +281,27 @@ $photobooth-button-background-size: 35px;
   }
 }
 
-.navbar-search {
-  display: flex;
-}
-
 .NavBar {
+  &__nav-clickable {
+    display: flex;
+    align-items: center;
+    border-left: 1px solid $secondary;
+    border-right: 1px solid $secondary;
+    margin: 0;
+
+    &:hover {
+      background-color: $secondary--live;
+      cursor: pointer;
+    }
+  }
+
   &__playa-info {
     display: flex;
     align-items: center;
+  }
+
+  &__search {
+    display: flex;
   }
 
   &__volume-control--hidden {
@@ -392,10 +351,9 @@ $photobooth-button-background-size: 35px;
   &__venue-id {
     font-family: "Rubik", sans-serif;
     font-weight: 500;
-    font-size: 18px;
-    line-height: 21px;
+    font-size: $venue-id-font-size;
     text-transform: uppercase;
-    margin: 18px;
+    margin: $venue-id-margin;
   }
 
   &__photobooth {
@@ -498,6 +456,49 @@ $photobooth-button-background-size: 35px;
         box-shadow: 0 0 0 2px $white;
         outline: none;
         opacity: 1;
+      }
+    }
+  }
+
+  &__dropdown {
+    position: fixed;
+    top: $navbar-height;
+    right: $spacing--xl;
+    background: $secondary--live;
+    border-radius: $border-radius--lg;
+    padding-bottom: $spacing--xl;
+    z-index: z(navbar-user-dropdown);
+
+    &-item a {
+      text-decoration: none;
+    }
+
+    &-item {
+      text-decoration: none;
+      font-family: "Rubik", sans-serif;
+      font-weight: 400;
+      font-size: 1rem;
+      padding: $dropdown-item-padding;
+      width: $dropdown-item-width;
+
+      &:first-child {
+        border-bottom: 1px solid $secondary--light;
+        padding-bottom: $spacing--md;
+        margin-bottom: $spacing--xs;
+        color: $light-grey--lightest;
+      }
+
+      &:hover {
+        background: $secondary--live;
+        color: $primaryColor;
+      }
+
+      &:focus {
+        background: $secondary--live;
+      }
+
+      &-icon {
+        margin-right: $spacing--md;
       }
     }
   }

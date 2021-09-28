@@ -45,7 +45,12 @@ import {
   animateMapEnvironmentSoundSelector,
   radioStationsSelector,
 } from "utils/selectors";
-import { enterVenue, openUrlInNewTab, venueInsideUrl } from "utils/url";
+import {
+  enterVenue,
+  getExtraLinkProps,
+  openUrlInNewTab,
+  venueInsideUrl,
+} from "utils/url";
 
 import { useAudioVolume } from "hooks/useAudioVolume";
 import { useDispatch } from "hooks/useDispatch";
@@ -135,7 +140,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { isShown: isDropdownShown, toggle: toggleDropdownShown } = useShowHide(
     false
   );
-
   const { isShown: isSearchShown, toggle: toggleSearchShown } = useShowHide();
 
   const [isFocus, setIsFocus] = useState(false);
@@ -290,6 +294,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
+  const onInputFocus = useCallback(() => setIsFocus(true), []);
+
+  const onInputBlur = useCallback(() => {
+    setIsFocus(false);
+    toggleSearchShown();
+  }, [toggleSearchShown]);
+
+  const onMouseLeave = useCallback(() => {
+    if (isFocus) return;
+    toggleSearchShown();
+  }, [isFocus, toggleSearchShown]);
+
   if (!ALLOW_NO_VENUE && !(venueId && currentVenue)) {
     console.warn(
       NavBar.name,
@@ -309,19 +325,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const showRadio = showNormalRadio || showSoundCloudRadio;
 
-  const onFocus = () => setIsFocus(true);
-
-  const onBlur = () => {
-    setIsFocus(false);
-    toggleSearchShown();
-  };
-
-  const onMouseLeave = () => {
-    if (isFocus) return;
-
-    toggleSearchShown();
-  };
-
   return (
     <>
       <header>
@@ -339,7 +342,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               <div className="nav-sparkle-logo">
                 <div onClick={navigateToHomepage}></div>
               </div>
-              <div className="nav-clickable" onClick={toggleEventSchedule}>
+              <div
+                className="NavBar__nav-clickable"
+                onClick={toggleEventSchedule}
+              >
                 <p className="NavBar__venue-id">{venueId}</p>
                 {shouldShowSchedule ? (
                   <div className="nav-schedule-wrapper">
@@ -415,15 +421,15 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 )}
 
                 <div
-                  className="navbar-search"
+                  className="NavBar__search"
                   onMouseEnter={toggleSearchShown}
                   onMouseLeave={onMouseLeave}
                 >
                   {isSearchShown && (
                     <NavSearchBar
                       venueId={venueId ?? ""}
-                      onFocus={onFocus}
-                      onBlur={onBlur}
+                      onFocus={onInputFocus}
+                      onBlur={onInputBlur}
                     />
                   )}
                   <ButtonNG
@@ -508,36 +514,35 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   <div className={dropdownArrowClasses}></div>
                 </div>
                 {isDropdownShown && (
-                  <Dropdown className="navbar-dropdown">
-                    <Dropdown.Item className="navbar-dropdown-item" disabled>
+                  <Dropdown className="NavBar__dropdown">
+                    <Dropdown.Item className="NavBar__dropdown-item" disabled>
                       Hello {profile?.partyName}
                     </Dropdown.Item>
                     <Dropdown.Item
-                      className="navbar-dropdown-item"
+                      className="NavBar__dropdown-item"
                       onClick={handleAvatarClick}
                     >
                       <FontAwesomeIcon
                         icon={faUser}
-                        className="navbar-dropdown-item-icon"
+                        className="NavBar__dropdown-item-icon"
                       />
                       Profile
                     </Dropdown.Item>
-                    <Dropdown.Item className="navbar-dropdown-item">
+                    <Dropdown.Item className="NavBar__dropdown-item">
                       <FontAwesomeIcon
                         icon={faCog}
-                        className="navbar-dropdown-item-icon"
+                        className="NavBar__dropdown-item-icon"
                       />
                       Account
                     </Dropdown.Item>
                     <Dropdown.Item
-                      className="navbar-dropdown-item"
+                      className="NavBar__dropdown-item"
                       href={HELP_CENTER_URL}
-                      target="_blank"
-                      rel="noreferrer"
+                      {...getExtraLinkProps(true)}
                     >
                       <FontAwesomeIcon
                         icon={faInfoCircle}
-                        className="navbar-dropdown-item-icon"
+                        className="NavBar__dropdown-item-icon"
                       />
                       Help
                     </Dropdown.Item>
