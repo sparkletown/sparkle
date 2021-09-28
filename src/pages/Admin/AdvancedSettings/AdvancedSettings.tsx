@@ -124,6 +124,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     updateVenue_v2(
       {
         name: venue.name,
+        worldId: venue.worldId,
         ...data,
       },
       user
