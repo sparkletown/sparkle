@@ -106,7 +106,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   //'showStatus' is used to render this conditionally only in some of the screens.
   const hasUserStatus =
     isStatusEnabledForVenue &&
-    isOnline &&
+    // @debt temporarily disable is online functionality
+    // isOnline &&
     showStatus &&
     !!venueUserStatuses.length;
 

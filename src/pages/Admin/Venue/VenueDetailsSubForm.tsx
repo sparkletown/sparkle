@@ -727,6 +727,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
         {renderRadioToggle()}
 
+        {values.showRadio && renderRadioStationInput()}
+
         {renderJukeboxToggle()}
 
         <UserStatusManager
@@ -739,8 +741,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           onPickColor={updateStatusColor}
           onChangeInput={updateStatusText}
         />
-
-        {values.showRadio && renderRadioStationInput()}
 
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
