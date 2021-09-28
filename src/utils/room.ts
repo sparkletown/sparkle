@@ -1,11 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
-import {
-  ParticipantWithUser,
-  RoomTemplate,
-  VenueRoomTemplate,
-} from "types/rooms";
+import { ParticipantWithUser } from "types/rooms";
 import { VenueTemplate } from "types/venues";
 
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
@@ -13,7 +9,6 @@ import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
-import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 
@@ -53,7 +48,7 @@ export const logIfCannotFindExistingParticipant = (
 
 export interface VenueSpace {
   text: string;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
   icon: string;
 }
 
@@ -87,11 +82,6 @@ export const venueSpacesList: VenueSpace[] = [
     text: "Experience",
     icon: RoomIconExperience,
     template: VenueTemplate.zoomroom,
-  },
-  {
-    text: "External link",
-    icon: RoomIconExternalLink,
-    template: RoomTemplate.external,
   },
   {
     text: "Map",
