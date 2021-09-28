@@ -1,8 +1,9 @@
 $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
 
-$primary-accent--over: #ffffff;
-$primary-content--over: #ffffff;
+$primary-accent--over: var(--primary-accent--over);
+$primary-content--over: var(--primary-content--over);
+$primary-content-under: #000000;
 
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
@@ -37,7 +38,6 @@ $light-grey: #292929;
 $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 $concrete--dark: #9f9fa0;
-$primary-content-under: #000000;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
