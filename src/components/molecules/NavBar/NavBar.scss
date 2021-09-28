@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
+$photobooth-button-margin: 140px 0px 0px;
+$photobooth-button-text-margin: 38px 0px 0px;
+$photobooth-button-background-size: 35px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -269,5 +271,29 @@ $border-radius: 28px;
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__photobooth-button {
+    position: absolute;
+    top: 130px;
+    left: -($spacing--lg);
+    border-radius: 0px $border-radius--md $border-radius--md 0px;
+    padding: $spacing--xs $spacing--md;
+    cursor: pointer;
+    background-color: $lighter-intermediate-grey;
+    background-image: url(/assets/icons/photobooth-icon.png);
+    background-size: $photobooth-button-background-size;
+    background-position: 50% 10%;
+    background-repeat: no-repeat;
+
+    &:hover {
+      background-color: $light-grey;
+    }
+  }
+
+  &__photobooth-title {
+    text-decoration: none;
+    margin: $photobooth-button-text-margin;
+    font-size: $font-size--sm;
   }
 }

@@ -44,7 +44,13 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
       try {
         if (venueId) {
-          await updateVenue_v2(world, user);
+          const venue = {
+            ...vals,
+            id: venueId,
+            worldId: createUrlSafeName(vals.name),
+          };
+          // @debt Replace with updateWorld api call / function
+          await updateVenue_v2(venue, user);
           history.push(ADMIN_V3_ROOT_URL);
         } else {
           await createWorld(world, user);

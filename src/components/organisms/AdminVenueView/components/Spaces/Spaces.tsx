@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -30,7 +30,6 @@ import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
-import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 
@@ -38,7 +37,7 @@ import "./Spaces.scss";
 
 interface VenueRooms {
   text: string;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
   icon: string;
 }
 
@@ -72,11 +71,6 @@ const venueRooms: VenueRooms[] = [
     text: "Experience",
     icon: RoomIconExperience,
     template: VenueTemplate.zoomroom,
-  },
-  {
-    text: "External link",
-    icon: RoomIconExternalLink,
-    template: RoomTemplate.external,
   },
   {
     text: "Map",
@@ -210,6 +204,7 @@ export const Spaces: React.FC<SpacesProps> = ({
                   mapBackgrounds={mapBackgrounds}
                   venueName={venue.name}
                   error={errorFetchBackgrounds}
+                  worldId={venue.worldId}
                 />
               )}
             </div>

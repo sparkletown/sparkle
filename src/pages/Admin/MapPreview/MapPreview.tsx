@@ -30,6 +30,7 @@ import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   venueName: string;
+  worldId: string;
   mapBackground?: string;
   rooms: RoomData_v2[];
   venueId: string;
@@ -39,6 +40,7 @@ export interface MapPreviewProps {
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
+  worldId,
   mapBackground,
   rooms,
   venueId,

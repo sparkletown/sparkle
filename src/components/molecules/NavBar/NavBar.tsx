@@ -6,7 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
-import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
+import {
+  DEFAULT_SHOW_SCHEDULE,
+  PLAYA_VENUE_ID,
+  SPARKLE_PHOTOBOOTH_URL,
+} from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -52,21 +56,21 @@ const navBarScheduleClassName = "NavBar__schedule-dropdown";
 export interface NavBarPropsType {
   hasBackButton?: boolean;
   withSchedule?: boolean;
+  withPhotobooth?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
-  hasBackButton = true,
-  withSchedule = true,
+  hasBackButton,
+  withSchedule,
+  withPhotobooth,
 }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
-
   const radioStations = useSelector(radioStationsSelector);
 
   const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
@@ -147,6 +151,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(false);
   }, []);
 
+  const parentVenueId = parentVenue?.id;
+
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
 
@@ -167,6 +173,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     () => setShowRadioPopover((prevState) => !prevState),
     []
   );
+
+  const handlePhotoboothRedirect = () => {
+    openUrlUsingRouter(SPARKLE_PHOTOBOOTH_URL);
+  };
 
   if (!venueId || !currentVenue) return null;
 
@@ -218,6 +228,15 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
               <VenuePartygoers />
             </div>
+
+            {withPhotobooth && (
+              <div
+                className="NavBar__photobooth-button nav-schedule"
+                onClick={handlePhotoboothRedirect}
+              >
+                <p className="NavBar__photobooth-title">Photobooth</p>
+              </div>
+            )}
 
             {!user && <NavBarLogin />}
 

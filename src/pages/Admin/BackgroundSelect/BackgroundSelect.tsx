@@ -13,7 +13,7 @@ import "./BackgroundSelect.scss";
 
 export interface BackgroundSelectProps {
   venueName: string;
-  mapBackground?: string;
+  worldId: string;
   mapBackgrounds: string[];
   isLoadingBackgrounds: boolean;
   error: Error | undefined;
@@ -24,6 +24,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   mapBackgrounds,
   isLoadingBackgrounds,
   error,
+  worldId,
 }) => {
   const { user } = useUser();
 
@@ -33,6 +34,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
       return await updateVenue_v2(
         {
+          worldId: worldId,
           name: venueName,
           mapBackgroundImageFile: file,
           mapBackgroundImageUrl: url,
@@ -40,7 +42,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         user
       );
     },
-    [user, venueName]
+    [user, venueName, worldId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
