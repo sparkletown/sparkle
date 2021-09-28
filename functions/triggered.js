@@ -10,7 +10,7 @@ exports.incrementSectionsCount = functions.firestore
       .collection("venues")
       .doc(context.params.venueId);
 
-    venueRef.update({
+    return venueRef.update({
       sectionsCount: admin.firestore.FieldValue.increment(1),
     });
   });
@@ -23,7 +23,7 @@ exports.decrementSectionsCount = functions.firestore
       .collection("venues")
       .doc(context.params.venueId);
 
-    venueRef.update({
+    return venueRef.update({
       sectionsCount: admin.firestore.FieldValue.increment(-1),
     });
   });
