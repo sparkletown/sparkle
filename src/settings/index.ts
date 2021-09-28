@@ -22,6 +22,9 @@ export * from "./urlSettings";
 export * from "./useSettingsDefaults";
 export * from "./portalSettings";
 
+export const ENABLE_POPUPS_URL =
+  "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
+
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
