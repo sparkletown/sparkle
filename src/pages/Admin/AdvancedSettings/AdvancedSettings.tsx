@@ -36,7 +36,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     reValidateMode: "onChange",
     validationSchema: advancedSettingsSchema,
     defaultValues: {
-      columns: venue.columns,
+      columns: venue.columns ?? 0,
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
