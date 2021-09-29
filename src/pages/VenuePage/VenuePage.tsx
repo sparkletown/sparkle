@@ -7,6 +7,7 @@ import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
+import { trackVenueEntrance } from "utils/mixpanel";
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import {
@@ -169,13 +170,13 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (user && profile && venueId && venueTemplate) {
-      window.mixpanel.track("VenuePage loaded", {
-        venueId,
-        template: venueTemplate,
-      });
-    }
-  }, [user, profile, venueId, venueTemplate]);
+    if (!venueId || !venueTemplate) return;
+
+    trackVenueEntrance("VenuePage loaded", {
+      venueId,
+      template: venueTemplate,
+    });
+  }, [venueId, venueTemplate]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

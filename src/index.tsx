@@ -21,13 +21,13 @@ import {
   BUILD_SHA1,
   BUILD_TAG,
   LOGROCKET_APP_ID,
-  MIXPANEL_PROJECT_TOKEN,
 } from "secrets";
 
 import { FIREBASE_CONFIG } from "settings";
 
 import { store } from "store";
 
+import { identifyMixpanelEmail, initMixpanel } from "utils/mixpanel";
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
 
@@ -186,11 +186,7 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  window.mixpanel.init(MIXPANEL_PROJECT_TOKEN, {
-    batch_requests: true,
-  });
-}
+initMixpanel();
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
@@ -210,9 +206,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    if (MIXPANEL_PROJECT_TOKEN) {
-      window.mixpanel.identify(email);
-    }
+    identifyMixpanelEmail(email);
   }, [auth]);
 
   if (!isLoaded(auth)) return <LoadingPage />;

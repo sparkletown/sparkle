@@ -3,7 +3,7 @@ export declare interface People {
 }
 
 export declare interface Mixpanel {
-  init(token: string, opts: Object): Mixpanel;
+  init(token: string, opts?: Object): Mixpanel;
   identify(id: string): void;
   register(data: Object): void;
   people: People;
