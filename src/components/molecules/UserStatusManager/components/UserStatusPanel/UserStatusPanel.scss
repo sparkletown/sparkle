@@ -19,8 +19,7 @@ $status--spacing: $icon--spacing 0;
     justify-content: center;
     align-items: center;
     border-radius: $border-radius--max;
-    width: $picker-icon--size;
-    height: $picker-icon--size;
+    @include square-size($picker-icon--size);
     margin-left: $icon--spacing;
     cursor: pointer;
 
