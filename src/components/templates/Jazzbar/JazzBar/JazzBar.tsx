@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 
-// NOTE: This functionality will probably be returned in the nearest future.
-// import { useForm } from "react-hook-form";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
@@ -25,8 +23,6 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Jukebox } from "components/molecules/Jukebox/Jukebox";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
-// NOTE: This functionality will probably be returned in the nearest future.
-// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
@@ -45,12 +41,6 @@ import "components/templates/Jazzbar/JazzBar/JazzBar.scss";
 interface JazzProps {
   venue: WithId<JazzbarVenue>;
 }
-
-// @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
-// NOTE: This functionality will probably be returned in the nearest future.
-// interface ChatOutDataType {
-//   messageToTheBand: string;
-// }
 
 export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const {
@@ -83,45 +73,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const isUserAudioMuted = !isUserAudioOn;
 
-  // NOTE: This functionality will probably be returned in the nearest future.
-
-  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
-  // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
-
-  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
-  // useEffect(() => {
-  //   if (isMessageToTheBandSent) {
-  //     setTimeout(() => {
-  //       setIsMessageToTheBandSent(false);
-  //     }, 2000);
-  //   }
-  // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
-
-  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
-  // const {
-  //   register: registerBandMessage,
-  //   handleSubmit: handleBandMessageSubmit,
-  //   reset,
-  // } = useForm<ChatOutDataType>({
-  //   mode: "onSubmit",
-  // });
-
-  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
-  // const onBandMessageSubmit = async (data: ChatOutDataType) => {
-  //   setIsMessageToTheBandSent(true);
-  //   user &&
-  //     dispatch(
-  //       addReaction({
-  //         venueId,
-  //         reaction: createReaction(
-  //           { reaction: TextReactionType, text: data.messageToTheBand },
-  //           user
-  //         ),
-  //       })
-  //     );
-  //   reset();
-  // };
-
   const shouldShowReactions =
     (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
   const firstTableReference = jazzbarTables[0].reference;
@@ -131,8 +82,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
       venue.enableJukebox &&
       seatedAtTable === firstTableReference) ??
     DEFAULT_ENABLE_JUKEBOX;
-  // @debt will be needed if shoutouts are restored
-  // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
@@ -217,17 +166,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       isReactionsMuted={isUserAudioMuted}
                       toggleMute={toggleUserAudio}
                     />
-
-                    {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
-                    {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                    {/* {shouldShowShoutouts && (
-                    <CallOutMessageForm
-                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                    ref={registerBandMessage({ required: true })}
-                    isMessageToTheBandSent={isMessageToTheBandSent}
-                    placeholder="Shout out..."
-                    />
-                  )} */}
                   </div>
                 )}
                 {shouldShowJukebox && (
