@@ -37,8 +37,8 @@ export interface AdminVenueViewRouteParams {
 
 export interface TabNavigationProps {
   onClickHome: () => void;
-  onClickBack: () => void;
-  onClickNext: () => void;
+  onClickBack?: () => void;
+  onClickNext?: () => void;
 }
 
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
@@ -114,7 +114,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton withSchedule withPhotobooth>
+    <WithNavigationBar hasBackButton withSchedule>
       <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
