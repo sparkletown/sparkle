@@ -5,8 +5,7 @@ import { unsetTableSeat } from "api/venue";
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
-import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
-import { Participant } from "components/organisms/Room/Participant";
+import { VideoParticipant } from "components/organisms/Video";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -73,12 +72,10 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   return (
     <>
       {localParticipant && profile && (
-        <div className="jazzbar-room__participant">
-          <LocalParticipant
-            key={localParticipant.sid}
+        <div className="jazzbar-room__participant" key={localParticipant.sid}>
+          <VideoParticipant
             participant={localParticipant}
-            profileData={profile}
-            profileDataId={localParticipant.identity}
+            participantUser={userWithId}
             defaultMute={defaultMute}
             isAudioEffectDisabled={isAudioEffectDisabled}
           />
@@ -89,10 +86,9 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
           key={participant.participant.identity}
           className="jazzbar-room__participant"
         >
-          <Participant
+          <VideoParticipant
             participant={participant.participant}
-            profileData={participant.user}
-            profileDataId={participant.user.id}
+            participantUser={participant.user}
           />
         </div>
       ))}
@@ -102,10 +98,9 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
             key={participant.participant.identity}
             className="jazzbar-room__participant"
           >
-            <Participant
+            <VideoParticipant
               participant={participant.participant}
-              profileData={participant.user}
-              profileDataId={participant.user.id}
+              participantUser={participant.user}
             />
           </div>
         ))}

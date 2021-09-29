@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useList } from "react-use";
 import {
   AudioTrack,
   LocalParticipant,
@@ -8,8 +9,6 @@ import {
 } from "twilio-video";
 
 import {
-  appendTrack,
-  filterTrack,
   isAudioTrack,
   isLocalAudioTrack,
   isLocalVideoTrack,
@@ -30,10 +29,6 @@ export interface UseParticipantStateProps {
  * Manage the state of the audio/video tracks (including mute, hiding video, etc) for
  * the provided Twilio Participant.
  *
- * @param participant
- * @param defaultMute
- * @param defaultVideoHidden
- *
  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/Participant.html
  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalParticipant.html
  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteParticipant.html
@@ -49,9 +44,24 @@ export const useParticipantState = ({
   defaultMute,
   defaultVideoHidden,
 }: UseParticipantStateProps) => {
-  // Audio / Video tracks
-  const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
-  const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
+  const [
+    videoTracks,
+    {
+      set: setVideoTracks,
+      push: pushVideoTrack,
+      filter: filterVideoTrack,
+      clear: clearVideoTracks,
+    },
+  ] = useList<VideoTrack>();
+  const [
+    audioTracks,
+    {
+      set: setAudioTracks,
+      push: pushAudioTrack,
+      filter: filterAudioTrack,
+      clear: clearAudioTracks,
+    },
+  ] = useList<AudioTrack>();
 
   useEffect(() => {
     if (!participant) return;
@@ -61,17 +71,17 @@ export const useParticipantState = ({
 
     const trackSubscribed = (track: Track) => {
       if (isVideoTrack(track)) {
-        setVideoTracks(appendTrack(track));
+        pushVideoTrack(track);
       } else if (isAudioTrack(track)) {
-        setAudioTracks(appendTrack(track));
+        pushAudioTrack(track);
       }
     };
 
     const trackUnsubscribed = (track: Track) => {
       if (isVideoTrack(track)) {
-        setVideoTracks(filterTrack(track));
+        filterVideoTrack((t) => t !== track);
       } else if (isAudioTrack(track)) {
-        setAudioTracks(filterTrack(track));
+        filterAudioTrack((t) => t !== track);
       }
     };
 
@@ -82,12 +92,21 @@ export const useParticipantState = ({
       participant.off("trackSubscribed", trackSubscribed);
       participant.off("trackUnsubscribed", trackUnsubscribed);
 
-      setVideoTracks([]);
-      setAudioTracks([]);
+      clearVideoTracks();
+      clearAudioTracks();
     };
-  }, [participant]);
+  }, [
+    clearAudioTracks,
+    clearVideoTracks,
+    filterAudioTrack,
+    filterVideoTrack,
+    participant,
+    pushAudioTrack,
+    pushVideoTrack,
+    setAudioTracks,
+    setVideoTracks,
+  ]);
 
-  // Mute/unmute audio
   const {
     isShown: isAudioOn,
 
@@ -122,21 +141,17 @@ export const useParticipantState = ({
     toggle: toggleVideo,
   } = useShowHide(!defaultVideoHidden);
 
-  const isVideoHidden = !isVideoShown;
-
   useEffect(() => {
-    if (isVideoHidden) {
-      // Pause all of our localVideoTracks
+    if (!isVideoShown) {
       videoTracks
         .filter(isLocalVideoTrack)
         .forEach((localVideoTrack) => localVideoTrack.disable());
     } else {
-      // Unpause all of our localVideoTracks
       videoTracks
         .filter(isLocalVideoTrack)
         .forEach((localVideoTrack) => localVideoTrack.enable());
     }
-  }, [videoTracks, isVideoHidden]);
+  }, [videoTracks, isVideoShown]);
 
   return {
     videoTracks,
@@ -148,7 +163,7 @@ export const useParticipantState = ({
     unmuteAudio,
     toggleMuted,
 
-    isVideoHidden,
+    isVideoShown,
     hideVideo,
     showVideo,
     toggleVideo,

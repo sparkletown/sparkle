@@ -11,10 +11,10 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { ClassValue } from "classnames/types";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
 import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 import { isLocalParticipant } from "utils/twilio";
@@ -25,27 +25,27 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./VideoParticipant.scss";
 
-export interface VideoParticipantProps {
+export interface VideoParticipantProps extends ContainerClassName {
   participant: LocalParticipant | RemoteParticipant;
   participantUser?: WithId<User>;
 
   showIcon?: boolean;
   defaultMute?: boolean;
   defaultVideoHidden?: boolean;
-  additionalClassNames?: ClassValue;
+
+  isAudioEffectDisabled?: boolean;
 }
 
 export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   participant,
   participantUser,
-
   showIcon = true,
   defaultMute = false,
   defaultVideoHidden = false,
-  additionalClassNames,
+  containerClassName,
+  isAudioEffectDisabled,
 }) => {
   const isMe = isLocalParticipant(participant);
-
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
   const {
@@ -57,7 +57,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
     unmuteAudio,
     toggleMuted,
 
-    isVideoHidden,
+    isVideoShown,
     toggleVideo,
     showVideo,
     hideVideo,
@@ -117,33 +117,37 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   const micIcon = isMe ? micIconMe : micIconOther;
   const micIconColor = isMuted ? "red" : undefined;
 
-  const videoIconMe = isVideoHidden ? faVideoSlash : faVideo;
-  const videoIconOther = isVideoHidden ? faEyeSlash : faEye;
+  const videoIconMe = isVideoShown ? faVideo : faVideoSlash;
+  const videoIconOther = isVideoShown ? faEye : faEyeSlash;
   const videoIcon = isMe ? videoIconMe : videoIconOther;
-  const videoIconColor = isVideoHidden ? "red" : undefined;
+  const videoIconColor = isVideoShown ? undefined : "red";
 
   return (
     <div
       className={classNames(
-        "video-participant",
+        "VideoParticipant",
         {
-          "video-participant--mirrored": shouldMirrorVideo,
+          "VideoParticipant--mirrored": shouldMirrorVideo,
         },
-        additionalClassNames
+        containerClassName
       )}
     >
-      <div className="video-participant__video">
+      <div className="VideoParticipant__video">
         <video ref={videoRef} autoPlay={true} />
         <audio ref={audioRef} autoPlay={true} />
       </div>
 
       {showIcon && participantUser && (
-        <div className="video-participant__profile">
-          <UserProfilePicture user={participantUser} />
+        <div className="VideoParticipant__profile">
+          <UserProfilePicture
+            user={participantUser}
+            reactionPosition="right"
+            isAudioEffectDisabled={isAudioEffectDisabled}
+          />
         </div>
       )}
 
-      <div className="video-participant__controls">
+      <div className="VideoParticipant__controls">
         <FontAwesomeIcon
           size="lg"
           icon={videoIcon}

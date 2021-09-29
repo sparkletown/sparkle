@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-.video-participant {
+.VideoParticipant {
   position: relative;
 
   &--mirrored {
@@ -38,6 +38,7 @@
     height: 100%;
 
     pointer-events: none;
+    cursor: pointer;
 
     display: flex;
     justify-content: flex-end;

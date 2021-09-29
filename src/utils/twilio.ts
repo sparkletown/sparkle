@@ -3,7 +3,6 @@ import {
   DataTrack,
   LocalAudioTrack,
   LocalParticipant,
-  LocalTrack,
   LocalVideoTrack,
   Participant,
   RemoteParticipant,
@@ -12,7 +11,7 @@ import {
   VideoTrack,
 } from "twilio-video";
 
-import { isTruthyFilter } from "./filter";
+import { isTruthy } from "utils/types";
 
 export const isLocalParticipant = (
   participant: LocalParticipant | RemoteParticipant
@@ -41,38 +40,16 @@ export const isLocalAudioTrack = (track: Track): track is LocalAudioTrack =>
 export const isDataTrack = (track: Track): track is DataTrack =>
   track.kind === "data";
 
-// export const getVideoTrackId = (track: VideoTrack) => {
-//   if (isLocalVideoTrack(track)) {
-//     return track.id;
-//   } else if (isRemoteVideoTrack(track)) {
-//     return track.sid;
-//   }
-// };
-
 export const trackMapToVideoTracks = (
   trackMap: Participant["videoTracks"]
 ): VideoTrack[] =>
   Array.from(trackMap.values())
     .map((publication) => publication.track)
-    .filter(isTruthyFilter);
+    .filter(isTruthy);
 
 export const trackMapToAudioTracks = (
   trackMap: Participant["audioTracks"]
 ): AudioTrack[] =>
   Array.from(trackMap.values())
     .map((publication) => publication.track)
-    .filter(isTruthyFilter);
-
-export const appendTrack = <T extends Track>(track: T) => (tracks: T[]) => [
-  ...tracks,
-  track,
-];
-
-export const filterTrack = <T extends Track>(track: T) => (tracks: T[]) =>
-  tracks.filter((t) => t !== track);
-
-export const stopLocalTrack = (track: LocalTrack) => {
-  if (track instanceof LocalAudioTrack || track instanceof LocalVideoTrack) {
-    track.stop();
-  }
-};
+    .filter(isTruthy);
