@@ -105,6 +105,7 @@ service cloud.firestore {
     }
     match /worlds/{worldId} {
       allow create: if request.auth.uid in role('admin').users;
+      allow read: if true;
 
       function world() {
         return get(/databases/$(database)/documents/worlds/$(worldId)).data;

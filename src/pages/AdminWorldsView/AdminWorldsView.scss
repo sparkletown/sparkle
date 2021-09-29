@@ -1,0 +1,28 @@
+@import "scss/constants.scss";
+
+.AdminWorldsView {
+  display: flex;
+
+  &__worlds-list {
+    background-color: $dark;
+
+    grid-template-columns: auto;
+    padding: $spacing--lg;
+
+    position: relative;
+    overflow-y: scroll;
+
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 1rem;
+    margin: 1rem 0;
+  }
+
+  &__world-panel {
+    border: 1px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
