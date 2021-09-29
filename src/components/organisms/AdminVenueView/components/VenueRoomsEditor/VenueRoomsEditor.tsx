@@ -27,11 +27,10 @@ import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlac
 
 import "./VenueRoomsEditor.scss";
 
-const styles: React.CSSProperties = {
-  width: "100%",
-  height: "100%",
-  position: "relative",
-};
+const roomImageClass = (room: RoomData_v2) =>
+  classNames("VenueRoomsEditor__room-image", {
+    "VenueRoomsEditor__room-image--disabled": !room.isEnabled,
+  });
 
 export interface RoomIcon {
   title: string;
@@ -67,8 +66,6 @@ export interface VenueRoomsEditorProps {
   onMove?: (position: Position) => void;
   otherIconsStyle?: CSSProperties;
   rounded?: boolean;
-  backgroundImageClassName?: string;
-  containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   rooms: Room[];
   selectedRoom?: Room;
@@ -84,8 +81,6 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   interactive,
   resizable,
   rounded,
-  backgroundImageClassName,
-  containerStyle,
   lockAspectRatio,
   rooms,
   selectedRoom,
@@ -269,11 +264,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
     ]
   );
 
-  const backgroundImageClass = `VenueRoomsEditor__background-image ${backgroundImageClassName}`;
-  const roomImageClass = (room: RoomData_v2) =>
-    classNames("VenueRoomsEditor__room-image", {
-      "VenueRoomsEditor__room-image--disabled": !room.isEnabled,
-    });
+  const backgroundImageClass = `VenueRoomsEditor__background-image`;
 
   const renderRoomsPreview = useMemo(
     () =>
@@ -306,15 +297,13 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   );
 
   return (
-    <div ref={drop} style={{ ...styles, ...containerStyle }}>
+    <div ref={drop} className="VenueRoomsEditor">
       <ReactResizeDetector
         handleWidth
         handleHeight
         onResize={(width, height) => setImageDims({ width, height })}
       />
-      {!backgroundImage ? (
-        <MapBackgroundPlaceholder />
-      ) : (
+      {backgroundImage ? (
         <div className="VenueRoomsEditor__background-image-wrapper">
           <img
             alt="draggable background"
@@ -322,6 +311,8 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
             src={backgroundImage}
           />
         </div>
+      ) : (
+        <MapBackgroundPlaceholder />
       )}
       {backgroundImage && renderRoomsPreview}
     </div>
