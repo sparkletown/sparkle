@@ -16,9 +16,9 @@ import { Dropdown } from "components/atoms/Dropdown";
 import "./SpacesDropdown.scss";
 
 export interface SpacesDropdownProps extends ContainerClassName {
-  defaultSpace: string;
+  defaultSpace?: string;
   venueSpaces: Room[];
-  venueId: string;
+  venueId?: string;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   fieldName: string;
 }
@@ -31,7 +31,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   setValue,
   fieldName,
 }) => {
-  const [spaceValue, setSpaceValue] = useState<string>(defaultSpace);
+  const [spaceValue, setSpaceValue] = useState<string | undefined>(
+    defaultSpace
+  );
 
   const getSpaceIcon = useCallback(
     (spaceTemplate) =>
