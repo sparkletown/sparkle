@@ -8,6 +8,7 @@ import { WithId, WithVenueId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
+import { Banner } from "./banner";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -21,29 +22,43 @@ import { VideoAspectRatio } from "./VideoAspectRatio";
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  artcar = "artcar",
   artpiece = "artpiece",
-  audience = "audience",
   auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
-  friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
   animatemap = "animatemap",
-  performancevenue = "performancevenue",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
-  themecamp = "themecamp",
   zoomroom = "zoomroom",
 
   /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
+   */
+  audience = "audience",
+  /**
+   * @deprecated Legacy template removed
+   */
+  artcar = "artcar",
+  /**
+   * @deprecated Legacy template removed
+   */
+  friendship = "friendship",
+  /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
+  themecamp = "themecamp",
+  /**
+   * @deprecated Legacy template removed
+   */
+  performancevenue = "performancevenue",
+  /**
+   * @deprecated Legacy template removed
+   */
   avatargrid = "avatargrid",
-
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
@@ -103,11 +118,11 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  worldId: string;
 }
 
 export interface Venue_v2_AdvancedConfig {
   attendeesTitle?: string;
-  bannerMessage?: string;
   chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
@@ -152,7 +167,7 @@ export interface BaseVenue {
   radioTitle?: string;
   dustStorm?: boolean;
   activity?: string;
-  bannerMessage?: string;
+  banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
@@ -193,6 +208,7 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  sectionsCount?: number;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: WithId<User>[];
@@ -382,11 +398,23 @@ export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   liveAudience: number;
 }
 
+export interface VenueTablePath {
+  venueId: string;
+  tableReference: string;
+}
+
+export type TableSeatedUsersVenuesTemplates =
+  | VenueTemplate.jazzbar
+  | VenueTemplate.conversationspace
+  | VenueTemplate.friendship;
+
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;
   venueId: string;
   venueSpecificData: T extends VenueTemplate.auditorium
     ? Pick<AuditoriumSectionPath, "sectionId">
+    : T extends TableSeatedUsersVenuesTemplates
+    ? {}
     : never;
 };
 

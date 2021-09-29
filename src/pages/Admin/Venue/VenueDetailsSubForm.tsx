@@ -5,9 +5,6 @@ import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  BANNER_MESSAGE_TEMPLATES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -16,6 +13,8 @@ import {
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
+  SECTION_DEFAULT_COLUMNS_COUNT,
+  SECTION_DEFAULT_ROWS_COUNT,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
@@ -95,7 +94,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   setFormError,
 }) => {
   const values = watch();
-
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -191,9 +189,9 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderBannerPhotoInput = () => (
+  const renderHighlightImageInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Upload a banner photo</h4>
+      <h4 className="italic input-header">Upload Highlight image</h4>
       <ImageInput
         disabled={disable}
         name={"bannerImageFile"}
@@ -203,6 +201,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         register={register}
         setValue={setValue}
         error={errors.bannerImageFile || errors.bannerImageUrl}
+        isInputHidden={!values.bannerImageUrl}
+        text="Upload Highlight image"
       />
     </div>
   );
@@ -223,25 +223,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         error={errors.logoImageFile || errors.logoImageUrl}
       />
     </div>
-  );
-
-  const renderAnnouncementInput = () => (
-    <>
-      <h4 className="italic input-header">
-        Show an announcement in the venue (or leave blank for none)
-      </h4>
-      <input
-        type="text"
-        disabled={disable}
-        name="bannerMessage"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Enter your announcement"
-      />
-      {errors.bannerMessage && (
-        <span className="input-error">{errors.bannerMessage.message}</span>
-      )}
-    </>
   );
 
   const renderAttendeesTitleInput = () => (
@@ -367,7 +348,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         <h4 className="italic input-header">Number of seats columns</h4>
         <input
           disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+          defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
           min={5}
           name="auditoriumColumns"
           type="number"
@@ -385,7 +366,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         <h4 className="italic input-header">Number of seats rows</h4>
         <input
           disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+          defaultValue={SECTION_DEFAULT_ROWS_COUNT}
           name="auditoriumRows"
           type="number"
           ref={register}
@@ -683,12 +664,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderDescriptionInput()}
         {renderRestrictToAdultsInput()}
 
-        {renderBannerPhotoInput()}
+        {renderHighlightImageInput()}
         {renderLogoInput()}
-
-        {templateID &&
-          BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
-          renderAnnouncementInput()}
 
         {/* ATTENDEES (multiple) TITLE */}
         {renderAttendeesTitleInput()}

@@ -56,6 +56,21 @@ const removeDanglingSeatedUsers = async () => {
             `${seatedUserData.venueSpecificData.sectionId}/seatedSectionUsers/${userId}`
         );
         break;
+      case "jazzbar":
+      case "conversationspace":
+      case "friendship":
+        batch.delete(
+          firestore
+            .collection("venues")
+            .doc(venueId)
+            .collection("seatedTableUsers")
+            .doc(userId)
+        );
+        console.log(
+          "[scheduled-updateSeatedUsersCountInAuditorium] " +
+            `Deleted from ${seatedUserData.template} /venues/${venueId}/seatedTableUsers/${userId}`
+        );
+        break;
       default:
         console.warn(
           `Found unsupported venue template ${seatedUserData.template}`

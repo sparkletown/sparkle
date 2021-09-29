@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import {
   REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
@@ -11,6 +12,7 @@ import {
   unsetAuditoriumSectionSeat,
 } from "api/venue";
 
+import { AuditoriumSection } from "types/auditorium";
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
@@ -18,21 +20,17 @@ import {
   convertToCartesianCoordinate,
   getVideoSizeInSeats,
 } from "utils/auditorium";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
 
 import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
 
-import { isLoaded } from "../useFirestoreConnect";
 import { useGetUserByPosition } from "../useGetUserByPosition";
-import { useSelector } from "../useSelector";
 import { useUser } from "../useUser";
-
-import { useConnectAllAuditoriumSections } from "./useAllAuditoriumSections";
 
 export interface UseAuditoriumSectionProps {
   venue: WithId<AuditoriumVenue>;
-  sectionId?: string;
+  sectionId: string;
 }
 
 export const useAuditoriumSection = ({
@@ -45,13 +43,23 @@ export const useAuditoriumSection = ({
     auditoriumRows: venueRowsCount,
   } = venue;
 
-  useConnectAllAuditoriumSections(venueId);
+  const firestore = useFirestore();
 
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
-  const section = sectionId ? sectionsById?.[sectionId] : undefined;
+  const sectionRef = firestore
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .doc(sectionId)
+    .withConverter(withIdConverter);
+
+  const { data: section, status } = useFirestoreDocData<
+    WithId<AuditoriumSection>
+  >(sectionRef);
+
+  const isSectionLoaded = status !== "loading";
 
   const baseRowsCount =
     section?.rowsCount ?? venueRowsCount ?? SECTION_DEFAULT_ROWS_COUNT;
@@ -66,7 +74,7 @@ export const useAuditoriumSection = ({
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
 
-  const [seatedUsers] = useAuditoriumSeatedUsers({ venueId, sectionId });
+  const seatedUsers = useAuditoriumSeatedUsers({ venueId, sectionId });
 
   const isUserSeated = useMemo(
     () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
@@ -125,7 +133,7 @@ export const useAuditoriumSection = ({
 
   return {
     auditoriumSection: section,
-    isAuditoriumSectionLoaded: isLoaded(sectionsById),
+    isAuditoriumSectionLoaded: isSectionLoaded,
 
     baseRowsCount,
     baseColumnsCount,

@@ -45,6 +45,7 @@ export const Timing: React.FC<TimingProps> = ({
         start_utc_seconds: startUtcSeconds,
         end_utc_seconds: endUtcSeconds,
         name: venue?.name,
+        worldId: venue?.worldId,
       },
       user
     );
@@ -57,7 +58,7 @@ export const Timing: React.FC<TimingProps> = ({
   return (
     <AdminPanel className="Timing">
       <AdminSidebar>
-        <AdminSidebarTitle>Plan your events</AdminSidebarTitle>
+        <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
         <TabFooter
           {...tabNavigationProps}
           handleVenueUpdate={handleVenueUpdate}
