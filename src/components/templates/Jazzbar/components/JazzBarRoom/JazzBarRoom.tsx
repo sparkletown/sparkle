@@ -40,7 +40,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
     participants,
     renderErrorModal,
     loading,
-  } = useVideoRoomState(userWithId, roomName);
+  } = useVideoRoomState(userId, roomName);
 
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;

@@ -9,24 +9,19 @@ import {
 } from "twilio-video";
 
 import { getUser } from "api/profile";
-import { useTwilioVideoToken } from "api/video";
+import { getTwilioVideoToken } from "api/video";
 
 import { ParticipantWithUser } from "types/rooms";
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 export const useVideoRoomState = (
-  user: WithId<User> | undefined,
+  userId: string | undefined,
   roomName?: string | undefined,
   activeParticipantByDefault = true
 ) => {
-  const { value: token } = useTwilioVideoToken({ userId: user?.id, roomName });
-
   const [room, setRoom] = useState<Room>();
   const [videoError, setVideoError] = useState("");
   const dismissVideoError = useCallback(() => setVideoError(""), []);
@@ -84,7 +79,11 @@ export const useVideoRoomState = (
     loading: roomLoading,
     retry: retryConnect,
   } = useAsyncRetry(async () => {
-    if (!token || !roomName) return;
+    if (!userId || !roomName) return;
+
+    const token = await getTwilioVideoToken({ userId, roomName });
+    if (!token) return;
+
     dismissVideoError();
 
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
@@ -104,12 +103,12 @@ export const useVideoRoomState = (
           );
         } else setVideoError(message);
       });
-  }, [token, roomName, dismissVideoError, isActiveParticipant]);
+  }, [userId, roomName, dismissVideoError, isActiveParticipant]);
 
   useEffect(() => () => disconnect(), [disconnect]);
 
   const { loading: participantsLoading } = useAsync(async () => {
-    if (!room || !user) return;
+    if (!room) return;
 
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
@@ -122,7 +121,7 @@ export const useVideoRoomState = (
       room.off("participantConnected", participantConnected);
       room.off("participantDisconnected", participantDisconnected);
     };
-  }, [room, user, participantConnected, participantDisconnected]);
+  }, [room, participantConnected, participantDisconnected]);
 
   const renderErrorModal = useCallback(
     (onBack: (dismissError: () => void) => void) => {

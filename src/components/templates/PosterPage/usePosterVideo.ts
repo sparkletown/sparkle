@@ -9,13 +9,13 @@ import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
 export const usePosterVideo = (venueId: string) => {
-  const { userId, userWithId } = useUser();
+  const { userId } = useUser();
 
   const {
     participants,
     becomeActiveParticipant,
     becomePassiveParticipant,
-  } = useVideoRoomState(userWithId, venueId, false);
+  } = useVideoRoomState(userId, venueId, false);
 
   const { passiveListeners, activeParticipants } = useMemo(
     () =>

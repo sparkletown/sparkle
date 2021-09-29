@@ -37,7 +37,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   isAudioEffectDisabled,
   onExit,
 }) => {
-  const { userWithId } = useUser();
+  const { userId, userWithId } = useUser();
 
   const {
     localParticipant,
@@ -45,7 +45,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     disconnect,
     loading,
     renderErrorModal,
-  } = useVideoRoomState(userWithId, roomName);
+  } = useVideoRoomState(userId, roomName);
 
   // TODO: nordbeavers team should rework
   // how useWorldUsersById stuff used to work here

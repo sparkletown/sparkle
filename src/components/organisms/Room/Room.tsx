@@ -28,14 +28,14 @@ const Room: React.FC<RoomProps> = ({
   hasChairs = true,
   defaultMute,
 }) => {
-  const { userId, profile, userWithId } = useUser();
+  const { userId, profile } = useUser();
 
   const {
     localParticipant,
     participants,
     renderErrorModal,
     loading,
-  } = useVideoRoomState(userWithId, roomName);
+  } = useVideoRoomState(userId, roomName);
 
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
