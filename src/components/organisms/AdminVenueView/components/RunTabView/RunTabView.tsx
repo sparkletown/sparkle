@@ -11,12 +11,14 @@ import MapPreview from "pages/Admin/MapPreview";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/TabFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/TabFooter/AdminSidebarFooter";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 

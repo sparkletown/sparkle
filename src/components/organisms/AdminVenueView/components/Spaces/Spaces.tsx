@@ -14,10 +14,12 @@ import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/TabFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/TabFooter/AdminSidebarFooter";
 
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";

@@ -13,8 +13,10 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/TabFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/TabFooter/AdminSidebarFooter";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
