@@ -1,6 +1,8 @@
-import { Venue_v2 } from "types/venues";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 export interface AdvancedSettingsProps {
-  venue: Venue_v2;
+  venue: WithId<AnyVenue>;
   onSave: () => void;
 }

@@ -4,7 +4,7 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-import { updateVenue_v2, VenueInput_v2 } from "api/admin";
+import { updateVenue, VenueInput_v2 } from "api/admin";
 
 // Typings
 import { Question, Venue_v2_EntranceConfig } from "types/venues";
@@ -80,9 +80,9 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
         entrance: data.entrance ?? [],
       };
 
-      await updateVenue_v2(
+      await updateVenue(
         {
-          name: venue.name,
+          id: venue.id,
           worldId: venue.worldId,
           ...entranceData,
         },
@@ -91,7 +91,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
 
       onSave();
     },
-    [onSave, user, venue.name, venue.worldId]
+    [onSave, user, venue.id, venue.worldId]
   );
 
   return (

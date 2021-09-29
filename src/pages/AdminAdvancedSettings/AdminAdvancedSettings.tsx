@@ -3,8 +3,6 @@ import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
-import { Venue_v2 } from "types/venues";
-
 import { adminNGSettingsUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
@@ -77,6 +75,10 @@ export const AdminAdvancedSettings: React.FC = () => {
     return <LoadingPage />;
   }
 
+  if (!venue) {
+    return null;
+  }
+
   return (
     <WithNavigationBar>
       <AdminRestricted>
@@ -89,16 +91,13 @@ export const AdminAdvancedSettings: React.FC = () => {
         {selectedTab === AdminAdvancedTab.entranceExperience && (
           <EntranceExperience
             // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
-            venue={venue as Venue_v2}
+            venue={venue}
             sovereignVenue={sovereignVenue}
             onSave={navigateToDefaultTab}
           />
         )}
         {selectedTab === AdminAdvancedTab.advancedMapSettings && (
-          <AdvancedSettings
-            venue={venue as Venue_v2}
-            onSave={navigateToDefaultTab}
-          />
+          <AdvancedSettings venue={venue} onSave={navigateToDefaultTab} />
         )}
       </AdminRestricted>
     </WithNavigationBar>

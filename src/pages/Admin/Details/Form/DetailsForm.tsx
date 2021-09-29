@@ -6,7 +6,7 @@ import classNames from "classnames";
 
 import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
 
-import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
+import { createUrlSafeName, createWorld, updateVenue } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -50,7 +50,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
             worldId: createUrlSafeName(vals.name),
           };
           // @debt Replace with updateWorld api call / function
-          await updateVenue_v2(venue, user);
+          await updateVenue(venue, user);
           history.push(ADMIN_V3_ROOT_URL);
         } else {
           await createWorld(world, user);

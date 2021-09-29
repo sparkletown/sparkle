@@ -37,20 +37,14 @@ export interface AdvancedVenueInput {
   code_of_conduct_questions: Array<Question>;
 }
 
-type VenueImageFileKeys =
-  | "bannerImageFile"
-  | "logoImageFile"
-  | "mapBackgroundImageFile";
+type VenueImageFileKeys = "bannerImageFile" | "logoImageFile";
 
 type VenueImageUrlKeys =
   | "bannerImageUrl"
   | "logoImageUrl"
   | "mapBackgroundImageUrl";
 
-type ImageFileKeys =
-  | "bannerImageFile"
-  | "logoImageFile"
-  | "mapBackgroundImageFile";
+type ImageFileKeys = "bannerImageFile" | "logoImageFile";
 
 type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapBackgroundImageUrl";
 
@@ -72,8 +66,9 @@ export type RoomInput_v2 = RoomData_v2 & {
   image_file?: FileList;
 };
 
-export type VenueInput = AdvancedVenueInput &
-  VenueImageUrls & {
+export type VenueInput = VenueImageUrls &
+  Venue_v2_AdvancedConfig &
+  Venue_v2_EntranceConfig & {
     name: string;
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
@@ -111,7 +106,7 @@ export type VenueInput = AdvancedVenueInput &
 export interface VenueInput_v2
   extends Venue_v2_AdvancedConfig,
     Venue_v2_EntranceConfig {
-  name: string;
+  name?: string;
   description?: string;
   subtitle?: string;
   bannerImageFile?: FileList;
@@ -126,6 +121,34 @@ export interface VenueInput_v2
   autoPlay?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
+  zoomUrl?: string;
+  showGrid?: boolean;
+  columns?: number;
+  parentId?: string;
+  owners?: string[];
+  chatTitle?: string;
+  attendeesTitle?: string;
+  auditoriumRows?: number;
+  auditoriumColumns?: number;
+  userStatuses?: UserStatus[];
+  showReactions?: boolean;
+  enableJukebox?: boolean;
+  showShoutouts?: boolean;
+  showRadio?: boolean;
+  radioStations?: string[];
+  showNametags?: UsernameVisibility;
+  showUserStatus?: boolean;
+}
+
+export interface InitialVenue {
+  name: string;
+  description?: string;
+  subtitle?: string;
+  bannerImageFile?: FileList;
+  bannerImageUrl?: string;
+  logoImageFile?: FileList;
+  logoImageUrl?: string;
+  template?: VenueTemplate;
 }
 
 export interface WorldFormInput {
@@ -214,10 +237,6 @@ const createFirestoreVenueInput = async (
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
     },
-    {
-      fileKey: "mapBackgroundImageFile",
-      urlKey: "mapBackgroundImageUrl",
-    },
   ];
 
   let imageInputData = {};
@@ -263,7 +282,7 @@ const createFirestoreVenueInput = async (
 };
 
 const createFirestoreVenueInput_v2 = async (
-  input: VenueInput_v2,
+  input: InitialVenue,
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
@@ -281,10 +300,6 @@ const createFirestoreVenueInput_v2 = async (
     {
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
-    },
-    {
-      fileKey: "mapBackgroundImageFile",
-      urlKey: "mapBackgroundImageUrl",
     },
   ];
 
@@ -332,16 +347,10 @@ export const createVenue = async (
 };
 
 export const createVenue_v2 = async (
-  input: WithWorldId<VenueInput_v2>,
+  input: WithWorldId<InitialVenue>,
   user: firebase.UserInfo
 ) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(
-    {
-      ...input,
-      rooms: [],
-    },
-    user
-  );
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
   return await firebase.functions().httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
     worldId: input.worldId,
@@ -363,6 +372,7 @@ export const createWorld = async (
   });
 };
 
+// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 export const updateWorld = async (
   world: WithId<WorldFormInput>,
   user: firebase.UserInfo
@@ -373,31 +383,19 @@ export const updateWorld = async (
   );
 };
 
-// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 export const updateVenue = async (
-  input: WithId<VenueInput>,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
-
-  return await firebase.functions().httpsCallable("venue-updateVenue")(
-    firestoreVenueInput
-  );
-};
-
-export const updateVenue_v2 = async (
-  input: WithWorldId<VenueInput_v2>,
+  input: WithWorldId<WithId<VenueInput_v2>>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
   return firebase
     .functions()
-    .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
+    .httpsCallable("venue-updateVenue")(firestoreVenueInput)
     .catch((error) => {
-      const msg = `[updateVenue_v2] updating venue ${input.name}`;
+      const msg = `[updateVenue] updating venue ${input.name}`;
       const context = {
-        location: "api/admin::updateVenue_v2",
+        location: "api/admin::updateVenue",
       };
 
       Bugsnag.notify(msg, (event) => {

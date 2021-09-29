@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAsyncFn } from "react-use";
 
-import { updateVenue_v2 } from "api/admin";
+import { updateVenue } from "api/admin";
 
 import { AnyVenue } from "types/venues";
 
@@ -40,11 +40,11 @@ export const Timing: React.FC<TimingProps> = ({
   const [, handleVenueUpdate] = useAsyncFn(async () => {
     if (!venue?.name || !user) return;
 
-    updateVenue_v2(
+    updateVenue(
       {
         start_utc_seconds: startUtcSeconds,
         end_utc_seconds: endUtcSeconds,
-        name: venue?.name,
+        id: venue?.id,
         worldId: venue?.worldId,
       },
       user

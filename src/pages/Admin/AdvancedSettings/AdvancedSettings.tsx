@@ -8,7 +8,7 @@ import {
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
-import { updateVenue_v2 } from "api/admin";
+import { updateVenue } from "api/admin";
 
 import { UsernameVisibility } from "types/User";
 import { Venue_v2_AdvancedConfig } from "types/venues";
@@ -121,9 +121,9 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   const onSubmit = (data: Venue_v2_AdvancedConfig) => {
     if (!user) return;
 
-    updateVenue_v2(
+    updateVenue(
       {
-        name: venue.name,
+        id: venue.id,
         worldId: venue.worldId,
         ...data,
       },

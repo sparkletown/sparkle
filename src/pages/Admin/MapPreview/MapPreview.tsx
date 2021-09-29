@@ -136,7 +136,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         {!isEditing && (
           <BackgroundSelect
             worldId={worldId}
-            venueName={venueName}
+            venueId={venueId}
             mapBackground={mapBackground}
           />
         )}

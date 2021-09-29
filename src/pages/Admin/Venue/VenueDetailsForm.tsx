@@ -26,6 +26,7 @@ import { isTruthy } from "utils/types";
 import { useQuery } from "hooks/useQuery";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
+import { useWorldId } from "hooks/worlds/useWorldId";
 
 import { VenueDetailsSubForm } from "pages/Admin/Venue/VenueDetailsSubForm";
 
@@ -60,6 +61,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
+  const worldId = useWorldId();
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
 
@@ -124,18 +126,20 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
 
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (venueId) {
+        if (venueId && worldId) {
           await updateVenue(
             {
               ...(vals as VenueInput),
               id: venueId,
               userStatuses,
               showUserStatus: showUserStatuses,
+              worldId,
             },
             user
           );
 
           //@debt Create separate function that updates the userStatuses separately by venue id.
+          //@debt update user statuses in the world instead of the parent/sovereign venue.
           if (
             sovereignVenueId &&
             sovereignVenue &&
@@ -149,13 +153,13 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
                   sovereignVenue.config?.landingPageConfig.subtitle ?? "",
                 description:
                   sovereignVenue.config?.landingPageConfig.description ?? "",
-                adultContent: sovereignVenue.adultContent ?? false,
                 profile_questions: sovereignVenue.profile_questions,
                 code_of_conduct_questions:
                   sovereignVenue.code_of_conduct_questions,
                 userStatuses,
                 showUserStatus: showUserStatuses,
                 template: sovereignVenue.template,
+                worldId,
               },
               user
             );
@@ -182,7 +186,15 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, formError, venueId, history, sovereignVenueId, sovereignVenue]
+    [
+      user,
+      formError,
+      venueId,
+      worldId,
+      history,
+      sovereignVenueId,
+      sovereignVenue,
+    ]
   );
 
   useEffect(() => {

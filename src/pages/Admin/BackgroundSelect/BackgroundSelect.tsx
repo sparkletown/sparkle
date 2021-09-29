@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { useAsyncFn } from "react-use";
 
-import { updateVenue_v2 } from "api/admin";
+import { updateVenue } from "api/admin";
 
 import { useFetchAssets } from "hooks/useFetchAssets";
 import { useUser } from "hooks/useUser";
@@ -11,13 +11,13 @@ import { FileButton } from "components/atoms/FileButton";
 import "./BackgroundSelect.scss";
 
 export interface BackgroundSelectProps {
-  venueName: string;
+  venueId: string;
   worldId: string;
   mapBackground?: string;
 }
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
-  venueName,
+  venueId,
   worldId,
   mapBackground,
 }) => {
@@ -33,17 +33,17 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
       const hasCustomBackground = !!(file && file.length);
 
-      return await updateVenue_v2(
+      return await updateVenue(
         {
-          worldId: worldId,
-          name: venueName,
+          worldId,
+          id: venueId,
           ...(hasCustomBackground && { mapBackgroundImageFile: file }),
           mapBackgroundImageUrl: url,
         },
         user
       );
     },
-    [user, venueName, worldId]
+    [user, venueId, worldId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
