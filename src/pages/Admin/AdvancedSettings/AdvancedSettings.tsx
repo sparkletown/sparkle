@@ -133,6 +133,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         name: venue.name,
         worldId: venue.worldId,
         ...data,
+        userStatuses,
       },
       user
     );
@@ -280,7 +281,9 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     </S.ItemWrapper>
   );
 
-  const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
+    values.userStatuses ?? []
+  );
 
   const addUserStatus = useCallback(
     () =>
@@ -353,12 +356,12 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         </Form.Group>
       </ToggleElement>
       {values.showUserStatus && (
-        <div className="AdvancedSettings__userStatuses">
+        <>
           {renderVenueUserStatuses}
           <ButtonNG variant="primary" iconName={faPlus} onClick={addUserStatus}>
             Add a status
           </ButtonNG>
-        </div>
+        </>
       )}
     </>
   );
