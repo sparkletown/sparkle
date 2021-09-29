@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
-import { useAsync } from "react-use";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useAsync, useAsyncRetry } from "react-use";
+import { identity } from "lodash";
 import {
   connect,
   LocalParticipant,
@@ -22,13 +23,21 @@ import { useShowHide } from "hooks/useShowHide";
 export const useVideoRoomState = (
   user: WithId<User> | undefined,
   roomName?: string | undefined,
-  activeParticipantByDefault = true
+  activeParticipantByDefault = true,
+  transformVideoErrorMessage: (msg: string) => string = identity
 ) => {
   const { value: token } = useTwilioVideoToken({ userId: user?.id, roomName });
 
+  const errorTransformFuncRef = useRef<(msg: string) => string>(
+    transformVideoErrorMessage
+  );
+
   const [room, setRoom] = useState<Room>();
+  const [videoError, setVideoError] = useState("");
+  const dismissVideoError = useCallback(() => setVideoError(""), []);
+  const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
   const [participants, setParticipants] = useState<
-    ParticipantWithUser<LocalParticipant | RemoteParticipant>[]
+    ParticipantWithUser<RemoteParticipant>[]
   >([]);
 
   const disconnect = useCallback(() => {
@@ -54,7 +63,7 @@ export const useVideoRoomState = (
   } = useShowHide(activeParticipantByDefault);
 
   const participantConnected = useCallback(
-    async (participant: RemoteParticipant | LocalParticipant) => {
+    async (participant: RemoteParticipant) => {
       const user = await getUser(participant.identity);
 
       setParticipants((prevParticipants) => [
@@ -80,8 +89,12 @@ export const useVideoRoomState = (
     []
   );
 
-  const { loading: roomLoading } = useAsync(async () => {
+  const {
+    loading: roomLoading,
+    retry: retryConnect,
+  } = useAsyncRetry(async () => {
     if (!token || !roomName) return;
+    dismissVideoError();
 
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
     await connect(token, {
@@ -89,8 +102,12 @@ export const useVideoRoomState = (
       video: isActiveParticipant,
       audio: isActiveParticipant,
       enableDscp: true,
-    }).then(setRoom);
-  }, [roomName, token, isActiveParticipant]);
+    })
+      .then(setRoom)
+      .catch((error) => {
+        setVideoError(errorTransformFuncRef.current(error.message));
+      });
+  }, [token, roomName, dismissVideoError, isActiveParticipant]);
 
   useEffect(() => () => disconnect(), [disconnect]);
 
@@ -100,12 +117,11 @@ export const useVideoRoomState = (
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
 
-    [room.localParticipant, ...room.participants.values()].forEach(
-      participantConnected
-    );
+    setLocalParticipant(room.localParticipant);
+    [...room.participants.values()].forEach(participantConnected);
 
-    // Do we need `.off`? It looks like it's not in the docs
     return () => {
+      setLocalParticipant(undefined);
       room.off("participantConnected", participantConnected);
       room.off("participantDisconnected", participantDisconnected);
     };
@@ -116,7 +132,12 @@ export const useVideoRoomState = (
 
     room,
     participants,
+    localParticipant,
     roomLoading: participantsLoading || roomLoading,
+
+    videoError,
+    dismissVideoError,
+    retryConnect,
 
     disconnect,
     becomeActiveParticipant,
