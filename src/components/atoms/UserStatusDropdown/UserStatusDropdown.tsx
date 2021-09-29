@@ -38,6 +38,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
     () =>
       userStatuses.map((userStatus) => (
         <ReactBootstrapDropdown.Item
+          className="UserStatusDropdown__item"
           key={userStatus.status}
           onClick={() => changeUserStatus(userStatus.status)}
         >

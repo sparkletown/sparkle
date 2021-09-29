@@ -17,7 +17,8 @@
     }
   }
 
-  .dropdown-item {
+  &__item {
+    text-decoration: none;
     display: flex;
     justify-content: space-between;
     padding: 0 $spacing--md;
