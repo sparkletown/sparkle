@@ -9,7 +9,9 @@ import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import { Participant } from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
-import "./Room.scss";
+import { Loading } from "components/molecules/Loading";
+
+import "./JazzBarRoom.scss";
 
 const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
@@ -26,7 +28,7 @@ interface RoomProps {
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
-const Room: React.FC<RoomProps> = ({
+export const JazzBarRoom: React.FC<RoomProps> = ({
   roomName,
   venueId,
   setSeatedAtTable,
@@ -41,12 +43,8 @@ const Room: React.FC<RoomProps> = ({
     videoError,
     dismissVideoError,
     retryConnect,
-  } = useVideoRoomState(userWithId, roomName, true, (message) => {
-    if (message.toLowerCase().includes("unknown")) {
-      return `${message}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`;
-    }
-    return message;
-  });
+    loading,
+  } = useVideoRoomState(userWithId, roomName);
 
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
@@ -70,6 +68,10 @@ const Room: React.FC<RoomProps> = ({
 
     return [sidedVideoParticipants, otherVideoParticipants];
   }, [participants]);
+
+  if (loading) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -122,5 +124,3 @@ const Room: React.FC<RoomProps> = ({
     </>
   );
 };
-
-export default Room;

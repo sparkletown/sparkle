@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAsync, useAsyncRetry } from "react-use";
-import { identity } from "lodash";
 import {
   connect,
   LocalParticipant,
@@ -23,14 +22,9 @@ import { useShowHide } from "hooks/useShowHide";
 export const useVideoRoomState = (
   user: WithId<User> | undefined,
   roomName?: string | undefined,
-  activeParticipantByDefault = true,
-  transformVideoErrorMessage: (msg: string) => string = identity
+  activeParticipantByDefault = true
 ) => {
   const { value: token } = useTwilioVideoToken({ userId: user?.id, roomName });
-
-  const errorTransformFuncRef = useRef<(msg: string) => string>(
-    transformVideoErrorMessage
-  );
 
   const [room, setRoom] = useState<Room>();
   const [videoError, setVideoError] = useState("");
@@ -105,7 +99,13 @@ export const useVideoRoomState = (
     })
       .then(setRoom)
       .catch((error) => {
-        setVideoError(errorTransformFuncRef.current(error.message));
+        const message = error.message;
+
+        if (message.toLowerCase().includes("unknown")) {
+          setVideoError(
+            `${message}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`
+          );
+        } else setVideoError(message);
       });
   }, [token, roomName, dismissVideoError, isActiveParticipant]);
 
@@ -128,12 +128,10 @@ export const useVideoRoomState = (
   }, [room, user, participantConnected, participantDisconnected]);
 
   return {
-    token,
+    loading: participantsLoading || roomLoading,
 
-    room,
-    participants,
     localParticipant,
-    roomLoading: participantsLoading || roomLoading,
+    participants,
 
     videoError,
     dismissVideoError,

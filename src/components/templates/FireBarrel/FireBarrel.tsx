@@ -25,7 +25,7 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   const { userId, userWithId } = useUser();
 
   const {
-    room,
+    localParticipant,
     participants,
     videoError,
     dismissVideoError,
@@ -59,11 +59,11 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
 
         const isMe = participantUserData.id === userId;
 
-        if (!!room && isMe) {
+        if (!!localParticipant && isMe) {
           return (
             <S.Chair key={userId}>
               <LocalParticipant
-                participant={room.localParticipant}
+                participant={localParticipant}
                 profileData={userWithId}
                 profileDataId={userWithId?.id}
               />

@@ -31,7 +31,7 @@ import { UserList } from "components/molecules/UserList";
 import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
-import Room from "../components/JazzBarRoom";
+import { JazzBarRoom } from "../components/JazzBarRoom";
 import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
@@ -187,7 +187,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             )}
           </div>
           {seatedAtTable && (
-            <Room
+            <JazzBarRoom
               roomName={`${venue.name}-${seatedAtTable}`}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
