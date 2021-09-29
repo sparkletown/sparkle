@@ -8,10 +8,9 @@ export interface DropdownProps {
   options: JSX.Element[];
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({ title, options }) => {
-  return (
-    <DropdownButton title={title} className="Dropdown">
-      {options}
-    </DropdownButton>
-  );
-};
+// @debt look into the possibility of creating more robust (and isolated) component without Bootstrap
+export const Dropdown: React.FC<DropdownProps> = ({ title, options }) => (
+  <DropdownButton title={title} className="Dropdown">
+    {options}
+  </DropdownButton>
+);
