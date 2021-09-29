@@ -2,12 +2,13 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { VENUE_SPACES_LIST } from "settings";
+
 import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { venueSpacesList } from "utils/room";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -98,7 +99,7 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const renderAddRooms = useMemo(
     () =>
-      venueSpacesList.map((venueSpace, index) => (
+      VENUE_SPACES_LIST.map((venueSpace, index) => (
         <VenueRoomItem
           key={`${venueSpace.text}-${index}`}
           text={venueSpace.text}

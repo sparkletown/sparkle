@@ -54,11 +54,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
         {userStatus.status}&nbsp;
       </div>
       {showDropdown && (
-        <Dropdown
-          id="user-status-dropdown"
-          title="change status"
-          options={userStatusDropdownOptions}
-        />
+        <Dropdown title="change status" options={userStatusDropdownOptions} />
       )}
     </div>
   );

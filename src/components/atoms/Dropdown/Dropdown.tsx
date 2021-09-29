@@ -1,29 +1,16 @@
 import React from "react";
 import { DropdownButton } from "react-bootstrap";
-import classNames from "classnames";
-
-import { ContainerClassName } from "types/utility";
 
 import "./Dropdown.scss";
 
-export interface DropdownProps extends ContainerClassName {
-  id: string;
+export interface DropdownProps {
   title: string;
   options: JSX.Element[];
 }
 
-export const Dropdown: React.FC<DropdownProps> = ({
-  containerClassName,
-  id,
-  title,
-  options,
-}) => {
+export const Dropdown: React.FC<DropdownProps> = ({ title, options }) => {
   return (
-    <DropdownButton
-      id={id}
-      title={title}
-      className={classNames("Dropdown", containerClassName)}
-    >
+    <DropdownButton title={title} className="Dropdown">
       {options}
     </DropdownButton>
   );

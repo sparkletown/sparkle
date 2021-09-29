@@ -21,6 +21,7 @@ import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
 export * from "./portalSettings";
+export * from "./spacesSettings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =

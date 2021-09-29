@@ -1,15 +1,13 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ADMIN_V1_ROOMS_URL } from "settings";
+import { ADMIN_V1_ROOMS_URL, VENUE_SPACES_ICONS_MAPPING } from "settings";
 
 import { Room } from "types/rooms";
 import { ContainerClassName } from "types/utility";
-
-import { venueSpacesList } from "utils/room";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
@@ -35,17 +33,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     defaultSpace
   );
 
-  const getSpaceIcon = useCallback(
-    (spaceTemplate) =>
-      venueSpacesList.find(
-        (venueSpace) => venueSpace.template === spaceTemplate
-      )?.icon,
-    []
-  );
-
   const spaceOptions = useMemo(() => {
     const options = venueSpaces.map((space) => {
-      const spaceIcon = getSpaceIcon(space.template);
+      const spaceIcon = VENUE_SPACES_ICONS_MAPPING[space.template ?? ""];
       return (
         <ReactBootstrapDropdown.Item
           key={space.title}
@@ -80,13 +70,13 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     );
 
     return [...options, createSpaceOption];
-  }, [venueSpaces, setValue, fieldName, venueId, getSpaceIcon]);
+  }, [venueSpaces, setValue, fieldName, venueId]);
 
   const renderSpaceValue = useMemo(() => {
     if (!spaceValue) return;
 
     const space = venueSpaces.find((space) => space.title === spaceValue);
-    const spaceIcon = getSpaceIcon(space?.template);
+    const spaceIcon = VENUE_SPACES_ICONS_MAPPING[space?.template ?? ""];
 
     return (
       <span className="SpacesDropdown__value">
@@ -98,17 +88,12 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         {spaceValue}
       </span>
     );
-  }, [venueSpaces, spaceValue, getSpaceIcon]);
+  }, [venueSpaces, spaceValue]);
 
   return (
     <div className={classNames("SpacesDropdown", containerClassName)}>
       {renderSpaceValue}
-      <Dropdown
-        id={fieldName}
-        title="Select a space"
-        options={spaceOptions}
-        containerClassName="SpacesDropdown__container"
-      />
+      <Dropdown title="Select a space" options={spaceOptions} />
     </div>
   );
 };

@@ -18,6 +18,8 @@ $dropdown-item-icon-size: 20px;
   }
 
   &__item {
+    display: flex;
+    align-items: center;
     padding: $spacing--sm $spacing--md;
 
     font-weight: $font-weight--400;
@@ -29,7 +31,7 @@ $dropdown-item-icon-size: 20px;
     }
 
     &-icon {
-      width: $dropdown-item-icon-size;
+      min-width: $dropdown-item-icon-size;
       height: $dropdown-item-icon-size;
       margin-right: $spacing--sm;
     }
