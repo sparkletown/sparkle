@@ -269,16 +269,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description: [
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    ],
-  },
-  {
     template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: ["Add an NEW auditorium with an embedded video and sections"],
+    name: "Auditorium",
+    description: ["Add an auditorium with an embedded video and sections"],
   },
   {
     template: VenueTemplate.firebarrel,
@@ -307,28 +300,10 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Jazz Bar",
     description: ["Create a jazzbar."],
   },
-
-  {
-    template: VenueTemplate.artcar,
-    name: "Art Car",
-    description: ["Create a space on the Jam that moves around."],
-  },
-  {
-    template: VenueTemplate.performancevenue,
-    name: "Performance Venue",
-    description: [
-      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
-    ],
-  },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [""],
-  },
-  {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp (legacy)",
-    description: ["To be removed asap"],
   },
   {
     template: VenueTemplate.animatemap,
@@ -374,20 +349,6 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       {
         name: "bannerMessage",
         title: "Show an announcement in the venue (or leave blank for none)",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description:
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    icon: "/venues/pickspace-thumbnail_auditorium.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
         type: "text",
       },
     ],
@@ -567,11 +528,6 @@ export const DEFAULT_CAMERA_ENABLED = true;
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
-
-// Audience
-// Always have an odd number of rows and columns (because of the firelane delimiter).
-export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
-export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
 
 // These must both be odd, otherwise the video won't be centered properly
 export const SECTION_DEFAULT_ROWS_COUNT = 17;
