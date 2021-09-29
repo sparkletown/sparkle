@@ -9,7 +9,6 @@ import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
@@ -27,9 +26,7 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   const {
     localParticipant,
     participants,
-    videoError,
-    dismissVideoError,
-    retryConnect,
+    renderErrorModal,
   } = useVideoRoomState(userWithId, venue?.name);
 
   const seatCount =
@@ -86,13 +83,7 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
         return <React.Fragment key={index} />;
       })}
 
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={dismissVideoError}
-        errorMessage={videoError}
-        onRetry={retryConnect}
-        onBack={dismissVideoError}
-      />
+      {renderErrorModal((dismissError) => dismissError())}
     </S.Wrapper>
   );
 };

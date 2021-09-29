@@ -7,7 +7,6 @@ import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import { Participant } from "components/organisms/Room/Participant";
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -40,9 +39,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   const {
     localParticipant,
     participants,
-    videoError,
-    dismissVideoError,
-    retryConnect,
+    renderErrorModal,
     loading,
   } = useVideoRoomState(userWithId, roomName);
 
@@ -114,13 +111,9 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
         ))}
       </div>
 
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={dismissVideoError}
-        errorMessage={videoError}
-        onRetry={retryConnect}
-        onBack={() => (setSeatedAtTable ? leaveSeat() : dismissVideoError())}
-      />
+      {renderErrorModal((dismissVideoError: () => void) =>
+        setSeatedAtTable ? leaveSeat() : dismissVideoError
+      )}
     </>
   );
 };

@@ -8,7 +8,6 @@ import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import { Participant } from "components/organisms/Room/Participant";
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { Button } from "components/atoms/Button";
 
@@ -43,11 +42,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   const {
     localParticipant,
     participants,
-    videoError,
     disconnect,
-    dismissVideoError,
-    retryConnect,
     loading,
+    renderErrorModal,
   } = useVideoRoomState(userWithId, roomName);
 
   // TODO: nordbeavers team should rework
@@ -206,18 +203,11 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         {sidedVideos}
         {otherVideos}
       </div>
-
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={dismissVideoError}
-        errorMessage={videoError}
-        onRetry={retryConnect}
-        onBack={() => {
-          if (onExit) {
-            onExit(roomName);
-          }
-        }}
-      />
+      {renderErrorModal(() => {
+        if (onExit) {
+          onExit(roomName);
+        }
+      })}
     </>
   );
 };

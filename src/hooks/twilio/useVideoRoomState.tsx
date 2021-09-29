@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useAsync, useAsyncRetry } from "react-use";
 import {
   connect,
@@ -18,6 +18,8 @@ import { WithId } from "utils/id";
 import { logIfCannotFindExistingParticipant } from "utils/room";
 
 import { useShowHide } from "hooks/useShowHide";
+
+import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 export const useVideoRoomState = (
   user: WithId<User> | undefined,
@@ -127,15 +129,31 @@ export const useVideoRoomState = (
     };
   }, [room, user, participantConnected, participantDisconnected]);
 
+  const renderErrorModal = useCallback(
+    (onBack: (dismissError: () => void) => void) => {
+      const backHandler = () => {
+        onBack(dismissVideoError);
+      };
+      return (
+        <VideoErrorModal
+          show={!!videoError}
+          onHide={dismissVideoError}
+          errorMessage={videoError}
+          onRetry={retryConnect}
+          onBack={backHandler}
+        />
+      );
+    },
+    [dismissVideoError, retryConnect, videoError]
+  );
+
   return {
     loading: participantsLoading || roomLoading,
 
     localParticipant,
     participants,
 
-    videoError,
-    dismissVideoError,
-    retryConnect,
+    renderErrorModal,
 
     disconnect,
     becomeActiveParticipant,

@@ -9,7 +9,6 @@ import { Loading } from "components/molecules/Loading";
 
 import { LocalParticipant } from "./LocalParticipant";
 import { Participant } from "./Participant";
-import VideoErrorModal from "./VideoErrorModal";
 
 import "./Room.scss";
 
@@ -34,9 +33,7 @@ const Room: React.FC<RoomProps> = ({
   const {
     localParticipant,
     participants,
-    videoError,
-    dismissVideoError,
-    retryConnect,
+    renderErrorModal,
     loading,
   } = useVideoRoomState(userWithId, roomName);
 
@@ -124,13 +121,9 @@ const Room: React.FC<RoomProps> = ({
       {meComponent}
       {othersComponents}
       {emptyComponents}
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={dismissVideoError}
-        errorMessage={videoError}
-        onRetry={retryConnect}
-        onBack={() => (setSeatedAtTable ? leaveSeat() : dismissVideoError)}
-      />
+      {renderErrorModal((dismissVideoError: () => void) =>
+        setSeatedAtTable ? leaveSeat() : dismissVideoError
+      )}
     </Fragment>
   );
 };
