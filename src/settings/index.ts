@@ -24,9 +24,10 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
+export * from "./portalSettings";
+export * from "./sectionSettings";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
-export * from "./portalSettings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -535,15 +536,6 @@ export const DEFAULT_CAMERA_ENABLED = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
-export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
-
-// These must both be odd, otherwise the video won't be centered properly
-export const SECTION_DEFAULT_ROWS_COUNT = 17;
-export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
-
-export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
-
-export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 

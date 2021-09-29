@@ -5,8 +5,6 @@ import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -15,6 +13,8 @@ import {
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
+  SECTION_DEFAULT_COLUMNS_COUNT,
+  SECTION_DEFAULT_ROWS_COUNT,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
@@ -348,7 +348,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         <h4 className="italic input-header">Number of seats columns</h4>
         <input
           disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+          defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
           min={5}
           name="auditoriumColumns"
           type="number"
@@ -366,7 +366,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         <h4 className="italic input-header">Number of seats rows</h4>
         <input
           disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+          defaultValue={SECTION_DEFAULT_ROWS_COUNT}
           name="auditoriumRows"
           type="number"
           ref={register}
