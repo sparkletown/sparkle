@@ -93,7 +93,11 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   return (
     <div className={classNames("SpacesDropdown", containerClassName)}>
       {renderSpaceValue}
-      <Dropdown title="Select a space" options={spaceOptions} />
+      <Dropdown
+        buttonClassName="SpacesDropdown__button"
+        title="Select a space"
+        options={spaceOptions}
+      />
     </div>
   );
 };

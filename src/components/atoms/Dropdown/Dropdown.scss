@@ -1,7 +1,8 @@
 @import "scss/constants";
 
 .Dropdown {
-  .dropdown-toggle.btn {
+  &__button {
+    color: $white;
     background: none;
     padding: 0;
     margin: 0;

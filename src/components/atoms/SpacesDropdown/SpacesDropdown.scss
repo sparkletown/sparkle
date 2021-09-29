@@ -44,7 +44,7 @@ $dropdown-item-icon-size: 20px;
     border-radius: $border-radius--lg;
   }
 
-  .dropdown-toggle.btn {
+  &__button {
     display: flex;
     align-items: center;
     padding: $spacing--md $spacing--xl;
