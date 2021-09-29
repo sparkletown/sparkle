@@ -1,7 +1,10 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { ADMIN_V3_NEW_WORLD_URL, ADMIN_V3_ROOT_URL } from "settings";
+
+import { useUser } from "hooks/useUser";
+import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -12,6 +15,8 @@ import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/compon
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { WorldCard } from "components/molecules/WorldCard";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -25,6 +30,35 @@ export const WorldsDashboard: React.FC = () => {
   const navigateToHome = useCallback(() => history.push(ADMIN_V3_ROOT_URL), [
     history,
   ]);
+
+  const user = useUser();
+
+  const worlds = useOwnWorlds(user.userId);
+
+  const hasWorlds = !!worlds.length;
+
+  const renderWelcomePage = useMemo(
+    () => (
+      <>
+        <div className="WorldsDashboard__messages-container">
+          <AdminShowcaseTitle>Let’s create a world</AdminShowcaseTitle>
+          <AdminShowcaseSubTitle>It’s fast and easy</AdminShowcaseSubTitle>
+        </div>
+      </>
+    ),
+    []
+  );
+
+  const renderWorldsList = useMemo(
+    () => (
+      <div className="WorldsDashboard__worlds-list">
+        {worlds.map((world) => (
+          <WorldCard key={world.id} world={world} />
+        ))}
+      </div>
+    ),
+    [worlds]
+  );
 
   return (
     <div className="WorldsDashboard">
@@ -41,23 +75,21 @@ export const WorldsDashboard: React.FC = () => {
               </AdminSidebarSubTitle>
               <TabFooter onClickHome={navigateToHome} />
             </AdminSidebar>
-            <AdminShowcase>
+            <AdminShowcase className="WorldsDashboard__worlds">
               <div className="WorldsDashboard__new">
                 <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
                   Create a new world
                 </ButtonNG>
-                <img
-                  alt="arrow pointing towards the Create a world button"
-                  className="WorldsDashboard__arrow"
-                  src={ARROW}
-                />
+                {!hasWorlds && (
+                  <img
+                    alt="arrow pointing towards the Create a world button"
+                    className="WorldsDashboard__arrow"
+                    src={ARROW}
+                  />
+                )}
               </div>
-              <div className="WorldsDashboard__messages-container">
-                <AdminShowcaseTitle>Let’s create a world</AdminShowcaseTitle>
-                <AdminShowcaseSubTitle>
-                  It’s fast and easy
-                </AdminShowcaseSubTitle>
-              </div>
+              {!hasWorlds && renderWelcomePage}
+              {hasWorlds && renderWorldsList}
             </AdminShowcase>
           </AdminPanel>
         </AdminRestricted>

@@ -1,0 +1,52 @@
+@import "scss/constants";
+
+.WorldCard {
+  display: flex;
+  flex-direction: column;
+  background-color: $secondary--dark;
+  border-radius: $border-radius--lg;
+  margin: $spacing--lg;
+  padding: $spacing--xxl;
+  background-position: center;
+  background-size: cover;
+
+  &__logo {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    background-size: cover;
+    background-color: $black;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    align-self: flex-start;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: $spacing--sm;
+  }
+
+  &__titles {
+    padding-left: $spacing--sm;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__world-name {
+    word-break: break-word;
+    font-size: $font-size--xl;
+    font-weight: $font-weight--700;
+  }
+
+  &__world-description {
+    word-break: break-word;
+    font-size: $font-size--sm;
+    font-weight: $font-weight--400;
+  }
+
+  &__button {
+    max-width: none;
+    text-align: left;
+  }
+}
