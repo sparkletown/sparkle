@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
   faEye,
   faEyeSlash,
@@ -19,7 +19,7 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 import { isLocalParticipant } from "utils/twilio";
 
-import { useParticipantState } from "hooks/twilio/useParticipantState";
+import { useParticipantMediaState } from "hooks/twilio/useParticipantMediaState";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -48,69 +48,24 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   const isMe = isLocalParticipant(participant);
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
-  const {
-    videoTracks,
-    audioTracks,
-
-    isMuted,
-    muteAudio,
-    unmuteAudio,
-    toggleMuted,
-
-    isVideoShown,
-    toggleVideo,
-    showVideo,
-    hideVideo,
-  } = useParticipantState({
-    participant,
-    defaultMute,
-    defaultVideoHidden,
-  });
-
   const videoRef = useRef<HTMLVideoElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // @debt should we be handling the other video tracks here?
-  const videoTrack = videoTracks[0];
-  useEffect(() => {
-    if (!videoTrack) return;
+  const {
+    isEnabled: isVideoShown,
+    toggle: toggleVideo,
+  } = useParticipantMediaState(
+    "video",
+    videoRef,
+    participant,
+    defaultVideoHidden
+  );
+  const {
+    isEnabled: isAudioShown,
+    toggle: toggleAudio,
+  } = useParticipantMediaState("audio", audioRef, participant, defaultMute);
 
-    videoRef.current
-      ? videoTrack.attach(videoRef.current)
-      : videoTrack.detach();
-
-    videoTrack.on("enabled", showVideo);
-    videoTrack.on("disabled", hideVideo);
-
-    return () => {
-      videoTrack.off("enabled", showVideo);
-      videoTrack.off("disabled", hideVideo);
-
-      videoTrack.detach();
-    };
-  }, [videoTrack, showVideo, hideVideo]);
-
-  // @debt should we be handling the other audio tracks?
-  const audioTrack = audioTracks[0];
-  useEffect(() => {
-    if (!audioTrack) return;
-
-    if (audioRef.current && !isMuted) {
-      audioTrack.attach(audioRef.current);
-    } else {
-      audioTrack.detach();
-    }
-
-    audioTrack.on("enabled", unmuteAudio);
-    audioTrack.on("disabled", muteAudio);
-
-    return () => {
-      audioTrack.off("enabled", unmuteAudio);
-      audioTrack.off("disabled", muteAudio);
-
-      audioTrack.detach();
-    };
-  }, [audioTrack, isMuted, muteAudio, unmuteAudio]);
+  const isMuted = !isAudioShown;
 
   const micIconMe = isMuted ? faMicrophoneSlash : faMicrophone;
   const micIconOther = isMuted ? faVolumeMute : faVolumeUp;
@@ -159,7 +114,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           size="lg"
           icon={micIcon}
           color={micIconColor}
-          onClick={toggleMuted}
+          onClick={toggleAudio}
         />
       </div>
     </div>

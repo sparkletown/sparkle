@@ -1,12 +1,10 @@
 import {
   AudioTrack,
-  DataTrack,
   LocalAudioTrack,
   LocalParticipant,
   LocalVideoTrack,
   Participant,
   RemoteParticipant,
-  RemoteVideoTrack,
   Track,
   VideoTrack,
 } from "twilio-video";
@@ -28,17 +26,15 @@ export const isAudioTrack = (track: Track): track is AudioTrack =>
 export const isVideoTrack = (track: Track): track is VideoTrack =>
   track.kind === "video";
 
-export const isLocalVideoTrack = (track: Track): track is LocalVideoTrack =>
-  track.kind === "video" && (track as LocalVideoTrack).enable !== undefined;
-
-export const isRemoteVideoTrack = (track: Track): track is RemoteVideoTrack =>
-  track.kind === "video" && (track as RemoteVideoTrack).sid !== undefined;
-
-export const isLocalAudioTrack = (track: Track): track is LocalAudioTrack =>
-  track.kind === "audio" && (track as LocalAudioTrack).enable !== undefined;
-
-export const isDataTrack = (track: Track): track is DataTrack =>
-  track.kind === "data";
+export const isLocalTrack = (
+  track: Track
+): track is LocalAudioTrack | LocalVideoTrack => {
+  return isAudioTrack(track)
+    ? (track as LocalAudioTrack).enable !== undefined
+    : isVideoTrack(track)
+    ? (track as LocalVideoTrack).enable !== undefined
+    : false;
+};
 
 export const trackMapToVideoTracks = (
   trackMap: Participant["videoTracks"]
