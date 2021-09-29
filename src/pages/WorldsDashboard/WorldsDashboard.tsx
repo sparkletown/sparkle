@@ -8,14 +8,13 @@ import { AdminShowcase } from "components/organisms/AdminVenueView/components/Ad
 import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
-
-import { AdminSidebarSubTitle } from "../AdminVenueView/components/AdminSidebarSubTitle";
 
 import ARROW from "assets/images/admin/dashboard-arrow.svg";
 

@@ -12,10 +12,10 @@ import {
 
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
+import { WorldsDashboard } from "pages/WorldsDashboard";
 
 import { AdminDashboard } from "components/organisms/AdminDashboard";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
-import { WorldsDashboard } from "components/organisms/WorldsDashboard";
 
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>
