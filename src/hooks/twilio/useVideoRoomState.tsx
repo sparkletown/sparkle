@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useAsync, useAsyncRetry } from "react-use";
+import { useAsync, useAsyncRetry, useList } from "react-use";
 import {
   connect,
   LocalParticipant,
@@ -15,7 +15,6 @@ import { ParticipantWithUser } from "types/rooms";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { logIfCannotFindExistingParticipant } from "utils/room";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -32,10 +31,10 @@ export const useVideoRoomState = (
   const [videoError, setVideoError] = useState("");
   const dismissVideoError = useCallback(() => setVideoError(""), []);
   const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
-  const [participants, setParticipants] = useState<
-    ParticipantWithUser<RemoteParticipant>[]
-  >([]);
-
+  const [
+    participants,
+    { upsert: upsertParticipant, filter: filterParticipants },
+  ] = useList<ParticipantWithUser<RemoteParticipant>>([]);
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
       if (currentRoom?.localParticipant?.state !== "connected")
@@ -61,28 +60,24 @@ export const useVideoRoomState = (
   const participantConnected = useCallback(
     async (participant: RemoteParticipant) => {
       const user = await getUser(participant.identity);
-
-      setParticipants((prevParticipants) => [
-        ...prevParticipants,
+      upsertParticipant(
+        (existing) => existing.participant.identity === participant.identity,
         {
           participant: participant,
           user,
-        },
-      ]);
+        }
+      );
     },
-    []
+    [upsertParticipant]
   );
 
   const participantDisconnected = useCallback(
     (participant: RemoteParticipant) => {
-      setParticipants((prevParticipants) => {
-        logIfCannotFindExistingParticipant(prevParticipants, participant);
-        return prevParticipants.filter(
-          (p) => p.participant.identity !== participant.identity
-        );
-      });
+      filterParticipants(
+        (existing) => existing.participant.identity !== participant.identity
+      );
     },
-    []
+    [filterParticipants]
   );
 
   const {
