@@ -7,8 +7,8 @@ exports.removePreviosDanglingSeat = functions.firestore
   .document("/venues/{venueId}/recentSeatedUsers/{userId}")
   .onUpdate(async (change, context) => {
     const { before: beforeSnap, after: afterSnap } = change;
-    const before = beforeSnap.val();
-    const after = afterSnap.val();
+    const before = beforeSnap.data();
+    const after = afterSnap.data();
 
     const { venueId, userId } = context.params;
 
@@ -37,7 +37,7 @@ exports.removePreviosDanglingSeat = functions.firestore
           .collection("venues")
           .doc(venueId)
           .collection("sections")
-          .doc(sectionId)
+          .doc(beforeSectionId)
           .collection("seatedSectionUsers")
           .doc(userId)
           .delete();
