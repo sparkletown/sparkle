@@ -5,7 +5,7 @@ import { AnyVenue } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
-import { useVideoRoomState } from "hooks/twilio";
+import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
 import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
@@ -24,10 +24,7 @@ export interface FireBarrelProps {
 export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   const { userId, userWithId } = useUser();
 
-  const { room, participants } = useVideoRoomState({
-    user: userWithId,
-    roomName: venue?.name,
-  });
+  const { room, participants } = useVideoRoomState(userWithId, venue?.name);
 
   const seatCount =
     participants.length > DEFAULT_BURN_BARREL_SEATS

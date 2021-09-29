@@ -19,7 +19,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { isLocalParticipant } from "utils/twilio";
 
-import { useParticipantState } from "hooks/twilio";
+import { useParticipantState } from "hooks/twilio/useParticipantState";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
