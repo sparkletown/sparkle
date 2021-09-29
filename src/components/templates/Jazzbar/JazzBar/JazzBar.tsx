@@ -40,7 +40,7 @@ import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
-import "./JazzTab.scss";
+import "components/templates/Jazzbar/JazzBar/JazzBar.scss";
 
 interface JazzProps {
   venue: WithId<JazzbarVenue>;
@@ -52,7 +52,7 @@ interface JazzProps {
 //   messageToTheBand: string;
 // }
 
-const Jazz: React.FC<JazzProps> = ({ venue }) => {
+export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
@@ -270,5 +270,3 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
     </>
   );
 };
-
-export default Jazz;
