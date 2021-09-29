@@ -21,6 +21,7 @@ $status--spacing: $icon--spacing 0;
     border-radius: $border-radius--max;
     width: $picker-icon--size;
     height: $picker-icon--size;
+    margin-left: $icon--spacing;
     cursor: pointer;
 
     &:hover {
@@ -29,7 +30,6 @@ $status--spacing: $icon--spacing 0;
   }
 
   &__delete-icon {
-    margin-left: $icon--spacing;
     background-color: $lighter-intermediate-grey;
   }
 }
