@@ -23,3 +23,5 @@ export const ADMIN_V3_CREATE_URL = `${ADMIN_V3_ROOT_URL}/create/venue`;
 export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_V3_ROOT_URL}/edit/:venueId`;
 export const ADMIN_V3_VENUE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:selectedTab?`;
 export const ADMIN_V3_ADVANCED_PARAM_URL = `${ADMIN_V3_ROOT_URL}/advanced-settings/:venueId?/:selectedTab?`;
+export const ADMIN_V3_WORLDS_URL = `${ADMIN_V3_ROOT_URL}/worlds`;
+export const ADMIN_V3_NEW_WORLD_URL = `${ADMIN_V3_WORLDS_URL}/new`;

@@ -14,6 +14,12 @@ import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import defaultAvatar1 from "assets/avatars/default-profile-pic-1.png";
+import defaultAvatar2 from "assets/avatars/default-profile-pic-2.png";
+import defaultAvatar3 from "assets/avatars/default-profile-pic-3.png";
+import defaultAvatar4 from "assets/avatars/default-profile-pic-4.png";
+import defaultAvatar5 from "assets/avatars/default-profile-pic-5.png";
+import defaultAvatar6 from "assets/avatars/default-profile-pic-6.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
@@ -269,16 +275,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description: [
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    ],
-  },
-  {
     template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: ["Add an NEW auditorium with an embedded video and sections"],
+    name: "Auditorium",
+    description: ["Add an auditorium with an embedded video and sections"],
   },
   {
     template: VenueTemplate.firebarrel,
@@ -307,28 +306,10 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Jazz Bar",
     description: ["Create a jazzbar."],
   },
-
-  {
-    template: VenueTemplate.artcar,
-    name: "Art Car",
-    description: ["Create a space on the Jam that moves around."],
-  },
-  {
-    template: VenueTemplate.performancevenue,
-    name: "Performance Venue",
-    description: [
-      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
-    ],
-  },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [""],
-  },
-  {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp (legacy)",
-    description: ["To be removed asap"],
   },
   {
     template: VenueTemplate.animatemap,
@@ -374,20 +355,6 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       {
         name: "bannerMessage",
         title: "Show an announcement in the venue (or leave blank for none)",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description:
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    icon: "/venues/pickspace-thumbnail_auditorium.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
         type: "text",
       },
     ],
@@ -550,10 +517,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  defaultAvatar1,
+  defaultAvatar2,
+  defaultAvatar3,
+  defaultAvatar4,
+  defaultAvatar5,
+  defaultAvatar6,
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
@@ -567,11 +536,6 @@ export const DEFAULT_CAMERA_ENABLED = true;
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
-
-// Audience
-// Always have an odd number of rows and columns (because of the firelane delimiter).
-export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
-export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
 
 // These must both be odd, otherwise the video won't be centered properly
 export const SECTION_DEFAULT_ROWS_COUNT = 17;
