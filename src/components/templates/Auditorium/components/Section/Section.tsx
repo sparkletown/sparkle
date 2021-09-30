@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { AuditoriumVenue, VenueTemplate } from "types/venues";
+import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
@@ -13,7 +13,7 @@ import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { Loading } from "components/molecules/Loading";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
@@ -67,16 +67,11 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     sectionId,
   });
 
-  useUpdateRecentSeatedUsers(
-    VenueTemplate.auditorium,
-    venueId,
-    isUserSeated && { sectionId }
-  );
+  useUpdateAuditoriumRecentSeatedUsers(venueId, isUserSeated && sectionId);
 
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
 
   // Ensure the user leaves their seat when they leave the section
-  // @debt We should handle/enforce this on the backend somehow
   useEffect(() => {
     return () => {
       leaveSeat();

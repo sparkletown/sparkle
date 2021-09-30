@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { VENUE_SPACES_LIST } from "settings";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 import { AnyVenue } from "types/venues";
 
@@ -14,12 +14,14 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
-import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
@@ -28,18 +30,18 @@ import { AdminShowcase } from "../AdminShowcase";
 
 import "./Spaces.scss";
 
-interface SpacesProps extends TabNavigationProps {
+interface SpacesProps extends AdminSidebarFooterProps {
   venue: WithId<AnyVenue>;
 }
 
-const emptyRoomsArray: RoomData_v2[] = [];
+const emptyRoomsArray: Room[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({
   venue,
-  ...tabNavigationProps
+  ...sidebarFooterProps
 }) => {
-  const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
-  const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const [updatedRoom, setUpdatedRoom] = useState<Room>();
 
   const { isShown: showRooms, toggle: toggleShowRooms } = useShowHide(false);
   const { isShown: showAddRoom, toggle: toggleShowAddRoom } = useShowHide(
@@ -56,28 +58,36 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
-    setUpdatedRoom({});
+    setUpdatedRoom(undefined);
   }, []);
 
-  const updateRoomPosition = useCallback(async (position: Position) => {
-    if (!position) return;
+  const updateRoomPosition = useCallback(
+    async (position: Position) => {
+      if (!position || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      x_percent: position.left,
-      y_percent: position.top,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        x_percent: position.left,
+        y_percent: position.top,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
-  const updateRoomSize = useCallback(async (size: Dimensions) => {
-    if (!size) return;
+  const updateRoomSize = useCallback(
+    async (size: Dimensions) => {
+      if (!size || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      width_percent: size.width,
-      height_percent: size.height,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        width_percent: size.width,
+        height_percent: size.height,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
   const renderVenueRooms = useMemo(
     () =>
@@ -126,11 +136,12 @@ export const Spaces: React.FC<SpacesProps> = ({
             onBackClick={clearSelectedRoom}
             onDelete={clearSelectedRoom}
             onEdit={clearSelectedRoom}
+            onClickHome={sidebarFooterProps.onClickHome}
           />
         ) : (
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
-            <TabFooter {...tabNavigationProps} />
+            <AdminSidebarFooter {...sidebarFooterProps} />
             <div>
               <div
                 className="Spaces__venue-rooms"

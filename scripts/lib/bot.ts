@@ -7,10 +7,12 @@ import { chunk, keyBy } from "lodash";
 
 import { getUsersRef } from "./collections";
 import {
+  getRecentSeatedUsersUserRef,
   getSeatedSectionUserRef,
   getSeatedTableUserRef,
   getVenueName,
 } from "./documents";
+import { FetchSovereignVenueReturn } from "./fetch";
 import { FieldValue, wrapIntoSlashes } from "./helpers";
 import { withErrorReporter } from "./log";
 import {
@@ -19,6 +21,7 @@ import {
   DocumentReference,
   QueryDocumentSnapshot,
   SimContext,
+  SimStats,
   TableInfo,
   WithId,
 } from "./types";
@@ -30,7 +33,7 @@ import {
   sleep,
 } from "./utils";
 
-export const enterVenue: (
+const enterVenue: (
   options: {
     userRef: DocumentReference;
   } & SimContext<"venueRef" | "venueId" | "stats" | "log" | "sovereignVenue">
@@ -107,42 +110,36 @@ export const takeSeatInAudience: (
     );
   }
 
-  const allVenueIds = [
-    ...sovereignVenue.checkedVenueIds,
-    sovereignVenue.sovereignVenue.id,
-  ].reverse();
-
-  const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
-
   await enterVenue({ ...options, venueId });
 
-  const now = Date.now();
+  const locationPromise = updateUserLocation(userRef, sovereignVenue, stats);
 
-  await Promise.all([
-    userRef
-      .update({ lastSeenAt: now, lastVenueIdSeenIn: locationPath })
-      .then(() => (stats.writes = increment(stats.writes))),
-    (sectionId
-      ? getSeatedSectionUserRef({
-          venueId,
-          sectionId,
-          userId: userRef.id,
-        }).then((ref) =>
-          ref.set({
-            ...user,
-            position: {
-              row: row,
-              column: col,
-            },
-            path: {
-              venueId,
-              sectionId,
-            },
-          })
-        )
-      : Promise.resolve()
-    ).then(() => (stats.writes = increment(stats.writes))),
-  ]);
+  const seatPromise = (sectionId
+    ? getSeatedSectionUserRef({
+        venueId,
+        sectionId,
+        userId: userRef.id,
+      }).then((ref) =>
+        ref.set({
+          ...user,
+          position: {
+            row: row,
+            column: col,
+          },
+          path: {
+            venueId,
+            sectionId,
+          },
+        })
+      )
+    : Promise.resolve()
+  ).then(() => (stats.writes = increment(stats.writes)));
+
+  const recentSeatPromise = updateRecentSeat(venueId, userRef, "auditorium", {
+    sectionId,
+  });
+
+  await Promise.all([locationPromise, seatPromise, recentSeatPromise]);
 
   stats.relocations = increment(stats.relocations);
 
@@ -166,8 +163,6 @@ export const takeSeatAtTable: (
       "venueRef" | "venueId" | "venueName" | "stats" | "log" | "sovereignVenue"
     >
 ) => Promise<void> = async (options) => {
-  await enterVenue(options);
-
   const {
     userRef,
     user,
@@ -182,33 +177,32 @@ export const takeSeatAtTable: (
     sovereignVenue,
   } = options;
 
-  const now = Date.now();
+  await enterVenue(options);
 
   const vid = `${venueName}-table${idx}`;
 
-  const allVenueIds = [
-    ...sovereignVenue.checkedVenueIds,
-    sovereignVenue.sovereignVenue.id,
-  ].reverse();
+  const locationPromise = updateUserLocation(userRef, sovereignVenue, stats);
 
-  const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
+  const seatPromise = getSeatedTableUserRef({ venueId, userId: userRef.id })
+    .then((ref) =>
+      ref.set({
+        ...user,
+        path: {
+          venueId,
+          tableReference,
+        },
+      })
+    )
+    .then(() => (stats.writes = increment(stats.writes)));
 
-  await Promise.all([
-    userRef
-      .update({ lastSeenAt: now, lastVenueIdSeenIn: locationPath })
-      .then(() => (stats.writes = increment(stats.writes))),
-    getSeatedTableUserRef({ venueId, userId: userRef.id })
-      .then((ref) =>
-        ref.set({
-          ...user,
-          path: {
-            venueId,
-            tableReference,
-          },
-        })
-      )
-      .then(() => (stats.writes = increment(stats.writes))),
-  ]);
+  const recentSeatPromise = updateRecentSeat(
+    venueId,
+    userRef,
+    "jazzbar",
+    undefined
+  );
+
+  await Promise.all([locationPromise, seatPromise, recentSeatPromise]);
 
   stats.relocations = increment(stats.relocations);
 
@@ -216,6 +210,41 @@ export const takeSeatAtTable: (
     chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,ref,vid)}: ({yellow ${row}},{yellow ${col}},{green ${tableReference}},{green ${vid}})`
   );
 };
+
+const updateUserLocation = (
+  userRef: DocumentReference,
+  sovereignVenue: FetchSovereignVenueReturn,
+  stats: SimStats
+) => {
+  const allVenueIds = [
+    ...sovereignVenue.checkedVenueIds,
+    sovereignVenue.sovereignVenue.id,
+  ].reverse();
+
+  const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
+
+  return userRef
+    .update({ lastSeenAt: Date.now(), lastVenueIdSeenIn: locationPath })
+    .then(() => (stats.writes = increment(stats.writes)));
+};
+
+const updateRecentSeat = (
+  venueId: string,
+  userRef: DocumentReference,
+  template: string,
+  venueSpecificData: unknown
+) =>
+  getRecentSeatedUsersUserRef({
+    venueId,
+    userId: userRef.id,
+  }).then((ref) =>
+    ref.set({
+      template,
+      venueId,
+      venueSpecificData,
+      lastSittingTimeMs: Date.now(),
+    })
+  );
 
 export const ensureBotUsers: (
   options: SimContext<"conf" | "log" | "stats" | "stop">

@@ -1,1 +1,0 @@
-export { TabFooter } from "./TabFooter";

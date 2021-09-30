@@ -19,7 +19,7 @@ import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -75,7 +75,7 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
 
-  useUpdateRecentSeatedTableUsers(
+  useUpdateTableRecentSeatedUsers(
     VenueTemplate.jazzbar,
     seatedAtTable && venue?.id
   );
