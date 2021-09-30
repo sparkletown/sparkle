@@ -35,10 +35,10 @@ const removePreviousDanglingSeat = async (
   venueId,
   userId
 ) => {
-  const before = beforeSnap?.data();
-  const after = afterSnap?.data();
+  const before = beforeSnap.data();
+  const after = afterSnap && afterSnap.data();
 
-  const template = before?.template;
+  const template = before.template;
   if (!template) {
     throw new HttpsError(
       "invalid-argument",
@@ -46,8 +46,10 @@ const removePreviousDanglingSeat = async (
     );
   }
 
-  const { sectionId: beforeSectionId } = before?.venueSpecificData;
-  const { sectionId: afterSectionId } = after?.venueSpecificData ?? {};
+  const { sectionId: beforeSectionId } = before.venueSpecificData;
+  const afterVenueSpecificData = after && after.venueSpecificData;
+  const afterSectionId =
+    afterVenueSpecificData && afterVenueSpecificData.sectionId;
 
   switch (template) {
     case "auditorium":
