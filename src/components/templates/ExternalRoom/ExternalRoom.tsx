@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
@@ -25,7 +25,7 @@ export interface ExternalRoomProps {
 }
 
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
-  const redirectUrl = venue.zoomUrl;
+  const redirectUrl = venue.zoomUrl ?? "";
 
   const venueLogoVars = useCss({
     "background-image": `url(${venue.host?.icon})`,
@@ -40,6 +40,8 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
     if (!redirectUrl) return;
     openUrl(redirectUrl);
   }, [redirectUrl]);
+
+  const openRoomUrl = useCallback(() => openUrl(redirectUrl), [redirectUrl]);
 
   return (
     <VenueWithOverlay venue={venue} containerClassNames="ExternalRoom">
@@ -83,10 +85,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
                     {venue.config?.landingPageConfig.subtitle}
                   </div>
 
-                  <ButtonNG
-                    variant="primary"
-                    onClick={() => openUrl(redirectUrl)}
-                  >
+                  <ButtonNG variant="primary" onClick={openRoomUrl}>
                     Enter
                   </ButtonNG>
                 </div>
