@@ -4,4 +4,8 @@
   &__save-button {
     margin-bottom: $footer-height;
   }
+
+  &__reactions-checkbox {
+    justify-content: start;
+  }
 }

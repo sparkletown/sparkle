@@ -134,6 +134,8 @@ export interface Venue_v2_AdvancedConfig {
   showRadio?: boolean;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
+  showReactions?: boolean;
+  isReactionsAudible?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {

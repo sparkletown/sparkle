@@ -118,12 +118,15 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
+      showReactions: venue.showReactions,
+      isReactionsAudible: venue.isReactionsAudible,
     },
   });
 
   const { user } = useUser();
 
   const values = watch();
+  console.log(values);
 
   const onSubmit = (data: Venue_v2_AdvancedConfig) => {
     if (!user) return;
@@ -366,6 +369,27 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     </>
   );
 
+  const renderShowReactions = () => (
+    <>
+      <ToggleElement
+        forwardRef={register}
+        isChecked={values.showReactions}
+        name="showReactions"
+        title="Show reactions"
+      />
+      {values.showReactions && (
+        <Checkbox
+          containerClassName="AdvancedSettings__reactions-checkbox"
+          label="Audible reactions"
+          name="isReactionsAudible"
+          forwardedRef={register}
+          defaultChecked={values.isReactionsAudible}
+          toggler
+        />
+      )}
+    </>
+  );
+
   return (
     <div>
       <h1>Advanced settings</h1>
@@ -384,6 +408,10 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         />
 
         {renderShowNametags()}
+
+        {/* {templateID &&
+          HAS_REACTIONS_TEMPLATES.includes(templateID) && */}
+        {renderShowReactions()}
 
         <ToggleElement
           forwardRef={register}
