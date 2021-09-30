@@ -133,6 +133,8 @@ export interface VenueAdvancedConfig {
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
   parentId?: string;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -406,8 +408,7 @@ export interface VenueTablePath {
 
 export type TableSeatedUsersVenuesTemplates =
   | VenueTemplate.jazzbar
-  | VenueTemplate.conversationspace
-  | VenueTemplate.friendship;
+  | VenueTemplate.conversationspace;
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;

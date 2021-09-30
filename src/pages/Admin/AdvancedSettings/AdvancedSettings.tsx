@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+
+import { DEFAULT_USER_STATUS } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
+import { UserStatus } from "types/User";
 import { AnyVenue, VenueAdvancedConfig } from "types/venues";
 
 import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
+
+import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -47,6 +53,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
       roomVisibility: venue.roomVisibility,
+      showUserStatus: venue.showUserStatus,
+      userStatuses: venue.userStatuses,
     },
   });
 
@@ -62,12 +70,70 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         name: venue.name,
         worldId: venue.worldId,
         ...data,
+        userStatuses,
       },
       user
     ).catch((e) => console.error(AdvancedSettings.name, e));
 
     onSave();
   };
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
+    values.userStatuses ?? []
+  );
+
+  const addUserStatus = useCallback(
+    () =>
+      setUserStatuses([
+        ...userStatuses,
+        { status: "", color: DEFAULT_USER_STATUS.color },
+      ]),
+    [userStatuses, setUserStatuses]
+  );
+
+  const deleteStatus = useCallback(
+    (index: number) => {
+      const statuses = [...userStatuses];
+      statuses.splice(index, 1);
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const changeInput = useCallback(
+    (event: React.FormEvent<HTMLInputElement>, index: number) => {
+      const statuses = [...userStatuses];
+
+      statuses[index] = {
+        color: statuses[index].color,
+        status: event.currentTarget.value,
+      };
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const pickColor = useCallback(
+    (color: string, index: number) => {
+      const statuses = [...userStatuses];
+      statuses[index] = { color, status: statuses[index].status };
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const renderVenueUserStatuses = useMemo(
+    () =>
+      userStatuses.map((userStatus, index) => (
+        <UserStatusPanel
+          key={`${userStatus}-${index}`}
+          userStatus={userStatus}
+          onPickColor={(color) => pickColor(color, index)}
+          onChangeInput={(value) => changeInput(value, index)}
+          onDelete={() => deleteStatus(index)}
+        />
+      )),
+    [changeInput, deleteStatus, pickColor, userStatuses]
+  );
 
   return (
     <div className="AdvancedSettings">
@@ -106,7 +172,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
         <div className="AdvancedSettings__form-field">
           <Toggler forwardedRef={register} name="showGrid" title="Show grid" />
-          <Form.Label>Number of columns:</Form.Label>
+          <Form.Label>Number of columns: </Form.Label>
           <InputField
             name="columns"
             type="number"
@@ -151,7 +217,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             name="showRadio"
             title="Enable venue radio"
           />
-          <Form.Label>Radio station stream URL:</Form.Label>
+          <Form.Label>Radio station stream URL: </Form.Label>
           <InputField
             name="radioStations"
             error={errors.radioStations}
@@ -161,8 +227,28 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         </div>
 
         <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="showUserStatus"
+            title="Show user status"
+          />
+          {values.showUserStatus && (
+            <>
+              {renderVenueUserStatuses}
+              <ButtonNG
+                variant="primary"
+                iconName={faPlus}
+                onClick={addUserStatus}
+              >
+                Add a status
+              </ButtonNG>
+            </>
+          )}
+        </div>
+
+        <div className="AdvancedSettings__form-field">
           <Form.Label>Room appearance</Form.Label>
-          <div>Choose how you&apos;d like your rooms to appear on the map</div>
+          <div>Choose how you&apos; d like your rooms to appear on the map</div>
           <Form.Control as="select" custom name="roomVisibility" ref={register}>
             <option value="hover">Hover</option>
             <option value="count">Count</option>
@@ -172,17 +258,17 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
         <div className="AdvancedSettings__form-field">
           <Form.Label>
-            Enter the parent venue ID, for the &quot;back&quot; button to go to,
-            and for sharing events in the schedule
+            Enter the parent venue ID, for the &quot; back&quot; button to go
+            to, and for sharing events in the schedule
           </Form.Label>
           <div>
-            The nav bar can show a &quot;back&quot; button if you enter an ID
-            here. Clicking &quot;back&quot; will return the user to the venue
-            whose ID you enter. Additionally, the events you add here will be
+            The nav bar can show a &quot; back&quot; button if you enter an ID
+            here.Clicking &quot; back&quot; will return the user to the venue
+            whose ID you enter.Additionally, the events you add here will be
             shown to users while they are on all other venues which share the
-            parent venue ID you enter here, as well as in the parent venue. The
-            value is a venue ID. Enter the venue ID you wish to use. A venue ID
-            is the part of the URL after /in/, so eg. for{" "}
+            parent venue ID you enter here, as well as in the parent venue.The
+            value is a venue ID.Enter the venue ID you wish to use.A venue ID is
+            the part of the URL after /in/, so eg.for{" "}
             <i>sparkle.space/in/abcdef</i> you would enter <i>abcdef</i>
             below
           </div>

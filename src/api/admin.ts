@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { Room, RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
   Venue_v2_EntranceConfig,
@@ -65,7 +65,7 @@ export type RoomInput = Omit<Room, "image_url"> & {
   image_file?: FileList;
 };
 
-export type RoomInput_v2 = RoomData_v2 & {
+export type RoomInput_v2 = Room & {
   venueName?: string;
   useUrl?: boolean;
   image_url?: string;
@@ -538,7 +538,7 @@ export const upsertRoom = async (
     });
 };
 
-export const deleteRoom = async (venueId: string, room: RoomData_v2) => {
+export const deleteRoom = async (venueId: string, room: Room) => {
   return await firebase
     .functions()
     .httpsCallable("venue-deleteRoom")({
