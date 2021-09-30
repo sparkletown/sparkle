@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import classNames from "classnames";
 import Video from "twilio-video";
 
 import { DEFAULT_CAMERA_ENABLED } from "settings";
@@ -18,6 +19,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
 
+import "./Participant.scss";
 export interface ParticipantProps {
   defaultMute?: boolean;
   participant: Video.Participant;
@@ -25,6 +27,7 @@ export interface ParticipantProps {
   profileDataId: string;
   showIcon?: boolean;
   isAudioEffectDisabled?: boolean;
+  isShowSoundDisable?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -36,6 +39,7 @@ export const Participant: React.FC<ParticipantProps> = ({
   profileData,
   defaultMute = false,
   showIcon = true,
+  isShowSoundDisable = false,
   isAudioEffectDisabled,
 }) => {
   const isCurrentUser = useIsCurrentUser(participant.identity);
@@ -148,16 +152,22 @@ export const Participant: React.FC<ParticipantProps> = ({
     [profileData]
   );
 
+  const profileIconClasses = classNames("profile-icon", {
+    "profile-icon__onlyIcon": !videoEnabled,
+    "profile-icon__onlyIcon--remote": !videoEnabled && !isCurrentUser,
+  });
+
   return (
     <div className="col participant">
       {!videoEnabled && <div className="participant--video-disabled" />}
       {videoAndAudio}
       {showIcon && (
-        <div className="profile-icon">
+        <div className={profileIconClasses}>
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
             reactionPosition="right"
             isAudioEffectDisabled={isAudioEffectDisabled}
+            isVideoEnabled={videoEnabled}
           />
         </div>
       )}
@@ -168,12 +178,14 @@ export const Participant: React.FC<ParticipantProps> = ({
           defaultMute={defaultMute}
         />
       )}
-      <VideoOverlayButton
-        containerClassName={"mute-other-container"}
-        variant="audio"
-        defaultValue={!defaultMute}
-        onEnabledChanged={changeAudioState}
-      />
+      {isShowSoundDisable && (
+        <VideoOverlayButton
+          containerClassName={"mute-other-container"}
+          variant="audio"
+          defaultValue={!defaultMute}
+          onEnabledChanged={changeAudioState}
+        />
+      )}
     </div>
   );
 };

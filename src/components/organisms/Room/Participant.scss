@@ -1,0 +1,59 @@
+@import "scss/constants";
+
+.participant {
+  background-color: $light-grey;
+  display: flex;
+  justify-content: center;
+  justify-self: center;
+  max-width: $video-participant-optimal-width;
+  width: $video-participant-optimal-width;
+  height: $video-participant-optimal-height;
+  max-height: $video-participant-optimal-height;
+  display: flex;
+  padding: 0;
+
+  video {
+    height: 100%;
+    width: 100%;
+  }
+
+  .mirrored {
+    transform: scale(-1, 1);
+  }
+
+  .profile-icon {
+    position: absolute;
+    bottom: $spacing--sm;
+    left: $spacing--sm;
+    border-radius: 188%;
+    z-index: z(jazzbar-participant-profile-icon);
+
+    &__onlyIcon {
+      left: auto;
+      bottom: auto;
+
+      &--remote {
+        top: $spacing--lg;
+      }
+    }
+  }
+
+  .mute-container {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+  }
+
+  .mute-other-container {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    // @note firebarrel had visibility: hidden, but Participant is disabled there
+    // visibility: hidden;
+  }
+}

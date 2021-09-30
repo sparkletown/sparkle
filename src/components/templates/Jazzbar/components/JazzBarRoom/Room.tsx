@@ -175,6 +175,7 @@ const Room: React.FC<RoomProps> = ({
               participant={participant.participant}
               profileData={participant.user}
               profileDataId={participant.user.id}
+              isShowSoundDisable
             />
           </div>
         );
@@ -198,6 +199,7 @@ const Room: React.FC<RoomProps> = ({
               participant={participant.participant}
               profileData={participant.user}
               profileDataId={participant.user.id}
+              isShowSoundDisable
             />
           </div>
         );

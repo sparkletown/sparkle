@@ -61,9 +61,13 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   } = useVenueUserStatuses(user);
 
   const avatarSrc = useMemo((): string => {
+    const validAvatar =
+      (user?.pictureUrl?.includes("static") ||
+        user?.pictureUrl?.includes("http")) &&
+      user?.pictureUrl;
     const url = user?.anonMode
       ? DEFAULT_PROFILE_IMAGE
-      : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+      : validAvatar || DEFAULT_PROFILE_IMAGE;
 
     const facadeSize = size ? AVATAR_SIZE_MAP[size] : undefined;
     const resizeOptions: ImageResizeOptions = { fit: "crop" };

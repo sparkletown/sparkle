@@ -139,7 +139,10 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       {showIcon && participantUser && (
         <div className="video-participant__profile">
-          <UserProfilePicture user={participantUser} />
+          <UserProfilePicture
+            user={participantUser}
+            isVideoEnabled={!isVideoHidden}
+          />
         </div>
       )}
 

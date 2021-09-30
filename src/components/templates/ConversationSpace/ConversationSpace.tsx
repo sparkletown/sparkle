@@ -63,7 +63,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   }, [parentVenueId]);
 
   const tables = venue?.config?.tables ?? TABLES;
-
   return (
     <>
       <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>

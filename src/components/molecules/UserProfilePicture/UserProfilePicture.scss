@@ -18,6 +18,14 @@ $avatarUrl: var(--user-profile-picture-avatar-url, none);
 
   cursor: pointer;
 
+  &__onlyIcon {
+    width: 100px;
+    height: 100px;
+    bottom: 0;
+    left: 0;
+    margin: 7px auto;
+  }
+
   // Note: this is only needed to pass down to UserAvatar, if we go back to using the
   // direct styles above to render the image within this component, then this won't be needed anymore.
   &__avatar {

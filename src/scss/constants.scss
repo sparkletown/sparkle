@@ -87,6 +87,8 @@ $admin-ng-tab-bar-height: 30px;
 $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
+$video-participant-optimal-width: 260px;
+$video-participant-optimal-height: 145px;
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
