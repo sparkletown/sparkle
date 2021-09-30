@@ -1,14 +1,4 @@
-import React, { useRef } from "react";
-import {
-  faEye,
-  faEyeSlash,
-  faMicrophone,
-  faMicrophoneSlash,
-  faVideo,
-  faVideoSlash,
-  faVolumeMute,
-  faVolumeUp,
-} from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
@@ -17,9 +7,8 @@ import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-import { isLocalParticipant } from "utils/twilio";
 
-import { useParticipantMediaState } from "hooks/twilio/useParticipantMediaState";
+import { useVideoParticipant } from "hooks/twilio/useVideoParticipant";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -45,37 +34,21 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   containerClassName,
   isAudioEffectDisabled,
 }) => {
-  const isMe = isLocalParticipant(participant);
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const {
+    ref: videoRef,
+    handleToggle: handleVideoToggle,
+    icon: videoIcon,
+    iconColor: videoIconColor,
+  } = useVideoParticipant("video", participant, defaultVideoHidden);
 
   const {
-    isEnabled: isVideoShown,
-    toggle: toggleVideo,
-  } = useParticipantMediaState(
-    "video",
-    videoRef,
-    participant,
-    defaultVideoHidden
-  );
-  const {
-    isEnabled: isAudioShown,
-    toggle: toggleAudio,
-  } = useParticipantMediaState("audio", audioRef, participant, defaultMute);
-
-  const isMuted = !isAudioShown;
-
-  const micIconMe = isMuted ? faMicrophoneSlash : faMicrophone;
-  const micIconOther = isMuted ? faVolumeMute : faVolumeUp;
-  const micIcon = isMe ? micIconMe : micIconOther;
-  const micIconColor = isMuted ? "red" : undefined;
-
-  const videoIconMe = isVideoShown ? faVideo : faVideoSlash;
-  const videoIconOther = isVideoShown ? faEye : faEyeSlash;
-  const videoIcon = isMe ? videoIconMe : videoIconOther;
-  const videoIconColor = isVideoShown ? undefined : "red";
+    ref: audioRef,
+    handleToggle: handleAudioToggle,
+    icon: audioIcon,
+    iconColor: audioIconColor,
+  } = useVideoParticipant("audio", participant, defaultMute);
 
   return (
     <div
@@ -107,14 +80,14 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           size="lg"
           icon={videoIcon}
           color={videoIconColor}
-          onClick={toggleVideo}
+          onClick={handleVideoToggle}
         />
 
         <FontAwesomeIcon
           size="lg"
-          icon={micIcon}
-          color={micIconColor}
-          onClick={toggleAudio}
+          icon={audioIcon}
+          color={audioIconColor}
+          onClick={handleAudioToggle}
         />
       </div>
     </div>
