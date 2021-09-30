@@ -1,24 +1,13 @@
 import {
   AudioTrack,
   LocalAudioTrack,
-  LocalParticipant,
   LocalVideoTrack,
   Participant,
-  RemoteParticipant,
   Track,
   VideoTrack,
 } from "twilio-video";
 
 import { isTruthy } from "utils/types";
-
-export const isLocalParticipant = (
-  participant: LocalParticipant | RemoteParticipant
-): participant is LocalParticipant =>
-  (participant as LocalParticipant).publishTrack !== undefined;
-
-export const isRemoteParticipant = (
-  participant: LocalParticipant | RemoteParticipant
-): participant is RemoteParticipant => !isLocalParticipant(participant);
 
 export const isAudioTrack = (track: Track): track is AudioTrack =>
   track.kind === "audio";

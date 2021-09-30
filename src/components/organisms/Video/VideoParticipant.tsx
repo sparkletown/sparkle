@@ -8,7 +8,7 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
-import { useVideoParticipant } from "hooks/twilio/useVideoParticipant";
+import { useParticipantState } from "hooks/twilio/useParticipantState";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -38,17 +38,17 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
   const {
     ref: videoRef,
-    handleToggle: handleVideoToggle,
+    handleToggle: toggleVideo,
     icon: videoIcon,
     iconColor: videoIconColor,
-  } = useVideoParticipant("video", participant, defaultVideoHidden);
+  } = useParticipantState("video", participant, defaultVideoHidden);
 
   const {
     ref: audioRef,
-    handleToggle: handleAudioToggle,
+    handleToggle: toggleAudio,
     icon: audioIcon,
     iconColor: audioIconColor,
-  } = useVideoParticipant("audio", participant, defaultMute);
+  } = useParticipantState("audio", participant, defaultMute);
 
   return (
     <div
@@ -80,14 +80,14 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           size="lg"
           icon={videoIcon}
           color={videoIconColor}
-          onClick={handleVideoToggle}
+          onClick={toggleVideo}
         />
 
         <FontAwesomeIcon
           size="lg"
           icon={audioIcon}
           color={audioIconColor}
-          onClick={handleAudioToggle}
+          onClick={toggleAudio}
         />
       </div>
     </div>

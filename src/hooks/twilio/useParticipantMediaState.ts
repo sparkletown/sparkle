@@ -18,7 +18,7 @@ import { useShowHide } from "hooks/useShowHide";
 export interface UseParticipantStateProps {
   videoRef: RefObject<HTMLVideoElement>;
   audioRef: RefObject<HTMLAudioElement>;
-  participant?: LocalParticipant | RemoteParticipant;
+  participant: LocalParticipant | RemoteParticipant;
   defaultMute: boolean;
   defaultVideoHidden: boolean;
 }
@@ -40,7 +40,7 @@ export interface UseParticipantStateProps {
 export const useParticipantMediaState = (
   media: "audio" | "video",
   ref: RefObject<HTMLVideoElement | HTMLAudioElement>,
-  participant: LocalParticipant | RemoteParticipant | undefined,
+  participant: LocalParticipant | RemoteParticipant,
   defaultMute: boolean
 ) => {
   const [
@@ -68,8 +68,6 @@ export const useParticipantMediaState = (
   );
 
   useEffect(() => {
-    if (!participant) return;
-
     setTracks(
       media === "video"
         ? trackMapToVideoTracks(participant.videoTracks)
@@ -133,7 +131,7 @@ export const useParticipantMediaState = (
 
       track.detach();
     };
-  }, [disable, enable, ref, track]);
+  }, [disable, enable, isEnabled, ref, track]);
 
   return { isEnabled, toggle };
 };

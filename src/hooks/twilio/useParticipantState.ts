@@ -13,8 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
-import { isLocalParticipant } from "utils/twilio";
-
+import { useIsLocalParticipant } from "hooks/twilio/useIsLocalParticipant";
 import { useParticipantMediaState } from "hooks/twilio/useParticipantMediaState";
 
 type RefType<T extends "audio" | "video"> = T extends "audio"
@@ -22,18 +21,19 @@ type RefType<T extends "audio" | "video"> = T extends "audio"
   : HTMLVideoElement;
 
 interface UseVideoParticipantReturnType<T extends "audio" | "video"> {
+  isExternalEnabled: boolean;
   handleToggle: () => void;
   icon: IconDefinition;
   iconColor: string | undefined;
   ref: RefObject<RefType<T>>;
 }
 
-export const useVideoParticipant = <T extends "audio" | "video">(
+export const useParticipantState = <T extends "audio" | "video">(
   media: T,
   participant: LocalParticipant | RemoteParticipant,
   defaultMute: boolean
 ): UseVideoParticipantReturnType<T> => {
-  const isMe = isLocalParticipant(participant);
+  const isMe = useIsLocalParticipant(participant);
 
   const ref = useRef<RefType<T>>(null);
   const { isEnabled: isTwilioEnabled, toggle } = useParticipantMediaState(
@@ -64,13 +64,18 @@ export const useVideoParticipant = <T extends "audio" | "video">(
     else toggleEnableOverride();
   }, [isMe, toggle, toggleEnableOverride]);
 
-  const isEnabled = isMe ? isTwilioEnabled : isUserEnabled && isTwilioEnabled;
+  const isExternalEnabled = isMe
+    ? isTwilioEnabled
+    : isUserEnabled && isTwilioEnabled;
 
   return {
     handleToggle,
+    isExternalEnabled,
     icon:
-      icons[`${isMe ? "me" : "other"}${isEnabled ? "Enabled" : "Disabled"}`],
+      icons[
+        `${isMe ? "me" : "other"}${isExternalEnabled ? "Enabled" : "Disabled"}`
+      ],
     ref,
-    iconColor: isEnabled ? undefined : "red",
+    iconColor: isExternalEnabled ? undefined : "red",
   };
 };
