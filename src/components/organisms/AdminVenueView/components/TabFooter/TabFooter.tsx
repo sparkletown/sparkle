@@ -18,7 +18,7 @@ export const TabFooter: React.FC<TabFooterProps> = ({
   handleVenueUpdate,
 }) => {
   const handleClickNext = useCallback(() => {
-    onClickNext();
+    onClickNext?.();
     handleVenueUpdate?.();
   }, [onClickNext, handleVenueUpdate]);
 
@@ -32,16 +32,20 @@ export const TabFooter: React.FC<TabFooterProps> = ({
           iconOnly={true}
           title="Home"
         />
-        <ButtonNG className="TabFooter__nav-button" onClick={onClickBack}>
-          Back
-        </ButtonNG>
-        <ButtonNG
-          className="TabFooter__nav-button"
-          onClick={handleClickNext}
-          variant="primary"
-        >
-          Next
-        </ButtonNG>
+        {onClickNext && (
+          <ButtonNG className="TabFooter__nav-button" onClick={onClickBack}>
+            Back
+          </ButtonNG>
+        )}
+        {onClickNext && (
+          <ButtonNG
+            className="TabFooter__nav-button"
+            onClick={handleClickNext}
+            variant="primary"
+          >
+            Next
+          </ButtonNG>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ $border-radius: 22px;
 $spacing: 20px;
 
 .RoomModal {
-  padding: $spacing;
+  padding: $spacing--lg 0;
 
   background-color: $dark;
   background-repeat: no-repeat;
@@ -14,11 +14,16 @@ $spacing: 20px;
     text-align: center;
   }
 
+  &__wrapper {
+    padding: 0;
+  }
+
   &__title {
     font-weight: 700;
 
     margin-top: $spacing;
     margin-bottom: $spacing;
+    padding: 0 $spacing--lg;
   }
 
   &__main {
@@ -26,6 +31,7 @@ $spacing: 20px;
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+    padding: 0 $spacing--lg;
 
     > * {
       flex: 1;
@@ -44,7 +50,7 @@ $spacing: 20px;
     width: 180px;
     border-radius: $border-radius;
     background-color: $black;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
   }
@@ -81,15 +87,7 @@ $spacing: 20px;
   }
 
   &__events {
-    max-height: 35vh;
+    max-height: 20vh;
     overflow-y: auto;
-    // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
-    //   We should just clean it up there instead.
-    .schedule-item-container {
-      margin: -10px;
-      padding: 10px $spacing;
-
-      border-radius: $border-radius;
-    }
   }
 }

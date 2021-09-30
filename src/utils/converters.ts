@@ -5,6 +5,13 @@ import { AnyVenue } from "types/venues";
 
 import { WithId, withId } from "utils/id";
 
+export const withIdConverter: firebase.firestore.FirestoreDataConverter<object> = {
+  toFirestore: (value: object): firebase.firestore.DocumentData => value,
+
+  fromFirestore: (snapshot: firebase.firestore.QueryDocumentSnapshot) =>
+    withId(snapshot.data(), snapshot.id),
+};
+
 export const venueConverter: firebase.firestore.FirestoreDataConverter<
   WithId<AnyVenue>
 > = {

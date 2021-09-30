@@ -3,7 +3,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "store";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
-import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
+import { AuditoriumSeatedUser } from "types/auditorium";
 import {
   ChatSettings,
   JukeboxMessage,
@@ -149,14 +149,6 @@ export const animateMapArtCarsSelector: SparkleSelector<
 
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
-
-export const currentAuditoriumSectionsSelector: SparkleSelector<
-  WithId<AuditoriumSection>[] | undefined
-> = (state) => state.firestore.ordered.currentAuditoriumSections;
-
-export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
-  Partial<Record<string, AuditoriumSection>> | undefined
-> = (state) => state.firestore.data.currentAuditoriumSections;
 
 export const currentAuditoriumSectionSeatedUsersSelector: SparkleSelector<
   WithId<AuditoriumSeatedUser>[] | undefined
