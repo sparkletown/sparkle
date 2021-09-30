@@ -2,9 +2,11 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { ROOMS_TAXON, VENUE_SPACES_LIST } from "settings";
+
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -26,59 +28,7 @@ import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
 
-import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
-import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
-import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
-import RoomIconExperience from "assets/icons/icon-room-experience.svg";
-import RoomIconMap from "assets/icons/icon-room-map.svg";
-import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
-
 import "./Spaces.scss";
-
-interface VenueRooms {
-  text: string;
-  template?: VenueTemplate;
-  icon: string;
-}
-
-const venueRooms: VenueRooms[] = [
-  {
-    text: "Conversation Space",
-    icon: RoomIconConversation,
-    template: VenueTemplate.conversationspace,
-  },
-  {
-    text: "Auditorium",
-    icon: RoomIconAuditorium,
-    template: VenueTemplate.audience,
-  },
-  {
-    text: "Music Bar",
-    icon: RoomIconMusicBar,
-    template: VenueTemplate.jazzbar,
-  },
-  {
-    text: "Burn Firebarrel",
-    icon: RoomIconBurnBarrel,
-    template: VenueTemplate.firebarrel,
-  },
-  {
-    text: "Art Piece",
-    icon: RoomIconArtPiece,
-    template: VenueTemplate.artpiece,
-  },
-  {
-    text: "Experience",
-    icon: RoomIconExperience,
-    template: VenueTemplate.zoomroom,
-  },
-  {
-    text: "Map",
-    icon: RoomIconMap,
-    template: VenueTemplate.partymap,
-  },
-];
 
 interface SpacesProps extends AdminSidebarFooterProps {
   venue: WithId<AnyVenue>;
@@ -159,12 +109,12 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const renderAddRooms = useMemo(
     () =>
-      venueRooms.map((venueRoom, index) => (
+      VENUE_SPACES_LIST.map((venueSpace, index) => (
         <VenueRoomItem
-          key={`${venueRoom.text}-${index}`}
-          text={venueRoom.text}
-          template={venueRoom.template}
-          icon={venueRoom.icon}
+          key={`${venueSpace.text}-${index}`}
+          text={venueSpace.text}
+          template={venueSpace.template}
+          icon={venueSpace.icon}
           worldId={worldId}
         />
       )),
@@ -211,7 +161,9 @@ export const Spaces: React.FC<SpacesProps> = ({
             </div>
             <div>
               <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
-                <div>{numberOfRooms} Rooms</div>
+                <div>
+                  {numberOfRooms} {ROOMS_TAXON.capital}
+                </div>
                 <FontAwesomeIcon
                   icon={showRooms ? faCaretDown : faCaretRight}
                 />
@@ -221,7 +173,7 @@ export const Spaces: React.FC<SpacesProps> = ({
             </div>
 
             <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
-              <div>Add rooms</div>
+              <div>Add {ROOMS_TAXON.lower}</div>
               <FontAwesomeIcon
                 icon={showAddRoom ? faCaretDown : faCaretRight}
               />
