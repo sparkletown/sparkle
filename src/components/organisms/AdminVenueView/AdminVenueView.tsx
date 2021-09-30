@@ -35,12 +35,6 @@ export interface AdminVenueViewRouteParams {
   selectedTab?: AdminVenueTab;
 }
 
-export interface TabNavigationProps {
-  onClickHome: () => void;
-  onClickBack?: () => void;
-  onClickNext?: () => void;
-}
-
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",

@@ -31,17 +31,22 @@ export const DateTimeField: React.FC<DateFieldProps> = ({
   }, [dateValue, timeValue, onChange]);
 
   return (
-    <div className="DateTimeField__title">
-      {title}
+    <div className="DateTimeField">
+      <div className="DateTimeField__title">{title}</div>
       {subTitle && <p className="DateTimeField__subtitle">{subTitle}</p>}
       <div className="DateTimeField__container">
         <input
           type="date"
-          className="DateTimeField__date"
+          className="DateTimeField__input DateTimeField__date"
           value={dateValue}
           onChange={handleDateChange}
         />
-        <input type="time" value={timeValue} onChange={handleTimeChange} />
+        <input
+          className="DateTimeField__input DateTimeField__time"
+          type="time"
+          value={timeValue}
+          onChange={handleTimeChange}
+        />
       </div>
     </div>
   );
