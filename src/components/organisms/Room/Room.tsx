@@ -5,10 +5,9 @@ import { unsetTableSeat } from "api/venue";
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
-import { Loading } from "components/molecules/Loading";
+import { VideoParticipant } from "components/organisms/Video";
 
-import { LocalParticipant } from "./LocalParticipant";
-import { Participant } from "./Participant";
+import { Loading } from "components/molecules/Loading";
 
 import "./Room.scss";
 
@@ -21,14 +20,14 @@ interface RoomProps {
   defaultMute?: boolean;
 }
 
-const Room: React.FC<RoomProps> = ({
+export const Room: React.FC<RoomProps> = ({
   roomName,
   venueId,
   setSeatedAtTable,
   hasChairs = true,
   defaultMute,
 }) => {
-  const { userId, profile } = useUser();
+  const { userId, userWithId } = useUser();
 
   const {
     localParticipant,
@@ -57,18 +56,24 @@ const Room: React.FC<RoomProps> = ({
   }, [participants.length]);
 
   const meComponent = useMemo(() => {
-    return localParticipant && profile ? (
-      <div className={`participant-container ${participantContainerClassName}`}>
-        <LocalParticipant
-          key={localParticipant.sid}
+    return localParticipant && userWithId ? (
+      <div
+        className={`participant-container ${participantContainerClassName}`}
+        key={localParticipant.identity}
+      >
+        <VideoParticipant
           participant={localParticipant}
-          profileData={profile}
-          profileDataId={localParticipant.identity}
+          participantUser={userWithId}
           defaultMute={defaultMute}
         />
       </div>
     ) : null;
-  }, [localParticipant, profile, defaultMute, participantContainerClassName]);
+  }, [
+    localParticipant,
+    userWithId,
+    defaultMute,
+    participantContainerClassName,
+  ]);
 
   const othersComponents = useMemo(
     () =>
@@ -82,10 +87,9 @@ const Room: React.FC<RoomProps> = ({
             key={participant.participant.identity}
             className={`participant-container ${participantContainerClassName}`}
           >
-            <Participant
+            <VideoParticipant
               participant={participant.participant}
-              profileData={participant.user}
-              profileDataId={participant.user.id}
+              participantUser={participant.user}
             />
           </div>
         );
@@ -127,5 +131,3 @@ const Room: React.FC<RoomProps> = ({
     </Fragment>
   );
 };
-
-export default Room;

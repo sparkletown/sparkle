@@ -8,7 +8,7 @@ import { WithId } from "utils/id";
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
-import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
+import { VideoParticipant } from "components/organisms/Video";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
@@ -59,10 +59,9 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
         if (!!localParticipant && isMe) {
           return (
             <S.Chair key={userId}>
-              <LocalParticipant
+              <VideoParticipant
                 participant={localParticipant}
-                profileData={userWithId}
-                profileDataId={userWithId?.id}
+                participantUser={userWithId}
               />
             </S.Chair>
           );
@@ -71,10 +70,9 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
         if (participants.length && !!participants[index]) {
           return (
             <S.Chair key={participant.identity}>
-              <LocalParticipant
+              <VideoParticipant
                 participant={participant}
-                profileData={participantUserData}
-                profileDataId={participantUserData.id}
+                participantUser={userWithId}
               />
             </S.Chair>
           );

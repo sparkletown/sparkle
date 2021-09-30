@@ -6,8 +6,7 @@ import { AnimateMapVenue } from "types/venues";
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
-import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
-import { Participant } from "components/organisms/Room/Participant";
+import { VideoParticipant } from "components/organisms/Video";
 
 import { Button } from "components/atoms/Button";
 
@@ -108,10 +107,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
             key={participant.participant.identity}
             className="firebarrel-room__participant"
           >
-            <Participant
+            <VideoParticipant
               participant={participant.participant}
-              profileData={participant.user}
-              profileDataId={participant.user.id}
+              participantUser={participant.user}
             />
           </div>
         );
@@ -131,10 +129,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
             key={participant.participant.identity}
             className="firebarrel-room__participant"
           >
-            <Participant
+            <VideoParticipant
               participant={participant.participant}
-              profileData={participant.user}
-              profileDataId={participant.user.id}
+              participantUser={participant.user}
             />
           </div>
         );
@@ -144,12 +141,10 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   const myVideo = useMemo(() => {
     return localParticipant && userWithId ? (
-      <div className="firebarrel-room__participant">
-        <LocalParticipant
-          key={localParticipant.sid}
+      <div className="firebarrel-room__participant" key={localParticipant.sid}>
+        <VideoParticipant
           participant={localParticipant}
-          profileData={userWithId}
-          profileDataId={userWithId.id}
+          participantUser={userWithId}
           defaultMute={defaultMute}
           isAudioEffectDisabled={isAudioEffectDisabled}
         />

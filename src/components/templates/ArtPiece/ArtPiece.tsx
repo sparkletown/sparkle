@@ -12,7 +12,7 @@ import { WithId } from "utils/id";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import Room from "components/organisms/Room";
+import { Room } from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";

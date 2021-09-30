@@ -15,7 +15,7 @@ import { ParticipantWithUser } from "types/rooms";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { VideoErrorModal } from "components/organisms/Room/VideoErrorModal";
 
 export const useVideoRoomState = (
   userId: string | undefined,
