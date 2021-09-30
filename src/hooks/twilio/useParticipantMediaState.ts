@@ -53,7 +53,14 @@ export const useParticipantMediaState = (
     },
   ] = useList<VideoTrack | AudioTrack>();
 
-  const trackUnsubscribed = useCallback(
+  const trackSubscribedHandler = useCallback(
+    (track: VideoTrack | AudioTrack) => {
+      pushTrack(track);
+    },
+    [pushTrack]
+  );
+
+  const trackUnsubscribedHandler = useCallback(
     (track: VideoTrack | AudioTrack) => {
       filterTrack((t) => t !== track);
     },
@@ -69,12 +76,17 @@ export const useParticipantMediaState = (
         : trackMapToAudioTracks(participant?.audioTracks)
     );
 
-    participant.on("trackSubscribed", pushTrack);
-    participant.on("trackUnsubscribed", trackUnsubscribed);
+    /*
+      Here twilio sometimes passes two params to "trackSubscribed" handler.
+      If we use pushTrack here as a handler then objects of incorrect type
+      can end up in tracks list.
+     */
+    participant.on("trackSubscribed", trackSubscribedHandler);
+    participant.on("trackUnsubscribed", trackUnsubscribedHandler);
 
     return () => {
-      participant.off("trackSubscribed", pushTrack);
-      participant.off("trackUnsubscribed", trackUnsubscribed);
+      participant.off("trackSubscribed", trackSubscribedHandler);
+      participant.off("trackUnsubscribed", trackUnsubscribedHandler);
 
       clearTracks();
     };
@@ -85,7 +97,8 @@ export const useParticipantMediaState = (
     participant,
     pushTrack,
     setTracks,
-    trackUnsubscribed,
+    trackSubscribedHandler,
+    trackUnsubscribedHandler,
   ]);
 
   const {
@@ -104,7 +117,7 @@ export const useParticipantMediaState = (
     }
   }, [isEnabled, tracks]);
 
-  // @debt should we be handling the other audio tracks?
+  // @debt should we be handling the other tracks too?
   const track = tracks[0];
   useEffect(() => {
     if (!track) return;
