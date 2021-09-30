@@ -37,21 +37,19 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
   const {
-    isEnabled: isVideoEnabledExternally,
+    shouldDisableExternally: shouldDisableVideoExternally,
     ref: videoRef,
     handleToggle: toggleVideo,
     icon: videoIcon,
     iconColor: videoIconColor,
-    iconClickable: videoIconClickable,
   } = useParticipantState("video", participant, defaultVideoHidden);
 
   const {
-    isEnabled: isAudioEnabledExternally,
+    shouldDisableExternally: shouldDisableAudioExternally,
     ref: audioRef,
     handleToggle: toggleAudio,
     icon: audioIcon,
     iconColor: audioIconColor,
-    iconClickable: audioIconClickable,
   } = useParticipantState("audio", participant, defaultMute);
 
   return (
@@ -67,16 +65,20 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
       <div className="VideoParticipant__video">
         <video
           className={classNames("VideoParticipant__video-element", {
-            "VideoParticipant__video-element--disabled": !isVideoEnabledExternally,
+            "VideoParticipant__video-element--disabled": shouldDisableVideoExternally,
           })}
           ref={videoRef}
           autoPlay={true}
         />
-        {!isVideoEnabledExternally && (
+        {shouldDisableVideoExternally && (
           <div className="VideoParticipant__video--placeholder" />
         )}
       </div>
-      <audio ref={audioRef} autoPlay={true} muted={!isAudioEnabledExternally} />
+      <audio
+        ref={audioRef}
+        autoPlay={true}
+        muted={shouldDisableAudioExternally}
+      />
 
       {showIcon && participantUser && (
         <div className="VideoParticipant__profile">
@@ -90,9 +92,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       <div className="VideoParticipant__controls">
         <FontAwesomeIcon
-          className={classNames({
-            "VideoParticipant__controls--clickable": videoIconClickable,
-          })}
           size="lg"
           icon={videoIcon}
           color={videoIconColor}
@@ -100,9 +99,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
         />
 
         <FontAwesomeIcon
-          className={classNames({
-            "VideoParticipant__controls--clickable": audioIconClickable,
-          })}
           size="lg"
           icon={audioIcon}
           color={audioIconColor}
