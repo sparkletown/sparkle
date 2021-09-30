@@ -12,7 +12,7 @@ import { isEqual } from "lodash";
 
 import { RoomInput_v2, updateRoom } from "api/admin";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 
 import { useUser } from "hooks/useUser";
 
@@ -34,10 +34,10 @@ export interface MapPreviewProps {
   venueName: string;
   worldId: string;
   mapBackground?: string;
-  rooms: RoomData_v2[];
+  rooms: Room[];
   venueId: string;
   isEditing: boolean;
-  onRoomChange?: (rooms: RoomData_v2[]) => void;
+  onRoomChange?: (rooms: Room[]) => void;
 }
 
 const MapPreview: React.FC<MapPreviewProps> = ({
@@ -50,7 +50,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   onRoomChange,
 }) => {
   const { user } = useUser();
-  const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
+  const [mapRooms, setMapRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     if (

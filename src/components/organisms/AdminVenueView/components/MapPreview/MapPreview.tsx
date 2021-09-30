@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { useCheckImage } from "hooks/useCheckImage";
@@ -14,10 +14,10 @@ import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   mapBackground?: string;
-  rooms: RoomData_v2[];
+  rooms: Room[];
   isEditing: boolean;
-  selectedRoom?: RoomData_v2;
-  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  selectedRoom?: Room;
+  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
   onResizeRoom?: (size: Dimensions) => void;
   onMoveRoom?: (position: Position) => void;
 }
