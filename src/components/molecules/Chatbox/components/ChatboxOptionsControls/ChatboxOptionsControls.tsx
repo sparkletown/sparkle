@@ -47,7 +47,7 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
       {shouldShowPoll ? (
         <TextButton label="Cancel Poll" onClick={unselectOption} />
       ) : (
-        // @debt align the styling of the dropdown component
+        // @debt align the style of the SpacesDropdown with the Dropdown component
         <DropdownButton
           id="options-dropdown"
           title="Options"

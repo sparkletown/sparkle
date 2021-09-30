@@ -44,7 +44,7 @@ export const AdminDashboard: React.FC = () => {
 
   const sortingOptions = useMemo(
     () => (
-      // @debt align the styling of the dropdown component
+      // @debt align the style of the SpacesDropdown with the Dropdown component
       <DropdownButton variant="secondary" title="Sort venues">
         {Object.values(VenueSortingOptions).map((sortingOption) => (
           <ReactBootstrapDropdown.Item
