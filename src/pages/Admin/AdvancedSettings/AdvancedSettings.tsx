@@ -10,9 +10,11 @@ import { updateVenue_v2 } from "api/admin";
 import { UserStatus } from "types/User";
 import { AnyVenue, VenueAdvancedConfig } from "types/venues";
 
+import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
+import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
@@ -23,7 +25,7 @@ import { Toggler } from "components/atoms/Toggler";
 import "./AdvancedSettings.scss";
 
 export interface AdvancedSettingsProps {
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
   onSave: () => void;
 }
 
@@ -36,6 +38,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     formState: { dirty, isSubmitting },
     register,
     errors,
+    setError,
     handleSubmit,
   } = useForm<VenueAdvancedConfig>({
     mode: "onSubmit",
@@ -58,12 +61,42 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     },
   });
 
+  const { worldParentVenues } = useWorldVenues(venue.worldId);
+
   const { user } = useUser();
 
   const values = watch();
 
+  const validateParentId = useCallback(
+    (parentId, checkedIds) => {
+      if (checkedIds.includes(parentId)) return false;
+
+      if (!parentId) return true;
+
+      const parentVenue = worldParentVenues.find(
+        (venue) => venue.id === parentId
+      );
+
+      if (!parentVenue) return true;
+
+      validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
+    },
+    [worldParentVenues]
+  );
+
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
     if (!user) return;
+
+    const isValidParentId = validateParentId(data.parentId, [venue.id]);
+
+    if (!isValidParentId) {
+      setError(
+        "parentId",
+        "manual",
+        "This parent id is invalid because it will create a loop of parent venues. If venue 'A' is a parent of venue 'B', venue 'B' can't be a parent of venue 'A'."
+      );
+      return;
+    }
 
     updateVenue_v2(
       {
