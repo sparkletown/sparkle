@@ -5,7 +5,7 @@ import { useAsyncFn } from "react-use";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
@@ -26,8 +26,8 @@ import { PortalVisibility } from "components/atoms/PortalVisibility";
 import "./EditRoomForm.scss";
 
 interface EditRoomFormProps extends AdminSidebarFooterProps {
-  room: RoomData_v2;
-  updatedRoom: RoomData_v2;
+  room: Room;
+  updatedRoom?: Room;
   roomIndex: number;
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
@@ -55,7 +55,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     defaultValues: {
       title: room.title,
       url: room.url,
-      description: room.description,
+      about: room.about,
       template: room.template,
       image_url: room.image_url,
       visibility: room.visibility ?? venueVisibility,
@@ -137,11 +137,11 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
         <Form.Label>Room tagline</Form.Label>
         <InputField
-          name="description"
+          name="about"
           type="text"
           autoComplete="off"
-          placeholder="Description"
-          error={errors.description}
+          placeholder="About"
+          error={errors.about}
           ref={register()}
         />
 
