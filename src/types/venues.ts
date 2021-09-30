@@ -409,8 +409,7 @@ export interface VenueTablePath {
 
 export type TableSeatedUsersVenuesTemplates =
   | VenueTemplate.jazzbar
-  | VenueTemplate.conversationspace
-  | VenueTemplate.friendship;
+  | VenueTemplate.conversationspace;
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;

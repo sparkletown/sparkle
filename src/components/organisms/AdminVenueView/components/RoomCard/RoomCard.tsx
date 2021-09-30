@@ -10,6 +10,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { ROOM_TAXON } from "settings";
+
 import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room, RoomType } from "types/rooms";
@@ -105,14 +107,18 @@ export const RoomCard: React.FC<RoomCardProps> = ({
             iconName={room.isEnabled ? faEye : faEyeSlash}
             disabled={isTogglingRoom}
             onClick={toggleRoom}
-            title={`click to ${room.isEnabled ? "hide" : "show"} room`}
+            title={`click to ${room.isEnabled ? "hide" : "show"} ${
+              ROOM_TAXON.lower
+            }`}
           />
           <ButtonNG
             iconOnly={true}
             iconName={isRoomUnclickable ? faBan : faHandPointer}
             disabled={isTogglingClickability}
             onClick={toggleRoomClickablility}
-            title={`make room ${isRoomUnclickable ? "" : "un"}clickable`}
+            title={`make ${ROOM_TAXON.lower} ${
+              isRoomUnclickable ? "" : "un"
+            }clickable`}
           />
         </div>
       </div>

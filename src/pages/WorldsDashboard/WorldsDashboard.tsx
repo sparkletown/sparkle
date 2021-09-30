@@ -8,9 +8,9 @@ import { AdminShowcase } from "components/organisms/AdminVenueView/components/Ad
 import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -39,7 +39,7 @@ export const WorldsDashboard: React.FC = () => {
                 This can be an event or a series of events in the sparkly
                 universe
               </AdminSidebarSubTitle>
-              <TabFooter onClickHome={navigateToHome} />
+              <AdminSidebarFooter onClickHome={navigateToHome} />
             </AdminSidebar>
             <AdminShowcase>
               <div className="WorldsDashboard__new">

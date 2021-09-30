@@ -12,7 +12,9 @@ import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
 import update from "immutability-helper";
 
-import { RoomData_v2 } from "types/rooms";
+import { ROOM_TAXON } from "settings";
+
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
@@ -66,9 +68,9 @@ export interface VenueRoomsEditorProps {
   backgroundImageClassName?: string;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
-  rooms: RoomData_v2[];
-  selectedRoom: RoomData_v2 | undefined;
-  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  rooms: Room[];
+  selectedRoom?: Room;
+  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
 }
 
 export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
@@ -287,7 +289,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
                 "Container__room-image--disabled": !room.isEnabled,
               })}
               src={room.image_url}
-              alt="room-logo"
+              alt={`${ROOM_TAXON.lower} logo`}
               title={room.title}
             />
             <div className="Container__room-title">{room.title}</div>
