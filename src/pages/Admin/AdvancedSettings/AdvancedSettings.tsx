@@ -86,6 +86,8 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     .notRequired(),
   showRadio: Yup.bool().notRequired(),
   showUserStatus: Yup.bool().notRequired(),
+  showReactions: Yup.bool().notRequired(),
+  isReactionsAudible: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
