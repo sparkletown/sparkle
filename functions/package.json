@@ -5,7 +5,7 @@
     "lint": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "engines": {
-    "node": "10"
+    "node": "14"
   },
   "dependencies": {
     "agora-access-token": "^2.0.4",
