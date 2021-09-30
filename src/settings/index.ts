@@ -37,6 +37,7 @@ export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
+export * from "./spacesSettings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =

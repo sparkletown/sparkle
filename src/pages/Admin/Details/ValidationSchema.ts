@@ -255,8 +255,5 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
     .typeError("Minutes must be a number")
     .required("Minutes equired"),
   host: Yup.string().required("Host required"),
-  room: Yup.string().matches(
-    new RegExp(`^(?!Select a ${ROOM_TAXON.lower}...$).*$`),
-    `${ROOM_TAXON.capital} is required`
-  ),
+  room: Yup.string().required("Space is required"),
 });

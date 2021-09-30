@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
-import { HAS_ROOMS_TEMPLATES, ROOM_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, HAS_ROOMS_TEMPLATES } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -12,6 +12,8 @@ import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 
 import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
+
+import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 import "./TimingEventModal.scss";
 
@@ -43,6 +45,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     errors,
     formState,
     reset,
+    setValue,
   } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -90,20 +93,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     [onHide, venueId, template, event]
   );
 
-  const rooms = useMemo(() => venue.rooms ?? [], [venue]);
-
-  const roomOptions = useMemo(
-    () =>
-      rooms.map((room) => {
-        return (
-          <option key={room.title} value={room.title}>
-            {room.title}
-          </option>
-        );
-      }),
-    [rooms]
-  );
-
   return (
     <>
       <Modal show={show} onHide={onHide} className="TimingEventModal">
@@ -112,20 +101,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
-                <select
-                  name="room"
-                  id="room"
-                  className="input-group__modal-input input-group__dropdown"
-                  ref={register}
-                >
-                  <option
-                    selected={true}
-                    className="input-group__dropdown__hidden"
-                  >
-                    Select a {ROOM_TAXON.lower}...
-                  </option>
-                  {roomOptions}
-                </select>
+                <SpacesDropdown
+                  venueSpaces={venue.rooms ?? ALWAYS_EMPTY_ARRAY}
+                  venueId={venueId}
+                  setValue={setValue}
+                  fieldName="room"
+                  defaultSpace={event?.room}
+                />
                 {errors.room && (
                   <span className="input-error">{errors.room.message}</span>
                 )}
