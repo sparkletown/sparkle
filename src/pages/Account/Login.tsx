@@ -6,6 +6,7 @@ import { fetchCustomAuthConfig } from "api/auth";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { trackMixpanelEvent } from "utils/mixpanel";
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
@@ -82,7 +83,9 @@ export const Login: React.FC<LoginProps> = ({
     setFormToDisplay("passwordReset");
   };
 
-  const redirectAfterLogin = () => {};
+  const afterUserIsLoggedIn = () => {
+    trackMixpanelEvent("Login", { worldId: venue.worldId });
+  };
 
   if (isCustomAuthConfigLoading) return <LoadingPage />;
 
@@ -128,7 +131,7 @@ export const Login: React.FC<LoginProps> = ({
           <RegisterForm
             displayLoginForm={displayLoginForm}
             displayPasswordResetForm={displayPasswordResetForm}
-            afterUserIsLoggedIn={redirectAfterLogin}
+            afterUserIsLoggedIn={afterUserIsLoggedIn}
             closeAuthenticationModal={() => null}
           />
         )}
@@ -137,13 +140,13 @@ export const Login: React.FC<LoginProps> = ({
             displayRegisterForm={displayRegisterForm}
             displayPasswordResetForm={displayPasswordResetForm}
             closeAuthenticationModal={() => null}
-            afterUserIsLoggedIn={redirectAfterLogin}
+            afterUserIsLoggedIn={afterUserIsLoggedIn}
           />
         )}
         {formToDisplay === "passwordReset" && (
           <PasswordResetForm
             displayLoginForm={displayLoginForm}
-            closeAuthenticationModal={redirectAfterLogin}
+            closeAuthenticationModal={afterUserIsLoggedIn}
           />
         )}
       </div>
