@@ -67,7 +67,7 @@ export interface VenueRoomsEditorProps {
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   rooms: Room[];
-  selectedRoom: Room | undefined;
+  selectedRoom?: Room;
   setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
 }
 
