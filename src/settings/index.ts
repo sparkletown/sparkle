@@ -9,24 +9,34 @@ import {
   PROJECT_ID,
 } from "secrets";
 
+import { RoomType } from "types/rooms";
+import { VenueTemplate } from "types/venues";
+
+import { FIVE_MINUTES_MS } from "utils/time";
+
 import {
   ROOM_TAXON,
   ROOMS_TAXON,
   SCREENING_ROOM_TAXON,
   SPACE_TAXON,
   ZOOM_ROOM_TAXON,
-} from "settings/taxonomy";
+} from "./taxonomy";
 
-import { RoomType } from "types/rooms";
-import { VenueTemplate } from "types/venues";
-
-import { FIVE_MINUTES_MS } from "utils/time";
-
+import defaultAvatar1 from "assets/avatars/default-profile-pic-1.png";
+import defaultAvatar2 from "assets/avatars/default-profile-pic-2.png";
+import defaultAvatar3 from "assets/avatars/default-profile-pic-3.png";
+import defaultAvatar4 from "assets/avatars/default-profile-pic-4.png";
+import defaultAvatar5 from "assets/avatars/default-profile-pic-5.png";
+import defaultAvatar6 from "assets/avatars/default-profile-pic-6.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export * from "./taxonomy";
+export * from "./portalSettings";
+export * from "./sectionSettings";
+export * from "./urlSettings";
+export * from "./useSettingsDefaults";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -45,10 +55,12 @@ export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
 export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
 
 export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
+export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
-export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
@@ -101,7 +113,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
-export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 5000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 20 * 1000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -164,8 +176,6 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
 
 export const ACCEPTED_IMAGE_TYPES =
   "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
-
-export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
@@ -277,16 +287,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description: [
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    ],
-  },
-  {
     template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: ["Add an NEW auditorium with an embedded video and sections"],
+    name: "Auditorium",
+    description: ["Add an auditorium with an embedded video and sections"],
   },
   {
     template: VenueTemplate.firebarrel,
@@ -317,28 +320,10 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Jazz Bar",
     description: ["Create a jazzbar."],
   },
-
-  {
-    template: VenueTemplate.artcar,
-    name: "Art Car",
-    description: ["Create a space on the Jam that moves around."],
-  },
-  {
-    template: VenueTemplate.performancevenue,
-    name: "Performance Venue",
-    description: [
-      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
-    ],
-  },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [""],
-  },
-  {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp (legacy)",
-    description: ["To be removed asap"],
   },
   {
     template: VenueTemplate.animatemap,
@@ -384,20 +369,6 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       {
         name: "bannerMessage",
         title: "Show an announcement in the venue (or leave blank for none)",
-        type: "text",
-      },
-    ],
-  },
-  {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description:
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    icon: "/venues/pickspace-thumbnail_auditorium.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
         type: "text",
       },
     ],
@@ -559,10 +530,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  defaultAvatar1,
+  defaultAvatar2,
+  defaultAvatar3,
+  defaultAvatar4,
+  defaultAvatar5,
+  defaultAvatar6,
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
@@ -575,20 +548,6 @@ export const DEFAULT_CAMERA_ENABLED = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
-export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
-
-// Audience
-// Always have an odd number of rows and columns (because of the firelane delimiter).
-export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
-export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
-
-// These must both be odd, otherwise the video won't be centered properly
-export const SECTION_DEFAULT_ROWS_COUNT = 17;
-export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
-
-export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
-
-export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 
@@ -672,7 +631,6 @@ Object.freeze(ALWAYS_EMPTY_ARRAY);
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
 
-export const DEFAULT_SHOW_CHAT = true;
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,
   VenueTemplate.screeningroom,

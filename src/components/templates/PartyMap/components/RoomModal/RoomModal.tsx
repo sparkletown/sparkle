@@ -61,7 +61,12 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
+    <Modal
+      show={show}
+      onHide={onHide}
+      centered
+      contentClassName="RoomModal__wrapper"
+    >
       <div className="RoomModal">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </div>
@@ -107,8 +112,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
-
-  const userList = portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
@@ -180,10 +183,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <UserList
         containerClassName="RoomModal__userlist"
-        users={userList}
-        limit={11}
+        usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        userCount={portalVenue?.recentUserCount ?? 0}
         activity={`in this ${ROOM_TAXON.lower}`}
-        hasClickableAvatars
       />
 
       {room.about && (
@@ -198,11 +200,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       )}
 
       {showRoomEvents && (
-        <div className="RoomModal__events">
+        <>
           <div className="RoomModal__title">{ROOM_TAXON.capital} Schedule</div>
-
-          {renderedRoomEvents}
-        </div>
+          <div className="RoomModal__events">{renderedRoomEvents}</div>
+        </>
       )}
     </>
   );

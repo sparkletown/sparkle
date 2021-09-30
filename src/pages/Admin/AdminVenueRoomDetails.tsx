@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
-import { ROOM_TAXON } from "settings";
+import { ADMIN_V1_ROOMS_URL, ADMIN_V1_ROOT_URL, ROOM_TAXON } from "settings";
 
 import { RoomInput, upsertRoom } from "api/admin";
 
@@ -72,7 +72,7 @@ export const AdminVenueRoomDetails = ({
 
       await upsertRoom(roomValues, venue.id, user, index);
 
-      history.push(`/admin/${venue.id}`);
+      history.push(`${ADMIN_V1_ROOT_URL}/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {
@@ -114,7 +114,7 @@ export const AdminVenueRoomDetails = ({
                 <div className="edit-room">
                   {
                     <Link
-                      to={`/admin/venue/rooms/${venue.id}?roomIndex=${index}`}
+                      to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${index}`}
                       className="btn btn-block"
                     >
                       Edit {ROOM_TAXON.capital}

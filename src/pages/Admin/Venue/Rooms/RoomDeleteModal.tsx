@@ -4,13 +4,13 @@ import firebase from "firebase/app";
 
 import { ROOM_TAXON } from "settings";
 
-import { Room, RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 
 import "./RoomDeleteModal.scss";
 
 interface PropsType {
   venueId: string;
-  room: Room | RoomData_v2;
+  room: Room;
   show: boolean;
   onHide: () => void;
   onDelete?: () => void;

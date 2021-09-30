@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import * as Yup from "yup";
 
 import {
+  DEFAULT_USER_STATUS,
   MAXIMUM_PARTYMAP_COLUMNS_COUNT,
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
   ROOM_TAXON,
@@ -12,10 +14,12 @@ import {
 
 import { updateVenue_v2 } from "api/admin";
 
-import { UsernameVisibility } from "types/User";
+import { UsernameVisibility, UserStatus } from "types/User";
 import { Venue_v2_AdvancedConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
+
+import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
@@ -83,6 +87,7 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     .oneOf(Object.values(UsernameVisibility))
     .notRequired(),
   showRadio: Yup.bool().notRequired(),
+  showUserStatus: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
@@ -110,9 +115,11 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
+      roomVisibility: venue.roomVisibility,
+      showUserStatus: venue.showUserStatus,
+      userStatuses: venue.userStatuses,
     },
   });
 
@@ -126,7 +133,9 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     updateVenue_v2(
       {
         name: venue.name,
+        worldId: venue.worldId,
         ...data,
+        userStatuses,
       },
       user
     );
@@ -225,32 +234,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     </S.ItemWrapper>
   );
 
-  const renderAnnouncementInput = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Venue announcement</S.ItemTitle>
-        </S.TitleWrapper>
-        <S.ItemSubtitle>
-          Show an announcement in the venue (or leave blank for none)
-        </S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control
-          name="bannerMessage"
-          placeholder="Enter your announcement"
-          ref={register}
-          custom
-          type="text"
-        />
-        {errors.bannerMessage && (
-          <span className="input-error">{errors.bannerMessage.message}</span>
-        )}
-      </S.ItemBody>
-    </S.ItemWrapper>
-  );
-
   const renderAttendeesTitleInput = () => (
     <S.ItemWrapper>
       <S.ItemHeader>
@@ -301,12 +284,96 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     </S.ItemWrapper>
   );
 
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
+    values.userStatuses ?? []
+  );
+
+  const addUserStatus = useCallback(
+    () =>
+      setUserStatuses([
+        ...userStatuses,
+        { status: "", color: DEFAULT_USER_STATUS.color },
+      ]),
+    [userStatuses, setUserStatuses]
+  );
+
+  const deleteStatus = useCallback(
+    (index: number) => {
+      const statuses = [...userStatuses];
+      statuses.splice(index, 1);
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const changeInput = useCallback(
+    (event: React.FormEvent<HTMLInputElement>, index: number) => {
+      const statuses = [...userStatuses];
+
+      statuses[index] = {
+        color: statuses[index].color,
+        status: event.currentTarget.value,
+      };
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const pickColor = useCallback(
+    (color: string, index: number) => {
+      const statuses = [...userStatuses];
+      statuses[index] = { color, status: statuses[index].status };
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const renderVenueUserStatuses = useMemo(
+    () =>
+      userStatuses.map((userStatus, index) => (
+        <UserStatusPanel
+          key={`${userStatus}-${index}`}
+          userStatus={userStatus}
+          onPickColor={(color) => pickColor(color, index)}
+          onChangeInput={(value) => changeInput(value, index)}
+          onDelete={() => deleteStatus(index)}
+        />
+      )),
+    [changeInput, deleteStatus, pickColor, userStatuses]
+  );
+
+  const renderUserStatusesToggle = () => (
+    <>
+      <ToggleElement
+        forwardRef={register}
+        isChecked={values.showUserStatus}
+        name="showUserStatus"
+        title="User statuses"
+      >
+        <Form.Group>
+          <Form.Label>
+            Attendees can set a special status on their profile (minimum 2)
+            <br />
+            Example: Available, Busy, is sleeping...
+          </Form.Label>
+        </Form.Group>
+      </ToggleElement>
+      {values.showUserStatus && (
+        <>
+          {renderVenueUserStatuses}
+          <ButtonNG variant="primary" iconName={faPlus} onClick={addUserStatus}>
+            Add a status
+          </ButtonNG>
+        </>
+      )}
+    </>
+  );
+
   return (
     <div>
       <h1>Advanced settings</h1>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-        {renderAnnouncementInput()}
         {renderAttendeesTitleInput()}
         {renderChatTitleInput()}
 
@@ -329,6 +396,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         />
 
         {renderRadioToggle()}
+
+        {renderUserStatusesToggle()}
 
         {renderRoomVisibility()}
 

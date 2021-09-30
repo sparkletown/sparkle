@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ROOMS_TAXON } from "settings";
 
-import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -31,7 +31,6 @@ import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
-import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 
@@ -39,7 +38,7 @@ import "./Spaces.scss";
 
 interface VenueRooms {
   text: string;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
   icon: string;
 }
 
@@ -75,11 +74,6 @@ const venueRooms: VenueRooms[] = [
     template: VenueTemplate.zoomroom,
   },
   {
-    text: "External link",
-    icon: RoomIconExternalLink,
-    template: RoomTemplate.external,
-  },
-  {
     text: "Map",
     icon: RoomIconMap,
     template: VenueTemplate.partymap,
@@ -90,14 +84,14 @@ interface SpacesProps extends TabNavigationProps {
   venue: WithId<AnyVenue>;
 }
 
-const emptyRoomsArray: RoomData_v2[] = [];
+const emptyRoomsArray: Room[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({
   venue,
   ...tabNavigationProps
 }) => {
-  const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
-  const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const [updatedRoom, setUpdatedRoom] = useState<Room>();
 
   const { isShown: showRooms, toggle: toggleShowRooms } = useShowHide(false);
   const { isShown: showAddRoom, toggle: toggleShowAddRoom } = useShowHide(
@@ -114,28 +108,36 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
-    setUpdatedRoom({});
+    setUpdatedRoom(undefined);
   }, []);
 
-  const updateRoomPosition = useCallback(async (position: Position) => {
-    if (!position) return;
+  const updateRoomPosition = useCallback(
+    async (position: Position) => {
+      if (!position || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      x_percent: position.left,
-      y_percent: position.top,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        x_percent: position.left,
+        y_percent: position.top,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
-  const updateRoomSize = useCallback(async (size: Dimensions) => {
-    if (!size) return;
+  const updateRoomSize = useCallback(
+    async (size: Dimensions) => {
+      if (!size || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      width_percent: size.width,
-      height_percent: size.height,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        width_percent: size.width,
+        height_percent: size.height,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
   const renderVenueRooms = useMemo(
     () =>
@@ -177,6 +179,7 @@ export const Spaces: React.FC<SpacesProps> = ({
       <AdminSidebar>
         {selectedRoom ? (
           <EditRoomForm
+            venueVisibility={venue?.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
@@ -199,7 +202,10 @@ export const Spaces: React.FC<SpacesProps> = ({
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue?.name ?? ""} />
+                <BackgroundSelect
+                  worldId={venue.worldId}
+                  venueName={venue?.name ?? ""}
+                />
               )}
             </div>
             <div>

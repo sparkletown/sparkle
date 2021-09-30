@@ -7,7 +7,8 @@ import { ROOM_TAXON } from "settings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
+import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -16,16 +17,18 @@ import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 
 import "./EditRoomForm.scss";
 
 interface EditRoomFormProps {
-  room: RoomData_v2;
-  updatedRoom: RoomData_v2;
+  room: Room;
+  updatedRoom?: Room;
   roomIndex: number;
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  venueVisibility?: RoomVisibility;
 }
 
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
@@ -35,6 +38,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   onBackClick,
   onDelete,
   onEdit,
+  venueVisibility,
 }) => {
   const { user } = useUser();
 
@@ -46,9 +50,10 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     defaultValues: {
       title: room.title,
       url: room.url,
-      description: room.description,
+      about: room.about,
       template: room.template,
       image_url: room.image_url,
+      visibility: room.visibility ?? venueVisibility,
     },
   });
 
@@ -115,11 +120,11 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
           <Form.Label>{ROOM_TAXON.capital} tagline</Form.Label>
           <InputField
-            name="description"
+            name="about"
             type="text"
             autoComplete="off"
             placeholder="Description"
-            error={errors.description}
+            error={errors.about}
             ref={register()}
           />
 
@@ -146,6 +151,11 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           {errors.image_url && (
             <span className="input-error">{errors.image_url.message}</span>
           )}
+
+          <Form.Label>
+            Change label appearance (overrides global settings)
+          </Form.Label>
+          <PortalVisibility register={register} />
 
           <Button
             disabled={isUpdating || isDeleting}

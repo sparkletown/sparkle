@@ -6,7 +6,9 @@ import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
+import { ADMIN_V3_ROOT_URL } from "settings";
+
+import { adminNGVenueUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
@@ -35,8 +37,8 @@ export interface AdminVenueViewRouteParams {
 
 export interface TabNavigationProps {
   onClickHome: () => void;
-  onClickBack: () => void;
-  onClickNext: () => void;
+  onClickBack?: () => void;
+  onClickNext?: () => void;
 }
 
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
@@ -83,7 +85,7 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const navigateToHome = useCallback(() => history.push(adminNGRootUrl()), [
+  const navigateToHome = useCallback(() => history.push(ADMIN_V3_ROOT_URL), [
     history,
   ]);
 
@@ -112,7 +114,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar hasBackButton withSchedule>
       <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
