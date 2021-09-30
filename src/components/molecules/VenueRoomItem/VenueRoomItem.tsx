@@ -67,6 +67,10 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       isEnabled: true,
       image_url: DEFAULT_VENUE_LOGO,
       url: roomUrl,
+      width_percent: 5,
+      height_percent: 5,
+      x_percent: 50,
+      y_percent: 50,
       template,
     };
 
