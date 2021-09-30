@@ -3,6 +3,8 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
+import { ROOM_TAXON } from "settings";
+
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
@@ -114,7 +116,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
         </ButtonNG>
       </AdminSidebarFooter>
       <div className="EditRoomForm__content">
-        <Form.Label>Room type</Form.Label>
+        <Form.Label>{ROOM_TAXON.capital} type</Form.Label>
         <InputField
           name="template"
           type="text"
@@ -125,7 +127,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           disabled
         />
 
-        <Form.Label>Room name</Form.Label>
+        <Form.Label>{ROOM_TAXON.capital} name</Form.Label>
         <InputField
           name="title"
           type="text"
@@ -135,7 +137,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           ref={register()}
         />
 
-        <Form.Label>Room tagline</Form.Label>
+        <Form.Label>{ROOM_TAXON.capital} tagline</Form.Label>
         <InputField
           name="about"
           type="text"
@@ -145,7 +147,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           ref={register()}
         />
 
-        <Form.Label>Room url</Form.Label>
+        <Form.Label>{ROOM_TAXON.capital} url</Form.Label>
         <InputField
           name="url"
           type="text"
@@ -155,7 +157,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           ref={register()}
         />
 
-        <Form.Label>Room image:</Form.Label>
+        <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
         <ImageInput
           onChange={handleImageChange}
           name="image"
@@ -180,7 +182,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           onClick={deleteSelectedRoom}
           variant="danger"
         >
-          Delete room
+          Delete {ROOM_TAXON.lower}
         </ButtonNG>
         {error && <div>Error: {error}</div>}
       </div>

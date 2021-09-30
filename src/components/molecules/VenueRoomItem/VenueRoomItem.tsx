@@ -3,7 +3,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO, ROOM_TAXON } from "settings";
 
 import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
 
@@ -86,12 +86,12 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <Form.Label>Room title</Form.Label>
+            <Form.Label>{ROOM_TAXON.capital} title</Form.Label>
             <InputField
               name="roomTitle"
               type="text"
               autoComplete="off"
-              placeholder="Room title"
+              placeholder={`${ROOM_TAXON.capital} title`}
               error={errors.roomTitle}
               ref={register()}
               disabled={isLoading}
@@ -110,15 +110,19 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               />
             </>
 
-            <Button disabled={isLoading} title="Add room" type="submit">
-              Add room
+            <Button
+              disabled={isLoading}
+              title={`Add ${ROOM_TAXON.lower}`}
+              type="submit"
+            >
+              Add {ROOM_TAXON.lower}
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
       <div className="VenueRoomItem" onClick={showModal}>
         <img
-          alt={`room-icon-${icon}`}
+          alt={`${ROOM_TAXON.lower} icon ${icon}`}
           src={icon}
           className="VenueRoomItem__room-icon"
         />

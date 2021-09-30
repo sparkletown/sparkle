@@ -10,6 +10,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useAsyncFn } from "react-use";
 import { isEqual } from "lodash";
 
+import { ROOM_TAXON, ROOMS_TAXON } from "settings";
+
 import { RoomInput_v2, updateRoom } from "api/admin";
 
 import { Room } from "types/rooms";
@@ -163,7 +165,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
                   transition: "filter .3s ease",
                 }}
                 src={room.image_url}
-                alt="room banner"
+                alt={`${ROOM_TAXON.lower} banner`}
                 title={room.title}
               />
             </div>
@@ -196,7 +198,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           loading={isSaving}
           onClick={saveRoomPositions}
         >
-          Save rooms
+          Save {ROOMS_TAXON.lower}
         </ButtonNG>
       </div>
     </DndProvider>

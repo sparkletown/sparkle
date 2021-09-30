@@ -8,7 +8,6 @@ import { Venue_v2 } from "types/venues";
 import { adminNGSettingsUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
@@ -45,8 +44,6 @@ export const AdminAdvancedSettings: React.FC = () => {
     venueId,
     selectedTab = AdminAdvancedTab.basicInfo,
   } = useParams<AdminAdvancedSettingsRouteParams>();
-
-  const { sovereignVenue } = useRelatedVenues();
 
   const {
     currentVenue: venue,
@@ -95,7 +92,6 @@ export const AdminAdvancedSettings: React.FC = () => {
           <EntranceExperience
             // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
             venue={venue as Venue_v2}
-            sovereignVenue={sovereignVenue}
             onSave={navigateToDefaultTab}
           />
         )}

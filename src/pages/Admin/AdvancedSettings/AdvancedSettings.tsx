@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_USER_STATUS } from "settings";
+import { DEFAULT_USER_STATUS, ROOM_TAXON, ROOMS_TAXON } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -110,6 +110,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
     onSave();
   };
+
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
     values.userStatuses ?? []
   );
@@ -280,8 +281,11 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         </div>
 
         <div className="AdvancedSettings__form-field">
-          <Form.Label>Room appearance</Form.Label>
-          <div>Choose how you&apos; d like your rooms to appear on the map</div>
+          <Form.Label>{ROOM_TAXON.capital} appearance</Form.Label>
+          <div>
+            Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
+            the map
+          </div>
           <Form.Control as="select" custom name="roomVisibility" ref={register}>
             <option value="hover">Hover</option>
             <option value="count">Count</option>
