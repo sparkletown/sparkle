@@ -11,7 +11,6 @@ import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
@@ -73,8 +72,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     isUserSeated && { sectionId }
   );
 
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
-
   // Ensure the user leaves their seat when they leave the section
   // @debt We should handle/enforce this on the backend somehow
   useEffect(() => {
@@ -105,11 +102,9 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   const sectionsCount = venue.sectionsCount ?? 0;
   const hasOnlyOneSection = sectionsCount === 1;
 
-  const shouldShowReactions = areSettingsLoaded && settings.showReactions;
-
   const renderReactions = () => {
     return (
-      shouldShowReactions && (
+      venue.showReactions && (
         <div className="Section__reactions">
           <ReactionsBar
             venueId={venueId}
