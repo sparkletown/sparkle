@@ -5,6 +5,7 @@ import {
   DEFAULT_SETTING_ENABLE_ADMIN_V1,
   DEFAULT_SETTING_ENABLE_ADMIN_V3,
   DEFAULT_SETTING_SHOW_CHAT,
+  DEFAULT_SHOW_REACTIONS,
 } from "settings";
 
 import { Settings } from "types/settings";
@@ -29,6 +30,7 @@ export const useSettings: () => UseSetingsReturnType = () => {
   return useMemo(() => {
     const {
       showChat = DEFAULT_SETTING_SHOW_CHAT,
+      showReactions = DEFAULT_SHOW_REACTIONS,
       enableAdmin1 = DEFAULT_SETTING_ENABLE_ADMIN_V1,
       enableAdmin3 = DEFAULT_SETTING_ENABLE_ADMIN_V3,
       adminVersion = DEFAULT_SETTING_ADMIN_VERSION,
@@ -38,6 +40,7 @@ export const useSettings: () => UseSetingsReturnType = () => {
       isLoaded: isLoaded(settings),
       settings: {
         showChat,
+        showReactions,
         enableAdmin1,
         enableAdmin3,
         adminVersion,

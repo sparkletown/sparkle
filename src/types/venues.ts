@@ -141,6 +141,8 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -217,6 +219,7 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  sectionsCount?: number;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: WithId<User>[];
@@ -422,8 +425,7 @@ export interface VenueTablePath {
 
 export type TableSeatedUsersVenuesTemplates =
   | VenueTemplate.jazzbar
-  | VenueTemplate.conversationspace
-  | VenueTemplate.friendship;
+  | VenueTemplate.conversationspace;
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;

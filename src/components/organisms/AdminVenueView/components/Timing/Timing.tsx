@@ -58,7 +58,7 @@ export const Timing: React.FC<TimingProps> = ({
   return (
     <AdminPanel className="Timing">
       <AdminSidebar>
-        <AdminSidebarTitle>Plan your events</AdminSidebarTitle>
+        <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
         <TabFooter
           {...tabNavigationProps}
           handleVenueUpdate={handleVenueUpdate}
