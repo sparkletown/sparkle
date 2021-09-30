@@ -2,6 +2,8 @@
 
 import fs from "fs";
 
+import { ROOM_TAXON } from "settings";
+
 import { ScreeningRoomVideo } from "../src/types/screeningRoom";
 
 import {
@@ -15,7 +17,7 @@ import {
 // ---------------------------------------------------------
 
 const usage = makeScriptUsage({
-  description: `Bulk add screening room videos`,
+  description: `Bulk add screening ${ROOM_TAXON.lower} videos`,
   usageParams: `PROJECT_ID VENUE_ID SCREENING_VIDEOS_CSV_PATH CREDENTIAL_PATH`,
   exampleParams: `co-reality-sparkle bootstrap data.csv fooAccountKey.json`,
 });
