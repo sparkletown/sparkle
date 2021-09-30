@@ -21,10 +21,11 @@ type RefType<T extends "audio" | "video"> = T extends "audio"
   : HTMLVideoElement;
 
 interface UseVideoParticipantReturnType<T extends "audio" | "video"> {
-  isExternalEnabled: boolean;
+  isEnabled: boolean;
   handleToggle: () => void;
   icon: IconDefinition;
   iconColor: string | undefined;
+  iconClickable: boolean;
   ref: RefObject<RefType<T>>;
 }
 
@@ -64,18 +65,15 @@ export const useParticipantState = <T extends "audio" | "video">(
     else toggleEnableOverride();
   }, [isMe, toggle, toggleEnableOverride]);
 
-  const isExternalEnabled = isMe
-    ? isTwilioEnabled
-    : isUserEnabled && isTwilioEnabled;
+  const isEnabled = isMe ? isTwilioEnabled : isUserEnabled && isTwilioEnabled;
 
   return {
     handleToggle,
-    isExternalEnabled,
+    isEnabled,
     icon:
-      icons[
-        `${isMe ? "me" : "other"}${isExternalEnabled ? "Enabled" : "Disabled"}`
-      ],
+      icons[`${isMe ? "me" : "other"}${isEnabled ? "Enabled" : "Disabled"}`],
+    iconClickable: isMe || isTwilioEnabled,
     ref,
-    iconColor: isExternalEnabled ? undefined : "red",
+    iconColor: isEnabled ? undefined : "red",
   };
 };
