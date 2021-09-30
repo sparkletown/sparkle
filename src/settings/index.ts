@@ -193,6 +193,7 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
   VenueTemplate.posterpage,
+  VenueTemplate.viewingwindow,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -302,6 +303,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.screeningroom,
     name: "Screening Room",
     description: ["Add an screening room with the videos listed inside."],
+  },
+  {
+    template: VenueTemplate.viewingwindow,
+    name: "Viewing Window",
+    description: [
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+    ],
   },
 ];
 
@@ -479,6 +487,30 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  // {
+  //   template: VenueTemplate.viewingwindow,
+  //   name: "Viewing Window",
+  //   description:
+  //     "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+  //   icon: "/venues/pickspace-thumbnail_art.png",
+  //   customInputs: [
+  //     {
+  //       name: "iframeUrl",
+  //       title: "Livestream URL",
+  //       type: "text",
+  //     },
+  //     {
+  //       name: "bannerMessage",
+  //       title: "Show an announcement in the venue (or leave blank for none)",
+  //       type: "text",
+  //     },
+  //     {
+  //       name: "isWithParticipants",
+  //       title: "has participants?",
+  //       type: "switch",
+  //     },
+  //   ],
+  // },
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -510,6 +542,7 @@ export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.preplaya,
   VenueTemplate.themecamp,
   VenueTemplate.artpiece,
+  VenueTemplate.viewingwindow,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -524,6 +557,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
 ];
 
 export const FIREBASE_CONFIG = {
@@ -678,4 +712,5 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.embeddable,
   VenueTemplate.auditorium,
   VenueTemplate.audience,
+  VenueTemplate.viewingwindow,
 ];

@@ -31,6 +31,7 @@ import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
+import RoomIconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 
 import "./Spaces.scss";
 
@@ -75,6 +76,11 @@ const venueRooms: VenueRooms[] = [
     text: "Map",
     icon: RoomIconMap,
     template: VenueTemplate.partymap,
+  },
+  {
+    text: "Viewing Window",
+    icon: RoomIconViewingWindow,
+    template: VenueTemplate.viewingwindow,
   },
 ];
 

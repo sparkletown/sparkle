@@ -27,6 +27,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
+  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**
@@ -61,6 +62,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
   VenueTemplate.zoomroom,
   VenueTemplate.screeningroom,
 ];
@@ -74,6 +76,7 @@ const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.viewingwindow,
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)

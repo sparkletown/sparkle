@@ -23,6 +23,7 @@ import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ReactionPage } from "components/templates/ReactionPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
+import { ViewingWindow } from "components/templates/ViewingWindow";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -70,6 +71,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
     case VenueTemplate.zoomroom:
       template = <ExternalRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.viewingwindow:
+      template = <ViewingWindow venue={venue} />;
       break;
 
     case VenueTemplate.auditorium:
