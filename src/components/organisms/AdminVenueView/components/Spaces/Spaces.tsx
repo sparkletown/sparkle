@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { VENUE_SPACES_LIST } from "settings";
+import { ROOMS_TAXON, VENUE_SPACES_LIST } from "settings";
 
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
@@ -161,7 +161,9 @@ export const Spaces: React.FC<SpacesProps> = ({
             </div>
             <div>
               <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
-                <div>{numberOfRooms} Rooms</div>
+                <div>
+                  {numberOfRooms} {ROOMS_TAXON.capital}
+                </div>
                 <FontAwesomeIcon
                   icon={showRooms ? faCaretDown : faCaretRight}
                 />
@@ -171,7 +173,7 @@ export const Spaces: React.FC<SpacesProps> = ({
             </div>
 
             <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
-              <div>Add rooms</div>
+              <div>Add {ROOMS_TAXON.lower}</div>
               <FontAwesomeIcon
                 icon={showAddRoom ? faCaretDown : faCaretRight}
               />

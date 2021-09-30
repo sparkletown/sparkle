@@ -6,6 +6,7 @@ import {
   PLAYA_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
+  ROOM_TAXON,
   VENUE_NAME_MAX_CHAR_COUNT,
   VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
@@ -142,7 +143,9 @@ export const roomSchema = Yup.object().shape<VenueRoomSchema>({
   roomUrl: roomUrlSchema,
 });
 
-const roomImageUrlSchema = Yup.string().required("Room image is required");
+const roomImageUrlSchema = Yup.string().required(
+  `${ROOM_TAXON.capital} image is required`
+);
 
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   useUrl: Yup.boolean().required(),
