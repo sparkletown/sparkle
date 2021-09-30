@@ -88,7 +88,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   }, [venueSpaces, spaceValue]);
 
   return (
-    // @debt align the styling of the dropdown component
+    // @debt align the style of the SpacesDropdown with the Dropdown component
     <div className="SpacesDropdown">
       {renderSpaceValue}
       <Dropdown title="Select a space" options={spaceOptions} />
