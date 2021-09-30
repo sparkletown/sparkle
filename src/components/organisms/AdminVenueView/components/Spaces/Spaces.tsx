@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -82,14 +82,14 @@ interface SpacesProps extends TabNavigationProps {
   venue: WithId<AnyVenue>;
 }
 
-const emptyRoomsArray: RoomData_v2[] = [];
+const emptyRoomsArray: Room[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({
   venue,
   ...tabNavigationProps
 }) => {
-  const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
-  const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const [updatedRoom, setUpdatedRoom] = useState<Room>();
 
   const { isShown: showRooms, toggle: toggleShowRooms } = useShowHide(false);
   const { isShown: showAddRoom, toggle: toggleShowAddRoom } = useShowHide(
@@ -106,28 +106,36 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
-    setUpdatedRoom({});
+    setUpdatedRoom(undefined);
   }, []);
 
-  const updateRoomPosition = useCallback(async (position: Position) => {
-    if (!position) return;
+  const updateRoomPosition = useCallback(
+    async (position: Position) => {
+      if (!position || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      x_percent: position.left,
-      y_percent: position.top,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        x_percent: position.left,
+        y_percent: position.top,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
-  const updateRoomSize = useCallback(async (size: Dimensions) => {
-    if (!size) return;
+  const updateRoomSize = useCallback(
+    async (size: Dimensions) => {
+      if (!size || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      width_percent: size.width,
-      height_percent: size.height,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        width_percent: size.width,
+        height_percent: size.height,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
   const renderVenueRooms = useMemo(
     () =>
