@@ -26,7 +26,6 @@ const updateSeatedData = async <T extends VenueTemplate>(
   venueSpecificData: RecentSeatedUserData<T>["venueSpecificData"] | FalseyValue
 ) => {
   if (!venueSpecificData || !venueId || !userId) return;
-  console.log("updating");
 
   const withTimestamp: RecentSeatedUserTimestamp<T> = {
     template,

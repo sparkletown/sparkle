@@ -80,9 +80,9 @@ const removeDanglingSeatedUsers = async () => {
   ).then(() => console.log(`Removed ${removedUsersCount} dangling users`));
 };
 
-exports.updateSeatedUsersCountInAuditorium =
-  // functions.https.onCall(async () => {
-  functions.pubsub.schedule("every 5 minutes").onRun(async () => {
+exports.updateSeatedUsersCountInAuditorium = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
     await removeDanglingSeatedUsers();
 
     const firestore = admin.firestore();
