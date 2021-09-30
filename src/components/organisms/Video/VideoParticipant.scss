@@ -15,11 +15,14 @@
 
     pointer-events: none;
 
-    video {
+    &-element {
       height: inherit;
       width: inherit;
 
       border-radius: $border-radius--xl;
+      &--disabled {
+        opacity: 0;
+      }
     }
 
     &--placeholder {
@@ -28,7 +31,7 @@
       top: 0;
       width: 100%;
       height: 100%;
-      background-color: $light-grey;
+      background-color: $lighter-intermediate-grey;
       border-radius: $border-radius--xl;
     }
   }
