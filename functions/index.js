@@ -36,7 +36,6 @@ const venue = require("./venue");
 const video = require("./video");
 const scheduled = require("./scheduled");
 const world = require("./world");
-const seats = require("./seats");
 const triggered = require("./triggered");
 
 exports.access = access;
@@ -46,7 +45,6 @@ exports.venue = venue;
 exports.video = video;
 exports.scheduled = scheduled;
 exports.world = world;
-exports.seats = seats;
 exports.triggered = triggered;
 
 // @debt Refactor this into ./auth if this is still used/needed, otherwise remove it

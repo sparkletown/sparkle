@@ -19,6 +19,14 @@ import { getCurrentTimeInMilliseconds } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 
+const getRecentSeatedUserRef = (venueId: string, userId: string) =>
+  firebase
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("recentSeatedUsers")
+    .doc(userId);
+
 const updateSeatedData = async <T extends VenueTemplate>(
   template: T,
   venueId: string | undefined,
@@ -34,13 +42,7 @@ const updateSeatedData = async <T extends VenueTemplate>(
     lastSittingTimeMs: getCurrentTimeInMilliseconds(),
   };
 
-  return firebase
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .collection("recentSeatedUsers")
-    .doc(userId)
-    .set(withTimestamp);
+  return getRecentSeatedUserRef(venueId, userId).set(withTimestamp);
 };
 
 const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
@@ -60,6 +62,11 @@ const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
 
   useEffect(() => {
     void updateSeatedData(template, venueId, userId, venueSpecificData);
+
+    return () => {
+      if (venueId && userId)
+        void getRecentSeatedUserRef(venueId, userId).delete();
+    };
   }, [template, userId, venueId, venueSpecificData]);
 };
 

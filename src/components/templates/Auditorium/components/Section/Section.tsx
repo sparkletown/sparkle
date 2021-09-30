@@ -72,7 +72,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
 
   // Ensure the user leaves their seat when they leave the section
-  // @debt We should handle/enforce this on the backend somehow
   useEffect(() => {
     return () => {
       leaveSeat();
