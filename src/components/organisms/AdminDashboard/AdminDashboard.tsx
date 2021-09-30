@@ -1,5 +1,8 @@
 import React, { useMemo, useState } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import {
+  Dropdown as ReactBootstrapDropdown,
+  DropdownButton,
+} from "react-bootstrap";
 import classNames from "classnames";
 
 import { ADMIN_V3_CREATE_URL } from "settings";
@@ -43,12 +46,12 @@ export const AdminDashboard: React.FC = () => {
     () => (
       <DropdownButton variant="secondary" title="Sort venues">
         {Object.values(VenueSortingOptions).map((sortingOption) => (
-          <Dropdown.Item
+          <ReactBootstrapDropdown.Item
             key={sortingOption}
             onClick={() => setCurrentSortingOption(sortingOption)}
           >
             {sortingOption}
-          </Dropdown.Item>
+          </ReactBootstrapDropdown.Item>
         ))}
       </DropdownButton>
     ),

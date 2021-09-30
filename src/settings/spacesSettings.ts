@@ -8,13 +8,13 @@ import RoomIconExperience from "assets/icons/icon-room-experience.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 
-export interface VenueSpace {
+export interface SpacesListItem {
   text: string;
   template?: VenueTemplate;
   icon: string;
 }
 
-export const VENUE_SPACES_LIST: VenueSpace[] = [
+export const VENUE_SPACES_LIST: SpacesListItem[] = [
   {
     text: "Conversation Space",
     icon: RoomIconConversation,

@@ -2,18 +2,16 @@ import React, { useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 
 import { ADMIN_V1_ROOMS_URL, VENUE_SPACES_ICONS_MAPPING } from "settings";
 
 import { Room } from "types/rooms";
-import { ContainerClassName } from "types/utility";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SpacesDropdown.scss";
 
-export interface SpacesDropdownProps extends ContainerClassName {
+export interface SpacesDropdownProps {
   defaultSpace?: string;
   venueSpaces: Room[];
   venueId?: string;
@@ -25,7 +23,6 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   defaultSpace,
   venueSpaces,
   venueId,
-  containerClassName,
   setValue,
   fieldName,
 }) => {
@@ -91,7 +88,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   }, [venueSpaces, spaceValue]);
 
   return (
-    <div className={classNames("SpacesDropdown", containerClassName)}>
+    <div className="SpacesDropdown">
       {renderSpaceValue}
       <Dropdown title="Select a space" options={spaceOptions} />
     </div>
