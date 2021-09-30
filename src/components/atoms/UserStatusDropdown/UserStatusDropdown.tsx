@@ -49,7 +49,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   );
 
   return (
-    // @debt replace with our own dropdown component
+    // @debt align the styling of the dropdown component
     <div className={classNames("UserStatusDropdown", containerClassName)}>
       <div className="UserStatusDropdown__status">
         {userStatus.status}&nbsp;
