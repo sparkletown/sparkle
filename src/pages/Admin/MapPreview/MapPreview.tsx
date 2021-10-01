@@ -16,6 +16,7 @@ import { RoomInput_v2, updateRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 
+import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 
 import {
@@ -124,7 +125,9 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [rooms, user, venueId]);
 
-  if (!mapBackground) {
+  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
+
+  if (!hasMapBackground) {
     return <MapBackgroundPlaceholder />;
   }
 
