@@ -8,6 +8,7 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
+  ROOM_TAXON,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
   ZOOM_URL_TEMPLATES,
@@ -189,28 +190,28 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__room">
-          <Form.Label>Room type</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} type</Form.Label>
           <InputField
             name="room.template"
             type="text"
             autoComplete="off"
-            placeholder="Room template"
+            placeholder={`${ROOM_TAXON.capital} template`}
             error={errors?.room?.template}
             ref={register()}
             disabled
           />
 
-          <Form.Label>Name your room</Form.Label>
+          <Form.Label>Name your {ROOM_TAXON.lower}</Form.Label>
           <InputField
             name="room.title"
             type="text"
             autoComplete="off"
-            placeholder="Room name"
+            placeholder={`${ROOM_TAXON.capital} name`}
             error={errors?.room?.title}
             ref={register()}
           />
 
-          <Form.Label>Room subtitle</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} subtitle</Form.Label>
           <InputField
             name="room.subtitle"
             type="textarea"
@@ -220,7 +221,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             ref={register()}
           />
 
-          <Form.Label>Room description</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} description</Form.Label>
           <textarea
             name="room.about"
             autoComplete="off"
@@ -231,18 +232,18 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             <span className="input-error">{errors?.room?.about.message}</span>
           )}
 
-          <Form.Label>Room url</Form.Label>
+          <Form.Label>{ROOM_TAXON.capital} url</Form.Label>
           <InputField
             name="room.url"
             type="text"
             autoComplete="off"
-            placeholder="Room url"
+            placeholder={`${ROOM_TAXON.capital} url`}
             error={errors?.room?.url}
             ref={register()}
           />
 
           <div>
-            <Form.Label>Room image</Form.Label>
+            <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
             <ImageInput
               onChange={changeRoomImageUrl}
               name="room.image"
@@ -281,7 +282,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   room.template as VenueTemplate
                 ) && (
                   <>
-                    <Form.Label>Room background</Form.Label>
+                    <Form.Label>{ROOM_TAXON.capital} background</Form.Label>
                     <ImageInput
                       onChange={changeBackgroundImageUrl}
                       name="venue.mapBackgroundImage"
@@ -458,7 +459,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             disabled={isUpdating || isDeleting}
             onClick={deleteSelectedRoom}
           >
-            Delete room
+            Delete {ROOM_TAXON.lower}
           </ButtonNG>
           {error && <div>Error: {error}</div>}
         </div>
