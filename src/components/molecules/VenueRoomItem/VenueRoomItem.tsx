@@ -5,7 +5,12 @@ import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO, ROOM_TAXON } from "settings";
 
-import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
+import {
+  createRoom,
+  createUrlSafeName,
+  createVenue_v2,
+  RoomInput_v2,
+} from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -60,9 +65,9 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const venueName = roomValues.venueName.replace(/\W/g, "").toLowerCase();
+    const venueUrlName = createUrlSafeName(roomValues.venueName);
 
-    const roomUrl = window.origin + venueInsideUrl(venueName);
+    const roomUrl = window.origin + venueInsideUrl(venueUrlName);
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
