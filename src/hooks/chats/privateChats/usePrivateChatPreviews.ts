@@ -1,19 +1,23 @@
 import { useMemo } from "react";
+import { useFirestore } from "reactfire";
 
-import { PreviewChatMessageMap } from "types/chat";
+import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
 import { chatSort, getPreviewChatMessage } from "utils/chat";
 
+import { useChatMessagesRaw } from "hooks/chats/useChatMessages";
 import { useUser } from "hooks/useUser";
-
-import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 export const usePrivateChatPreviews = () => {
   const { userId } = useUser();
-  const {
+  const firestore = useFirestore();
+
+  const [
     privateChatMessages,
     isUserPrivateChatsLoaded,
-  } = usePrivateChatMessages();
+  ] = useChatMessagesRaw<PrivateChatMessage>(
+    firestore.collection("privatechats").doc(userId).collection("chats")
+  );
 
   const privateChatPreviewsMap: PreviewChatMessageMap = useMemo(
     () =>

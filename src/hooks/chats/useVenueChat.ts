@@ -1,37 +1,38 @@
-import { useCallback, useMemo } from "react";
-import { isEqual } from "lodash";
+import { useCallback } from "react";
+import { useFirestore } from "reactfire";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { deleteVenueMessage, sendVenueMessage } from "api/chat";
 
 import {
+  ChatMessage,
   DeleteMessage,
   SendChatReply,
   SendMessage,
   VenueChatMessage,
 } from "types/chat";
 
-import {
-  buildMessage,
-  filterNewSchemaMessages,
-  getMessageReplies,
-  partitionMessagesFromReplies,
-} from "utils/chat";
-import { WithId } from "utils/id";
-import { venueChatMessagesSelector } from "utils/selectors";
+import { buildMessage } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
-import { isTruthy } from "utils/types";
 
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { useChatMessages } from "hooks/chats/useChatMessages";
 import { useUser } from "hooks/useUser";
-
-const noMessages: WithId<VenueChatMessage>[] = [];
 
 export const useVenueChat = (venueId?: string) => {
   const chatActions = useVenueChatActions(venueId);
-  const messagesToDisplay = useVenueChatMessages(venueId);
+
+  const firestore = useFirestore();
+
+  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+  const [messagesToDisplay] = useChatMessages<ChatMessage>(
+    firestore
+      .collection("venues")
+      .doc(venueId)
+      .collection("chats")
+      .orderBy("timestamp", "desc"),
+    (message) => message.timestamp.seconds > venueChatAgeThresholdSec
+  );
 
   return {
     ...chatActions,
@@ -84,71 +85,4 @@ const useVenueChatActions = (venueId?: string) => {
     deleteMessage,
     sendThreadReply,
   };
-};
-
-// const useChatMessages = <T extends BaseChatMessage>(
-//   messagesRef: CollectionReference<DocumentData>,
-// ): MessageToDisplay<T>[] => {
-//   const firestore = useFirestore();
-//
-//   useFirestoreConnect(firestoreConnectParam);
-//
-// };
-
-const useVenueChatMessages = (venueId?: string) => {
-  useConnectVenueChatMessages(venueId);
-
-  const chatMessages =
-    filterNewSchemaMessages<VenueChatMessage>(
-      useSelector(venueChatMessagesSelector, isEqual)
-    ) ?? noMessages;
-
-  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-
-  const filteredMessages = useMemo(
-    () =>
-      chatMessages.filter(
-        (message) =>
-          message.deleted !== true &&
-          message.timestamp.seconds > venueChatAgeThresholdSec
-      ),
-    [chatMessages, venueChatAgeThresholdSec]
-  );
-
-  const { messages, allMessagesReplies } = useMemo(
-    () => partitionMessagesFromReplies<VenueChatMessage>(filteredMessages),
-    [filteredMessages]
-  );
-
-  return useMemo(
-    () =>
-      messages
-        .map((message) => {
-          const messageReplies = getMessageReplies<VenueChatMessage>({
-            messageId: message.id,
-            allReplies: allMessagesReplies,
-          }).filter(isTruthy);
-
-          return {
-            ...message,
-            replies: messageReplies,
-          };
-        })
-        .filter(isTruthy),
-    [messages, allMessagesReplies]
-  );
-};
-
-const useConnectVenueChatMessages = (venueId?: string) => {
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "chats" }],
-          orderBy: ["timestamp", "desc"],
-          storeAs: "venueChatMessages",
-        }
-      : undefined
-  );
 };

@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
+import { useFirestore } from "reactfire";
 
 import {
   deletePrivateMessage,
@@ -14,59 +15,22 @@ import {
 } from "types/chat";
 import { DisplayUser } from "types/User";
 
-import {
-  buildMessage,
-  chatSort,
-  getMessageReplies,
-  partitionMessagesFromReplies,
-  pickDisplayUserFromUser,
-} from "utils/chat";
+import { buildMessage, pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 
+import { useChatMessages } from "hooks/chats/useChatMessages";
 import { useUser } from "hooks/useUser";
-
-import { usePrivateChatMessages } from "./usePrivateChatMessages";
-export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
-  const { privateChatMessages } = usePrivateChatMessages();
-
-  const filteredMessages = useMemo(
-    () =>
-      privateChatMessages
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            (message.toUser.id === recipient.id ||
-              message.fromUser.id === recipient.id)
-        )
-        .sort(chatSort),
-    [privateChatMessages, recipient.id]
-  );
-
-  const { messages, allMessagesReplies } = useMemo(
-    () => partitionMessagesFromReplies(filteredMessages),
-    [filteredMessages]
-  );
-
-  return useMemo(
-    () =>
-      messages
-        .map((message) => {
-          const messageReplies = getMessageReplies<PrivateChatMessage>({
-            messageId: message.id,
-            allReplies: allMessagesReplies,
-          }).filter(isTruthy);
-
-          return { ...message, replies: messageReplies };
-        })
-        .filter(isTruthy),
-    [allMessagesReplies, messages]
-  );
-};
 
 export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   const chatActions = useRecipientChatActions(recipient);
-  const messagesToDisplay = useRecipientChatMessages(recipient);
+  const { userId } = useUser();
+  const firestore = useFirestore();
+
+  const [messagesToDisplay] = useChatMessages<PrivateChatMessage>(
+    firestore.collection("privatechats").doc(userId).collection("chats"),
+    (message) =>
+      message.toUser.id === recipient.id || message.fromUser.id === recipient.id
+  );
 
   return {
     ...chatActions,
