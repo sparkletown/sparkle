@@ -8,15 +8,17 @@ import { adminNGSettingsUrl } from "utils/url";
 
 import MapPreview from "pages/Admin/MapPreview";
 
-import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -24,13 +26,13 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabView.scss";
 
-export interface RunTabViewProps extends TabNavigationProps {
+export interface RunTabViewProps extends AdminSidebarFooterProps {
   venue?: WithId<AnyVenue>;
 }
 
 export const RunTabView: React.FC<RunTabViewProps> = ({
   venue,
-  ...tabNavigationProps
+  ...sidebarFooterProps
 }) => {
   if (!venue) {
     return <LoadingPage />;
@@ -42,8 +44,8 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
     <AdminPanel className="RunTabView">
       <AdminSidebar>
         <AdminSidebarTitle>Run your space</AdminSidebarTitle>
-        <TabFooter {...tabNavigationProps} />
-        <div className="RunTabView__sidebar">
+        <AdminSidebarFooter {...sidebarFooterProps} />
+        <div className="RunTabView__content">
           <ButtonNG
             isLink
             className="RunTabView__advanced"
