@@ -30,6 +30,8 @@ $announcement-background: rgba(39, 35, 34, 0.9);
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
+$cod-gray: #1d1a1a;
+$tundora: #4a4848;
 $almost-black: $secondary--darkest;
 $saturated-black: $secondary--dark;
 $saturated-black-alt: #262427;
@@ -71,7 +73,7 @@ $send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
-$navbar-height: 66px;
+$navbar-height: 54px;
 $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
@@ -216,6 +218,7 @@ $z-layers: (
   navbar: $z-layer-navbar,
   navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,
+  navbar-user-dropdown: 30,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,

@@ -40,9 +40,15 @@ import "./NavSearchBar.scss";
 
 export interface NavSearchBarProps {
   venueId: string;
+  onBlur: () => void;
+  onFocus: () => void;
 }
 
-export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
+export const NavSearchBar: React.FC<NavSearchBarProps> = ({
+  venueId,
+  onBlur,
+  onFocus,
+}) => {
   const {
     searchInputValue,
     searchQuery,
@@ -241,6 +247,8 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         autoComplete="off"
         iconStart={faSearch}
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
+        onFocus={onFocus}
+        onBlur={onBlur}
       />
 
       {/* @debt use only one RoomModal instance with state controlled with redux */}

@@ -1,8 +1,18 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { Dropdown, OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCog,
+  faEye,
+  faHome,
+  faInfoCircle,
+  faSearch,
+  faTicketAlt,
+  faUser,
+  faVolumeUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
@@ -15,12 +25,13 @@ import {
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { radioStationsSelector } from "utils/selectors";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import { enterVenue, getExtraLinkProps, venueInsideUrl } from "utils/url";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -32,10 +43,13 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import * as S from "./Navbar.styles";
 import { NavBarLogin } from "./NavBarLogin";
+
+import radio from "assets/icons/radio.svg";
 
 import "./NavBar.scss";
 import "./playa.scss";
@@ -64,7 +78,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   withSchedule,
   withPhotobooth,
 }) => {
-  const { user, userWithId } = useUser();
+  const { profile, user, userWithId } = useUser();
   const venueId = useVenueId();
   const radioStations = useSelector(radioStationsSelector);
 
@@ -76,6 +90,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
+
+  const { isShown: isDropdownShown, toggle: toggleDropdownShown } = useShowHide(
+    false
+  );
+  const { isShown: isSearchShown, toggle: toggleSearchShown } = useShowHide();
+
+  const [isSearchInFocus, setIsSearchInFocus] = useState(false);
 
   const isSovereignVenue = venueId === sovereignVenueId;
 
@@ -167,6 +188,19 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
+  const onInputFocus = useCallback(() => setIsSearchInFocus(true), []);
+
+  const onInputBlur = useCallback(() => {
+    setIsSearchInFocus(false);
+    toggleSearchShown();
+  }, [toggleSearchShown]);
+
+  const onMouseLeave = useCallback(() => {
+    if (isSearchInFocus) return;
+
+    toggleSearchShown();
+  }, [isSearchInFocus, toggleSearchShown]);
+
   const [showRadioPopover, setShowRadioPopover] = useState(false);
 
   const toggleShowRadioPopover = useCallback(
@@ -188,6 +222,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio =
     (currentVenue?.showRadio && isSoundCloud) ?? false;
+
+  const dropdownArrowClasses = classNames({
+    "navbar__dropdown-arrow-up": isDropdownShown,
+    "navbar__dropdown-arrow-down": !isDropdownShown,
+  });
 
   return (
     <>
@@ -220,13 +259,26 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                  <p className="nav-party-logo-text">{navbarTitle}</p>
+                  <span className="schedule-text">{"What’s On"}</span>
                 </button>
               ) : (
                 <div>{navbarTitle}</div>
               )}
-
-              <VenuePartygoers />
+              <div className="navbar-links__simple-view">
+                <a
+                  className="navbar-links__simple-view-a"
+                  href={`/m/${venueId}`}
+                  {...getExtraLinkProps(true)}
+                >
+                  <ButtonNG className="navbar-links__simple-view-button">
+                    <FontAwesomeIcon icon={faEye} />
+                    <span className="navbar-links__simple-view-text">
+                      Simple View
+                    </span>
+                  </ButtonNG>
+                </a>
+              </div>
             </div>
 
             {withPhotobooth && (
@@ -242,7 +294,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar venueId={venueId} />
+                <VenuePartygoers />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -256,6 +308,41 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     </span>
                   </OverlayTrigger>
                 )}
+
+                <div
+                  className="navbar-links__search"
+                  onMouseEnter={toggleSearchShown}
+                  onMouseLeave={onMouseLeave}
+                >
+                  {isSearchShown && (
+                    <NavSearchBar
+                      venueId={venueId ?? ""}
+                      onFocus={onInputFocus}
+                      onBlur={onInputBlur}
+                    />
+                  )}
+                  <ButtonNG
+                    className="navbar-links__menu-link"
+                    iconOnly
+                    iconSize="1x"
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </ButtonNG>
+                </div>
+                <ButtonNG
+                  className="navbar-links__menu-link"
+                  iconOnly
+                  iconSize="1x"
+                >
+                  <img src={radio} alt="radio" />
+                </ButtonNG>
+                <ButtonNG
+                  className="navbar-links__menu-link"
+                  iconOnly
+                  iconSize="1x"
+                >
+                  <FontAwesomeIcon icon={faVolumeUp} />
+                </ButtonNG>
 
                 {showNormalRadio && (
                   <OverlayTrigger
@@ -309,10 +396,44 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 )}
                 <div
                   className="navbar-links-user-avatar"
-                  onClick={handleAvatarClick}
+                  onClick={toggleDropdownShown}
                 >
                   <UserAvatar user={userWithId} showStatus size="medium" />
+                  <div className={dropdownArrowClasses}></div>
                 </div>
+                {isDropdownShown && (
+                  <Dropdown className="navbar__dropdown">
+                    <Dropdown.Item className="navbar__dropdown-item" disabled>
+                      {profile?.partyName && (
+                        <span>Hello {profile.partyName}</span>
+                      )}
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      className="navbar__dropdown-item"
+                      onClick={handleAvatarClick}
+                    >
+                      <FontAwesomeIcon
+                        icon={faUser}
+                        className="navbar__dropdown-item-icon"
+                      />
+                      Profile
+                    </Dropdown.Item>
+                    <Dropdown.Item className="navbar__dropdown-item">
+                      <FontAwesomeIcon
+                        icon={faCog}
+                        className="navbar__dropdown-item-icon"
+                      />
+                      Account
+                    </Dropdown.Item>
+                    <Dropdown.Item className="navbar__dropdown-item">
+                      <FontAwesomeIcon
+                        icon={faInfoCircle}
+                        className="navbar__dropdown-item-icon"
+                      />
+                      Help
+                    </Dropdown.Item>
+                  </Dropdown>
+                )}
               </div>
             )}
           </div>
