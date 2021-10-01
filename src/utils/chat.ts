@@ -2,7 +2,6 @@ import firebase from "firebase/app";
 import { has, pick } from "lodash";
 
 import {
-  BaseChatMessage,
   ChatMessage,
   ChatMessageType,
   PollMessage,
@@ -12,11 +11,6 @@ import {
 import { DisplayUser, User } from "types/User";
 
 import { WithId } from "utils/id";
-
-export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
-  a: BaseChatMessage,
-  b: BaseChatMessage
-) => b.timestamp.valueOf().localeCompare(a.timestamp.valueOf());
 
 export interface GetPreviewChatMessageProps {
   message: WithId<PrivateChatMessage>;

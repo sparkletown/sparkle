@@ -60,9 +60,8 @@ const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
   const [{ messages }] = useChatMessages<JukeboxMessage>(
     firestore
       .collection("venues")
-      .doc(venueId)
+      .doc((tableId && venueId) ?? undefined)
       .collection("jukeboxMessages")
-      .orderBy("timestamp", "asc")
   );
 
   return messages;

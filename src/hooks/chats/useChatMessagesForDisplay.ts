@@ -7,7 +7,6 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 import { ChatMessage, MessageToDisplay } from "types/chat";
 
 import {
-  chatSort,
   filterNewSchemaMessages,
   getMessageReplies,
   partitionMessagesFromReplies,
@@ -55,12 +54,10 @@ export const useChatMessages = <T extends ChatMessage>(
 
   const filteredMessages = useMemo(
     () =>
-      chatMessages
-        .filter(
-          (message) =>
-            isTruthy(message) && message.deleted !== true && filter(message)
-        )
-        .sort(chatSort),
+      chatMessages.filter(
+        (message) =>
+          isTruthy(message) && message.deleted !== true && filter(message)
+      ),
     [chatMessages, filter]
   );
 
@@ -79,7 +76,7 @@ export const useChatMessagesRaw = <T extends ChatMessage>(
     data: rawMessages = ALWAYS_EMPTY_ARRAY,
     status,
   } = useFirestoreCollectionData<WithId<T>>(
-    messagesRef.withConverter(withIdConverter<T>())
+    messagesRef.orderBy("timestamp", "asc").withConverter(withIdConverter<T>())
   );
 
   const chatMessages =

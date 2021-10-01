@@ -3,7 +3,7 @@ import { useFirestore } from "reactfire";
 
 import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
-import { chatSort, getPreviewChatMessage } from "utils/chat";
+import { getPreviewChatMessage } from "utils/chat";
 
 import { useChatMessagesRaw } from "hooks/chats/useChatMessagesForDisplay";
 import { useUser } from "hooks/useUser";
@@ -59,7 +59,7 @@ export const usePrivateChatPreviews = () => {
 
   return useMemo(
     () => ({
-      privateChatPreviews: Object.values(privateChatPreviewsMap).sort(chatSort),
+      privateChatPreviews: Object.values(privateChatPreviewsMap),
       isPrivateChatPreviewsLoaded: isUserPrivateChatsLoaded,
     }),
     [privateChatPreviewsMap, isUserPrivateChatsLoaded]
