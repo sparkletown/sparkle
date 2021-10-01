@@ -29,9 +29,11 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 }) => {
   const { isShown: selectedSpace, toggle: toggleSelectedSpace } = useShowHide();
 
-  const onClickCreateButton = useCallback(() => setShowCreateEventModal(), [
-    setShowCreateEventModal,
-  ]);
+  const onClickCreateButton = useCallback(() => {
+    const event = { room: spaceName } as WithId<VenueEvent>;
+    setShowCreateEventModal();
+    setEditedEvent(event);
+  }, [setShowCreateEventModal, setEditedEvent, spaceName]);
 
   const renderedSpaceEvents = useMemo(
     () =>
@@ -70,7 +72,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
           className="TimingSpace__createButton"
           onClick={onClickCreateButton}
         >
-          Add experience
+          Create an Experience
         </ButtonNG>
       </div>
       {selectedSpace && (

@@ -34,4 +34,13 @@
     background-color: $black;
     border-top: 1px solid opaque-white(0.2);
   }
+
+  &__content {
+    padding: $spacing--xl;
+  }
+
+  .AdminSidebarFooter__buttons {
+    // NOTE: Magic number determined empirically to fill the footer space in just this one case
+    width: 2 * $admin-ng-sidebar-footer-buttons-width--magic-number;
+  }
 }

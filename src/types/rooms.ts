@@ -13,14 +13,13 @@ export enum RoomType {
   modalFrame = "MODALFRAME",
 }
 
-// @debt We should end up with 1 canonical room type
 export interface Room {
   type?: RoomType;
   zIndex?: number;
   title: string;
   subtitle?: string;
   url: string;
-  about: string;
+  about?: string;
   x_percent: number;
   y_percent: number;
   width_percent: number;
@@ -29,7 +28,7 @@ export interface Room {
   visibility?: RoomVisibility;
   image_url: string;
   enterSound?: SoundConfigReference;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
 }
 
 // @debt We should end up with 1 canonical room type
@@ -48,12 +47,8 @@ export interface RoomData_v2 {
   visibility?: RoomVisibility;
   image_url?: string;
   enterSound?: SoundConfigReference;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
   roomIndex?: number;
-}
-
-export enum RoomTemplate {
-  external = "external",
 }
 
 export type ParticipantWithUser<
@@ -62,5 +57,3 @@ export type ParticipantWithUser<
   participant: T;
   user: WithId<DisplayUser>;
 };
-
-export type VenueRoomTemplate = VenueTemplate | RoomTemplate;

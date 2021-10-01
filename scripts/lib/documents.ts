@@ -36,6 +36,16 @@ export const getSeatedSectionUserRef: (
     .collection("seatedSectionUsers")
     .doc(userId);
 
+export const getRecentSeatedUsersUserRef: (
+  options: SimContext<"venueId"> & { userId: string }
+) => Promise<DocumentReference> = async ({ venueId, userId }) =>
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("recentSeatedUsers")
+    .doc(userId);
+
 export const getSeatedTableUserRef: (
   options: SimContext<"venueId"> & { userId: string }
 ) => Promise<DocumentReference> = async ({ venueId, userId }) =>
@@ -94,20 +104,17 @@ export const getVenueTemplate: (
   return name;
 };
 
-export const getVenueGridSize: (
+export const getAuditoriumGridSize: (
   options: SimContext<"venueRef">
 ) => Promise<{} | GridSize> = async ({ venueRef }) => {
   const snap = await venueRef.get();
   const data = await snap.data();
-  const { auditoriumColumns, auditoriumRows, template } = data ?? {};
-  const isAudience = template === "audience";
+  const { auditoriumColumns, auditoriumRows } = data ?? {};
 
   return auditoriumRows && auditoriumColumns
     ? {
-        minCol: isAudience ? -auditoriumColumns : 0,
-        minRow: isAudience ? -auditoriumRows : 0,
-        maxCol: auditoriumColumns,
-        maxRow: auditoriumRows,
+        auditoriumColumns,
+        auditoriumRows,
       }
     : {};
 };
