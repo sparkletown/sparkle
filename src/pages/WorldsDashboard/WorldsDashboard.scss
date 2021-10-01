@@ -1,0 +1,54 @@
+@import "scss/constants.scss";
+
+.WorldsDashboard {
+  .AdminPanel {
+    width: 100%;
+    height: calc(100vh - #{$reserved-page-height});
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+  }
+
+  .AdminSidebarTitle,
+  .AdminSidebarSubTitle {
+    margin: $spacing--xl 0;
+  }
+
+  .AdminSidebar {
+    display: flex;
+    flex-direction: column;
+
+    width: $admin-ng-sidebar-width--normal;
+    min-width: $admin-ng-sidebar-width--min;
+
+    padding: $spacing--lg;
+  }
+
+  .AdminShowcase {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    background-color: $dark;
+  }
+
+  .AdminSidebarFooter {
+    width: $admin-ng-sidebar-width--normal;
+    margin-left: -$spacing--lg;
+  }
+
+  &__new {
+    margin: $spacing--xl;
+    place-self: end;
+  }
+
+  &__arrow {
+    transform: translateX(-100%) translateY(-25%) rotate(-15deg);
+  }
+
+  &__messages-container {
+    text-align: center;
+  }
+}

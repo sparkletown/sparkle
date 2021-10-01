@@ -35,11 +35,6 @@ $border-radius: 28px;
   height: 100%;
 }
 
-.party-map-grid-container > *:first-child {
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
-}
-
 .party-map-grid-container {
   position: absolute;
   width: 100%;

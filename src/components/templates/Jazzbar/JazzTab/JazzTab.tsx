@@ -6,7 +6,6 @@ import classNames from "classnames";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
-  DEFAULT_SHOW_REACTIONS,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -18,8 +17,9 @@ import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateRecentSeatedTableUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -58,6 +58,7 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
     toggle: toggleTablesVisibility,
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+  const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
   const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
 
@@ -74,7 +75,7 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
 
-  useUpdateRecentSeatedTableUsers(
+  useUpdateTableRecentSeatedUsers(
     VenueTemplate.jazzbar,
     seatedAtTable && venue?.id
   );
@@ -123,7 +124,7 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
   // };
 
   const shouldShowReactions =
-    (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+    seatedAtTable && areSettingsLoaded && settings.showReactions;
   const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =

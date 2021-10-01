@@ -36,10 +36,10 @@ export interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
-  const { isLoaded: settingsAreLoaded, settings } = useSettings();
+  const { isLoaded: areSettingsLoaded, settings } = useSettings();
 
   const shouldShowChat =
-    settingsAreLoaded &&
+    areSettingsLoaded &&
     (settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template));
 
   let template;
@@ -127,11 +127,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar
-        hasBackButton={hasBackButton}
-        withPhotobooth
-        withSchedule
-      >
+      <WithNavigationBar hasBackButton={hasBackButton} withSchedule>
         <AnnouncementMessage isAnnouncementUserView />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
