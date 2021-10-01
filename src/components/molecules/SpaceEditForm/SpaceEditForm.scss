@@ -5,9 +5,8 @@
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
-  margin-bottom: $admin-ng-spaces-footer-height;
 
-  &__room {
+  &__portal {
     display: flex;
     flex-direction: column;
     padding: $spacing--xl;
@@ -19,20 +18,6 @@
     justify-content: center;
     align-items: center;
     flex: 1;
-  }
-
-  &__footer {
-    height: $admin-ng-spaces-footer-height;
-    display: flex;
-    position: fixed;
-    bottom: 0;
-    flex-direction: row;
-    justify-content: space-between;
-    width: $admin-ng-sidebar-width--normal;
-    padding: $spacing--md;
-    margin-bottom: $footer-height;
-    background-color: $black;
-    border-top: 1px solid opaque-white(0.2);
   }
 
   &__content {

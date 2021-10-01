@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Button, Form, Spinner } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
@@ -24,6 +24,8 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
+
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
@@ -189,7 +191,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
-        <div className="SpaceEditForm__room">
+        <div className="SpaceEditForm__portal">
           <Form.Label>{ROOM_TAXON.capital} type</Form.Label>
           <InputField
             name="room.template"
@@ -471,16 +473,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           </div>
         )}
 
-        <div className="SpaceEditForm__footer">
-          <Button onClick={handleBackClick}>Back</Button>
-          <Button
-            className="confirm-button"
+        <AdminSidebarFooter onClickCancel={handleBackClick}>
+          <ButtonNG
+            className="AdminSidebarFooter__button--larger"
             type="submit"
+            variant="primary"
             disabled={isUpdating || isDeleting}
           >
             Save changes
-          </Button>
-        </div>
+          </ButtonNG>
+        </AdminSidebarFooter>
       </div>
     </Form>
   );
