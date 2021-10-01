@@ -5,7 +5,12 @@ import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO, ROOM_TAXON } from "settings";
 
-import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
+import {
+  createRoom,
+  createUrlSafeName,
+  createVenue_v2,
+  RoomInput_v2,
+} from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -60,10 +65,13 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const roomUrl = window.origin + venueInsideUrl(roomValues.venueName);
+    const venueUrlName = createUrlSafeName(roomValues.venueName);
+
+    const roomUrl = window.origin + venueInsideUrl(venueUrlName);
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
+      about: "",
       isEnabled: true,
       image_url: DEFAULT_VENUE_LOGO,
       url: roomUrl,
@@ -76,7 +84,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-    await createVenue_v2({ ...venueData, worldId }, user);
+    await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
   }, [getValues, hideModal, template, user, venueId, worldId]);
