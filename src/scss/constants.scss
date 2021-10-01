@@ -23,6 +23,8 @@ $input--invalid: #dc3545;
 $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
+$subheading--over: #a5a5a5;
+
 $modal-background--confirm: #232225;
 $announcement-background: rgba(39, 35, 34, 0.9);
 
@@ -78,13 +80,6 @@ $announcement-container-width-admin: 600px;
 $announcement-container-width: 470px;
 $announcement-container-height: 140px;
 $announcement-banner-admin-height: 55px;
-$admin-ng-sidebar-width--normal: 20%;
-$admin-ng-sidebar-width--min: 360px;
-$admin-ng-tab-footer-height--max: 64px;
-$admin-ng-tab-bar-height: 30px;
-$admin-ng-panel-height: calc(
-  100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
-);
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
@@ -152,6 +147,20 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 $image-input-border--error: 2px solid red;
+
+// NOTE: Magic number determined empirically to fill the footer space in default case
+$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
+$admin-ng-sidebar-width--normal: 30vw;
+$admin-ng-sidebar-width--min: $admin-ng-sidebar-footer-buttons-width--magic-number;
+$admin-ng-sidebar-width--max: 30vw;
+$admin-ng-sidebar-footer-height--max: 4rem;
+$admin-ng-showcase-width--normal: calc(
+  100vw - #{$admin-ng-sidebar-width--normal}
+);
+$admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
+$admin-ng-panel-height: calc(
+  100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
+);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)

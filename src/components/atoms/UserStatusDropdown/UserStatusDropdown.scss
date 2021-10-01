@@ -1,7 +1,5 @@
 @import "scss/constants";
 
-$dropdown-width: 100px;
-
 .UserStatusDropdown {
   display: flex;
   flex-direction: row;
@@ -10,40 +8,20 @@ $dropdown-width: 100px;
     font-weight: $font-weight--500;
   }
 
-  .dropdown-toggle.btn {
-    background: none;
-    padding: 0;
-    margin: 0;
+  .Dropdown__button {
     text-decoration: underline;
-    border: none;
     font-weight: $font-weight--400;
-    line-height: unset;
-    vertical-align: baseline;
-
-    &:focus {
-      box-shadow: none;
-    }
-
-    &:hover {
-      background-color: initial;
-      transform: none;
-    }
 
     &::after {
       display: none;
     }
   }
 
-  .dropdown-item {
+  &__item {
+    text-decoration: none;
     display: flex;
     justify-content: space-between;
     padding: 0 $spacing--md;
-    text-decoration: none;
     opacity: 0.8;
-
-    &:hover,
-    &:focus {
-      opacity: 1;
-    }
   }
 }

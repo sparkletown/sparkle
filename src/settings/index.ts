@@ -14,14 +14,31 @@ import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import {
+  ROOM_TAXON,
+  ROOMS_TAXON,
+  SCREENING_ROOM_TAXON,
+  SPACE_TAXON,
+  ZOOM_ROOM_TAXON,
+} from "./taxonomy";
+
+import defaultAvatar1 from "assets/avatars/default-profile-pic-1.png";
+import defaultAvatar2 from "assets/avatars/default-profile-pic-2.png";
+import defaultAvatar3 from "assets/avatars/default-profile-pic-3.png";
+import defaultAvatar4 from "assets/avatars/default-profile-pic-4.png";
+import defaultAvatar5 from "assets/avatars/default-profile-pic-5.png";
+import defaultAvatar6 from "assets/avatars/default-profile-pic-6.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
+export * from "./taxonomy";
 export * from "./mapBackgrounds";
+export * from "./portalSettings";
+export * from "./sectionSettings";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
-export * from "./portalSettings";
+export * from "./spacesSettings";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -98,7 +115,7 @@ export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
 export const WORLD_USERS_UPDATE_INTERVAL = 5000;
-export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 5000;
+export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 20 * 1000;
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -232,27 +249,29 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
     name: "Conversation Space",
-    description: ["A room of tables in which to talk and make merry."],
+    description: [
+      `A ${SPACE_TAXON.lower} of tables in which to talk and make merry.`,
+    ],
   },
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+      `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
     ],
   },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [
-      "An explorable party map into which you can place all your party rooms.",
+      `An explorable party map into which you can place all your party ${ROOMS_TAXON.lower}.`,
     ],
   },
   {
     template: VenueTemplate.animatemap,
     name: "Animate Map",
     description: [
-      "An explorable party map into which you can place all your party rooms.",
+      `An explorable party map into which you can place all your party ${ROOMS_TAXON.lower}.`,
     ],
   },
   {
@@ -270,16 +289,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description: [
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    ],
-  },
-  {
     template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: ["Add an NEW auditorium with an embedded video and sections"],
+    name: "Auditorium",
+    description: ["Add an auditorium with an embedded video and sections"],
   },
   {
     template: VenueTemplate.firebarrel,
@@ -295,8 +307,10 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening Room",
-    description: ["Add an screening room with the videos listed inside."],
+    name: SCREENING_ROOM_TAXON.title,
+    description: [
+      `Add an screening ${ROOM_TAXON.lower} with the videos listed inside.`,
+    ],
   },
 ];
 
@@ -308,28 +322,10 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Jazz Bar",
     description: ["Create a jazzbar."],
   },
-
-  {
-    template: VenueTemplate.artcar,
-    name: "Art Car",
-    description: ["Create a space on the Jam that moves around."],
-  },
-  {
-    template: VenueTemplate.performancevenue,
-    name: "Performance Venue",
-    description: [
-      "Create a live performance space with tables, audience reactions and video chat between people in the venue.",
-    ],
-  },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [""],
-  },
-  {
-    template: VenueTemplate.themecamp,
-    name: "Theme Camp (legacy)",
-    description: ["To be removed asap"],
   },
   {
     template: VenueTemplate.animatemap,
@@ -380,20 +376,6 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
     ],
   },
   {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description:
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    icon: "/venues/pickspace-thumbnail_auditorium.png",
-    customInputs: [
-      {
-        name: "iframeUrl",
-        title: "Livestream URL",
-        type: "text",
-      },
-    ],
-  },
-  {
     template: VenueTemplate.auditorium,
     name: "New Auditorium",
     description: "Add an NEW auditorium with an embedded video and sections",
@@ -409,8 +391,7 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.zoomroom,
     name: "Experience",
-    description:
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    description: `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
     icon: "/venues/pickspace-thumbnail_zoom.png",
   },
   {
@@ -551,15 +532,16 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  defaultAvatar1,
+  defaultAvatar2,
+  defaultAvatar3,
+  defaultAvatar4,
+  defaultAvatar5,
+  defaultAvatar6,
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
-export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
@@ -567,20 +549,6 @@ export const DEFAULT_CAMERA_ENABLED = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
-export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
-
-// Audience
-// Always have an odd number of rows and columns (because of the firelane delimiter).
-export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
-export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
-
-// These must both be odd, otherwise the video won't be centered properly
-export const SECTION_DEFAULT_ROWS_COUNT = 17;
-export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
-
-export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
-
-export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 
