@@ -3,6 +3,7 @@
 $border-radius: 22px;
 $spacing: 20px;
 $text-width: 50rem;
+$venue-logo-size: 180px;
 
 .ExternalRoom {
   min-height: 100%;
@@ -73,9 +74,8 @@ $text-width: 50rem;
   }
 
   &__venue-logo {
+    @include square-size($venue-logo-size);
     flex-shrink: 0;
-    height: 180px;
-    width: 180px;
     border-radius: $border-radius;
     background-color: $black;
     background-size: contain;
