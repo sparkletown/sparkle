@@ -91,7 +91,7 @@ $sorting-option--font-size: 0.8rem;
 
       &__sorting-option {
         &:hover {
-          color: var(--primary-color);
+          color: $primaryColor;
           cursor: pointer;
         }
 
