@@ -1,25 +1,31 @@
 import { strict as assert } from "assert";
 
 import chalk from "chalk";
-import faker from "faker";
 
 import { takeSeatInAudience as actualTakeSeat } from "../lib/bot";
 import { getSectionsRef } from "../lib/collections";
-import { getVenueGridSize } from "../lib/documents";
+import { getAuditoriumGridSize } from "../lib/documents";
 import { withErrorReporter } from "../lib/log";
-import { DocumentReference, GridSize, SimContext } from "../lib/types";
-import { pickValueFrom, sleep } from "../lib/utils";
+import {
+  DocumentReference,
+  GridPosition,
+  GridSize,
+  SimContext,
+} from "../lib/types";
+import { determineWhereToSeat, pickValueFrom, sleep } from "../lib/utils";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;
 export const DEFAULT_SEAT_TICK_MS = 1000;
 export const DEFAULT_SEAT_AFFINITY = 0.01;
 export const DEFAULT_SEAT_IMPATIENCE = 0.01;
 
+// These must both be odd, otherwise the video won't be centered properly
+export const SECTION_DEFAULT_ROWS_COUNT = 17;
+export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
+
 export const DEFAULT_GRID_SIZE: GridSize = {
-  minRow: 0,
-  maxRow: 9,
-  minCol: 0,
-  maxCol: 9,
+  auditoriumRows: SECTION_DEFAULT_ROWS_COUNT,
+  auditoriumColumns: SECTION_DEFAULT_COLUMNS_COUNT,
 };
 
 export const simSeat: (options: SimContext) => Promise<void> = async (
@@ -50,7 +56,7 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
   // Manual config should take precedence if the col/row values are provided
   const grid: GridSize = {
     ...DEFAULT_GRID_SIZE,
-    ...(await getVenueGridSize(options)),
+    ...(await getAuditoriumGridSize(options)),
     ...conf.venue,
   };
 
@@ -59,7 +65,8 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
   ).listDocuments();
 
   // keep track of who's already seated
-  const seated: Record<string, boolean> = {};
+  const seatedUsers: Record<string, GridPosition | undefined> = {};
+  const seatedPositions: Record<string, true | undefined> = {};
 
   const takeSeat = withErrorReporter(conf.log, actualTakeSeat);
 
@@ -74,37 +81,31 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
           const userId = userRef.id;
 
           // affinity works only for those already seated
-          if (seated[userId] && Math.random() >= affinity) {
+          if (seatedUsers[userId] && Math.random() >= affinity) {
             return;
           }
 
           // more impatient users will sit down fast, then affinity to move will kick in
-          if (!seated[userId] && Math.random() >= impatience) {
+          if (!seatedUsers[userId] && Math.random() >= impatience) {
             return;
           }
 
           const sectionId = pickValueFrom(sectionRefs)?.id;
 
-          const row = faker.datatype.number({
-            min: grid.minRow,
-            max: grid.maxRow,
-          });
-          const col = faker.datatype.number({
-            min: grid.minCol,
-            max: grid.maxCol,
-          });
-
-          // TODO: add logic checking for already taken seats
+          const pos = determineWhereToSeat(
+            userId,
+            grid,
+            seatedUsers,
+            seatedPositions
+          );
 
           await takeSeat({
             ...options,
             userRef,
             user: usersById[userRef.id],
-            row,
-            col,
+            ...pos,
             sectionId,
           });
-          seated[userId] = true;
         })
       );
       // explicit sleep between the chunks

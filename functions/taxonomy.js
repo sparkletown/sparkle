@@ -2,7 +2,7 @@
 // (will make it easy to find occurrences)
 // until more comprehensive solution is available
 
-export const ROOM_TAXON = Object.freeze({
+exports.ROOM_TAXON = Object.freeze({
   capital: "Portal",
   lower: "portal",
   upper: "PORTAL",
