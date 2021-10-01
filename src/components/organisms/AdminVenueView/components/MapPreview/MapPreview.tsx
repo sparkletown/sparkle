@@ -32,6 +32,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const iconsMap: RoomIcon[] = useMemo(() => {
     return rooms.map((room, index: number) => ({
+      title: room.title ?? "",
       width: room.width_percent ?? 0,
       height: room.height_percent ?? 0,
       top: room.y_percent ?? 0,
