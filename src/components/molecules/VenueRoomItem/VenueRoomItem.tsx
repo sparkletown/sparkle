@@ -3,7 +3,7 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE_LOGO, ROOM_TAXON } from "settings";
+import { ROOM_TAXON } from "settings";
 
 import {
   createRoom,
@@ -73,7 +73,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       title: roomValues.roomTitle,
       about: "",
       isEnabled: true,
-      image_url: DEFAULT_VENUE_LOGO,
+      image_url: icon,
       url: roomUrl,
       width_percent: 5,
       height_percent: 5,
@@ -87,7 +87,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, template, user, venueId, worldId]);
+  }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
   return (
     <>
