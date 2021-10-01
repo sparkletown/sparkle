@@ -297,9 +297,6 @@ const createVenueData_v2 = (data, context) => {
         description: data.description,
       },
     },
-    theme: {
-      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-    },
     host: {
       icon: data.logoImageUrl,
     },
@@ -311,6 +308,7 @@ const createVenueData_v2 = (data, context) => {
     createdAt: Date.now(),
     updatedAt: Date.now(),
     worldId: data.worldId,
+    ...(data.parentId && { parentId: data.parentId }),
   };
 
   if (data.template === VenueTemplate.jazzbar) {

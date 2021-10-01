@@ -116,12 +116,8 @@ export type SimConfig = Incomplete<
       scriptTag: string;
     };
 
-    venue: {
+    venue: GridSize & {
       id: string;
-      minRow: number;
-      minCol: number;
-      maxRow: number;
-      maxCol: number;
     };
 
     seat: SimLoopConfig & HasImpatienceFlag;
@@ -149,18 +145,19 @@ export type SimContext<
 > = Pick<FullSimContext, T>;
 
 export type GridSize = {
-  maxCol: number;
-  maxRow: number;
-  minCol: number;
-  minRow: number;
+  auditoriumColumns: number;
+  auditoriumRows: number;
 };
 
-export type TableInfo = {
-  cap: number;
+export type GridPosition = {
+  row: number;
   col: number;
+};
+
+export type TableInfo = GridPosition & {
+  cap: number;
   dub: string;
   idx: string;
-  row: number;
   ref: string;
 };
 
