@@ -15,6 +15,11 @@ export const getVenueCollectionRef = () =>
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
 
+export const fetchVenue = async (venueId: string) => {
+  const venueDoc = await getVenueRef(venueId).get();
+  return venueDoc.data() as AnyVenue;
+};
+
 export interface SetVenueLiveStatusProps {
   venueId: string;
   isLive: boolean;
@@ -80,6 +85,30 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   return await firebase
     .functions()
     .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+};
+
+type VenueInputForm = Partial<WithId<AnyVenue>> & {
+  mapBackgroundImage_url?: string;
+  mapBackgroundImage_file?: FileList;
+};
+
+export const updateVenueNG = async (
+  venue: VenueInputForm,
+  user: firebase.UserInfo
+) => {
+  const file = venue.mapBackgroundImage_file?.[0];
+  if (file) {
+    const storageRef = firebase.storage().ref();
+    const fileExtension = file.name.split(".").pop();
+    const uploadFileRef = storageRef.child(
+      `users/${user.uid}/venues/${venue.id}/mapBackground.${fileExtension}`
+    );
+    await uploadFileRef.put(file);
+    const downloadUrl = await uploadFileRef.getDownloadURL();
+    venue.mapBackgroundImageUrl = downloadUrl;
+  }
+
+  return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
 };
 
 const getUserInSectionRef = (userId: string, path: AuditoriumSectionPath) =>
