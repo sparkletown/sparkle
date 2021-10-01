@@ -1,14 +1,16 @@
-$primaryColor: var(--primary-color);
-$backgroundColor: var(--background-color);
+$primaryColor: var(--primary-color-deprecated);
 
-$primary-accent--over: #ffffff;
-$primary-content--over: #ffffff;
-$primary-content-under: #000000;
+$primary-accent--over: var(--primary-accent--over);
+$primary-accent--under: var(--primary-accent--under);
+$primary-content--over: var(--primary-content--over);
+$primary-content-under: var(--primary-content--under);
+
+$primary--darken-20pp: var(--primary--darken-20pp);
+$primary--lighten-10pp: var(--primary--lighten-10pp);
 
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
 $primary--live-hover: #8755fb;
-$primary-accent--under: #7c46fb;
 $primary--darker: #3f247d;
 
 $secondary--lightest: #868686;
@@ -275,15 +277,19 @@ $z-layers: (
 }
 
 @function opaque-white($opacity: 0.1) {
-  @return rgba($primary-content--over, $opacity);
+  $white-rgb: var(--primary-content--over-rgb);
+
+  @return rgba(#{$white-rgb}, $opacity);
 }
 
 @function opaque-black($opacity: 0.1) {
-  @return rgba($primary-content-under, $opacity);
+  $black-rbg: var(--primary-content--under-rgb);
+
+  @return rgba(#{var(--primary-content--under-rgb)}, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {
-  @return 0 10px 30px 0 rgba($primary-content-under, $transparency);
+  @return 0 10px 30px 0 opaque-black($transparency);
 }
 
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322

@@ -1,12 +1,7 @@
-@import "constants.scss";
-
-:root {
-  --primary-color: #f6e652;
-}
-
 @import "node_modules/bootswatch/dist/darkly/variables";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
+@import "./colors.scss";
 @import "./constants.scss";
 @import "./modifiers.scss";
 @import "./customOverrides";
@@ -116,7 +111,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: darken($primary-accent--under, 14%);
+      background-color: var(--primary--darken-14pp);
     }
   }
 
@@ -159,13 +154,13 @@ input.btn {
 
   &.disabled,
   &[type="submit"]:disabled {
-    color: rgba($primary-content--over, 0.5);
-    background-color: rgba($primary-content--over, 0.15);
+    color: opaque-white(0.5);
+    background-color: opaque-white(0.15);
 
     &.btn-primary {
-      color: rgba($primary-content--over, 0.5);
+      color: opaque-white(0.5);
       background-image: none;
-      background-color: rgba($primary-content--over, 0.15);
+      background-color: opaque-white(0.15);
     }
   }
 }
@@ -232,7 +227,7 @@ button.btn {
   }
 
   &.disabled {
-    color: rgba($primary-content--over, 0.2);
+    color: opaque-white(0.2);
     background-image: linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.2) 0%,
@@ -248,7 +243,7 @@ textarea {
   -webkit-appearance: none;
   border: none;
   outline: none;
-  background-color: rgba($primary-content--over, 0.12);
+  background-color: opaque-white(0.12);
   width: 100%;
   position: relative;
   cursor: pointer;
@@ -266,11 +261,11 @@ textarea {
   }
 
   &:hover {
-    background-color: rgba($primary-content--over, 0.16);
+    background-color: opaque-white(0.16);
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba($primary-content--over, 1);
+    box-shadow: 0 0 0 2px opaque-white(1);
   }
 
   &[type="checkbox"]:focus {
@@ -663,16 +658,16 @@ input.btn.btn-primary.btn-success {
   border: 1px solid $light-grey;
   background-image: linear-gradient(
     0deg,
-    rgba($primary-content--over, 0.05) 0%,
-    rgba($primary-content--over, 0.05) 100%
+    opaque-white(0.05) 0%,
+    opaque-white(0.05) 100%
   );
 
   .chatbox-container {
     background: $primary-content-under;
     background-image: linear-gradient(
       0deg,
-      rgba($primary-content--over, 0.05) 0%,
-      rgba($primary-content--over, 0.05) 100%
+      opaque-white(0.05) 0%,
+      opaque-white(0.05) 100%
     );
 
     .bubble {

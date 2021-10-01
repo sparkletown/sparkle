@@ -29,8 +29,7 @@ $label-visible: flex;
 
       background-color: $primary-accent--under;
       opacity: 1;
-      box-shadow: 0 0 0 3px lighten($primary-accent--under, 10%),
-        0 2px 4px rgba($primary-content-under, 0.2);
+      box-shadow: 0 0 0 3px $primary--lighten-10pp, 0 2px 4px opaque-black(0.2);
     }
 
     .maproom__title--count {
@@ -107,7 +106,7 @@ $label-visible: flex;
     backdrop-filter: blur(8px);
 
     font-size: 0.9rem;
-    background-color: darken($primary-accent--under, 50%);
+    background-color: var(--primary--darken-50pp);
     opacity: 0.5;
   }
 

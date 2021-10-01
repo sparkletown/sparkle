@@ -1,0 +1,21 @@
+$colors-enum: (
+  primary: #7c46fb,
+);
+$shades-enum: (5, 10, 14, 20, 50);
+
+:root {
+  --primary-color-deprecated: #f6e652;
+  --primary-content--under: #000000;
+  --primary-content--under-rgb: 0, 0, 0;
+  --primary-content--over: #ffffff;
+  --primary-content--over-rgb: 255, 255, 255;
+
+  --primary-accent--over: #ffffff;
+  @each $colorName, $color in $colors-enum {
+    @each $shade in $shades-enum {
+      --#{$colorName}--darken-#{$shade}pp: #{darken($color, $shade * 1%)};
+      --#{$colorName}--lighten-#{$shade}pp: #{lighten($color, $shade * 1%)};
+    }
+    --#{$colorName}-accent--under: #{$color};
+  }
+}
