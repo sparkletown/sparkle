@@ -111,7 +111,7 @@
     object-fit: cover;
 
     .secret-password-form-wrapper {
-      background: rgba($primary-content-under, 0.75);
+      background: opaque-black(0.75);
       padding: 20px;
       width: 250px;
       margin-right: 40px;

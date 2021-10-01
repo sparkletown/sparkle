@@ -67,7 +67,7 @@
 //    }
 //
 //    &.btn-link_disabled {
-//      color: rgba($primary-content-under, 0.5);
+//      color: opaque-black(0.5);
 //      cursor: auto;
 //      &:after {
 //        display: none;
@@ -79,11 +79,11 @@
 //    color: $primary-content-under;
 //    box-shadow: none;
 //    &:hover {
-//      color: rgba($primary-content-under, 0.6);
+//      color: opaque-black(0.6);
 //    }
 //    &:disabled {
-//      background-color: rgba($primary-content--over, 0.1);
-//      color: rgba($primary-content--over, 0.6);
+//      background-color: opaque-white(0.1);
+//      color: opaque-white(0.6);
 //    }
 //  }
 //  &.btn-block {
@@ -94,6 +94,6 @@
 //    cursor: not-allowed;
 //    background-color: $primary-content-under;
 //    box-shadow: none;
-//    color: rgba($primary-content--over, 0.6);
+//    color: opaque-white(0.6);
 //  }
 //}

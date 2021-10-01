@@ -161,7 +161,7 @@ $photobooth-button-background-size: 35px;
 
 .nav-party-logo {
   position: relative;
-  background-color: rgba($primary-content--over, 0.08);
+  background-color: opaque-white(0.08);
   height: 60px;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -184,7 +184,7 @@ $photobooth-button-background-size: 35px;
   &:hover,
   &:focus {
     border: none;
-    background-color: rgba($primary-content--over, 0.14);
+    background-color: opaque-white(0.14);
 
     &:after {
       opacity: 0.7;

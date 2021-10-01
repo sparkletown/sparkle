@@ -31,7 +31,7 @@
   }
 
   &:hover {
-    background-color: rgba($primary-content--over, 0.1);
+    background-color: opaque-white(0.1);
   }
 
   &:last-child {
