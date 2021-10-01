@@ -60,9 +60,9 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const roomUrl =
-      window.origin +
-      venueInsideUrl(roomValues.venueName.replace(/\W/g, "").toLowerCase());
+    const venueName = roomValues.venueName.replace(/\W/g, "").toLowerCase();
+
+    const roomUrl = window.origin + venueInsideUrl(venueName);
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
