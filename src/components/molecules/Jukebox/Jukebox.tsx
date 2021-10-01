@@ -5,9 +5,9 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from "react";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
@@ -16,6 +16,7 @@ import { AnyVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
+import { waitAtLeast } from "utils/promise";
 import { isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/jukebox";
@@ -42,7 +43,6 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   }>({
     mode: "onSubmit",
   });
-  const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
 
   const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
@@ -63,26 +63,15 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     updateIframeUrl(urlToEmbed);
   }, [messagesToDisplay, updateIframeUrl]);
 
-  const sendMessageToChat = handleSubmit(async ({ jukeboxMessage }) => {
-    setMessageSending(true);
-
-    await sendJukeboxMsg({ message: jukeboxMessage });
-    reset();
-  });
-
-  // @debt replace with useDebounce
-  // This logic disallows users to spam into the chat. There should be a delay, between each message
-  useEffect(() => {
-    if (!isSendingMessage) return;
-
-    const timeoutId = setTimeout(() => {
-      setMessageSending(false);
-    }, CHAT_MESSAGE_TIMEOUT);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isSendingMessage]);
+  const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
+    async ({ jukeboxMessage }) => {
+      await waitAtLeast(
+        sendJukeboxMsg({ message: jukeboxMessage }).then(() => reset()),
+        CHAT_MESSAGE_TIMEOUT
+      );
+    },
+    [reset, sendJukeboxMsg]
+  );
 
   const isBtnDisabled = !chatValue || isSendingMessage;
   const submitButtonClasses = classNames("Jukebox__buttons-submit", {
@@ -133,7 +122,10 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           {jukeboxChatMessages}
           <div ref={messagesEndRef} />
         </div>
-        <form className="Jukebox__form" onSubmit={sendMessageToChat}>
+        <form
+          className="Jukebox__form"
+          onSubmit={handleSubmit(sendMessageToChat)}
+        >
           <InputField
             containerClassName="Jukebox__input-container"
             inputClassName="Jukebox__input"
