@@ -1,10 +1,24 @@
 @import "scss/constants.scss";
 
-.EditRoomForm {
+.SpaceEditForm {
   display: flex;
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
+
+  &__portal {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing--xl;
+  }
+
+  &__loading-indicator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+  }
 
   &__content {
     padding: $spacing--xl;
