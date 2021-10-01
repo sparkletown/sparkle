@@ -1,7 +1,10 @@
 import { MIXPANEL_PROJECT_TOKEN } from "secrets";
 
 export const initMixpanel = (opts?: Object) => {
-  if (!MIXPANEL_PROJECT_TOKEN) return;
+  if (!MIXPANEL_PROJECT_TOKEN) {
+    console.warn("Mixpanel is not set up correctly.");
+    return;
+  }
 
   return window.mixpanel.init(MIXPANEL_PROJECT_TOKEN, opts);
 };

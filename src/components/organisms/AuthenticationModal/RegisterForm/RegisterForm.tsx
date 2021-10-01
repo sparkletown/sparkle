@@ -16,6 +16,7 @@ import { useSelector } from "hooks/useSelector";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
+import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -24,7 +25,7 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 interface PropsType {
   displayLoginForm: () => void;
   displayPasswordResetForm: () => void;
-  afterUserIsLoggedIn?: () => void;
+  afterUserIsLoggedIn?: (data: LoginFormData) => void;
   closeAuthenticationModal: () => void;
 }
 
@@ -127,7 +128,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         });
       }
 
-      afterUserIsLoggedIn && afterUserIsLoggedIn();
+      afterUserIsLoggedIn && afterUserIsLoggedIn(data);
 
       closeAuthenticationModal();
 

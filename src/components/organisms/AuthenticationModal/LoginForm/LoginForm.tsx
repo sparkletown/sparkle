@@ -14,10 +14,10 @@ export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal: () => void;
-  afterUserIsLoggedIn?: () => void;
+  afterUserIsLoggedIn?: (data: LoginFormData) => void;
 }
 
-interface LoginFormData {
+export interface LoginFormData {
   email: string;
   password: string;
   code: string;
@@ -60,7 +60,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     try {
       await signIn(data);
 
-      afterUserIsLoggedIn && afterUserIsLoggedIn();
+      afterUserIsLoggedIn && afterUserIsLoggedIn(data);
 
       closeAuthenticationModal();
     } catch (error) {

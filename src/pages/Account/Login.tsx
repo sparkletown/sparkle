@@ -16,6 +16,7 @@ import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
+import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 
@@ -83,8 +84,11 @@ export const Login: React.FC<LoginProps> = ({
     setFormToDisplay("passwordReset");
   };
 
-  const afterUserIsLoggedIn = () => {
-    trackMixpanelEvent("Login", { worldId: venue.worldId });
+  const afterUserIsLoggedIn = (data: LoginFormData) => {
+    trackMixpanelEvent("Login", {
+      worldId: venue.worldId,
+      email: data.email,
+    });
   };
 
   if (isCustomAuthConfigLoading) return <LoadingPage />;
@@ -146,7 +150,7 @@ export const Login: React.FC<LoginProps> = ({
         {formToDisplay === "passwordReset" && (
           <PasswordResetForm
             displayLoginForm={displayLoginForm}
-            closeAuthenticationModal={afterUserIsLoggedIn}
+            closeAuthenticationModal={() => null}
           />
         )}
       </div>
