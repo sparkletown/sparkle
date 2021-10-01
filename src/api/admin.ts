@@ -127,7 +127,6 @@ export interface VenueInput_v2
   parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  parentId?: string;
 }
 
 export interface WorldFormInput {

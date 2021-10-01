@@ -31,26 +31,6 @@ export interface Room {
   template?: VenueTemplate;
 }
 
-// @debt We should end up with 1 canonical room type
-export interface RoomData_v2 {
-  type?: RoomType;
-  zIndex?: number;
-  title?: string;
-  subtitle?: string;
-  url?: string;
-  about?: string;
-  x_percent?: number;
-  y_percent?: number;
-  width_percent?: number;
-  height_percent?: number;
-  isEnabled?: boolean;
-  visibility?: RoomVisibility;
-  image_url?: string;
-  enterSound?: SoundConfigReference;
-  template?: VenueTemplate;
-  roomIndex?: number;
-}
-
 export type ParticipantWithUser<
   T extends Video.Participant = Video.Participant
 > = {

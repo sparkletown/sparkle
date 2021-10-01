@@ -136,7 +136,6 @@ export const Spaces: React.FC<SpacesProps> = ({
             onBackClick={clearSelectedRoom}
             onDelete={clearSelectedRoom}
             onEdit={clearSelectedRoom}
-            onClickHome={sidebarFooterProps.onClickHome}
           />
         ) : (
           <>

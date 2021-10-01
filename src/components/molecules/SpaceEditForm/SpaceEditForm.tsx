@@ -5,21 +5,20 @@ import { useAsync, useAsyncFn } from "react-use";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
+  SECTION_DEFAULT_COLUMNS_COUNT,
+  SECTION_DEFAULT_ROWS_COUNT,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -34,8 +33,8 @@ import { Toggler } from "components/atoms/Toggler";
 import "./SpaceEditForm.scss";
 
 interface SpaceEditFormProps {
-  room: RoomData_v2;
-  updatedRoom: RoomData_v2;
+  room: Room;
+  updatedRoom?: Room;
   roomIndex: number;
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
@@ -56,13 +55,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const venueId = useVenueId();
 
-  const { relatedVenues } = useRelatedVenues({ currentVenueId: venueId });
-
-  const roomVenueId = useMemo(
-    () =>
-      relatedVenues.find((venue) => room?.url?.endsWith(`/${venue.id}`))?.id,
-    [relatedVenues, room?.url]
-  );
+  const roomVenueId = room?.url?.split("/").pop();
 
   const {
     loading: isLoadingRoomVenue,
@@ -390,7 +383,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       Number of seats columns
                     </h4>
                     <input
-                      defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+                      defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
                       min={5}
                       name="venue.auditoriumColumns"
                       type="number"
@@ -409,7 +402,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       Number of seats rows
                     </h4>
                     <input
-                      defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+                      defaultValue={SECTION_DEFAULT_ROWS_COUNT}
                       name="venue.auditoriumRows"
                       type="number"
                       ref={register}

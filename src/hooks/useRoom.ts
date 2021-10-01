@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { Room, RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 
 import {
   enterVenue,
@@ -10,7 +10,7 @@ import {
 } from "utils/url";
 
 export interface UseRoomProps {
-  room?: Room | RoomData_v2;
+  room?: Room;
 }
 export const useRoom = ({ room }: UseRoomProps) => {
   const roomUrl = room?.url ?? "";
