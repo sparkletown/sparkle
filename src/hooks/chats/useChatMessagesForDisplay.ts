@@ -11,28 +11,19 @@ import {
   filterNewSchemaMessages,
   getMessageReplies,
   partitionMessagesFromReplies,
+  PartitionMessagesFromRepliesReturn,
 } from "utils/chat";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
-export const useChatMessages = <T extends ChatMessage>(
+export const useChatMessagesForDisplay = <T extends ChatMessage>(
   messagesRef: firebase.firestore.Query,
-  filter: (msg: T) => boolean
+  filter: (msg: T) => boolean = () => true
 ): [WithId<MessageToDisplay<T>>[], boolean] => {
-  const [chatMessages, isLoaded] = useChatMessagesRaw<T>(messagesRef);
-
-  const filteredMessages = useMemo(
-    () =>
-      chatMessages
-        .filter((message) => message.deleted !== true && filter(message))
-        .sort(chatSort),
-    [chatMessages, filter]
-  );
-
-  const { messages, allMessagesReplies } = useMemo(
-    () => partitionMessagesFromReplies<T>(filteredMessages),
-    [filteredMessages]
+  const [{ messages, allMessagesReplies }, isLoaded] = useChatMessages<T>(
+    messagesRef,
+    filter
   );
 
   const messagesToDisplay = useMemo(
@@ -54,6 +45,31 @@ export const useChatMessages = <T extends ChatMessage>(
   );
 
   return [messagesToDisplay, isLoaded];
+};
+
+export const useChatMessages = <T extends ChatMessage>(
+  messagesRef: firebase.firestore.Query,
+  filter: (msg: T) => boolean = () => true
+): [PartitionMessagesFromRepliesReturn<T>, boolean] => {
+  const [chatMessages, isLoaded] = useChatMessagesRaw<T>(messagesRef);
+
+  const filteredMessages = useMemo(
+    () =>
+      chatMessages
+        .filter(
+          (message) =>
+            isTruthy(message) && message.deleted !== true && filter(message)
+        )
+        .sort(chatSort),
+    [chatMessages, filter]
+  );
+
+  return [
+    useMemo(() => partitionMessagesFromReplies<T>(filteredMessages), [
+      filteredMessages,
+    ]),
+    isLoaded,
+  ];
 };
 
 export const useChatMessagesRaw = <T extends ChatMessage>(

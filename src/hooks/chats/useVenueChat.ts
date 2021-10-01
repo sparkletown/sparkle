@@ -16,7 +16,7 @@ import {
 import { buildMessage } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
 
-import { useChatMessages } from "hooks/chats/useChatMessages";
+import { useChatMessagesForDisplay } from "hooks/chats/useChatMessagesForDisplay";
 import { useUser } from "hooks/useUser";
 
 export const useVenueChat = (venueId?: string) => {
@@ -25,7 +25,7 @@ export const useVenueChat = (venueId?: string) => {
   const firestore = useFirestore();
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-  const [messagesToDisplay] = useChatMessages<ChatMessage>(
+  const [messagesToDisplay] = useChatMessagesForDisplay<ChatMessage>(
     firestore
       .collection("venues")
       .doc(venueId)

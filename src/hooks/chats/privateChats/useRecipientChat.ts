@@ -18,7 +18,7 @@ import { DisplayUser } from "types/User";
 import { buildMessage, pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";
 
-import { useChatMessages } from "hooks/chats/useChatMessages";
+import { useChatMessagesForDisplay } from "hooks/chats/useChatMessagesForDisplay";
 import { useUser } from "hooks/useUser";
 
 export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
@@ -26,7 +26,7 @@ export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   const { userId } = useUser();
   const firestore = useFirestore();
 
-  const [messagesToDisplay] = useChatMessages<PrivateChatMessage>(
+  const [messagesToDisplay] = useChatMessagesForDisplay<PrivateChatMessage>(
     firestore.collection("privatechats").doc(userId).collection("chats"),
     (message) =>
       message.toUser.id === recipient.id || message.fromUser.id === recipient.id

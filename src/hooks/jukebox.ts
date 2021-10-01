@@ -1,25 +1,15 @@
-import { useCallback, useMemo } from "react";
-import { isEqual } from "lodash";
+import { useCallback } from "react";
+import { useFirestore } from "reactfire";
 
 import { sendJukeboxMessage } from "api/jukebox";
 
 import { JukeboxMessage } from "types/chat";
 import { SendJukeboxMessage } from "types/jukebox";
 
-import {
-  buildMessage,
-  filterNewSchemaMessages,
-  partitionMessagesFromReplies,
-} from "utils/chat";
-import { WithId } from "utils/id";
-import { jukeboxMessagesSelector } from "utils/selectors";
-import { isTruthy } from "utils/types";
+import { buildMessage } from "utils/chat";
 
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { useChatMessages } from "hooks/chats/useChatMessagesForDisplay";
 import { useUser } from "hooks/useUser";
-
-const noMessages: WithId<JukeboxMessage>[] = [];
 
 export const useJukeboxChat = ({
   venueId,
@@ -65,33 +55,15 @@ const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
 };
 
 const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
-  useConnectVenueJukeboxMessages(venueId, tableId);
+  const firestore = useFirestore();
 
-  const jukeboxMessages =
-    filterNewSchemaMessages<JukeboxMessage>(
-      useSelector(jukeboxMessagesSelector, isEqual)
-    ) ?? noMessages;
-
-  const { messages } = useMemo(
-    () => partitionMessagesFromReplies(jukeboxMessages),
-    [jukeboxMessages]
+  const [{ messages }] = useChatMessages<JukeboxMessage>(
+    firestore
+      .collection("venues")
+      .doc(venueId)
+      .collection("jukeboxMessages")
+      .orderBy("timestamp", "asc")
   );
-  return useMemo(() => messages.filter(isTruthy), [messages]);
-};
 
-const useConnectVenueJukeboxMessages = (
-  venueId?: string,
-  tableId?: string | null
-) => {
-  useFirestoreConnect(
-    venueId && tableId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "jukeboxMessages" }],
-          orderBy: ["timestamp", "asc"],
-          storeAs: "venueJukeboxMessages",
-        }
-      : undefined
-  );
+  return messages;
 };

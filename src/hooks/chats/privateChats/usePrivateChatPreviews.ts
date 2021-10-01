@@ -5,7 +5,7 @@ import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
 import { chatSort, getPreviewChatMessage } from "utils/chat";
 
-import { useChatMessagesRaw } from "hooks/chats/useChatMessages";
+import { useChatMessagesRaw } from "hooks/chats/useChatMessagesForDisplay";
 import { useUser } from "hooks/useUser";
 
 export const usePrivateChatPreviews = () => {
