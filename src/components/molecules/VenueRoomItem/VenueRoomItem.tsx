@@ -60,10 +60,13 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const roomUrl = window.origin + venueInsideUrl(roomValues.venueName);
+    const roomUrl =
+      window.origin +
+      venueInsideUrl(roomValues.venueName.replace(/\W/g, "").toLowerCase());
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
+      about: "",
       isEnabled: true,
       image_url: DEFAULT_VENUE_LOGO,
       url: roomUrl,
@@ -76,7 +79,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-    await createVenue_v2({ ...venueData, worldId }, user);
+    await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
   }, [getValues, hideModal, template, user, venueId, worldId]);

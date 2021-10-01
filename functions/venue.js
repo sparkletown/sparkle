@@ -297,9 +297,6 @@ const createVenueData_v2 = (data, context) => {
         description: data.description,
       },
     },
-    theme: {
-      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-    },
     host: {
       icon: data.logoImageUrl,
     },
@@ -310,6 +307,7 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    parentId: data.parentId || "",
     worldId: data.worldId,
   };
 
