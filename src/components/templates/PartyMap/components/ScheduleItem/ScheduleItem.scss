@@ -35,7 +35,7 @@
   }
 
   &--primary {
-    background-color: rgba($primary, 0.2);
+    background-color: rgba($primary-accent--under, 0.2);
   }
 
   &__event-section {
@@ -46,8 +46,8 @@
 
   &__event-live-label {
     padding: 5px 15px;
-    background: $primary--live;
-    box-shadow: 0px 0px 8px rgba($primary, 0.8);
+    background: $primary-accent--under;
+    box-shadow: 0px 0px 8px rgba($primary-accent--under, 0.8);
     border-radius: $border-radius--xl;
   }
 
