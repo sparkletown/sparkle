@@ -28,10 +28,6 @@
 
   venue: {
     //  id: undefined,
-    minRow: 0,
-    maxRow: 9,
-    minCol: 0,
-    maxCol: 9,
   },
 
   chat: {
