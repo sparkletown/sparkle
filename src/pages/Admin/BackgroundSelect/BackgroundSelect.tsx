@@ -16,14 +16,12 @@ export interface BackgroundSelectProps {
   worldId: string;
   mapBackgrounds: string[];
   isLoadingBackgrounds: boolean;
-  error: Error | undefined;
 }
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   venueName,
   mapBackgrounds,
   isLoadingBackgrounds,
-  error,
   worldId,
 }) => {
   const { user } = useUser();
@@ -90,16 +88,6 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         </div>
 
         {isLoadingBackgrounds && <div>Loading maps...</div>}
-
-        {error && (
-          <>
-            <div>
-              The preset map backgrounds could not be fetched. Please, refresh
-              the page or upload a custom map background.
-            </div>
-            <div>Error: {error.message}</div>
-          </>
-        )}
       </>
     </div>
   );

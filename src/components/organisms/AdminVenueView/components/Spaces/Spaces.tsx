@@ -199,13 +199,23 @@ export const Spaces: React.FC<SpacesProps> = ({
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect
-                  isLoadingBackgrounds={isLoadingBackgrounds}
-                  mapBackgrounds={mapBackgrounds}
-                  venueName={venue.name}
-                  error={errorFetchBackgrounds}
-                  worldId={venue.worldId}
-                />
+                <>
+                  <BackgroundSelect
+                    isLoadingBackgrounds={isLoadingBackgrounds}
+                    mapBackgrounds={mapBackgrounds}
+                    venueName={venue.name}
+                    worldId={venue.worldId}
+                  />
+                  {errorFetchBackgrounds && (
+                    <>
+                      <div>
+                        The preset map backgrounds could not be fetched. Please,
+                        refresh the page or upload a custom map background.
+                      </div>
+                      <div>Error: {errorFetchBackgrounds.message}</div>
+                    </>
+                  )}
+                </>
               )}
             </div>
             <div>
