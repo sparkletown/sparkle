@@ -27,9 +27,54 @@ import { isTruthy } from "utils/types";
 import { useUser } from "hooks/useUser";
 
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
+export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
+  const { privateChatMessages } = usePrivateChatMessages();
+
+  const filteredMessages = useMemo(
+    () =>
+      privateChatMessages
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            (message.toUser.id === recipient.id ||
+              message.fromUser.id === recipient.id)
+        )
+        .sort(chatSort),
+    [privateChatMessages, recipient.id]
+  );
+
+  const { messages, allMessagesReplies } = useMemo(
+    () => partitionMessagesFromReplies(filteredMessages),
+    [filteredMessages]
+  );
+
+  return useMemo(
+    () =>
+      messages
+        .map((message) => {
+          const messageReplies = getMessageReplies<PrivateChatMessage>({
+            messageId: message.id,
+            allReplies: allMessagesReplies,
+          }).filter(isTruthy);
+
+          return { ...message, replies: messageReplies };
+        })
+        .filter(isTruthy),
+    [allMessagesReplies, messages]
+  );
+};
 
 export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
-  const { privateChatMessages } = usePrivateChatMessages();
+  const chatActions = useRecipientChatActions(recipient);
+  const messagesToDisplay = useRecipientChatMessages(recipient);
+
+  return {
+    ...chatActions,
+    messagesToDisplay,
+  };
+};
+
+const useRecipientChatActions = (recipient: WithId<DisplayUser>) => {
   const { userWithId } = useUser();
 
   const sendMessageToSelectedRecipient: SendMessage = useCallback(
@@ -80,45 +125,10 @@ export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
     [recipient, userWithId]
   );
 
-  const filteredMessages = useMemo(
-    () =>
-      privateChatMessages
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            (message.toUser.id === recipient.id ||
-              message.fromUser.id === recipient.id)
-        )
-        .sort(chatSort),
-    [privateChatMessages, recipient.id]
-  );
-
-  const { messages, allMessagesReplies } = useMemo(
-    () => partitionMessagesFromReplies(filteredMessages),
-    [filteredMessages]
-  );
-
-  const messagesToDisplay = useMemo(
-    () =>
-      messages
-        .map((message) => {
-          const messageReplies = getMessageReplies<PrivateChatMessage>({
-            messageId: message.id,
-            allReplies: allMessagesReplies,
-          }).filter(isTruthy);
-
-          return { ...message, replies: messageReplies };
-        })
-        .filter(isTruthy),
-    [allMessagesReplies, messages]
-  );
-
   return {
     sendMessageToSelectedRecipient,
-    deleteMessage,
-    markMessageRead,
     sendThreadReply,
-
-    messagesToDisplay,
+    markMessageRead,
+    deleteMessage,
   };
 };

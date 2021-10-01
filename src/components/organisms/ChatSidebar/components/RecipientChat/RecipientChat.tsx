@@ -6,8 +6,8 @@ import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
+import { useChatSidebarControls } from "hooks/chats/useChatSidebarControls";
 
 import { Chatbox } from "components/molecules/Chatbox";
 

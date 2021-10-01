@@ -30,18 +30,12 @@ import { useUser } from "hooks/useUser";
 const noMessages: WithId<VenueChatMessage>[] = [];
 
 export const useVenueChat = (venueId?: string) => {
+  const chatActions = useChatActions(venueId);
   const messagesToDisplay = useChatMessages(venueId);
 
-  const { sendMessage, deleteMessage, sendThreadReply } = useChatActions(
-    venueId
-  );
-
   return {
+    ...chatActions,
     messagesToDisplay,
-
-    sendMessage,
-    deleteMessage,
-    sendThreadReply,
   };
 };
 

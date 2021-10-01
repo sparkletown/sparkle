@@ -4,7 +4,7 @@ import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
-import { useVenueChat } from "hooks/chats/venueChat";
+import { useVenueChat } from "hooks/chats/useVenueChat";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";

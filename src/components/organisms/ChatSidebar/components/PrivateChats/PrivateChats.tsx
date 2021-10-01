@@ -4,8 +4,8 @@ import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
+import { useChatSidebarControls } from "hooks/chats/useChatSidebarControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
