@@ -23,7 +23,7 @@ import {
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
@@ -128,15 +128,14 @@ export const Spaces: React.FC<SpacesProps> = ({
     <AdminPanel className="Spaces">
       <AdminSidebar>
         {selectedRoom ? (
-          <EditRoomForm
-            venueVisibility={venue?.roomVisibility}
+          <SpaceEditForm
+            venueVisibility={venue.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
             onBackClick={clearSelectedRoom}
             onDelete={clearSelectedRoom}
             onEdit={clearSelectedRoom}
-            onClickHome={sidebarFooterProps.onClickHome}
           />
         ) : (
           <>
