@@ -22,22 +22,22 @@ export type BaseChatMessage = {
   isQuestion?: boolean;
 };
 
-export type PrivateChatMessage = BaseChatMessage & {
+export interface PrivateChatMessage extends BaseChatMessage {
   toUser: WithId<DisplayUser>;
   isRead?: boolean;
-};
+}
 
-export type VenueChatMessage = BaseChatMessage;
+export interface VenueChatMessage extends BaseChatMessage {}
 
-export type PollMessage = BaseChatMessage & {
+export interface PollMessage extends BaseChatMessage {
   type: ChatMessageType.poll;
   poll: PollValues;
   votes: PollVote[];
-};
+}
 
-export type JukeboxMessage = BaseChatMessage & {
+export interface JukeboxMessage extends BaseChatMessage {
   tableId: string;
-};
+}
 
 export type PollVoteBase = {
   questionId: number;

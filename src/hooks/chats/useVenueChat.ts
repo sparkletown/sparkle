@@ -30,8 +30,8 @@ import { useUser } from "hooks/useUser";
 const noMessages: WithId<VenueChatMessage>[] = [];
 
 export const useVenueChat = (venueId?: string) => {
-  const chatActions = useChatActions(venueId);
-  const messagesToDisplay = useChatMessages(venueId);
+  const chatActions = useVenueChatActions(venueId);
+  const messagesToDisplay = useVenueChatMessages(venueId);
 
   return {
     ...chatActions,
@@ -39,7 +39,7 @@ export const useVenueChat = (venueId?: string) => {
   };
 };
 
-const useChatActions = (venueId?: string) => {
+const useVenueChatActions = (venueId?: string) => {
   const { userWithId } = useUser();
 
   const sendMessage: SendMessage = useCallback(
@@ -86,7 +86,16 @@ const useChatActions = (venueId?: string) => {
   };
 };
 
-const useChatMessages = (venueId?: string) => {
+// const useChatMessages = <T extends BaseChatMessage>(
+//   messagesRef: CollectionReference<DocumentData>,
+// ): MessageToDisplay<T>[] => {
+//   const firestore = useFirestore();
+//
+//   useFirestoreConnect(firestoreConnectParam);
+//
+// };
+
+const useVenueChatMessages = (venueId?: string) => {
   useConnectVenueChatMessages(venueId);
 
   const chatMessages =

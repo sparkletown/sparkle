@@ -31,7 +31,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     .collection("venues")
     .doc(venueId)
     .collection("sections")
-    .withConverter(withIdConverter);
+    .withConverter(withIdConverter<AuditoriumSection>());
 
   const {
     data: sections = ALWAYS_EMPTY_ARRAY,
