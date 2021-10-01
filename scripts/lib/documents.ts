@@ -36,6 +36,16 @@ export const getSeatedSectionUserRef: (
     .collection("seatedSectionUsers")
     .doc(userId);
 
+export const getRecentSeatedUsersUserRef: (
+  options: SimContext<"venueId"> & { userId: string }
+) => Promise<DocumentReference> = async ({ venueId, userId }) =>
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("recentSeatedUsers")
+    .doc(userId);
+
 export const getSeatedTableUserRef: (
   options: SimContext<"venueId"> & { userId: string }
 ) => Promise<DocumentReference> = async ({ venueId, userId }) =>

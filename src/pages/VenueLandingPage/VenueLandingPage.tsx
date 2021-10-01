@@ -48,7 +48,7 @@ export const VenueLandingPage: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton withSchedule withPhotobooth>
+    <WithNavigationBar hasBackButton withSchedule>
       <VenueLandingPageContent venue={venue} />
     </WithNavigationBar>
   );
