@@ -27,6 +27,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
+import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
@@ -75,9 +76,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
-  const [filterRelatedEvents, setFilterRelatedEvents] = useState(
-    venue.id !== sovereignVenue?.id
-  );
+  const isNotSovereignVenue = venue.id !== sovereignVenue?.id;
+
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
@@ -229,43 +230,39 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
-  const isNotSovereignVenue = venue.id !== sovereignVenue?.id;
-  const breadcrumbSovereignVenueClasses = classNames(
-    "NavBarScheduleBreadcrumb__btn",
-    {
-      "NavBarScheduleBreadcrumb__btn--disabled": filterRelatedEvents,
-    }
+  const breadcrumbedLocations = useMemo(() => {
+    if (!sovereignVenue) return [];
+
+    const locations = [{ key: sovereignVenue.id, name: sovereignVenue.name }];
+
+    if (isNotSovereignVenue)
+      locations.push({ key: venue.id, name: venue.name });
+
+    return locations;
+  }, [isNotSovereignVenue, sovereignVenue, venue.id, venue.name]);
+
+  const onBreacrumbsSelect = useCallback(
+    (key: string) => {
+      setFilterRelatedEvents(key === venue.id && isNotSovereignVenue);
+    },
+    [venue.id, isNotSovereignVenue]
   );
 
-  const breadcrumbVenueClasses = classNames("NavBarScheduleBreadcrumb__btn", {
-    "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
-  });
-
   return (
-    <div className="NavBarSchedule__wrapper">
-      <div className={containerClasses}>
+    <div className={containerClasses}>
+      <div className="NavBarSchedule__wrapper">
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
         {/* {<ScheduleVenueDescription />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
-        <div className="NavBarSchedule__breadcrumb">
-          <label>Events on: </label>
-          <button
-            onClick={() => setFilterRelatedEvents(false)}
-            className={breadcrumbSovereignVenueClasses}
-          >
-            {sovereignVenue?.name}
-          </button>
-          /
-          {isNotSovereignVenue && (
-            <button
-              onClick={() => setFilterRelatedEvents(true)}
-              className={breadcrumbVenueClasses}
-            >
-              {venue?.name}
-            </button>
-          )}
-        </div>
+        {venue && sovereignVenue && (
+          <Breadcrumbs
+            containerClassName="NavBarSchedule__breadcrumbs"
+            label="Events on"
+            onSelect={onBreacrumbsSelect}
+            locations={breadcrumbedLocations}
+          />
+        )}
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"
