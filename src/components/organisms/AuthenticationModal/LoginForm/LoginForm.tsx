@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
+import {} from "@fortawesome/free-regular-svg-icons";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -10,6 +11,10 @@ import { useSelector } from "hooks/useSelector";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import fIcon from "assets/icons/facebook-social-icon.svg";
+import gIcon from "assets/icons/google-social-icon.svg";
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
@@ -96,8 +101,15 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         </span>
       </div>
 
-      <h2>Log in</h2>
-
+      <h3>Log in to your account</h3>
+      {errors.backend && (
+        <div className="auth-submit-error">
+          <span>
+            Oops! Something went wrong. Please try again or use another method
+            to create an account
+          </span>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         onChange={clearBackendErrors}
@@ -106,8 +118,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="email"
-            className="input-block input-centered"
-            placeholder="Your email"
+            className="input-block input-centered auth-input"
+            placeholder="Your email address"
             ref={register({ required: true })}
           />
           {errors.email && errors.email.type === "required" && (
@@ -122,7 +134,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="password"
-            className="input-block input-centered"
+            className="input-block input-centered auth-input"
             type="password"
             placeholder="Password"
             ref={register({
@@ -142,13 +154,31 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           <span className="input-error">{errors.backend.message}</span>
         )}
 
-        <input
-          className="btn btn-primary btn-block btn-centered"
+        <ButtonNG
+          className="auth-input"
+          variant="primary"
           type="submit"
-          value="Log in"
           disabled={!formState.isValid}
-        />
+        >
+          Log in
+        </ButtonNG>
       </form>
+
+      <div className="social-auth-container">
+        <span>or</span>
+        <ButtonNG className="auth-input" type="submit">
+          <div className="social-icon">
+            <img src={gIcon} alt="asd" />
+          </div>
+          Log in with Google
+        </ButtonNG>
+        <ButtonNG className="auth-input" type="submit">
+          <div className="social-icon">
+            <img src={fIcon} alt="asd" />
+          </div>
+          Log in with Facebook
+        </ButtonNG>
+      </div>
 
       <div className="secondary-action">
         {`Forgot your password?`}

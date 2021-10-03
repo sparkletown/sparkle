@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 $profile-picture-size--sm: 40px;
-$profile-picture-size--lg: 80px;
+$profile-picture-size--lg: 116px;
 
 $upload-button-max-width: 300px;
 
@@ -50,6 +50,7 @@ $upload-button-max-width: 300px;
   &__image {
     width: $profile-picture-size--lg;
     height: $profile-picture-size--lg;
+    margin-bottom: -($spacing--xl);
     border: 3px solid $white;
 
     &--small {
