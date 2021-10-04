@@ -23,5 +23,25 @@
         display: inline-block;
       }
     }
+
+    &__wrap {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    &__labelled {
+      display: flex;
+      align-items: center;
+      margin-right: $spacing--sm;
+
+      input {
+        width: 100px;
+        display: inline-block;
+      }
+
+      label {
+        margin: 0 0 0 $spacing--sm;
+      }
+    }
   }
 }

@@ -194,22 +194,28 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className="input-group">
-                <label htmlFor="duration_hours">Duration</label>
-                <div className="input-group__flex">
-                  <input
-                    id="duration_hours"
-                    name="duration_hours"
-                    className="input-group__modal-input"
-                    placeholder="hours"
-                    ref={register}
-                  />
-                  <input
-                    id="duration_minutes"
-                    name="duration_minutes"
-                    className="input-group__modal-input"
-                    placeholder="minutes"
-                    ref={register}
-                  />
+                <label>Duration</label>
+                <div className="input-group__wrap">
+                  <div className="input-group__labelled">
+                    <input
+                      id="duration_hours"
+                      name="duration_hours"
+                      className="input-group__modal-input"
+                      placeholder="hours"
+                      ref={register}
+                    />
+                    <label htmlFor="duration_hours">hour(s)</label>
+                  </div>
+                  <div className="input-group__labelled">
+                    <input
+                      id="duration_minutes"
+                      name="duration_minutes"
+                      className="input-group__modal-input"
+                      placeholder="minutes"
+                      ref={register}
+                    />
+                    <label htmlFor="duration_minutes">minutes</label>
+                  </div>
                 </div>
 
                 <div className="input-group__flex">
