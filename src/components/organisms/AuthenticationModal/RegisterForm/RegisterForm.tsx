@@ -26,7 +26,7 @@ interface PropsType {
   displayLoginForm: () => void;
   displayPasswordResetForm: () => void;
   afterUserIsLoggedIn?: (data: LoginFormData) => void;
-  closeAuthenticationModal: () => void;
+  closeAuthenticationModal?: () => void;
 }
 
 interface RegisterFormData {
@@ -49,7 +49,6 @@ const sparkleTermsAndConditions = {
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
-  displayPasswordResetForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
 }) => {
@@ -128,9 +127,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         });
       }
 
-      afterUserIsLoggedIn && afterUserIsLoggedIn(data);
+      afterUserIsLoggedIn?.(data);
 
-      closeAuthenticationModal();
+      closeAuthenticationModal?.();
 
       const accountProfileUrl = `/account/profile${
         venue.id ? `?venueId=${venue.id}` : ""

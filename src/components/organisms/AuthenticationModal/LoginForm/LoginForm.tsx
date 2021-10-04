@@ -13,7 +13,7 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
-  closeAuthenticationModal: () => void;
+  closeAuthenticationModal?: () => void;
   afterUserIsLoggedIn?: (data: LoginFormData) => void;
 }
 
@@ -60,9 +60,9 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     try {
       await signIn(data);
 
-      afterUserIsLoggedIn && afterUserIsLoggedIn(data);
+      afterUserIsLoggedIn?.(data);
 
-      closeAuthenticationModal();
+      closeAuthenticationModal?.();
     } catch (error) {
       if (error.response?.status === 404) {
         setError(

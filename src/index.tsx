@@ -27,7 +27,7 @@ import { FIREBASE_CONFIG } from "settings";
 
 import { store } from "store";
 
-import { identifyMixpanelEmail, initMixpanel } from "utils/mixpanel";
+import { identifyMixpanelUser, initMixpanel } from "utils/mixpanel";
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
 
@@ -206,7 +206,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    identifyMixpanelEmail(email);
+    identifyMixpanelUser(displayName, email);
   }, [auth]);
 
   if (!isLoaded(auth)) return <LoadingPage />;

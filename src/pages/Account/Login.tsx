@@ -136,22 +136,17 @@ export const Login: React.FC<LoginProps> = ({
             displayLoginForm={displayLoginForm}
             displayPasswordResetForm={displayPasswordResetForm}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
-            closeAuthenticationModal={() => null}
           />
         )}
         {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
             displayPasswordResetForm={displayPasswordResetForm}
-            closeAuthenticationModal={() => null}
             afterUserIsLoggedIn={afterUserIsLoggedIn}
           />
         )}
         {formToDisplay === "passwordReset" && (
-          <PasswordResetForm
-            displayLoginForm={displayLoginForm}
-            closeAuthenticationModal={() => null}
-          />
+          <PasswordResetForm displayLoginForm={displayLoginForm} />
         )}
       </div>
     </div>
