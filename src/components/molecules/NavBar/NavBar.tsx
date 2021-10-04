@@ -6,11 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
-import {
-  DEFAULT_SHOW_SCHEDULE,
-  PLAYA_VENUE_ID,
-  SPARKLE_PHOTOBOOTH_URL,
-} from "settings";
+import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -56,13 +52,11 @@ const navBarScheduleClassName = "NavBar__schedule-dropdown";
 export interface NavBarPropsType {
   hasBackButton?: boolean;
   withSchedule?: boolean;
-  withPhotobooth?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton,
   withSchedule,
-  withPhotobooth,
 }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
@@ -174,10 +168,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []
   );
 
-  const handlePhotoboothRedirect = () => {
-    openUrlUsingRouter(SPARKLE_PHOTOBOOTH_URL);
-  };
-
   if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
@@ -228,15 +218,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
               <VenuePartygoers />
             </div>
-
-            {withPhotobooth && (
-              <div
-                className="NavBar__photobooth-button nav-schedule"
-                onClick={handlePhotoboothRedirect}
-              >
-                <p className="NavBar__photobooth-title">Photobooth</p>
-              </div>
-            )}
 
             {!user && <NavBarLogin />}
 
