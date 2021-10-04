@@ -21,4 +21,10 @@ $room-icon-size: 34px;
     border-radius: $border-radius--xs;
     box-shadow: 0 0 0 3px $primary;
   }
+
+  &__center-content {
+    margin-top: $spacing--lg;
+    display: flex;
+    justify-content: center;
+  }
 }
