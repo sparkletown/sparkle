@@ -106,6 +106,7 @@ export type VenueInput = AdvancedVenueInput &
     radioStations?: string;
     showNametags?: UsernameVisibility;
     showUserStatus?: boolean;
+    hasSamlLoginEnabled?: boolean;
   };
 
 export interface VenueInput_v2
@@ -390,7 +391,6 @@ export const updateVenue_v2 = async (
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
-
   return firebase
     .functions()
     .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)

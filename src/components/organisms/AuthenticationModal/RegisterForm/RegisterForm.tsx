@@ -323,21 +323,23 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         </ButtonNG>
       </form>
 
-      <div className="social-auth-container">
-        <span>or</span>
-        <ButtonNG className="auth-input" type="submit">
-          <div className="social-icon">
-            <img src={gIcon} alt="asd" />
-          </div>
-          Sign up with Google
-        </ButtonNG>
-        <ButtonNG className="auth-input" type="submit">
-          <div className="social-icon">
-            <img src={fIcon} alt="asd" />
-          </div>
-          Sign up with Facebook
-        </ButtonNG>
-      </div>
+      {venue.hasSamlLoginEnabled && (
+        <div className="social-auth-container">
+          <span>or</span>
+          <ButtonNG className="auth-input" type="submit">
+            <div className="social-icon">
+              <img src={gIcon} alt="asd" />
+            </div>
+            Sign up with Google
+          </ButtonNG>
+          <ButtonNG className="auth-input" type="submit">
+            <div className="social-icon">
+              <img src={fIcon} alt="asd" />
+            </div>
+            Sign up with Facebook
+          </ButtonNG>
+        </div>
+      )}
 
       <div className="secondary-action">
         Already have an account?

@@ -134,6 +134,7 @@ export interface Venue_v2_AdvancedConfig {
   showRadio?: boolean;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
+  hasSamlLoginEnabled?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -217,6 +218,7 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
+  hasSamlLoginEnabled?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

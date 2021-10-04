@@ -88,6 +88,7 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     .notRequired(),
   showRadio: Yup.bool().notRequired(),
   showUserStatus: Yup.bool().notRequired(),
+  hasSamlLoginEnabled: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
@@ -120,9 +121,9 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
+      hasSamlLoginEnabled: venue.hasSamlLoginEnabled,
     },
   });
-
   const { user } = useUser();
 
   const values = watch();
@@ -186,6 +187,21 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         {errors.radioStations && (
           <span className="input-error">{errors.radioStations.message}</span>
         )}
+      </Form.Group>
+    </ToggleElement>
+  );
+
+  const renderSamlLoginToggle = () => (
+    <ToggleElement
+      forwardRef={register}
+      isChecked={values.hasSamlLoginEnabled}
+      name="hasSamlLoginEnabled"
+      title="Social Login"
+    >
+      <Form.Group>
+        <Form.Label>
+          Users can login using Google/Facebook/Okta social networks
+        </Form.Label>
       </Form.Group>
     </ToggleElement>
   );
@@ -396,6 +412,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         />
 
         {renderRadioToggle()}
+
+        {renderSamlLoginToggle()}
 
         {renderUserStatusesToggle()}
 
