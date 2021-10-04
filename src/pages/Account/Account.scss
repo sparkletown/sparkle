@@ -40,7 +40,7 @@ $page-max-width: 1240px;
   }
   &.checkbox-checked {
     &:before {
-      background-color: $primaryColor;
+      background-color: $primary--over;
       box-shadow: 0 0 0 2px opaque-white(0);
       background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;

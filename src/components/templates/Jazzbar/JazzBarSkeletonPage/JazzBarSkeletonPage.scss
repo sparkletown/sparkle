@@ -56,7 +56,7 @@
     &:active,
     &:focus {
       // !important is used to overwrite some bootstrap css elements
-      background: $primaryColor !important;
+      background: $primary--over !important;
       color: $content--under;
     }
   }

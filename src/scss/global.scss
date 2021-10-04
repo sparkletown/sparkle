@@ -180,7 +180,7 @@ button.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: $primaryColor;
+  background-color: $primary--over;
   transition: all 400ms $transition-function;
   color: $content--under;
   transform: translateY(0);
@@ -380,7 +380,7 @@ a,
   text-decoration: underline;
 
   &:hover {
-    color: $primaryColor;
+    color: $primary--over;
   }
 }
 
@@ -409,7 +409,7 @@ h4 {
 }
 
 .primary {
-  color: $primaryColor;
+  color: $primary--over;
 }
 
 .modal-backdrop {
@@ -711,7 +711,7 @@ span.link {
   text-decoration: underline;
 
   &:hover {
-    color: $primaryColor;
+    color: $primary--over;
   }
 }
 
