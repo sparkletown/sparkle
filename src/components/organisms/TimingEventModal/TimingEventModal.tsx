@@ -95,7 +95,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   return (
     <>
-      <Modal show={show} onHide={onHide} className="TimingEventModal">
+      <Modal
+        show={show}
+        onHide={onHide}
+        className="TimingEventModal"
+        backdrop="static"
+      >
         <Modal.Body>
           <div className="form-container">
             <h2>Add experience</h2>
@@ -255,6 +260,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   />
                 )}
               </div>
+              <input
+                className="btn btn-secondary btn-small"
+                onClick={onHide}
+                value="Cancel"
+              />
             </form>
           </div>
         </Modal.Body>
