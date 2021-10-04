@@ -24,7 +24,9 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 export const ReactionPage: React.FC = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
-  const { messagesToDisplay: venueChatMessages } = useVenueChat(venueId);
+  const {
+    messagesToDisplay: [venueChatMessages],
+  } = useVenueChat(venueId);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(

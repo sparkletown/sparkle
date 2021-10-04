@@ -86,7 +86,7 @@ export interface ChatActions {
   sendThreadReply: SendChatReply;
 }
 
-export interface InfiniteChatActions {
+export interface InfiniteScrollProps {
   allMessagesCount: number;
   loadMore: () => void;
 }

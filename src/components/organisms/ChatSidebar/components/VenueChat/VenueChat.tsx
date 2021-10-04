@@ -5,7 +5,6 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useRenderInfiniteScrollChatMessages } from "hooks/chats/util/useRenderInfiniteScrollChatMessages";
 import { useVenueChat } from "hooks/chats/venue/useVenueChat";
 import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
@@ -21,16 +20,11 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const {
     sendMessage,
     deleteMessage,
-    messagesToDisplay: allMessagesToDisplay,
+    messagesToDisplay: [messagesToDisplay, infiniteProps],
     sendThreadReply,
   } = useVenueChat(venue.id);
 
   const canDeleteMessages = useCanDeleteVenueChatMessages(venue);
-
-  const [
-    messagesToDisplay,
-    infiniteActions,
-  ] = useRenderInfiniteScrollChatMessages(allMessagesToDisplay);
 
   return (
     <Chatbox
@@ -41,7 +35,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
       sendThreadReply={sendThreadReply}
       deleteMessage={canDeleteMessages ? deleteMessage : undefined}
       containerClassName="venue-chat"
-      {...infiniteActions}
+      {...infiniteProps}
     />
   );
 };

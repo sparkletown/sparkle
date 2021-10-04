@@ -6,7 +6,7 @@ import { isEqual } from "lodash";
 import {
   ChatActions,
   ChatOptionType,
-  InfiniteChatActions,
+  InfiniteScrollProps,
   MessageToDisplay,
 } from "types/chat";
 import { ContainerClassName } from "types/utility";
@@ -29,7 +29,7 @@ import "./Chatbox.scss";
 export interface ChatboxProps
   extends ContainerClassName,
     ChatActions,
-    InfiniteChatActions {
+    InfiniteScrollProps {
   messages: WithId<MessageToDisplay>[];
   displayPoll?: boolean;
 }

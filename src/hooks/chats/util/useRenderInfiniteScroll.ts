@@ -3,13 +3,13 @@ import { usePrevious } from "react-use";
 
 import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
 
-import { ChatMessage, InfiniteChatActions, MessageToDisplay } from "types/chat";
+import { ChatMessage, InfiniteScrollProps, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
-export const useRenderInfiniteScrollChatMessages = <T extends ChatMessage>(
+export const useRenderInfiniteScroll = <T extends ChatMessage>(
   messages: WithId<MessageToDisplay<T>>[]
-): [WithId<MessageToDisplay<T>>[], InfiniteChatActions] => {
+): [WithId<MessageToDisplay<T>>[], InfiniteScrollProps] => {
   const getNextMessagesRenderCount = useCallback(
     (currentCount: number) =>
       Math.min(currentCount + CHATBOX_NEXT_RENDER_SIZE, messages.length),
@@ -32,7 +32,7 @@ export const useRenderInfiniteScrollChatMessages = <T extends ChatMessage>(
       increaseRenderedMessagesCount();
   }, [increaseRenderedMessagesCount, messages.length, prevLength]);
 
-  const actions: InfiniteChatActions = useMemo(
+  const infiniteProps: InfiniteScrollProps = useMemo(
     () => ({
       loadMore: increaseRenderedMessagesCount,
       allMessagesCount: messages.length,
@@ -40,5 +40,5 @@ export const useRenderInfiniteScrollChatMessages = <T extends ChatMessage>(
     [increaseRenderedMessagesCount, messages.length]
   );
 
-  return [messagesToRender, actions];
+  return [messagesToRender, infiniteProps];
 };
