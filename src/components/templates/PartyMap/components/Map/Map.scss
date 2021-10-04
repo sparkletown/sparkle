@@ -2,6 +2,7 @@
 
 $sand: #937c63;
 $border-radius: 28px;
+$avatarpulse-box-shadow-color: var(--primary-accent--under-65A);
 
 .party-map-map-component {
   display: flex;
@@ -140,17 +141,17 @@ $border-radius: 28px;
     0% {
       background-color: $primary-accent--under;
       box-shadow: 0 0 0 3px $primary-accent--under,
-        0 0 20px rgba($primary-accent--under, 0.65);
+        0 0 20px $avatarpulse-box-shadow-color;
     }
     50% {
       background-color: $primary--lighten-10pp;
       box-shadow: 0 0 0 3px $primary-accent--under,
-        0 0 20px 10px rgba($primary-accent--under, 0.65);
+        0 0 20px 10px $avatarpulse-box-shadow-color;
     }
     100% {
       background-color: $primary-accent--under;
       box-shadow: 0 0 0 3px $primary-accent--under,
-        0 0 20px rgba($primary-accent--under, 0.65);
+        0 0 20px $avatarpulse-box-shadow-color;
     }
   }
 

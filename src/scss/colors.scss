@@ -2,20 +2,33 @@ $colors-enum: (
   primary: #7c46fb,
 );
 $shades-enum: (5, 10, 14, 20, 50);
+$alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
 
 :root {
   --primary-color-deprecated: #f6e652;
-  --primary-content--under: #000000;
-  --primary-content--under-rgb: 0, 0, 0;
-  --primary-content--over: #ffffff;
-  --primary-content--over-rgb: 255, 255, 255;
 
+  --primary-content--under: #000000;
+  --primary-content--over: #ffffff;
   --primary-accent--over: #ffffff;
+
+  // TODO: add util function from hex to rgb
+  --primary-content--under-rgb: 0, 0, 0;
+  --primary-content--over-rgb: 255, 255, 255;
+  --primary-accent--under-rbg: 124, 70, 251;
+
   @each $colorName, $color in $colors-enum {
     @each $shade in $shades-enum {
       --#{$colorName}--darken-#{$shade}pp: #{darken($color, $shade * 1%)};
       --#{$colorName}--lighten-#{$shade}pp: #{lighten($color, $shade * 1%)};
     }
+
     --#{$colorName}-accent--under: #{$color};
+
+    @each $aphpa in $alphas-enum {
+      --#{$colorName}-accent--under-#{$aphpa*100}A: #{rgba(
+          var(--primary-accent--under-rbg),
+          $aphpa
+        )};
+    }
   }
 }
