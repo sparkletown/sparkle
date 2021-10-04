@@ -1,7 +1,8 @@
 @import "scss/constants";
 
 $header-height: 45px;
-
+$chat-button-narrow-width: 50px;
+$unread-dot-right-spacing: 20px;
 // NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
 $media-width--mobile-min: 768px;
 $media-width--mobile-max: 1024px;
@@ -26,7 +27,7 @@ $media-width--mobile-max: 1024px;
     box-shadow: -10px 0 40px opaque-black(0.5);
 
     & .chat-sidebar__controller {
-      width: auto;
+      width: $chat-button-narrow-width;
     }
   }
 
@@ -80,7 +81,7 @@ $media-width--mobile-max: 1024px;
     padding: 0 $spacing--sm;
     width: 100px;
     height: 55px;
-    margin-top: 10px;
+    margin-top: $spacing--md;
     border-radius: $border-radius--lg 0 0 $border-radius--lg;
 
     display: flex;
@@ -114,13 +115,12 @@ $media-width--mobile-max: 1024px;
 
     &--new-message {
       background-color: $red;
-      height: 12px;
-      width: 12px;
+      @include square-size($spacing--md);
       border: 2px solid $secondary;
       position: absolute;
       border-radius: $border-radius--max;
-      right: 6px;
-      bottom: 10px;
+      right: $unread-dot-right-spacing;
+      bottom: $spacing--xxl;
     }
   }
 

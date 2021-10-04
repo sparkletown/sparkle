@@ -49,7 +49,7 @@ export const useChatSidebarControls = () => {
       collapseSidebar();
     } else {
       expandSidebar();
-      dispatch(setPrivateChatTabOpened(undefined));
+      dispatch(setPrivateChatTabOpened());
     }
   }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
 
@@ -60,7 +60,7 @@ export const useChatSidebarControls = () => {
 
   const selectPrivateChat = useCallback(() => {
     expandSidebar();
-    dispatch(setPrivateChatTabOpened(undefined));
+    dispatch(setPrivateChatTabOpened());
   }, [dispatch, expandSidebar]);
 
   const selectRecipientChat = useCallback(

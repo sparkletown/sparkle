@@ -103,7 +103,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                   <span className="chat-sidebar__controller-text">
                     Messages
                   </span>
-                  {newPrivateMessageRecived > 0 && (
+                  {newPrivateMessageRecived === 0 && (
                     <div className="chat-sidebar__controller--new-message"></div>
                   )}
                 </div>
