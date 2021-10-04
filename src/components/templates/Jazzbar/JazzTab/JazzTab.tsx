@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -13,6 +13,7 @@ import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
+import { trackMixpanelEvent } from "utils/mixpanel";
 import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
@@ -20,6 +21,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -82,6 +84,8 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
 
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
+  const { user } = useUser();
+
   const isUserAudioMuted = !isUserAudioOn;
 
   // NOTE: This functionality will probably be returned in the nearest future.
@@ -122,6 +126,27 @@ const Jazz: React.FC<JazzProps> = ({ venue }) => {
   //     );
   //   reset();
   // };
+
+  useEffect(() => {
+    trackMixpanelEvent("enter jazz bar", {
+      worldId: venue.worldId,
+      email: user?.email,
+    });
+  }, [user?.email, venue.worldId]);
+
+  useEffect(() => {
+    seatedAtTable &&
+      trackMixpanelEvent("select table", {
+        worldId: venue.worldId,
+        email: user?.email,
+      });
+
+    seatedAtTable &&
+      trackMixpanelEvent("sit down in seat", {
+        worldId: venue.worldId,
+        email: user?.email,
+      });
+  }, [seatedAtTable, user?.email, venue.worldId]);
 
   const shouldShowReactions =
     seatedAtTable && areSettingsLoaded && settings.showReactions;

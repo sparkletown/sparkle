@@ -85,7 +85,7 @@ export const Login: React.FC<LoginProps> = ({
   };
 
   const afterUserIsLoggedIn = (data: LoginFormData) => {
-    trackMixpanelEvent("Login", {
+    trackMixpanelEvent("Login Successful", {
       worldId: venue.worldId,
       email: data.email,
     });

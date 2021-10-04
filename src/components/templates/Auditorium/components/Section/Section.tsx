@@ -7,6 +7,7 @@ import classNames from "classnames";
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { trackMixpanelEvent } from "utils/mixpanel";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
@@ -14,6 +15,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
@@ -46,6 +48,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     replace: replaceUrlUsingRouter,
   } = useHistory();
 
+  const { user } = useUser();
+
   const {
     auditoriumSection,
     isAuditoriumSectionLoaded,
@@ -77,6 +81,21 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       leaveSeat();
     };
   }, [leaveSeat]);
+
+  useEffect(() => {
+    trackMixpanelEvent("enter auditorium", {
+      worldId: venue.worldId,
+      email: user?.email,
+    });
+  }, [user?.email, venue.worldId]);
+
+  useEffect(() => {
+    isUserSeated &&
+      trackMixpanelEvent("sit down in seat", {
+        worldId: venue.worldId,
+        email: user?.email,
+      });
+  }, [isUserSeated, user?.email, venue.worldId]);
 
   const centralScreenVars = useCss({
     "--central-screen-width-in-seats": screenWidthInSeats,

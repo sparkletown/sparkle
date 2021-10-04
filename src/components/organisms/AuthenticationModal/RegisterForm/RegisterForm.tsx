@@ -9,6 +9,7 @@ import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
+import { trackMixpanelEvent } from "utils/mixpanel";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
@@ -126,6 +127,11 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           date_of_birth: data.date_of_birth,
         });
       }
+
+      trackMixpanelEvent("Sign Up", {
+        worldId: venue.worldId,
+        email: data.email,
+      });
 
       afterUserIsLoggedIn?.(data);
 
