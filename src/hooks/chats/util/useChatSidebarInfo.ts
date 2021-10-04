@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { AnyVenue } from "types/venues";
 
-import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
+import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
 import { useUser } from "hooks/useUser";
 
 export const useChatSidebarInfo = (venue: AnyVenue) => {

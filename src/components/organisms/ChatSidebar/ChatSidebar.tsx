@@ -13,8 +13,8 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useChatSidebarControls } from "hooks/chats/useChatSidebarControls";
-import { useChatSidebarInfo } from "hooks/chats/useChatSidebarInfo";
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
+import { useChatSidebarInfo } from "hooks/chats/util/useChatSidebarInfo";
 
 import { PrivateChats, VenueChat } from "./components";
 

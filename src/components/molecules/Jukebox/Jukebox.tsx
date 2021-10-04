@@ -19,7 +19,7 @@ import { WithId } from "utils/id";
 import { waitAtLeast } from "utils/promise";
 import { isValidUrl } from "utils/url";
 
-import { useJukeboxChat } from "hooks/chats/useJukeboxChat";
+import { useJukeboxChat } from "hooks/chats/jukebox/useJukeboxChat";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ButtonNG } from "components/atoms/ButtonNG";

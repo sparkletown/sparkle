@@ -29,7 +29,7 @@ export const useVenueChat = (venueId?: string) => {
   };
 };
 
-export const useVenueChatActions = (venueId?: string) => {
+const useVenueChatActions = (venueId?: string) => {
   const messagesRefs = useMemo(
     () => (venueId ? [getVenueRef(venueId).collection("chats")] : []),
     [venueId]
