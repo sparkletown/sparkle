@@ -12,6 +12,7 @@ import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
+import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
@@ -59,6 +60,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const venue = useSelector(venueSelector);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -326,13 +329,21 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       {venue.hasSamlLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
-          <ButtonNG className="auth-input" type="submit">
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={signInWithGoogle}
+          >
             <div className="social-icon">
               <img src={gIcon} alt="asd" />
             </div>
             Sign up with Google
           </ButtonNG>
-          <ButtonNG className="auth-input" type="submit">
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={signInWithFacebook}
+          >
             <div className="social-icon">
               <img src={fIcon} alt="asd" />
             </div>
