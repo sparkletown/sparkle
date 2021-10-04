@@ -95,14 +95,14 @@ input.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: var(--primary-accent--under-24A);
+  background-color: var(--primary-accent--under-24a);
   transition: all 400ms $transition-function;
   color: $primary-content--over;
   transform: translateY(0);
 
   &:hover {
     transform: translateY(-1px);
-    background-color: var(--primary-accent--under-18A);
+    background-color: var(--primary-accent--under-18a);
   }
 
   &.btn-primary {

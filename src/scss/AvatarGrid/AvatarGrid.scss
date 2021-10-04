@@ -30,7 +30,7 @@
 //  }
 //  &:hover {
 //    color: darken($primary-accent--under, 5%);
-//    box-shadow: inset 0 0 0 3px var(--primary-accent--under-20A);
+//    box-shadow: inset 0 0 0 3px var(--primary-accent--under-20a);
 //    transform: translateY(-1px);
 //  }
 //
@@ -56,13 +56,13 @@
 //      bottom: 6px;
 //      left: 20px;
 //      width: calc(100% - 40px);
-//      background-color: var(--primary-accent--under-20A);
+//      background-color: var(--primary-accent--under-20a);
 //    }
 //
 //    &:hover {
 //      color: darken($primary-accent--under, 20%);
 //      &:after {
-//        background-color: var(--primary-accent--under-50A);
+//        background-color: var(--primary-accent--under-50a);
 //      }
 //    }
 //

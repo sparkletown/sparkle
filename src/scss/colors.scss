@@ -28,10 +28,10 @@ $alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
     --#{$colorName}-accent--under: #{$color};
     --#{$colorName}-accent--under-rbg: #{hexToRGB($color)};
 
-    @each $aphpa in $alphas-enum {
-      --#{$colorName}-accent--under-#{$aphpa*100}A: #{rgba(
+    @each $alpha in $alphas-enum {
+      --#{$colorName}-accent--under-#{$alpha*100}a: #{rgba(
           var(--primary-accent--under-rbg),
-          $aphpa
+          $alpha
         )};
     }
   }
