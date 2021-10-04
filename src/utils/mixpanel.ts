@@ -24,3 +24,10 @@ export const trackMixpanelEvent = (eventName: string, data: Object) => {
 
   return mixpanel.track(eventName, data);
 };
+
+export const setMixpanelGroup = (groupKey: string, groupIds: string[]) => {
+  mixpanel.set_group(groupKey, groupIds);
+  groupIds.forEach((id) => {
+    mixpanel.get_group(groupKey, id).set({ $name: id });
+  });
+};

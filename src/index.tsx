@@ -27,12 +27,19 @@ import { FIREBASE_CONFIG } from "settings";
 
 import { store } from "store";
 
-import { identifyMixpanelUser, initMixpanel } from "utils/mixpanel";
+import { isPartyMapVenue } from "types/venues";
+
+import {
+  identifyMixpanelUser,
+  initMixpanel,
+  setMixpanelGroup,
+} from "utils/mixpanel";
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
 
 import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useSelector } from "hooks/useSelector";
 
 import { AppRouter } from "components/organisms/AppRouter";
@@ -191,7 +198,12 @@ initMixpanel();
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
+  const { ownedVenues: venues } = useOwnedVenues({});
   const auth = useSelector(authSelector);
+
+  const worldsNames = venues
+    ?.filter(isPartyMapVenue)
+    .map((venue) => venue.name);
 
   useEffect(() => {
     if (!auth || !auth.uid) return;
@@ -207,7 +219,8 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
     }
 
     identifyMixpanelUser(displayName, email);
-  }, [auth]);
+    setMixpanelGroup("worldId", worldsNames);
+  }, [auth, worldsNames]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 
