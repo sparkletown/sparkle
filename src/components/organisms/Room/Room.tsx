@@ -15,7 +15,6 @@ interface RoomProps {
   roomName: string;
   venueId: string;
   setSeatedAtTable?: (val: string) => void;
-  onBack?: () => void;
   hasChairs?: boolean;
   defaultMute?: boolean;
 }
@@ -55,25 +54,23 @@ export const Room: React.FC<RoomProps> = ({
     return "three-across";
   }, [participants.length]);
 
-  const meComponent = useMemo(() => {
-    return localParticipant && userWithId ? (
-      <div
-        className={`participant-container ${participantContainerClassName}`}
-        key={localParticipant.identity}
-      >
-        <VideoParticipant
-          participant={localParticipant}
-          participantUser={userWithId}
-          defaultMute={defaultMute}
-        />
-      </div>
-    ) : null;
-  }, [
-    localParticipant,
-    userWithId,
-    defaultMute,
-    participantContainerClassName,
-  ]);
+  const meComponent = useMemo(
+    () =>
+      localParticipant &&
+      userWithId && (
+        <div
+          className={`participant-container ${participantContainerClassName}`}
+          key={localParticipant.identity}
+        >
+          <VideoParticipant
+            participant={localParticipant}
+            participantUser={userWithId}
+            defaultMute={defaultMute}
+          />
+        </div>
+      ),
+    [localParticipant, userWithId, defaultMute, participantContainerClassName]
+  );
 
   const othersComponents = useMemo(
     () =>
@@ -125,9 +122,7 @@ export const Room: React.FC<RoomProps> = ({
       {meComponent}
       {othersComponents}
       {emptyComponents}
-      {renderErrorModal((dismissVideoError: () => void) =>
-        setSeatedAtTable ? leaveSeat() : dismissVideoError
-      )}
+      {renderErrorModal(leaveSeat)}
     </Fragment>
   );
 };

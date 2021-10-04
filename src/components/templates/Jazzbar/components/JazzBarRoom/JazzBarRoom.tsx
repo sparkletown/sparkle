@@ -17,7 +17,6 @@ interface RoomProps {
   roomName: string;
   venueId: string;
   setSeatedAtTable?: (val: string) => void;
-  onBack?: () => void;
   defaultMute?: boolean;
   isAudioEffectDisabled: boolean;
 }
@@ -106,9 +105,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
         ))}
       </div>
 
-      {renderErrorModal((dismissVideoError: () => void) =>
-        setSeatedAtTable ? leaveSeat() : dismissVideoError
-      )}
+      {renderErrorModal(leaveSeat)}
     </>
   );
 };

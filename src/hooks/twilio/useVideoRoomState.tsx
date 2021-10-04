@@ -124,9 +124,10 @@ export const useVideoRoomState = (
   }, [room, participantConnected, participantDisconnected]);
 
   const renderErrorModal = useCallback(
-    (onBack: (dismissError: () => void) => void) => {
+    (onBack?: () => void) => {
       const backHandler = () => {
-        onBack(dismissVideoError);
+        dismissVideoError();
+        onBack?.();
       };
       return (
         <VideoErrorModal

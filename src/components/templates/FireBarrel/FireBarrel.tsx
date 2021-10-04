@@ -81,7 +81,7 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
         return <React.Fragment key={index} />;
       })}
 
-      {renderErrorModal((dismissError) => dismissError())}
+      {renderErrorModal()}
     </S.Wrapper>
   );
 };

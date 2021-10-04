@@ -110,6 +110,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               {seatedAtTable && (
                 <div className="participants-container">
                   <Room
+                    setSeatedAtTable={setSeatedAtTable}
                     venueId={venue.id}
                     roomName={`${venue.name}-${seatedAtTable}`}
                   />
