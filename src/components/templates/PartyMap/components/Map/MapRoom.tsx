@@ -131,7 +131,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
         <img className="maproom__image" src={room.image_url} alt={room.title} />
       )}
 
-      {console.log(room.title, room.visibility, hasRecentRoomUsers)}
       {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
