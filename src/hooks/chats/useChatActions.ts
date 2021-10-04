@@ -31,7 +31,7 @@ export const useChatActions = <T extends ChatMessage>(
         batch.set(ref.doc(), processedMessage)
       );
 
-      await waitAtLeast(batch.commit(), CHAT_MESSAGE_TIMEOUT);
+      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
     [messagesCollections, spreadOnMessage, userWithId]
   );
@@ -42,7 +42,7 @@ export const useChatActions = <T extends ChatMessage>(
 
       messagesCollections.forEach((ref) => batch.delete(ref.doc(messageId)));
 
-      await waitAtLeast(batch.commit(), CHAT_MESSAGE_TIMEOUT);
+      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
     [messagesCollections]
   );
@@ -62,7 +62,7 @@ export const useChatActions = <T extends ChatMessage>(
 
       messagesCollections.forEach((ref) => batch.set(ref.doc(), threadReply));
 
-      await waitAtLeast(batch.commit(), CHAT_MESSAGE_TIMEOUT);
+      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
     [messagesCollections, spreadOnMessage, userWithId]
   );

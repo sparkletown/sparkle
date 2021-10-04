@@ -4,6 +4,6 @@ export const wait = async (ms: number): Promise<unknown> =>
   });
 
 export const waitAtLeast = async <T>(
-  other: Promise<T>,
-  ms: number
+  ms: number,
+  other: Promise<T>
 ): Promise<T> => (await Promise.all([other, wait(ms)]))[0] as T;
