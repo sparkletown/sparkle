@@ -87,11 +87,11 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         id={"Chatbox_scrollable_div"}
       >
         <InfiniteScroll
-          dataLength={allMessagesCount}
+          dataLength={messages.length}
           className={"Chatbox__messages-infinite-scroll"}
           next={loadMore}
           inverse
-          hasMore={allMessagesCount < messages.length}
+          hasMore={messages.length < allMessagesCount}
           scrollableTarget="Chatbox_scrollable_div"
           loader={
             <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />

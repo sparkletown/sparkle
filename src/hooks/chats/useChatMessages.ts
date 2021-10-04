@@ -76,7 +76,7 @@ export const useChatMessagesRaw = <T extends ChatMessage>(
     data: rawMessages = ALWAYS_EMPTY_ARRAY,
     status,
   } = useFirestoreCollectionData<WithId<T>>(
-    messagesRef.orderBy("timestamp", "asc").withConverter(withIdConverter<T>())
+    messagesRef.orderBy("timestamp", "desc").withConverter(withIdConverter<T>())
   );
 
   const chatMessages =

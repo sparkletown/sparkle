@@ -18,12 +18,14 @@ export const useChatActions = <T extends ChatMessage>(
 
   const sendMessage = useCallback(
     async ({ message, isQuestion }) => {
+      console.log("sendMessage", message, isQuestion);
       if (!userWithId) return;
 
       const processedMessage = buildMessage<T>(message, userWithId, {
         ...(isQuestion && { isQuestion }),
         ...spreadOnMessage,
       });
+      console.log("messa", messagesCollections);
 
       const batch = firebase.firestore().batch();
 

@@ -50,22 +50,24 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   });
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
-    async ({ message }) =>
-      sendMessage({ message, isQuestion }).then(() => {
-        reset();
-        unselectOption();
-      }),
+    async ({ message }) => {
+      reset();
+      unselectOption();
+
+      await sendMessage({ message, isQuestion });
+    },
     [isQuestion, reset, sendMessage, unselectOption]
   );
 
   const [{ loading: isReplying }, sendReplyToThread] = useAsyncFn(
     async ({ message }) => {
       if (!selectedThread) return;
+      reset();
 
-      return onReplyToThread({
+      await onReplyToThread({
         replyText: message,
         threadId: selectedThread.id,
-      }).then(() => reset());
+      });
     },
     [onReplyToThread, reset, selectedThread]
   );
