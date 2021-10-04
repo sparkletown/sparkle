@@ -19,7 +19,7 @@ import { WithId } from "utils/id";
 import { waitAtLeast } from "utils/promise";
 import { isValidUrl } from "utils/url";
 
-import { useJukeboxChat } from "hooks/jukebox";
+import { useJukeboxChat } from "hooks/chats/useJukeboxChat";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -45,7 +45,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const chatValue = watch("jukeboxMessage");
 
-  const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
+  const { sendMessage, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
     tableId: tableRef,
   });
@@ -66,11 +66,11 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ jukeboxMessage }) => {
       await waitAtLeast(
-        sendJukeboxMsg({ message: jukeboxMessage }).then(() => reset()),
+        sendMessage({ message: jukeboxMessage }).then(() => reset()),
         CHAT_MESSAGE_TIMEOUT
       );
     },
-    [reset, sendJukeboxMsg]
+    [reset, sendMessage]
   );
 
   const isBtnDisabled = !chatValue || isSendingMessage;

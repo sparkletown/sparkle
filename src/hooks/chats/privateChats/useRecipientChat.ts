@@ -3,7 +3,11 @@ import { useFirestore } from "reactfire";
 
 import { getUserChatsCollectionRef, setChatMessageRead } from "api/chat";
 
-import { PrivateChatMessage } from "types/chat";
+import {
+  MarkMessageRead,
+  PrivateChatActions,
+  PrivateChatMessage,
+} from "types/chat";
 import { DisplayUser } from "types/User";
 
 import { pickDisplayUserFromUser } from "utils/chat";
@@ -30,7 +34,9 @@ export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   };
 };
 
-export const useRecipientChatActions = (recipient: WithId<DisplayUser>) => {
+export const useRecipientChatActions = (
+  recipient: WithId<DisplayUser>
+): PrivateChatActions => {
   const { userId } = useUser();
 
   const refs = useMemo(() => {
@@ -40,8 +46,8 @@ export const useRecipientChatActions = (recipient: WithId<DisplayUser>) => {
     return [authorRef, recipientRef];
   }, [recipient.id, userId]);
 
-  const markMessageRead = useCallback(
-    (messageId: string) => {
+  const markMessageRead: MarkMessageRead = useCallback(
+    async (messageId: string) => {
       if (!userId) return;
 
       return setChatMessageRead({ userId, messageId });

@@ -67,6 +67,8 @@ export type SendMessage = (sendMessageProps: SendMessageProps) => Promise<void>;
 
 export type DeleteMessage = (messageId: string) => Promise<void>;
 
+export type MarkMessageRead = (messageId: string) => Promise<void>;
+
 export interface SendChatReplyProps {
   replyText: string;
   threadId: string;
@@ -83,6 +85,13 @@ export interface ChatActions {
   deleteMessage?: DeleteMessage;
   sendThreadReply: SendChatReply;
 }
+
+export interface PrivateChatActions
+  extends Exclude<ChatActions, "deleteMessage"> {
+  markMessageRead: MarkMessageRead;
+}
+
+export type JukeboxChatActions = Pick<ChatActions, "sendMessage">;
 
 export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
 
