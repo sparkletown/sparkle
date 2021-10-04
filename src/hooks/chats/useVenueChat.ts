@@ -26,11 +26,7 @@ export const useVenueChat = (venueId?: string) => {
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
   const [messagesToDisplay] = useChatMessagesForDisplay<ChatMessage>(
-    firestore
-      .collection("venues")
-      .doc(venueId)
-      .collection("chats")
-      .orderBy("timestamp", "desc"),
+    firestore.collection("venues").doc(venueId).collection("chats"),
     (message) => message.timestamp.seconds > venueChatAgeThresholdSec
   );
 
