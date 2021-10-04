@@ -8,6 +8,7 @@ import { WithId } from "utils/id";
 
 import { useRecipientChat } from "hooks/chats/private/useRecipientChat";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
+import { useRenderInfiniteScrollChatMessages } from "hooks/chats/util/useRenderInfiniteScrollChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -20,7 +21,7 @@ export interface RecipientChatProps {
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   const {
-    messagesToDisplay,
+    messagesToDisplay: allMessagesToDisplay,
 
     sendMessage,
     markMessageRead,
@@ -28,7 +29,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   } = useRecipientChat(recipient);
 
   useEffect(() => {
-    const unreadCounterpartyMessages = messagesToDisplay.filter(
+    const unreadCounterpartyMessages = allMessagesToDisplay.filter(
       (message) => !message.isRead && message.fromUser.id === recipient.id
     );
 
@@ -37,9 +38,14 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         markMessageRead(message.id)
       );
     }
-  }, [messagesToDisplay, recipient.id, markMessageRead]);
+  }, [allMessagesToDisplay, recipient.id, markMessageRead]);
 
   const { selectPrivateChat } = useChatSidebarControls();
+
+  const [
+    messagesToDisplay,
+    infiniteActions,
+  ] = useRenderInfiniteScrollChatMessages(allMessagesToDisplay);
 
   return (
     <div className="recipient-chat">
@@ -57,6 +63,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         messages={messagesToDisplay}
         sendMessage={sendMessage}
         sendThreadReply={sendThreadReply}
+        {...infiniteActions}
       />
     </div>
   );

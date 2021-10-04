@@ -1,11 +1,14 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
-import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
-
-import { ChatActions, ChatOptionType, MessageToDisplay } from "types/chat";
+import {
+  ChatActions,
+  ChatOptionType,
+  InfiniteChatActions,
+  MessageToDisplay,
+} from "types/chat";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -23,7 +26,10 @@ import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 import "./Chatbox.scss";
 
-export interface ChatboxProps extends ContainerClassName, ChatActions {
+export interface ChatboxProps
+  extends ContainerClassName,
+    ChatActions,
+    InfiniteChatActions {
   messages: WithId<MessageToDisplay>[];
   displayPoll?: boolean;
 }
@@ -35,6 +41,8 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   deleteMessage,
   displayPoll: isDisplayedPoll,
   containerClassName,
+  allMessagesCount,
+  loadMore = () => {},
 }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
 
@@ -62,34 +70,6 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
-  const getNextMessagesRenderCount = useCallback(
-    (currentCount: number) =>
-      Math.min(currentCount + CHATBOX_NEXT_RENDER_SIZE, messages.length),
-    [messages.length]
-  );
-
-  const [renderedMessagesCount, setRenderedMessagesCount] = useState(
-    getNextMessagesRenderCount(0)
-  );
-
-  const increaseRenderedMessagesCount = useCallback(() => {
-    setRenderedMessagesCount(getNextMessagesRenderCount(renderedMessagesCount));
-  }, [getNextMessagesRenderCount, renderedMessagesCount]);
-
-  const renderedMessages = useMemo(() => {
-    const messagesToRender = messages.slice(0, renderedMessagesCount);
-    return messagesToRender.map((message, i) => (
-      <ChatboxMessage
-        key={message.id}
-        message={message}
-        nextMessage={messagesToRender?.[i + 1]}
-        deleteMessage={deleteMessage}
-        voteInPoll={voteInPoll}
-        selectThisThread={() => setSelectedThread(message)}
-      />
-    ));
-  }, [messages, renderedMessagesCount, deleteMessage, voteInPoll]);
-
   const onReplyToThread = useCallback(
     async ({ replyText, threadId }) => {
       await sendThreadReply({ replyText, threadId });
@@ -107,17 +87,26 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         id={"Chatbox_scrollable_div"}
       >
         <InfiniteScroll
-          dataLength={renderedMessagesCount}
+          dataLength={allMessagesCount}
           className={"Chatbox__messages-infinite-scroll"}
-          next={increaseRenderedMessagesCount}
+          next={loadMore}
           inverse
-          hasMore={renderedMessagesCount < messages.length}
+          hasMore={allMessagesCount < messages.length}
           scrollableTarget="Chatbox_scrollable_div"
           loader={
             <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
           }
         >
-          {renderedMessages}
+          {messages.map((message, i) => (
+            <ChatboxMessage
+              key={message.id}
+              message={message}
+              nextMessage={messages?.[i + 1]}
+              deleteMessage={deleteMessage}
+              voteInPoll={voteInPoll}
+              selectThisThread={() => setSelectedThread(message)}
+            />
+          ))}
         </InfiniteScroll>
       </div>
       <div className="Chatbox__form-box">

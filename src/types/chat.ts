@@ -86,6 +86,11 @@ export interface ChatActions {
   sendThreadReply: SendChatReply;
 }
 
+export interface InfiniteChatActions {
+  allMessagesCount: number;
+  loadMore: () => void;
+}
+
 export interface PrivateChatActions
   extends Exclude<ChatActions, "deleteMessage"> {
   markMessageRead: MarkMessageRead;
