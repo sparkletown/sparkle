@@ -1,20 +1,23 @@
+@use "sass:color";
+
 $colors-enum: (
   primary: #7c46fb,
 );
 $shades-enum: (5, 10, 14, 20, 50);
 $alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
 
+@function hexToRGB($hex) {
+  @return red($hex), green($hex), blue($hex);
+}
+
 :root {
   --primary-color-deprecated: #f6e652;
 
   --primary-content--under: #000000;
+  --primary-content--under-rgb: hexToRGB(#{var(--primary-content--under)});
   --primary-content--over: #ffffff;
+  --primary-content--over-rgb: hexToRGB(#{var(--primary-content--over)});
   --primary-accent--over: #ffffff;
-
-  // TODO: add util function from hex to rgb
-  --primary-content--under-rgb: 0, 0, 0;
-  --primary-content--over-rgb: 255, 255, 255;
-  --primary-accent--under-rbg: 124, 70, 251;
 
   @each $colorName, $color in $colors-enum {
     @each $shade in $shades-enum {
@@ -23,6 +26,7 @@ $alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
     }
 
     --#{$colorName}-accent--under: #{$color};
+    --#{$colorName}-accent--under-rbg: hexToRGB(#{$color});
 
     @each $aphpa in $alphas-enum {
       --#{$colorName}-accent--under-#{$aphpa*100}A: #{rgba(
