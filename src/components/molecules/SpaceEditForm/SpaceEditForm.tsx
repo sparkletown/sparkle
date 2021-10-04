@@ -124,6 +124,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const values = watch("room");
   const venueValues = watch("venue");
+  console.log(values);
 
   const changeRoomImageUrl = useCallback(
     (val: string) => {
