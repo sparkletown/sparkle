@@ -1,9 +1,9 @@
 $primary--over: var(--primary-color-deprecated);
 
-$accent--over: var(--primary-accent--over);
-$accent--under: var(--primary-accent--under);
-$content--over: var(--primary-content--over);
-$content--under: var(--primary-content--under);
+$accent--over: var(--accent--over);
+$accent--under: var(--accent--under);
+$content--over: var(--content--over);
+$content--under: var(--content--under);
 
 $primary--darker-20pp: var(--primary--darker-20pp);
 $primary--lighter-10pp: var(--primary--lighter-10pp);
@@ -278,11 +278,11 @@ $z-layers: (
 }
 
 @function opaque-white($opacity: 0.1) {
-  @return rgba(#{var(--primary-content--over-rgb)}, $opacity);
+  @return rgba(#{var(--content--over-rgb)}, $opacity);
 }
 
 @function opaque-black($opacity: 0.1) {
-  @return rgba(#{var(--primary-content--under-rgb)}, $opacity);
+  @return rgba(#{var(--content--under-rgb)}, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {
