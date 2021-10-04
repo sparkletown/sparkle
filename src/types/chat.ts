@@ -78,6 +78,12 @@ export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
 };
 
+export interface ChatActions {
+  sendMessage: SendMessage;
+  deleteMessage?: DeleteMessage;
+  sendThreadReply: SendChatReply;
+}
+
 export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
 
 export enum ChatTypes {

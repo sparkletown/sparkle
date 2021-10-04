@@ -31,12 +31,10 @@ export const useVenuePoll = () => {
     async (pollValues: PollValues) => {
       if (!venueId || !userWithId) return;
 
-      const message = buildMessage<PollMessage>(userWithId, {
+      const message = buildMessage<PollMessage>("poll", userWithId, {
         poll: pollValues,
         type: ChatMessageType.poll,
         votes: [],
-        // @debt remove this useless text from here
-        text: "poll",
       });
 
       return sendVenueMessage({ venueId, message });

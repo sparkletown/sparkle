@@ -25,11 +25,18 @@ export const getPreviewChatMessage = ({
   counterPartyUser: user,
 });
 
+export type ExcludeBuiltMessage<T extends ChatMessage> = Pick<
+  T,
+  Exclude<keyof T, "text" | "timestamp" | "fromUser">
+>;
+
 export const buildMessage = <T extends ChatMessage>(
+  text: string,
   fromUser: WithId<DisplayUser>,
-  message: Pick<T, Exclude<keyof T, "timestamp" | "fromUser">>
+  message: ExcludeBuiltMessage<T>
 ) => ({
   ...message,
+  text,
   fromUser: pickDisplayUserFromUser(fromUser),
   timestamp: firebase.firestore.Timestamp.now(),
 });

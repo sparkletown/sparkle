@@ -5,13 +5,7 @@ import { isEqual } from "lodash";
 
 import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
 
-import {
-  ChatOptionType,
-  DeleteMessage,
-  MessageToDisplay,
-  SendChatReply,
-  SendMessage,
-} from "types/chat";
+import { ChatActions, ChatOptionType, MessageToDisplay } from "types/chat";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -29,11 +23,8 @@ import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 import "./Chatbox.scss";
 
-export interface ChatboxProps extends ContainerClassName {
+export interface ChatboxProps extends ContainerClassName, ChatActions {
   messages: WithId<MessageToDisplay>[];
-  sendMessage: SendMessage;
-  sendThreadReply: SendChatReply;
-  deleteMessage?: DeleteMessage;
   displayPoll?: boolean;
 }
 

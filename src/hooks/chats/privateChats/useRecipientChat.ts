@@ -1,24 +1,16 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useFirestore } from "reactfire";
 
-import {
-  deletePrivateMessage,
-  sendPrivateMessage,
-  setChatMessageRead,
-} from "api/chat";
+import { getUserChatsCollectionRef, setChatMessageRead } from "api/chat";
 
-import {
-  DeleteMessage,
-  PrivateChatMessage,
-  SendChatReply,
-  SendMessage,
-} from "types/chat";
+import { PrivateChatMessage } from "types/chat";
 import { DisplayUser } from "types/User";
 
-import { buildMessage, pickDisplayUserFromUser } from "utils/chat";
+import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";
 
-import { useChatMessagesForDisplay } from "hooks/chats/useChatMessagesForDisplay";
+import { useChatActions } from "hooks/chats/useChatActions";
+import { useChatMessagesForDisplay } from "hooks/chats/useChatMessages";
 import { useUser } from "hooks/useUser";
 
 export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
@@ -38,61 +30,31 @@ export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   };
 };
 
-const useRecipientChatActions = (recipient: WithId<DisplayUser>) => {
-  const { userWithId } = useUser();
+export const useRecipientChatActions = (recipient: WithId<DisplayUser>) => {
+  const { userId } = useUser();
 
-  const sendMessageToSelectedRecipient: SendMessage = useCallback(
-    async ({ message, isQuestion }) => {
-      if (!userWithId) return;
-
-      const privateChatMessage = buildMessage<PrivateChatMessage>(userWithId, {
-        text: message,
-        isQuestion,
-        toUser: pickDisplayUserFromUser(recipient),
-      });
-
-      return sendPrivateMessage(privateChatMessage);
-    },
-    [recipient, userWithId]
-  );
-
-  const deleteMessage: DeleteMessage = useCallback(
-    async (messageId: string) => {
-      if (!userWithId) return;
-
-      return deletePrivateMessage({ userId: userWithId.id, messageId });
-    },
-    [userWithId]
-  );
+  const refs = useMemo(() => {
+    if (!userId) return [];
+    const authorRef = getUserChatsCollectionRef(userId);
+    const recipientRef = getUserChatsCollectionRef(recipient.id);
+    return [authorRef, recipientRef];
+  }, [recipient.id, userId]);
 
   const markMessageRead = useCallback(
     (messageId: string) => {
-      if (!userWithId) return;
+      if (!userId) return;
 
-      return setChatMessageRead({ userId: userWithId.id, messageId });
+      return setChatMessageRead({ userId, messageId });
     },
-    [userWithId]
+    [userId]
   );
 
-  const sendThreadReply: SendChatReply = useCallback(
-    async ({ replyText, threadId }) => {
-      if (!userWithId) return;
-
-      const threadReply = buildMessage<PrivateChatMessage>(userWithId, {
-        toUser: recipient,
-        text: replyText,
-        threadId,
-      });
-
-      return sendPrivateMessage(threadReply);
-    },
-    [recipient, userWithId]
-  );
+  const chatActions = useChatActions<PrivateChatMessage>(refs, {
+    toUser: pickDisplayUserFromUser(recipient),
+  });
 
   return {
-    sendMessageToSelectedRecipient,
-    sendThreadReply,
+    ...chatActions,
     markMessageRead,
-    deleteMessage,
   };
 };

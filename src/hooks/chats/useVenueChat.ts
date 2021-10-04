@@ -1,23 +1,16 @@
-import { useCallback } from "react";
+import { useMemo } from "react";
 import { useFirestore } from "reactfire";
 
-import { VENUE_CHAT_AGE_DAYS } from "settings";
+import { ALWAYS_EMPTY_OBJECT, VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { deleteVenueMessage, sendVenueMessage } from "api/chat";
+import { getVenueRef } from "api/venue";
 
-import {
-  ChatMessage,
-  DeleteMessage,
-  SendChatReply,
-  SendMessage,
-  VenueChatMessage,
-} from "types/chat";
+import { ChatMessage, VenueChatMessage } from "types/chat";
 
-import { buildMessage } from "utils/chat";
 import { getDaysAgoInSeconds } from "utils/time";
 
-import { useChatMessagesForDisplay } from "hooks/chats/useChatMessagesForDisplay";
-import { useUser } from "hooks/useUser";
+import { useChatActions } from "hooks/chats/useChatActions";
+import { useChatMessagesForDisplay } from "hooks/chats/useChatMessages";
 
 export const useVenueChat = (venueId?: string) => {
   const chatActions = useVenueChatActions(venueId);
@@ -36,49 +29,11 @@ export const useVenueChat = (venueId?: string) => {
   };
 };
 
-const useVenueChatActions = (venueId?: string) => {
-  const { userWithId } = useUser();
-
-  const sendMessage: SendMessage = useCallback(
-    async ({ message, isQuestion }) => {
-      if (!venueId || !userWithId) return;
-
-      const processedMessage = buildMessage<VenueChatMessage>(userWithId, {
-        text: message,
-        ...(isQuestion && { isQuestion }),
-      });
-
-      return sendVenueMessage({ venueId, message: processedMessage });
-    },
-    [venueId, userWithId]
-  );
-
-  const deleteMessage: DeleteMessage = useCallback(
-    async (messageId: string) => {
-      if (!venueId) return;
-
-      return deleteVenueMessage({ venueId, messageId });
-    },
+export const useVenueChatActions = (venueId?: string) => {
+  const messagesRefs = useMemo(
+    () => (venueId ? [getVenueRef(venueId).collection("chats")] : []),
     [venueId]
   );
 
-  const sendThreadReply: SendChatReply = useCallback(
-    async ({ replyText, threadId }) => {
-      if (!venueId || !userWithId) return;
-
-      const threadReply = buildMessage<VenueChatMessage>(userWithId, {
-        text: replyText,
-        threadId,
-      });
-
-      return sendVenueMessage({ venueId, message: threadReply });
-    },
-    [venueId, userWithId]
-  );
-
-  return {
-    sendMessage,
-    deleteMessage,
-    sendThreadReply,
-  };
+  return useChatActions<VenueChatMessage>(messagesRefs, ALWAYS_EMPTY_OBJECT);
 };

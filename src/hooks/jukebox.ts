@@ -8,7 +8,7 @@ import { SendJukeboxMessage } from "types/jukebox";
 
 import { buildMessage } from "utils/chat";
 
-import { useChatMessages } from "hooks/chats/useChatMessagesForDisplay";
+import { useChatMessages } from "hooks/chats/useChatMessages";
 import { useUser } from "hooks/useUser";
 
 export const useJukeboxChat = ({
@@ -35,10 +35,13 @@ const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
     async ({ message }) => {
       if (!venueId || !userWithId || !tableId) return;
 
-      const processedMessage = buildMessage<JukeboxMessage>(userWithId, {
-        text: message,
-        tableId,
-      });
+      const processedMessage = buildMessage<JukeboxMessage>(
+        message,
+        userWithId,
+        {
+          tableId,
+        }
+      );
 
       return sendJukeboxMessage({
         venueId,
