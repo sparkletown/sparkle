@@ -139,7 +139,11 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar hasBackButton={hasBackButton}>
+      <WithNavigationBar
+        hasBackButton={hasBackButton}
+        withPhotobooth
+        withSchedule
+      >
         <AnnouncementMessage message={venue.bannerMessage} />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>

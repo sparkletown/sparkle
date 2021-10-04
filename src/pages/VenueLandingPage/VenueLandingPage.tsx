@@ -50,7 +50,7 @@ export const VenueLandingPage: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar withSchedule withPhotobooth>
       <VenueLandingPageContent venue={venue} />
     </WithNavigationBar>
   );

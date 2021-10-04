@@ -23,7 +23,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
   if (!venue) return <>Loading...</>;
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar withPhotobooth withSchedule>
       <div className="friendship-container">
         <div className="title">
           <h1>{venue.name}</h1>

@@ -40,7 +40,7 @@ import {
   animateMapEnvironmentSoundSelector,
   radioStationsSelector,
 } from "utils/selectors";
-import { enterVenue, openUrlInNewTab, venueInsideUrl } from "utils/url";
+import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useAudioVolume } from "hooks/useAudioVolume";
 import { useDispatch } from "hooks/useDispatch";
@@ -105,13 +105,13 @@ const VolumePopover = (
 export interface NavBarPropsType {
   hasBackButton?: boolean;
   withSchedule?: boolean;
-  hasSchedule?: boolean;
+  withPhotobooth?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
-  hasBackButton = true,
-  withSchedule = true,
-  hasSchedule = true,
+  hasBackButton,
+  withSchedule,
+  withPhotobooth,
 }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
@@ -150,9 +150,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    withSchedule &&
-    hasSchedule &&
-    (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+    withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -267,6 +265,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
+  const handlePhotoboothRedirect = () => {
+    openUrlUsingRouter(SPARKLEVERSE_PHOTOBOOTH_URL);
+  };
+
   if (!ALLOW_NO_VENUE && !(venueId && currentVenue)) {
     console.warn(
       NavBar.name,
@@ -314,12 +316,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 <div>{navbarTitle}</div>
               )}
 
-              <div
-                className="NavBar__photobooth-button nav-schedule"
-                onClick={() => openUrlInNewTab(SPARKLEVERSE_PHOTOBOOTH_URL)}
-              >
-                <p className="NavBar__photobooth-title">Photobooth</p>
-              </div>
+              {withPhotobooth && (
+                <div
+                  className="NavBar__photobooth-button nav-schedule"
+                  onClick={handlePhotoboothRedirect}
+                >
+                  <p className="NavBar__photobooth-title">Photobooth</p>
+                </div>
+              )}
 
               <div className="navbar-links__simplified-view">
                 <a
