@@ -6,6 +6,7 @@ import { LABEL_VISIBILITY_OPTIONS } from "settings";
 import "./PortalVisibility.scss";
 
 export interface PortalVisibilityProps {
+  name?: string;
   register: ReturnType<typeof useForm>["register"];
 }
 
@@ -16,14 +17,10 @@ export const labelOptions = LABEL_VISIBILITY_OPTIONS.map((option) => (
 ));
 
 export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
+  name = "visibility",
   register,
 }) => (
-  <select
-    name="visibility"
-    id="visibility"
-    ref={register}
-    className="PortalVisibility"
-  >
+  <select name={name} ref={register} className="PortalVisibility">
     {labelOptions}
   </select>
 );
