@@ -639,3 +639,5 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.auditorium,
   VenueTemplate.audience,
 ];
+
+export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;

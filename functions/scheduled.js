@@ -9,6 +9,7 @@ const {
   uniq,
   differenceWith,
   flatten,
+  sum,
 } = require("lodash");
 const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
@@ -259,4 +260,32 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
 
       return batch.commit();
     });
+  });
+
+exports.updateVenuesChatCounters = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+    const venueRefs = await admin
+      .firestore()
+      .collection("venues")
+      .get()
+      .then(({ docs }) => docs.map((d) => d.ref));
+
+    return Promise.all(
+      venueRefs.map(async (venue) => {
+        const counter = sum(
+          await venue
+            .collection("chatMessagesCounter")
+            .where(admin.firestore.FieldPath.documentId(), "!==", "counter")
+            .get()
+            .then(({ docs }) =>
+              docs.map((d) => d.data().count).filter((c) => Boolean(c))
+            )
+        );
+        await venue
+          .collection("chatMessagesCounter")
+          .doc("counter")
+          .update({ chatMessagesCount: counter });
+      })
+    );
   });
