@@ -10,13 +10,10 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import { CHAT_MESSAGE_TIMEOUT } from "settings";
-
 import { AnyVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { waitAtLeast } from "utils/promise";
 import { isValidUrl } from "utils/url";
 
 import { useJukeboxChat } from "hooks/chats/jukebox/useJukeboxChat";
@@ -64,12 +61,8 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   }, [messagesToDisplay, updateIframeUrl]);
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
-    async ({ jukeboxMessage }) => {
-      await waitAtLeast(
-        sendMessage({ message: jukeboxMessage }).then(() => reset()),
-        CHAT_MESSAGE_TIMEOUT
-      );
-    },
+    async ({ jukeboxMessage }) =>
+      sendMessage({ message: jukeboxMessage }).then(() => reset()),
     [reset, sendMessage]
   );
 

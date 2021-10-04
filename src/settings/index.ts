@@ -528,7 +528,7 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+export const CHAT_MESSAGE_TIMEOUT = 500;
 
 export const DEFAULT_AVATARS = [
   defaultAvatar1,

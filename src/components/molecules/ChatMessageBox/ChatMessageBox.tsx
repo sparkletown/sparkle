@@ -7,12 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
-import { CHAT_MESSAGE_TIMEOUT } from "settings";
-
 import { MessageToDisplay, SendChatReplyProps, SendMessage } from "types/chat";
 
 import { WithId } from "utils/id";
-import { waitAtLeast } from "utils/promise";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -54,13 +51,10 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ message }) =>
-      waitAtLeast(
-        sendMessage({ message, isQuestion }).then(() => {
-          reset();
-          unselectOption();
-        }),
-        CHAT_MESSAGE_TIMEOUT
-      ),
+      sendMessage({ message, isQuestion }).then(() => {
+        reset();
+        unselectOption();
+      }),
     [isQuestion, reset, sendMessage, unselectOption]
   );
 
@@ -68,13 +62,10 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     async ({ message }) => {
       if (!selectedThread) return;
 
-      await waitAtLeast(
-        onReplyToThread({
-          replyText: message,
-          threadId: selectedThread.id,
-        }).then(() => reset()),
-        CHAT_MESSAGE_TIMEOUT
-      );
+      return onReplyToThread({
+        replyText: message,
+        threadId: selectedThread.id,
+      }).then(() => reset());
     },
     [onReplyToThread, reset, selectedThread]
   );

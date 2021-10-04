@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useFirestore } from "reactfire";
 
 import { getVenueRef } from "api/venue";
 
@@ -15,7 +14,7 @@ export const useJukeboxChat = ({
   venueId?: string;
   tableId?: string | null;
 }) => {
-  const messagesToDisplay = useJukeboxMessages(venueId, tableId);
+  const messagesToDisplay = useJukeboxMessages(venueId);
 
   const actions = useJukeboxActions(venueId, tableId);
 
@@ -39,14 +38,9 @@ const useJukeboxActions = (
   });
 };
 
-const useJukeboxMessages = (venueId?: string, tableId?: string | null) => {
-  const firestore = useFirestore();
-
+const useJukeboxMessages = (venueId?: string) => {
   const [{ messages }] = useChatMessages<JukeboxMessage>(
-    firestore
-      .collection("venues")
-      .doc((tableId && venueId) ?? undefined)
-      .collection("jukeboxMessages")
+    getVenueRef(venueId ?? "").collection("jukeboxMessages")
   );
 
   return messages;

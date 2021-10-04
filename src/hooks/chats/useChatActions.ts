@@ -1,15 +1,12 @@
 import { useCallback } from "react";
 import firebase from "firebase/app";
 
-import {
-  ChatActions,
-  ChatMessage,
-  DeleteMessage,
-  SendChatReply,
-  SendMessage,
-} from "types/chat";
+import { CHAT_MESSAGE_TIMEOUT } from "settings";
+
+import { ChatActions, ChatMessage } from "types/chat";
 
 import { buildMessage, ExcludeBuiltMessage } from "utils/chat";
+import { waitAtLeast } from "utils/promise";
 
 import { useUser } from "hooks/useUser";
 
@@ -19,7 +16,7 @@ export const useChatActions = <T extends ChatMessage>(
 ): ChatActions => {
   const { userWithId } = useUser();
 
-  const sendMessage: SendMessage = useCallback(
+  const sendMessage = useCallback(
     async ({ message, isQuestion }) => {
       if (!userWithId) return;
 
@@ -34,23 +31,23 @@ export const useChatActions = <T extends ChatMessage>(
         batch.set(ref.doc(), processedMessage)
       );
 
-      await batch.commit();
+      await waitAtLeast(batch.commit(), CHAT_MESSAGE_TIMEOUT);
     },
     [messagesCollections, spreadOnMessage, userWithId]
   );
 
-  const deleteMessage: DeleteMessage = useCallback(
+  const deleteMessage = useCallback(
     async (messageId: string) => {
       const batch = firebase.firestore().batch();
 
       messagesCollections.forEach((ref) => batch.delete(ref.doc(messageId)));
 
-      await batch.commit();
+      await waitAtLeast(batch.commit(), CHAT_MESSAGE_TIMEOUT);
     },
     [messagesCollections]
   );
 
-  const sendThreadReply: SendChatReply = useCallback(
+  const sendThreadReply = useCallback(
     async ({ replyText, threadId }) => {
       if (!userWithId) return;
 
@@ -65,7 +62,7 @@ export const useChatActions = <T extends ChatMessage>(
 
       messagesCollections.forEach((ref) => batch.set(ref.doc(), threadReply));
 
-      await batch.commit();
+      await waitAtLeast(batch.commit(), CHAT_MESSAGE_TIMEOUT);
     },
     [messagesCollections, spreadOnMessage, userWithId]
   );
