@@ -14,6 +14,8 @@ import JSON5 from "json5";
 
 import { log, NOT_AVAILABLE } from "./log";
 import {
+  GridPosition,
+  GridSize,
   ScriptRunTime,
   SimAverages,
   SimConfig,
@@ -224,3 +226,67 @@ export const calculateScriptRunTime: (options: {
     ? formatDistanceStrict(finish, parseISO(stats.sim.finish))
     : NOT_AVAILABLE,
 });
+
+export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
+
+const getVideoSizeInSeats = (columnCount: number) => {
+  // Video takes 1/3 of the seats
+  const videoWidthInSeats = Math.max(
+    Math.floor(columnCount / 3),
+    SECTION_VIDEO_MIN_WIDTH_IN_SEATS
+  );
+
+  // Keep the 16:9 ratio
+  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
+
+  return {
+    videoHeightInSeats,
+    videoWidthInSeats,
+  };
+};
+
+export const determineWhereToSeat = (
+  userId: string,
+  grid: GridSize,
+  seatedUsers: Record<string, GridPosition | undefined>,
+  seatedPositions: Record<string, true | undefined>
+): GridPosition => {
+  const hash = (pos: GridPosition) => `${pos.row},${pos.col}`;
+
+  let pos = getRandomSeat(grid);
+  while (seatedPositions[hash(pos)]) {
+    pos = getRandomSeat(grid);
+  }
+
+  seatedPositions[hash(pos)] = true;
+  const oldPos = seatedUsers[userId];
+  if (oldPos) {
+    seatedPositions[hash(oldPos)] = undefined;
+  }
+  seatedUsers[userId] = pos;
+
+  return pos;
+};
+
+const getRandomSeat = (grid: GridSize): GridPosition => {
+  const { videoHeightInSeats, videoWidthInSeats } = getVideoSizeInSeats(
+    grid.auditoriumColumns
+  );
+  const videoRowThreshold = (grid.auditoriumRows - videoHeightInSeats) / 2;
+  const videoColThreshold = (grid.auditoriumColumns - videoWidthInSeats) / 2;
+
+  const rowRandom = faker.datatype.number(
+    grid.auditoriumRows - videoHeightInSeats
+  );
+  const colRandom = faker.datatype.number(
+    grid.auditoriumColumns - videoWidthInSeats
+  );
+
+  const row =
+    rowRandom < videoRowThreshold ? rowRandom : rowRandom + videoHeightInSeats;
+
+  const col =
+    colRandom < videoColThreshold ? colRandom : colRandom + videoWidthInSeats;
+
+  return { row, col };
+};
