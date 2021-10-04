@@ -189,7 +189,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
           </div>
           {seatedAtTable && (
             <JazzBarRoom
-              roomName={`${venue.name}-${seatedAtTable}`}
+              roomName={`${venue.id}-${seatedAtTable}`}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
               isAudioEffectDisabled={isUserAudioMuted}

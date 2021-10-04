@@ -112,7 +112,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   <Room
                     setSeatedAtTable={setSeatedAtTable}
                     venueId={venue.id}
-                    roomName={`${venue.name}-${seatedAtTable}`}
+                    roomName={`${venue.id}-${seatedAtTable}`}
                   />
                 </div>
               )}

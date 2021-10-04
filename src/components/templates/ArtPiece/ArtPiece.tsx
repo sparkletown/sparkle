@@ -86,7 +86,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
           <div className="ArtPiece__video-chat-wrapper">
             <Room
               venueId={venue.id}
-              roomName={name}
+              roomName={venue.id}
               hasChairs={false}
               defaultMute={true}
             />
