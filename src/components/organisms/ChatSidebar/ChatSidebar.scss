@@ -2,7 +2,8 @@
 
 $header-height: 45px;
 $chat-button-narrow-width: 50px;
-$unread-dot-right-spacing: 20px;
+$unread-dot-right-spacing-right: 28px;
+$unread-dot-right-spacing-bottom: 22px;
 // NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
 $media-width--mobile-min: 768px;
 $media-width--mobile-max: 1024px;
@@ -114,13 +115,13 @@ $media-width--mobile-max: 1024px;
     }
 
     &--new-message {
-      background-color: $red;
-      @include square-size($spacing--md);
-      border: 2px solid $secondary;
+      background-color: $primary;
+      @include square-size($spacing--md + 1);
+      border: 3px solid $secondary;
       position: absolute;
       border-radius: $border-radius--max;
-      right: $unread-dot-right-spacing;
-      bottom: $spacing--xxl;
+      right: $unread-dot-right-spacing-right;
+      bottom: $unread-dot-right-spacing-bottom;
     }
   }
 
