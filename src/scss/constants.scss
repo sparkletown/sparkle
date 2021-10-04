@@ -277,14 +277,10 @@ $z-layers: (
 }
 
 @function opaque-white($opacity: 0.1) {
-  $white-rgb: var(--primary-content--over-rgb);
-
-  @return rgba(#{$white-rgb}, $opacity);
+  @return rgba(#{var(--primary-content--over-rgb)}, $opacity);
 }
 
 @function opaque-black($opacity: 0.1) {
-  $black-rbg: var(--primary-content--under-rgb);
-
   @return rgba(#{var(--primary-content--under-rgb)}, $opacity);
 }
 
