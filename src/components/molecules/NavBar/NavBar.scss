@@ -9,7 +9,7 @@ $photobooth-button-background-size: 35px;
 }
 
 .navbar-container {
-  background: $primary-content-under;
+  background: $content--under;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,7 +31,7 @@ $photobooth-button-background-size: 35px;
 
   .notification-card {
     background: $red;
-    color: $primary-content--over;
+    color: $content--over;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -175,7 +175,7 @@ $photobooth-button-background-size: 35px;
   transition: transform 400ms $transition-function;
   border: none;
   appearance: none;
-  color: $primary-content--over;
+  color: $content--over;
 
   img {
     height: 40px;
@@ -217,7 +217,7 @@ $photobooth-button-background-size: 35px;
 }
 
 .schedule-text {
-  background-color: $primary-accent--under;
+  background-color: $accent--under;
   border-radius: 10px;
   margin-left: 8px;
   padding: 0px 10px;

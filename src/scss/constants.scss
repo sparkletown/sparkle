@@ -1,9 +1,9 @@
 $primaryColor: var(--primary-color-deprecated);
 
-$primary-accent--over: var(--primary-accent--over);
-$primary-accent--under: var(--primary-accent--under);
-$primary-content--over: var(--primary-content--over);
-$primary-content-under: var(--primary-content--under);
+$accent--over: var(--primary-accent--over);
+$accent--under: var(--primary-accent--under);
+$content--over: var(--primary-content--over);
+$content--under: var(--primary-content--under);
 
 $primary--darker-20pp: var(--primary--darker-20pp);
 $primary--lighter-10pp: var(--primary--lighter-10pp);
@@ -64,7 +64,7 @@ $room-card-background: #323232;
 $gradient: linear-gradient(
   124deg,
   #00f6d5 0%,
-  $primary-accent--under 50%,
+  $accent--under 50%,
   #e15ada 100%
 );
 $danger-gradient: linear-gradient(
@@ -325,19 +325,19 @@ $z-layers: (
   // The standard properties
   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
-  scrollbar-color: opaque-white(0.3) $primary-content-under;
+  scrollbar-color: opaque-white(0.3) $content--under;
   scrollbar-width: thin;
 
   // The webkit properties
   // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
 
   &::-webkit-scrollbar-corner {
-    background-color: $primary-content-under;
+    background-color: $content--under;
   }
 
   &::-webkit-scrollbar-track {
     border-radius: $border-radius--xs;
-    background-color: $primary-content-under;
+    background-color: $content--under;
   }
 
   &::-webkit-scrollbar {

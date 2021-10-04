@@ -15,7 +15,7 @@ $label-visible: flex;
   appearance: none;
   background: none;
   border: none;
-  color: $primary-content--over;
+  color: $content--over;
 
   transition: transform 600ms $transition-function;
 
@@ -27,7 +27,7 @@ $label-visible: flex;
     .maproom__label {
       display: $label-visible;
 
-      background-color: $primary-accent--under;
+      background-color: $accent--under;
       opacity: 1;
       box-shadow: 0 0 0 3px $primary--lighter-10pp, 0 2px 4px opaque-black(0.2);
     }

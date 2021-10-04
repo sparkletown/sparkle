@@ -130,10 +130,10 @@
 }
 
 input:checked + .slider {
-  background-color: $primary-accent--under;
-  border-color: $primary-content--over;
+  background-color: $accent--under;
+  border-color: $content--over;
   &::before {
-    background-color: $primary-content--over;
+    background-color: $content--over;
   }
 }
 

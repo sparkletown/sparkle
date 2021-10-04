@@ -25,7 +25,7 @@ $sand: #937c63;
   border-bottom: 1px solid opaque-white(0.2);
   box-shadow: box-shadow--large(0.1);
   backdrop-filter: blur(5px);
-  background-color: $primary-content-under;
+  background-color: $content--under;
   padding: 0 1rem;
 
   .navbar-container {
@@ -112,7 +112,7 @@ $sand: #937c63;
         &.navbar-link-schedule {
           width: auto;
           background-image: $gradient;
-          color: $primary-content--over;
+          color: $content--over;
           line-height: 42px;
           padding: 0 10px;
           font-size: 0.9rem;
@@ -185,7 +185,7 @@ $sand: #937c63;
   }
 
   &.nonplaya {
-    background-color: $primary-content-under;
+    background-color: $content--under;
     .navbar-container {
       .navbar-dropdown-middle {
         background-color: rgba(255, 255, 255, 0.1);

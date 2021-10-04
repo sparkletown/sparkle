@@ -41,12 +41,12 @@
     }
 
     &:hover {
-      color: $primary-content--over;
+      color: $content--over;
     }
 
     &--selected {
-      color: $primary-content--over;
-      background-color: $primary-accent--under;
+      color: $content--over;
+      background-color: $accent--under;
     }
   }
 }

@@ -18,8 +18,8 @@ body {
     sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  background-color: $primary-content-under;
-  color: $primary-content--over;
+  background-color: $content--under;
+  color: $content--over;
   display: flex;
   justify-content: center;
   font-family: "Rubik", sans-serif;
@@ -45,7 +45,7 @@ h6 {
   line-height: 1.2;
 
   &.primary {
-    color: $primary-accent--under;
+    color: $accent--under;
   }
 
   &.italic {
@@ -81,7 +81,7 @@ h6 {
 // Buttons
 
 button:focus {
-  outline: 1px dotted $primary-content--over;
+  outline: 1px dotted $content--over;
 }
 
 button.btn,
@@ -97,7 +97,7 @@ input.btn {
 
   background-color: var(--primary-accent--under-24a);
   transition: all 400ms $transition-function;
-  color: $primary-content--over;
+  color: $content--over;
   transform: translateY(0);
 
   &:hover {
@@ -106,7 +106,7 @@ input.btn {
   }
 
   &.btn-primary {
-    color: $primary-content--over;
+    color: $content--over;
     background-image: $gradient;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
@@ -116,7 +116,7 @@ input.btn {
   }
 
   &.btn-secondary {
-    color: $primary-content--over;
+    color: $content--over;
     background-color: rgba(124, 70, 251, 0.4);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
@@ -126,7 +126,7 @@ input.btn {
   }
 
   &.btn-danger {
-    color: $primary-content--over;
+    color: $content--over;
     background: $danger-gradient;
     border-color: rgba(0, 0, 0, 0);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
@@ -182,7 +182,7 @@ button.btn {
 
   background-color: $primaryColor;
   transition: all 400ms $transition-function;
-  color: $primary-content-under;
+  color: $content--under;
   transform: translateY(0);
 
   &:hover:enabled {
@@ -208,7 +208,7 @@ button.btn {
   &.btn-primary {
     // Background image has to be set to 'none' because by default the Button has gradient image
     background-image: none;
-    background-color: $primary-accent--under;
+    background-color: $accent--under;
 
     &:hover {
       background-image: none;
@@ -251,7 +251,7 @@ textarea {
   padding: 12px;
   border-radius: 22px;
   text-align: center;
-  color: $primary-content--over;
+  color: $content--over;
 
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -353,14 +353,14 @@ textarea {
   cursor: pointer;
   border-radius: 10px;
   padding: $spacer * 0.25 $spacer * 0.75;
-  background: $primary-content-under;
-  color: $primary-content--over;
+  background: $content--under;
+  color: $content--over;
 
   &.positioned {
     position: absolute;
     opacity: 0.5;
-    background: $primary-content--over;
-    color: $primary-content-under;
+    background: $content--over;
+    color: $content--under;
   }
 
   .icon {
@@ -376,7 +376,7 @@ textarea {
 
 a,
 .button--a {
-  color: $primary-content--over;
+  color: $content--over;
   text-decoration: underline;
 
   &:hover {
@@ -431,7 +431,7 @@ h4 {
 .modal-content {
   border: none;
   border-radius: 22px;
-  background: $primary-content-under;
+  background: $content--under;
   box-shadow: box-shadow--large(0.34);
 }
 
@@ -509,7 +509,7 @@ h4 {
   .youtube-video {
     transition: all 0.1s linear;
     background-color: $dark;
-    color: $primary-content--over;
+    color: $content--over;
   }
 }
 
@@ -590,7 +590,7 @@ h4 {
     .participant {
       display: flex;
       flex-grow: 1;
-      background: $primary-content-under;
+      background: $content--under;
 
       .mirrored {
         transform: scale(-1, 1);
@@ -631,7 +631,7 @@ h4 {
   }
 
   .chatbox-container {
-    border: 2px solid $primary-content-under;
+    border: 2px solid $content--under;
   }
 }
 
@@ -654,7 +654,7 @@ input.btn.btn-primary.btn-success {
 .bs-popover-bottom-end {
   width: 300px;
   max-width: 99%;
-  background: $primary-content-under;
+  background: $content--under;
   border: 1px solid $light-grey;
   background-image: linear-gradient(
     0deg,
@@ -663,7 +663,7 @@ input.btn.btn-primary.btn-success {
   );
 
   .chatbox-container {
-    background: $primary-content-under;
+    background: $content--under;
     background-image: linear-gradient(
       0deg,
       opaque-white(0.05) 0%,
@@ -673,7 +673,7 @@ input.btn.btn-primary.btn-success {
     .bubble {
       padding: 10px;
       border-radius: 10px;
-      color: $primary-content--over;
+      color: $content--over;
 
       &.global {
         background: $dark;
@@ -838,7 +838,7 @@ span.link {
 }
 
 .host-icon-container {
-  background: $primary-content-under;
+  background: $content--under;
   padding: 10px;
   width: 200px;
   height: 200px;

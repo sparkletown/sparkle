@@ -50,7 +50,7 @@ $playa-profile-name-size: 60px;
         height: $playa-avatar-size * 1.5;
       }
       &.they {
-        border: 2px solid $primary-content--over;
+        border: 2px solid $content--over;
         background: $sand;
         .avatar-name-container {
           top: -9px;
@@ -90,7 +90,7 @@ $playa-profile-name-size: 60px;
         }
       }
       &.they {
-        border: 2px solid $primary-content--over;
+        border: 2px solid $content--over;
         background: $sand;
       }
     }
@@ -184,7 +184,7 @@ $playa-profile-name-size: 60px;
       align-items: center;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
-      color: $primary-content--over;
+      color: $content--over;
       overflow: hidden;
       white-space: nowrap;
       padding: 3px 8px;
@@ -203,7 +203,7 @@ $playa-profile-name-size: 60px;
       height: $playa-mode-badge-size / 2;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
-      color: $primary-content--over;
+      color: $content--over;
       overflow: hidden;
       white-space: nowrap;
       padding: 3px;
@@ -217,7 +217,7 @@ $playa-profile-name-size: 60px;
       border-radius: 50%;
       width: $playa-mode-badge-size;
       height: $playa-mode-badge-size;
-      background-color: $primary-content--over;
+      background-color: $content--over;
       z-index: 1;
       overflow: hidden;
 
@@ -620,9 +620,9 @@ $playa-profile-name-size: 60px;
 }
 .link-button {
   display: inline-block;
-  color: $primary-content--over !important;
+  color: $content--over !important;
   padding: 10px;
-  border: solid 1px $primary-content--over;
+  border: solid 1px $content--over;
   font-size: 13px;
   text-decoration: none !important;
 }

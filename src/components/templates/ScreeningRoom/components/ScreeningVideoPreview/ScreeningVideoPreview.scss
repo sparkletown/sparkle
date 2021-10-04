@@ -22,7 +22,7 @@ $active-video-shadows: 0 10px 20px 0 var(--primary-accent--under-56a);
   border-radius: $border-radius--md;
 
   background-color: $saturated-black-alt;
-  color: $primary-content--over;
+  color: $content--over;
 
   border: 2px solid $lighter-intermediate-grey;
 
@@ -34,12 +34,12 @@ $active-video-shadows: 0 10px 20px 0 var(--primary-accent--under-56a);
   }
 
   &--selected {
-    border-color: $primary-accent--under;
+    border-color: $accent--under;
     box-shadow: $active-video-shadows;
 
     &:hover {
       background-color: $lighter-intermediate-grey;
-      border-color: $primary-accent--under;
+      border-color: $accent--under;
     }
   }
 
@@ -55,7 +55,7 @@ $active-video-shadows: 0 10px 20px 0 var(--primary-accent--under-56a);
     padding: $spacing--sm;
     border-radius: $border-radius--lg;
 
-    background-color: $primary-accent--under;
+    background-color: $accent--under;
   }
 
   &__selected-badge-text {

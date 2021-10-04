@@ -21,11 +21,11 @@ $upload-button-max-width: 300px;
     display: flex;
     align-items: center;
     border-radius: $border-radius--xl;
-    border: solid $primary-accent--under;
+    border: solid $accent--under;
     padding: $spacing--lg 50px;
     margin: $spacing--lg 0;
     font-weight: $font-weight--700;
-    color: $primary-content--over;
+    color: $content--over;
     background-color: transparent;
 
     &:hover {
@@ -50,7 +50,7 @@ $upload-button-max-width: 300px;
   &__image {
     width: $profile-picture-size--lg;
     height: $profile-picture-size--lg;
-    border: 3px solid $primary-content--over;
+    border: 3px solid $content--over;
 
     &--small {
       width: $profile-picture-size--sm;

@@ -57,7 +57,7 @@
     &:focus {
       // !important is used to overwrite some bootstrap css elements
       background: $primaryColor !important;
-      color: $primary-content-under;
+      color: $content--under;
     }
   }
   .chevron {

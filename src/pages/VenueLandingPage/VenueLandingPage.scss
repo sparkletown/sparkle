@@ -51,7 +51,7 @@
   .quotation-container {
     display: flex;
     flex-direction: column;
-    color: $primary-content--over;
+    color: $content--over;
     align-items: center;
     margin-bottom: 10px;
 
@@ -72,16 +72,16 @@
     width: 40%;
     margin: auto;
     background: $light-green;
-    color: $primary-content-under;
+    color: $content--under;
 
     .toast-header {
       background: $dark-green;
-      color: $primary-content-under;
+      color: $content--under;
       display: flex;
       justify-content: space-between;
 
       button {
-        color: $primary-content-under;
+        color: $content--under;
         opacity: 0.7;
         margin: 0;
         outline: none;
@@ -178,7 +178,7 @@
   }
   .date {
     font-size: 15px;
-    color: $primary-content--over;
+    color: $content--over;
     margin-bottom: 5px;
   }
   .event-description {

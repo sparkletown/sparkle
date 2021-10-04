@@ -3,8 +3,8 @@
 .initial-form {
   .create-account-button {
     border-radius: $border-radius--sm;
-    box-shadow: inset 0 0 0 3px $primary-accent--under !important;
-    background-color: $primary-accent--under !important;
+    box-shadow: inset 0 0 0 3px $accent--under !important;
+    background-color: $accent--under !important;
     color: white !important;
 
     &:focus,
@@ -19,7 +19,7 @@
   }
 
   .login-button {
-    box-shadow: inset 0 0 0 3px $primary-accent--under !important;
+    box-shadow: inset 0 0 0 3px $accent--under !important;
     color: white !important;
     background: none !important;
     border-radius: $border-radius--sm;

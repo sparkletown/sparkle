@@ -103,7 +103,7 @@ $avatarpulse-box-shadow-color: var(--primary-accent--under-65a);
 
     .avatar {
       opacity: 0.025;
-      background-color: $primary-content--over;
+      background-color: $content--over;
     }
   }
 
@@ -111,7 +111,7 @@ $avatarpulse-box-shadow-color: var(--primary-accent--under-65a);
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: $primary-content--over;
+    background-color: $content--over;
     opacity: 0.025;
     border-radius: 100%;
 
@@ -139,18 +139,18 @@ $avatarpulse-box-shadow-color: var(--primary-accent--under-65a);
   //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
-      background-color: $primary-accent--under;
-      box-shadow: 0 0 0 3px $primary-accent--under,
+      background-color: $accent--under;
+      box-shadow: 0 0 0 3px $accent--under,
         0 0 20px $avatarpulse-box-shadow-color;
     }
     50% {
       background-color: $primary--lighter-10pp;
-      box-shadow: 0 0 0 3px $primary-accent--under,
+      box-shadow: 0 0 0 3px $accent--under,
         0 0 20px 10px $avatarpulse-box-shadow-color;
     }
     100% {
-      background-color: $primary-accent--under;
-      box-shadow: 0 0 0 3px $primary-accent--under,
+      background-color: $accent--under;
+      box-shadow: 0 0 0 3px $accent--under,
         0 0 20px $avatarpulse-box-shadow-color;
     }
   }

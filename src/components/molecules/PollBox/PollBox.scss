@@ -33,7 +33,7 @@ $append-button-width: 24px;
     align-items: center;
     margin-left: $spacing--md;
 
-    background-color: $primary-accent--under;
+    background-color: $accent--under;
 
     &:disabled {
       background-color: $saturated-black;
@@ -41,7 +41,7 @@ $append-button-width: 24px;
   }
 
   &__submit-button-icon {
-    color: $primary-accent--over;
+    color: $accent--over;
   }
 
   &__append-button {
@@ -53,6 +53,6 @@ $append-button-width: 24px;
     align-items: center;
     margin-left: $spacing--md;
     background-color: transparent;
-    color: $primary-accent--over;
+    color: $accent--over;
   }
 }

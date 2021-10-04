@@ -32,7 +32,7 @@ $preview-margin: 30px;
   }
 
   .page-container-left {
-    background-color: $primary-content-under;
+    background-color: $content--under;
     padding-top: $navbar-height;
     overflow-y: auto;
     height: 100%;
@@ -59,7 +59,7 @@ $preview-margin: 30px;
       padding: 10px 14px;
       display: flex;
       justify-content: space-between;
-      background-color: $primary-content-under;
+      background-color: $content--under;
       border-top: 1px solid opaque-white(0.2);
 
       .btn {
@@ -70,7 +70,7 @@ $preview-margin: 30px;
   }
 
   &.preview {
-    background-color: $primary-content-under;
+    background-color: $content--under;
     overflow: auto;
     flex-direction: column;
     margin-top: $navbar-height;
@@ -85,7 +85,7 @@ $preview-margin: 30px;
   .venue-preview {
     flex: 1;
     margin: $preview-margin;
-    background-color: $primary-content-under;
+    background-color: $content--under;
     border-radius: 20px;
     overflow: auto;
     border: 2px solid gray;
@@ -139,7 +139,7 @@ $preview-margin: 30px;
   }
 
   &.selected {
-    box-shadow: 0 0 0 4px $primary-accent--under;
+    box-shadow: 0 0 0 4px $accent--under;
     background-color: lighten($dark, 4%);
 
     .pickspace-thumbnail {
@@ -153,7 +153,7 @@ $preview-margin: 30px;
     width: 120px;
     height: 120px;
     margin-right: 20px;
-    background-color: $primary-content-under;
+    background-color: $content--under;
     border-radius: $border-radius;
     display: flex;
     align-items: center;

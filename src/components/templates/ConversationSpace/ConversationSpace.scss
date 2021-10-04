@@ -34,7 +34,7 @@
 
     .table-header {
       background: $dark;
-      color: $primary-content--over;
+      color: $content--over;
       padding: 10px 20px;
       border-radius: 22px 22px 0 0;
     }
@@ -270,7 +270,7 @@
   }
 
   .seated-area {
-    border: 0px solid $primary-content--over;
+    border: 0px solid $content--over;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;

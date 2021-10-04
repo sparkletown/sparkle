@@ -18,7 +18,7 @@ $active-poster-shadows: 0 10px 20px 0 var(--primary-accent--under-56a);
   border-radius: $border-radius--md;
 
   background-color: $saturated-black-alt;
-  color: $primary-content--over;
+  color: $content--over;
 
   border: 2px solid $lighter-intermediate-grey;
 
@@ -30,12 +30,12 @@ $active-poster-shadows: 0 10px 20px 0 var(--primary-accent--under-56a);
   }
 
   &--live {
-    border-color: $primary-accent--under;
+    border-color: $accent--under;
     box-shadow: $active-poster-shadows;
 
     &:hover {
       background-color: $lighter-intermediate-grey;
-      border-color: $primary-accent--under;
+      border-color: $accent--under;
     }
   }
 

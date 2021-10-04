@@ -7,14 +7,14 @@ $background-hover: opaque-white(0.3);
   background-color: $background;
   border-radius: $border-radius--xl;
   padding: 6px 18px 6px 12px;
-  color: $primary-content--over;
+  color: $content--over;
 
   display: inline-block;
   text-decoration: none;
 
   &:hover {
     text-decoration: none;
-    color: $primary-content--over;
+    color: $content--over;
     background-color: $background-hover;
   }
 }
