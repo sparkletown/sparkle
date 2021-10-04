@@ -1,0 +1,48 @@
+@import "scss/constants.scss";
+
+.AdminSidebarFooter {
+  position: absolute;
+  bottom: $footer-height;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  background-color: $black;
+  border-top: 1px solid opaque-white(0.2);
+
+  padding: $spacing--xs;
+
+  width: $admin-ng-sidebar-width--normal;
+  min-width: $admin-ng-sidebar-width--min;
+  max-width: $admin-ng-sidebar-width--max;
+  max-height: $admin-ng-sidebar-footer-height--max;
+
+  font-size: 1rem;
+  line-height: 1rem;
+
+  &__buttons {
+    display: flex;
+    width: $admin-ng-sidebar-footer-buttons-width--magic-number;
+  }
+
+  &__button {
+    flex-shrink: 0;
+    flex-grow: 4;
+
+    &--larger {
+      flex-grow: 4;
+      flex-shrink: 0.25;
+    }
+
+    &--smaller {
+      flex-shrink: 4;
+      flex-grow: 1;
+    }
+
+    &--same-size {
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
+  }
+}

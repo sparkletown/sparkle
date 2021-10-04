@@ -62,12 +62,6 @@
 
     // required venue name/id
     id: "venue id",
-
-    // defaults are ±9 in case the venue doesn't have auditoriumColumns and auditoriumRows fields
-    minRow: -9,
-    maxRow: +9,
-    minCol: -9,
-    maxCol: +9,
   },
 
   // The following settings will be overridden by the ones for the respective simulations

@@ -5,8 +5,6 @@ import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -15,6 +13,10 @@ import {
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
+  ROOMS_TAXON,
+  SECTION_DEFAULT_COLUMNS_COUNT,
+  SECTION_DEFAULT_ROWS_COUNT,
+  ZOOM_ROOM_TAXON,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
@@ -267,8 +269,9 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
       <div style={{ fontSize: "16px" }}>
-        Please post a URL to, for example, a Zoom room, Twitch stream, other
-        Universe, or any interesting thing out there on the open web.
+        Please post a URL to, for example, a {ZOOM_ROOM_TAXON.capital}, Twitch
+        stream, other Universe, or any interesting thing out there on the open
+        web.
       </div>
       <textarea
         disabled={disable}
@@ -348,7 +351,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         <h4 className="italic input-header">Number of seats columns</h4>
         <input
           disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+          defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
           min={5}
           name="auditoriumColumns"
           type="number"
@@ -366,7 +369,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         <h4 className="italic input-header">Number of seats rows</h4>
         <input
           disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+          defaultValue={SECTION_DEFAULT_ROWS_COUNT}
           name="auditoriumRows"
           type="number"
           ref={register}
@@ -475,7 +478,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   const renderRoomAppearanceSelect = () => (
     <>
       <h4 className="italic input-header">
-        Choose how you&apos;d like your rooms to appear on the map
+        Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the map
       </h4>
       <div className="input-container">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
@@ -727,6 +730,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
         {renderRadioToggle()}
 
+        {values.showRadio && renderRadioStationInput()}
+
         {renderJukeboxToggle()}
 
         <UserStatusManager
@@ -739,8 +744,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           onPickColor={updateStatusColor}
           onChangeInput={updateStatusText}
         />
-
-        {values.showRadio && renderRadioStationInput()}
 
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
@@ -774,7 +777,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
       </div>
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
-          You&apos;ll be able to add rooms to your theme camp on the next page
+          You&apos;ll be able to add {ROOMS_TAXON.lower} to your theme camp on
+          the next page
         </div>
       )}
     </form>

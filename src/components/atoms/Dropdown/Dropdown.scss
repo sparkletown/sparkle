@@ -1,0 +1,22 @@
+@import "scss/constants";
+
+.Dropdown {
+  &__button {
+    color: $white;
+    background: none;
+    padding: 0;
+    margin: 0;
+    border: none;
+    line-height: unset;
+    vertical-align: baseline;
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:hover {
+      background-color: initial;
+      transform: none;
+    }
+  }
+}

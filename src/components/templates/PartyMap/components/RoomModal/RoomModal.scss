@@ -4,38 +4,31 @@ $border-radius: 22px;
 $spacing: 20px;
 
 .RoomModal {
-  padding: $spacing;
-
-  background-color: $dark;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  h2 {
-    text-align: center;
+  &__modal-body {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    background-color: $dark;
+    background-repeat: no-repeat;
+    background-size: cover;
   }
 
   &__title {
-    font-weight: 700;
+    font-weight: $font-weight--700;
+    font-size: $font-size--xxl;
+  }
 
-    margin-top: $spacing;
-    margin-bottom: $spacing;
+  &__subtitle {
+    font-weight: $font-weight--300;
+    font-size: $font-size--lg;
   }
 
   &__main {
+    padding: $spacing;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    align-items: center;
-
-    > * {
-      flex: 1;
-      height: fit-content;
-      margin-left: $spacing;
-
-      &:first-child {
-        margin-left: 0;
-      }
-    }
   }
 
   &__icon {
@@ -44,14 +37,13 @@ $spacing: 20px;
     width: 180px;
     border-radius: $border-radius;
     background-color: $black;
-    background-size: contain;
+    background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
   }
 
-  &__content {
+  .modal-content {
     background: $dark;
-    padding: 10px $spacing;
     border-radius: $border-radius;
     height: fit-content;
   }
@@ -63,26 +55,33 @@ $spacing: 20px;
 
   &__btn-enter {
     width: 100%;
+    margin-top: 10px;
   }
 
   &__userlist {
-    margin-bottom: $spacing;
+    margin: $spacing 0;
   }
 
   &__description {
-    margin-bottom: $spacing;
-    padding: 0 $spacing;
+    @include scrollbar;
+    padding: 10px $spacing;
 
     background: $dark;
     border-radius: $border-radius;
 
     max-height: 25vh;
     overflow-y: auto;
+
+    font-size: $font-size--md;
+    font-weight: $font-weight--400;
+    color: opaque-white(0.6);
   }
 
   &__events {
+    @include scrollbar;
     max-height: 35vh;
     overflow-y: auto;
+
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {
