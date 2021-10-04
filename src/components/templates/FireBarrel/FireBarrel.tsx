@@ -27,7 +27,7 @@ export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
     localParticipant,
     participants,
     renderErrorModal,
-  } = useVideoRoomState(userId, venue?.name);
+  } = useVideoRoomState(userId, venue?.id);
 
   const seatCount =
     participants.length > DEFAULT_BURN_BARREL_SEATS

@@ -116,22 +116,22 @@ export const useParticipantMediaState = (
   }, [isEnabled, tracks]);
 
   // @debt should we be handling the other tracks too?
-  const track = tracks[0];
+  const [firstTrack] = tracks;
   useEffect(() => {
-    if (!track) return;
+    if (!firstTrack) return;
 
-    ref.current ? track.attach(ref.current) : track.detach();
+    ref.current ? firstTrack.attach(ref.current) : firstTrack.detach();
 
-    track.on("enabled", enable);
-    track.on("disabled", disable);
+    firstTrack.on("enabled", enable);
+    firstTrack.on("disabled", disable);
 
     return () => {
-      track.off("enabled", enable);
-      track.off("disabled", disable);
+      firstTrack.off("enabled", enable);
+      firstTrack.off("disabled", disable);
 
-      track.detach();
+      firstTrack.detach();
     };
-  }, [disable, enable, isEnabled, ref, track]);
+  }, [disable, enable, isEnabled, ref, firstTrack]);
 
   return { isEnabled, toggle };
 };
