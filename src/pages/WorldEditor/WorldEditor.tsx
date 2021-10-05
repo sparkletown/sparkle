@@ -3,8 +3,10 @@ import { useHistory } from "react-router-dom";
 
 import { ADMIN_V3_WORLDS_URL } from "settings";
 
+import { WorldNavTab } from "types/WorldNavTab";
+
 import { useWorldEdit } from "hooks/useWorldEdit";
-import { useWorldId } from "hooks/useWorldId";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedPanel";
 import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
@@ -19,8 +21,8 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 import "./WorldEditor.scss";
 
 export const WorldEditor: React.FC = () => {
-  const worldId = useWorldId();
   const history = useHistory();
+  const { worldId, selectedTab } = useWorldEditParams();
 
   const { isLoaded, world } = useWorldEdit(worldId);
 
@@ -28,46 +30,35 @@ export const WorldEditor: React.FC = () => {
     history,
   ]);
 
-  // TODO: Remove the following noinspection comment after navigation is added
-  // noinspection PointlessBooleanExpressionJS
   return (
     <div className="WorldEditor">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
           <WorldNav />
-          {
-            // TODO: replace with check for selected tab
-            true && (
-              <WorldEditorStartPanel
-                worldId={worldId}
-                onClickHome={navigateToHome}
-                loaded={isLoaded}
-                world={world}
-              />
-            )
-          }
-          {
-            // TODO: replace with check for selected tab
-            false && (
-              <WorldEditorEntrancePanel
-                worldId={worldId}
-                onClickHome={navigateToHome}
-                loaded={isLoaded}
-                world={world}
-              />
-            )
-          }
-          {
-            // TODO: replace with check for selected tab
-            false && (
-              <WorldEditorAdvancedPanel
-                worldId={worldId}
-                onClickHome={navigateToHome}
-                loaded={isLoaded}
-                world={world}
-              />
-            )
-          }
+          {selectedTab === WorldNavTab.start && (
+            <WorldEditorStartPanel
+              worldId={worldId}
+              onClickHome={navigateToHome}
+              loaded={isLoaded}
+              world={world}
+            />
+          )}
+          {selectedTab === WorldNavTab.entrance && (
+            <WorldEditorEntrancePanel
+              worldId={worldId}
+              onClickHome={navigateToHome}
+              loaded={isLoaded}
+              world={world}
+            />
+          )}
+          {selectedTab === WorldNavTab.advanced && (
+            <WorldEditorAdvancedPanel
+              worldId={worldId}
+              onClickHome={navigateToHome}
+              loaded={isLoaded}
+              world={world}
+            />
+          )}
         </AdminRestricted>
       </WithNavigationBar>
     </div>

@@ -1,4 +1,4 @@
-import { WorldNavTab } from "./WorldNavTab";
+import { WorldNavTab } from "types/WorldNavTab";
 
 export const WorldNavLabelMap: Readonly<
   Record<WorldNavTab, string>

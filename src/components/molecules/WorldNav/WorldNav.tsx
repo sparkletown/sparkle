@@ -1,27 +1,21 @@
 import React, { useMemo } from "react";
-import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { WorldNavTab } from "types/WorldNavTab";
+
 import { adminWorldUrl } from "utils/url";
+
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import { WorldNavIconMap } from "./WorldNavIconMap";
 import { WorldNavLabelMap } from "./WorldNavLabelMap";
-import { WorldNavTab } from "./WorldNavTab";
 
 import "./WorldNav.scss";
 
-export interface WorldNavRouteParams {
-  worldId?: string;
-  selectedTab?: WorldNavTab;
-}
-
 export const WorldNav: React.FC = () => {
-  const {
-    worldId,
-    selectedTab = WorldNavTab.start,
-  } = useParams<WorldNavRouteParams>();
+  const { worldId, selectedTab } = useWorldEditParams();
   const renderedTabs = useMemo(() => {
     return Object.entries(WorldNavLabelMap).map(([key, label]) => (
       <Link
