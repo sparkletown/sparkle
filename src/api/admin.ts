@@ -5,8 +5,8 @@ import { omit } from "lodash";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
@@ -109,7 +109,7 @@ export type VenueInput = AdvancedVenueInput &
   };
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
