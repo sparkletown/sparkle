@@ -17,7 +17,9 @@ const checkIsAdmin = async (uid) => {
     }
     const admins = adminDoc.data();
 
-    if (admins.users && admins.users.includes(uid)) return;
+    if (admins.users && admins.users.includes(uid)) {
+      return;
+    }
 
     throw new HttpsError("permission-denied", `User is not an admin`);
   } catch (error) {
@@ -42,7 +44,9 @@ const checkIsWorldOwner = async (worldId, uid) => {
 
     const world = worldDoc.data();
 
-    if (world.owners && world.owners.includes(uid)) return;
+    if (world.owners && world.owners.includes(uid)) {
+      return;
+    }
 
     throw new HttpsError(
       "permission-denied",
@@ -85,8 +89,18 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
-
-  const worldId = data.id;
+  const {
+    id: worldId,
+    name,
+    bannerImageUrl,
+    code_of_conduct_questions,
+    description,
+    entrance,
+    logoImageUrl,
+    profile_questions,
+    rooms,
+    subtitle,
+  } = data;
 
   if (!worldId) {
     throw new HttpsError(
@@ -98,41 +112,37 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   await checkIsWorldOwner(worldId, context.auth.token.user_id);
   await checkIsAdmin(context.auth.token.user_id);
 
+  let landingPageConfig;
+  if (bannerImageUrl || subtitle || description) {
+    landingPageConfig = {};
+    if (typeof bannerImageUrl === "string") {
+      landingPageConfig.coverImageUrl = bannerImageUrl;
+    }
+
+    if (typeof subtitle === "string") {
+      landingPageConfig.subtitle = subtitle;
+    }
+
+    if (typeof description === "string") {
+      landingPageConfig.description = description;
+    }
+  }
+
   const worldData = {
     updatedAt: Date.now(),
-    ...(data.logoImageUrl && { host: { icon: data.logoImageUrl } }),
-    ...(data.rooms && { rooms: data.rooms }),
-    ...(data.code_of_conduct_questions && {
-      code_of_conduct_questions: data.code_of_conduct_questions,
-    }),
-    ...(data.profile_questions && {
-      profile_questions: data.profile_questions,
-    }),
-    ...(data.entrance && { entrance: data.entrance }),
+    ...(name && { name }),
+    ...(logoImageUrl && { host: { icon: logoImageUrl } }),
+    ...(rooms && { rooms }),
+    ...(code_of_conduct_questions && { code_of_conduct_questions }),
+    ...(profile_questions && { profile_questions }),
+    ...(entrance && { entrance }),
+    ...(landingPageConfig && { config: { landingPageConfig } }),
   };
-
-  if (data.bannerImageUrl || data.subtitle || data.description) {
-    worldData.config = {
-      landingPageConfig: {},
-    };
-  }
-
-  if (typeof data.bannerImageUrl === "string") {
-    worldData.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
-  }
-
-  if (typeof data.subtitle === "string") {
-    worldData.config.landingPageConfig.subtitle = data.subtitle;
-  }
-
-  if (typeof data.description === "string") {
-    worldData.config.landingPageConfig.description = data.description;
-  }
 
   await admin
     .firestore()
     .collection("worlds")
-    .doc(data.id)
+    .doc(worldId)
     .set(worldData, { merge: true });
 
   return worldData;
