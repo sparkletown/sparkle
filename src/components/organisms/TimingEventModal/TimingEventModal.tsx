@@ -52,6 +52,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     validationSchema: eventEditSchema,
   });
 
+  //register the room dropdown
+  useEffect(() => {
+    register("room");
+  }, [register]);
+
   useEffect(() => {
     if (event) {
       reset({
@@ -239,7 +244,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
               <div className={event && "input-group__flex"}>
                 <input
-                  className="btn btn-primary btn-small {event && 'update-button'}"
+                  className="btn btn-primary btn-small"
                   type="submit"
                   value={event ? "Update" : "Create"}
                   disabled={formState.isSubmitting}
@@ -248,7 +253,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 {template && HAS_ROOMS_TEMPLATES.includes(template) && event && (
                   <input
                     className="btn btn-primary btn-danger btn-small"
-                    type="submit"
                     value="Delete"
                     onClick={(e) => {
                       e.preventDefault();
