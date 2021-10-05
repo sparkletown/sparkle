@@ -66,5 +66,3 @@ export const makeRoomHitFilter = ({
 
   return isWithinBounds(checkPercent, roomBounds);
 };
-
-export const filterEnabledRooms = (room: Room) => room.isEnabled;

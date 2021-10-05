@@ -3,6 +3,9 @@
 .full-page-container.jazz-bar-container {
   padding: 0;
 }
+.jazz-bar-container {
+  margin-top: -($spacing--xxl);
+}
 .content-container {
   display: flex;
   flex: 1 1 auto;

@@ -3,11 +3,16 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { ROOM_TAXON } from "settings";
 
-import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
+import {
+  createRoom,
+  createUrlSafeName,
+  createVenue_v2,
+  RoomInput_v2,
+} from "api/admin";
 
-import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { VenueTemplate } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
@@ -16,10 +21,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import {
-  roomSchema,
-  venueRoomSchema,
-} from "pages/Admin/Details/ValidationSchema";
+import { venueRoomSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -28,13 +30,15 @@ import "./VenueRoomItem.scss";
 export interface VenueRoomItemProps {
   icon: string;
   text: string;
-  template?: VenueRoomTemplate;
+  template?: VenueTemplate;
+  worldId: string;
 }
 
 export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   icon,
   text,
   template,
+  worldId,
 }) => {
   const {
     isShown: isModalVisible,
@@ -46,10 +50,8 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
   const venueId = useVenueId();
 
-  const isVenuePortal = template !== RoomTemplate.external;
-
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema: isVenuePortal ? venueRoomSchema : roomSchema,
+    validationSchema: venueRoomSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -63,84 +65,72 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const roomUrl = isVenuePortal
-      ? window.origin + venueInsideUrl(roomValues.venueName)
-      : roomValues.roomUrl;
+    const venueUrlName = createUrlSafeName(roomValues.venueName);
+
+    const roomUrl = window.origin + venueInsideUrl(venueUrlName);
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
+      about: "",
       isEnabled: true,
-      image_url: DEFAULT_VENUE_LOGO,
+      image_url: icon,
       url: roomUrl,
+      width_percent: 5,
+      height_percent: 5,
+      x_percent: 50,
+      y_percent: 50,
       template,
     };
 
-    // TS doesn't work properly with const statements and won't 'know' that this is already checked.
-    // That's why this is inline instead of isVenuePortal
-    if (template !== RoomTemplate.external) {
-      const venueData = buildEmptyVenue(roomValues.venueName, template);
+    const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-      await createVenue_v2(venueData, user);
-    }
+    await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, isVenuePortal, template, user, venueId]);
+  }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
   return (
     <>
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <Form.Label>Room title</Form.Label>
+            <Form.Label>{ROOM_TAXON.capital} title</Form.Label>
             <InputField
               name="roomTitle"
               type="text"
               autoComplete="off"
-              placeholder="Room title"
+              placeholder={`${ROOM_TAXON.capital} title`}
               error={errors.roomTitle}
               ref={register()}
               disabled={isLoading}
             />
 
-            {isVenuePortal && (
-              <>
-                <Form.Label>Venue name</Form.Label>
-                <InputField
-                  name="venueName"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Venue name"
-                  error={errors.venueName}
-                  ref={register()}
-                  disabled={isLoading}
-                />
-              </>
-            )}
+            <>
+              <Form.Label>Venue name</Form.Label>
+              <InputField
+                name="venueName"
+                type="text"
+                autoComplete="off"
+                placeholder="Venue name"
+                error={errors.venueName}
+                ref={register()}
+                disabled={isLoading}
+              />
+            </>
 
-            {!isVenuePortal && (
-              <>
-                <Form.Label>Room url</Form.Label>
-                <InputField
-                  name="roomUrl"
-                  type="text"
-                  autoComplete="off"
-                  placeholder="Room url"
-                  error={errors.roomUrl}
-                  ref={register()}
-                  disabled={isLoading}
-                />
-              </>
-            )}
-
-            <Button disabled={isLoading} title="Add room" type="submit">
-              Add room
+            <Button
+              disabled={isLoading}
+              title={`Add ${ROOM_TAXON.lower}`}
+              type="submit"
+            >
+              Add {ROOM_TAXON.lower}
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
       <div className="VenueRoomItem" onClick={showModal}>
         <img
-          alt={`room-icon-${icon}`}
+          alt={`${ROOM_TAXON.lower} icon ${icon}`}
           src={icon}
           className="VenueRoomItem__room-icon"
         />

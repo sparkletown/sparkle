@@ -157,7 +157,6 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <ProfileModalEditBasicInfo
-        venueId={venue.id}
         user={user}
         containerClassName="EditingProfileModalContent__section"
         register={register}
