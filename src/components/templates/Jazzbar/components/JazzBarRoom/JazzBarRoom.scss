@@ -3,13 +3,13 @@
 
 .jazzbar-room {
   &__participant {
-    background-color: $light-grey;
+    background-color: $black;
+    border-radius: $border-radius--xl;
     display: flex;
     justify-content: center;
     justify-self: center;
     max-width: $video-participant-optimal-width;
     max-height: $video-participant-optimal-height;
-    border-radius: 15px;
 
     .participant {
       display: flex;
