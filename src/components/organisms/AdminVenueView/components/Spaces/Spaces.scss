@@ -49,14 +49,14 @@ $icon-size: 20px;
 
   &__venue-rooms {
     padding: $spacing--md;
-    background-color: $saturated-black;
+    background-color: $secondary--dark;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     border-bottom: 1px solid opaque-white(0.1);
 
     &:hover {
-      background-color: lighten($saturated-black, 5%);
+      background-color: lighten($secondary--dark, 5%);
     }
   }
 
@@ -67,7 +67,7 @@ $icon-size: 20px;
     align-items: center;
 
     &:hover {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 
