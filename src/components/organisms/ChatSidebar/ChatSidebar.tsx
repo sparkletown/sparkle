@@ -87,15 +87,13 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
             </>
           )}
         </button>
-        {!isExpanded && (
+        {!isExpanded ? (
           <button
-            aria-label={isExpanded ? "Hide chat" : "Show chat"}
+            aria-label={"Show chat"}
             className="chat-sidebar__controller chat-sidebar__private-chat"
             onClick={togglePrivateChatSidebar}
           >
-            {isExpanded ? (
-              <FontAwesomeIcon icon={faChevronRight} size="sm" />
-            ) : (
+            {
               <>
                 <FontAwesomeIcon icon={faChevronLeft} size="sm" />
                 <div className="chat-sidebar__controller-wrapper">
@@ -108,33 +106,33 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                   )}
                 </div>
               </>
-            )}
+            }
           </button>
-        )}
-
-        {isExpanded && (
-          <div className="chat-sidebar__tabs" role="tablist">
-            <button
-              role="tab"
-              id={venueTabId}
-              aria-label={venueChatTabTitle}
-              aria-selected={isVenueChat}
-              className={venueChatTabStyles}
-              onClick={selectVenueChat}
-            >
-              {venueChatTabTitle}
-            </button>
-            <button
-              role="tab"
-              id={privateTabId}
-              aria-label={privateChatTabTitle}
-              aria-selected={isPrivateChat}
-              className={privateChatTabStyles}
-              onClick={selectPrivateChat}
-            >
-              {privateChatTabTitle}
-            </button>
-          </div>
+        ) : (
+          <>
+            <div className="chat-sidebar__tabs" role="tablist">
+              <button
+                role="tab"
+                id={venueTabId}
+                aria-label={venueChatTabTitle}
+                aria-selected={isVenueChat}
+                className={venueChatTabStyles}
+                onClick={selectVenueChat}
+              >
+                {venueChatTabTitle}
+              </button>
+              <button
+                role="tab"
+                id={privateTabId}
+                aria-label={privateChatTabTitle}
+                aria-selected={isPrivateChat}
+                className={privateChatTabStyles}
+                onClick={selectPrivateChat}
+              >
+                {privateChatTabTitle}
+              </button>
+            </div>
+          </>
         )}
       </div>
       {isExpanded && (
