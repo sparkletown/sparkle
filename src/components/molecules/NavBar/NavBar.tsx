@@ -9,7 +9,6 @@ import {
   faSearch,
   faTicketAlt,
   faUser,
-  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -22,11 +21,17 @@ import {
   SPARKLE_PHOTOBOOTH_URL,
 } from "settings";
 
+import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import { radioStationsSelector } from "utils/selectors";
+import {
+  animateMapEnvironmentSoundSelector,
+  radioStationsSelector,
+} from "utils/selectors";
 import { enterVenue, getExtraLinkProps, venueInsideUrl } from "utils/url";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -45,11 +50,10 @@ import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 import { BackButton } from "components/atoms/BackButton";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { VolumeControl } from "components/atoms/VolumeControl";
 
 import * as S from "./Navbar.styles";
 import { NavBarLogin } from "./NavBarLogin";
-
-import radio from "assets/icons/radio.svg";
 
 import "./NavBar.scss";
 import "./playa.scss";
@@ -141,6 +145,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+
+  const dispatch = useDispatch();
+  const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
+  const [, setAmbientAudioVocal] = useState(true);
+
+  const onToggleAmbientAudio = useCallback(() => {
+    const toggledValue = !isAmbientAudioVocal;
+    setAmbientAudioVocal(toggledValue);
+    dispatch(setAnimateMapEnvironmentSound(toggledValue));
+  }, [dispatch, isAmbientAudioVocal, setAmbientAudioVocal]);
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -321,28 +335,23 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                       onBlur={onInputBlur}
                     />
                   )}
-                  <ButtonNG
-                    className="navbar-links__menu-link"
-                    iconOnly
-                    iconSize="1x"
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </ButtonNG>
+                  {!isSearchShown && (
+                    <ButtonNG
+                      className="navbar-links__menu-link"
+                      iconOnly
+                      iconSize="1x"
+                    >
+                      <FontAwesomeIcon icon={faSearch} />
+                    </ButtonNG>
+                  )}
                 </div>
-                <ButtonNG
-                  className="navbar-links__menu-link"
-                  iconOnly
-                  iconSize="1x"
-                >
-                  <img src={radio} alt="radio" />
-                </ButtonNG>
-                <ButtonNG
-                  className="navbar-links__menu-link"
-                  iconOnly
-                  iconSize="1x"
-                >
-                  <FontAwesomeIcon icon={faVolumeUp} />
-                </ButtonNG>
+                <VolumeControl
+                  className="NavBar__volume-control"
+                  name="noise"
+                  muted={isAmbientAudioVocal}
+                  withMute
+                  onMute={onToggleAmbientAudio}
+                />
 
                 {showNormalRadio && (
                   <OverlayTrigger
@@ -418,14 +427,20 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                       />
                       Profile
                     </Dropdown.Item>
-                    <Dropdown.Item className="navbar__dropdown-item">
+                    <Dropdown.Item
+                      className="navbar__dropdown-item"
+                      style={{ display: "none" }}
+                    >
                       <FontAwesomeIcon
                         icon={faCog}
                         className="navbar__dropdown-item-icon"
                       />
                       Account
                     </Dropdown.Item>
-                    <Dropdown.Item className="navbar__dropdown-item">
+                    <Dropdown.Item
+                      className="navbar__dropdown-item"
+                      style={{ display: "none" }}
+                    >
                       <FontAwesomeIcon
                         icon={faInfoCircle}
                         className="navbar__dropdown-item-icon"
