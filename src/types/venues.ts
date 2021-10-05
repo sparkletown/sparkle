@@ -95,7 +95,7 @@ export type AnyVenue =
 // --- VENUE V2
 export interface Venue_v2
   extends Venue_v2_Base,
-    Venue_v2_AdvancedConfig,
+    VenueAdvancedConfig,
     Venue_v2_EntranceConfig {}
 
 export interface Venue_v2_Base {
@@ -121,7 +121,7 @@ export interface Venue_v2_Base {
   worldId: string;
 }
 
-export interface Venue_v2_AdvancedConfig {
+export interface VenueAdvancedConfig {
   attendeesTitle?: string;
   chatTitle?: string;
   columns?: number;
@@ -132,6 +132,9 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
+  parentId?: string;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -405,8 +408,7 @@ export interface VenueTablePath {
 
 export type TableSeatedUsersVenuesTemplates =
   | VenueTemplate.jazzbar
-  | VenueTemplate.conversationspace
-  | VenueTemplate.friendship;
+  | VenueTemplate.conversationspace;
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;

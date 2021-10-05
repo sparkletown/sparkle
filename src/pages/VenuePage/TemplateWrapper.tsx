@@ -17,7 +17,7 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
-import { Jazzbar } from "components/templates/Jazzbar";
+import { JazzBarPage } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
@@ -36,10 +36,10 @@ export interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
-  const { isLoaded: settingsAreLoaded, settings } = useSettings();
+  const { isLoaded: areSettingsLoaded, settings } = useSettings();
 
   const shouldShowChat =
-    settingsAreLoaded &&
+    areSettingsLoaded &&
     (settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template));
 
   let template;
@@ -50,7 +50,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route render={() => <Jazzbar venue={venue} />} />
+          <Route render={() => <JazzBarPage venue={venue} />} />
         </Switch>
       );
       // NOTE: Remove the back button, because we don't need it in Table view
@@ -127,11 +127,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar
-        hasBackButton={hasBackButton}
-        withPhotobooth
-        withSchedule
-      >
+      <WithNavigationBar hasBackButton={hasBackButton} withSchedule>
         <AnnouncementMessage isAnnouncementUserView />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>

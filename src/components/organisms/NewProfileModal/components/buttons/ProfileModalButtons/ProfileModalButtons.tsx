@@ -26,10 +26,10 @@ export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
 
   return (
     <ButtonNG
-      // @debt temporarily disable is online functionality
+      // @debt until temporarily disable is online functionality
       variant={!isCurrentUser ? "primary" : "secondary"}
       className={classNames("ProfileModalButtons", containerClassName, {
-        // @debt temporarily disable is online functionality
+        // @debt until temporarily disable is online functionality
         // "ProfileModalButtons--online": !isCurrentUser && isOnline,
       })}
       onClick={onClick}

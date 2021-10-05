@@ -2,94 +2,47 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { RoomData_v2 } from "types/rooms";
+import { ROOMS_TAXON, VENUE_SPACES_LIST } from "settings";
+
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useFetchAssets } from "hooks/useFetchAssets";
 import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
-import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
-import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
 
-import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
-import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
-import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
-import RoomIconExperience from "assets/icons/icon-room-experience.svg";
-import RoomIconMap from "assets/icons/icon-room-map.svg";
-import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
-
 import "./Spaces.scss";
 
-interface VenueRooms {
-  text: string;
-  template?: VenueTemplate;
-  icon: string;
-}
-
-const venueRooms: VenueRooms[] = [
-  {
-    text: "Conversation Space",
-    icon: RoomIconConversation,
-    template: VenueTemplate.conversationspace,
-  },
-  {
-    text: "Auditorium",
-    icon: RoomIconAuditorium,
-    template: VenueTemplate.audience,
-  },
-  {
-    text: "Music Bar",
-    icon: RoomIconMusicBar,
-    template: VenueTemplate.jazzbar,
-  },
-  {
-    text: "Burn Firebarrel",
-    icon: RoomIconBurnBarrel,
-    template: VenueTemplate.firebarrel,
-  },
-  {
-    text: "Art Piece",
-    icon: RoomIconArtPiece,
-    template: VenueTemplate.artpiece,
-  },
-  {
-    text: "Experience",
-    icon: RoomIconExperience,
-    template: VenueTemplate.zoomroom,
-  },
-  {
-    text: "Map",
-    icon: RoomIconMap,
-    template: VenueTemplate.partymap,
-  },
-];
-
-interface SpacesProps extends TabNavigationProps {
+interface SpacesProps extends AdminSidebarFooterProps {
   venue: WithId<AnyVenue>;
 }
 
-const emptyRoomsArray: RoomData_v2[] = [];
+const emptyRoomsArray: Room[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({
   venue,
-  ...tabNavigationProps
+  ...sidebarFooterProps
 }) => {
-  const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
-  const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
+  const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const [updatedRoom, setUpdatedRoom] = useState<Room>();
 
   const { isShown: showRooms, toggle: toggleShowRooms } = useShowHide(false);
   const { isShown: showAddRoom, toggle: toggleShowAddRoom } = useShowHide(
@@ -100,34 +53,48 @@ export const Spaces: React.FC<SpacesProps> = ({
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
+  const {
+    assets: mapBackgrounds,
+    isLoading: isLoadingBackgrounds,
+    error: errorFetchBackgrounds,
+  } = useFetchAssets("mapBackgrounds");
+
   const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue?.rooms?.length ?? 0;
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
-    setUpdatedRoom({});
+    setUpdatedRoom(undefined);
   }, []);
 
-  const updateRoomPosition = useCallback(async (position: Position) => {
-    if (!position) return;
+  const updateRoomPosition = useCallback(
+    async (position: Position) => {
+      if (!position || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      x_percent: position.left,
-      y_percent: position.top,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        x_percent: position.left,
+        y_percent: position.top,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
-  const updateRoomSize = useCallback(async (size: Dimensions) => {
-    if (!size) return;
+  const updateRoomSize = useCallback(
+    async (size: Dimensions) => {
+      if (!size || !selectedRoom) return;
 
-    setUpdatedRoom((room) => ({
-      ...room,
-      width_percent: size.width,
-      height_percent: size.height,
-    }));
-  }, []);
+      setUpdatedRoom({
+        ...selectedRoom,
+        ...updatedRoom,
+        width_percent: size.width,
+        height_percent: size.height,
+      });
+    },
+    [selectedRoom, updatedRoom]
+  );
 
   const renderVenueRooms = useMemo(
     () =>
@@ -149,12 +116,12 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const renderAddRooms = useMemo(
     () =>
-      venueRooms.map((venueRoom, index) => (
+      VENUE_SPACES_LIST.map((venueSpace, index) => (
         <VenueRoomItem
-          key={`${venueRoom.text}-${index}`}
-          text={venueRoom.text}
-          template={venueRoom.template}
-          icon={venueRoom.icon}
+          key={`${venueSpace.text}-${index}`}
+          text={venueSpace.text}
+          template={venueSpace.template}
+          icon={venueSpace.icon}
           worldId={worldId}
         />
       )),
@@ -168,8 +135,8 @@ export const Spaces: React.FC<SpacesProps> = ({
     <AdminPanel className="Spaces">
       <AdminSidebar>
         {selectedRoom ? (
-          <EditRoomForm
-            venueVisibility={venue?.roomVisibility}
+          <SpaceEditForm
+            venueVisibility={venue.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
@@ -180,7 +147,7 @@ export const Spaces: React.FC<SpacesProps> = ({
         ) : (
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
-            <TabFooter {...tabNavigationProps} />
+            <AdminSidebarFooter {...sidebarFooterProps} />
             <div>
               <div
                 className="Spaces__venue-rooms"
@@ -192,15 +159,30 @@ export const Spaces: React.FC<SpacesProps> = ({
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect
-                  worldId={venue.worldId}
-                  venueName={venue?.name ?? ""}
-                />
+                <>
+                  <BackgroundSelect
+                    isLoadingBackgrounds={isLoadingBackgrounds}
+                    mapBackgrounds={mapBackgrounds}
+                    venueName={venue.name}
+                    worldId={venue.worldId}
+                  />
+                  {errorFetchBackgrounds && (
+                    <>
+                      <div>
+                        The preset map backgrounds could not be fetched. Please,
+                        refresh the page or upload a custom map background.
+                      </div>
+                      <div>Error: {errorFetchBackgrounds.message}</div>
+                    </>
+                  )}
+                </>
               )}
             </div>
             <div>
               <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
-                <div>{numberOfRooms} Rooms</div>
+                <div>
+                  {numberOfRooms} {ROOMS_TAXON.capital}
+                </div>
                 <FontAwesomeIcon
                   icon={showRooms ? faCaretDown : faCaretRight}
                 />
@@ -210,7 +192,7 @@ export const Spaces: React.FC<SpacesProps> = ({
             </div>
 
             <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
-              <div>Add rooms</div>
+              <div>Add {ROOMS_TAXON.lower}</div>
               <FontAwesomeIcon
                 icon={showAddRoom ? faCaretDown : faCaretRight}
               />

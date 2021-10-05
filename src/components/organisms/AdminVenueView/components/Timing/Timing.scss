@@ -11,4 +11,8 @@
     background-color: $secondary--dark;
     align-items: start;
   }
+
+  &__content {
+    padding: $spacing--md;
+  }
 }

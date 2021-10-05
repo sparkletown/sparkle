@@ -10,10 +10,13 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useAsyncFn } from "react-use";
 import { isEqual } from "lodash";
 
+import { ROOM_TAXON, ROOMS_TAXON } from "settings";
+
 import { RoomInput_v2, updateRoom } from "api/admin";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 
+import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 
 import {
@@ -26,18 +29,16 @@ import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlac
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import Legend from "components/atoms/Legend";
 
-import { BackgroundSelect } from "../BackgroundSelect";
-
 import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   venueName: string;
   worldId: string;
   mapBackground?: string;
-  rooms: RoomData_v2[];
+  rooms: Room[];
   venueId: string;
   isEditing: boolean;
-  onRoomChange?: (rooms: RoomData_v2[]) => void;
+  onRoomChange?: (rooms: Room[]) => void;
 }
 
 const MapPreview: React.FC<MapPreviewProps> = ({
@@ -50,7 +51,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   onRoomChange,
 }) => {
   const { user } = useUser();
-  const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
+  const [mapRooms, setMapRooms] = useState<Room[]>([]);
 
   useEffect(() => {
     if (
@@ -124,7 +125,9 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [rooms, user, venueId]);
 
-  if (!mapBackground) {
+  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
+
+  if (!hasMapBackground) {
     return <MapBackgroundPlaceholder />;
   }
 
@@ -132,14 +135,6 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
         <Legend text={`${venueName}'s Map`} />
-
-        {!isEditing && (
-          <BackgroundSelect
-            worldId={worldId}
-            venueName={venueName}
-            mapBackground={mapBackground}
-          />
-        )}
 
         {mapBackground &&
           !isEditing &&
@@ -163,7 +158,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
                   transition: "filter .3s ease",
                 }}
                 src={room.image_url}
-                alt="room banner"
+                alt={`${ROOM_TAXON.lower} banner`}
                 title={room.title}
               />
             </div>
@@ -196,7 +191,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           loading={isSaving}
           onClick={saveRoomPositions}
         >
-          Save rooms
+          Save {ROOMS_TAXON.lower}
         </ButtonNG>
       </div>
     </DndProvider>

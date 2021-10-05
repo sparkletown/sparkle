@@ -1,15 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import Bugsnag from "@bugsnag/js";
-import Video from "twilio-video";
-
-import { useTwilioVideoToken } from "api/video";
+import React, { useCallback, useMemo } from "react";
 
 import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
 
+import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { VideoParticipant } from "components/organisms/Video";
 
 import { Button } from "components/atoms/Button";
 
@@ -35,40 +32,25 @@ export interface FirebarrelWidgetProps {
 // It needs to get deleted in the future
 export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   roomName,
+  defaultMute,
+  isAudioEffectDisabled,
   onExit,
 }) => {
-  const [room, setRoom] = useState<Video.Room>();
-  const [videoError, setVideoError] = useState<string>("");
-  const [participants, setParticipants] = useState<Array<Video.Participant>>(
-    []
-  );
+  const { userId, userWithId } = useUser();
 
-  const { user } = useUser();
+  const {
+    localParticipant,
+    participants,
+    disconnect,
+    loading,
+    renderErrorModal,
+  } = useVideoRoomState(userId, roomName);
 
   // TODO: nordbeavers team should rework
   // how useWorldUsersById stuff used to work here
 
   // const { worldUsersById } = useWorldUsersById();
   // const firebase = useFirebase();
-
-  const userFriendlyVideoError = (originalMessage: string) => {
-    if (originalMessage.toLowerCase().includes("unknown")) {
-      return `${originalMessage}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`;
-    }
-    return originalMessage;
-  };
-
-  const disconnect = () => {
-    if (room && room.localParticipant.state === "connected") {
-      room.localParticipant.tracks.forEach((trackPublication) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignored
-        trackPublication.track.stop(); //@debt typing does this work?
-      });
-      room.disconnect();
-      setRoom(undefined);
-    }
-  };
 
   // const getUserList = (
   //   room: Video.Room | undefined,
@@ -77,11 +59,6 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   // ) => {
   //   return room ? [...participants.map((p) => worldUsersById[p.identity])] : [];
   // };
-
-  const { value: token } = useTwilioVideoToken({
-    userId: user?.uid,
-    roomName,
-  });
 
   // const convertRemoteParticipantToLocal = (
   //   localParticipant: Video.LocalParticipant | undefined,
@@ -105,132 +82,6 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   //   return result;
   // };
 
-  const connectToVideoRoom = () => {
-    if (!token || room) return;
-
-    setVideoError("");
-
-    Video.connect(token, {
-      name: roomName,
-    })
-      .then((room) => {
-        console.log("connect to room", room);
-        setRoom(room);
-
-        // const users = getUserList(
-        //   room,
-        //   convertRemoteParticipantToLocal(
-        //     room?.localParticipant,
-        //     room?.participants
-        //   ),
-        //   worldUsersById
-        // );
-        // onEnter(roomName, users);
-        //@debt refactor this
-        // firebase
-        //   .firestore()
-        //   .collection("venues")
-        //   .doc(venue.id)
-        //   .collection("firebarrels")
-        //   .doc(roomName)
-        //   .update({ connectedUsers: users.map((user) => user.id) });
-      })
-      .catch((error) => {
-        console.error("error connect to room", error.message);
-        setVideoError(userFriendlyVideoError(error.message));
-      });
-  };
-
-  useEffect(() => {
-    if (!token || room) return;
-
-    const participantConnected = (participant: Video.Participant) => {
-      setParticipants((prevParticipants) => [
-        // Hopefully prevents duplicate users in the participant list
-        ...prevParticipants.filter((p) => p.identity !== participant.identity),
-        participant,
-      ]);
-    };
-
-    const participantDisconnected = (participant: Video.Participant) => {
-      setParticipants((prevParticipants) => {
-        if (!prevParticipants.find((p) => p === participant)) {
-          // @debt Remove when root issue found and fixed
-          console.error(
-            "Could not find disconnnected participant:",
-            participant
-          );
-          Bugsnag.notify(
-            new Error("Could not find disconnnected participant"),
-            (event) => {
-              const { identity, sid } = participant;
-              event.addMetadata("Room::participantDisconnected", {
-                identity,
-                sid,
-              });
-            }
-          );
-        }
-        return prevParticipants.filter((p) => p !== participant);
-      });
-    };
-
-    Video.connect(token, {
-      name: roomName,
-    })
-      .then((room) => {
-        console.log("connect", room, room.localParticipant.state);
-        setRoom(room);
-
-        room.on("participantConnected", participantConnected);
-        room.on("participantDisconnected", participantDisconnected);
-        room.participants.forEach(participantConnected);
-
-        // const users = getUserList(
-        //   room,
-        //   convertRemoteParticipantToLocal(
-        //     room?.localParticipant,
-        //     room?.participants
-        //   ),
-        //   worldUsersById
-        // );
-        // onEnter(roomName, users);
-        // //@debt refactor this
-        // firebase
-        //   .firestore()
-        //   .collection("venues")
-        //   .doc(venue.id)
-        //   .collection("firebarrels")
-        //   .doc(roomName)
-        //   .update({ connectedUsers: users.map((user) => user.id) });
-      })
-      .catch((error) => setVideoError(error.message));
-    // note: we really doesn't need rerender this for others dependencies
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomName, token]);
-
-  useEffect(() => {
-    if (!room) return;
-    // const users = getUserList(
-    //   room,
-    //   convertRemoteParticipantToLocal(
-    //     room?.localParticipant,
-    //     room?.participants
-    //   ),
-    //   worldUsersById
-    // );
-    // setUserList(roomName, users); //FIXME: not call sometimes
-    // note: we really doesn't need rerender this for others dependencies
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [participants]);
-
-  // Video stream and local participant take up 2 slots
-  // Ensure capacity is always even, so the grid works
-
-  // const profileData = room
-  //   ? worldUsersById[room.localParticipant.identity]
-  //   : undefined;
-
   const [sidedVideoParticipants, otherVideoParticipants] = useMemo(() => {
     const sidedVideoParticipants = participants.slice(
       0,
@@ -253,14 +104,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
         return (
           <div
-            key={participant.identity}
+            key={participant.participant.identity}
             className="firebarrel-room__participant"
           >
-            {/*<Participant*/}
-            {/*  participant={participant}*/}
-            {/*  profileData={worldUsersById[participant.identity]}*/}
-            {/*  profileDataId={participant.identity}*/}
-            {/*/>*/}
+            <VideoParticipant
+              participant={participant.participant}
+              participantUser={participant.user}
+            />
           </div>
         );
       }),
@@ -276,14 +126,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
         return (
           <div
-            key={participant.identity}
+            key={participant.participant.identity}
             className="firebarrel-room__participant"
           >
-            {/*<Participant*/}
-            {/*  participant={participant}*/}
-            {/*  profileData={worldUsersById[participant.identity]}*/}
-            {/*  profileDataId={participant.identity}*/}
-            {/*/>*/}
+            <VideoParticipant
+              participant={participant.participant}
+              participantUser={participant.user}
+            />
           </div>
         );
       }),
@@ -291,19 +140,17 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   );
 
   const myVideo = useMemo(() => {
-    return room ? (
-      <div className="firebarrel-room__participant">
-        {/*<LocalParticipant*/}
-        {/*  key={room.localParticipant.sid}*/}
-        {/*  participant={room.localParticipant}*/}
-        {/*  profileData={profileData}*/}
-        {/*  profileDataId={room.localParticipant.identity}*/}
-        {/*  defaultMute={defaultMute}*/}
-        {/*  isAudioEffectDisabled={isAudioEffectDisabled}*/}
-        {/*/>*/}
+    return localParticipant && userWithId ? (
+      <div className="firebarrel-room__participant" key={localParticipant.sid}>
+        <VideoParticipant
+          participant={localParticipant}
+          participantUser={userWithId}
+          defaultMute={defaultMute}
+          isAudioEffectDisabled={isAudioEffectDisabled}
+        />
       </div>
     ) : null;
-  }, [room]);
+  }, [defaultMute, isAudioEffectDisabled, localParticipant, userWithId]);
 
   const onExitClick = useCallback(() => {
     // const users = getUserList(
@@ -334,7 +181,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onExit]);
 
-  if (!token || !room) return null;
+  if (loading) return null;
 
   return (
     <>
@@ -351,18 +198,11 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         {sidedVideos}
         {otherVideos}
       </div>
-
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={() => setVideoError("")}
-        errorMessage={videoError}
-        onRetry={connectToVideoRoom}
-        onBack={() => {
-          if (onExit) {
-            onExit(roomName);
-          }
-        }}
-      />
+      {renderErrorModal(() => {
+        if (onExit) {
+          onExit(roomName);
+        }
+      })}
     </>
   );
 };
