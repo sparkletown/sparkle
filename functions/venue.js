@@ -810,6 +810,14 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
   if (typeof data.showSchedule === "boolean") {
     updated.showSchedule = data.showSchedule;
   }
