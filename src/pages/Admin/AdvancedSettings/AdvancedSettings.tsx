@@ -84,6 +84,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     [worldParentVenues]
   );
 
+  // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
     if (!user) return;
 

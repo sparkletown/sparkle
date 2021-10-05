@@ -7,13 +7,13 @@ import { AnyVenue } from "types/venues";
 import { venueConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-interface UseWorldVenuesReturnValue {
+export interface UseWorldVenuesResult {
   worldVenues: WithId<AnyVenue>[];
   worldVenuesIds: string[];
   worldParentVenues: WithId<AnyVenue>[];
 }
 
-export const useWorldVenues = (worldId: string): UseWorldVenuesReturnValue => {
+export const useWorldVenues = (worldId: string): UseWorldVenuesResult => {
   const firestore = useFirestore();
   const worldVenuesRef = firestore
     .collection("venues")
