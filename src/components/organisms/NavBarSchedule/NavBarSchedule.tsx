@@ -10,9 +10,8 @@ import {
   startOfToday,
 } from "date-fns";
 
-import { PLATFORM_BRAND_NAME } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
-import { User } from "types/User";
 import { ScheduledVenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
@@ -20,11 +19,10 @@ import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
-import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
@@ -52,11 +50,6 @@ export interface NavBarScheduleProps {
   venueId: string;
 }
 
-interface UserWithVenueIdProps extends WithId<User> {
-  venueId?: string;
-  portalId?: string;
-}
-
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   onClickClose = () => {},
@@ -80,7 +73,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ venueId, userEventIds });
+  } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -108,6 +101,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         });
       }
     };
+
+    if (dayDifference <= 0) return ALWAYS_EMPTY_ARRAY;
 
     return range(dayDifference).map((dayIndex) => {
       const day = addDays(firstScheduleDate, dayIndex);
@@ -172,33 +167,19 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
-  const day = addDays(firstScheduleDate, 0);
-
-  const daysEvents = liveAndFutureEvents.filter(
-    isEventWithinDateAndNotFinished(day)
-  );
-
-  const recentRoomUsers = useRoomRecentUsersList({
-    eventList: daysEvents,
-    venueId,
-  });
-
-  const flatRoomUsers: UserWithVenueIdProps[] = recentRoomUsers.flatMap(
-    (user) => user
-  );
+  const { findVenueInRelatedVenues } = useRelatedVenues();
 
   const scheduleNGWithAttendees = {
     ...scheduleNG,
-    daysEvents: scheduleNG.daysEvents.map((event, index) =>
-      prepareForSchedule({
+    daysEvents: scheduleNG.daysEvents.map((event) => {
+      const portalVenue = findVenueInRelatedVenues(event.venueId);
+
+      return prepareForSchedule({
         relatedVenues,
         usersEvents: userEventIds,
-        recentRoomUsers: flatRoomUsers.filter((user) => {
-          return user.portalId === event?.room?.trim();
-        }),
-        index,
-      })(event)
-    ),
+        recentRoomUsersCount: portalVenue?.recentUserCount,
+      })(event);
+    }),
   };
   const downloadPersonalEventsCalendar = useCallback(() => {
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
@@ -228,10 +209,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   return (
-    <div className="NavBarWrapper">
+    <div className="NavBarSchedule__wrapper">
       <div className={containerClasses}>
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+        {/* {<ScheduleVenueDescription />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
@@ -272,6 +253,27 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           </ButtonNG>
         </div>
       )}
+        {!isEventsLoading && (
+          <div className="NavBarSchedule__download-buttons">
+            {isShowPersonalDownloadBtn && (
+              <ButtonNG
+                onClick={downloadPersonalEventsCalendar}
+                className="NavBarSchedule__download-schedule-button"
+                variant="primary"
+              >
+                Download your schedule
+              </ButtonNG>
+            )}
+            <ButtonNG
+              onClick={downloadAllEventsCalendar}
+              className="NavBarSchedule__download-schedule-button"
+              variant="primary"
+            >
+              Download full schedule
+            </ButtonNG>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

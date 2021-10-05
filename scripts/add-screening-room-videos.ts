@@ -2,6 +2,8 @@
 
 import fs from "fs";
 
+import { ROOM_TAXON } from "settings";
+
 import { ScreeningRoomVideo } from "../src/types/screeningRoom";
 
 import {
@@ -15,7 +17,7 @@ import {
 // ---------------------------------------------------------
 
 const usage = makeScriptUsage({
-  description: `Bulk add screening room videos`,
+  description: `Bulk add screening ${ROOM_TAXON.lower} videos`,
   usageParams: `PROJECT_ID VENUE_ID SCREENING_VIDEOS_CSV_PATH CREDENTIAL_PATH`,
   exampleParams: `co-reality-sparkle bootstrap data.csv fooAccountKey.json`,
 });
@@ -52,7 +54,7 @@ const appBatch = app.firestore().batch();
   const screeningRoomVideosData = fs
     .readFileSync(screeningVideosDataPath, "utf-8")
     .split(/\r?\n/)
-    .map((line) => line.split(",").map((dataString) => dataString.trim()));
+    .map((line) => line.split("\t").map((dataString) => dataString.trim()));
 
   // Remove the namings row
   screeningRoomVideosData.shift();

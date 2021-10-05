@@ -1,9 +1,7 @@
 import React, { useCallback } from "react";
-import { OnSubmit } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
-import { UserProfileModalFormData } from "types/profileModal";
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
@@ -21,18 +19,12 @@ export interface NewProfileModalBodyProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   closeUserProfileModal: () => void;
-  isSubmitting: boolean;
-  handleSubmitWrapper: (
-    handler: OnSubmit<UserProfileModalFormData>
-  ) => OnSubmit<UserProfileModalFormData>;
 }
 
 export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
   user,
   venue,
-  isSubmitting,
   closeUserProfileModal,
-  handleSubmitWrapper,
 }: NewProfileModalBodyProps) => {
   const firebase = useFirebase();
   const history = useHistory();
@@ -47,16 +39,17 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
 
   const logout = useCallback(async () => {
     await firebase.auth().signOut();
+    closeUserProfileModal();
 
     history.push(venue.id ? venueLandingUrl(venue.id) : "/");
-  }, [firebase, history, venue.id]);
+  }, [closeUserProfileModal, firebase, history, venue.id]);
 
   const { selectRecipientChat } = useChatSidebarControls();
 
   const openChosenUserChat = useCallback(() => {
-    selectRecipientChat(user.id);
+    selectRecipientChat(user);
     closeUserProfileModal();
-  }, [user.id, selectRecipientChat, closeUserProfileModal]);
+  }, [selectRecipientChat, user, closeUserProfileModal]);
 
   return isCurrentUser ? (
     editMode ? (
@@ -64,8 +57,6 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
         user={user}
         venue={venue}
         onCancelEditing={turnOffEditMode}
-        isSubmitting={isSubmitting}
-        handleSubmitWrapper={handleSubmitWrapper}
       />
     ) : (
       <ProfileModalContent

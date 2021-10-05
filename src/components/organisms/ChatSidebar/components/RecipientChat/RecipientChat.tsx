@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { DisplayUser } from "types/User";
+
+import { WithId } from "utils/id";
+
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 
@@ -11,24 +15,21 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
 export interface RecipientChatProps {
-  recipientId: string;
+  recipient: WithId<DisplayUser>;
 }
 
-export const RecipientChat: React.FC<RecipientChatProps> = ({
-  recipientId,
-}) => {
+export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   const {
     messagesToDisplay,
-    recipient,
 
     sendMessageToSelectedRecipient,
     markMessageRead,
     sendThreadReply,
-  } = useRecipientChat(recipientId);
+  } = useRecipientChat(recipient);
 
   useEffect(() => {
     const unreadCounterpartyMessages = messagesToDisplay.filter(
-      (message) => !message.isRead && message.from === recipientId
+      (message) => !message.isRead && message.fromUser.id === recipient.id
     );
 
     if (unreadCounterpartyMessages.length > 0) {
@@ -36,7 +37,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         markMessageRead(message.id)
       );
     }
-  }, [messagesToDisplay, recipientId, markMessageRead]);
+  }, [messagesToDisplay, recipient.id, markMessageRead]);
 
   const { selectPrivateChat } = useChatSidebarControls();
 

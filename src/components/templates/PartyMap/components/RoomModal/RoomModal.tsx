@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_SCHEDULE,
+  ROOM_TAXON,
+} from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
@@ -15,14 +18,13 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useRecentVenueUsers } from "hooks/users";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "..";
+import { ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
@@ -59,10 +61,10 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
-      <div className="room-modal">
+    <Modal show={show} onHide={onHide} className="RoomModal" centered>
+      <Modal.Body className="RoomModal__modal-body">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
-      </div>
+      </Modal.Body>
     </Modal>
   );
 };
@@ -102,15 +104,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
-  const { recentVenueUsers: recentRoomUsers } = useRecentVenueUsers({
-    venueId: portalVenueId,
-  });
-
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
-
-  const userList = recentRoomUsers as readonly WithId<User>[];
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
@@ -134,10 +130,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
         enterEventLocation={enterRoomWithSound}
-        roomUrl={room.url}
       />
     ));
-  }, [enterRoomWithSound, room.url, showSchedule, venueEvents]);
+  }, [enterRoomWithSound, showSchedule, venueEvents]);
 
   const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
@@ -155,51 +150,46 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   return (
     <>
-      <h2>{roomTitle}</h2>
+      <div className="RoomModal__main">
+        <div className="RoomModal__icon" style={iconStyles} />
 
-      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
+        <div className="RoomModal__content">
+          <div className="RoomModal__title">{roomTitle}</div>
 
-      <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyles} />
-
-        <div className="room-modal__content">
-          {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
+          {roomSubtitle && (
+            <div className="RoomModal__subtitle">{roomSubtitle}</div>
+          )}
 
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
           {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
           <button
             ref={enterButtonref}
             autoFocus
-            className="btn btn-primary room-modal__btn-enter"
+            className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
             onClick={enterRoomWithSound}
           >
-            Enter
+            Join {ROOM_TAXON.capital}
           </button>
         </div>
       </div>
 
-      <UserList
-        containerClassName="room-modal__userlist"
-        users={userList}
-        limit={11}
-        activity="in this room"
-        hasClickableAvatars
-      />
-
       {room.about && (
-        <div className="room-modal__description">
+        <div className="RoomModal__description">
           <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
-      {showRoomEvents && (
-        <div className="room-modal__events">
-          <div className="room-modal__title">Room Schedule</div>
+      <UserList
+        containerClassName="RoomModal__userlist"
+        usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        userCount={portalVenue?.recentUserCount ?? 0}
+        activity={`in this ${ROOM_TAXON.lower}`}
+      />
 
-          {renderedRoomEvents}
-        </div>
+      {showRoomEvents && (
+        <div className="RoomModal__events">{renderedRoomEvents}</div>
       )}
     </>
   );

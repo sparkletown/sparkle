@@ -1,18 +1,21 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "store";
-import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
-import { AuditoriumSection } from "types/auditorium";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
+import { AuditoriumSeatedUser } from "types/auditorium";
+import {
+  ChatSettings,
+  JukeboxMessage,
+  PrivateChatMessage,
+  VenueChatMessage,
+} from "types/chat";
 import { Experience } from "types/Firestore";
-import { JukeboxMessage } from "types/jukebox";
 import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
-import { User, UserWithLocation } from "types/User";
+import { TableSeatedUser, User, UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -125,9 +128,6 @@ export const venueEventsSelector: SparkleSelector<
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;
 
-export const userModalVisitsSelector = (state: RootState) =>
-  state.firestore.ordered.userModalVisits;
-
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
 
@@ -147,28 +147,24 @@ export const animateMapArtCarsSelector: SparkleSelector<
   WithId<ArtCar>[] | undefined
 > = (state) => state.firestore.ordered.animatemapArtcars;
 
-/**
- * Selector to retrieve sovereignVenueId state from the Redux store.
- *
- * @param state the Redux store
- *
- * @see SovereignVenueState
- * @see RootState
- */
-export const sovereignVenueSelector: SparkleSelector<SovereignVenueState> = (
-  state
-) => state.sovereignVenue;
-
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
-export const currentAuditoriumSectionsSelector: SparkleSelector<
-  WithId<AuditoriumSection>[] | undefined
-> = (state) => state.firestore.ordered.currentAuditoriumSections;
+export const currentAuditoriumSectionSeatedUsersSelector: SparkleSelector<
+  WithId<AuditoriumSeatedUser>[] | undefined
+> = makeOrderedSelector("currentAuditoriumSeatedSectionUsers");
 
-export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
-  Partial<Record<string, AuditoriumSection>> | undefined
-> = (state) => state.firestore.data.currentAuditoriumSections;
+export const currentAuditoriumSectionSeatedUsersByIdSelector: SparkleSelector<
+  Partial<Record<string, AuditoriumSeatedUser>> | undefined
+> = makeDataSelector("currentAuditoriumSeatedSectionUsers");
+
+export const currentSeatedTableUsersSelector: SparkleSelector<
+  WithId<TableSeatedUser>[] | undefined
+> = makeOrderedSelector("currentSeatedTableUsers");
+
+export const currentSeatedTableUsersByIdSelector: SparkleSelector<
+  Record<string, TableSeatedUser> | undefined
+> = makeDataSelector("currentSeatedTableUsers");
 
 export const currentModalUserDataSelector: SparkleSelector<
   User | undefined

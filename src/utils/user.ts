@@ -1,17 +1,9 @@
 import { omit, pick } from "lodash";
 
-import { Experience, User, UserLocation, UserWithLocation } from "types/User";
+import { User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId } from "./id";
 import { wrapIntoSlashes } from "./string";
-
-export const getUserExperience = (venueName?: string) => (
-  user?: User
-): Experience | undefined => {
-  if (!venueName || !user) return;
-
-  return user?.data?.[venueName];
-};
 
 export const getUserLocationData = ({
   worldUserLocationsById,

@@ -1,7 +1,16 @@
 import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
-import { VALID_URL_PROTOCOLS } from "settings";
+import {
+  ADMIN_ROOT_URL,
+  ADMIN_V1_ROOT_URL,
+  ADMIN_V3_ADVANCED_PARAM_URL,
+  ADMIN_V3_ROOT_URL,
+  ADMIN_V3_VENUE_PARAM_URL,
+  VALID_URL_PROTOCOLS,
+} from "settings";
+
+import { Settings } from "types/settings";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -11,21 +20,11 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
-const createAdminUrlHelperFor = (segment: string) => (
-  venueId?: string,
-  selectedTab?: string
-) =>
-  segment
-    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
-        segment: segment,
-        venueId: venueId,
-        selectedTab: selectedTab,
-      })
-    : generatePath("/admin-ng");
+export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
 
-export const adminNGRootUrl = createAdminUrlHelperFor("");
-export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
-export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
@@ -146,4 +145,36 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
+};
+
+export const resolveAdminRootUrl: (settings: Partial<Settings>) => string = ({
+  enableAdmin1,
+  enableAdmin3,
+  adminVersion,
+}) => {
+  // Tie breaker for when both admins are enabled.
+  // Currently only two exist, so anything other than explicit 3 defaults to 1
+  if (enableAdmin1 && enableAdmin3) {
+    // easier to compare to just a string
+    return `${adminVersion}` === "3" ? ADMIN_V3_ROOT_URL : ADMIN_V1_ROOT_URL;
+  }
+
+  if (enableAdmin3) return ADMIN_V3_ROOT_URL;
+  if (enableAdmin1) return ADMIN_V1_ROOT_URL;
+
+  // No versions are enabled, just return the default even if it fails with 401, 403, 404
+  return ADMIN_ROOT_URL;
+};
+
+export const resolveUrlPath: (path: string) => string = (path) => {
+  const base = window.location.href;
+  try {
+    return new URL(path, base).href;
+  } catch (error) {
+    Bugsnag.notify(new Error(error), (event) => {
+      event.severity = "info";
+      event.addMetadata("utils/url::resolveUrlPath", { path, base });
+    });
+    return "";
+  }
 };

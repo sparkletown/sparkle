@@ -1,14 +1,14 @@
 @import "scss/constants.scss";
 
-$NavBarSchedule--width: 40%;
-$NavBarSchedule--padding: 20px;
+$navbar-schedule-width: 40%;
+$navbar-schedule-padding: 20px;
 
-$weekday--padding: 8px 10px;
-$weekday--margin-right: 10px;
+$weekday-padding: 8px 10px;
+$weekday-margin-right: 10px;
 
-$schedule-btn--padding: 0.35em 1em;
+$schedule-button-padding: 0.35em 1em;
 
-$schedule-btn--height: 51px;
+$schedule-button-height: 51px;
 
 $close-btn-height: 45px;
 $close-btn-width: $close-btn-height;
@@ -59,11 +59,11 @@ $close-btn-width: $close-btn-height;
   z-index: z(navbar-schedule);
   top: 0;
   left: 0;
-  height: calc(100% - #{$schedule-btn--height});
-  width: $NavBarSchedule--width;
+  height: calc(100% - #{$footer-height});
+  width: $navbar-schedule-width;
 
   padding-top: $navbar-height;
-  padding-left: $NavBarSchedule--padding;
+  padding-left: $navbar-schedule-padding;
 
   background-color: opaque-black(0.8);
   overflow: auto;
@@ -71,7 +71,7 @@ $close-btn-width: $close-btn-height;
   pointer-events: none;
   opacity: 0;
   backdrop-filter: blur(5px);
-  transform: translateX(-$NavBarSchedule--width);
+  transform: translateX(-$navbar-schedule-width);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
 
@@ -88,24 +88,24 @@ $close-btn-width: $close-btn-height;
     background-color: opaque-black(1);
   }
 
+  &__weekday-button {
+    border: none;
+    background: inherit;
+    color: $white;
+
+    &:focus {
+      color: $white;
+      opacity: 1;
+      outline: none;
+    }
+  }
+
   &__weekday {
     display: inline;
     cursor: pointer;
-    padding: $weekday--padding;
-    margin-right: $weekday--margin-right;
+    padding: $weekday-padding;
+    margin-right: $weekday-margin-right;
     opacity: 0.8;
-
-    &-button {
-      border: none;
-      background: inherit;
-      color: $white;
-
-      &:focus {
-        color: $white;
-        opacity: 1;
-        outline: none;
-      }
-    }
 
     &--active {
       opacity: 1;
@@ -132,6 +132,31 @@ $close-btn-width: $close-btn-height;
   &__bookmarked-toggle {
     justify-content: left;
     padding: $spacing--sm 0px;
+  }
+
+  &__download-buttons {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    z-index: z(navbar-schedule-download);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: opaque-black(0.9);
+    height: $schedule-button-height;
+    padding-left: $navbar-schedule-padding;
+  }
+
+  &__download-schedule-button {
+    opacity: 0.8;
+    margin-right: $spacing--sm;
+    padding: $schedule-button-padding;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
   }
 }
 
