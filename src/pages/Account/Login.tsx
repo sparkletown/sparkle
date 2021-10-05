@@ -6,7 +6,7 @@ import { fetchCustomAuthConfig } from "api/auth";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { trackMixpanelEvent } from "utils/mixpanel";
+import { trackAnalyticEvent } from "utils/mixpanel";
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
@@ -85,7 +85,7 @@ export const Login: React.FC<LoginProps> = ({
   };
 
   const afterUserIsLoggedIn = (data: LoginFormData) => {
-    trackMixpanelEvent("Login Successful", {
+    trackAnalyticEvent("Login successful", {
       worldId: venue.worldId,
       email: data.email,
     });

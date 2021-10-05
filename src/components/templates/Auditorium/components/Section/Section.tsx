@@ -7,7 +7,7 @@ import classNames from "classnames";
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { trackMixpanelEvent } from "utils/mixpanel";
+import { trackAnalyticEvent } from "utils/mixpanel";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
@@ -83,7 +83,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   }, [leaveSeat]);
 
   useEffect(() => {
-    trackMixpanelEvent("enter auditorium", {
+    trackAnalyticEvent("Enter auditorium", {
       worldId: venue.worldId,
       email: user?.email,
     });
@@ -91,7 +91,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   useEffect(() => {
     isUserSeated &&
-      trackMixpanelEvent("sit down in seat", {
+      trackAnalyticEvent("Sit down in seat", {
         worldId: venue.worldId,
         email: user?.email,
       });

@@ -30,9 +30,9 @@ import { store } from "store";
 import { isPartyMapVenue } from "types/venues";
 
 import {
-  identifyMixpanelUser,
-  initMixpanel,
-  setMixpanelGroup,
+  identifyAnalyticUser,
+  initAnalytic,
+  setAnalyticGroup,
 } from "utils/mixpanel";
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -194,7 +194,7 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-initMixpanel();
+initAnalytic();
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
@@ -220,8 +220,8 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    identifyMixpanelUser(email, userWithId.partyName);
-    setMixpanelGroup("worldId", worldsNames);
+    identifyAnalyticUser(email, userWithId.partyName);
+    setAnalyticGroup("worldId", worldsNames);
   }, [auth, userWithId, worldsNames]);
 
   if (!isLoaded(auth)) return <LoadingPage />;

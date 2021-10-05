@@ -7,7 +7,7 @@ import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
-import { trackMixpanelEvent } from "utils/mixpanel";
+import { trackAnalyticEvent } from "utils/mixpanel";
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import {
@@ -172,7 +172,7 @@ export const VenuePage: React.FC = () => {
   useEffect(() => {
     if (!venueId || !venueTemplate) return;
 
-    trackMixpanelEvent("VenuePage loaded", {
+    trackAnalyticEvent("VenuePage loaded", {
       venueId,
       template: venueTemplate,
     });

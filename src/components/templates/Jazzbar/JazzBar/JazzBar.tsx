@@ -11,7 +11,7 @@ import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { trackMixpanelEvent } from "utils/mixpanel";
+import { trackAnalyticEvent } from "utils/mixpanel";
 import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
@@ -79,7 +79,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const isUserAudioMuted = !isUserAudioOn;
 
   useEffect(() => {
-    trackMixpanelEvent("enter jazz bar", {
+    trackAnalyticEvent("Enter jazz bar", {
       worldId: venue.worldId,
       email: user?.email,
     });
@@ -87,13 +87,13 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   useEffect(() => {
     seatedAtTable &&
-      trackMixpanelEvent("select table", {
+      trackAnalyticEvent("Select table", {
         worldId: venue.worldId,
         email: user?.email,
       });
 
     seatedAtTable &&
-      trackMixpanelEvent("sit down in seat", {
+      trackAnalyticEvent("Sit down in seat", {
         worldId: venue.worldId,
         email: user?.email,
       });

@@ -13,7 +13,7 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
-import { trackMixpanelEvent } from "utils/mixpanel";
+import { trackAnalyticEvent } from "utils/mixpanel";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
@@ -120,7 +120,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
-    trackMixpanelEvent("enter_room", {
+    trackAnalyticEvent("Enter room", {
       worldId: venue.worldId,
       email: user?.email,
       template: venue?.template,
@@ -154,7 +154,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomDescription = room.about || portalVenueDescription;
 
   useEffect(() => {
-    trackMixpanelEvent("open_room_modal", {
+    trackAnalyticEvent("Open room modal", {
       worldId: venue.worldId,
       email: user?.email,
     });
