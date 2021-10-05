@@ -3,76 +3,13 @@
 $photobooth-button-margin: 140px 0px 0px;
 $photobooth-button-text-margin: 38px 0px 0px;
 $photobooth-button-background-size: 35px;
-$simple-view-button-padding: $spacing--sm $spacing--md;
-$icon-button-width: 32px;
-$icon-button-height: 32px;
-$arrow-margin: 0 $spacing--md;
-$arrow-height: 20px;
-$arrow-width: 20px;
-$dropdown-item-width: 170px;
-$dropdown-item-padding: $spacing--lg $spacing--xl 0 $spacing--xl;
-$nav-party-logo-padding: 0 50px 0 20px;
 
-.navbar-links {
-  flex: 1;
-  display: flex;
-  position: relative;
-
-  &-user-avatar {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-
-  &__simple-view {
-    font-size: $font-size--md;
-    margin-right: $spacing--sm;
-  }
-
-  &__simple-view-a {
-    color: opaque-white(0.8);
-  }
-
-  &__simple-view-button {
-    padding: $spacing--xs $spacing--sm;
-    background-color: $tundora;
-    margin-left: $spacing--md;
-  }
-
-  &__simple-view-text {
-    margin-left: $spacing--sm;
-  }
-
-  &__search {
-    display: flex;
-    margin-left: $spacing--lg;
-  }
-
-  &__menu-link {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba($white, 1);
-    opacity: 0.8;
-    border: none;
-    border-radius: $border-radius--max;
-    width: $icon-button-width;
-    height: $icon-button-height;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-right: $spacing--sm;
-
-    &:focus {
-      box-shadow: 0 0 0 2px #ffffff;
-      outline: none;
-      opacity: 1;
-    }
-  }
+.navbar-links-user-avatar {
+  cursor: pointer;
 }
 
 .navbar-container {
-  background: $black;
+  background: $content--under;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -94,7 +31,7 @@ $nav-party-logo-padding: 0 50px 0 20px;
 
   .notification-card {
     background: $red;
-    color: $white;
+    color: $content--over;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -148,64 +85,6 @@ $nav-party-logo-padding: 0 50px 0 20px;
   #sound-cloud-player {
     border: none;
   }
-
-  &__dropdown {
-    position: fixed;
-    top: $navbar-height;
-    right: $spacing--xl;
-    background: $secondary--live;
-    border-radius: $border-radius--lg;
-    padding-bottom: $spacing--xl;
-    z-index: z(navbar-user-dropdown);
-
-    &-item a {
-      text-decoration: none;
-    }
-
-    &-item {
-      text-decoration: none;
-      font-family: "Rubik", sans-serif;
-      font-weight: $font-weight--400;
-      font-size: $font-size--md;
-      padding: $dropdown-item-padding;
-      width: $dropdown-item-width;
-
-      &:first-child {
-        border-bottom: 1px solid $secondary--light;
-        padding-bottom: $spacing--md;
-        margin-bottom: $spacing--xs;
-        color: $light-grey--lightest;
-      }
-
-      &:hover {
-        background: $secondary--live;
-        color: $primaryColor;
-      }
-
-      &:focus {
-        background: $secondary--live;
-      }
-
-      &-icon {
-        margin-right: $spacing--md;
-      }
-    }
-
-    &-arrow-down,
-    &-arrow-up {
-      height: $arrow-height;
-      width: $arrow-width;
-      margin: $arrow-margin;
-      background: url(/assets/icons/nav-party-logo-icon.png);
-      background-size: $arrow-height;
-      opacity: 0.4;
-      transition: transform 400ms $transition-function;
-    }
-
-    &-arrow-up {
-      transform: rotate(180deg);
-    }
-  }
 }
 
 .custom-dialog {
@@ -215,9 +94,8 @@ $nav-party-logo-padding: 0 50px 0 20px;
 
 .nav-logos {
   display: flex;
-  flex: 1;
+  justify-content: space-between;
   align-items: center;
-  height: 100%;
 }
 
 .nav-sparkle-logo,
@@ -283,9 +161,9 @@ $nav-party-logo-padding: 0 50px 0 20px;
 
 .nav-party-logo {
   position: relative;
-  background-color: inherit;
-  height: 100%;
-  padding: $nav-party-logo-padding;
+  background-color: opaque-white(0.08);
+  height: 60px;
+  padding: 0 50px 0 20px;
   text-align: center;
   cursor: pointer;
   display: flex;
@@ -295,16 +173,9 @@ $nav-party-logo-padding: 0 50px 0 20px;
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: transform 400ms $transition-function;
+  border: none;
   appearance: none;
-  color: $white;
-  border-left: 1px solid $tundora;
-  border-right: 1px solid $tundora;
-  margin-left: $spacing--md;
-
-  &-text {
-    text-transform: uppercase;
-    margin: 0;
-  }
+  color: $content--over;
 
   img {
     height: 40px;
@@ -312,7 +183,8 @@ $nav-party-logo-padding: 0 50px 0 20px;
 
   &:hover,
   &:focus {
-    background-color: rgba($white, 0.14);
+    border: none;
+    background-color: opaque-white(0.14);
 
     &:after {
       opacity: 0.7;
@@ -323,6 +195,7 @@ $nav-party-logo-padding: 0 50px 0 20px;
     content: "";
     position: absolute;
     right: 20px;
+    top: 20px;
     height: 20px;
     width: 20px;
     background-image: url(/assets/icons/nav-party-logo-icon.png);
@@ -344,14 +217,11 @@ $nav-party-logo-padding: 0 50px 0 20px;
 }
 
 .schedule-text {
+  background-color: $accent--under;
+  border-radius: 10px;
+  margin-left: 8px;
+  padding: 0px 10px;
   display: inline-block;
-  margin-left: $spacing--sm;
-  padding: $spacing--sm $spacing--xl;
-  border-radius: $border-radius--xl;
-  background-color: $tundora;
-  font-weight: $font-weight--500;
-  font-size: $font-size--md;
-  line-height: $spacing--lg;
   text-shadow: 0 2px 3px rgb(0 0 0 / 35%);
 }
 

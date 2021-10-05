@@ -1,8 +1,6 @@
 @import "scss/constants.scss";
 
 $side-padding: 30px;
-$black: #000000;
-$white: #fff;
 
 $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
@@ -22,11 +20,12 @@ $sand: #937c63;
   top: 0;
   left: 0;
   width: 100%;
-  height: $navbar-height;
-  border-bottom: 1px solid rgba($white, 0.2);
+  height: 66px;
+  background-color: opaque-black(0.2);
+  border-bottom: 1px solid opaque-white(0.2);
   box-shadow: box-shadow--large(0.1);
   backdrop-filter: blur(5px);
-  background-color: $black;
+  background-color: $content--under;
   padding: 0 1rem;
 
   .navbar-container {
@@ -77,7 +76,7 @@ $sand: #937c63;
         display: block;
         height: 40px;
         width: 40px;
-        background-color: rgba($black, 0.4);
+        background-color: opaque-black(0.4);
         border-radius: 20px;
         margin-right: $margin-right--navbar-links;
         &:hover {
@@ -93,10 +92,10 @@ $sand: #937c63;
         &.navbar-link-menu {
           background-image: url(/assets/icons/navbar-link-menu.png);
           background-size: 40px 40px;
-          background-color: rgba($black, 0);
+          background-color: opaque-black(0);
 
           &:hover {
-            background-color: rgba($black, 0.3);
+            background-color: opaque-black(0.3);
           }
         }
         &.navbar-link-radio {
@@ -113,7 +112,7 @@ $sand: #937c63;
         &.navbar-link-schedule {
           width: auto;
           background-image: $gradient;
-          color: $white;
+          color: $content--over;
           line-height: 42px;
           padding: 0 10px;
           font-size: 0.9rem;
@@ -186,7 +185,7 @@ $sand: #937c63;
   }
 
   &.nonplaya {
-    background-color: $black;
+    background-color: $content--under;
     .navbar-container {
       .navbar-dropdown-middle {
         background-color: rgba(255, 255, 255, 0.1);

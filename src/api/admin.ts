@@ -5,8 +5,8 @@ import { omit } from "lodash";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
@@ -109,7 +109,7 @@ export type VenueInput = AdvancedVenueInput &
   };
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
@@ -124,9 +124,9 @@ export interface VenueInput_v2
   template?: VenueTemplate;
   iframeUrl?: string;
   autoPlay?: boolean;
+  parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  parentId?: string;
 }
 
 export interface WorldFormInput {
@@ -164,6 +164,7 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
+    parentId?: string;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
@@ -180,9 +181,6 @@ export type PlacementInput = {
   width: number;
   height: number;
 };
-
-// add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-const randomPrefix = () => Math.random().toString();
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
@@ -298,7 +296,7 @@ const createFirestoreVenueInput_v2 = async (
     const file = fileArr[0];
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix()}-${file.name}`
+      `users/${user.uid}/venues/${urlVenueName}/background.${file.type}`
     );
 
     await uploadFileRef.put(file);
@@ -317,6 +315,7 @@ const createFirestoreVenueInput_v2 = async (
     ),
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
+    parentId: input.parentId ?? "",
   };
 
   return firestoreVenueInput;

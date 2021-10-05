@@ -10,12 +10,12 @@
     margin: 0.9375rem;
 
     & input {
-      background-color: $black;
+      background-color: $content--under;
       text-align: left;
       font-size: 0.875rem;
 
       &::placeholder {
-        color: $white;
+        color: $content--over;
         opacity: 0.2;
       }
     }
