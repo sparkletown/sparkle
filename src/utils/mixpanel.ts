@@ -12,11 +12,11 @@ export const initMixpanel = (opts?: Object) => {
   return mixpanel.init(MIXPANEL_PROJECT_TOKEN, opts);
 };
 
-export const identifyMixpanelUser = (name: string, email: string) => {
+export const identifyMixpanelUser = (email: string, name = "N/A") => {
   if (!MIXPANEL_PROJECT_TOKEN) return;
 
   mixpanel.identify(email);
-  mixpanel.people.set({ $name: name, $email: email });
+  mixpanel.people.set({ $email: email, $name: name });
 };
 
 export const trackMixpanelEvent = (eventName: string, data: Object) => {

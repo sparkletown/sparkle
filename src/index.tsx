@@ -41,6 +41,7 @@ import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 import { AppRouter } from "components/organisms/AppRouter";
 
@@ -198,6 +199,7 @@ initMixpanel();
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
+  const { userWithId } = useUser();
   const { ownedVenues: venues } = useOwnedVenues({});
   const auth = useSelector(authSelector);
 
@@ -206,7 +208,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
     .map((venue) => venue.name);
 
   useEffect(() => {
-    if (!auth || !auth.uid) return;
+    if (!auth || !auth.uid || !userWithId) return;
 
     const displayName = auth.displayName || "N/A";
     const email = auth.email || "N/A";
@@ -218,9 +220,9 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    identifyMixpanelUser(displayName, email);
+    identifyMixpanelUser(email, userWithId.partyName);
     setMixpanelGroup("worldId", worldsNames);
-  }, [auth, worldsNames]);
+  }, [auth, userWithId, worldsNames]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 
