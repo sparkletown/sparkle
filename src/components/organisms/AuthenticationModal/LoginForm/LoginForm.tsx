@@ -184,7 +184,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         </ButtonNG>
       </form>
 
-      {venue.hasSamlLoginEnabled && (
+      {venue.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

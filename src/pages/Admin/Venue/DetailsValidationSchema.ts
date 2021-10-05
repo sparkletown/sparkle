@@ -158,7 +158,7 @@ export const validationSchema = Yup.object()
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
     enableJukebox: Yup.bool().notRequired(),
-    hasSamlLoginEnabled: Yup.bool().notRequired(),
+    hasSocialLoginEnabled: Yup.bool().notRequired(),
     showShoutouts: Yup.bool().notRequired(),
     showNametags: Yup.mixed()
       .oneOf(Object.values(UsernameVisibility))
@@ -201,7 +201,7 @@ export const editVenueCastSchema = Yup.object()
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
   .from("enableJukebox", "enableJukebox")
-  .from("hasSamlLoginEnabled", "hasSamlLoginEnabled")
+  .from("hasSocialLoginEnabled", "hasSocialLoginEnabled")
   .from("showShoutouts", "showShoutouts")
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")

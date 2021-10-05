@@ -337,7 +337,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         </ButtonNG>
       </form>
 
-      {venue.hasSamlLoginEnabled && (
+      {venue.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

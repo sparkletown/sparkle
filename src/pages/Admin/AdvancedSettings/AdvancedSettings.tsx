@@ -58,7 +58,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
-      hasSamlLoginEnabled: venue.hasSamlLoginEnabled,
+      hasSocialLoginEnabled: venue.hasSocialLoginEnabled,
     },
   });
 
@@ -265,7 +265,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         <div className="AdvancedSettings__form-field">
           <Toggler
             forwardedRef={register}
-            name="hasSamlLoginEnabled"
+            name="hasSocialLoginEnabled"
             title="Social Login"
           />
           <Form.Label>

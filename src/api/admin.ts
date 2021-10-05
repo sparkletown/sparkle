@@ -106,7 +106,7 @@ export type VenueInput = AdvancedVenueInput &
     radioStations?: string;
     showNametags?: UsernameVisibility;
     showUserStatus?: boolean;
-    hasSamlLoginEnabled?: boolean;
+    hasSocialLoginEnabled?: boolean;
   };
 
 export interface VenueInput_v2

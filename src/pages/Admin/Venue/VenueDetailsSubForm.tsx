@@ -557,7 +557,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     return (
       <div className="toggle-room DetailsForm">
         <h4 className="italic input-header">Enable Social Login</h4>
-        <Toggler name="hasSamlLoginEnabled" forwardedRef={register} />
+        <Toggler name="hasSocialLoginEnabled" forwardedRef={register} />
       </div>
     );
   };
