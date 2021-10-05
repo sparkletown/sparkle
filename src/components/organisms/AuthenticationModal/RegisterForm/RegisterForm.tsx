@@ -12,6 +12,7 @@ import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
+import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
@@ -59,6 +60,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const venue = useSelector(venueSelector);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const signUp = ({ email, password }: RegisterFormData) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
@@ -161,6 +164,21 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    const { message } = await signInWithGoogle();
+
+    if (message) {
+      setError("backend", "firebase", message);
+    }
+  };
+  const handleFacebookSignIn = async () => {
+    const { message } = await signInWithFacebook();
+
+    if (message) {
+      setError("backend", "firebase", message);
+    }
+  };
+
   const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
   const termsAndConditions = venue.termsAndConditions;
 
@@ -184,8 +202,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       {errors.backend && (
         <div className="auth-submit-error">
           <span>
-            Oops! Something went wrong. Please try again or use another method
-            to create an account
+            {errors.backend.message &&
+              "Oops! Something went wrong. Please try again or use another method to create an account"}
           </span>
         </div>
       )}
@@ -243,10 +261,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
         {venue.requiresDateOfBirth && (
           <DateOfBirthField register={register} error={errors?.date_of_birth} />
-        )}
-
-        {errors.backend && (
-          <span className="input-error">{errors.backend.message}</span>
         )}
 
         {/* <div className="input-group" key={sparkleTermsAndConditions.name}>
@@ -326,13 +340,21 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       {venue.hasSamlLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
-          <ButtonNG className="auth-input" type="submit">
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={handleGoogleSignIn}
+          >
             <div className="social-icon">
               <img src={gIcon} alt="asd" />
             </div>
             Sign up with Google
           </ButtonNG>
-          <ButtonNG className="auth-input" type="submit">
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={handleFacebookSignIn}
+          >
             <div className="social-icon">
               <img src={fIcon} alt="asd" />
             </div>
