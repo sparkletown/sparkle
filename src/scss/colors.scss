@@ -5,6 +5,7 @@ $shades-enum: (5, 10, 14, 20, 50);
 $alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
 
 :root {
+  // --(palette name)--(under/over)-(variation value)-(unit name)
   --primary--under-rgb: 124, 70, 251;
   --content--under: #000000;
   --content--under-rgb: 0, 0, 0;
@@ -17,16 +18,9 @@ $alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
 
   @each $name, $color in $colors-enum {
     @each $shade in $shades-enum {
-      --#{$name}--darker-#{$shade}pp: #{darken($color, $shade * 1%)};
-      --#{$name}--lighter-#{$shade}pp: #{lighten($color, $shade * 1%)};
+      --#{$name}-darker-#{$shade}pp: #{darken($color, $shade * 1%)};
+      --#{$name}-lighter-#{$shade}pp: #{lighten($color, $shade * 1%)};
     }
-
-    // @each $alpha in $alphas-enum {
-    //   --#{$name}-accent--under-#{$alpha*100}a: #{rgba(
-    //       var(--accent--under-rbg),
-    //       $alpha
-    //     )};
-    // }
 
     @each $alpha in $alphas-enum {
       --#{$name}-#{$alpha*100}a: #{rgba(var(--#{$name}-rgb), $alpha)};

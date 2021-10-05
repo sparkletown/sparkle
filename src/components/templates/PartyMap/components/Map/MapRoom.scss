@@ -29,7 +29,7 @@ $label-visible: flex;
 
       background-color: $accent--under;
       opacity: 1;
-      box-shadow: 0 0 0 3px var(--primary--under--lighter-10pp),
+      box-shadow: 0 0 0 3px var(--primary--under-lighter-10pp),
         0 2px 4px opaque-black(0.2);
     }
 
@@ -107,7 +107,7 @@ $label-visible: flex;
     backdrop-filter: blur(8px);
 
     font-size: 0.9rem;
-    background-color: var(--primary--under--darker-50pp);
+    background-color: var(--primary--under-darker-50pp);
     opacity: 0.5;
   }
 

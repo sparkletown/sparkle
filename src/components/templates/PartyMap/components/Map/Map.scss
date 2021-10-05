@@ -2,7 +2,7 @@
 
 $sand: #937c63;
 $border-radius: 28px;
-$avatarpulse-box-shadow-color: var(--primary-accent--under-65a);
+$avatarpulse-box-shadow-color: var(--primary--under-65a);
 
 .party-map-map-component {
   display: flex;
@@ -144,7 +144,7 @@ $avatarpulse-box-shadow-color: var(--primary-accent--under-65a);
         0 0 20px $avatarpulse-box-shadow-color;
     }
     50% {
-      background-color: var(--primary--under--lighter-10pp);
+      background-color: var(--primary--under-lighter-10pp);
       box-shadow: 0 0 0 3px $accent--under,
         0 0 20px 10px $avatarpulse-box-shadow-color;
     }
