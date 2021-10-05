@@ -33,6 +33,7 @@ const styles: React.CSSProperties = {
 };
 
 export interface RoomIcon {
+  title: string;
   top: number;
   left: number;
   url: string;

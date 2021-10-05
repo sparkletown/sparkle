@@ -1,7 +1,5 @@
 const colors = {
   blue: "#375a7f",
-  indigo: "#6610f2",
-  purple: "#6f42c1",
   pink: "#e83e8c",
   red: "#E74C3C",
   orange: "#fd7e14",
@@ -12,7 +10,7 @@ const colors = {
   white: "#fff",
   gray: "#1a1d24",
   grayDark: "#303030",
-  primary: "#375a7f",
+  primary: "#7c46fb",
   secondary: "#444",
   success: "#00bc8c",
   info: "#3498DB",
