@@ -41,7 +41,7 @@ $media-width--mobile-max: 1024px;
     display: flex;
     justify-content: space-between;
     width: 100%;
-    background-color: $black;
+    background-color: $content--under;
   }
 
   &__tab {
@@ -62,19 +62,19 @@ $media-width--mobile-max: 1024px;
     }
 
     &--selected {
-      border-bottom: $white 2px solid;
-      color: $white;
+      border-bottom: $content--over 2px solid;
+      color: $content--over;
 
       &:focus,
       &:hover {
-        color: $white;
-        border-bottom: $white 2px solid;
+        color: $content--over;
+        border-bottom: $content--over 2px solid;
       }
     }
   }
 
   &__controller {
-    color: $white;
+    color: $accent--over;
     background-color: $secondary;
     cursor: pointer;
 

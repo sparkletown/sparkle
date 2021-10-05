@@ -1,5 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
+import { World } from "api/admin";
+
 import { RootState } from "store";
 
 import { ArtCar, Firebarrel } from "types/animateMap";
@@ -213,3 +215,6 @@ export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
 export const settingsSelector: SparkleSelector<Settings | undefined> = (
   state
 ) => state.firestore.data.settings;
+
+export const worldEditSelector: SparkleSelector<World | undefined> = (state) =>
+  state.firestore.data.worldEdit;
