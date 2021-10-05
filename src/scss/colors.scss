@@ -1,22 +1,31 @@
-$colors-enum: (
+$colors-map: (
+  // deprecated color, should probably be replaced with a more appropriate one
+  primary--over: #f6e652,
   primary--under: #7c46fb,
+  content--under: #000000,
+  content--over: #ffffff,
+  accent--over: #ffffff,
+  accent--under: #7c46fb
+    // NOTE: there is a need for danger--over and danger--under
 );
+
 $shades-enum: (5, 10, 14, 20, 50);
 $alphas-enum: (0.18, 0.2, 0.24, 0.35, 0.5, 0.56, 0.65, 0.8);
 
-:root {
-  // --(palette name)--(under/over)-(optional description)-(variation value)(unit name)
-  --primary--under-rgb: 124, 70, 251;
-  --content--under: #000000;
-  --content--under-rgb: 0, 0, 0;
-  --content--over: #ffffff;
-  --content--over-rgb: 255, 255, 255;
-  --accent--over: #ffffff;
-  --accent--over-rgb: 255, 255, 255;
-  --accent--under: #7c46fb;
-  --accent--under-rbg: 124, 70, 251;
+@function rgb-triplet($hex) {
+  @return "" + red($hex) + "," + green($hex) + "," + blue($hex);
+}
 
-  @each $name, $color in $colors-enum {
+:root {
+  // NOTE: Basic palette colors in hex (rgb triplet needed for palette generation)
+  @each $name, $color in $colors-map {
+    --#{$name}: #{$color};
+    --#{$name}-rgb: #{rgb-triplet($color)};
+  }
+
+  // NOTE: Palette generation, naming convention is:
+  // --(palette name)--(under/over)-(optional description)-(variation value)(unit name)
+  @each $name, $color in $colors-map {
     @each $shade in $shades-enum {
       --#{$name}-darker-#{$shade}pp: #{darken($color, $shade * 1%)};
       --#{$name}-lighter-#{$shade}pp: #{lighten($color, $shade * 1%)};

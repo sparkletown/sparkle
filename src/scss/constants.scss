@@ -1,16 +1,19 @@
-$primary--over: var(--primary-color-deprecated);
-
+// NOTE: convenience constants for the basic palette colors
+$primary--over: var(--primary-over);
+$primary--under: var(--primary-under);
 $accent--over: var(--accent--over);
 $accent--under: var(--accent--under);
 $content--over: var(--content--over);
 $content--under: var(--content--under);
 
+// @debt these should probably be replaced with var(--primary-...) referencing theme colors
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
 $primary--live-hover: #8755fb;
 $primary--darker: #3f247d;
 $primary--over: #f6e652;
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $secondary--lightest: #868686;
 $secondary--light: #6a6a6a;
 $secondary: #333035;
@@ -18,20 +21,23 @@ $secondary--dark: #19181a;
 $secondary--darkest: #090909;
 $secondary--live: #1a1d24;
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
+// @debt these should probably be replaced with var(...) referencing theme colors, need to include danger palette
 $input--invalid: #dc3545;
 $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $subheading--over: #a5a5a5;
-
 $modal-background--confirm: #232225;
 $announcement-background: rgba(39, 35, 34, 0.9);
+$send-msg-online-color: #78b553;
 
-// @debt replace all greyish colors with $secondary alternatives
+// @debt these should probably be removed or replaced with var(...) references
 $dark-grey: #1a1d23;
 $almost-black: $secondary--darkest;
 $saturated-black: $secondary--dark;
@@ -59,6 +65,7 @@ $chat-busy: var(--primary--under-35a);
 $chat-busy-me: rgba(#ffffff, 0.35);
 $room-card-background: #323232;
 
+// @debt the colors in these gradients should probably be replaced with var(...) references
 $gradient: linear-gradient(
   124deg,
   #00f6d5 0%,
@@ -72,8 +79,6 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
-
-$send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
