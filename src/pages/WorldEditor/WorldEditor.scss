@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-.WorldsDashboard {
+.WorldEditor {
   .AdminPanel {
     width: 100%;
     height: calc(100vh - #{$reserved-page-height});
@@ -37,18 +37,15 @@
   .AdminSidebarFooter {
     width: $admin-ng-sidebar-width--normal;
     margin-left: -$spacing--lg;
+
+    &__buttons {
+      width: 100%;
+      padding-right: $spacing--lg;
+    }
   }
 
   &__new {
     margin: $spacing--xl;
     place-self: end;
-  }
-
-  &__arrow {
-    transform: translateX(-100%) translateY(-25%) rotate(-15deg);
-  }
-
-  &__messages-container {
-    text-align: center;
   }
 }
