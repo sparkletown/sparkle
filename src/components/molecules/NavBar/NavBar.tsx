@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
-import { IS_BURN } from "secrets";
-
-import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
+import {
+  DEFAULT_SHOW_SCHEDULE,
+  PLAYA_VENUE_ID,
+  SPARKLE_PHOTOBOOTH_URL,
+} from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -22,7 +24,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
@@ -50,34 +51,26 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   </Popover>
 );
 
-const GiftPopover = (
-  <Popover id="gift-popover">
-    <Popover.Content>
-      <GiftTicketModal />
-    </Popover.Content>
-  </Popover>
-);
-
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
   hasBackButton?: boolean;
   withSchedule?: boolean;
+  withPhotobooth?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
-  hasBackButton = true,
-  withSchedule = true,
+  hasBackButton,
+  withSchedule,
+  withPhotobooth,
 }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
-
   const radioStations = useSelector(radioStationsSelector);
 
   const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
@@ -158,6 +151,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(false);
   }, []);
 
+  const parentVenueId = parentVenue?.id;
+
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
 
@@ -178,6 +173,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     () => setShowRadioPopover((prevState) => !prevState),
     []
   );
+
+  const handlePhotoboothRedirect = () => {
+    openUrlUsingRouter(SPARKLE_PHOTOBOOTH_URL);
+  };
 
   if (!venueId || !currentVenue) return null;
 
@@ -227,8 +226,17 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers venueId={venueId} />
+              <VenuePartygoers />
             </div>
+
+            {withPhotobooth && (
+              <div
+                className="NavBar__photobooth-button nav-schedule"
+                onClick={handlePhotoboothRedirect}
+              >
+                <p className="NavBar__photobooth-title">Photobooth</p>
+              </div>
+            )}
 
             {!user && <NavBarLogin />}
 
@@ -245,19 +253,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   >
                     <span className="tickets-icon">
                       <FontAwesomeIcon icon={faTicketAlt} />
-                    </span>
-                  </OverlayTrigger>
-                )}
-
-                {IS_BURN && currentVenue?.showGiftATicket && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={GiftPopover}
-                    rootClose={true}
-                  >
-                    <span className="private-chat-icon">
-                      <div className="navbar-link-gift" />
                     </span>
                   </OverlayTrigger>
                 )}

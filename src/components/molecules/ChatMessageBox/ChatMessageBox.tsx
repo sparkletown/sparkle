@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
+import { faSmile } from "@fortawesome/free-regular-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
@@ -24,7 +25,7 @@ export interface ChatMessageBoxProps {
   sendMessage: SendMessage;
   unselectOption: () => void;
   isQuestion?: boolean;
-  onReplyToThread: (data: SendChatReplyProps) => void;
+  onReplyToThread: (data: SendChatReplyProps) => Promise<void>;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
@@ -64,18 +65,18 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     mode: "onSubmit",
   });
 
-  const sendMessageToChat = handleSubmit(({ message }) => {
+  const sendMessageToChat = handleSubmit(async ({ message }) => {
     setMessageSending(true);
-    sendMessage({ message, isQuestion });
+    await sendMessage({ message, isQuestion });
     reset();
     unselectOption();
   });
 
-  const sendReplyToThread = handleSubmit(({ message }) => {
+  const sendReplyToThread = handleSubmit(async ({ message }) => {
     if (!selectedThread) return;
 
     setMessageSending(true);
-    onReplyToThread({ replyText: message, threadId: selectedThread.id });
+    await onReplyToThread({ replyText: message, threadId: selectedThread.id });
     reset();
   });
 

@@ -7,14 +7,9 @@ $user-list-cell-size: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
 
-  &__toggler-text {
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      color: $primaryColor;
+    &-text {
+      z-index: z(user-list-label);
     }
   }
 

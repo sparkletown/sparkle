@@ -1,13 +1,12 @@
 import React from "react";
 
-import { SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
 import { useVenueChat } from "hooks/chats/venueChat";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -25,9 +24,6 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 export const ReactionPage: React.FC = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
-  const { recentVenueUsers } = useRecentVenueUsers({
-    venueId: currentVenue?.id,
-  });
   const { messagesToDisplay: venueChatMessages } = useVenueChat(venueId);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
@@ -57,7 +53,11 @@ export const ReactionPage: React.FC = () => {
         </div>
 
         <div className="col-4">
-          <UserList users={recentVenueUsers} showEvenWhenNoUsers />
+          <UserList
+            usersSample={currentVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={currentVenue?.recentUserCount ?? 0}
+            showEvenWhenNoUsers
+          />
         </div>
       </div>
     </div>

@@ -1,20 +1,14 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
-import { getTwilioVideoToken } from "api/video";
+import { useTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
 
-import { WithId } from "utils/id";
-
-import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
-import { Participant } from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { Button } from "components/atoms/Button";
@@ -40,13 +34,8 @@ export interface FirebarrelWidgetProps {
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
 export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
-  venue,
   roomName,
-  setUserList,
-  onEnter,
   onExit,
-  defaultMute,
-  isAudioEffectDisabled,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");
@@ -55,9 +44,12 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   );
 
   const { user } = useUser();
-  const { worldUsersById } = useWorldUsersById();
-  const [token, setToken] = useState<string>();
-  const firebase = useFirebase();
+
+  // TODO: nordbeavers team should rework
+  // how useWorldUsersById stuff used to work here
+
+  // const { worldUsersById } = useWorldUsersById();
+  // const firebase = useFirebase();
 
   const userFriendlyVideoError = (originalMessage: string) => {
     if (originalMessage.toLowerCase().includes("unknown")) {
@@ -78,47 +70,40 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     }
   };
 
-  const getUserList = (
-    room: Video.Room | undefined,
-    participants: Video.Participant[],
-    worldUsersById: Record<string, WithId<User>>
-  ) => {
-    return room ? [...participants.map((p) => worldUsersById[p.identity])] : [];
-  };
+  // const getUserList = (
+  //   room: Video.Room | undefined,
+  //   participants: Video.Participant[],
+  //   worldUsersById: Record<string, WithId<User>>
+  // ) => {
+  //   return room ? [...participants.map((p) => worldUsersById[p.identity])] : [];
+  // };
 
-  // @debt refactor this to use useAsync or similar?
-  useEffect(() => {
-    if (!user) return;
+  const { value: token } = useTwilioVideoToken({
+    userId: user?.uid,
+    roomName,
+  });
 
-    getTwilioVideoToken({
-      userId: user.uid,
-      roomName,
-    }).then((token) => {
-      setToken(token);
-    });
-  }, [firebase, roomName, user]);
-
-  const convertRemoteParticipantToLocal = (
-    localParticipant: Video.LocalParticipant | undefined,
-    participants: Map<string, Video.RemoteParticipant> | undefined
-  ) => {
-    const result: Video.Participant[] = [];
-
-    if (localParticipant) {
-      result.push(localParticipant as Video.Participant);
-    }
-
-    if (participants) {
-      for (const key of Array.from(participants.keys())) {
-        const participant = participants.get(key);
-        if (participant) {
-          result.push(participant as Video.Participant);
-        }
-      }
-    }
-
-    return result;
-  };
+  // const convertRemoteParticipantToLocal = (
+  //   localParticipant: Video.LocalParticipant | undefined,
+  //   participants: Map<string, Video.RemoteParticipant> | undefined
+  // ) => {
+  //   const result: Video.Participant[] = [];
+  //
+  //   if (localParticipant) {
+  //     result.push(localParticipant as Video.Participant);
+  //   }
+  //
+  //   if (participants) {
+  //     for (const key of Array.from(participants.keys())) {
+  //       const participant = participants.get(key);
+  //       if (participant) {
+  //         result.push(participant as Video.Participant);
+  //       }
+  //     }
+  //   }
+  //
+  //   return result;
+  // };
 
   const connectToVideoRoom = () => {
     if (!token || room) return;
@@ -132,23 +117,23 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         console.log("connect to room", room);
         setRoom(room);
 
-        const users = getUserList(
-          room,
-          convertRemoteParticipantToLocal(
-            room?.localParticipant,
-            room?.participants
-          ),
-          worldUsersById
-        );
-        onEnter(roomName, users);
+        // const users = getUserList(
+        //   room,
+        //   convertRemoteParticipantToLocal(
+        //     room?.localParticipant,
+        //     room?.participants
+        //   ),
+        //   worldUsersById
+        // );
+        // onEnter(roomName, users);
         //@debt refactor this
-        firebase
-          .firestore()
-          .collection("venues")
-          .doc(venue.id)
-          .collection("firebarrels")
-          .doc(roomName)
-          .update({ connectedUsers: users.map((user) => user.id) });
+        // firebase
+        //   .firestore()
+        //   .collection("venues")
+        //   .doc(venue.id)
+        //   .collection("firebarrels")
+        //   .doc(roomName)
+        //   .update({ connectedUsers: users.map((user) => user.id) });
       })
       .catch((error) => {
         console.error("error connect to room", error.message);
@@ -201,23 +186,23 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
 
-        const users = getUserList(
-          room,
-          convertRemoteParticipantToLocal(
-            room?.localParticipant,
-            room?.participants
-          ),
-          worldUsersById
-        );
-        onEnter(roomName, users);
-        //@debt refactor this
-        firebase
-          .firestore()
-          .collection("venues")
-          .doc(venue.id)
-          .collection("firebarrels")
-          .doc(roomName)
-          .update({ connectedUsers: users.map((user) => user.id) });
+        // const users = getUserList(
+        //   room,
+        //   convertRemoteParticipantToLocal(
+        //     room?.localParticipant,
+        //     room?.participants
+        //   ),
+        //   worldUsersById
+        // );
+        // onEnter(roomName, users);
+        // //@debt refactor this
+        // firebase
+        //   .firestore()
+        //   .collection("venues")
+        //   .doc(venue.id)
+        //   .collection("firebarrels")
+        //   .doc(roomName)
+        //   .update({ connectedUsers: users.map((user) => user.id) });
       })
       .catch((error) => setVideoError(error.message));
     // note: we really doesn't need rerender this for others dependencies
@@ -226,40 +211,25 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
 
   useEffect(() => {
     if (!room) return;
-    const users = getUserList(
-      room,
-      convertRemoteParticipantToLocal(
-        room?.localParticipant,
-        room?.participants
-      ),
-      worldUsersById
-    );
-    setUserList(roomName, users); //FIXME: not call sometimes
+    // const users = getUserList(
+    //   room,
+    //   convertRemoteParticipantToLocal(
+    //     room?.localParticipant,
+    //     room?.participants
+    //   ),
+    //   worldUsersById
+    // );
+    // setUserList(roomName, users); //FIXME: not call sometimes
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [participants, worldUsersById]);
-
-  const getIsUserBartender = (userIdentity?: string) => {
-    if (!userIdentity) return;
-    return worldUsersById?.[userIdentity]?.data?.[roomName]?.bartender;
-  };
-
-  // Ordering of participants:
-  // 1. Me
-  // 2. Bartender, if found (only one allowed)
-  // 3. Rest of the participants, in order
-
-  // Only allow the first bartender to appear as bartender
-  const userIdentity = room?.localParticipant?.identity;
-
-  const meIsBartender = getIsUserBartender(userIdentity);
+  }, [participants]);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
 
-  const profileData = room
-    ? worldUsersById[room.localParticipant.identity]
-    : undefined;
+  // const profileData = room
+  //   ? worldUsersById[room.localParticipant.identity]
+  //   : undefined;
 
   const [sidedVideoParticipants, otherVideoParticipants] = useMemo(() => {
     const sidedVideoParticipants = participants.slice(
@@ -281,25 +251,20 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           return null;
         }
 
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
           <div
             key={participant.identity}
             className="firebarrel-room__participant"
           >
-            <Participant
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
-              bartender={bartender}
-            />
+            {/*<Participant*/}
+            {/*  participant={participant}*/}
+            {/*  profileData={worldUsersById[participant.identity]}*/}
+            {/*  profileDataId={participant.identity}*/}
+            {/*/>*/}
           </div>
         );
       }),
-    [sidedVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [sidedVideoParticipants]
   );
 
   const otherVideos = useMemo(
@@ -309,62 +274,56 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           return null;
         }
 
-        const bartender = meIsBartender
-          ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
-          : undefined;
-
         return (
           <div
             key={participant.identity}
             className="firebarrel-room__participant"
           >
-            <Participant
-              participant={participant}
-              profileData={worldUsersById[participant.identity]}
-              profileDataId={participant.identity}
-              bartender={bartender}
-            />
+            {/*<Participant*/}
+            {/*  participant={participant}*/}
+            {/*  profileData={worldUsersById[participant.identity]}*/}
+            {/*  profileDataId={participant.identity}*/}
+            {/*/>*/}
           </div>
         );
       }),
-    [otherVideoParticipants, meIsBartender, worldUsersById, roomName]
+    [otherVideoParticipants]
   );
 
   const myVideo = useMemo(() => {
-    return room && profileData ? (
+    return room ? (
       <div className="firebarrel-room__participant">
-        <LocalParticipant
-          key={room.localParticipant.sid}
-          participant={room.localParticipant}
-          profileData={profileData}
-          profileDataId={room.localParticipant.identity}
-          bartender={meIsBartender}
-          defaultMute={defaultMute}
-          isAudioEffectDisabled={isAudioEffectDisabled}
-        />
+        {/*<LocalParticipant*/}
+        {/*  key={room.localParticipant.sid}*/}
+        {/*  participant={room.localParticipant}*/}
+        {/*  profileData={profileData}*/}
+        {/*  profileDataId={room.localParticipant.identity}*/}
+        {/*  defaultMute={defaultMute}*/}
+        {/*  isAudioEffectDisabled={isAudioEffectDisabled}*/}
+        {/*/>*/}
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
+  }, [room]);
 
   const onExitClick = useCallback(() => {
-    const users = getUserList(
-      room,
-      convertRemoteParticipantToLocal(
-        room?.localParticipant,
-        room?.participants
-      ),
-      worldUsersById
-    );
-    if (!users || users.length <= 1) {
-      //@debt rewrite this hardcode
-      firebase
-        .firestore()
-        .collection("venues")
-        .doc(venue.id)
-        .collection("firebarrels")
-        .doc(roomName)
-        .update({ connectedUsers: [] });
-    }
+    // const users = getUserList(
+    //   room,
+    //   convertRemoteParticipantToLocal(
+    //     room?.localParticipant,
+    //     room?.participants
+    //   ),
+    //   worldUsersById
+    // );
+    // if (!users || users.length <= 1) {
+    //   //@debt rewrite this hardcode
+    //   firebase
+    //     .firestore()
+    //     .collection("venues")
+    //     .doc(venue.id)
+    //     .collection("firebarrels")
+    //     .doc(roomName)
+    //     .update({ connectedUsers: [] });
+    // }
 
     disconnect();
 

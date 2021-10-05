@@ -1,51 +1,22 @@
 import firebase from "firebase/app";
+import { has, pick } from "lodash";
 
 import {
   BaseChatMessage,
-  BaseMessageToDisplay,
   ChatMessage,
   ChatMessageType,
   PollMessage,
   PreviewChatMessage,
-  PreviewChatMessageToDisplay,
   PrivateChatMessage,
 } from "types/chat";
-import { User } from "types/User";
+import { DisplayUser, User } from "types/User";
 
-import { WithId, withId } from "utils/id";
+import { WithId } from "utils/id";
 
 export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   a: BaseChatMessage,
   b: BaseChatMessage
-) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
-
-export interface GetBaseMessageToDisplayProps<T extends ChatMessage> {
-  message: T;
-  usersById: Partial<Record<string, User>>;
-  myUserId?: string;
-}
-
-export type GetBaseMessageToDisplayReturn<T extends ChatMessage> =
-  | BaseMessageToDisplay<T>
-  | undefined;
-
-export const getBaseMessageToDisplay = <T extends ChatMessage>({
-  message,
-  usersById,
-  myUserId,
-}: GetBaseMessageToDisplayProps<T>): GetBaseMessageToDisplayReturn<T> => {
-  const user = usersById[message.from];
-
-  if (!user) return undefined;
-
-  const isMine = myUserId === message.from;
-
-  return {
-    ...message,
-    author: withId(user, message.from),
-    isMine,
-  };
-};
+) => b.timestamp.valueOf().localeCompare(a.timestamp.valueOf());
 
 export interface GetPreviewChatMessageProps {
   message: WithId<PrivateChatMessage>;
@@ -60,25 +31,32 @@ export const getPreviewChatMessage = ({
   counterPartyUser: user,
 });
 
-export interface GetPreviewChatMessageToDisplayProps {
-  message: PreviewChatMessage;
-  myUserId?: string;
-}
-
-export const getPreviewChatMessageToDisplay = ({
-  message,
-  myUserId,
-}: GetPreviewChatMessageToDisplayProps): PreviewChatMessageToDisplay => ({
-  ...message,
-  isMine: myUserId === message.from,
-});
-
 export const buildMessage = <T extends ChatMessage>(
-  message: Pick<T, Exclude<keyof T, "ts_utc">>
+  fromUser: WithId<DisplayUser>,
+  message: Pick<T, Exclude<keyof T, "timestamp" | "fromUser">>
 ) => ({
   ...message,
-  ts_utc: firebase.firestore.Timestamp.now(),
+  fromUser: pickDisplayUserFromUser(fromUser),
+  timestamp: firebase.firestore.Timestamp.now(),
 });
+
+export const pickDisplayUserFromUser = (
+  user: WithId<User>
+): WithId<DisplayUser> =>
+  pick(user, "id", "partyName", "pictureUrl", "anonMode");
+
+export const isNewSchemaMessage = <T extends ChatMessage>(
+  message: WithId<T>
+) => {
+  if (!("fromUser" in message && "timestamp" in message)) return false;
+  if ("to" in message && !("toUser" in message)) return false;
+
+  return has(message.fromUser, "id");
+};
+
+export const filterNewSchemaMessages = <T extends ChatMessage>(
+  messages: WithId<T>[] | undefined
+) => messages?.filter(isNewSchemaMessage);
 
 export interface PartitionMessagesFromRepliesReturn<T extends object> {
   messages: WithId<T>[];
