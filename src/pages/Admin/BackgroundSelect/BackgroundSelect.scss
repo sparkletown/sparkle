@@ -32,7 +32,7 @@ $map-default-size: 50px;
     width: 100%;
     padding-bottom: $map-default-size;
     border-radius: $border-radius--lg;
-    background: $black;
+    background: $content--under;
     background-size: cover;
     background-position: center;
     cursor: pointer;
@@ -40,7 +40,7 @@ $map-default-size: 50px;
     margin-bottom: $spacing--sm;
 
     &:hover {
-      border: $border-radius--xxs solid $white;
+      border: $border-radius--xxs solid $content--over;
       padding-bottom: $map-default-size - $border-radius--xxs;
     }
   }
