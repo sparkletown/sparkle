@@ -373,12 +373,12 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.parentId === "string") {
+    updated.parentId = data.parentId;
   }
 
   if (typeof data.showSchedule === "boolean") {
