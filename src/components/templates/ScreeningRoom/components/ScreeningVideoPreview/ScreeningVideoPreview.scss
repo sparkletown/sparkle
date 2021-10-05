@@ -2,7 +2,7 @@
 
 $video-preview-height: 320px;
 $video-preview-width: 280px;
-$active-video-shadows: 0 10px 20px 0 rgba($primary, 0.56);
+$active-video-shadows: 0 10px 20px 0 var(--primary--under-56a);
 
 .ScreeningVideoPreview {
   display: flex;
@@ -22,7 +22,7 @@ $active-video-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   border-radius: $border-radius--md;
 
   background-color: $saturated-black-alt;
-  color: $white;
+  color: $content--over;
 
   border: 2px solid $lighter-intermediate-grey;
 
@@ -34,12 +34,12 @@ $active-video-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   }
 
   &--selected {
-    border-color: $primary;
+    border-color: $accent--under;
     box-shadow: $active-video-shadows;
 
     &:hover {
       background-color: $lighter-intermediate-grey;
-      border-color: $primary;
+      border-color: $accent--under;
     }
   }
 
@@ -55,7 +55,7 @@ $active-video-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     padding: $spacing--sm;
     border-radius: $border-radius--lg;
 
-    background-color: $primary;
+    background-color: $accent--under;
   }
 
   &__selected-badge-text {
