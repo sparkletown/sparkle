@@ -52,7 +52,7 @@
   cursor: pointer;
 
   &:hover {
-    color: $primaryColor;
+    color: $primary--over;
   }
 }
 
@@ -130,10 +130,10 @@
 }
 
 input:checked + .slider {
-  background-color: $primary;
-  border-color: $white;
+  background-color: $accent--under;
+  border-color: $content--over;
   &::before {
-    background-color: $white;
+    background-color: $content--over;
   }
 }
 

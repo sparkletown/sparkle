@@ -1,13 +1,19 @@
-$primaryColor: var(--primary-color);
-$backgroundColor: var(--background-color);
+// NOTE: convenience constants for the basic palette colors
+$primary--over: var(--primary-over);
+$primary--under: var(--primary-under);
+$accent--over: var(--accent--over);
+$accent--under: var(--accent--under);
+$content--over: var(--content--over);
+$content--under: var(--content--under);
 
+// @debt these should probably be replaced with var(--primary-...) referencing theme colors
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
 $primary--live-hover: #8755fb;
-$primary--live: #7c46fb;
-$primary: #6f43ff;
 $primary--darker: #3f247d;
+$primary--over: #f6e652;
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $secondary--lightest: #868686;
 $secondary--light: #6a6a6a;
 $secondary: #333035;
@@ -15,20 +21,23 @@ $secondary--dark: #19181a;
 $secondary--darkest: #090909;
 $secondary--live: #1a1d24;
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
+// @debt these should probably be replaced with var(...) referencing theme colors, need to include danger palette
 $input--invalid: #dc3545;
 $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $subheading--over: #a5a5a5;
-
 $modal-background--confirm: #232225;
 $announcement-background: rgba(39, 35, 34, 0.9);
+$send-msg-online-color: #78b553;
 
-// @debt replace all greyish colors with $secondary alternatives
+// @debt these should probably be removed or replaced with var(...) references
 $dark-grey: #1a1d23;
 $almost-black: $secondary--darkest;
 $saturated-black: $secondary--dark;
@@ -38,8 +47,6 @@ $light-grey: #292929;
 $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 $concrete--dark: #9f9fa0;
-$black: #000000;
-$white: #ffffff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
@@ -54,11 +61,17 @@ $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba($primary, 0.35);
+$chat-busy: var(--primary--under-35a);
 $chat-busy-me: rgba(#ffffff, 0.35);
 $room-card-background: #323232;
 
-$gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
+// @debt the colors in these gradients should probably be replaced with var(...) references
+$gradient: linear-gradient(
+  124deg,
+  #00f6d5 0%,
+  $accent--under 50%,
+  #e15ada 100%
+);
 $danger-gradient: linear-gradient(
   124deg,
   #e15a5a 0%,
@@ -66,8 +79,6 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
-
-$send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
@@ -185,7 +196,7 @@ $z-layer-jukebox: $z-layer-on-top-bg;
 $z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
-  admin-venue-card-bg: -1,
+  admin-space-card-bg: -1,
   admin-navbar: 100,
   admin-placement: 10,
   admin-venue-header-after: 2,
@@ -269,15 +280,23 @@ $z-layers: (
 }
 
 @function opaque-white($opacity: 0.1) {
-  @return rgba($white, $opacity);
+  @return rgba(#{var(--content--over-rgb)}, $opacity);
 }
 
 @function opaque-black($opacity: 0.1) {
-  @return rgba($black, $opacity);
+  @return rgba(#{var(--content--under-rgb)}, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {
-  @return 0 10px 30px 0 rgba($black, $transparency);
+  @return 0 10px 30px 0 opaque-black($transparency);
+}
+
+@function font-size--parent($scale: 1) {
+  @return $scale * 1em;
+}
+
+@function font-size--root($scale: 1) {
+  @return $scale * 1rem;
 }
 
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
@@ -317,19 +336,19 @@ $z-layers: (
   // The standard properties
   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
   // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
-  scrollbar-color: opaque-white(0.3) $black;
+  scrollbar-color: opaque-white(0.3) $content--under;
   scrollbar-width: thin;
 
   // The webkit properties
   // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
 
   &::-webkit-scrollbar-corner {
-    background-color: $black;
+    background-color: $content--under;
   }
 
   &::-webkit-scrollbar-track {
     border-radius: $border-radius--xs;
-    background-color: $black;
+    background-color: $content--under;
   }
 
   &::-webkit-scrollbar {
