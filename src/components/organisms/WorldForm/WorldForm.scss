@@ -1,0 +1,17 @@
+@import "scss/constants";
+
+.WorldForm {
+  &__name {
+    color: $red;
+  }
+
+  p {
+    margin-top: $spacing--xs;
+    margin-bottom: $spacing--xs;
+  }
+
+  section {
+    margin-top: $spacing--lg;
+    margin-bottom: $spacing--lg;
+  }
+}

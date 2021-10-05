@@ -64,7 +64,7 @@ $admin-space-card-logo-size: 80px;
     @include square-size($admin-space-card-logo-size);
     border-radius: $border-radius--max;
     background-size: cover;
-    background-color: $black;
+    background-color: $content--under;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 

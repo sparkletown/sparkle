@@ -7,7 +7,9 @@ import {
   ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_ROOT_URL,
   ADMIN_V3_VENUE_PARAM_URL,
+  ENTRANCE_ROOT_URL,
   VALID_URL_PROTOCOLS,
+  WORLD_ROOT_URL,
 } from "settings";
 
 import { Settings } from "types/settings";
@@ -31,8 +33,10 @@ export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
 };
 
 export const venueEntranceUrl = (venueId: string, step?: number) => {
-  return `/e/${step ?? 1}/${venueId}`;
+  return `${ENTRANCE_ROOT_URL}/${step ?? 1}/${venueId}`;
 };
+
+export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 
 export const isExternalUrl = (url: string) => {
   try {
