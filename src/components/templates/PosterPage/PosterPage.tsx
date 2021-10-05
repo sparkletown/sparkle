@@ -78,7 +78,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           key={participant.identity ?? `participant-${index}`}
           participant={participant}
           participantUser={user}
-          additionalClassNames="PosterPage__video-participant"
+          containerClassName="PosterPage__video-participant"
         />
       )),
     [activeParticipants]
