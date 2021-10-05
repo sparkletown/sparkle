@@ -127,7 +127,7 @@ $preview-margin: 30px;
   width: 100%;
   padding: 18px;
   border-radius: $border-radius;
-  background-color: $dark;
+  background-color: $secondary--live;
   cursor: pointer;
   min-height: 156px;
   margin-bottom: 1rem;
@@ -135,12 +135,12 @@ $preview-margin: 30px;
 
   &:hover {
     box-shadow: 0 0 0 4px opaque-white(0.62);
-    background-color: lighten($dark, 4%);
+    background-color: lighten($secondary--live, 4%);
   }
 
   &.selected {
     box-shadow: 0 0 0 4px $accent--under;
-    background-color: lighten($dark, 4%);
+    background-color: lighten($secondary--live, 4%);
 
     .pickspace-thumbnail {
       background-image: $gradient;

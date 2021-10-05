@@ -12,7 +12,6 @@ $login-wide-max-width: 1140px;
 
 $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
-$dark: #1a1d24;
 $modal-max-width: 540px;
 $page-max-width: 1240px;
 
@@ -49,7 +48,7 @@ $page-max-width: 1240px;
 }
 
 .page-container {
-  background-color: $dark;
+  background-color: $secondary--live;
   flex-direction: column;
   flex: 1;
   padding-bottom: $spacing--xxl;
@@ -113,7 +112,7 @@ $page-max-width: 1240px;
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  background-color: #1a1d24;
+  background-color: $secondary--live;
   height: 100vh;
 
   .logo-container {
@@ -183,7 +182,7 @@ $page-max-width: 1240px;
     max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $dark;
+    background-color: $secondary--live;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -283,14 +282,14 @@ $page-max-width: 1240px;
       width: 100%;
       padding: 15px;
       border-radius: $border-radius;
-      background-color: $dark;
+      background-color: $secondary--live;
       margin-bottom: 20px;
       cursor: pointer;
       height: 130px;
       transition: all 400ms $transition-function;
       &:hover {
         box-shadow: 0 0 0 4px opaque-white(0.62);
-        background-color: lighten($dark, 4%);
+        background-color: lighten($secondary--live, 4%);
       }
     }
   }
@@ -322,7 +321,7 @@ $page-max-width: 1240px;
     max-width: $login-wide-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $dark;
+    background-color: $secondary--live;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;

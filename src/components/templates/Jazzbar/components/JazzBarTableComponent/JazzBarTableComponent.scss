@@ -23,7 +23,7 @@ $seat-margin: 6px;
   }
 
   .table-subtitle {
-    color: $dark;
+    color: $secondary--live;
   }
 
   .table-item {
@@ -31,7 +31,7 @@ $seat-margin: 6px;
 
     height: 100%;
     width: 100%;
-    background: $dark;
+    background: $secondary--live;
     border-radius: 22px;
 
     color: $content--over;
@@ -41,7 +41,7 @@ $seat-margin: 6px;
     padding: 50px 15px 15px;
     position: relative;
     &:hover {
-      background-color: lighten($dark, 10%);
+      background-color: lighten($secondary--live, 10%);
       transform: scale(1.05);
     }
   }
