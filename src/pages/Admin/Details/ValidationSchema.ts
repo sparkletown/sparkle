@@ -185,10 +185,12 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   image_url: roomImageUrlSchema,
 });
 
-export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
-  title: roomTitleSchema,
-  url: roomUrlSchema,
-  image_url: roomImageUrlSchema,
+export const roomEditSchema = Yup.object().shape({
+  room: Yup.object().shape<RoomSchemaShape>({
+    title: roomTitleSchema,
+    url: roomUrlSchema,
+    image_url: roomImageUrlSchema,
+  }),
 });
 
 // this is used to transform the api data to conform to the yup schema
