@@ -14,7 +14,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { UserList } from "components/molecules/UserList";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { LogoRF } from "components/atoms/LogoRF";
+import { SparkleLogoIcon } from "components/atoms/SparkleLogoIcon";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./ExternalRoom.scss";
@@ -45,7 +45,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   return (
     <VenueWithOverlay venue={venue} containerClassNames="ExternalRoom">
       <div className="ExternalRoom__container">
-        <LogoRF />
+        <SparkleLogoIcon />
         {!redirectUrl && (
           <div className="ExternalRoom__container">
             <div className="ExternalRoom__message">
