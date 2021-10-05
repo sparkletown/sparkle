@@ -13,8 +13,9 @@ import { DisplayUser } from "types/User";
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";
 
-import { useChatActions } from "hooks/chats/useChatActions";
-import { useChatMessagesForDisplay } from "hooks/chats/useChatMessages";
+import { useChatMessagesForDisplay } from "hooks/chats/common/useChatMessages";
+import { useSendMessage } from "hooks/chats/common/useSendMessage";
+import { useSendThreadReply } from "hooks/chats/common/useSendThreadReply";
 import { useUser } from "hooks/useUser";
 
 export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
@@ -55,12 +56,19 @@ export const useRecipientChatActions = (
     [userId]
   );
 
-  const chatActions = useChatActions<PrivateChatMessage>(refs, {
-    toUser: pickDisplayUserFromUser(recipient),
-  });
+  const spread = useMemo(
+    () => ({
+      toUser: pickDisplayUserFromUser(recipient),
+    }),
+    [recipient]
+  );
+
+  const sendMessage = useSendMessage<PrivateChatMessage>(refs, spread);
+  const sendThreadReply = useSendThreadReply<PrivateChatMessage>(refs, spread);
 
   return {
-    ...chatActions,
+    sendMessage,
+    sendThreadReply,
     markMessageRead,
   };
 };

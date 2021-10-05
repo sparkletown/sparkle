@@ -1,53 +1,78 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import firebase from "firebase/app";
 
-import { ALWAYS_EMPTY_OBJECT, VENUE_CHAT_AGE_DAYS } from "settings";
+import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
 import { getVenueRef } from "api/venue";
 
 import {
-  ChatMessage,
-  InfiniteScrollProps,
-  MessageToDisplay,
+  BaseChatMessage,
+  ChatActions,
+  SendThreadReply,
   VenueChatMessage,
 } from "types/chat";
 
-import { WithId } from "utils/id";
-import { getDaysAgoInSeconds } from "utils/time";
+import { buildBaseMessage } from "utils/chat";
+import { waitAtLeast } from "utils/promise";
 
-import { useChatActions } from "hooks/chats/useChatActions";
-import { useChatMessagesForDisplay } from "hooks/chats/useChatMessages";
-import { useRenderInfiniteScroll } from "hooks/chats/util/useRenderInfiniteScroll";
+import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
+import { useDeleteMessage } from "hooks/chats/common/useDeleteMessage";
+import { useSendMessage } from "hooks/chats/common/useSendMessage";
+import { useUser } from "hooks/useUser";
 
-export const useVenueChat = (venueId?: string) => {
-  const chatActions = useVenueChatActions(venueId);
-  const messagesToDisplay = useVenueChatMessages(venueId);
+const getChatsRef = (venueId?: string) =>
+  getVenueRef(venueId).collection("chats");
+const getThreadsRef = (venueId?: string, threadId?: string) =>
+  getVenueRef(venueId).collection("chats").doc(threadId).collection("threads");
 
-  return {
-    ...chatActions,
-    messagesToDisplay,
-  };
+export const useVenueChatActions = (venueId?: string): ChatActions => {
+  const refs = useMemo(() => [getChatsRef(venueId)], [venueId]);
+
+  const sendMessage = useSendMessage<VenueChatMessage>(refs, {
+    threadRepliesCount: 0,
+  });
+  const deleteMessage = useDeleteMessage(refs, true);
+  const sendThreadReply = useSendVenueThreadReply(venueId);
+
+  return { sendMessage, deleteMessage, sendThreadReply };
 };
 
-const useVenueChatMessages = (
-  venueId?: string
-): [WithId<MessageToDisplay<VenueChatMessage>>[], InfiniteScrollProps] => {
-  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+const useSendVenueThreadReply = (venueId?: string): SendThreadReply => {
+  const { userWithId } = useUser();
 
-  const [messagesToDisplay] = useChatMessagesForDisplay<ChatMessage>(
-    getVenueRef(venueId ?? "").collection("chats"),
-    (message) => message.timestamp.seconds > venueChatAgeThresholdSec
+  return useCallback(
+    async ({ replyText, threadId }) => {
+      if (!userWithId) return;
+
+      const message = buildBaseMessage<BaseChatMessage>(replyText, userWithId);
+
+      if (!message) return;
+
+      await waitAtLeast(
+        CHAT_MESSAGE_TIMEOUT,
+        getThreadsRef(venueId, threadId).add(message)
+      );
+    },
+    [userWithId, venueId]
   );
-
-  const [toRender, props] = useRenderInfiniteScroll(messagesToDisplay);
-
-  return [toRender, props];
 };
 
-const useVenueChatActions = (venueId?: string) => {
-  const messagesRefs = useMemo(
-    () => (venueId ? [getVenueRef(venueId).collection("chats")] : []),
-    [venueId]
-  );
+export const useVenueChatMessages = (
+  venueId: string | undefined,
+  limit?: number
+) => {
+  let ref: firebase.firestore.Query = getChatsRef(venueId);
+  if (limit) ref = ref.limit(limit);
+  return useChatMessagesRaw<VenueChatMessage>(ref);
+};
 
-  return useChatActions<VenueChatMessage>(messagesRefs, ALWAYS_EMPTY_OBJECT);
+export const useVenueChatThreadMessages = (
+  venueId: string | undefined,
+  threadId: string | undefined,
+  limit?: number
+) => {
+  let ref: firebase.firestore.Query = getThreadsRef(venueId, threadId);
+  if (limit) ref = ref.limit(limit);
+
+  return useChatMessagesRaw<BaseChatMessage>(ref);
 };

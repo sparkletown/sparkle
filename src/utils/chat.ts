@@ -2,8 +2,9 @@ import firebase from "firebase/app";
 import { has, pick } from "lodash";
 
 import {
-  ChatMessage,
+  BaseChatMessage,
   ChatMessageType,
+  OldChatMessage,
   PollMessage,
   PreviewChatMessage,
   PrivateChatMessage,
@@ -25,15 +26,15 @@ export const getPreviewChatMessage = ({
   counterPartyUser: user,
 });
 
-export type ExcludeBuiltMessage<T extends ChatMessage> = Pick<
+export type ExcludeBuiltMessage<T extends BaseChatMessage> = Pick<
   T,
   Exclude<keyof T, "text" | "timestamp" | "fromUser">
 >;
 
-export const buildMessage = <T extends ChatMessage>(
+export const buildBaseMessage = <T extends BaseChatMessage>(
   text: string,
   fromUser: WithId<DisplayUser>,
-  message: ExcludeBuiltMessage<T>
+  message?: ExcludeBuiltMessage<T>
 ) => ({
   ...message,
   text,
@@ -46,7 +47,7 @@ export const pickDisplayUserFromUser = (
 ): WithId<DisplayUser> =>
   pick(user, "id", "partyName", "pictureUrl", "anonMode");
 
-export const isNewSchemaMessage = <T extends ChatMessage>(
+export const isNewSchemaMessage = <T extends BaseChatMessage>(
   message: WithId<T>
 ) => {
   if (!("fromUser" in message && "timestamp" in message)) return false;
@@ -55,7 +56,7 @@ export const isNewSchemaMessage = <T extends ChatMessage>(
   return has(message.fromUser, "id");
 };
 
-export const filterNewSchemaMessages = <T extends ChatMessage>(
+export const filterNewSchemaMessages = <T extends BaseChatMessage>(
   messages: WithId<T>[] | undefined
 ) => messages?.filter(isNewSchemaMessage);
 
@@ -64,7 +65,7 @@ export interface PartitionMessagesFromRepliesReturn<T extends object> {
   allMessagesReplies: WithId<T>[];
 }
 
-export const partitionMessagesFromReplies = <T extends ChatMessage>(
+export const partitionMessagesFromReplies = <T extends OldChatMessage>(
   messages: WithId<T>[]
 ): PartitionMessagesFromRepliesReturn<T> =>
   messages.reduce<PartitionMessagesFromRepliesReturn<T>>(
@@ -83,14 +84,14 @@ export interface GetMessageRepliesProps<T extends object> {
   allReplies: WithId<T>[];
 }
 
-export const getMessageReplies = <T extends ChatMessage>({
+export const getMessageReplies = <T extends OldChatMessage>({
   messageId,
   allReplies,
 }: GetMessageRepliesProps<T>) =>
   allReplies.filter((reply) => reply.threadId === messageId);
 
 export const checkIfPollMessage = (
-  message: ChatMessage
+  message: OldChatMessage
 ): message is PollMessage => {
   if ("type" in message) {
     return message.type === ChatMessageType.poll;

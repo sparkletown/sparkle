@@ -4,7 +4,6 @@ import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
-import { useVenueChat } from "hooks/chats/venue/useVenueChat";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
@@ -24,9 +23,6 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 export const ReactionPage: React.FC = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
-  const {
-    messagesToDisplay: [venueChatMessages],
-  } = useVenueChat(venueId);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(
@@ -48,10 +44,7 @@ export const ReactionPage: React.FC = () => {
 
       <div className="row">
         <div className="col-8">
-          <ReactionList
-            reactions={reactions}
-            chatMessages={venueChatMessages}
-          />
+          <ReactionList reactions={reactions} chatMessages={[]} />
         </div>
 
         <div className="col-4">

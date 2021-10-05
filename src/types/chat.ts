@@ -17,25 +17,30 @@ export type BaseChatMessage = {
   fromUser: WithId<DisplayUser>;
   text: string;
   timestamp: firebase.firestore.Timestamp;
-  threadId?: string;
-  deleted?: boolean;
   isQuestion?: boolean;
 };
 
-export interface PrivateChatMessage extends BaseChatMessage {
+export type OldChatMessageBase = BaseChatMessage & {
+  threadId?: string;
+  deleted?: boolean;
+};
+
+export interface PrivateChatMessage extends OldChatMessageBase {
   toUser: WithId<DisplayUser>;
   isRead?: boolean;
 }
 
-export interface VenueChatMessage extends BaseChatMessage {}
+export interface VenueChatMessage extends BaseChatMessage {
+  threadRepliesCount: number;
+}
 
-export interface PollMessage extends BaseChatMessage {
+export interface PollMessage extends OldChatMessageBase {
   type: ChatMessageType.poll;
   poll: PollValues;
   votes: PollVote[];
 }
 
-export interface JukeboxMessage extends BaseChatMessage {
+export interface JukeboxMessage extends OldChatMessageBase {
   tableId: string;
 }
 
@@ -48,13 +53,9 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type ChatMessage =
-  | PrivateChatMessage
-  | VenueChatMessage
-  | PollMessage
-  | JukeboxMessage;
+export type OldChatMessage = PrivateChatMessage | PollMessage | JukeboxMessage;
 
-export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
+export type MessageToDisplay<T extends OldChatMessage = OldChatMessage> = T & {
   replies: WithId<T>[];
 };
 
@@ -74,7 +75,7 @@ export interface SendChatReplyProps {
   threadId: string;
 }
 
-export type SendChatReply = (props: SendChatReplyProps) => Promise<void>;
+export type SendThreadReply = (props: SendChatReplyProps) => Promise<void>;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
@@ -83,7 +84,7 @@ export type PreviewChatMessage = PrivateChatMessage & {
 export interface ChatActions {
   sendMessage: SendMessage;
   deleteMessage?: DeleteMessage;
-  sendThreadReply: SendChatReply;
+  sendThreadReply: SendThreadReply;
 }
 
 export interface InfiniteScrollProps {

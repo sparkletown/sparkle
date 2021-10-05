@@ -3,7 +3,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ChatMessage } from "types/chat";
+import { OldChatMessage } from "types/chat";
 
 import { formatTimeLocalised } from "utils/time";
 
@@ -16,7 +16,7 @@ import "./ChatMessageInfo.scss";
 const deleteIconClass = "ChatMessageInfo__delete-icon";
 
 export interface ChatMessageInfoProps {
-  message: ChatMessage;
+  message: OldChatMessage;
   deleteMessage?: () => Promise<void>;
   reversed?: boolean;
 }

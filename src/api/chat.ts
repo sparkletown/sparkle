@@ -4,7 +4,7 @@ import { noop } from "lodash";
 
 import { getVenueRef } from "api/venue";
 
-import { PollVoteBase, VenueChatMessage } from "types/chat";
+import { BaseChatMessage, PollVoteBase } from "types/chat";
 
 export const getUserChatsCollectionRef = (userId: string) =>
   firebase
@@ -15,7 +15,7 @@ export const getUserChatsCollectionRef = (userId: string) =>
 
 export interface SendVenueMessageProps {
   venueId: string;
-  message: VenueChatMessage;
+  message: BaseChatMessage;
 }
 
 export const sendVenueMessage = async ({

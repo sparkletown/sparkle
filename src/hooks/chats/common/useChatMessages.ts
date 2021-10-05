@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { ChatMessage, MessageToDisplay } from "types/chat";
+import { BaseChatMessage, MessageToDisplay, OldChatMessage } from "types/chat";
 
 import {
   filterNewSchemaMessages,
@@ -16,7 +16,7 @@ import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
-export const useChatMessagesForDisplay = <T extends ChatMessage>(
+export const useChatMessagesForDisplay = <T extends OldChatMessage>(
   messagesRef: firebase.firestore.Query,
   filter: (msg: T) => boolean = () => true
 ): [WithId<MessageToDisplay<T>>[], boolean] => {
@@ -46,20 +46,16 @@ export const useChatMessagesForDisplay = <T extends ChatMessage>(
   return [messagesToDisplay, isLoaded];
 };
 
-export const useChatMessages = <T extends ChatMessage>(
+export const useChatMessages = <T extends OldChatMessage>(
   messagesRef: firebase.firestore.Query,
   filter: (msg: T) => boolean = () => true
 ): [PartitionMessagesFromRepliesReturn<T>, boolean] => {
   const [chatMessages, isLoaded] = useChatMessagesRaw<T>(messagesRef);
 
-  const filteredMessages = useMemo(
-    () =>
-      chatMessages.filter(
-        (message) =>
-          isTruthy(message) && message.deleted !== true && filter(message)
-      ),
-    [chatMessages, filter]
-  );
+  const filteredMessages = useMemo(() => chatMessages.filter(filter), [
+    chatMessages,
+    filter,
+  ]);
 
   return [
     useMemo(() => partitionMessagesFromReplies<T>(filteredMessages), [
@@ -69,7 +65,7 @@ export const useChatMessages = <T extends ChatMessage>(
   ];
 };
 
-export const useChatMessagesRaw = <T extends ChatMessage>(
+export const useChatMessagesRaw = <T extends BaseChatMessage>(
   messagesRef: firebase.firestore.Query
 ): [WithId<T>[], boolean] => {
   const {
@@ -80,7 +76,7 @@ export const useChatMessagesRaw = <T extends ChatMessage>(
   );
 
   const chatMessages =
-    filterNewSchemaMessages<T>(rawMessages) ??
+    filterNewSchemaMessages<T>(rawMessages)?.filter(isTruthy) ??
     (ALWAYS_EMPTY_ARRAY as WithId<T>[]);
 
   return [chatMessages, status !== "loading"];

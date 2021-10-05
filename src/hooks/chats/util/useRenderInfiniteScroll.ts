@@ -3,11 +3,15 @@ import { usePrevious } from "react-use";
 
 import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
 
-import { ChatMessage, InfiniteScrollProps, MessageToDisplay } from "types/chat";
+import {
+  InfiniteScrollProps,
+  MessageToDisplay,
+  OldChatMessage,
+} from "types/chat";
 
 import { WithId } from "utils/id";
 
-export const useRenderInfiniteScroll = <T extends ChatMessage>(
+export const useRenderInfiniteScroll = <T extends OldChatMessage>(
   messages: WithId<MessageToDisplay<T>>[]
 ): [WithId<MessageToDisplay<T>>[], InfiniteScrollProps] => {
   const getNextMessagesRenderCount = useCallback(

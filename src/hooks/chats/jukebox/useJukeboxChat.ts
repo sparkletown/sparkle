@@ -4,8 +4,8 @@ import { getVenueRef } from "api/venue";
 
 import { JukeboxChatActions, JukeboxMessage } from "types/chat";
 
-import { useChatActions } from "hooks/chats/useChatActions";
-import { useChatMessages } from "hooks/chats/useChatMessages";
+import { useChatMessages } from "hooks/chats/common/useChatMessages";
+import { useSendMessage } from "hooks/chats/common/useSendMessage";
 
 export const useJukeboxChat = ({
   venueId,
@@ -33,9 +33,11 @@ const useJukeboxActions = (
     [venueId]
   );
 
-  return useChatActions<JukeboxMessage>(messagesRefs, {
+  const sendMessage = useSendMessage<JukeboxMessage>(messagesRefs, {
     tableId: tableId ?? "",
   });
+
+  return { sendMessage };
 };
 
 const useJukeboxMessages = (venueId?: string) => {
