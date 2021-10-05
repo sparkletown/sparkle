@@ -13,6 +13,7 @@ import { AdminSidebarFooter } from "components/organisms/AdminVenueView/componen
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { WorldForm } from "components/organisms/WorldForm";
+import { WorldNav } from "components/organisms/WorldForm/components/WorldNav";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -37,6 +38,7 @@ export const WorldEditor: React.FC = () => {
     <div className="WorldEditor">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
+          <WorldNav />
           <AdminPanel>
             <AdminSidebar>
               <AdminSidebarTitle>{title}</AdminSidebarTitle>

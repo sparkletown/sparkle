@@ -29,4 +29,4 @@ export const ADMIN_V3_VENUE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:s
 export const ADMIN_V3_ADVANCED_PARAM_URL = `${ADMIN_V3_ROOT_URL}/advanced-settings/:venueId?/:selectedTab?`;
 export const ADMIN_V3_WORLDS_URL = `${ADMIN_V3_ROOT_URL}/worlds`;
 export const ADMIN_V3_NEW_WORLD_URL = `${ADMIN_V3_WORLDS_URL}/new`;
-export const ADMIN_V3_OLD_WORLD_PARAM_URL = `${ADMIN_V3_WORLDS_URL}/old/:worldId`;
+export const ADMIN_V3_OLD_WORLD_PARAM_URL = `${ADMIN_V3_WORLDS_URL}/old/:worldId?/:selectedTab?`;
