@@ -372,12 +372,12 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.parentId === "string") {
+    updated.parentId = data.parentId;
   }
 
   if (typeof data.showSchedule === "boolean") {
@@ -808,6 +808,14 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
   }
 
   if (typeof data.showSchedule === "boolean") {
