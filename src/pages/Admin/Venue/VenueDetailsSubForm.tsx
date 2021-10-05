@@ -553,7 +553,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     );
   };
 
-  const renderSamlLoginToggle = () => {
+  const renderSocialLoginToggle = () => {
     return (
       <div className="toggle-room DetailsForm">
         <h4 className="italic input-header">Enable Social Login</h4>
@@ -743,7 +743,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
         {renderJukeboxToggle()}
 
-        {renderSamlLoginToggle()}
+        {renderSocialLoginToggle()}
 
         <UserStatusManager
           venueId={venueId}

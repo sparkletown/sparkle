@@ -224,7 +224,7 @@ const createVenueData = (data, context) => {
     radioStations: data.radioStations ? [data.radioStations] : [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
-    hasSamlLoginEnabled: data.hasSamlLoginEnabled || false,
+    hasSocialLoginEnabled: data.hasSocialLoginEnabled || false,
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -397,8 +397,8 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
-  if (typeof data.hasSamlLoginEnabled === "boolean") {
-    updated.hasSamlLoginEnabled = data.hasSamlLoginEnabled;
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
@@ -835,8 +835,8 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
-  if (typeof data.hasSamlLoginEnabled === "boolean") {
-    updated.hasSamlLoginEnabled = data.hasSamlLoginEnabled;
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
