@@ -8,6 +8,7 @@ import { VenueAccessMode } from "types/VenueAcccess";
 import { venueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
+import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -36,6 +37,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   afterUserIsLoggedIn,
 }) => {
   const firebase = useFirebase();
+
+  const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const venue = useSelector(venueSelector);
   const {
@@ -91,6 +94,21 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    const { message } = await signInWithGoogle();
+
+    if (message) {
+      setError("backend", "firebase", message);
+    }
+  };
+  const handleFacebookSignIn = async () => {
+    const { message } = await signInWithFacebook();
+
+    if (message) {
+      setError("backend", "firebase", message);
+    }
+  };
+
   return (
     <div className="form-container">
       <div className="secondary-action">
@@ -105,8 +123,14 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
       {errors.backend && (
         <div className="auth-submit-error">
           <span>
-            Oops! Something went wrong. Please try again or use another method
-            to create an account
+            {errors.backend && (
+              <div className="auth-submit-error">
+                <span>
+                  {errors.backend.message &&
+                    "Oops! Something went wrong. Please try again or use another method to create an account"}
+                </span>
+              </div>
+            )}
           </span>
         </div>
       )}
@@ -150,10 +174,6 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
-        {errors.backend && (
-          <span className="input-error">{errors.backend.message}</span>
-        )}
-
         <ButtonNG
           className="auth-input"
           variant="primary"
@@ -167,13 +187,21 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
       {venue.hasSamlLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
-          <ButtonNG className="auth-input" type="submit">
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={handleGoogleSignIn}
+          >
             <div className="social-icon">
               <img src={gIcon} alt="asd" />
             </div>
             Log in with Google
           </ButtonNG>
-          <ButtonNG className="auth-input" type="submit">
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={handleFacebookSignIn}
+          >
             <div className="social-icon">
               <img src={fIcon} alt="asd" />
             </div>

@@ -6,6 +6,7 @@ $large-shadow: box-shadow--large(0.34);
 $border-radius: 28px;
 $auth-body-max-width: 365px;
 $auth-icon-sso-size: 35px;
+$auth-error-container-height: 80px;
 
 .Login {
   &__login-box {
@@ -72,11 +73,13 @@ $auth-icon-sso-size: 35px;
         margin: $spacing--md auto;
         max-width: $auth-body-max-width;
         background: rgba(221, 75, 57, 0.49);
-        border-radius: 16px;
-        height: 80px;
+        border-radius: $border-radius--lg;
+        min-height: $auth-error-container-height;
+        height: auto;
         display: flex;
         justify-content: center;
         align-items: center;
+        word-break: break-word;
 
         span {
           width: 80%;
