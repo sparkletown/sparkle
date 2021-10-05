@@ -9,8 +9,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { getExtraLinkProps, openUrl } from "utils/url";
 
-import { LogoRF } from "pages/RegistrationFlow/LogoRF";
-
+import { LogoRF } from "components/organisms/LogoRF";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { UserList } from "components/molecules/UserList";
