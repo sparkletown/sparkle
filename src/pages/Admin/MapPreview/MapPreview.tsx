@@ -16,6 +16,7 @@ import { RoomInput_v2, updateRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 
+import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 
 import {
@@ -27,8 +28,6 @@ import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlac
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import Legend from "components/atoms/Legend";
-
-import { BackgroundSelect } from "../BackgroundSelect";
 
 import "./MapPreview.scss";
 
@@ -126,7 +125,9 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [rooms, user, venueId]);
 
-  if (!mapBackground) {
+  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
+
+  if (!hasMapBackground) {
     return <MapBackgroundPlaceholder />;
   }
 
@@ -134,14 +135,6 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
         <Legend text={`${venueName}'s Map`} />
-
-        {!isEditing && (
-          <BackgroundSelect
-            worldId={worldId}
-            venueName={venueName}
-            mapBackground={mapBackground}
-          />
-        )}
 
         {mapBackground &&
           !isEditing &&

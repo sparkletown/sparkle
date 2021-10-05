@@ -10,6 +10,7 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useFetchAssets } from "hooks/useFetchAssets";
 import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
@@ -23,7 +24,7 @@ import {
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
@@ -51,6 +52,12 @@ export const Spaces: React.FC<SpacesProps> = ({
     isShown: showAdvancedSettings,
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
+
+  const {
+    assets: mapBackgrounds,
+    isLoading: isLoadingBackgrounds,
+    error: errorFetchBackgrounds,
+  } = useFetchAssets("mapBackgrounds");
 
   const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
@@ -128,15 +135,14 @@ export const Spaces: React.FC<SpacesProps> = ({
     <AdminPanel className="Spaces">
       <AdminSidebar>
         {selectedRoom ? (
-          <EditRoomForm
-            venueVisibility={venue?.roomVisibility}
+          <SpaceEditForm
+            venueVisibility={venue.roomVisibility}
             room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
             onBackClick={clearSelectedRoom}
             onDelete={clearSelectedRoom}
             onEdit={clearSelectedRoom}
-            onClickHome={sidebarFooterProps.onClickHome}
           />
         ) : (
           <>
@@ -153,10 +159,23 @@ export const Spaces: React.FC<SpacesProps> = ({
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect
-                  worldId={venue.worldId}
-                  venueName={venue?.name ?? ""}
-                />
+                <>
+                  <BackgroundSelect
+                    isLoadingBackgrounds={isLoadingBackgrounds}
+                    mapBackgrounds={mapBackgrounds}
+                    venueName={venue.name}
+                    worldId={venue.worldId}
+                  />
+                  {errorFetchBackgrounds && (
+                    <>
+                      <div>
+                        The preset map backgrounds could not be fetched. Please,
+                        refresh the page or upload a custom map background.
+                      </div>
+                      <div>Error: {errorFetchBackgrounds.message}</div>
+                    </>
+                  )}
+                </>
               )}
             </div>
             <div>

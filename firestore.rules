@@ -110,7 +110,8 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/worlds/$(worldId)).data;
       }
 
-      allow update,delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+      allow read: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+      allow update, delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
     }
   }
 }
