@@ -115,7 +115,7 @@ $media-width--mobile-max: 1024px;
     }
 
     &--new-message {
-      background-color: $primary;
+      background-color: $primary--light;
       @include square-size($spacing--md + 1);
       border: 3px solid $secondary;
       position: absolute;
