@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
+$photobooth-button-margin: 140px 0px 0px;
+$photobooth-button-text-margin: 38px 0px 0px;
+$photobooth-button-background-size: 35px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -14,7 +16,6 @@ $border-radius: 28px;
 
   .log-in-button {
     cursor: pointer;
-    margin-right: 10px;
     font-size: 18px;
   }
 
@@ -101,12 +102,15 @@ $border-radius: 28px;
 .nav-sparkle-logo_small {
   position: relative;
   margin-right: 12px;
+
   &:hover {
     width: 120px;
   }
+
   &.nav-sparkle-logo_small {
     display: none;
   }
+
   div {
     position: relative;
     display: block;
@@ -114,6 +118,7 @@ $border-radius: 28px;
     height: 35px;
     background-image: url(/assets/icons/sparkle-nav-logo.png);
     background-size: 25px 35px;
+
     &:before {
       position: absolute;
       content: "";
@@ -127,6 +132,7 @@ $border-radius: 28px;
       transform: translateX(-40px) scale(0.75);
       transition: opacity 200ms, transform 400ms $transition-function;
     }
+
     @keyframes sparklelogoanimate {
       100% {
         background-position: -75px;
@@ -139,17 +145,20 @@ $border-radius: 28px;
       background-size: 75px 35px;
       background-position: 0 0;
       animation: sparklelogoanimate 0.4s steps(3) infinite;
+
       &:before {
         opacity: 1;
         pointer-events: all;
         transform: translateX(0px) scale(1);
       }
     }
+
     &:active {
       opacity: 0.7;
     }
   }
 }
+
 .nav-party-logo {
   position: relative;
   background-color: rgba($white, 0.08);
@@ -171,14 +180,17 @@ $border-radius: 28px;
   img {
     height: 40px;
   }
+
   &:hover,
   &:focus {
     border: none;
     background-color: rgba($white, 0.14);
+
     &:after {
       opacity: 0.7;
     }
   }
+
   &:after {
     content: "";
     position: absolute;
@@ -192,11 +204,13 @@ $border-radius: 28px;
     transform: rotate(0deg);
     transition: transform 400ms $transition-function;
   }
+
   &.clicked {
     &:after {
       transform: rotate(180deg);
     }
   }
+
   &.slide {
     transform: translateX(110px);
   }
@@ -257,5 +271,29 @@ $border-radius: 28px;
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__photobooth-button {
+    position: absolute;
+    top: 130px;
+    left: -($spacing--lg);
+    border-radius: 0px $border-radius--md $border-radius--md 0px;
+    padding: $spacing--xs $spacing--md;
+    cursor: pointer;
+    background-color: $lighter-intermediate-grey;
+    background-image: url(/assets/icons/photobooth-icon.png);
+    background-size: $photobooth-button-background-size;
+    background-position: 50% 10%;
+    background-repeat: no-repeat;
+
+    &:hover {
+      background-color: $light-grey;
+    }
+  }
+
+  &__photobooth-title {
+    text-decoration: none;
+    margin: $photobooth-button-text-margin;
+    font-size: $font-size--sm;
   }
 }

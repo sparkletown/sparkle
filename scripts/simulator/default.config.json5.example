@@ -1,0 +1,61 @@
+// This configuration follows closely to default values of the various settings
+// For more info @see ./scripts/simulator/simulator.config.json5.example
+
+{
+  //  credentials: undefined,
+  //  projectId: undefined,
+
+  //  timeout: undefined,
+  keepAlive: true,
+
+  //  simulate: undefined,
+
+  log: {
+    verbose: false,
+    stack: false,
+  },
+
+  //  affinity: undefined,
+  //  chunkSize: undefined,
+  //  tick: undefined,
+
+  user: {
+    count: 100,
+    //  scriptTag: undefined,
+    createMissing: true,
+    cleanup: true,
+  },
+
+  venue: {
+    //  id: undefined,
+  },
+
+  chat: {
+    affinity: 0.005,
+    chunkSize: 100,
+    cleanup: true,
+    tick: 1000,
+  },
+
+  experience: {
+    affinity: 0.005,
+    chunkSize: 100,
+    cleanup: true,
+    tick: 1000,
+  },
+
+  seat: {
+    impatience: 0.01,
+    affinity: 0.01,
+    chunkSize: 100,
+    tick: 1000,
+  },
+
+  table: {
+    impatience: 0.01,
+    affinity: 0.01,
+    chunkSize: 100,
+    tick: 1000,
+  },
+
+}

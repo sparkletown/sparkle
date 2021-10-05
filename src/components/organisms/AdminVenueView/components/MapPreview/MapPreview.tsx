@@ -2,8 +2,10 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
+
+import { useCheckImage } from "hooks/useCheckImage";
 
 import { VenueRoomsEditor } from "../VenueRoomsEditor";
 import { RoomIcon } from "../VenueRoomsEditor/VenueRoomsEditor";
@@ -12,10 +14,10 @@ import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   mapBackground?: string;
-  rooms: RoomData_v2[];
+  rooms: Room[];
   isEditing: boolean;
-  selectedRoom?: RoomData_v2;
-  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
+  selectedRoom?: Room;
+  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
   onResizeRoom?: (size: Dimensions) => void;
   onMoveRoom?: (position: Position) => void;
 }
@@ -30,6 +32,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const iconsMap: RoomIcon[] = useMemo(() => {
     return rooms.map((room, index: number) => ({
+      title: room.title ?? "",
       width: room.width_percent ?? 0,
       height: room.height_percent ?? 0,
       top: room.y_percent ?? 0,
@@ -39,10 +42,14 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     }));
   }, [rooms]);
 
+  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
-        <div className="MapPreview__header">{`Preview of your space’s map`}</div>
+        {hasMapBackground && (
+          <div className="MapPreview__header">{`Preview of your space’s map`}</div>
+        )}
         <VenueRoomsEditor
           interactive
           resizable
@@ -50,7 +57,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
           rooms={rooms}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
-          backgroundImage={mapBackground ?? ""}
+          backgroundImage={hasMapBackground ? mapBackground : undefined}
           roomIcons={iconsMap}
           coordinatesBoundary={{
             width: 100,

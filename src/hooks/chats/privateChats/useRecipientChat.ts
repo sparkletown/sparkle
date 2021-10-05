@@ -12,78 +12,72 @@ import {
   SendChatReply,
   SendMessage,
 } from "types/chat";
+import { DisplayUser } from "types/User";
 
 import {
   buildMessage,
   chatSort,
-  getBaseMessageToDisplay,
   getMessageReplies,
   partitionMessagesFromReplies,
+  pickDisplayUserFromUser,
 } from "utils/chat";
-import { WithId, withId } from "utils/id";
+import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
-import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
-export const useRecipientChat = (recipientId: string) => {
-  const { worldUsersById } = useWorldUsersById();
+export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   const { privateChatMessages } = usePrivateChatMessages();
-  const { user } = useUser();
-
-  const userId = user?.uid;
-  const recipient = withId(worldUsersById[recipientId], recipientId);
+  const { userWithId } = useUser();
 
   const sendMessageToSelectedRecipient: SendMessage = useCallback(
-    ({ message, isQuestion }) => {
-      if (!userId) return;
+    async ({ message, isQuestion }) => {
+      if (!userWithId) return;
 
-      const privateChatMessage = buildMessage<PrivateChatMessage>({
-        from: userId,
+      const privateChatMessage = buildMessage<PrivateChatMessage>(userWithId, {
         text: message,
         isQuestion,
-        to: recipientId,
+        toUser: pickDisplayUserFromUser(recipient),
       });
 
       return sendPrivateMessage(privateChatMessage);
     },
-    [userId, recipientId]
+    [recipient, userWithId]
   );
 
   const deleteMessage: DeleteMessage = useCallback(
-    (messageId: string) => {
-      if (!userId) return;
+    async (messageId: string) => {
+      if (!userWithId) return;
 
-      return deletePrivateMessage({ userId, messageId });
+      return deletePrivateMessage({ userId: userWithId.id, messageId });
     },
-    [userId]
+    [userWithId]
   );
 
   const markMessageRead = useCallback(
     (messageId: string) => {
-      if (!userId) return;
+      if (!userWithId) return;
 
-      setChatMessageRead({ userId, messageId });
+      return setChatMessageRead({ userId: userWithId.id, messageId });
     },
-    [userId]
+    [userWithId]
   );
 
   const sendThreadReply: SendChatReply = useCallback(
     async ({ replyText, threadId }) => {
-      if (!userId) return;
+      if (!userWithId) return;
 
-      const threadReply = buildMessage<PrivateChatMessage>({
-        from: userId,
-        to: recipientId,
+      const threadReply = buildMessage<PrivateChatMessage>(userWithId, {
+        toUser: recipient,
         text: replyText,
         threadId,
       });
 
       return sendPrivateMessage(threadReply);
     },
-    [userId, recipientId]
+    [recipient, userWithId]
   );
 
   const filteredMessages = useMemo(
@@ -92,10 +86,11 @@ export const useRecipientChat = (recipientId: string) => {
         .filter(
           (message) =>
             message.deleted !== true &&
-            (message.to === recipientId || message.from === recipientId)
+            (message.toUser.id === recipient.id ||
+              message.fromUser.id === recipient.id)
         )
         .sort(chatSort),
-    [privateChatMessages, recipientId]
+    [privateChatMessages, recipient.id]
   );
 
   const { messages, allMessagesReplies } = useMemo(
@@ -107,33 +102,15 @@ export const useRecipientChat = (recipientId: string) => {
     () =>
       messages
         .map((message) => {
-          const displayMessage = getBaseMessageToDisplay<
-            WithId<PrivateChatMessage>
-          >({
-            message,
-            usersById: worldUsersById,
-            myUserId: userId,
-          });
-
-          if (!displayMessage) return undefined;
-
           const messageReplies = getMessageReplies<PrivateChatMessage>({
             messageId: message.id,
             allReplies: allMessagesReplies,
-          })
-            .map((reply) =>
-              getBaseMessageToDisplay<WithId<PrivateChatMessage>>({
-                message: reply,
-                usersById: worldUsersById,
-                myUserId: userId,
-              })
-            )
-            .filter(isTruthy);
+          }).filter(isTruthy);
 
-          return { ...displayMessage, replies: messageReplies };
+          return { ...message, replies: messageReplies };
         })
         .filter(isTruthy),
-    [worldUsersById, userId, allMessagesReplies, messages]
+    [allMessagesReplies, messages]
   );
 
   return {
@@ -143,6 +120,5 @@ export const useRecipientChat = (recipientId: string) => {
     sendThreadReply,
 
     messagesToDisplay,
-    recipient,
   };
 };

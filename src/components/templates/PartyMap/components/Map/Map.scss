@@ -36,11 +36,6 @@ $border-radius: 28px;
   height: 100%;
 }
 
-.party-map-grid-container > *:first-child {
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
-}
-
 .party-map-grid-container {
   position: absolute;
   width: 100%;
@@ -174,13 +169,6 @@ $border-radius: 28px;
 
 .tab-option {
   padding: 10px;
-}
-
-.sparkle-fairies {
-  position: fixed;
-  top: 70px;
-  left: 0px;
-  z-index: z(left-column);
 }
 
 .info-drawer-camp {

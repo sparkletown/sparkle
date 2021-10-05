@@ -16,10 +16,10 @@ import { useVenueId } from "./useVenueId";
 
 export const useVenuePoll = () => {
   const venueId = useVenueId();
-  const { userId } = useUser();
+  const { userWithId } = useUser();
 
   const voteInPoll = useCallback(
-    (pollVote: PollVoteBase) => {
+    async (pollVote: PollVoteBase) => {
       if (!venueId) return;
 
       return voteInVenuePoll({ pollVote, venueId });
@@ -28,21 +28,20 @@ export const useVenuePoll = () => {
   );
 
   const createPoll = useCallback(
-    (pollValues: PollValues) => {
-      if (!venueId || !userId) return;
+    async (pollValues: PollValues) => {
+      if (!venueId || !userWithId) return;
 
-      const message = buildMessage<PollMessage>({
+      const message = buildMessage<PollMessage>(userWithId, {
         poll: pollValues,
         type: ChatMessageType.poll,
-        from: userId,
         votes: [],
         // @debt remove this useless text from here
         text: "poll",
       });
 
-      sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message });
     },
-    [venueId, userId]
+    [venueId, userWithId]
   );
 
   return useMemo(

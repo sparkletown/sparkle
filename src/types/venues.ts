@@ -2,43 +2,63 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { WithVenueId } from "utils/id";
+import { AuditoriumSectionPath } from "types/auditorium";
 
+import { WithId, WithVenueId } from "utils/id";
+
+import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+
+import { Banner } from "./banner";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UsernameVisibility, UserStatus } from "./User";
+import { User, UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  artcar = "artcar",
   artpiece = "artpiece",
-  audience = "audience",
   auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
-  friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
-  performancevenue = "performancevenue",
+  animatemap = "animatemap",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
-  themecamp = "themecamp",
   zoomroom = "zoomroom",
 
   /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
+   */
+  audience = "audience",
+  /**
+   * @deprecated Legacy template removed
+   */
+  artcar = "artcar",
+  /**
+   * @deprecated Legacy template removed
+   */
+  friendship = "friendship",
+  /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
+  themecamp = "themecamp",
+  /**
+   * @deprecated Legacy template removed
+   */
+  performancevenue = "performancevenue",
+  /**
+   * @deprecated Legacy template removed
+   */
   avatargrid = "avatargrid",
-
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
@@ -55,6 +75,7 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
+  | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
@@ -65,6 +86,7 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
+  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -80,8 +102,8 @@ export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
-      subtitle: string;
-      description: string;
+      subtitle?: string;
+      description?: string;
       coverImageUrl: string;
     };
   };
@@ -96,11 +118,11 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  worldId: string;
 }
 
 export interface Venue_v2_AdvancedConfig {
   attendeesTitle?: string;
-  bannerMessage?: string;
   chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
@@ -110,7 +132,8 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
-  showRangers?: boolean;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -136,6 +159,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
+  autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   placement?: VenuePlacement;
   zoomUrl?: string;
@@ -145,7 +169,7 @@ export interface BaseVenue {
   radioTitle?: string;
   dustStorm?: boolean;
   activity?: string;
-  bannerMessage?: string;
+  banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
@@ -170,10 +194,10 @@ export interface BaseVenue {
   };
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
+  end_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
   showShoutouts?: boolean;
@@ -186,10 +210,24 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  sectionsCount?: number;
+  createdAt?: number;
+  recentUserCount?: number;
+  recentUsersSample?: WithId<User>[];
+  recentUsersSampleSize?: number;
+  updatedAt?: number;
+  worldId: string;
 }
 
 export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  id: string;
+  gameOptions: GameOptions;
+  relatedPartymapId: string;
+  template: VenueTemplate.animatemap;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
@@ -231,6 +269,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {
@@ -252,6 +291,15 @@ export interface AuditoriumVenue extends BaseVenue {
   title?: string;
 }
 
+export interface AnimateMapVenue extends BaseVenue {
+  template: VenueTemplate.animatemap;
+  playerioGameId: string;
+  playerioMaxPlayerPerRoom?: number;
+  playerioFrequencyUpdate?: number;
+  //@dept Right now advanced mode in develop, don't add this flag to venue!
+  playerioAdvancedMode?: boolean;
+}
+
 export interface Question {
   name: string;
   text: string;
@@ -268,6 +316,8 @@ export enum RoomVisibility {
   hover = "hover",
   count = "count",
   nameCount = "count/name",
+  none = "none",
+  unclickable = "unclickable",
 }
 
 export interface VenueConfig {
@@ -280,7 +330,6 @@ export interface VenueConfig {
   landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
-  showRangers?: boolean;
   tables?: Table[];
 }
 
@@ -288,7 +337,7 @@ export interface VenueConfig {
 //   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
-  subtitle: string;
+  subtitle?: string;
   description?: string;
   presentation: string[];
   bannerImageUrl?: string;
@@ -331,6 +380,7 @@ export interface VenueEvent {
   room?: string;
   id?: string;
   orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {
@@ -341,11 +391,37 @@ export interface VenueLocation {
 
 export interface LocationEvents {
   location: VenueLocation;
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
 }
 
-export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
+  venueIcon: string;
+  liveAudience: number;
+}
+
+export interface VenueTablePath {
+  venueId: string;
+  tableReference: string;
+}
+
+export type TableSeatedUsersVenuesTemplates =
+  | VenueTemplate.jazzbar
+  | VenueTemplate.conversationspace;
+
+export type RecentSeatedUserData<T extends VenueTemplate> = {
+  template: T;
+  venueId: string;
+  venueSpecificData: T extends VenueTemplate.auditorium
+    ? Pick<AuditoriumSectionPath, "sectionId">
+    : T extends TableSeatedUsersVenuesTemplates
+    ? {}
+    : never;
+};
+
+export interface RecentSeatedUserTimestamp<T extends VenueTemplate>
+  extends RecentSeatedUserData<T> {
+  lastSittingTimeMs: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

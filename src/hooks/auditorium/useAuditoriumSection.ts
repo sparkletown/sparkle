@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import {
   REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
@@ -6,30 +7,30 @@ import {
   SECTION_DEFAULT_ROWS_COUNT,
 } from "settings";
 
-import { setGridData } from "api/profile";
+import {
+  setAuditoriumSectionSeat,
+  unsetAuditoriumSectionSeat,
+} from "api/venue";
 
+import { AuditoriumSection } from "types/auditorium";
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
 import {
   convertToCartesianCoordinate,
-  getAuditoriumSeatedUsers,
   getVideoSizeInSeats,
 } from "utils/auditorium";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
 
-import { isLoaded } from "../useFirestoreConnect";
+import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
+
 import { useGetUserByPosition } from "../useGetUserByPosition";
-import { useRecentVenueUsers } from "../users";
-import { useSelector } from "../useSelector";
 import { useUser } from "../useUser";
-
-import { useConnectAllAuditoriumSections } from "./useAllAuditoriumSections";
 
 export interface UseAuditoriumSectionProps {
   venue: WithId<AuditoriumVenue>;
-  sectionId?: string;
+  sectionId: string;
 }
 
 export const useAuditoriumSection = ({
@@ -38,20 +39,27 @@ export const useAuditoriumSection = ({
 }: UseAuditoriumSectionProps) => {
   const {
     id: venueId,
-    name: venueName,
     auditoriumColumns: venueColumnsCount,
     auditoriumRows: venueRowsCount,
   } = venue;
 
-  useConnectAllAuditoriumSections(venueId);
+  const firestore = useFirestore();
 
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  const sectionRef = firestore
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .doc(sectionId)
+    .withConverter(withIdConverter);
 
-  const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
-  const section = sectionId ? sectionsById?.[sectionId] : undefined;
+  const { data: section, status } = useFirestoreDocData<
+    WithId<AuditoriumSection>
+  >(sectionRef);
+
+  const isSectionLoaded = status !== "loading";
 
   const baseRowsCount =
     section?.rowsCount ?? venueRowsCount ?? SECTION_DEFAULT_ROWS_COUNT;
@@ -66,46 +74,45 @@ export const useAuditoriumSection = ({
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
 
-  const seatedUsers = getAuditoriumSeatedUsers({
-    auditoriumUsers: recentVenueUsers,
-    venueId,
-    sectionId,
-  });
+  const seatedUsers = useAuditoriumSeatedUsers({ venueId, sectionId });
 
   const isUserSeated = useMemo(
-    () => seatedUsers.some((seatedUser) => seatedUser.id === userId),
+    () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
     [seatedUsers, userId]
   );
 
-  const getUserBySeat = useGetUserByPosition({
-    venueId,
-    positionedUsers: seatedUsers,
-  });
+  const getUserBySeat = useGetUserByPosition(seatedUsers);
 
   const takeSeat: (
     gridPosition: GridPosition
   ) => Promise<void> | undefined = useCallback(
     ({ row, column }: GridPosition) => {
-      if (!sectionId || !venueId || !userId) return;
+      if (!sectionId || !venueId || !userWithId) return;
 
-      return setGridData({
-        venueId,
-        userId,
-        gridData: { sectionId, row, column },
-      });
+      return setAuditoriumSectionSeat(
+        userWithId,
+        {
+          row,
+          column,
+        },
+        {
+          venueId,
+          sectionId,
+        }
+      );
     },
-    [sectionId, venueId, userId]
+    [sectionId, venueId, userWithId]
   );
 
   const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
-    if (!venueId || !userId) return;
+    if (!venueId || !userId || !sectionId) return;
 
-    return setGridData({ venueId, userId, gridData: undefined });
-  }, [venueId, userId]);
+    return unsetAuditoriumSectionSeat(userId, { venueId, sectionId });
+  }, [venueId, userId, sectionId]);
 
   const checkIfSeat = useCallback(
     ({ row, column }: GridPosition) => {
-      const covertedRowCoordinate = convertToCartesianCoordinate({
+      const convertedRowCoordinate = convertToCartesianCoordinate({
         index: row,
         totalAmount: baseRowsCount,
       });
@@ -115,7 +122,7 @@ export const useAuditoriumSection = ({
       });
 
       const isInVideoRow =
-        Math.abs(covertedRowCoordinate) <= screenHeightInSeats / 2;
+        Math.abs(convertedRowCoordinate) <= screenHeightInSeats / 2;
       const isInVideoColumn =
         Math.abs(convertedColumnCoordinate) <= screenWidthInSeats / 2;
 
@@ -126,7 +133,7 @@ export const useAuditoriumSection = ({
 
   return {
     auditoriumSection: section,
-    isAuditoriumSectionLoaded: isLoaded(sectionsById),
+    isAuditoriumSectionLoaded: isSectionLoaded,
 
     baseRowsCount,
     baseColumnsCount,

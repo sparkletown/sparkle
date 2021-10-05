@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from "react";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelector } from "utils/selectors";
+import { AnyVenue } from "types/venues";
+
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { WithId } from "utils/id";
 
 import { useVideoRoomState } from "hooks/twilio";
-import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
-import LocalParticipant from "components/organisms/Room/LocalParticipant";
+import { LocalParticipant } from "components/organisms/Room/LocalParticipant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -17,45 +17,47 @@ import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-// @debt refactor this to pass in venue as a prop
-export const FireBarrel: React.FC = () => {
-  const venue = useSelector(currentVenueSelector);
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
-    venueName: venue?.name,
-  });
+export interface FireBarrelProps {
+  venue: WithId<AnyVenue>;
+}
 
-  const seatCount =
-    recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
-      ? recentVenueUsers.length
-      : DEFAULT_BURN_BARREL_SEATS;
-
-  const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
+export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
   const { userId, userWithId } = useUser();
 
   const { room, participants } = useVideoRoomState({
-    userId,
+    user: userWithId,
     roomName: venue?.name,
   });
 
+  const seatCount =
+    participants.length > DEFAULT_BURN_BARREL_SEATS
+      ? participants.length
+      : DEFAULT_BURN_BARREL_SEATS;
+
+  const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
+
   const [videoError, setVideoError] = useState<string>("");
-  const { worldUsersById } = useWorldUsersById();
 
   return useMemo(() => {
-    if (!isRecentVenueUsersLoaded || !userWithId) return <LoadingPage />;
+    if (!userWithId) return <LoadingPage />;
 
     return (
       <S.Wrapper>
-        <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
-
-        {/* @debt Refactor this to be less brittle/complex */}
+        <S.Barrel
+          src={convertToEmbeddableUrl({
+            url: venue?.iframeUrl,
+            autoPlay: true,
+          })}
+        />
         {seatsArray.map((_, index) => {
-          const partyPerson = recentVenueUsers[index] ?? null;
+          const { participant, user: participantUserData } =
+            participants?.[index] ?? {};
 
-          const isMe = partyPerson?.id === userId;
-
-          if (!recentVenueUsers[index]) {
+          if (!participantUserData) {
             return <S.Chair key={index} isEmpty />;
           }
+
+          const isMe = participantUserData.id === userId;
 
           if (!!room && isMe) {
             return (
@@ -70,14 +72,6 @@ export const FireBarrel: React.FC = () => {
           }
 
           if (participants.length && !!participants[index]) {
-            const participant = participants[index];
-            const participantUserData = worldUsersById[
-              participant.identity
-            ] && {
-              ...worldUsersById[participant.identity],
-              id: participant.identity,
-            };
-
             return (
               <S.Chair key={participant.identity}>
                 <LocalParticipant
@@ -102,15 +96,12 @@ export const FireBarrel: React.FC = () => {
       </S.Wrapper>
     );
   }, [
-    seatsArray,
-    recentVenueUsers,
     userWithId,
-    participants,
-    room,
-    userId,
-    worldUsersById,
+    venue?.iframeUrl,
+    seatsArray,
     videoError,
-    venue,
-    isRecentVenueUsersLoaded,
+    participants,
+    userId,
+    room,
   ]);
 };

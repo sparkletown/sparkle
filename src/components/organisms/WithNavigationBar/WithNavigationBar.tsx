@@ -2,8 +2,11 @@ import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
+
+import { NewProfileModal } from "components/organisms/NewProfileModal";
 
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";
@@ -20,14 +23,20 @@ const NavBar = lazy(() =>
 
 export interface WithNavigationBarProps {
   hasBackButton?: boolean;
+  withSchedule?: boolean;
+  withPhotobooth?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
+  withSchedule,
+  withPhotobooth,
   children,
 }) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
   const venueId = useVenueId();
+
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   // @debt remove backButton from Navbar
   return (
@@ -37,15 +46,20 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId}>
+      <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
         <Suspense fallback={<Loading />}>
-          <NavBar hasBackButton={hasBackButton} />
+          <NavBar
+            hasBackButton={hasBackButton}
+            withSchedule={withSchedule}
+            withPhotobooth={withPhotobooth}
+          />
         </Suspense>
       </RelatedVenuesProvider>
 
       <div className="navbar-margin">{children}</div>
 
       <Footer />
+      {venue && <NewProfileModal venue={venue} />}
     </>
   );
 };

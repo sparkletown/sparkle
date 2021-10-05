@@ -6,28 +6,29 @@ import { isEqual, reduce } from "lodash";
 import {
   COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
-  DEFAULT_VENUE_LOGO,
+  ROOM_TAXON,
+  ROOMS_TAXON,
 } from "settings";
 
+import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
-import { uppercaseFirstChar } from "utils/string";
-import { formatUtcSecondsRelativeToNow } from "utils/time";
+import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
+import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useVenueEvents } from "hooks/events";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useWorldUsers } from "hooks/users";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 
 import { EventModal } from "components/organisms/EventModal";
 
 import { Loading } from "components/molecules/Loading";
+import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSearchBarFoundEvent";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -59,14 +60,14 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
 
-  const [selectedRoomVenue, setSelectedRoomVenue] = useState<AnyVenue>();
+  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
+    WithId<AnyVenue>
+  >();
 
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
+  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues();
 
   const enabledRelatedRooms = useMemo<Room[]>(
     () =>
@@ -110,7 +111,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           <NavSearchResult
             key={`room-${room.title}-${index}`}
             title={room.title}
-            description="Room"
+            description={ROOM_TAXON.capital}
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);
@@ -129,26 +130,32 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     );
   }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
 
-  const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
 
-  const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
+  const algoliaSearchState = useAlgoliaSearch(venueId, searchQuery);
 
-    return worldUsers
-      .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
-      .map((user) => (
+  const foundUsers = useMemo<JSX.Element[]>(() => {
+    const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
+    if (!usersResults) return [];
+
+    return usersResults.hits.map((hit) => {
+      const userFields = {
+        ...hit,
+        id: hit.objectID,
+      };
+      return (
         <NavSearchResult
-          key={`user-${user.id}`}
-          title={user.partyName ?? DEFAULT_PARTY_NAME}
-          user={user}
+          key={`user-${hit.objectID}`}
+          title={hit?.partyName ?? DEFAULT_PARTY_NAME}
+          user={userFields}
           onClick={() => {
-            openUserProfileModal(user);
+            openUserProfileModal(hit.objectID);
             clearSearch();
           }}
         />
-      ));
-  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
+      );
+    });
+  }, [algoliaSearchState.value, openUserProfileModal, clearSearch]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -164,29 +171,18 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
         );
       })
-      .map((event) => {
-        const imageUrl =
-          enabledRelatedRooms.find((room) => room.title === event.room)
-            ?.image_url ??
-          relatedVenues.find((venue) => venue.id === event.venueId)?.host
-            ?.icon ??
-          DEFAULT_VENUE_LOGO;
-
-        return (
-          <NavSearchResult
-            key={`event-${event.id ?? event.name}`}
-            title={event.name}
-            description={`Event - ${uppercaseFirstChar(
-              formatUtcSecondsRelativeToNow(event.start_utc_seconds)
-            )}`}
-            image={imageUrl ?? DEFAULT_VENUE_LOGO}
-            onClick={() => {
-              setSelectedEvent(event);
-              clearSearch();
-            }}
-          />
-        );
-      });
+      .map((event) => (
+        <NavSearchBarFoundEvent
+          key={`event-${event.id ?? event.name}`}
+          event={event}
+          enabledRelatedRooms={enabledRelatedRooms}
+          relatedVenues={relatedVenues}
+          onClick={() => {
+            setSelectedEvent(event);
+            clearSearch();
+          }}
+        />
+      ));
   }, [
     searchQuery,
     relatedEvents,
@@ -241,7 +237,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
-        placeholder="Search for people, rooms, events..."
+        placeholder={`Search for people, ${ROOMS_TAXON.lower}, events...`}
         autoComplete="off"
         iconStart={faSearch}
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}

@@ -25,7 +25,7 @@ import {
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
 
@@ -41,7 +41,7 @@ import "./ScheduleEvent.scss";
 const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
 
 export interface ScheduleEventProps {
-  event: PersonalizedVenueEvent;
+  event: ScheduledVenueEvent;
   scheduleStartHour: number;
   personalizedEvent?: boolean;
 }
@@ -92,10 +92,10 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const isExpandHidden = isEventShort || !isEventFullLength;
 
   const expandClasses = classNames("ScheduleEvent__expand", {
-    "ScheduleEvent__expand--hidden": isExpandHidden,
     "ScheduleEvent__expand--marged": !isEventLong,
     "ScheduleEvent__expand--padded": isEventLong,
     "ScheduleEvent__expand--live": isEventLive(event),
+    "mod--hidden": isExpandHidden,
   });
 
   const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(() => {

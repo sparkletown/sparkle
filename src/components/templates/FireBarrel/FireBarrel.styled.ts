@@ -72,6 +72,7 @@ export const Chair = styled.div<ChairProps>`
   }
 
   .mute-other-container {
+    cursor: pointer;
     position: absolute;
     bottom: 15%;
     right: 0.5em;
