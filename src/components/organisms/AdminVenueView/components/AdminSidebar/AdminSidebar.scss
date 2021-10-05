@@ -3,6 +3,6 @@
 .AdminSidebar {
   width: $admin-ng-sidebar-width--normal;
   min-width: $admin-ng-sidebar-width--min;
-  height: calc(100% - #{$admin-ng-tab-footer-height--max});
+  height: calc(100% - #{$admin-ng-sidebar-footer-height--max});
   overflow: scroll;
 }

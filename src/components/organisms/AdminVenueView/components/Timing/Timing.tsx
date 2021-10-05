@@ -9,12 +9,14 @@ import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 
-import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import {
+  AdminSidebarFooter,
+  AdminSidebarFooterProps,
+} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -23,13 +25,14 @@ import { EventsView } from "../EventsView";
 
 import "./Timing.scss";
 
-interface TimingProps extends TabNavigationProps {
+interface TimingProps extends AdminSidebarFooterProps {
   venue?: WithId<AnyVenue>;
 }
 
 export const Timing: React.FC<TimingProps> = ({
   venue,
-  ...tabNavigationProps
+  onClickNext,
+  ...sidebarFooterProps
 }) => {
   const { user } = useUser();
   const [startUtcSeconds, setStartUtcSeconds] = useState(
@@ -38,6 +41,7 @@ export const Timing: React.FC<TimingProps> = ({
   const [endUtcSeconds, setEndUtcSeconds] = useState(venue?.end_utc_seconds);
 
   const [, handleVenueUpdate] = useAsyncFn(async () => {
+    onClickNext?.();
     if (!venue?.name || !user) return;
 
     updateVenue_v2(
@@ -45,10 +49,11 @@ export const Timing: React.FC<TimingProps> = ({
         start_utc_seconds: startUtcSeconds,
         end_utc_seconds: endUtcSeconds,
         name: venue?.name,
+        worldId: venue?.worldId,
       },
       user
-    );
-  }, [venue, user, startUtcSeconds, endUtcSeconds]);
+    ).catch((e) => console.error(Timing.name, e));
+  }, [venue, user, startUtcSeconds, endUtcSeconds, onClickNext]);
 
   if (!venue) {
     return <LoadingPage />;
@@ -57,10 +62,10 @@ export const Timing: React.FC<TimingProps> = ({
   return (
     <AdminPanel className="Timing">
       <AdminSidebar>
-        <AdminSidebarTitle>Plan your events</AdminSidebarTitle>
-        <TabFooter
-          {...tabNavigationProps}
-          handleVenueUpdate={handleVenueUpdate}
+        <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
+        <AdminSidebarFooter
+          {...sidebarFooterProps}
+          onClickNext={handleVenueUpdate}
         />
         <div className="Timing__content">
           <DateTimeField

@@ -1,6 +1,8 @@
 import { Settings } from "./settings";
 
-import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
+import { World } from "api/admin";
+
+import { AuditoriumSeatedUser } from "types/auditorium";
 import {
   JukeboxMessage,
   PrivateChatMessage,
@@ -61,7 +63,6 @@ export interface FirestoreData {
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
-  currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   currentAuditoriumSeatedSectionUsers?: Partial<
     Record<string, AuditoriumSeatedUser>
   >;
@@ -79,6 +80,7 @@ export interface FirestoreData {
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
+  worldEdit?: World;
 }
 
 // note: these entries should be sorted alphabetically
@@ -86,7 +88,6 @@ export interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
-  currentAuditoriumSections?: WithId<AuditoriumSection>[];
   currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
@@ -106,4 +107,5 @@ export interface FirestoreOrdered {
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
+  worldEdit?: WithId<World>[];
 }

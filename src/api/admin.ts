@@ -2,11 +2,11 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { Room, RoomData_v2 } from "types/rooms";
+import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
@@ -65,7 +65,7 @@ export type RoomInput = Omit<Room, "image_url"> & {
   image_file?: FileList;
 };
 
-export type RoomInput_v2 = RoomData_v2 & {
+export type RoomInput_v2 = Room & {
   venueName?: string;
   useUrl?: boolean;
   image_url?: string;
@@ -109,7 +109,7 @@ export type VenueInput = AdvancedVenueInput &
   };
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
@@ -124,6 +124,7 @@ export interface VenueInput_v2
   template?: VenueTemplate;
   iframeUrl?: string;
   autoPlay?: boolean;
+  parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
 }
@@ -163,6 +164,7 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
+    parentId?: string;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
@@ -179,9 +181,6 @@ export type PlacementInput = {
   width: number;
   height: number;
 };
-
-// add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-const randomPrefix = () => Math.random().toString();
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
@@ -297,7 +296,7 @@ const createFirestoreVenueInput_v2 = async (
     const file = fileArr[0];
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix()}-${file.name}`
+      `users/${user.uid}/venues/${urlVenueName}/background.${file.type}`
     );
 
     await uploadFileRef.put(file);
@@ -316,6 +315,7 @@ const createFirestoreVenueInput_v2 = async (
     ),
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
+    parentId: input.parentId ?? "",
   };
 
   return firestoreVenueInput;
@@ -386,7 +386,7 @@ export const updateVenue = async (
 };
 
 export const updateVenue_v2 = async (
-  input: VenueInput_v2,
+  input: WithWorldId<VenueInput_v2>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
@@ -538,7 +538,7 @@ export const upsertRoom = async (
     });
 };
 
-export const deleteRoom = async (venueId: string, room: RoomData_v2) => {
+export const deleteRoom = async (venueId: string, room: Room) => {
   return await firebase
     .functions()
     .httpsCallable("venue-deleteRoom")({

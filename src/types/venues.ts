@@ -22,29 +22,43 @@ import { VideoAspectRatio } from "./VideoAspectRatio";
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  artcar = "artcar",
   artpiece = "artpiece",
-  audience = "audience",
   auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
-  friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
   animatemap = "animatemap",
-  performancevenue = "performancevenue",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
-  themecamp = "themecamp",
   zoomroom = "zoomroom",
 
   /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
+   */
+  audience = "audience",
+  /**
+   * @deprecated Legacy template removed
+   */
+  artcar = "artcar",
+  /**
+   * @deprecated Legacy template removed
+   */
+  friendship = "friendship",
+  /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
+  themecamp = "themecamp",
+  /**
+   * @deprecated Legacy template removed
+   */
+  performancevenue = "performancevenue",
+  /**
+   * @deprecated Legacy template removed
+   */
   avatargrid = "avatargrid",
-
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
@@ -81,7 +95,7 @@ export type AnyVenue =
 // --- VENUE V2
 export interface Venue_v2
   extends Venue_v2_Base,
-    Venue_v2_AdvancedConfig,
+    VenueAdvancedConfig,
     Venue_v2_EntranceConfig {}
 
 export interface Venue_v2_Base {
@@ -104,9 +118,10 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  worldId: string;
 }
 
-export interface Venue_v2_AdvancedConfig {
+export interface VenueAdvancedConfig {
   attendeesTitle?: string;
   chatTitle?: string;
   columns?: number;
@@ -117,6 +132,9 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
+  parentId?: string;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -193,6 +211,7 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  sectionsCount?: number;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: WithId<User>[];
@@ -389,8 +408,7 @@ export interface VenueTablePath {
 
 export type TableSeatedUsersVenuesTemplates =
   | VenueTemplate.jazzbar
-  | VenueTemplate.conversationspace
-  | VenueTemplate.friendship;
+  | VenueTemplate.conversationspace;
 
 export type RecentSeatedUserData<T extends VenueTemplate> = {
   template: T;

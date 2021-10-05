@@ -1,0 +1,52 @@
+@import "scss/constants.scss";
+
+.WorldEditor {
+  .AdminPanel {
+    width: 100%;
+    height: $admin-ng-panel-height;
+    max-height: $admin-ng-panel-height;
+    display: grid;
+    grid-template-columns: 1fr 9fr;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+  }
+
+  .AdminSidebarTitle,
+  .AdminSidebarSubTitle {
+    margin: $spacing--xl 0;
+  }
+
+  .AdminSidebar {
+    display: flex;
+    flex-direction: column;
+
+    width: $admin-ng-sidebar-width--normal;
+    min-width: $admin-ng-sidebar-width--min;
+
+    padding: $spacing--lg;
+  }
+
+  .AdminShowcase {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 9fr;
+    background-color: $dark;
+  }
+
+  .AdminSidebarFooter {
+    width: $admin-ng-sidebar-width--normal;
+    margin-left: -$spacing--lg;
+
+    &__buttons {
+      width: 100%;
+      padding-right: $spacing--lg;
+    }
+  }
+
+  &__new {
+    margin: $spacing--xl;
+    place-self: end;
+  }
+}

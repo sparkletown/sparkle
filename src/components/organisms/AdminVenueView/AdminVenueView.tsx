@@ -35,12 +35,6 @@ export interface AdminVenueViewRouteParams {
   selectedTab?: AdminVenueTab;
 }
 
-export interface TabNavigationProps {
-  onClickHome: () => void;
-  onClickBack: () => void;
-  onClickNext: () => void;
-}
-
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
@@ -114,7 +108,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar hasBackButton withSchedule>
       <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>

@@ -26,6 +26,8 @@ import {
   ADMIN_V1_ROOMS_URL,
   ADMIN_V1_ROOT_URL,
   DEFAULT_VENUE,
+  ROOM_TAXON,
+  ROOMS_TAXON,
 } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
@@ -350,7 +352,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
                 className="btn btn-block"
               >
-                Add a Room
+                Add a {ROOM_TAXON.capital}
               </Link>
             )}
             {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
@@ -358,7 +360,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
               >
-                Edit Room
+                Edit {ROOM_TAXON.capital}
               </Link>
             )}
             <button
@@ -379,8 +381,9 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             </Link>
             {typeof roomIndex !== "number" && (
               <div className="page-container-adminpanel-actions__note">
-                If you are looking to edit one of your rooms, please select the
-                room in the left hand menu
+                If you are looking to edit one of your {ROOMS_TAXON.lower},
+                please select the
+                {ROOM_TAXON.lower} in the left hand menu
               </div>
             )}
             {canBeDeleted(venue) && (
@@ -434,7 +437,7 @@ export const Admin: React.FC = () => {
   // @debt deliberately returning AdminRestricted before redirect as to keep original logic/behavior. Ideally they'd be in reverse
   if (!user) {
     return (
-      <WithNavigationBar hasBackButton={false}>
+      <WithNavigationBar>
         <AdminRestricted>
           <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
         </AdminRestricted>
@@ -443,7 +446,7 @@ export const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
+    <WithNavigationBar>
       <AdminRestricted>
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">

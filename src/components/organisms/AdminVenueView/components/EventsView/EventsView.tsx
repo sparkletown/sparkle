@@ -92,11 +92,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     <div className="EventsView">
       <div className="EventsView__container">
         <div className="EventsView__header">
-          <h4 className="EventsView__title">Events Schedule</h4>
+          <h4 className="EventsView__title">Experiences Schedule</h4>
           <Checkbox
             checked={showSplittedEvents}
             onChange={toggleSplittedEvents}
-            label="Split by Space"
+            label="Split by space"
             labelClassName="EventsView__checkbox"
           />
         </div>
@@ -119,7 +119,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
       {hasVenueEvents && (
         <div className="EventsView__create">
           <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
-            Create an Event
+            Create an Experience
           </ButtonNG>
         </div>
       )}
