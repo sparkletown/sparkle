@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
-import { User } from "types/User";
+import { DisplayUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -13,10 +13,8 @@ export enum ChatMessageType {
   poll = "poll",
 }
 
-export type ChatUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
-
 export type BaseChatMessage = {
-  fromUser: WithId<ChatUser>;
+  fromUser: WithId<DisplayUser>;
   text: string;
   timestamp: firebase.firestore.Timestamp;
   threadId?: string;
@@ -25,7 +23,7 @@ export type BaseChatMessage = {
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
-  toUser: WithId<ChatUser>;
+  toUser: WithId<DisplayUser>;
   isRead?: boolean;
 };
 
@@ -90,7 +88,7 @@ export enum ChatTypes {
 
 export type PrivateChatSettings = {
   openedChatType: ChatTypes.PRIVATE_CHAT;
-  recipient?: WithId<ChatUser>;
+  recipient?: WithId<DisplayUser>;
 };
 
 export type VenueChatSettings = {

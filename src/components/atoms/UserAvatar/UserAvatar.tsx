@@ -13,7 +13,6 @@ import {
   ImageResizeOptions,
 } from "utils/image";
 
-import { useIsOnline } from "hooks/useIsOnline";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
@@ -52,7 +51,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showStatus,
   size,
 }) => {
-  const { isOnline } = useIsOnline(user?.id);
+  // @debt until temporarily disable is online functionality
+  const isOnline = false;
 
   const {
     userStatus,
@@ -106,7 +106,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   //'showStatus' is used to render this conditionally only in some of the screens.
   const hasUserStatus =
     isStatusEnabledForVenue &&
-    isOnline &&
+    // @debt until temporarily disable is online functionality
+    // isOnline &&
     showStatus &&
     !!venueUserStatuses.length;
 

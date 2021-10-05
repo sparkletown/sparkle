@@ -9,7 +9,7 @@ import {
   VenueTemplate,
 } from "types/venues";
 
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
@@ -65,8 +65,8 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
           "/default-profile-pic.png",
           values.bannerImageFile
         ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
+        subtitle: values.subtitle || "Subtitle for your space",
+        description: values.description || "Description of your space",
         presentation: [],
         checkList: [],
         quotations: [],

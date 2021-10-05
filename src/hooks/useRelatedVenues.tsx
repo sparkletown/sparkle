@@ -1,15 +1,15 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { AnyVenue } from "types/venues";
 
+import { venueConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { relatedVenuesSelector } from "utils/selectors";
 import { findSovereignVenue } from "utils/venue";
 
-import { isEmpty, isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { isEmpty } from "./useFirestoreConnect";
 
 export interface RelatedVenuesContextState {
   isLoading: boolean;
@@ -32,32 +32,27 @@ const RelatedVenuesContext = createContext<
 >(undefined);
 
 export interface RelatedVenuesProviderProps {
-  venue?: WithId<AnyVenue>;
+  venueId?: string;
+  worldId?: string;
 }
 
 export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
-  venue,
+  venueId,
+  worldId,
   children,
 }) => {
-  const venueId = venue?.id;
-  const worldId = venue?.worldId;
+  const firestore = useFirestore();
+  const relatedVenuesRef = firestore
+    .collection("venues")
+    .where("worldId", "==", worldId ?? "")
+    .withConverter(venueConverter);
 
-  // @debt rewrite this the way users are implemented, but without the batching
-  useFirestoreConnect(() => {
-    if (!worldId) return [];
-
-    return [
-      {
-        collection: "venues",
-        where: ["worldId", "==", worldId],
-        storeAs: "relatedVenues",
-      },
-    ];
-  });
-
-  // @debt rewrite this the way users are implemented, but without the batching
-  const rawRelatedVenues = useSelector(relatedVenuesSelector);
-  const relatedVenues = rawRelatedVenues ?? ALWAYS_EMPTY_ARRAY;
+  const { data: relatedVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
+    relatedVenuesRef,
+    {
+      initialData: ALWAYS_EMPTY_ARRAY,
+    }
+  );
 
   const sovereignVenueSearchResult = useMemo(() => {
     if (!venueId || isEmpty(relatedVenues)) return;
@@ -91,7 +86,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
-      isLoading: !isLoaded(relatedVenues),
+      isLoading: false,
 
       sovereignVenue,
       sovereignVenueId,

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
+import { faSmile } from "@fortawesome/free-regular-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useAsync } from "react-use";
 import {
   AudioTrack,
   connect,
@@ -10,8 +11,14 @@ import {
   VideoTrack,
 } from "twilio-video";
 
-import { getTwilioVideoToken } from "api/video";
+import { getUser } from "api/profile";
+import { useTwilioVideoToken } from "api/video";
 
+import { ParticipantWithUser } from "types/rooms";
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
+import { logIfCannotFindExistingParticipant } from "utils/room";
 import {
   appendTrack,
   filterTrack,
@@ -161,34 +168,21 @@ export const useParticipantState = ({
 };
 
 export interface UseVideoRoomStateProps {
-  userId?: string;
+  user?: WithId<User>;
   roomName?: string;
   activeParticipantByDefault?: boolean;
 }
 
 export const useVideoRoomState = ({
-  userId,
+  user,
   roomName,
   activeParticipantByDefault = true,
 }: UseVideoRoomStateProps) => {
-  const [token, setToken] = useState<string>();
-
-  useEffect(() => {
-    if (!userId || !!token || !roomName) return;
-
-    getTwilioVideoToken({
-      userId,
-      roomName,
-    }).then((token) => {
-      if (!token) return;
-
-      setToken(token);
-    });
-  }, [userId, roomName, token]);
+  const { value: token } = useTwilioVideoToken({ userId: user?.id, roomName });
 
   const [room, setRoom] = useState<Room>();
   const [participants, setParticipants] = useState<
-    (LocalParticipant | RemoteParticipant)[]
+    ParticipantWithUser<LocalParticipant | RemoteParticipant>[]
   >([]);
 
   const disconnect = useCallback(() => {
@@ -213,46 +207,55 @@ export const useVideoRoomState = ({
     hide: becomePassiveParticipant,
   } = useShowHide(activeParticipantByDefault);
 
-  const participantConnected = useCallback((participant: RemoteParticipant) => {
-    setParticipants((prevParticipants) => [...prevParticipants, participant]);
-  }, []);
+  const participantConnected = useCallback(
+    async (participant: RemoteParticipant | LocalParticipant) => {
+      const user = await getUser(participant.identity);
 
-  const participantDisconnected = useCallback(
-    (participant: RemoteParticipant) => {
-      setParticipants((prevParticipants) =>
-        prevParticipants.filter((p) => p !== participant)
-      );
+      setParticipants((prevParticipants) => [
+        ...prevParticipants,
+        {
+          participant: participant,
+          user,
+        },
+      ]);
     },
     []
   );
 
-  useEffect(() => {
+  const participantDisconnected = useCallback(
+    (participant: RemoteParticipant) => {
+      setParticipants((prevParticipants) => {
+        logIfCannotFindExistingParticipant(prevParticipants, participant);
+        return prevParticipants.filter(
+          (p) => p.participant.identity !== participant.identity
+        );
+      });
+    },
+    []
+  );
+
+  const { loading: roomLoading } = useAsync(async () => {
     if (!token || !roomName) return;
 
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
-    connect(token, {
+    await connect(token, {
       name: roomName,
       video: isActiveParticipant,
       audio: isActiveParticipant,
       enableDscp: true,
     }).then(setRoom);
+  }, [roomName, token, isActiveParticipant]);
 
-    return () => {
-      disconnect();
-    };
-  }, [disconnect, roomName, token, isActiveParticipant]);
+  useEffect(() => () => disconnect(), [disconnect]);
 
-  useEffect(() => {
-    if (!room) return;
+  const { loading: participantsLoading } = useAsync(async () => {
+    if (!room || !user) return;
 
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
 
-    const remoteParticipants = Array.from(room.participants.values());
-    setParticipants(
-      room.localParticipant
-        ? [room.localParticipant, ...remoteParticipants]
-        : remoteParticipants
+    [room.localParticipant, ...room.participants.values()].forEach(
+      participantConnected
     );
 
     // Do we need `.off`? It looks like it's not in the docs
@@ -260,13 +263,14 @@ export const useVideoRoomState = ({
       room.off("participantConnected", participantConnected);
       room.off("participantDisconnected", participantDisconnected);
     };
-  }, [room, participantConnected, participantDisconnected]);
+  }, [room, user, participantConnected, participantDisconnected]);
 
   return {
     token,
 
     room,
     participants,
+    roomLoading: participantsLoading || roomLoading,
 
     disconnect,
     becomeActiveParticipant,

@@ -11,13 +11,11 @@ import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useWorldUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VideoParticipant } from "components/organisms/Video";
 
 import { UserList } from "components/molecules/UserList";
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 
@@ -97,13 +95,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
 
-  const { worldUsers } = useWorldUsers();
-
-  const presenterUser = useMemo(
-    () => worldUsers.find((user) => user.partyName === authorName),
-    [worldUsers, authorName]
-  );
-
   return (
     <div className="PosterPage">
       <div className="PosterPage__header">
@@ -128,13 +119,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           <p className="PosterPage__title">{title}</p>
 
           <div className="PosterPage__authorBox">
-            {presenterUser && (
-              <UserProfilePicture
-                containerClassName="PosterPage__avatar"
-                user={presenterUser}
-                showStatus
-              />
-            )}
+            {authorName}
             <span className="PosterPage__author">
               {authorList ?? authorName}
             </span>
@@ -202,7 +187,8 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
       </div>
 
       <UserList
-        users={passiveListeners}
+        usersSample={passiveListeners}
+        userCount={passiveListeners.length}
         activity="listening"
         containerClassName="PosterPage__listeners"
       />

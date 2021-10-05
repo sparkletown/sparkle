@@ -6,6 +6,7 @@ import {
   PLAYA_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
+  ROOM_TAXON,
   VENUE_NAME_MAX_CHAR_COUNT,
   VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
@@ -31,7 +32,7 @@ export interface SchemaShape {
   subtitle?: string;
   description?: string;
 
-  bannerImageUrl: string;
+  bannerImageUrl?: string;
   logoImageUrl: string;
 }
 
@@ -99,7 +100,7 @@ export const validationSchema_v2 = Yup.object()
       message: mustBeMinimum("Description", 3),
     }),
 
-    bannerImageUrl: Yup.string().required("Banner is required!"),
+    bannerImageUrl: Yup.string(),
     logoImageUrl: Yup.string().required("Logo is required!"),
   })
   .required();
@@ -142,7 +143,9 @@ export const roomSchema = Yup.object().shape<VenueRoomSchema>({
   roomUrl: roomUrlSchema,
 });
 
-const roomImageUrlSchema = Yup.string().required("Room image is required");
+const roomImageUrlSchema = Yup.string().required(
+  `${ROOM_TAXON.capital} image is required`
+);
 
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   useUrl: Yup.boolean().required(),
@@ -182,10 +185,12 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   image_url: roomImageUrlSchema,
 });
 
-export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
-  title: roomTitleSchema,
-  url: roomUrlSchema,
-  image_url: roomImageUrlSchema,
+export const roomEditSchema = Yup.object().shape({
+  room: Yup.object().shape<RoomSchemaShape>({
+    title: roomTitleSchema,
+    url: roomUrlSchema,
+    image_url: roomImageUrlSchema,
+  }),
 });
 
 // this is used to transform the api data to conform to the yup schema
@@ -252,5 +257,5 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
     .typeError("Minutes must be a number")
     .required("Minutes equired"),
   host: Yup.string().required("Host required"),
-  room: Yup.string().matches(/^(?!Select a room...$).*$/, "Room is required"),
+  room: Yup.string().required("Space is required"),
 });

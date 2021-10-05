@@ -6,7 +6,9 @@ import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
+import { ADMIN_V3_ROOT_URL } from "settings";
+
+import { adminNGVenueUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
@@ -16,7 +18,7 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import { WithNavigationBar } from "../WithNavigationBar";
 
-import { RunTabView } from "./components/RunTabView/RunTabView";
+import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
 
@@ -31,12 +33,6 @@ export enum AdminVenueTab {
 export interface AdminVenueViewRouteParams {
   venueId?: string;
   selectedTab?: AdminVenueTab;
-}
-
-export interface TabNavigationProps {
-  onClickHome: () => void;
-  onClickBack: () => void;
-  onClickNext: () => void;
 }
 
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
@@ -83,7 +79,7 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const navigateToHome = useCallback(() => history.push(adminNGRootUrl()), [
+  const navigateToHome = useCallback(() => history.push(ADMIN_V3_ROOT_URL), [
     history,
   ]);
 
@@ -112,7 +108,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar hasBackButton withSchedule>
       <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
@@ -133,7 +129,14 @@ export const AdminVenueView: React.FC = () => {
             venue={venue}
           />
         )}
-        {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
+        {selectedTab === AdminVenueTab.run && (
+          <RunTabView
+            onClickHome={navigateToHome}
+            onClickBack={navigateToTiming}
+            onClickNext={navigateToHome}
+            venue={venue}
+          />
+        )}
       </AdminRestricted>
     </WithNavigationBar>
   );

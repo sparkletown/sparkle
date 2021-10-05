@@ -1,5 +1,3 @@
-import firebase from "firebase/app";
-
 export interface SendMessageProps {
   message: string;
 }
