@@ -164,6 +164,21 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    const { message } = await signInWithGoogle();
+
+    if (message) {
+      setError("backend", "firebase", message);
+    }
+  };
+  const handleFacebookSignIn = async () => {
+    const { message } = await signInWithFacebook();
+
+    if (message) {
+      setError("backend", "firebase", message);
+    }
+  };
+
   const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
   const termsAndConditions = venue.termsAndConditions;
 
@@ -187,8 +202,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       {errors.backend && (
         <div className="auth-submit-error">
           <span>
-            Oops! Something went wrong. Please try again or use another method
-            to create an account
+            {errors.backend.message &&
+              "Oops! Something went wrong. Please try again or use another method to create an account"}
           </span>
         </div>
       )}
@@ -246,10 +261,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
         {venue.requiresDateOfBirth && (
           <DateOfBirthField register={register} error={errors?.date_of_birth} />
-        )}
-
-        {errors.backend && (
-          <span className="input-error">{errors.backend.message}</span>
         )}
 
         {/* <div className="input-group" key={sparkleTermsAndConditions.name}>
@@ -332,7 +343,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           <ButtonNG
             className="auth-input"
             type="submit"
-            onClick={signInWithGoogle}
+            onClick={handleGoogleSignIn}
           >
             <div className="social-icon">
               <img src={gIcon} alt="asd" />
@@ -342,7 +353,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           <ButtonNG
             className="auth-input"
             type="submit"
-            onClick={signInWithFacebook}
+            onClick={handleFacebookSignIn}
           >
             <div className="social-icon">
               <img src={fIcon} alt="asd" />

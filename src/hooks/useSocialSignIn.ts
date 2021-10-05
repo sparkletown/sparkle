@@ -22,6 +22,8 @@ export const useSocialSignIn = () => {
             credential,
           });
         });
+
+        return error;
       });
 
   const signInWithFacebook = () =>
@@ -30,7 +32,7 @@ export const useSocialSignIn = () => {
       .signInWithPopup(providerFb)
       .catch((error) => {
         const { code, message, email, credential } = error;
-
+        console.log(error);
         Bugsnag.notify(error, (event) => {
           event.addMetadata("context", {
             location: "hooks/useSocialSignIn::signInWithFacebook",
@@ -41,6 +43,8 @@ export const useSocialSignIn = () => {
             credential,
           });
         });
+
+        return error;
       });
 
   return { signInWithGoogle, signInWithFacebook };
