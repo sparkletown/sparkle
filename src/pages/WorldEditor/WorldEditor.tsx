@@ -12,6 +12,8 @@ import { WorldEditorStartPanel } from "pages/WorldEditor/WorldEditorStartPanel";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { WorldNav } from "components/molecules/WorldNav";
+
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import "./WorldEditor.scss";
@@ -32,6 +34,7 @@ export const WorldEditor: React.FC = () => {
     <div className="WorldEditor">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
+          <WorldNav />
           {
             // TODO: replace with check for selected tab
             true && (
