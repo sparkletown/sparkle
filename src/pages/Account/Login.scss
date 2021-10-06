@@ -1,6 +1,5 @@
 @import "scss/constants.scss";
 
-$login-max-width: 450px;
 $side-padding: 30px;
 $large-shadow: box-shadow--large(0.34);
 $border-radius: 28px;
@@ -54,7 +53,7 @@ $auth-icon-top-margin: 5px;
   height: 100vh;
 
   .logo-container {
-    width: $login-max-width / 2;
+    width: $auth-container-max-width / 2;
     padding-bottom: 50px;
   }
 
@@ -62,7 +61,7 @@ $auth-icon-top-margin: 5px;
     .form-container {
       display: inline-table;
       flex: 0;
-      width: $login-max-width;
+      width: $auth-container-max-width;
       margin: 0 auto;
       padding: $side-padding;
       background-color: $dark-grey;
