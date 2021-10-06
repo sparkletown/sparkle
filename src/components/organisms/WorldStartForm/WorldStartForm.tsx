@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
-import { WORLD_ROOT_URL } from "settings";
+import { ADMIN_V3_WORLDS_URL, WORLD_ROOT_URL } from "settings";
 
 import { createWorld, updateWorld, World } from "api/admin";
 
@@ -52,7 +53,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   ...sidebarFooterProps
 }) => {
   const worldId = world?.id;
-  const createMode = !worldId;
+  const history = useHistory();
   const { user } = useUser();
 
   const defaultValues = useMemo(
@@ -87,16 +88,17 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user) return;
-    if (!createMode || !worldId) return;
 
-    if (createMode) {
+    if (!worldId) {
       await createWorld(values, user);
+      history.push(ADMIN_V3_WORLDS_URL);
     } else {
       await updateWorld({ ...values, id: worldId }, user);
+      history.push(ADMIN_V3_WORLDS_URL);
     }
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, createMode, defaultValues]);
+  }, [values, user, worldId, reset, defaultValues, history]);
 
   if (error) {
     console.error(WorldStartForm.name, error);

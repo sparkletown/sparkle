@@ -356,11 +356,7 @@ export const createWorld = async (
   const worldResponse = await firebase
     .functions()
     .httpsCallable("world-createWorld")(firestoreVenueInput);
-  const worldId = worldResponse?.data;
-  await firebase.functions().httpsCallable("venue-createVenue_v2")({
-    ...firestoreVenueInput,
-    worldId,
-  });
+  return worldResponse?.data;
 };
 
 export const updateWorld = async (

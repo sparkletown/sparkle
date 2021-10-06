@@ -5,10 +5,9 @@ import {
 } from "react-bootstrap";
 import classNames from "classnames";
 
-import { ADMIN_V3_CREATE_URL } from "settings";
-
 import { isPartyMapVenue } from "types/venues";
 
+import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -23,8 +22,20 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./AdminDashboard.scss";
 
-export const AdminDashboard: React.FC = () => {
-  const { ownedVenues: venues, isLoading } = useOwnedVenues({});
+export interface AdminDashboardProps {
+  worldId?: string;
+  worldName?: string;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({
+  worldId,
+  worldName,
+}) => {
+  const { ownedVenues, isLoading } = useOwnedVenues({});
+
+  const venues = worldId
+    ? ownedVenues.filter((venue) => venue.worldId === worldId)
+    : ownedVenues;
 
   const [
     currentSortingOption,
@@ -47,7 +58,7 @@ export const AdminDashboard: React.FC = () => {
   const sortingOptions = useMemo(
     () => (
       // @debt align the style of the SpacesDropdown with the Dropdown component
-      <DropdownButton variant="secondary" title="Sort venues">
+      <DropdownButton variant="secondary" title="Sort spaces">
         {Object.values(VenueSortingOptions).map((sortingOption) => (
           <ReactBootstrapDropdown.Item
             key={sortingOption}
@@ -72,10 +83,14 @@ export const AdminDashboard: React.FC = () => {
       <div className="AdminDashboard">
         <div className="AdminDashboard__header">
           <div className="AdminDashboard__header-content">
-            <AdminShowcaseTitle>Admin Dashboard</AdminShowcaseTitle>
+            <AdminShowcaseTitle>{worldName} Spaces</AdminShowcaseTitle>
             {sortingOptions}
           </div>
-          <ButtonNG variant="primary" isLink linkTo={ADMIN_V3_CREATE_URL}>
+          <ButtonNG
+            variant="primary"
+            isLink
+            linkTo={adminCreateWorldSpace(worldId)}
+          >
             Create a new space
           </ButtonNG>
         </div>

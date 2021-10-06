@@ -6,7 +6,7 @@ import classNames from "classnames";
 
 import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
 
-import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
+import { createUrlSafeName, createVenue_v2, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -15,6 +15,7 @@ import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import {
   setBannerURL,
@@ -36,9 +37,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
+  const { worldId } = useWorldEditParams();
+
   const setWorld = useCallback(
     async (vals: FormValues) => {
-      if (!user) return;
+      if (!user || !worldId) return;
 
       const world = { ...vals, id: createUrlSafeName(vals.name) };
 
@@ -47,20 +50,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           const venue = {
             ...vals,
             id: venueId,
-            worldId: createUrlSafeName(vals.name),
+            worldId,
           };
-          // @debt Replace with updateWorld api call / function
           await updateVenue_v2(venue, user);
           history.push(ADMIN_V3_ROOT_URL);
         } else {
-          await createWorld(world, user);
+          await createVenue_v2({ ...world, worldId: worldId }, user);
           history.push(adminNGVenueUrl(world.id));
         }
       } catch (e) {
         console.error(e);
       }
     },
-    [user, venueId, history]
+    [user, worldId, venueId, history]
   );
 
   const {
