@@ -105,13 +105,12 @@ service cloud.firestore {
     }
     match /worlds/{worldId} {
       allow create: if request.auth.uid in role('admin').users;
-      allow read: if true;
 
       function world() {
         return get(/databases/$(database)/documents/worlds/$(worldId)).data;
       }
 
-      allow read: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+      allow read: if request.auth.uid != null;
       allow update, delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
     }
   }

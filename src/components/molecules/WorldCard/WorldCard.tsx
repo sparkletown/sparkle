@@ -8,6 +8,7 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 import { World } from "api/admin";
 
 import { WithId } from "utils/id";
+import { adminWorldUrl } from "utils/url";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -24,15 +25,16 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
 
   const cardClasses = classNames("WorldCard", cardVars);
 
+  const logoVars = useCss({
+    backgroundImage: `url(${world.host?.icon ?? DEFAULT_VENUE_LOGO})`,
+  });
+
+  const logoClasses = classNames("WorldCard__logo", logoVars);
+
   return (
     <div className={cardClasses}>
       <div className="WorldCard__info">
-        <div
-          className="WorldCard__logo"
-          style={{
-            backgroundImage: `url(${world.host?.icon ?? DEFAULT_VENUE_LOGO})`,
-          }}
-        />
+        <div className={logoClasses} />
         <div className="WorldCard__titles">
           <div className="WorldCard__world-name">{world.name}</div>
           <div className="WorldCard__world-description">
@@ -47,7 +49,13 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       >
         Enter dashboard
       </ButtonNG>
-      <ButtonNG variant="dark" iconName={faCog} className="WorldCard__button">
+      <ButtonNG
+        isLink
+        linkTo={adminWorldUrl(world.id)}
+        variant="dark"
+        iconName={faCog}
+        className="WorldCard__button"
+      >
         Configure world
       </ButtonNG>
     </div>

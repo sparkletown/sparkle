@@ -37,7 +37,7 @@ export const WorldsDashboard: React.FC = () => {
 
   const hasWorlds = !!worlds.length;
 
-  const renderWelcomePage = useMemo(
+  const renderedWelcomePage = useMemo(
     () => (
       <div className="WorldsDashboard__messages-container">
         <AdminShowcaseTitle>Let’s create a world</AdminShowcaseTitle>
@@ -47,7 +47,7 @@ export const WorldsDashboard: React.FC = () => {
     []
   );
 
-  const renderWorldsList = useMemo(
+  const renderedWorldsList = useMemo(
     () => (
       <div className="WorldsDashboard__worlds-list">
         {worlds.map((world) => (
@@ -86,7 +86,7 @@ export const WorldsDashboard: React.FC = () => {
                   />
                 )}
               </div>
-              {hasWorlds ? renderWorldsList : renderWelcomePage}
+              {hasWorlds ? renderedWorldsList : renderedWelcomePage}
             </AdminShowcase>
           </AdminPanel>
         </AdminRestricted>
