@@ -1,10 +1,12 @@
+import sparkleLogoIcon from "assets/icons/sparkle-logo-icon.svg";
+
 import "./SparkleLogoIcon.scss";
 
 export const SparkleLogoIcon = () => (
   <div className="SparkleLogoIcon">
     <img
       className="SparkleLogoIcon__logo"
-      src="/sparkle-logo-rf.svg"
+      src={sparkleLogoIcon}
       alt="sparkle logo"
     />
   </div>
