@@ -5,7 +5,7 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { WorldNavTab } from "components/organisms/WorldForm/components/WorldNav/WorldNavTab";
+import { WorldNavTab } from "types/WorldNavTab";
 
 export const WorldNavIconMap: Readonly<
   Record<WorldNavTab, IconDefinition>
