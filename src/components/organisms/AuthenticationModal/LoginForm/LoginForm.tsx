@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import {} from "@fortawesome/free-regular-svg-icons";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -122,7 +121,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
       <h3>Log in to your account</h3>
       {errors.backend && (
         <div className="auth-submit-error">
-          <span>
+          <span className="auth-submit-error__message">
             Oops! Something went wrong. Please try again or use another method
             to create an account
           </span>

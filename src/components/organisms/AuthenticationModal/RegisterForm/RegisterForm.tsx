@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/app";
 
-// import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
@@ -43,12 +42,6 @@ interface RegisterFormData {
 export interface RegisterData {
   date_of_birth: string;
 }
-
-// const sparkleTermsAndConditions = {
-//   name: `I agree to Sparkle's terms and conditions`,
-//   text: `I agree to Sparkle's terms and conditions`,
-//   link: SPARKLE_TERMS_AND_CONDITIONS_URL,
-// };
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
@@ -201,7 +194,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       </div>
       {errors.backend && (
         <div className="auth-submit-error">
-          <span>
+          <span className="auth-submit-error__message">
             Oops! Something went wrong. Please try again or use another method
             to create an account
           </span>
@@ -262,37 +255,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         {venue.requiresDateOfBirth && (
           <DateOfBirthField register={register} error={errors?.date_of_birth} />
         )}
-
-        {/* <div className="input-group" key={sparkleTermsAndConditions.name}>
-          <label
-            htmlFor={sparkleTermsAndConditions.name}
-            className={`checkbox input-info ${
-              watch(sparkleTermsAndConditions.name) && "checkbox-checked"
-            }`}
-          >
-            {sparkleTermsAndConditions.link && (
-              <a
-                href={sparkleTermsAndConditions.link}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {sparkleTermsAndConditions.text}
-              </a>
-            )}
-            {!sparkleTermsAndConditions.link && sparkleTermsAndConditions.text}
-          </label>
-          <input
-            type="checkbox"
-            name={sparkleTermsAndConditions.name}
-            id={sparkleTermsAndConditions.name}
-            ref={register({
-              required: true,
-            })}
-          />
-          {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
-            <span className="input-error">Required</span>
-          )}
-        </div> */}
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
             const required = errors?.[term.name]?.type === "required";

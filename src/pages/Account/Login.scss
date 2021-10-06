@@ -7,6 +7,7 @@ $border-radius: 28px;
 $auth-body-max-width: 365px;
 $auth-icon-sso-size: 35px;
 $auth-error-container-height: 80px;
+$auth-icon-top-margin: 5px;
 
 .Login {
   &__login-box {
@@ -81,7 +82,7 @@ $auth-error-container-height: 80px;
         align-items: center;
         word-break: break-word;
 
-        span {
+        &__message {
           width: 80%;
         }
       }
@@ -119,7 +120,7 @@ $auth-error-container-height: 80px;
           float: left;
           border-radius: 50%;
           display: flex;
-          margin-top: -($spacing--sm);
+          margin-top: -($auth-icon-top-margin);
           justify-content: center;
           align-items: center;
           position: absolute;
