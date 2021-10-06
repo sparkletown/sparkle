@@ -5,6 +5,7 @@ import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_EMBEDDABLE_VIDEO,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -303,7 +304,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         ref={register}
         className="wide-input-block input-centered align-left"
       >
-        https://player.vimeo.com/video/512606583?h=84853fbd28
+        {DEFAULT_EMBEDDABLE_VIDEO}
       </textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>

@@ -75,6 +75,9 @@ export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
+export const DEFAULT_EMBEDDABLE_VIDEO =
+  "https://player.vimeo.com/video/512606583?h=84853fbd28";
+
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
