@@ -1,7 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { ALWAYS_EMPTY_ARRAY } from "settings";
+
+import { BaseChatMessage, MessageToDisplay } from "types/chat";
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
@@ -15,6 +18,7 @@ import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
+
 export interface RecipientChatProps {
   recipient: WithId<DisplayUser>;
 }
@@ -22,6 +26,7 @@ export interface RecipientChatProps {
 export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   const {
     messagesToDisplay: allMessagesToDisplay,
+    replies,
 
     sendMessage,
     markMessageRead,
@@ -46,6 +51,14 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
     allMessagesToDisplay
   );
 
+  const [thread, setThread] = useState<WithId<MessageToDisplay>>();
+
+  const threadMessages: WithId<BaseChatMessage>[] = useMemo(() => {
+    const threadId = thread?.id;
+    if (threadId) return replies[threadId] ?? ALWAYS_EMPTY_ARRAY;
+    return ALWAYS_EMPTY_ARRAY;
+  }, [replies, thread?.id]);
+
   return (
     <div className="recipient-chat">
       <div className="recipient-chat__breadcrumbs" onClick={selectPrivateChat}>
@@ -60,6 +73,9 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
       <Chatbox
         containerClassName="recipient-chat__chatbox"
         messages={messagesToDisplay}
+        threadMessages={threadMessages}
+        selectedThread={thread}
+        setSelectedThread={setThread}
         sendMessage={sendMessage}
         sendThreadReply={sendThreadReply}
         {...infiniteProps}

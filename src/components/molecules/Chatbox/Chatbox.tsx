@@ -1,9 +1,10 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
 import {
+  BaseChatMessage,
   ChatActions,
   ChatOptionType,
   InfiniteScrollProps,
@@ -31,28 +32,33 @@ export interface ChatboxProps
     ChatActions,
     InfiniteScrollProps {
   messages: WithId<MessageToDisplay>[];
+  threadMessages: WithId<BaseChatMessage>[];
   displayPoll?: boolean;
+  selectedThread?: WithId<MessageToDisplay>;
+  setSelectedThread: (thread?: WithId<MessageToDisplay>) => void;
 }
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
+  threadMessages,
   sendMessage,
   sendThreadReply,
   deleteMessage,
+  deleteThreadReply,
   displayPoll: isDisplayedPoll,
   containerClassName,
-  allMessagesCount,
+  selectedThread,
+  setSelectedThread,
+  hasMore,
   loadMore = () => {},
 }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
 
   const { createPoll, voteInPoll } = useVenuePoll();
 
-  const [selectedThread, setSelectedThread] = useState<
-    WithId<MessageToDisplay>
-  >();
-
-  const closeThread = useCallback(() => setSelectedThread(undefined), []);
+  const closeThread = useCallback(() => setSelectedThread(undefined), [
+    setSelectedThread,
+  ]);
 
   const [activeOption, setActiveOption] = useState<ChatOptionType>();
 
@@ -79,6 +85,32 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     [unselectOption, closeThread, sendThreadReply]
   );
 
+  const hasSelectedThread = threadMessages?.length > 0;
+
+  const renderedMessages = useMemo(
+    () =>
+      messages.map((message, i) => (
+        <ChatboxMessage
+          key={message.id}
+          message={message}
+          thread={threadMessages}
+          nextMessage={messages?.[i + 1]}
+          deleteMessage={deleteMessage}
+          deleteThreadReply={deleteThreadReply}
+          voteInPoll={voteInPoll}
+          selectThisThread={() => setSelectedThread(message)}
+        />
+      )),
+    [
+      deleteMessage,
+      deleteThreadReply,
+      messages,
+      setSelectedThread,
+      threadMessages,
+      voteInPoll,
+    ]
+  );
+
   return (
     <div className={classNames("Chatbox", containerClassName)}>
       <div
@@ -91,40 +123,31 @@ const _ChatBox: React.FC<ChatboxProps> = ({
           className={"Chatbox__messages-infinite-scroll"}
           next={loadMore}
           inverse
-          hasMore={messages.length < allMessagesCount}
+          hasMore={hasMore}
           scrollableTarget="Chatbox_scrollable_div"
           loader={
             <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
           }
         >
-          {messages.map((message, i) => (
-            <ChatboxMessage
-              key={message.id}
-              message={message}
-              nextMessage={messages?.[i + 1]}
-              deleteMessage={deleteMessage}
-              voteInPoll={voteInPoll}
-              selectThisThread={() => setSelectedThread(message)}
-            />
-          ))}
+          {renderedMessages}
         </InfiniteScroll>
       </div>
       <div className="Chatbox__form-box">
         {/* @debt sort these out. Preferrably using some kind of enum */}
-        {selectedThread && (
+        {!!selectedThread && (
           <ChatboxThreadControls
             text="replying to"
             threadAuthor={selectedThread.fromUser.partyName}
             closeThread={closeThread}
           />
         )}
-        {isQuestionOptions && !selectedThread && (
+        {isQuestionOptions && !hasSelectedThread && (
           <ChatboxThreadControls
             text="asking a question"
             closeThread={unselectOption}
           />
         )}
-        {isDisplayedPoll && !isQuestionOptions && !selectedThread && (
+        {isDisplayedPoll && !isQuestionOptions && !hasSelectedThread && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}
@@ -134,7 +157,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
           <PollBox onPollSubmit={onPollSubmit} />
         ) : (
           <ChatMessageBox
-            selectedThread={selectedThread}
+            selectedThreadId={selectedThread?.id}
             sendMessage={sendMessage}
             unselectOption={unselectOption}
             isQuestion={isQuestionOptions}

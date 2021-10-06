@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME } from "settings";
 
-import { OldChatMessage } from "types/chat";
+import { ChatMessage } from "types/chat";
 import {
   chatMessageAsTextReaction,
   EmojiReactionsMap,
@@ -15,7 +15,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 export interface ReactionListProps {
   reactions: Reaction[];
-  chatMessages: OldChatMessage[];
+  chatMessages: ChatMessage[];
   small?: boolean;
 }
 

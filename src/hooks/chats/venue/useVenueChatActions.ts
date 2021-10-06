@@ -8,33 +8,57 @@ import { getVenueRef } from "api/venue";
 import {
   BaseChatMessage,
   ChatActions,
+  DeleteThreadReply,
+  MessageWithReplies,
   SendThreadReply,
   VenueChatMessage,
 } from "types/chat";
 
 import { buildBaseMessage } from "utils/chat";
 import { waitAtLeast } from "utils/promise";
+import { propName } from "utils/propName";
 
-import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 import { useDeleteMessage } from "hooks/chats/common/useDeleteMessage";
 import { useSendMessage } from "hooks/chats/common/useSendMessage";
 import { useUser } from "hooks/useUser";
 
-const getChatsRef = (venueId?: string) =>
+export const getChatsRef = (venueId?: string) =>
   getVenueRef(venueId).collection("chats");
-const getThreadsRef = (venueId?: string, threadId?: string) =>
+export const getThreadsRef = (venueId?: string, threadId?: string) =>
   getVenueRef(venueId).collection("chats").doc(threadId).collection("threads");
 
 export const useVenueChatActions = (venueId?: string): ChatActions => {
   const refs = useMemo(() => [getChatsRef(venueId)], [venueId]);
 
   const sendMessage = useSendMessage<VenueChatMessage>(refs, {
-    threadRepliesCount: 0,
+    repliesCount: 0,
   });
   const deleteMessage = useDeleteMessage(refs, true);
+  const deleteThreadReply = useDeleteVenueThreadReply(venueId);
   const sendThreadReply = useSendVenueThreadReply(venueId);
 
-  return { sendMessage, deleteMessage, sendThreadReply };
+  return { sendMessage, deleteMessage, sendThreadReply, deleteThreadReply };
+};
+
+const useDeleteVenueThreadReply = (venueId?: string): DeleteThreadReply => {
+  const { userWithId } = useUser();
+
+  return useCallback(
+    async (threadId, messageId) => {
+      if (!userWithId) return;
+
+      const batch = firebase.firestore().batch();
+      batch.delete(getThreadsRef(venueId, threadId).doc(messageId));
+      batch.update(
+        getChatsRef(venueId).doc(threadId),
+        propName<MessageWithReplies>("repliesCount"),
+        firebase.firestore.FieldValue.increment(-1)
+      );
+
+      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
+    },
+    [userWithId, venueId]
+  );
 };
 
 const useSendVenueThreadReply = (venueId?: string): SendThreadReply => {
@@ -44,35 +68,20 @@ const useSendVenueThreadReply = (venueId?: string): SendThreadReply => {
     async ({ replyText, threadId }) => {
       if (!userWithId) return;
 
+      const batch = firebase.firestore().batch();
       const message = buildBaseMessage<BaseChatMessage>(replyText, userWithId);
 
       if (!message) return;
 
-      await waitAtLeast(
-        CHAT_MESSAGE_TIMEOUT,
-        getThreadsRef(venueId, threadId).add(message)
+      batch.set(getThreadsRef(venueId, threadId).doc(), message);
+      batch.update(
+        getChatsRef(venueId).doc(threadId),
+        propName<MessageWithReplies>("repliesCount"),
+        firebase.firestore.FieldValue.increment(1)
       );
+
+      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
     [userWithId, venueId]
   );
-};
-
-export const useVenueChatMessages = (
-  venueId: string | undefined,
-  limit?: number
-) => {
-  let ref: firebase.firestore.Query = getChatsRef(venueId);
-  if (limit) ref = ref.limit(limit);
-  return useChatMessagesRaw<VenueChatMessage>(ref);
-};
-
-export const useVenueChatThreadMessages = (
-  venueId: string | undefined,
-  threadId: string | undefined,
-  limit?: number
-) => {
-  let ref: firebase.firestore.Query = getThreadsRef(venueId, threadId);
-  if (limit) ref = ref.limit(limit);
-
-  return useChatMessagesRaw<BaseChatMessage>(ref);
 };

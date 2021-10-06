@@ -18,29 +18,24 @@ export type BaseChatMessage = {
   text: string;
   timestamp: firebase.firestore.Timestamp;
   isQuestion?: boolean;
-};
-
-export type OldChatMessageBase = BaseChatMessage & {
   threadId?: string;
   deleted?: boolean;
 };
 
-export interface PrivateChatMessage extends OldChatMessageBase {
+export interface PrivateChatMessage extends BaseChatMessage {
   toUser: WithId<DisplayUser>;
   isRead?: boolean;
 }
 
-export interface VenueChatMessage extends BaseChatMessage {
-  threadRepliesCount: number;
-}
+export type VenueChatMessage = BaseChatMessage & MessageWithReplies;
 
-export interface PollMessage extends OldChatMessageBase {
+export interface PollMessage extends BaseChatMessage {
   type: ChatMessageType.poll;
   poll: PollValues;
   votes: PollVote[];
 }
 
-export interface JukeboxMessage extends OldChatMessageBase {
+export interface JukeboxMessage extends BaseChatMessage {
   tableId: string;
 }
 
@@ -53,11 +48,18 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type OldChatMessage = PrivateChatMessage | PollMessage | JukeboxMessage;
+export type ChatMessage =
+  | VenueChatMessage
+  | PrivateChatMessage
+  | PollMessage
+  | JukeboxMessage;
 
-export type MessageToDisplay<T extends OldChatMessage = OldChatMessage> = T & {
-  replies: WithId<T>[];
+export type MessageWithReplies = {
+  repliesCount: number;
 };
+
+export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T &
+  MessageWithReplies;
 
 export interface SendMessageProps {
   message: string;
@@ -67,6 +69,11 @@ export interface SendMessageProps {
 export type SendMessage = (sendMessageProps: SendMessageProps) => Promise<void>;
 
 export type DeleteMessage = (messageId: string) => Promise<void>;
+
+export type DeleteThreadReply = (
+  threadId: string,
+  messageId: string
+) => Promise<void>;
 
 export type MarkMessageRead = (messageId: string) => Promise<void>;
 
@@ -85,15 +92,16 @@ export interface ChatActions {
   sendMessage: SendMessage;
   deleteMessage?: DeleteMessage;
   sendThreadReply: SendThreadReply;
+  deleteThreadReply?: DeleteThreadReply;
 }
 
 export interface InfiniteScrollProps {
-  allMessagesCount: number;
+  hasMore: boolean;
   loadMore: () => void;
 }
 
 export interface PrivateChatActions
-  extends Exclude<ChatActions, "deleteMessage"> {
+  extends Exclude<ChatActions, "deleteMessage" | "deleteThreadReply"> {
   markMessageRead: MarkMessageRead;
 }
 

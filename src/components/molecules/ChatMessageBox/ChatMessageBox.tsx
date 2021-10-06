@@ -7,9 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
-import { MessageToDisplay, SendChatReplyProps, SendMessage } from "types/chat";
-
-import { WithId } from "utils/id";
+import { SendChatReplyProps, SendMessage } from "types/chat";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -20,7 +18,7 @@ import { InputField } from "components/atoms/InputField";
 import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
-  selectedThread?: WithId<MessageToDisplay>;
+  selectedThreadId?: string;
   sendMessage: SendMessage;
   unselectOption: () => void;
   isQuestion?: boolean;
@@ -28,13 +26,13 @@ export interface ChatMessageBoxProps {
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
-  selectedThread,
+  selectedThreadId,
   sendMessage,
   unselectOption,
   onReplyToThread,
   isQuestion = false,
 }) => {
-  const hasChosenThread = selectedThread !== undefined;
+  const hasChosenThread = Boolean(selectedThreadId);
 
   const {
     register,
@@ -61,15 +59,15 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const [{ loading: isReplying }, sendReplyToThread] = useAsyncFn(
     async ({ message }) => {
-      if (!selectedThread) return;
+      if (!selectedThreadId) return;
       reset();
 
       await onReplyToThread({
         replyText: message,
-        threadId: selectedThread.id,
+        threadId: selectedThreadId,
       });
     },
-    [onReplyToThread, reset, selectedThread]
+    [onReplyToThread, reset, selectedThreadId]
   );
 
   const {

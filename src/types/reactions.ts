@@ -1,4 +1,4 @@
-import { OldChatMessage } from "types/chat";
+import { ChatMessage } from "types/chat";
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
@@ -137,7 +137,7 @@ export const isReaction = (r: unknown): r is Reaction =>
   isEmojiReaction(r) || isTextReaction(r);
 
 export const chatMessageAsTextReaction = (
-  message: OldChatMessage
+  message: ChatMessage
 ): TextReaction => ({
   created_at: message.timestamp.toMillis() / 1000,
   created_by: message.fromUser,

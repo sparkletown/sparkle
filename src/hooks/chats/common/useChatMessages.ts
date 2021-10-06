@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { BaseChatMessage, MessageToDisplay, OldChatMessage } from "types/chat";
+import { BaseChatMessage, ChatMessage, MessageToDisplay } from "types/chat";
 
 import {
   filterNewSchemaMessages,
@@ -16,37 +16,40 @@ import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
-export const useChatMessagesForDisplay = <T extends OldChatMessage>(
+export const useChatMessagesForDisplay = <T extends ChatMessage>(
   messagesRef: firebase.firestore.Query,
   filter: (msg: T) => boolean = () => true
-): [WithId<MessageToDisplay<T>>[], boolean] => {
+): [WithId<MessageToDisplay<T>>[], Record<string, WithId<T>[]>, boolean] => {
   const [{ messages, allMessagesReplies }, isLoaded] = useChatMessages<T>(
     messagesRef,
     filter
   );
 
-  const messagesToDisplay = useMemo(
+  const replies = useMemo(
     () =>
-      messages
-        .map((message) => {
-          const messageReplies = getMessageReplies<T>({
-            messageId: message.id,
-            allReplies: allMessagesReplies,
-          }).filter(isTruthy);
-
-          return {
-            ...message,
-            replies: messageReplies,
-          };
-        })
-        .filter(isTruthy),
+      Object.assign(
+        {},
+        ...messages
+          .map((message) => ({
+            [message.id]: getMessageReplies<T>({
+              messageId: message.id,
+              allReplies: allMessagesReplies,
+            }).filter(isTruthy),
+          }))
+          .filter(isTruthy)
+      ),
     [messages, allMessagesReplies]
   );
 
-  return [messagesToDisplay, isLoaded];
+  const messagesToDisplay = messages.map((x) => ({
+    ...x,
+    repliesCount: replies[x.id]?.length ?? 0,
+  }));
+
+  return [messagesToDisplay, replies, isLoaded];
 };
 
-export const useChatMessages = <T extends OldChatMessage>(
+export const useChatMessages = <T extends ChatMessage>(
   messagesRef: firebase.firestore.Query,
   filter: (msg: T) => boolean = () => true
 ): [PartitionMessagesFromRepliesReturn<T>, boolean] => {

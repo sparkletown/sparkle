@@ -3,21 +3,17 @@ import { usePrevious } from "react-use";
 
 import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
 
-import {
-  InfiniteScrollProps,
-  MessageToDisplay,
-  OldChatMessage,
-} from "types/chat";
+import { ChatMessage, InfiniteScrollProps, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
-export const useRenderInfiniteScroll = <T extends OldChatMessage>(
-  messages: WithId<MessageToDisplay<T>>[]
-): [WithId<MessageToDisplay<T>>[], InfiniteScrollProps] => {
+export const useRenderMessagesCount = (
+  overallLength: number = Number.MAX_VALUE
+): [number, () => void] => {
   const getNextMessagesRenderCount = useCallback(
     (currentCount: number) =>
-      Math.min(currentCount + CHATBOX_NEXT_RENDER_SIZE, messages.length),
-    [messages.length]
+      Math.min(currentCount + CHATBOX_NEXT_RENDER_SIZE, overallLength),
+    [overallLength]
   );
 
   const [renderedMessagesCount, setRenderedMessagesCount] = useState(
@@ -28,7 +24,21 @@ export const useRenderInfiniteScroll = <T extends OldChatMessage>(
     setRenderedMessagesCount(getNextMessagesRenderCount(renderedMessagesCount));
   }, [getNextMessagesRenderCount, renderedMessagesCount]);
 
-  const messagesToRender = messages.slice(0, renderedMessagesCount);
+  return [renderedMessagesCount, increaseRenderedMessagesCount];
+};
+
+export const useRenderInfiniteScroll = <T extends ChatMessage>(
+  messages: WithId<MessageToDisplay<T>>[]
+): [WithId<MessageToDisplay<T>>[], InfiniteScrollProps] => {
+  const [
+    renderedMessagesCount,
+    increaseRenderedMessagesCount,
+  ] = useRenderMessagesCount(messages.length);
+
+  const messagesToRender = useMemo(
+    () => messages.slice(0, renderedMessagesCount),
+    [messages, renderedMessagesCount]
+  );
 
   const prevLength = usePrevious(messages.length);
   useEffect(() => {
@@ -39,9 +49,9 @@ export const useRenderInfiniteScroll = <T extends OldChatMessage>(
   const infiniteProps: InfiniteScrollProps = useMemo(
     () => ({
       loadMore: increaseRenderedMessagesCount,
-      allMessagesCount: messages.length,
+      hasMore: renderedMessagesCount < messages.length,
     }),
-    [increaseRenderedMessagesCount, messages.length]
+    [increaseRenderedMessagesCount, messages.length, renderedMessagesCount]
   );
 
   return [messagesToRender, infiniteProps];

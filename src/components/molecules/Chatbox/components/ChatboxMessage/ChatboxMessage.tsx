@@ -1,7 +1,12 @@
 import React from "react";
 import { startOfDay } from "date-fns";
 
-import { DeleteMessage, MessageToDisplay } from "types/chat";
+import {
+  BaseChatMessage,
+  DeleteMessage,
+  DeleteThreadReply,
+  MessageToDisplay,
+} from "types/chat";
 
 import { checkIfPollMessage } from "utils/chat";
 import { WithId } from "utils/id";
@@ -12,7 +17,7 @@ import { useVenuePoll } from "hooks/useVenuePoll";
 import { ChatPoll } from "components/molecules/ChatPoll";
 
 import {
-  ChatMessage,
+  ChatMessage as ChatMessageComponent,
   ChatProps,
 } from "components/atoms/ChatMessage/ChatMessage";
 
@@ -21,8 +26,10 @@ import "./ChatboxMessage.scss";
 export interface ChatboxMessageProps {
   message: WithId<MessageToDisplay>;
   nextMessage?: WithId<MessageToDisplay>;
+  thread: WithId<BaseChatMessage>[];
 
   deleteMessage?: DeleteMessage;
+  deleteThreadReply?: DeleteThreadReply;
   voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
   selectThisThread: ChatProps["selectThisThread"];
 }
@@ -30,7 +37,9 @@ export interface ChatboxMessageProps {
 export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   message,
   nextMessage,
+  thread,
   deleteMessage,
+  deleteThreadReply,
   voteInPoll,
   selectThisThread,
 }) => {
@@ -49,10 +58,12 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
       voteInPoll={voteInPoll}
     />
   ) : (
-    <ChatMessage
+    <ChatMessageComponent
       key={message.id}
       message={message}
+      thread={thread}
       deleteMessage={deleteMessage}
+      deleteThreadReply={deleteThreadReply}
       selectThisThread={selectThisThread}
     />
   );

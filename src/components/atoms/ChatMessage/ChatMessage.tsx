@@ -3,7 +3,12 @@ import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { DeleteMessage, MessageToDisplay } from "types/chat";
+import {
+  BaseChatMessage,
+  DeleteMessage,
+  DeleteThreadReply,
+  MessageToDisplay,
+} from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -19,17 +24,21 @@ import "./ChatMessage.scss";
 
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
+  thread: WithId<BaseChatMessage>[];
   deleteMessage?: DeleteMessage;
+  deleteThreadReply?: DeleteThreadReply;
   selectThisThread: () => void;
 }
 
 export const ChatMessage: React.FC<ChatProps> = ({
   message,
+  thread,
   deleteMessage,
+  deleteThreadReply,
   selectThisThread,
 }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
-  const { text, replies, id, isQuestion } = message;
+  const { text, id, isQuestion } = message;
 
   const deleteThisMessage = useCallback(async () => deleteMessage?.(id), [
     deleteMessage,
@@ -45,23 +54,24 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const renderedReplies = useMemo(
     () =>
-      replies?.map((reply) => {
-        const deleteReplyMessage = async () => deleteMessage?.(reply.id);
+      thread?.map((reply) => {
+        const deleteReplyMessage = async () =>
+          deleteThreadReply?.(id, reply.id);
 
         return (
           <div key={reply.id} className="ChatMessage__reply">
             <RenderMarkdown text={reply.text} allowHeadings={false} />
             <ChatMessageInfo
               message={reply}
-              deleteMessage={deleteMessage && deleteReplyMessage}
+              deleteMessage={deleteThreadReply && deleteReplyMessage}
             />
           </div>
         );
       }),
-    [replies, deleteMessage]
+    [thread, deleteThreadReply, id]
   );
 
-  const repliesCount = renderedReplies.length;
+  const repliesCount = message.repliesCount;
 
   const hasReplies = repliesCount !== 0;
 
