@@ -1,20 +1,28 @@
 @import "scss/constants.scss";
 
-$admin-venue-card-button-margin: 5px 0;
+$admin-space-card-button-margin: $spacing--xs 0;
+$admin-space-card-logo-size: 80px;
 
-.AdminVenueCard {
+.AdminSpaceCard {
   position: relative;
   overflow: hidden;
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
   border: none;
-  padding: 1rem;
-  border-radius: 20px;
+  border-radius: $border-radius--xl;
+  padding: font-size--root(1);
+  gap: font-size--root(0.5);
+
+  .AdminShowcaseSubTitle {
+    font-weight: $font-weight--700;
+    font-size: font-size--parent(1.6);
+    color: $content--over;
+  }
 
   &__bg {
     position: absolute;
-    z-index: z(admin-venue-card-bg);
+    z-index: z(admin-space-card-bg);
     top: 0;
     left: 0;
     width: 100%;
@@ -35,14 +43,14 @@ $admin-venue-card-button-margin: 5px 0;
         $secondary--dark 100%
       );
     }
+  }
 
-    &:hover {
-      background-image: linear-gradient(
-        180deg,
-        rgba(38, 36, 39, 0.6) 0%,
-        $saturated-black-alt 100%
-      );
-    }
+  &:hover &__bg:after {
+    background-image: linear-gradient(
+      180deg,
+      rgba(38, 36, 39, 0.6) 0%,
+      $saturated-black-alt 100%
+    );
   }
 
   &__info {
@@ -53,27 +61,14 @@ $admin-venue-card-button-margin: 5px 0;
   }
 
   &__logo {
-    height: 70px;
-    width: 70px;
-    border-radius: 50%;
+    @include square-size($admin-space-card-logo-size);
+    border-radius: $border-radius--max;
     background-size: cover;
     background-color: $content--under;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
 
-  &__button {
-    background-color: $accent--under;
-    padding: 0.5rem;
-    border-radius: 16px;
-    text-align: center;
-    text-decoration: none;
-    margin: $admin-venue-card-button-margin;
-
-    &:hover {
-      color: $content--over;
-      background-color: var(--primary--under-darker-5pp);
-      box-shadow: 0 2px 30px rgba(124, 70, 251, 0.6);
-      text-decoration: none;
-    }
+  .ButtonNG {
+    margin: $admin-space-card-button-margin;
   }
 }

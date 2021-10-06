@@ -1,29 +1,28 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { ADMIN_V3_NEW_WORLD_URL, ADMIN_V3_WORLDS_URL } from "settings";
+import { ADMIN_V3_WORLDS_URL } from "settings";
+
+import { WorldNavTab } from "types/WorldNavTab";
 
 import { useWorldEdit } from "hooks/useWorldEdit";
-import { useWorldId } from "hooks/useWorldId";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedPanel";
+import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
+import { WorldEditorStartPanel } from "pages/WorldEditor/WorldEditorStartPanel";
+
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { WorldForm } from "components/organisms/WorldForm";
 
-import { Loading } from "components/molecules/Loading";
+import { WorldNav } from "components/molecules/WorldNav";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WorldEditor.scss";
 
 export const WorldEditor: React.FC = () => {
-  const worldId = useWorldId();
   const history = useHistory();
+  const { worldId, selectedTab } = useWorldEditParams();
 
   const { isLoaded, world } = useWorldEdit(worldId);
 
@@ -31,30 +30,35 @@ export const WorldEditor: React.FC = () => {
     history,
   ]);
 
-  const title = worldId ? "Configure your world" : "Create a new world";
-
   return (
     <div className="WorldEditor">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
-          <AdminPanel>
-            <AdminSidebar>
-              <AdminSidebarTitle>{title}</AdminSidebarTitle>
-              <AdminSidebarFooter onClickHome={navigateToHome} />
-              {isLoaded || !worldId ? (
-                <WorldForm world={world} onClickCancel={navigateToHome} />
-              ) : (
-                <Loading />
-              )}
-            </AdminSidebar>
-            <AdminShowcase>
-              <div className="WorldEditor__new">
-                <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
-                  Create a new world
-                </ButtonNG>
-              </div>
-            </AdminShowcase>
-          </AdminPanel>
+          <WorldNav />
+          {selectedTab === WorldNavTab.start && (
+            <WorldEditorStartPanel
+              worldId={worldId}
+              onClickHome={navigateToHome}
+              loaded={isLoaded}
+              world={world}
+            />
+          )}
+          {selectedTab === WorldNavTab.entrance && (
+            <WorldEditorEntrancePanel
+              worldId={worldId}
+              onClickHome={navigateToHome}
+              loaded={isLoaded}
+              world={world}
+            />
+          )}
+          {selectedTab === WorldNavTab.advanced && (
+            <WorldEditorAdvancedPanel
+              worldId={worldId}
+              onClickHome={navigateToHome}
+              loaded={isLoaded}
+              world={world}
+            />
+          )}
         </AdminRestricted>
       </WithNavigationBar>
     </div>

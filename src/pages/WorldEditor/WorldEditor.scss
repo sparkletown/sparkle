@@ -3,7 +3,8 @@
 .WorldEditor {
   .AdminPanel {
     width: 100%;
-    height: calc(100vh - #{$reserved-page-height});
+    height: $admin-ng-panel-height;
+    max-height: $admin-ng-panel-height;
     display: grid;
     grid-template-columns: 1fr 9fr;
     margin: 0;

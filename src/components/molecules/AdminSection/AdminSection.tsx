@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 
 import "./AdminSection.scss";
 
 export interface AdminSectionProps {
-  title?: string;
+  title?: ReactNode | string;
 }
 
 export const AdminSection: React.FC<AdminSectionProps> = ({
