@@ -214,7 +214,7 @@ $preview-margin: 30px;
   padding: 0.5em;
   margin-top: 1.5rem;
 
-  border: 1px solid #cccccc;
+  border: 1px solid $secondary--border;
 
   input:disabled {
     cursor: not-allowed;
