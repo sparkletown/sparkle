@@ -6,7 +6,7 @@ import * as Yup from "yup";
 
 import { WORLD_ROOT_URL } from "settings";
 
-import { createWorld, updateWorld, World } from "api/admin";
+import { createUrlSafeName, createWorld, updateWorld, World } from "api/admin";
 
 import { WithId } from "utils/id";
 
@@ -84,6 +84,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   });
 
   const values = watch();
+  const slug = createUrlSafeName(values.name);
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user) return;
@@ -120,7 +121,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
               {window.location.host}
             </span>
             <span className="WorldStartForm__path-end WorldStartForm__name">
-              {WORLD_ROOT_URL}/{values.name}
+              {WORLD_ROOT_URL}/{slug}
             </span>
           </p>
         </AdminSection>
