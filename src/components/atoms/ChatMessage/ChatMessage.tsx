@@ -5,8 +5,9 @@ import classNames from "classnames";
 
 import {
   BaseChatMessage,
-  DeleteMessage,
-  DeleteThreadReply,
+  DeleteChatMessage,
+  DeleteMessageProps,
+  DeleteThreadMessageProps,
   MessageToDisplay,
 } from "types/chat";
 
@@ -25,8 +26,8 @@ import "./ChatMessage.scss";
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
   thread: WithId<BaseChatMessage>[];
-  deleteMessage?: DeleteMessage;
-  deleteThreadReply?: DeleteThreadReply;
+  deleteMessage?: DeleteChatMessage<DeleteMessageProps>;
+  deleteThreadReply?: DeleteChatMessage<DeleteThreadMessageProps>;
   selectThisThread: () => void;
 }
 
@@ -38,12 +39,12 @@ export const ChatMessage: React.FC<ChatProps> = ({
   selectThisThread,
 }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
-  const { text, id, isQuestion } = message;
+  const { text, id: messageId, isQuestion } = message;
 
-  const deleteThisMessage = useCallback(async () => deleteMessage?.(id), [
-    deleteMessage,
-    id,
-  ]);
+  const deleteThisMessage = useCallback(
+    async () => deleteMessage?.({ messageId: messageId }),
+    [deleteMessage, messageId]
+  );
 
   const { isShown: isRepliesShown, toggle: toggleReplies } = useShowHide();
 
@@ -56,7 +57,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     () =>
       thread?.map((reply) => {
         const deleteReplyMessage = async () =>
-          deleteThreadReply?.(id, reply.id);
+          deleteThreadReply?.({ threadId: messageId, messageId: reply.id });
 
         return (
           <div key={reply.id} className="ChatMessage__reply">
@@ -68,7 +69,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
           </div>
         );
       }),
-    [thread, deleteThreadReply, id]
+    [thread, deleteThreadReply, messageId]
   );
 
   const repliesCount = message.repliesCount;

@@ -7,7 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
-import { SendChatReplyProps, SendMessage } from "types/chat";
+import {
+  SendChatMessageProps,
+  SendMessage,
+  SendThreadMessageProps,
+} from "types/chat";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -19,17 +23,17 @@ import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
   selectedThreadId?: string;
-  sendMessage: SendMessage;
+  sendMessage: SendMessage<SendChatMessageProps>;
+  sendThreadMessage: SendMessage<SendThreadMessageProps>;
   unselectOption: () => void;
   isQuestion?: boolean;
-  onReplyToThread: (data: SendChatReplyProps) => Promise<void>;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   selectedThreadId,
   sendMessage,
+  sendThreadMessage,
   unselectOption,
-  onReplyToThread,
   isQuestion = false,
 }) => {
   const hasChosenThread = Boolean(selectedThreadId);
@@ -62,12 +66,12 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       if (!selectedThreadId) return;
       reset();
 
-      await onReplyToThread({
-        replyText: message,
+      await sendThreadMessage({
+        message: message,
         threadId: selectedThreadId,
       });
     },
-    [onReplyToThread, reset, selectedThreadId]
+    [sendThreadMessage, reset, selectedThreadId]
   );
 
   const {

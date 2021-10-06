@@ -12,8 +12,10 @@ import { DisplayUser } from "types/User";
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId } from "utils/id";
 
-import { useSendMessage } from "hooks/chats/common/useSendMessage";
-import { useSendThreadReply } from "hooks/chats/common/useSendThreadReply";
+import {
+  useSendChatMessage,
+  useSendThreadMessage,
+} from "hooks/chats/common/useSendMessage";
 import { useUser } from "hooks/useUser";
 
 export const useRecipientChatActions = (
@@ -44,12 +46,15 @@ export const useRecipientChatActions = (
     [recipient]
   );
 
-  const sendMessage = useSendMessage<PrivateChatMessage>(refs, spread);
-  const sendThreadReply = useSendThreadReply<PrivateChatMessage>(refs, spread);
+  const sendMessage = useSendChatMessage<PrivateChatMessage>(refs, spread);
+  const sendThreadReply = useSendThreadMessage<PrivateChatMessage>(
+    refs,
+    spread
+  );
 
   return {
     sendMessage,
-    sendThreadReply,
+    sendThreadMessage: sendThreadReply,
     markMessageRead,
   };
 };

@@ -5,7 +5,7 @@ import { MessageToDisplay, VenueChatMessage } from "types/chat";
 import { WithId } from "utils/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
-import { getChatsRef } from "hooks/chats/venue/useVenueChatActions";
+import { getChatsRef } from "hooks/chats/venue/util";
 
 export const useVenueChatMessages = (
   venueId: string | undefined,

@@ -42,9 +42,9 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
   threadMessages,
   sendMessage,
-  sendThreadReply,
+  sendThreadMessage,
   deleteMessage,
-  deleteThreadReply,
+  deleteThreadMessage,
   displayPoll: isDisplayedPoll,
   containerClassName,
   selectedThread,
@@ -76,13 +76,13 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
-  const onReplyToThread = useCallback(
+  const sendThreadMessageWrapper = useCallback(
     async ({ replyText, threadId }) => {
-      await sendThreadReply({ replyText, threadId });
+      await sendThreadMessage({ message: replyText, threadId });
       unselectOption();
       closeThread();
     },
-    [unselectOption, closeThread, sendThreadReply]
+    [unselectOption, closeThread, sendThreadMessage]
   );
 
   const hasSelectedThread = threadMessages?.length > 0;
@@ -96,14 +96,14 @@ const _ChatBox: React.FC<ChatboxProps> = ({
           thread={threadMessages}
           nextMessage={messages?.[i + 1]}
           deleteMessage={deleteMessage}
-          deleteThreadReply={deleteThreadReply}
+          deleteThreadReply={deleteThreadMessage}
           voteInPoll={voteInPoll}
           selectThisThread={() => setSelectedThread(message)}
         />
       )),
     [
       deleteMessage,
-      deleteThreadReply,
+      deleteThreadMessage,
       messages,
       setSelectedThread,
       threadMessages,
@@ -159,9 +159,9 @@ const _ChatBox: React.FC<ChatboxProps> = ({
           <ChatMessageBox
             selectedThreadId={selectedThread?.id}
             sendMessage={sendMessage}
+            sendThreadMessage={sendThreadMessageWrapper}
             unselectOption={unselectOption}
             isQuestion={isQuestionOptions}
-            onReplyToThread={onReplyToThread}
           />
         )}
       </div>

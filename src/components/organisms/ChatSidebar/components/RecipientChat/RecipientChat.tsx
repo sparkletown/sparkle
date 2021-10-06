@@ -30,7 +30,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
 
     sendMessage,
     markMessageRead,
-    sendThreadReply,
+    sendThreadMessage,
   } = useRecipientChat(recipient);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         selectedThread={thread}
         setSelectedThread={setThread}
         sendMessage={sendMessage}
-        sendThreadReply={sendThreadReply}
+        sendThreadMessage={sendThreadMessage}
         {...infiniteProps}
       />
     </div>

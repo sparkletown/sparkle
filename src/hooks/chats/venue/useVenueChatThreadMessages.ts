@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import { BaseChatMessage } from "types/chat";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
-import { getThreadsRef } from "hooks/chats/venue/useVenueChatActions";
+import { getThreadsRef } from "hooks/chats/venue/util";
 
 export const useVenueChatThreadMessages = (
   venueId: string | undefined,

@@ -1,28 +1,43 @@
 import { useCallback } from "react";
 import firebase from "firebase/app";
+import { noop } from "lodash";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { DeleteMessage } from "types/chat";
+import { DeleteChatMessage, DeleteMessageProps } from "types/chat";
 
 import { waitAtLeast } from "utils/promise";
 
-export const useDeleteMessage = (
-  collectionRefs: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
-  hardDelete?: boolean
-): DeleteMessage =>
+export interface UseDeleteMessageProps<T extends DeleteMessageProps> {
+  getCollections: (
+    props: T
+  ) => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[];
+  processResultingBatch?: (
+    props: T,
+    batch: firebase.firestore.WriteBatch
+  ) => void;
+  hardDelete?: boolean;
+}
+
+export const useDeleteMessage = <T extends DeleteMessageProps>({
+  getCollections,
+  hardDelete,
+  processResultingBatch = noop,
+}: UseDeleteMessageProps<T>): DeleteChatMessage<T> =>
   useCallback(
-    async (messageId: string) => {
+    async (props) => {
       const batch = firebase.firestore().batch();
+      const collectionRefs = getCollections(props);
 
       if (hardDelete)
-        collectionRefs.forEach((ref) => batch.delete(ref.doc(messageId)));
+        collectionRefs.forEach((ref) => batch.delete(ref.doc(props.messageId)));
       else
         collectionRefs.forEach((ref) =>
-          batch.update(ref.doc(messageId), { deleted: true })
+          batch.update(ref.doc(props.messageId), { deleted: true })
         );
+      processResultingBatch(props, batch);
 
       await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
-    [collectionRefs, hardDelete]
+    [getCollections, hardDelete, processResultingBatch]
   );

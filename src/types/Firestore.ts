@@ -105,3 +105,10 @@ export interface FirestoreOrdered {
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
 }
+
+export interface DistributedCounterValue {
+  sum: number;
+}
+export interface DistributedCounterShard {
+  count: number;
+}

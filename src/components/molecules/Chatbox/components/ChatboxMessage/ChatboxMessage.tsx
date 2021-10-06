@@ -3,8 +3,9 @@ import { startOfDay } from "date-fns";
 
 import {
   BaseChatMessage,
-  DeleteMessage,
-  DeleteThreadReply,
+  DeleteChatMessage,
+  DeleteMessageProps,
+  DeleteThreadMessageProps,
   MessageToDisplay,
 } from "types/chat";
 
@@ -28,8 +29,8 @@ export interface ChatboxMessageProps {
   nextMessage?: WithId<MessageToDisplay>;
   thread: WithId<BaseChatMessage>[];
 
-  deleteMessage?: DeleteMessage;
-  deleteThreadReply?: DeleteThreadReply;
+  deleteMessage?: DeleteChatMessage<DeleteMessageProps>;
+  deleteThreadReply?: DeleteChatMessage<DeleteThreadMessageProps>;
   voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
   selectThisThread: ChatProps["selectThisThread"];
 }

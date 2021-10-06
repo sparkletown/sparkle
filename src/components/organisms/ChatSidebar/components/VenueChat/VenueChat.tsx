@@ -7,8 +7,14 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useRenderMessagesCount } from "hooks/chats/util/useRenderInfiniteScroll";
-import { useVenueChatActions } from "hooks/chats/venue/useVenueChatActions";
+import {
+  useDeleteVenueChatMessage,
+  useDeleteVenueThreadMessage,
+  useSendVenueChatMessage,
+  useSendVenueThreadMessage,
+} from "hooks/chats/venue/useVenueChatActions";
 import { useVenueChatMessages } from "hooks/chats/venue/useVenueChatMessages";
+import { useVenueChatMessagesCount } from "hooks/chats/venue/useVenueChatMessagesCount";
 import { useVenueChatThreadMessages } from "hooks/chats/venue/useVenueChatThreadMessages";
 import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
@@ -21,15 +27,14 @@ export interface VenueChatProps {
 }
 
 export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
-  let actions = useVenueChatActions(venue.id);
+  const venueId = venue.id;
+
+  const sendChatMessage = useSendVenueChatMessage(venueId);
+  const sendThreadMessage = useSendVenueThreadMessage(venueId);
+  const deleteChatMessage = useDeleteVenueChatMessage(venueId);
+  const deleteThreadMessage = useDeleteVenueThreadMessage(venueId);
 
   const canDeleteMessages = useCanDeleteVenueChatMessages(venue);
-  if (!canDeleteMessages)
-    actions = {
-      ...actions,
-      deleteMessage: undefined,
-      deleteThreadReply: undefined,
-    };
 
   const [limit, increaseLimit] = useRenderMessagesCount();
   const [thread, setThread] = useState<WithId<MessageToDisplay>>();
@@ -37,17 +42,22 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const messages = useVenueChatMessages(venue.id, limit);
   const threadMessages = useVenueChatThreadMessages(venue.id, thread?.id);
 
+  const { data: allChatMessagesCount } = useVenueChatMessagesCount(venueId);
+
   return (
     <Chatbox
       // poll is available for Venue Chat only (displayPoll = true)
       displayPoll
       messages={messages}
       threadMessages={threadMessages}
-      {...actions}
+      sendMessage={sendChatMessage}
+      sendThreadMessage={sendThreadMessage}
+      deleteMessage={canDeleteMessages ? deleteChatMessage : undefined}
+      deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
       selectedThread={thread}
       setSelectedThread={setThread}
       containerClassName="venue-chat"
-      hasMore={true}
+      hasMore={limit < allChatMessagesCount}
       loadMore={increaseLimit}
     />
   );

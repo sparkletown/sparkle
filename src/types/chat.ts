@@ -61,38 +61,45 @@ export type MessageWithReplies = {
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T &
   MessageWithReplies;
 
-export interface SendMessageProps {
+export interface SendMessagePropsBase {
   message: string;
+}
+
+export interface SendChatMessageProps extends SendMessagePropsBase {
   isQuestion?: boolean;
 }
 
-export type SendMessage = (sendMessageProps: SendMessageProps) => Promise<void>;
-
-export type DeleteMessage = (messageId: string) => Promise<void>;
-
-export type DeleteThreadReply = (
-  threadId: string,
-  messageId: string
-) => Promise<void>;
-
-export type MarkMessageRead = (messageId: string) => Promise<void>;
-
-export interface SendChatReplyProps {
-  replyText: string;
+export interface SendThreadMessageProps extends SendMessagePropsBase {
   threadId: string;
 }
 
-export type SendThreadReply = (props: SendChatReplyProps) => Promise<void>;
+export type SendMessage<T extends SendMessagePropsBase> = (
+  sendMessageProps: T
+) => Promise<void>;
+
+export interface DeleteMessageProps {
+  messageId: string;
+}
+
+export interface DeleteThreadMessageProps extends DeleteMessageProps {
+  threadId: string;
+}
+
+export type DeleteChatMessage<T extends DeleteMessageProps> = (
+  props: T
+) => Promise<void>;
+
+export type MarkMessageRead = (messageId: string) => Promise<void>;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
 };
 
 export interface ChatActions {
-  sendMessage: SendMessage;
-  deleteMessage?: DeleteMessage;
-  sendThreadReply: SendThreadReply;
-  deleteThreadReply?: DeleteThreadReply;
+  sendMessage: SendMessage<SendChatMessageProps>;
+  deleteMessage?: DeleteChatMessage<DeleteMessageProps>;
+  sendThreadMessage: SendMessage<SendThreadMessageProps>;
+  deleteThreadMessage?: DeleteChatMessage<DeleteThreadMessageProps>;
 }
 
 export interface InfiniteScrollProps {

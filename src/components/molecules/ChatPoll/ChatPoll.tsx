@@ -4,7 +4,12 @@ import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { DeleteMessage, PollMessage, PollQuestion } from "types/chat";
+import {
+  DeleteChatMessage,
+  DeleteMessageProps,
+  PollMessage,
+  PollQuestion,
+} from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -23,7 +28,7 @@ import "./ChatPoll.scss";
 
 export interface ChatPollProps {
   pollMessage: WithId<PollMessage>;
-  deletePollMessage?: DeleteMessage;
+  deletePollMessage?: DeleteChatMessage<DeleteMessageProps>;
   voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
 }
 
@@ -125,7 +130,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   };
 
   const deleteThisPollMessage = useCallback(
-    async () => deletePollMessage?.(id),
+    async () => deletePollMessage?.({ messageId: id }),
     [id, deletePollMessage]
   );
 
