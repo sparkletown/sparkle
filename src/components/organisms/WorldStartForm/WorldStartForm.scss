@@ -1,0 +1,11 @@
+@import "scss/constants";
+
+.WorldStartForm {
+  &__name {
+    color: $red;
+  }
+
+  &__subdued {
+    color: var(--content--over-50a);
+  }
+}

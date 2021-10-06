@@ -51,4 +51,21 @@
   &__messages-container {
     text-align: center;
   }
+
+  &__worlds-list {
+    background-color: $dark;
+
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: max-content;
+    grid-gap: 1rem;
+  }
+
+  &__world-panel {
+    border: 1px solid $content--over;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }

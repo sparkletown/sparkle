@@ -5,6 +5,7 @@ import {
   ADMIN_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ADVANCED_PARAM_URL,
+  ADMIN_V3_OLD_WORLD_PARAM_URL,
   ADMIN_V3_ROOT_URL,
   ADMIN_V3_VENUE_PARAM_URL,
   ENTRANCE_ROOT_URL,
@@ -27,6 +28,9 @@ export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
 
 export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
+
+export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
