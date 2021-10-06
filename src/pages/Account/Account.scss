@@ -385,7 +385,7 @@ $page-max-width: 1240px;
     align-items: center; /* Align Items Vertically */
     justify-content: space-around;
     margin-bottom: 2rem;
-    border-bottom: 1px solid opaque-white(0.2);
+    border-bottom: 1px solid $secondary--border;
     overflow-x: auto;
     overflow-y: hidden;
     button {

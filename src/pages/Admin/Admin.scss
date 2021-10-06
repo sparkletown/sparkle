@@ -31,7 +31,7 @@ $sorting-option--font-size: 0.8rem;
     width: 100%;
     height: 48px;
     background-color: $content--under;
-    border-bottom: 1px solid opaque-white(0.2);
+    border-bottom: 1px solid $secondary--border;
     box-shadow: box-shadow--large(0.62);
 
     .navbar-container {
@@ -284,7 +284,7 @@ $sorting-option--font-size: 0.8rem;
 
           .venue-preview {
             margin: 15px;
-            border: 4px solid opaque-white(0.2);
+            border: 4px solid $secondary--border;
             background-color: opaque-white(0.1);
             padding: 20px;
             border-radius: 10px;

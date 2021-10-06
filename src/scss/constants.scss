@@ -53,6 +53,23 @@ $yellow: #ffe600;
 $light-green: #3ce348;
 $dark-green: #208a28;
 
+@function opaque-white($opacity: 0.1) {
+  @return rgba(#{var(--content--over-rgb)}, $opacity);
+}
+
+@function opaque-black($opacity: 0.1) {
+  @return rgba(#{var(--content--under-rgb)}, $opacity);
+}
+
+// @debt theme-able border colors for inputs, lines should be replaced with var(...) references
+$secondary--border: opaque-white(0.2);
+$input--border: opaque-white();
+$announcement--border: opaque-white(0.4);
+$search-field--border: opaque-white(0.1);
+$spaces-portals--border: opaque-white(0.1);
+$poster-preview--border: $lighter-intermediate-grey;
+$spaces-owner-list--border: #808080;
+
 // @debt the colors in these gradients should probably be replaced with var(...) references
 $gradient: linear-gradient(
   124deg,
@@ -264,14 +281,6 @@ $z-layers: (
   }
 
   @return map-get($z-layers, $layer);
-}
-
-@function opaque-white($opacity: 0.1) {
-  @return rgba(#{var(--content--over-rgb)}, $opacity);
-}
-
-@function opaque-black($opacity: 0.1) {
-  @return rgba(#{var(--content--under-rgb)}, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {
