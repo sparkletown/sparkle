@@ -81,9 +81,8 @@ $announce-box-shadow: 0px 2px 20px 5px;
     position: absolute;
     top: $spacing;
     right: $spacing;
-    background: url("/assets/icons/close-icon.svg");
-    height: 20px;
-    width: 20px;
+    color: $icon--color;
+    @include square-size(20px, 20px);
     &:focus,
     &:hover {
       color: $primary--over;

@@ -70,6 +70,9 @@ $spaces-portals--border: opaque-white(0.1);
 $poster-preview--border: $lighter-intermediate-grey;
 $spaces-owner-list--border: #808080;
 
+// @debt theme-able colors for icons should be replaced with var(...) references
+$icon--color: $accent--over;
+
 // @debt the colors in these gradients should probably be replaced with var(...) references
 $gradient: linear-gradient(
   124deg,

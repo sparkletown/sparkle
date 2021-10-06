@@ -99,7 +99,7 @@ $reply-icon-radius: 20px;
   }
 
   &__reply-icon {
-    color: $accent--over;
+    color: $icon--color;
     display: flex;
     opacity: 0;
     justify-content: center;
@@ -111,8 +111,7 @@ $reply-icon-radius: 20px;
 
     cursor: pointer;
 
-    width: $reply-icon-radius;
-    height: $reply-icon-radius;
+    @include square-size($reply-icon-radius);
 
     right: $spacing--sm;
 
