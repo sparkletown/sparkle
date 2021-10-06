@@ -123,14 +123,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
       {errors.backend && (
         <div className="auth-submit-error">
           <span>
-            {errors.backend && (
-              <div className="auth-submit-error">
-                <span>
-                  {errors.backend.message &&
-                    "Oops! Something went wrong. Please try again or use another method to create an account"}
-                </span>
-              </div>
-            )}
+            Oops! Something went wrong. Please try again or use another method
+            to create an account
           </span>
         </div>
       )}

@@ -202,8 +202,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       {errors.backend && (
         <div className="auth-submit-error">
           <span>
-            {errors.backend.message &&
-              "Oops! Something went wrong. Please try again or use another method to create an account"}
+            Oops! Something went wrong. Please try again or use another method
+            to create an account
           </span>
         </div>
       )}
