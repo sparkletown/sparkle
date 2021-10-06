@@ -94,17 +94,18 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   };
 
   const handleGoogleSignIn = async () => {
-    const { message } = await signInWithGoogle();
+    const res = await signInWithGoogle();
 
-    if (message) {
-      setError("backend", "firebase", message);
+    if (res?.message) {
+      setError("backend", "firebase", res?.message);
     }
   };
-  const handleFacebookSignIn = async () => {
-    const { message } = await signInWithFacebook();
 
-    if (message) {
-      setError("backend", "firebase", message);
+  const handleFacebookSignIn = async () => {
+    const res = await signInWithFacebook();
+
+    if (res?.message) {
+      setError("backend", "firebase", res?.message);
     }
   };
 

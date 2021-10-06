@@ -18,6 +18,7 @@ import {
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
+import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
   updateLocationData,
@@ -34,6 +35,8 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+import { updateUserProfile } from "pages/Account/helpers";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -140,6 +143,21 @@ export const VenuePage: React.FC = () => {
     updateLocationData({ userId, newLocationPath: locationPath });
   }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
 
+  useEffect(() => {
+    if (
+      user &&
+      profile &&
+      !isCompleteProfile(profile) &&
+      isCompleteUserInfo(user)
+    ) {
+      const profileData = {
+        pictureUrl: user?.photoURL ?? "",
+        partyName: user?.displayName ?? "",
+      };
+      updateUserProfile(user?.uid, profileData);
+    }
+  }, [user, profile]);
+
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -240,7 +258,7 @@ export const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (profile && !isCompleteProfile(profile)) {
+  if (user && !isCompleteUserInfo(user)) {
     return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 

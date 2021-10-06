@@ -158,17 +158,17 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   };
 
   const handleGoogleSignIn = async () => {
-    const { message } = await signInWithGoogle();
+    const res = await signInWithGoogle();
 
-    if (message) {
-      setError("backend", "firebase", message);
+    if (res?.message) {
+      setError("backend", "firebase", res?.message);
     }
   };
   const handleFacebookSignIn = async () => {
-    const { message } = await signInWithFacebook();
+    const res = await signInWithFacebook();
 
-    if (message) {
-      setError("backend", "firebase", message);
+    if (res?.message) {
+      setError("backend", "firebase", res?.message);
     }
   };
 
