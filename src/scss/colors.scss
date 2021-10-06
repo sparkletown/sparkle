@@ -5,8 +5,9 @@ $colors-map: (
   content--under: #000000,
   content--over: #ffffff,
   accent--over: #ffffff,
-  accent--under: #7c46fb
-    // NOTE: there is a need for danger--over and danger--under
+  accent--under: #7c46fb,
+  icon--color: #ffffff,
+  // NOTE: there is a need for danger--over and danger--under
 );
 
 $shades-enum: (5, 10, 14, 20, 50);
