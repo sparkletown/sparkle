@@ -4,7 +4,7 @@ import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import {
   BaseChatMessage,
-  DeleteMessageProps,
+  DeleteChatMessageProps,
   DeleteThreadMessageProps,
   SendChatMessageProps,
   SendThreadMessageProps,
@@ -34,7 +34,7 @@ export const useSendVenueChatMessage = (venueId?: string) =>
   });
 
 export const useDeleteVenueChatMessage = (venueId?: string) =>
-  useDeleteMessage<DeleteMessageProps>({
+  useDeleteMessage<DeleteChatMessageProps>({
     getCollections: useGetVenueChatCollectionRef(venueId),
     processResultingBatch: useProcessBatchForChat(venueId, "deleteChat"),
     hardDelete: true,

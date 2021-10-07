@@ -53,7 +53,7 @@ export const useRecipientChatActions = (
   );
 
   return {
-    sendMessage,
+    sendChatMessage: sendMessage,
     sendThreadMessage: sendThreadReply,
     markMessageRead,
   };

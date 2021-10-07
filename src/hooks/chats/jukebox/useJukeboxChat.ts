@@ -37,7 +37,7 @@ const useJukeboxActions = (
     tableId: tableId ?? "",
   });
 
-  return { sendMessage };
+  return { sendChatMessage: sendMessage };
 };
 
 const useJukeboxMessages = (venueId?: string) => {

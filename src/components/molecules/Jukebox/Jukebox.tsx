@@ -42,7 +42,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   });
   const chatValue = watch("jukeboxMessage");
 
-  const { sendMessage, messagesToDisplay } = useJukeboxChat({
+  const { sendChatMessage, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
     tableId: tableRef,
   });
@@ -62,8 +62,8 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ jukeboxMessage }) =>
-      sendMessage({ text: jukeboxMessage }).then(() => reset()),
-    [reset, sendMessage]
+      sendChatMessage({ text: jukeboxMessage }).then(() => reset()),
+    [reset, sendChatMessage]
   );
 
   const isBtnDisabled = !chatValue || isSendingMessage;

@@ -5,30 +5,37 @@ import React, {
   useMemo,
 } from "react";
 
-import { NON_EXISTENT_FIRESTORE_ID } from "settings";
+import { ALWAYS_EMPTY_ARRAY, NON_EXISTENT_FIRESTORE_ID } from "settings";
 
-import { PrivateChatMessage } from "types/chat";
+import {
+  ChatActions,
+  DeleteChatMessage,
+  DeleteChatMessageProps,
+  DeleteThreadMessageProps,
+  PrivateChatMessage,
+  SendChatMessage,
+  SendChatMessageProps,
+  SendThreadMessageProps,
+} from "types/chat";
 
 import { useVenueChatThreadMessages } from "hooks/chats/venue/useVenueChatThreadMessages";
 
-export interface ChatboxContextState {
-  venueId?: string;
-  preloadedThreads: Record<string, PrivateChatMessage[]>;
-}
-
-export const ChatboxContext = createContext<ChatboxContextState>({
-  venueId: undefined,
-  preloadedThreads: {},
-});
-
-interface ChatboxContextProviderProps {
+export interface ChatboxContextState extends ChatActions {
   venueId?: string;
   preloadedThreads?: Record<string, PrivateChatMessage[]>;
 }
 
+export const ChatboxContext = createContext<ChatboxContextState>({
+  venueId: undefined,
+  sendChatMessage: async () => {},
+  sendThreadMessage: async () => {},
+  preloadedThreads: {},
+});
+
 export const useChatboxThread = (threadId: string) => {
   const context = useContext(ChatboxContext);
-  const preloadedThread = context.preloadedThreads[threadId];
+  const preloadedThread =
+    context?.preloadedThreads?.[threadId] ?? ALWAYS_EMPTY_ARRAY;
   const liveThread = useVenueChatThreadMessages(
     context.venueId ?? NON_EXISTENT_FIRESTORE_ID,
     threadId
@@ -40,18 +47,24 @@ export const useChatboxThread = (threadId: string) => {
   ]);
 };
 
-export const ChatboxContextProvider: React.FC<
-  PropsWithChildren<ChatboxContextProviderProps>
-> = ({ children, venueId, preloadedThreads }) => {
-  const state: ChatboxContextState = useMemo(
-    () => ({
-      venueId,
-      preloadedThreads: preloadedThreads ?? {},
-    }),
-    [preloadedThreads, venueId]
-  );
+export const useChatboxSendChatMessage = (): SendChatMessage<SendChatMessageProps> =>
+  useContext(ChatboxContext).sendChatMessage;
 
+export const useChatboxSendThreadMessage = (): SendChatMessage<SendThreadMessageProps> =>
+  useContext(ChatboxContext).sendThreadMessage;
+
+export const useChatboxDeleteChatMessage = ():
+  | DeleteChatMessage<DeleteChatMessageProps>
+  | undefined => useContext(ChatboxContext).deleteChatMessage;
+
+export const useChatboxDeleteThreadMessage = ():
+  | DeleteChatMessage<DeleteThreadMessageProps>
+  | undefined => useContext(ChatboxContext).deleteThreadMessage;
+
+export const ChatboxContextProvider: React.FC<
+  PropsWithChildren<ChatboxContextState>
+> = ({ children, ...rest }) => {
   return (
-    <ChatboxContext.Provider value={state}>{children}</ChatboxContext.Provider>
+    <ChatboxContext.Provider value={rest}>{children}</ChatboxContext.Provider>
   );
 };

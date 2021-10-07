@@ -4,11 +4,11 @@ import { noop } from "lodash";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { DeleteChatMessage, DeleteMessageProps } from "types/chat";
+import { DeleteChatMessage, DeleteChatMessageProps } from "types/chat";
 
 import { waitAtLeast } from "utils/promise";
 
-export interface UseDeleteMessageProps<T extends DeleteMessageProps> {
+export interface UseDeleteMessageProps<T extends DeleteChatMessageProps> {
   getCollections: (
     props: T
   ) => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[];
@@ -19,7 +19,7 @@ export interface UseDeleteMessageProps<T extends DeleteMessageProps> {
   hardDelete?: boolean;
 }
 
-export const useDeleteMessage = <T extends DeleteMessageProps>({
+export const useDeleteMessage = <T extends DeleteChatMessageProps>({
   getCollections,
   hardDelete,
   processResultingBatch = noop,

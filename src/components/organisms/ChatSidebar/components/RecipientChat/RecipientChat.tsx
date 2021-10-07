@@ -32,7 +32,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   } = useRecipientChatMessages(recipient);
 
   const {
-    sendMessage,
+    sendChatMessage,
     markMessageRead,
     sendThreadMessage,
   } = useRecipientChatActions(recipient);
@@ -74,15 +74,17 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         <UserAvatar user={recipient} showStatus size="small" />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <ChatboxContextProvider preloadedThreads={replies}>
+      <ChatboxContextProvider
+        preloadedThreads={replies}
+        sendChatMessage={sendChatMessage}
+        sendThreadMessage={sendThreadMessage}
+      >
         <Chatbox
           containerClassName="recipient-chat__chatbox"
           messages={messagesToDisplay}
           threadMessages={threadMessages}
           selectedThread={thread}
           setSelectedThread={setThread}
-          sendMessage={sendMessage}
-          sendThreadMessage={sendThreadMessage}
           {...infiniteProps}
         />
       </ChatboxContextProvider>

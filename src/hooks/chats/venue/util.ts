@@ -10,7 +10,7 @@ import {
 import { getVenueRef } from "api/venue";
 
 import {
-  DeleteMessageProps,
+  DeleteChatMessageProps,
   DeleteThreadMessageProps,
   MessageWithReplies,
   SendChatMessageProps,
@@ -39,7 +39,7 @@ type ChatActionsProps<T extends Variant> = T extends "sendChat"
   : T extends "sendThread"
   ? UseSendMessageProps<VenueChatMessage, SendThreadMessageProps>
   : T extends "deleteChat"
-  ? UseDeleteMessageProps<DeleteMessageProps>
+  ? UseDeleteMessageProps<DeleteChatMessageProps>
   : T extends "deleteThread"
   ? UseDeleteMessageProps<DeleteThreadMessageProps>
   : never;

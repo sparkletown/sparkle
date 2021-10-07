@@ -4,16 +4,14 @@ import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import {
-  BaseChatMessage,
-  DeleteChatMessage,
-  DeleteMessageProps,
-  DeleteThreadMessageProps,
-  MessageToDisplay,
-} from "types/chat";
+import { BaseChatMessage, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import {
+  useChatboxDeleteChatMessage,
+  useChatboxDeleteThreadMessage,
+} from "hooks/chats/private/ChatboxContext";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -26,20 +24,19 @@ import "./ChatMessage.scss";
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
   thread: WithId<BaseChatMessage>[];
-  deleteMessage?: DeleteChatMessage<DeleteMessageProps>;
-  deleteThreadReply?: DeleteChatMessage<DeleteThreadMessageProps>;
   selectThisThread: () => void;
 }
 
 export const ChatMessage: React.FC<ChatProps> = ({
   message,
   thread,
-  deleteMessage,
-  deleteThreadReply,
   selectThisThread,
 }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
   const { text, id: messageId, isQuestion } = message;
+
+  const deleteMessage = useChatboxDeleteChatMessage();
+  const deleteThreadReply = useChatboxDeleteThreadMessage();
 
   const deleteThisMessage = useCallback(
     async () => deleteMessage?.({ messageId: messageId }),

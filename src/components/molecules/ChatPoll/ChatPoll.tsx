@@ -4,15 +4,11 @@ import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import {
-  DeleteChatMessage,
-  DeleteMessageProps,
-  PollMessage,
-  PollQuestion,
-} from "types/chat";
+import { PollMessage, PollQuestion } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import { useChatboxDeleteChatMessage } from "hooks/chats/private/ChatboxContext";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUser } from "hooks/useUser";
 import { useVenuePoll } from "hooks/useVenuePoll";
@@ -28,19 +24,19 @@ import "./ChatPoll.scss";
 
 export interface ChatPollProps {
   pollMessage: WithId<PollMessage>;
-  deletePollMessage?: DeleteChatMessage<DeleteMessageProps>;
   voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
   voteInPoll,
-  deletePollMessage,
 }) => {
   const { userId } = useUser();
   const { id, poll, votes } = pollMessage;
   const { questions, topic } = poll;
   const isMine = useIsCurrentUser(pollMessage.fromUser.id);
+
+  const deletePollMessage = useChatboxDeleteChatMessage();
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)

@@ -7,8 +7,8 @@ import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
 import {
   BaseChatMessage,
+  SendChatMessage,
   SendChatMessageProps,
-  SendMessage,
   SendMessagePropsBase,
   SendThreadMessageProps,
 } from "types/chat";
@@ -21,7 +21,7 @@ import { useUser } from "hooks/useUser";
 export const useSendChatMessage = <T extends BaseChatMessage>(
   chats: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
   spreadOnMessage: ExcludeBuiltMessage<T>
-): SendMessage<SendChatMessageProps> => {
+): SendChatMessage<SendChatMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
   const getSpread = useCallback(() => spreadOnMessage, [spreadOnMessage]);
 
@@ -34,7 +34,7 @@ export const useSendChatMessage = <T extends BaseChatMessage>(
 export const useSendThreadMessage = <T extends BaseChatMessage>(
   chats: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
   spreadOnMessage: ExcludeBuiltMessage<T>
-): SendMessage<SendThreadMessageProps> => {
+): SendChatMessage<SendThreadMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
   const getSpread: (
     props: SendThreadMessageProps
@@ -70,7 +70,7 @@ export const useSendMessage = <
   getCollections,
   getSpread,
   processResultingBatch = noop,
-}: UseSendMessageProps<T, K>): SendMessage<K> => {
+}: UseSendMessageProps<T, K>): SendChatMessage<K> => {
   const { userWithId } = useUser();
   const firestore = useFirestore();
 

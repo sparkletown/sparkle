@@ -46,18 +46,18 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const { data: allChatMessagesCount } = useVenueChatMessagesCount(venueId);
 
   return (
-    <ChatboxContextProvider venueId={venue.id}>
+    <ChatboxContextProvider
+      venueId={venue.id}
+      sendChatMessage={sendChatMessage}
+      sendThreadMessage={sendThreadMessage}
+      deleteChatMessage={canDeleteMessages ? deleteChatMessage : undefined}
+      deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
+    >
       <Chatbox
         // poll is available for Venue Chat only (displayPoll = true)
         displayPoll
         messages={messages}
         threadMessages={threadMessages}
-        sendMessage={sendChatMessage}
-        sendThreadMessage={sendThreadMessage}
-        deleteMessage={canDeleteMessages ? deleteChatMessage : undefined}
-        deleteThreadMessage={
-          canDeleteMessages ? deleteThreadMessage : undefined
-        }
         selectedThread={thread}
         setSelectedThread={setThread}
         containerClassName="venue-chat"

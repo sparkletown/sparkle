@@ -73,19 +73,19 @@ export interface SendThreadMessageProps extends SendMessagePropsBase {
   threadId: string;
 }
 
-export type SendMessage<T extends SendMessagePropsBase> = (
+export type SendChatMessage<T extends SendMessagePropsBase> = (
   sendMessageProps: T
 ) => Promise<void>;
 
-export interface DeleteMessageProps {
+export interface DeleteChatMessageProps {
   messageId: string;
 }
 
-export interface DeleteThreadMessageProps extends DeleteMessageProps {
+export interface DeleteThreadMessageProps extends DeleteChatMessageProps {
   threadId: string;
 }
 
-export type DeleteChatMessage<T extends DeleteMessageProps> = (
+export type DeleteChatMessage<T extends DeleteChatMessageProps> = (
   props: T
 ) => Promise<void>;
 
@@ -96,9 +96,9 @@ export type PreviewChatMessage = PrivateChatMessage & {
 };
 
 export interface ChatActions {
-  sendMessage: SendMessage<SendChatMessageProps>;
-  deleteMessage?: DeleteChatMessage<DeleteMessageProps>;
-  sendThreadMessage: SendMessage<SendThreadMessageProps>;
+  sendChatMessage: SendChatMessage<SendChatMessageProps>;
+  deleteChatMessage?: DeleteChatMessage<DeleteChatMessageProps>;
+  sendThreadMessage: SendChatMessage<SendThreadMessageProps>;
   deleteThreadMessage?: DeleteChatMessage<DeleteThreadMessageProps>;
 }
 
@@ -112,7 +112,7 @@ export interface PrivateChatActions
   markMessageRead: MarkMessageRead;
 }
 
-export type JukeboxChatActions = Pick<ChatActions, "sendMessage">;
+export type JukeboxChatActions = Pick<ChatActions, "sendChatMessage">;
 
 export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
 
