@@ -2,7 +2,10 @@ import { useCallback } from "react";
 import firebase from "firebase/app";
 import { random } from "lodash";
 
-import { VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT,
+} from "settings";
 
 import { getVenueRef } from "api/venue";
 
@@ -14,16 +17,17 @@ import {
   SendThreadMessageProps,
   VenueChatMessage,
 } from "types/chat";
+import { DistributedCounterShard } from "types/Firestore";
 
 import { propName } from "utils/propName";
 
 import { UseDeleteMessageProps } from "hooks/chats/common/useDeleteMessage";
 import { UseSendMessageProps } from "hooks/chats/common/useSendMessage";
 
-export const getChatsRef = (venueId?: string) =>
+export const getChatsRef = (venueId: string) =>
   getVenueRef(venueId).collection("chats");
-export const getThreadsRef = (venueId?: string, threadId?: string) =>
-  getVenueRef(venueId).collection("chats").doc(threadId).collection("threads");
+export const getThreadsRef = (venueId: string, threadId: string) =>
+  getChatsRef(venueId).doc(threadId).collection("threads");
 
 type ChatVariant = "sendChat" | "deleteChat";
 type ThreadVariant = "sendThread" | "deleteThread";
@@ -41,13 +45,16 @@ type ChatActionsProps<T extends Variant> = T extends "sendChat"
   : never;
 
 export const useGetVenueChatCollectionRef = (venueId: string | undefined) =>
-  useCallback(() => [getChatsRef(venueId)], [venueId]);
+  useCallback(() => (venueId ? [getChatsRef(venueId)] : ALWAYS_EMPTY_ARRAY), [
+    venueId,
+  ]);
 
 export const useGetVenueThreadCollectionRef = (venueId: string | undefined) =>
   useCallback(
-    ({ threadId }: SendThreadMessageProps | DeleteThreadMessageProps) => [
-      getThreadsRef(venueId, threadId),
-    ],
+    ({ threadId }: SendThreadMessageProps | DeleteThreadMessageProps) =>
+      venueId && threadId
+        ? [getThreadsRef(venueId, threadId)]
+        : ALWAYS_EMPTY_ARRAY,
     [venueId]
   );
 
@@ -57,6 +64,7 @@ export const useProcessBatchForThread = <T extends ThreadVariant>(
 ): ChatActionsProps<T>["processResultingBatch"] =>
   useCallback(
     ({ threadId }, batch) => {
+      if (!venueId) return;
       batch.update(
         getChatsRef(venueId).doc(threadId),
         propName<MessageWithReplies>("repliesCount"),
@@ -74,14 +82,13 @@ export const useProcessBatchForChat = <T extends ChatVariant>(
 ): ChatActionsProps<T>["processResultingBatch"] =>
   useCallback(
     (props, batch) => {
+      if (!venueId) return;
       const randomShard = getVenueRef(venueId)
         .collection("chatMessagesCounter")
         .doc(random(VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT - 1).toString());
       batch.set(
         randomShard,
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        "count",
+        propName<DistributedCounterShard>("count"),
         firebase.firestore.FieldValue.increment(variant === "sendChat" ? 1 : -1)
       );
     },

@@ -4,7 +4,7 @@ import { getVenueRef } from "api/venue";
 
 import { distributedCounterValueConverter } from "utils/converters";
 
-export const useVenueChatMessagesCount = (venueId: string | undefined) =>
+export const useVenueChatMessagesCount = (venueId: string) =>
   useFirestoreDocData<number>(
     getVenueRef(venueId)
       .collection("chatMessagesCounter")

@@ -8,7 +8,7 @@ import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 import { getChatsRef } from "hooks/chats/venue/util";
 
 export const useVenueChatMessages = (
-  venueId: string | undefined,
+  venueId: string,
   limit?: number
 ): WithId<MessageToDisplay<VenueChatMessage>>[] => {
   let ref: firebase.firestore.Query = getChatsRef(venueId);

@@ -12,7 +12,6 @@ import {
   partitionMessagesFromReplies,
   PartitionMessagesFromRepliesReturn,
 } from "utils/chat";
-import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 
@@ -75,12 +74,18 @@ export const useChatMessagesRaw = <T extends BaseChatMessage>(
     data: rawMessages = ALWAYS_EMPTY_ARRAY,
     status,
   } = useFirestoreCollectionData<WithId<T>>(
-    messagesRef.orderBy("timestamp", "desc").withConverter(withIdConverter<T>())
+    messagesRef.orderBy("timestamp", "desc"),
+    {
+      idField: "id",
+    }
   );
 
-  const chatMessages =
-    filterNewSchemaMessages<T>(rawMessages)?.filter(isTruthy) ??
-    (ALWAYS_EMPTY_ARRAY as WithId<T>[]);
+  const chatMessages = useMemo(
+    () =>
+      filterNewSchemaMessages<T>(rawMessages)?.filter(isTruthy) ??
+      (ALWAYS_EMPTY_ARRAY as WithId<T>[]),
+    [rawMessages]
+  );
 
   return [chatMessages, status !== "loading"];
 };

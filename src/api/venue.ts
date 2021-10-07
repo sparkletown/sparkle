@@ -12,7 +12,7 @@ import { WithId, withId } from "utils/id";
 export const getVenueCollectionRef = () =>
   firebase.firestore().collection("venues");
 
-export const getVenueRef = (venueId?: string) =>
+export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
 
 export const fetchVenue = async (venueId: string) => {
