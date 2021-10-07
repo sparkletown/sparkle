@@ -9,7 +9,9 @@ import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRecipientChat } from "hooks/chats/private/useRecipientChat";
+import { ChatboxContextProvider } from "hooks/chats/private/ChatboxContext";
+import { useRecipientChatMessages } from "hooks/chats/private/useRecipientChat";
+import { useRecipientChatActions } from "hooks/chats/private/useRecipientChatActions";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useRenderInfiniteScroll } from "hooks/chats/util/useRenderInfiniteScroll";
 
@@ -27,11 +29,13 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
   const {
     messagesToDisplay: allMessagesToDisplay,
     replies,
+  } = useRecipientChatMessages(recipient);
 
+  const {
     sendMessage,
     markMessageRead,
     sendThreadMessage,
-  } = useRecipientChat(recipient);
+  } = useRecipientChatActions(recipient);
 
   useEffect(() => {
     const unreadCounterpartyMessages = allMessagesToDisplay.filter(
@@ -70,16 +74,18 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         <UserAvatar user={recipient} showStatus size="small" />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <Chatbox
-        containerClassName="recipient-chat__chatbox"
-        messages={messagesToDisplay}
-        threadMessages={threadMessages}
-        selectedThread={thread}
-        setSelectedThread={setThread}
-        sendMessage={sendMessage}
-        sendThreadMessage={sendThreadMessage}
-        {...infiniteProps}
-      />
+      <ChatboxContextProvider preloadedThreads={replies}>
+        <Chatbox
+          containerClassName="recipient-chat__chatbox"
+          messages={messagesToDisplay}
+          threadMessages={threadMessages}
+          selectedThread={thread}
+          setSelectedThread={setThread}
+          sendMessage={sendMessage}
+          sendThreadMessage={sendThreadMessage}
+          {...infiniteProps}
+        />
+      </ChatboxContextProvider>
     </div>
   );
 };

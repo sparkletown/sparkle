@@ -6,11 +6,9 @@ import { DisplayUser } from "types/User";
 import { WithId } from "utils/id";
 
 import { useChatMessagesForDisplay } from "hooks/chats/common/useChatMessages";
-import { useRecipientChatActions } from "hooks/chats/private/useRecipientChatActions";
 import { useUser } from "hooks/useUser";
 
-export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
-  const chatActions = useRecipientChatActions(recipient);
+export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
   const { userId } = useUser();
   const firestore = useFirestore();
 
@@ -24,7 +22,6 @@ export const useRecipientChat = (recipient: WithId<DisplayUser>) => {
   );
 
   return {
-    ...chatActions,
     messagesToDisplay,
     replies,
   };

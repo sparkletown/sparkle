@@ -6,6 +6,7 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { ChatboxContextProvider } from "hooks/chats/private/ChatboxContext";
 import { useRenderMessagesCount } from "hooks/chats/util/useRenderInfiniteScroll";
 import {
   useDeleteVenueChatMessage,
@@ -45,21 +46,25 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const { data: allChatMessagesCount } = useVenueChatMessagesCount(venueId);
 
   return (
-    <Chatbox
-      // poll is available for Venue Chat only (displayPoll = true)
-      displayPoll
-      messages={messages}
-      threadMessages={threadMessages}
-      sendMessage={sendChatMessage}
-      sendThreadMessage={sendThreadMessage}
-      deleteMessage={canDeleteMessages ? deleteChatMessage : undefined}
-      deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
-      selectedThread={thread}
-      setSelectedThread={setThread}
-      containerClassName="venue-chat"
-      hasMore={limit < allChatMessagesCount}
-      loadMore={increaseLimit}
-    />
+    <ChatboxContextProvider venueId={venue.id}>
+      <Chatbox
+        // poll is available for Venue Chat only (displayPoll = true)
+        displayPoll
+        messages={messages}
+        threadMessages={threadMessages}
+        sendMessage={sendChatMessage}
+        sendThreadMessage={sendThreadMessage}
+        deleteMessage={canDeleteMessages ? deleteChatMessage : undefined}
+        deleteThreadMessage={
+          canDeleteMessages ? deleteThreadMessage : undefined
+        }
+        selectedThread={thread}
+        setSelectedThread={setThread}
+        containerClassName="venue-chat"
+        hasMore={limit < allChatMessagesCount}
+        loadMore={increaseLimit}
+      />
+    </ChatboxContextProvider>
   );
 };
 
