@@ -17,7 +17,6 @@ import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 import { WorldEditor } from "pages/WorldEditor";
 import { WorldsDashboard } from "pages/WorldsDashboard";
 
-import { AdminDashboard } from "components/organisms/AdminDashboard";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 export const AdminV3Subrouter: React.FC = () => (
@@ -32,6 +31,6 @@ export const AdminV3Subrouter: React.FC = () => (
     />
     <Route path={ADMIN_V3_CREATE_PARAM_URL} component={VenueWizardV2} />
     <Route path={ADMIN_V3_EDIT_PARAM_URL} component={VenueWizardV2} />
-    <Route path={ADMIN_V3_ROOT_URL} component={AdminDashboard} />
+    <Route path={ADMIN_V3_ROOT_URL} component={WorldsDashboard} />
   </Switch>
 );

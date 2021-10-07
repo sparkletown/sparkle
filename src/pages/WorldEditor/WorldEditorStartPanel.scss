@@ -4,11 +4,7 @@
   display: block;
 
   &__cards {
-    display: grid;
-    width: 100%;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: max-content;
-    grid-gap: 1rem;
   }
 
   .AdminSpaceCard {
