@@ -52,10 +52,15 @@ export const useUser = (): UseUserResult => {
   );
 
   const userWithId = useMemo(() => {
-    if (!userId || !profile) return;
+    if (!userId || !user) return;
 
-    return withId(profile, userId);
-  }, [profile, userId]);
+    const userData = {
+      ...user,
+      partyName: user.displayName ?? "",
+      pictureUrl: user.photoURL ?? "",
+    };
+    return withId(userData, userId);
+  }, [user, userId]);
 
   return useMemo(
     () => ({

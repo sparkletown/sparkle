@@ -181,7 +181,6 @@ export const VenuePage: React.FC = () => {
 
     void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
   }, [enteredVenueIds, userLocation, userId, venueId, profile]);
-
   // NOTE: User's timespent updates
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
