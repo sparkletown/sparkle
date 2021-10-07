@@ -5,8 +5,8 @@ import { omit } from "lodash";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
@@ -109,7 +109,7 @@ export type VenueInput = AdvancedVenueInput &
   };
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
@@ -124,6 +124,7 @@ export interface VenueInput_v2
   template?: VenueTemplate;
   iframeUrl?: string;
   autoPlay?: boolean;
+  parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
 }
@@ -163,6 +164,7 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
+    parentId?: string;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
@@ -179,9 +181,6 @@ export type PlacementInput = {
   width: number;
   height: number;
 };
-
-// add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-const randomPrefix = () => Math.random().toString();
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
@@ -200,7 +199,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -232,7 +231,7 @@ const createFirestoreVenueInput = async (
     const randomPrefix = Math.random().toString();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
+      `users/${user.uid}/venues/${slug}/${randomPrefix}-${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -257,6 +256,8 @@ const createFirestoreVenueInput = async (
     owners,
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -267,8 +268,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -296,8 +296,10 @@ const createFirestoreVenueInput_v2 = async (
     if (!fileArr || fileArr.length === 0) continue;
     const file = fileArr[0];
 
+    const fileExtension = file.type.split("/").pop();
+
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix()}-${file.name}`
+      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -316,6 +318,9 @@ const createFirestoreVenueInput_v2 = async (
     ),
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
+    parentId: input.parentId ?? "",
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -398,6 +403,30 @@ export const updateVenue_v2 = async (
       const msg = `[updateVenue_v2] updating venue ${input.name}`;
       const context = {
         location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
+      });
+      throw error;
+    });
+};
+
+export const updateMapBackground = async (
+  input: WithWorldId<VenueInput_v2>,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateMapBackground")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateMapBackground] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateMapBackground",
       };
 
       Bugsnag.notify(msg, (event) => {

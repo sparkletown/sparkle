@@ -1,17 +1,22 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { ADMIN_V3_NEW_WORLD_URL, ADMIN_V3_ROOT_URL } from "settings";
+
+import { useUser } from "hooks/useUser";
+import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { WorldCard } from "components/molecules/WorldCard";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -26,6 +31,33 @@ export const WorldsDashboard: React.FC = () => {
     history,
   ]);
 
+  const user = useUser();
+
+  const worlds = useOwnWorlds(user.userId);
+
+  const hasWorlds = !!worlds.length;
+
+  const renderedWelcomePage = useMemo(
+    () => (
+      <div className="WorldsDashboard__messages-container">
+        <AdminShowcaseTitle>Let’s create a world</AdminShowcaseTitle>
+        <AdminShowcaseSubTitle>It’s fast and easy</AdminShowcaseSubTitle>
+      </div>
+    ),
+    []
+  );
+
+  const renderedWorldsList = useMemo(
+    () => (
+      <div className="WorldsDashboard__worlds-list">
+        {worlds.map((world) => (
+          <WorldCard key={world.id} world={world} />
+        ))}
+      </div>
+    ),
+    [worlds]
+  );
+
   return (
     <div className="WorldsDashboard">
       <WithNavigationBar hasBackButton withSchedule>
@@ -39,25 +71,22 @@ export const WorldsDashboard: React.FC = () => {
                 This can be an event or a series of events in the sparkly
                 universe
               </AdminSidebarSubTitle>
-              <TabFooter onClickHome={navigateToHome} />
+              <AdminSidebarFooter onClickHome={navigateToHome} />
             </AdminSidebar>
-            <AdminShowcase>
+            <AdminShowcase className="WorldsDashboard__worlds">
               <div className="WorldsDashboard__new">
                 <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
                   Create a new world
                 </ButtonNG>
-                <img
-                  alt="arrow pointing towards the Create a world button"
-                  className="WorldsDashboard__arrow"
-                  src={ARROW}
-                />
+                {!hasWorlds && (
+                  <img
+                    alt="arrow pointing towards the Create a world button"
+                    className="WorldsDashboard__arrow"
+                    src={ARROW}
+                  />
+                )}
               </div>
-              <div className="WorldsDashboard__messages-container">
-                <AdminShowcaseTitle>Let’s create a world</AdminShowcaseTitle>
-                <AdminShowcaseSubTitle>
-                  It’s fast and easy
-                </AdminShowcaseSubTitle>
-              </div>
+              {hasWorlds ? renderedWorldsList : renderedWelcomePage}
             </AdminShowcase>
           </AdminPanel>
         </AdminRestricted>

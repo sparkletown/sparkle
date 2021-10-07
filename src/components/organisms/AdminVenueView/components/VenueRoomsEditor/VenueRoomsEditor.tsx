@@ -12,6 +12,8 @@ import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
 import update from "immutability-helper";
 
+import { ROOM_TAXON } from "settings";
+
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
@@ -31,6 +33,7 @@ const styles: React.CSSProperties = {
 };
 
 export interface RoomIcon {
+  title: string;
   top: number;
   left: number;
   url: string;
@@ -287,7 +290,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
                 "Container__room-image--disabled": !room.isEnabled,
               })}
               src={room.image_url}
-              alt="room-logo"
+              alt={`${ROOM_TAXON.lower} logo`}
               title={room.title}
             />
             <div className="Container__room-title">{room.title}</div>

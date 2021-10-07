@@ -3,9 +3,14 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { ROOM_TAXON } from "settings";
 
-import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
+import {
+  createRoom,
+  createUrlSafeName,
+  createVenue_v2,
+  RoomInput_v2,
+} from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -60,12 +65,15 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const roomValues = getValues();
 
-    const roomUrl = window.origin + venueInsideUrl(roomValues.venueName);
+    const venueUrlName = createUrlSafeName(roomValues.venueName);
+
+    const roomUrl = window.origin + venueInsideUrl(venueUrlName);
 
     const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
+      about: "",
       isEnabled: true,
-      image_url: DEFAULT_VENUE_LOGO,
+      image_url: icon,
       url: roomUrl,
       width_percent: 5,
       height_percent: 5,
@@ -76,22 +84,22 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
     const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-    await createVenue_v2({ ...venueData, worldId }, user);
+    await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, template, user, venueId, worldId]);
+  }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
   return (
     <>
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <Form.Label>Room title</Form.Label>
+            <Form.Label>{ROOM_TAXON.capital} title</Form.Label>
             <InputField
               name="roomTitle"
               type="text"
               autoComplete="off"
-              placeholder="Room title"
+              placeholder={`${ROOM_TAXON.capital} title`}
               error={errors.roomTitle}
               ref={register()}
               disabled={isLoading}
@@ -110,15 +118,19 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               />
             </>
 
-            <Button disabled={isLoading} title="Add room" type="submit">
-              Add room
+            <Button
+              disabled={isLoading}
+              title={`Add ${ROOM_TAXON.lower}`}
+              type="submit"
+            >
+              Add {ROOM_TAXON.lower}
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
       <div className="VenueRoomItem" onClick={showModal}>
         <img
-          alt={`room-icon-${icon}`}
+          alt={`${ROOM_TAXON.lower} icon ${icon}`}
           src={icon}
           className="VenueRoomItem__room-icon"
         />

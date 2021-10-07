@@ -1,5 +1,8 @@
 import React, { useCallback, useMemo } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import {
+  Dropdown as ReactBootstrapDropdown,
+  DropdownButton,
+} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ChatMessageOptions, ChatOptionType } from "types/chat";
@@ -24,13 +27,13 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
   const dropdownOptions = useMemo(
     () =>
       ChatMessageOptions.map((option) => (
-        <Dropdown.Item
+        <ReactBootstrapDropdown.Item
           key={option.name}
           onClick={() => setActiveOption(option.type)}
         >
           {option.name}
           <FontAwesomeIcon icon={option.icon} />
-        </Dropdown.Item>
+        </ReactBootstrapDropdown.Item>
       )),
     [setActiveOption]
   );
@@ -44,6 +47,7 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
       {shouldShowPoll ? (
         <TextButton label="Cancel Poll" onClick={unselectOption} />
       ) : (
+        // @debt align the style of the SpacesDropdown with the Dropdown component
         <DropdownButton
           id="options-dropdown"
           title="Options"

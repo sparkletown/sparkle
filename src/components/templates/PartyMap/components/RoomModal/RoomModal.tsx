@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { ALWAYS_EMPTY_ARRAY, DEFAULT_SHOW_SCHEDULE } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_SCHEDULE,
+  ROOM_TAXON,
+} from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -166,7 +170,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
             onMouseOut={clearAttendance}
             onClick={enterRoomWithSound}
           >
-            Join Room
+            Join {ROOM_TAXON.capital}
           </button>
         </div>
       </div>
@@ -181,7 +185,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         containerClassName="RoomModal__userlist"
         usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
         userCount={portalVenue?.recentUserCount ?? 0}
-        activity="in this room"
+        activity={`in this ${ROOM_TAXON.lower}`}
       />
 
       {showRoomEvents && (

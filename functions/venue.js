@@ -6,6 +6,7 @@ const { addAdmin, removeAdmin } = require("./src/api/roles");
 
 const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const { ROOM_TAXON } = require("./taxonomy.js");
 
 const PLAYA_VENUE_ID = "jamonline";
 
@@ -299,9 +300,6 @@ const createVenueData_v2 = (data, context) => {
         description: data.description,
       },
     },
-    theme: {
-      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-    },
     host: {
       icon: data.logoImageUrl,
     },
@@ -312,7 +310,9 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    parentId: data.parentId || "",
     worldId: data.worldId,
+    ...(data.parentId && { parentId: data.parentId }),
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -375,12 +375,12 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.parentId === "string") {
+    updated.parentId = data.parentId;
   }
 
   if (typeof data.showSchedule === "boolean") {
@@ -545,7 +545,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   //if the room exists under the same name, find it
   const index = rooms.findIndex((val) => val.title === room.title);
   if (index === -1) {
-    throw new HttpsError("not-found", "Room does not exist");
+    throw new HttpsError("not-found", `${ROOM_TAXON.capital} does not exist`);
   } else {
     docData.rooms.splice(index, 1);
   }
@@ -763,6 +763,163 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   // @debt this is exactly the same as in updateVenue
   admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
+exports.updateMapBackground = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+});
+
+exports.updateVenueNG = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
+  await checkUserIsOwner(data.id, context.auth.token.user_id);
+
+  const updated = {};
+  updated.updatedAt = Date.now();
+
+  if (data.subtitle || data.subtitle === "") {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+
+  if (data.description || data.description === "") {
+    updated.config.landingPageConfig.description = data.description;
+  }
+
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
+  if (typeof data.zoomUrl === "string") {
+    updated.zoomUrl = data.zoomUrl;
+  }
+
+  if (typeof data.iframeUrl === "string") {
+    updated.iframeUrl = data.iframeUrl;
+  }
+
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.showUserStatus === "boolean") {
+    updated.showUserStatus = data.showUserStatus;
+  }
+
+  if (typeof data.showShoutouts === "boolean") {
+    updated.showShoutouts = data.showShoutouts;
+  }
+
+  if (data.userStatuses) {
+    updated.userStatuses = data.userStatuses;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
+  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
+
+  if (data.bannerImageUrl) {
+    updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+
+  if (typeof data.showGrid === "boolean") {
+    updated.showGrid = data.showGrid;
+  }
+
+  if (typeof data.columns === "number") {
+    updated.columns = data.columns;
+  }
+
+  if (typeof data.requiresDateOfBirth === "boolean") {
+    updated.requiresDateOfBirth = data.requiresDateOfBirth;
+  }
+
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+  }
+
+  if (data.radioStations) {
+    updated.radioStations = [data.radioStations];
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(data.id)
+    .set(updated, { merge: true });
 });
 
 exports.updateTables = functions.https.onCall((data, context) => {

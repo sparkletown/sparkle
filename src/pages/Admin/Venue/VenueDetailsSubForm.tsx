@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { FieldErrors, useForm } from "react-hook-form";
 import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -13,8 +14,10 @@ import {
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
+  ROOMS_TAXON,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
+  ZOOM_ROOM_TAXON,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
@@ -267,8 +270,9 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
       <div style={{ fontSize: "16px" }}>
-        Please post a URL to, for example, a Zoom room, Twitch stream, other
-        Universe, or any interesting thing out there on the open web.
+        Please post a URL to, for example, a {ZOOM_ROOM_TAXON.capital}, Twitch
+        stream, other Universe, or any interesting thing out there on the open
+        web.
       </div>
       <textarea
         disabled={disable}
@@ -295,13 +299,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
       {/* note: the default embedded video is the "Intro to Sparkle" video*/}
       <textarea
+        placeholder={DEFAULT_EMBED_URL}
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-      >
-        https://player.vimeo.com/video/512606583?h=84853fbd28
-      </textarea>
+      />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
@@ -475,7 +478,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   const renderRoomAppearanceSelect = () => (
     <>
       <h4 className="italic input-header">
-        Choose how you&apos;d like your rooms to appear on the map
+        Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the map
       </h4>
       <div className="input-container">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
@@ -640,12 +643,23 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     setUserStatuses(statuses);
   };
 
+  const updateVenue = useCallback(
+    (values: Partial<FormValues>) =>
+      void onSubmit(
+        {
+          ...values,
+          iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+        },
+        userStatuses,
+        hasUserStatuses
+      ),
+    [onSubmit, userStatuses, hasUserStatuses]
+  );
+
   return (
     <form
       className="full-height-container"
-      onSubmit={handleSubmit((vals) =>
-        onSubmit(vals, userStatuses, hasUserStatuses)
-      )}
+      onSubmit={handleSubmit(updateVenue)}
     >
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
@@ -774,7 +788,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
       </div>
       {templateID === VenueTemplate.themecamp && (
         <div style={{ textAlign: "center" }}>
-          You&apos;ll be able to add rooms to your theme camp on the next page
+          You&apos;ll be able to add {ROOMS_TAXON.lower} to your theme camp on
+          the next page
         </div>
       )}
     </form>

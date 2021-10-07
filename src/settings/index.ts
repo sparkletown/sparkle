@@ -14,6 +14,14 @@ import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import {
+  ROOM_TAXON,
+  ROOMS_TAXON,
+  SCREENING_ROOM_TAXON,
+  SPACE_TAXON,
+  ZOOM_ROOM_TAXON,
+} from "./taxonomy";
+
 import defaultAvatar1 from "assets/avatars/default-profile-pic-1.png";
 import defaultAvatar2 from "assets/avatars/default-profile-pic-2.png";
 import defaultAvatar3 from "assets/avatars/default-profile-pic-3.png";
@@ -24,10 +32,17 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
+export * from "./taxonomy";
+export * from "./mapBackgrounds";
 export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
+export * from "./spacesSettings";
+export * from "./embedUrlSettings";
+
+export const ENABLE_POPUPS_URL =
+  "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -84,13 +99,6 @@ export const SPARKLEVERSE_COMMUNITY_URL =
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
-export const TWITCH_SHORT_URL = "twitch.tv";
-export const TWITCH_EMBED_URL = "https://player.twitch.tv";
-export const FACEBOOK_EMBED_URL = "plugins/video.php";
-export const VIMEO_SHORT_EVENT_URL = "vimeo.com/event";
-export const VIMEO_EMBED_URL = "https://player.vimeo.com/video";
-export const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
-export const YOUTUBE_SHORT_URL_STRING = "youtu";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
@@ -239,27 +247,29 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
     name: "Conversation Space",
-    description: ["A room of tables in which to talk and make merry."],
+    description: [
+      `A ${SPACE_TAXON.lower} of tables in which to talk and make merry.`,
+    ],
   },
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
     description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+      `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
     ],
   },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
     description: [
-      "An explorable party map into which you can place all your party rooms.",
+      `An explorable party map into which you can place all your party ${ROOMS_TAXON.lower}.`,
     ],
   },
   {
     template: VenueTemplate.animatemap,
     name: "Animate Map",
     description: [
-      "An explorable party map into which you can place all your party rooms.",
+      `An explorable party map into which you can place all your party ${ROOMS_TAXON.lower}.`,
     ],
   },
   {
@@ -295,8 +305,10 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening Room",
-    description: ["Add an screening room with the videos listed inside."],
+    name: SCREENING_ROOM_TAXON.title,
+    description: [
+      `Add an screening ${ROOM_TAXON.lower} with the videos listed inside.`,
+    ],
   },
   {
     template: VenueTemplate.viewingwindow,
@@ -384,8 +396,7 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.zoomroom,
     name: "Experience",
-    description:
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
+    description: `Ideal for performances, debates, interactive sessions of all kinds: a ${ZOOM_ROOM_TAXON.capital} with its own spot on the Jam`,
     icon: "/venues/pickspace-thumbnail_zoom.png",
   },
   {
@@ -562,7 +573,6 @@ export const DEFAULT_AVATARS = [
 
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
-export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
