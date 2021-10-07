@@ -1,0 +1,7 @@
+@import "scss/constants";
+
+.SubmitError {
+  &__message {
+    color: $red;
+  }
+}

@@ -13,7 +13,7 @@ export interface FormErrorsProps {
   omitted?: string[];
 }
 
-export const FormErrors = ({ errors, omitted }: FormErrorsProps) => {
+export const FormErrors: React.FC<FormErrorsProps> = ({ errors, omitted }) => {
   const entries = Object.entries(omitted ? omit(errors, omitted) : errors);
 
   if (entries.length === 0) {

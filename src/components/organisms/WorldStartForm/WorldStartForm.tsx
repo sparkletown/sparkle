@@ -17,6 +17,7 @@ import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
 
 import ImageInput from "components/atoms/ImageInput";
 
@@ -51,7 +52,6 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   ...sidebarFooterProps
 }) => {
   const worldId = world?.id;
-  const createMode = !worldId;
   const { user } = useUser();
 
   const defaultValues = useMemo(
@@ -86,20 +86,15 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user) return;
-    if (!createMode || !worldId) return;
 
-    if (createMode) {
-      await createWorld(values, user);
-    } else {
+    if (worldId) {
       await updateWorld({ ...values, id: worldId }, user);
+    } else {
+      await createWorld(values, user);
     }
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, createMode, defaultValues]);
-
-  if (error) {
-    console.error(WorldStartForm.name, error);
-  }
+  }, [worldId, user, values, reset, defaultValues]);
 
   return (
     <div className="WorldStartForm">
@@ -150,7 +145,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
           <div className="WorldStartForm__banner-wrapper">
             <ImageInput
               name="bannerImage"
-              imgUrl={values.bannerImageFile}
+              imgUrl={values.bannerImageUrl}
               error={errors.bannerImageFile || errors.bannerImageUrl}
               isInputHidden={!values.bannerImageUrl}
               register={register}
@@ -179,6 +174,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
           </div>
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+        <SubmitError error={error} />
       </Form>
     </div>
   );

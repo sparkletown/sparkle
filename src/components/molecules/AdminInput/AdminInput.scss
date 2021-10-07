@@ -4,6 +4,11 @@
   margin-top: $spacing--xs;
   margin-bottom: $spacing--xs;
 
+  &__error,
+  &__subtext {
+    display: block;
+  }
+
   &__error {
     color: $red;
   }

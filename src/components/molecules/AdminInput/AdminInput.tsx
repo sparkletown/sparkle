@@ -41,8 +41,8 @@ export const AdminInput: React.FC<AdminInputProps> = ({
         ref={register}
         id={id}
       />
-      {subtext && <div className="AdminInput__subtext">{subtext}</div>}
-      {error && <div className="AdminInput__error">{error?.message}</div>}
+      {subtext && <span className="AdminInput__subtext">{subtext}</span>}
+      {error && <span className="AdminInput__error">{error?.message}</span>}
     </p>
   );
 };
