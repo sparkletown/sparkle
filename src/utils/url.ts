@@ -5,7 +5,7 @@ import {
   ADMIN_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ADVANCED_PARAM_URL,
-  ADMIN_V3_CREATE_URL,
+  ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_OLD_WORLD_PARAM_URL,
   ADMIN_V3_ROOT_URL,
   ADMIN_V3_VENUE_PARAM_URL,
@@ -34,7 +34,7 @@ export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });
 
 export const adminCreateWorldSpace = (worldId?: string) =>
-  generatePath(ADMIN_V3_CREATE_URL, { worldId });
+  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldId });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
