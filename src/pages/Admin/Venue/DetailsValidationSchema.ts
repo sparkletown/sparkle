@@ -3,7 +3,6 @@ import * as Yup from "yup";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  IFRAME_TEMPLATES,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_AUDITORIUM_COLUMNS_COUNT,
@@ -104,19 +103,6 @@ export const validationSchema = Yup.object()
           ? schema
               .required("Required")
               .test("zoomUrl", "URL required", (val: string) => val.length > 0)
-          : schema.notRequired()
-    ),
-    iframeUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        IFRAME_TEMPLATES.includes(template)
-          ? schema
-              .required("Required")
-              .test(
-                "iframeUrl",
-                "Video URL required",
-                (val: string) => val.length > 0
-              )
           : schema.notRequired()
     ),
 

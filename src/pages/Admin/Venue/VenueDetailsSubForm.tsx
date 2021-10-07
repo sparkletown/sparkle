@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { FieldErrors, useForm } from "react-hook-form";
 import classNames from "classnames";
@@ -299,13 +299,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
       {/* note: the default embedded video is the "Intro to Sparkle" video*/}
       <textarea
+        placeholder={DEFAULT_EMBED_URL}
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-      >
-        {DEFAULT_EMBED_URL}
-      </textarea>
+      ></textarea>
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
@@ -644,12 +643,22 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     setUserStatuses(statuses);
   };
 
+  const updateVenue = useCallback(
+    (vals: Partial<FormValues>) => {
+      const values = {
+        ...vals,
+        iframeUrl: vals.iframeUrl || DEFAULT_EMBED_URL,
+      };
+
+      onSubmit(values, userStatuses, hasUserStatuses);
+    },
+    [onSubmit, userStatuses, hasUserStatuses]
+  );
+
   return (
     <form
       className="full-height-container"
-      onSubmit={handleSubmit((vals) =>
-        onSubmit(vals, userStatuses, hasUserStatuses)
-      )}
+      onSubmit={handleSubmit(updateVenue)}
     >
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
