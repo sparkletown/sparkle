@@ -13,6 +13,7 @@ import { WithId } from "utils/id";
 
 import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 import "./TimingEventModal.scss";
@@ -97,6 +98,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     },
     [onHide, venueId, template, event]
   );
+
+  const showDeleteButton =
+    template && HAS_ROOMS_TEMPLATES.includes(template) && event;
+  const handleDelete = () => {
+    onHide();
+    setEditedEvent && setEditedEvent(event);
+    setShowDeleteEventModal();
+  };
 
   return (
     <>
@@ -243,32 +252,28 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className={event && "input-group__flex"}>
-                <input
-                  className="btn btn-primary btn-small"
-                  type="submit"
-                  value={event ? "Update" : "Create"}
+                <ButtonNG
                   disabled={formState.isSubmitting}
-                />
+                  variant="primary"
+                  type="submit"
+                  onClick={onHide}
+                >
+                  {event ? "Update" : "Create"}
+                </ButtonNG>
 
-                {template && HAS_ROOMS_TEMPLATES.includes(template) && event && (
-                  <input
-                    className="btn btn-primary btn-danger btn-small"
-                    value="Delete"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      onHide();
-                      setEditedEvent && setEditedEvent(event);
-                      setShowDeleteEventModal();
-                    }}
+                {showDeleteButton && (
+                  <ButtonNG
                     disabled={formState.isSubmitting}
-                  />
+                    variant="danger"
+                    onClick={handleDelete}
+                  >
+                    Delete
+                  </ButtonNG>
                 )}
               </div>
-              <input
-                className="btn btn-secondary btn-small"
-                onClick={onHide}
-                value="Cancel"
-              />
+              <ButtonNG variant="secondary" onClick={onHide}>
+                Cancel
+              </ButtonNG>
             </form>
           </div>
         </Modal.Body>
