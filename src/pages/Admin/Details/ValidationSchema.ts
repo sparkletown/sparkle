@@ -193,6 +193,8 @@ export const roomEditSchema = Yup.object().shape({
   }),
 });
 
+export const roomEditNGSchema = Yup.object().shape({});
+
 // this is used to transform the api data to conform to the yup schema
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editVenueCastSchema = Yup.object()

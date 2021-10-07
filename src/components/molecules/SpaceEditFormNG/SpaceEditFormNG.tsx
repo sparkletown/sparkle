@@ -13,11 +13,13 @@ import { Room } from "types/rooms";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
+import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+
+import { AdminSection } from "components/molecules/AdminSection";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
@@ -60,9 +62,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const defaultValues = useMemo(
     () => ({
-      room: {
-        image_url: room.image_url ?? "",
-      },
+      image_url: room.image_url ?? "",
+      bannerImageUrl: "",
       venue: {
         iframeUrl: roomVenue?.iframeUrl ?? "",
       },
@@ -72,21 +73,14 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
     reValidateMode: "onChange",
-    validationSchema: roomEditSchema,
+    validationSchema: roomEditNGSchema,
     defaultValues,
   });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
-  const values = watch("room");
+  const values = watch();
   const venueValues = watch("venue");
-
-  const changeRoomImageUrl = useCallback(
-    (val: string) => {
-      setValue("room.image_url", val, false);
-    },
-    [setValue]
-  );
 
   const updateVenueRoom = useCallback(async () => {
     if (!user || !roomVenueId) return;
@@ -164,24 +158,46 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           <Form.Label>Autoplay your embeded video</Form.Label>
           <Toggler name="room.autoPlay" forwardedRef={register} />
 
-          <div>
-            <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
-            <ImageInput
-              onChange={changeRoomImageUrl}
-              name="room.image"
-              setValue={setValue}
-              register={register}
-              small
-              nameWithUnderscore
-              imgUrl={room.image_url}
-            />
-            {errors?.room?.image_url && (
-              <span className="input-error">
-                {errors?.room?.image_url.message}
-              </span>
-            )}
-          </div>
-
+          <AdminSection
+            title={
+              <>
+                Upload Highlight image &nbsp;
+                <span className="mod--subdued">(optional)</span>
+              </>
+            }
+            subtitle="A plain 1920 x 1080px image works best."
+          >
+            <div className="SpaceEditFormNG__banner-wrapper">
+              <ImageInput
+                name="bannerImage"
+                imgUrl={values.bannerImageUrl}
+                error={errors.bannerImageUrl}
+                isInputHidden={!values.bannerImageUrl}
+                register={register}
+                setValue={setValue}
+              />
+            </div>
+          </AdminSection>
+          <AdminSection
+            title={
+              <>
+                Upload a logo &nbsp;
+                <span className="mod--subdued">(optional)</span>
+              </>
+            }
+            subtitle="A 400 px square image works best."
+          >
+            <div className="SpaceEditFormNG__logo-wrapper">
+              <ImageInput
+                name="image_url"
+                imgUrl={values.image_url}
+                error={errors.image_url}
+                setValue={setValue}
+                register={register}
+                small
+              />
+            </div>
+          </AdminSection>
           <ButtonNG
             variant="danger"
             loading={isUpdating || isDeleting}
@@ -196,7 +212,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         {isLoadingRoomVenue && (
           <div className="SpaceEditFormNG__loading-indicator">
             <Spinner animation="border" role="status" />
-            <span>Loading venue information...</span>
+            <span>Loading space information...</span>
           </div>
         )}
 
