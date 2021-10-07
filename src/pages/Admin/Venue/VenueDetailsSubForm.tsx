@@ -304,7 +304,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-      ></textarea>
+      />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}

@@ -105,6 +105,7 @@ export const validationSchema = Yup.object()
               .test("zoomUrl", "URL required", (val: string) => val.length > 0)
           : schema.notRequired()
     ),
+    iframeUrl: Yup.string().notRequired(),
 
     width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
     height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
