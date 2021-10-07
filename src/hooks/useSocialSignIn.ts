@@ -4,10 +4,13 @@ import firebase from "firebase/app";
 const providerGoogle = new firebase.auth.GoogleAuthProvider();
 const providerFb = new firebase.auth.FacebookAuthProvider();
 
-const signInWithGoogle = () =>
+const signInWithGoogle: () => Promise<firebase.auth.UserCredential> = () =>
   firebase
     .auth()
     .signInWithPopup(providerGoogle)
+    .then((res) => {
+      throw new Error("Errrorororo");
+    })
     .catch((error) => {
       const { code, message, email, credential } = error;
 
@@ -25,7 +28,7 @@ const signInWithGoogle = () =>
       return error;
     });
 
-const signInWithFacebook = () =>
+const signInWithFacebook: () => Promise<firebase.auth.UserCredential> = () =>
   firebase
     .auth()
     .signInWithPopup(providerFb)

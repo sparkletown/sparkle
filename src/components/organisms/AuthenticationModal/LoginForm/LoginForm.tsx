@@ -62,14 +62,18 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
+  const postSignInCheck = () => {
+    afterUserIsLoggedIn && afterUserIsLoggedIn();
+
+    closeAuthenticationModal();
+  };
+
   const onSubmit = async (data: LoginFormData) => {
     if (!venue) return;
     try {
       await signIn(data);
 
-      afterUserIsLoggedIn && afterUserIsLoggedIn();
-
-      closeAuthenticationModal();
+      postSignInCheck();
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
@@ -94,18 +98,20 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   };
 
   const handleGoogleSignIn = async () => {
-    const res = await signInWithGoogle();
-
-    if (res?.message) {
-      setError("backend", "firebase", res?.message);
+    try {
+      await signInWithGoogle();
+      postSignInCheck();
+    } catch {
+      setError("backend", "firebase", "Error");
     }
   };
 
   const handleFacebookSignIn = async () => {
-    const res = await signInWithFacebook();
-
-    if (res?.message) {
-      setError("backend", "firebase", res?.message);
+    try {
+      await signInWithFacebook();
+      postSignInCheck();
+    } catch {
+      setError("backend", "firebase", "Error");
     }
   };
 

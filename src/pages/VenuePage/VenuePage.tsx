@@ -258,7 +258,7 @@ export const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (user && !isCompleteUserInfo(user)) {
+  if (profile && !isCompleteProfile(profile)) {
     return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 

@@ -82,53 +82,64 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     return <>Loading...</>;
   }
 
+  const checkVenueAccessLevels = async (data: RegisterFormData) => {
+    if (venue.access === VenueAccessMode.Emails) {
+      const isEmailWhitelisted = await checkIsEmailWhitelisted({
+        venueId: venue.id,
+        email: data.email,
+      });
+
+      if (!isEmailWhitelisted.data) {
+        setError(
+          "email",
+          "validation",
+          "We can't find you! Please use the email from your invitation."
+        );
+        return;
+      }
+    }
+
+    if (venue.access === VenueAccessMode.Codes) {
+      const isCodeValid = await checkIsCodeValid({
+        venueId: venue.id,
+        code: data.code,
+      });
+
+      if (!isCodeValid.data) {
+        setError(
+          "code",
+          "validation",
+          "We can't find you! Please use the code from your invitation."
+        );
+        return;
+      }
+    }
+  };
+
+  const postRegisterCheck = (
+    authResult: firebase.auth.UserCredential,
+    data: RegisterFormData
+  ) => {
+    if (authResult.user && venue.requiresDateOfBirth) {
+      updateUserPrivate(authResult.user.uid, {
+        date_of_birth: data.date_of_birth,
+      });
+    }
+
+    afterUserIsLoggedIn && afterUserIsLoggedIn();
+
+    closeAuthenticationModal();
+  };
+
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
 
-      if (venue.access === VenueAccessMode.Emails) {
-        const isEmailWhitelisted = await checkIsEmailWhitelisted({
-          venueId: venue.id,
-          email: data.email,
-        });
-
-        if (!isEmailWhitelisted.data) {
-          setError(
-            "email",
-            "validation",
-            "We can't find you! Please use the email from your invitation."
-          );
-          return;
-        }
-      }
-
-      if (venue.access === VenueAccessMode.Codes) {
-        const isCodeValid = await checkIsCodeValid({
-          venueId: venue.id,
-          code: data.code,
-        });
-
-        if (!isCodeValid.data) {
-          setError(
-            "code",
-            "validation",
-            "We can't find you! Please use the code from your invitation."
-          );
-          return;
-        }
-      }
+      checkVenueAccessLevels(data);
 
       const auth = await signUp(data);
 
-      if (auth.user && venue.requiresDateOfBirth) {
-        updateUserPrivate(auth.user.uid, {
-          date_of_birth: data.date_of_birth,
-        });
-      }
-
-      afterUserIsLoggedIn && afterUserIsLoggedIn();
-
-      closeAuthenticationModal();
+      postRegisterCheck(auth, data);
 
       const accountProfileUrl = `/account/profile${
         venue.id ? `?venueId=${venue.id}` : ""
@@ -158,17 +169,25 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   };
 
   const handleGoogleSignIn = async () => {
-    const res = await signInWithGoogle();
-
-    if (res?.message) {
-      setError("backend", "firebase", res?.message);
+    const { email, password, code, date_of_birth } = getValues();
+    const formValues = { email, password, code, date_of_birth };
+    checkVenueAccessLevels(formValues);
+    try {
+      const auth = await signInWithGoogle();
+      postRegisterCheck(auth, formValues);
+    } catch (error) {
+      setError("backend", "firebase", "Error");
     }
   };
   const handleFacebookSignIn = async () => {
-    const res = await signInWithFacebook();
-
-    if (res?.message) {
-      setError("backend", "firebase", res?.message);
+    const { email, password, code, date_of_birth } = getValues();
+    const formValues = { email, password, code, date_of_birth };
+    checkVenueAccessLevels(formValues);
+    try {
+      const auth = await signInWithFacebook();
+      postRegisterCheck(auth, formValues);
+    } catch {
+      setError("backend", "firebase", "Error");
     }
   };
 
