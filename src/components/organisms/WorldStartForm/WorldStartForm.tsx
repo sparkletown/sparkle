@@ -4,8 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
-import { WORLD_ROOT_URL } from "settings";
-
 import { createWorld, updateWorld, World } from "api/admin";
 
 import { WithId } from "utils/id";
@@ -17,6 +15,7 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
 
 import ImageInput from "components/atoms/ImageInput";
@@ -113,26 +112,12 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             loading: isSubmitting || isSaving,
           }}
         />
-        <AdminSection>
-          <p>The URL of your world is:</p>
-          <p>
-            <span className="WorldStartForm__path-beginning">
-              {window.location.host}
-            </span>
-            <span className="WorldStartForm__path-end WorldStartForm__name">
-              {WORLD_ROOT_URL}/{values.name}
-            </span>
-          </p>
-        </AdminSection>
-        <AdminSection title="Name your world">
+        <AdminWorldUrlSection name={values.name} />
+        <AdminSection title="Name your world" withLabel>
           <AdminInput
-            label={
-              <>
-                What should we call this world?
-                <span className="WorldStartForm__name">*</span>
-              </>
-            }
             name="name"
+            subtext="If you are hosting an event, use the event name."
+            placeholder="World or Event Name"
             register={register}
             errors={errors}
           />
@@ -156,10 +141,11 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
         <AdminSection
           title={
             <>
-              <span>Upload Highlight image</span>{" "}
-              <span className="WorldStartForm__subdued">(optional)</span>
+              Upload Highlight image &nbsp;
+              <span className="mod--subdued">(optional)</span>
             </>
           }
+          subtitle="A plain 1920 x 1080px image works best."
         >
           <div className="WorldStartForm__banner-wrapper">
             <ImageInput
@@ -175,10 +161,11 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
         <AdminSection
           title={
             <>
-              <span>Upload your logo</span>{" "}
-              <span className="WorldStartForm__subdued">(optional)</span>
+              Upload your logo &nbsp;
+              <span className="mod--subdued">(optional)</span>
             </>
           }
+          subtitle="A 400 px square image works best."
         >
           <div className="WorldStartForm__logo-wrapper">
             <ImageInput

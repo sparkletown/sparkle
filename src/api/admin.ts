@@ -137,8 +137,6 @@ export interface WorldFormInput {
   bannerImageUrl?: string;
   logoImageFile?: FileList;
   logoImageUrl?: string;
-  mapBackgroundImageFile?: FileList;
-  mapBackgroundImageUrl?: string;
 }
 
 export interface World {

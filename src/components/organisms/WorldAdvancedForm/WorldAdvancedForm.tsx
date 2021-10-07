@@ -13,7 +13,12 @@ import { useUser } from "hooks/useUser";
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 
+import { AdminInput } from "components/molecules/AdminInput";
+import { AdminSection } from "components/molecules/AdminSection";
+import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
+
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./WorldAdvancedForm.scss";
 
@@ -42,6 +47,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     formState: { dirty, isSubmitting },
     errors,
     handleSubmit,
+    register,
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -60,6 +66,15 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     reset(defaultValues);
   }, [worldId, user, values, reset, createMode, defaultValues]);
 
+  const saveButtonProps: ButtonProps = useMemo(
+    () => ({
+      type: "submit",
+      disabled: !dirty && !isSaving && !isSubmitting,
+      loading: isSubmitting || isSaving,
+    }),
+    [dirty, isSaving, isSubmitting]
+  );
+
   if (error) {
     console.error(WorldAdvancedForm.name, error);
   }
@@ -69,12 +84,36 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       <Form onSubmit={handleSubmit(submit)}>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          saveButtonProps={{
-            type: "submit",
-            disabled: !dirty && !isSaving && !isSubmitting,
-            loading: isSubmitting || isSaving,
-          }}
+          saveButtonProps={saveButtonProps}
         />
+        <AdminWorldUrlSection name={world?.name} />
+        <AdminSection
+          title="Title of your venues attendees"
+          subtitle="(For example: guests, attendees, partygoers)"
+          withLabel
+        >
+          <AdminInput
+            name="attendeesTitle"
+            autoComplete="off"
+            placeholder="Attendees title"
+            errors={errors}
+            register={register}
+          />
+        </AdminSection>
+
+        <AdminSection
+          title="Your venue chat label"
+          subtitle="(For example: Party, Event, Meeting)"
+          withLabel
+        >
+          <AdminInput
+            name="chatTitle"
+            autoComplete="off"
+            placeholder="Event label"
+            errors={errors}
+            register={register}
+          />
+        </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
       </Form>
     </div>

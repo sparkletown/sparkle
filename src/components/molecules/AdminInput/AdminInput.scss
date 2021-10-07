@@ -7,4 +7,10 @@
   &__error {
     color: $red;
   }
+
+  &__subtext {
+    margin: 0;
+    padding: 0;
+    color: var(--content--over-50a);
+  }
 }
