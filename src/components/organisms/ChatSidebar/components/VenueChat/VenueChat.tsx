@@ -50,10 +50,8 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
       deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
     >
       <Chatbox
-        // poll is available for Venue Chat only (displayPoll = true)
-        displayPoll
+        displayPollOption
         messages={messages}
-        threadMessages={[]}
         containerClassName="venue-chat"
         hasMore={limit < allChatMessagesCount}
         loadMore={increaseLimit}

@@ -30,7 +30,7 @@ import { useVenueChatThreadMessages } from "hooks/chats/venue/useVenueChatThread
 
 export interface ChatboxContextState extends ChatActions {
   venueId: string;
-  preloadedThreads: Record<string, PrivateChatMessage[]>;
+  preloadedThreads: Record<string, WithId<PrivateChatMessage>[]>;
   selectedReplyThread?: WithId<MessageToDisplay>;
   setSelectedReplyThread: Dispatch<
     SetStateAction<WithId<MessageToDisplay> | undefined>
@@ -90,9 +90,12 @@ export const useDeselectReplyThread = () => {
 export const useSelectedReplyThread = () =>
   useContext(ChatboxContext).selectedReplyThread;
 
+export const useHasSelectedReplyThread = () =>
+  Boolean(useContext(ChatboxContext).selectedReplyThread);
+
 type Props = ChatActions & {
   venueId?: string;
-  preloadedThreads?: Record<string, PrivateChatMessage[]>;
+  preloadedThreads?: Record<string, WithId<PrivateChatMessage>[]>;
 };
 
 export const ChatboxContextProvider: React.FC<PropsWithChildren<Props>> = ({

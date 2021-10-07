@@ -1,10 +1,9 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
 import {
-  BaseChatMessage,
   ChatOptionType,
   InfiniteScrollProps,
   MessageToDisplay,
@@ -18,7 +17,7 @@ import { WithId } from "utils/id";
 import {
   useChatboxSendThreadMessage,
   useDeselectReplyThread,
-  useSelectedReplyThread,
+  useHasSelectedReplyThread,
 } from "hooks/chats/private/ChatboxContext";
 import { useVenuePoll } from "hooks/useVenuePoll";
 
@@ -35,14 +34,12 @@ import "./Chatbox.scss";
 
 export interface ChatboxProps extends ContainerClassName, InfiniteScrollProps {
   messages: WithId<MessageToDisplay>[];
-  threadMessages: WithId<BaseChatMessage>[];
-  displayPoll?: boolean;
+  displayPollOption?: boolean;
 }
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
-  threadMessages,
-  displayPoll: isDisplayedPoll,
+  displayPollOption,
   containerClassName,
   hasMore,
   loadMore = () => {},
@@ -80,22 +77,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     [unselectOption, closeThread, sendThreadMessage]
   );
 
-  const selectedThread = useSelectedReplyThread();
-  const hasSelectedThread = Boolean(selectedThread);
-
-  const renderedMessages = useMemo(
-    () =>
-      messages.map((message, i) => (
-        <ChatboxMessage
-          key={message.id}
-          message={message}
-          thread={threadMessages}
-          nextMessage={messages?.[i + 1]}
-          voteInPoll={voteInPoll}
-        />
-      )),
-    [messages, threadMessages, voteInPoll]
-  );
+  const hasSelectedThread = useHasSelectedReplyThread();
 
   return (
     <div className={classNames("Chatbox", containerClassName)}>
@@ -115,16 +97,22 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
           }
         >
-          {renderedMessages}
+          {messages.map((message, i) => (
+            <ChatboxMessage
+              key={message.id}
+              message={message}
+              nextMessage={messages?.[i + 1]}
+              voteInPoll={voteInPoll}
+            />
+          ))}
         </InfiniteScroll>
       </div>
       <div className="Chatbox__form-box">
-        {/* @debt sort these out. Preferrably using some kind of enum */}
-        {!!selectedThread && (
+        {/* @debt sort these out. Preferably using some kind of enum */}
+        {hasSelectedThread && (
           <ChatboxThreadControls
-            text="replying to"
-            threadAuthor={selectedThread.fromUser.partyName}
-            closeThread={closeThread}
+            text="asking a question"
+            closeThread={unselectOption}
           />
         )}
         {isQuestionOptions && !hasSelectedThread && (
@@ -133,7 +121,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             closeThread={unselectOption}
           />
         )}
-        {isDisplayedPoll && !isQuestionOptions && !hasSelectedThread && (
+        {displayPollOption && !isQuestionOptions && !hasSelectedThread && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}

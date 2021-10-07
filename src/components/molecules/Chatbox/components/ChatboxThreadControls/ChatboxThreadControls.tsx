@@ -2,21 +2,23 @@ import React from "react";
 
 import { isDefined } from "utils/types";
 
+import { useSelectedReplyThread } from "hooks/chats/private/ChatboxContext";
+
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatboxThreadControls.scss";
 
 export interface ChatboxThreadControlsProps {
   closeThread: () => void;
-  threadAuthor?: string;
   text?: string;
 }
 
 export const ChatboxThreadControls: React.FC<ChatboxThreadControlsProps> = ({
   closeThread,
-  threadAuthor,
   text,
 }) => {
+  const threadAuthor = useSelectedReplyThread()?.fromUser?.partyName;
+
   return (
     <div className="ChatboxThreadControls">
       <span className="ChatboxThreadControls__text">

@@ -71,7 +71,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         <Chatbox
           containerClassName="recipient-chat__chatbox"
           messages={messagesToDisplay}
-          threadMessages={[]}
           {...infiniteProps}
         />
       </ChatboxContextProvider>
