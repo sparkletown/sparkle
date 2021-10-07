@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 
+import { World } from "api/admin";
+
 import { DistributedCounterValue } from "types/Firestore";
 
 import { WithId, withId } from "utils/id";
@@ -24,4 +26,14 @@ export const distributedCounterValueConverter: firebase.firestore.FirestoreDataC
   }: DistributedCounterValue): firebase.firestore.DocumentData => ({
     sum,
   }),
+};
+
+export const worldConverter: firebase.firestore.FirestoreDataConverter<
+  WithId<World>
+> = {
+  toFirestore: (world: WithId<World>): firebase.firestore.DocumentData => world,
+
+  fromFirestore: (
+    snapshot: firebase.firestore.QueryDocumentSnapshot
+  ): WithId<World> => withId(snapshot.data() as World, snapshot.id),
 };

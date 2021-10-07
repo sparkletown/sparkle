@@ -109,7 +109,7 @@
             margin-left: 10px;
             width: 100px;
             &[type="submit"]:disabled {
-              color: rgba($white, 0.2);
+              color: opaque-white(0.2);
               background-color: rgba(green, 0.5);
             }
           }
@@ -152,7 +152,7 @@
   }
 
   .seated-area {
-    border: 0px solid $white;
+    border: 0px solid $content--over;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;

@@ -88,8 +88,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         showGrid: roomVenue?.showGrid ?? false,
         showReactions: roomVenue?.showReactions ?? false,
         showShoutouts: roomVenue?.showShoutouts ?? false,
-        auditoriumColumns: roomVenue?.auditoriumColumns ?? 0,
-        auditoriumRows: roomVenue?.auditoriumRows ?? 0,
+        auditoriumColumns:
+          roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
+        auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
       },
     }),
