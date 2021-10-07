@@ -84,7 +84,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   });
 
   const values = watch();
-  const slug = createUrlSafeName(values.name);
+  const slug = values.name ? createUrlSafeName(values.name) : "";
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user) return;
