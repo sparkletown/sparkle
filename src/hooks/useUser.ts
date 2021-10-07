@@ -56,11 +56,11 @@ export const useUser = (): UseUserResult => {
 
     const userData = {
       ...user,
-      partyName: user.displayName ?? "",
-      pictureUrl: user.photoURL ?? "",
+      partyName: profile?.partyName ?? user.displayName ?? "",
+      pictureUrl: profile?.pictureUrl ?? user.photoURL ?? "",
     };
     return withId(userData, userId);
-  }, [user, userId]);
+  }, [user, userId, profile]);
 
   return useMemo(
     () => ({
