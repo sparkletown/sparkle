@@ -344,7 +344,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
           <div className={navBarScheduleClassName}>
             <NavBarSchedule
               isVisible={isEventScheduleVisible}
-              venue={currentVenue}
+              venueId={venueId}
             />
           </div>
         </div>

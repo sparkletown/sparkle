@@ -11,14 +11,13 @@ import {
 
 import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
-import { AnyVenue, ScheduledVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
-import { WithId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
@@ -47,13 +46,17 @@ export interface ScheduleNGDay {
 export const emptyPersonalizedSchedule = {};
 export interface NavBarScheduleProps {
   isVisible?: boolean;
-  venue: WithId<AnyVenue>;
+  venueId: string;
 }
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
-  venue,
+  venueId,
 }) => {
+  const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
@@ -76,7 +79,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
-  const isNotSovereignVenue = venue.id !== sovereignVenue?.id;
+  const isNotSovereignVenue = venue?.id !== sovereignVenue?.id;
 
   const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
 
@@ -157,15 +160,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       eventTimeAndOrderComparator
     );
 
-    const currentVenueId = venue?.id?.toLowerCase();
-
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
-      ({ isSaved, venueId }) =>
-        isSaved && venueId?.toLowerCase() === currentVenueId
+      ({ isSaved, venueId: eventVenueId }) =>
+        isSaved && eventVenueId?.toLowerCase() === venueId
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
-      ({ venueId }) => venueId?.toLowerCase() === currentVenueId
+      ({ venueId: eventVenueId }) => eventVenueId?.toLowerCase() === venueId
     );
 
     const personalisedSchedule = filterRelatedEvents
@@ -184,12 +185,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
     selectedDayIndex,
     liveAndFutureEvents,
-    venue?.id,
     filterRelatedEvents,
     showPersonalisedSchedule,
+    venueId,
   ]);
-
-  const { findVenueInRelatedVenues } = useRelatedVenues();
 
   const scheduleNGWithAttendees = {
     ...scheduleNG,
@@ -235,17 +234,17 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
     const locations = [{ key: sovereignVenue.id, name: sovereignVenue.name }];
 
-    if (isNotSovereignVenue)
+    if (venue && isNotSovereignVenue)
       locations.push({ key: venue.id, name: venue.name });
 
     return locations;
-  }, [isNotSovereignVenue, sovereignVenue, venue.id, venue.name]);
+  }, [isNotSovereignVenue, sovereignVenue, venue]);
 
   const onBreacrumbsSelect = useCallback(
     (key: string) => {
-      setFilterRelatedEvents(key === venue.id && isNotSovereignVenue);
+      setFilterRelatedEvents(key === venue?.id && isNotSovereignVenue);
     },
-    [venue.id, isNotSovereignVenue]
+    [venue, isNotSovereignVenue]
   );
 
   return (
