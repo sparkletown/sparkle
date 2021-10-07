@@ -1,5 +1,17 @@
 @import "scss/constants.scss";
 .TimingEventModal {
+  &__container {
+    display: flex;
+    justify-content: space-between;
+
+    label,
+    input {
+      width: 49%;
+      display: inline-block;
+      margin-bottom: 0;
+    }
+  }
+
   .modal-content {
     background-color: $light-grey;
   }
@@ -12,20 +24,8 @@
       border: 0.1px solid opaque-white(0.2);
       text-align: left;
 
-      &--indent {
+      &--indented {
         margin-right: $spacing--sm;
-      }
-    }
-
-    &__flex {
-      display: flex;
-      justify-content: space-between;
-
-      label,
-      input {
-        width: 49%;
-        display: inline-block;
-        margin-bottom: 0;
       }
     }
   }
