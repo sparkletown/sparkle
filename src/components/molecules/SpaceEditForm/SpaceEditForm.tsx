@@ -5,7 +5,7 @@ import { useAsync, useAsyncFn } from "react-use";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  DEFAULT_EMBEDDABLE_VIDEO,
+  DEFAULT_EMBED_URL,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -147,7 +147,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       {
         id: roomVenueId,
         ...venueValues,
-        iframeUrl: venueValues.iframeUrl || DEFAULT_EMBEDDABLE_VIDEO,
+        iframeUrl: venueValues.iframeUrl || DEFAULT_EMBED_URL,
       },
       user
     );
