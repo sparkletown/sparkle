@@ -62,10 +62,10 @@ $schedule-weekdays-height: 40px;
   &__weekday-button {
     border: none;
     background: inherit;
-    color: $white;
+    color: $accent--over;
 
     &:focus {
-      color: $white;
+      color: $content--over;
       opacity: 1;
       outline: none;
     }

@@ -17,6 +17,8 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 import { radioStationsSelector } from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useAdminContextCheck } from "hooks/useAdminContextCheck";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -67,10 +69,23 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
   const radioStations = useSelector(radioStationsSelector);
+  const isAdminContext = useAdminContextCheck();
 
-  const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
+  const {
+    currentVenue: relatedVenue,
+    parentVenue,
+    sovereignVenueId,
+  } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const { currentVenue: ownedVenue } = useOwnedVenues({
+    currentVenueId: venueId,
+  });
+
+  // when Admin is displayed, owned venues are used
+  const currentVenue = relatedVenue ?? ownedVenue;
+  const parentVenueId = parentVenue?.id ?? ownedVenue?.parentId;
 
   const {
     location: { pathname },
@@ -151,8 +166,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(false);
   }, []);
 
-  const parentVenueId = parentVenue?.id;
-
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
 
@@ -178,10 +191,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     openUrlUsingRouter(SPARKLE_PHOTOBOOTH_URL);
   };
 
-  if (!venueId || !currentVenue) return null;
-
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue.name;
+  const navbarTitle = parentVenue?.name ?? currentVenue?.name;
 
   const radioStation = hasRadioStations(radioStations) && radioStations[0];
 
@@ -212,7 +223,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 />
               )}
 
-              {shouldShowSchedule ? (
+              {shouldShowSchedule && venueId ? (
                 <button
                   aria-label="Schedule"
                   className={`nav-party-logo ${
@@ -220,13 +231,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                  {venueId && !isAdminContext && navbarTitle} &nbsp;
+                  <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                <div>{navbarTitle}</div>
+                venueId && !isAdminContext && <div>{navbarTitle}</div>
               )}
 
-              <VenuePartygoers />
+              {venueId && !isAdminContext && <VenuePartygoers />}
             </div>
 
             {withPhotobooth && (
@@ -242,7 +254,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar venueId={venueId} />
+                {venueId && !isAdminContext && (
+                  <NavSearchBar venueId={venueId} />
+                )}
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -319,7 +333,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
         </div>
       </header>
 
-      {shouldShowSchedule && (
+      {shouldShowSchedule && venueId && (
         <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
           className={`schedule-dropdown-backdrop ${

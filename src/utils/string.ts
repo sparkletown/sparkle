@@ -11,3 +11,8 @@ export const wrapIntoSlashes = (str: string): string => {
 export const isBlank = (str: string): boolean => {
   return !trim(str);
 };
+
+export const generateId: (prefix: string, tailLength?: number) => string = (
+  prefix,
+  tailLength = 6
+) => `${prefix}-${Date.now()}-${Math.trunc(Math.random() * 10 ** tailLength)}`;
