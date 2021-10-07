@@ -1,10 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
-
-import { BaseChatMessage, MessageToDisplay } from "types/chat";
 import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
@@ -55,14 +52,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
     allMessagesToDisplay
   );
 
-  const [thread, setThread] = useState<WithId<MessageToDisplay>>();
-
-  const threadMessages: WithId<BaseChatMessage>[] = useMemo(() => {
-    const threadId = thread?.id;
-    if (threadId) return replies[threadId] ?? ALWAYS_EMPTY_ARRAY;
-    return ALWAYS_EMPTY_ARRAY;
-  }, [replies, thread?.id]);
-
   return (
     <div className="recipient-chat">
       <div className="recipient-chat__breadcrumbs" onClick={selectPrivateChat}>
@@ -82,9 +71,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         <Chatbox
           containerClassName="recipient-chat__chatbox"
           messages={messagesToDisplay}
-          threadMessages={threadMessages}
-          selectedThread={thread}
-          setSelectedThread={setThread}
+          threadMessages={[]}
           {...infiniteProps}
         />
       </ChatboxContextProvider>

@@ -7,14 +7,12 @@ import { checkIfPollMessage } from "utils/chat";
 import { WithId } from "utils/id";
 import { formatDateRelativeToNow } from "utils/time";
 
+import { useSelectReplyThread } from "hooks/chats/private/ChatboxContext";
 import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { ChatPoll } from "components/molecules/ChatPoll";
 
-import {
-  ChatMessage as ChatMessageComponent,
-  ChatProps,
-} from "components/atoms/ChatMessage/ChatMessage";
+import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage/ChatMessage";
 
 import "./ChatboxMessage.scss";
 
@@ -24,7 +22,6 @@ export interface ChatboxMessageProps {
   thread: WithId<BaseChatMessage>[];
 
   voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
-  selectThisThread: ChatProps["selectThisThread"];
 }
 
 export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
@@ -32,7 +29,6 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   nextMessage,
   thread,
   voteInPoll,
-  selectThisThread,
 }) => {
   const messageStartOfDay = startOfDay(message.timestamp.toDate());
 
@@ -40,6 +36,8 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   const nextMessageStartOfDay = nextMessageDate
     ? startOfDay(nextMessageDate)
     : undefined;
+
+  const selectThisThread = useSelectReplyThread(message);
 
   const renderedMessage = checkIfPollMessage(message) ? (
     <ChatPoll key={message.id} pollMessage={message} voteInPoll={voteInPoll} />

@@ -9,7 +9,10 @@ import { EmojiData } from "emoji-mart";
 
 import { SendChatMessage, SendThreadMessageProps } from "types/chat";
 
-import { useChatboxSendChatMessage } from "hooks/chats/private/ChatboxContext";
+import {
+  useChatboxSendChatMessage,
+  useSelectedReplyThread,
+} from "hooks/chats/private/ChatboxContext";
 import { useShowHide } from "hooks/useShowHide";
 
 import { EmojiPicker } from "components/molecules/EmojiPicker";
@@ -19,18 +22,17 @@ import { InputField } from "components/atoms/InputField";
 import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
-  selectedThreadId?: string;
   sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps>;
   unselectOption: () => void;
   isQuestion?: boolean;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
-  selectedThreadId,
   sendThreadMessageWrapper,
   unselectOption,
   isQuestion = false,
 }) => {
+  const selectedThreadId = useSelectedReplyThread()?.id;
   const hasChosenThread = Boolean(selectedThreadId);
 
   const {

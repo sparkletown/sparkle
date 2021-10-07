@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { isEqual } from "lodash";
 
-import { MessageToDisplay } from "types/chat";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -16,7 +15,6 @@ import {
 } from "hooks/chats/venue/useVenueChatActions";
 import { useVenueChatMessages } from "hooks/chats/venue/useVenueChatMessages";
 import { useVenueChatMessagesCount } from "hooks/chats/venue/useVenueChatMessagesCount";
-import { useVenueChatThreadMessages } from "hooks/chats/venue/useVenueChatThreadMessages";
 import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
@@ -38,10 +36,8 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const canDeleteMessages = useCanDeleteVenueChatMessages(venue);
 
   const [limit, increaseLimit] = useRenderMessagesCount();
-  const [thread, setThread] = useState<WithId<MessageToDisplay>>();
 
   const messages = useVenueChatMessages(venue.id, limit);
-  const threadMessages = useVenueChatThreadMessages(venue.id, thread?.id);
 
   const { data: allChatMessagesCount } = useVenueChatMessagesCount(venueId);
 
@@ -57,9 +53,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
         // poll is available for Venue Chat only (displayPoll = true)
         displayPoll
         messages={messages}
-        threadMessages={threadMessages}
-        selectedThread={thread}
-        setSelectedThread={setThread}
+        threadMessages={[]}
         containerClassName="venue-chat"
         hasMore={limit < allChatMessagesCount}
         loadMore={increaseLimit}
