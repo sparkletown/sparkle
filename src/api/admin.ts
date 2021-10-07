@@ -200,7 +200,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -232,7 +232,7 @@ const createFirestoreVenueInput = async (
     const randomPrefix = Math.random().toString();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
+      `users/${user.uid}/venues/${slug}/${randomPrefix}-${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -257,6 +257,8 @@ const createFirestoreVenueInput = async (
     owners,
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -267,8 +269,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -297,7 +298,7 @@ const createFirestoreVenueInput_v2 = async (
     const file = fileArr[0];
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/background.${file.type}`
+      `users/${user.uid}/venues/${slug}/background.${file.type}`
     );
 
     await uploadFileRef.put(file);
@@ -317,6 +318,8 @@ const createFirestoreVenueInput_v2 = async (
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
     parentId: input.parentId ?? "",
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
