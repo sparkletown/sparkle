@@ -62,7 +62,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ jukeboxMessage }) =>
-      sendMessage({ message: jukeboxMessage }).then(() => reset()),
+      sendMessage({ text: jukeboxMessage }).then(() => reset()),
     [reset, sendMessage]
   );
 

@@ -62,7 +62,7 @@ export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T &
   MessageWithReplies;
 
 export interface SendMessagePropsBase {
-  message: string;
+  text: string;
 }
 
 export interface SendChatMessageProps extends SendMessagePropsBase {

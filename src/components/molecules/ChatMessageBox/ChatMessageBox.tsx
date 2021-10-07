@@ -53,10 +53,11 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ message }) => {
+      console.log("sendMessage", message);
       reset();
       unselectOption();
 
-      await sendMessage({ message, isQuestion });
+      await sendMessage({ text: message, isQuestion });
     },
     [isQuestion, reset, sendMessage, unselectOption]
   );
@@ -67,7 +68,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       reset();
 
       await sendThreadMessage({
-        message: message,
+        text: message,
         threadId: selectedThreadId,
       });
     },

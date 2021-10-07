@@ -9,6 +9,8 @@ import {
   ChatOptionType,
   InfiniteScrollProps,
   MessageToDisplay,
+  SendMessage,
+  SendThreadMessageProps,
 } from "types/chat";
 import { ContainerClassName } from "types/utility";
 
@@ -76,9 +78,9 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
-  const sendThreadMessageWrapper = useCallback(
-    async ({ replyText, threadId }) => {
-      await sendThreadMessage({ message: replyText, threadId });
+  const sendThreadMessageWrapper: SendMessage<SendThreadMessageProps> = useCallback(
+    async ({ text, threadId }) => {
+      await sendThreadMessage({ text, threadId });
       unselectOption();
       closeThread();
     },

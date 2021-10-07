@@ -76,20 +76,24 @@ export const useSendMessage = <
 
   return useCallback(
     async (props) => {
-      if (!userWithId) return;
+      try {
+        if (!userWithId) return;
 
-      const processedMessage = buildBaseMessage<T>(props.message, userWithId, {
-        ...getSpread(props),
-      });
+        const processedMessage = buildBaseMessage<T>(props.text, userWithId, {
+          ...getSpread(props),
+        });
 
-      const batch = firestore.batch();
+        const batch = firestore.batch();
 
-      const collections = getCollections(props);
-      collections.forEach((ref) => batch.set(ref.doc(), processedMessage));
+        const collections = getCollections(props);
+        collections.forEach((ref) => batch.set(ref.doc(), processedMessage));
 
-      processResultingBatch(props, batch);
+        processResultingBatch(props, batch);
 
-      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
+        await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
+      } catch (e) {
+        console.error(e);
+      }
     },
     [userWithId, getSpread, firestore, getCollections, processResultingBatch]
   );

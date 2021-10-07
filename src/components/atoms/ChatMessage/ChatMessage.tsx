@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useToggle } from "react-use";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -14,7 +15,6 @@ import {
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -46,7 +46,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     [deleteMessage, messageId]
   );
 
-  const { isShown: isRepliesShown, toggle: toggleReplies } = useShowHide();
+  const [isRepliesShown, toggleReplies] = useToggle(false);
 
   const containerStyles = classNames("ChatMessage", {
     "ChatMessage--me": isMine,

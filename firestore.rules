@@ -40,23 +40,25 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/venues/$(venue)).data;
       }
 
-      match /chatMessagesCounter/{shardId} {
-        allow read,write: if request.auth.uid != null;
-      }
       match /events/{event} {
         allow read: if true;
         allow write: if request.auth.uid in venueData().owners;
       }
-      match /chats/{restOfPath=**} {
+
+      match /chatMessagesCounter/{shardId} {
+        allow read,write: if request.auth.uid != null;
+      }
+      match /chats/{messageId} {
         allow read,create: if request.auth.uid != null;
-        allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
-          isUpdateRestrictedToField(request, 'deleted');
-        match /threads/{messageId} {
-          allow read,write: if request.auth.uid != null;
-          allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
-                           isUpdateRestrictedToField(request, 'deleted');
+        allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
+        allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'repliesCount');
+        match /thread/{messageId} {
+          allow read,create: if request.auth.uid != null;
+          allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
+          allow update: if false;
         }
       }
+
       match /jukeboxMessages/{restOfPath=**} {
         allow read,create: if request.auth.uid != null;
         allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
