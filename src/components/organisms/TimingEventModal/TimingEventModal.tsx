@@ -55,11 +55,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     validationSchema: eventEditSchema,
   });
 
-  //register the room dropdown
-  useEffect(() => {
-    register("room");
-  }, [register]);
-
   useEffect(() => {
     if (event) {
       reset({
@@ -126,6 +121,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   venueSpaces={venue.rooms ?? ALWAYS_EMPTY_ARRAY}
                   venueId={venueId}
                   setValue={setValue}
+                  register={register}
                   fieldName="room"
                   defaultSpace={event?.room}
                 />
@@ -254,7 +250,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   disabled={formState.isSubmitting}
                   variant="primary"
                   type="submit"
-                  onClick={onHide}
                 >
                   {event ? "Update" : "Create"}
                 </ButtonNG>

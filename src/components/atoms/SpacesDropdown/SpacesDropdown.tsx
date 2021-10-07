@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -16,6 +17,7 @@ export interface SpacesDropdownProps {
   venueSpaces: Room[];
   venueId?: string;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  register: ReturnType<typeof useForm>["register"];
   fieldName: string;
 }
 
@@ -24,6 +26,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   venueSpaces,
   venueId,
   setValue,
+  register,
   fieldName,
 }) => {
   const [spaceValue, setSpaceValue] = useState<string | undefined>(
@@ -92,6 +95,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     <div className="SpacesDropdown">
       {renderSpaceValue}
       <Dropdown title="Select a space" options={spaceOptions} />
+      <input type="hidden" ref={register} name={fieldName} />
     </div>
   );
 };
