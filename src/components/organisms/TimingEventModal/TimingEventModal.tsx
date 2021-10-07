@@ -13,6 +13,8 @@ import { WithId } from "utils/id";
 
 import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
 
+import { AdminSection } from "components/organisms//WorldForm/components/AdminSection";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
@@ -212,31 +214,27 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 </div>
               </div>
 
-              <div className="input-group">
-                <label>Duration</label>
-                <div className="input-group__wrap">
-                  <div className="input-group__labelled">
+              <AdminSection title="Duration">
+                <div className="input-group__flex">
+                  <label htmlFor="duration_hours">
                     <input
-                      id="duration_hours"
                       name="duration_hours"
-                      className="input-group__modal-input"
+                      className="input-group__modal-input input-group__modal-input--indent"
                       placeholder="hours"
                       ref={register}
                     />
-                    <label htmlFor="duration_hours">hour(s)</label>
-                  </div>
-                  <div className="input-group__labelled">
+                    hour(s)
+                  </label>
+                  <label htmlFor="duration_minutes">
                     <input
-                      id="duration_minutes"
                       name="duration_minutes"
-                      className="input-group__modal-input"
+                      className="input-group__modal-input input-group__modal-input--indent"
                       placeholder="minutes"
                       ref={register}
                     />
-                    <label htmlFor="duration_minutes">minutes</label>
-                  </div>
+                    minutes
+                  </label>
                 </div>
-
                 <div className="input-group__flex">
                   {errors.duration_hours && (
                     <span className="input-error">
@@ -249,9 +247,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     </span>
                   )}
                 </div>
-              </div>
+              </AdminSection>
 
-              <div className={event && "input-group__flex"}>
+              <div className="input-group__flex">
                 <ButtonNG
                   disabled={formState.isSubmitting}
                   variant="primary"
@@ -271,9 +269,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   </ButtonNG>
                 )}
               </div>
-              <ButtonNG variant="secondary" onClick={onHide}>
-                Cancel
-              </ButtonNG>
+
+              <div className="input-group__flex">
+                <ButtonNG variant="secondary" onClick={onHide}>
+                  Cancel
+                </ButtonNG>
+              </div>
             </form>
           </div>
         </Modal.Body>

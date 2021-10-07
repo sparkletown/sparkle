@@ -11,37 +11,26 @@
       width: 100%;
       border: 0.1px solid opaque-white(0.2);
       text-align: left;
+
+      &--indent {
+        margin-right: $spacing--sm;
+      }
     }
 
     &__flex {
       display: flex;
       justify-content: space-between;
 
-      input,
-      btn {
+      label,
+      input {
         width: 49%;
         display: inline-block;
+        margin-bottom: 0;
       }
     }
+  }
 
-    &__wrap {
-      display: flex;
-      align-items: flex-start;
-    }
-
-    &__labelled {
-      display: flex;
-      align-items: center;
-      margin-right: $spacing--sm;
-
-      input {
-        width: 100px;
-        display: inline-block;
-      }
-
-      label {
-        margin: 0 0 0 $spacing--sm;
-      }
-    }
+  .ButtonNG {
+    max-width: none;
   }
 }
