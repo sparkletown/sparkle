@@ -55,7 +55,7 @@ export type ChatMessage =
   | JukeboxMessage;
 
 export type MessageWithReplies = {
-  repliesCount: number;
+  repliesCount?: number;
 };
 
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T &

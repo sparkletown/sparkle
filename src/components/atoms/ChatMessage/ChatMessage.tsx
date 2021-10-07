@@ -72,7 +72,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     [thread, deleteThreadReply, messageId]
   );
 
-  const repliesCount = message.repliesCount;
+  const repliesCount = message.repliesCount ?? 0;
 
   const hasReplies = repliesCount !== 0;
 

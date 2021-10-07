@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { useFirestore } from "reactfire";
 import firebase from "firebase/app";
 import { noop } from "lodash";
 
@@ -71,6 +72,7 @@ export const useSendMessage = <
   processResultingBatch = noop,
 }: UseSendMessageProps<T, K>): SendMessage<K> => {
   const { userWithId } = useUser();
+  const firestore = useFirestore();
 
   return useCallback(
     async (props) => {
@@ -80,7 +82,7 @@ export const useSendMessage = <
         ...getSpread(props),
       });
 
-      const batch = firebase.firestore().batch();
+      const batch = firestore.batch();
 
       const collections = getCollections(props);
       collections.forEach((ref) => batch.set(ref.doc(), processedMessage));
@@ -89,6 +91,6 @@ export const useSendMessage = <
 
       await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
-    [getCollections, processResultingBatch, getSpread, userWithId]
+    [userWithId, getSpread, firestore, getCollections, processResultingBatch]
   );
 };

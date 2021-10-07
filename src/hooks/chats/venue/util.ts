@@ -26,8 +26,8 @@ import { UseSendMessageProps } from "hooks/chats/common/useSendMessage";
 
 export const getChatsRef = (venueId: string) =>
   getVenueRef(venueId).collection("chats");
-export const getThreadsRef = (venueId: string, threadId: string) =>
-  getChatsRef(venueId).doc(threadId).collection("threads");
+export const getThreadRef = (venueId: string, threadId: string) =>
+  getChatsRef(venueId).doc(threadId).collection("thread");
 
 type ChatVariant = "sendChat" | "deleteChat";
 type ThreadVariant = "sendThread" | "deleteThread";
@@ -53,7 +53,7 @@ export const useGetVenueThreadCollectionRef = (venueId: string | undefined) =>
   useCallback(
     ({ threadId }: SendThreadMessageProps | DeleteThreadMessageProps) =>
       venueId && threadId
-        ? [getThreadsRef(venueId, threadId)]
+        ? [getThreadRef(venueId, threadId)]
         : ALWAYS_EMPTY_ARRAY,
     [venueId]
   );
@@ -81,12 +81,12 @@ export const useProcessBatchForChat = <T extends ChatVariant>(
   variant: T
 ): ChatActionsProps<T>["processResultingBatch"] =>
   useCallback(
-    (props, batch) => {
+    (props, batch: firebase.firestore.WriteBatch) => {
       if (!venueId) return;
       const randomShard = getVenueRef(venueId)
         .collection("chatMessagesCounter")
         .doc(random(VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT - 1).toString());
-      batch.set(
+      batch.update(
         randomShard,
         propName<DistributedCounterShard>("count"),
         firebase.firestore.FieldValue.increment(variant === "sendChat" ? 1 : -1)
