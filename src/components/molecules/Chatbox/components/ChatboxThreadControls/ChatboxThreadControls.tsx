@@ -2,7 +2,7 @@ import React from "react";
 
 import { isDefined } from "utils/types";
 
-import { useSelectedReplyThread } from "hooks/chats/private/ChatboxContext";
+import { useSelectedReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { TextButton } from "components/atoms/TextButton";
 

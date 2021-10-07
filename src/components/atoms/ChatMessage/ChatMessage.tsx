@@ -8,13 +8,14 @@ import { MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
-import {
-  useChatboxDeleteChatMessage,
-  useSelectReplyThread,
-} from "hooks/chats/private/ChatboxContext";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import {
+  useChatboxDeleteChatMessage,
+  useSelectReplyThread,
+} from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { ChatMessageReplies } from "components/atoms/ChatMessage/ChatMessageReplies";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";

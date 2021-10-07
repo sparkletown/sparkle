@@ -46,6 +46,39 @@ const ChatboxContext = createContext<ChatboxContextState>({
   setSelectedReplyThread: noop,
 });
 
+type ChatboxContextProviderProps = ChatActions & {
+  venueId?: string;
+  preloadedThreads?: Record<string, WithId<PrivateChatMessage>[]>;
+};
+
+export const ChatboxContextProvider: React.FC<
+  PropsWithChildren<ChatboxContextProviderProps>
+> = ({
+  children,
+  venueId = NON_EXISTENT_FIRESTORE_ID,
+  preloadedThreads = {},
+  ...rest
+}) => {
+  const [selectedReplyThread, setSelectedReplyThread] = useState<
+    WithId<MessageToDisplay>
+  >();
+
+  const state: ChatboxContextState = useMemo(
+    () => ({
+      venueId,
+      preloadedThreads,
+      selectedReplyThread,
+      setSelectedReplyThread,
+      ...rest,
+    }),
+    [preloadedThreads, rest, selectedReplyThread, venueId]
+  );
+
+  return (
+    <ChatboxContext.Provider value={state}>{children}</ChatboxContext.Provider>
+  );
+};
+
 export const useChatboxThread = (threadId: string) => {
   const context = useContext(ChatboxContext);
   const preloadedThread =
@@ -92,34 +125,3 @@ export const useSelectedReplyThread = () =>
 
 export const useHasSelectedReplyThread = () =>
   Boolean(useContext(ChatboxContext).selectedReplyThread);
-
-type Props = ChatActions & {
-  venueId?: string;
-  preloadedThreads?: Record<string, WithId<PrivateChatMessage>[]>;
-};
-
-export const ChatboxContextProvider: React.FC<PropsWithChildren<Props>> = ({
-  children,
-  venueId = NON_EXISTENT_FIRESTORE_ID,
-  preloadedThreads = {},
-  ...rest
-}) => {
-  const [selectedReplyThread, setSelectedReplyThread] = useState<
-    WithId<MessageToDisplay>
-  >();
-
-  const state: ChatboxContextState = useMemo(
-    () => ({
-      venueId,
-      preloadedThreads,
-      selectedReplyThread,
-      setSelectedReplyThread,
-      ...rest,
-    }),
-    [preloadedThreads, rest, selectedReplyThread, venueId]
-  );
-
-  return (
-    <ChatboxContext.Provider value={state}>{children}</ChatboxContext.Provider>
-  );
-};

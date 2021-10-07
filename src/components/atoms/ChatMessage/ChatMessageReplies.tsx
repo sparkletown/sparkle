@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import {
   useChatboxDeleteThreadMessage,
   useChatboxThread,
-} from "hooks/chats/private/ChatboxContext";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+} from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 

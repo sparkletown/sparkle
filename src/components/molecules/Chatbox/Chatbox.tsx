@@ -14,14 +14,14 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
+import { useVenuePoll } from "hooks/useVenuePoll";
+
+import { ChatboxMessage } from "components/molecules/Chatbox/components/ChatboxMessage";
 import {
   useChatboxSendThreadMessage,
   useDeselectReplyThread,
   useHasSelectedReplyThread,
-} from "hooks/chats/private/ChatboxContext";
-import { useVenuePoll } from "hooks/useVenuePoll";
-
-import { ChatboxMessage } from "components/molecules/Chatbox/components/ChatboxMessage";
+} from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
 import { Loading } from "components/molecules/Loading";
 import { PollBox } from "components/molecules/PollBox";

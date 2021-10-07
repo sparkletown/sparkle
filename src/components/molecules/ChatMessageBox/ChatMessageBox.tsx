@@ -9,12 +9,12 @@ import { EmojiData } from "emoji-mart";
 
 import { SendChatMessage, SendThreadMessageProps } from "types/chat";
 
+import { useShowHide } from "hooks/useShowHide";
+
 import {
   useChatboxSendChatMessage,
   useSelectedReplyThread,
-} from "hooks/chats/private/ChatboxContext";
-import { useShowHide } from "hooks/useShowHide";
-
+} from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { EmojiPicker } from "components/molecules/EmojiPicker";
 
 import { InputField } from "components/atoms/InputField";

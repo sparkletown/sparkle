@@ -8,13 +8,13 @@ import { PollMessage, PollQuestion } from "types/chat";
 
 import { WithId } from "utils/id";
 
-import { useChatboxDeleteChatMessage } from "hooks/chats/private/ChatboxContext";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUser } from "hooks/useUser";
 import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { useChatboxDeleteChatMessage } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { Loading } from "components/molecules/Loading";
 
 import Button from "components/atoms/Button";

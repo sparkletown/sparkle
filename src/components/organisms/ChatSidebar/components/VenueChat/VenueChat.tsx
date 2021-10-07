@@ -5,7 +5,6 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { ChatboxContextProvider } from "hooks/chats/private/ChatboxContext";
 import { useRenderMessagesCount } from "hooks/chats/util/useRenderInfiniteScroll";
 import {
   useDeleteVenueChatMessage,
@@ -18,6 +17,7 @@ import { useVenueChatMessagesCount } from "hooks/chats/venue/useVenueChatMessage
 import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
+import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import "./VenueChat.scss";
 

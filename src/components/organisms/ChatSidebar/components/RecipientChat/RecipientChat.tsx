@@ -6,13 +6,13 @@ import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { ChatboxContextProvider } from "hooks/chats/private/ChatboxContext";
 import { useRecipientChatMessages } from "hooks/chats/private/useRecipientChat";
 import { useRecipientChatActions } from "hooks/chats/private/useRecipientChatActions";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useRenderInfiniteScroll } from "hooks/chats/util/useRenderInfiniteScroll";
 
 import { Chatbox } from "components/molecules/Chatbox";
+import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
