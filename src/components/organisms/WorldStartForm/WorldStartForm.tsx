@@ -92,9 +92,11 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
 
     if (!worldId) {
       await createWorld(values, user);
+      //TODO: Change this to the most appropriate url when product decides the perfect UX
       history.push(ADMIN_V3_WORLDS_URL);
     } else {
       await updateWorld({ ...values, id: worldId }, user);
+      //TODO: Change this to the most appropriate url when product decides the perfect UX
       history.push(ADMIN_V3_WORLDS_URL);
     }
 

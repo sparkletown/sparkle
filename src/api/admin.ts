@@ -359,7 +359,11 @@ export const createWorld = async (
   const worldResponse = await firebase
     .functions()
     .httpsCallable("world-createWorld")(firestoreVenueInput);
-  return worldResponse?.data;
+
+  return {
+    ...firestoreVenueInput,
+    id: worldResponse?.data,
+  };
 };
 
 export const updateWorld = async (
