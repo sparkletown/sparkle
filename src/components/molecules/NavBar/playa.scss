@@ -2,12 +2,6 @@
 
 $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
-$border-radius: 28px;
-$large-shadow: box-shadow--large(0.34);
-$modal-max-width: 540px;
-
-$sand: #937c63;
-
 // @debt Refactor the relevant parts of this file into ./NavBar.scss
 .navbar.navbar_playa {
   position: fixed;

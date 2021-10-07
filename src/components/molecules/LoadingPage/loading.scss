@@ -1,9 +1,5 @@
 @import "scss/constants";
 
-$border-radius: 28px;
-$large-shadow: box-shadow--large(0.34);
-$modal-max-width: 540px;
-
 body {
   &.no-scroll {
     overflow: hidden;
