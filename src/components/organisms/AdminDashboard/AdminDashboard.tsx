@@ -13,7 +13,9 @@ import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 
-import { AdminVenueCard } from "components/molecules/AdminVenueCard";
+import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
+
+import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -38,7 +40,7 @@ export const AdminDashboard: React.FC = () => {
     () =>
       sortedVenues
         ?.filter(isPartyMapVenue)
-        .map((venue) => <AdminVenueCard key={venue.id} venue={venue} />),
+        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
     [sortedVenues]
   );
 
@@ -70,7 +72,7 @@ export const AdminDashboard: React.FC = () => {
       <div className="AdminDashboard">
         <div className="AdminDashboard__header">
           <div className="AdminDashboard__header-content">
-            <div className="AdminDashboard__header-title">Admin Dashboard</div>
+            <AdminShowcaseTitle>Admin Dashboard</AdminShowcaseTitle>
             {sortingOptions}
           </div>
           <ButtonNG variant="primary" isLink linkTo={ADMIN_V3_CREATE_URL}>

@@ -5,8 +5,8 @@ import { omit } from "lodash";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
@@ -109,7 +109,7 @@ export type VenueInput = AdvancedVenueInput &
   };
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
@@ -199,7 +199,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -231,7 +231,7 @@ const createFirestoreVenueInput = async (
     const randomPrefix = Math.random().toString();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
+      `users/${user.uid}/venues/${slug}/${randomPrefix}-${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -256,6 +256,8 @@ const createFirestoreVenueInput = async (
     owners,
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -266,8 +268,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -298,7 +299,7 @@ const createFirestoreVenueInput_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/background.${fileExtension}`
+      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -318,6 +319,8 @@ const createFirestoreVenueInput_v2 = async (
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
     parentId: input.parentId ?? "",
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
