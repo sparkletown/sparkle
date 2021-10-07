@@ -644,14 +644,15 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   };
 
   const updateVenue = useCallback(
-    (vals: Partial<FormValues>) => {
-      const values = {
-        ...vals,
-        iframeUrl: vals.iframeUrl || DEFAULT_EMBED_URL,
-      };
-
-      onSubmit(values, userStatuses, hasUserStatuses);
-    },
+    (values: Partial<FormValues>) =>
+      void onSubmit(
+        {
+          ...values,
+          iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+        },
+        userStatuses,
+        hasUserStatuses
+      ),
     [onSubmit, userStatuses, hasUserStatuses]
   );
 
