@@ -22,6 +22,8 @@ const updateUserEmail = () => {
       event.addMetadata("context", {
         location: "hooks/useSocialSignIn::updateUserEmail",
         message: "Social provider or username is empty",
+        user: currentUser,
+        providerData,
       });
     });
     return;
@@ -56,6 +58,9 @@ const signInWithFacebook: () => Promise<firebase.auth.UserCredential> = () =>
     .signInWithPopup(providerFb)
     .then((res) => {
       const { user } = res;
+      // @debt temporary user email update since facebook returns empty email in user/providerData
+      // https://stackoverflow.com/a/20594547/7785277
+      // probably we'd need to use firebase?.auth()?.currentUser.verifyEmail along with an email form
       if (user && !user.emailVerified) {
         updateUserEmail();
       }
