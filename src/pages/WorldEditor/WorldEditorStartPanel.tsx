@@ -15,6 +15,8 @@ import { Loading } from "components/molecules/Loading";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
+import "./WorldEditorStartPanel.scss";
+
 export interface WorldEditorStartPanelProps {
   worldId?: string;
   onClickHome: () => void;

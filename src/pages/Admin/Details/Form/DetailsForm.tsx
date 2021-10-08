@@ -4,18 +4,18 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { createUrlSafeName, updateVenue_v2 } from "api/admin";
-import { createWorld } from "api/world";
+import { createUrlSafeName, createVenue_v2, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
-import { adminNGVenueUrl, venueLandingUrl } from "utils/url";
+import { adminWorldSpacesUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import {
   setBannerURL,
@@ -37,31 +37,39 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const setWorld = useCallback(
-    async (vals: FormValues) => {
-      if (!user) return;
+  const { worldId } = useWorldEditParams();
 
-      const world = { ...vals, id: createUrlSafeName(vals.name) };
+  const setVenue = useCallback(
+    async (vals: FormValues) => {
+      if (!user || !worldId) return;
 
       try {
         if (venueId) {
-          const venue = {
+          const updatedVenue = {
             ...vals,
             id: venueId,
-            worldId: createUrlSafeName(vals.name),
+            worldId,
           };
-          // @debt Replace with updateWorld api call / function
-          await updateVenue_v2(venue, user);
-          history.push(ADMIN_V3_ROOT_URL);
+
+          await updateVenue_v2(updatedVenue, user);
+
+          history.push(adminWorldSpacesUrl(worldId));
         } else {
-          await createWorld(world, user);
-          history.push(adminNGVenueUrl(world.id));
+          const newVenue = {
+            ...vals,
+            id: createUrlSafeName(vals.name),
+            worldId,
+          };
+
+          await createVenue_v2(newVenue, user);
+
+          history.push(adminWorldSpacesUrl(worldId));
         }
       } catch (e) {
         console.error(e);
       }
     },
-    [user, venueId, history]
+    [user, worldId, venueId, history]
   );
 
   const {
@@ -219,7 +227,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   return (
     <Form
       className={formStyles}
-      onSubmit={handleSubmit(setWorld)}
+      onSubmit={handleSubmit(setVenue)}
       onChange={handleOnChange}
     >
       <div className="DetailsForm__wrapper">
