@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ADMIN_V3_NEW_WORLD_URL } from "settings";
+import { adminCreateWorldSpace } from "utils/url";
 
 import { useWorldEdit } from "hooks/useWorldEdit";
 
@@ -41,11 +41,16 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
         )}
       </AdminSidebar>
       <AdminShowcase>
-        <div className="WorldEditor__new">
-          <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
-            Create a new space
-          </ButtonNG>
-        </div>
+        {worldId && (
+          <div className="WorldEditor__new">
+            <ButtonNG
+              variant="normal-gradient"
+              linkTo={adminCreateWorldSpace(worldId)}
+            >
+              Create a new space
+            </ButtonNG>
+          </div>
+        )}
       </AdminShowcase>
     </AdminPanel>
   );
