@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createUrlSafeName, createVenue_v2, updateVenue_v2 } from "api/admin";
 
@@ -53,7 +53,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
           await updateVenue_v2(updatedVenue, user);
 
-          history.push(ADMIN_V3_ROOT_URL);
+          history.push(adminWorldSpacesUrl(worldId));
         } else {
           const newVenue = {
             ...vals,
