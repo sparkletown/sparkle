@@ -49,8 +49,6 @@ export const WorldShowcase: React.FC<WorldShowcaseProps> = ({ world }) => {
     })
   );
 
-  console.log(WorldShowcase.name, world);
-
   return (
     <section className="WorldShowcase">
       <div className="WorldShowcase__nav">
