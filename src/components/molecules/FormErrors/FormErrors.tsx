@@ -2,14 +2,12 @@ import React from "react";
 import { FieldErrors } from "react-hook-form";
 import { omit } from "lodash";
 
-import { WorldFormInput } from "api/admin";
-
 import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 
 import "./FormErrors.scss";
 
 export interface FormErrorsProps {
-  errors: FieldErrors<WorldFormInput>;
+  errors: FieldErrors<object>;
   omitted?: string[];
 }
 

@@ -5,6 +5,9 @@ import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
 import { World } from "api/admin";
+import { updateWorldAdvancedSettings } from "api/world";
+
+import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId } from "utils/id";
 
@@ -17,6 +20,7 @@ import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
@@ -28,18 +32,24 @@ const HANDLED_ERRORS: string[] = [];
 const validationSchema = Yup.object().shape({});
 
 export interface WorldAdvancedFormProps extends AdminSidebarFooterProps {
-  world?: WithId<World>;
+  world: WithId<World>;
 }
 
 export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world?.id;
-  const createMode = !worldId;
+  const worldId = world.id;
   const { user } = useUser();
 
-  const defaultValues = useMemo(() => ({}), []);
+  const defaultValues = useMemo<WorldAdvancedFormInput>(
+    () => ({
+      attendeesTitle: world.attendeesTitle,
+      chatTitle: world.chatTitle,
+      showNametags: world.showNametags,
+    }),
+    [world]
+  );
 
   const {
     reset,
@@ -48,7 +58,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     errors,
     handleSubmit,
     register,
-  } = useForm({
+  } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
@@ -58,13 +68,12 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const values = watch();
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user) return;
-    if (!createMode || !worldId) return;
+    if (!values || !user || !worldId) return;
 
-    // await updateWorld({ ...values, id: worldId }, user);
+    await updateWorldAdvancedSettings({ ...values, id: worldId }, user);
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, createMode, defaultValues]);
+  }, [worldId, user, values, reset, defaultValues]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
@@ -75,10 +84,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     [dirty, isSaving, isSubmitting]
   );
 
-  if (error) {
-    console.error(WorldAdvancedForm.name, error);
-  }
-
   return (
     <div className="WorldAdvancedForm">
       <Form onSubmit={handleSubmit(submit)}>
@@ -86,7 +91,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
-        <AdminWorldUrlSection name={world?.name} />
+        <AdminWorldUrlSection slug={world.slug} />
         <AdminSection
           title="Title of your venues attendees"
           subtitle="(For example: guests, attendees, partygoers)"
@@ -114,7 +119,17 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             register={register}
           />
         </AdminSection>
+        <AdminSection
+          title="Show Nametags (Display user names on their avatars)"
+          withLabel
+        >
+          <Form.Control as="select" custom name="showNametags" ref={register}>
+            <option value="none">None</option>
+            <option value="hover">Inline and hover</option>
+          </Form.Control>
+        </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+        <SubmitError error={error} />
       </Form>
     </div>
   );

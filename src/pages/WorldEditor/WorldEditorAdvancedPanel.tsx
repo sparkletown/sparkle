@@ -26,8 +26,13 @@ export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> =
       <AdminSidebar>
         <AdminSidebarTitle>Advanced Settings: {world?.name}</AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
-        {isLoaded || !worldId ? (
-          <WorldAdvancedForm world={world} onClickCancel={onClickHome} />
+        {isLoaded ? (
+          world ? (
+            <WorldAdvancedForm world={world} onClickCancel={onClickHome} />
+          ) : (
+            // TODO: Display not found component
+            "World Not Found"
+          )
         ) : (
           <Loading />
         )}

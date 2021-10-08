@@ -26,8 +26,13 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
       <AdminSidebar>
         <AdminSidebarTitle>Title goes here</AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
-        {isLoaded || !worldId ? (
-          <WorldEntranceForm world={world} onClickCancel={onClickHome} />
+        {isLoaded ? (
+          world ? (
+            <WorldEntranceForm world={world} onClickCancel={onClickHome} />
+          ) : (
+            // TODO: Display not found component
+            "World Not Found"
+          )
         ) : (
           <Loading />
         )}

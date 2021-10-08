@@ -4,7 +4,10 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
-import { createWorld, updateWorld, World } from "api/admin";
+import { World } from "api/admin";
+import { createWorld, updateWorldStartSettings } from "api/world";
+
+import { WorldStartFormInput } from "types/world";
 
 import { WithId } from "utils/id";
 
@@ -19,6 +22,7 @@ import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection/
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
 import "./WorldStartForm.scss";
@@ -54,9 +58,9 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   const worldId = world?.id;
   const { user } = useUser();
 
-  const defaultValues = useMemo(
+  const defaultValues = useMemo<WorldStartFormInput>(
     () => ({
-      name: world?.name,
+      name: world?.name ?? "",
       description: world?.config?.landingPageConfig?.description,
       subtitle: world?.config?.landingPageConfig?.subtitle,
       bannerImageFile: undefined,
@@ -75,7 +79,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     register,
     errors,
     handleSubmit,
-  } = useForm({
+  } = useForm<WorldStartFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
@@ -88,7 +92,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     if (!values || !user) return;
 
     if (worldId) {
-      await updateWorld({ ...values, id: worldId }, user);
+      await updateWorldStartSettings({ ...values, id: worldId }, user);
     } else {
       await createWorld(values, user);
     }
@@ -96,16 +100,21 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     reset(defaultValues);
   }, [worldId, user, values, reset, defaultValues]);
 
+  const saveButtonProps: ButtonProps = useMemo(
+    () => ({
+      type: "submit",
+      disabled: !dirty && !isSaving && !isSubmitting,
+      loading: isSubmitting || isSaving,
+    }),
+    [dirty, isSaving, isSubmitting]
+  );
+
   return (
     <div className="WorldStartForm">
       <Form onSubmit={handleSubmit(submit)}>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          saveButtonProps={{
-            type: "submit",
-            disabled: !dirty && !isSaving && !isSubmitting,
-            loading: isSubmitting || isSaving,
-          }}
+          saveButtonProps={saveButtonProps}
         />
         <AdminWorldUrlSection name={values.name} />
         <AdminSection title="Name your world" withLabel>
@@ -142,16 +151,14 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
           }
           subtitle="A plain 1920 x 1080px image works best."
         >
-          <div className="WorldStartForm__banner-wrapper">
-            <ImageInput
-              name="bannerImage"
-              imgUrl={values.bannerImageUrl}
-              error={errors.bannerImageFile || errors.bannerImageUrl}
-              isInputHidden={!values.bannerImageUrl}
-              register={register}
-              setValue={setValue}
-            />
-          </div>
+          <ImageInput
+            name="bannerImage"
+            imgUrl={values.bannerImageUrl}
+            error={errors.bannerImageFile || errors.bannerImageUrl}
+            isInputHidden={!values.bannerImageUrl}
+            register={register}
+            setValue={setValue}
+          />
         </AdminSection>
         <AdminSection
           title={
@@ -162,16 +169,14 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
           }
           subtitle="A 400 px square image works best."
         >
-          <div className="WorldStartForm__logo-wrapper">
-            <ImageInput
-              name="logoImage"
-              imgUrl={values?.logoImageUrl}
-              error={errors.logoImageFile || errors.logoImageUrl}
-              setValue={setValue}
-              register={register}
-              small
-            />
-          </div>
+          <ImageInput
+            name="logoImage"
+            imgUrl={values?.logoImageUrl}
+            error={errors.logoImageFile || errors.logoImageUrl}
+            setValue={setValue}
+            register={register}
+            small
+          />
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />

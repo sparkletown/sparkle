@@ -131,30 +131,26 @@ export interface VenueInput_v2
   end_utc_seconds?: number;
 }
 
-export interface WorldFormInput {
-  name: string;
-  description?: string;
-  subtitle?: string;
-  bannerImageFile?: FileList;
-  bannerImageUrl?: string;
-  logoImageFile?: FileList;
-  logoImageUrl?: string;
-}
-
+// NOTE: world might have many fields, please keep them in alphabetic order
+// @debt move to src/types/world
 export interface World {
-  name: string;
+  attendeesTitle?: string;
+  chatTitle?: string;
   config: {
     landingPageConfig: {
       coverImageUrl: string;
-      subtitle?: string;
       description?: string;
+      subtitle?: string;
     };
   };
+  createdAt: Date;
   host: {
     icon: string;
   };
+  name: string;
   owners: string[];
-  createdAt: Date;
+  showNametags?: UsernameVisibility;
+  slug: string;
   updatedAt: Date;
 }
 
@@ -354,31 +350,6 @@ export const createVenue_v2 = async (
     ...firestoreVenueInput,
     worldId: input.worldId,
   });
-};
-
-export const createWorld = async (
-  world: WorldFormInput,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
-  const worldResponse = await firebase
-    .functions()
-    .httpsCallable("world-createWorld")(firestoreVenueInput);
-  const worldId = worldResponse?.data;
-  await firebase.functions().httpsCallable("venue-createVenue_v2")({
-    ...firestoreVenueInput,
-    worldId,
-  });
-};
-
-export const updateWorld = async (
-  world: WithId<WorldFormInput>,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    firestoreVenueInput
-  );
 };
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.

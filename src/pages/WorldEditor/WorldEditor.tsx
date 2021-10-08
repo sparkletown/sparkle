@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { ADMIN_V3_WORLDS_URL } from "settings";
 
-import { WorldNavTab } from "types/WorldNavTab";
+import { WorldNavTab } from "types/world";
 
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 

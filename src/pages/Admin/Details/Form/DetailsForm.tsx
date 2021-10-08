@@ -6,7 +6,8 @@ import classNames from "classnames";
 
 import { ADMIN_V3_ROOT_URL, DEFAULT_VENUE_LOGO } from "settings";
 
-import { createUrlSafeName, createWorld, updateVenue_v2 } from "api/admin";
+import { createUrlSafeName, updateVenue_v2 } from "api/admin";
+import { createWorld } from "api/world";
 
 import { VenueTemplate } from "types/venues";
 
