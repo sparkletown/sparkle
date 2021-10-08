@@ -1,7 +1,5 @@
 import React from "react";
 
-import { ADMIN_V3_NEW_WORLD_URL } from "settings";
-
 import { World } from "api/admin";
 
 import { WithId } from "utils/id";
@@ -15,7 +13,7 @@ import { WorldStartForm } from "components/organisms/WorldStartForm";
 
 import { Loading } from "components/molecules/Loading";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import "./WorldEditorStartPanel.scss";
 
 export interface WorldEditorStartPanelProps {
   worldId?: string;
@@ -42,12 +40,6 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
         <Loading />
       )}
     </AdminSidebar>
-    <AdminShowcase>
-      <div className="WorldEditor__new">
-        <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
-          Create a new world
-        </ButtonNG>
-      </div>
-    </AdminShowcase>
+    <AdminShowcase></AdminShowcase>
   </AdminPanel>
 );
