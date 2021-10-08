@@ -12,5 +12,5 @@ export const AdminSidebarSubTitle: React.FC<AdminSidebarSubTitleProps> = ({
   children,
 }) => {
   const containerClasses = classNames("AdminSidebarSubTitle", className);
-  return <h2 className={containerClasses}> {children}</h2>;
+  return <p className={containerClasses}> {children}</p>;
 };

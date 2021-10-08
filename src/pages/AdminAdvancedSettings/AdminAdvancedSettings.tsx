@@ -74,6 +74,11 @@ export const AdminAdvancedSettings: React.FC = () => {
     return <LoadingPage />;
   }
 
+  if (!venue) {
+    //@debt Add NotFound page here after it's merged
+    return null;
+  }
+
   return (
     <WithNavigationBar>
       <AdminRestricted>
@@ -91,10 +96,7 @@ export const AdminAdvancedSettings: React.FC = () => {
           />
         )}
         {selectedTab === AdminAdvancedTab.advancedMapSettings && (
-          <AdvancedSettings
-            venue={venue as Venue_v2}
-            onSave={navigateToDefaultTab}
-          />
+          <AdvancedSettings venue={venue} onSave={navigateToDefaultTab} />
         )}
       </AdminRestricted>
     </WithNavigationBar>

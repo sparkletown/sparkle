@@ -5,7 +5,7 @@
 }
 
 .navbar-container {
-  background: $black;
+  background: $content--under;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,7 +27,7 @@
 
   .notification-card {
     background: $red;
-    color: $white;
+    color: $content--over;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -157,7 +157,7 @@
 
 .nav-party-logo {
   position: relative;
-  background-color: rgba($white, 0.08);
+  background-color: opaque-white(0.08);
   height: 60px;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -171,7 +171,7 @@
   transition: transform 400ms $transition-function;
   border: none;
   appearance: none;
-  color: $white;
+  color: $content--over;
 
   img {
     height: 40px;
@@ -180,7 +180,7 @@
   &:hover,
   &:focus {
     border: none;
-    background-color: rgba($white, 0.14);
+    background-color: opaque-white(0.14);
 
     &:after {
       opacity: 0.7;
@@ -213,7 +213,7 @@
 }
 
 .schedule-text {
-  background-color: $primary;
+  background-color: $accent--under;
   border-radius: 10px;
   margin-left: 8px;
   padding: 0px 10px;

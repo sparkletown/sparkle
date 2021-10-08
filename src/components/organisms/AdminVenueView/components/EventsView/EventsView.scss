@@ -6,7 +6,7 @@
 
   &__container {
     height: 60vh;
-    background-color: $black;
+    background-color: $content--under;
     border-radius: $border-radius--xl;
     box-shadow: box-shadow--large();
     overflow-y: scroll;
@@ -52,7 +52,7 @@
 
       &-start {
         font-weight: $font-weight--700;
-        color: $white;
+        color: $content--over;
         margin-top: $spacing--xl;
       }
     }
@@ -60,7 +60,7 @@
     &__details {
       &-name {
         font-weight: $font-weight--700;
-        color: $white;
+        color: $content--over;
         font-size: $spacing--lg;
       }
 
@@ -95,10 +95,10 @@
       justify-content: center;
       align-items: center;
       margin: auto;
-      background-color: $primary;
+      background-color: $accent--under;
 
       &__icon {
-        color: $white;
+        color: $content--over;
       }
     }
   }

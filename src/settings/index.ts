@@ -39,6 +39,10 @@ export * from "./sectionSettings";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
 export * from "./spacesSettings";
+export * from "./embedUrlSettings";
+
+export const ENABLE_POPUPS_URL =
+  "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -94,13 +98,6 @@ export const SPARKLEVERSE_COMMUNITY_URL =
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
-export const TWITCH_SHORT_URL = "twitch.tv";
-export const TWITCH_EMBED_URL = "https://player.twitch.tv";
-export const FACEBOOK_EMBED_URL = "plugins/video.php";
-export const VIMEO_SHORT_EVENT_URL = "vimeo.com/event";
-export const VIMEO_EMBED_URL = "https://player.vimeo.com/video";
-export const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
-export const YOUTUBE_SHORT_URL_STRING = "youtu";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins

@@ -74,7 +74,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           "mod--hidden": isInputHidden,
         })}
         style={{
-          backgroundImage: `url(${imageUrl})`,
+          backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
         }}
       >
         <input
