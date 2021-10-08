@@ -151,8 +151,8 @@ export const VenuePage: React.FC = () => {
       isCompleteUserInfo(user)
     ) {
       const profileData = {
-        pictureUrl: user?.photoURL ?? "",
-        partyName: user?.displayName ?? "",
+        pictureUrl: user.photoURL ?? "",
+        partyName: user.displayName ?? "",
       };
       updateUserProfile(user?.uid, profileData);
     }

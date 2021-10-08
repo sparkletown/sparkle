@@ -54,12 +54,13 @@ export const useUser = (): UseUserResult => {
   const userWithId = useMemo(() => {
     if (!userId || !user) return;
 
-    const userData = {
-      ...user,
+    const profileData = {
+      ...profile,
       partyName: profile?.partyName ?? user.displayName ?? "",
       pictureUrl: profile?.pictureUrl ?? user.photoURL ?? "",
     };
-    return withId(userData, userId);
+
+    return withId(profileData, userId);
   }, [user, userId, profile]);
 
   return useMemo(

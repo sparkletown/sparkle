@@ -4,12 +4,28 @@ import firebase from "firebase/app";
 const providerGoogle = new firebase.auth.GoogleAuthProvider();
 const providerFb = new firebase.auth.FacebookAuthProvider();
 
+// @debt temporary user email update since facebook returns empty email in user/providerData
+// https://stackoverflow.com/a/20594547/7785277
 const updateUserEmail = () => {
   const currentUser = firebase?.auth()?.currentUser;
-  const [providerData] = currentUser?.providerData ?? [];
-  const userName =
-    currentUser?.displayName?.toLowerCase().replaceAll(" ", "") ?? "undefined";
+  const [providerData] = currentUser?.providerData ?? [{ uid: "" }];
+  const lettersAndNumbersRegex = /[^a-zA-Z0-9]+/g;
+  const userName = currentUser?.displayName?.replace(
+    lettersAndNumbersRegex,
+    ""
+  );
+  const nameValue = providerData?.uid ?? userName;
 
+  if (!nameValue) {
+    const error = new Error("Failed to update user email");
+    Bugsnag.notify(error, (event) => {
+      event.addMetadata("context", {
+        location: "hooks/useSocialSignIn::updateUserEmail",
+        message: "Social provider or username is empty",
+      });
+    });
+    return;
+  }
   currentUser?.updateEmail(`${providerData?.uid ?? userName}@facebook.auth`);
 };
 
