@@ -75,7 +75,10 @@ export const WorldsDashboard: React.FC = () => {
             </AdminSidebar>
             <AdminShowcase className="WorldsDashboard__worlds">
               <div className="WorldsDashboard__new">
-                <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
+                <ButtonNG
+                  variant="normal-gradient"
+                  linkTo={ADMIN_V3_NEW_WORLD_URL}
+                >
                   Create a new world
                 </ButtonNG>
                 {!hasWorlds && (

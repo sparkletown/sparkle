@@ -503,10 +503,24 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  const venueData = createVenueData_v2(data, context);
   const venueId = getVenueId(data.name);
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  const venueDoc = await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get();
+
+  if (venueDoc.exists) {
+    throw new HttpsError(
+      "already-exists",
+      `The venue ${data.name} already exists. Please try with another name.`
+    );
+  }
+
+  const venueData = createVenueData_v2(data, context);
+
+  await admin.firestore().collection("venues").doc(venueId).create(venueData);
 
   return venueData;
 });
