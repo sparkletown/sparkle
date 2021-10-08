@@ -51,4 +51,5 @@ export const useDeleteVenueThreadMessage = (venueId?: string) =>
   useDeleteMessage<DeleteThreadMessageProps>({
     getCollections: useGetVenueThreadCollectionRef(venueId),
     processResultingBatch: useProcessBatchForThread(venueId, "deleteThread"),
+    hardDelete: true,
   });
