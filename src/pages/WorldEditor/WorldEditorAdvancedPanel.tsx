@@ -37,7 +37,7 @@ export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> =
           <Loading />
         )}
       </AdminSidebar>
-      <AdminShowcase>Showcase component goes here</AdminShowcase>
+      <AdminShowcase></AdminShowcase>
     </AdminPanel>
   );
 };
