@@ -16,7 +16,7 @@ const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 60 * 1000;
-const BATCH_MAX_OPS = 500;
+export const BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
   const firestore = admin.firestore();
