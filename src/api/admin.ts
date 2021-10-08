@@ -2,6 +2,8 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
+import { ACCEPTED_IMAGE_TYPES } from "settings";
+
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
@@ -129,32 +131,26 @@ export interface VenueInput_v2
   end_utc_seconds?: number;
 }
 
-export interface WorldFormInput {
-  name: string;
-  description?: string;
-  subtitle?: string;
-  bannerImageFile?: FileList;
-  bannerImageUrl?: string;
-  logoImageFile?: FileList;
-  logoImageUrl?: string;
-  mapBackgroundImageFile?: FileList;
-  mapBackgroundImageUrl?: string;
-}
-
+// NOTE: world might have many fields, please keep them in alphabetic order
+// @debt move to src/types/world
 export interface World {
-  name: string;
+  attendeesTitle?: string;
+  chatTitle?: string;
   config: {
     landingPageConfig: {
       coverImageUrl: string;
-      subtitle?: string;
       description?: string;
+      subtitle?: string;
     };
   };
+  createdAt: Date;
   host: {
     icon: string;
   };
+  name: string;
   owners: string[];
-  createdAt: Date;
+  showNametags?: UsernameVisibility;
+  slug: string;
   updatedAt: Date;
 }
 
@@ -291,10 +287,14 @@ const createFirestoreVenueInput_v2 = async (
   let imageInputData = {};
 
   // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
-    const file = fileArr[0];
+  for (const { fileKey, urlKey } of imageKeys) {
+    const files = input[fileKey];
+    const file = files?.[0];
+
+    if (!file) continue;
+
+    const type = file.type;
+    if (!ACCEPTED_IMAGE_TYPES.includes(type)) continue;
 
     const fileExtension = file.type.split("/").pop();
 
@@ -307,7 +307,7 @@ const createFirestoreVenueInput_v2 = async (
 
     imageInputData = {
       ...imageInputData,
-      [entry.urlKey]: downloadUrl,
+      [urlKey]: downloadUrl,
     };
   }
 
@@ -351,31 +351,6 @@ export const createVenue_v2 = async (
     ...firestoreVenueInput,
     worldId: input.worldId,
   });
-};
-
-export const createWorld = async (
-  world: WorldFormInput,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
-  const worldResponse = await firebase
-    .functions()
-    .httpsCallable("world-createWorld")(firestoreVenueInput);
-
-  return {
-    ...firestoreVenueInput,
-    id: worldResponse?.data,
-  };
-};
-
-export const updateWorld = async (
-  world: WithId<WorldFormInput>,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    firestoreVenueInput
-  );
 };
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.

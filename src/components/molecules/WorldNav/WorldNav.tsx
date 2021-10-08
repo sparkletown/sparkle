@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { WorldNavTab } from "types/WorldNavTab";
+import { WorldNavTab } from "types/world";
 
 import { adminWorldUrl } from "utils/url";
 

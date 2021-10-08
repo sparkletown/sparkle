@@ -2,13 +2,13 @@
 
 $height: 1rem;
 
-.AdminShowcaseSubTitle {
+.AdminSidebarSectionSubTitle {
   place-content: center start;
   min-height: $height;
   line-height: $height;
-  font-size: $height;
+  font-size: $height * 0.75;
   font-weight: $font-weight--400;
-  margin: $spacing--md;
+  margin: $spacing--xs 0 $spacing--md;
   padding: 0;
-  color: $subheading--over;
+  color: var(--content--over-50a);
 }
