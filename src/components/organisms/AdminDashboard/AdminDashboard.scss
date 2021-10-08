@@ -2,13 +2,21 @@
 
 .AdminDashboard {
   width: 100%;
-  display: grid;
   height: 100vh;
-  grid-template-columns: auto;
   padding: $spacing--lg;
+
+  display: grid;
+  grid-template-columns: auto;
 
   position: relative;
   overflow-y: scroll;
+
+  .AdminShowcaseTitle {
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--500;
+    padding-right: $spacing--md;
+    align-self: center;
+  }
 
   &__header {
     display: flex;
@@ -22,13 +30,6 @@
     justify-content: space-between;
   }
 
-  &__header-title {
-    font-size: $font-size--xxl;
-    font-weight: $font-weight--500;
-    align-self: center;
-    padding-right: $spacing--md;
-  }
-
   &__welcome-message {
     font-size: $font-size--xxl;
     font-weight: $font-weight--500;
@@ -38,8 +39,8 @@
     display: grid;
     width: 100%;
     grid-template-columns: repeat(6, 1fr);
-    grid-gap: 1rem;
-    margin: 1rem 0;
+    grid-template-rows: max-content;
+    grid-gap: font-size--root(1);
 
     &--empty {
       display: flex;

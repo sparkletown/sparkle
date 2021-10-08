@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 
+import { World } from "api/admin";
+
 import { AuditoriumSeatedUser } from "types/auditorium";
 import { AnyVenue } from "types/venues";
 
@@ -34,4 +36,14 @@ export const auditoriumSeatedUserConverter: firebase.firestore.FirestoreDataConv
     snapshot: firebase.firestore.QueryDocumentSnapshot
   ): WithId<AuditoriumSeatedUser> =>
     withId(snapshot.data() as AuditoriumSeatedUser, snapshot.id),
+};
+
+export const worldConverter: firebase.firestore.FirestoreDataConverter<
+  WithId<World>
+> = {
+  toFirestore: (world: WithId<World>): firebase.firestore.DocumentData => world,
+
+  fromFirestore: (
+    snapshot: firebase.firestore.QueryDocumentSnapshot
+  ): WithId<World> => withId(snapshot.data() as World, snapshot.id),
 };
