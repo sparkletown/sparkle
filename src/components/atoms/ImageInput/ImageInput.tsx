@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback, useRef, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -57,26 +58,28 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
       setImageUrl(url);
       setValue(fileName, [compressedFile], false);
+      setValue(fileUrl, url, false);
       onChange(url);
     },
-    [handleFileInputChange, onChange, setValue, fileName]
+    [handleFileInputChange, fileUrl, onChange, setValue, fileName]
   );
 
   const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
+  const labelStyle = useCss({
+    "background-image": imageUrl ? `url(${imageUrl})` : undefined,
+  });
+
+  const labelClasses = classNames("ImageInput__container", labelStyle, {
+    "ImageInput__container--error": !!error?.message,
+    "ImageInput__container--small": small,
+    "ImageInput__container--disabled": loading,
+    "mod--hidden": isInputHidden,
+  });
+
   return (
     <>
-      <label
-        className={classNames("ImageInput__container", {
-          "ImageInput__container--error": !!error?.message,
-          "ImageInput__container--small": small,
-          "ImageInput__container--disabled": loading,
-          "mod--hidden": isInputHidden,
-        })}
-        style={{
-          backgroundImage: imageUrl ? `url(${imageUrl})` : undefined,
-        }}
-      >
+      <label className={labelClasses}>
         <input
           accept={ACCEPTED_IMAGE_TYPES}
           hidden
@@ -97,13 +100,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         </span>
       </label>
 
-      <input
-        type="hidden"
-        name={fileUrl}
-        ref={register}
-        value={imageUrl}
-        readOnly
-      />
+      <input type="hidden" name={fileUrl} ref={register} readOnly />
       {isInputHidden && (
         <ButtonNG onClick={onButtonClick} variant="primary">
           {text}

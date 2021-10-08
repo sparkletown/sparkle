@@ -1,8 +1,6 @@
 import React from "react";
 
-import { World } from "api/admin";
-
-import { WithId } from "utils/id";
+import { useWorldEdit } from "hooks/useWorldEdit";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -16,26 +14,30 @@ import { Loading } from "components/molecules/Loading";
 export interface WorldEditorAdvancedPanelProps {
   worldId?: string;
   onClickHome: () => void;
-  loaded: boolean;
-  world?: WithId<World>;
 }
 
 export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> = ({
-  loaded,
   onClickHome,
-  world,
   worldId,
-}) => (
-  <AdminPanel>
-    <AdminSidebar>
-      <AdminSidebarTitle>Title goes here</AdminSidebarTitle>
-      <AdminSidebarFooter onClickHome={onClickHome} />
-      {loaded || !worldId ? (
-        <WorldAdvancedForm world={world} onClickCancel={onClickHome} />
-      ) : (
-        <Loading />
-      )}
-    </AdminSidebar>
-    <AdminShowcase>Showcase component goes here</AdminShowcase>
-  </AdminPanel>
-);
+}) => {
+  const { isLoaded, world } = useWorldEdit(worldId);
+  return (
+    <AdminPanel>
+      <AdminSidebar>
+        <AdminSidebarTitle>Advanced Settings: {world?.name}</AdminSidebarTitle>
+        <AdminSidebarFooter onClickHome={onClickHome} />
+        {isLoaded ? (
+          world ? (
+            <WorldAdvancedForm world={world} onClickCancel={onClickHome} />
+          ) : (
+            // TODO: Display not found component
+            "World Not Found"
+          )
+        ) : (
+          <Loading />
+        )}
+      </AdminSidebar>
+      <AdminShowcase>Showcase component goes here</AdminShowcase>
+    </AdminPanel>
+  );
+};
