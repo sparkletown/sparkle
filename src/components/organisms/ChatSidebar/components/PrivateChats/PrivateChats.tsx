@@ -7,6 +7,7 @@ import { WithId } from "utils/id";
 import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useUser } from "hooks/useUser";
 
 import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 
@@ -18,6 +19,8 @@ export interface PrivateChatsProps {
 
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
   const { sovereignVenue } = useRelatedVenues();
+
+  const { userId } = useUser();
 
   const { privateChatPreviews } = usePrivateChatPreviews();
   const { selectRecipientChat } = useChatSidebarControls();
@@ -39,14 +42,16 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
 
   const renderedUsers = useMemo(
     () =>
-      sovereignVenue?.recentUsersSample?.map((user) => (
-        <OnlineUser
-          key={user.id}
-          user={user}
-          onClick={() => selectRecipientChat(user)}
-        />
-      )),
-    [sovereignVenue?.recentUsersSample, selectRecipientChat]
+      sovereignVenue?.recentUsersSample
+        ?.filter((x) => x.id !== userId)
+        ?.map((user) => (
+          <OnlineUser
+            key={user.id}
+            user={user}
+            onClick={() => selectRecipientChat(user)}
+          />
+        )),
+    [sovereignVenue?.recentUsersSample, userId, selectRecipientChat]
   );
 
   const numberOfUsers = sovereignVenue?.recentUserCount;

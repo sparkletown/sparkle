@@ -7,13 +7,10 @@ import { ChatMessage, InfiniteScrollProps, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
-export const useRenderMessagesCount = (
-  overallLength: number = Number.MAX_VALUE
-): [number, () => void] => {
+export const useRenderMessagesCount = (): [number, () => void] => {
   const getNextMessagesRenderCount = useCallback(
-    (currentCount: number) =>
-      Math.min(currentCount + CHATBOX_NEXT_RENDER_SIZE, overallLength),
-    [overallLength]
+    (currentCount: number) => currentCount + CHATBOX_NEXT_RENDER_SIZE,
+    []
   );
 
   const [renderedMessagesCount, setRenderedMessagesCount] = useState(
@@ -33,7 +30,7 @@ export const useRenderInfiniteScroll = <T extends ChatMessage>(
   const [
     renderedMessagesCount,
     increaseRenderedMessagesCount,
-  ] = useRenderMessagesCount(messages.length);
+  ] = useRenderMessagesCount();
 
   const messagesToRender = useMemo(
     () => messages.slice(0, renderedMessagesCount),

@@ -52,7 +52,6 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ message }) => {
-      console.log("sendMessage", message);
       reset();
       unselectOption();
 
