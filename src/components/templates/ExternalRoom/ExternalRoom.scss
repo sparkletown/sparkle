@@ -1,43 +1,110 @@
 @import "scss/constants";
 
+$border-radius: 22px;
+$spacing: 20px;
+$text-width: 50rem;
+$venue-logo-size: 180px;
+
 .ExternalRoom {
-  height: 100%;
+  min-height: 100%;
+  padding-bottom: $spacing--xxl;
   display: flex;
+  background-position: center;
+  background-size: cover;
   align-items: center;
   justify-content: center;
-  margin: 0 auto;
+  flex-direction: column;
 
-  &__message {
-    padding: 60px;
-    width: 80%;
+  &__container {
+    margin-top: $spacing--xl;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-evenly;
-    background: $light-grey;
-    box-shadow: box-shadow--large(0.5);
-    border-radius: $border-radius--xl;
     z-index: z(external-message);
-    margin: 0 auto;
   }
 
-  &__content {
+  &__link {
+    max-width: $text-width;
+
+    text-align: center;
+    overflow-wrap: break-word;
+  }
+
+  &__message {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: $spacing--xxl;
-  }
-
-  &__header {
+    margin: $spacing--xxl 0;
     font-family: Rubik;
     font-weight: $font-weight--300;
     font-size: $font-size--xl;
   }
 
-  &__link {
-    font-family: Rubik;
-    font-style: normal;
-    font-weight: $font-weight--500;
+  &__content {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    border-radius: $border-radius;
+    background: $dark;
+  }
+
+  &__venue-container {
+    padding: $spacing;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  &__venue-title {
+    font-weight: $font-weight--700;
+    font-size: $font-size--xxl;
+  }
+
+  &__venue-subtitle {
+    font-weight: $font-weight--300;
+    font-size: $font-size--lg;
+  }
+
+  &__venue-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: $spacing;
+  }
+
+  &__venue-logo {
+    @include square-size($venue-logo-size);
+    flex-shrink: 0;
+    border-radius: $border-radius;
+    background-color: $saturated-black;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &__venue-description {
+    padding: $spacing--sm $spacing;
+
+    background: $dark;
+    border-radius: $border-radius;
+
+    max-height: 25vh;
+    max-width: $text-width;
+    overflow-y: auto;
+
+    font-size: $font-size--md;
+    font-weight: $font-weight--400;
+    color: opaque-white(0.6);
+    overflow-wrap: break-word;
+  }
+
+  &__userlist {
+    margin: $spacing;
+    align-self: flex-start;
+  }
+
+  .UserList__avatars {
+    justify-content: flex-start;
   }
 }

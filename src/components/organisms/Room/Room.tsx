@@ -1,93 +1,39 @@
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import Video from "twilio-video";
+import React, { Fragment, useCallback, useMemo } from "react";
 
-import { getUser } from "api/profile";
 import { unsetTableSeat } from "api/venue";
-import { useTwilioVideoToken } from "api/video";
 
-import { ParticipantWithUser } from "types/rooms";
-
-import { logIfCannotFindExistingParticipant } from "utils/room";
-import { stopLocalTrack } from "utils/twilio";
-
+import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
-import { LocalParticipant } from "./LocalParticipant";
-import { Participant } from "./Participant";
-import VideoErrorModal from "./VideoErrorModal";
+import { VideoParticipant } from "components/organisms/Video";
+
+import { Loading } from "components/molecules/Loading";
 
 import "./Room.scss";
 
 interface RoomProps {
   roomName: string;
   venueId: string;
-  setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
-  onBack?: () => void;
   hasChairs?: boolean;
   defaultMute?: boolean;
 }
 
-const Room: React.FC<RoomProps> = ({
+export const Room: React.FC<RoomProps> = ({
   roomName,
   venueId,
-  setParticipantCount,
   setSeatedAtTable,
   hasChairs = true,
   defaultMute,
 }) => {
-  const [room, setRoom] = useState<Video.Room>();
-  const [videoError, setVideoError] = useState<string>("");
-  const [participants, setParticipants] = useState<ParticipantWithUser[]>([]);
+  const { userId, userWithId } = useUser();
 
-  const { userId, profile } = useUser();
-
-  useEffect(
-    () => setParticipantCount && setParticipantCount(participants.length),
-    [participants.length, setParticipantCount]
-  );
-
-  const userFriendlyVideoError = (originalMessage: string) => {
-    if (originalMessage.toLowerCase().includes("unknown")) {
-      return `${originalMessage}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`;
-    }
-    return originalMessage;
-  };
-
-  const { value: token } = useTwilioVideoToken({
-    userId,
-    roomName,
-  });
-
-  const connectToVideoRoom = () => {
-    if (!token) return;
-    setVideoError("");
-
-    Video.connect(token, {
-      name: roomName,
-    })
-      .then((room) => {
-        setRoom(room);
-      })
-      .catch((error) => setVideoError(userFriendlyVideoError(error.message)));
-  };
-
-  useEffect(() => {
-    return () => {
-      if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach((trackPublication) => {
-          stopLocalTrack(trackPublication.track);
-        });
-        room.disconnect();
-      }
-    };
-  }, [room]);
+  const {
+    localParticipant,
+    participants,
+    renderErrorModal,
+    loading,
+  } = useVideoRoomState(userId, roomName);
 
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
@@ -96,52 +42,6 @@ const Room: React.FC<RoomProps> = ({
 
     setSeatedAtTable?.("");
   }, [setSeatedAtTable, userId, venueId]);
-
-  useEffect(() => {
-    if (!token) return;
-
-    let localRoom: Video.Room;
-
-    const participantConnected = async (participant: Video.Participant) => {
-      const user = await getUser(participant.identity);
-      setParticipants((prevParticipants) => [
-        ...prevParticipants.filter(
-          (p) => p.participant.identity !== participant.identity
-        ),
-        { participant, user },
-      ]);
-    };
-
-    const participantDisconnected = (participant: Video.Participant) => {
-      setParticipants((prevParticipants) => {
-        logIfCannotFindExistingParticipant(prevParticipants, participant);
-        return prevParticipants.filter(
-          (p) => p.participant.identity !== participant.identity
-        );
-      });
-    };
-
-    Video.connect(token, {
-      name: roomName,
-    })
-      .then((room) => {
-        setRoom(room);
-        localRoom = room;
-        room.on("participantConnected", participantConnected);
-        room.on("participantDisconnected", participantDisconnected);
-        room.participants.forEach(participantConnected);
-      })
-      .catch((error) => setVideoError(error.message));
-
-    return () => {
-      if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach((trackPublication) => {
-          stopLocalTrack(trackPublication.track);
-        });
-        localRoom.disconnect();
-      }
-    };
-  }, [roomName, token, setParticipantCount]);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works
@@ -154,19 +54,23 @@ const Room: React.FC<RoomProps> = ({
     return "three-across";
   }, [participants.length]);
 
-  const meComponent = useMemo(() => {
-    return room && profile ? (
-      <div className={`participant-container ${participantContainerClassName}`}>
-        <LocalParticipant
-          key={room.localParticipant.sid}
-          participant={room.localParticipant}
-          profileData={profile}
-          profileDataId={room.localParticipant.identity}
-          defaultMute={defaultMute}
-        />
-      </div>
-    ) : null;
-  }, [room, profile, defaultMute, participantContainerClassName]);
+  const meComponent = useMemo(
+    () =>
+      localParticipant &&
+      userWithId && (
+        <div
+          className={`participant-container ${participantContainerClassName}`}
+          key={localParticipant.identity}
+        >
+          <VideoParticipant
+            participant={localParticipant}
+            participantUser={userWithId}
+            defaultMute={defaultMute}
+          />
+        </div>
+      ),
+    [localParticipant, userWithId, defaultMute, participantContainerClassName]
+  );
 
   const othersComponents = useMemo(
     () =>
@@ -180,10 +84,9 @@ const Room: React.FC<RoomProps> = ({
             key={participant.participant.identity}
             className={`participant-container ${participantContainerClassName}`}
           >
-            <Participant
+            <VideoParticipant
               participant={participant.participant}
-              profileData={participant.user}
-              profileDataId={participant.user.id}
+              participantUser={participant.user}
             />
           </div>
         );
@@ -210,8 +113,8 @@ const Room: React.FC<RoomProps> = ({
     [hasChairs, participants.length, participantContainerClassName]
   );
 
-  if (!token) {
-    return <></>;
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -219,15 +122,7 @@ const Room: React.FC<RoomProps> = ({
       {meComponent}
       {othersComponents}
       {emptyComponents}
-      <VideoErrorModal
-        show={!!videoError}
-        onHide={() => setVideoError("")}
-        errorMessage={videoError}
-        onRetry={connectToVideoRoom}
-        onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
-      />
+      {renderErrorModal(leaveSeat)}
     </Fragment>
   );
 };
-
-export default Room;

@@ -14,7 +14,7 @@ import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUser
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import Room from "components/organisms/Room";
+import { Room } from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
@@ -110,8 +110,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               {seatedAtTable && (
                 <div className="participants-container">
                   <Room
+                    setSeatedAtTable={setSeatedAtTable}
                     venueId={venue.id}
-                    roomName={`${venue.name}-${seatedAtTable}`}
+                    roomName={`${venue.id}-${seatedAtTable}`}
                   />
                 </div>
               )}
