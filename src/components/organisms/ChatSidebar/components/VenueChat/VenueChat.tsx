@@ -6,6 +6,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useRenderMessagesCount } from "hooks/chats/util/useRenderInfiniteScroll";
+import { useCanDeleteVenueChatMessages } from "hooks/chats/venue/useCanDeleteVenueChatMessages";
 import {
   useDeleteVenueChatMessage,
   useDeleteVenueThreadMessage,
@@ -14,7 +15,6 @@ import {
 } from "hooks/chats/venue/useVenueChatActions";
 import { useVenueChatMessages } from "hooks/chats/venue/useVenueChatMessages";
 import { useVenueChatMessagesCount } from "hooks/chats/venue/useVenueChatMessagesCount";
-import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
 import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";

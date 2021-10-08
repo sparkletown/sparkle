@@ -28,11 +28,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
     replies,
   } = useRecipientChatMessages(recipient);
 
-  const {
-    sendChatMessage,
-    markMessageRead,
-    sendThreadMessage,
-  } = useRecipientChatActions(recipient);
+  const actions = useRecipientChatActions(recipient);
 
   useEffect(() => {
     const unreadCounterpartyMessages = allMessagesToDisplay.filter(
@@ -41,10 +37,10 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
 
     if (unreadCounterpartyMessages.length > 0) {
       unreadCounterpartyMessages.forEach((message) =>
-        markMessageRead(message.id)
+        actions.markMessageRead(message.id)
       );
     }
-  }, [allMessagesToDisplay, recipient.id, markMessageRead]);
+  }, [allMessagesToDisplay, recipient.id, actions.markMessageRead, actions]);
 
   const { selectPrivateChat } = useChatSidebarControls();
 
@@ -63,11 +59,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         <UserAvatar user={recipient} showStatus size="small" />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <ChatboxContextProvider
-        preloadedThreads={replies}
-        sendChatMessage={sendChatMessage}
-        sendThreadMessage={sendThreadMessage}
-      >
+      <ChatboxContextProvider preloadedThreads={replies} {...actions}>
         <Chatbox
           containerClassName="recipient-chat__chatbox"
           messages={messagesToDisplay}
