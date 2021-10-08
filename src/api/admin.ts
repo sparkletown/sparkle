@@ -296,9 +296,10 @@ const createFirestoreVenueInput_v2 = async (
     const type = file.type;
     if (!ACCEPTED_IMAGE_TYPES.includes(type)) continue;
 
-    const extension = type.split("/").pop();
+    const fileExtension = file.type.split("/").pop();
+
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/background.${extension}`
+      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -377,6 +378,30 @@ export const updateVenue_v2 = async (
       const msg = `[updateVenue_v2] updating venue ${input.name}`;
       const context = {
         location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
+      });
+      throw error;
+    });
+};
+
+export const updateMapBackground = async (
+  input: WithWorldId<VenueInput_v2>,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateMapBackground")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateMapBackground] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateMapBackground",
       };
 
       Bugsnag.notify(msg, (event) => {
