@@ -49,6 +49,7 @@ const useJukeboxActions = (venueId?: string, tableId?: string | null) => {
         text: message,
         tableId,
       });
+
       return sendJukeboxMessage({
         venueId,
         tableId,
