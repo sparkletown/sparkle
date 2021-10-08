@@ -767,6 +767,26 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+exports.updateMapBackground = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+});
+
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
