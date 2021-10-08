@@ -30,4 +30,4 @@ export const ADMIN_V3_ADVANCED_PARAM_URL = `${ADMIN_V3_ROOT_URL}/advanced-settin
 export const ADMIN_V3_WORLDS_URL = `${ADMIN_V3_ROOT_URL}/worlds`;
 export const ADMIN_V3_NEW_WORLD_URL = `${ADMIN_V3_WORLDS_URL}/new`;
 export const ADMIN_V3_OLD_WORLD_PARAM_URL = `${ADMIN_V3_WORLDS_URL}/old/:worldId?/:selectedTab?`;
-export const ADMIN_V3_WORLD_SPACES_PARAM_URL = `${ADMIN_V3_WORLDS_URL}/spaces/:worldId?`;
+export const ADMIN_V3_WORLD_SPACES_PARAM_URL = `${ADMIN_V3_WORLDS_URL}/:worldId?/spaces`;

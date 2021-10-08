@@ -43,20 +43,27 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     async (vals: FormValues) => {
       if (!user || !worldId) return;
 
-      const world = { ...vals, id: createUrlSafeName(vals.name) };
-
       try {
         if (venueId) {
-          const venue = {
+          const updatedVenue = {
             ...vals,
             id: venueId,
             worldId,
           };
-          await updateVenue_v2(venue, user);
+
+          await updateVenue_v2(updatedVenue, user);
+
           history.push(ADMIN_V3_ROOT_URL);
         } else {
-          await createVenue_v2({ ...world, worldId: worldId }, user);
-          history.push(adminWorldSpacesUrl(world.id));
+          const newVenue = {
+            ...vals,
+            id: createUrlSafeName(vals.name),
+            worldId,
+          };
+
+          await createVenue_v2(newVenue, user);
+
+          history.push(adminWorldSpacesUrl(worldId));
         }
       } catch (e) {
         console.error(e);
