@@ -26,7 +26,7 @@
     .UserAvatar__nametag--hover {
       opacity: 1;
 
-      background-color: $primary;
+      background-color: $accent--under;
       padding: $spacing--xs;
 
       transform: scale(1.5) translate(-35%, 50%);
@@ -74,7 +74,7 @@
 
   &__nametag {
     position: absolute;
-    color: $white;
+    color: $content--over;
 
     opacity: 0;
 

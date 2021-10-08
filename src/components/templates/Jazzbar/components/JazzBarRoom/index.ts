@@ -1,1 +1,1 @@
-export { default } from "./Room";
+export { JazzBarRoom } from "./JazzBarRoom";

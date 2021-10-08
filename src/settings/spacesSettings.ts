@@ -23,7 +23,7 @@ export const VENUE_SPACES_LIST: SpacesListItem[] = [
   {
     text: "Auditorium",
     icon: RoomIconAuditorium,
-    template: VenueTemplate.audience,
+    template: VenueTemplate.auditorium,
   },
   {
     text: "Music Bar",
