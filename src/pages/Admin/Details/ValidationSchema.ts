@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import firebase from "firebase/app";
 import * as Yup from "yup";
 
@@ -213,13 +212,6 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
     .matches(
       /\d{4}-\d{2}-\d{2}/,
       'Start date must have the format "yyyy-mm-dd"'
-    )
-    .test(
-      "start_date_future",
-      "Start date must be in the futur",
-      (start_date) => {
-        return dayjs(start_date).isSameOrAfter(dayjs(), "day");
-      }
     ),
   start_time: Yup.string().required("Start time required"),
   duration_hours: Yup.number()
