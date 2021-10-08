@@ -10,7 +10,7 @@ import { createUrlSafeName, createVenue_v2, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
-import { adminNGVenueUrl, venueLandingUrl } from "utils/url";
+import { adminWorldSpacesUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
@@ -39,7 +39,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const { worldId } = useWorldEditParams();
 
-  const setWorld = useCallback(
+  const setVenue = useCallback(
     async (vals: FormValues) => {
       if (!user || !worldId) return;
 
@@ -56,7 +56,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           history.push(ADMIN_V3_ROOT_URL);
         } else {
           await createVenue_v2({ ...world, worldId: worldId }, user);
-          history.push(adminNGVenueUrl(world.id));
+          history.push(adminWorldSpacesUrl(world.id));
         }
       } catch (e) {
         console.error(e);
@@ -220,7 +220,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   return (
     <Form
       className={formStyles}
-      onSubmit={handleSubmit(setWorld)}
+      onSubmit={handleSubmit(setVenue)}
       onChange={handleOnChange}
     >
       <div className="DetailsForm__wrapper">

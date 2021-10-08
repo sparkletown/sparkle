@@ -9,6 +9,7 @@ import {
   ADMIN_V3_OLD_WORLD_PARAM_URL,
   ADMIN_V3_ROOT_URL,
   ADMIN_V3_VENUE_PARAM_URL,
+  ADMIN_V3_WORLD_SPACES_PARAM_URL,
   ADMIN_V3_WORLDS_URL,
 } from "settings";
 
@@ -19,8 +20,11 @@ import { WorldsDashboard } from "pages/WorldsDashboard";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
+import { AdminDashboard } from "../AdminDashboard";
+
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>
+    <Route path={ADMIN_V3_WORLD_SPACES_PARAM_URL} component={AdminDashboard} />
     <Route path={ADMIN_V3_NEW_WORLD_URL} component={WorldEditor} />
     <Route path={ADMIN_V3_OLD_WORLD_PARAM_URL} component={WorldEditor} />
     <Route path={ADMIN_V3_WORLDS_URL} component={WorldsDashboard} />

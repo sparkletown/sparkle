@@ -5,12 +5,15 @@ import {
 } from "react-bootstrap";
 import classNames from "classnames";
 
+import { ADMIN_V3_WORLDS_URL } from "settings";
+
 import { isPartyMapVenue } from "types/venues";
 
 import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 
@@ -22,16 +25,10 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./AdminDashboard.scss";
 
-export interface AdminDashboardProps {
-  worldId?: string;
-  worldName?: string;
-}
-
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({
-  worldId,
-  worldName,
-}) => {
+export const AdminDashboard: React.FC = () => {
   const { ownedVenues, isLoading } = useOwnedVenues({});
+
+  const { worldId } = useWorldEditParams();
 
   const venues = worldId
     ? ownedVenues.filter((venue) => venue.worldId === worldId)
@@ -82,8 +79,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     <AdminRestricted>
       <div className="AdminDashboard">
         <div className="AdminDashboard__header">
+          <ButtonNG variant="danger" isLink linkTo={ADMIN_V3_WORLDS_URL}>
+            Back to worlds
+          </ButtonNG>
+
           <div className="AdminDashboard__header-content">
-            <AdminShowcaseTitle>{worldName} Spaces</AdminShowcaseTitle>
+            <AdminShowcaseTitle>Spaces</AdminShowcaseTitle>
             {sortingOptions}
           </div>
           <ButtonNG

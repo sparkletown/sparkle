@@ -4,7 +4,6 @@ import { World } from "api/admin";
 
 import { WithId } from "utils/id";
 
-import { AdminDashboard } from "components/organisms/AdminDashboard";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
@@ -41,8 +40,6 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
         <Loading />
       )}
     </AdminSidebar>
-    <AdminShowcase>
-      {worldId && <AdminDashboard worldName={world?.name} worldId={worldId} />}
-    </AdminShowcase>
+    <AdminShowcase></AdminShowcase>
   </AdminPanel>
 );

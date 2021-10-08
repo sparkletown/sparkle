@@ -6,7 +6,7 @@ import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGVenueUrl, adminWorldUrl } from "utils/url";
+import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
@@ -78,7 +78,7 @@ export const AdminVenueView: React.FC = () => {
   }, [selectedTab, venueId]);
 
   const navigateToHome = useCallback(
-    () => history.push(adminWorldUrl(venue?.worldId)),
+    () => history.push(adminWorldSpacesUrl(venue?.worldId)),
     [history, venue?.worldId]
   );
 
