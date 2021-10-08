@@ -9,7 +9,7 @@ import { updateWorldAdvancedSettings } from "api/world";
 
 import { WorldAdvancedFormInput } from "types/world";
 
-import { WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 
@@ -70,7 +70,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
 
-    await updateWorldAdvancedSettings({ ...values, id: worldId }, user);
+    await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
 
     reset(defaultValues);
   }, [worldId, user, values, reset, defaultValues]);

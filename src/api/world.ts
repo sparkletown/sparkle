@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { omit } from "lodash";
+import { omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -69,10 +69,17 @@ export const createFirestoreWorldStartInput: (
 };
 
 export const createFirestoreWorldEntranceInput: (
-  input: WithId<WorldAdvancedFormInput>,
+  input: WithId<WorldEntranceFormInput>,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
-  const worldUpdateData: Partial<WithId<World>> = {};
+  const worldUpdateData: Partial<WithId<World>> = {
+    id: input.id,
+    // save only to new place for new worlds, and if missing, read old ones for legacy worlds
+    // questions: {
+    //   code: input.code_of_conduct_questions,
+    //   profile: input.profile_questions,
+    // },
+  };
 
   return worldUpdateData;
 };
@@ -81,11 +88,8 @@ export const createFirestoreWorldAdvancedInput: (
   input: WithId<WorldAdvancedFormInput>,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
-  const worldUpdateData: Partial<WithId<World>> = {
-    attendeesTitle: input.attendeesTitle,
-  };
-
-  return worldUpdateData;
+  // mapping is 1:1, so just filtering out unintended extra fields
+  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
 };
 
 export const createWorld = async (
