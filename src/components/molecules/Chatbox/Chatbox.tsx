@@ -19,7 +19,7 @@ import { useVenuePoll } from "hooks/useVenuePoll";
 import { ChatboxMessage } from "components/molecules/Chatbox/components/ChatboxMessage";
 import {
   useChatboxSendThreadMessage,
-  useDeselectReplyThread,
+  useClearSelectedReplyThread,
   useHasSelectedReplyThread,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
@@ -48,7 +48,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const { createPoll, voteInPoll } = useVenuePoll();
 
-  const closeThread = useDeselectReplyThread();
+  const closeThread = useClearSelectedReplyThread();
 
   const [activeOption, setActiveOption] = useState<ChatOptionType>();
 

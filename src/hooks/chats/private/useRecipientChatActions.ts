@@ -52,9 +52,12 @@ export const useRecipientChatActions = (
     spread
   );
 
-  return {
-    sendChatMessage: sendMessage,
-    sendThreadMessage: sendThreadReply,
-    markMessageRead,
-  };
+  return useMemo(
+    () => ({
+      sendChatMessage: sendMessage,
+      sendThreadMessage: sendThreadReply,
+      markMessageRead,
+    }),
+    [markMessageRead, sendMessage, sendThreadReply]
+  );
 };

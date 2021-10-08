@@ -6,10 +6,11 @@ import {
   useChatboxDeleteThreadMessage,
   useChatboxThread,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
+import { Loading } from "components/molecules/Loading";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 
-import "./ChatMessage.scss";
+import "./ChatMessageReplies.scss";
 
 type ChatMessageRepliesProps = {
   threadId: string;
@@ -18,7 +19,7 @@ type ChatMessageRepliesProps = {
 export const ChatMessageReplies: React.FC<ChatMessageRepliesProps> = ({
   threadId,
 }) => {
-  const thread = useChatboxThread(threadId);
+  const [thread, isThreadLoaded] = useChatboxThread(threadId);
   const deleteThreadReply = useChatboxDeleteThreadMessage();
 
   const rendered = useMemo(
@@ -28,7 +29,7 @@ export const ChatMessageReplies: React.FC<ChatMessageRepliesProps> = ({
           deleteThreadReply?.({ threadId, messageId: reply.id });
 
         return (
-          <div key={reply.id} className="ChatMessage__reply">
+          <div key={reply.id} className="ChatMessageReplies__reply">
             <RenderMarkdown text={reply.text} allowHeadings={false} />
             <ChatMessageInfo
               message={reply}
@@ -40,5 +41,13 @@ export const ChatMessageReplies: React.FC<ChatMessageRepliesProps> = ({
     [deleteThreadReply, thread, threadId]
   );
 
-  return <div className="ChatMessage__replies">{rendered}</div>;
+  return (
+    <div className="ChatMessageReplies">
+      {isThreadLoaded ? (
+        rendered
+      ) : (
+        <Loading containerClassName="ChatMessageReplies__loading" />
+      )}
+    </div>
+  );
 };

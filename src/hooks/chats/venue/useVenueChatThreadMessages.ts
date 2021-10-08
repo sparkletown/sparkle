@@ -11,4 +11,4 @@ export const useVenueChatThreadMessages = (
 ) =>
   useChatMessagesRaw<BaseChatMessage>(
     getThreadRef(venueId, threadId ?? NON_EXISTENT_FIRESTORE_ID)
-  )[0];
+  );

@@ -14,11 +14,11 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import {
   useChatboxDeleteChatMessage,
-  useSelectReplyThread,
+  useSelectThisReplyThread,
 } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
-import { ChatMessageReplies } from "components/atoms/ChatMessage/ChatMessageReplies";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { ChatMessageReplies } from "components/atoms/ChatMessageReplies/ChatMessageReplies";
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatMessage.scss";
@@ -38,7 +38,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     [deleteMessage, messageId]
   );
 
-  const selectThisThread = useSelectReplyThread(message);
+  const selectThisThread = useSelectThisReplyThread(message);
 
   const [isRepliesShown, toggleReplies] = useToggle(false);
 

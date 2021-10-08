@@ -13,6 +13,7 @@ import { noop } from "lodash";
 import { ALWAYS_EMPTY_ARRAY, NON_EXISTENT_FIRESTORE_ID } from "settings";
 
 import {
+  BaseChatMessage,
   ChatActions,
   DeleteChatMessage,
   DeleteChatMessageProps,
@@ -79,16 +80,21 @@ export const ChatboxContextProvider: React.FC<
   );
 };
 
-export const useChatboxThread = (threadId: string) => {
+export const useChatboxThread = (
+  threadId: string
+): [WithId<BaseChatMessage>[], boolean] => {
   const context = useContext(ChatboxContext);
   const preloadedThread =
     context.preloadedThreads[threadId] ?? ALWAYS_EMPTY_ARRAY;
-  const liveThread = useVenueChatThreadMessages(context.venueId, threadId);
+  const [liveThread, isLiveThreadLoaded] = useVenueChatThreadMessages(
+    context.venueId,
+    threadId
+  );
 
-  return useMemo(() => [...preloadedThread, ...liveThread], [
-    liveThread,
-    preloadedThread,
-  ]);
+  return useMemo(
+    () => [[...preloadedThread, ...liveThread], isLiveThreadLoaded],
+    [isLiveThreadLoaded, liveThread, preloadedThread]
+  );
 };
 
 export const useChatboxSendChatMessage = (): SendChatMessage<SendChatMessageProps> =>
@@ -105,7 +111,7 @@ export const useChatboxDeleteThreadMessage = ():
   | DeleteChatMessage<DeleteThreadMessageProps>
   | undefined => useContext(ChatboxContext).deleteThreadMessage;
 
-export const useSelectReplyThread = (thread: WithId<MessageToDisplay>) => {
+export const useSelectThisReplyThread = (thread: WithId<MessageToDisplay>) => {
   const { setSelectedReplyThread } = useContext(ChatboxContext);
   return useCallback(() => setSelectedReplyThread(thread), [
     setSelectedReplyThread,
@@ -113,7 +119,7 @@ export const useSelectReplyThread = (thread: WithId<MessageToDisplay>) => {
   ]);
 };
 
-export const useDeselectReplyThread = () => {
+export const useClearSelectedReplyThread = () => {
   const { setSelectedReplyThread } = useContext(ChatboxContext);
   return useCallback(() => setSelectedReplyThread(undefined), [
     setSelectedReplyThread,
