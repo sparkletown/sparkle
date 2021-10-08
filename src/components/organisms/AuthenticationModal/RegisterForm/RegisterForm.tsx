@@ -185,6 +185,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     checkVenueAccessLevels(formValues);
     try {
       const auth = await signInWithFacebook();
+
+      if (auth.message) {
+        setError("backend", "firebase", "Error");
+
+        return;
+      }
+
       postRegisterCheck(auth, formValues);
     } catch {
       setError("backend", "firebase", "Error");
