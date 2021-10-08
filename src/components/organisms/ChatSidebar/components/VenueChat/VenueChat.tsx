@@ -39,7 +39,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
 
   const messages = useVenueChatMessages(venue.id, limit);
 
-  const { data: allChatMessagesCount } = useVenueChatMessagesCount(venueId);
+  const allChatMessagesCount = useVenueChatMessagesCount(venueId);
 
   return (
     <ChatboxContextProvider
