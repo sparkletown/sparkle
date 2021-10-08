@@ -7,7 +7,7 @@ import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_URL } from "settings";
 
-import { World } from "api/admin";
+import { createUrlSafeName, World } from "api/admin";
 import { createWorld, updateWorldStartSettings } from "api/world";
 
 import { WorldStartFormInput } from "types/world";
@@ -41,7 +41,13 @@ const HANDLED_ERRORS = [
 ];
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string().required(),
+  name: Yup.string()
+    .required()
+    .test(
+      "name",
+      "Must have alphanumeric characters",
+      (val: string) => createUrlSafeName(val).length > 0
+    ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
   bannerImageFile: Yup.mixed<FileList>().notRequired(),
