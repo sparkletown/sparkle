@@ -19,11 +19,11 @@ import { AdminSidebarFooter } from "components/organisms/AdminVenueView/componen
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 
+import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
-import { InputField } from "components/atoms/InputField";
 import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditFormNG.scss";
@@ -131,8 +131,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
-  console.log(!isLoadingRoomVenue && !!roomVenue);
-
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditFormNG">
@@ -142,72 +140,67 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         <AdminSidebarSubTitle>
           The url of your space is <span>{room.url}</span>
         </AdminSidebarSubTitle>
-        <div className="SpaceEditFormNG__portal">
-          <Form.Label>Livestream URL</Form.Label>
-          <InputField
+        <AdminSection title="Livestream URL" withLabel>
+          <AdminInput
             name="venue.iframeUrl"
-            type="text"
-            autoComplete="off"
             placeholder="Livestream URL"
-            error={errors?.venue?.iframeUrl}
-            ref={register()}
+            register={register}
+            errors={errors}
           />
-          {errors?.venue?.iframeUrl && (
-            <span className="input-error">{errors?.venue?.iframeUrl}</span>
-          )}
-          <Form.Label>Autoplay your embeded video</Form.Label>
+        </AdminSection>
+        <AdminSection title="Autoplay your embeded video">
           <Toggler name="room.autoPlay" forwardedRef={register} />
+        </AdminSection>
 
-          <AdminSection
-            title={
-              <>
-                Upload Highlight image &nbsp;
-                <span className="mod--subdued">(optional)</span>
-              </>
-            }
-            subtitle="A plain 1920 x 1080px image works best."
-          >
-            <div className="SpaceEditFormNG__banner-wrapper">
-              <ImageInput
-                name="bannerImage"
-                imgUrl={values.bannerImageUrl}
-                error={errors.bannerImageUrl}
-                isInputHidden={!values.bannerImageUrl}
-                register={register}
-                setValue={setValue}
-              />
-            </div>
-          </AdminSection>
-          <AdminSection
-            title={
-              <>
-                Upload a logo &nbsp;
-                <span className="mod--subdued">(optional)</span>
-              </>
-            }
-            subtitle="A 400 px square image works best."
-          >
-            <div className="SpaceEditFormNG__logo-wrapper">
-              <ImageInput
-                name="image_url"
-                imgUrl={values.image_url}
-                error={errors.image_url}
-                setValue={setValue}
-                register={register}
-                small
-              />
-            </div>
-          </AdminSection>
-          <ButtonNG
-            variant="danger"
-            loading={isUpdating || isDeleting}
-            disabled={isUpdating || isDeleting}
-            onClick={deleteSelectedRoom}
-          >
-            Delete {ROOM_TAXON.lower}
-          </ButtonNG>
-          {error && <div>Error: {error}</div>}
-        </div>
+        <AdminSection
+          title={
+            <>
+              Upload Highlight image &nbsp;
+              <span className="mod--subdued">(optional)</span>
+            </>
+          }
+          subtitle="A plain 1920 x 1080px image works best."
+        >
+          <div className="SpaceEditFormNG__banner-wrapper">
+            <ImageInput
+              name="bannerImage"
+              imgUrl={values.bannerImageUrl}
+              error={errors.bannerImageUrl}
+              isInputHidden={!values.bannerImageUrl}
+              register={register}
+              setValue={setValue}
+            />
+          </div>
+        </AdminSection>
+        <AdminSection
+          title={
+            <>
+              Upload a logo &nbsp;
+              <span className="mod--subdued">(optional)</span>
+            </>
+          }
+          subtitle="A 400 px square image works best."
+        >
+          <div className="SpaceEditFormNG__logo-wrapper">
+            <ImageInput
+              name="image_url"
+              imgUrl={values.image_url}
+              error={errors.image_url}
+              setValue={setValue}
+              register={register}
+              small
+            />
+          </div>
+        </AdminSection>
+        <ButtonNG
+          variant="danger"
+          loading={isUpdating || isDeleting}
+          disabled={isUpdating || isDeleting}
+          onClick={deleteSelectedRoom}
+        >
+          Delete {ROOM_TAXON.lower}
+        </ButtonNG>
+        {error && <div>Error: {error}</div>}
 
         {isLoadingRoomVenue && (
           <div className="SpaceEditFormNG__loading-indicator">
