@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect } from "react";
-import { Form } from "react-bootstrap";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Dropdown as ReactBootstrapDropdown, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
@@ -16,14 +16,10 @@ import { createJazzbar } from "utils/venue";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
-
-import {
-  setBannerURL,
-  setSquareLogoUrl,
-} from "pages/Admin/Venue/VenueWizard/redux/actions";
-import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
+import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Dropdown } from "components/atoms/Dropdown";
 import ImageInput from "components/atoms/ImageInput";
 
 import { validationSchema_v2 } from "../ValidationSchema";
@@ -32,7 +28,7 @@ import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
 import "./DetailsForm.scss";
 
-const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
+const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const history = useHistory();
   const venueId = useVenueId();
   const { user } = useUser();
@@ -41,24 +37,24 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const setVenue = useCallback(
     async (vals: FormValues) => {
-      if (!user || !worldId) return;
+      if (!user) return;
 
       try {
         if (venueId) {
           const updatedVenue = {
             ...vals,
             id: venueId,
-            worldId,
+            worldId: venue?.worldId ?? "",
           };
 
           await updateVenue_v2(updatedVenue, user);
 
-          history.push(adminWorldSpacesUrl(worldId));
+          history.push(adminWorldSpacesUrl(venue?.worldId));
         } else {
           const newVenue = {
             ...vals,
             id: createUrlSafeName(vals.name),
-            worldId,
+            worldId: worldId ?? "",
           };
 
           await createVenue_v2(newVenue, user);
@@ -69,7 +65,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         console.error(e);
       }
     },
-    [user, worldId, venueId, history]
+    [history, user, venue?.worldId, venueId, worldId]
   );
 
   const {
@@ -105,25 +101,27 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const defaultVenue = createJazzbar({});
 
   useEffect(() => {
-    if (editData && venueId) {
+    if (venue && venueId) {
       setValue([
-        { name: editData?.name },
-        { subtitle: editData?.subtitle },
-        { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl ?? "" },
-        { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
-        { showGrid: editData?.showGrid },
+        { name: venue?.name },
+        { subtitle: venue?.config?.landingPageConfig.subtitle },
+        { description: venue?.config?.landingPageConfig?.description },
+        {
+          bannerImageUrl: venue?.config?.landingPageConfig?.coverImageUrl ?? "",
+        },
+        { logoImageUrl: venue?.host?.icon ?? DEFAULT_VENUE_LOGO },
+        { showGrid: venue?.showGrid },
       ]);
     }
-  }, [editData, setValue, venueId]);
+  }, [venue, setValue, venueId]);
 
   const handleBannerUpload = (url: string) => {
-    setBannerURL(dispatch, url);
+    setValue("bannerImage", url);
     void triggerValidation();
   };
 
   const handleLogoUpload = (url: string) => {
-    setSquareLogoUrl(dispatch, url);
+    setValue("logoImage", url);
     void triggerValidation();
   };
 
@@ -189,7 +187,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         error={errors.bannerImageFile || errors.bannerImageUrl}
         setValue={setValue}
         register={register}
-        imgUrl={editData?.bannerImageUrl}
+        imgUrl={venue?.config?.landingPageConfig.coverImageUrl}
         isInputHidden={!values.bannerImageUrl}
         text="Upload Highlight image"
       />
@@ -206,30 +204,40 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         error={errors.logoImageFile || errors.logoImageUrl}
         setValue={setValue}
         register={register}
-        imgUrl={editData?.logoImageUrl}
+        imgUrl={venue?.host?.icon}
       />
     </div>
   );
 
-  const handleOnChange = () => {
-    return dispatch({
-      type: SET_FORM_VALUES,
-      payload: {
-        name: values.name,
-        subtitle: values.subtitle,
-        description: values.description,
-      },
-    });
-  };
+  const { worldVenuesIds } = useWorldVenues(worldId ?? "");
+
+  const parentIdDropdownOptions = useMemo(
+    () =>
+      worldVenuesIds.map((venueId) => (
+        <ReactBootstrapDropdown.Item
+          key={venueId}
+          onClick={() => setValue("parentId", venueId)}
+        >
+          {venueId}
+        </ReactBootstrapDropdown.Item>
+      )),
+    [setValue, worldVenuesIds]
+  );
+
+  const renderedParentIdDropdown = useMemo(
+    () => (
+      <div>
+        <h4 className="italic">Upload your logo</h4>
+        <Dropdown title="Parent id" options={parentIdDropdownOptions} />
+      </div>
+    ),
+    [parentIdDropdownOptions]
+  );
 
   const formStyles = classNames({ DetailsForm__edit: venueId });
 
   return (
-    <Form
-      className={formStyles}
-      onSubmit={handleSubmit(setVenue)}
-      onChange={handleOnChange}
-    >
+    <Form className={formStyles} onSubmit={handleSubmit(setVenue)}>
       <div className="DetailsForm__wrapper">
         <input
           type="hidden"
@@ -252,6 +260,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderDescription()}
         {renderHighlightImageUpload()}
         {renderLogoUpload()}
+        {renderedParentIdDropdown}
       </div>
 
       <div className="DetailsForm__footer">
