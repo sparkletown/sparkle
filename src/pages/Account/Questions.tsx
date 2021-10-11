@@ -86,20 +86,15 @@ export const Questions: React.FC = () => {
   if (isLoaded(venue) && !venue) {
     return <>Error: venue not found for venueId={venueId}</>;
   }
-  console.log(
-    "QUESTIONS",
-    venue,
-    isSovereignVenueLoading,
-    isUpdating,
-    sovereignVenue,
-    isLoaded(venue),
-    venueId
-  );
+
   if (!venue || isSovereignVenueLoading) {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = sovereignVenue?.profile_questions?.length ?? 0;
+  const numberOfQuestions =
+    venue?.profile_questions?.length ??
+    sovereignVenue?.profile_questions?.length ??
+    0;
   const headerMessage = `Now complete your profile by answering ${
     numberOfQuestions === 1 ? "this question" : "some short questions"
   }`;
@@ -115,7 +110,7 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions?.map((question: QuestionType) => (
+          {venue?.profile_questions?.map((question: QuestionType) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
                 <strong>{question.name}</strong>

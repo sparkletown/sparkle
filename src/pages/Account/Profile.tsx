@@ -63,14 +63,14 @@ export const Profile: React.FC = () => {
       const nextUrl = venueId
         ? `/account/questions?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
-      console.log("PROFILE REDIRECT", nextUrl, venueId);
+
       history.push(nextUrl);
     },
     [history, returnUrl, user, venueId]
   );
 
   const pictureUrl = watch("pictureUrl");
-  console.log("PROFILE", isUpdating);
+
   return (
     <div className="page-container-onboarding">
       <div className="login-container">
