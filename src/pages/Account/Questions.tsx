@@ -84,7 +84,14 @@ export const Questions: React.FC = () => {
   if (isLoaded(venue) && !venue) {
     return <>Error: venue not found for venueId={venueId}</>;
   }
-  console.log("QUESTIONS", venue, isSovereignVenueLoading, isUpdating);
+  console.log(
+    "QUESTIONS",
+    venue,
+    isSovereignVenueLoading,
+    isUpdating,
+    sovereignVenue,
+    isLoaded(venue)
+  );
   if (!venue || isSovereignVenueLoading) {
     return <LoadingPage />;
   }
