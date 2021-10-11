@@ -553,6 +553,15 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     );
   };
 
+  const renderSocialLoginToggle = () => {
+    return (
+      <div className="toggle-room DetailsForm">
+        <h4 className="italic input-header">Enable Social Login</h4>
+        <Toggler name="hasSocialLoginEnabled" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -744,6 +753,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {values.showRadio && renderRadioStationInput()}
 
         {renderJukeboxToggle()}
+
+        {renderSocialLoginToggle()}
 
         <UserStatusManager
           venueId={venueId}

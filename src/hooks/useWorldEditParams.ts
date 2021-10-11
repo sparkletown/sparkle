@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 
-import { WorldNavTab } from "types/WorldNavTab";
+import { WorldNavTab } from "types/world";
 
 export interface WorldEditParams {
   worldId?: string;
