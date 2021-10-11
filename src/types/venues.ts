@@ -135,6 +135,7 @@ export interface VenueAdvancedConfig {
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
+  hasSocialLoginEnabled?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -218,6 +219,7 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
+  hasSocialLoginEnabled?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

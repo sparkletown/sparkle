@@ -8,7 +8,7 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 import { World } from "api/admin";
 
 import { WithId } from "utils/id";
-import { adminWorldUrl } from "utils/url";
+import { adminWorldSpacesUrl, adminWorldUrl } from "utils/url";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -44,6 +44,8 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       </div>
       <ButtonNG
         variant="dark"
+        isLink
+        linkTo={adminWorldSpacesUrl(world.id)}
         iconName={faSignInAlt}
         className="WorldCard__button"
       >
