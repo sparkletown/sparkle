@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
-  // AUTH_DOMAIN,
+  AUTH_DOMAIN,
   BUCKET_URL,
   MEASUREMENT_ID,
   PROJECT_ID,
@@ -502,7 +502,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
-  authDomain: "co-reality-staging.firebaseapp.com",
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
