@@ -4,9 +4,10 @@ import { ROOMS_TAXON, VENUE_SPACES_LIST } from "settings";
 
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { SPACE_EDIT_FORM_TEMPLATES } from "utils/venue";
 
 import { useFetchAssets } from "hooks/useFetchAssets";
 
@@ -22,8 +23,6 @@ import { AdminSidebarTitle } from "components/organisms/AdminVenueView/component
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
-import { SpaceEditFormNG } from "components/molecules/SpaceEditFormNG";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
@@ -121,26 +120,35 @@ export const Spaces: React.FC<SpacesProps> = ({
   const selectedRoomIndex =
     venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
-  // TEMP solution: provide mapping for EditForm
-  const EditForm =
-    selectedRoom?.template === VenueTemplate.auditorium
-      ? SpaceEditFormNG
-      : SpaceEditForm;
+  const renderSpaceEditForm = useCallback(() => {
+    if (!selectedRoom) return;
+
+    const EditForm = SPACE_EDIT_FORM_TEMPLATES[selectedRoom.template ?? ""];
+
+    return (
+      <EditForm
+        venueVisibility={venue.roomVisibility}
+        room={selectedRoom}
+        updatedRoom={updatedRoom}
+        roomIndex={selectedRoomIndex}
+        onBackClick={clearSelectedRoom}
+        onDelete={clearSelectedRoom}
+        onEdit={clearSelectedRoom}
+      />
+    );
+  }, [
+    venue.roomVisibility,
+    selectedRoom,
+    updatedRoom,
+    selectedRoomIndex,
+    clearSelectedRoom,
+  ]);
 
   return (
     <AdminPanel className="Spaces">
       <AdminSidebar>
-        {selectedRoom ? (
-          <EditForm
-            venueVisibility={venue.roomVisibility}
-            room={selectedRoom}
-            updatedRoom={updatedRoom}
-            roomIndex={selectedRoomIndex}
-            onBackClick={clearSelectedRoom}
-            onDelete={clearSelectedRoom}
-            onEdit={clearSelectedRoom}
-          />
-        ) : (
+        {renderSpaceEditForm()}
+        {!selectedRoom && (
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
             <AdminSidebarFooter {...sidebarFooterProps} />

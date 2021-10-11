@@ -1,3 +1,5 @@
+import React from "react";
+
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
 import { VenueInput_v2 } from "api/admin";
@@ -10,6 +12,11 @@ import {
 } from "types/venues";
 
 import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
+
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
+import { SpaceEditFormProps } from "components/molecules/SpaceEditForm/SpaceEditForm";
+import { SpaceEditFormNG } from "components/molecules/SpaceEditFormNG";
+import { SpaceEditFormNGProps } from "components/molecules/SpaceEditFormNG/SpaceEditFormNG";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
@@ -171,3 +178,21 @@ export const findSovereignVenue = (
     maxDepth: maxDepth ? maxDepth - 1 : undefined,
   });
 };
+
+const spaceEditForms = () => {
+  const templatesList: VenueTemplate[] = Object.values(VenueTemplate).filter(
+    (template) => template !== VenueTemplate.auditorium
+  );
+  const templatelistNG = {
+    [`${VenueTemplate.auditorium}`]: SpaceEditFormNG,
+  };
+
+  return templatesList.reduce(
+    (acc, template) => ({ ...acc, [`${template}`]: SpaceEditForm }),
+    templatelistNG
+  );
+};
+export const SPACE_EDIT_FORM_TEMPLATES: Record<
+  string,
+  React.FC<SpaceEditFormNGProps | SpaceEditFormProps>
+> = spaceEditForms();

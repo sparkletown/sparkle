@@ -10,6 +10,7 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
+import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -31,13 +32,14 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditFormNG.scss";
 
-interface SpaceEditFormNGProps {
+export interface SpaceEditFormNGProps {
   room: Room;
   updatedRoom?: Room;
   roomIndex: number;
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  venueVisibility?: RoomVisibility;
 }
 
 export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({

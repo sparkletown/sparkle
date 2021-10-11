@@ -36,7 +36,7 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditForm.scss";
 
-interface SpaceEditFormProps {
+export interface SpaceEditFormProps {
   room: Room;
   updatedRoom?: Room;
   roomIndex: number;
