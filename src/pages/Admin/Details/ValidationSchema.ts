@@ -165,7 +165,7 @@ export const roomEditSchema = Yup.object().shape({
 });
 
 export const roomEditNGSchema = Yup.object().shape({
-  image_url: roomImageUrlSchema,
+  image_url: Yup.string().notRequired(),
   bannerImageUrl: Yup.string().notRequired(),
   venue: Yup.object().shape({
     iframeUrl: Yup.string().notRequired(),
