@@ -5,6 +5,9 @@ import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
 import { World } from "api/admin";
+import { updateWorldEntranceSettings } from "api/world";
+
+import { WorldEntranceFormInput } from "types/world";
 
 import { WithId } from "utils/id";
 
@@ -14,6 +17,9 @@ import { AdminSidebarFooter } from "components/organisms/AdminVenueView/componen
 import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 
 import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
+
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./WorldEntranceForm.scss";
 
@@ -23,18 +29,23 @@ const HANDLED_ERRORS: string[] = [];
 const validationSchema = Yup.object().shape({});
 
 export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
-  world?: WithId<World>;
+  world: WithId<World>;
 }
 
 export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world?.id;
-  const createMode = !worldId;
+  const worldId = world.id;
   const { user } = useUser();
 
-  const defaultValues = useMemo(() => ({}), []);
+  const defaultValues = useMemo<WorldEntranceFormInput>(
+    () => ({
+      profile_questions: [],
+      code_of_conduct_questions: [],
+    }),
+    []
+  );
 
   const {
     reset,
@@ -42,7 +53,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     formState: { dirty, isSubmitting },
     errors,
     handleSubmit,
-  } = useForm({
+  } = useForm<WorldEntranceFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
@@ -52,30 +63,31 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const values = watch();
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user) return;
-    if (!createMode || !worldId) return;
+    if (!values || !user || !worldId) return;
 
-    // await updateWorld({ ...values, id: worldId }, user);
+    await updateWorldEntranceSettings({ ...values, id: worldId }, user);
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, createMode, defaultValues]);
+  }, [worldId, user, values, reset, defaultValues]);
 
-  if (error) {
-    console.error(WorldEntranceForm.name, error);
-  }
+  const saveButtonProps: ButtonProps = useMemo(
+    () => ({
+      type: "submit",
+      disabled: !dirty && !isSaving && !isSubmitting,
+      loading: isSubmitting || isSaving,
+    }),
+    [dirty, isSaving, isSubmitting]
+  );
 
   return (
     <div className="WorldEntranceForm">
       <Form onSubmit={handleSubmit(submit)}>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          saveButtonProps={{
-            type: "submit",
-            disabled: !dirty && !isSaving && !isSubmitting,
-            loading: isSubmitting || isSaving,
-          }}
+          saveButtonProps={saveButtonProps}
         />
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+        <SubmitError error={error} />
       </Form>
     </div>
   );

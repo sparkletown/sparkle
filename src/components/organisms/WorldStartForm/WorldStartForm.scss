@@ -1,11 +1,8 @@
 @import "scss/constants";
 
 .WorldStartForm {
-  &__name {
+  &__name,
+  .AdminWorldUrlSection__id {
     color: $red;
-  }
-
-  &__subdued {
-    color: var(--content--over-50a);
   }
 }

@@ -34,6 +34,7 @@ export const updateUserProfile = (
 ) => {
   const firestore = firebase.firestore();
   const doc = `users/${userId}`;
+
   return firestore
     .doc(doc)
     .update(profileData)

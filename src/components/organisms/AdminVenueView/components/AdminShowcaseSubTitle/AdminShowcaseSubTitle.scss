@@ -4,8 +4,7 @@ $height: 1rem;
 
 .AdminShowcaseSubTitle {
   place-content: center start;
-  height: $height;
-  max-height: $height;
+  min-height: $height;
   line-height: $height;
   font-size: $height;
   font-weight: $font-weight--400;
