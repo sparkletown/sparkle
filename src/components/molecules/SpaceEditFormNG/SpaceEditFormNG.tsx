@@ -68,11 +68,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const defaultValues = useMemo(
     () => ({
       image_url: room.image_url ?? "",
+      iframeUrl: roomVenue?.iframeUrl ?? "",
+      autoPlay: roomVenue?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: roomVenue?.config?.landingPageConfig.bannerImageUrl ?? "",
-      venue: {
-        iframeUrl: roomVenue?.iframeUrl ?? "",
-        autoPlay: roomVenue?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
-      },
     }),
     [room.image_url, roomVenue]
   );
@@ -86,19 +84,34 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
-  const venueValues = watch("venue");
+
+  const changeRoomImageUrl = useCallback(
+    (val: string) => {
+      setValue("image_url", val, false);
+    },
+    [setValue]
+  );
+
+  const changeBackgroundImageUrl = useCallback(
+    (val: string) => {
+      setValue("bannerImageUrl", val, false);
+    },
+    [setValue]
+  );
 
   const updateVenueRoom = useCallback(async () => {
-    if (!user || !roomVenueId) return;
+    if (!user || !roomVenueId || !roomVenue) return;
+
     await updateVenueNG(
       {
         id: roomVenueId,
-        ...venueValues,
-        iframeUrl: venueValues.iframeUrl || DEFAULT_EMBED_URL,
+        iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+        autoPlay: values.autoPlay,
+        bannerImageUrl: values.bannerImageUrl,
       },
       user
     );
-  }, [roomVenueId, user, venueValues]);
+  }, [roomVenueId, user, values, roomVenue]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
@@ -106,11 +119,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     const roomData: RoomInput = {
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
-      ...values,
+      image_url: values.image_url,
     };
 
     await upsertRoom(roomData, venueId, user, roomIndex);
-    room.template && (await updateVenueRoom());
+    await updateVenueRoom();
 
     onEdit && onEdit();
   }, [
@@ -160,14 +173,14 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </AdminSidebarSectionTitle>
           <AdminSection title="Livestream URL" withLabel>
             <AdminInput
-              name="venue.iframeUrl"
+              name="iframeUrl"
               placeholder="Livestream URL"
               register={register}
               errors={errors}
             />
           </AdminSection>
           <AdminSection title="Autoplay your embeded video">
-            <Toggler name="venue.autoPlay" forwardedRef={register} />
+            <Toggler name="autoPlay" forwardedRef={register} />
           </AdminSection>
         </>
       </AdminSpacesListItem>
@@ -178,6 +191,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       >
         <AdminSection title="Upload a banner photo">
           <ImageInput
+            onChange={changeBackgroundImageUrl}
             name="bannerImage"
             imgUrl={values.bannerImageUrl}
             error={errors.bannerImageUrl}
@@ -188,7 +202,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSection>
         <AdminSection title="Upload a logo">
           <ImageInput
-            name="image_url"
+            nameWithUnderscore
+            onChange={changeRoomImageUrl}
+            name="image"
             imgUrl={values.image_url}
             error={errors.image_url}
             setValue={setValue}
