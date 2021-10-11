@@ -218,3 +218,7 @@ export const settingsSelector: SparkleSelector<Settings | undefined> = (
 
 export const worldEditSelector: SparkleSelector<World | undefined> = (state) =>
   state.firestore.data.worldEdit;
+
+export const currentWorldSelector: SparkleSelector<World | undefined> = (
+  state
+) => state.firestore.data.currentWorld;

@@ -10,15 +10,14 @@ import {
 import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
-import { trackAnalyticEvent } from "utils/mixpanel";
 import { openUrl, venueInsideUrl } from "utils/url";
 
+import { useAnalytic } from "hooks/useAnalytic";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
-import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -52,6 +51,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
   const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
+  const analytic = useAnalytic({ venue });
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
@@ -73,30 +73,17 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
-  const { user } = useUser();
-
   const isUserAudioMuted = !isUserAudioOn;
 
   useEffect(() => {
-    trackAnalyticEvent("Enter jazz bar", {
-      worldId: venue.worldId,
-      email: user?.email,
-    });
-  }, [user?.email, venue.worldId]);
+    analytic.trackEnterJazzBarEvent();
+  }, [analytic]);
 
   useEffect(() => {
-    seatedAtTable &&
-      trackAnalyticEvent("Select table", {
-        worldId: venue.worldId,
-        email: user?.email,
-      });
+    seatedAtTable && analytic.trackSelectTableEvent();
 
-    seatedAtTable &&
-      trackAnalyticEvent("Sit down in seat", {
-        worldId: venue.worldId,
-        email: user?.email,
-      });
-  }, [seatedAtTable, user?.email, venue.worldId]);
+    seatedAtTable && analytic.trackTakeSeatEvent();
+  }, [analytic, seatedAtTable]);
 
   const shouldShowReactions =
     seatedAtTable && areSettingsLoaded && settings.showReactions;

@@ -7,7 +7,6 @@ import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
-import { trackAnalyticEvent } from "utils/mixpanel";
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import {
@@ -26,9 +25,10 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
+import { useAnalytic } from "hooks/useAnalytic";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-// import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -67,6 +67,9 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
+  const venue = useSelector(currentVenueSelector);
+  const analytic = useAnalytic({ venue });
+  const { world } = useCurrentWorld({ worldId: venue?.worldId });
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
@@ -76,7 +79,7 @@ export const VenuePage: React.FC = () => {
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
+
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   const assetsToPreload = useMemo(
@@ -99,7 +102,6 @@ export const VenuePage: React.FC = () => {
   const userId = user?.uid;
 
   const venueName = venue?.name ?? "";
-  const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
 
@@ -187,13 +189,10 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!venueId || !venueTemplate) return;
+    if (!world) return;
 
-    trackAnalyticEvent("VenuePage loaded", {
-      venueId,
-      template: venueTemplate,
-    });
-  }, [venueId, venueTemplate]);
+    analytic.trackVenuePageLoadedEvent(world.name);
+  }, [analytic, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

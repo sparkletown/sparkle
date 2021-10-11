@@ -18,11 +18,11 @@ import gIcon from "assets/icons/google-social-icon.svg";
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
-  closeAuthenticationModal: () => void;
-  afterUserIsLoggedIn?: () => void;
+  closeAuthenticationModal?: () => void;
+  afterUserIsLoggedIn?: (data: LoginFormData) => void;
 }
 
-interface LoginFormData {
+export interface LoginFormData {
   email: string;
   password: string;
   code: string;

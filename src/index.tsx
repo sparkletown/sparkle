@@ -27,19 +27,12 @@ import { FIREBASE_CONFIG } from "settings";
 
 import { store } from "store";
 
-import { isPartyMapVenue } from "types/venues";
-
-import {
-  identifyAnalyticUser,
-  initAnalytic,
-  setAnalyticGroup,
-} from "utils/mixpanel";
 import { traceReactScheduler } from "utils/performance";
-import { authSelector } from "utils/selectors";
+import { authSelector, currentVenueSelector } from "utils/selectors";
 
 import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useAnalytic } from "hooks/useAnalytic";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -194,18 +187,13 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-initAnalytic();
-
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const { userWithId } = useUser();
-  const { ownedVenues: venues } = useOwnedVenues({});
+  const venue = useSelector(currentVenueSelector);
+  const analytic = useAnalytic({ venue });
   const auth = useSelector(authSelector);
-
-  const worldsNames = venues
-    ?.filter(isPartyMapVenue)
-    .map((venue) => venue.name);
 
   useEffect(() => {
     if (!auth || !auth.uid || !userWithId) return;
@@ -220,9 +208,10 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    identifyAnalyticUser(email, userWithId.partyName);
-    setAnalyticGroup("worldId", worldsNames);
-  }, [auth, userWithId, worldsNames]);
+    analytic.initAnalytic();
+
+    analytic.identifyAnalyticUser(email, userWithId.partyName);
+  }, [analytic, auth, userWithId]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 

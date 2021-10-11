@@ -10,11 +10,13 @@ import { VenueAccessMode } from "types/VenueAcccess";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
+import { useAnalytic } from "hooks/useAnalytic";
 import { useSelector } from "hooks/useSelector";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
+import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -27,8 +29,8 @@ import gIcon from "assets/icons/google-social-icon.svg";
 interface PropsType {
   displayLoginForm: () => void;
   displayPasswordResetForm: () => void;
-  afterUserIsLoggedIn?: () => void;
-  closeAuthenticationModal: () => void;
+  afterUserIsLoggedIn?: (data: LoginFormData) => void;
+  closeAuthenticationModal?: () => void;
 }
 
 interface RegisterFormData {
@@ -45,7 +47,6 @@ export interface RegisterData {
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
-  displayPasswordResetForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
 }) => {
@@ -53,6 +54,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const venue = useSelector(venueSelector);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const analytic = useAnalytic({ venue });
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
@@ -126,9 +128,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       });
     }
 
+    analytic.trackSignUpEvent(data.email);
     afterUserIsLoggedIn && afterUserIsLoggedIn();
 
-    closeAuthenticationModal();
+    afterUserIsLoggedIn?.(data);
+
+    closeAuthenticationModal?.();
   };
 
   const onSubmit = async (data: RegisterFormData) => {
