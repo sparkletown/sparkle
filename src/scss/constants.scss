@@ -79,6 +79,12 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+$login-rainbox-gradient: linear-gradient(
+  130.78deg,
+  #00f6d5 0%,
+  #6f43ff 45.84%,
+  #e15ada 93.63%
+);
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
@@ -91,6 +97,7 @@ $announcement-container-width-admin: 600px;
 $announcement-container-width: 470px;
 $announcement-container-height: 140px;
 $announcement-banner-admin-height: 55px;
+$auth-container-max-width: 450px;
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;

@@ -69,13 +69,13 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle || "",
         description: data.description || "",
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     createdAt: Date.now(),
@@ -86,19 +86,23 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
   return await worldDoc.create(worldData).then(() => worldDoc.id);
 });
 
-// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
+
   const {
-    id: worldId,
-    name,
+    attendeesTitle,
     bannerImageUrl,
+    chatTitle,
     code_of_conduct_questions,
     description,
     entrance,
+    id: worldId,
     logoImageUrl,
+    name,
     profile_questions,
     rooms,
+    showNametags,
+    slug,
     subtitle,
   } = data;
 
@@ -130,13 +134,17 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     updatedAt: Date.now(),
-    ...(name && { name }),
-    ...(logoImageUrl && { host: { icon: logoImageUrl } }),
-    ...(rooms && { rooms }),
+    ...(attendeesTitle && { attendeesTitle }),
+    ...(chatTitle && { chatTitle }),
     ...(code_of_conduct_questions && { code_of_conduct_questions }),
-    ...(profile_questions && { profile_questions }),
     ...(entrance && { entrance }),
     ...(landingPageConfig && { config: { landingPageConfig } }),
+    ...(logoImageUrl && { host: { icon: logoImageUrl } }),
+    ...(name && { name }),
+    ...(profile_questions && { profile_questions }),
+    ...(rooms && { rooms }),
+    ...(showNametags && { showNametags }),
+    ...(slug && { slug }),
   };
 
   await admin
