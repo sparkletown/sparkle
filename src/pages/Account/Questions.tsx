@@ -6,6 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -36,9 +37,10 @@ export const Questions: React.FC = () => {
   const venueId = useVenueId();
   const {
     sovereignVenue,
-    currentVenue: venue,
     isLoading: isSovereignVenueLoading,
   } = useRelatedVenues({ currentVenueId: venueId });
+
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   // @debt this should probably be retrieving the sovereign venue
 
@@ -90,7 +92,8 @@ export const Questions: React.FC = () => {
     isSovereignVenueLoading,
     isUpdating,
     sovereignVenue,
-    isLoaded(venue)
+    isLoaded(venue),
+    venueId
   );
   if (!venue || isSovereignVenueLoading) {
     return <LoadingPage />;

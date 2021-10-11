@@ -16,6 +16,6 @@ export const useVenueId: () => string | undefined = () => {
   // @debt this is a fallback for our legacy ?venueId=foo pattern. Once we eradicate that
   //   from the codebase in favour of using /:venueId/ paths in the URL, we can remove this.
   const searchParamVenueId = useSearchParam("venueId");
-
+  console.log("useVenueId", urlParamVenueId, searchParamVenueId);
   return urlParamVenueId ?? searchParamVenueId ?? undefined;
 };
