@@ -69,26 +69,16 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       aria-labelledby={isVenueChat ? venueTabId : privateTabId}
       className={containerStyles}
     >
-      <div className="chat-sidebar__header">
-        <button
-          aria-label={isExpanded ? "Hide chat" : "Show chat"}
-          className="chat-sidebar__controller"
-          onClick={toggleSidebar}
-        >
-          {isExpanded ? (
-            <FontAwesomeIcon icon={faChevronRight} size="sm" />
-          ) : (
-            <>
-              <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <div className="chat-sidebar__controller-wrapper">
-                <FontAwesomeIcon icon={faCommentDots} size="lg" />
-                <span className="chat-sidebar__controller-text">Chat</span>
-              </div>
-            </>
-          )}
-        </button>
-        {isExpanded ? (
-          <>
+      {isExpanded ? (
+        <>
+          <div className="chat-sidebar__header">
+            <button
+              aria-label="Hide chat"
+              className="chat-sidebar__controller"
+              onClick={toggleSidebar}
+            >
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
+            </button>
             <div className="chat-sidebar__tabs" role="tablist">
               <button
                 role="tab"
@@ -111,8 +101,27 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                 {privateChatTabTitle}
               </button>
             </div>
-          </>
-        ) : (
+          </div>
+          <div role="tabpanel" className="chat-sidebar__tab-content">
+            {isVenueChat && <VenueChat venue={venue} />}
+            {isPrivateChat && <PrivateChats recipient={recipient} />}
+          </div>
+        </>
+      ) : (
+        <div className="chat-sidebar__header">
+          <button
+            aria-label="Show chat"
+            className="chat-sidebar__controller"
+            onClick={toggleSidebar}
+          >
+            <>
+              <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+              <div className="chat-sidebar__controller-wrapper">
+                <FontAwesomeIcon icon={faCommentDots} size="lg" />
+                <span className="chat-sidebar__controller-text">Chat</span>
+              </div>
+            </>
+          </button>
           <button
             aria-label="Show chat"
             className="chat-sidebar__controller chat-sidebar__private-chat"
@@ -123,18 +132,12 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
               <div className="chat-sidebar__controller-wrapper">
                 <FontAwesomeIcon icon={faEnvelope} size="lg" />
                 <span className="chat-sidebar__controller-text">Messages</span>
-                {newPrivateMessageRecived === 0 && (
+                {newPrivateMessageRecived > 0 && (
                   <div className="chat-sidebar__controller--new-message"></div>
                 )}
               </div>
             </>
           </button>
-        )}
-      </div>
-      {isExpanded && (
-        <div role="tabpanel" className="chat-sidebar__tab-content">
-          {isVenueChat && <VenueChat venue={venue} />}
-          {isPrivateChat && <PrivateChats recipient={recipient} />}
         </div>
       )}
     </div>
