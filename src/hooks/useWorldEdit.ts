@@ -1,37 +1,32 @@
-import { useMemo } from "react";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import { World } from "api/admin";
 
-import { WithId, withId } from "utils/id";
-import { worldEditSelector } from "utils/selectors";
-
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { worldConverter } from "utils/converters";
+import { WithId } from "utils/id";
 
 type UseWorldEditResult = { world?: WithId<World>; isLoaded: boolean };
 
 export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
   worldId
 ) => {
-  useFirestoreConnect(() => {
-    if (!worldId) return [];
+  const firestore = useFirestore();
+  const worldsRef = firestore
+    .collection("worlds")
+    .doc(worldId)
+    .withConverter(worldConverter);
 
-    return [
-      {
-        collection: "worlds",
-        doc: worldId,
-        storeAs: "worldEdit",
-      },
-    ];
-  });
-
-  const world = useSelector(worldEditSelector);
-
-  return useMemo(
-    () => ({
-      world: worldId && world ? withId(world, worldId) : undefined,
-      isLoaded: isLoaded(world),
-    }),
-    [worldId, world]
+  const { data: world, status } = useFirestoreDocData<WithId<World>>(
+    worldsRef,
+    {
+      initialData: undefined,
+    }
   );
+
+  const isWorldLoaded = status === "success";
+
+  return {
+    world,
+    isLoaded: isWorldLoaded,
+  };
 };
