@@ -3,7 +3,8 @@ import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
-import { ROOM_TAXON } from "settings";
+import { DEFAULT_VENUE_AUTOPLAY, ROOM_TAXON } from "settings";
+import { DEFAULT_EMBED_URL } from "settings/embedUrlSettings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
@@ -63,12 +64,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const defaultValues = useMemo(
     () => ({
       image_url: room.image_url ?? "",
-      bannerImageUrl: "",
+      bannerImageUrl: roomVenue?.config?.landingPageConfig.bannerImageUrl ?? "",
       venue: {
         iframeUrl: roomVenue?.iframeUrl ?? "",
+        autoPlay: roomVenue?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       },
     }),
-    [room.image_url, roomVenue?.iframeUrl]
+    [room.image_url, roomVenue]
   );
 
   const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
@@ -88,6 +90,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       {
         id: roomVenueId,
         ...venueValues,
+        iframeUrl: venueValues.iframeUrl || DEFAULT_EMBED_URL,
       },
       user
     );
@@ -132,94 +135,75 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   }, [onBackClick, roomIndex]);
 
   return (
-    <Form onSubmit={handleSubmit(updateSelectedRoom)}>
-      <div className="SpaceEditFormNG">
-        <AdminSidebarTitle>
-          Edit {room.template} space: {room.title}
-        </AdminSidebarTitle>
-        <AdminSidebarSubTitle>
-          The url of your space is <span>{room.url}</span>
-        </AdminSidebarSubTitle>
-        <AdminSection title="Livestream URL" withLabel>
-          <AdminInput
-            name="venue.iframeUrl"
-            placeholder="Livestream URL"
-            register={register}
-            errors={errors}
-          />
-        </AdminSection>
-        <AdminSection title="Autoplay your embeded video">
-          <Toggler name="room.autoPlay" forwardedRef={register} />
-        </AdminSection>
+    <Form
+      onSubmit={handleSubmit(updateSelectedRoom)}
+      className="SpaceEditFormNG"
+    >
+      <AdminSidebarTitle>
+        Edit {room.template} space: {room.title}
+      </AdminSidebarTitle>
+      <AdminSidebarSubTitle>
+        The url of your space is <span>{room.url}</span>
+      </AdminSidebarSubTitle>
+      <AdminSection title="Livestream URL" withLabel>
+        <AdminInput
+          name="venue.iframeUrl"
+          placeholder="Livestream URL"
+          register={register}
+          errors={errors}
+        />
+      </AdminSection>
+      <AdminSection title="Autoplay your embeded video">
+        <Toggler name="venue.autoPlay" forwardedRef={register} />
+      </AdminSection>
+      <AdminSection title="Upload a banner photo">
+        <ImageInput
+          name="bannerImage"
+          imgUrl={values.bannerImageUrl}
+          error={errors.bannerImageUrl}
+          isInputHidden={!values.bannerImageUrl}
+          register={register}
+          setValue={setValue}
+        />
+      </AdminSection>
+      <AdminSection title="Upload a logo">
+        <ImageInput
+          name="image_url"
+          imgUrl={values.image_url}
+          error={errors.image_url}
+          setValue={setValue}
+          register={register}
+          small
+        />
+      </AdminSection>
 
-        <AdminSection
-          title={
-            <>
-              Upload Highlight image &nbsp;
-              <span className="mod--subdued">(optional)</span>
-            </>
-          }
-          subtitle="A plain 1920 x 1080px image works best."
-        >
-          <div className="SpaceEditFormNG__banner-wrapper">
-            <ImageInput
-              name="bannerImage"
-              imgUrl={values.bannerImageUrl}
-              error={errors.bannerImageUrl}
-              isInputHidden={!values.bannerImageUrl}
-              register={register}
-              setValue={setValue}
-            />
-          </div>
-        </AdminSection>
-        <AdminSection
-          title={
-            <>
-              Upload a logo &nbsp;
-              <span className="mod--subdued">(optional)</span>
-            </>
-          }
-          subtitle="A 400 px square image works best."
-        >
-          <div className="SpaceEditFormNG__logo-wrapper">
-            <ImageInput
-              name="image_url"
-              imgUrl={values.image_url}
-              error={errors.image_url}
-              setValue={setValue}
-              register={register}
-              small
-            />
-          </div>
-        </AdminSection>
+      <ButtonNG
+        variant="danger"
+        loading={isUpdating || isDeleting}
+        disabled={isUpdating || isDeleting}
+        onClick={deleteSelectedRoom}
+      >
+        Delete {ROOM_TAXON.lower}
+      </ButtonNG>
+      {error && <div>Error: {error}</div>}
+
+      {isLoadingRoomVenue && (
+        <div className="SpaceEditFormNG__loading-indicator">
+          <Spinner animation="border" role="status" />
+          <span>Loading space information...</span>
+        </div>
+      )}
+
+      <AdminSidebarFooter onClickCancel={handleBackClick}>
         <ButtonNG
-          variant="danger"
-          loading={isUpdating || isDeleting}
+          className="AdminSidebarFooter__button--larger"
+          type="submit"
+          variant="primary"
           disabled={isUpdating || isDeleting}
-          onClick={deleteSelectedRoom}
         >
-          Delete {ROOM_TAXON.lower}
+          Save changes
         </ButtonNG>
-        {error && <div>Error: {error}</div>}
-
-        {isLoadingRoomVenue && (
-          <div className="SpaceEditFormNG__loading-indicator">
-            <Spinner animation="border" role="status" />
-            <span>Loading space information...</span>
-          </div>
-        )}
-
-        <AdminSidebarFooter onClickCancel={handleBackClick}>
-          <ButtonNG
-            className="AdminSidebarFooter__button--larger"
-            type="submit"
-            variant="primary"
-            disabled={isUpdating || isDeleting}
-          >
-            Save changes
-          </ButtonNG>
-        </AdminSidebarFooter>
-      </div>
+      </AdminSidebarFooter>
     </Form>
   );
 };
