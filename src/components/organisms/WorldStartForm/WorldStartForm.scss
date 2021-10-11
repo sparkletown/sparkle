@@ -1,0 +1,8 @@
+@import "scss/constants";
+
+.WorldStartForm {
+  &__name,
+  .AdminWorldUrlSection__id {
+    color: $red;
+  }
+}

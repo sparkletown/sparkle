@@ -9,7 +9,6 @@ import {
 
 import { JazzbarVenue, VenueTemplate } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { trackAnalyticEvent } from "utils/mixpanel";
 import { openUrl, venueInsideUrl } from "utils/url";
@@ -169,12 +168,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       key="main-event"
                       title="main event"
                       className="iframe-video"
-                      src={
-                        convertToEmbeddableUrl({
-                          url: venue.iframeUrl,
-                          autoPlay: venue?.autoPlay,
-                        }) ?? ""
-                      }
+                      src={iframeUrl}
                       frameBorder="0"
                       allow={IFRAME_ALLOW}
                     />

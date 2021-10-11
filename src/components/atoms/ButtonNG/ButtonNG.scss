@@ -107,15 +107,15 @@ $variants-enum: (
     }
   }
 
-  &--gradient:enabled {
-    background-image: $gradient;
-  }
-
   &--admin-gradient:enabled {
     background-image: $admin-gradient;
   }
 
   &--danger-gradient:enabled {
     background-image: $danger-gradient;
+  }
+
+  &--normal-gradient:enabled {
+    background-image: $gradient;
   }
 }

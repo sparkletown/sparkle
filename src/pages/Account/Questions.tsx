@@ -6,6 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -36,9 +37,10 @@ export const Questions: React.FC = () => {
   const venueId = useVenueId();
   const {
     sovereignVenue,
-    currentVenue: venue,
     isLoading: isSovereignVenueLoading,
   } = useRelatedVenues({ currentVenueId: venueId });
+
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   // @debt this should probably be retrieving the sovereign venue
 
@@ -89,7 +91,10 @@ export const Questions: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = sovereignVenue?.profile_questions?.length ?? 0;
+  const profileQuestions = venue?.profile_questions?.length
+    ? venue?.profile_questions
+    : sovereignVenue?.profile_questions;
+  const numberOfQuestions = profileQuestions?.length ?? 0;
   const headerMessage = `Now complete your profile by answering ${
     numberOfQuestions === 1 ? "this question" : "some short questions"
   }`;
@@ -105,7 +110,7 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions?.map((question: QuestionType) => (
+          {profileQuestions?.map((question: QuestionType) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
                 <strong>{question.name}</strong>
