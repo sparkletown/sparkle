@@ -10,20 +10,25 @@ import "./AdminSpacesListItem.scss";
 export interface AdminSpacesListItemProps {
   className?: string;
   title: string;
+  isOpened?: boolean;
 }
 
 export const AdminSpacesListItem: React.FC<AdminSpacesListItemProps> = ({
   className,
   title,
+  isOpened,
   children,
 }) => {
   const { isShown: showListItem, toggle: toggleShowListItem } = useShowHide(
-    false
+    isOpened ?? false
   );
-  const containerClasses = classNames("AdminSpacesListItem", className);
+
   return (
     <>
-      <div className={containerClasses} onClick={toggleShowListItem}>
+      <div
+        className={classNames("AdminSpacesListItem", className)}
+        onClick={toggleShowListItem}
+      >
         <div>{title}</div>
         <FontAwesomeIcon icon={showListItem ? faCaretDown : faCaretRight} />
       </div>

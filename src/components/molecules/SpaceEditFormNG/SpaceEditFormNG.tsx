@@ -17,8 +17,10 @@ import { useVenueId } from "hooks/useVenueId";
 import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
@@ -145,37 +147,54 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       <AdminSidebarSubTitle>
         The url of your space is <span>{room.url}</span>
       </AdminSidebarSubTitle>
-      <AdminSection title="Livestream URL" withLabel>
-        <AdminInput
-          name="venue.iframeUrl"
-          placeholder="Livestream URL"
-          register={register}
-          errors={errors}
-        />
-      </AdminSection>
-      <AdminSection title="Autoplay your embeded video">
-        <Toggler name="venue.autoPlay" forwardedRef={register} />
-      </AdminSection>
-      <AdminSection title="Upload a banner photo">
-        <ImageInput
-          name="bannerImage"
-          imgUrl={values.bannerImageUrl}
-          error={errors.bannerImageUrl}
-          isInputHidden={!values.bannerImageUrl}
-          register={register}
-          setValue={setValue}
-        />
-      </AdminSection>
-      <AdminSection title="Upload a logo">
-        <ImageInput
-          name="image_url"
-          imgUrl={values.image_url}
-          error={errors.image_url}
-          setValue={setValue}
-          register={register}
-          small
-        />
-      </AdminSection>
+      <AdminSpacesListItem
+        className="SpaceEditFormNG__list-item"
+        title="The basics"
+        isOpened
+      >
+        <>
+          <AdminSidebarSectionTitle className="SpaceEditFormNG__section-title">
+            Your content
+          </AdminSidebarSectionTitle>
+          <AdminSection title="Livestream URL" withLabel>
+            <AdminInput
+              name="venue.iframeUrl"
+              placeholder="Livestream URL"
+              register={register}
+              errors={errors}
+            />
+          </AdminSection>
+          <AdminSection title="Autoplay your embeded video">
+            <Toggler name="venue.autoPlay" forwardedRef={register} />
+          </AdminSection>
+        </>
+      </AdminSpacesListItem>
+      <AdminSpacesListItem
+        className="SpaceEditFormNG__list-item"
+        title="Appearance"
+        isOpened
+      >
+        <AdminSection title="Upload a banner photo">
+          <ImageInput
+            name="bannerImage"
+            imgUrl={values.bannerImageUrl}
+            error={errors.bannerImageUrl}
+            isInputHidden={!values.bannerImageUrl}
+            register={register}
+            setValue={setValue}
+          />
+        </AdminSection>
+        <AdminSection title="Upload a logo">
+          <ImageInput
+            name="image_url"
+            imgUrl={values.image_url}
+            error={errors.image_url}
+            setValue={setValue}
+            register={register}
+            small
+          />
+        </AdminSection>
+      </AdminSpacesListItem>
 
       <ButtonNG
         variant="danger"

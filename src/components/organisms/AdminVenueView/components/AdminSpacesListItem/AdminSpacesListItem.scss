@@ -1,1 +1,7 @@
 @import "scss/constants";
+
+.AdminSpacesListItem {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing--md;
+}

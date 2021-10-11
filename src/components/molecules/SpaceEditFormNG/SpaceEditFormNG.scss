@@ -14,6 +14,26 @@
     flex: 1;
   }
 
+  &__list-item {
+    background-color: $secondary--live;
+  }
+
+  &__section-title {
+    margin: $spacing--sm $spacing--xl $spacing--md;
+  }
+
+  .AdminSidebarTitle {
+    margin: $spacing--xxl $spacing--xl $spacing--md;
+  }
+
+  .AdminSidebarSubTitle {
+    margin: 0 $spacing--xl $spacing--xl;
+  }
+
+  .AdminSection {
+    padding: $spacing--sm $spacing--xl;
+  }
+
   .AdminSidebarFooter__buttons {
     width: 100%;
   }
