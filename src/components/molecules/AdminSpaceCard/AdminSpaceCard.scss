@@ -22,7 +22,6 @@ $admin-space-card-logo-size: 80px;
 
   &__bg {
     position: absolute;
-    z-index: z(admin-space-card-bg);
     top: 0;
     left: 0;
     width: 100%;
@@ -58,6 +57,7 @@ $admin-space-card-logo-size: 80px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
+    z-index: z(admin-space-card-info);
   }
 
   &__logo {

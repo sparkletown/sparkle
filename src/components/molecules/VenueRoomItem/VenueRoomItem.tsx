@@ -1,9 +1,9 @@
 import React from "react";
-import { Button, Form, Modal } from "react-bootstrap";
+import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import { ROOM_TAXON } from "settings";
+import { ROOM_TAXON, SPACE_TAXON } from "settings";
 
 import {
   createRoom,
@@ -21,8 +21,9 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { venueRoomSchema } from "pages/Admin/Details/ValidationSchema";
+import { createSpaceSchema } from "pages/Admin/Details/ValidationSchema";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 
 import "./VenueRoomItem.scss";
@@ -51,7 +52,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   const venueId = useVenueId();
 
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema: venueRoomSchema,
+    validationSchema: createSpaceSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -70,7 +71,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     const roomUrl = window.origin + venueInsideUrl(venueUrlName);
 
     const roomData: RoomInput_v2 = {
-      title: roomValues.roomTitle,
+      title: roomValues.venueName,
       about: "",
       isEnabled: true,
       image_url: icon,
@@ -85,7 +86,6 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     const venueData = buildEmptyVenue(roomValues.venueName, template);
 
     await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
-
     await createRoom(roomData, venueId, user).then(() => hideModal());
   }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
@@ -94,37 +94,27 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <Form.Label>{ROOM_TAXON.capital} title</Form.Label>
+            <Form.Label>{SPACE_TAXON.capital} name</Form.Label>
             <InputField
-              name="roomTitle"
+              name="venueName"
               type="text"
               autoComplete="off"
-              placeholder={`${ROOM_TAXON.capital} title`}
-              error={errors.roomTitle}
+              placeholder={`${SPACE_TAXON.capital} name`}
+              error={errors.venueName}
               ref={register()}
               disabled={isLoading}
             />
 
-            <>
-              <Form.Label>Venue name</Form.Label>
-              <InputField
-                name="venueName"
-                type="text"
-                autoComplete="off"
-                placeholder="Venue name"
-                error={errors.venueName}
-                ref={register()}
+            <div className="VenueRoomItem__center-content">
+              <ButtonNG
+                variant="primary"
                 disabled={isLoading}
-              />
-            </>
-
-            <Button
-              disabled={isLoading}
-              title={`Add ${ROOM_TAXON.lower}`}
-              type="submit"
-            >
-              Add {ROOM_TAXON.lower}
-            </Button>
+                title={`Add ${ROOM_TAXON.lower}`}
+                type="submit"
+              >
+                Add {ROOM_TAXON.lower}
+              </ButtonNG>
+            </div>
           </Form>
         </Modal.Body>
       </Modal>
