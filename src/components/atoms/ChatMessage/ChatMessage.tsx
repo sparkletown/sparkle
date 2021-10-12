@@ -34,7 +34,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const deleteMessage = useChatboxDeleteChatMessage();
 
   const deleteThisMessage = useCallback(
-    async () => deleteMessage?.({ messageId: messageId }),
+    async () => deleteMessage?.({ messageId }),
     [deleteMessage, messageId]
   );
 
