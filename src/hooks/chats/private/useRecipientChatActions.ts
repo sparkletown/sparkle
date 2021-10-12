@@ -40,17 +40,20 @@ export const useRecipientChatActions = (
     [userId]
   );
 
-  const spread = useMemo(
+  const additionalMessageFields = useMemo(
     () => ({
       toUser: pickDisplayUserFromUser(recipient),
     }),
     [recipient]
   );
 
-  const sendMessage = useSendChatMessage<PrivateChatMessage>(refs, spread);
+  const sendMessage = useSendChatMessage<PrivateChatMessage>(
+    refs,
+    additionalMessageFields
+  );
   const sendThreadReply = useSendThreadMessage<PrivateChatMessage>(
     refs,
-    spread
+    additionalMessageFields
   );
 
   return useMemo(

@@ -20,14 +20,16 @@ import { useUser } from "hooks/useUser";
 
 export const useSendChatMessage = <T extends BaseChatMessage>(
   chats: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
-  spreadOnMessage: ExcludeBuiltMessage<T>
+  additionalMessageFields: ExcludeBuiltMessage<T>
 ): SendChatMessage<SendChatMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
-  const getSpread = useCallback(() => spreadOnMessage, [spreadOnMessage]);
+  const getAdditionalFields = useCallback(() => additionalMessageFields, [
+    additionalMessageFields,
+  ]);
 
   return useSendMessage<T, SendChatMessageProps>({
     getCollections,
-    getSpread,
+    getAdditionalFields,
   });
 };
 
@@ -36,7 +38,7 @@ export const useSendThreadMessage = <T extends BaseChatMessage>(
   spreadOnMessage: ExcludeBuiltMessage<T>
 ): SendChatMessage<SendThreadMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
-  const getSpread: (
+  const getAdditionalFields: (
     props: SendThreadMessageProps
   ) => ExcludeBuiltMessage<T> = useCallback(
     ({ threadId }) => ({ threadId, ...spreadOnMessage }),
@@ -45,7 +47,7 @@ export const useSendThreadMessage = <T extends BaseChatMessage>(
 
   return useSendMessage<T, SendThreadMessageProps>({
     getCollections,
-    getSpread,
+    getAdditionalFields,
   });
 };
 
@@ -56,7 +58,7 @@ export interface UseSendMessageProps<
   getCollections: (
     props: K
   ) => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[];
-  getSpread: (props: K) => ExcludeBuiltMessage<T>;
+  getAdditionalFields: (props: K) => ExcludeBuiltMessage<T>;
   processResultingBatch?: (
     props: K,
     batch: firebase.firestore.WriteBatch
@@ -68,7 +70,7 @@ export const useSendMessage = <
   K extends SendMessagePropsBase
 >({
   getCollections,
-  getSpread,
+  getAdditionalFields,
   processResultingBatch = noop,
 }: UseSendMessageProps<T, K>): SendChatMessage<K> => {
   const { userWithId } = useUser();
@@ -80,7 +82,7 @@ export const useSendMessage = <
         if (!userWithId) return;
 
         const processedMessage = buildBaseMessage<T>(props.text, userWithId, {
-          ...getSpread(props),
+          ...getAdditionalFields(props),
         });
 
         const batch = firestore.batch();
@@ -95,6 +97,12 @@ export const useSendMessage = <
         console.error(e);
       }
     },
-    [userWithId, getSpread, firestore, getCollections, processResultingBatch]
+    [
+      userWithId,
+      getAdditionalFields,
+      firestore,
+      getCollections,
+      processResultingBatch,
+    ]
   );
 };

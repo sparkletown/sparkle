@@ -32,10 +32,17 @@ const useJukeboxActions = (
     () => (venueId ? [getVenueRef(venueId).collection("jukeboxMessages")] : []),
     [venueId]
   );
+  const additionalFields = useMemo(
+    () => ({
+      tableId: tableId ?? "",
+    }),
+    [tableId]
+  );
 
-  const sendMessage = useSendChatMessage<JukeboxMessage>(messagesRefs, {
-    tableId: tableId ?? "",
-  });
+  const sendMessage = useSendChatMessage<JukeboxMessage>(
+    messagesRefs,
+    additionalFields
+  );
 
   return { sendChatMessage: sendMessage };
 };
