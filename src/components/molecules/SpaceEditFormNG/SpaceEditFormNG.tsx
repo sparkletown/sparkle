@@ -160,85 +160,84 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   }, [onBackClick, roomIndex]);
 
   return (
-    <Form
-      onSubmit={handleSubmit(updateSelectedRoom)}
-      className="SpaceEditFormNG"
-    >
-      <AdminSidebarTitle>
-        Edit {room.template} space: {room.title}
-      </AdminSidebarTitle>
-      <AdminSidebarSubTitle>
-        The url of your space is <span>{room.url}</span>
-      </AdminSidebarSubTitle>
-      <AdminSpacesListItem title="The basics" isOpened>
-        <>
-          <AdminSidebarSectionTitle>Your content</AdminSidebarSectionTitle>
-          <AdminSection title="Livestream URL" withLabel>
-            <AdminInput
-              name="iframeUrl"
-              placeholder="Livestream URL"
+    <div className="SpaceEditFormNG">
+      <Form onSubmit={handleSubmit(updateSelectedRoom)}>
+        <AdminSidebarTitle>
+          Edit {room.template} space: {room.title}
+        </AdminSidebarTitle>
+        <AdminSidebarSubTitle>
+          The url of your space is <span>{room.url}</span>
+        </AdminSidebarSubTitle>
+        <AdminSpacesListItem title="The basics" isOpened>
+          <>
+            <AdminSidebarSectionTitle>Your content</AdminSidebarSectionTitle>
+            <AdminSection title="Livestream URL" withLabel>
+              <AdminInput
+                name="iframeUrl"
+                placeholder="Livestream URL"
+                register={register}
+                errors={errors}
+              />
+            </AdminSection>
+            <AdminSection title="Autoplay your embeded video" withLabel>
+              <Toggler name="autoPlay" forwardedRef={register} />
+            </AdminSection>
+          </>
+        </AdminSpacesListItem>
+        <AdminSpacesListItem title="Appearance" isOpened>
+          <AdminSection title="Upload a banner photo">
+            <ImageInput
+              onChange={changeBackgroundImageUrl}
+              name="bannerImage"
+              imgUrl={values.bannerImageUrl}
+              error={errors.bannerImageUrl}
+              isInputHidden={!values.bannerImageUrl}
               register={register}
-              errors={errors}
+              setValue={setValue}
             />
           </AdminSection>
-          <AdminSection title="Autoplay your embeded video" withLabel>
-            <Toggler name="autoPlay" forwardedRef={register} />
+          <AdminSection title="Upload a logo">
+            <ImageInput
+              nameWithUnderscore
+              onChange={changePortalImageUrl}
+              name="image"
+              imgUrl={values.image_url}
+              error={errors.image_url}
+              setValue={setValue}
+              register={register}
+              small
+            />
           </AdminSection>
-        </>
-      </AdminSpacesListItem>
-      <AdminSpacesListItem title="Appearance" isOpened>
-        <AdminSection title="Upload a banner photo">
-          <ImageInput
-            onChange={changeBackgroundImageUrl}
-            name="bannerImage"
-            imgUrl={values.bannerImageUrl}
-            error={errors.bannerImageUrl}
-            isInputHidden={!values.bannerImageUrl}
-            register={register}
-            setValue={setValue}
-          />
-        </AdminSection>
-        <AdminSection title="Upload a logo">
-          <ImageInput
-            nameWithUnderscore
-            onChange={changePortalImageUrl}
-            name="image"
-            imgUrl={values.image_url}
-            error={errors.image_url}
-            setValue={setValue}
-            register={register}
-            small
-          />
-        </AdminSection>
-      </AdminSpacesListItem>
+        </AdminSpacesListItem>
 
-      <ButtonNG
-        variant="danger"
-        loading={isUpdating || isDeleting}
-        disabled={isUpdating || isDeleting}
-        onClick={deleteSelectedRoom}
-      >
-        Delete {ROOM_TAXON.lower}
-      </ButtonNG>
-      <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
-      <SubmitError error={error} />
-
-      {isLoadingPortal && (
-        <AdminSection title="Loading space information...">
-          <Spinner animation="border" role="status" />
-        </AdminSection>
-      )}
-
-      <AdminSidebarFooter onClickCancel={handleBackClick}>
         <ButtonNG
-          className="AdminSidebarFooter__button--larger"
-          type="submit"
-          variant="primary"
+          variant="danger"
+          loading={isUpdating || isDeleting}
           disabled={isUpdating || isDeleting}
+          onClick={deleteSelectedRoom}
         >
-          Save changes
+          Delete {ROOM_TAXON.lower}
         </ButtonNG>
-      </AdminSidebarFooter>
-    </Form>
+        <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+        <SubmitError error={error} />
+
+        {isLoadingPortal && (
+          <AdminSection title="Loading space information...">
+            <Spinner animation="border" role="status" />
+          </AdminSection>
+        )}
+
+        <AdminSidebarFooter onClickCancel={handleBackClick}>
+          <ButtonNG
+            className="AdminSidebarFooter__button--larger"
+            type="submit"
+            variant="primary"
+            disabled={isUpdating || isDeleting}
+          >
+            Save changes
+          </ButtonNG>
+        </AdminSidebarFooter>
+      </Form>
+    </div>
   );
 };

@@ -184,11 +184,11 @@ const spaceEditForms = () => {
     (template) => template !== VenueTemplate.auditorium
   );
   const templatelistNG = {
-    [`${VenueTemplate.auditorium}`]: SpaceEditFormNG,
+    [VenueTemplate.auditorium]: SpaceEditFormNG,
   };
 
   return templatesList.reduce(
-    (acc, template) => ({ ...acc, [`${template}`]: SpaceEditForm }),
+    (acc, template) => ({ ...acc, [template]: SpaceEditForm }),
     templatelistNG
   );
 };

@@ -1,7 +1,8 @@
 @import "scss/constants";
 
-.AdminSpacesListItem {
+.AdminSpacesListItem__label {
   display: flex;
   justify-content: space-between;
   padding: $spacing--md;
+  margin: 0;
 }
