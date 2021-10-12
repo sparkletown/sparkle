@@ -8,7 +8,6 @@ import { useShowHide } from "hooks/useShowHide";
 import "./AdminSpacesListItem.scss";
 
 export interface AdminSpacesListItemProps {
-  className?: string;
   title: string;
   isOpened?: boolean;
 }

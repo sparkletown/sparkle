@@ -3,15 +3,12 @@ import classNames from "classnames";
 
 import "./AdminSidebarSectionTitle.scss";
 
-export interface AdminSidebarSectionTitleProps {
-  className?: string;
-}
 
-export const AdminSidebarSectionTitle: React.FC<AdminSidebarSectionTitleProps> = ({
+export const AdminSidebarSectionTitle: React.FC = ({
   className,
   children,
 }) => (
-  <h2 className={classNames("AdminSidebarSectionTitle", className)}>
+  <h2 className="AdminSidebarSectionTitle">
     {children}
   </h2>
 );

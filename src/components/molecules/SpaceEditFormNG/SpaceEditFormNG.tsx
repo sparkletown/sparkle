@@ -135,7 +135,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     await upsertRoom(roomData, venueId, user, roomIndex);
     await updateVenueRoom();
 
-    onEdit && onEdit();
+    onEdit?.();
   }, [
     onEdit,
     room,
@@ -178,7 +178,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         isOpened
       >
         <>
-          <AdminSidebarSectionTitle className="SpaceEditFormNG__section-title">
+          <AdminSidebarSectionTitle>
             Your content
           </AdminSidebarSectionTitle>
           <AdminSection title="Livestream URL" withLabel>
