@@ -1,5 +1,17 @@
 @import "scss/constants.scss";
 .TimingEventModal {
+  &__container {
+    display: flex;
+    justify-content: space-between;
+
+    label,
+    input {
+      width: 49%;
+      display: inline-block;
+      margin-bottom: 0;
+    }
+  }
+
   .modal-content {
     background-color: $light-grey;
   }
@@ -11,17 +23,14 @@
       width: 100%;
       border: 0.1px solid opaque-white(0.2);
       text-align: left;
-    }
 
-    &__flex {
-      display: flex;
-      justify-content: space-between;
-
-      input,
-      btn {
-        width: 49%;
-        display: inline-block;
+      &--indented {
+        margin-right: $spacing--sm;
       }
     }
+  }
+
+  .ButtonNG {
+    max-width: none;
   }
 }

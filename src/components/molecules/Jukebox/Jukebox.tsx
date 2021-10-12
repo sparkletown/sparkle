@@ -52,9 +52,11 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   useEffect(() => {
     const [lastMessage] = messagesToDisplay.slice(-1);
+
     if (!isValidUrl(lastMessage?.text)) {
       return;
     }
+
     const urlToEmbed = convertToEmbeddableUrl({ url: lastMessage?.text });
 
     updateIframeUrl(urlToEmbed);

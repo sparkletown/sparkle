@@ -58,6 +58,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
+      hasSocialLoginEnabled: venue.hasSocialLoginEnabled,
     },
   });
 
@@ -259,6 +260,17 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             ref={register}
             disabled={!values.showRadio}
           />
+        </div>
+
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="hasSocialLoginEnabled"
+            title="Social Login"
+          />
+          <Form.Label>
+            Users can login using Google/Facebook/Okta social networks
+          </Form.Label>
         </div>
 
         <div className="AdvancedSettings__form-field">

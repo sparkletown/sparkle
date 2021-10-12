@@ -17,7 +17,7 @@ export const useChatSidebarInfo = (venue: AnyVenue) => {
   };
 };
 
-const useNumberOfUnreadChats = () => {
+export const useNumberOfUnreadChats = () => {
   const { userId } = useUser();
   const { privateChatPreviews } = usePrivateChatPreviews();
 

@@ -78,7 +78,6 @@ export const CodeOfConduct: React.FC = () => {
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
       if (!user) return;
-
       await updateUserProfile(user.uid, data);
 
       proceed();

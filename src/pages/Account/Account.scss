@@ -7,14 +7,12 @@ $vertical-padding: 20px;
 $side-padding: 30px;
 $border-radius: 28px;
 $large-shadow: box-shadow--large(0.34);
-$login-max-width: 540px;
+$auth-icon-sso-size: 35px;
 $login-wide-max-width: 1140px;
-
-$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+$auth-body-max-width: 365px;
 
 $dark: #1a1d24;
 $modal-max-width: 540px;
-$page-max-width: 1240px;
 
 .checkbox {
   display: block;
@@ -83,7 +81,12 @@ $page-max-width: 1240px;
 
   .login-welcome-subtitle {
     text-align: center;
-    padding-bottom: 30px;
+    padding-bottom: $spacing--xxl;
+  }
+
+  .create-account__button {
+    background: $login-rainbox-gradient;
+    align-self: center;
   }
 }
 
@@ -107,46 +110,6 @@ $page-max-width: 1240px;
   }
 }
 
-.auth-container {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: center;
-  flex: 1;
-  background-color: #1a1d24;
-  height: 100vh;
-
-  .logo-container {
-    width: $login-max-width / 2;
-    padding-bottom: 50px;
-  }
-
-  .auth-form-container {
-    .form-container {
-      display: inline-table;
-      flex: 0;
-      width: $login-max-width;
-      margin: 0 auto;
-      padding: $side-padding;
-      background-color: $content--under;
-      box-shadow: $large-shadow;
-      text-align: center;
-      border-radius: $border-radius;
-
-      .form {
-        margin-top: 2rem;
-      }
-    }
-
-    .register-form-title {
-      font-weight: 900;
-      font-style: italic;
-      font-size: 2em;
-      color: $content--over;
-    }
-  }
-}
-
 .secondary-action {
   margin-top: 2rem;
   font-size: 1.2em;
@@ -156,7 +119,7 @@ $page-max-width: 1240px;
   text-align: center;
 }
 
-@media (max-width: $login-max-width) {
+@media (max-width: $auth-container-max-width) {
   .login-container {
     border-radius: 0;
   }
@@ -180,7 +143,7 @@ $page-max-width: 1240px;
   }
   .step0-container {
     top: 50%;
-    max-width: $login-max-width;
+    max-width: $auth-container-max-width;
     margin: 0 auto;
     padding: $side-padding;
     background-color: $dark;
@@ -220,7 +183,7 @@ $page-max-width: 1240px;
     }
   }
   .ten-principles-burning {
-    max-width: $login-max-width;
+    max-width: $auth-container-max-width;
     margin: 0 auto;
     padding: $side-padding;
     background-color: $content--under;
@@ -272,7 +235,7 @@ $page-max-width: 1240px;
   .step4-container {
     top: 20%;
     bottom: 20%;
-    max-width: $login-max-width;
+    max-width: $auth-container-max-width;
     margin: 0 auto;
     padding: $side-padding;
     background-color: $content--under;
@@ -297,7 +260,7 @@ $page-max-width: 1240px;
   .step5-container {
     top: 8%;
     bottom: 8%;
-    max-width: $login-max-width;
+    max-width: $auth-container-max-width;
     margin: 0 auto;
     padding: $side-padding;
     background-color: $content--under;

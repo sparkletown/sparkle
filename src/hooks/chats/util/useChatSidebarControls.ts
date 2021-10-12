@@ -14,6 +14,7 @@ import {
   selectedChatSettingsSelector,
 } from "utils/selectors";
 
+import { useNumberOfUnreadChats } from "hooks/chats/util/useChatSidebarInfo";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
 
@@ -21,6 +22,7 @@ export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
   const isExpanded = useSelector(chatVisibilitySelector);
   const chatSettings = useSelector(selectedChatSettingsSelector);
+  const newPrivateMessageRecived = useNumberOfUnreadChats();
 
   const expandSidebar = useCallback(() => {
     dispatch(setChatSidebarVisibility(true));
@@ -34,9 +36,19 @@ export const useChatSidebarControls = () => {
     if (isExpanded) {
       collapseSidebar();
     } else {
+      dispatch(setVenueChatTabOpened());
       expandSidebar();
     }
-  }, [expandSidebar, collapseSidebar, isExpanded]);
+  }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
+
+  const togglePrivateChatSidebar = useCallback(() => {
+    if (isExpanded) {
+      collapseSidebar();
+    } else {
+      expandSidebar();
+      dispatch(setPrivateChatTabOpened());
+    }
+  }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
 
   const selectVenueChat = useCallback(() => {
     expandSidebar();
@@ -45,7 +57,7 @@ export const useChatSidebarControls = () => {
 
   const selectPrivateChat = useCallback(() => {
     expandSidebar();
-    dispatch(setPrivateChatTabOpened(undefined));
+    dispatch(setPrivateChatTabOpened());
   }, [dispatch, expandSidebar]);
 
   const selectRecipientChat = useCallback(
@@ -58,6 +70,7 @@ export const useChatSidebarControls = () => {
 
   return {
     isExpanded,
+    newPrivateMessageRecived,
     chatSettings,
 
     expandSidebar,
@@ -66,5 +79,6 @@ export const useChatSidebarControls = () => {
     selectRecipientChat,
     collapseSidebar,
     toggleSidebar,
+    togglePrivateChatSidebar,
   };
 };
