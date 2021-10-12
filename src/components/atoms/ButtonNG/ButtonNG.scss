@@ -75,10 +75,6 @@ $variants-enum: (
     cursor: default;
   }
 
-  &__icon {
-    color: $icon--color;
-  }
-
   &--icon-only {
     padding: $spacing--xs;
   }

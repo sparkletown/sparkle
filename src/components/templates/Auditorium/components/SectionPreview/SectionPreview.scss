@@ -54,7 +54,7 @@ $avatar-size: 20px;
 
   &__lock-icon {
     margin-right: $spacing--xs;
-    color: $icon--color;
+    color: $content--over;
   }
 
   &__people-count {
@@ -64,7 +64,7 @@ $avatar-size: 20px;
     margin: $spacing--xs;
 
     svg {
-      color: $icon--color;
+      color: $content--over;
     }
   }
 
