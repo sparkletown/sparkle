@@ -1,10 +1,11 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import fs from "fs";
 import { resolve } from "path";
 
 import admin from "firebase-admin";
 import { chunk } from "lodash";
-import fs from "fs";
+
 import { UserVisit } from "../src/types/Firestore";
 import { User } from "../src/types/User";
 import { WithId, withId } from "../src/utils/id";
@@ -226,7 +227,7 @@ interface UsersWithVisitsResult {
   // space between visit data & total data
   [0, 1, 2].map(() => fs.writeFileSync("./allData.csv", `\n`, { flag: "a" }));
 
-  let arrayOfResults: {
+  const arrayOfResults: {
     totalAmount: number;
     totalValue: number;
     totalUnique: number;
@@ -234,7 +235,7 @@ interface UsersWithVisitsResult {
 
   allDataResult.forEach((item) => {
     item.forEach((res, i) => {
-      arrayOfResults[i] = !!arrayOfResults[i]
+      arrayOfResults[i] = arrayOfResults[i]
         ? {
             totalAmount: arrayOfResults[i].totalAmount + 1,
             totalValue: arrayOfResults[i].totalValue + res,
