@@ -50,6 +50,8 @@ export const venueEntranceUrl = (venueId: string, step?: number) => {
 
 export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 
+export const simpleViewUrl = (venueId: string) => `/m/${venueId}`;
+
 export const isExternalUrl = (url: string) => {
   try {
     return new URL(url, window.location.origin).host !== window.location.host;

@@ -1,5 +1,11 @@
+@import "scss/constants.scss";
+
 .venue-partygoers-container {
   font-size: 0.8rem;
   opacity: 0.7;
   margin-left: 40px;
+
+  @media (max-width: $media-breakpoint--sm) {
+    margin-left: $spacing--md;
+  }
 }

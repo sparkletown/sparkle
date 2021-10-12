@@ -11,17 +11,21 @@ $arrow-height: 20px;
 $arrow-width: 20px;
 $dropdown-item-width: 170px;
 $dropdown-item-padding: $spacing--lg $spacing--xl 0 $spacing--xl;
-$nav-party-logo-padding: 0 50px 0 20px;
+$nav-party-logo-padding-lg: 0 50px 0 20px;
+$nav-party-logo-padding-sm: 0 16px 0 11px;
 
 .navbar-links {
-  flex: 1;
   display: flex;
   position: relative;
 
-  &-user-avatar {
+  &__user-avatar {
     cursor: pointer;
     display: flex;
     align-items: center;
+
+    @media (max-width: $media-breakpoint--md) {
+      display: none;
+    }
   }
 
   &__simple-view {
@@ -37,19 +41,41 @@ $nav-party-logo-padding: 0 50px 0 20px;
     padding: $spacing--xs $spacing--sm;
     background-color: $tundora;
     margin-left: $spacing--md;
+
+    @media (max-width: $media-breakpoint--lg) {
+      display: none;
+    }
   }
 
   &__simple-view-text {
     margin-left: $spacing--sm;
   }
 
+  &__partygoers {
+    @media (max-width: $media-breakpoint--xl) {
+      display: none;
+    }
+  }
+
   &__search {
     display: flex;
-    margin-left: $spacing--lg;
+
+    @media (min-width: $media-breakpoint--sm) {
+      margin-left: $spacing--lg;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    align-items: center;
+    margin-right: $spacing--md;
+    @media (max-width: $media-breakpoint--md) {
+      display: none;
+    }
   }
 
   &__menu-link {
-    background: rgba(255, 255, 255, 0.1);
+    background: opaque-white(0.1);
     color: opaque-white(1);
     opacity: 0.8;
     border: none;
@@ -61,12 +87,18 @@ $nav-party-logo-padding: 0 50px 0 20px;
     align-items: center;
     justify-content: center;
 
-    margin-right: $spacing--sm;
-
     &:focus {
-      box-shadow: 0 0 0 2px #ffffff;
+      box-shadow: 0 0 0 2px $white;
       outline: none;
       opacity: 1;
+    }
+  }
+
+  &__nav-dropdown {
+    display: none;
+
+    @media (max-width: $media-breakpoint--md) {
+      display: block;
     }
   }
 }
@@ -158,8 +190,23 @@ $nav-party-logo-padding: 0 50px 0 20px;
     padding-bottom: $spacing--xl;
     z-index: z(navbar-user-dropdown);
 
-    &-item a {
-      text-decoration: none;
+    @media (max-width: $media-breakpoint--sm) {
+      all: initial;
+      position: fixed;
+      top: $navbar-height;
+      right: 0;
+      left: 0;
+      width: 100%;
+      background: $secondary;
+      padding-bottom: 0;
+    }
+
+    &-mobile {
+      width: 100%;
+    }
+
+    &-mobile-top {
+      width: 100%;
     }
 
     &-item {
@@ -170,11 +217,39 @@ $nav-party-logo-padding: 0 50px 0 20px;
       padding: $dropdown-item-padding;
       width: $dropdown-item-width;
 
+      @media (max-width: $media-breakpoint--sm) {
+        padding: $spacing--md $spacing--xl;
+        margin: 0;
+        width: 100%;
+      }
+
+      &-buttons {
+        display: flex;
+        align-items: center;
+        padding-right: $spacing--md;
+      }
+
       &:first-child {
         border-bottom: 1px solid $secondary--light;
         padding-bottom: $spacing--md;
         margin-bottom: $spacing--xs;
         color: $light-grey--lightest;
+        padding-right: $spacing--xl;
+
+        @media (max-width: $media-breakpoint--sm) {
+          display: flex;
+          width: 100%;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0;
+          color: $white;
+        }
+      }
+
+      &:last-child {
+        @media (max-width: $media-breakpoint--sm) {
+          padding-bottom: $spacing--xxl;
+        }
       }
 
       &:hover {
@@ -215,7 +290,6 @@ $nav-party-logo-padding: 0 50px 0 20px;
 
 .nav-logos {
   display: flex;
-  flex: 1;
   align-items: center;
   height: 100%;
 }
@@ -223,10 +297,13 @@ $nav-party-logo-padding: 0 50px 0 20px;
 .nav-sparkle-logo,
 .nav-sparkle-logo_small {
   position: relative;
-  margin-right: 12px;
 
-  &:hover {
-    width: 120px;
+  @media (min-width: $media-breakpoint--sm) {
+    margin-right: $spacing--md;
+
+    &:hover {
+      width: 120px;
+    }
   }
 
   &.nav-sparkle-logo_small {
@@ -241,42 +318,44 @@ $nav-party-logo-padding: 0 50px 0 20px;
     background-image: url(/assets/icons/sparkle-nav-logo.png);
     background-size: 25px 35px;
 
-    &:before {
-      position: absolute;
-      content: "";
-      opacity: 0;
-      pointer-events: none;
-      left: 22px;
-      width: 108px;
-      height: 35px;
-      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
-      background-size: 108px 35px;
-      transform: translateX(-40px) scale(0.75);
-      transition: opacity 200ms, transform 400ms $transition-function;
-    }
-
-    @keyframes sparklelogoanimate {
-      100% {
-        background-position: -75px;
-      }
-    }
-
-    &:hover {
-      opacity: 1;
-      background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
-      background-size: 75px 35px;
-      background-position: 0 0;
-      animation: sparklelogoanimate 0.4s steps(3) infinite;
-
+    @media (min-width: $media-breakpoint--sm) {
       &:before {
-        opacity: 1;
-        pointer-events: all;
-        transform: translateX(0px) scale(1);
+        position: absolute;
+        content: "";
+        opacity: 0;
+        pointer-events: none;
+        left: 22px;
+        width: 108px;
+        height: 35px;
+        background-image: url(/assets/icons/sparkle-nav-logo-text.png);
+        background-size: 108px 35px;
+        transform: translateX(-40px) scale(0.75);
+        transition: opacity 200ms, transform 400ms $transition-function;
       }
-    }
 
-    &:active {
-      opacity: 0.7;
+      @keyframes sparklelogoanimate {
+        100% {
+          background-position: -75px;
+        }
+      }
+
+      &:hover {
+        opacity: 1;
+        background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
+        background-size: 75px 35px;
+        background-position: 0 0;
+        animation: sparklelogoanimate 0.4s steps(3) infinite;
+
+        &:before {
+          opacity: 1;
+          pointer-events: all;
+          transform: translateX(0px) scale(1);
+        }
+      }
+
+      &:active {
+        opacity: 0.7;
+      }
     }
   }
 }
@@ -284,7 +363,7 @@ $nav-party-logo-padding: 0 50px 0 20px;
 .nav-party-logo {
   position: relative;
   height: 100%;
-  padding: $nav-party-logo-padding;
+  padding: $nav-party-logo-padding-sm;
   background-color: opaque-white(0.08);
   text-align: center;
   cursor: pointer;
@@ -300,6 +379,10 @@ $nav-party-logo-padding: 0 50px 0 20px;
   border-left: 1px solid $tundora;
   border-right: 1px solid $tundora;
   margin-left: $spacing--md;
+
+  @media (min-width: $media-breakpoint--sm) {
+    padding: $nav-party-logo-padding-lg;
+  }
 
   &-text {
     margin: 0;
@@ -318,17 +401,19 @@ $nav-party-logo-padding: 0 50px 0 20px;
     }
   }
 
-  &:after {
-    content: "";
-    position: absolute;
-    right: 20px;
-    height: 20px;
-    width: 20px;
-    background-image: url(/assets/icons/nav-party-logo-icon.png);
-    background-size: 20px;
-    opacity: 0.4;
-    transform: rotate(0deg);
-    transition: transform 400ms $transition-function;
+  @media (min-width: $media-breakpoint--sm) {
+    &:after {
+      content: "";
+      position: absolute;
+      right: 20px;
+      height: 20px;
+      width: 20px;
+      background-image: url(/assets/icons/nav-party-logo-icon.png);
+      background-size: 20px;
+      opacity: 0.4;
+      transform: rotate(0deg);
+      transition: transform 400ms $transition-function;
+    }
   }
 
   &.clicked {
@@ -343,7 +428,7 @@ $nav-party-logo-padding: 0 50px 0 20px;
 }
 
 .schedule-text {
-  background-color: $accent--under;
+  background-color: $tundora;
   display: inline-block;
   margin-left: $spacing--sm;
   padding: $spacing--sm $spacing--xl;
@@ -370,18 +455,6 @@ $nav-party-logo-padding: 0 50px 0 20px;
   &.show {
     opacity: 1;
     pointer-events: all;
-  }
-}
-
-@media (max-width: 600px) {
-  .schedule-text {
-    display: none;
-  }
-}
-
-@media (max-width: 900px) {
-  .nav-search-links {
-    display: none;
   }
 }
 

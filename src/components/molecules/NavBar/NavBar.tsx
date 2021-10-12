@@ -1,8 +1,17 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
+import { Dropdown, OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCog,
+  faEye,
+  faHome,
+  faInfoCircle,
+  faSearch,
+  faTicketAlt,
+  faUser,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
@@ -12,17 +21,29 @@ import {
   SPARKLE_PHOTOBOOTH_URL,
 } from "settings";
 
+import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import { radioStationsSelector } from "utils/selectors";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import {
+  animateMapEnvironmentSoundSelector,
+  radioStationsSelector,
+} from "utils/selectors";
+import {
+  enterVenue,
+  getExtraLinkProps,
+  simpleViewUrl,
+  venueInsideUrl,
+} from "utils/url";
 
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useDispatch } from "hooks/useDispatch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -34,10 +55,16 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { VolumeControl } from "components/atoms/VolumeControl";
 
 import * as S from "./Navbar.styles";
 import { NavBarLogin } from "./NavBarLogin";
+
+import BurgerIcon from "assets/icons/burger-icon.svg";
+import CrossIcon from "assets/icons/close-icon.svg";
+import RadioIcon from "assets/icons/radio.svg";
 
 import "./NavBar.scss";
 import "./playa.scss";
@@ -66,7 +93,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   withSchedule,
   withPhotobooth,
 }) => {
-  const { user, userWithId } = useUser();
+  const { profile, user, userWithId } = useUser();
   const venueId = useVenueId();
   const radioStations = useSelector(radioStationsSelector);
   const isAdminContext = useAdminContextCheck();
@@ -91,6 +118,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
+
+  const {
+    isShown: isDropdownShown,
+    toggle: toggleDropdownShown,
+  } = useShowHide();
+  const { isShown: isSearchShown, toggle: toggleSearchShown } = useShowHide();
+  const {
+    isShown: isMobileDropdownShown,
+    toggle: toggleMobileDropdownShown,
+  } = useShowHide();
+
+  const [isSearchInFocus, setIsSearchInFocus] = useState(false);
 
   const isSovereignVenue = venueId === sovereignVenueId;
 
@@ -136,6 +175,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
 
+  const dispatch = useDispatch();
+  const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
+  const [, setAmbientAudioVocal] = useState(true);
+
+  const onToggleAmbientAudio = useCallback(() => {
+    const toggledValue = !isAmbientAudioVocal;
+    setAmbientAudioVocal(toggledValue);
+    dispatch(setAnimateMapEnvironmentSound(toggledValue));
+  }, [dispatch, isAmbientAudioVocal, setAmbientAudioVocal]);
+
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
     if (!radioFirstPlayStateLoaded.current) {
@@ -180,6 +229,19 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
+  const onInputFocus = useCallback(() => setIsSearchInFocus(true), []);
+
+  const onInputBlur = useCallback(() => {
+    setIsSearchInFocus(false);
+    toggleSearchShown();
+  }, [toggleSearchShown]);
+
+  const onMouseLeave = useCallback(() => {
+    if (isSearchInFocus) return;
+
+    toggleSearchShown();
+  }, [isSearchInFocus, toggleSearchShown]);
+
   const [showRadioPopover, setShowRadioPopover] = useState(false);
 
   const toggleShowRadioPopover = useCallback(
@@ -199,6 +261,104 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio =
     (currentVenue?.showRadio && isSoundCloud) ?? false;
+
+  const dropdownArrowClasses = classNames({
+    "navbar__dropdown-arrow-up": isDropdownShown,
+    "navbar__dropdown-arrow-down": !isDropdownShown,
+  });
+
+  const volumeButton = () => {
+    return (
+      <VolumeControl
+        className={"navbar-links__menu-link-volume-control"}
+        name="noise"
+        muted={isAmbientAudioVocal}
+        withMute
+        onMute={onToggleAmbientAudio}
+      />
+    );
+  };
+
+  const renderRadioButton = () => {
+    return (
+      showNormalRadio && (
+        <OverlayTrigger
+          trigger="click"
+          placement="bottom-end"
+          overlay={
+            <Popover id="radio-popover">
+              <Popover.Content>
+                <RadioModal
+                  {...{
+                    volume,
+                    setVolume,
+                    title: currentVenue?.radioTitle,
+                  }}
+                  onEnableHandler={handleRadioEnable}
+                  isRadioPlaying={isRadioPlaying}
+                />
+              </Popover.Content>
+            </Popover>
+          }
+          rootClose={true}
+          defaultShow={showRadioOverlay}
+        >
+          <button className={"navbar-links__menu-link"}>
+            <img src={RadioIcon} alt="radio" />
+          </button>
+        </OverlayTrigger>
+      )
+    );
+  };
+
+  const renderDropdown = () => {
+    return (
+      <Dropdown className="navbar__dropdown">
+        {isMobileDropdownShown && (
+          <Dropdown.Item className="navbar__dropdown-item">
+            <VenuePartygoers />
+            <div className="navbar__dropdown-item-buttons">
+              {renderRadioButton()}
+              {volumeButton()}
+            </div>
+          </Dropdown.Item>
+        )}
+        <Dropdown.Item className="navbar__dropdown-item" disabled>
+          {profile?.partyName && <span>Hello {profile.partyName}</span>}
+        </Dropdown.Item>
+        <Dropdown.Item
+          className="navbar__dropdown-item"
+          style={{ display: "none" }}
+        >
+          <FontAwesomeIcon
+            icon={faCog}
+            className="navbar__dropdown-item-icon"
+          />
+          Account
+        </Dropdown.Item>
+        <Dropdown.Item
+          className="navbar__dropdown-item"
+          style={{ display: "none" }}
+        >
+          <FontAwesomeIcon
+            icon={faInfoCircle}
+            className="navbar__dropdown-item-icon"
+          />
+          Help
+        </Dropdown.Item>
+        <Dropdown.Item
+          className="navbar__dropdown-item"
+          onClick={handleAvatarClick}
+        >
+          <FontAwesomeIcon
+            icon={faUser}
+            className="navbar__dropdown-item-icon"
+          />
+          Profile
+        </Dropdown.Item>
+      </Dropdown>
+    );
+  };
 
   return (
     <>
@@ -231,14 +391,30 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {venueId && !isAdminContext && navbarTitle} &nbsp;
-                  <span className="schedule-text">Schedule</span>
+                  {venueId && !isAdminContext && (
+                    <p className="nav-party-logo-text">{navbarTitle}</p>
+                  )}
+                  <span className="schedule-text">{"What’s On"}</span>
                 </button>
               ) : (
                 venueId && !isAdminContext && <div>{navbarTitle}</div>
               )}
-
-              {venueId && !isAdminContext && <VenuePartygoers />}
+              {venueId && (
+                <div className="navbar-links__simple-view">
+                  <a
+                    className="navbar-links__simple-view-a"
+                    href={simpleViewUrl(venueId)}
+                    {...getExtraLinkProps(true)}
+                  >
+                    <ButtonNG className="navbar-links__simple-view-button">
+                      <FontAwesomeIcon icon={faEye} />
+                      <span className="navbar-links__simple-view-text">
+                        Simple View
+                      </span>
+                    </ButtonNG>
+                  </a>
+                </div>
+              )}
             </div>
 
             {withPhotobooth && (
@@ -254,9 +430,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                {venueId && !isAdminContext && (
-                  <NavSearchBar venueId={venueId} />
-                )}
+                <div className="navbar-links__partygoers">
+                  {venueId && !isAdminContext && <VenuePartygoers />}
+                </div>
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -271,35 +447,47 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   </OverlayTrigger>
                 )}
 
-                {showNormalRadio && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={
-                      <Popover id="radio-popover">
-                        <Popover.Content>
-                          <RadioModal
-                            {...{
-                              volume,
-                              setVolume,
-                              title: currentVenue?.radioTitle,
-                            }}
-                            onEnableHandler={handleRadioEnable}
-                            isRadioPlaying={isRadioPlaying}
-                          />
-                        </Popover.Content>
-                      </Popover>
-                    }
-                    rootClose={true}
-                    defaultShow={showRadioOverlay}
-                  >
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
+                <div
+                  className="navbar-links__search"
+                  onMouseEnter={toggleSearchShown}
+                  onMouseLeave={onMouseLeave}
+                >
+                  {isSearchShown && venueId && !isAdminContext && (
+                    <NavSearchBar
+                      venueId={venueId ?? ""}
+                      onFocus={onInputFocus}
+                      onBlur={onInputBlur}
                     />
-                  </OverlayTrigger>
-                )}
+                  )}
+                  {!isSearchShown && (
+                    <ButtonNG
+                      className="navbar-links__menu-link"
+                      iconOnly
+                      iconSize="1x"
+                    >
+                      <FontAwesomeIcon icon={faSearch} />
+                    </ButtonNG>
+                  )}
+                </div>
+                <div className="navbar-links__nav-dropdown">
+                  <ButtonNG
+                    className="navbar-links__menu-link"
+                    iconOnly
+                    iconSize="1x"
+                    onClick={toggleMobileDropdownShown}
+                  >
+                    {!isMobileDropdownShown ? (
+                      <img src={BurgerIcon} alt="open dropdown" />
+                    ) : (
+                      <img src={CrossIcon} alt="close dropdown" />
+                    )}
+                  </ButtonNG>
+                </div>
+
+                <div className="navbar-links__buttons">
+                  {renderRadioButton()}
+                  {volumeButton()}
+                </div>
 
                 {showSoundCloudRadio && (
                   <S.RadioTrigger>
@@ -322,11 +510,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   </S.RadioTrigger>
                 )}
                 <div
-                  className="navbar-links-user-avatar"
-                  onClick={handleAvatarClick}
+                  className="navbar-links__user-avatar"
+                  onClick={toggleDropdownShown}
                 >
                   <UserAvatar user={userWithId} showStatus size="medium" />
+                  <div className={dropdownArrowClasses}></div>
                 </div>
+                {isDropdownShown && renderDropdown()}
+                {isMobileDropdownShown && (
+                  <div className="navbar__dropdown-mobile">
+                    {renderDropdown()}
+                  </div>
+                )}
               </div>
             )}
           </div>

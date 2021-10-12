@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 @import "./navSearchBarConstants.scss";
 
+$search-input-height: 32px;
+
 .NavSearchBar {
   position: relative;
   width: $search-dropdown-width;
@@ -9,6 +11,18 @@
   &__search-input {
     text-align: left;
     font-size: 0.9em;
+    height: $search-input-height;
+
+    @media (max-width: $media-breakpoint--lg) {
+      z-index: z(navbar-user-dropdown);
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: $cod-gray;
+      width: 100%;
+      height: $navbar-height;
+      border-radius: 0;
+    }
   }
 
   &__clear-search {
@@ -38,6 +52,11 @@
     transition: all 400ms $transition-function;
     pointer-events: none;
     z-index: z(navbar__drawer);
+
+    @media (max-width: $media-breakpoint--lg) {
+      width: 100%;
+      left: 0;
+    }
 
     &--show {
       transform: translateY(0);
