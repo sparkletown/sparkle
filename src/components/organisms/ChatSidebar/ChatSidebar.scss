@@ -1,6 +1,12 @@
 @import "scss/constants";
 
 $header-height: 45px;
+$chat-button-narrow-width: 50px;
+$unread-dot-right-spacing-right: 28px;
+$unread-dot-right-spacing-bottom: 22px;
+// NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
+$media-width--mobile-min: 768px;
+$media-width--mobile-max: 1024px;
 
 .chat-sidebar {
   transform: translateX(100%);
@@ -8,10 +14,10 @@ $header-height: 45px;
   position: fixed;
   display: flex;
   flex-flow: column;
-  top: 66px;
+  top: $navbar-height;
   right: 0;
   width: $chat-sidebar-width;
-  height: calc(100vh - 96px);
+  height: calc(100vh - #{$reserved-page-height});
   background-color: $saturated-black;
   z-index: z(sidebar);
 
@@ -19,7 +25,11 @@ $header-height: 45px;
     transform: translateX(0);
     transition: transform 0.3s;
     background-color: rgba($saturated-black, 0.9);
-    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+    box-shadow: -10px 0 40px opaque-black(0.5);
+
+    & .chat-sidebar__controller {
+      width: $chat-button-narrow-width;
+    }
   }
 
   &__header {
@@ -31,7 +41,7 @@ $header-height: 45px;
     display: flex;
     justify-content: space-between;
     width: 100%;
-    background-color: $black;
+    background-color: $content--under;
   }
 
   &__tab {
@@ -43,37 +53,38 @@ $header-height: 45px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-bottom: rgba(0, 0, 0, 0) thin solid;
-    color: rgba(255, 255, 255, 0.6);
+    border-bottom: 1px solid opaque-black(0);
+    color: opaque-white(0.6);
 
     &:focus,
     &:hover {
-      color: rgba(255, 255, 255, 0.7);
+      color: opaque-white(0.7);
     }
 
     &--selected {
-      border-bottom: $white 2px solid;
-      color: $white;
+      border-bottom: $content--over 2px solid;
+      color: $content--over;
 
       &:focus,
       &:hover {
-        color: $white;
-        border-bottom: $white 2px solid;
+        color: $content--over;
+        border-bottom: $content--over 2px solid;
       }
     }
   }
 
   &__controller {
-    color: $white;
-    border: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 13px;
-    height: 45px;
+    color: $accent--over;
     background-color: $secondary;
-    border-radius: 16px 0 0 16px;
     cursor: pointer;
+
+    border: none;
+    padding: 0 $spacing--sm;
+    width: 100px;
+    height: 55px;
+    margin-top: $spacing--md;
+    border-radius: $border-radius--lg 0 0 $border-radius--lg;
+
     display: flex;
     align-items: center;
     justify-content: center;
@@ -82,12 +93,35 @@ $header-height: 45px;
     top: 0;
     transform: translateX(-100%);
 
+    &-text {
+      font-size: $font-size--md;
+    }
+
+    &-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
     &:hover {
       background-color: $lighter-intermediate-grey;
     }
 
-    &__second-icon {
-      margin-left: 5px;
+    svg:nth-child(2) {
+      margin-left: 2 * $spacing--xs;
+      margin-right: -1 * $spacing--xs;
+    }
+
+    &--new-message {
+      background-color: $primary--light;
+      @include square-size($spacing--md + 1);
+      border: 3px solid $secondary;
+      position: absolute;
+      border-radius: $border-radius--max;
+      right: $unread-dot-right-spacing-right;
+      bottom: $unread-dot-right-spacing-bottom;
     }
   }
 
@@ -95,5 +129,30 @@ $header-height: 45px;
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
+  }
+
+  &__private-chat {
+    margin-top: $spacing--xl * 3;
+  }
+
+  @media only screen and (min-width: $media-width--mobile-min) and (max-width: $media-width--mobile-max) {
+    &--expanded {
+      width: 100%;
+    }
+
+    &__tabs {
+      padding-left: $header-height;
+    }
+
+    &--expanded &__controller {
+      width: 100%;
+      transform: translateX(0);
+      border-radius: 0 $border-radius--lg $border-radius--lg 0;
+    }
+
+    &--collapsed &__controller {
+      transform: translateX(-100%);
+      border-radius: $border-radius--lg 0 0 $border-radius--lg;
+    }
   }
 }

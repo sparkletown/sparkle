@@ -1,12 +1,7 @@
-@import "constants.scss";
-
-:root {
-  --primary-color: #f6e652;
-}
-
 @import "node_modules/bootswatch/dist/darkly/variables";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
+@import "./colors.scss";
 @import "./constants.scss";
 @import "./modifiers.scss";
 @import "./customOverrides";
@@ -23,8 +18,8 @@ body {
     sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  background-color: $black;
-  color: $white;
+  background-color: $content--under;
+  color: $content--over;
   display: flex;
   justify-content: center;
   font-family: "Rubik", sans-serif;
@@ -50,7 +45,7 @@ h6 {
   line-height: 1.2;
 
   &.primary {
-    color: $primary;
+    color: $accent--under;
   }
 
   &.italic {
@@ -86,7 +81,7 @@ h6 {
 // Buttons
 
 button:focus {
-  outline: 1px dotted $white;
+  outline: 1px dotted $content--over;
 }
 
 button.btn,
@@ -100,28 +95,28 @@ input.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: rgba($primary, 0.24);
+  background-color: var(--primary--under-24a);
   transition: all 400ms $transition-function;
-  color: $white;
+  color: $content--over;
   transform: translateY(0);
 
   &:hover {
     transform: translateY(-1px);
-    background-color: rgba($primary, 0.18);
+    background-color: var(--primary--under-18a);
   }
 
   &.btn-primary {
-    color: $white;
+    color: $content--over;
     background-image: $gradient;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: darken($primary, 14%);
+      background-color: var(--primary--under-darker-14pp);
     }
   }
 
   &.btn-secondary {
-    color: $white;
+    color: $content--over;
     background-color: rgba(124, 70, 251, 0.4);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
@@ -131,7 +126,7 @@ input.btn {
   }
 
   &.btn-danger {
-    color: $white;
+    color: $content--over;
     background: $danger-gradient;
     border-color: rgba(0, 0, 0, 0);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
@@ -159,13 +154,13 @@ input.btn {
 
   &.disabled,
   &[type="submit"]:disabled {
-    color: rgba($white, 0.5);
-    background-color: rgba($white, 0.15);
+    color: opaque-white(0.5);
+    background-color: opaque-white(0.15);
 
     &.btn-primary {
-      color: rgba($white, 0.5);
+      color: opaque-white(0.5);
       background-image: none;
-      background-color: rgba($white, 0.15);
+      background-color: opaque-white(0.15);
     }
   }
 }
@@ -185,9 +180,9 @@ button.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: $primaryColor;
+  background-color: $primary--over;
   transition: all 400ms $transition-function;
-  color: $black;
+  color: $content--under;
   transform: translateY(0);
 
   &:hover:enabled {
@@ -213,7 +208,7 @@ button.btn {
   &.btn-primary {
     // Background image has to be set to 'none' because by default the Button has gradient image
     background-image: none;
-    background-color: $primary;
+    background-color: $accent--under;
 
     &:hover {
       background-image: none;
@@ -232,7 +227,7 @@ button.btn {
   }
 
   &.disabled {
-    color: rgba($white, 0.2);
+    color: opaque-white(0.2);
     background-image: linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.2) 0%,
@@ -248,7 +243,7 @@ textarea {
   -webkit-appearance: none;
   border: none;
   outline: none;
-  background-color: rgba($white, 0.12);
+  background-color: opaque-white(0.12);
   width: 100%;
   position: relative;
   cursor: pointer;
@@ -256,7 +251,7 @@ textarea {
   padding: 12px;
   border-radius: 22px;
   text-align: center;
-  color: $white;
+  color: $content--over;
 
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -266,11 +261,11 @@ textarea {
   }
 
   &:hover {
-    background-color: rgba($white, 0.16);
+    background-color: opaque-white(0.16);
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px rgba($white, 1);
+    box-shadow: 0 0 0 2px opaque-white(1);
   }
 
   &[type="checkbox"]:focus {
@@ -358,14 +353,14 @@ textarea {
   cursor: pointer;
   border-radius: 10px;
   padding: $spacer * 0.25 $spacer * 0.75;
-  background: $black;
-  color: $white;
+  background: $content--under;
+  color: $content--over;
 
   &.positioned {
     position: absolute;
     opacity: 0.5;
-    background: $white;
-    color: $black;
+    background: $content--over;
+    color: $content--under;
   }
 
   .icon {
@@ -381,11 +376,11 @@ textarea {
 
 a,
 .button--a {
-  color: $white;
+  color: $content--over;
   text-decoration: underline;
 
   &:hover {
-    color: $primaryColor;
+    color: $primary--over;
   }
 }
 
@@ -414,7 +409,7 @@ h4 {
 }
 
 .primary {
-  color: $primaryColor;
+  color: $primary--over;
 }
 
 .modal-backdrop {
@@ -436,7 +431,7 @@ h4 {
 .modal-content {
   border: none;
   border-radius: 22px;
-  background: $black;
+  background: $content--under;
   box-shadow: box-shadow--large(0.34);
 }
 
@@ -514,7 +509,7 @@ h4 {
   .youtube-video {
     transition: all 0.1s linear;
     background-color: $dark;
-    color: $white;
+    color: $content--over;
   }
 }
 
@@ -527,7 +522,7 @@ h4 {
 
 .full-page-container,
 .friendship-container,
-.conversation-space-container {
+.conversation-space {
   .content {
     .wrapper {
       display: grid;
@@ -595,7 +590,7 @@ h4 {
     .participant {
       display: flex;
       flex-grow: 1;
-      background: $black;
+      background: $content--under;
 
       .mirrored {
         transform: scale(-1, 1);
@@ -636,7 +631,7 @@ h4 {
   }
 
   .chatbox-container {
-    border: 2px solid $black;
+    border: 2px solid $content--under;
   }
 }
 
@@ -659,26 +654,26 @@ input.btn.btn-primary.btn-success {
 .bs-popover-bottom-end {
   width: 300px;
   max-width: 99%;
-  background: $black;
+  background: $content--under;
   border: 1px solid $light-grey;
   background-image: linear-gradient(
     0deg,
-    rgba($white, 0.05) 0%,
-    rgba($white, 0.05) 100%
+    opaque-white(0.05) 0%,
+    opaque-white(0.05) 100%
   );
 
   .chatbox-container {
-    background: $black;
+    background: $content--under;
     background-image: linear-gradient(
       0deg,
-      rgba($white, 0.05) 0%,
-      rgba($white, 0.05) 100%
+      opaque-white(0.05) 0%,
+      opaque-white(0.05) 100%
     );
 
     .bubble {
       padding: 10px;
       border-radius: 10px;
-      color: $white;
+      color: $content--over;
 
       &.global {
         background: $dark;
@@ -716,7 +711,7 @@ span.link {
   text-decoration: underline;
 
   &:hover {
-    color: $primaryColor;
+    color: $primary--over;
   }
 }
 
@@ -843,7 +838,7 @@ span.link {
 }
 
 .host-icon-container {
-  background: $black;
+  background: $content--under;
   padding: 10px;
   width: 200px;
   height: 200px;

@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import firebase from "firebase/app";
 import * as Yup from "yup";
 
@@ -6,6 +5,7 @@ import {
   PLAYA_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
+  ROOM_TAXON,
   VENUE_NAME_MAX_CHAR_COUNT,
   VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
@@ -31,7 +31,7 @@ export interface SchemaShape {
   subtitle?: string;
   description?: string;
 
-  bannerImageUrl: string;
+  bannerImageUrl?: string;
   logoImageUrl: string;
 }
 
@@ -99,7 +99,7 @@ export const validationSchema_v2 = Yup.object()
       message: mustBeMinimum("Description", 3),
     }),
 
-    bannerImageUrl: Yup.string().required("Banner is required!"),
+    bannerImageUrl: Yup.string(),
     logoImageUrl: Yup.string().required("Logo is required!"),
   })
   .required();
@@ -113,6 +113,24 @@ const venueNameSchema = Yup.string()
   .max(
     VENUE_NAME_MAX_CHAR_COUNT,
     ({ max }) => `Name must be less than ${max} characters`
+  )
+  .test(
+    "name",
+    "Must have alphanumeric characters",
+    (val: string) => createUrlSafeName(val).length > 0
+  )
+  .test(
+    "name",
+    "This name is already taken",
+    async (val: string) =>
+      !val ||
+      !(
+        await firebase
+          .firestore()
+          .collection("venues")
+          .doc(createUrlSafeName(val))
+          .get()
+      ).exists
   );
 
 export const roomUrlSchema = Yup.string()
@@ -125,67 +143,25 @@ export const roomUrlSchema = Yup.string()
     isCurrentLocationValidUrl
   );
 
-export interface VenueRoomSchema {
+export interface SpaceSchema {
   template?: string;
-  roomTitle: string;
   venueName?: string;
-  roomUrl?: string;
 }
 
-export const venueRoomSchema = Yup.object().shape<VenueRoomSchema>({
-  roomTitle: roomTitleSchema,
+const roomImageUrlSchema = Yup.string().required(
+  `${ROOM_TAXON.capital} image is required`
+);
+
+export const createSpaceSchema = Yup.object().shape<SpaceSchema>({
   venueName: venueNameSchema,
 });
 
-export const roomSchema = Yup.object().shape<VenueRoomSchema>({
-  roomTitle: roomTitleSchema,
-  roomUrl: roomUrlSchema,
-});
-
-const roomImageUrlSchema = Yup.string().required("Room image is required");
-
-export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
-  useUrl: Yup.boolean().required(),
-  title: roomTitleSchema,
-  venueName: Yup.string()
-    .when("useUrl", {
-      is: false,
-      then: roomTitleSchema,
-    })
-    .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
-      !useUrl
-        ? schema
-            .test(
-              "name",
-              "Must have alphanumeric characters",
-              (val: string) => createUrlSafeName(val).length > 0
-            )
-            .test(
-              "name",
-              "This venue name is already taken",
-              async (val: string) =>
-                !val ||
-                !(
-                  await firebase
-                    .firestore()
-                    .collection("venues")
-                    .doc(createUrlSafeName(val))
-                    .get()
-                ).exists
-            )
-        : schema
-    ),
-  url: Yup.string().when("useUrl", {
-    is: true,
-    then: roomUrlSchema,
+export const roomEditSchema = Yup.object().shape({
+  room: Yup.object().shape<RoomSchemaShape>({
+    title: roomTitleSchema,
+    url: roomUrlSchema,
+    image_url: roomImageUrlSchema,
   }),
-  image_url: roomImageUrlSchema,
-});
-
-export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
-  title: roomTitleSchema,
-  url: roomUrlSchema,
-  image_url: roomImageUrlSchema,
 });
 
 // this is used to transform the api data to conform to the yup schema
@@ -236,13 +212,6 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
     .matches(
       /\d{4}-\d{2}-\d{2}/,
       'Start date must have the format "yyyy-mm-dd"'
-    )
-    .test(
-      "start_date_future",
-      "Start date must be in the futur",
-      (start_date) => {
-        return dayjs(start_date).isSameOrAfter(dayjs(), "day");
-      }
     ),
   start_time: Yup.string().required("Start time required"),
   duration_hours: Yup.number()
@@ -252,5 +221,5 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
     .typeError("Minutes must be a number")
     .required("Minutes equired"),
   host: Yup.string().required("Host required"),
-  room: Yup.string().matches(/^(?!Select a room...$).*$/, "Room is required"),
+  room: Yup.string().required("Space is required"),
 });

@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import classNames from "classnames";
 
 import { UserStatus } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+
+import { Dropdown } from "components/atoms/Dropdown";
 
 import "./UserStatusDropdown.scss";
 
@@ -35,26 +37,25 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   const userStatusDropdownOptions = useMemo(
     () =>
       userStatuses.map((userStatus) => (
-        <Dropdown.Item
+        <ReactBootstrapDropdown.Item
+          className="UserStatusDropdown__item"
           key={userStatus.status}
           onClick={() => changeUserStatus(userStatus.status)}
         >
           {userStatus.status}
-        </Dropdown.Item>
+        </ReactBootstrapDropdown.Item>
       )),
     [userStatuses, changeUserStatus]
   );
 
   return (
-    // @debt replace with our own dropdown component
+    // @debt align the style of the SpacesDropdown with the Dropdown component
     <div className={classNames("UserStatusDropdown", containerClassName)}>
       <div className="UserStatusDropdown__status">
         {userStatus.status}&nbsp;
       </div>
       {showDropdown && (
-        <DropdownButton id="user-status-dropdown" title={"change status"}>
-          {userStatusDropdownOptions}
-        </DropdownButton>
+        <Dropdown title="change status" options={userStatusDropdownOptions} />
       )}
     </div>
   );

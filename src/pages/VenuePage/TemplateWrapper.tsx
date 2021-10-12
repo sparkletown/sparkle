@@ -10,22 +10,20 @@ import { WithId } from "utils/id";
 import { ReactionsProvider } from "hooks/reactions";
 import { useSettings } from "hooks/useSettings";
 
-import { FriendShipPage } from "pages/FriendShipPage";
-
 import { AnimateMap } from "components/templates/AnimateMap";
 import { ArtPiece } from "components/templates/ArtPiece";
-import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
-import { Jazzbar } from "components/templates/Jazzbar";
+import { JazzBarPage } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ReactionPage } from "components/templates/ReactionPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
+import { ViewingWindow } from "components/templates/ViewingWindow";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -39,10 +37,10 @@ export interface TemplateWrapperProps {
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
-  const { isLoaded: settingsAreLoaded, settings } = useSettings();
+  const { isLoaded: areSettingsLoaded, settings } = useSettings();
 
   const shouldShowChat =
-    settingsAreLoaded &&
+    areSettingsLoaded &&
     (settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template));
 
   let template;
@@ -53,19 +51,14 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route render={() => <Jazzbar venue={venue} />} />
+          <Route render={() => <JazzBarPage venue={venue} />} />
         </Switch>
       );
       // NOTE: Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
-    case VenueTemplate.friendship:
-      template = <FriendShipPage />;
-      break;
-
     case VenueTemplate.partymap:
-    case VenueTemplate.themecamp:
       template = <PartyMap venue={venue} />;
       break;
 
@@ -77,20 +70,11 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ArtPiece venue={venue} />;
       break;
     case VenueTemplate.zoomroom:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.artcar:
       template = <ExternalRoom venue={venue} />;
       break;
-    // Note: This is the template that is used for Auditorium (v1)
-    case VenueTemplate.audience:
-      template = (
-        <Switch>
-          <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route>
-            <Audience venue={venue} />
-          </Route>
-        </Switch>
-      );
+
+    case VenueTemplate.viewingwindow:
+      template = <ViewingWindow venue={venue} />;
       break;
 
     case VenueTemplate.auditorium:
@@ -110,7 +94,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.firebarrel:
-      template = <FireBarrel />;
+      template = <FireBarrel venue={venue} />;
       break;
 
     case VenueTemplate.posterhall:
@@ -125,6 +109,11 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <ScreeningRoom venue={venue} />;
       break;
 
+    case VenueTemplate.friendship:
+    case VenueTemplate.themecamp:
+    case VenueTemplate.audience:
+    case VenueTemplate.artcar:
+    case VenueTemplate.performancevenue:
     case VenueTemplate.avatargrid:
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
@@ -143,8 +132,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar hasBackButton={hasBackButton}>
-        <AnnouncementMessage message={venue.bannerMessage} />
+      <WithNavigationBar hasBackButton={hasBackButton} withSchedule>
+        <AnnouncementMessage isAnnouncementUserView />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 

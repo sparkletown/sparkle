@@ -7,14 +7,13 @@ import { DEFAULT_AVATARS } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import "firebase/storage";
 
 import "./DefaultAvatars.scss";
 
 export interface DefaultAvatarsProps extends ContainerClassName {
-  venueId: string;
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
   avatarClassName?: string;
@@ -22,7 +21,6 @@ export interface DefaultAvatarsProps extends ContainerClassName {
 }
 
 export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
-  venueId,
   onAvatarClick,
   isLoadingExternal,
   avatarClassName,
@@ -31,9 +29,10 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
 }) => {
   const firebase = useFirebase();
 
-  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
-    venueId,
-  });
+  const {
+    sovereignVenueId,
+    isLoading: isSovereignVenueLoading,
+  } = useRelatedVenues();
 
   const {
     value: customAvatars,

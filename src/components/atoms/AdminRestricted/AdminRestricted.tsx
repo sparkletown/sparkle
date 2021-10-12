@@ -29,11 +29,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
     history.push(venueId ? venueLandingUrl(venueId) : "/");
   }, [firebase, history, venueId]);
 
-  if (isAdminUser) {
-    return (
-      <div className="AdminRestricted AdminRestricted--allowed">{children}</div>
-    );
-  }
+  if (isAdminUser) return <>{children}</>;
 
   if (isCheckingRole)
     return (

@@ -8,7 +8,6 @@ import { Venue_v2 } from "types/venues";
 import { adminNGSettingsUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
@@ -46,8 +45,6 @@ export const AdminAdvancedSettings: React.FC = () => {
     selectedTab = AdminAdvancedTab.basicInfo,
   } = useParams<AdminAdvancedSettingsRouteParams>();
 
-  const { sovereignVenue } = useSovereignVenue({ venueId });
-
   const {
     currentVenue: venue,
     isCurrentVenueLoaded,
@@ -77,8 +74,13 @@ export const AdminAdvancedSettings: React.FC = () => {
     return <LoadingPage />;
   }
 
+  if (!venue) {
+    //@debt Add NotFound page here after it's merged
+    return null;
+  }
+
   return (
-    <WithNavigationBar hasBackButton={false} withSchedule={false}>
+    <WithNavigationBar>
       <AdminRestricted>
         <div className="AdminAdvancedSettings">
           <div className="AdminAdvancedSettings__options">
@@ -90,15 +92,11 @@ export const AdminAdvancedSettings: React.FC = () => {
           <EntranceExperience
             // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
             venue={venue as Venue_v2}
-            sovereignVenue={sovereignVenue}
             onSave={navigateToDefaultTab}
           />
         )}
         {selectedTab === AdminAdvancedTab.advancedMapSettings && (
-          <AdvancedSettings
-            venue={venue as Venue_v2}
-            onSave={navigateToDefaultTab}
-          />
+          <AdvancedSettings venue={venue} onSave={navigateToDefaultTab} />
         )}
       </AdminRestricted>
     </WithNavigationBar>

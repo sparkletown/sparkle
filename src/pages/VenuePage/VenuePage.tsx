@@ -4,8 +4,6 @@ import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
-import { fetchSovereignVenue } from "api/venue";
-
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -20,6 +18,7 @@ import {
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
+import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
   updateLocationData,
@@ -32,9 +31,12 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+import { updateUserProfile } from "pages/Account/helpers";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -125,24 +127,36 @@ export const VenuePage: React.FC = () => {
     });
   }, LOC_UPDATE_FREQ_MS);
 
+  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
+
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !venueName || !venueId) return;
+    if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
 
-    const updateWholeLocationUserPath = async () => {
-      const { sovereignVenue, checkedVenueIds } = await fetchSovereignVenue(
-        venueId
-      );
+    const allVenueIds = [
+      ...sovereignVenueDescendantIds,
+      sovereignVenueId,
+    ].reverse();
 
-      const allVenues = [...checkedVenueIds, sovereignVenue.id].reverse();
+    const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
 
-      const locationPath = wrapIntoSlashes(allVenues.join("/"));
+    updateLocationData({ userId, newLocationPath: locationPath });
+  }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
 
-      updateLocationData({ userId, newLocationPath: locationPath });
-    };
-
-    updateWholeLocationUserPath();
-  }, [userId, venueName, venueId]);
+  useEffect(() => {
+    if (
+      user &&
+      profile &&
+      !isCompleteProfile(profile) &&
+      isCompleteUserInfo(user)
+    ) {
+      const profileData = {
+        pictureUrl: user.photoURL ?? "",
+        partyName: user.displayName ?? "",
+      };
+      updateUserProfile(user?.uid, profileData);
+    }
+  }, [user, profile]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
@@ -167,7 +181,6 @@ export const VenuePage: React.FC = () => {
 
     void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
   }, [enteredVenueIds, userLocation, userId, venueId, profile]);
-
   // NOTE: User's timespent updates
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?

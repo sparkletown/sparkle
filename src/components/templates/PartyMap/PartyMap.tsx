@@ -12,7 +12,6 @@ import {
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { Map, RoomModal } from "./components";
@@ -25,9 +24,8 @@ export interface PartyMapProps {
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers({ venueId: venue.id });
 
-  const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
+  const { relatedVenues } = useRelatedVenues();
 
   const selfAndChildVenueIds = useMemo(
     () =>
@@ -73,14 +71,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   return (
     <div className="party-venue-container">
-      <Map
-        user={user}
-        profileData={profile.data}
-        venue={venue}
-        partygoers={recentVenueUsers}
-        selectRoom={selectRoom}
-        unselectRoom={unselectRoom}
-      />
+      <Map user={user} venue={venue} selectRoom={selectRoom} />
 
       <RoomModal
         room={selectedRoom}

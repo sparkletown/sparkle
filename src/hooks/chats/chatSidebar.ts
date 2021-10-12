@@ -6,8 +6,10 @@ import {
   setVenueChatTabOpened,
 } from "store/actions/Chat";
 
+import { DisplayUser } from "types/User";
 import { AnyVenue } from "types/venues";
 
+import { WithId } from "utils/id";
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
@@ -23,6 +25,7 @@ export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
   const isExpanded = useSelector(chatVisibilitySelector);
   const chatSettings = useSelector(selectedChatSettingsSelector);
+  const newPrivateMessageRecived = useNumberOfUnreadChats();
 
   const expandSidebar = useCallback(() => {
     dispatch(setChatSidebarVisibility(true));
@@ -36,9 +39,19 @@ export const useChatSidebarControls = () => {
     if (isExpanded) {
       collapseSidebar();
     } else {
+      dispatch(setVenueChatTabOpened());
       expandSidebar();
     }
-  }, [expandSidebar, collapseSidebar, isExpanded]);
+  }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
+
+  const togglePrivateChatSidebar = useCallback(() => {
+    if (isExpanded) {
+      collapseSidebar();
+    } else {
+      expandSidebar();
+      dispatch(setPrivateChatTabOpened());
+    }
+  }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
 
   const selectVenueChat = useCallback(() => {
     expandSidebar();
@@ -51,15 +64,16 @@ export const useChatSidebarControls = () => {
   }, [dispatch, expandSidebar]);
 
   const selectRecipientChat = useCallback(
-    (recipientId: string) => {
+    (recipient: WithId<DisplayUser>) => {
       expandSidebar();
-      dispatch(setPrivateChatTabOpened(recipientId));
+      dispatch(setPrivateChatTabOpened(recipient));
     },
     [dispatch, expandSidebar]
   );
 
   return {
     isExpanded,
+    newPrivateMessageRecived,
     chatSettings,
 
     expandSidebar,
@@ -68,6 +82,7 @@ export const useChatSidebarControls = () => {
     selectRecipientChat,
     collapseSidebar,
     toggleSidebar,
+    togglePrivateChatSidebar,
   };
 };
 
@@ -84,15 +99,14 @@ export const useChatSidebarInfo = (venue: AnyVenue) => {
 };
 
 const useNumberOfUnreadChats = () => {
-  const { user } = useUser();
+  const { userId } = useUser();
   const { privateChatPreviews } = usePrivateChatPreviews();
-
-  const userId = user?.uid;
 
   return useMemo(
     () =>
       privateChatPreviews.filter(
-        (chatPreview) => !chatPreview.isRead && chatPreview.from !== userId
+        (chatPreview) =>
+          !chatPreview.isRead && chatPreview.fromUser.id !== userId
       ).length,
     [privateChatPreviews, userId]
   );

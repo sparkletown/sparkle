@@ -1,13 +1,15 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
+$photobooth-button-margin: 140px 0px 0px;
+$photobooth-button-text-margin: 38px 0px 0px;
+$photobooth-button-background-size: 35px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
 }
 
 .navbar-container {
-  background: $black;
+  background: $content--under;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -29,7 +31,7 @@ $border-radius: 28px;
 
   .notification-card {
     background: $red;
-    color: $white;
+    color: $content--over;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -159,7 +161,7 @@ $border-radius: 28px;
 
 .nav-party-logo {
   position: relative;
-  background-color: rgba($white, 0.08);
+  background-color: opaque-white(0.08);
   height: 60px;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -173,7 +175,7 @@ $border-radius: 28px;
   transition: transform 400ms $transition-function;
   border: none;
   appearance: none;
-  color: $white;
+  color: $content--over;
 
   img {
     height: 40px;
@@ -182,7 +184,7 @@ $border-radius: 28px;
   &:hover,
   &:focus {
     border: none;
-    background-color: rgba($white, 0.14);
+    background-color: opaque-white(0.14);
 
     &:after {
       opacity: 0.7;
@@ -215,7 +217,7 @@ $border-radius: 28px;
 }
 
 .schedule-text {
-  background-color: $primary;
+  background-color: $accent--under;
   border-radius: 10px;
   margin-left: 8px;
   padding: 0px 10px;
@@ -269,5 +271,29 @@ $border-radius: 28px;
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__photobooth-button {
+    position: absolute;
+    top: 130px;
+    left: -($spacing--lg);
+    border-radius: 0px $border-radius--md $border-radius--md 0px;
+    padding: $spacing--xs $spacing--md;
+    cursor: pointer;
+    background-color: $lighter-intermediate-grey;
+    background-image: url(/assets/icons/photobooth-icon.png);
+    background-size: $photobooth-button-background-size;
+    background-position: 50% 10%;
+    background-repeat: no-repeat;
+
+    &:hover {
+      background-color: $light-grey;
+    }
+  }
+
+  &__photobooth-title {
+    text-decoration: none;
+    margin: $photobooth-button-text-margin;
+    font-size: $font-size--sm;
   }
 }

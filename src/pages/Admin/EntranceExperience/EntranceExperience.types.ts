@@ -1,9 +1,6 @@
-import { AnyVenue, Venue_v2 } from "types/venues";
-
-import { WithId } from "utils/id";
+import { Venue_v2 } from "types/venues";
 
 export interface EntranceExperienceProps {
   venue: Venue_v2;
-  sovereignVenue?: WithId<AnyVenue>;
   onSave: () => void;
 }

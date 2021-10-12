@@ -2,6 +2,8 @@ import firebase from "firebase/app";
 
 import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 
+import { getUserRef } from "api/profile";
+
 import { useInterval } from "hooks/useInterval";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -49,10 +51,7 @@ export const useUpdateTimespentPeriodically = ({
       // @debt time spent is currently counted multiple times if multiple tabs are open
       if (!userId || !locationName) return;
 
-      const firestore = firebase.firestore();
-      const locationRef = firestore
-        .collection("users")
-        .doc(userId)
+      const locationRef = getUserRef(userId)
         .collection("visits")
         .doc(locationName);
 

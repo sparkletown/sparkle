@@ -1,0 +1,14 @@
+@import "scss/constants";
+
+$height: 1rem;
+
+.AdminShowcaseSubTitle {
+  place-content: center start;
+  min-height: $height;
+  line-height: $height;
+  font-size: $height;
+  font-weight: $font-weight--400;
+  margin: $spacing--md;
+  padding: 0;
+  color: $subheading--over;
+}
