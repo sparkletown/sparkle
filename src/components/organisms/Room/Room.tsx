@@ -86,8 +86,6 @@ export const Room: React.FC<RoomProps> = ({
           >
             <VideoParticipant
               participant={participant.participant}
-              profileDataId={participant.user.id}
-              isShowSoundDisable
               participantUser={participant.user}
             />
           </div>
