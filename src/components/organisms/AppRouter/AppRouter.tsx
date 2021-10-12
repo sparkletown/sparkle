@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import {
-  ADMIN_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ROOT_URL,
   DEFAULT_REDIRECT_URL,
@@ -111,10 +110,6 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route path={ADMIN_ROOT_URL}>
-            <Redirect to={adminRootUrl} />
-          </Route>
-
           {enableAdmin1 && (
             <Route path={ADMIN_V1_ROOT_URL}>
               <Provided withRelatedVenues>
@@ -128,6 +123,17 @@ export const AppRouter: React.FC = () => {
               <Provided withRelatedVenues>
                 <AdminV3Subrouter />
               </Provided>
+            </Route>
+          )}
+
+          {!enableAdmin1 && (
+            <Route path={ADMIN_V1_ROOT_URL}>
+              <Redirect to={adminRootUrl} />
+            </Route>
+          )}
+          {!enableAdmin3 && (
+            <Route path={ADMIN_V3_ROOT_URL}>
+              <Redirect to={adminRootUrl} />
             </Route>
           )}
 
