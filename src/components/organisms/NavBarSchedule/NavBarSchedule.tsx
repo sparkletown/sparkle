@@ -26,6 +26,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
+import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
@@ -52,6 +53,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
 }) => {
+  const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
@@ -73,6 +78,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
+
+  const isNotSovereignVenue = venue?.id !== sovereignVenue?.id;
+
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
@@ -151,20 +160,35 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       eventTimeAndOrderComparator
     );
 
+    const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
+      ({ isSaved, venueId: eventVenueId }) =>
+        isSaved && eventVenueId?.toLowerCase() === venueId
+    );
+
+    const currentVenueEvents = eventsFilledWithPriority.filter(
+      ({ venueId: eventVenueId }) => eventVenueId?.toLowerCase() === venueId
+    );
+
+    const personalisedSchedule = filterRelatedEvents
+      ? currentVenueBookMarkEvents
+      : eventsFilledWithPriority.filter((event) => event.isSaved);
+
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        ? personalisedSchedule
+        : filterRelatedEvents
+        ? currentVenueEvents
         : eventsFilledWithPriority,
     };
   }, [
-    liveAndFutureEvents,
-    selectedDayIndex,
-    showPersonalisedSchedule,
     firstScheduleDate,
+    selectedDayIndex,
+    liveAndFutureEvents,
+    filterRelatedEvents,
+    showPersonalisedSchedule,
+    venueId,
   ]);
-
-  const { findVenueInRelatedVenues } = useRelatedVenues();
 
   const scheduleNGWithAttendees = {
     ...scheduleNG,
@@ -205,13 +229,39 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
+  const breadcrumbedLocations = useMemo(() => {
+    if (!sovereignVenue) return [];
+
+    const locations = [{ key: sovereignVenue.id, name: sovereignVenue.name }];
+
+    if (venue && isNotSovereignVenue)
+      locations.push({ key: venue.id, name: venue.name });
+
+    return locations;
+  }, [isNotSovereignVenue, sovereignVenue, venue]);
+
+  const onBreacrumbsSelect = useCallback(
+    (key: string) => {
+      setFilterRelatedEvents(key === venue?.id && isNotSovereignVenue);
+    },
+    [venue, isNotSovereignVenue]
+  );
+
   return (
-    <div className="NavBarSchedule__wrapper">
-      <div className={containerClasses}>
+    <div className={containerClasses}>
+      <div className="NavBarSchedule__wrapper">
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
         {/* {<ScheduleVenueDescription />} */}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+        {venue && sovereignVenue && (
+          <Breadcrumbs
+            containerClassName="NavBarSchedule__breadcrumbs"
+            label="Events on"
+            onSelect={onBreacrumbsSelect}
+            locations={breadcrumbedLocations}
+          />
+        )}
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"

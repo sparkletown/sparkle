@@ -52,7 +52,7 @@ const signInWithGoogle: () => Promise<firebase.auth.UserCredential> = () =>
       return error;
     });
 
-const signInWithFacebook: () => Promise<firebase.auth.UserCredential> = () =>
+const signInWithFacebook = () =>
   firebase
     .auth()
     .signInWithPopup(providerFb)
@@ -67,6 +67,7 @@ const signInWithFacebook: () => Promise<firebase.auth.UserCredential> = () =>
     })
     .catch((error) => {
       const { code, message, email, credential } = error;
+
       Bugsnag.notify(error, (event) => {
         event.addMetadata("context", {
           location: "hooks/useSocialSignIn::signInWithFacebook",

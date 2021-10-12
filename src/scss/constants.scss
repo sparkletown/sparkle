@@ -192,6 +192,7 @@ $z-layer-sidebar: 15;
 $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
+$z-layer-viewing-window: 5;
 $z-layer-on-top-bg: 1;
 $z-layer-jazz-header: $z-layer-on-top-bg;
 $z-layer-user-list-label: $z-layer-on-top-bg;
@@ -266,6 +267,8 @@ $z-layers: (
   art-content: $z-layer-art-content,
   // Embeddable
   embeddable-iframe: $z-layer-embed-iframe,
+  // Viewing Window
+  viewing-window-content: $z-layer-viewing-window,
   // Auditorium
   auditorium-iframe: $z-layer-auditorium-iframe,
   // External Link
