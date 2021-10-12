@@ -16,12 +16,10 @@ export interface UseDeleteMessageProps<T extends DeleteChatMessageProps> {
     props: T,
     batch: firebase.firestore.WriteBatch
   ) => void;
-  hardDelete?: boolean;
 }
 
 export const useDeleteMessage = <T extends DeleteChatMessageProps>({
   getCollections,
-  hardDelete,
   processResultingBatch = noop,
 }: UseDeleteMessageProps<T>): DeleteChatMessage<T> =>
   useCallback(
@@ -29,15 +27,10 @@ export const useDeleteMessage = <T extends DeleteChatMessageProps>({
       const batch = firebase.firestore().batch();
       const collectionRefs = getCollections(props);
 
-      if (hardDelete)
-        collectionRefs.forEach((ref) => batch.delete(ref.doc(props.messageId)));
-      else
-        collectionRefs.forEach((ref) =>
-          batch.update(ref.doc(props.messageId), { deleted: true })
-        );
+      collectionRefs.forEach((ref) => batch.delete(ref.doc(props.messageId)));
       processResultingBatch(props, batch);
 
       await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },
-    [getCollections, hardDelete, processResultingBatch]
+    [getCollections, processResultingBatch]
   );

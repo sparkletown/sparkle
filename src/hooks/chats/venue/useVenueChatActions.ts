@@ -37,7 +37,6 @@ export const useDeleteVenueChatMessage = (venueId?: string) =>
   useDeleteMessage<DeleteChatMessageProps>({
     getCollections: useGetVenueChatCollectionRef(venueId),
     processResultingBatch: useProcessBatchForChat(venueId, "deleteChat"),
-    hardDelete: true,
   });
 
 export const useSendVenueThreadMessage = (venueId?: string) =>
@@ -51,5 +50,4 @@ export const useDeleteVenueThreadMessage = (venueId?: string) =>
   useDeleteMessage<DeleteThreadMessageProps>({
     getCollections: useGetVenueThreadCollectionRef(venueId),
     processResultingBatch: useProcessBatchForThread(venueId, "deleteThread"),
-    hardDelete: true,
   });
