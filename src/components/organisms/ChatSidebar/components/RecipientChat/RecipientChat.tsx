@@ -40,7 +40,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         actions.markMessageRead(message.id)
       );
     }
-  }, [allMessagesToDisplay, recipient.id, actions.markMessageRead, actions]);
+  }, [allMessagesToDisplay, recipient.id, actions]);
 
   const { selectPrivateChat } = useChatSidebarControls();
 
