@@ -10,7 +10,7 @@
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: $room-card-background;
+    background-color: var(--content--under-lighter-20pp);
     background-clip: border-box;
   }
 

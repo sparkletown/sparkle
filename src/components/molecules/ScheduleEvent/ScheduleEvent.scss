@@ -138,7 +138,7 @@ $expand--width: 40px;
   }
 
   &__expand {
-    color: $schedule-event-expanded-color;
+    color: var(--greyscale-lighter-20pp);
     border: none;
     background-color: transparent;
 

@@ -78,7 +78,7 @@ $sorting-option--font-size: 0.8rem;
         top: $sorting-dropdown--top;
         left: $sorting-dropdown--left;
         width: $sorting-dropdown--width;
-        background: $room-card-background;
+        background: var(--content--under-lighter-20pp);
         border-radius: $border-radius--lg;
         padding: $spacing--lg $spacing--sm;
       }
@@ -414,7 +414,7 @@ $sorting-option--font-size: 0.8rem;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #cccccc;
+      background-color: var(--greyscale-lighter-20pp);
       -webkit-transition: 0.4s;
       transition: 0.4s;
 

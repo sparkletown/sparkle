@@ -14,8 +14,6 @@ $primary--darker: #3f247d;
 $primary--over: #f6e652;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
-$secondary--lightest: #868686;
-$secondary--light: #6a6a6a;
 $secondary: #333035;
 $secondary--dark: #19181a;
 $secondary--live: #1a1d24;
@@ -31,16 +29,10 @@ $input--invalid-focus: #ff7384;
 $input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
 // @debt these should probably be replaced with var(...) referencing theme colors
-$subheading--over: #a5a5a5;
 $announcement-background: rgba(39, 35, 34, 0.9);
-$room-card-background: #323232;
-$recipient-chat-breadcrumbs-background: #090909;
-$schedule-event-expanded-color: #9f9fa0;
 $send-msg-online-color: #78b553;
 
 // @debt these should probably be removed or replaced with var(...) references
-// TODO $dark-grey is almost the same as $secondary--live: #1a1d24;
-$dark-grey: #1a1d23;
 $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
