@@ -25,6 +25,8 @@ import { AdminSpacesListItem } from "components/organisms/AdminVenueView/compone
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
@@ -41,6 +43,14 @@ export interface SpaceEditFormNGProps {
   onEdit?: () => void;
   venueVisibility?: RoomVisibility;
 }
+
+// NOTE: add the keys of those errors that their respective fields have handled
+const HANDLED_ERRORS: string[] = [
+  "image_url",
+  "iframeUrl",
+  "autoPlay",
+  "bannerImageUrl",
+];
 
 export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   room,
@@ -179,7 +189,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               errors={errors}
             />
           </AdminSection>
-          <AdminSection title="Autoplay your embeded video">
+          <AdminSection title="Autoplay your embeded video" withLabel>
             <Toggler name="autoPlay" forwardedRef={register} />
           </AdminSection>
         </>
@@ -222,13 +232,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       >
         Delete {ROOM_TAXON.lower}
       </ButtonNG>
-      {error && <div>Error: {error}</div>}
+      <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+      <SubmitError error={error} />
 
       {isLoadingRoomVenue && (
-        <div className="SpaceEditFormNG__loading-indicator">
+        <AdminSection title="Loading space information...">
           <Spinner animation="border" role="status" />
-          <span>Loading space information...</span>
-        </div>
+        </AdminSection>
       )}
 
       <AdminSidebarFooter onClickCancel={handleBackClick}>
