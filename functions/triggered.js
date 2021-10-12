@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { chunk } = require("lodash");
-const { BATCH_MAX_OPS } = require("functions/scheduled");
+const { BATCH_MAX_OPS } = require("./scheduled");
 
 exports.incrementSectionsCount = functions.firestore
   .document("venues/{venueId}/sections/{sectionId}")
