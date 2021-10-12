@@ -1,7 +1,6 @@
 import React from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -13,7 +12,6 @@ export interface AdminSpacesListItemProps {
 }
 
 export const AdminSpacesListItem: React.FC<AdminSpacesListItemProps> = ({
-  className,
   title,
   isOpened,
   children,
@@ -24,10 +22,7 @@ export const AdminSpacesListItem: React.FC<AdminSpacesListItemProps> = ({
 
   return (
     <>
-      <div
-        className={classNames("AdminSpacesListItem", className)}
-        onClick={toggleShowListItem}
-      >
+      <div className="AdminSpacesListItem" onClick={toggleShowListItem}>
         <div>{title}</div>
         <FontAwesomeIcon icon={showListItem ? faCaretDown : faCaretRight} />
       </div>

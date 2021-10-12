@@ -152,10 +152,7 @@ export const Spaces: React.FC<SpacesProps> = ({
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
             <AdminSidebarFooter {...sidebarFooterProps} />
-            <AdminSpacesListItem
-              className="Spaces__venue-rooms"
-              title="Map background"
-            >
+            <AdminSpacesListItem title="Map background">
               <>
                 <BackgroundSelect
                   isLoadingBackgrounds={isLoadingBackgrounds}
@@ -175,15 +172,11 @@ export const Spaces: React.FC<SpacesProps> = ({
               </>
             </AdminSpacesListItem>
             <AdminSpacesListItem
-              className="Spaces__venue-rooms"
               title={`${numberOfRooms} ${ROOMS_TAXON.capital}`}
             >
               {renderVenueRooms}
             </AdminSpacesListItem>
-            <AdminSpacesListItem
-              className="Spaces__venue-rooms"
-              title={`Add ${ROOMS_TAXON.lower}`}
-            >
+            <AdminSpacesListItem title={`Add ${ROOMS_TAXON.lower}`}>
               {renderAddRooms}
             </AdminSpacesListItem>
           </>
