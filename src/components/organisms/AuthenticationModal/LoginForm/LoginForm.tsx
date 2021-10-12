@@ -19,7 +19,7 @@ export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal?: () => void;
-  afterUserIsLoggedIn?: (data: LoginFormData) => void;
+  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
 }
 
 export interface LoginFormData {
@@ -65,7 +65,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   const postSignInCheck = () => {
     afterUserIsLoggedIn && afterUserIsLoggedIn();
 
-    closeAuthenticationModal();
+    closeAuthenticationModal?.();
   };
 
   const onSubmit = async (data: LoginFormData) => {

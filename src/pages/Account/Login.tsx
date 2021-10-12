@@ -85,7 +85,9 @@ export const Login: React.FC<LoginProps> = ({
     setFormToDisplay("passwordReset");
   };
 
-  const afterUserIsLoggedIn = (data: LoginFormData) => {
+  const afterUserIsLoggedIn = (data?: LoginFormData) => {
+    if (!data) return;
+
     analytic.trackLogInEvent(data.email);
   };
 

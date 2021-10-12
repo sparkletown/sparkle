@@ -29,7 +29,7 @@ import gIcon from "assets/icons/google-social-icon.svg";
 interface PropsType {
   displayLoginForm: () => void;
   displayPasswordResetForm: () => void;
-  afterUserIsLoggedIn?: (data: LoginFormData) => void;
+  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
   closeAuthenticationModal?: () => void;
 }
 
