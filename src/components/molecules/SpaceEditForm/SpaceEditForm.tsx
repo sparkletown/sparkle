@@ -6,7 +6,6 @@ import { useAsync, useAsyncFn } from "react-use";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
-  HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
   ROOM_TAXON,
@@ -348,13 +347,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   </div>
                 )}
 
-              {room.template &&
+              {/* disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253 */}
+              {/* {room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
                   <div className="toggle-room">
                     <h4 className="italic input-header">Show grid layout</h4>
                     <Toggler name="venue.showGrid" forwardedRef={register} />
                   </div>
-                )}
+                )} */}
 
               {room.template &&
                 HAS_REACTIONS_TEMPLATES.includes(
@@ -425,7 +425,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 </>
               )}
 
-              {room.template &&
+              {/* disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253 */}
+              {/* {room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
                 venueValues.showGrid && (
                   <>
@@ -454,7 +455,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       </div>
                     </div>
                   </>
-                )}
+                )} */}
             </>
           )}
 

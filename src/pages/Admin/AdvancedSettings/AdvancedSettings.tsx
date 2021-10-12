@@ -206,7 +206,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           />
         </div>
 
-        <div className="AdvancedSettings__form-field">
+        {/* disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253 */}
+        {/* <div className="AdvancedSettings__form-field">
           <Toggler forwardedRef={register} name="showGrid" title="Show grid" />
           <Form.Label>Number of columns: </Form.Label>
           <InputField
@@ -219,7 +220,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             disabled={!values.showGrid}
             min={1}
           />
-        </div>
+        </div> */}
 
         <div className="AdvancedSettings__form-field">
           <Toggler

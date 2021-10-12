@@ -115,7 +115,7 @@ export const AppRouter: React.FC = () => {
             <Redirect to={adminRootUrl} />
           </Route>
 
-          {enableAdmin1 && (
+          {!enableAdmin1 && (
             <Route path={ADMIN_V1_ROOT_URL}>
               <Provided withRelatedVenues>
                 <AdminV1Subrouter />
