@@ -108,7 +108,14 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   const handleFacebookSignIn = async () => {
     try {
-      await signInWithFacebook();
+      const auth = await signInWithFacebook();
+
+      if (auth.message) {
+        setError("backend", "firebase", "Error");
+
+        return;
+      }
+
       postSignInCheck();
     } catch {
       setError("backend", "firebase", "Error");
