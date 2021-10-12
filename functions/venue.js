@@ -28,6 +28,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
+  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**
@@ -62,6 +63,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
   VenueTemplate.zoomroom,
   VenueTemplate.screeningroom,
 ];
@@ -75,6 +77,7 @@ const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.viewingwindow,
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
@@ -224,6 +227,7 @@ const createVenueData = (data, context) => {
     radioStations: data.radioStations ? [data.radioStations] : [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    hasSocialLoginEnabled: data.hasSocialLoginEnabled || false,
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -396,6 +400,10 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
+  }
+
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -498,10 +506,24 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  const venueData = createVenueData_v2(data, context);
   const venueId = getVenueId(data.name);
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  const venueDoc = await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get();
+
+  if (venueDoc.exists) {
+    throw new HttpsError(
+      "already-exists",
+      `The venue ${data.name} already exists. Please try with another name.`
+    );
+  }
+
+  const venueData = createVenueData_v2(data, context);
+
+  await admin.firestore().collection("venues").doc(venueId).create(venueData);
 
   return venueData;
 });
@@ -762,6 +784,26 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+exports.updateMapBackground = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+});
+
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -836,6 +878,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {

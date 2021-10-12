@@ -22,10 +22,8 @@ import { VideoAspectRatio } from "./VideoAspectRatio";
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  artpiece = "artpiece",
   auditorium = "auditorium",
   conversationspace = "conversationspace",
-  embeddable = "embeddable",
   firebarrel = "firebarrel",
   jazzbar = "jazzbar",
   partymap = "partymap",
@@ -33,8 +31,17 @@ export enum VenueTemplate {
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
+  viewingwindow = "viewingwindow",
   zoomroom = "zoomroom",
 
+  /**
+   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
+   */
+  artpiece = "artpiece",
+  /**
+   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
+   */
+  embeddable = "embeddable",
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
    */
@@ -80,6 +87,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
+  | VenueTemplate.viewingwindow
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -90,7 +98,8 @@ export type AnyVenue =
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | PosterPageVenue;
+  | PosterPageVenue
+  | ViewingWindowVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -135,6 +144,7 @@ export interface VenueAdvancedConfig {
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
+  hasSocialLoginEnabled?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -218,6 +228,7 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
+  hasSocialLoginEnabled?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -279,6 +290,15 @@ export interface EmbeddableVenue extends BaseVenue {
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
+}
+
+export interface ViewingWindowVenue extends BaseVenue {
+  template: VenueTemplate.viewingwindow;
+  iframeUrl?: string;
+  containerStyles?: CSSProperties;
+  iframeStyles?: CSSProperties;
+  iframeOptions?: Record<string, string>;
+  isWithParticipants?: boolean;
 }
 
 export interface PosterPageVenue extends BaseVenue {

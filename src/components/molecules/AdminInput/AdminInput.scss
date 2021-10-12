@@ -1,0 +1,21 @@
+@import "scss/constants";
+
+.AdminInput {
+  margin-top: $spacing--xs;
+  margin-bottom: $spacing--xs;
+
+  &__error,
+  &__subtext {
+    display: block;
+  }
+
+  &__error {
+    color: $red;
+  }
+
+  &__subtext {
+    margin: 0;
+    padding: 0;
+    color: var(--content--over-50a);
+  }
+}
