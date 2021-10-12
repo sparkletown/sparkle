@@ -10,6 +10,6 @@ export const useVenueChatMessagesCount = (venueId: string) =>
   useFirestoreDocData<DistributedCounterValue>(
     getVenueRef(venueId)
       .collection("chatMessagesCounter")
-      .doc("counter")
+      .doc("sum")
       .withConverter(distributedCounterValueConverter)
-  )?.data?.sum ?? Number.MAX_VALUE;
+  )?.data?.value ?? Number.MAX_VALUE;

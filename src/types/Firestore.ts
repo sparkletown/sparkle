@@ -111,7 +111,7 @@ export interface FirestoreOrdered {
 }
 
 export interface DistributedCounterValue {
-  sum: number;
+  value: number;
 }
 export interface DistributedCounterShard {
   count: number;

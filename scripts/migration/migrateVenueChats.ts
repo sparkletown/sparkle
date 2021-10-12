@@ -1,3 +1,5 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import { chunk, difference, groupBy, range } from "lodash";
 
 import {
@@ -42,42 +44,58 @@ const BATCH_MAX_OPS = 500;
 const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 const app = initFirebaseAdminApp(projectId, { credentialPath });
 
-const checkExistsChatMessagesCounter = async (
-  venueRef: DocumentReference
-): Promise<boolean> => {
-  const shardIds = (
-    await venueRef.collection("chatMessagesCounter").listDocuments()
-  ).map((x) => x.id);
-  return (
-    difference(
-      [...range(0, VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT), "sum"],
-      shardIds
-    ).length === 0
-  );
-};
-
-const initializeVenueChatMessagesCounter = (venueRef: DocumentReference) => {
-  console.log("\tInit chatMessagesCounter...");
+const updateChatMessagesCounter = async (venueRef: DocumentReference) => {
   const batch = app.firestore().batch();
-  const counterCollection = venueRef.collection("chatMessagesCounter");
+  const counterCollectionRef = venueRef.collection("chatMessagesCounter");
+  const messagesRef = await venueRef.collection("chats").listDocuments();
+  const allShards = await counterCollectionRef.listDocuments();
+  console.log(`\tUpdating chatMessagesCounter to ${messagesRef.length}...`);
   for (
     let shardId = 0;
     shardId < VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT;
     shardId++
   ) {
-    batch.set(counterCollection.doc(shardId.toString()), { count: 0 });
+    batch.set(counterCollectionRef.doc(shardId.toString()), {
+      count: shardId === 0 ? messagesRef.length : 0,
+    });
   }
-  batch.set(counterCollection.doc("sum"), { value: 0 });
-  return batch.commit();
+  batch.set(counterCollectionRef.doc("sum"), { value: messagesRef.length });
+  await batch.commit();
+
+  const otherShardIds = difference(
+    allShards.map((x) => x.id),
+    [
+      ...range(0, VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT).map((x) =>
+        x.toString()
+      ),
+      "sum",
+    ]
+  );
+  if (otherShardIds.length > 0) {
+    console.log(`Removing ${otherShardIds.length} invalid shards...`);
+
+    await Promise.all(
+      chunk(otherShardIds, BATCH_MAX_OPS).map((chunk: string[]) => {
+        const batch = app.firestore().batch();
+        chunk.forEach((shardId) => {
+          batch.delete(counterCollectionRef.doc(shardId));
+        });
+        return batch.commit();
+      })
+    );
+  }
 };
 
-const hardDeleteMessages = async (chatsRef: CollectionReference) => {
+const deleteOldSchemaMessages = async (
+  chatsRef: CollectionReference,
+  field: string
+) => {
   const firestore = app.firestore();
 
-  const { docs: messagesToDelete } = await chatsRef
-    .where("delete", "==", true)
-    .get();
-  console.log(`\tHard deleting ${messagesToDelete.length} messages...`);
+  const { docs: messagesToDelete } = await chatsRef.orderBy(field).get();
+  console.log(
+    `\tDeleting ${messagesToDelete.length} old schema messages with '${field}' field...`
+  );
 
   return Promise.all(
     chunk(messagesToDelete, BATCH_MAX_OPS).map(
@@ -100,7 +118,7 @@ const cleanupThreads = async (chatsRef: CollectionReference) => {
   const byThreadId: Record<
     string,
     QueryDocumentSnapshot<DocumentData>[]
-  > = groupBy(threadMessages, "id");
+  > = groupBy(threadMessages, (x) => x.data().threadId);
 
   const nonExistentThreadIds = [];
   for (const threadId of Object.keys(byThreadId)) {
@@ -153,18 +171,27 @@ const cleanupThreads = async (chatsRef: CollectionReference) => {
 (async () => {
   const firestore = app.firestore();
 
+  if (
+    venueId &&
+    !(await firestore.collection("venues").doc(venueId).get()).exists
+  ) {
+    console.log(`Venue ${venueId} does not exist.`);
+    return;
+  }
+
   const venueRefs = venueId
-    ? [firestore.collection("venueRefs").doc(venueId)]
-    : await firestore.collection("venueRefs").listDocuments();
+    ? [firestore.collection("venues").doc(venueId)]
+    : await firestore.collection("venues").listDocuments();
 
   for (const venueRef of venueRefs) {
-    console.log("Working on venue ", venueRef.id);
+    console.log(`Processing venue ${venueRef.id}`);
     const chatsRef = venueRef.collection("chats");
 
-    if (!(await checkExistsChatMessagesCounter(venueRef)))
-      await initializeVenueChatMessagesCounter(venueRef);
-
-    await hardDeleteMessages(chatsRef);
+    await deleteOldSchemaMessages(chatsRef, "deleted");
+    await deleteOldSchemaMessages(chatsRef, "from");
+    await deleteOldSchemaMessages(chatsRef, "ts_utc");
     await cleanupThreads(chatsRef);
+
+    await updateChatMessagesCounter(venueRef);
   }
 })();
