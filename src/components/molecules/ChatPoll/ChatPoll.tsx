@@ -14,7 +14,6 @@ import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { useChatboxDeleteChatMessage } from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { Loading } from "components/molecules/Loading";
 
 import Button from "components/atoms/Button";
@@ -35,8 +34,6 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   const { id, poll, votes } = pollMessage;
   const { questions, topic } = poll;
   const isMine = useIsCurrentUser(pollMessage.fromUser.id);
-
-  const deletePollMessage = useChatboxDeleteChatMessage();
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
@@ -125,11 +122,6 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     return renderQuestions;
   };
 
-  const deleteThisPollMessage = useCallback(
-    async () => deletePollMessage?.({ messageId: id }),
-    [id, deletePollMessage]
-  );
-
   return (
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
@@ -144,11 +136,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         </div>
       </div>
 
-      <ChatMessageInfo
-        message={message}
-        reversed={isMine}
-        deleteMessage={deletePollMessage && deleteThisPollMessage}
-      />
+      <ChatMessageInfo message={message} reversed={isMine} />
     </div>
   );
 };

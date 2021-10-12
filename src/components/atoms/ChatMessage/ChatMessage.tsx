@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useToggle } from "react-use";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,10 +12,7 @@ import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import {
-  useChatboxDeleteChatMessage,
-  useSelectThisReplyThread,
-} from "components/molecules/Chatbox/components/context/ChatboxContext";
+import { useSelectThisReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { ChatMessageReplies } from "components/atoms/ChatMessageReplies/ChatMessageReplies";
@@ -30,13 +27,6 @@ export interface ChatMessageProps {
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
   const { text, id: messageId, isQuestion } = message;
-
-  const deleteMessage = useChatboxDeleteChatMessage();
-
-  const deleteThisMessage = useCallback(
-    async () => deleteMessage?.({ messageId }),
-    [deleteMessage, messageId]
-  );
 
   const selectThisThread = useSelectThisReplyThread(message);
 
@@ -87,11 +77,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           {isRepliesShown && <ChatMessageReplies threadId={messageId} />}
         </div>
       </div>
-      <ChatMessageInfo
-        message={message}
-        reversed={isMine}
-        deleteMessage={deleteMessage && deleteThisMessage}
-      />
+      <ChatMessageInfo message={message} reversed={isMine} />
     </div>
   );
 };
