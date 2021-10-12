@@ -79,6 +79,12 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+$login-rainbox-gradient: linear-gradient(
+  130.78deg,
+  #00f6d5 0%,
+  #6f43ff 45.84%,
+  #e15ada 93.63%
+);
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
@@ -91,6 +97,7 @@ $announcement-container-width-admin: 600px;
 $announcement-container-width: 470px;
 $announcement-container-height: 140px;
 $announcement-banner-admin-height: 55px;
+$auth-container-max-width: 450px;
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
@@ -183,6 +190,7 @@ $z-layer-sidebar: 15;
 $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
+$z-layer-viewing-window: 5;
 $z-layer-on-top-bg: 1;
 $z-layer-jazz-header: $z-layer-on-top-bg;
 $z-layer-user-list-label: $z-layer-on-top-bg;
@@ -196,7 +204,7 @@ $z-layer-jukebox: $z-layer-on-top-bg;
 $z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
-  admin-space-card-bg: -1,
+  admin-space-card-info: 1,
   admin-navbar: 100,
   admin-placement: 10,
   admin-venue-header-after: 2,
@@ -257,6 +265,8 @@ $z-layers: (
   art-content: $z-layer-art-content,
   // Embeddable
   embeddable-iframe: $z-layer-embed-iframe,
+  // Viewing Window
+  viewing-window-content: $z-layer-viewing-window,
   // Auditorium
   auditorium-iframe: $z-layer-auditorium-iframe,
   // External Link
