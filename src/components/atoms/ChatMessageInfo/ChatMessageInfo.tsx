@@ -1,13 +1,16 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { BaseChatMessage } from "types/chat";
 
+import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { useChatboxDeleteThreadMessage } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -16,18 +19,25 @@ import "./ChatMessageInfo.scss";
 const deleteIconClass = "ChatMessageInfo__delete-icon";
 
 export interface ChatMessageInfoProps {
-  message: BaseChatMessage;
-  deleteMessage?: () => Promise<void>;
+  threadId: string;
+  message: WithId<BaseChatMessage>;
   reversed?: boolean;
 }
 
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   message,
-  deleteMessage,
+  threadId,
   reversed: isReversed = false,
 }) => {
   const { timestamp, fromUser } = message;
   const { openUserProfileModal } = useProfileModalControls();
+
+  const deleteThreadReply = useChatboxDeleteThreadMessage();
+  const deleteMessage = useMemo(() => {
+    if (deleteThreadReply)
+      return () => deleteThreadReply({ threadId, messageId: message.id });
+    return null;
+  }, [deleteThreadReply, message.id, threadId]);
 
   const timestampMillis = timestamp.toMillis();
 
