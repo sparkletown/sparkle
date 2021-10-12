@@ -42,7 +42,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   displayPollOption,
   containerClassName,
   hasMore,
-  loadMore = () => {},
+  loadMore,
 }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
 
