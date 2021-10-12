@@ -40,7 +40,7 @@ export const setVenueChatTabOpened = (): SetVenueChatTabOpenedAction => ({
 });
 
 export const setPrivateChatTabOpened = (
-  recipient: WithId<DisplayUser> | undefined
+  recipient?: WithId<DisplayUser>
 ): SetPrivateChatTabOpenedAction => ({
   type: ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED,
   payload: {

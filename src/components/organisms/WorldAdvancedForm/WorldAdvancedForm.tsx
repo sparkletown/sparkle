@@ -5,15 +5,24 @@ import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
 import { World } from "api/admin";
+import { updateWorldAdvancedSettings } from "api/world";
 
-import { WithId } from "utils/id";
+import { WorldAdvancedFormInput } from "types/world";
+
+import { WithId, withId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 
+import { AdminInput } from "components/molecules/AdminInput";
+import { AdminSection } from "components/molecules/AdminSection";
+import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
+
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./WorldAdvancedForm.scss";
 
@@ -23,18 +32,24 @@ const HANDLED_ERRORS: string[] = [];
 const validationSchema = Yup.object().shape({});
 
 export interface WorldAdvancedFormProps extends AdminSidebarFooterProps {
-  world?: WithId<World>;
+  world: WithId<World>;
 }
 
 export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world?.id;
-  const createMode = !worldId;
+  const worldId = world.id;
   const { user } = useUser();
 
-  const defaultValues = useMemo(() => ({}), []);
+  const defaultValues = useMemo<WorldAdvancedFormInput>(
+    () => ({
+      attendeesTitle: world.attendeesTitle,
+      chatTitle: world.chatTitle,
+      showNametags: world.showNametags,
+    }),
+    [world]
+  );
 
   const {
     reset,
@@ -42,7 +57,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     formState: { dirty, isSubmitting },
     errors,
     handleSubmit,
-  } = useForm({
+    register,
+  } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
@@ -52,30 +68,68 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const values = watch();
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user) return;
-    if (!createMode || !worldId) return;
+    if (!values || !user || !worldId) return;
 
-    // await updateWorld({ ...values, id: worldId }, user);
+    await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, createMode, defaultValues]);
+  }, [worldId, user, values, reset, defaultValues]);
 
-  if (error) {
-    console.error(WorldAdvancedForm.name, error);
-  }
+  const saveButtonProps: ButtonProps = useMemo(
+    () => ({
+      type: "submit",
+      disabled: !dirty && !isSaving && !isSubmitting,
+      loading: isSubmitting || isSaving,
+    }),
+    [dirty, isSaving, isSubmitting]
+  );
 
   return (
     <div className="WorldAdvancedForm">
       <Form onSubmit={handleSubmit(submit)}>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          saveButtonProps={{
-            type: "submit",
-            disabled: !dirty && !isSaving && !isSubmitting,
-            loading: isSubmitting || isSaving,
-          }}
+          saveButtonProps={saveButtonProps}
         />
+        <AdminWorldUrlSection slug={world.slug} />
+        <AdminSection
+          title="Title of your venues attendees"
+          subtitle="(For example: guests, attendees, partygoers)"
+          withLabel
+        >
+          <AdminInput
+            name="attendeesTitle"
+            autoComplete="off"
+            placeholder="Attendees title"
+            errors={errors}
+            register={register}
+          />
+        </AdminSection>
+
+        <AdminSection
+          title="Your venue chat label"
+          subtitle="(For example: Party, Event, Meeting)"
+          withLabel
+        >
+          <AdminInput
+            name="chatTitle"
+            autoComplete="off"
+            placeholder="Event label"
+            errors={errors}
+            register={register}
+          />
+        </AdminSection>
+        <AdminSection
+          title="Show Nametags (Display user names on their avatars)"
+          withLabel
+        >
+          <Form.Control as="select" custom name="showNametags" ref={register}>
+            <option value="none">None</option>
+            <option value="hover">Inline and hover</option>
+          </Form.Control>
+        </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+        <SubmitError error={error} />
       </Form>
     </div>
   );

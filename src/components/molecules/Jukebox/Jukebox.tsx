@@ -55,9 +55,11 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   useEffect(() => {
     const [lastMessage] = messagesToDisplay.slice(-1);
+
     if (!isValidUrl(lastMessage?.text)) {
       return;
     }
+
     const urlToEmbed = convertToEmbeddableUrl({ url: lastMessage?.text });
 
     updateIframeUrl(urlToEmbed);
@@ -65,7 +67,6 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   const sendMessageToChat = handleSubmit(async ({ jukeboxMessage }) => {
     setMessageSending(true);
-
     await sendJukeboxMsg({ message: jukeboxMessage });
     reset();
   });

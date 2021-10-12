@@ -31,6 +31,10 @@ $spacing-map: (
     color: $red;
   }
 
+  &--subdued {
+    color: var(--content--over-50a);
+  }
+
   &--anamorphic {
     aspect-ratio: 2.39;
   }
