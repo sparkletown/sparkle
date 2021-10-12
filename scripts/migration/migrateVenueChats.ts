@@ -124,6 +124,10 @@ const cleanupThreads = async (chatsRef: CollectionReference) => {
         }
       )
     );
+
+    await threadSnap.ref.update({
+      repliesCount: thread.length,
+    });
   }
 
   console.log(
