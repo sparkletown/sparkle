@@ -6,15 +6,6 @@
   flex-direction: column;
   justify-content: space-between;
 
-  .AdminSpacesListItem {
-    background-color: $secondary--live;
-    border-bottom: 1px solid $content--under;
-  }
-
-  &__section-title {
-    margin: $spacing--sm $spacing--xl $spacing--md;
-  }
-
   .AdminSidebarTitle {
     margin: $spacing--xxl $spacing--xl $spacing--md;
   }

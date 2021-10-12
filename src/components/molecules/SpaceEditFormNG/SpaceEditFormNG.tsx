@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
@@ -10,7 +10,6 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
-import { RoomVisibility } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -18,7 +17,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
@@ -41,7 +39,6 @@ export interface SpaceEditFormNGProps {
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
-  venueVisibility?: RoomVisibility;
 }
 
 // NOTE: add the keys of those errors that their respective fields have handled
@@ -76,7 +73,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     () => ({
       image_url: room.image_url ?? "",
       iframeUrl: portal?.iframeUrl ?? "",
-      autoPlay: portal?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
+      autoPlay: portal?.autoPlay || DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
     }),
     [room.image_url, portal]
@@ -87,6 +84,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     validationSchema: roomEditNGSchema,
     defaultValues,
   });
+
+  useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
 
@@ -131,7 +130,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     await updateVenueRoom();
 
     onEdit?.();
-    reset(defaultValues);
   }, [
     onEdit,
     room,
@@ -141,8 +139,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     user,
     values,
     venueId,
-    reset,
-    defaultValues,
   ]);
 
   const [
@@ -170,7 +166,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSidebarSubTitle>
         <AdminSpacesListItem title="The basics" isOpened>
           <>
-            <AdminSidebarSectionTitle>Your content</AdminSidebarSectionTitle>
             <AdminSection title="Livestream URL" withLabel>
               <AdminInput
                 name="iframeUrl"

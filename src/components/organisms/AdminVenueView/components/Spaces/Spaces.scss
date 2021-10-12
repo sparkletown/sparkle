@@ -47,15 +47,6 @@ $icon-size: 20px;
     font-weight: bolder;
   }
 
-  .AdminSpacesListItem {
-    background-color: $saturated-black;
-    border-bottom: 1px solid opaque-white(0.1);
-
-    &:hover {
-      background-color: lighten($saturated-black, 5%);
-    }
-  }
-
   &__venue-room {
     padding: $spacing--md;
     display: flex;
