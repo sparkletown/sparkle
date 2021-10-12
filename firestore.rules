@@ -47,11 +47,13 @@ service cloud.firestore {
 
       match /chatMessagesCounter/{shardId} {
         allow read,write: if request.auth.uid != null;
+        allow delete: if false;
       }
       match /chats/{messageId} {
         allow read,create: if request.auth.uid != null;
         allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
         allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'repliesCount');
+
         match /thread/{messageId} {
           allow read,create: if request.auth.uid != null;
           allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
