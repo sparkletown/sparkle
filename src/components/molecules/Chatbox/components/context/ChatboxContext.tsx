@@ -30,8 +30,8 @@ import { WithId } from "utils/id";
 import { useVenueChatThreadMessages } from "hooks/chats/venue/useVenueChatThreadMessages";
 
 export interface ChatboxContextState extends ChatActions {
-  venueId: string;
-  preloadedThreads: Record<string, WithId<PrivateChatMessage>[]>;
+  venueId?: string;
+  preloadedThreads?: Record<string, WithId<PrivateChatMessage>[]>;
   selectedReplyThread?: WithId<MessageToDisplay>;
   setSelectedReplyThread: Dispatch<
     SetStateAction<WithId<MessageToDisplay> | undefined>
@@ -39,7 +39,7 @@ export interface ChatboxContextState extends ChatActions {
 }
 
 const ChatboxContext = createContext<ChatboxContextState>({
-  venueId: NON_EXISTENT_FIRESTORE_ID,
+  venueId: undefined,
   preloadedThreads: {},
   sendChatMessage: async () => {},
   sendThreadMessage: async () => {},
@@ -47,32 +47,25 @@ const ChatboxContext = createContext<ChatboxContextState>({
   setSelectedReplyThread: noop,
 });
 
-type ChatboxContextProviderProps = ChatActions & {
-  venueId?: string;
-  preloadedThreads?: Record<string, WithId<PrivateChatMessage>[]>;
-};
+type ChatboxContextProviderProps = Omit<
+  ChatboxContextState,
+  "selectedReplyThread" | "setSelectedReplyThread"
+>;
 
 export const ChatboxContextProvider: React.FC<
   PropsWithChildren<ChatboxContextProviderProps>
-> = ({
-  children,
-  venueId = NON_EXISTENT_FIRESTORE_ID,
-  preloadedThreads = {},
-  ...rest
-}) => {
+> = ({ children, ...rest }) => {
   const [selectedReplyThread, setSelectedReplyThread] = useState<
     WithId<MessageToDisplay>
   >();
 
   const state: ChatboxContextState = useMemo(
     () => ({
-      venueId,
-      preloadedThreads,
       selectedReplyThread,
       setSelectedReplyThread,
       ...rest,
     }),
-    [preloadedThreads, rest, selectedReplyThread, venueId]
+    [rest, selectedReplyThread]
   );
 
   return (
@@ -85,9 +78,9 @@ export const useChatboxThread = (
 ): [WithId<BaseChatMessage>[], boolean] => {
   const context = useContext(ChatboxContext);
   const preloadedThread =
-    context.preloadedThreads[threadId] ?? ALWAYS_EMPTY_ARRAY;
+    context?.preloadedThreads?.[threadId] ?? ALWAYS_EMPTY_ARRAY;
   const [liveThread, isLiveThreadLoaded] = useVenueChatThreadMessages(
-    context.venueId,
+    context?.venueId ?? NON_EXISTENT_FIRESTORE_ID,
     threadId
   );
 
