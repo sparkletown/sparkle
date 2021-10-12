@@ -81,7 +81,7 @@ $announce-box-shadow: 0px 2px 20px 5px;
     position: absolute;
     top: $spacing;
     right: $spacing;
-    color: $icon--color;
+    color: $content--over;
     @include square-size(20px, 20px);
     &:focus,
     &:hover {

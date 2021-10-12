@@ -117,7 +117,7 @@ $online-container-min-width: 50px;
     height: $bookmark-icon-size;
 
     svg {
-      color: $icon--color;
+      color: $content--over;
     }
   }
 
@@ -135,7 +135,7 @@ $online-container-min-width: 50px;
 
     &-icon {
       margin-right: $spacing--xs;
-      color: $icon--color;
+      color: $content--over;
     }
   }
 }
