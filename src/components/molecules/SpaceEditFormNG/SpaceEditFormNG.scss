@@ -16,6 +16,7 @@
 
   &__list-item {
     background-color: $secondary--live;
+    border-bottom: 1px solid $content--under;
   }
 
   &__section-title {

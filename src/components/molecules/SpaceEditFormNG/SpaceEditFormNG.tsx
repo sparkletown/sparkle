@@ -70,7 +70,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       image_url: room.image_url ?? "",
       iframeUrl: roomVenue?.iframeUrl ?? "",
       autoPlay: roomVenue?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
-      bannerImageUrl: roomVenue?.config?.landingPageConfig.bannerImageUrl ?? "",
+      bannerImageUrl: roomVenue?.config?.landingPageConfig.coverImageUrl ?? "",
     }),
     [room.image_url, roomVenue]
   );
@@ -100,7 +100,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   );
 
   const updateVenueRoom = useCallback(async () => {
-    if (!user || !roomVenueId || !roomVenue) return;
+    if (!user || !roomVenueId) return;
 
     await updateVenueNG(
       {
@@ -111,7 +111,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       },
       user
     );
-  }, [roomVenueId, user, values, roomVenue]);
+  }, [roomVenueId, user, values]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
