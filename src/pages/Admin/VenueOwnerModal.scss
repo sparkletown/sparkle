@@ -10,7 +10,7 @@
     overflow: scroll;
     padding: 10px;
     border-radius: 10px;
-    border: 2px solid $spaces-owner-list--border;
+    border: 2px solid var(--accent--over-10a);
     margin-top: 20px;
 
     .user-row {
@@ -18,7 +18,7 @@
       align-items: center;
       margin-top: 10px;
       padding: 5px;
-      background-color: rgba($color: white, $alpha: 0.1);
+      background-color: opaque-white();
 
       .info-container {
         flex: 1;
