@@ -20,13 +20,13 @@ $icon-width: 2.5rem;
   &--invalid .InputField__input {
     border: 1px solid $input--invalid;
     &:focus {
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--accent--over-10a);
       box-shadow: $input--invalid-box-shadow-focus;
     }
   }
 
   &__input {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent--over-10a);
     border-radius: 22px;
     height: 100%;
 
