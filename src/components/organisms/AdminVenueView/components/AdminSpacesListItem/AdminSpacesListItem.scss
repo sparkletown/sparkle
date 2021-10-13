@@ -5,11 +5,11 @@
   justify-content: space-between;
   padding: $spacing--md;
   margin: 0;
-  background-color: $saturated-black;
+  background-color: $secondary--dark;
   border-bottom: 1px solid opaque-white(0.1);
   cursor: pointer;
 
   &:hover {
-    background-color: lighten($saturated-black, 5%);
+    background-color: lighten($secondary--dark, 5%);
   }
 }

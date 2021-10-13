@@ -46,7 +46,7 @@ $venue-logo-size: 180px;
     flex-direction: column;
     max-height: 80vh;
     border-radius: $border-radius;
-    background: $dark;
+    background: $secondary--live;
   }
 
   &__venue-container {
@@ -77,7 +77,7 @@ $venue-logo-size: 180px;
     @include square-size($venue-logo-size);
     flex-shrink: 0;
     border-radius: $border-radius;
-    background-color: $saturated-black;
+    background-color: $secondary--dark;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -86,7 +86,7 @@ $venue-logo-size: 180px;
   &__venue-description {
     padding: $spacing--sm $spacing;
 
-    background: $dark;
+    background: $secondary--live;
     border-radius: $border-radius;
 
     max-height: 25vh;
