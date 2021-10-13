@@ -222,7 +222,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(setVenue)} onChange={handleOnChange}>
+    <Form
+      onSubmit={handleSubmit(setVenue)}
+      onChange={handleOnChange}
+      className="DetailsForm"
+    >
       <div className="DetailsForm__wrapper">
         <input
           type="hidden"
