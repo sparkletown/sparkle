@@ -7,7 +7,6 @@ export const ENTRANCE_ROOT_URL = "/e";
 export const WORLD_ROOT_URL = "/w";
 
 // Admin root URLs
-export const ADMIN_ROOT_URL = "/admin";
 export const ADMIN_V1_ROOT_URL = "/a1";
 export const ADMIN_V3_ROOT_URL = "/admin";
 

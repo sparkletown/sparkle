@@ -14,7 +14,7 @@ import {
 } from "settings";
 
 import { tracePromise } from "utils/performance";
-import { resolveAdminRootUrl, venueLandingUrl } from "utils/url";
+import { venueLandingUrl } from "utils/url";
 
 import { useSettings } from "hooks/useSettings";
 
@@ -96,7 +96,6 @@ export const AppRouter: React.FC = () => {
   if (!isLoaded) return <LoadingPage />;
 
   const { enableAdmin1, enableAdmin3 } = settings;
-  const adminRootUrl = resolveAdminRootUrl(settings);
 
   return (
     <Router basename="/">
@@ -123,17 +122,6 @@ export const AppRouter: React.FC = () => {
               <Provided withRelatedVenues>
                 <AdminV3Subrouter />
               </Provided>
-            </Route>
-          )}
-
-          {!enableAdmin1 && (
-            <Route path={ADMIN_V1_ROOT_URL}>
-              <Redirect to={adminRootUrl} />
-            </Route>
-          )}
-          {!enableAdmin3 && (
-            <Route path={ADMIN_V3_ROOT_URL}>
-              <Redirect to={adminRootUrl} />
             </Route>
           )}
 
