@@ -21,7 +21,7 @@ $icon-width: 2.5rem;
     border: 1px solid var(--danger--under);
     &:focus {
       border: 1px solid var(--accent--over-10a);
-      box-shadow: 0 0 0 2px rgba(var(--danger--under-rgb), 1);
+      box-shadow: 0 0 0 2px var(--danger--under-rgb);
     }
   }
 
