@@ -47,19 +47,6 @@ $icon-size: 20px;
     font-weight: bolder;
   }
 
-  &__venue-rooms {
-    padding: $spacing--md;
-    background-color: $saturated-black;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid opaque-white(0.1);
-
-    &:hover {
-      background-color: lighten($saturated-black, 5%);
-    }
-  }
-
   &__venue-room {
     padding: $spacing--md;
     display: flex;

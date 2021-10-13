@@ -1,6 +1,4 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ROOMS_TAXON, VENUE_SPACES_LIST } from "settings";
 
@@ -9,9 +7,9 @@ import { Dimensions, Position } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { SPACE_EDIT_FORM_TEMPLATES } from "utils/venue";
 
 import { useFetchAssets } from "hooks/useFetchAssets";
-import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -22,9 +20,9 @@ import {
   AdminSidebarFooterProps,
 } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 
 import { AdminShowcase } from "../AdminShowcase";
@@ -43,15 +41,6 @@ export const Spaces: React.FC<SpacesProps> = ({
 }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const [updatedRoom, setUpdatedRoom] = useState<Room>();
-
-  const { isShown: showRooms, toggle: toggleShowRooms } = useShowHide(false);
-  const { isShown: showAddRoom, toggle: toggleShowAddRoom } = useShowHide(
-    false
-  );
-  const {
-    isShown: showAdvancedSettings,
-    toggle: toggleShowAdvancedSettings,
-  } = useShowHide(false);
 
   const {
     assets: mapBackgrounds,
@@ -131,73 +120,65 @@ export const Spaces: React.FC<SpacesProps> = ({
   const selectedRoomIndex =
     venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
+  const renderSpaceEditForm = useCallback(() => {
+    if (!selectedRoom) return;
+
+    const EditForm = SPACE_EDIT_FORM_TEMPLATES[selectedRoom.template ?? ""];
+
+    return (
+      <EditForm
+        venueVisibility={venue.roomVisibility}
+        room={selectedRoom}
+        updatedRoom={updatedRoom}
+        roomIndex={selectedRoomIndex}
+        onBackClick={clearSelectedRoom}
+        onDelete={clearSelectedRoom}
+        onEdit={clearSelectedRoom}
+      />
+    );
+  }, [
+    venue.roomVisibility,
+    selectedRoom,
+    updatedRoom,
+    selectedRoomIndex,
+    clearSelectedRoom,
+  ]);
+
   return (
     <AdminPanel className="Spaces">
       <AdminSidebar>
-        {selectedRoom ? (
-          <SpaceEditForm
-            venueVisibility={venue.roomVisibility}
-            room={selectedRoom}
-            updatedRoom={updatedRoom}
-            roomIndex={selectedRoomIndex}
-            onBackClick={clearSelectedRoom}
-            onDelete={clearSelectedRoom}
-            onEdit={clearSelectedRoom}
-          />
-        ) : (
+        {renderSpaceEditForm()}
+        {!selectedRoom && (
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
             <AdminSidebarFooter {...sidebarFooterProps} />
-            <div>
-              <div
-                className="Spaces__venue-rooms"
-                onClick={toggleShowAdvancedSettings}
-              >
-                <div>Map background</div>
-                <FontAwesomeIcon
-                  icon={showAdvancedSettings ? faCaretDown : faCaretRight}
-                />{" "}
-              </div>
-              {showAdvancedSettings && (
-                <>
-                  <BackgroundSelect
-                    isLoadingBackgrounds={isLoadingBackgrounds}
-                    mapBackgrounds={mapBackgrounds}
-                    venueName={venue.name}
-                    worldId={venue.worldId}
-                  />
-                  {errorFetchBackgrounds && (
-                    <>
-                      <div>
-                        The preset map backgrounds could not be fetched. Please,
-                        refresh the page or upload a custom map background.
-                      </div>
-                      <div>Error: {errorFetchBackgrounds.message}</div>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-            <div>
-              <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
-                <div>
-                  {numberOfRooms} {ROOMS_TAXON.capital}
-                </div>
-                <FontAwesomeIcon
-                  icon={showRooms ? faCaretDown : faCaretRight}
+            <AdminSpacesListItem title="Map background">
+              <>
+                <BackgroundSelect
+                  isLoadingBackgrounds={isLoadingBackgrounds}
+                  mapBackgrounds={mapBackgrounds}
+                  venueName={venue.name}
+                  worldId={venue.worldId}
                 />
-              </div>
-
-              {showRooms && renderVenueRooms}
-            </div>
-
-            <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
-              <div>Add {ROOMS_TAXON.lower}</div>
-              <FontAwesomeIcon
-                icon={showAddRoom ? faCaretDown : faCaretRight}
-              />
-            </div>
-            {showAddRoom && renderAddRooms}
+                {errorFetchBackgrounds && (
+                  <>
+                    <div>
+                      The preset map backgrounds could not be fetched. Please,
+                      refresh the page or upload a custom map background.
+                    </div>
+                    <div>Error: {errorFetchBackgrounds.message}</div>
+                  </>
+                )}
+              </>
+            </AdminSpacesListItem>
+            <AdminSpacesListItem
+              title={`${numberOfRooms} ${ROOMS_TAXON.capital}`}
+            >
+              {renderVenueRooms}
+            </AdminSpacesListItem>
+            <AdminSpacesListItem title={`Add ${ROOMS_TAXON.lower}`}>
+              {renderAddRooms}
+            </AdminSpacesListItem>
           </>
         )}
       </AdminSidebar>
