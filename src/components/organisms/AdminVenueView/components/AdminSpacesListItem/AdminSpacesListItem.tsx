@@ -21,13 +21,13 @@ export const AdminSpacesListItem: React.FC<AdminSpacesListItemProps> = ({
   );
 
   return (
-    <section>
+    <section className="AdminSpacesListItem">
       <label
         className="AdminSpacesListItem__label"
         onClick={toggleShowListItem}
       >
         {title}
-        <FontAwesomeIcon icon={showListItem ? faCaretDown : faCaretRight} />
+        <FontAwesomeIcon className="AdminSpacesListItem__icon" icon={showListItem ? faCaretDown : faCaretRight} />
       </label>
       {showListItem && children}
     </section>
