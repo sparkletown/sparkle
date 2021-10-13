@@ -62,8 +62,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
-  const postSignInCheck = () => {
-    afterUserIsLoggedIn && afterUserIsLoggedIn();
+  const postSignInCheck = (data?: LoginFormData) => {
+    afterUserIsLoggedIn?.(data);
 
     closeAuthenticationModal?.();
   };
@@ -73,7 +73,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     try {
       await signIn(data);
 
-      postSignInCheck();
+      postSignInCheck(data);
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
