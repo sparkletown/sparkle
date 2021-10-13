@@ -45,11 +45,11 @@ $yellow: #ffe600;
 $light-green: #3ce348;
 $dark-green: #208a28;
 
-@function opaque-white($opacity: 0.1) {
+@function opaque-white($opacity) {
   @return rgba(#{var(--content--over-rgb)}, $opacity);
 }
 
-@function opaque-black($opacity: 0.1) {
+@function opaque-black($opacity) {
   @return rgba(#{var(--content--under-rgb)}, $opacity);
 }
 
