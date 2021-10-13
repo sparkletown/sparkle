@@ -21,7 +21,6 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
-import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -130,7 +129,6 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
-        <AdminWorldUrlSection name={values.name} />
         <AdminSection title="Name your world" withLabel>
           <AdminInput
             name="name"
