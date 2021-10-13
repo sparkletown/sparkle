@@ -32,6 +32,7 @@ $content-margin--left: font-size--root(3);
     margin-left: $sparkle-size + $sparkle-offset + font-size--root(1);
     font-weight: $font-weight--300;
     color: var(--content--over-80a);
+    text-shadow: $text-shadow--outline;
   }
 
   &__sparkle {
@@ -70,7 +71,7 @@ $content-margin--left: font-size--root(3);
   &__caption {
     font-size: font-size--root(2);
     color: var(--content--over);
-    text-shadow: 0 2px 4px var(--content--under-24a);
+    text-shadow: $text-shadow--outline;
   }
 
   &__content {

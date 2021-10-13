@@ -51,11 +51,11 @@
   }
 
   .table-subtitle {
-    color: $dark;
+    color: $secondary--live;
   }
 
   .table-item {
-    background: $dark;
+    background: $secondary--live;
     border-radius: 22px;
     min-height: 30px;
     color: $content--over;
@@ -66,7 +66,7 @@
     position: relative;
     margin: 5px 5px;
     &:hover {
-      background-color: lighten($dark, 10%);
+      background-color: lighten($secondary--live, 10%);
       transform: scale(1.05);
     }
   }

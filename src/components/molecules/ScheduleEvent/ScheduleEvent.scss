@@ -131,14 +131,14 @@ $expand--width: 40px;
     align-items: center;
     padding: $bookmark--padding;
     margin-left: auto;
-
+    color: $content--over;
     &:hover {
       padding-top: $bookmark-hover--padding-top;
     }
   }
 
   &__expand {
-    color: $concrete--dark;
+    color: var(--greyscale-lighter-20pp);
     border: none;
     background-color: transparent;
 
