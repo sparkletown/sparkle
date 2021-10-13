@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { addUserLookup, removeUserLookup } from "api/user";
+import { addUserLookupAndCommit, removeWithUserLookup } from "api/user";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
@@ -135,21 +135,20 @@ export const unsetAuditoriumSectionSeat = async (
   userId: string,
   path: AuditoriumSectionPath
 ) => {
-  const batch = firebase.firestore().batch();
-  batch.delete(getUserInSectionRef(userId, path));
-  removeUserLookup(batch, userId, getUserInSectionRef(userId, path));
-  return batch.commit().catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", {
-        location: "api/venue::unsetAuditoriumSectionSeat",
-        venueId: path.venueId,
-        sectionId: path.sectionId,
-        userId,
+  return removeWithUserLookup(userId, getUserInSectionRef(userId, path)).catch(
+    (err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/venue::unsetAuditoriumSectionSeat",
+          venueId: path.venueId,
+          sectionId: path.sectionId,
+          userId,
+        });
       });
-    });
 
-    throw err;
-  });
+      throw err;
+    }
+  );
 };
 
 export const setAuditoriumSectionSeat = async (
@@ -163,12 +162,11 @@ export const setAuditoriumSectionSeat = async (
     path,
   };
 
-  const batch = firebase.firestore().batch();
-
-  batch.set(getUserInSectionRef(user.id, path), seatedUserData);
-  addUserLookup(batch, user.id, getUserInSectionRef(user.id, path));
-
-  return batch.commit().catch((err) => {
+  return addUserLookupAndCommit(
+    seatedUserData,
+    user.id,
+    getUserInSectionRef(user.id, path)
+  ).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
         location: "api/venue::setAuditoriumSectionSeat",
@@ -190,20 +188,16 @@ export const setTableSeat = async (
     ...pickDisplayUserFromUser(user),
     path,
   };
-  const batch = firebase.firestore().batch();
-  batch.set(getUserSeatedTableRef(user.id, path.venueId), data);
-  addUserLookup(batch, user.id, getUserSeatedTableRef(user.id, path.venueId));
-
-  return batch.commit();
+  return addUserLookupAndCommit(
+    data,
+    user.id,
+    getUserSeatedTableRef(user.id, path.venueId)
+  );
 };
 
 export const unsetTableSeat = async (
   userId: string,
   { venueId }: Pick<VenueTablePath, "venueId">
 ) => {
-  const batch = firebase.firestore().batch();
-  batch.delete(getUserSeatedTableRef(userId, venueId));
-  removeUserLookup(batch, userId, getUserSeatedTableRef(userId, venueId));
-
-  return batch.commit();
+  return removeWithUserLookup(userId, getUserSeatedTableRef(userId, venueId));
 };
