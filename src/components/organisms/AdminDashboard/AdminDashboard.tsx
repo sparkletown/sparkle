@@ -16,6 +16,7 @@ import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -76,41 +77,43 @@ export const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <AdminRestricted>
-      <div className="AdminDashboard">
-        <div className="AdminDashboard__header">
-          <ButtonNG variant="secondary" isLink linkTo={ADMIN_V3_WORLDS_URL}>
-            Back to worlds
-          </ButtonNG>
+    <div className="AdminDashboard">
+      <WithNavigationBar hasBackButton withSchedule>
+        <AdminRestricted>
+          <div className="AdminDashboard__header">
+            <ButtonNG variant="secondary" isLink linkTo={ADMIN_V3_WORLDS_URL}>
+              Back to worlds
+            </ButtonNG>
 
-          <div className="AdminDashboard__header-content">
-            <AdminShowcaseTitle>Spaces</AdminShowcaseTitle>
-            {sortingOptions}
+            <div className="AdminDashboard__header-content">
+              <AdminShowcaseTitle>Spaces</AdminShowcaseTitle>
+              {sortingOptions}
+            </div>
+            <ButtonNG
+              variant="primary"
+              isLink
+              linkTo={adminCreateWorldSpace(worldId)}
+            >
+              Create a new space
+            </ButtonNG>
           </div>
-          <ButtonNG
-            variant="primary"
-            isLink
-            linkTo={adminCreateWorldSpace(worldId)}
+          <div
+            className={classNames("AdminDashboard__cards", {
+              "AdminDashboard__cards--empty": !hasVenues,
+            })}
           >
-            Create a new space
-          </ButtonNG>
-        </div>
-        <div
-          className={classNames("AdminDashboard__cards", {
-            "AdminDashboard__cards--empty": !hasVenues,
-          })}
-        >
-          {!hasVenues && (
-            <>
-              <div className="AdminDashboard__welcome-message">Welcome!</div>
-              <div className="AdminDashboard__welcome-message">
-                Create your first Sparkle space
-              </div>
-            </>
-          )}
-          {hasVenues && renderedPartyVenues}
-        </div>
-      </div>
-    </AdminRestricted>
+            {!hasVenues && (
+              <>
+                <div className="AdminDashboard__welcome-message">Welcome!</div>
+                <div className="AdminDashboard__welcome-message">
+                  Create your first Sparkle space
+                </div>
+              </>
+            )}
+            {hasVenues && renderedPartyVenues}
+          </div>
+        </AdminRestricted>
+      </WithNavigationBar>
+    </div>
   );
 };
