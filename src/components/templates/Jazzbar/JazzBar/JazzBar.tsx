@@ -12,7 +12,7 @@ import { JazzbarVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
-import { useAnalytic } from "hooks/useAnalytic";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
@@ -51,7 +51,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
   const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
-  const analytic = useAnalytic({ venue });
+  const analytics = useAnalytics({ venue });
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
@@ -76,14 +76,14 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const isUserAudioMuted = !isUserAudioOn;
 
   useEffect(() => {
-    analytic.trackEnterJazzBarEvent();
-  }, [analytic]);
+    analytics.trackEnterJazzBarEvent();
+  }, [analytics]);
 
   useEffect(() => {
-    seatedAtTable && analytic.trackSelectTableEvent();
+    seatedAtTable && analytics.trackSelectTableEvent();
 
-    seatedAtTable && analytic.trackTakeSeatEvent();
-  }, [analytic, seatedAtTable]);
+    seatedAtTable && analytics.trackTakeSeatEvent();
+  }, [analytics, seatedAtTable]);
 
   const shouldShowReactions =
     seatedAtTable && areSettingsLoaded && settings.showReactions;

@@ -599,9 +599,9 @@ export const DEFAULT_USER_STATUS = {
   color: "#53E52A",
 };
 
-// Analytic
-export const DEFAULT_ANALYTIC_GROUP_KEY = "worldId";
-export const DEFAULT_ANALYTIC_WORLD_NAME = "Undefined World";
+// Analytics
+export const DEFAULT_ANALYTICS_GROUP_KEY = "worldId";
+export const DEFAULT_ANALYTICS_WORLD_NAME = "Undefined World";
 export const LOG_IN_EVENT_NAME = "Login successful";
 export const SIGN_UP_EVENT_NAME = "Sign up";
 export const VENUE_PAGE_LOADED_EVENT_NAME = "VenuePage loaded";

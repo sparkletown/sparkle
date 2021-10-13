@@ -32,7 +32,7 @@ import { authSelector, currentVenueSelector } from "utils/selectors";
 
 import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
-import { useAnalytic } from "hooks/useAnalytic";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -192,7 +192,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 }) => {
   const { userWithId } = useUser();
   const venue = useSelector(currentVenueSelector);
-  const analytic = useAnalytic({ venue });
+  const analytics = useAnalytics({ venue });
   const auth = useSelector(authSelector);
 
   useEffect(() => {
@@ -208,10 +208,10 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    analytic.initAnalytic();
+    analytics.initAnalytics();
 
-    analytic.identifyAnalyticUser(email, userWithId.partyName);
-  }, [analytic, auth, userWithId]);
+    analytics.identifyUser(email, userWithId.partyName);
+  }, [analytics, auth, userWithId]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 

@@ -10,7 +10,7 @@ import { VenueAccessMode } from "types/VenueAcccess";
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
-import { useAnalytic } from "hooks/useAnalytic";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
@@ -54,7 +54,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const venue = useSelector(venueSelector);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const analytic = useAnalytic({ venue });
+  const analytics = useAnalytics({ venue });
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
@@ -128,7 +128,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       });
     }
 
-    analytic.trackSignUpEvent(data.email);
+    analytics.trackSignUpEvent(data.email);
     afterUserIsLoggedIn && afterUserIsLoggedIn();
 
     afterUserIsLoggedIn?.(data);

@@ -25,7 +25,7 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
-import { useAnalytic } from "hooks/useAnalytic";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
@@ -68,7 +68,7 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
-  const analytic = useAnalytic({ venue });
+  const analytics = useAnalytics({ venue });
   const { world } = useCurrentWorld({ worldId: venue?.worldId });
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
@@ -191,8 +191,8 @@ export const VenuePage: React.FC = () => {
   useEffect(() => {
     if (!world) return;
 
-    analytic.trackVenuePageLoadedEvent(world.name);
-  }, [analytic, world]);
+    analytics.trackVenuePageLoadedEvent(world);
+  }, [analytics, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

@@ -15,7 +15,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
-import { useAnalytic } from "hooks/useAnalytic";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -103,7 +103,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     room,
   });
 
-  const analytic = useAnalytic({ venue });
+  const analytics = useAnalytics({ venue });
 
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
@@ -119,8 +119,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
-    analytic.trackEnterRoomEvent(room.template);
-  }, [_enterRoomWithSound, analytic, room.template]);
+    analytics.trackEnterRoomEvent(room.template);
+  }, [_enterRoomWithSound, analytics, room.template]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
@@ -149,8 +149,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomDescription = room.about || portalVenueDescription;
 
   useEffect(() => {
-    analytic.trackOpenRoomModalEvent(roomTitle);
-  }, [analytic, roomTitle]);
+    analytics.trackOpenRoomModalEvent(roomTitle);
+  }, [analytics, roomTitle]);
 
   // @debt maybe refactor this, but autoFocus property working very bad.
   const enterButtonref = useRef<HTMLButtonElement>(null);

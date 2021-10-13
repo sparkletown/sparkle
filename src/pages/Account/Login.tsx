@@ -10,7 +10,7 @@ import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
-import { useAnalytic } from "hooks/useAnalytic";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
@@ -40,7 +40,7 @@ export const Login: React.FC<LoginProps> = ({
   const venueId = venue.id;
   const { sovereignVenue } = useRelatedVenues();
   const [formToDisplay, setFormToDisplay] = useState(formType);
-  const analytic = useAnalytic({ venue });
+  const analytics = useAnalytics({ venue });
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     sovereignVenue?.samlAuthProviderId
@@ -88,7 +88,7 @@ export const Login: React.FC<LoginProps> = ({
   const afterUserIsLoggedIn = (data?: LoginFormData) => {
     if (!data) return;
 
-    analytic.trackLogInEvent(data.email);
+    analytics.trackLogInEvent(data.email);
   };
 
   if (isCustomAuthConfigLoading) return <LoadingPage />;
