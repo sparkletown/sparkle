@@ -30,7 +30,7 @@ $photobooth-button-background-size: 35px;
   }
 
   .notification-card {
-    background: $red;
+    background: var(--danger--under);
     color: $content--over;
     position: absolute;
     bottom: 0;
