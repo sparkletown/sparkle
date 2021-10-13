@@ -23,11 +23,6 @@ $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
-// @debt these should probably be replaced with var(...) referencing theme colors, need to include danger palette
-$input--invalid: #dc3545;
-$input--invalid-focus: #ff7384;
-$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
-
 // @debt these should probably be replaced with var(...) referencing theme colors
 $announcement-background: rgba(39, 35, 34, 0.9);
 $send-msg-online-color: #78b553;
@@ -39,7 +34,6 @@ $light-grey: #292929;
 $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
 
-$red: #bc271a;
 $green: #4bcc4b;
 $yellow: #ffe600;
 $light-green: #3ce348;
@@ -160,7 +154,6 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
   background-color 0.2s ease-in-out;
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
-$image-input-border--error: 2px solid red;
 
 // NOTE: Magic number determined empirically to fill the footer space in default case
 $admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;

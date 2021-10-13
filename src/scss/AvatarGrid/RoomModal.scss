@@ -74,7 +74,7 @@
 //
 //    &:hover {
 //      color: $content--over;
-//      background-color: darken($accent--under, 5%);
+//      background-color: var(--accent--under-darker-5pp);
 //    }
 //  }
 //
@@ -85,7 +85,7 @@
 //
 //    &:hover {
 //      color: $content--over;
-//      background-color: darken($secondary, 5%);
+//      background-color: var(--accent--under-darker-5pp);
 //    }
 //  }
 //}
