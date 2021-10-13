@@ -38,12 +38,14 @@ $world-card-logo-size: 70px;
     word-break: break-word;
     font-size: $font-size--xl;
     font-weight: $font-weight--700;
+    text-shadow: $text-shadow--outline;
   }
 
   &__world-description {
     word-break: break-word;
     font-size: $font-size--sm;
     font-weight: $font-weight--400;
+    text-shadow: $text-shadow--outline;
   }
 
   &__button {
