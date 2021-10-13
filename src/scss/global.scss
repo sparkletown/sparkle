@@ -218,7 +218,7 @@ button.btn {
 
   &.btn-secondary {
     // Background image has to be set to 'none' because by default the Button has gradient image
-    background-color: $secondary--light;
+    background-color: var(--greyscale-lighter-10pp);
 
     &:hover {
       background-image: none;
@@ -413,7 +413,7 @@ h4 {
 }
 
 .modal-backdrop {
-  background: $dark;
+  background: $secondary--live;
 
   &.show {
     opacity: 0.8;
@@ -463,7 +463,7 @@ h4 {
   }
 
   .table-container {
-    background: $dark;
+    background: $secondary--live;
     border-radius: 0 0 22px 22px;
     transition: all 0.1s linear;
     padding: 0;
@@ -508,7 +508,7 @@ h4 {
 
   .youtube-video {
     transition: all 0.1s linear;
-    background-color: $dark;
+    background-color: $secondary--live;
     color: $content--over;
   }
 }
@@ -626,7 +626,7 @@ h4 {
   height: calc(100vh - 220px);
 
   .modal-body {
-    background: $dark;
+    background: $secondary--live;
     border-radius: 22px;
   }
 
@@ -645,7 +645,7 @@ input.btn.btn-primary.btn-success {
 }
 
 .popover {
-  background: $dark;
+  background: $secondary--live;
   border-radius: 22px;
   overflow-y: auto;
   height: calc(100vh - 120px);
@@ -676,25 +676,25 @@ input.btn.btn-primary.btn-success {
       color: $content--over;
 
       &.global {
-        background: $dark;
+        background: $secondary--live;
       }
 
       &.private {
-        background: $dark;
+        background: $secondary--live;
       }
 
       &.room {
-        background: $dark;
+        background: $secondary--live;
       }
     }
   }
 
   .chat-input {
-    background: $dark;
+    background: $secondary--live;
     margin-bottom: 10px;
 
     &:hover {
-      background: rgba($dark, 0.7);
+      background: rgba($secondary--live, 0.7);
     }
   }
 }
