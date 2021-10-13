@@ -11,7 +11,9 @@ import {
 import { World } from "api/admin";
 
 import { WithId } from "utils/id";
+import { worldEditStartValuesSelector } from "utils/selectors";
 
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 import "./WorldShowcase.scss";
@@ -21,12 +23,15 @@ export interface WorldShowcaseProps {
 }
 
 export const WorldShowcase: React.FC<WorldShowcaseProps> = ({ world }) => {
+  // NOTE: values can also be empty strings, not just missing
+  const dirty = useSelector(worldEditStartValuesSelector);
   const { profile } = useUser();
   const avatar = profile?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
   const banner =
-    world?.config?.landingPageConfig?.coverImageUrl ?? DEFAULT_LANDING_BANNER;
-  const logo = world?.host?.icon ?? DEFAULT_VENUE_LOGO;
-  const name = world?.name;
+    dirty?.bannerImageUrl ||
+    (world?.config?.landingPageConfig?.coverImageUrl ?? DEFAULT_LANDING_BANNER);
+  const logo = dirty?.logoImageUrl || (world?.host?.icon ?? DEFAULT_VENUE_LOGO);
+  const name = dirty?.name || world?.name;
 
   const bannerClasses = classNames(
     "WorldShowcase__highlight",

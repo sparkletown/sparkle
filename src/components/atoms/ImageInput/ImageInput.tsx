@@ -14,7 +14,15 @@ import { ButtonNG } from "../ButtonNG";
 import "./ImageInput.scss";
 
 export interface ImageInputProps {
-  onChange?: (url: string) => void;
+  onChange?: (
+    url: string,
+    extra: {
+      nameUrl: string;
+      valueUrl: string;
+      nameFile: string;
+      valueFile: File;
+    }
+  ) => void;
   name: string;
   imgUrl?: string;
   error?: FieldError;
@@ -27,7 +35,7 @@ export interface ImageInputProps {
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
-  onChange = () => {},
+  onChange,
   name,
   imgUrl,
   error,
@@ -59,7 +67,13 @@ const ImageInput: React.FC<ImageInputProps> = ({
       setImageUrl(url);
       setValue(fileName, [compressedFile], false);
       setValue(fileUrl, url, false);
-      onChange(url);
+
+      onChange?.(url, {
+        nameUrl: fileUrl,
+        valueUrl: url,
+        nameFile: fileName,
+        valueFile: compressedFile,
+      });
     },
     [handleFileInputChange, fileUrl, onChange, setValue, fileName]
   );
