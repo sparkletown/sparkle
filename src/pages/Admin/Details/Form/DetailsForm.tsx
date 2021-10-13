@@ -35,39 +35,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const { worldId } = useWorldEditParams();
 
-  const setVenue = useCallback(
-    async (vals: FormValues) => {
-      if (!user) return;
-
-      try {
-        if (venueId) {
-          const updatedVenue = {
-            ...vals,
-            id: venueId,
-            worldId: venue?.worldId ?? "",
-          };
-
-          await updateVenue_v2(updatedVenue, user);
-
-          history.push(adminWorldSpacesUrl(venue?.worldId));
-        } else {
-          const newVenue = {
-            ...vals,
-            id: createUrlSafeName(vals.name),
-            worldId: worldId ?? "",
-          };
-
-          await createVenue_v2(newVenue, user);
-
-          history.push(adminWorldSpacesUrl(worldId));
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    },
-    [history, user, venue?.worldId, venueId, worldId]
-  );
-
   const {
     watch,
     formState: { isSubmitting, dirty },
@@ -86,6 +53,41 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   });
 
   const values = watch();
+
+  const setVenue = useCallback(
+    async (vals: FormValues) => {
+      if (!user) return;
+
+      try {
+        if (venueId) {
+          const updatedVenue = {
+            ...vals,
+            id: venueId,
+            worldId: venue?.worldId ?? "",
+            parentId: values.parentId,
+          };
+
+          await updateVenue_v2(updatedVenue, user);
+
+          history.push(adminWorldSpacesUrl(venue?.worldId));
+        } else {
+          const newVenue = {
+            ...vals,
+            id: createUrlSafeName(vals.name),
+            worldId: worldId ?? "",
+            parentId: values.parentId ?? "",
+          };
+
+          await createVenue_v2(newVenue, user);
+
+          history.push(adminWorldSpacesUrl(worldId));
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    [history, user, values.parentId, venue?.worldId, venueId, worldId]
+  );
 
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -111,6 +113,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         },
         { logoImageUrl: venue?.host?.icon ?? DEFAULT_VENUE_LOGO },
         { showGrid: venue?.showGrid },
+        { parentId: venue?.parentId },
       ]);
     }
   }, [venue, setValue, venueId]);
@@ -209,16 +212,16 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     </div>
   );
 
-  const { worldVenuesIds } = useWorldVenues(worldId ?? "");
+  const { worldVenuesIds } = useWorldVenues(worldId ?? venue?.worldId ?? "");
 
   const parentIdDropdownOptions = useMemo(
     () =>
-      worldVenuesIds.map((venueId) => (
+      ["", ...worldVenuesIds].map((venueId) => (
         <ReactBootstrapDropdown.Item
           key={venueId}
           onClick={() => setValue("parentId", venueId)}
         >
-          {venueId}
+          {venueId ? venueId : "None"}
         </ReactBootstrapDropdown.Item>
       )),
     [setValue, worldVenuesIds]
@@ -226,12 +229,21 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const renderedParentIdDropdown = useMemo(
     () => (
-      <div>
-        <h4 className="italic">Upload your logo</h4>
-        <Dropdown title="Parent id" options={parentIdDropdownOptions} />
-      </div>
+      <>
+        <h4 className="italic">Select a parent for your venue</h4>
+        <Dropdown
+          title={values.parentId ? values.parentId : "None"}
+          options={parentIdDropdownOptions}
+        />
+        <input
+          type="hidden"
+          ref={register}
+          defaultValue={values.parentId ?? ""}
+          name={"parentId"}
+        />
+      </>
     ),
-    [parentIdDropdownOptions]
+    [parentIdDropdownOptions, register, values.parentId]
   );
 
   const formStyles = classNames({ DetailsForm__edit: venueId });
