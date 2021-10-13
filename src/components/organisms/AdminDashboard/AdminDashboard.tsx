@@ -79,7 +79,7 @@ export const AdminDashboard: React.FC = () => {
     <AdminRestricted>
       <div className="AdminDashboard">
         <div className="AdminDashboard__header">
-          <ButtonNG variant="danger" isLink linkTo={ADMIN_V3_WORLDS_URL}>
+          <ButtonNG variant="secondary" isLink linkTo={ADMIN_V3_WORLDS_URL}>
             Back to worlds
           </ButtonNG>
 

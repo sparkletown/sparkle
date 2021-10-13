@@ -16,7 +16,7 @@ $world-card-logo-size: 70px;
     @include square-size($world-card-logo-size);
     border-radius: $border-radius--max;
     background-size: cover;
-    background-color: $almost-black;
+    background-color: var(--greyscale-darker-50pp);
     box-shadow: 0 4px 12px opaque-black(0.4);
     align-self: flex-start;
   }

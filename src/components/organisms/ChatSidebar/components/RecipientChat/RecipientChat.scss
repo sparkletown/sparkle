@@ -12,7 +12,7 @@ $breadcrumbs-height: 45px;
     top: 0;
     width: 100%;
     height: $breadcrumbs-height;
-    background-color: $almost-black;
+    background-color: var(--greyscale-darker-50pp);
     display: flex;
     align-items: center;
     justify-content: flex-start;
