@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
@@ -70,7 +70,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world?.id;
+  const [worldId, setWorldId] = useState(world?.id);
   const history = useHistory();
   const { user } = useUser();
 
@@ -112,7 +112,18 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
       //TODO: Change this to the most appropriate url when product decides the perfect UX
       history.push(ADMIN_V3_WORLDS_URL);
     } else {
-      await createWorld(values, user);
+      const { worldId: id, error } = await createWorld(values, user);
+
+      if (id) {
+        setWorldId(id);
+      }
+
+      if (error) {
+        // Note, a more complex option when id exists is a redirect
+        // that doesn't lose the error message for the user
+        throw error;
+      }
+
       //TODO: Change this to the most appropriate url when product decides the perfect UX
       history.push(ADMIN_V3_WORLDS_URL);
     }
