@@ -2,6 +2,6 @@
 
 .SubmitError {
   &__message {
-    color: $red;
+    color: var(--danger--under);
   }
 }

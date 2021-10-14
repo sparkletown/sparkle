@@ -49,7 +49,7 @@ $auth-icon-top-margin: 5px;
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  background-color: $saturated-black;
+  background-color: $secondary--dark;
   height: 100vh;
 
   .logo-container {
@@ -64,7 +64,7 @@ $auth-icon-top-margin: 5px;
       width: $auth-container-max-width;
       margin: 0 auto;
       padding: $side-padding;
-      background-color: $dark-grey;
+      background-color: var(--greyscale-darker-50pp);
       box-shadow: $large-shadow;
       text-align: center;
       border-radius: $border-radius;

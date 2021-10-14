@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { useRouteMatch } from "react-router";
 import { Redirect, useHistory } from "react-router-dom";
 import classNames from "classnames";
@@ -8,6 +8,7 @@ import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
 import { chooseAuditoriumSize } from "utils/auditorium";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
@@ -82,6 +83,18 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     [auditoriumSize]
   );
 
+  const [iframeUrl, setIframeUrl] = useState("");
+  useLayoutEffect(() => {
+    if (!venue) return;
+
+    setIframeUrl(
+      convertToEmbeddableUrl({
+        url: venue.iframeUrl,
+        autoPlay: venue.autoPlay,
+      })
+    );
+  }, [venue]);
+
   const availableSectionIds = useMemo(
     () => availableSections.map((section) => section.id),
     [availableSections]
@@ -129,7 +142,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
         <div className="AllSectionPreviews__main">
           <IFrame
-            src={venue.iframeUrl}
+            src={iframeUrl}
             containerClassName="AllSectionPreviews__iframe-overlay"
             iframeClassname="AllSectionPreviews__iframe"
           />

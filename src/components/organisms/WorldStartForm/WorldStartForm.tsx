@@ -1,8 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
+import { omit } from "lodash";
 import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_URL } from "settings";
@@ -10,10 +11,13 @@ import { ADMIN_V3_WORLDS_URL } from "settings";
 import { createUrlSafeName, World } from "api/admin";
 import { createWorld, updateWorldStartSettings } from "api/world";
 
+import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
+
 import { WorldStartFormInput } from "types/world";
 
-import { WithId } from "utils/id";
+import { WithId, WithOptionalWorldId } from "utils/id";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -21,7 +25,6 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
-import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -39,6 +42,9 @@ const HANDLED_ERRORS = [
   "logoImageFile",
   "logoImageUrl",
 ];
+
+// NOTE: file objects are being mutated, so they aren't a good fit for redux store
+const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -134,14 +140,31 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     [dirty, isSaving, isSubmitting]
   );
 
+  const dispatch = useDispatch();
+  const handleChange = useCallback(
+    // if form onChange called -> ignore first arg
+    // if image onChange called -> use second arg
+    (_, { nameUrl, valueUrl } = {}) =>
+      dispatch<WorldEditActions>(
+        worldEdit({
+          ...omit(values, UNWANTED_FIELDS),
+          [nameUrl]: valueUrl,
+          worldId,
+        } as WithOptionalWorldId<WorldStartFormInput>)
+      ),
+    [values, worldId, dispatch]
+  );
+
+  // NOTE: palette cleanser when starting new world, run only once on init
+  useEffect(() => void dispatch<WorldEditActions>(worldEdit()), [dispatch]);
+
   return (
     <div className="WorldStartForm">
-      <Form onSubmit={handleSubmit(submit)}>
+      <Form onSubmit={handleSubmit(submit)} onChange={handleChange}>
         <AdminSidebarFooter
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
-        <AdminWorldUrlSection name={values.name} />
         <AdminSection title="Name your world" withLabel>
           <AdminInput
             name="name"
@@ -183,6 +206,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             isInputHidden={!values.bannerImageUrl}
             register={register}
             setValue={setValue}
+            onChange={handleChange}
           />
         </AdminSection>
         <AdminSection
@@ -201,6 +225,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             setValue={setValue}
             register={register}
             small
+            onChange={handleChange}
           />
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
