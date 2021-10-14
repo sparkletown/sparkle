@@ -22,6 +22,8 @@ import {
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
@@ -112,6 +114,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         { bannerImageUrl: editData?.bannerImageUrl ?? "" },
         { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
         { showGrid: editData?.showGrid },
+        { worldId: editData?.worldId },
       ]);
     }
   }, [editData, setValue, venueId]);
@@ -221,6 +224,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     });
   };
 
+  const navigateToHome = useCallback(() => {
+    history.push(adminWorldSpacesUrl(worldId ?? editData?.worldId));
+  }, [editData?.worldId, history, worldId]);
+
   return (
     <Form
       onSubmit={handleSubmit(setVenue)}
@@ -251,7 +258,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderLogoUpload()}
       </div>
 
-      <div className="DetailsForm__footer">
+      <AdminSidebarFooter onClickHome={navigateToHome}>
         <ButtonNG
           variant="primary"
           disabled={isSubmitting || !dirty}
@@ -260,7 +267,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         >
           {venueId ? "Update Space" : "Create Space"}
         </ButtonNG>
-      </div>
+      </AdminSidebarFooter>
     </Form>
   );
 };

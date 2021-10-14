@@ -1,15 +1,10 @@
-import React, { useCallback, useEffect } from "react";
-// Hooks
-import { useFirestore } from "react-redux-firebase";
+import React, { useEffect } from "react";
 
-// Typings
-import { Venue_v2 } from "types/venues";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-// Components
-import Details from "pages/Admin/Details";
+import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
 import { SET_FORM_VALUES } from "../redux";
-// Reducer
 import { setBannerURL, setSquareLogoUrl } from "../redux/actions";
 
 import { VenueWizardEditProps } from "./VenueWizardEdit.types";
@@ -19,36 +14,38 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   state,
   dispatch,
 }) => {
-  // get the venue
-  const firestore = useFirestore();
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
-  const fetchVenueFromAPI = useCallback(async () => {
-    const venueSnapshot = await firestore
-      .collection("venues")
-      .doc(venueId)
-      .get();
-
-    if (!venueSnapshot.exists) return;
-    const data = venueSnapshot.data() as Venue_v2;
+  useEffect(() => {
     dispatch({
       type: SET_FORM_VALUES,
       payload: {
-        name: data.name,
-        subtitle: data.config.landingPageConfig.subtitle,
-        description: data.config.landingPageConfig.description,
-        showGrid: data.showGrid,
-        columns: data.columns,
+        name: venue?.name,
+        subtitle: venue?.config?.landingPageConfig?.subtitle,
+        description: venue?.config?.landingPageConfig?.description,
+        showGrid: venue?.showGrid,
+        columns: venue?.columns,
+        worldId: venue?.worldId,
       },
     });
-    setBannerURL(dispatch, data.config.landingPageConfig.coverImageUrl);
-    setSquareLogoUrl(dispatch, data.host.icon);
-  }, [dispatch, firestore, venueId]);
+    setBannerURL(
+      dispatch,
+      venue?.config?.landingPageConfig?.coverImageUrl ?? ""
+    );
+    setSquareLogoUrl(dispatch, venue?.host?.icon ?? "");
+  }, [
+    dispatch,
+    venue?.columns,
+    venue?.config?.landingPageConfig?.coverImageUrl,
+    venue?.config?.landingPageConfig?.description,
+    venue?.config?.landingPageConfig?.subtitle,
+    venue?.host?.icon,
+    venue?.name,
+    venue?.showGrid,
+    venue?.worldId,
+  ]);
 
-  useEffect(() => {
-    fetchVenueFromAPI();
-  }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
-
-  return <Details data={state} dispatch={dispatch} />;
+  return <SpaceEditorStartPanel data={state} dispatch={dispatch} />;
 };
 
 export default VenueWizardEdit;

@@ -9,6 +9,7 @@ export interface FormValues extends WizardState {
   logoImageFile?: FileList;
   showGrid?: boolean;
   columns?: number;
+  worldId?: string;
 }
 
 export interface DetailsFormProps {

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { useUser } from "hooks/useUser";
 
-import Details from "pages/Admin/Details";
+import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
 import {
   AuthenticationModal,
@@ -41,7 +41,11 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
 
   return (
     <AdminRestricted>
-      <Details previous={previous} dispatch={dispatch} data={state} />
+      <SpaceEditorStartPanel
+        previous={previous}
+        dispatch={dispatch}
+        data={state}
+      />
     </AdminRestricted>
   );
 };
