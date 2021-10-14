@@ -3,5 +3,7 @@
 .SubmitError {
   &__message {
     color: var(--danger--under);
+    text-shadow: $text-shadow--outline;
+    word-break: break-word;
   }
 }
