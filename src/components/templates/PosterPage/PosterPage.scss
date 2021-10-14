@@ -93,8 +93,8 @@ $poster-cell-optimal-height: 195px;
   }
 
   &__control--stop {
-    background-color: $red;
-    color: $white;
+    background-color: var(--danger--under);
+    color: $accent--over;
     opacity: 0.8;
   }
 
@@ -103,6 +103,7 @@ $poster-cell-optimal-height: 195px;
     width: 100%;
     // Take exactly the same amount of space as 3 participants would take
     height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$spacing--xs});
+    border: none;
   }
 
   &__video-participant {
@@ -118,16 +119,16 @@ $poster-cell-optimal-height: 195px;
     justify-content: center;
     align-items: center;
 
-    color: $white;
+    color: $content--over;
     font-size: $font-size--xxl;
 
     cursor: pointer;
 
-    border: dashed $dark-grey thin;
+    border: dashed $secondary--live thin;
     border-radius: $border-radius--md;
 
     &:hover {
-      background-color: $dark;
+      background-color: $secondary--live;
     }
   }
 

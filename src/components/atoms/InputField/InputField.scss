@@ -2,25 +2,35 @@
 
 $icon-width: 2.5rem;
 
-.input-field {
+.InputField {
   position: relative;
 
   &--icon-start {
-    .input-field__input {
+    .InputField__input {
       padding-left: $icon-width;
     }
   }
 
   &--icon-end {
-    .input-field__input {
+    .InputField__input {
       padding-right: $icon-width;
     }
   }
 
+  &--invalid .InputField__input {
+    border: 1px solid var(--danger--under);
+    &:focus {
+      border: 1px solid var(--accent--over-10a);
+      box-shadow: 0 0 0 2px var(--danger--under-rgb);
+    }
+  }
+
   &__input {
+    border: 1px solid var(--accent--over-10a);
+    border-radius: 22px;
     height: 100%;
 
-    &:focus + .input-field__icon > * {
+    &:focus + .InputField__icon > * {
       opacity: 0.6;
     }
   }
@@ -47,5 +57,13 @@ $icon-width: 2.5rem;
       opacity: 0.2;
       max-width: 100%;
     }
+  }
+
+  &__error {
+    color: var(--danger--under);
+    font-size: 0.8rem;
+    position: absolute;
+    bottom: -1.3rem;
+    left: 2.8%;
   }
 }

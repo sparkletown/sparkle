@@ -1,34 +1,66 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
+import { GenericVenue, VenueTemplate } from "types/venues";
+
+import { WithId } from "utils/id";
+import { openUrl, venueInsideUrl } from "utils/url";
+
 import { useExperiences } from "hooks/useExperiences";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
+import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import Room from "components/organisms/Room";
+import { Room } from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
+import { TablesUserList } from "components/molecules/TablesUserList";
+import { UserList } from "components/molecules/UserList";
+
+import { BackButton } from "components/atoms/BackButton";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
-export const ConversationSpace: React.FunctionComponent = () => {
-  const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+export interface ConversationSpaceProps {
+  venue: WithId<GenericVenue>;
+}
 
-  const [seatedAtTable, setSeatedAtTable] = useState("");
+export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
+  venue,
+}) => {
+  const { parentVenue, parentVenueId } = useRelatedVenues({
+    currentVenueId: venue?.id,
+  });
+
+  const {
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
+  } = useShowHide();
+
+  const [seatedAtTable, setSeatedAtTable] = useState<string>();
+
+  useUpdateTableRecentSeatedUsers(
+    VenueTemplate.conversationspace,
+    seatedAtTable && venue?.id
+  );
 
   useExperiences(venue?.name);
 
-  if (!venue) return <>Loading...</>;
+  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    openUrl(venueInsideUrl(parentVenueId));
+  }, [parentVenueId]);
 
   const tables = venue?.config?.tables ?? TABLES;
 
@@ -47,17 +79,14 @@ export const ConversationSpace: React.FunctionComponent = () => {
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <div className="conversation-space-container">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            flexGrow: 3,
-            flexBasis: 0,
-            overflow: "hidden",
-          }}
-          className={`scrollable-area ${seatedAtTable && "at-table"}`}
-        >
+      <VenueWithOverlay venue={venue} containerClassNames="conversation-space">
+        {!seatedAtTable && parentVenueId && parentVenue && (
+          <BackButton
+            onClick={backToParentVenue}
+            locationName={parentVenue.name}
+          />
+        )}
+        <div className={`scrollable-area ${seatedAtTable && "at-table"}`}>
           {venue.description?.text && (
             <div className="row">
               <div className="col">
@@ -73,6 +102,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
+                  venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
                 />
@@ -80,11 +110,18 @@ export const ConversationSpace: React.FunctionComponent = () => {
               {seatedAtTable && (
                 <div className="participants-container">
                   <Room
-                    venueName={venue.name}
-                    roomName={`${venue.name}-${seatedAtTable}`}
-                    setUserList={() => {}}
+                    setSeatedAtTable={setSeatedAtTable}
+                    venueId={venue.id}
+                    roomName={`${venue.id}-${seatedAtTable}`}
                   />
                 </div>
+              )}
+              {!seatedAtTable && (
+                <TablesControlBar
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
+                />
               )}
             </div>
           </div>
@@ -92,24 +129,20 @@ export const ConversationSpace: React.FunctionComponent = () => {
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
-              venueName={venue.name}
+              venueId={venue.id}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              showOnlyAvailableTables={showOnlyAvailableTables}
             />
           </div>
           <UserList
-            users={recentVenueUsers}
+            usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={venue.recentUserCount ?? 0}
             activity={venue?.activity ?? "here"}
-            disableSeeAll={false}
           />
         </div>
-      </div>
+      </VenueWithOverlay>
     </>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ConversationSpace;

@@ -7,8 +7,10 @@
   padding: 8px 24px;
   cursor: pointer;
 
+  content-visibility: auto;
+
   &:hover {
-    background-color: $black;
+    background-color: $content--under;
 
     .online-user__name {
       opacity: 1;

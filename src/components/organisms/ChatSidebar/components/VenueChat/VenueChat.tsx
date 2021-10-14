@@ -1,10 +1,12 @@
 import React from "react";
+import { isEqual } from "lodash";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useVenueChat } from "hooks/useVenueChat";
+import { useVenueChat } from "hooks/chats/venueChat";
+import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -14,7 +16,7 @@ export interface VenueChatProps {
   venue: WithId<AnyVenue>;
 }
 
-export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
+export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const {
     sendMessage,
     deleteMessage,
@@ -22,17 +24,19 @@ export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
     sendThreadReply,
   } = useVenueChat(venue.id);
 
+  const canDeleteMessages = useCanDeleteVenueChatMessages(venue);
+
   return (
-    <div className="venue-chat">
-      <Chatbox
-        // poll is available for Venue Chat only (displayPoll = true)
-        displayPoll
-        messages={messagesToDisplay}
-        sendMessage={sendMessage}
-        sendThreadReply={sendThreadReply}
-        deleteMessage={deleteMessage}
-        venue={venue}
-      />
-    </div>
+    <Chatbox
+      // poll is available for Venue Chat only (displayPoll = true)
+      displayPoll
+      messages={messagesToDisplay}
+      sendMessage={sendMessage}
+      sendThreadReply={sendThreadReply}
+      deleteMessage={canDeleteMessages ? deleteMessage : undefined}
+      containerClassName="venue-chat"
+    />
   );
 };
+
+export const VenueChat = React.memo(_VenueChat, isEqual);

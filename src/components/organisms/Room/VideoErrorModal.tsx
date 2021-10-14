@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Modal } from "react-bootstrap";
+
 import "./VideoErrorModal.scss";
 
 interface PropsType {
@@ -20,7 +21,7 @@ const errorMessages: { [key: string]: string } = {
     "There was a problem with the camera, please try again.",
 };
 
-const VideoErrorModal: FC<PropsType> = ({
+export const VideoErrorModal: FC<PropsType> = ({
   show,
   errorMessage,
   onHide,
@@ -47,5 +48,3 @@ const VideoErrorModal: FC<PropsType> = ({
     </Modal>
   );
 };
-
-export default VideoErrorModal;

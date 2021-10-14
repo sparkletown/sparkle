@@ -1,11 +1,8 @@
 @import "scss/constants.scss";
 
 .navbar-margin {
+  height: auto;
+
   padding-top: $navbar-height;
   padding-bottom: $footer-height;
-}
-.navbar-margin.fullscreen {
-  height: 100%;
-  width: 100%;
-  overflow: auto;
 }

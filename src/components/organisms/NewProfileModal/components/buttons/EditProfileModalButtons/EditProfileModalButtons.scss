@@ -1,0 +1,10 @@
+@import "../../../profileModalStyles";
+
+.EditProfileModalButtons {
+  &__button {
+    @include ProfileModalButton;
+    &:not(:last-child) {
+      margin-bottom: $input-gap;
+    }
+  }
+}

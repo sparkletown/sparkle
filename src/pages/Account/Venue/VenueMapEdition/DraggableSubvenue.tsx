@@ -1,25 +1,27 @@
-import React, { useEffect, CSSProperties } from "react";
-import { useDrag, DragSourceMonitor } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import React, { CSSProperties, useEffect } from "react";
+import { DragSourceMonitor, useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { Resizable } from "re-resizable";
-import { Dimensions } from "types/utility";
-import { SubVenueIconMap } from "./Container";
 
-function getStyles(
+import { Dimensions } from "types/utility";
+
+import { SubVenueIconMap } from "./Container";
+import { ItemTypes } from "./ItemTypes";
+
+import "./DraggableSubvenue.scss";
+
+const getStyles = (
   left: number,
   top: number,
   isDragging: boolean
-): React.CSSProperties {
-  return {
-    position: "absolute",
-    top,
-    left,
-    opacity: isDragging ? 0 : 1,
-    height: isDragging ? 0 : "",
-    background: "rgba(147, 124, 99, 0.2)",
-  };
-}
+): React.CSSProperties => ({
+  position: "absolute",
+  top,
+  left,
+  opacity: isDragging ? 0 : 1,
+  height: isDragging ? 0 : "",
+  background: "rgba(147, 124, 99, 0.2)",
+});
 
 export type PropsType = SubVenueIconMap[string] & {
   id: string;
@@ -40,6 +42,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     top,
     width,
     height,
+    title,
     onChangeSize,
     isResizable,
     rounded,
@@ -118,6 +121,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
             <img src={url} alt="subvenue-icon" style={styles.resizeableImage} />
           </div>
         </div>
+        <div className="DraggableSubvenue__title">{title}</div>
       </Resizable>
     );
   }

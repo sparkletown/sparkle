@@ -16,7 +16,6 @@ $preview-margin: 30px;
   &--admin {
     max-height: unset;
     overflow-y: scroll;
-    scrollbar-width: thin;
   }
 }
 
@@ -31,8 +30,9 @@ $preview-margin: 30px;
     overflow-y: auto;
     height: 100%;
   }
+
   .page-container-left {
-    background-color: $black;
+    background-color: $content--under;
     padding-top: $navbar-height;
     overflow-y: auto;
     height: 100%;
@@ -54,20 +54,23 @@ $preview-margin: 30px;
         height: 100%;
       }
     }
+
     .page-container-left-bottombar {
       padding: 10px 14px;
       display: flex;
       justify-content: space-between;
-      background-color: $black;
-      border-top: 1px solid rgba($white, 0.2);
+      background-color: $content--under;
+      border-top: 1px solid var(--accent--over-20a);
+
       .btn {
         float: right;
         margin-left: 10px;
       }
     }
   }
+
   &.preview {
-    background-color: $black;
+    background-color: $content--under;
     overflow: auto;
     flex-direction: column;
     margin-top: $navbar-height;
@@ -82,7 +85,7 @@ $preview-margin: 30px;
   .venue-preview {
     flex: 1;
     margin: $preview-margin;
-    background-color: $black;
+    background-color: $content--under;
     border-radius: 20px;
     overflow: auto;
     border: 2px solid gray;
@@ -124,33 +127,38 @@ $preview-margin: 30px;
   width: 100%;
   padding: 18px;
   border-radius: $border-radius;
-  background-color: $dark;
+  background-color: $secondary--live;
   cursor: pointer;
   min-height: 156px;
   margin-bottom: 1rem;
   transition: all 400ms $transition-function;
+
   &:hover {
-    box-shadow: 0 0 0 4px rgba($white, 0.62);
-    background-color: lighten($dark, 4%);
+    box-shadow: 0 0 0 4px opaque-white(0.62);
+    background-color: lighten($secondary--live, 4%);
   }
+
   &.selected {
-    box-shadow: 0 0 0 4px $primary;
-    background-color: lighten($dark, 4%);
+    box-shadow: 0 0 0 4px $accent--under;
+    background-color: lighten($secondary--live, 4%);
+
     .pickspace-thumbnail {
       background-image: $gradient;
     }
   }
+
   .pickspace-thumbnail {
     position: relative;
     float: left;
     width: 120px;
     height: 120px;
     margin-right: 20px;
-    background-color: $black;
+    background-color: $content--under;
     border-radius: $border-radius;
     display: flex;
     align-items: center;
     justify-content: center;
+
     &:after {
       content: "";
       position: absolute;
@@ -160,11 +168,13 @@ $preview-margin: 30px;
       top: 20px;
       margin: auto;
     }
+
     img {
       max-width: 70%;
       max-height: 70%;
     }
   }
+
   ul {
     text-indent: 20px;
   }
@@ -204,7 +214,7 @@ $preview-margin: 30px;
   padding: 0.5em;
   margin-top: 1.5rem;
 
-  border: 1px solid #ccc;
+  border: 1px solid var(--accent--over-20a);
 
   input:disabled {
     cursor: not-allowed;
@@ -221,6 +231,7 @@ $preview-margin: 30px;
   margin-bottom: 1rem;
   cursor: pointer;
   padding: 6px 0 6px 40px;
+
   &:before {
     content: "";
     position: absolute;
@@ -229,18 +240,20 @@ $preview-margin: 30px;
     height: 30px;
     width: 30px;
     border-radius: 15px;
-    background-color: rgba($white, 0.12);
-    box-shadow: 0 0 0 2px rgba($white, 0.4);
+    background-color: opaque-white(0.12);
+    box-shadow: 0 0 0 2px opaque-white(0.4);
   }
+
   &:hover {
     &:before {
-      box-shadow: 0 0 0 2px rgba($white, 1);
+      box-shadow: 0 0 0 2px opaque-white(1);
     }
   }
+
   &.checkbox-checked {
     &:before {
-      background-color: $primaryColor;
-      box-shadow: 0 0 0 2px rgba($white, 0);
+      background-color: $primary--over;
+      box-shadow: 0 0 0 2px opaque-white(0);
       background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
@@ -268,6 +281,7 @@ $preview-margin: 30px;
   align-items: center;
   justify-content: center;
 }
+
 .template-card {
   flex: 1;
   margin-top: 10px;
@@ -295,6 +309,7 @@ $preview-margin: 30px;
 ul.template-card-list {
   list-style-position: inside;
 }
+
 ul.template-card-list li {
   left: 0;
 }
@@ -338,7 +353,7 @@ ul.template-card-list li {
 
 .delete-btn {
   margin-left: 10px;
-  background-color: red !important;
+  background-color: var(--danger--under) !important;
 }
 
 li.question {

@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Button } from "react-bootstrap";
+
 import "./RadioModal.scss";
 
 export interface RadioModalPropsType {
@@ -46,7 +47,7 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
   );
 
   return (
-    <div className="radio-modal-container">
+    <div role="dialog" className="radio-modal-container">
       {!isRadioPlaying ? (
         <Button onClick={handleEnableButtonClick}>Enable radio</Button>
       ) : (

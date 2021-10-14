@@ -1,24 +1,21 @@
 import React, { useMemo } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
-import { getSeconds } from "date-fns";
-
-import { REACTION_TIMEOUT } from "settings";
 
 import {
+  EmojiReactionType,
   isTextReaction,
   ReactionData,
-  EmojiReactionType,
 } from "types/reactions";
 
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
+import { useAudio } from "hooks/audio/useAudio";
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
 
-import "./UserReactions.scss";
+import { Reaction } from "components/atoms/Reaction";
 
-const REACTION_TIMEOUT_CSS = `${getSeconds(REACTION_TIMEOUT)}s`;
+import "./UserReactions.scss";
 
 export interface UserReactionsProps {
   userId: string;
@@ -30,7 +27,6 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   userId,
   isMuted: isMutedLocally = false,
   reactionPosition,
-  children,
 }) => {
   // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
   const isMutedGlobally = useSelector((state) => state.room.mute);
@@ -40,43 +36,41 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
     userId,
   });
 
-  const { renderedEmojiReactions, userShoutout } = useMemo(() => {
-    const userUniqueEmojiReactions = userReactions.reduce(
-      uniqueEmojiReactionsDataMapReducer,
-      new Map()
+  const { userUniqueEmojiReactions, userShoutout } = useMemo(() => {
+    const userUniqueEmojiReactions = Array.from(
+      userReactions
+        .reduce(uniqueEmojiReactionsDataMapReducer, new Map())
+        .values()
     );
-
-    const renderedEmojiReactions = Array.from(
-      userUniqueEmojiReactions.values()
-    ).map((emojiReaction) => (
-      <DisplayEmojiReaction
-        key={emojiReaction.type}
-        emojiReaction={emojiReaction}
-        isMuted={isMuted}
-      />
-    ));
 
     const userShoutout = userReactions.find(isTextReaction);
 
-    return { renderedEmojiReactions, userShoutout };
-  }, [isMuted, userReactions]);
-
-  const containerVars = useCss({
-    "--user-reactions-reaction-timeout": REACTION_TIMEOUT_CSS,
-  });
+    return { userUniqueEmojiReactions, userShoutout };
+  }, [userReactions]);
 
   const containerClasses = classNames(
     "UserReactions",
-    `UserReactions--reaction-${reactionPosition}`,
-    containerVars
+    `UserReactions--reaction-${reactionPosition}`
   );
 
+  const renderedEmojis = useMemo(
+    () =>
+      userUniqueEmojiReactions.map((emojiReaction) => (
+        <DisplayEmojiReaction
+          key={emojiReaction.type}
+          emojiReaction={emojiReaction}
+          isMuted={isMuted}
+        />
+      )),
+    [userUniqueEmojiReactions, isMuted]
+  );
+
+  const hasReactions = userUniqueEmojiReactions.length > 0 || userShoutout;
+
+  if (!hasReactions) return <></>;
   return (
     <div className={containerClasses}>
-      {children}
-
-      {renderedEmojiReactions}
-
+      {renderedEmojis}
       {userShoutout && (
         <div className="UserReactions__shout">{userShoutout.text}</div>
       )}
@@ -93,18 +87,8 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
   emojiReaction,
   isMuted = false,
 }) => {
-  const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+  const { audioPath } = emojiReaction;
+  useAudio({ audioPath, isMuted });
 
-  return (
-    <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
-      {emojiText}
-
-      {/* @debt replace this with useSound or calling new Audio in useEffect or similar */}
-      {!isMuted && (
-        <audio autoPlay loop>
-          <source src={audioPath} />
-        </audio>
-      )}
-    </div>
-  );
+  return <Reaction reaction={emojiReaction} />;
 };

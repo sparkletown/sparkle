@@ -1,51 +1,59 @@
-$primaryColor: var(--primary-color);
-$backgroundColor: var(--background-color);
+// NOTE: convenience constants for the basic palette colors
+$primary--over: var(--primary-over);
+$primary--under: var(--primary-under);
+$accent--over: var(--accent--over);
+$accent--under: var(--accent--under);
+$content--over: var(--content--over);
+$content--under: var(--content--under);
 
+// @debt these should probably be replaced with var(--primary-...) referencing theme colors
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
 $primary--live-hover: #8755fb;
-$primary--live: #7c46fb;
-$primary: #6f43ff;
 $primary--darker: #3f247d;
+$primary--over: #f6e652;
 
-$secondary--lightest: #868686;
-$secondary--light: #6a6a6a;
+// @debt these should probably be replaced with var(...) referencing theme colors
 $secondary: #333035;
 $secondary--dark: #19181a;
-$secondary--darkest: #090909;
+$secondary--live: #1a1d24;
 
+// @debt these should probably be replaced with var(...) referencing theme colors
 $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
-// @debt replace all greyish colors with $secondary alternatives
-$dark-grey: #1a1d23;
-$almost-black: $secondary--darkest;
-$saturated-black: $secondary--dark;
+// @debt these should probably be replaced with var(...) referencing theme colors
+$announcement-background: rgba(39, 35, 34, 0.9);
+$send-msg-online-color: #78b553;
+
+// @debt these should probably be removed or replaced with var(...) references
 $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
+$light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
-$black: #000000;
-$white: #fff;
-$dark: #1a1d24;
-$red: #bc271a;
-$pink: #df9e9b;
+
 $green: #4bcc4b;
 $yellow: #ffe600;
-$bright-yellow: #f0df73;
 $light-green: #3ce348;
 $dark-green: #208a28;
-$stripe-auto-fill-background-color: #fefde5;
-$clickable-area-color: #ffffff11;
-$ripple-color: chocolate;
-$profile-image-bg-color: #999999;
-$chat-open: rgba(80, 227, 194, 0.35);
-$chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba($primary, 0.35);
-$chat-busy-me: rgba(#ffffff, 0.35);
 
-$gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
+@function opaque-white($opacity) {
+  @return rgba(#{var(--content--over-rgb)}, $opacity);
+}
+
+@function opaque-black($opacity) {
+  @return rgba(#{var(--content--under-rgb)}, $opacity);
+}
+
+// @debt the colors in these gradients should probably be replaced with var(...) references
+$gradient: linear-gradient(
+  124deg,
+  #00f6d5 0%,
+  $accent--under 50%,
+  #e15ada 100%
+);
 $danger-gradient: linear-gradient(
   124deg,
   #e15a5a 0%,
@@ -53,13 +61,25 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+$login-rainbox-gradient: linear-gradient(
+  130.78deg,
+  #00f6d5 0%,
+  #6f43ff 45.84%,
+  #e15ada 93.63%
+);
 
 $map-sidebar-width: 20%;
-$chat-sidebar-width: 360px;
+$chat-sidebar-width: 300px;
 $navbar-height: 66px;
 $footer-height: 30px;
+$reserved-page-height: $navbar-height + $footer-height;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
+$announcement-container-width-admin: 600px;
+$announcement-container-width: 470px;
+$announcement-container-height: 140px;
+$announcement-banner-admin-height: 55px;
+$auth-container-max-width: 450px;
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
@@ -68,10 +88,11 @@ $reactionSize: max(2.5vh, 2vw);
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
-$playa-venue-live: rgb(125, 223, 194);
 
 $margin-right--navbar-links: 8px;
 
+$border-radius--xxs: 2px;
+$border-radius--xs: 4px;
 $border-radius--sm: 8px;
 $border-radius--md: 12px;
 $border-radius--lg: 16px;
@@ -84,8 +105,10 @@ $spacing--md: 12px;
 $spacing--lg: 16px;
 $spacing--xl: 24px;
 $spacing--xxl: 30px;
+$spacing--xxxl: 40px;
 
 $submit-button-diameter: 44px;
+$announce-button-width: 136px;
 
 $font-size--xxs: 10px;
 $font-size--xs: 11px;
@@ -109,27 +132,76 @@ $media-breakpoint--md: 768px;
 $media-breakpoint--lg: 992px;
 $media-breakpoint--xl: 1200px;
 
+$text-shadow--thin: 0 1px 2px rgba(#{var(--content--under-rgb)}, 0.25);
+$text-shadow--medium: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.25);
+$text-shadow--thick: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.5);
+$text-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
+  -1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  -1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2);
+
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
+
+$image-overlay-padding: 0.3rem;
+$image-overlay-backdrop-filter: blur(10px);
+
+$image-input-padding: 2.5em 0;
+$image-input-padding--small: 2.5em;
+$image-input-upload-button-padding: 0.7em 4.2em;
+$image-input-upload-button-padding--small: 0.7em 2em;
+$image-input-upload-button-transition: transform 0.2s ease-in-out,
+  background-color 0.2s ease-in-out;
+$image-input-upload-button-background: #462a87;
+$image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
+
+// NOTE: Magic number determined empirically to fill the footer space in default case
+$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
+$admin-ng-sidebar-width--normal: 30vw;
+$admin-ng-sidebar-width--min: $admin-ng-sidebar-footer-buttons-width--magic-number;
+$admin-ng-sidebar-width--max: 30vw;
+$admin-ng-sidebar-footer-height--max: 4rem;
+$admin-ng-showcase-width--normal: calc(
+  100vw - #{$admin-ng-sidebar-width--normal}
+);
+$admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
+$admin-ng-panel-height: calc(
+  100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
+);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
+$z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
+$z-layer-announcement-banner: 15;
+$z-layer-emergency-content: 15;
+$z-layer-art-content: 5;
+$z-layer-viewing-window: 5;
+$z-layer-on-top-bg: 1;
+$z-layer-jazz-header: $z-layer-on-top-bg;
+$z-layer-user-list-label: $z-layer-on-top-bg;
+$z-layer-embed-iframe: $z-layer-on-top-bg;
+$z-layer-external-message: $z-layer-on-top-bg;
+$z-layer-auditorium-iframe: $z-layer-on-top-bg;
+$z-layer-jukebox: $z-layer-on-top-bg;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
 $z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
-  admin-venue-card-bg: -1,
+  admin-space-card-info: 1,
   admin-navbar: 100,
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
+  jazzbar-header: $z-layer-jazz-header,
+  jukebox-content: $z-layer-jukebox,
   // Chat
   chatbox-chat-container: $z-layer-sidebar,
   chat-drawer-container: $z-layer-sidebar,
@@ -142,10 +214,13 @@ $z-layers: (
   user-search-results: 380,
   chat-poll-text: 0,
   chat-poll-text-background: -1,
+  // Emergency Page
+  emergency-content: $z-layer-emergency-content,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
+  navbar-schedule-download: $z-layer-live-schedule-download,
   navbar: $z-layer-navbar,
   navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,
@@ -154,12 +229,13 @@ $z-layers: (
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
   // UserAvatar
-  global-profile-icon--hover: 2,
   global-profile-icon: 1,
   user-avatar-status-indicator: 1,
   // UserReactions
   user-reactions-shout: 2,
   user-reactions-emoji: 1,
+  // UserList
+  user-list-label: $z-layer-user-list-label,
   // Map
   map-room--hovered: 7,
   map-avatar: 6,
@@ -172,14 +248,26 @@ $z-layers: (
   account-profile-picture-preview: 1,
   duststorm-container: 100,
   duststorm-modal-content: 220,
+  // Announcement banner
+  announcement-banner: $z-layer-announcement-banner,
+  // ArtPiece
+  art-content: $z-layer-art-content,
+  // Embeddable
+  embeddable-iframe: $z-layer-embed-iframe,
+  // Viewing Window
+  viewing-window-content: $z-layer-viewing-window,
+  // Auditorium
+  auditorium-iframe: $z-layer-auditorium-iframe,
+  // External Link
+  external-message: $z-layer-external-message,
   // Unsorted
-  announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
-  venuepage-preview-indication: 1
+  venuepage-preview-indication: 1,
+  map-preview-header: 5
 );
 
 @function z($layer) {
@@ -190,38 +278,16 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
-@function opaque-white($opacity: 0.1) {
-  @return rgba($white, $opacity);
-}
-
-@function opaque-black($opacity: 0.1) {
-  @return rgba($black, $opacity);
-}
-
 @function box-shadow--large($transparency: 0.5) {
-  @return 0 10px 30px 0 rgba($black, $transparency);
+  @return 0 10px 30px 0 opaque-black($transparency);
 }
 
-@mixin scrollbar {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
+@function font-size--parent($scale: 1) {
+  @return $scale * 1em;
+}
 
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
-  }
+@function font-size--root($scale: 1) {
+  @return $scale * 1rem;
 }
 
 // @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
@@ -236,4 +302,57 @@ $z-layers: (
   @include line-clamp($line-count);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@mixin square-size($size: 1, $min: null, $max: null) {
+  height: $size;
+  width: $size;
+  min-height: $min;
+  min-width: $min;
+  max-height: $max;
+  max-width: $max;
+}
+
+@mixin link-style($color, $hover-color: $color) {
+  color: $color;
+  text-decoration: underline $color;
+
+  &:hover {
+    color: $hover-color;
+    text-decoration: underline $hover-color;
+  }
+}
+
+@mixin scrollbar {
+  // The standard properties
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-color
+  // @see https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-width
+  scrollbar-color: opaque-white(0.3) $content--under;
+  scrollbar-width: thin;
+
+  // The webkit properties
+  // @see https: //developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-scrollbar
+
+  &::-webkit-scrollbar-corner {
+    background-color: $content--under;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: $border-radius--xs;
+    background-color: $content--under;
+  }
+
+  &::-webkit-scrollbar {
+    @include square-size($spacing--sm);
+    background-color: opaque-black(0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: $border-radius--xs;
+    background-color: opaque-white(0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: opaque-white(0.5);
+  }
 }

@@ -1,0 +1,66 @@
+@import "scss/constants.scss";
+
+.ImageInput {
+  &__container {
+    position: relative;
+    display: flex;
+    padding: $image-input-padding;
+    align-items: center;
+    justify-content: center;
+    border-radius: $border-radius--xl;
+    background-size: cover;
+    background-color: $secondary--live;
+    background-position: center;
+    cursor: pointer;
+
+    &--error {
+      border: 2px solid var(--danger--under);
+    }
+
+    &--disabled {
+      pointer-events: none;
+      cursor: initial;
+    }
+
+    &--small {
+      display: inline-block;
+      padding: $image-input-padding--small;
+    }
+  }
+
+  &__error {
+    display: block;
+
+    color: var(--danger--under);
+    font-style: italic;
+  }
+
+  &__upload-button {
+    padding: $image-input-upload-button-padding;
+    margin: 0;
+    border-radius: $border-radius--xl;
+    font-weight: bold;
+    transition: $image-input-upload-button-transition;
+    background-color: $image-input-upload-button-background;
+    &:hover,
+    &:active,
+    &:focus {
+      transform: translateY(-1px);
+      background-color: $image-input-upload-button-background--focus;
+    }
+    &--hidden {
+      background-color: transparent;
+      color: transparent;
+      &:hover,
+      &:active,
+      &:focus {
+        transform: none;
+        background-color: initial;
+      }
+    }
+
+    &--small {
+      padding: $image-input-upload-button-padding--small;
+    }
+  }
+}

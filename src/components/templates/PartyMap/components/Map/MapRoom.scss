@@ -12,18 +12,25 @@ $label-visible: flex;
   flex-direction: column;
   align-items: center;
 
+  appearance: none;
+  background: none;
+  border: none;
+  color: $content--over;
+
   transition: transform 600ms $transition-function;
 
-  &:hover {
+  &:hover,
+  &:focus {
     z-index: z(map-room--hovered);
     transform: scale(1.1);
 
     .maproom__label {
       display: $label-visible;
 
-      background-color: $primary;
+      background-color: $accent--under;
       opacity: 1;
-      box-shadow: 0 0 0 3px lighten($primary, 10%), 0 2px 4px rgba($black, 0.2);
+      box-shadow: 0 0 0 3px var(--primary--under-lighter-10pp),
+        0 2px 4px opaque-black(0.2);
     }
 
     .maproom__title--count {
@@ -39,7 +46,8 @@ $label-visible: flex;
   &--covert {
     cursor: default;
 
-    &:hover {
+    &:hover,
+    &:focus {
       transform: none;
 
       .maproom__image {
@@ -51,8 +59,11 @@ $label-visible: flex;
   &--unclickable {
     z-index: z(map-room--unclickable);
 
-    &:hover {
+    &:hover,
+    &:focus {
       z-index: z(map-room--unclickable);
+      cursor: default;
+      outline: none;
     }
   }
 
@@ -96,7 +107,7 @@ $label-visible: flex;
     backdrop-filter: blur(8px);
 
     font-size: 0.9rem;
-    background-color: darken($primary, 50%);
+    background-color: var(--primary--under-darker-50pp);
     opacity: 0.5;
   }
 

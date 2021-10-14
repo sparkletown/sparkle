@@ -18,18 +18,26 @@
     display: flex;
     width: 100%;
     flex-direction: row;
-    justify-content: space-between;
   }
 
   &__tab {
     position: relative;
-    display: flex;
     flex-grow: 1;
     text-align: center;
-    align-self: center;
     cursor: pointer;
-    color: rgba($white, 0.6);
+    color: opaque-white(0.6);
     text-decoration: none;
+    padding: $spacing--sm $spacing--xl;
+    height: $admin-ng-tab-bar-height;
+
+    &:hover {
+      color: $content--over;
+    }
+
+    &--selected {
+      color: $content--over;
+      background-color: $accent--under;
+    }
 
     @media (max-width: $media-breakpoint--lg) {
       width: 50%;
@@ -38,14 +46,9 @@
     @media (max-width: $media-breakpoint--md) {
       width: 100%;
     }
+  }
 
-    &:hover {
-      color: $white;
-    }
-
-    &--selected {
-      color: $white;
-      background-color: $primary;
-    }
+  &__tabIcon {
+    margin-right: $spacing--sm;
   }
 }

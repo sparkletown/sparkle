@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { sendVenueMessage, voteInVenuePoll } from "api/chat";
 
@@ -11,38 +11,37 @@ import {
 
 import { buildMessage } from "utils/chat";
 
-import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
+import { useVenueId } from "./useVenueId";
 
 export const useVenuePoll = () => {
   const venueId = useVenueId();
-  const { userId } = useUser();
+  const { userWithId } = useUser();
 
   const voteInPoll = useCallback(
-    (pollVote: PollVoteBase) => {
+    async (pollVote: PollVoteBase) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ pollVote, venueId });
+      return voteInVenuePoll({ pollVote, venueId });
     },
     [venueId]
   );
 
   const createPoll = useCallback(
-    (pollValues: PollValues) => {
-      if (!venueId || !userId) return;
+    async (pollValues: PollValues) => {
+      if (!venueId || !userWithId) return;
 
-      const message = buildMessage<PollMessage>({
+      const message = buildMessage<PollMessage>(userWithId, {
         poll: pollValues,
         type: ChatMessageType.poll,
-        from: userId,
         votes: [],
         // @debt remove this useless text from here
         text: "poll",
       });
 
-      sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message });
     },
-    [venueId, userId]
+    [venueId, userWithId]
   );
 
   return useMemo(

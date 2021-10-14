@@ -11,11 +11,20 @@
     flex-flow: column-reverse;
     justify-self: flex-end;
     padding: $spacing--xl $spacing--lg 0;
-    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  &__messages-infinite-scroll {
+    display: flex;
+    flex-flow: column-reverse;
+  }
+
+  &__messages-infinite-scroll-loading {
+    overflow: hidden;
   }
 
   &__form-box {
-    background-color: $black;
+    background-color: $content--under;
     display: flex;
     flex-flow: column;
   }

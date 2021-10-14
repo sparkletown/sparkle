@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import firebase from "firebase/app";
+import React, { useEffect, useState } from "react";
+
+import { updateIframeUrl } from "api/venue";
 
 import { AnyVenue } from "types/venues";
 
@@ -10,8 +11,6 @@ interface IframeAdminProps {
   venue: AnyVenue;
 }
 
-// @debt This component is almost exactly the same as BannerAdmin, we should refactor them both to use the same generic base component
-//   BannerAdmin is the 'canonical example' to follow when we do this
 export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
   const [iframeUrl, setIframeUrl] = useState("");
   const [error, setError] = useState<string | null>();
@@ -20,18 +19,12 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
     setIframeUrl(venue?.iframeUrl || "");
   }, [venue]);
 
-  // @debt refactor this into api/*
-  const updateIframeUrl = (iframeUrl: string) => {
-    firebase
-      .functions()
-      .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl })
-      .catch((e) => setError(e.toString()));
-  };
-
   const saveIframeUrl = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    updateIframeUrl(iframeUrl);
+    updateIframeUrl(iframeUrl, venueId).catch((err) =>
+      setError(err.toString())
+    );
   };
 
   return (
@@ -40,9 +33,7 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
         <div className="col">
           <form>
             <div className="form-group">
-              <label htmlFor="bannerMessage">
-                iframe URL for {venue?.name}:
-              </label>
+              <label>iframe URL for {venue?.name}:</label>
 
               <input
                 type="text"

@@ -1,5 +1,4 @@
 import React from "react";
-import "firebase/storage";
 
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 
@@ -7,6 +6,8 @@ import {
   AuthenticationModal,
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
+
+import "firebase/storage";
 
 import "./Account.scss";
 

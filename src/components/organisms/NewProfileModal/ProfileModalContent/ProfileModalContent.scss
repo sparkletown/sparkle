@@ -1,0 +1,12 @@
+@import "../NewProfileModal";
+
+$edit-buttons-margin-top: 2rem;
+
+.ProfileModalContent {
+  &__section {
+    margin-top: $section-gap;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}

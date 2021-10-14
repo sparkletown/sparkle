@@ -9,10 +9,20 @@
     padding: $spacing--md;
     display: flex;
     align-items: center;
+
+    .InputField {
+      flex-grow: 1;
+    }
   }
 
   &__input {
-    width: 100%;
+    text-align: left;
+    padding-left: $spacing--lg;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-grow: 0;
   }
 
   &__submit-button {
@@ -26,15 +36,15 @@
     align-items: center;
     margin-left: $spacing--md;
 
-    background-color: $primary;
+    background-color: $accent--under;
 
     &:disabled {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 
   &__submit-button-icon {
-    color: $white;
+    color: $accent--over;
   }
 
   &__emoji-picker {

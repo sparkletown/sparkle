@@ -1,16 +1,21 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
+$photobooth-button-margin: 140px 0px 0px;
+$photobooth-button-text-margin: 38px 0px 0px;
+$photobooth-button-background-size: 35px;
+
+.navbar-links-user-avatar {
+  cursor: pointer;
+}
 
 .navbar-container {
-  background: $black;
+  background: $content--under;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   .log-in-button {
     cursor: pointer;
-    margin-right: 10px;
     font-size: 18px;
   }
 
@@ -24,13 +29,9 @@ $border-radius: 28px;
     cursor: pointer;
   }
 
-  .profile-icon-container {
-    cursor: pointer;
-  }
-
   .notification-card {
-    background: $red;
-    color: $white;
+    background: var(--danger--under);
+    color: $content--over;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -65,7 +66,7 @@ $border-radius: 28px;
 
       &:hover {
         background: #ebebeb;
-        color: $dark;
+        color: $secondary--live;
       }
     }
   }
@@ -79,7 +80,7 @@ $border-radius: 28px;
   display: flex;
   height: $navbar-height;
   padding: 0 15px;
-  background-color: $dark;
+  background-color: $secondary--live;
 
   #sound-cloud-player {
     border: none;
@@ -101,12 +102,15 @@ $border-radius: 28px;
 .nav-sparkle-logo_small {
   position: relative;
   margin-right: 12px;
+
   &:hover {
     width: 120px;
   }
+
   &.nav-sparkle-logo_small {
     display: none;
   }
+
   div {
     position: relative;
     display: block;
@@ -114,6 +118,7 @@ $border-radius: 28px;
     height: 35px;
     background-image: url(/assets/icons/sparkle-nav-logo.png);
     background-size: 25px 35px;
+
     &:before {
       position: absolute;
       content: "";
@@ -127,6 +132,7 @@ $border-radius: 28px;
       transform: translateX(-40px) scale(0.75);
       transition: opacity 200ms, transform 400ms $transition-function;
     }
+
     @keyframes sparklelogoanimate {
       100% {
         background-position: -75px;
@@ -139,20 +145,23 @@ $border-radius: 28px;
       background-size: 75px 35px;
       background-position: 0 0;
       animation: sparklelogoanimate 0.4s steps(3) infinite;
+
       &:before {
         opacity: 1;
         pointer-events: all;
         transform: translateX(0px) scale(1);
       }
     }
+
     &:active {
       opacity: 0.7;
     }
   }
 }
+
 .nav-party-logo {
   position: relative;
-  background-color: rgba($white, 0.08);
+  background-color: opaque-white(0.08);
   height: 60px;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -164,15 +173,24 @@ $border-radius: 28px;
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: transform 400ms $transition-function;
+  border: none;
+  appearance: none;
+  color: $content--over;
+
   img {
     height: 40px;
   }
-  &:hover {
-    background-color: rgba($white, 0.14);
+
+  &:hover,
+  &:focus {
+    border: none;
+    background-color: opaque-white(0.14);
+
     &:after {
       opacity: 0.7;
     }
   }
+
   &:after {
     content: "";
     position: absolute;
@@ -186,18 +204,20 @@ $border-radius: 28px;
     transform: rotate(0deg);
     transition: transform 400ms $transition-function;
   }
+
   &.clicked {
     &:after {
       transform: rotate(180deg);
     }
   }
+
   &.slide {
     transform: translateX(110px);
   }
 }
 
 .schedule-text {
-  background-color: $primary;
+  background-color: $accent--under;
   border-radius: 10px;
   margin-left: 8px;
   padding: 0px 10px;
@@ -212,7 +232,6 @@ $border-radius: 28px;
   z-index: z(navbar-schedule-backdrop);
   width: 100%;
   height: 100%;
-  background-color: rgba($black, 0.8);
   cursor: pointer;
   transition: opacity 600ms $transition-function,
     transform 600ms $transition-function;
@@ -222,40 +241,6 @@ $border-radius: 28px;
   &.show {
     opacity: 1;
     pointer-events: all;
-  }
-}
-
-.back-map-btn {
-  position: fixed;
-  top: $navbar-height;
-  z-index: z(navbar-map-back-button);
-  left: 0px;
-  height: 40px;
-  width: auto;
-  cursor: pointer;
-  background-color: $secondary;
-  box-shadow: 0 10px 20px rgba($secondary, 0.2);
-  backdrop-filter: blur(8px);
-
-  border-radius: 0 0 16px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px 0 0;
-  font-size: 0.9rem;
-
-  &:hover {
-    background-color: $lighter-intermediate-grey;
-    .back-icon {
-      opacity: 1;
-    }
-  }
-  .back-icon {
-    height: 22px;
-    width: 22px;
-    background-image: url(/assets/icons/slide-btn-icon.png);
-    background-size: 22px 22px;
-    opacity: 0.7;
   }
 }
 
@@ -275,6 +260,7 @@ $border-radius: 28px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
+    color: $content--over;
 
     margin-right: $spacing--md;
 
@@ -282,5 +268,33 @@ $border-radius: 28px;
       font-size: 27px;
       margin-right: $spacing--sm;
     }
+  }
+
+  &__profile-popover {
+    height: 100%;
+  }
+
+  &__photobooth-button {
+    position: absolute;
+    top: 130px;
+    left: -($spacing--lg);
+    border-radius: 0px $border-radius--md $border-radius--md 0px;
+    padding: $spacing--xs $spacing--md;
+    cursor: pointer;
+    background-color: $lighter-intermediate-grey;
+    background-image: url(/assets/icons/photobooth-icon.png);
+    background-size: $photobooth-button-background-size;
+    background-position: 50% 10%;
+    background-repeat: no-repeat;
+
+    &:hover {
+      background-color: $light-grey;
+    }
+  }
+
+  &__photobooth-title {
+    text-decoration: none;
+    margin: $photobooth-button-text-margin;
+    font-size: $font-size--sm;
   }
 }

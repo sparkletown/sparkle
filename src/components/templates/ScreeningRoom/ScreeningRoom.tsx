@@ -1,21 +1,20 @@
-import React, { useMemo, useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { IFRAME_ALLOW } from "settings";
+import { IFRAME_ALLOW, SCREENING_ROOM_TAXON } from "settings";
 
-import { GenericVenue } from "types/venues";
 import { ScreeningRoomVideo } from "types/screeningRoom";
+import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { InputField } from "components/atoms/InputField";
 import { Button } from "components/atoms/Button";
+import { InputField } from "components/atoms/InputField";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
-import { useScreeningRoom } from "./useScreeningRoom";
-
 import { ScreeningVideoPreview } from "./components/ScreeningVideoPreview";
+import { useScreeningRoom } from "./useScreeningRoom";
 
 import "./ScreeningRoom.scss";
 
@@ -82,7 +81,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
           key="All videos"
           category="All videos"
           onClick={unsetCategoryFilter}
-          containerClassname="ScreeningRoom__category"
+          containerClassName="ScreeningRoom__category"
           active={categoryFilter === undefined}
         />
         {categoryList.map((category) => (
@@ -90,7 +89,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
             key={category}
             category={category}
             onClick={() => setCategoryFilter(category)}
-            containerClassname="ScreeningRoom__category"
+            containerClassName="ScreeningRoom__category"
             active={category === categoryFilter}
           />
         ))}
@@ -107,7 +106,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
             key={subCategory}
             category={subCategory}
             onClick={() => setSubCategoryFilter(subCategory)}
-            containerClassname="ScreeningRoom__subcategory"
+            containerClassName="ScreeningRoom__subcategory"
             active={subCategory === subCategoryFilter}
           />
         ))}
@@ -118,7 +117,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
 
   return (
     <div className="ScreeningRoom">
-      <p className="ScreeningRoom__title">Screening room</p>
+      <p className="ScreeningRoom__title">{SCREENING_ROOM_TAXON.capital}</p>
       {selectedVideo && (
         <div className="ScreeningRoom__video-container">
           {/* We need this additional wrapper to properly place the close button over the iframe */}

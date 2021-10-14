@@ -1,41 +1,44 @@
-import React, { useState, useEffect, useCallback } from "react";
-import classNames from "classnames";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { BaseEmoji, Picker } from "emoji-mart";
+import { faSmile } from "@fortawesome/free-regular-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
+import { EmojiData } from "emoji-mart";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { useShowHide } from "hooks/useShowHide";
-
-import { MessageToDisplay, SendChatReply, SendMessage } from "types/chat";
+import { MessageToDisplay, SendChatReplyProps, SendMessage } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import { useShowHide } from "hooks/useShowHide";
+
+import { EmojiPicker } from "components/molecules/EmojiPicker";
+
 import { InputField } from "components/atoms/InputField";
 
-import "emoji-mart/css/emoji-mart.css";
 import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
   selectedThread?: WithId<MessageToDisplay>;
   sendMessage: SendMessage;
-  sendThreadReply: SendChatReply;
   unselectOption: () => void;
   isQuestion?: boolean;
+  onReplyToThread: (data: SendChatReplyProps) => Promise<void>;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   selectedThread,
   sendMessage,
-  sendThreadReply,
   unselectOption,
+  onReplyToThread,
   isQuestion = false,
 }) => {
   const hasChosenThread = selectedThread !== undefined;
   const [isSendingMessage, setMessageSending] = useState(false);
 
+  // @debt replace with useDebounce
   // This logic disallows users to spam into the chat. There should be a delay, between each message
   useEffect(() => {
     if (!isSendingMessage) return;
@@ -62,20 +65,19 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     mode: "onSubmit",
   });
 
-  const sendMessageToChat = handleSubmit(({ message }) => {
+  const sendMessageToChat = handleSubmit(async ({ message }) => {
     setMessageSending(true);
-    sendMessage({ message, isQuestion });
+    await sendMessage({ message, isQuestion });
     reset();
     unselectOption();
   });
 
-  const sendReplyToThread = handleSubmit(({ message }) => {
+  const sendReplyToThread = handleSubmit(async ({ message }) => {
     if (!selectedThread) return;
 
     setMessageSending(true);
-    sendThreadReply({ replyText: message, threadId: selectedThread.id });
+    await onReplyToThread({ replyText: message, threadId: selectedThread.id });
     reset();
-    unselectOption();
   });
 
   const {
@@ -85,8 +87,8 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   } = useShowHide();
 
   const addEmoji = useCallback(
-    (emoji: BaseEmoji) => {
-      if (emoji.native) {
+    (emoji: EmojiData) => {
+      if ("native" in emoji && emoji.native) {
         const message = getValues("message");
         setValue("message", message + emoji.native);
       }
@@ -111,13 +113,14 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
       >
         <InputField
-          containerClassName="Chatbox__input"
+          inputClassName="Chatbox__input"
           ref={register({ required: true })}
           name="message"
           placeholder={`Write your ${placeholderValue}...`}
           autoComplete="off"
         />
         <button
+          aria-label="Send message"
           className="Chatbox__submit-button"
           type="button"
           onClick={toggleEmojiPicker}
@@ -129,6 +132,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           />
         </button>
         <button
+          aria-label="Send message"
           className={buttonClasses}
           type="submit"
           disabled={!chatValue || isSendingMessage}
@@ -143,7 +147,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
       {isEmojiPickerVisible && (
         <div className="Chatbox__emoji-picker">
-          <Picker theme={"dark"} onSelect={addEmoji} native />
+          <EmojiPicker onSelect={addEmoji} />
         </div>
       )}
     </>

@@ -1,155 +1,87 @@
-import React, { useCallback, useMemo, useState } from "react";
-import firebase from "firebase/app";
+import React, { useMemo } from "react";
 
-import { VideoState } from "types/User";
+import { AnyVenue } from "types/venues";
 
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelector } from "utils/selectors";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { WithId } from "utils/id";
 
+import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
-import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
-import { useVideoRoomState } from "hooks/twilio";
 
-import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+import { VideoParticipant } from "components/organisms/Video";
+
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import LocalParticipant from "../Playa/Video/LocalParticipant";
-import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 
 import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
-export const FireBarrel: React.FC = () => {
-  const venue = useSelector(currentVenueSelector);
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
+export interface FireBarrelProps {
+  venue: WithId<AnyVenue>;
+}
 
-  const chairs =
-    recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
-      ? recentVenueUsers.length
+export const FireBarrel: React.FC<FireBarrelProps> = ({ venue }) => {
+  const { userId, userWithId } = useUser();
+
+  const {
+    localParticipant,
+    participants,
+    renderErrorModal,
+  } = useVideoRoomState(userId, venue?.id);
+
+  const seatCount =
+    participants.length > DEFAULT_BURN_BARREL_SEATS
+      ? participants.length
       : DEFAULT_BURN_BARREL_SEATS;
 
-  const { userId, profile, userWithId } = useUser();
+  const seatsArray = useMemo(() => Array.from(Array(seatCount)), [seatCount]);
 
-  const { room, participants } = useVideoRoomState({
-    userId,
-    roomName: venue?.name,
-  });
+  if (!userWithId) return <LoadingPage />;
 
-  const chairsArray = Array.from(Array(chairs));
-
-  const [videoError, setVideoError] = useState<string>("");
-  const { worldUsersById } = useWorldUsersById();
-
-  const updateVideoState = useCallback(
-    (update: VideoState) => {
-      if (!userId) return;
-
-      firebase.firestore().doc(`users/${userId}`).update({ video: update });
-    },
-    [userId]
-  );
-
-  const leave = useCallback(() => {
-    if (profile) {
-      profile.video = {};
-    }
-    updateVideoState({});
-  }, [profile, updateVideoState]);
-
-  const removeParticipant = useCallback(
-    (uid: string) => {
-      if (!profile?.video) return;
-      const removed = profile.video.removedParticipantUids || [];
-      if (!removed.includes(uid)) {
-        removed.push(uid);
-      }
-      updateVideoState({
-        ...profile.video,
-        removedParticipantUids: removed,
-      });
-    },
-    [updateVideoState, profile]
-  );
-
-  return useMemo(() => {
-    if (!isRecentVenueUsersLoaded || !userWithId) return <LoadingPage />;
-
-    return (
-      <S.Wrapper>
-        <S.Barrel src={ConvertToEmbeddableUrl(venue?.iframeUrl)} />
-
-        {chairsArray.map((_, index) => {
-          const partyPerson = recentVenueUsers[index] ?? null;
-
-          const isMe = partyPerson?.id === userId;
-
-          if (!recentVenueUsers[index]) {
-            return <S.Chair key={index} isEmpty />;
-          }
-
-          if (!!room && isMe) {
-            return (
-              <S.Chair key={userId}>
-                <LocalParticipant
-                  showLeave={false}
-                  participant={room.localParticipant}
-                  user={userWithId}
-                  isHost={false}
-                  leave={leave}
-                  useFontAwesome
-                  showName={false}
-                />
-              </S.Chair>
-            );
-          }
-
-          if (participants.length && !!participants[index]) {
-            const participant = participants[index];
-            const participantUserData = worldUsersById[
-              participant.identity
-            ] && {
-              ...worldUsersById[participant.identity],
-              id: participant.identity,
-            };
-
-            return (
-              <S.Chair key={participant.identity}>
-                <RemoteParticipant
-                  participant={participant}
-                  user={participantUserData}
-                  isHost={false}
-                  showHostControls={false}
-                  remove={() => removeParticipant(participant.identity)}
-                />
-              </S.Chair>
-            );
-          }
-
-          return <React.Fragment key={index}></React.Fragment>;
+  return (
+    <S.Wrapper>
+      <S.Barrel
+        src={convertToEmbeddableUrl({
+          url: venue?.iframeUrl,
+          autoPlay: true,
         })}
+      />
+      {seatsArray.map((_, index) => {
+        const { participant, user: participantUserData } =
+          participants?.[index] ?? {};
 
-        <VideoErrorModal
-          show={!!videoError}
-          onHide={() => setVideoError("")}
-          errorMessage={videoError}
-          onRetry={() => {}}
-          onBack={() => {}}
-        />
-      </S.Wrapper>
-    );
-  }, [
-    chairsArray,
-    recentVenueUsers,
-    userWithId,
-    leave,
-    participants,
-    removeParticipant,
-    room,
-    userId,
-    worldUsersById,
-    videoError,
-    venue,
-    isRecentVenueUsersLoaded,
-  ]);
+        if (!participantUserData) {
+          return <S.Chair key={index} isEmpty />;
+        }
+
+        const isMe = participantUserData.id === userId;
+
+        if (!!localParticipant && isMe) {
+          return (
+            <S.Chair key={userId}>
+              <VideoParticipant
+                participant={localParticipant}
+                participantUser={userWithId}
+              />
+            </S.Chair>
+          );
+        }
+
+        if (participants.length && !!participants[index]) {
+          return (
+            <S.Chair key={participant.identity}>
+              <VideoParticipant
+                participant={participant}
+                participantUser={userWithId}
+              />
+            </S.Chair>
+          );
+        }
+
+        return <React.Fragment key={index} />;
+      })}
+
+      {renderErrorModal()}
+    </S.Wrapper>
+  );
 };

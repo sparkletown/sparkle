@@ -1,40 +1,62 @@
-import React from "react";
+import React, { useCallback } from "react";
+import classNames from "classnames";
 
-// Typings
-import { FileButtonProps } from "./FileButton.types";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-// Styles
-import * as S from "./FileButton.styles";
+import "./FileButton.scss";
 
-const FileButton: React.FC<FileButtonProps> = ({
-  text = "Import a map background",
-  recommendedSize = "Recommended size: 2000px / 1200px",
+export interface FileButtonProps {
+  title: string;
+  accept?: string;
+  description?: string;
+  disabled?: boolean;
+  onChange: (url: string, file: FileList) => void;
+}
+
+export const FileButton: React.FC<FileButtonProps> = ({
+  title,
+  accept = ACCEPTED_IMAGE_TYPES,
+  description,
+  disabled: isDisabled,
   onChange,
 }) => {
-  const handleChange = (files: FileList | null) => {
-    if (!files) return;
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
 
-    const url = URL.createObjectURL(files[0]);
+      if (!files || isDisabled) return;
 
-    onChange(url, files);
-  };
+      const url = URL.createObjectURL(files[0]);
+
+      onChange(url, files);
+    },
+    [isDisabled, onChange]
+  );
+
+  const buttonClasses = classNames("btn btn-primary", {
+    "btn-disabled": isDisabled,
+  });
 
   return (
-    <S.Wrapper>
-      <S.Label htmlFor="backgroundMap" as="label">
-        {text}
-      </S.Label>
+    <div className="FileButton">
+      <button className={buttonClasses} disabled={isDisabled}>
+        <label className="FileButton__label" htmlFor="fileButton">
+          {title}
+        </label>
+      </button>
 
       <input
         hidden
         type="file"
-        id="backgroundMap"
-        onChange={(event) => handleChange(event.target.files)}
+        id="fileButton"
+        accept={accept}
+        disabled={isDisabled}
+        onChange={handleChange}
       />
 
-      <S.Recommended>{recommendedSize}</S.Recommended>
-    </S.Wrapper>
+      {description && (
+        <span className="FileButton__description">{description}</span>
+      )}
+    </div>
   );
 };
-
-export default FileButton;

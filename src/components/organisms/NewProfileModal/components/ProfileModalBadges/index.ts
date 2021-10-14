@@ -1,0 +1,1 @@
+export { ProfileModalBadges } from "./ProfileModalBadges";

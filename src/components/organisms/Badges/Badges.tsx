@@ -1,15 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
-import { User } from "@bugsnag/js";
-
 import { useFirestore } from "react-redux-firebase";
+import { User } from "@bugsnag/js";
+import classNames from "classnames";
+import { chunk } from "lodash";
 
 import {
   DEFAULT_AVATAR_IMAGE,
   FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
 } from "settings";
 
+import { getUserRef } from "api/profile";
+
 import { UserVisit } from "types/Firestore";
+import { ContainerClassName } from "types/utility";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -19,10 +22,12 @@ import { BadgeImage } from "./BadgeImage";
 
 import "./Badges.scss";
 
-export const Badges: React.FC<{
-  user: WithId<User>;
-  currentVenue: WithId<AnyVenue>;
-}> = ({ user, currentVenue }) => {
+export const Badges: React.FC<
+  {
+    user: WithId<User>;
+    currentVenue: WithId<AnyVenue>;
+  } & ContainerClassName
+> = ({ user, currentVenue, containerClassName }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -30,7 +35,7 @@ export const Badges: React.FC<{
   const firestore = useFirestore();
 
   const fetchAllVenues = useCallback(async () => {
-    const userSnapshot = await firestore.collection("users").doc(user.id).get();
+    const userSnapshot = await getUserRef(user.id).get();
     const visitsSnapshot = await userSnapshot.ref.collection("visits").get();
 
     const visits: WithId<UserVisit>[] =
@@ -130,7 +135,7 @@ export const Badges: React.FC<{
   const badgeList = useMemo(
     () =>
       badges.filter(notEmpty).map((badge) => (
-        <li className="badge-list-item" key={badge.label}>
+        <li className="Badges__list-item" key={badge.label}>
           <BadgeImage image={badge.image} name={badge.venue.name} />
         </li>
       )),
@@ -146,28 +151,26 @@ export const Badges: React.FC<{
   }
 
   return (
-    <div className="badges-component">
-      <div className="visits">
-        <div className="visit-item">
-          <span className="visit-item__value">
-            {visitHours > 1 ? `${visitHours}` : "< 1"} hrs
+    <div className={classNames("Badges", containerClassName)}>
+      <div className="Badges__visits">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
+            {visitHours > 1 ? visitHours : "< 1"} hrs
           </span>
-          <span className="visit-item__label">Time spent in Sparkle</span>
+          <span className="Badges__visit-label">Time spent in Sparkle</span>
         </div>
 
-        <div className="visit-separator" />
-
-        <div className="visit-item">
-          <span className="visit-item__value">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
             {relevantVisits?.length ?? 0}
           </span>
-          <span className="visit-item__label">Venues visited</span>
+          <span className="Badges__visit-label">Venues visited</span>
         </div>
       </div>
 
-      <div className="badges-container">
-        <div className="badges-title">{badges.length} Badges</div>
-        <ul className="badge-list">{badgeList}</ul>
+      <div className="Badges__container">
+        <div className="Badges__title">{badges.length} Badges</div>
+        <ul className="Badges__list">{badgeList}</ul>
       </div>
     </div>
   );

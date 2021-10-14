@@ -4,12 +4,17 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { useSelector } from "hooks/useSelector";
-
 import { venueSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import fIcon from "assets/icons/facebook-social-icon.svg";
+import gIcon from "assets/icons/google-social-icon.svg";
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
@@ -31,6 +36,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   afterUserIsLoggedIn,
 }) => {
   const firebase = useFirebase();
+
+  const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const venue = useSelector(venueSelector);
   const {
@@ -55,14 +62,18 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
+  const postSignInCheck = () => {
+    afterUserIsLoggedIn && afterUserIsLoggedIn();
+
+    closeAuthenticationModal();
+  };
+
   const onSubmit = async (data: LoginFormData) => {
     if (!venue) return;
     try {
       await signIn(data);
 
-      afterUserIsLoggedIn && afterUserIsLoggedIn();
-
-      closeAuthenticationModal();
+      postSignInCheck();
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
@@ -77,8 +88,37 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           `Error checking ticket: ${error.message}`
         );
       } else {
-        setError("backend", "firebase", error.message);
+        setError(
+          "backend",
+          "firebase",
+          "Please check your email or password or contact your event organizer"
+        );
       }
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      postSignInCheck();
+    } catch {
+      setError("backend", "firebase", "Error");
+    }
+  };
+
+  const handleFacebookSignIn = async () => {
+    try {
+      const auth = await signInWithFacebook();
+
+      if (auth.message) {
+        setError("backend", "firebase", "Error");
+
+        return;
+      }
+
+      postSignInCheck();
+    } catch {
+      setError("backend", "firebase", "Error");
     }
   };
 
@@ -92,8 +132,15 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         </span>
       </div>
 
-      <h2>Log in</h2>
-
+      <h3>Log in to your account</h3>
+      {errors.backend && (
+        <div className="auth-submit-error">
+          <span className="auth-submit-error__message">
+            Oops! Something went wrong. Please try again or use another method
+            to create an account
+          </span>
+        </div>
+      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         onChange={clearBackendErrors}
@@ -102,8 +149,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="email"
-            className="input-block input-centered"
-            placeholder="Your email"
+            className="input-block input-centered auth-input"
+            placeholder="Your email address"
             ref={register({ required: true })}
           />
           {errors.email && errors.email.type === "required" && (
@@ -118,7 +165,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         <div className="input-group">
           <input
             name="password"
-            className="input-block input-centered"
+            className="input-block input-centered auth-input"
             type="password"
             placeholder="Password"
             ref={register({
@@ -134,17 +181,41 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
-        {errors.backend && (
-          <span className="input-error">{errors.backend.message}</span>
-        )}
-
-        <input
-          className="btn btn-primary btn-block btn-centered"
+        <ButtonNG
+          className="auth-input"
+          variant="primary"
           type="submit"
-          value="Log in"
           disabled={!formState.isValid}
-        />
+        >
+          Log in
+        </ButtonNG>
       </form>
+
+      {venue.hasSocialLoginEnabled && (
+        <div className="social-auth-container">
+          <span>or</span>
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={handleGoogleSignIn}
+          >
+            <div className="social-icon">
+              <img src={gIcon} alt="asd" />
+            </div>
+            Log in with Google
+          </ButtonNG>
+          <ButtonNG
+            className="auth-input"
+            type="submit"
+            onClick={handleFacebookSignIn}
+          >
+            <div className="social-icon">
+              <img src={fIcon} alt="asd" />
+            </div>
+            Log in with Facebook
+          </ButtonNG>
+        </div>
+      )}
 
       <div className="secondary-action">
         {`Forgot your password?`}

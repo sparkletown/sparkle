@@ -91,5 +91,6 @@ $video-container-height: 500px;
   &__more-button {
     display: flex;
     justify-content: center;
+    margin-bottom: $spacing--xxl;
   }
 }

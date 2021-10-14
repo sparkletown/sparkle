@@ -1,133 +1,74 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { InputField } from "components/atoms/InputField";
+import React, { useMemo } from "react";
 
-import { AnyVenue } from "types/venues";
+import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
-import {
-  usePrivateChatPreviews,
-  useOnlineUsersToDisplay,
-} from "hooks/privateChats";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
+import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 
 import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
-  venue: WithId<AnyVenue>;
-  recipientId?: string;
+  recipient: WithId<DisplayUser> | undefined;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({
-  recipientId,
-  venue,
-}) => {
-  const [userSearchQuery, setUserSearchQuery] = useState("");
-  const onInputChange = useCallback(
-    (e) => setUserSearchQuery(e.target.value),
-    []
-  );
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
+  const { sovereignVenue } = useRelatedVenues();
 
   const { privateChatPreviews } = usePrivateChatPreviews();
-  const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
-
-  const privateChatUserIds = useMemo(
-    () =>
-      privateChatPreviews.map((chatPreview) => chatPreview.counterPartyUser.id),
-    [privateChatPreviews]
-  );
 
   const renderedPrivateChatPreviews = useMemo(
     () =>
       privateChatPreviews
-        // Filter out self
-        .filter((chatMessage) => chatMessage.from !== chatMessage.to)
+        // NOTE: Filter out self
+        .filter((chatMessage) => chatMessage.fromUser !== chatMessage.toUser)
         .map((chatMessage) => (
           <PrivateChatPreview
-            key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
+            key={`${chatMessage.timestamp}-${chatMessage.fromUser}-${chatMessage.toUser}`}
             message={chatMessage}
-            onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
+            onClick={() => selectRecipientChat(chatMessage.counterPartyUser)}
           />
         )),
     [privateChatPreviews, selectRecipientChat]
   );
 
-  const renderedOnlineUsers = useMemo(
+  const renderedUsers = useMemo(
     () =>
-      onlineUsers
-        .filter((user) => !privateChatUserIds.includes(user.id))
-        .map((user) => (
-          <OnlineUser
-            key={user.id}
-            user={user}
-            onClick={() => selectRecipientChat(user.id)}
-          />
-        )),
-    [onlineUsers, privateChatUserIds, selectRecipientChat]
+      sovereignVenue?.recentUsersSample?.map((user) => (
+        <OnlineUser
+          key={user.id}
+          user={user}
+          onClick={() => selectRecipientChat(user)}
+        />
+      )),
+    [sovereignVenue?.recentUsersSample, selectRecipientChat]
   );
 
-  const renderedSearchResults = useMemo(
-    () =>
-      onlineUsers
-        .filter((user) =>
-          user.partyName?.toLowerCase().includes(userSearchQuery.toLowerCase())
-        )
-        .map((user) => (
-          <OnlineUser
-            key={user.id}
-            user={user}
-            onClick={() => selectRecipientChat(user.id)}
-          />
-        )),
-    [onlineUsers, selectRecipientChat, userSearchQuery]
-  );
-
-  const numberOfSearchResults = renderedSearchResults.length;
+  const numberOfUsers = sovereignVenue?.recentUserCount;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
-  const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
-  if (recipientId) {
-    return <RecipientChat recipientId={recipientId} venue={venue} />;
+  if (recipient) {
+    return <RecipientChat recipient={recipient} />;
   }
 
   return (
-    <div className="private-chats">
-      <InputField
-        containerClassName="private-chats__search"
-        placeholder="Search for online people"
-        value={userSearchQuery}
-        onChange={onInputChange}
-        iconStart={faSearch}
-        autoComplete="off"
-      />
-
-      {userSearchQuery ? (
-        <>
-          <p className="private-chats__title-text">
-            {numberOfSearchResults} search results
-          </p>
-
-          {renderedSearchResults}
-        </>
-      ) : (
-        <>
-          {hasChatPreviews && (
-            <div className="private-chats__previews">
-              {renderedPrivateChatPreviews}
-            </div>
-          )}
-
-          <p className="private-chats__title-text">
-            {numberOfOtherOnlineUsers} other online people
-          </p>
-
-          {renderedOnlineUsers}
-        </>
+    <div className="private-chats" id="private_chats_scrollable_div">
+      {hasChatPreviews && (
+        <div className="private-chats__previews">
+          {renderedPrivateChatPreviews}
+        </div>
       )}
+
+      <p className="private-chats__title-text">
+        {numberOfUsers} online people. Here is a handful of other online people:
+      </p>
+
+      {renderedUsers}
     </div>
   );
 };

@@ -28,8 +28,9 @@
     text-align: center;
     align-self: center;
     cursor: pointer;
-    color: rgba($white, 0.6);
+    color: opaque-white(0.6);
     text-decoration: none;
+    padding: $spacing--sm $spacing--xl;
 
     @media (max-width: $media-breakpoint--lg) {
       width: 50%;
@@ -40,12 +41,12 @@
     }
 
     &:hover {
-      color: $white;
+      color: $content--over;
     }
 
     &--selected {
-      color: $white;
-      background-color: $primary;
+      color: $content--over;
+      background-color: $accent--under;
     }
   }
 }

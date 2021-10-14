@@ -1,0 +1,38 @@
+@import "scss/constants.scss";
+
+.RunTabView {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing--md;
+    gap: $spacing--lg;
+  }
+
+  &__advanced {
+    max-width: calc(100% - #{$spacing--xs});
+  }
+
+  &__map {
+    border-radius: $border-radius--xl;
+
+    > * {
+      margin: -1px; // to avoid border artefacts
+    }
+  }
+
+  &__main {
+    background-color: $secondary--live;
+    display: flex;
+    flex-direction: column;
+    padding: $spacing--lg;
+    margin-bottom: $footer-height;
+  }
+
+  &--spacing + &--spacing {
+    margin-top: $spacing--lg;
+  }
+}

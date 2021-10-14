@@ -1,4 +1,5 @@
-import { User } from "types/User";
+import { DisplayUser } from "types/User";
+
 import { WithId } from "utils/id";
 
 export interface Table {
@@ -14,10 +15,8 @@ export interface Table {
 export interface TableComponentPropsType {
   table: Table;
   tableLocked: (table: string) => boolean;
-  experienceName: string;
-  users: readonly WithId<User>[];
+  users: readonly WithId<DisplayUser>[];
   tableCapacity?: number;
-  onJoinClicked: (table: string, locked: boolean, videoRoom: string) => void;
-  nameOfVideoRoom: string;
+  onJoinClicked: (table: string, locked: boolean) => void;
   imageSize?: number;
 }

@@ -33,15 +33,15 @@ $append-button-width: 24px;
     align-items: center;
     margin-left: $spacing--md;
 
-    background-color: $primary;
+    background-color: $accent--under;
 
     &:disabled {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 
   &__submit-button-icon {
-    color: $white;
+    color: $accent--over;
   }
 
   &__append-button {
@@ -53,10 +53,6 @@ $append-button-width: 24px;
     align-items: center;
     margin-left: $spacing--md;
     background-color: transparent;
-    color: $white;
-
-    &:focus {
-      outline: none;
-    }
+    color: $accent--over;
   }
 }

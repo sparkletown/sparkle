@@ -1,16 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import "firebase/functions";
 import firebase from "firebase/app";
 
-interface ImageInputProps {
+import { ACCEPTED_IMAGE_TYPES } from "settings";
+
+import { ContainerClassName } from "types/utility";
+
+import "firebase/functions";
+
+interface ImageInputProps extends ContainerClassName {
   collectionPath: string;
   disabled: boolean;
   imageUrl?: string;
   image?: FileList;
   fieldName: string;
   register: ReturnType<typeof useForm>["register"];
-  containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
   imageType: string;
@@ -75,6 +79,8 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     []
   );
 
+  const hasImageCollections = !!imageCollection.length;
+
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
     if (selectedCollectionImageUrl) {
@@ -108,7 +114,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
           disabled={disabled}
           type="file"
           onChange={handleFileChange}
-          accept="image/png,image/x-png,image/gif,image/jpeg"
+          accept={ACCEPTED_IMAGE_TYPES}
           className="default-input"
           ref={register}
         />
@@ -124,16 +130,13 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
             )}
         </div>
       </div>
-      <input
-        type="hidden"
-        name={`${fieldName}Url`}
-        ref={register}
-        value={imageUrlForPreview}
-      />
+      <input type="hidden" name={`${fieldName}Url`} ref={register} />
       {error?.message && <span className="input-error">{error.message}</span>}
-      <div style={{ marginTop: 10, fontSize: "16px" }}>
-        {`Or choose one of our popular ${imageType}`}
-      </div>
+      {hasImageCollections && (
+        <div style={{ marginTop: 10, fontSize: "16px" }}>
+          {`Or choose one of our popular ${imageType}`}
+        </div>
+      )}
       <div
         style={{
           display: "flex",

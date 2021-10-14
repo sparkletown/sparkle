@@ -1,59 +1,68 @@
 import React, { useState } from "react";
 
+import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
 import { VenueTemplate } from "types/venues";
 
-import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
-import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
+import "./Venue.scss";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
-  [VenueTemplate.zoomroom]: "/venues/venue-zoom.jpg",
-  [VenueTemplate.artpiece]: "/venues/venue-art.jpg",
-  [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
-  [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
-  [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
-  [VenueTemplate.jazzbar]: "/venues/venue-performance.jpg",
-  [VenueTemplate.friendship]: undefined,
-  [VenueTemplate.partymap]: "/venues/venue-camp.jpg",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
-  [VenueTemplate.audience]: "/venues/venue-performance.jpg",
-  [VenueTemplate.conversationspace]: undefined,
-  [VenueTemplate.firebarrel]: undefined,
-  [VenueTemplate.embeddable]: undefined,
+  [VenueTemplate.zoomroom]: "/venues/experience.png",
+  [VenueTemplate.artpiece]: "/venues/art-piece.png",
+  [VenueTemplate.jazzbar]: "/venues/music-venue.png",
+  [VenueTemplate.partymap]: "/venues/party-map.png",
+  [VenueTemplate.animatemap]: "/venues/animate-map.png",
+  [VenueTemplate.conversationspace]: "/venues/conversation-space.png",
+  [VenueTemplate.firebarrel]: "/venues/fire-barrel.png",
+  [VenueTemplate.embeddable]: "/venues/embeddable.jpg",
+  [VenueTemplate.auditorium]: "/venues/new-auditorium.png",
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
-  [VenueTemplate.screeningroom]: undefined,
+  [VenueTemplate.screeningroom]: "/venues/screening-room.png",
+  [VenueTemplate.viewingwindow]: "/venues/viewing-window.png",
 
   // Legacy
+  [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
+  [VenueTemplate.audience]: "/venues/auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.friendship]: undefined,
+  [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
+  [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
 };
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
-  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoom.png",
+  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoomroom.png",
   [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",
-  [VenueTemplate.performancevenue]:
-    "/venues/pickspace-thumbnail_performance.png",
-  [VenueTemplate.themecamp]: "/venues/pickspace-thumbnail_camp.png",
-  [VenueTemplate.artcar]: "/venues/pickspace-thumbnail_artcar.png",
   [VenueTemplate.jazzbar]: "/venues/pickspace-thumbnail_bar.png",
-  [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/pickspace-thumbnail_map.png",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
-  [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
+  [VenueTemplate.animatemap]: "/venues/pickspace-thumbnail_map.png",
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
-  [VenueTemplate.firebarrel]: undefined,
-  [VenueTemplate.embeddable]: undefined,
+  [VenueTemplate.firebarrel]: "/venues/pickspace-thumbnail_camp.png",
+  [VenueTemplate.embeddable]: "/venues/pickspace-thumbnail_art.png",
+  [VenueTemplate.auditorium]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
+  [VenueTemplate.viewingwindow]:
+    "/venues/pickspace-thumbnail_viewing-window.png",
 
   // Legacy
+  [VenueTemplate.artcar]: "/venues/pickspace-thumbnail_artcar.png",
+  [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.friendship]: undefined,
+  [VenueTemplate.performancevenue]:
+    "/venues/pickspace-thumbnail_performance.png",
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
+  [VenueTemplate.themecamp]: "/venues/pickspace-thumbnail_camp.png",
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
@@ -61,7 +70,7 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
     Template | undefined
   >(state.templatePage?.template);
 
-  const templateImage = !!selectedTemplate
+  const templateImage = selectedTemplate
     ? templateImageMap[selectedTemplate.template]
     : undefined;
   const hasTemplateImage = !!templateImage;

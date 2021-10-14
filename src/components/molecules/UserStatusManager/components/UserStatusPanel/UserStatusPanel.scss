@@ -1,0 +1,34 @@
+@import "scss/constants";
+
+$picker-icon--size: 35px;
+$delete-icon--size: 25px;
+$icon--spacing: 5px;
+$status--spacing: $icon--spacing 0;
+
+.UserStatusPanel {
+  &__status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: $status--spacing;
+  }
+
+  &__picker-icon,
+  &__delete-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $border-radius--max;
+    @include square-size($picker-icon--size);
+    margin-left: $icon--spacing;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__delete-icon {
+    background-color: $lighter-intermediate-grey;
+  }
+}

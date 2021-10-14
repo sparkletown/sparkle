@@ -2,7 +2,7 @@
 
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
 $shoutBounceTranslateXOffset: 50%;
-$reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
+$reactionTimeout: 5s;
 
 .UserReactions {
   // Note: we need this to ensure the reactions use this container for their positioning
@@ -15,7 +15,7 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
   height: 100%;
 
   &--reaction-left {
-    .UserReactions__reaction {
+    .Reaction {
       left: $reactionOffset;
     }
 
@@ -27,7 +27,7 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
   }
 
   &--reaction-right {
-    .UserReactions__reaction {
+    .Reaction {
       right: $reactionOffset;
     }
 
@@ -38,7 +38,7 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
     }
   }
 
-  &__reaction {
+  .Reaction {
     position: absolute;
     top: $reactionOffset;
 
@@ -60,8 +60,8 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
     max-width: 20em;
     padding: 6px 10px;
 
-    background-color: $white;
-    color: $black;
+    background-color: $content--over;
+    color: $content--under;
     font-size: 20px;
     border-radius: 10px;
   }

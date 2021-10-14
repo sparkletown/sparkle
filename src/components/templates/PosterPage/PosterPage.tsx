@@ -1,30 +1,31 @@
 import React, { useMemo } from "react";
-import { faTv, faShare, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faShare, faStop, faTv } from "@fortawesome/free-solid-svg-icons";
 
-import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
+import {
+  IFRAME_ALLOW,
+  POSTERPAGE_MAX_VIDEO_PARTICIPANTS,
+  POSTERPAGE_MORE_INFO_URL_TITLE,
+} from "settings";
 
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
-import { useWorldUsers } from "hooks/users";
 
 import { VideoParticipant } from "components/organisms/Video";
+
 import { UserList } from "components/molecules/UserList";
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
 import { PosterPageSettingsControl } from "./components/PosterPageSettingsControl";
 import { ShareModal } from "./components/ShareModal";
-
 import { usePosterVideo } from "./usePosterVideo";
 
 import "./PosterPage.scss";
-
-import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
 
 export interface PosterPageProps {
   venue: WithId<PosterPageVenue>;
@@ -77,7 +78,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           key={participant.identity ?? `participant-${index}`}
           participant={participant}
           participantUser={user}
-          additionalClassNames="PosterPage__video-participant"
+          containerClassName="PosterPage__video-participant"
         />
       )),
     [activeParticipants]
@@ -93,13 +94,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
-
-  const { worldUsers } = useWorldUsers();
-
-  const presenterUser = useMemo(
-    () => worldUsers.find((user) => user.partyName === authorName),
-    [worldUsers, authorName]
-  );
 
   return (
     <div className="PosterPage">
@@ -125,13 +119,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           <p className="PosterPage__title">{title}</p>
 
           <div className="PosterPage__authorBox">
-            {presenterUser && (
-              <UserProfilePicture
-                containerClassName="PosterPage__avatar"
-                user={presenterUser}
-                showStatus
-              />
-            )}
+            {authorName}
             <span className="PosterPage__author">
               {authorList ?? authorName}
             </span>
@@ -199,7 +187,8 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
       </div>
 
       <UserList
-        users={passiveListeners}
+        usersSample={passiveListeners}
+        userCount={passiveListeners.length}
         activity="listening"
         containerClassName="PosterPage__listeners"
       />

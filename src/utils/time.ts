@@ -1,5 +1,6 @@
 import {
   differenceInSeconds,
+  Duration,
   endOfDay,
   format,
   formatDuration,
@@ -13,7 +14,9 @@ import {
   isToday,
   isTomorrow,
   isYesterday,
+  max,
   startOfDay,
+  startOfToday,
   subDays,
   subHours,
 } from "date-fns";
@@ -202,9 +205,8 @@ export const formatDateRelativeToNow = (
 export const formatTimeLocalised = (dateOrTimestamp: Date | number): string =>
   format(dateOrTimestamp, "p");
 
-export function oneHourAfterTimestamp(timestamp: number) {
-  return timestamp + ONE_HOUR_IN_SECONDS;
-}
+export const oneHourAfterTimestamp = (timestamp: number) =>
+  timestamp + ONE_HOUR_IN_SECONDS;
 
 export const getHoursAgoInMilliseconds = (hours: number) =>
   getTime(subHours(Date.now(), hours));
@@ -251,3 +253,27 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
+
+export const isDateRangeStartWithinToday = ({
+  dateValue,
+  targetDateValue,
+}: {
+  dateValue: number;
+  targetDateValue: number;
+}) => {
+  return max([dateValue, targetDateValue]) <= startOfToday();
+};
+
+export const getDateTimeFromUtc = (utcSeconds: number | undefined) => {
+  const unixTime = utcSeconds ?? Date.now() / 1000;
+
+  const time = format(fromUnixTime(unixTime), "HH:mm");
+  const date = format(fromUnixTime(unixTime), "yyyy-MM-dd");
+  return {
+    date,
+    time,
+  };
+};
+
+export const getUtcFromDateTime = (dateTimeValue: string) =>
+  getUnixTime(new Date(dateTimeValue));

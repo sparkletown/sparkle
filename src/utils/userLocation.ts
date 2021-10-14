@@ -1,87 +1,36 @@
 import firebase from "firebase/app";
 
-import { updateUserProfile } from "pages/Account/helpers";
-import { useInterval } from "hooks/useInterval";
-
 import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 
-import { getCurrentTimeInMilliseconds } from "./time";
-import { openRoomUrl } from "./url";
+import { getUserRef } from "api/profile";
 
-export type LocationData = Record<string, number>;
+import { useInterval } from "hooks/useInterval";
+
+import { updateUserProfile } from "pages/Account/helpers";
+
+import { getCurrentTimeInMilliseconds } from "./time";
+
+export type LocationData = string | null;
 
 export interface UpdateLocationDataProps {
   userId: string;
-  newLocationData: LocationData;
+  newLocationPath: LocationData;
 }
 
 export const updateLocationData = ({
   userId,
-  newLocationData,
+  newLocationPath,
 }: UpdateLocationDataProps) => {
   updateUserProfile(userId, {
     lastSeenAt: getCurrentTimeInMilliseconds(),
-    lastSeenIn: newLocationData,
+    lastVenueIdSeenIn: newLocationPath,
   });
 };
 
-export interface SetLocationDataProps {
-  userId: string;
-  locationName: string;
-}
-
-export const setLocationData = ({
-  userId,
-  locationName,
-}: SetLocationDataProps) => {
-  updateLocationData({
-    userId,
-    newLocationData: {
-      [locationName]: getCurrentTimeInMilliseconds(),
-    },
-  });
-};
-
-export interface UpdateCurrentLocationDataProps {
-  userId: string;
-  profileLocationData: LocationData;
-}
-
-// NOTE: The intended effect is to update the current location, without rewriting it.
-// profileLocationData can only have 1 key at any point of time
-export const updateCurrentLocationData = ({
-  userId,
-  profileLocationData,
-}: UpdateCurrentLocationDataProps) => {
-  const [locationName] = Object.keys(profileLocationData);
-
-  updateLocationData({
-    userId,
-    newLocationData: { [locationName]: getCurrentTimeInMilliseconds() },
-  });
-};
-
+// TODO: refactor how user location updates works here?
+//   Called from VenuePage useEffect + onBeforeUnloadHandler
 export const clearLocationData = (userId: string) => {
-  updateLocationData({ userId, newLocationData: {} });
-};
-
-export interface EnterExternalRoomProps {
-  userId: string;
-  roomUrl: string;
-  locationName: string;
-}
-
-export const enterExternalRoom = ({
-  userId,
-  locationName,
-  roomUrl,
-}: EnterExternalRoomProps) => {
-  setLocationData({
-    userId,
-    locationName,
-  });
-
-  openRoomUrl(roomUrl);
+  updateLocationData({ userId, newLocationPath: null });
 };
 
 export interface UseUpdateTimespentPeriodicallyProps {
@@ -102,10 +51,7 @@ export const useUpdateTimespentPeriodically = ({
       // @debt time spent is currently counted multiple times if multiple tabs are open
       if (!userId || !locationName) return;
 
-      const firestore = firebase.firestore();
-      const locationRef = firestore
-        .collection("users")
-        .doc(userId)
+      const locationRef = getUserRef(userId)
         .collection("visits")
         .doc(locationName);
 

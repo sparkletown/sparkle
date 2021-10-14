@@ -1,33 +1,62 @@
-import React, { useMemo } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import React, { useEffect, useMemo } from "react";
+import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
+import classNames from "classnames";
 
-import { USER_STATUSES } from "settings";
+import { UserStatus } from "types/User";
+import { ContainerClassName } from "types/utility";
 
-import { useProfileStatus } from "hooks/useProfileStatus";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+
+import { Dropdown } from "components/atoms/Dropdown";
 
 import "./UserStatusDropdown.scss";
 
-export const UserStatusDropdown: React.FC = () => {
-  const { status, changeUserStatus } = useProfileStatus();
+export interface UserStatusDropdownProps extends ContainerClassName {
+  userStatuses: UserStatus[];
+  showDropdown?: boolean;
+}
+
+export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
+  userStatuses,
+  showDropdown,
+  containerClassName,
+}) => {
+  const { userStatus, changeUserStatus } = useVenueUserStatuses();
+
+  // This will check if the user status from the database exists in the venue user statuses and if it doesn't, it will fallback to the first one from the list.
+  useEffect(() => {
+    const statusTexts = userStatuses.map((userStatus) => userStatus.status);
+
+    const defaultUserStatus = userStatuses[0].status;
+
+    if (!statusTexts.includes(userStatus.status)) {
+      changeUserStatus(defaultUserStatus);
+    }
+  }, [changeUserStatus, userStatus, userStatuses]);
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      USER_STATUSES.map((option) => (
-        <Dropdown.Item key={option} onClick={() => changeUserStatus(option)}>
-          {option}
-        </Dropdown.Item>
+      userStatuses.map((userStatus) => (
+        <ReactBootstrapDropdown.Item
+          className="UserStatusDropdown__item"
+          key={userStatus.status}
+          onClick={() => changeUserStatus(userStatus.status)}
+        >
+          {userStatus.status}
+        </ReactBootstrapDropdown.Item>
       )),
-    [changeUserStatus]
+    [userStatuses, changeUserStatus]
   );
 
   return (
-    // @debt replace with our own dropdown component
-    <DropdownButton
-      id="user-status-dropdown"
-      title={status ?? "Change user status"}
-      className="UserStatusDropdown"
-    >
-      {userStatusDropdownOptions}
-    </DropdownButton>
+    // @debt align the style of the SpacesDropdown with the Dropdown component
+    <div className={classNames("UserStatusDropdown", containerClassName)}>
+      <div className="UserStatusDropdown__status">
+        {userStatus.status}&nbsp;
+      </div>
+      {showDropdown && (
+        <Dropdown title="change status" options={userStatusDropdownOptions} />
+      )}
+    </div>
   );
 };

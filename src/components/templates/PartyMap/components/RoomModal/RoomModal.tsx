@@ -1,13 +1,22 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
+
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_SCHEDULE,
+  ROOM_TAXON,
+} from "settings";
+
+import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { isEventLive } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
+import { useDispatch } from "hooks/useDispatch";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -15,7 +24,7 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "..";
+import { ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
@@ -24,7 +33,7 @@ const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
-  venue?: AnyVenue;
+  venue?: WithId<AnyVenue>;
   room?: Room;
   venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
@@ -52,37 +61,66 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide}>
-      <div className="room-modal">
-        <RoomModalContent
-          room={room}
-          venueName={venue.name}
-          venueEvents={venueEvents}
-        />
-      </div>
+    <Modal show={show} onHide={onHide} className="RoomModal" centered>
+      <Modal.Body className="RoomModal__modal-body">
+        <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
+      </Modal.Body>
     </Modal>
   );
 };
 
 export interface RoomModalContentProps {
   room: Room;
-  venueName: string;
+  venue: WithId<AnyVenue>;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
-  venueName,
+  venue,
   venueEvents,
 }) => {
-  const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const { showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
-  const [enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const dispatch = useDispatch();
+
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
+  const triggerAttendance = useCallback(() => {
+    dispatch(retainAttendance(true));
+  }, [dispatch]);
+
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
+  const clearAttendance = useCallback(() => {
+    dispatch(retainAttendance(false));
+  }, [dispatch]);
+
+  const { findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+
+  const { enterRoom, portalVenueId } = useRoom({
+    room,
+  });
+
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+
+  const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
+  const portalVenueDescription =
+    portalVenue?.config?.landingPageConfig?.description;
+
+  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
+  // note: this is here just to change the type on it in an easy way
+  const enterRoomWithSound: () => void = useCallback(_enterRoomWithSound, [
+    _enterRoomWithSound,
+  ]);
+
   const renderedRoomEvents = useMemo(() => {
+    if (!showSchedule) return [];
+
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
         // @debt Ideally event.id would always be a unique identifier, but our types suggest it
@@ -91,54 +129,67 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        isCurrentEvent={isEventLive(event)}
-        onRoomEnter={enterRoomWithSound}
-        roomUrl={room.url}
+        enterEventLocation={enterRoomWithSound}
       />
     ));
-  }, [enterRoomWithSound, room.url, venueEvents]);
+  }, [enterRoomWithSound, showSchedule, venueEvents]);
 
-  const hasRoomEvents = renderedRoomEvents?.length > 0;
+  const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
+  const roomTitle = room.title || portalVenue?.name;
+  const roomSubtitle = room.subtitle || portalVenueSubtitle;
+  const roomDescription = room.about || portalVenueDescription;
+
+  // @debt maybe refactor this, but autoFocus property working very bad.
+  const enterButtonref = useRef<HTMLButtonElement>(null);
+  useEffect(() => enterButtonref.current?.focus());
+
   return (
     <>
-      <h2>{room.title}</h2>
+      <div className="RoomModal__main">
+        <div className="RoomModal__icon" style={iconStyles} />
 
-      {room.subtitle && (
-        <div className="room-modal__title">{room.subtitle}</div>
-      )}
+        <div className="RoomModal__content">
+          <div className="RoomModal__title">{roomTitle}</div>
 
-      <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyles} />
-        <RoomModalOngoingEvent
-          roomEvents={venueEvents}
-          onRoomEnter={enterRoomWithSound}
-        />
+          {roomSubtitle && (
+            <div className="RoomModal__subtitle">{roomSubtitle}</div>
+          )}
+
+          {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+          {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
+          <button
+            ref={enterButtonref}
+            autoFocus
+            className="btn btn-primary RoomModal__btn-enter"
+            onMouseOver={triggerAttendance}
+            onMouseOut={clearAttendance}
+            onClick={enterRoomWithSound}
+          >
+            Join {ROOM_TAXON.capital}
+          </button>
+        </div>
       </div>
 
-      <UserList
-        users={recentRoomUsers}
-        limit={11}
-        activity="in this room"
-        attendanceBoost={room.attendanceBoost}
-      />
-
       {room.about && (
-        <div className="room-modal__description">
-          <RenderMarkdown text={room.about} />
+        <div className="RoomModal__description">
+          <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
-      {hasRoomEvents && (
-        <div className="room-modal__events">
-          <div className="room-modal__title">Room Schedule</div>
+      <UserList
+        containerClassName="RoomModal__userlist"
+        usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        userCount={portalVenue?.recentUserCount ?? 0}
+        activity={`in this ${ROOM_TAXON.lower}`}
+      />
 
-          {renderedRoomEvents}
-        </div>
+      {showRoomEvents && (
+        <div className="RoomModal__events">{renderedRoomEvents}</div>
       )}
     </>
   );

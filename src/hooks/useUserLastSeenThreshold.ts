@@ -1,7 +1,9 @@
 import { useState } from "react";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
+
 import { getHoursAgoInMilliseconds } from "utils/time";
+
 import { useInterval } from "./useInterval";
 
 const calcDefaultThreshold = () => getHoursAgoInMilliseconds(3);

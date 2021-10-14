@@ -1,0 +1,36 @@
+@import "scss/constants.scss";
+.TimingEventModal {
+  &__container {
+    display: flex;
+    justify-content: space-between;
+
+    label,
+    input {
+      width: 49%;
+      display: inline-block;
+      margin-bottom: 0;
+    }
+  }
+
+  .modal-content {
+    background-color: $light-grey;
+  }
+
+  .input-group {
+    position: relative;
+
+    &__modal-input {
+      width: 100%;
+      border: 0.1px solid var(--accent--over-20a);
+      text-align: left;
+
+      &--indented {
+        margin-right: $spacing--sm;
+      }
+    }
+  }
+
+  .ButtonNG {
+    max-width: none;
+  }
+}

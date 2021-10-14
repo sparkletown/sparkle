@@ -1,88 +1,128 @@
-import React, { useState } from "react";
-import {
-  GIF_RESIZER_URL,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  ACCEPTED_IMAGE_TYPES,
-} from "settings";
+import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import { FieldError, useForm } from "react-hook-form";
+import { useCss } from "react-use";
+import classNames from "classnames";
 
-// Typings
-import { ImageInputProps } from "./ImageInput.types";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-// Styles
-import * as S from "./ImageInput.styles";
+import { useImageInputCompression } from "hooks/useImageInputCompression";
+
+import { ImageOverlay } from "components/atoms/ImageOverlay";
+
+import { ButtonNG } from "../ButtonNG";
+
+import "./ImageInput.scss";
+
+export interface ImageInputProps {
+  onChange?: (
+    url: string,
+    extra: {
+      nameUrl: string;
+      valueUrl: string;
+      nameFile: string;
+      valueFile: File;
+    }
+  ) => void;
+  name: string;
+  imgUrl?: string;
+  error?: FieldError;
+  setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  small?: boolean;
+  register: ReturnType<typeof useForm>["register"];
+  nameWithUnderscore?: boolean;
+  text?: string;
+  isInputHidden?: boolean;
+}
 
 const ImageInput: React.FC<ImageInputProps> = ({
-  onChange = () => {},
-  customClass,
+  onChange,
   name,
   imgUrl,
   error,
-  small,
-  forwardRef,
+  small = false,
+  register,
+  setValue,
   nameWithUnderscore = false,
+  isInputHidden = false,
+  text = "Upload",
 }) => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const [imageUrl, setImageUrl] = useState(imgUrl);
-  const [imageSizeError, setImageSizeError] = useState(false);
-
-  const handleOnChange = (files: FileList | null) => {
-    if (!files) return;
-
-    if (files[0].size < MAX_IMAGE_FILE_SIZE_BYTES) {
-      const url = URL.createObjectURL(files[0]);
-
-      setImageSizeError(false);
-      setImageUrl(url);
-
-      return onChange(url);
-    }
-
-    setImageSizeError(true);
-  };
-
-  const imageError =
-    error?.message ||
-    `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`;
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
 
+  const {
+    loading,
+    errorMessage,
+    handleFileInputChange,
+  } = useImageInputCompression(register, error?.message, fileName);
+
+  const handleFileInputChangeWrapper = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const [url, compressedFile] = await handleFileInputChange(event);
+      if (!compressedFile || !url) return;
+
+      setImageUrl(url);
+      setValue(fileName, [compressedFile], false);
+      setValue(fileUrl, url, false);
+
+      onChange?.(url, {
+        nameUrl: fileUrl,
+        valueUrl: url,
+        nameFile: fileName,
+        valueFile: compressedFile,
+      });
+    },
+    [handleFileInputChange, fileUrl, onChange, setValue, fileName]
+  );
+
+  const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
+
+  const labelStyle = useCss({
+    "background-image": imageUrl ? `url(${imageUrl})` : undefined,
+  });
+
+  const labelClasses = classNames("ImageInput__container", labelStyle, {
+    "ImageInput__container--error": !!error?.message,
+    "ImageInput__container--small": small,
+    "ImageInput__container--disabled": loading,
+    "mod--hidden": isInputHidden,
+  });
+
   return (
     <>
-      <S.Wrapper
-        small={small}
-        hasError={!!error?.message}
-        backgroundImage={imageUrl}
-        as="label"
-      >
+      <label className={labelClasses}>
         <input
           accept={ACCEPTED_IMAGE_TYPES}
-          className={customClass}
           hidden
           id={name}
-          name={fileName}
-          onChange={(event) => handleOnChange(event.target.files)}
-          ref={forwardRef}
+          onChange={handleFileInputChangeWrapper}
           type="file"
+          ref={inputFileRef}
         />
+        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
-        <S.UploadButton isHidden={!!imageUrl}>Upload</S.UploadButton>
-      </S.Wrapper>
+        <span
+          className={classNames("ImageInput__upload-button", {
+            "ImageInput__upload-button--small": small,
+            "ImageInput__upload-button--hidden": !!imageUrl,
+          })}
+        >
+          Upload
+        </span>
+      </label>
 
-      <input
-        type="hidden"
-        name={fileUrl}
-        ref={forwardRef}
-        value={imageUrl}
-        readOnly
-      />
-      {(error?.message || imageSizeError) && <S.Error>{imageError}</S.Error>}
+      <input type="hidden" name={fileUrl} ref={register} readOnly />
+      {isInputHidden && (
+        <ButtonNG onClick={onButtonClick} variant="primary">
+          {text}
+        </ButtonNG>
+      )}
+      {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );
-};
-
-ImageInput.defaultProps = {
-  small: false,
-  customClass: "",
 };
 
 export default ImageInput;

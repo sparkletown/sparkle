@@ -1,8 +1,11 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import "./VideoModal.scss";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import { IFRAME_ALLOW } from "settings";
+
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+
+import "./VideoModal.scss";
 
 interface PropsType {
   show: boolean;
@@ -41,7 +44,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
           <iframe
             className="youtube-video"
             title="art-piece-video"
-            src={ConvertToEmbeddableUrl(url, autoplay)}
+            src={convertToEmbeddableUrl({ url, autoPlay: autoplay })}
             frameBorder="0"
             allow={IFRAME_ALLOW}
             allowFullScreen
