@@ -3,10 +3,9 @@
 import { resolve } from "path";
 
 import admin from "firebase-admin";
-
 import { chunk } from "lodash";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import { initFirebaseAdminApp, makeScriptUsage } from "../lib/helpers";
 
 const usage = makeScriptUsage({
   description: "Update events details: { venueId, sovereignVenueId }",
@@ -22,9 +21,7 @@ if (!projectId) {
 }
 
 initFirebaseAdminApp(projectId, {
-  credentialPath: credentialPath
-    ? resolve(__dirname, credentialPath)
-    : undefined,
+  credentialPath: credentialPath ? resolve(credentialPath) : undefined,
 });
 
 export interface FetchSovereignVenueOptions {
@@ -74,34 +71,31 @@ const fetchSovereignVenue = async (
   const venueDocs = (await venuesCollection.get()).docs;
 
   // const batch = admin.firestore().batch();
-  chunk(venueDocs, 250).forEach(async (venueDocsChunk) => {
+  chunk(venueDocs, 100).forEach(async (venueDocsChunk) => {
     venueDocsChunk.forEach(async (venueDoc) => {
       const venueId = venueDoc.id;
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
 
-      // batch.update(venueDoc.ref, { worldId: sovereignVenueId });
+      const world = await admin
+        .firestore()
+        .collection("worlds")
+        .doc(sovereignVenueId)
+        .get();
+
+      if (!world.exists) {
+        await admin
+          .firestore()
+          .collection("worlds")
+          .doc(sovereignVenueId)
+          .create({});
+      }
 
       await venueDoc.ref.update({ worldId: sovereignVenueId });
-
-      // const events = await venuesCollection
-      //   .doc(venueId)
-      //   .collection("events")
-      //   .get();
-
-      // events.forEach((eventDoc) => {
-      //   const venueData = {
-      //     venueId,
-      //     sovereignVenueId,
-      //   };
-
-      //   console.log(`updating event "${eventDoc.data().name}"`, venueData);
-      //   eventDoc.ref.update(venueData);
-      // });
     });
   });
 
-  // batch.commit().catch((error) => {
+  // await batch.commit().catch((error) => {
   //   throw new Error(
   //     `Commit batch of recent users of venues failed. Error: ${error}`
   //   );
