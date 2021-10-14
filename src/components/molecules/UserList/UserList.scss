@@ -41,7 +41,7 @@ $user-list-cell-size: 30px;
   }
 
   &__dots-icon {
-    color: $secondary--light;
+    color: var(--greyscale-lighter-10pp);
     width: 100%;
     height: 100%;
   }

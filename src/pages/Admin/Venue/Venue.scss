@@ -60,7 +60,7 @@ $preview-margin: 30px;
       display: flex;
       justify-content: space-between;
       background-color: $content--under;
-      border-top: 1px solid opaque-white(0.2);
+      border-top: 1px solid var(--accent--over-20a);
 
       .btn {
         float: right;
@@ -127,7 +127,7 @@ $preview-margin: 30px;
   width: 100%;
   padding: 18px;
   border-radius: $border-radius;
-  background-color: $dark;
+  background-color: $secondary--live;
   cursor: pointer;
   min-height: 156px;
   margin-bottom: 1rem;
@@ -135,12 +135,12 @@ $preview-margin: 30px;
 
   &:hover {
     box-shadow: 0 0 0 4px opaque-white(0.62);
-    background-color: lighten($dark, 4%);
+    background-color: lighten($secondary--live, 4%);
   }
 
   &.selected {
     box-shadow: 0 0 0 4px $accent--under;
-    background-color: lighten($dark, 4%);
+    background-color: lighten($secondary--live, 4%);
 
     .pickspace-thumbnail {
       background-image: $gradient;
@@ -214,7 +214,7 @@ $preview-margin: 30px;
   padding: 0.5em;
   margin-top: 1.5rem;
 
-  border: 1px solid #cccccc;
+  border: 1px solid var(--accent--over-20a);
 
   input:disabled {
     cursor: not-allowed;
@@ -353,7 +353,7 @@ ul.template-card-list li {
 
 .delete-btn {
   margin-left: 10px;
-  background-color: red !important;
+  background-color: var(--danger--under) !important;
 }
 
 li.question {

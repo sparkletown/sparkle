@@ -33,7 +33,7 @@
     flex-shrink: 0;
 
     .table-header {
-      background: $dark;
+      background: $secondary--live;
       color: $content--over;
       padding: 10px 20px;
       border-radius: 22px 22px 0 0;
@@ -69,7 +69,7 @@
     }
 
     .call-out-band-container-at-table {
-      background: $dark;
+      background: $secondary--live;
       padding: 10px;
       margin-top: 15px;
       border-radius: 0px 0px 22px 22px;
@@ -193,7 +193,7 @@
       justify-content: space-around;
       border-radius: 0 0 22px 22px;
       padding-top: 4px;
-      background: $dark;
+      background: $secondary--live;
     }
 
     .emoji-container {

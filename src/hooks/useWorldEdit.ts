@@ -8,7 +8,10 @@ import { worldEditSelector } from "utils/selectors";
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
-type UseWorldEditResult = { world?: WithId<World>; isLoaded: boolean };
+type UseWorldEditResult = {
+  world?: WithId<World>;
+  isLoaded: boolean;
+};
 
 export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
   worldId
@@ -25,13 +28,17 @@ export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
     ];
   });
 
+  // NOTE: world could be past instance (previous valid worldId), always check the id
   const world = useSelector(worldEditSelector);
 
   return useMemo(
-    () => ({
-      world: worldId && world ? withId(world, worldId) : undefined,
-      isLoaded: isLoaded(world),
-    }),
+    () =>
+      worldId
+        ? {
+            world: world ? withId(world, worldId) : undefined,
+            isLoaded: isLoaded(world),
+          }
+        : { world: undefined, isLoaded: true, dirty: undefined },
     [worldId, world]
   );
 };

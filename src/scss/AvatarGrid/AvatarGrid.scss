@@ -29,7 +29,7 @@
 //    font-size: 0.8em;
 //  }
 //  &:hover {
-//    color: darken($accent--under, 5%);
+//    color: var(--accent--under-darker-5pp);
 //    box-shadow: inset 0 0 0 3px var(--primary--under-20a);
 //    transform: translateY(-1px);
 //  }
@@ -41,7 +41,7 @@
 //
 //    &:hover {
 //      color: $content--over;
-//      background-color: darken($accent--under, 5%);
+//      background-color: var(--accent--under-darker-5pp);
 //    }
 //  }
 //
@@ -60,7 +60,7 @@
 //    }
 //
 //    &:hover {
-//      color: darken($accent--under, 20%);
+//      color: var(--accent--under-darker-20pp);
 //      &:after {
 //        background-color: var(--primary--under-50a);
 //      }
