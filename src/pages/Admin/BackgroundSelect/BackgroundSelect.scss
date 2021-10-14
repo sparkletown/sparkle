@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$map-default-size: 96px;
+$map-default-size: 64px;
 
 .BackgroundSelect {
   display: flex;
@@ -23,8 +23,9 @@ $map-default-size: 96px;
 
   &__map-grid {
     width: 100%;
+    padding: 0 $spacing--lg;
     display: grid;
-    grid-gap: $spacing--xs;
+    grid-gap: $spacing--sm;
     grid-template-columns: repeat(4, 1fr);
   }
 
@@ -33,7 +34,7 @@ $map-default-size: 96px;
   }
 
   .ButtonNG.BackgroundSelect__map {
-    @include square-size($map-default-size);
+    height: $map-default-size;
     border-radius: $border-radius--lg;
     background-color: $content--under;
     background-size: cover;
