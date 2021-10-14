@@ -5,6 +5,7 @@ import { useAsync, useAsyncFn } from "react-use";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_EMBED_URL,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -35,7 +36,7 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditForm.scss";
 
-interface SpaceEditFormProps {
+export interface SpaceEditFormProps {
   room: Room;
   updatedRoom?: Room;
   roomIndex: number;
@@ -146,6 +147,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       {
         id: roomVenueId,
         ...venueValues,
+        iframeUrl: venueValues.iframeUrl || DEFAULT_EMBED_URL,
       },
       user
     );

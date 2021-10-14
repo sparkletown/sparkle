@@ -11,6 +11,8 @@ import { useVenueId } from "hooks/useVenueId";
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import "firebase/storage";
 
 import { updateUserProfile } from "./helpers";
@@ -115,13 +117,14 @@ export const Profile: React.FC = () => {
           </div>
 
           <div className="input-group">
-            <button
+            <ButtonNG
               type="submit"
-              className="btn btn-primary btn-block btn-centered"
+              className="create-account__button"
+              variant="primary"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile
-            </button>
+            </ButtonNG>
             {isUpdating && <Loading />}
             {httpError && (
               <span className="input-error">{httpError.message}</span>

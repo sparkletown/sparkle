@@ -13,7 +13,12 @@ $variants-enum: (
   ("secondary", $content--over, opaque-white(0.2), opaque-white(0.25)),
   ("white", $accent--under, $content--over, $content--over),
   ("dark", $content--over, opaque-black(0.4), opaque-black(0.6)),
-  ("danger", $accent--over, $input--invalid, lighten($input--invalid, 10%))
+  (
+    "danger",
+    var(--danger--over),
+    var(--danger--under),
+    var(--danger--under-lighter-10pp)
+  )
 );
 
 @function calc-size-by-factor($factor) {
@@ -43,7 +48,7 @@ $variants-enum: (
   transition: transform 0.4s $transition-function;
 
   color: $content--over;
-  text-shadow: 0 1px 2px opaque-black(0.25);
+  text-shadow: $text-shadow--thin;
   background-color: opaque-white(0.2);
   backdrop-filter: blur(10px);
   box-shadow: 0 4px 10px opaque-black(0.25);
@@ -107,15 +112,15 @@ $variants-enum: (
     }
   }
 
-  &--gradient:enabled {
-    background-image: $gradient;
-  }
-
   &--admin-gradient:enabled {
     background-image: $admin-gradient;
   }
 
   &--danger-gradient:enabled {
     background-image: $danger-gradient;
+  }
+
+  &--normal-gradient:enabled {
+    background-image: $gradient;
   }
 }

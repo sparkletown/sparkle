@@ -32,4 +32,5 @@ export const advancedSettingsSchema = Yup.object().shape<VenueAdvancedConfig>({
   roomVisibility: Yup.mixed()
     .oneOf(Object.values(RoomVisibility))
     .notRequired(),
+  hasSocialLoginEnabled: Yup.bool().notRequired(),
 });

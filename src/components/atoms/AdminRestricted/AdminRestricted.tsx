@@ -61,7 +61,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
           disabled={isLoggingOut}
           onClick={logout}
         >
-          Switch Account
+          Log Out
         </ButtonNG>
       </div>
     </div>

@@ -3,7 +3,8 @@
 .WorldEditor {
   .AdminPanel {
     width: 100%;
-    height: calc(100vh - #{$reserved-page-height});
+    height: $admin-ng-panel-height;
+    max-height: $admin-ng-panel-height;
     display: grid;
     grid-template-columns: 1fr 9fr;
     margin: 0;
@@ -13,7 +14,7 @@
 
   .AdminSidebarTitle,
   .AdminSidebarSubTitle {
-    margin: $spacing--xl 0;
+    margin: $spacing--xl 0 $spacing--sm;
   }
 
   .AdminSidebar {
@@ -31,7 +32,7 @@
     height: 100%;
     display: grid;
     grid-template-rows: 1fr 9fr;
-    background-color: $dark;
+    background-color: $secondary--live;
   }
 
   .AdminSidebarFooter {

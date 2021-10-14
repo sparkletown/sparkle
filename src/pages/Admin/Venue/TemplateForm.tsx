@@ -12,14 +12,9 @@ import "./Venue.scss";
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/experience.png",
   [VenueTemplate.artpiece]: "/venues/art-piece.png",
-  [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
-  [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
-  [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
   [VenueTemplate.jazzbar]: "/venues/music-venue.png",
-  [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/party-map.png",
   [VenueTemplate.animatemap]: "/venues/animate-map.png",
-  [VenueTemplate.audience]: "/venues/auditorium.png",
   [VenueTemplate.conversationspace]: "/venues/conversation-space.png",
   [VenueTemplate.firebarrel]: "/venues/fire-barrel.png",
   [VenueTemplate.embeddable]: "/venues/embeddable.jpg",
@@ -27,26 +22,26 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: "/venues/screening-room.png",
+  [VenueTemplate.viewingwindow]: "/venues/viewing-window.png",
 
   // Legacy
+  [VenueTemplate.artcar]: "/venues/venue-artcar.jpg",
+  [VenueTemplate.audience]: "/venues/auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.friendship]: undefined,
+  [VenueTemplate.performancevenue]: "/venues/venue-performance.jpg",
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
+  [VenueTemplate.themecamp]: "/venues/venue-camp.jpg",
 };
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoomroom.png",
   [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",
-  [VenueTemplate.performancevenue]:
-    "/venues/pickspace-thumbnail_performance.png",
-  [VenueTemplate.themecamp]: "/venues/pickspace-thumbnail_camp.png",
-  [VenueTemplate.artcar]: "/venues/pickspace-thumbnail_artcar.png",
   [VenueTemplate.jazzbar]: "/venues/pickspace-thumbnail_bar.png",
-  [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/pickspace-thumbnail_map.png",
   [VenueTemplate.animatemap]: "/venues/pickspace-thumbnail_map.png",
-  [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
   [VenueTemplate.firebarrel]: "/venues/pickspace-thumbnail_camp.png",
@@ -55,11 +50,19 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
+  [VenueTemplate.viewingwindow]:
+    "/venues/pickspace-thumbnail_viewing-window.png",
 
   // Legacy
+  [VenueTemplate.artcar]: "/venues/pickspace-thumbnail_artcar.png",
+  [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.friendship]: undefined,
+  [VenueTemplate.performancevenue]:
+    "/venues/pickspace-thumbnail_performance.png",
   [VenueTemplate.preplaya]: undefined,
   [VenueTemplate.playa]: undefined,
+  [VenueTemplate.themecamp]: "/venues/pickspace-thumbnail_camp.png",
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {

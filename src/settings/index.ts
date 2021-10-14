@@ -39,6 +39,10 @@ export * from "./sectionSettings";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
 export * from "./spacesSettings";
+export * from "./embedUrlSettings";
+
+export const ENABLE_POPUPS_URL =
+  "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -95,13 +99,6 @@ export const SPARKLEVERSE_COMMUNITY_URL =
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
-export const TWITCH_SHORT_URL = "twitch.tv";
-export const TWITCH_EMBED_URL = "https://player.twitch.tv";
-export const FACEBOOK_EMBED_URL = "plugins/video.php";
-export const VIMEO_SHORT_EVENT_URL = "vimeo.com/event";
-export const VIMEO_EMBED_URL = "https://player.vimeo.com/video";
-export const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/";
-export const YOUTUBE_SHORT_URL_STRING = "youtu";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
@@ -205,6 +202,7 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
   VenueTemplate.posterpage,
+  VenueTemplate.viewingwindow,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -310,6 +308,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: SCREENING_ROOM_TAXON.title,
     description: [
       `Add an screening ${ROOM_TAXON.lower} with the videos listed inside.`,
+    ],
+  },
+  {
+    template: VenueTemplate.viewingwindow,
+    name: "Viewing Window",
+    description: [
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
 ];
@@ -455,6 +460,30 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  // {
+  //   template: VenueTemplate.viewingwindow,
+  //   name: "Viewing Window",
+  //   description:
+  //     "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+  //   icon: "/venues/pickspace-thumbnail_art.png",
+  //   customInputs: [
+  //     {
+  //       name: "iframeUrl",
+  //       title: "Livestream URL",
+  //       type: "text",
+  //     },
+  //     {
+  //       name: "bannerMessage",
+  //       title: "Show an announcement in the venue (or leave blank for none)",
+  //       type: "text",
+  //     },
+  //     {
+  //       name: "isWithParticipants",
+  //       title: "has participants?",
+  //       type: "switch",
+  //     },
+  //   ],
+  // },
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -486,6 +515,7 @@ export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.preplaya,
   VenueTemplate.themecamp,
   VenueTemplate.artpiece,
+  VenueTemplate.viewingwindow,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -500,6 +530,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
 ];
 
 export const FIREBASE_CONFIG = {
@@ -639,4 +670,5 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.embeddable,
   VenueTemplate.auditorium,
   VenueTemplate.audience,
+  VenueTemplate.viewingwindow,
 ];

@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
@@ -33,8 +34,6 @@ import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSea
 import { InputField } from "components/atoms/InputField";
 
 import { NavSearchResult } from "./NavSearchResult";
-
-import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import "./NavSearchBar.scss";
 
@@ -196,10 +195,10 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     foundRooms.length + foundEvents.length + foundUsers.length;
 
   const clearSearchIcon = (
-    <img
+    <FontAwesomeIcon
+      size="lg"
       className="NavSearchBar__clear-search"
-      src={navDropdownCloseIcon}
-      alt="close button"
+      icon={faTimesCircle}
       onClick={clearSearch}
     />
   );

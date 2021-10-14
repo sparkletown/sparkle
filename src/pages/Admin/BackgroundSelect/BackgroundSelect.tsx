@@ -3,7 +3,7 @@ import { useAsyncFn } from "react-use";
 
 import { DEFAULT_BACKGROUNDS } from "settings";
 
-import { updateVenue_v2 } from "api/admin";
+import { updateMapBackground } from "api/admin";
 
 import { useUser } from "hooks/useUser";
 
@@ -30,7 +30,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
     async (url: string, file?: FileList) => {
       if (!user) return;
 
-      return await updateVenue_v2(
+      return await updateMapBackground(
         {
           worldId: worldId,
           name: venueName,

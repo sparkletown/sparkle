@@ -30,7 +30,7 @@ $photobooth-button-background-size: 35px;
   }
 
   .notification-card {
-    background: $red;
+    background: var(--danger--under);
     color: $content--over;
     position: absolute;
     bottom: 0;
@@ -66,7 +66,7 @@ $photobooth-button-background-size: 35px;
 
       &:hover {
         background: #ebebeb;
-        color: $dark;
+        color: $secondary--live;
       }
     }
   }
@@ -80,7 +80,7 @@ $photobooth-button-background-size: 35px;
   display: flex;
   height: $navbar-height;
   padding: 0 15px;
-  background-color: $dark;
+  background-color: $secondary--live;
 
   #sound-cloud-player {
     border: none;
@@ -260,6 +260,7 @@ $photobooth-button-background-size: 35px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
+    color: $content--over;
 
     margin-right: $spacing--md;
 
