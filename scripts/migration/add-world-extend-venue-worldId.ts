@@ -77,19 +77,11 @@ const fetchSovereignVenue = async (
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
 
-      const world = await admin
+      await admin
         .firestore()
         .collection("worlds")
         .doc(sovereignVenueId)
-        .get();
-
-      if (!world.exists) {
-        await admin
-          .firestore()
-          .collection("worlds")
-          .doc(sovereignVenueId)
-          .create({});
-      }
+        .set(sovereignVenue.data());
 
       await venueDoc.ref.update({ worldId: sovereignVenueId });
     });
