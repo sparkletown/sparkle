@@ -6,6 +6,8 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { updateBanner } from "api/bannerAdmin";
 
+import { Banner } from "types/banner";
+
 import { venueInsideUrl } from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -20,11 +22,13 @@ import "./RunTabToolbar.scss";
 export interface RunTabToolbarProps {
   venueId?: string;
   venueName: string;
+  announcement?: Banner;
 }
 
 export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
   venueId,
   venueName,
+  announcement,
 }) => {
   const { register, getValues } = useForm<{
     message: string;
@@ -59,6 +63,7 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
           disabled={isUpdatingBanner}
           containerClassName="RunTabToolbar__announce"
           inputClassName="mod--text-left"
+          defaultValue={announcement?.content}
           ref={register({ required: true })}
           name="message"
           placeholder="Announcement..."
@@ -66,6 +71,7 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
         />
         <ButtonNG
           disabled={isUpdatingBanner}
+          loading={isUpdatingBanner}
           iconName={faPaperPlane}
           iconOnly={true}
           onClick={updateBannerAsync}
