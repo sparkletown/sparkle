@@ -10,11 +10,7 @@ $schedule-button-padding: 0.35em 1em;
 
 $schedule-button-height: 51px;
 
-.NavBarSchedule__wrapper {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-}
+$schedule-weekdays-height: 40px;
 
 .NavBarSchedule {
   position: fixed;
@@ -37,10 +33,21 @@ $schedule-button-height: 51px;
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
 
+  &__wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
   &--show {
     pointer-events: all;
     opacity: 1;
     transform: translateY(0);
+  }
+
+  &__breadcrumbs {
+    margin: $spacing--sm 0;
   }
 
   &__weekdays {
@@ -48,6 +55,8 @@ $schedule-button-height: 51px;
     overflow: auto;
     cursor: default;
     background-color: opaque-black(1);
+    margin-left: -$navbar-schedule-padding;
+    flex: 0 0 $schedule-weekdays-height;
   }
 
   &__weekday-button {
@@ -97,7 +106,7 @@ $schedule-button-height: 51px;
   }
 
   &__download-buttons {
-    position: fixed;
+    position: sticky;
     bottom: 0;
     right: 0;
     width: 100%;

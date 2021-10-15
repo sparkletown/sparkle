@@ -5,7 +5,10 @@ import { World } from "api/admin";
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseWorldEditResult = { world?: WithId<World>; isLoaded: boolean };
+type UseWorldEditResult = {
+  world?: WithId<World>;
+  isLoaded: boolean;
+};
 
 export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
   worldId

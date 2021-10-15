@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { isDefined } from "utils/types";
@@ -93,8 +95,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
           )}
 
           {isAnnouncementCloseable && (
-            <span
+            <FontAwesomeIcon
               className="AnnouncementMessage__close-button"
+              icon={faTimes}
               onClick={handleBannerModalClose}
             />
           )}

@@ -16,7 +16,7 @@ $start-table-internal-indent: 25px;
   min-height: $start-table-height;
 
   width: 100%;
-  background: $dark;
+  background: $secondary--live;
   border: none;
   border-radius: 22px;
   color: $content--over;
@@ -25,7 +25,7 @@ $start-table-internal-indent: 25px;
   cursor: pointer;
 
   &:hover {
-    background-color: lighten($dark, 10%);
+    background-color: lighten($secondary--live, 10%);
     transform: scale(1.05);
 
     .StartTable__sign {

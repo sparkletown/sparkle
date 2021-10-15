@@ -18,15 +18,15 @@ $icon-width: 2.5rem;
   }
 
   &--invalid .InputField__input {
-    border: 1px solid $input--invalid;
+    border: 1px solid var(--danger--under);
     &:focus {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: $input--invalid-box-shadow-focus;
+      border: 1px solid var(--accent--over-10a);
+      box-shadow: 0 0 0 2px var(--danger--under-rgb);
     }
   }
 
   &__input {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent--over-10a);
     border-radius: 22px;
     height: 100%;
 
@@ -60,7 +60,7 @@ $icon-width: 2.5rem;
   }
 
   &__error {
-    color: $input--invalid;
+    color: var(--danger--under);
     font-size: 0.8rem;
     position: absolute;
     bottom: -1.3rem;

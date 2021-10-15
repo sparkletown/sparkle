@@ -28,6 +28,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
+  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**
@@ -62,6 +63,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
   VenueTemplate.zoomroom,
   VenueTemplate.screeningroom,
 ];
@@ -75,6 +77,7 @@ const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.viewingwindow,
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
@@ -224,6 +227,7 @@ const createVenueData = (data, context) => {
     radioStations: data.radioStations ? [data.radioStations] : [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    hasSocialLoginEnabled: data.hasSocialLoginEnabled || false,
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -394,6 +398,10 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
@@ -870,6 +878,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {

@@ -30,7 +30,7 @@
     width: $search-dropdown-width;
     max-height: $search-dropdown-height--max;
     margin-top: $navbar-height;
-    background-color: $saturated-black;
+    background-color: $secondary--dark;
     box-shadow: box-shadow--large();
     border-radius: 0 0 $border-radius--xl $border-radius--xl;
     transform: translateY(-$navbar-height - $search-dropdown-height--empty);
