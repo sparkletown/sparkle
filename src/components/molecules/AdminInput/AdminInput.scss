@@ -10,7 +10,7 @@
   }
 
   &__error {
-    color: $red;
+    color: var(--danger--under);
   }
 
   &__subtext {

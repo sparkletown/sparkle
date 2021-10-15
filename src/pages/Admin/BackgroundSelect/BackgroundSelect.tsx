@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAsyncFn } from "react-use";
 
 import { DEFAULT_BACKGROUNDS } from "settings";
@@ -7,6 +7,10 @@ import { updateMapBackground } from "api/admin";
 
 import { useUser } from "hooks/useUser";
 
+import { Loading } from "components/molecules/Loading";
+import { SubmitError } from "components/molecules/SubmitError";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { FileButton } from "components/atoms/FileButton";
 
 import "./BackgroundSelect.scss";
@@ -25,9 +29,12 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   worldId,
 }) => {
   const { user } = useUser();
+  const [selected, setSelected] = useState("");
 
-  const [{ loading: isUploading }, uploadMapBackground] = useAsyncFn(
+  const [{ loading: isUploading, error }, uploadMapBackground] = useAsyncFn(
     async (url: string, file?: FileList) => {
+      setSelected(url);
+
       if (!user) return;
 
       return await updateMapBackground(
@@ -45,27 +52,28 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
 
-  const renderBackground = useCallback(
-    (mapBackground: string, index: number) => (
-      <button
+  const renderedBackground = useCallback(
+    (mapBackground, key) => (
+      <ButtonNG
         className="BackgroundSelect__map"
         disabled={isUploading}
+        loading={isUploading && mapBackground === selected}
         style={{ backgroundImage: `url(${mapBackground})` }}
-        key={index}
+        key={key}
         onClick={() => uploadMapBackground(mapBackground)}
       />
     ),
-    [isUploading, uploadMapBackground]
+    [isUploading, uploadMapBackground, selected]
   );
 
-  const renderMapBackgrounds = useMemo(
-    () => mapBackgrounds.map(renderBackground),
-    [mapBackgrounds, renderBackground]
+  const renderedMapBackgrounds = useMemo(
+    () => mapBackgrounds.map(renderedBackground),
+    [mapBackgrounds, renderedBackground]
   );
 
-  const renderDefaultBackgrounds = useMemo(
-    () => DEFAULT_BACKGROUNDS.map(renderBackground),
-    [renderBackground]
+  const renderedDefaultBackgrounds = useMemo(
+    () => DEFAULT_BACKGROUNDS.map(renderedBackground),
+    [renderedBackground]
   );
 
   return (
@@ -73,6 +81,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
       <>
         <FileButton
           disabled={isUploading}
+          loading={isUploading}
           title="Import a map background"
           description="Recommended size: 2000px / 1200px"
           onChange={uploadMapBackground}
@@ -83,11 +92,12 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         </h3>
 
         <div className="BackgroundSelect__map-grid">
-          {renderDefaultBackgrounds}
-          {hasBackgrounds && renderMapBackgrounds}
+          {renderedDefaultBackgrounds}
+          {hasBackgrounds && renderedMapBackgrounds}
         </div>
 
-        {isLoadingBackgrounds && <div>Loading maps...</div>}
+        {isLoadingBackgrounds && <Loading label="Loading maps..." />}
+        <SubmitError error={error} />
       </>
     </div>
   );

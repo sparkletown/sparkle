@@ -13,7 +13,12 @@ $variants-enum: (
   ("secondary", $content--over, opaque-white(0.2), opaque-white(0.25)),
   ("white", $accent--under, $content--over, $content--over),
   ("dark", $content--over, opaque-black(0.4), opaque-black(0.6)),
-  ("danger", $accent--over, $input--invalid, lighten($input--invalid, 10%))
+  (
+    "danger",
+    var(--danger--over),
+    var(--danger--under),
+    var(--danger--under-lighter-10pp)
+  )
 );
 
 @function calc-size-by-factor($factor) {
@@ -81,6 +86,10 @@ $variants-enum: (
 
   &__icon--icon-text {
     margin-right: 1em;
+  }
+
+  &__icon--loading {
+    filter: $drop-shadow--outline;
   }
 
   &--1x {
