@@ -153,23 +153,21 @@ export const Spaces: React.FC<SpacesProps> = ({
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
             <AdminSidebarFooter {...sidebarFooterProps} />
             <AdminSpacesListItem title="Map background">
-              <>
-                <BackgroundSelect
-                  isLoadingBackgrounds={isLoadingBackgrounds}
-                  mapBackgrounds={mapBackgrounds}
-                  venueName={venue.name}
-                  worldId={venue.worldId}
-                />
-                {errorFetchBackgrounds && (
-                  <>
-                    <div>
-                      The preset map backgrounds could not be fetched. Please,
-                      refresh the page or upload a custom map background.
-                    </div>
-                    <div>Error: {errorFetchBackgrounds.message}</div>
-                  </>
-                )}
-              </>
+              <BackgroundSelect
+                isLoadingBackgrounds={isLoadingBackgrounds}
+                mapBackgrounds={mapBackgrounds}
+                venueName={venue.name}
+                worldId={venue.worldId}
+              />
+              {errorFetchBackgrounds && (
+                <>
+                  <div>
+                    The preset map backgrounds could not be fetched. Please,
+                    refresh the page or upload a custom map background.
+                  </div>
+                  <div>Error: {errorFetchBackgrounds.message}</div>
+                </>
+              )}
             </AdminSpacesListItem>
             <AdminSpacesListItem
               title={`${numberOfRooms} ${ROOMS_TAXON.capital}`}
