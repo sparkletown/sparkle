@@ -44,27 +44,14 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const parentVenueId = parentVenue?.id;
 
   const {
-    auditoriumSections: auditoriumSectionsRaw,
+    auditoriumSections,
+    loadMore,
     isAuditoriumSectionsLoaded,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
     enterSection,
     availableSections,
   } = useAllAuditoriumSections(venue);
-
-  const NEXT_RENDERED_SECTIONS_COUNT = 50;
-  const [renderedSectionsCount, setRenderedSectionsCount] = useState(
-    NEXT_RENDERED_SECTIONS_COUNT
-  );
-
-  const loadMore = useCallback(() => {
-    setRenderedSectionsCount((prev) => prev + NEXT_RENDERED_SECTIONS_COUNT);
-  }, []);
-
-  const auditoriumSections = auditoriumSectionsRaw.slice(
-    0,
-    Math.min(renderedSectionsCount, auditoriumSectionsRaw.length)
-  );
 
   const sectionsCount = venue.sectionsCount ?? 0;
   const hasOnlyOneSection = sectionsCount === 1;
@@ -119,7 +106,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     <InfiniteScroll
       dataLength={auditoriumSections.length}
       next={loadMore}
-      hasMore={auditoriumSections.length < auditoriumSectionsRaw.length}
+      hasMore={true}
       loader={
         <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
       }

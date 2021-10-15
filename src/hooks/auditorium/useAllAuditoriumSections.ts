@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { noop } from "lodash";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SECTIONS_NEXT_FETCH_SIZE } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -27,10 +28,19 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
+  const [fetchSectionsCount, setFetchSectionsCount] = useState(
+    SECTIONS_NEXT_FETCH_SIZE
+  );
+
+  const loadMore = useCallback(() => {
+    setFetchSectionsCount((prev) => prev + SECTIONS_NEXT_FETCH_SIZE);
+  }, []);
+
   const sectionsRef = firestore
     .collection("venues")
     .doc(venueId)
     .collection("sections")
+    .limit(fetchSectionsCount)
     .withConverter(withIdConverter);
 
   const {
@@ -67,6 +77,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       auditoriumSections:
         (isFullAuditoriumsHidden ? availableSections : sections) ??
         ALWAYS_EMPTY_ARRAY,
+      loadMore: isFullAuditoriumsShown ? loadMore : noop,
       isAuditoriumSectionsLoaded: isSectionsLoaded,
       isFullAuditoriumsHidden,
       availableSections: availableSections ?? ALWAYS_EMPTY_ARRAY,
@@ -74,10 +85,12 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       enterSection,
     }),
     [
-      sections,
-      availableSections,
-      isSectionsLoaded,
       isFullAuditoriumsHidden,
+      availableSections,
+      sections,
+      isFullAuditoriumsShown,
+      loadMore,
+      isSectionsLoaded,
       toggleFullAuditoriums,
       enterSection,
     ]
