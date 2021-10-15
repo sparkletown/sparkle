@@ -88,6 +88,10 @@ $variants-enum: (
     margin-right: 1em;
   }
 
+  &__icon--loading {
+    filter: $drop-shadow--outline;
+  }
+
   &--1x {
     @include square-size(calc-size-by-factor(2.5));
   }
