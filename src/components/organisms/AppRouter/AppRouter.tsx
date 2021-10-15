@@ -95,7 +95,7 @@ export const AppRouter: React.FC = () => {
 
   if (!isLoaded) return <LoadingPage />;
 
-  const { enableAdmin1, enableAdmin3 } = settings;
+  const { enableAdmin1 } = settings;
 
   return (
     <Router basename="/">
@@ -117,13 +117,11 @@ export const AppRouter: React.FC = () => {
             </Route>
           )}
 
-          {enableAdmin3 && (
-            <Route path={ADMIN_V3_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV3Subrouter />
-              </Provided>
-            </Route>
-          )}
+          <Route path={ADMIN_V3_ROOT_URL}>
+            <Provided withRelatedVenues>
+              <AdminV3Subrouter />
+            </Provided>
+          </Route>
 
           <Route
             path="/login/:venueId/:customToken"
