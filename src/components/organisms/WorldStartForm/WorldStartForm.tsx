@@ -158,10 +158,6 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   // NOTE: palette cleanser when starting new world, run only once on init
   useEffect(() => void dispatch<WorldEditActions>(worldEdit()), [dispatch]);
 
-  useEffect(() => {
-    reset(defaultValues);
-  }, [defaultValues, reset]);
-
   return (
     <div className="WorldStartForm">
       <Form onSubmit={handleSubmit(submit)} onChange={handleChange}>
