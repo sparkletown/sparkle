@@ -3,7 +3,6 @@
 import { resolve } from "path";
 
 import admin from "firebase-admin";
-import { chunk } from "lodash";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "../lib/helpers";
 
@@ -70,19 +69,17 @@ const fetchSovereignVenue = async (
   const venuesCollection = admin.firestore().collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
-  chunk(venueDocs, 100).forEach(async (venueDocsChunk) => {
-    venueDocsChunk.forEach(async (venueDoc) => {
-      const venueId = venueDoc.id;
-      const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
-      const sovereignVenueId = sovereignVenue.id;
+  venueDocs.forEach(async (venueDoc) => {
+    const venueId = venueDoc.id;
+    const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
+    const sovereignVenueId = sovereignVenue.id;
 
-      await admin
-        .firestore()
-        .collection("worlds")
-        .doc(sovereignVenueId)
-        .set(sovereignVenue.data());
+    await admin
+      .firestore()
+      .collection("worlds")
+      .doc(sovereignVenueId)
+      .set(sovereignVenue.data());
 
-      await venueDoc.ref.update({ worldId: sovereignVenueId });
-    });
+    await venueDoc.ref.update({ worldId: sovereignVenueId });
   });
 })();
