@@ -67,6 +67,7 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     name: data.name,
+    slug: data.slug,
     config: {
       landingPageConfig: {
         coverImageUrl: data.bannerImageUrl || "",

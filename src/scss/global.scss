@@ -132,7 +132,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: darken($red, 14%);
+      background-color: var(--danger--under-darker-14pp);
     }
   }
 
@@ -166,7 +166,7 @@ input.btn {
 }
 
 .input-error {
-  color: red;
+  color: var(--danger--under);
 }
 
 button.btn {
@@ -330,7 +330,7 @@ textarea {
 
   .input-error {
     text-align: center;
-    color: #e30b0b;
+    color: var(--danger--under);
     font-size: 0.9em;
     font-weight: bold;
   }

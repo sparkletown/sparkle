@@ -105,7 +105,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
           icon={faCircleNotch}
           spin
           size={iconSize}
-          className="ButtonNG__icon"
+          className="ButtonNG__icon ButtonNG__icon--loading"
         />
       </button>
     );

@@ -27,7 +27,7 @@ $avatar-size: 20px;
     cursor: not-allowed;
 
     .SectionPreview__people-count {
-      color: $red;
+      color: var(--danger--under);
     }
   }
 

@@ -93,7 +93,7 @@ $poster-cell-optimal-height: 195px;
   }
 
   &__control--stop {
-    background-color: $red;
+    background-color: var(--danger--under);
     color: $accent--over;
     opacity: 0.8;
   }
