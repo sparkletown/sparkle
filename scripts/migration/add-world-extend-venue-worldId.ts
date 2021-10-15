@@ -8,7 +8,7 @@ import { chunk } from "lodash";
 import { initFirebaseAdminApp, makeScriptUsage } from "../lib/helpers";
 
 const usage = makeScriptUsage({
-  description: "Update events details: { venueId, sovereignVenueId }",
+  description: "Migrate the environment to the world architecture",
   usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
   exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
 });
@@ -70,7 +70,6 @@ const fetchSovereignVenue = async (
   const venuesCollection = admin.firestore().collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
-  // const batch = admin.firestore().batch();
   chunk(venueDocs, 100).forEach(async (venueDocsChunk) => {
     venueDocsChunk.forEach(async (venueDoc) => {
       const venueId = venueDoc.id;
@@ -86,10 +85,4 @@ const fetchSovereignVenue = async (
       await venueDoc.ref.update({ worldId: sovereignVenueId });
     });
   });
-
-  // await batch.commit().catch((error) => {
-  //   throw new Error(
-  //     `Commit batch of recent users of venues failed. Error: ${error}`
-  //   );
-  // });
 })();
