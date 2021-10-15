@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import {
   DEFAULT_SETTING_ADMIN_VERSION,
   DEFAULT_SETTING_ENABLE_ADMIN_V1,
-  DEFAULT_SETTING_ENABLE_ADMIN_V3,
   DEFAULT_SETTING_SHOW_CHAT,
   DEFAULT_SETTING_SHOW_REACTIONS,
 } from "settings";
@@ -32,7 +31,6 @@ export const useSettings: () => UseSetingsReturnType = () => {
       showChat = DEFAULT_SETTING_SHOW_CHAT,
       showReactions = DEFAULT_SETTING_SHOW_REACTIONS,
       enableAdmin1 = DEFAULT_SETTING_ENABLE_ADMIN_V1,
-      enableAdmin3 = DEFAULT_SETTING_ENABLE_ADMIN_V3,
       adminVersion = DEFAULT_SETTING_ADMIN_VERSION,
     } = settings ?? {};
 
@@ -42,7 +40,6 @@ export const useSettings: () => UseSetingsReturnType = () => {
         showChat,
         showReactions,
         enableAdmin1,
-        enableAdmin3,
         adminVersion,
       },
     };
