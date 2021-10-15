@@ -6,6 +6,7 @@ import { useAsync, useAsyncFn } from "react-use";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
+  DEFAULT_SHOW_SHOUTOUTS,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -88,7 +89,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         iframeUrl: roomVenue?.iframeUrl ?? "",
         showGrid: roomVenue?.showGrid ?? false,
         showReactions: roomVenue?.showReactions ?? false,
-        showShoutouts: roomVenue?.showShoutouts ?? false,
+        showShoutouts: roomVenue?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
         auditoriumColumns:
           roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,

@@ -3,7 +3,11 @@ import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE_AUTOPLAY, ROOM_TAXON } from "settings";
+import {
+  DEFAULT_SHOW_SHOUTOUTS,
+  DEFAULT_VENUE_AUTOPLAY,
+  ROOM_TAXON,
+} from "settings";
 import { DEFAULT_EMBED_URL } from "settings/embedUrlSettings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
@@ -27,6 +31,7 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Checkbox } from "components/atoms/Checkbox";
 import ImageInput from "components/atoms/ImageInput";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -75,6 +80,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       iframeUrl: portal?.iframeUrl ?? "",
       autoPlay: portal?.autoPlay || DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
+      showReactions: portal?.showReactions ?? false,
+      showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+      isMuted: false,
     }),
     [room.image_url, portal]
   );
@@ -112,6 +120,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
         autoPlay: values.autoPlay,
         bannerImageUrl: values.bannerImageUrl,
+        showShoutouts: values.showShoutouts,
+        showReactions: values.showReactions,
       },
       user
     );
@@ -174,9 +184,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 errors={errors}
               />
             </AdminSection>
-            <AdminSection title="Autoplay your embeded video" withLabel>
-              <Toggler name="autoPlay" forwardedRef={register} />
-            </AdminSection>
+            <Checkbox
+              name="autoPlay"
+              defaultChecked={values.autoPlay}
+              forwardedRef={register}
+              containerClassName="SpaceEditFormNG__toggler"
+              label="Autoplay"
+            />
           </>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Appearance" isOpened>
@@ -204,7 +218,28 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             />
           </AdminSection>
         </AdminSpacesListItem>
-
+        <AdminSpacesListItem title="Extras" isOpened>
+          <Checkbox
+            defaultChecked={values.showShoutouts}
+            forwardedRef={register}
+            containerClassName="SpaceEditFormNG__toggler"
+            label="Enable shoutouts"
+            name="showShoutouts"
+          />
+          <Checkbox
+            defaultChecked={values.showReactions}
+            forwardedRef={register}
+            containerClassName="SpaceEditFormNG__toggler"
+            label="Reaction emojis"
+            name="showReactions"
+          />
+          <Toggler
+            name="isMuted"
+            forwardedRef={register}
+            disabled={!values.showReactions}
+            label="Audible"
+          />
+        </AdminSpacesListItem>
         <ButtonNG
           variant="danger"
           loading={isUpdating || isDeleting}
