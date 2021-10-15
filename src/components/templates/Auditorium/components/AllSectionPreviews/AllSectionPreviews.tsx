@@ -1,4 +1,5 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouteMatch } from "react-router";
 import { Redirect, useHistory } from "react-router-dom";
 import classNames from "classnames";
@@ -43,7 +44,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const parentVenueId = parentVenue?.id;
 
   const {
-    auditoriumSections,
+    auditoriumSections: auditoriumSectionsRaw,
     isAuditoriumSectionsLoaded,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
@@ -51,37 +52,25 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     availableSections,
   } = useAllAuditoriumSections(venue);
 
+  const NEXT_RENDERED_SECTIONS_COUNT = 50;
+  const [renderedSectionsCount, setRenderedSectionsCount] = useState(
+    NEXT_RENDERED_SECTIONS_COUNT
+  );
+
+  const loadMore = useCallback(() => {
+    setRenderedSectionsCount((prev) => prev + NEXT_RENDERED_SECTIONS_COUNT);
+  }, []);
+
+  const auditoriumSections = auditoriumSectionsRaw.slice(
+    0,
+    Math.min(renderedSectionsCount, auditoriumSectionsRaw.length)
+  );
+
   const sectionsCount = venue.sectionsCount ?? 0;
   const hasOnlyOneSection = sectionsCount === 1;
   const [firstSection] = auditoriumSections;
 
   const auditoriumSize = chooseAuditoriumSize(sectionsCount);
-
-  const sectionPreviews = useMemo(
-    () =>
-      auditoriumSections.map((section) => (
-        <SectionPreview
-          key={section.id}
-          section={section}
-          venue={venue}
-          enterSection={enterSection}
-        />
-      )),
-    [auditoriumSections, venue, enterSection]
-  );
-
-  const emptyBlocks = useMemo(
-    () =>
-      Array(AuditoriumEmptyBlocksCount[auditoriumSize])
-        .fill(0)
-        .map((_, index) => (
-          <div
-            key={index}
-            className={`AllSectionPreviews__empty-block--${index + 1}`}
-          />
-        )),
-    [auditoriumSize]
-  );
 
   const [iframeUrl, setIframeUrl] = useState("");
   useLayoutEffect(() => {
@@ -127,7 +116,14 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   }
 
   return (
-    <>
+    <InfiniteScroll
+      dataLength={auditoriumSections.length}
+      next={loadMore}
+      hasMore={auditoriumSections.length < auditoriumSectionsRaw.length}
+      loader={
+        <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
+      }
+    >
       {parentVenue && (
         <BackButton
           onClick={backToParentVenue}
@@ -138,7 +134,14 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         venue={venue}
         containerClassNames={`AllSectionPreviews ${containerClasses}`}
       >
-        {emptyBlocks}
+        {Array(AuditoriumEmptyBlocksCount[auditoriumSize])
+          .fill(0)
+          .map((_, index) => (
+            <div
+              key={index}
+              className={`AllSectionPreviews__empty-block--${index + 1}`}
+            />
+          ))}
 
         <div className="AllSectionPreviews__main">
           <IFrame
@@ -162,8 +165,15 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           </div>
         </div>
 
-        {sectionPreviews}
+        {auditoriumSections.map((section) => (
+          <SectionPreview
+            key={section.id}
+            section={section}
+            venue={venue}
+            enterSection={enterSection}
+          />
+        ))}
       </VenueWithOverlay>
-    </>
+    </InfiniteScroll>
   );
 };
