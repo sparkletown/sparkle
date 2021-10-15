@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -24,7 +24,7 @@ import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
 import { validationSchema_v2 } from "../ValidationSchema";
@@ -42,24 +42,24 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const setVenue = useCallback(
     async (vals: FormValues) => {
-      if (!user || !worldId) return;
+      if (!user) return;
 
       try {
         if (venueId) {
           const updatedVenue = {
             ...vals,
             id: venueId,
-            worldId,
+            worldId: editData?.worldId ?? "",
           };
 
           await updateVenue_v2(updatedVenue, user);
 
-          history.push(adminWorldSpacesUrl(worldId));
+          history.push(adminWorldSpacesUrl(editData?.worldId));
         } else {
           const newVenue = {
             ...vals,
             id: createUrlSafeName(vals.name),
-            worldId,
+            worldId: worldId ?? "",
           };
 
           await createVenue_v2(newVenue, user);
@@ -70,7 +70,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         console.error(e);
       }
     },
-    [user, worldId, venueId, history]
+    [user, venueId, editData?.worldId, history, worldId]
   );
 
   const {
@@ -228,6 +228,16 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     history.push(adminWorldSpacesUrl(worldId ?? editData?.worldId));
   }, [editData?.worldId, history, worldId]);
 
+  const saveButtonProps: ButtonProps = useMemo(
+    () => ({
+      type: "submit",
+      variant: "primary",
+      disabled: isSubmitting || !dirty,
+      loading: isSubmitting,
+    }),
+    [dirty, isSubmitting]
+  );
+
   return (
     <Form
       onSubmit={handleSubmit(setVenue)}
@@ -258,16 +268,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderLogoUpload()}
       </div>
 
-      <AdminSidebarFooter onClickHome={navigateToHome}>
-        <ButtonNG
-          variant="primary"
-          disabled={isSubmitting || !dirty}
-          type="submit"
-          loading={isSubmitting}
-        >
-          {venueId ? "Update Space" : "Create Space"}
-        </ButtonNG>
-      </AdminSidebarFooter>
+      <AdminSidebarFooter
+        onClickHome={navigateToHome}
+        saveButtonProps={saveButtonProps}
+        saveButtonText={venueId ? "Update Space" : "Create Space"}
+      />
     </Form>
   );
 };
