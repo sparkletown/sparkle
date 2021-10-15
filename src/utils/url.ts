@@ -2,20 +2,15 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
-  ADMIN_ROOT_URL,
-  ADMIN_V1_ROOT_URL,
   ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_OLD_WORLD_PARAM_URL,
-  ADMIN_V3_ROOT_URL,
   ADMIN_V3_VENUE_PARAM_URL,
   ADMIN_V3_WORLD_SPACES_PARAM_URL,
   ENTRANCE_ROOT_URL,
   VALID_URL_PROTOCOLS,
   WORLD_ROOT_URL,
 } from "settings";
-
-import { Settings } from "types/settings";
 
 export const venueLandingUrl = (venueId: string) => {
   return `/v/${venueId}`;
@@ -161,25 +156,6 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
-};
-
-export const resolveAdminRootUrl: (settings: Partial<Settings>) => string = ({
-  enableAdmin1,
-  enableAdmin3,
-  adminVersion,
-}) => {
-  // Tie breaker for when both admins are enabled.
-  // Currently only two exist, so anything other than explicit 3 defaults to 1
-  if (enableAdmin1 && enableAdmin3) {
-    // easier to compare to just a string
-    return `${adminVersion}` === "3" ? ADMIN_V3_ROOT_URL : ADMIN_V1_ROOT_URL;
-  }
-
-  if (enableAdmin3) return ADMIN_V3_ROOT_URL;
-  if (enableAdmin1) return ADMIN_V1_ROOT_URL;
-
-  // No versions are enabled, just return the default even if it fails with 401, 403, 404
-  return ADMIN_ROOT_URL;
 };
 
 export const resolveUrlPath: (path: string) => string = (path) => {

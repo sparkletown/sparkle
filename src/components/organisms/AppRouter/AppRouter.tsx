@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 
 import {
-  ADMIN_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ROOT_URL,
   DEFAULT_REDIRECT_URL,
@@ -15,7 +14,7 @@ import {
 } from "settings";
 
 import { tracePromise } from "utils/performance";
-import { resolveAdminRootUrl, venueLandingUrl } from "utils/url";
+import { venueLandingUrl } from "utils/url";
 
 import { useSettings } from "hooks/useSettings";
 
@@ -96,8 +95,7 @@ export const AppRouter: React.FC = () => {
 
   if (!isLoaded) return <LoadingPage />;
 
-  const { enableAdmin1, enableAdmin3 } = settings;
-  const adminRootUrl = resolveAdminRootUrl(settings);
+  const { enableAdmin1 } = settings;
 
   return (
     <Router basename="/">
@@ -111,10 +109,6 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route path={ADMIN_ROOT_URL}>
-            <Redirect to={adminRootUrl} />
-          </Route>
-
           {enableAdmin1 && (
             <Route path={ADMIN_V1_ROOT_URL}>
               <Provided withRelatedVenues>
@@ -123,13 +117,11 @@ export const AppRouter: React.FC = () => {
             </Route>
           )}
 
-          {enableAdmin3 && (
-            <Route path={ADMIN_V3_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV3Subrouter />
-              </Provided>
-            </Route>
-          )}
+          <Route path={ADMIN_V3_ROOT_URL}>
+            <Provided withRelatedVenues>
+              <AdminV3Subrouter />
+            </Provided>
+          </Route>
 
           <Route
             path="/login/:venueId/:customToken"
