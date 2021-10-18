@@ -73,6 +73,13 @@ export type AnySparkleRFQuery =
   | SparkleRFSubcollectionQuery
   | ReduxFirestoreQuerySetting;
 
+export type UseFirestoreConnectParameter =
+  | AnySparkleRFQuery
+  | AnySparkleRFQuery[]
+  | (() => AnySparkleRFQuery)
+  | (() => AnySparkleRFQuery[])
+  | ValidFirestoreRootCollections;
+
 /**
  * A wrapper for react-redux-firestore's useFirestoreConnect() that ensures the
  * config we pass it conforms to our set of allowed query types.
@@ -87,14 +94,8 @@ export type AnySparkleRFQuery =
  * @see ReduxFirestoreQuerySetting
  * @see ValidFirestoreRootCollections
  */
-export const useFirestoreConnect = (
-  config?:
-    | AnySparkleRFQuery
-    | AnySparkleRFQuery[]
-    | (() => AnySparkleRFQuery)
-    | (() => AnySparkleRFQuery[])
-    | ValidFirestoreRootCollections
-) => _useFirestoreConnect(config);
+export const useFirestoreConnect = (config?: UseFirestoreConnectParameter) =>
+  _useFirestoreConnect(config);
 
 /**
  * Use react-redux-firestore's isEmpty helper with
