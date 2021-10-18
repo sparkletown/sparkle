@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 import {
   setChatSidebarVisibility,
@@ -7,7 +7,6 @@ import {
 } from "store/actions/Chat";
 
 import { DisplayUser } from "types/User";
-import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import {
@@ -15,11 +14,9 @@ import {
   selectedChatSettingsSelector,
 } from "utils/selectors";
 
+import { useNumberOfUnreadChats } from "hooks/chats/util/useChatSidebarInfo";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-
-import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
@@ -84,30 +81,4 @@ export const useChatSidebarControls = () => {
     toggleSidebar,
     togglePrivateChatSidebar,
   };
-};
-
-export const useChatSidebarInfo = (venue: AnyVenue) => {
-  const numberOfUnreadChats = useNumberOfUnreadChats();
-  const chatTitle = venue?.chatTitle ?? "Venue";
-
-  return {
-    privateChatTabTitle: `Direct Messages ${
-      numberOfUnreadChats ? `(${numberOfUnreadChats})` : ""
-    }`,
-    venueChatTabTitle: `${chatTitle} Chat`,
-  };
-};
-
-const useNumberOfUnreadChats = () => {
-  const { userId } = useUser();
-  const { privateChatPreviews } = usePrivateChatPreviews();
-
-  return useMemo(
-    () =>
-      privateChatPreviews.filter(
-        (chatPreview) =>
-          !chatPreview.isRead && chatPreview.fromUser.id !== userId
-      ).length,
-    [privateChatPreviews, userId]
-  );
 };

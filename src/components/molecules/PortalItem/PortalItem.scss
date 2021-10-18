@@ -2,11 +2,25 @@
 
 $room-icon-size: 34px;
 
-.VenueRoomItem {
+.PortalItem {
   padding: $spacing--md;
   display: flex;
   flex-direction: row;
   align-items: center;
+
+  &__title,
+  &__description {
+    margin-top: $spacing--xl;
+    margin-bottom: $spacing--xl;
+    text-align: center;
+  }
+
+  &__poster {
+    width: 100%;
+    height: 100%;
+    border: 2px solid opaque-white(0.2);
+    border-radius: $border-radius--md;
+  }
 
   &:hover {
     background-color: $secondary--dark;
