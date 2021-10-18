@@ -98,66 +98,68 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   }
 
   return (
-    <InfiniteScroll
-      dataLength={auditoriumSections.length}
-      next={loadMore}
-      hasMore={
-        venue.sectionsCount
-          ? auditoriumSections.length < venue.sectionsCount
-          : true
-      }
-      loader={<Loading />}
-    >
+    <>
       {parentVenue && (
         <BackButton
           onClick={backToParentVenue}
           locationName={parentVenue.name}
         />
       )}
-      <VenueWithOverlay
-        venue={venue}
-        containerClassNames={`AllSectionPreviews ${containerClasses}`}
-      >
-        {Array(AuditoriumEmptyBlocksCount[auditoriumSize])
-          .fill(0)
-          .map((_, index) => (
-            <div
-              key={index}
-              className={`AllSectionPreviews__empty-block--${index + 1}`}
+      <VenueWithOverlay venue={venue} containerClassNames="">
+        <InfiniteScroll
+          dataLength={auditoriumSections.length}
+          className={`AllSectionPreviews ${containerClasses}`}
+          next={loadMore}
+          hasMore={
+            venue.sectionsCount
+              ? auditoriumSections.length < venue.sectionsCount
+              : true
+          }
+          loader={<Loading containerClassName="AllSectionPreviews__loader" />}
+        >
+          {Array(AuditoriumEmptyBlocksCount[auditoriumSize])
+            .fill(0)
+            .map((_, index) => (
+              <div
+                key={index}
+                className={`AllSectionPreviews__empty-block--${index + 1}`}
+              />
+            ))}
+
+          <div className="AllSectionPreviews__main">
+            <IFrame
+              src={iframeUrl}
+              containerClassName="AllSectionPreviews__iframe-overlay"
+              iframeClassname="AllSectionPreviews__iframe"
+            />
+            <div className="AllSectionPreviews__welcome-text">
+              {venue.title}
+            </div>
+            <div className="AllSectionPreviews__description-text">
+              {venue.description}
+            </div>
+            <div className="AllSectionPreviews__action-buttons">
+              <Checkbox
+                defaultChecked={isFullAuditoriumsHidden}
+                onChange={toggleFullAuditoriums}
+                containerClassName="AllSectionPreviews__toggler"
+                label="Hide full sections"
+              />
+
+              <Button onClick={enterRandomSection}>Enter random section</Button>
+            </div>
+          </div>
+
+          {auditoriumSections.map((section) => (
+            <SectionPreview
+              key={section.id}
+              section={section}
+              venue={venue}
+              enterSection={enterSection}
             />
           ))}
-
-        <div className="AllSectionPreviews__main">
-          <IFrame
-            src={iframeUrl}
-            containerClassName="AllSectionPreviews__iframe-overlay"
-            iframeClassname="AllSectionPreviews__iframe"
-          />
-          <div className="AllSectionPreviews__welcome-text">{venue.title}</div>
-          <div className="AllSectionPreviews__description-text">
-            {venue.description}
-          </div>
-          <div className="AllSectionPreviews__action-buttons">
-            <Checkbox
-              defaultChecked={isFullAuditoriumsHidden}
-              onChange={toggleFullAuditoriums}
-              containerClassName="AllSectionPreviews__toggler"
-              label="Hide full sections"
-            />
-
-            <Button onClick={enterRandomSection}>Enter random section</Button>
-          </div>
-        </div>
-
-        {auditoriumSections.map((section) => (
-          <SectionPreview
-            key={section.id}
-            section={section}
-            venue={venue}
-            enterSection={enterSection}
-          />
-        ))}
+        </InfiniteScroll>
       </VenueWithOverlay>
-    </InfiniteScroll>
+    </>
   );
 };
