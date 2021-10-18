@@ -46,7 +46,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const {
     auditoriumSections,
     loadMore,
-    isAuditoriumSectionsLoaded,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
     enterSection,
@@ -94,10 +93,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     `AllSectionPreviews--${auditoriumSize}`
   );
 
-  if (!isAuditoriumSectionsLoaded) {
-    return <Loading label="Loading sections" />;
-  }
-
   if (hasOnlyOneSection && firstSection) {
     return <Redirect to={`${match.url}/section/${firstSection.id}`} />;
   }
@@ -111,9 +106,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           ? auditoriumSections.length < venue.sectionsCount
           : true
       }
-      loader={
-        <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
-      }
+      loader={<Loading />}
     >
       {parentVenue && (
         <BackButton
