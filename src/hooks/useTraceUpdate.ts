@@ -19,7 +19,7 @@ export const useTraceUpdate = (props: Record<string, unknown>) => {
     if (Object.keys(changedProps).length > 0) {
       console.log("Changed props:", changedProps);
     } else {
-      console.log("Props haven't changed2.");
+      console.log("Props haven't changed.");
     }
     prev.current = props;
   });

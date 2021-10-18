@@ -1,67 +1,43 @@
-import React, { useCallback, useMemo } from "react";
+import React from "react";
+import { useToggle } from "react-use";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { DeleteMessage, MessageToDisplay } from "types/chat";
+import { MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { useSelectThisReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
+
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { ChatMessageReplies } from "components/atoms/ChatMessageReplies/ChatMessageReplies";
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatMessage.scss";
 
-export interface ChatProps {
+export interface ChatMessageProps {
   message: WithId<MessageToDisplay>;
-  deleteMessage?: DeleteMessage;
-  selectThisThread: () => void;
 }
 
-export const ChatMessage: React.FC<ChatProps> = ({
-  message,
-  deleteMessage,
-  selectThisThread,
-}) => {
+export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
-  const { text, replies, id, isQuestion } = message;
+  const { text, id: messageId, isQuestion } = message;
 
-  const deleteThisMessage = useCallback(async () => deleteMessage?.(id), [
-    deleteMessage,
-    id,
-  ]);
+  const selectThisThread = useSelectThisReplyThread(message);
 
-  const { isShown: isRepliesShown, toggle: toggleReplies } = useShowHide();
+  const [isRepliesShown, toggleReplies] = useToggle(false);
 
   const containerStyles = classNames("ChatMessage", {
     "ChatMessage--me": isMine,
     "ChatMessage--question": isQuestion,
   });
 
-  const renderedReplies = useMemo(
-    () =>
-      replies?.map((reply) => {
-        const deleteReplyMessage = async () => deleteMessage?.(reply.id);
-
-        return (
-          <div key={reply.id} className="ChatMessage__reply">
-            <RenderMarkdown text={reply.text} allowHeadings={false} />
-            <ChatMessageInfo
-              message={reply}
-              deleteMessage={deleteMessage && deleteReplyMessage}
-            />
-          </div>
-        );
-      }),
-    [replies, deleteMessage]
-  );
-
-  const repliesCount = renderedReplies.length;
+  const repliesCount = message.repliesCount ?? 0;
 
   const hasReplies = repliesCount !== 0;
 
@@ -98,16 +74,10 @@ export const ChatMessage: React.FC<ChatProps> = ({
         </div>
 
         <div className="ChatMessage__replies-content">
-          {isRepliesShown && (
-            <div className="ChatMessage__replies">{renderedReplies}</div>
-          )}
+          {isRepliesShown && <ChatMessageReplies threadId={messageId} />}
         </div>
       </div>
-      <ChatMessageInfo
-        message={message}
-        reversed={isMine}
-        deleteMessage={deleteMessage && deleteThisMessage}
-      />
+      <ChatMessageInfo message={message} reversed={isMine} />
     </div>
   );
 };

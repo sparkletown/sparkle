@@ -13,11 +13,6 @@ import { DisplayUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 
-export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
-  a: BaseChatMessage,
-  b: BaseChatMessage
-) => b.timestamp.valueOf().localeCompare(a.timestamp.valueOf());
-
 export interface GetPreviewChatMessageProps {
   message: WithId<PrivateChatMessage>;
   user: WithId<User>;
@@ -31,11 +26,18 @@ export const getPreviewChatMessage = ({
   counterPartyUser: user,
 });
 
-export const buildMessage = <T extends ChatMessage>(
+export type ExcludeBuiltMessage<T extends BaseChatMessage> = Pick<
+  T,
+  Exclude<keyof T, "text" | "timestamp" | "fromUser">
+>;
+
+export const buildBaseMessage = <T extends BaseChatMessage>(
+  text: string,
   fromUser: WithId<DisplayUser>,
-  message: Pick<T, Exclude<keyof T, "timestamp" | "fromUser">>
+  message?: ExcludeBuiltMessage<T>
 ) => ({
   ...message,
+  text,
   fromUser: pickDisplayUserFromUser(fromUser),
   timestamp: firebase.firestore.Timestamp.now(),
 });
@@ -45,7 +47,7 @@ export const pickDisplayUserFromUser = (
 ): WithId<DisplayUser> =>
   pick(user, "id", "partyName", "pictureUrl", "anonMode");
 
-export const isNewSchemaMessage = <T extends ChatMessage>(
+export const isNewSchemaMessage = <T extends BaseChatMessage>(
   message: WithId<T>
 ) => {
   if (!("fromUser" in message && "timestamp" in message)) return false;
@@ -54,7 +56,7 @@ export const isNewSchemaMessage = <T extends ChatMessage>(
   return has(message.fromUser, "id");
 };
 
-export const filterNewSchemaMessages = <T extends ChatMessage>(
+export const filterNewSchemaMessages = <T extends BaseChatMessage>(
   messages: WithId<T>[] | undefined
 ) => messages?.filter(isNewSchemaMessage);
 
