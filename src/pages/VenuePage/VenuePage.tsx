@@ -38,8 +38,12 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateTheme } from "./helpers";
 
@@ -201,11 +205,14 @@ export const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+    return (
+      <WithNavigationBar hasBackButton>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
   if (!venue || !venueId) {
-    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 
