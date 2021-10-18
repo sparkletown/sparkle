@@ -41,7 +41,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     .doc(venueId)
     .collection("sections")
     .limit(fetchSectionsCount)
-    .withConverter(withIdConverter);
+    .withConverter(withIdConverter<AuditoriumSection>());
 
   const {
     data: sections = ALWAYS_EMPTY_ARRAY,

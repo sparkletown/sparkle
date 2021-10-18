@@ -560,7 +560,7 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+export const CHAT_MESSAGE_TIMEOUT = 500;
 
 export const DEFAULT_AVATARS = [
   defaultAvatar1,
@@ -673,3 +673,7 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.audience,
   VenueTemplate.viewingwindow,
 ];
+
+export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
+
+export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";

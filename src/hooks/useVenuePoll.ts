@@ -9,7 +9,7 @@ import {
   PollVoteBase,
 } from "types/chat";
 
-import { buildMessage } from "utils/chat";
+import { buildBaseMessage } from "utils/chat";
 
 import { useUser } from "./useUser";
 import { useVenueId } from "./useVenueId";
@@ -31,12 +31,10 @@ export const useVenuePoll = () => {
     async (pollValues: PollValues) => {
       if (!venueId || !userWithId) return;
 
-      const message = buildMessage<PollMessage>(userWithId, {
+      const message = buildBaseMessage<PollMessage>("poll", userWithId, {
         poll: pollValues,
         type: ChatMessageType.poll,
         votes: [],
-        // @debt remove this useless text from here
-        text: "poll",
       });
 
       return sendVenueMessage({ venueId, message });
