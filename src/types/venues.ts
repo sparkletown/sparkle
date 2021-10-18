@@ -211,6 +211,7 @@ export interface BaseVenue {
   ticketUrl?: string;
   chatTitle?: string;
   showReactions?: boolean;
+  isReactionsMuted?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
