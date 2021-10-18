@@ -184,13 +184,15 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 errors={errors}
               />
             </AdminSection>
-            <Checkbox
-              name="autoPlay"
-              defaultChecked={values.autoPlay}
-              forwardedRef={register}
-              containerClassName="SpaceEditFormNG__toggler"
-              label="Autoplay"
-            />
+            <AdminSection>
+              <Checkbox
+                name="autoPlay"
+                defaultChecked={values.autoPlay}
+                forwardedRef={register}
+                containerClassName="SpaceEditFormNG__toggler"
+                label="Autoplay"
+              />
+            </AdminSection>
           </>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Appearance" isOpened>
@@ -219,26 +221,33 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </AdminSection>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Extras" isOpened>
-          <Checkbox
-            defaultChecked={values.showShoutouts}
-            forwardedRef={register}
-            containerClassName="SpaceEditFormNG__toggler"
-            label="Enable shoutouts"
-            name="showShoutouts"
-          />
-          <Checkbox
-            defaultChecked={values.showReactions}
-            forwardedRef={register}
-            containerClassName="SpaceEditFormNG__toggler"
-            label="Reaction emojis"
-            name="showReactions"
-          />
-          <Toggler
-            name="isMuted"
-            forwardedRef={register}
-            disabled={!values.showReactions}
-            label="Audible"
-          />
+          <AdminSection>
+            <Checkbox
+              defaultChecked={values.showShoutouts}
+              forwardedRef={register}
+              containerClassName="SpaceEditFormNG__toggler"
+              label="Enable shoutouts"
+              name="showShoutouts"
+            />
+          </AdminSection>
+          <AdminSection>
+            <Checkbox
+              defaultChecked={values.showReactions}
+              forwardedRef={register}
+              containerClassName="SpaceEditFormNG__toggler"
+              label="Reaction emojis"
+              name="showReactions"
+            />
+          </AdminSection>
+          <AdminSection>
+            <Toggler
+              name="isMuted"
+              forwardedRef={register}
+              disabled={!values.showReactions}
+              containerClassName="SpaceEditFormNG__toggler"
+              label="Audible"
+            />
+          </AdminSection>
         </AdminSpacesListItem>
         <ButtonNG
           variant="danger"
