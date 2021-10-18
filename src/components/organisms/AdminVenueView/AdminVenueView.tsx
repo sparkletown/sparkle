@@ -13,6 +13,7 @@ import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 
 import { WithNavigationBar } from "../WithNavigationBar";
 
@@ -102,8 +103,13 @@ export const AdminVenueView: React.FC = () => {
   }
 
   if (!venue) {
-    // @debt replace null with a `NotFound` component for better UX
-    return null;
+    return (
+      <WithNavigationBar withSchedule>
+        <AdminRestricted>
+          <NotFound />
+        </AdminRestricted>
+      </WithNavigationBar>
+    );
   }
 
   return (
