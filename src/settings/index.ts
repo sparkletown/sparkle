@@ -543,7 +543,6 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
