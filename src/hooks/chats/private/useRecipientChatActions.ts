@@ -25,7 +25,7 @@ export const useRecipientChatActions = (
 
   const refs = useMemo(() => {
     if (!userId) return [];
-    
+
     const authorRef = getUserChatsCollectionRef(userId);
     const recipientRef = getUserChatsCollectionRef(recipient.id);
     return [authorRef, recipientRef];
