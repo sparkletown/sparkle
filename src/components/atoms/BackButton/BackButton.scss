@@ -33,8 +33,7 @@ $back-button-filter: blur(8px);
   }
 
   &__icon {
-    height: $back-button-icon-diameter;
-    width: $back-button-icon-diameter;
+    @include square-size($back-button-icon-diameter);
     opacity: 0.7;
   }
 

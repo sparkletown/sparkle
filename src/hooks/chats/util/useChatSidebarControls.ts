@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 
 import {
   setChatSidebarVisibility,
@@ -7,7 +7,6 @@ import {
 } from "store/actions/Chat";
 
 import { DisplayUser } from "types/User";
-import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import {
@@ -15,16 +14,15 @@ import {
   selectedChatSettingsSelector,
 } from "utils/selectors";
 
+import { useNumberOfUnreadChats } from "hooks/chats/util/useChatSidebarInfo";
 import { useDispatch } from "hooks/useDispatch";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-
-import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
   const isExpanded = useSelector(chatVisibilitySelector);
   const chatSettings = useSelector(selectedChatSettingsSelector);
+  const newPrivateMessageRecived = useNumberOfUnreadChats();
 
   const expandSidebar = useCallback(() => {
     dispatch(setChatSidebarVisibility(true));
@@ -38,9 +36,19 @@ export const useChatSidebarControls = () => {
     if (isExpanded) {
       collapseSidebar();
     } else {
+      dispatch(setVenueChatTabOpened());
       expandSidebar();
     }
-  }, [expandSidebar, collapseSidebar, isExpanded]);
+  }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
+
+  const togglePrivateChatSidebar = useCallback(() => {
+    if (isExpanded) {
+      collapseSidebar();
+    } else {
+      expandSidebar();
+      dispatch(setPrivateChatTabOpened());
+    }
+  }, [expandSidebar, collapseSidebar, dispatch, isExpanded]);
 
   const selectVenueChat = useCallback(() => {
     expandSidebar();
@@ -49,7 +57,7 @@ export const useChatSidebarControls = () => {
 
   const selectPrivateChat = useCallback(() => {
     expandSidebar();
-    dispatch(setPrivateChatTabOpened(undefined));
+    dispatch(setPrivateChatTabOpened());
   }, [dispatch, expandSidebar]);
 
   const selectRecipientChat = useCallback(
@@ -62,6 +70,7 @@ export const useChatSidebarControls = () => {
 
   return {
     isExpanded,
+    newPrivateMessageRecived,
     chatSettings,
 
     expandSidebar,
@@ -70,31 +79,6 @@ export const useChatSidebarControls = () => {
     selectRecipientChat,
     collapseSidebar,
     toggleSidebar,
+    togglePrivateChatSidebar,
   };
-};
-
-export const useChatSidebarInfo = (venue: AnyVenue) => {
-  const numberOfUnreadChats = useNumberOfUnreadChats();
-  const chatTitle = venue?.chatTitle ?? "Venue";
-
-  return {
-    privateChatTabTitle: `Direct Messages ${
-      numberOfUnreadChats ? `(${numberOfUnreadChats})` : ""
-    }`,
-    venueChatTabTitle: `${chatTitle} Chat`,
-  };
-};
-
-const useNumberOfUnreadChats = () => {
-  const { userId } = useUser();
-  const { privateChatPreviews } = usePrivateChatPreviews();
-
-  return useMemo(
-    () =>
-      privateChatPreviews.filter(
-        (chatPreview) =>
-          !chatPreview.isRead && chatPreview.fromUser.id !== userId
-      ).length,
-    [privateChatPreviews, userId]
-  );
 };

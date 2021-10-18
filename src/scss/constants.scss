@@ -14,11 +14,8 @@ $primary--darker: #3f247d;
 $primary--over: #f6e652;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
-$secondary--lightest: #868686;
-$secondary--light: #6a6a6a;
 $secondary: #333035;
 $secondary--dark: #19181a;
-$secondary--darkest: #090909;
 $secondary--live: #1a1d24;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
@@ -26,44 +23,29 @@ $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
-// @debt these should probably be replaced with var(...) referencing theme colors, need to include danger palette
-$input--invalid: #dc3545;
-$input--invalid-focus: #ff7384;
-$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
-
 // @debt these should probably be replaced with var(...) referencing theme colors
-$subheading--over: #a5a5a5;
-$modal-background--confirm: #232225;
 $announcement-background: rgba(39, 35, 34, 0.9);
 $send-msg-online-color: #78b553;
 
 // @debt these should probably be removed or replaced with var(...) references
-$dark-grey: #1a1d23;
-$almost-black: $secondary--darkest;
-$saturated-black: $secondary--dark;
 $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $light-grey--lightest: #acadb0;
 $concrete: #a3a6ab;
-$concrete--dark: #9f9fa0;
-$dark: #1a1d24;
-$red: #bc271a;
-$pink: #df9e9b;
-$bright-pink: #ba3ff4;
+
 $green: #4bcc4b;
 $yellow: #ffe600;
-$bright-yellow: #f0df73;
 $light-green: #3ce348;
 $dark-green: #208a28;
-$clickable-area-color: #ffffff11;
-$ripple-color: chocolate;
-$profile-image-bg-color: #999999;
-$chat-open: rgba(80, 227, 194, 0.35);
-$chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: var(--primary--under-35a);
-$chat-busy-me: rgba(#ffffff, 0.35);
-$room-card-background: #323232;
+
+@function opaque-white($opacity) {
+  @return rgba(#{var(--content--over-rgb)}, $opacity);
+}
+
+@function opaque-black($opacity) {
+  @return rgba(#{var(--content--under-rgb)}, $opacity);
+}
 
 // @debt the colors in these gradients should probably be replaced with var(...) references
 $gradient: linear-gradient(
@@ -106,7 +88,6 @@ $reactionSize: max(2.5vh, 2vw);
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
-$playa-venue-live: rgb(125, 223, 194);
 
 $margin-right--navbar-links: 8px;
 
@@ -151,6 +132,22 @@ $media-breakpoint--md: 768px;
 $media-breakpoint--lg: 992px;
 $media-breakpoint--xl: 1200px;
 
+$text-shadow--thin: 0 1px 2px rgba(#{var(--content--under-rgb)}, 0.25);
+$text-shadow--medium: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.25);
+$text-shadow--thick: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.5);
+$text-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
+  -1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  -1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2);
+
+// NOTE: line comments prevent tools to do automatic folding of the code into a single line
+$drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
+  drop-shadow(-1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(-1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2)); //
+
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
 $image-overlay-padding: 0.3rem;
@@ -164,7 +161,6 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
   background-color 0.2s ease-in-out;
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
-$image-input-border--error: 2px solid red;
 
 // NOTE: Magic number determined empirically to fill the footer space in default case
 $admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
@@ -190,6 +186,7 @@ $z-layer-sidebar: 15;
 $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
+$z-layer-viewing-window: 5;
 $z-layer-on-top-bg: 1;
 $z-layer-jazz-header: $z-layer-on-top-bg;
 $z-layer-user-list-label: $z-layer-on-top-bg;
@@ -264,6 +261,8 @@ $z-layers: (
   art-content: $z-layer-art-content,
   // Embeddable
   embeddable-iframe: $z-layer-embed-iframe,
+  // Viewing Window
+  viewing-window-content: $z-layer-viewing-window,
   // Auditorium
   auditorium-iframe: $z-layer-auditorium-iframe,
   // External Link
@@ -284,14 +283,6 @@ $z-layers: (
   }
 
   @return map-get($z-layers, $layer);
-}
-
-@function opaque-white($opacity: 0.1) {
-  @return rgba(#{var(--content--over-rgb)}, $opacity);
-}
-
-@function opaque-black($opacity: 0.1) {
-  @return rgba(#{var(--content--under-rgb)}, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {

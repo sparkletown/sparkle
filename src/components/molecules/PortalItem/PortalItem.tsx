@@ -17,6 +17,7 @@ import { VenueTemplate } from "types/venues";
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
+import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -26,18 +27,22 @@ import { createSpaceSchema } from "pages/Admin/Details/ValidationSchema";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 
-import "./VenueRoomItem.scss";
+import "./PortalItem.scss";
 
-export interface VenueRoomItemProps {
+export interface PortalItemProps {
   icon: string;
   text: string;
+  poster: string;
+  description: string;
   template?: VenueTemplate;
   worldId: string;
 }
 
-export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
+export const PortalItem: React.FC<PortalItemProps> = ({
   icon,
   text,
+  poster,
+  description,
   template,
   worldId,
 }) => {
@@ -89,12 +94,18 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     await createRoom(roomData, venueId, user).then(() => hideModal());
   }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
+  const { isValid } = useCheckImage(poster);
+
   return (
     <>
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <Form.Label>{SPACE_TAXON.capital} name</Form.Label>
+            <div className="PortalItem__title">{text}</div>
+            {isValid && (
+              <img className="PortalItem__poster" alt={text} src={poster} />
+            )}
+            <div className="PortalItem__description">{description}</div>
             <InputField
               name="venueName"
               type="text"
@@ -105,7 +116,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               disabled={isLoading}
             />
 
-            <div className="VenueRoomItem__center-content">
+            <div className="PortalItem__center-content">
               <ButtonNG
                 variant="primary"
                 disabled={isLoading}
@@ -118,11 +129,11 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
-      <div className="VenueRoomItem" onClick={showModal}>
+      <div className="PortalItem" onClick={showModal}>
         <img
           alt={`${ROOM_TAXON.lower} icon ${icon}`}
           src={icon}
-          className="VenueRoomItem__room-icon"
+          className="PortalItem__room-icon"
         />
         <div>{text}</div>
       </div>

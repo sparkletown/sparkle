@@ -2,6 +2,6 @@
 
 .FormErrors {
   &__list {
-    color: $red;
+    color: var(--danger--under);
   }
 }

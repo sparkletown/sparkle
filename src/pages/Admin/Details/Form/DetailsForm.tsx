@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Dropdown as ReactBootstrapDropdown, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
@@ -34,12 +33,21 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const { user } = useUser();
 
   const { worldId } = useWorldEditParams();
+  const { worldVenuesIds, worldParentVenues } = useWorldVenues(
+    worldId ?? venue?.worldId ?? ""
+  );
+
+  const { subtitle, description, coverImageUrl } =
+    venue?.config?.landingPageConfig ?? {};
+  const { icon } = venue?.host ?? {};
+  const { name, showGrid, parentId } = venue ?? {};
 
   const {
     watch,
     formState: { isSubmitting, dirty },
     register,
     setValue,
+    setError,
     errors,
     handleSubmit,
     triggerValidation,
@@ -54,9 +62,37 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const values = watch();
 
+  const validateParentId = useCallback(
+    (parentId, checkedIds) => {
+      if (checkedIds.includes(parentId)) return false;
+
+      if (!parentId) return true;
+
+      const parentVenue = worldParentVenues.find(
+        (venue) => venue.id === parentId
+      );
+
+      if (!parentVenue) return true;
+
+      validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
+    },
+    [worldParentVenues]
+  );
+
   const setVenue = useCallback(
     async (vals: FormValues) => {
       if (!user) return;
+
+      const isValidParentId = validateParentId(values.parentId, [venueId]);
+
+      if (!isValidParentId) {
+        setError(
+          "parentId",
+          "manual",
+          "This parent id is invalid because it will create a loop of parent venues. If venue 'A' is a parent of venue 'B', venue 'B' can't be a parent of venue 'A'."
+        );
+        return;
+      }
 
       try {
         if (venueId) {
@@ -86,7 +122,16 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         console.error(e);
       }
     },
-    [history, user, values.parentId, venue?.worldId, venueId, worldId]
+    [
+      history,
+      setError,
+      user,
+      validateParentId,
+      values.parentId,
+      venue?.worldId,
+      venueId,
+      worldId,
+    ]
   );
 
   const urlSafeName = values.name
@@ -101,11 +146,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const nameDisabled = isSubmitting || !!venueId;
 
   const defaultVenue = createJazzbar({});
-
-  const { subtitle, description, coverImageUrl } =
-    venue?.config?.landingPageConfig ?? {};
-  const { icon } = venue?.host ?? {};
-  const { name, showGrid, parentId } = venue ?? {};
 
   useEffect(() => {
     if (venue && venueId) {
@@ -228,8 +268,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     </div>
   );
 
-  const { worldVenuesIds } = useWorldVenues(worldId ?? venue?.worldId ?? "");
-
   const parentIdDropdownOptions = useMemo(
     () =>
       ["", ...worldVenuesIds].map((venueId) => (
@@ -257,15 +295,16 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
           defaultValue={values.parentId ?? ""}
           name={"parentId"}
         />
+        {errors.parentId && (
+          <span className="input-error">{errors.parentId.message}</span>
+        )}
       </>
     ),
-    [parentIdDropdownOptions, register, values.parentId]
+    [errors.parentId, parentIdDropdownOptions, register, values.parentId]
   );
 
-  const formClasses = classNames({ DetailsForm__edit: venueId });
-
   return (
-    <Form className={formClasses} onSubmit={handleSubmit(setVenue)}>
+    <Form onSubmit={handleSubmit(setVenue)} className="DetailsForm">
       <div className="DetailsForm__wrapper">
         <input
           type="hidden"

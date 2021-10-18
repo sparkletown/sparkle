@@ -9,6 +9,7 @@ const {
   uniq,
   differenceWith,
   flatten,
+  sum,
 } = require("lodash");
 const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
@@ -16,6 +17,8 @@ const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 60 * 1000;
 const BATCH_MAX_OPS = 500;
+
+exports.BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
   const firestore = admin.firestore();
@@ -259,4 +262,32 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
 
       return batch.commit();
     });
+  });
+
+exports.updateVenuesChatCounters = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+    const venueRefs = await admin
+      .firestore()
+      .collection("venues")
+      .get()
+      .then(({ docs }) => docs.map((d) => d.ref));
+
+    return Promise.all(
+      venueRefs.map(async (venue) => {
+        const counter = sum(
+          await venue
+            .collection("chatMessagesCounter")
+            .where(admin.firestore.FieldPath.documentId(), "!==", "sum")
+            .get()
+            .then(({ docs }) =>
+              docs.map((d) => d.data().count).filter((c) => Boolean(c))
+            )
+        );
+        await venue
+          .collection("chatMessagesCounter")
+          .doc("sum")
+          .update({ value: counter });
+      })
+    );
   });

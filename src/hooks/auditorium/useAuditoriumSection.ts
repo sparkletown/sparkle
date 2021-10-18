@@ -53,7 +53,7 @@ export const useAuditoriumSection = ({
     .doc(venueId)
     .collection("sections")
     .doc(sectionId)
-    .withConverter(withIdConverter);
+    .withConverter(withIdConverter<AuditoriumSection>());
 
   const { data: section, status } = useFirestoreDocData<
     WithId<AuditoriumSection>
