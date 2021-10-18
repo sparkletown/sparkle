@@ -876,6 +876,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.isReactionsMuted === "boolean") {
+    updated.isReactionsMuted = data.isReactionsMuted;
+  }
+
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
   }

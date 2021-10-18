@@ -78,11 +78,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     () => ({
       image_url: room.image_url ?? "",
       iframeUrl: portal?.iframeUrl ?? "",
-      autoPlay: portal?.autoPlay || DEFAULT_VENUE_AUTOPLAY,
+      autoPlay: portal?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
       showReactions: portal?.showReactions ?? false,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      isMuted: false,
+      isReactionsMuted: portal?.isReactionsMuted ?? false,
     }),
     [room.image_url, portal]
   );
@@ -122,6 +122,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         bannerImageUrl: values.bannerImageUrl,
         showShoutouts: values.showShoutouts,
         showReactions: values.showReactions,
+        isReactionsMuted: values.isReactionsMuted,
       },
       user
     );
@@ -241,7 +242,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </AdminSection>
           <AdminSection>
             <Toggler
-              name="isMuted"
+              name="isReactionsMuted"
               forwardedRef={register}
               disabled={!values.showReactions}
               containerClassName="SpaceEditFormNG__toggler"
