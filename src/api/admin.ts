@@ -151,6 +151,7 @@ export interface World {
   name: string;
   owners: string[];
   showNametags?: UsernameVisibility;
+  showBadges?: boolean;
   slug: string;
   updatedAt: Date;
 }
