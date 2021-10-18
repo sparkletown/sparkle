@@ -89,7 +89,13 @@ export const createFirestoreWorldAdvancedInput: (
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
+  return pick(input, [
+    "id",
+    "attendeesTitle",
+    "chatTitle",
+    "showNametags",
+    "showBadges",
+  ]);
 };
 
 export const createWorld: (
