@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
+  DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
   ROOM_TAXON,
@@ -31,7 +32,6 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { Checkbox } from "components/atoms/Checkbox";
 import ImageInput from "components/atoms/ImageInput";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -80,7 +80,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       iframeUrl: portal?.iframeUrl ?? "",
       autoPlay: portal?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
-      showReactions: portal?.showReactions ?? false,
+      showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
       isReactionsMuted: portal?.isReactionsMuted ?? false,
     }),
@@ -186,9 +186,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               />
             </AdminSection>
             <AdminSection>
-              <Checkbox
+              <Toggler
                 name="autoPlay"
-                defaultChecked={values.autoPlay}
                 forwardedRef={register}
                 containerClassName="SpaceEditFormNG__toggler"
                 label="Autoplay"
@@ -223,21 +222,19 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Extras" isOpened>
           <AdminSection>
-            <Checkbox
-              defaultChecked={values.showShoutouts}
+            <Toggler
+              name="showShoutouts"
               forwardedRef={register}
               containerClassName="SpaceEditFormNG__toggler"
               label="Enable shoutouts"
-              name="showShoutouts"
             />
           </AdminSection>
           <AdminSection>
-            <Checkbox
-              defaultChecked={values.showReactions}
+            <Toggler
+              name="showReactions"
               forwardedRef={register}
               containerClassName="SpaceEditFormNG__toggler"
               label="Reaction emojis"
-              name="showReactions"
             />
           </AdminSection>
           <AdminSection>
