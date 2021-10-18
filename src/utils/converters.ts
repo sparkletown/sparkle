@@ -19,12 +19,12 @@ export const withIdConverter = <T extends object>() =>
 export const distributedCounterValueConverter: firebase.firestore.FirestoreDataConverter<DistributedCounterValue> = {
   fromFirestore: (
     snapshot: firebase.firestore.QueryDocumentSnapshot
-  ): DistributedCounterValue => ({ sum: snapshot.data().sum }),
+  ): DistributedCounterValue => ({ value: snapshot.data().value }),
 
   toFirestore: ({
-    sum,
+    value,
   }: DistributedCounterValue): firebase.firestore.DocumentData => ({
-    sum,
+    value,
   }),
 };
 
