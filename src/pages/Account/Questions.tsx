@@ -6,11 +6,8 @@ import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
-import { currentVenueSelectorData } from "utils/selectors";
-
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -38,14 +35,14 @@ export const Questions: React.FC = () => {
   const { user } = useUser();
 
   const venueId = useVenueId();
-  const { sovereignVenue, isSovereignVenueLoading } = useSovereignVenue({
-    venueId,
-  });
+  const {
+    sovereignVenue,
+    isLoading: isSovereignVenueLoading,
+  } = useRelatedVenues({ currentVenueId: venueId });
+
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   // @debt this should probably be retrieving the sovereign venue
-  // @debt replace this with useConnectCurrentVenueNG or similar?
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelectorData);
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
@@ -94,7 +91,10 @@ export const Questions: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = sovereignVenue?.profile_questions?.length ?? 0;
+  const profileQuestions = venue?.profile_questions?.length
+    ? venue?.profile_questions
+    : sovereignVenue?.profile_questions;
+  const numberOfQuestions = profileQuestions?.length ?? 0;
   const headerMessage = `Now complete your profile by answering ${
     numberOfQuestions === 1 ? "this question" : "some short questions"
   }`;
@@ -110,7 +110,7 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions?.map((question: QuestionType) => (
+          {profileQuestions?.map((question: QuestionType) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
                 <strong>{question.name}</strong>

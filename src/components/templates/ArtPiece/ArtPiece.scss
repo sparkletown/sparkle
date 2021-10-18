@@ -10,6 +10,9 @@ $chat-wrapper-height: 260px;
   height: 100%;
   padding: 0;
   margin: 0;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
 
   &__title-sidebar {
     font-size: $font-size--xl;
@@ -25,12 +28,6 @@ $chat-wrapper-height: 260px;
     font-size: $font-size--md;
   }
 
-  &__sparkle-fairies {
-    position: fixed;
-    top: 250px;
-    left: 0;
-  }
-
   &__content {
     height: 100%;
     width: 100%;
@@ -43,6 +40,7 @@ $chat-wrapper-height: 260px;
     align-content: center;
     justify-content: space-between;
     align-items: center;
+    z-index: z(art-content);
   }
 
   &__aspect-container {
@@ -53,6 +51,7 @@ $chat-wrapper-height: 260px;
     overflow: auto;
     max-width: 100%;
     max-height: 100%;
+    z-index: z(art-content);
   }
 
   &__youtube-video {
@@ -75,8 +74,9 @@ $chat-wrapper-height: 260px;
       width: unset;
       flex-grow: 0;
       flex-shrink: 0;
+      border-radius: $spacing--xl;
 
-      .participant {
+      .VideoParticipant {
         max-width: 200px;
         max-height: 200px;
         height: 100%;
@@ -99,22 +99,19 @@ $chat-wrapper-height: 260px;
           z-index: z(global-profile-icon);
         }
 
-        .mute-container,
-        .mute-other-container {
-          cursor: pointer;
-          position: absolute;
-          text-align: center;
-          display: flex;
-          justify-content: center;
-        }
-
         .mute-container {
+          position: absolute;
           bottom: $spacing--md;
           left: 0;
           right: 0;
         }
 
         .mute-other-container {
+          cursor: pointer;
+          position: absolute;
+          text-align: center;
+          display: flex;
+          justify-content: center;
           top: $spacing--md;
           right: $spacing--md;
         }
@@ -124,6 +121,10 @@ $chat-wrapper-height: 260px;
           width: 100%;
           display: block;
           margin: 0 auto;
+        }
+
+        .participant--video-disabled {
+          border-radius: $border-radius--xl;
         }
       }
     }

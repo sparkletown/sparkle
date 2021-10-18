@@ -1,7 +1,12 @@
 @import "scss/constants";
 
 // @debt Are all of the jazzbar / emoji related styles actually needed/used here?
-.conversation-space-container {
+.conversation-space {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+
   .userlist-container {
     margin-left: 80px;
   }
@@ -28,8 +33,8 @@
     flex-shrink: 0;
 
     .table-header {
-      background: $dark;
-      color: $white;
+      background: $secondary--live;
+      color: $content--over;
       padding: 10px 20px;
       border-radius: 22px 22px 0 0;
     }
@@ -64,7 +69,7 @@
     }
 
     .call-out-band-container-at-table {
-      background: $dark;
+      background: $secondary--live;
       padding: 10px;
       margin-top: 15px;
       border-radius: 0px 0px 22px 22px;
@@ -78,6 +83,12 @@
   }
 
   .scrollable-area {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 3;
+    flex-basis: 0;
+    overflow: hidden;
+
     .description {
       font-weight: 700;
       text-align: center;
@@ -182,7 +193,7 @@
       justify-content: space-around;
       border-radius: 0 0 22px 22px;
       padding-top: 4px;
-      background: $dark;
+      background: $secondary--live;
     }
 
     .emoji-container {
@@ -217,7 +228,7 @@
         margin-left: 10px;
         width: 100px;
         &[type="submit"]:disabled {
-          color: rgba($white, 0.2);
+          color: opaque-white(0.2);
           background-color: rgba(green, 0.5);
         }
       }
@@ -259,7 +270,7 @@
   }
 
   .seated-area {
-    border: 0px solid $white;
+    border: 0px solid $content--over;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -313,5 +324,17 @@
         }
       }
     }
+  }
+}
+
+.TableHeader {
+  &__leave-table {
+    z-index: z(jazzbar-header);
+  }
+  &__lock-button {
+    z-index: z(jazzbar-header);
+  }
+  &__topic-info {
+    z-index: z(jazzbar-header);
   }
 }

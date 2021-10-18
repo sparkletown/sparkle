@@ -1,15 +1,15 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ContainerClassName } from "types/utility";
-
 import "./CenterContent.scss";
 
-export const CenterContent: React.FC<
-  React.PropsWithChildren<ContainerClassName>
-> = ({ children, containerClassName }) => {
+export const CenterContent: React.FC<React.HTMLProps<HTMLDivElement>> = ({
+  children,
+  className,
+  ...rest
+}) => {
   return (
-    <div className={classNames("CenterContent", containerClassName)}>
+    <div className={classNames("CenterContent", className)} {...rest}>
       {children}
     </div>
   );

@@ -16,7 +16,6 @@ import { Firestore } from "types/Firestore";
 import { UserWithLocation } from "types/User";
 
 import { AnimateMapActionTypes } from "./actions/AnimateMap";
-import { worldUsersApi } from "./api";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
@@ -26,7 +25,6 @@ export const rootReducer = combineReducers({
   firestore: firestoreReducer as Reducer<Firestore>,
   ...VenueTemplateReducers,
   ...MiscReducers,
-  [worldUsersApi.reducerPath]: worldUsersApi.reducer,
 });
 
 export const initialState: Readonly<{}> = {};
@@ -93,7 +91,6 @@ export const store = configureStore({
         },
       },
     })
-      .concat(worldUsersApi.middleware)
       .concat(
         /**
          * Note: LogRocket middleware needs to be last to be able to capture everything correctly

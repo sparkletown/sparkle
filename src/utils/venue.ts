@@ -1,8 +1,9 @@
+import React from "react";
+
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
 import { VenueInput_v2 } from "api/admin";
 
-import { User } from "types/User";
 import {
   AnyVenue,
   JazzbarVenue,
@@ -10,7 +11,12 @@ import {
   VenueTemplate,
 } from "types/venues";
 
-import { FormValues } from "pages/Admin/Venue/DetailsForm";
+import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
+
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
+import { SpaceEditFormProps } from "components/molecules/SpaceEditForm/SpaceEditForm";
+import { SpaceEditFormNG } from "components/molecules/SpaceEditFormNG";
+import { SpaceEditFormNGProps } from "components/molecules/SpaceEditFormNG/SpaceEditFormNG";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
@@ -52,42 +58,6 @@ export const buildEmptyVenue = (
   };
 };
 
-/**
- * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
- * @deprecated legacy tech debt related to Playa, soon to be removed
- */
-export const peopleByLastSeenIn = (
-  venueName: string,
-  users?: readonly WithId<User>[]
-) => {
-  const result: { [lastSeenIn: string]: WithId<User>[] } = {};
-  // @debt This isn't correct, but this is only used by Playa/etc, which are legacy code soon to be removed, so we don't mind
-  // for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-  //   if (user.lastSeenIn) {
-  //     if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
-  //     if (user.lastSeenIn && user.lastSeenIn[venueName]) {
-  //       result[venueName].push(user);
-  //     }
-  //   }
-  // }
-  return result;
-};
-
-/**
- * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
- * @deprecated legacy tech debt related to Playa, soon to be removed
- */
-export const peopleAttending = (
-  peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
-  venue: AnyVenue
-) => {
-  const rooms = venue.rooms?.map((room) => room.title) ?? [];
-
-  const locations = [venue.name, ...rooms];
-
-  return locations.flatMap((location) => peopleByLastSeenIn[location] ?? []);
-};
-
 export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
@@ -102,8 +72,8 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
           "/default-profile-pic.png",
           values.bannerImageFile
         ),
-        subtitle: values.subtitle || "Subtitle for your venue",
-        description: values.description || "Description of your venue",
+        subtitle: values.subtitle || "Subtitle for your space",
+        description: values.description || "Description of your space",
         presentation: [],
         checkList: [],
         quotations: [],
@@ -122,6 +92,7 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
     // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
     iframeUrl: "",
     logoImageUrl: "",
+    worldId: "",
   };
 };
 
@@ -165,3 +136,63 @@ export const sortVenues = (
       assertUnreachable(sortingOption);
   }
 };
+
+export interface FindSovereignVenueOptions {
+  previouslyCheckedVenueIds?: readonly string[];
+  maxDepth?: number;
+}
+
+export interface FindSovereignVenueReturn {
+  sovereignVenue: WithId<AnyVenue>;
+  checkedVenueIds: readonly string[];
+}
+
+export const findSovereignVenue = (
+  venueId: string,
+  venues: WithId<AnyVenue>[],
+  options?: FindSovereignVenueOptions
+): FindSovereignVenueReturn | undefined => {
+  const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
+
+  const venue = venues.find((venue) => venue.id === venueId);
+
+  if (!venue) return undefined;
+
+  if (!venue.parentId)
+    return {
+      sovereignVenue: venue,
+      checkedVenueIds: previouslyCheckedVenueIds,
+    };
+
+  if (previouslyCheckedVenueIds.includes(venueId))
+    throw new Error(
+      `Circular reference detected. '${venueId}' has already been checked`
+    );
+
+  if (maxDepth && maxDepth <= 0)
+    throw new Error("Maximum depth reached before finding the sovereignVenue.");
+
+  return findSovereignVenue(venue.parentId, venues, {
+    ...options,
+    previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
+    maxDepth: maxDepth ? maxDepth - 1 : undefined,
+  });
+};
+
+const spaceEditForms = () => {
+  const templatesList: VenueTemplate[] = Object.values(VenueTemplate).filter(
+    (template) => template !== VenueTemplate.auditorium
+  );
+  const templatelistNG = {
+    [VenueTemplate.auditorium]: SpaceEditFormNG,
+  };
+
+  return templatesList.reduce(
+    (acc, template) => ({ ...acc, [template]: SpaceEditForm }),
+    templatelistNG
+  );
+};
+export const SPACE_EDIT_FORM_TEMPLATES: Record<
+  string,
+  React.FC<SpaceEditFormNGProps | SpaceEditFormProps>
+> = spaceEditForms();

@@ -1,13 +1,19 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { BaseMessageToDisplay } from "types/chat";
+import { BaseChatMessage } from "types/chat";
 
+import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import {
+  useChatboxDeleteChatMessage,
+  useChatboxDeleteThreadMessage,
+} from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -16,28 +22,41 @@ import "./ChatMessageInfo.scss";
 const deleteIconClass = "ChatMessageInfo__delete-icon";
 
 export interface ChatMessageInfoProps {
-  message: BaseMessageToDisplay;
-  deleteMessage?: () => void;
+  threadId?: string;
+  message: WithId<BaseChatMessage>;
   reversed?: boolean;
 }
 
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   message,
-  deleteMessage,
+  threadId,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, author } = message;
+  const { timestamp, fromUser } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
-  const timestamp = ts_utc.toMillis();
+  const deleteThreadReply = useChatboxDeleteThreadMessage();
+  const deleteChatMessage = useChatboxDeleteChatMessage();
+  const deleteMessage = useMemo(() => {
+    if (threadId) {
+      if (deleteThreadReply)
+        return () => deleteThreadReply({ threadId, messageId: message.id });
+    } else {
+      if (deleteChatMessage)
+        return () => deleteChatMessage({ messageId: message.id });
+    }
+    return null;
+  }, [deleteChatMessage, deleteThreadReply, message.id, threadId]);
+
+  const timestampMillis = timestamp.toMillis();
 
   const openAuthorProfile = useCallback(
     (event) => {
       if (event.target.closest(`.${deleteIconClass}`)) return;
 
-      openUserProfileModal(author);
+      openUserProfileModal(fromUser.id);
     },
-    [openUserProfileModal, author]
+    [openUserProfileModal, fromUser.id]
   );
 
   const containerClasses = classNames("ChatMessageInfo", {
@@ -46,10 +65,10 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   return (
     <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={author} showStatus />
-      <span className="ChatMessageInfo__author">{author.partyName}</span>
+      <UserAvatar user={fromUser} showStatus />
+      <span className="ChatMessageInfo__author">{fromUser.partyName}</span>
       <span className="ChatMessageInfo__time">
-        {formatTimeLocalised(timestamp)}
+        {formatTimeLocalised(timestampMillis)}
       </span>
       {deleteMessage && (
         <FontAwesomeIcon

@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
-import { User } from "types/User";
+import { DisplayUser, User } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -14,26 +14,30 @@ export enum ChatMessageType {
 }
 
 export type BaseChatMessage = {
-  from: string;
+  fromUser: WithId<DisplayUser>;
   text: string;
-  ts_utc: firebase.firestore.Timestamp;
-  deleted?: boolean;
-  threadId?: string;
+  timestamp: firebase.firestore.Timestamp;
   isQuestion?: boolean;
+  threadId?: string;
+  deleted?: boolean;
 };
 
-export type PrivateChatMessage = BaseChatMessage & {
-  to: string;
+export interface PrivateChatMessage extends BaseChatMessage {
+  toUser: WithId<DisplayUser>;
   isRead?: boolean;
-};
+}
 
-export type VenueChatMessage = BaseChatMessage;
+export type VenueChatMessage = BaseChatMessage & MessageWithReplies;
 
-export type PollMessage = BaseChatMessage & {
+export interface PollMessage extends BaseChatMessage {
   type: ChatMessageType.poll;
   poll: PollValues;
   votes: PollVote[];
-};
+}
+
+export interface JukeboxMessage extends BaseChatMessage {
+  tableId: string;
+}
 
 export type PollVoteBase = {
   questionId: number;
@@ -44,48 +48,73 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
+export type ChatMessage =
+  | VenueChatMessage
+  | PrivateChatMessage
+  | PollMessage
+  | JukeboxMessage;
 
-export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
-  author: WithId<User>;
-  isMine: boolean;
+export type MessageWithReplies = {
+  repliesCount?: number;
 };
 
-export type MessageToDisplay<
-  T extends ChatMessage = ChatMessage
-> = BaseMessageToDisplay<T> & {
-  replies: WithId<BaseMessageToDisplay<T>>[];
-};
+export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T &
+  MessageWithReplies;
 
-export interface SendMessageProps {
-  message: string;
+export interface SendMessagePropsBase {
+  text: string;
+}
+
+export interface SendChatMessageProps extends SendMessagePropsBase {
   isQuestion?: boolean;
 }
 
-export type SendMessage = (
-  sendMessageProps: SendMessageProps
-) => Promise<void> | undefined;
-
-export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
-
-export interface SendChatReplyProps {
-  replyText: string;
+export interface SendThreadMessageProps extends SendMessagePropsBase {
   threadId: string;
 }
 
-export type SendChatReply = (
-  props: SendChatReplyProps
-) => Promise<void> | undefined;
+export type SendChatMessage<T extends SendMessagePropsBase> = (
+  sendMessageProps: T
+) => Promise<void>;
+
+export interface DeleteChatMessageProps {
+  messageId: string;
+}
+
+export interface DeleteThreadMessageProps extends DeleteChatMessageProps {
+  threadId: string;
+}
+
+export type DeleteChatMessage<T extends DeleteChatMessageProps> = (
+  props: T
+) => Promise<void>;
+
+export type MarkMessageRead = (messageId: string) => Promise<void>;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
 };
 
-export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
+export interface ChatActions {
+  sendChatMessage: SendChatMessage<SendChatMessageProps>;
+  deleteChatMessage?: DeleteChatMessage<DeleteChatMessageProps>;
+  sendThreadMessage: SendChatMessage<SendThreadMessageProps>;
+  deleteThreadMessage?: DeleteChatMessage<DeleteThreadMessageProps>;
+}
 
-export type PreviewChatMessageToDisplay = PreviewChatMessage & {
-  isMine: boolean;
-};
+export interface InfiniteScrollProps {
+  hasMore: boolean;
+  loadMore: () => void;
+}
+
+export interface PrivateChatActions
+  extends Exclude<ChatActions, "deleteMessage" | "deleteThreadReply"> {
+  markMessageRead: MarkMessageRead;
+}
+
+export type JukeboxChatActions = Pick<ChatActions, "sendChatMessage">;
+
+export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
 
 export enum ChatTypes {
   WORLD_CHAT = "WORLD_CHAT",
@@ -95,7 +124,7 @@ export enum ChatTypes {
 
 export type PrivateChatSettings = {
   openedChatType: ChatTypes.PRIVATE_CHAT;
-  recipientId?: string;
+  recipient?: WithId<DisplayUser>;
 };
 
 export type VenueChatSettings = {

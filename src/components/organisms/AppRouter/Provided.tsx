@@ -1,45 +1,26 @@
 import React from "react";
 
-import {
-  RelatedVenuesProvider,
-  RelatedVenuesProviderProps,
-} from "hooks/useRelatedVenues";
-import { WorldUsersProvider, WorldUsersProviderProps } from "hooks/users";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
-
-export type EmptyProviderProps = Partial<
-  RelatedVenuesProviderProps & WorldUsersProviderProps
->;
-
-const EmptyProvider: React.FC<EmptyProviderProps> = ({ children }) => {
-  return <>{children}</>;
-};
 
 export interface ProvidedProps {
   withRelatedVenues?: boolean;
-  withWorldUsers?: boolean;
 }
 
 export const Provided: React.FC<ProvidedProps> = ({
   children,
   withRelatedVenues = false,
-  withWorldUsers = false,
 }) => {
   const venueId = useVenueId();
 
-  const MaybeRelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = withRelatedVenues
-    ? RelatedVenuesProvider
-    : EmptyProvider;
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
-  const MaybeWorldUsersProvider: React.FC<WorldUsersProviderProps> = withWorldUsers
-    ? WorldUsersProvider
-    : EmptyProvider;
+  if (!withRelatedVenues) return <>{children}</>;
 
   return (
-    <MaybeWorldUsersProvider venueId={venueId}>
-      <MaybeRelatedVenuesProvider venueId={venueId}>
-        {children}
-      </MaybeRelatedVenuesProvider>
-    </MaybeWorldUsersProvider>
+    <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
+      {children}
+    </RelatedVenuesProvider>
   );
 };

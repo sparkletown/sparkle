@@ -20,9 +20,15 @@ import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { IS_BURN } from "secrets";
-
-import { DEFAULT_VENUE } from "settings";
+import {
+  ADMIN_V1_CREATE_URL,
+  ADMIN_V1_EDIT_URL,
+  ADMIN_V1_ROOMS_URL,
+  ADMIN_V1_ROOT_URL,
+  DEFAULT_VENUE,
+  ROOM_TAXON,
+  ROOMS_TAXON,
+} from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
@@ -38,7 +44,6 @@ import {
   VenueSortingOptions,
 } from "utils/venue";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
@@ -49,6 +54,8 @@ import { useVenueId } from "hooks/useVenueId";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { Loading } from "components/molecules/Loading";
+
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import "firebase/storage";
 
@@ -72,7 +79,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const { isLoading, ownedVenues } = useOwnedVenues({
+  const { ownedVenues } = useOwnedVenues({
     currentVenueId: selectedVenueId,
   });
 
@@ -109,8 +116,6 @@ const VenueList: React.FC<VenueListProps> = ({
     [currentSortingOption, toggleSortingDropdown]
   );
 
-  if (isLoading) return <Loading />;
-
   return (
     <>
       <div className="page-container-adminsidebar-title title">
@@ -122,7 +127,7 @@ const VenueList: React.FC<VenueListProps> = ({
         />
       </div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin/venue/creation" className="btn btn-primary">
+        <Link to={ADMIN_V1_CREATE_URL} className="btn btn-primary">
           Create a venue
         </Link>
       </div>
@@ -134,7 +139,7 @@ const VenueList: React.FC<VenueListProps> = ({
               canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
-            <Link to={`/admin/${venue.id}`}>{venue.name}</Link>
+            <Link to={`${ADMIN_V1_ROOT_URL}/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms?.map((room, idx) => (
@@ -142,7 +147,9 @@ const VenueList: React.FC<VenueListProps> = ({
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
-                    <Link to={`/admin/${venue.id}?roomIndex=${idx}`}>
+                    <Link
+                      to={`${ADMIN_V1_ROOT_URL}/${venue.id}?roomIndex=${idx}`}
+                    >
                       {room.title}
                     </Link>
                   </li>
@@ -173,7 +180,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const { currentVenue } = useOwnedVenues({ currentVenueId: venueId });
+  const { isLoading, currentVenue } = useOwnedVenues({
+    currentVenueId: venueId,
+  });
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
@@ -204,6 +213,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
       },
     ].filter(isTruthyFilter);
   }, [matchUrl, currentVenue]);
+
+  if (isLoading) return <Loading />;
 
   if (!currentVenue) {
     return <>{"Oops, seems we can't find your venue!"}</>;
@@ -285,6 +296,10 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
+  const navigateToAdmin = useCallback(() => {
+    history.push(ADMIN_V1_ROOT_URL);
+  }, [history]);
+
   useEffect(() => {
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
     const clientHeight = placementDivRef.current?.clientHeight ?? 0;
@@ -327,25 +342,25 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               Visit space
             </Link>
             <Link
-              to={`/admin/venue/edit/${venue.id}`}
+              to={`${ADMIN_V1_EDIT_URL}/${venue.id}`}
               className="btn btn-block"
             >
               Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
-                to={`/admin/venue/rooms/${venue.id}`}
+                to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
                 className="btn btn-block"
               >
-                Add a Room
+                Add a {ROOM_TAXON.capital}
               </Link>
             )}
             {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
               <Link
-                to={`/admin/venue/rooms/${venue.id}?roomIndex=${roomIndex}`}
+                to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
               >
-                Edit Room
+                Edit {ROOM_TAXON.capital}
               </Link>
             )}
             <button
@@ -356,7 +371,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               }}
               style={{ marginBottom: 10, width: "100%" }}
             >
-              Create an Event
+              Add experience
             </button>
             <Link
               to={{ search: "manageUsers=true" }}
@@ -366,8 +381,9 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             </Link>
             {typeof roomIndex !== "number" && (
               <div className="page-container-adminpanel-actions__note">
-                If you are looking to edit one of your rooms, please select the
-                room in the left hand menu
+                If you are looking to edit one of your {ROOMS_TAXON.lower},
+                please select the
+                {ROOM_TAXON.lower} in the left hand menu
               </div>
             )}
             {canBeDeleted(venue) && (
@@ -384,8 +400,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
       </div>
       <VenueDeleteModal
         show={isDeleteModalVisible}
+        onCancel={hideDeleteModal}
         onHide={hideDeleteModal}
-        venue={venue}
+        onDelete={navigateToAdmin}
+        venueId={venue.id}
+        venueName={venue.name}
       />
       <VenueOwnersModal
         visible={manageUsers}
@@ -399,8 +418,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
 export const Admin: React.FC = () => {
   const { user } = useUser();
   const userId = user?.uid || "";
-
-  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
@@ -417,29 +434,35 @@ export const Admin: React.FC = () => {
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  if (isAdminUserLoading) return <>Loading...</>;
-  if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
-
+  // @debt deliberately returning AdminRestricted before redirect as to keep original logic/behavior. Ideally they'd be in reverse
   if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
+    return (
+      <WithNavigationBar>
+        <AdminRestricted>
+          <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
+        </AdminRestricted>
+      </WithNavigationBar>
+    );
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
-      <div className="admin-dashboard">
-        <div className="page-container page-container_adminview">
-          <div className="page-container-adminsidebar">
-            <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
-          </div>
-          <div className="page-container-adminpanel">
-            {venueId ? (
-              <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
-            ) : (
-              <>Select a venue to see its details</>
-            )}
+    <WithNavigationBar>
+      <AdminRestricted>
+        <div className="admin-dashboard">
+          <div className="page-container page-container_adminview">
+            <div className="page-container-adminsidebar">
+              <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
+            </div>
+            <div className="page-container-adminpanel">
+              {venueId ? (
+                <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+              ) : (
+                <>Select a venue to see its details</>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };

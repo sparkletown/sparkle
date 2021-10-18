@@ -24,6 +24,15 @@ $spacing-map: (
   &--hidden {
     display: none;
     visibility: hidden;
+    height: 0;
+  }
+
+  &--error {
+    color: var(--danger--under);
+  }
+
+  &--subdued {
+    color: var(--content--over-50a);
   }
 
   &--anamorphic {
