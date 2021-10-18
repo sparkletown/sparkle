@@ -106,7 +106,11 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     <InfiniteScroll
       dataLength={auditoriumSections.length}
       next={loadMore}
-      hasMore={true}
+      hasMore={
+        venue.sectionsCount
+          ? auditoriumSections.length < venue.sectionsCount
+          : true
+      }
       loader={
         <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
       }
