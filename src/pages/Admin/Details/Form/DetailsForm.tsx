@@ -102,21 +102,37 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const defaultVenue = createJazzbar({});
 
+  const { subtitle, description, coverImageUrl } =
+    venue?.config?.landingPageConfig ?? {};
+  const { icon } = venue?.host ?? {};
+  const { name, showGrid, parentId } = venue ?? {};
+
   useEffect(() => {
     if (venue && venueId) {
       setValue([
-        { name: venue?.name },
-        { subtitle: venue?.config?.landingPageConfig.subtitle },
-        { description: venue?.config?.landingPageConfig?.description },
+        { name: name },
+        { subtitle },
+        { description },
         {
-          bannerImageUrl: venue?.config?.landingPageConfig?.coverImageUrl ?? "",
+          bannerImageUrl: coverImageUrl ?? "",
         },
-        { logoImageUrl: venue?.host?.icon ?? DEFAULT_VENUE_LOGO },
-        { showGrid: venue?.showGrid },
-        { parentId: venue?.parentId },
+        { logoImageUrl: icon ?? DEFAULT_VENUE_LOGO },
+        { showGrid: showGrid },
+        { parentId: parentId },
       ]);
     }
-  }, [venue, setValue, venueId]);
+  }, [
+    coverImageUrl,
+    description,
+    icon,
+    name,
+    parentId,
+    setValue,
+    showGrid,
+    subtitle,
+    venue,
+    venueId,
+  ]);
 
   const handleBannerUpload = (url: string) => {
     setValue("bannerImage", url);
@@ -246,10 +262,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     [parentIdDropdownOptions, register, values.parentId]
   );
 
-  const formStyles = classNames({ DetailsForm__edit: venueId });
+  const formClasses = classNames({ DetailsForm__edit: venueId });
 
   return (
-    <Form className={formStyles} onSubmit={handleSubmit(setVenue)}>
+    <Form className={formClasses} onSubmit={handleSubmit(setVenue)}>
       <div className="DetailsForm__wrapper">
         <input
           type="hidden"
