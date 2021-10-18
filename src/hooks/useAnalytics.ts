@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from "react";
+// eslint-disable-next-line no-restricted-imports
 import mixpanel, { Mixpanel } from "mixpanel-browser";
 
 import { MIXPANEL_PROJECT_TOKEN } from "secrets";
@@ -6,7 +7,7 @@ import { MIXPANEL_PROJECT_TOKEN } from "secrets";
 import {
   DEFAULT_ANALYTICS_GROUP_KEY,
   DEFAULT_ANALYTICS_WORLD_NAME,
-  ENTER_AUDITORIUM_EVENT_NAME,
+  ENTER_AUDITORIUM_SECTION_EVENT_NAME,
   ENTER_JAZZ_BAR_EVENT_NAME,
   ENTER_ROOM_EVENT_NAME,
   LOG_IN_EVENT_NAME,
@@ -17,8 +18,6 @@ import {
   VENUE_PAGE_LOADED_EVENT_NAME,
 } from "settings";
 
-import { World } from "api/admin";
-
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
@@ -27,40 +26,58 @@ import { WithId } from "utils/id";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
 
-const setAnalyticsGroup = (groupKey: string, groupId: string) => {
-  mixpanel.set_group(groupKey, groupId);
-  mixpanel.get_group(groupKey, groupId).set({ $name: groupId });
+const defaultWorld = {
+  id: "undefined",
+  name: DEFAULT_ANALYTICS_WORLD_NAME,
 };
 
-const trackDefaultGroupAnalyticsEvent = (
-  eventName: string,
-  properties: Object,
-  worldName: string = DEFAULT_ANALYTICS_WORLD_NAME
-) => {
-  return mixpanel.track_with_groups(eventName, properties, {
-    [DEFAULT_ANALYTICS_GROUP_KEY]: worldName,
+export const setAnalyticsGroup = (groupKey: string, groupName: string) => {
+  if (!MIXPANEL_PROJECT_TOKEN) return;
+
+  mixpanel.set_group(groupKey, groupName);
+  mixpanel.get_group(groupKey, groupName).set({ $name: groupName });
+};
+
+export const initAnalytics = (opts?: Object) => {
+  if (!MIXPANEL_PROJECT_TOKEN) {
+    console.warn("Mixpanel is not set up correctly. The token is missing.");
+    return;
+  }
+
+  return mixpanel.init(MIXPANEL_PROJECT_TOKEN, opts);
+};
+
+export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
+  if (!MIXPANEL_PROJECT_TOKEN) return;
+
+  mixpanel.identify(email);
+  mixpanel.people.set({
+    $email: email,
+    $name: `${name} (${email})`,
   });
 };
 
-interface UseAnalyticsProps {
+export interface UseAnalyticsProps {
   venue?: WithId<AnyVenue>;
 }
 
-interface UseAnalyticsResult {
+export interface IdentifyUserProps {
+  email: string;
+  name?: string;
+}
+
+export interface UseAnalyticsResult {
   initAnalytics: (opts?: Object) => Mixpanel | undefined;
-  identifyUser: (email: string, name?: string) => void;
-  trackVenuePageLoadedEvent: (
-    worldName: WithId<World>,
-    groupKey?: string
-  ) => void;
+  identifyUser: (props: IdentifyUserProps) => void;
+  trackVenuePageLoadedEvent: () => void;
   trackLogInEvent: (email: string) => void;
   trackSignUpEvent: (email: string) => void;
-  trackOpenRoomModalEvent: (roomTitle?: string, groupKey?: string) => void;
-  trackEnterRoomEvent: (roomTemplate?: string, groupKey?: string) => void;
-  trackEnterAuditoriumEvent: (groupKey?: string) => void;
-  trackSelectTableEvent: (groupKey?: string) => void;
-  trackTakeSeatEvent: (groupKey?: string) => void;
-  trackEnterJazzBarEvent: (groupKey?: string) => void;
+  trackOpenRoomModalEvent: (roomTitle?: string) => void;
+  trackEnterRoomEvent: (roomTitle?: string, roomTemplate?: string) => void;
+  trackEnterAuditoriumSectionEvent: () => void;
+  trackSelectTableEvent: () => void;
+  trackTakeSeatEvent: () => void;
+  trackEnterJazzBarEvent: () => void;
 }
 
 export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
@@ -74,228 +91,100 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
   const worldIdAndName = useMemo(() => {
     if (!isWorldLoaded || !world) return;
 
-    return { id: world.id, name: world.name || DEFAULT_ANALYTICS_WORLD_NAME };
+    return { id: world.id, name: world.name };
   }, [isWorldLoaded, world]);
 
-  const initAnalytics = useCallback((opts?: Object) => {
-    if (!MIXPANEL_PROJECT_TOKEN) {
-      console.warn("Mixpanel is not set up correctly.");
-      return;
-    }
+  const trackWithWorld = useCallback(
+    (eventName, properties = {}) => {
+      if (!venue) return;
 
-    return mixpanel.init(MIXPANEL_PROJECT_TOKEN, opts);
-  }, []);
+      const { id: worldId, name: worldName } = worldIdAndName ?? defaultWorld;
+      const worldString = `${worldName} (${worldId})`;
+      setAnalyticsGroup(DEFAULT_ANALYTICS_GROUP_KEY, worldString);
 
-  const identifyUser = useCallback((email: string, name = "N/A") => {
-    if (!MIXPANEL_PROJECT_TOKEN) return;
-
-    mixpanel.identify(email);
-    mixpanel.people.set({
-      $email: email,
-      $name: `${name} (${email})`,
-    });
-  }, []);
-
-  const trackLogInEvent = useCallback(
-    (email: string) => {
-      if (!MIXPANEL_PROJECT_TOKEN || !email || !venue) return;
-
-      setAnalyticsGroup(
-        DEFAULT_ANALYTICS_GROUP_KEY,
-        DEFAULT_ANALYTICS_WORLD_NAME
+      return mixpanel.track_with_groups(
+        eventName,
+        { email: user?.email, venueId: venue.id, ...properties },
+        {
+          [DEFAULT_ANALYTICS_GROUP_KEY]: worldString,
+        }
       );
-
-      return trackDefaultGroupAnalyticsEvent(LOG_IN_EVENT_NAME, {
-        email,
-        venueId: venue.id,
-      });
     },
-    [venue]
+    [user, venue, worldIdAndName]
   );
 
-  const trackSignUpEvent = useCallback((email: string) => {
-    if (!MIXPANEL_PROJECT_TOKEN || !email) return;
+  const trackLogInEvent = useCallback(
+    (email: string) => trackWithWorld(LOG_IN_EVENT_NAME, { email }),
+    [trackWithWorld]
+  );
 
-    setAnalyticsGroup(
-      DEFAULT_ANALYTICS_GROUP_KEY,
-      DEFAULT_ANALYTICS_WORLD_NAME
-    );
+  const trackSignUpEvent = useCallback(
+    (email: string) => {
+      if (!email) return;
 
-    return trackDefaultGroupAnalyticsEvent(
-      SIGN_UP_EVENT_NAME,
-      { email },
-      DEFAULT_ANALYTICS_WORLD_NAME
-    );
-  }, []);
+      return trackWithWorld(SIGN_UP_EVENT_NAME, {
+        email,
+      });
+    },
+    [trackWithWorld]
+  );
 
   const trackVenuePageLoadedEvent = useCallback(
-    (world: WithId<World>, groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (!MIXPANEL_PROJECT_TOKEN || !venue || !world || !user) return;
-      const groupId =
-        world.name !== world.id ? `${world.name} (${world.id})` : world.name;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        VENUE_PAGE_LOADED_EVENT_NAME,
-        { worldId: world.id, worldName: world.name, template: venue.template },
-        groupId
-      );
-    },
-    [user, venue]
+    () =>
+      trackWithWorld(VENUE_PAGE_LOADED_EVENT_NAME, {
+        template: venue?.template,
+      }),
+    [trackWithWorld, venue?.template]
   );
 
   const trackOpenRoomModalEvent = useCallback(
-    (roomTitle?: string, groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (
-        !MIXPANEL_PROJECT_TOKEN ||
-        !user ||
-        !venue ||
-        !worldIdAndName ||
-        !roomTitle
-      )
-        return;
-
-      const { id: worldId, name: worldName } = worldIdAndName;
-      const groupId = `${worldName} (${worldId})`;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        OPEN_ROOM_MODAL_EVENT_NAME,
-        {
-          worldId,
-          worldName,
-          email: user.email,
-          roomName: roomTitle,
-          venueId: venue.id,
-        },
-        groupId
-      );
-    },
-    [user, venue, worldIdAndName]
+    (roomTitle?: string) =>
+      trackWithWorld(OPEN_ROOM_MODAL_EVENT_NAME, {
+        roomName: roomTitle,
+      }),
+    [trackWithWorld]
   );
 
   const trackEnterRoomEvent = useCallback(
-    (roomTemplate?: string, groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (
-        !MIXPANEL_PROJECT_TOKEN ||
-        !user ||
-        !venue ||
-        !worldIdAndName ||
-        !roomTemplate
-      )
-        return;
-
-      const { id: worldId, name: worldName } = worldIdAndName;
-      const groupId = `${worldName} (${worldId})`;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        ENTER_ROOM_EVENT_NAME,
-        {
-          worldId,
-          worldName,
-          email: user.email,
-          roomTemplate: roomTemplate,
-          venueId: venue.id,
-        },
-        groupId
-      );
-    },
-    [user, venue, worldIdAndName]
+    (roomTitle?: string, roomTemplate?: string) =>
+      trackWithWorld(ENTER_ROOM_EVENT_NAME, {
+        roomTitle,
+        roomTemplate,
+      }),
+    [trackWithWorld]
   );
 
-  const trackEnterAuditoriumEvent = useCallback(
-    (groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (!MIXPANEL_PROJECT_TOKEN || !user || !venue || !worldIdAndName) return;
-
-      const { id: worldId, name: worldName } = worldIdAndName;
-      const groupId = `${worldName} (${worldId})`;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        ENTER_AUDITORIUM_EVENT_NAME,
-        { worldId, worldName, email: user.email, venueId: venue.id },
-        groupId
-      );
-    },
-    [user, venue, worldIdAndName]
+  const trackEnterAuditoriumSectionEvent = useCallback(
+    () => trackWithWorld(ENTER_AUDITORIUM_SECTION_EVENT_NAME),
+    [trackWithWorld]
   );
 
   const trackSelectTableEvent = useCallback(
-    (groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (!MIXPANEL_PROJECT_TOKEN || !user || !venue || !worldIdAndName) return;
-
-      const { id: worldId, name: worldName } = worldIdAndName;
-      const groupId = `${worldName} (${worldId})`;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        SELECT_TABLE_EVENT_NAME,
-        {
-          worldId,
-          worldName,
-          email: user.email,
-          venueId: venue.id,
-          venueTemplate: venue.template,
-        },
-        groupId
-      );
-    },
-    [user, venue, worldIdAndName]
+    () =>
+      trackWithWorld(SELECT_TABLE_EVENT_NAME, {
+        venueTemplate: venue?.template,
+      }),
+    [trackWithWorld, venue?.template]
   );
 
   const trackTakeSeatEvent = useCallback(
-    (groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (!MIXPANEL_PROJECT_TOKEN || !user || !venue || !worldIdAndName) return;
-
-      const { id: worldId, name: worldName } = worldIdAndName;
-      const groupId = `${worldName} (${worldId})`;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        TAKE_SEAT_EVENT_NAME,
-        {
-          worldId,
-          worldName,
-          email: user.email,
-          venueId: venue.id,
-          venueTemplate: venue.template,
-        },
-        groupId
-      );
-    },
-    [user, venue, worldIdAndName]
+    () =>
+      trackWithWorld(TAKE_SEAT_EVENT_NAME, {
+        venueTemplate: venue?.template,
+      }),
+    [trackWithWorld, venue]
   );
 
   const trackEnterJazzBarEvent = useCallback(
-    (groupKey: string = DEFAULT_ANALYTICS_GROUP_KEY) => {
-      if (!MIXPANEL_PROJECT_TOKEN || !user || !venue || !worldIdAndName) return;
-
-      const { id: worldId, name: worldName } = worldIdAndName;
-      const groupId = `${worldName} (${worldId})`;
-
-      setAnalyticsGroup(groupKey, groupId);
-
-      return trackDefaultGroupAnalyticsEvent(
-        ENTER_JAZZ_BAR_EVENT_NAME,
-        { worldId, worldName, email: user.email, venueId: venue.id },
-        groupId
-      );
-    },
-    [user, venue, worldIdAndName]
+    () => trackWithWorld(ENTER_JAZZ_BAR_EVENT_NAME),
+    [trackWithWorld]
   );
 
   return useMemo(
     () => ({
       initAnalytics,
       identifyUser,
-      trackEnterAuditoriumEvent,
+      trackEnterAuditoriumSectionEvent,
       trackEnterJazzBarEvent,
       trackOpenRoomModalEvent,
       trackEnterRoomEvent,
@@ -306,9 +195,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
       trackVenuePageLoadedEvent,
     }),
     [
-      initAnalytics,
-      identifyUser,
-      trackEnterAuditoriumEvent,
+      trackEnterAuditoriumSectionEvent,
       trackEnterJazzBarEvent,
       trackOpenRoomModalEvent,
       trackEnterRoomEvent,

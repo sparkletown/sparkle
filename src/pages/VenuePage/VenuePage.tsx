@@ -69,7 +69,9 @@ export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
   const analytics = useAnalytics({ venue });
-  const { world } = useCurrentWorld({ worldId: venue?.worldId });
+  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
+    worldId: venue?.worldId,
+  });
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
@@ -189,10 +191,10 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!world) return;
+    if (!isWorldLoaded || !world || !user) return;
 
-    analytics.trackVenuePageLoadedEvent(world);
-  }, [analytics, world]);
+    analytics.trackVenuePageLoadedEvent();
+  }, [analytics, isWorldLoaded, user, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

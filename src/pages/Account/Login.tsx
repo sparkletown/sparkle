@@ -135,7 +135,6 @@ export const Login: React.FC<LoginProps> = ({
           <RegisterForm
             displayLoginForm={displayLoginForm}
             displayPasswordResetForm={displayPasswordResetForm}
-            afterUserIsLoggedIn={afterUserIsLoggedIn}
           />
         )}
         {formToDisplay === "login" && (

@@ -82,7 +82,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   }, [leaveSeat]);
 
   useEffect(() => {
-    analytics.trackEnterAuditoriumEvent();
+    analytics.trackEnterAuditoriumSectionEvent();
   }, [analytics]);
 
   useEffect(() => {

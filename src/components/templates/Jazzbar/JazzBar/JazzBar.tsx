@@ -81,8 +81,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   useEffect(() => {
     seatedAtTable && analytics.trackSelectTableEvent();
-
-    seatedAtTable && analytics.trackTakeSeatEvent();
   }, [analytics, seatedAtTable]);
 
   const shouldShowReactions =

@@ -600,14 +600,14 @@ export const DEFAULT_USER_STATUS = {
 };
 
 // Analytics
-export const DEFAULT_ANALYTICS_GROUP_KEY = "worldId";
+export const DEFAULT_ANALYTICS_GROUP_KEY = "world";
 export const DEFAULT_ANALYTICS_WORLD_NAME = "Undefined World";
 export const LOG_IN_EVENT_NAME = "Login successful";
 export const SIGN_UP_EVENT_NAME = "Sign up";
 export const VENUE_PAGE_LOADED_EVENT_NAME = "VenuePage loaded";
 export const OPEN_ROOM_MODAL_EVENT_NAME = "Open room modal";
 export const ENTER_ROOM_EVENT_NAME = "Enter room";
-export const ENTER_AUDITORIUM_EVENT_NAME = "Enter auditorium";
+export const ENTER_AUDITORIUM_SECTION_EVENT_NAME = "Enter auditorium section";
 export const SELECT_TABLE_EVENT_NAME = "Select table";
 export const TAKE_SEAT_EVENT_NAME = "Take a seat";
 export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";

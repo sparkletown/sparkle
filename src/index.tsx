@@ -196,6 +196,10 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   const auth = useSelector(authSelector);
 
   useEffect(() => {
+    analytics.initAnalytics();
+  }, [analytics]);
+
+  useEffect(() => {
     if (!auth || !auth.uid || !userWithId) return;
 
     const displayName = auth.displayName || "N/A";
@@ -208,9 +212,10 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    analytics.initAnalytics();
-
-    analytics.identifyUser(email, userWithId.partyName);
+    analytics.identifyUser({
+      email,
+      name: userWithId.partyName,
+    });
   }, [analytics, auth, userWithId]);
 
   if (!isLoaded(auth)) return <LoadingPage />;

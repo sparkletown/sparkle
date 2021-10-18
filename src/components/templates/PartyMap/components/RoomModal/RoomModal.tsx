@@ -118,9 +118,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
+    analytics.trackEnterRoomEvent(room.title, room.template);
     _enterRoomWithSound();
-    analytics.trackEnterRoomEvent(room.template);
-  }, [_enterRoomWithSound, analytics, room.template]);
+  }, [_enterRoomWithSound, analytics, room]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];

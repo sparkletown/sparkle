@@ -129,8 +129,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     }
 
     analytics.trackSignUpEvent(data.email);
-    afterUserIsLoggedIn && afterUserIsLoggedIn();
-
     afterUserIsLoggedIn?.(data);
 
     closeAuthenticationModal?.();
