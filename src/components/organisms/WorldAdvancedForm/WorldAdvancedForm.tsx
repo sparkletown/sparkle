@@ -52,8 +52,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     [world]
   );
 
-  console.log(world);
-
   const {
     reset,
     watch,
