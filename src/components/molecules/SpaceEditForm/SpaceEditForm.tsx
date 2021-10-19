@@ -6,6 +6,7 @@ import { useAsync, useAsyncFn } from "react-use";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
+  DEFAULT_SHOW_SHOUTOUTS,
   DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
@@ -37,7 +38,7 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditForm.scss";
 
-interface SpaceEditFormProps {
+export interface SpaceEditFormProps {
   room: Room;
   updatedRoom?: Room;
   roomIndex: number;
@@ -89,7 +90,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         iframeUrl: roomVenue?.iframeUrl ?? "",
         showGrid: roomVenue?.showGrid ?? false,
         showReactions: roomVenue?.showReactions ?? false,
-        showShoutouts: roomVenue?.showShoutouts ?? false,
+        showShoutouts: roomVenue?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
         auditoriumColumns:
           roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,

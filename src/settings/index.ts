@@ -202,6 +202,7 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
   VenueTemplate.posterpage,
+  VenueTemplate.viewingwindow,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -307,6 +308,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: SCREENING_ROOM_TAXON.title,
     description: [
       `Add an screening ${ROOM_TAXON.lower} with the videos listed inside.`,
+    ],
+  },
+  {
+    template: VenueTemplate.viewingwindow,
+    name: "Viewing Window",
+    description: [
+      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
 ];
@@ -452,6 +460,30 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  // {
+  //   template: VenueTemplate.viewingwindow,
+  //   name: "Viewing Window",
+  //   description:
+  //     "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+  //   icon: "/venues/pickspace-thumbnail_art.png",
+  //   customInputs: [
+  //     {
+  //       name: "iframeUrl",
+  //       title: "Livestream URL",
+  //       type: "text",
+  //     },
+  //     {
+  //       name: "bannerMessage",
+  //       title: "Show an announcement in the venue (or leave blank for none)",
+  //       type: "text",
+  //     },
+  //     {
+  //       name: "isWithParticipants",
+  //       title: "has participants?",
+  //       type: "switch",
+  //     },
+  //   ],
+  // },
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -483,6 +515,7 @@ export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.preplaya,
   VenueTemplate.themecamp,
   VenueTemplate.artpiece,
+  VenueTemplate.viewingwindow,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -497,6 +530,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
 ];
 
 export const FIREBASE_CONFIG = {
@@ -509,7 +543,6 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -526,7 +559,7 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+export const CHAT_MESSAGE_TIMEOUT = 500;
 
 export const DEFAULT_AVATARS = [
   defaultAvatar1,
@@ -541,6 +574,7 @@ export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
+export const DEFAULT_SHOW_REACTIONS = true;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
@@ -636,7 +670,12 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.embeddable,
   VenueTemplate.auditorium,
   VenueTemplate.audience,
+  VenueTemplate.viewingwindow,
 ];
+
+export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
+
+export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
 
 // Issue related features that have been enabled/disabled
 

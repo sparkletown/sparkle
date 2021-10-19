@@ -27,6 +27,7 @@ const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.themecamp]: "Camp Info:",
   [VenueTemplate.artpiece]: "Art Piece Info:",
   [VenueTemplate.partymap]: "Party Map Info:",
+  [VenueTemplate.viewingwindow]: "Viewing Window Info:",
 };
 
 export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
@@ -36,6 +37,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   const templateSpecificListItems = useMemo(() => {
     switch (venue.template) {
       case VenueTemplate.artpiece:
+      case VenueTemplate.viewingwindow:
         return (
           <>
             <div>
