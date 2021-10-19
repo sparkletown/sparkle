@@ -676,3 +676,8 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
+
+// Issue related features that have been enabled/disabled
+
+// disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
+export const DISABLED_DUE_TO_1253 = true;
