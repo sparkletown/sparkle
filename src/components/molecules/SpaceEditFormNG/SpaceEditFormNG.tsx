@@ -1,16 +1,22 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE_AUTOPLAY, ROOM_TAXON } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_VENUE_AUTOPLAY,
+  ROOM_TAXON,
+} from "settings";
 import { DEFAULT_EMBED_URL } from "settings/embedUrlSettings";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
+import { RoomVisibility } from "types/venues";
 
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -28,8 +34,10 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
-import { Toggler } from "components/atoms/Toggler";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
+import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
+// import { Toggler } from "components/atoms/Toggler";
 import "./SpaceEditFormNG.scss";
 
 export interface SpaceEditFormNGProps {
@@ -61,6 +69,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const venueId = useVenueId();
 
+  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
+
   const portalId = room?.url?.split("/").pop();
 
   const { loading: isLoadingPortal, value: portal } = useAsync(async () => {
@@ -68,15 +78,19 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
     return await fetchVenue(portalId);
   }, [portalId]);
-
+  console.log(portal, room);
   const defaultValues = useMemo(
     () => ({
+      name: portal?.name ?? room?.title ?? "",
+      subtitle: room?.subtitle ?? "",
+      description: portal?.description?.text ?? "",
       image_url: room.image_url ?? "",
       iframeUrl: portal?.iframeUrl ?? "",
       autoPlay: portal?.autoPlay || DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
+      roomVisibility: room?.visibility,
     }),
-    [room.image_url, portal]
+    [room.image_url, portal, room.subtitle, room?.title, room?.visibility]
   );
 
   const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
@@ -84,7 +98,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     validationSchema: roomEditNGSchema,
     defaultValues,
   });
-
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
@@ -112,6 +125,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
         autoPlay: values.autoPlay,
         bannerImageUrl: values.bannerImageUrl,
+        name: values.name,
+        // description: { text: values.description },
       },
       user
     );
@@ -124,6 +139,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
       image_url: values.image_url,
+      visibility: roomVisibility,
+      subtitle: values.subtitle,
     };
 
     await upsertRoom(portalData, venueId, user, roomIndex);
@@ -139,6 +156,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     user,
     values,
     venueId,
+    roomVisibility,
   ]);
 
   const [
@@ -155,6 +173,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
+  const { ownedVenues } = useOwnedVenues({});
+
   return (
     <div className="SpaceEditFormNG">
       <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -166,7 +186,46 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSidebarSubTitle>
         <AdminSpacesListItem title="The basics" isOpened>
           <>
-            <AdminSection title="Livestream URL" withLabel>
+            <AdminSection title="Rename your space" withLabel>
+              <AdminInput
+                name="name"
+                placeholder="Space Name"
+                register={register}
+                errors={errors}
+                required
+              />
+            </AdminSection>
+            <AdminSection title="Subtitle" withLabel>
+              <AdminInput
+                name="subtitle"
+                placeholder="Subtitle for your space"
+                register={register}
+                errors={errors}
+              />
+            </AdminSection>
+            <AdminSection title="Description" withLabel>
+              <AdminInput
+                name="description"
+                placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
+                register={register}
+                errors={errors}
+                height="120"
+                isTextarea
+              />
+            </AdminSection>
+            <AdminSection
+              title="Select the parent space for the “back” button"
+              withLabel
+            >
+              <SpacesDropdown
+                venueSpaces={ownedVenues ?? ALWAYS_EMPTY_ARRAY}
+                venueId={venueId}
+                setValue={setValue}
+                register={register}
+                fieldName="room"
+              />
+            </AdminSection>
+            {/* <AdminSection title="Livestream URL" withLabel>
               <AdminInput
                 name="iframeUrl"
                 placeholder="Livestream URL"
@@ -176,11 +235,17 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             </AdminSection>
             <AdminSection title="Autoplay your embeded video" withLabel>
               <Toggler name="autoPlay" forwardedRef={register} />
-            </AdminSection>
+            </AdminSection> */}
           </>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Appearance" isOpened>
-          <AdminSection title="Upload a banner photo">
+          <AdminSection title="Default portal appearence">
+            <PortalVisibility
+              updateRoomVisibility={updateRoomVisibility}
+              visibilityState={room?.visibility}
+            />
+          </AdminSection>
+          <AdminSection title="Upload a highlight image">
             <ImageInput
               onChange={changeBackgroundImageUrl}
               name="bannerImage"

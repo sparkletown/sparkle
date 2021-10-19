@@ -1,22 +1,64 @@
 @import "scss/constants.scss";
 
 .PortalVisibility {
-  appearance: none;
-  border-radius: $border-radius--xl;
-  color: $content--over;
-  background-color: opaque-white(0.12);
-  padding: $spacing--md $spacing--xl $spacing--md $spacing--md;
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
-  margin-bottom: $spacing--xl;
-  cursor: pointer;
+  align-items: center;
+  margin-left: -10px;
 
-  &:hover {
-    background-color: opaque-white(0.16);
-  }
+  &__item {
+    border-radius: $border-radius--xl;
+    background-color: opaque-white(0.12);
+    // padding: $spacing--md $spacing--xl $spacing--md $spacing--md;
+    text-align: center;
+    width: 110px;
+    height: 160px;
+    margin: 6px 2px $spacing--xl 2px;
+    padding: 6px;
+    cursor: pointer;
+    font-size: $font-size--sm;
+    padding: 8px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border: 2px solid transparent;
 
-  option {
-    color: $content--over;
-    background-color: $secondary--dark;
+    &:hover {
+      background-color: opaque-white(0.16);
+    }
+    &-image {
+      background-image: url(/assets/images/label-carousel.png);
+      height: 87px;
+      width: 77px;
+      margin-bottom: 8px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      display: flex;
+    }
+
+    &--selected {
+      border: 2px solid $primary--light;
+    }
+
+    &-subtitle {
+      display: flex;
+      flex-direction: column;
+      background-color: $primary--light;
+      margin: auto;
+      width: 90%;
+      padding: 4px;
+      border-radius: 12px;
+
+      &-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        &-text {
+          margin-left: 4px;
+        }
+      }
+    }
   }
 }

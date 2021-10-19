@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -51,6 +51,8 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
   const venueId = useVenueId();
 
+  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
+
   const { register, handleSubmit, setValue, watch, errors } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditSchema,
@@ -80,11 +82,21 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
       ...values,
+      visibility: roomVisibility,
     };
 
     await upsertRoom(roomData, venueId, user, roomIndex);
     onEdit && onEdit();
-  }, [onEdit, room, roomIndex, updatedRoom, user, values, venueId]);
+  }, [
+    onEdit,
+    room,
+    roomIndex,
+    updatedRoom,
+    user,
+    values,
+    venueId,
+    roomVisibility,
+  ]);
 
   const [
     { loading: isDeleting, error },
@@ -174,7 +186,10 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
         <Form.Label>
           Change label appearance (overrides global settings)
         </Form.Label>
-        <PortalVisibility register={register} />
+        <PortalVisibility
+          updateRoomVisibility={updateRoomVisibility}
+          visibilityState={room.visibility ?? venueVisibility}
+        />
 
         <ButtonNG
           disabled={isUpdating || isDeleting}

@@ -816,7 +816,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
-
+  console.log("HERE>>>>>", data.description);
   if (data.description || data.description === "") {
     updated.config.landingPageConfig.description = data.description;
   }

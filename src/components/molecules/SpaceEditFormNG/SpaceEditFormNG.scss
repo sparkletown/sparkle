@@ -21,4 +21,24 @@
   .AdminSidebarFooter__buttons {
     width: 100%;
   }
+
+  .SpacesDropdown {
+    .Dropdown {
+      width: 100%;
+      background-color: opaque-white(0.12);
+      border-radius: $border-radius--xl;
+
+      .Dropdown__button {
+        width: 100%;
+
+        &:hover {
+          background: opaque-white(0.2);
+        }
+
+        &:after {
+          margin-left: auto;
+        }
+      }
+    }
+  }
 }

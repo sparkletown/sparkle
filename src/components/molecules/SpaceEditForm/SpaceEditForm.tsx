@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
@@ -60,6 +60,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const venueId = useVenueId();
 
   const roomVenueId = room?.url?.split("/").pop();
+
+  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
 
   const {
     loading: isLoadingRoomVenue,
@@ -160,6 +162,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
       ...values,
+      visibility: roomVisibility,
     };
 
     await upsertRoom(roomData, venueId, user, roomIndex);
@@ -175,6 +178,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     user,
     values,
     venueId,
+    roomVisibility,
   ]);
 
   const [
@@ -268,7 +272,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           <Form.Label>
             Change label appearance (overrides global settings)
           </Form.Label>
-          <PortalVisibility name="room.visibility" register={register} />
+          <PortalVisibility
+            updateRoomVisibility={updateRoomVisibility}
+            visibilityState={room?.visibility ?? roomVenue?.roomVisibility}
+          />
 
           {!roomVenue && roomVenueError && (
             <>

@@ -7,6 +7,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ADMIN_V1_ROOMS_URL, VENUE_SPACES_ICONS_MAPPING } from "settings";
 
 import { Room } from "types/rooms";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
@@ -14,7 +17,7 @@ import "./SpacesDropdown.scss";
 
 export interface SpacesDropdownProps {
   defaultSpace?: string;
-  venueSpaces: Room[];
+  venueSpaces: Room[] | WithId<AnyVenue>[];
   venueId?: string;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
@@ -36,14 +39,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   );
 
   const spaceOptions = useMemo(() => {
-    const options = venueSpaces.map((space) => {
+    const options = venueSpaces.map((space: Room | WithId<AnyVenue>) => {
       const spaceIcon = VENUE_SPACES_ICONS_MAPPING[space.template ?? ""];
       return (
         <ReactBootstrapDropdown.Item
-          key={space.title}
+          key={space.title ?? space.name}
           onClick={() => {
-            setSpaceValue(space.title);
-            setValue(fieldName, space.title, true);
+            setSpaceValue(space.title ?? space.name);
+            setValue(fieldName, space.title ?? space.name, true);
           }}
           className="SpacesDropdown__item"
         >
@@ -52,7 +55,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             src={spaceIcon}
             className="SpacesDropdown__item-icon"
           />
-          {space.title}
+          {space.title ?? space.name}
         </ReactBootstrapDropdown.Item>
       );
     });
@@ -77,7 +80,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   const renderSpaceValue = useMemo(() => {
     if (!spaceValue) return;
 
-    const space = venueSpaces.find((space) => space.title === spaceValue);
+    const space = venueSpaces[0];
     const spaceIcon = VENUE_SPACES_ICONS_MAPPING[space?.template ?? ""];
 
     return (

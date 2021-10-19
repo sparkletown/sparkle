@@ -20,7 +20,7 @@ import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { AnyVenue, PartyMapVenue } from "types/venues";
+import { AnyVenue, PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { withId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
@@ -131,6 +131,8 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     editingRoom,
   ]);
 
+  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
+
   const {
     watch,
     register,
@@ -165,6 +167,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
         const roomValues: RoomInput = {
           ...editingRoom,
           ...vals,
+          visibility: roomVisibility,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
@@ -179,7 +182,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
         });
       }
     },
-    [user, history, venueId, editingRoomIndex, editingRoom]
+    [user, history, venueId, editingRoomIndex, editingRoom, roomVisibility]
   );
 
   useEffect(() => {
@@ -355,7 +358,12 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     <div className="input-title">
                       Change label appearance (overrides global settings)
                     </div>
-                    <PortalVisibility register={register} />
+                    <PortalVisibility
+                      updateRoomVisibility={updateRoomVisibility}
+                      visibilityState={
+                        editingRoom?.visibility ?? venue.roomVisibility
+                      }
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">

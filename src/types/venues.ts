@@ -160,6 +160,7 @@ export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
+  title?: string;
   access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
