@@ -8,7 +8,7 @@ import { DEFAULT_USER_STATUS, ROOM_TAXON, ROOMS_TAXON } from "settings";
 import { updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueAdvancedConfig } from "types/venues";
+import { AnyVenue, RoomVisibility, VenueAdvancedConfig } from "types/venues";
 
 import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
@@ -20,6 +20,7 @@ import { UserStatusPanel } from "components/molecules/UserStatusManager/componen
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import "./AdvancedSettings.scss";
@@ -68,6 +69,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
   const values = watch();
 
+  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
+
   const validateParentId = useCallback(
     (parentId, checkedIds) => {
       if (checkedIds.includes(parentId)) return false;
@@ -106,6 +109,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         worldId: venue.worldId,
         ...data,
         userStatuses,
+        roomVisibility,
       },
       user
     ).catch((e) => console.error(AdvancedSettings.name, e));
@@ -299,11 +303,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
             the map
           </div>
-          <Form.Control as="select" custom name="roomVisibility" ref={register}>
-            <option value="hover">Hover</option>
-            <option value="count">Count</option>
-            <option value="count/name">Count and names</option>
-          </Form.Control>
+          <PortalVisibility updateRoomVisibility={updateRoomVisibility} />
         </div>
 
         <div className="AdvancedSettings__form-field">
