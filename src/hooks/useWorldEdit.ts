@@ -1,12 +1,9 @@
-import { useMemo } from "react";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import { World } from "api/admin";
 
-import { WithId, withId } from "utils/id";
-import { worldEditSelector } from "utils/selectors";
-
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { worldConverter } from "utils/converters";
+import { WithId } from "utils/id";
 
 type UseWorldEditResult = {
   world?: WithId<World>;
@@ -16,29 +13,23 @@ type UseWorldEditResult = {
 export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
   worldId
 ) => {
-  useFirestoreConnect(() => {
-    if (!worldId) return [];
+  const firestore = useFirestore();
+  const worldsRef = firestore
+    .collection("worlds")
+    .doc(worldId)
+    .withConverter(worldConverter);
 
-    return [
-      {
-        collection: "worlds",
-        doc: worldId,
-        storeAs: "worldEdit",
-      },
-    ];
-  });
-
-  // NOTE: world could be past instance (previous valid worldId), always check the id
-  const world = useSelector(worldEditSelector);
-
-  return useMemo(
-    () =>
-      worldId
-        ? {
-            world: world ? withId(world, worldId) : undefined,
-            isLoaded: isLoaded(world),
-          }
-        : { world: undefined, isLoaded: true, dirty: undefined },
-    [worldId, world]
+  const { data: world, status } = useFirestoreDocData<WithId<World>>(
+    worldsRef,
+    {
+      initialData: undefined,
+    }
   );
+
+  const isWorldLoaded = status === "success";
+
+  return {
+    world,
+    isLoaded: isWorldLoaded,
+  };
 };
