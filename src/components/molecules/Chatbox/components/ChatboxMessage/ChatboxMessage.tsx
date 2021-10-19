@@ -1,7 +1,7 @@
 import React from "react";
 import { startOfDay } from "date-fns";
 
-import { DeleteMessage, MessageToDisplay } from "types/chat";
+import { MessageToDisplay } from "types/chat";
 
 import { checkIfPollMessage } from "utils/chat";
 import { WithId } from "utils/id";
@@ -11,10 +11,7 @@ import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { ChatPoll } from "components/molecules/ChatPoll";
 
-import {
-  ChatMessage,
-  ChatProps,
-} from "components/atoms/ChatMessage/ChatMessage";
+import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage/ChatMessage";
 
 import "./ChatboxMessage.scss";
 
@@ -22,17 +19,13 @@ export interface ChatboxMessageProps {
   message: WithId<MessageToDisplay>;
   nextMessage?: WithId<MessageToDisplay>;
 
-  deleteMessage?: DeleteMessage;
   voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
-  selectThisThread: ChatProps["selectThisThread"];
 }
 
 export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
   message,
   nextMessage,
-  deleteMessage,
   voteInPoll,
-  selectThisThread,
 }) => {
   const messageStartOfDay = startOfDay(message.timestamp.toDate());
 
@@ -42,19 +35,9 @@ export const ChatboxMessage: React.FC<ChatboxMessageProps> = ({
     : undefined;
 
   const renderedMessage = checkIfPollMessage(message) ? (
-    <ChatPoll
-      key={message.id}
-      pollMessage={message}
-      deletePollMessage={deleteMessage}
-      voteInPoll={voteInPoll}
-    />
+    <ChatPoll key={message.id} pollMessage={message} voteInPoll={voteInPoll} />
   ) : (
-    <ChatMessage
-      key={message.id}
-      message={message}
-      deleteMessage={deleteMessage}
-      selectThisThread={selectThisThread}
-    />
+    <ChatMessageComponent key={message.id} message={message} />
   );
 
   const dateLabel =

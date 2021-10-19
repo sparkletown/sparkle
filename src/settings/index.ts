@@ -543,7 +543,6 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -560,7 +559,7 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+export const CHAT_MESSAGE_TIMEOUT = 500;
 
 export const DEFAULT_AVATARS = [
   defaultAvatar1,
@@ -575,6 +574,7 @@ export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
+export const DEFAULT_SHOW_REACTIONS = true;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
@@ -672,3 +672,7 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.audience,
   VenueTemplate.viewingwindow,
 ];
+
+export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
+
+export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";

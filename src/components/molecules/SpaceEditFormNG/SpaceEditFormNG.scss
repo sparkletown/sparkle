@@ -6,6 +6,10 @@
   flex-direction: column;
   justify-content: space-between;
 
+  &__toggler {
+    width: max-content;
+  }
+
   .AdminSidebarTitle {
     margin: $spacing--xxl $spacing--xl $spacing--md;
   }

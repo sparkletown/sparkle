@@ -4,7 +4,7 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { AnyVenue } from "types/venues";
 
-import { venueConverter } from "utils/converters";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
 export interface UseWorldVenuesResult {
@@ -18,7 +18,7 @@ export const useWorldVenues = (worldId: string): UseWorldVenuesResult => {
   const worldVenuesRef = firestore
     .collection("venues")
     .where("worldId", "==", worldId)
-    .withConverter(venueConverter);
+    .withConverter(withIdConverter());
 
   const { data: worldVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
     worldVenuesRef,
