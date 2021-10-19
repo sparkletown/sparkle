@@ -105,11 +105,8 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
         const pos = findFreeSeat(userId, sectionIds, seatedUsersMap, grids);
 
         if (!pos) {
-          assert.ok(
-            Boolean(pos),
-            chalk`${simSeat.name}(): all seats are occupied`
-          );
-          process.exit(1);
+          console.log(chalk`${simSeat.name}(): all seats are occupied`);
+          return;
         }
 
         await takeSeat({

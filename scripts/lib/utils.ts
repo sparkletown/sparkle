@@ -240,7 +240,10 @@ const getVideoSizeInSeats = (columnCount: number) => {
   );
 
   // Keep the 16:9 ratio
-  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
+  const videoHeightInSeats =
+    Math.ceil(videoWidthInSeats * (9 / 16)) +
+    //+3 for extra UI elements
+    3;
 
   return {
     videoHeightInSeats,
