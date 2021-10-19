@@ -103,6 +103,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     profile_questions,
     rooms,
     showNametags,
+    showBadges,
     slug,
     subtitle,
   } = data;
@@ -145,6 +146,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(profile_questions && { profile_questions }),
     ...(rooms && { rooms }),
     ...(showNametags && { showNametags }),
+    ...(showBadges && { showBadges }),
     ...(slug && { slug }),
   };
 
