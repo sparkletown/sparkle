@@ -71,8 +71,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
     await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
 
-    reset(defaultValues);
-  }, [worldId, user, values, reset, defaultValues]);
+    reset(values);
+  }, [worldId, user, values, reset]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
