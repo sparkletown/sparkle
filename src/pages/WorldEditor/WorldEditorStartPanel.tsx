@@ -24,6 +24,10 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
   worldId,
 }) => {
   const { isLoaded, world } = useWorldEdit(worldId);
+
+  const isUpdatingWorld = isLoaded && worldId && world;
+  const isCreatingWorld = isLoaded && !world && !worldId;
+
   return (
     <AdminPanel>
       <AdminSidebar>
@@ -31,15 +35,13 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
           {worldId ? "Configure your world" : "Create a new world"}
         </AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
-        {isLoaded || !worldId ? (
+        {isUpdatingWorld || isCreatingWorld ? (
           <WorldStartForm world={world} onClickCancel={onClickHome} />
         ) : (
           <Loading />
         )}
       </AdminSidebar>
-      <AdminShowcase>
-        <WorldShowcase world={world} />
-      </AdminShowcase>
+      <AdminShowcase>{world && <WorldShowcase world={world} />}</AdminShowcase>
     </AdminPanel>
   );
 };
