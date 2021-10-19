@@ -124,6 +124,7 @@ export const loopUntilKilled: (
     log(chalk`{blue.inverse INFO} Press {redBright CTRL-C} to exit...`);
 
     process.on("SIGINT", () => {
+      console.log("SIGINT----------------");
       log(chalk`{blue.inverse INFO} {redBright CTRL-C} detected, stopping...`);
       clearInterval(intervalId);
       resolve("sigint");
