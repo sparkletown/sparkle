@@ -824,10 +824,8 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
 });
 
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {
-  console.log("check auth");
   checkAuth(context);
 
-  console.log("CHECK OWNER");
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
@@ -842,7 +840,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.name = data.name;
   }
 
-  console.log("HERE>>>>>", data);
   if (data.description || data.description === "") {
     updated.config.landingPageConfig.description = data.description.text;
   }
