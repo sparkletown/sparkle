@@ -78,19 +78,20 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
     return await fetchVenue(portalId);
   }, [portalId]);
-  console.log(portal, room);
+
   const defaultValues = useMemo(
     () => ({
-      name: portal?.name ?? room?.title ?? "",
-      subtitle: room?.subtitle ?? "",
-      description: portal?.description?.text ?? "",
+      name: portal?.name ?? "",
+      subtitle: portal?.config?.landingPageConfig?.subtitle ?? "",
+      description: portal?.config?.landingPageConfig?.description ?? "",
       image_url: room.image_url ?? "",
       iframeUrl: portal?.iframeUrl ?? "",
       autoPlay: portal?.autoPlay || DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
       roomVisibility: room?.visibility,
+      parentId: portal?.parentId ?? "",
     }),
-    [room.image_url, portal, room.subtitle, room?.title, room?.visibility]
+    [room.image_url, portal, room?.visibility]
   );
 
   const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
@@ -126,7 +127,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         autoPlay: values.autoPlay,
         bannerImageUrl: values.bannerImageUrl,
         name: values.name,
-        // description: { text: values.description },
+        description: { text: values.description },
+        subtitle: values.subtitle,
+        parentId: values.parentId,
       },
       user
     );
@@ -140,7 +143,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       ...(updatedRoom as RoomInput),
       image_url: values.image_url,
       visibility: roomVisibility,
-      subtitle: values.subtitle,
     };
 
     await upsertRoom(portalData, venueId, user, roomIndex);
@@ -222,7 +224,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 venueId={venueId}
                 setValue={setValue}
                 register={register}
-                fieldName="room"
+                fieldName="parentId"
+                defaultSpace={values.parentId}
               />
             </AdminSection>
             {/* <AdminSection title="Livestream URL" withLabel>

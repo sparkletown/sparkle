@@ -24,7 +24,7 @@ import {
 import { createUrlSafeName } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue, RoomVisibility, VenueTemplate } from "types/venues";
 
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
@@ -39,6 +39,7 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
 
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import "firebase/functions";
@@ -107,6 +108,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   const templateID = state.templatePage?.template.template;
 
   const defaultVenue = createJazzbar({});
+
+  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
 
   const renderVenueNameInput = () => {
     return !editing ? (
@@ -481,11 +484,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the map
       </h4>
       <div className="input-container">
-        <Form.Control as="select" name="roomVisibility" ref={register} custom>
-          <option value="hover">Hover</option>
-          <option value="count">Count</option>
-          <option value="count/name">Count and names</option>
-        </Form.Control>
+        <PortalVisibility updateRoomVisibility={updateRoomVisibility} />
       </div>
     </>
   );
@@ -658,11 +657,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {
           ...values,
           iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+          roomVisibility,
         },
         userStatuses,
         hasUserStatuses
       ),
-    [onSubmit, userStatuses, hasUserStatuses]
+    [onSubmit, userStatuses, hasUserStatuses, roomVisibility]
   );
 
   return (

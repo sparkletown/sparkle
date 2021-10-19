@@ -13,7 +13,7 @@ import { RoomVisibility } from "types/venues";
 import "./PortalVisibility.scss";
 export interface PortalVisibilityProps {
   updateRoomVisibility: Dispatch<SetStateAction<RoomVisibility | undefined>>;
-  visibilityState: RoomVisibility | undefined;
+  visibilityState?: RoomVisibility | undefined;
 }
 
 export const labelOptions = LABEL_VISIBILITY_OPTIONS;

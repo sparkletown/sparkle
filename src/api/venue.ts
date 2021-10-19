@@ -108,7 +108,7 @@ export const updateVenueNG = async (
     const downloadUrl = await uploadFileRef.getDownloadURL();
     venue.mapBackgroundImageUrl = downloadUrl;
   }
-
+  console.log("await venue update venue", venue, user);
   return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
 };
 

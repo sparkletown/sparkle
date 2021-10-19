@@ -204,6 +204,7 @@ export interface BaseVenue {
   description?: {
     text: string;
   };
+  subtitle?: string;
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;

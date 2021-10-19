@@ -156,6 +156,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
                 userStatuses,
                 showUserStatus: showUserStatuses,
                 template: sovereignVenue.template,
+                roomVisibility: sovereignVenue.roomVisibility,
               },
               user
             );

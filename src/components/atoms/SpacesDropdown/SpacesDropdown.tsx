@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -37,6 +37,12 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   const [spaceValue, setSpaceValue] = useState<string | undefined>(
     defaultSpace
   );
+
+  useEffect(() => {
+    if (defaultSpace) {
+      setSpaceValue(defaultSpace);
+    }
+  }, [defaultSpace]);
 
   const spaceOptions = useMemo(() => {
     const options = venueSpaces.map((space: Room | WithId<AnyVenue>) => {
@@ -82,7 +88,6 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
     const space = venueSpaces[0];
     const spaceIcon = VENUE_SPACES_ICONS_MAPPING[space?.template ?? ""];
-
     return (
       <span className="SpacesDropdown__value">
         <img
