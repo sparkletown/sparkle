@@ -574,6 +574,7 @@ export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
+export const DEFAULT_SHOW_REACTIONS = true;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
@@ -675,3 +676,8 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
+
+// Issue related features that have been enabled/disabled
+
+// disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
+export const DISABLED_DUE_TO_1253 = true;
