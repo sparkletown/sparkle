@@ -105,6 +105,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     profile_questions,
     rooms,
     showNametags,
+    showBadges,
     slug,
     subtitle,
   } = data;
@@ -148,6 +149,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
     ...(!isNil(slug) && { slug }),
+    ...(!isNil(showBadges) && { showBadges }),
   };
 
   await admin
