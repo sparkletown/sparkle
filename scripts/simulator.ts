@@ -104,7 +104,6 @@ const main: (options: RunContext<SimConfig>) => Promise<MainResult> = async (
   const simStart = new Date();
 
   stop.then(() => {
-    console.log("simFinish");
     const simFinish = new Date();
     stats.sim = {
       start: simStart.toISOString(),

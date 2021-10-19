@@ -156,6 +156,14 @@ export type GridPosition = {
   col: number;
 };
 
+export type Grid = string[][];
+
+export type SectionGridPosition = GridPosition & {
+  sectionId: string;
+};
+
+export type SeatedUsersMap = Partial<Record<string, SectionGridPosition>>;
+
 export type TableInfo = GridPosition & {
   cap: number;
   dub: string;

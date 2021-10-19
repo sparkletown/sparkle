@@ -14,9 +14,12 @@ import JSON5 from "json5";
 
 import { log, NOT_AVAILABLE } from "./log";
 import {
+  Grid,
   GridPosition,
   GridSize,
   ScriptRunTime,
+  SeatedUsersMap,
+  SectionGridPosition,
   SimAverages,
   SimConfig,
   SimStats,
@@ -124,7 +127,6 @@ export const loopUntilKilled: (
     log(chalk`{blue.inverse INFO} Press {redBright CTRL-C} to exit...`);
 
     process.on("SIGINT", () => {
-      console.log("SIGINT----------------");
       log(chalk`{blue.inverse INFO} {redBright CTRL-C} detected, stopping...`);
       clearInterval(intervalId);
       resolve("sigint");
@@ -246,48 +248,69 @@ const getVideoSizeInSeats = (columnCount: number) => {
   };
 };
 
-export const determineWhereToSeat = (
-  userId: string,
-  grid: GridSize,
-  seatedUsers: Record<string, GridPosition | undefined>,
-  seatedPositions: Record<string, true | undefined>
-): GridPosition => {
-  const hash = (pos: GridPosition) => `${pos.row},${pos.col}`;
-
-  let pos = getRandomSeat(grid);
-  while (seatedPositions[hash(pos)]) {
-    pos = getRandomSeat(grid);
+export const getGridFromGridSize = (gridSize: GridSize) => {
+  const rows = new Array(gridSize.auditoriumRows);
+  for (let i = 0; i < rows.length; i++) {
+    rows[i] = new Array(gridSize.auditoriumColumns).fill("");
   }
-
-  seatedPositions[hash(pos)] = true;
-  const oldPos = seatedUsers[userId];
-  if (oldPos) {
-    seatedPositions[hash(oldPos)] = undefined;
-  }
-  seatedUsers[userId] = pos;
-
-  return pos;
+  return rows;
 };
 
-const getRandomSeat = (grid: GridSize): GridPosition => {
+//@debt implement more efficient data structure for finding next free seat
+export const findFreeSeat = (
+  userId: string,
+  sectionIds: string[],
+  seatedUsersMap: SeatedUsersMap,
+  grids: Record<string, Grid>
+): SectionGridPosition | undefined => {
+  for (const sectionId of sectionIds) {
+    const pos = getNextFreeSeat(grids[sectionId]);
+    if (!pos) continue;
+
+    grids[sectionId][pos.row][pos.col] = userId;
+
+    const oldPos = seatedUsersMap[userId];
+    if (oldPos) grids[oldPos.sectionId][oldPos.row][oldPos.col] = "";
+
+    const result = {
+      ...pos,
+      sectionId,
+    };
+
+    seatedUsersMap[userId] = result;
+    return result;
+  }
+};
+
+const getNextFreeSeat = (grid: string[][]): GridPosition | undefined => {
+  const rows = grid.length;
+  const columns = grid[0].length;
+
   const { videoHeightInSeats, videoWidthInSeats } = getVideoSizeInSeats(
-    grid.auditoriumColumns
-  );
-  const videoRowThreshold = (grid.auditoriumRows - videoHeightInSeats) / 2;
-  const videoColThreshold = (grid.auditoriumColumns - videoWidthInSeats) / 2;
-
-  const rowRandom = faker.datatype.number(
-    grid.auditoriumRows - videoHeightInSeats
-  );
-  const colRandom = faker.datatype.number(
-    grid.auditoriumColumns - videoWidthInSeats
+    columns
   );
 
-  const row =
-    rowRandom < videoRowThreshold ? rowRandom : rowRandom + videoHeightInSeats;
+  const videoRowThresholdLo = Math.floor((rows - videoHeightInSeats) / 2);
+  const videoRowThresholdHi = videoRowThresholdLo + videoHeightInSeats;
 
-  const col =
-    colRandom < videoColThreshold ? colRandom : colRandom + videoWidthInSeats;
+  const videoColThresholdLo = Math.floor((columns - videoWidthInSeats) / 2);
+  const videoColThresholdHi = videoColThresholdLo + videoWidthInSeats;
 
-  return { row, col };
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[row].length; col++) {
+      if (
+        row >= videoRowThresholdLo &&
+        row < videoRowThresholdHi &&
+        col >= videoColThresholdLo &&
+        col < videoColThresholdHi
+      )
+        continue;
+
+      if (!grid[row][col]) {
+        return { row, col };
+      }
+    }
+  }
+
+  return undefined;
 };
