@@ -3,9 +3,11 @@ import { VenueTemplate } from "types/venues";
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
+import RoomEmbeddable from "assets/icons/icon-room-embeddable.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
+import RoomScreening from "assets/icons/icon-room-screening.svg";
 import RoomIconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
 import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
@@ -15,15 +17,16 @@ import PosterMusicBar from "assets/spaces/add-portal-jazzbar.png";
 import PosterMap from "assets/spaces/add-portal-map.png";
 // import PosterViewingWindow from "assets/spaces/add-portal-viewingwindow.png";
 
-export interface SpacesListItem {
+export interface SpacePortalsListItem {
   text: string;
   poster: string;
   description: string;
   template?: VenueTemplate;
   icon: string;
+  hidden?: boolean;
 }
 
-export const VENUE_SPACES_LIST: SpacesListItem[] = [
+export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
   {
     text: "Conversation Space",
     icon: RoomIconConversation,
@@ -57,7 +60,7 @@ export const VENUE_SPACES_LIST: SpacesListItem[] = [
     template: VenueTemplate.artpiece,
   },
   {
-    text: "Experience",
+    text: "External Experience",
     icon: RoomIconExperience,
     poster: PosterExperience,
     description:
@@ -79,10 +82,29 @@ export const VENUE_SPACES_LIST: SpacesListItem[] = [
       "Focus on a central piece of content without any video chatting.",
     template: VenueTemplate.viewingwindow,
   },
+  {
+    text: "Embeddable",
+    icon: RoomEmbeddable,
+    poster: "",
+    description: "",
+    template: VenueTemplate.embeddable,
+    hidden: true,
+  },
+  {
+    text: "Screening Room",
+    icon: RoomScreening,
+    poster: "",
+    description: "",
+    template: VenueTemplate.screeningroom,
+    hidden: true,
+  },
 ];
 
-export const VENUE_SPACES_ICONS_MAPPING: Record<string, string> = Object.freeze(
-  VENUE_SPACES_LIST.reduce(
+export const SPACE_PORTALS_ICONS_MAPPING: Record<
+  string,
+  string
+> = Object.freeze(
+  SPACE_PORTALS_LIST.reduce(
     (acc, space) => ({ ...acc, [`${space.template}`]: space.icon }),
     {}
   )
