@@ -160,7 +160,6 @@ export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
-  title?: string;
   access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;
@@ -213,6 +212,7 @@ export interface BaseVenue {
   ticketUrl?: string;
   chatTitle?: string;
   showReactions?: boolean;
+  isReactionsMuted?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;

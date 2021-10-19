@@ -17,7 +17,6 @@ export interface Room {
   type?: RoomType;
   zIndex?: number;
   title: string;
-  name?: string;
   subtitle?: string;
   url: string;
   about?: string;
