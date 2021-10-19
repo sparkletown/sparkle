@@ -10,6 +10,7 @@ import {
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
+  DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -329,14 +330,13 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  // disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  // const renderShowGridToggle = () => (
-  //   <div className="toggle-room">
-  //     <h4 className="italic input-header">Show grid layout</h4>
-  //     <Toggler name="showGrid" forwardedRef={register} />
-  //   </div>
-  // );
+  const renderShowGridToggle = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show grid layout</h4>
+      <Toggler name="showGrid" forwardedRef={register} />
+    </div>
+  );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
@@ -417,34 +417,33 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  // disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
-  // const renderGridDimensionsInputs = () => (
-  //   <>
-  //     <div className="input-container">
-  //       <h4 className="italic input-header">Number of columns</h4>
-  //       <input
-  //         disabled={disable}
-  //         defaultValue={1}
-  //         name="columns"
-  //         type="number"
-  //         ref={register}
-  //         className="align-left"
-  //         placeholder={`Number of grid columns`}
-  //       />
-  //       {errors.columns ? (
-  //         <span className="input-error">{errors.columns.message}</span>
-  //       ) : null}
-  //     </div>
-  //     <div className="input-container">
-  //       <h4 className="italic input-header">Number of rows</h4>
-  //       <div>
-  //         Not editable. The number of rows is derived from the number of
-  //         specified columns and the width:height ratio of the party map, to keep
-  //         the two aligned.
-  //       </div>
-  //     </div>
-  //   </>
-  // );
+  const renderGridDimensionsInputs = () => (
+    <>
+      <div className="input-container">
+        <h4 className="italic input-header">Number of columns</h4>
+        <input
+          disabled={disable}
+          defaultValue={1}
+          name="columns"
+          type="number"
+          ref={register}
+          className="align-left"
+          placeholder={`Number of grid columns`}
+        />
+        {errors.columns ? (
+          <span className="input-error">{errors.columns.message}</span>
+        ) : null}
+      </div>
+      <div className="input-container">
+        <h4 className="italic input-header">Number of rows</h4>
+        <div>
+          Not editable. The number of rows is derived from the number of
+          specified columns and the width:height ratio of the party map, to keep
+          the two aligned.
+        </div>
+      </div>
+    </>
+  );
 
   const renderParentIdInput = () => (
     <div className="input-container">
@@ -731,9 +730,11 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         />
 
         {renderShowScheduleToggle()}
-        {/* {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
-          renderShowGridToggle()} */}
+          renderShowGridToggle()}
+
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
         {templateID &&
@@ -769,11 +770,11 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           onChangeInput={updateStatusText}
         />
 
-        {/* disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253 */}
-        {/* {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid &&
-          renderGridDimensionsInputs()} */}
+          renderGridDimensionsInputs()}
 
         {renderParentIdInput()}
 
