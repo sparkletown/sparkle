@@ -1,15 +1,12 @@
 import { useMemo } from "react";
-import { isEqual } from "lodash";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import { World } from "api/admin";
 
 import { ReactHook } from "types/utility";
 
-import { WithId, withId } from "utils/id";
-import { currentWorldSelector } from "utils/selectors";
-
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { withIdConverter } from "utils/converters";
+import { WithId } from "utils/id";
 
 interface UseCurrentWorldProps {
   worldId?: string;
@@ -24,25 +21,21 @@ export const useCurrentWorld: ReactHook<
   UseCurrentWorldProps,
   UseCurrentWorldReturn
 > = ({ worldId }) => {
-  const world = useSelector(currentWorldSelector, isEqual);
+  const firestore = useFirestore();
+  const worldRef = firestore
+    .collection("worlds")
+    .doc(worldId)
+    .withConverter(withIdConverter);
 
-  useFirestoreConnect(() => {
-    if (!worldId) return [];
+  const { data: world, status } = useFirestoreDocData<WithId<World>>(worldRef);
 
-    return [
-      {
-        collection: "worlds",
-        doc: worldId,
-        storeAs: "currentWorld",
-      },
-    ];
-  });
+  const isWorldLoaded = status !== "loading";
 
   return useMemo(
     () => ({
-      world: worldId && world ? withId(world, worldId) : undefined,
-      isLoaded: isLoaded(world),
+      world: world,
+      isLoaded: isWorldLoaded,
     }),
-    [worldId, world]
+    [isWorldLoaded, world]
   );
 };
