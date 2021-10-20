@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { ROOMS_TAXON, VENUE_SPACES_LIST } from "settings";
+import { ROOMS_TAXON, SPACE_PORTALS_LIST } from "settings";
 
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
@@ -105,15 +105,12 @@ export const Spaces: React.FC<SpacesProps> = ({
 
   const renderAddRooms = useMemo(
     () =>
-      VENUE_SPACES_LIST.map((venueSpace, index) => (
+      SPACE_PORTALS_LIST.map((item, index) => (
         <PortalItem
-          key={`${venueSpace.text}-${index}`}
-          text={venueSpace.text}
-          poster={venueSpace.poster}
-          description={venueSpace.description}
-          template={venueSpace.template}
-          icon={venueSpace.icon}
+          key={`${index}-${item.template}`}
+          item={item}
           worldId={worldId}
+          tabIndex={index + 1}
         />
       )),
     [worldId]

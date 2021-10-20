@@ -6,6 +6,8 @@ import { useAsync, useAsyncFn } from "react-use";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
+  DEFAULT_SHOW_SHOUTOUTS,
+  DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -88,7 +90,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         iframeUrl: roomVenue?.iframeUrl ?? "",
         showGrid: roomVenue?.showGrid ?? false,
         showReactions: roomVenue?.showReactions ?? false,
-        showShoutouts: roomVenue?.showShoutouts ?? false,
+        showShoutouts: roomVenue?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
         auditoriumColumns:
           roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
@@ -348,7 +350,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   </div>
                 )}
 
-              {room.template &&
+              {!DISABLED_DUE_TO_1253 &&
+                room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
                   <div className="toggle-room">
                     <h4 className="italic input-header">Show grid layout</h4>
@@ -425,7 +428,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 </>
               )}
 
-              {room.template &&
+              {!DISABLED_DUE_TO_1253 &&
+                room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
                 venueValues.showGrid && (
                   <>
