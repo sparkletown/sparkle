@@ -109,6 +109,7 @@ export const createWorld: (
   let worldId = "";
   try {
     // NOTE: due to interdependence on id and upload files' URLs:
+
     // 1. first a world stub is created
     const stubInput = await createFirestoreWorldCreateInput(world, user);
 
@@ -123,6 +124,7 @@ export const createWorld: (
     );
 
     await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
+
     // 3. initial venue is created
     await firebase.functions().httpsCallable("venue-createVenue_v2")({
       ...fullInput,
