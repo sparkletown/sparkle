@@ -89,7 +89,13 @@ export const createFirestoreWorldAdvancedInput: (
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
+  return pick(input, [
+    "id",
+    "attendeesTitle",
+    "chatTitle",
+    "showNametags",
+    "showBadges",
+  ]);
 };
 
 export const createWorld: (
@@ -97,7 +103,7 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";

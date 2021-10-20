@@ -4,6 +4,8 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
 
+const { isNil } = require("lodash");
+
 const checkIsAdmin = async (uid) => {
   try {
     const adminDoc = await admin
@@ -103,6 +105,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     profile_questions,
     rooms,
     showNametags,
+    showBadges,
     slug,
     subtitle,
   } = data;
@@ -135,17 +138,18 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     updatedAt: Date.now(),
-    ...(attendeesTitle && { attendeesTitle }),
-    ...(chatTitle && { chatTitle }),
-    ...(code_of_conduct_questions && { code_of_conduct_questions }),
-    ...(entrance && { entrance }),
-    ...(landingPageConfig && { config: { landingPageConfig } }),
-    ...(logoImageUrl && { host: { icon: logoImageUrl } }),
-    ...(name && { name }),
-    ...(profile_questions && { profile_questions }),
-    ...(rooms && { rooms }),
-    ...(showNametags && { showNametags }),
-    ...(slug && { slug }),
+    ...(!isNil(attendeesTitle) && { attendeesTitle }),
+    ...(!isNil(chatTitle) && { chatTitle }),
+    ...(!isNil(code_of_conduct_questions) && { code_of_conduct_questions }),
+    ...(!isNil(entrance) && { entrance }),
+    ...(!isNil(landingPageConfig) && { config: { landingPageConfig } }),
+    ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
+    ...(!isNil(name) && { name }),
+    ...(!isNil(profile_questions) && { profile_questions }),
+    ...(!isNil(rooms) && { rooms }),
+    ...(!isNil(showNametags) && { showNametags }),
+    ...(!isNil(slug) && { slug }),
+    ...(!isNil(showBadges) && { showBadges }),
   };
 
   await admin
