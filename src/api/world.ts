@@ -42,8 +42,6 @@ export const createFirestoreWorldStartInput: (
 
   // upload the files
   for (const [key, value] of Object.entries(imageInputs)) {
-    imageInputData[key] = "";
-
     const file = value?.[0];
 
     if (!file) continue;
