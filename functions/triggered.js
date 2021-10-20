@@ -2,6 +2,10 @@ const admin = require("firebase-admin");
 
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
+const { pick, isEqual, chunk, set } = require("lodash");
+const { BATCH_MAX_OPS } = require("functions/scheduled");
+
+const DISPLAY_USER_FIELDS = ["partyName" | "pictureUrl" | "anonMode"];
 
 exports.incrementSectionsCount = functions.firestore
   .document("venues/{venueId}/sections/{sectionId}")
@@ -115,7 +119,29 @@ exports.removeDanglingAfterSeatLeave = functions.firestore
 
 exports.onUserUpdate = functions.firestore
   .document("/users/{userId}")
-  .onDelete(async (beforeSnap, context) => {
-    const { venueId, userId } = context.params;
-    return removePreviousDanglingSeat(beforeSnap, undefined, venueId, userId);
+  .onUpdate(async (change, context) => {
+    const { userId } = context.params;
+
+    const before = pick(change.before, DISPLAY_USER_FIELDS);
+    const after = pick(change.after, DISPLAY_USER_FIELDS);
+    if (isEqual(before, after)) return;
+
+    const { docs: paths } = await admin
+      .firestore()
+      .collection("usersLookup")
+      .doc(userId)
+      .collection("paths")
+      .get();
+
+    await Promise.all(
+      chunk(paths, BATCH_MAX_OPS).map((pathsChunk) => {
+        const batch = admin.firestore().batch();
+        for (const pathRef of pathsChunk) {
+          const pathInDoc = pathRef.data().path;
+          const data = pathInDoc ? set({}, pathInDoc, after) : after;
+          batch.update(admin.firestore().doc(pathRef.id), data);
+        }
+        return batch.commit();
+      })
+    );
   });
