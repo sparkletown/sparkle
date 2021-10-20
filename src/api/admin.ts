@@ -342,6 +342,7 @@ export const createVenue_v2 = async (
   input: WithWorldId<VenueInput_v2>,
   user: firebase.UserInfo
 ) => {
+  console.log("createVenue_v2", input, user);
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
     {
       ...input,
@@ -349,6 +350,7 @@ export const createVenue_v2 = async (
     },
     user
   );
+  console.log("createVenue_v2", firestoreVenueInput);
   return await firebase.functions().httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
     worldId: input.worldId,

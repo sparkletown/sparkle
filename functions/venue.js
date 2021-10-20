@@ -536,7 +536,6 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
       `The venue ${data.name} already exists. Please try with another name.`
     );
   }
-
   const venueData = createVenueData_v2(data, context);
 
   batch.create(venueRef, venueData);

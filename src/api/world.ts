@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { omit, pick } from "lodash";
+import { pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -59,7 +59,7 @@ export const createFirestoreWorldStartInput: (
   }
 
   const worldUpdateData: Partial<WithId<World>> = {
-    ...omit(input, Object.keys(imageInputs)),
+    ...input,
     ...imageInputData,
     id,
     slug,
@@ -103,13 +103,12 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";
   try {
     // NOTE: due to interdependence on id and upload files' URLs:
-
     // 1. first a world stub is created
     const stubInput = await createFirestoreWorldCreateInput(world, user);
 
@@ -124,7 +123,6 @@ export const createWorld: (
     );
 
     await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
-
     // 3. initial venue is created
     await firebase.functions().httpsCallable("venue-createVenue_v2")({
       ...fullInput,
