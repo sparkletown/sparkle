@@ -542,7 +542,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "zilloween";
+export const DEFAULT_VENUE = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
