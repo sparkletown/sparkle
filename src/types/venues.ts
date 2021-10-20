@@ -77,6 +77,8 @@ export enum VenueTemplate {
   playa = "playa",
 }
 
+export type PortalTemplate = VenueTemplate | "external";
+
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
