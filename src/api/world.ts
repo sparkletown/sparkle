@@ -95,6 +95,7 @@ export const createFirestoreWorldAdvancedInput: (
     "chatTitle",
     "showNametags",
     "showBadges",
+    "showSchedule",
   ]);
 };
 
@@ -103,7 +104,7 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";
@@ -116,7 +117,6 @@ export const createWorld: (
     worldId = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
-
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),

@@ -152,6 +152,7 @@ export interface World {
   owners: string[];
   showNametags?: UsernameVisibility;
   showBadges?: boolean;
+  showSchedule?: boolean;
   slug: string;
   updatedAt: Date;
 }
@@ -324,7 +325,6 @@ const createFirestoreVenueInput_v2 = async (
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
   };
-
   return firestoreVenueInput;
 };
 

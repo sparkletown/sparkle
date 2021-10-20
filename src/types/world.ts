@@ -26,4 +26,5 @@ export interface WorldAdvancedFormInput {
   attendeesTitle?: string;
   chatTitle?: string;
   showNametags?: UsernameVisibility;
+  showSchedule?: boolean;
 }

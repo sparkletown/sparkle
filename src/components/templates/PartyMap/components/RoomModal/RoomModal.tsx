@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFAULT_SHOW_SCHEDULE,
-  ROOM_TAXON,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -18,6 +14,7 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
+import { useWorldEdit } from "hooks/useWorldEdit";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -80,8 +77,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venue,
   venueEvents,
 }) => {
-  const { showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
-
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -97,6 +92,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
+
+  const { world } = useWorldEdit(venue?.worldId);
 
   const { enterRoom, portalVenueId } = useRoom({
     room,
@@ -119,7 +116,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   ]);
 
   const renderedRoomEvents = useMemo(() => {
-    if (!showSchedule) return [];
+    if (!world?.showSchedule) return [];
 
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
@@ -132,9 +129,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         enterEventLocation={enterRoomWithSound}
       />
     ));
-  }, [enterRoomWithSound, showSchedule, venueEvents]);
+  }, [enterRoomWithSound, world?.showSchedule, venueEvents]);
 
-  const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
+  const showRoomEvents = world?.showSchedule && renderedRoomEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,

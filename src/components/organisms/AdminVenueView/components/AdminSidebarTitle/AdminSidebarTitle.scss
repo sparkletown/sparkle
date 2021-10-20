@@ -1,10 +1,11 @@
 @import "scss/constants";
 
+$min-height: 4rem;
 $height: 2rem;
 
 .AdminSidebarTitle {
   place-content: center start;
-  min-height: $height;
+  min-height: $min-height;
   line-height: $height;
   font-size: $height * 0.75;
   font-weight: $font-weight--600;
