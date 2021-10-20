@@ -1,6 +1,5 @@
-import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
-import { useRouteMatch } from "react-router";
-import { Redirect, useHistory } from "react-router-dom";
+import React, { useCallback, useMemo } from "react";
+import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { sample } from "lodash";
 
@@ -8,20 +7,16 @@ import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
 import { chooseAuditoriumSize } from "utils/auditorium";
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { Loading } from "components/molecules/Loading";
-
 import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
 
@@ -34,7 +29,6 @@ export interface SectionPreviewsProps {
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   venue,
 }) => {
-  const match = useRouteMatch();
   const { push: openUrlUsingRouter } = useHistory();
 
   const { parentVenue } = useRelatedVenues({
@@ -44,16 +38,13 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   const {
     auditoriumSections,
-    isAuditoriumSectionsLoaded,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
     enterSection,
     availableSections,
   } = useAllAuditoriumSections(venue);
 
-  const sectionsCount = venue.sectionsCount ?? 0;
-  const hasOnlyOneSection = sectionsCount === 1;
-  const [firstSection] = auditoriumSections;
+  const sectionsCount = auditoriumSections.length;
 
   const auditoriumSize = chooseAuditoriumSize(sectionsCount);
 
@@ -83,18 +74,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     [auditoriumSize]
   );
 
-  const [iframeUrl, setIframeUrl] = useState("");
-  useLayoutEffect(() => {
-    if (!venue) return;
-
-    setIframeUrl(
-      convertToEmbeddableUrl({
-        url: venue.iframeUrl,
-        autoPlay: venue.autoPlay,
-      })
-    );
-  }, [venue]);
-
   const availableSectionIds = useMemo(
     () => availableSections.map((section) => section.id),
     [availableSections]
@@ -118,14 +97,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     `AllSectionPreviews--${auditoriumSize}`
   );
 
-  if (!isAuditoriumSectionsLoaded) {
-    return <Loading label="Loading sections" />;
-  }
-
-  if (hasOnlyOneSection && firstSection) {
-    return <Redirect to={`${match.url}/section/${firstSection.id}`} />;
-  }
-
   return (
     <>
       {parentVenue && (
@@ -134,15 +105,12 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           locationName={parentVenue.name}
         />
       )}
-      <VenueWithOverlay
-        venue={venue}
-        containerClassNames={`AllSectionPreviews ${containerClasses}`}
-      >
+      <div className={containerClasses}>
         {emptyBlocks}
 
         <div className="AllSectionPreviews__main">
           <IFrame
-            src={iframeUrl}
+            src={venue.iframeUrl}
             containerClassName="AllSectionPreviews__iframe-overlay"
             iframeClassname="AllSectionPreviews__iframe"
           />
@@ -163,7 +131,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         </div>
 
         {sectionPreviews}
-      </VenueWithOverlay>
+      </div>
     </>
   );
 };

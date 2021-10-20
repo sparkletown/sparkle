@@ -1,21 +1,11 @@
-import React, { useCallback, useEffect } from "react";
-import { useCss } from "react-use";
-import classNames from "classnames";
-
-import { ALWAYS_EMPTY_ARRAY, ENABLE_POPUPS_URL } from "settings";
+import React, { useEffect } from "react";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { getExtraLinkProps, openUrl } from "utils/url";
+import { openUrl } from "utils/url";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { UserList } from "components/molecules/UserList";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { SparkleLogoIcon } from "components/atoms/SparkleLogoIcon";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 import "./ExternalRoom.scss";
 
@@ -24,89 +14,48 @@ export interface ExternalRoomProps {
 }
 
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
-  const redirectUrl = venue.zoomUrl ?? "";
-
-  const venueLogoVars = useCss({
-    "background-image": `url(${venue.host?.icon})`,
-  });
-
-  const venueLogoClasses = classNames(
-    "ExternalRoom__venue-logo",
-    venueLogoVars
-  );
+  const redirectUrl = venue.zoomUrl;
 
   useEffect(() => {
     if (!redirectUrl) return;
+
     openUrl(redirectUrl);
   }, [redirectUrl]);
 
-  const openRoomUrl = useCallback(() => openUrl(redirectUrl), [redirectUrl]);
-
-  return (
-    <VenueWithOverlay venue={venue} containerClassNames="ExternalRoom">
-      <div className="ExternalRoom__container">
-        <SparkleLogoIcon />
-        {!redirectUrl && (
-          <div className="ExternalRoom__container">
-            <div className="ExternalRoom__message">
-              Venue {venue.name} should redirect to a URL, but none was set.
-            </div>
-          </div>
-        )}
-
-        {redirectUrl && (
-          <>
-            <div className="ExternalRoom__message">
-              <div>This page should automatically open</div>
-              <a
-                href={redirectUrl}
-                className="ExternalRoom__link"
-                {...getExtraLinkProps(true)}
-              >
-                {redirectUrl}
-              </a>
-
-              <div>
-                in a new tab. If you&apos;re not seeing this, try{" "}
-                <a rel="noreferrer" href={ENABLE_POPUPS_URL} target="_blank">
-                  enabling pop ups on your browser.
-                </a>
-              </div>
-            </div>
-            <div className="ExternalRoom__content">
-              <div className="ExternalRoom__venue-container">
-                <div className={venueLogoClasses} />
-
-                <div className="ExternalRoom__venue-details">
-                  <div className="ExternalRoom__venue-title">{venue.name}</div>
-
-                  <div className="ExternalRoom__venue-subtitle">
-                    {venue.config?.landingPageConfig.subtitle}
-                  </div>
-
-                  <ButtonNG variant="primary" onClick={openRoomUrl}>
-                    Enter
-                  </ButtonNG>
-                </div>
-              </div>
-
-              <div className="ExternalRoom__venue-description">
-                <RenderMarkdown
-                  text={venue.config?.landingPageConfig.description}
-                />
-              </div>
-
-              <UserList
-                containerClassName="ExternalRoom__userlist"
-                userCount={venue.recentUserCount ?? 0}
-                usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-                activity="in here"
-                hasClickableAvatars
-              />
-            </div>
-          </>
-        )}
+  return redirectUrl ? (
+    <div className="ExternalRoom">
+      <div className="ExternalRoom__message">
+        <SparkleLogo />
+        <div className="ExternalRoom__content">
+          <h4 className="ExternalRoom__header">
+            You will now be redirected to some incredible content! Please ensure
+            you{" "}
+            <a
+              rel="noreferrer"
+              href="https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop"
+              target="_blank"
+            >
+              allow popups in your browser
+            </a>{" "}
+            and keep this tab open while you explore, so you can find your way
+            back easily. If you do not see a new tab open, please feel free to
+            click through to:{" "}
+            <a
+              rel="noreferrer"
+              href={venue.zoomUrl}
+              target="_blank"
+              className="ExternalRoom__link"
+            >
+              {venue.zoomUrl}
+            </a>
+            .
+          </h4>
+        </div>
       </div>
-    </VenueWithOverlay>
+    </div>
+  ) : (
+    <div className="ExternalRoom__message">
+      <p>Venue {venue.name} should redirect to a URL, but none was set.</p>
+    </div>
   );
 };

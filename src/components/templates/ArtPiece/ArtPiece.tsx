@@ -7,17 +7,16 @@ import { IFRAME_ALLOW } from "settings";
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import { Room } from "components/organisms/Room";
+import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
-
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import "./ArtPiece.scss";
 
@@ -36,10 +35,11 @@ export interface ArtPieceProps {
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
-  const { name, host, config, iframeUrl, videoAspect } = venue ?? {};
+  const { name, host, config, showRangers, iframeUrl, videoAspect } =
+    venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
-  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
+  const embeddableUrl = ConvertToEmbeddableUrl(iframeUrl);
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({
@@ -59,40 +59,44 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   if (!venue) return <Loading label="Loading..." />;
 
   return (
-    <>
-      <VenueWithOverlay venue={venue} containerClassNames="ArtPiece">
-        <InformationLeftColumn iconNameOrPath={host?.icon}>
-          <InformationCard title="About the venue">
-            <p className="ArtPiece__title-sidebar">{name}</p>
-            <p className="ArtPiece__short-description-sidebar">
-              {landingPageConfig?.subtitle}
-            </p>
-            <div className="ArtPiece__rendered-markdown">
-              <RenderMarkdown text={landingPageConfig?.description} />
-            </div>
-          </InformationCard>
-        </InformationLeftColumn>
-        <div className="ArtPiece__content">
-          <div className={aspectContainerClasses}>
-            <iframe
-              className="ArtPiece__youtube-video"
-              title="art-piece-video"
-              src={embeddableUrl}
-              frameBorder="0"
-              allow={IFRAME_ALLOW}
-              allowFullScreen
-            />
+    <div className="ArtPiece">
+      <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationCard title="About the venue">
+          <p className="ArtPiece__title-sidebar">{name}</p>
+          <p className="ArtPiece__short-description-sidebar">
+            {landingPageConfig?.subtitle}
+          </p>
+          <div className="ArtPiece__rendered-markdown">
+            <RenderMarkdown text={landingPageConfig?.description} />
           </div>
-          <div className="ArtPiece__video-chat-wrapper">
-            <Room
-              venueId={venue.id}
-              roomName={venue.id}
-              hasChairs={false}
-              defaultMute={true}
-            />
-          </div>
+        </InformationCard>
+      </InformationLeftColumn>
+      <div className="ArtPiece__content">
+        <div className={aspectContainerClasses}>
+          <iframe
+            className="ArtPiece__youtube-video"
+            title="art-piece-video"
+            src={embeddableUrl}
+            frameBorder="0"
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
         </div>
-      </VenueWithOverlay>
-    </>
+        <div className="ArtPiece__video-chat-wrapper">
+          <Room
+            venueName={name}
+            roomName={name}
+            setUserList={() => null}
+            hasChairs={false}
+            defaultMute={true}
+          />
+        </div>
+      </div>
+      {showRangers && (
+        <div className="ArtPiece__sparkle-fairies">
+          <SparkleFairiesPopUp />
+        </div>
+      )}
+    </div>
   );
 };

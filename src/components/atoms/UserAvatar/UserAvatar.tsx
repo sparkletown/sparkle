@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { BaseUser, UsernameVisibility } from "types/User";
+import { User, UsernameVisibility } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -13,18 +13,16 @@ import {
   ImageResizeOptions,
 } from "utils/image";
 
+import { useIsOnline } from "hooks/useIsOnline";
+import { useVenueId } from "hooks/useVenueId";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
-export type UserAvatarUserFields = WithId<
-  Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode" | "status">
->;
-
 export interface UserAvatarProps extends ContainerClassName {
-  user?: UserAvatarUserFields;
+  user?: WithId<User>;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
@@ -51,14 +49,15 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showStatus,
   size,
 }) => {
-  // @debt until temporarily disable is online functionality
-  const isOnline = false;
+  const venueId = useVenueId();
+
+  const { isOnline } = useIsOnline(user?.id);
 
   const {
     userStatus,
     venueUserStatuses,
     isStatusEnabledForVenue,
-  } = useVenueUserStatuses(user);
+  } = useVenueUserStatuses(venueId, user);
 
   const avatarSrc = useMemo((): string => {
     const url = user?.anonMode
@@ -106,8 +105,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   //'showStatus' is used to render this conditionally only in some of the screens.
   const hasUserStatus =
     isStatusEnabledForVenue &&
-    // @debt until temporarily disable is online functionality
-    // isOnline &&
+    isOnline &&
     showStatus &&
     !!venueUserStatuses.length;
 

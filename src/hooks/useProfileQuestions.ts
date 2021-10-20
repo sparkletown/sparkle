@@ -2,10 +2,10 @@ import { useMemo } from "react";
 
 import { User } from "types/User";
 
-import { useRelatedVenues } from "./useRelatedVenues";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 export const useProfileQuestions = (user?: User, venueId?: string) => {
-  const { sovereignVenue } = useRelatedVenues();
+  const { sovereignVenue } = useSovereignVenue({ venueId });
   const questions = sovereignVenue?.profile_questions;
   const answers = useMemo(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

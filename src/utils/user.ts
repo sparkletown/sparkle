@@ -1,39 +1,42 @@
-import { FirebaseReducer } from "react-redux-firebase";
-import { omit, pick } from "lodash";
-
-import { User, UserLocation, UserWithLocation } from "types/User";
+import { Experience, User, UserLocation } from "types/User";
 
 import { WithId } from "./id";
-import { wrapIntoSlashes } from "./string";
-import { isTruthy } from "./types";
+
+export const getUserExperience = (venueName?: string) => (
+  user?: User
+): Experience | undefined => {
+  if (!venueName || !user) return;
+
+  return user?.data?.[venueName];
+};
 
 export const getUserLocationData = ({
   worldUserLocationsById,
   user,
-  portalVenueId,
+  roomName,
+  venueName,
+  location,
 }: {
   worldUserLocationsById: Record<string, WithId<UserLocation>>;
   user: WithId<User>;
-  portalVenueId: string;
+  roomName: string;
+  venueName: string;
+  location: string;
 }) => {
   const userLocation: WithId<UserLocation> | undefined =
     worldUserLocationsById[user.id];
 
-  const isLocationMatch = userLocation?.lastVenueIdSeenIn?.includes(
-    wrapIntoSlashes(portalVenueId)
-  );
-
+  const userLastSeenIn =
+    Object.keys(userLocation.lastSeenIn)[0] &&
+    !!Object.keys(userLocation.lastSeenIn)[0].includes(roomName);
+  const userLastSeenLocation =
+    userLocation.lastSeenIn?.[venueName] ||
+    userLocation.lastSeenIn?.[roomName] ||
+    userLocation.lastSeenIn?.[location] ||
+    Object.values(userLocation.lastSeenIn)[0];
+  const isLocationMatch = userLastSeenIn && userLastSeenLocation;
   return {
     isLocationMatch,
-    ...userLocation,
+    userLastSeenLocation,
   };
 };
-
-export const omitLocationFromUser = <T extends UserWithLocation>(user: T) =>
-  omit(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");
-
-export const extractLocationFromUser = <T extends UserWithLocation>(user: T) =>
-  pick(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");
-
-export const isCompleteUserInfo = (user: FirebaseReducer.AuthState) =>
-  isTruthy(user.displayName) && isTruthy(user.photoURL);

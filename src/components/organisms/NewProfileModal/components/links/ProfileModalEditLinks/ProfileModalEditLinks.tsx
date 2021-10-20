@@ -66,7 +66,7 @@ export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
     <div className={classNames("ProfileModalEditLinks", containerClassName)}>
       <div className="ProfileModalEditLinks__header-container">
         <ProfileModalSectionHeader text="Profile links" />
-        <ProfileModalRoundIcon onClick={onAddLink} iconName={faPlus} />
+        <ProfileModalRoundIcon onClick={onAddLink} icon={faPlus} size="sm" />
       </div>
       {renderedLinks}
     </div>

@@ -36,7 +36,7 @@ $online-container-min-width: 50px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: $content--under;
+    background-color: $black;
   }
 
   &__details {
@@ -74,7 +74,7 @@ $online-container-min-width: 50px;
     justify-content: center;
     align-items: center;
 
-    background: $accent--under;
+    background: $primary;
     border-radius: $border-radius--xl;
 
     font-size: $font-size--md;

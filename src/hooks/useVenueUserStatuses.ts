@@ -8,13 +8,13 @@ import { User, UserStatus } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRelatedVenues } from "./useRelatedVenues";
+import { useSovereignVenue } from "./useSovereignVenue";
 import { useUser } from "./useUser";
 
 const emptyStatuses: UserStatus[] = [];
 
-export const useVenueUserStatuses = (user?: WithId<User>) => {
-  const { sovereignVenue } = useRelatedVenues();
+export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
+  const { sovereignVenue } = useSovereignVenue({ venueId });
   const { userId, profile } = useUser();
 
   // @debt replace this with useAsync / useAsyncFn / similar

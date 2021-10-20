@@ -10,17 +10,12 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
-import { Loading } from "components/molecules/Loading";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Section.scss";
 
@@ -31,24 +26,15 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
-  const { parentVenue } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-  const parentVenueId = parentVenue?.id;
-
   const isUserAudioMuted = !isUserAudioOn;
 
   const { iframeUrl, id: venueId } = venue;
 
-  const { sectionId } = useParams<{ sectionId: string }>();
-  const {
-    push: openUrlUsingRouter,
-    replace: replaceUrlUsingRouter,
-  } = useHistory();
+  const { sectionId } = useParams<{ sectionId?: string }>();
+  const { push: openUrlUsingRouter } = useHistory();
 
   const {
     auditoriumSection,
-    isAuditoriumSectionLoaded,
 
     baseRowsCount,
     baseColumnsCount,
@@ -67,11 +53,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     sectionId,
   });
 
-  useUpdateAuditoriumRecentSeatedUsers(venueId, isUserSeated && sectionId);
-
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
-
   // Ensure the user leaves their seat when they leave the section
+  // @debt We should handle/enforce this on the backend somehow
   useEffect(() => {
     return () => {
       leaveSeat();
@@ -97,74 +80,37 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
-  const sectionsCount = venue.sectionsCount ?? 0;
-  const hasOnlyOneSection = sectionsCount === 1;
-
-  const shouldShowReactions = areSettingsLoaded && settings.showReactions;
-
-  const renderReactions = () => {
-    return (
-      shouldShowReactions && (
-        <div className="Section__reactions">
-          <ReactionsBar
-            venueId={venueId}
-            leaveSeat={leaveSeat}
-            isReactionsMuted={isUserAudioMuted}
-            toggleMute={toggleUserAudio}
-          />
-        </div>
-      )
-    );
-  };
-
   const backToMain = useCallback(() => {
     if (!venueId) return;
 
-    if (hasOnlyOneSection && parentVenueId) {
-      return enterVenue(parentVenueId, {
-        // NOTE: Replace URL here to get rid of /section/sectionId in the URL
-        customOpenExternalUrl: replaceUrlUsingRouter,
-      });
-    }
-
     enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [
-    venueId,
-    openUrlUsingRouter,
-    replaceUrlUsingRouter,
-    hasOnlyOneSection,
-    parentVenueId,
-  ]);
-
-  if (!isAuditoriumSectionLoaded) {
-    return <Loading label="Loading section data" />;
-  }
+  }, [venueId, openUrlUsingRouter]);
 
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <VenueWithOverlay venue={venue} containerClassNames="Section">
-      <BackButton
-        onClick={backToMain}
-        locationName={
-          hasOnlyOneSection && parentVenue ? parentVenue.name : "overview"
-        }
-      />
+    <div className="Section">
+      <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>
             <IFrame containerClassName="Section__iframe" src={iframeUrl} />
-            {isUserSeated ? (
-              renderReactions()
-            ) : (
-              <div className="Section__reactions">
-                Welcome! Click on an empty seat to claim it!
-              </div>
-            )}
+            <div className="Section__reactions">
+              {isUserSeated ? (
+                <ReactionsBar
+                  venueId={venueId}
+                  leaveSeat={leaveSeat}
+                  isReactionsMuted={isUserAudioMuted}
+                  toggleMute={toggleUserAudio}
+                />
+              ) : (
+                "Welcome! Click on an empty seat to claim it!"
+              )}
+            </div>
           </div>
         </div>
         {seatsGrid}
       </div>
-    </VenueWithOverlay>
+    </div>
   );
 };

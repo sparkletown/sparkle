@@ -1,4 +1,6 @@
 //$primary: #d0021b;
+//$black: #000000;
+//$white: #fff;
 //
 //$border-radius: 28px;
 
@@ -13,8 +15,8 @@
 //  font-weight: 500;
 //  border: none;
 //  background-color: transparent;
-//  color: $accent--under;
-//  box-shadow: inset 0 0 0 3px $accent--under;
+//  color: $primary;
+//  box-shadow: inset 0 0 0 3px $primary;
 //  transition: box-shadow 400ms, background-color 400ms, color 400ms,
 //    opacity 400ms, transform 1400ms $transition-function;
 //  border-radius: $border-radius;
@@ -29,24 +31,24 @@
 //    font-size: 0.8em;
 //  }
 //  &:hover {
-//    color: var(--accent--under-darker-5pp);
-//    box-shadow: inset 0 0 0 3px var(--primary--under-20a);
+//    color: darken($primary, 5%);
+//    box-shadow: inset 0 0 0 3px rgba($primary, 0.2);
 //    transform: translateY(-1px);
 //  }
 //
 //  &.btn-primary {
-//    background-color: $accent--under;
-//    color: $content--over;
+//    background-color: $primary;
+//    color: $white;
 //    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 //
 //    &:hover {
-//      color: $content--over;
-//      background-color: var(--accent--under-darker-5pp);
+//      color: $white;
+//      background-color: darken($primary, 5%);
 //    }
 //  }
 //
 //  &.btn-link {
-//    color: $accent--under;
+//    color: $primary;
 //    background-color: transparent;
 //
 //    &:after {
@@ -56,18 +58,18 @@
 //      bottom: 6px;
 //      left: 20px;
 //      width: calc(100% - 40px);
-//      background-color: var(--primary--under-20a);
+//      background-color: rgba($primary, 0.2);
 //    }
 //
 //    &:hover {
-//      color: var(--accent--under-darker-20pp);
+//      color: darken($primary, 20%);
 //      &:after {
-//        background-color: var(--primary--under-50a);
+//        background-color: rgba($primary, 0.5);
 //      }
 //    }
 //
 //    &.btn-link_disabled {
-//      color: opaque-black(0.5);
+//      color: rgba($black, 0.5);
 //      cursor: auto;
 //      &:after {
 //        display: none;
@@ -76,14 +78,14 @@
 //  }
 //  &.btn-white {
 //    background-color: white;
-//    color: $content--under;
+//    color: $black;
 //    box-shadow: none;
 //    &:hover {
-//      color: opaque-black(0.6);
+//      color: rgba($black, 0.6);
 //    }
 //    &:disabled {
-//      background-color: opaque-white(0.1);
-//      color: opaque-white(0.6);
+//      background-color: rgba($white, 0.1);
+//      color: rgba($white, 0.6);
 //    }
 //  }
 //  &.btn-block {
@@ -92,8 +94,8 @@
 //  }
 //  &.btn-disabled {
 //    cursor: not-allowed;
-//    background-color: $content--under;
+//    background-color: $black;
 //    box-shadow: none;
-//    color: opaque-white(0.6);
+//    color: rgba($white, 0.6);
 //  }
 //}

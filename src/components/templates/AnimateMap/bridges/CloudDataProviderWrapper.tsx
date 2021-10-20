@@ -1,30 +1,23 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
-
 import { Room } from "types/rooms";
 import { AnimateMapVenue, AnyVenue } from "types/venues";
 
 import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
-import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
 import { useVenueEvents } from "hooks/events";
+import { useRecentWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
+import { getFirebaseStorageResizedImage } from "../../../../utils/image";
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
-
-// @debt Removed users out as a part of massive refactor of users. Beavers should implement the new architecture in this template a part of AnimateMap refactor
-const EMPTY_WORLD_USERS = {
-  recentWorldUsers: ALWAYS_EMPTY_ARRAY,
-  isRecentWorldUsersLoaded: true,
-};
 
 export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
@@ -50,6 +43,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   );
   const firebase = useFirebase();
   const user = useUser();
+  const worldUsers = useRecentWorldUsers();
 
   const venues: WithId<AnyVenue>[] = useMemo(
     () =>
@@ -122,8 +116,8 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   }, [roomsWithFullData, firebarrelsWithUsers, dataProvider]);
 
   useEffect(() => {
-    if (dataProvider) dataProvider.updateUsersAsync(EMPTY_WORLD_USERS);
-  }, [dataProvider]);
+    if (dataProvider) dataProvider.updateUsersAsync(worldUsers);
+  }, [worldUsers, dataProvider]);
 
   useEffect(
     () => {
@@ -146,7 +140,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
         });
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
-        dataProvider.updateUsers(EMPTY_WORLD_USERS);
+        dataProvider.updateUsers(worldUsers);
 
         setDataProvider(dataProvider);
         newDataProviderCreate(dataProvider);

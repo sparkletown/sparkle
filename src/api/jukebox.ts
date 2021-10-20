@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import { noop } from "lodash";
 
-import { JukeboxMessage } from "types/chat";
+import { JukeboxMessage } from "types/jukebox";
 
 import { getVenueRef } from "./venue";
 

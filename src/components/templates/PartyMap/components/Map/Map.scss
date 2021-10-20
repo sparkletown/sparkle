@@ -1,7 +1,8 @@
 @import "scss/constants";
 
+$sand: #937c63;
+$white: #ffffff;
 $border-radius: 28px;
-$avatarpulse-box-shadow-color: var(--primary--under-65a);
 
 .party-map-map-component {
   display: flex;
@@ -33,6 +34,11 @@ $avatarpulse-box-shadow-color: var(--primary--under-65a);
   z-index: z(map-background);
   border-radius: 15px;
   height: 100%;
+}
+
+.party-map-grid-container > *:first-child {
+  grid-row: 1 / 1;
+  grid-column: 1 / 1;
 }
 
 .party-map-grid-container {
@@ -102,7 +108,7 @@ $avatarpulse-box-shadow-color: var(--primary--under-65a);
 
     .avatar {
       opacity: 0.025;
-      background-color: $content--over;
+      background-color: $white;
     }
   }
 
@@ -110,7 +116,7 @@ $avatarpulse-box-shadow-color: var(--primary--under-65a);
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: $content--over;
+    background-color: $white;
     opacity: 0.025;
     border-radius: 100%;
 
@@ -138,19 +144,16 @@ $avatarpulse-box-shadow-color: var(--primary--under-65a);
   //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
-      background-color: $accent--under;
-      box-shadow: 0 0 0 3px $accent--under,
-        0 0 20px $avatarpulse-box-shadow-color;
+      background-color: $primary;
+      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
     }
     50% {
-      background-color: var(--primary--under-lighter-10pp);
-      box-shadow: 0 0 0 3px $accent--under,
-        0 0 20px 10px $avatarpulse-box-shadow-color;
+      background-color: lighten($primary, 10%);
+      box-shadow: 0 0 0 3px $primary, 0 0 20px 10px rgba($primary, 0.65);
     }
     100% {
-      background-color: $accent--under;
-      box-shadow: 0 0 0 3px $accent--under,
-        0 0 20px $avatarpulse-box-shadow-color;
+      background-color: $primary;
+      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
     }
   }
 
@@ -171,6 +174,13 @@ $avatarpulse-box-shadow-color: var(--primary--under-65a);
 
 .tab-option {
   padding: 10px;
+}
+
+.sparkle-fairies {
+  position: fixed;
+  top: 70px;
+  left: 0px;
+  z-index: z(left-column);
 }
 
 .info-drawer-camp {

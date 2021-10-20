@@ -15,7 +15,7 @@ $label-visible: flex;
   appearance: none;
   background: none;
   border: none;
-  color: $content--over;
+  color: $white;
 
   transition: transform 600ms $transition-function;
 
@@ -27,10 +27,9 @@ $label-visible: flex;
     .maproom__label {
       display: $label-visible;
 
-      background-color: $accent--under;
+      background-color: $primary;
       opacity: 1;
-      box-shadow: 0 0 0 3px var(--primary--under-lighter-10pp),
-        0 2px 4px opaque-black(0.2);
+      box-shadow: 0 0 0 3px lighten($primary, 10%), 0 2px 4px rgba($black, 0.2);
     }
 
     .maproom__title--count {
@@ -107,7 +106,7 @@ $label-visible: flex;
     backdrop-filter: blur(8px);
 
     font-size: 0.9rem;
-    background-color: var(--primary--under-darker-50pp);
+    background-color: darken($primary, 50%);
     opacity: 0.5;
   }
 

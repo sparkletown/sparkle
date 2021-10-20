@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useMemo, useRef } from "react";
+import React, { ChangeEvent, useCallback, useMemo } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -8,14 +8,12 @@ import { ContainerClassName } from "types/utility";
 
 import { useImageInputCompression } from "hooks/useImageInputCompression";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
 import { ImageOverlay } from "components/atoms/ImageOverlay";
 
 import "firebase/functions";
 
 interface ImageInputProps extends ContainerClassName {
   disabled: boolean;
-  isInputHidden?: boolean;
   name: string;
   remoteUrlInputName?: string;
   remoteImageUrl?: string;
@@ -24,7 +22,6 @@ interface ImageInputProps extends ContainerClassName {
   error?: FieldError;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
-  text?: string;
 }
 
 export const ImageInput: React.FC<ImageInputProps> = ({
@@ -38,11 +35,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
   disabled,
   setValue,
   register,
-  isInputHidden = false,
-  text = "Upload",
 }) => {
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
   const imageUrl = useMemo(
     () =>
       (image && image.length > 0 && URL.createObjectURL(image[0])) ||
@@ -70,17 +63,17 @@ export const ImageInput: React.FC<ImageInputProps> = ({
     [handleFileInputChange, name, remoteUrlInputName, setValue]
   );
 
-  const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
-
-  const containerClasses = classNames("image-input default-container", {
-    containerClassName,
-    "mod--hidden": isInputHidden,
-    disabled: loading,
-  });
-
   return (
     <>
-      <div className={containerClasses}>
+      <div
+        className={classNames(
+          `image-input default-container`,
+          containerClassName,
+          {
+            disabled: loading,
+          }
+        )}
+      >
         {imageUrl ? (
           <img
             className={`default-image ${imageClassName}`}
@@ -100,19 +93,12 @@ export const ImageInput: React.FC<ImageInputProps> = ({
           accept={ACCEPTED_IMAGE_TYPES}
           onChange={handleFileInputChangeWrapper}
           className="default-input"
-          ref={inputFileRef}
         />
-
         {loading && <ImageOverlay>processing...</ImageOverlay>}
         {remoteUrlInputName && (
           <input type="hidden" ref={register} name={remoteUrlInputName} />
         )}
       </div>
-      {isInputHidden && (
-        <ButtonNG onClick={onButtonClick} variant="primary">
-          {text}
-        </ButtonNG>
-      )}
       {errorMessage && <span className="input-error">{errorMessage}</span>}
     </>
   );

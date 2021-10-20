@@ -1,63 +1,51 @@
-import React, { useCallback, useMemo } from "react";
-
-import { ACCEPTED_IMAGE_TYPES } from "settings";
-
-import { generateId } from "utils/string";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
+import React, { useCallback } from "react";
+import classNames from "classnames";
 
 import "./FileButton.scss";
 
 export interface FileButtonProps {
   title: string;
-  accept?: string;
   description?: string;
   disabled?: boolean;
-  loading?: boolean;
   onChange: (url: string, file: FileList) => void;
 }
 
 export const FileButton: React.FC<FileButtonProps> = ({
   title,
-  accept = ACCEPTED_IMAGE_TYPES,
   description,
-  disabled,
-  loading,
+  disabled: isDisabled,
   onChange,
 }) => {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
 
-      if (!files || disabled) return;
+      if (!files || isDisabled) return;
 
       const url = URL.createObjectURL(files[0]);
 
       onChange(url, files);
     },
-    [disabled, onChange]
+    [isDisabled, onChange]
   );
 
-  const id = useMemo(
-    () => generateId("FileButton-" + title.replace(/\W/g, "-")),
-    [title]
-  );
+  const buttonClasses = classNames("btn btn-primary", {
+    "btn-disabled": isDisabled,
+  });
 
   return (
     <div className="FileButton">
-      <ButtonNG variant="primary" disabled={disabled} loading={loading}>
-        <label className="FileButton__label" htmlFor={id}>
+      <button className={buttonClasses} disabled={isDisabled}>
+        <label className="FileButton__label" htmlFor="fileButton">
           {title}
         </label>
-      </ButtonNG>
+      </button>
 
       <input
-        className="FileButton__input"
         hidden
         type="file"
-        id={id}
-        accept={accept}
-        disabled={disabled}
+        id="fileButton"
+        disabled={isDisabled}
         onChange={handleChange}
       />
 

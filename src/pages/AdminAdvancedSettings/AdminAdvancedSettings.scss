@@ -28,7 +28,7 @@
     text-align: center;
     align-self: center;
     cursor: pointer;
-    color: opaque-white(0.6);
+    color: rgba($white, 0.6);
     text-decoration: none;
     padding: $spacing--sm $spacing--xl;
 
@@ -41,12 +41,12 @@
     }
 
     &:hover {
-      color: $content--over;
+      color: $white;
     }
 
     &--selected {
-      color: $content--over;
-      background-color: $accent--under;
+      color: $white;
+      background-color: $primary;
     }
   }
 }

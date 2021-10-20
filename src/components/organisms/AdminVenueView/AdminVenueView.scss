@@ -25,18 +25,17 @@
     flex-grow: 1;
     text-align: center;
     cursor: pointer;
-    color: opaque-white(0.6);
+    color: rgba($white, 0.6);
     text-decoration: none;
     padding: $spacing--sm $spacing--xl;
-    height: $admin-ng-tab-bar-height;
 
     &:hover {
-      color: $content--over;
+      color: $white;
     }
 
     &--selected {
-      color: $content--over;
-      background-color: $accent--under;
+      color: $white;
+      background-color: $primary;
     }
 
     @media (max-width: $media-breakpoint--lg) {

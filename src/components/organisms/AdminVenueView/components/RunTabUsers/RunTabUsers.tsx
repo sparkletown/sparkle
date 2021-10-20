@@ -1,18 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { useAsync } from "react-use";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
-
-import { getUserRef } from "api/profile";
-
-import { AlgoliaSearchIndex } from "types/algolia";
-import { User } from "types/User";
-
-import { withId } from "utils/id";
-
-import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentWorldUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
@@ -30,7 +19,7 @@ interface RunTabSidebarProps {
 
 export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const { sovereignVenue } = useRelatedVenues();
+  const { recentWorldUsers } = useRecentWorldUsers();
   const [searchText, setSearchText] = useState("");
   const {
     isShown: isShownInviteAdminModal,
@@ -38,30 +27,17 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
     hide: hideInviteAdminModal,
   } = useShowHide();
 
-  const owners = venue?.owners ?? ALWAYS_EMPTY_ARRAY;
+  const admins = useMemo(() => {
+    const owners = venue?.owners ?? [];
+    return recentWorldUsers.filter(({ id }) => owners.includes(id));
+  }, [recentWorldUsers, venue?.owners]);
 
-  const { value: admins = ALWAYS_EMPTY_ARRAY } = useAsync(
-    async () =>
-      Promise.all(owners.map((owner) => getUserRef(owner).get())).then((docs) =>
-        docs.map((doc) => withId(doc.data() as User, doc.id))
-      ),
-    [owners]
-  );
-
-  const algoliaSearchState = useAlgoliaSearch(
-    venueId,
-    searchText.toLowerCase()
-  );
-
-  const foundUsers = useMemo(() => {
-    const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
-    if (!usersResults) return [];
-
-    return usersResults.hits.map((hit) => ({
-      ...hit,
-      id: hit.objectID,
-    }));
-  }, [algoliaSearchState.value]);
+  const users = useMemo(() => {
+    const needle = searchText.toLowerCase();
+    return recentWorldUsers.filter(({ partyName }) =>
+      partyName?.toLowerCase().includes(needle)
+    );
+  }, [recentWorldUsers, searchText]);
 
   if (!venue) {
     return null;
@@ -71,12 +47,12 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
     <div className="RunTabUsers">
       <div className="RunTabUsers__row RunTabUsers__manage">
         <span className="RunTabUsers__info">
-          {sovereignVenue?.recentUserCount} people live
+          {recentWorldUsers.length} people live
         </span>
         <ButtonNG>Manage users</ButtonNG>
       </div>
       <div>
-        {foundUsers.map((user) => (
+        {users.map((user) => (
           <RunTabUserInfo key={user.id} user={user} />
         ))}
       </div>

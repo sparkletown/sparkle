@@ -8,7 +8,6 @@ $edit-topic-button-diameter: 0px 5px;
   display: flex;
   justify-content: space-between;
   align-items: stretch;
-  margin-right: 0;
 
   &__leave-table {
     display: flex;
@@ -19,7 +18,7 @@ $edit-topic-button-diameter: 0px 5px;
   &__leave-button {
     background-color: $secondary;
     font-size: 0.9rem;
-    color: $content--over;
+    color: $white;
     border: none;
     padding: 15px 15px 15px 25px;
     border-radius: 0 0 16px 0;
@@ -72,7 +71,7 @@ $edit-topic-button-diameter: 0px 5px;
     cursor: pointer;
 
     &:hover {
-      background-color: var(--greyscale-lighter-10pp);
+      background-color: $secondary--light;
 
       &--icon {
         opacity: 1;

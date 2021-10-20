@@ -8,8 +8,6 @@ import { Dimensions } from "types/utility";
 import { SubVenueIconMap } from "./Container";
 import { ItemTypes } from "./ItemTypes";
 
-import "./DraggableSubvenue.scss";
-
 const getStyles = (
   left: number,
   top: number,
@@ -42,7 +40,6 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
     top,
     width,
     height,
-    title,
     onChangeSize,
     isResizable,
     rounded,
@@ -121,7 +118,6 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
             <img src={url} alt="subvenue-icon" style={styles.resizeableImage} />
           </div>
         </div>
-        <div className="DraggableSubvenue__title">{title}</div>
       </Resizable>
     );
   }

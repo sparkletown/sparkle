@@ -114,7 +114,7 @@ const EventsComponent: React.FC<EventsComponentProps> = ({
           className="btn btn-primary"
           onClick={() => setShowCreateEventModal(true)}
         >
-          Add experience
+          Create an Event
         </button>
       </div>
     </>

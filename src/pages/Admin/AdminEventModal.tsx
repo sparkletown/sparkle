@@ -5,7 +5,7 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import * as Yup from "yup";
 
-import { HAS_ROOMS_TEMPLATES, ROOM_TAXON } from "settings";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -200,9 +200,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
           </div>
           {template && HAS_ROOMS_TEMPLATES.includes(template) && (
             <div className="input-group">
-              <label htmlFor="room">
-                {ROOM_TAXON.capital} your event is in
-              </label>
+              <label htmlFor="room">Room your event is in</label>
               <input
                 id="room"
                 name="room"

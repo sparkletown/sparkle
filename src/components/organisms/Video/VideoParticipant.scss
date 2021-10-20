@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-.VideoParticipant {
+.video-participant {
   position: relative;
 
   &--mirrored {
@@ -15,23 +15,10 @@
 
     pointer-events: none;
 
-    &-element {
+    video {
       height: inherit;
       width: inherit;
 
-      border-radius: $border-radius--xl;
-      &--disabled {
-        opacity: 0;
-      }
-    }
-
-    &--placeholder {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: $lighter-intermediate-grey;
       border-radius: $border-radius--xl;
     }
   }
@@ -46,8 +33,6 @@
     position: absolute;
     bottom: 0;
     left: 0;
-
-    cursor: pointer;
 
     width: 100%;
     height: 100%;

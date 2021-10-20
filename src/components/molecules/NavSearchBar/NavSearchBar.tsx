@@ -1,28 +1,21 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
-import {
-  COVERT_ROOM_TYPES,
-  DEFAULT_PARTY_NAME,
-  ROOM_TAXON,
-  ROOMS_TAXON,
-} from "settings";
+import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 
-import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
-import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useVenueEvents } from "hooks/events";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUsers } from "hooks/users";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 
@@ -34,6 +27,8 @@ import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSea
 import { InputField } from "components/atoms/InputField";
 
 import { NavSearchResult } from "./NavSearchResult";
+
+import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import "./NavSearchBar.scss";
 
@@ -66,7 +61,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues();
+  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
 
   const enabledRelatedRooms = useMemo<Room[]>(
     () =>
@@ -110,7 +107,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           <NavSearchResult
             key={`room-${room.title}-${index}`}
             title={room.title}
-            description={ROOM_TAXON.capital}
+            description="Room"
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);
@@ -129,32 +126,26 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     );
   }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
 
+  const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
 
-  const algoliaSearchState = useAlgoliaSearch(venueId, searchQuery);
-
   const foundUsers = useMemo<JSX.Element[]>(() => {
-    const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
-    if (!usersResults) return [];
+    if (!searchQuery) return [];
 
-    return usersResults.hits.map((hit) => {
-      const userFields = {
-        ...hit,
-        id: hit.objectID,
-      };
-      return (
+    return worldUsers
+      .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
+      .map((user) => (
         <NavSearchResult
-          key={`user-${hit.objectID}`}
-          title={hit?.partyName ?? DEFAULT_PARTY_NAME}
-          user={userFields}
+          key={`user-${user.id}`}
+          title={user.partyName ?? DEFAULT_PARTY_NAME}
+          user={user}
           onClick={() => {
-            openUserProfileModal(hit.objectID);
+            openUserProfileModal(user);
             clearSearch();
           }}
         />
-      );
-    });
-  }, [algoliaSearchState.value, openUserProfileModal, clearSearch]);
+      ));
+  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -195,10 +186,10 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     foundRooms.length + foundEvents.length + foundUsers.length;
 
   const clearSearchIcon = (
-    <FontAwesomeIcon
-      size="lg"
+    <img
       className="NavSearchBar__clear-search"
-      icon={faTimesCircle}
+      src={navDropdownCloseIcon}
+      alt="close button"
       onClick={clearSearch}
     />
   );
@@ -236,7 +227,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
-        placeholder={`Search for people, ${ROOMS_TAXON.lower}, events...`}
+        placeholder="Search for people, rooms, events..."
         autoComplete="off"
         iconStart={faSearch}
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}

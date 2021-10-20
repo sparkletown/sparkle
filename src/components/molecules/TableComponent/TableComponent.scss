@@ -51,14 +51,14 @@
   }
 
   .table-subtitle {
-    color: $secondary--live;
+    color: $dark;
   }
 
   .table-item {
-    background: $secondary--live;
+    background: $dark;
     border-radius: 22px;
     min-height: 30px;
-    color: $content--over;
+    color: $white;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -66,7 +66,7 @@
     position: relative;
     margin: 5px 5px;
     &:hover {
-      background-color: lighten($secondary--live, 10%);
+      background-color: lighten($dark, 10%);
       transform: scale(1.05);
     }
   }
@@ -79,11 +79,11 @@
   }
 
   .red-text {
-    color: $primary--over;
+    color: $primaryColor;
   }
 
   .table-participant-picture {
-    background: $content--under;
+    background: $black;
   }
 
   .join-text,
@@ -115,14 +115,14 @@
     transition: all 400ms $transition-function;
     font-size: 2rem;
     &:hover {
-      background-color: $content--over;
+      background-color: $white;
       transform: scale(1.05) rotate(90deg);
       color: rgba(black, 0.7);
-      box-shadow: 2px 0px 10px opaque-white(0.6);
+      box-shadow: 2px 0px 10px rgba($white, 0.6);
     }
     &:active {
       transform: scale(0.95) rotate(90deg);
-      box-shadow: 2px 0px 10px opaque-white(0.2);
+      box-shadow: 2px 0px 10px rgba($white, 0.2);
     }
   }
 }

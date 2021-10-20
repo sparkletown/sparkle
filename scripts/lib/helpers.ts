@@ -192,7 +192,3 @@ export const findUserByEmail = (app: admin.app.App) => (
     .auth()
     .getUserByEmail(email)
     .catch(() => undefined);
-
-export const wrapIntoSlashes = (str: string): string => {
-  return `/${str}/`;
-};

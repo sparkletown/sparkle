@@ -10,13 +10,10 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useAsyncFn } from "react-use";
 import { isEqual } from "lodash";
 
-import { ROOM_TAXON, ROOMS_TAXON } from "settings";
-
 import { RoomInput_v2, updateRoom } from "api/admin";
 
-import { Room } from "types/rooms";
+import { RoomData_v2 } from "types/rooms";
 
-import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 
 import {
@@ -24,26 +21,24 @@ import {
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
 
-import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
-
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import Legend from "components/atoms/Legend";
+
+import { BackgroundSelect } from "../BackgroundSelect";
 
 import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   venueName: string;
-  worldId: string;
   mapBackground?: string;
-  rooms: Room[];
+  rooms: RoomData_v2[];
   venueId: string;
   isEditing: boolean;
-  onRoomChange?: (rooms: Room[]) => void;
+  onRoomChange?: (rooms: RoomData_v2[]) => void;
 }
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
-  worldId,
   mapBackground,
   rooms,
   venueId,
@@ -51,7 +46,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   onRoomChange,
 }) => {
   const { user } = useUser();
-  const [mapRooms, setMapRooms] = useState<Room[]>([]);
+  const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
 
   useEffect(() => {
     if (
@@ -68,7 +63,6 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const iconsMap = useMemo(() => {
     const iconsRooms = isEditing || mapRooms.length ? mapRooms : rooms;
     return iconsRooms.map((room, index: number) => ({
-      title: room.title,
       width: room.width_percent,
       height: room.height_percent,
       top: room.y_percent,
@@ -125,16 +119,17 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }
   }, [rooms, user, venueId]);
 
-  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
-
-  if (!hasMapBackground) {
-    return <MapBackgroundPlaceholder />;
-  }
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
         <Legend text={`${venueName}'s Map`} />
+
+        {!isEditing && (
+          <BackgroundSelect
+            venueName={venueName}
+            mapBackground={mapBackground}
+          />
+        )}
 
         {mapBackground &&
           !isEditing &&
@@ -158,7 +153,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
                   transition: "filter .3s ease",
                 }}
                 src={room.image_url}
-                alt={`${ROOM_TAXON.lower} banner`}
+                alt="room banner"
                 title={room.title}
               />
             </div>
@@ -191,7 +186,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           loading={isSaving}
           onClick={saveRoomPositions}
         >
-          Save {ROOMS_TAXON.lower}
+          Save rooms
         </ButtonNG>
       </div>
     </DndProvider>

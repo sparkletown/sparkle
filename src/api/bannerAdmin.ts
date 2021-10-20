@@ -1,22 +1,13 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { Banner } from "types/banner";
-
-export interface UpdateBannerProps {
-  venueId: string;
-  banner?: Banner;
-  onError?: (errorMsg: string) => void;
-}
-
-export const updateBanner = async ({
-  venueId,
-  banner,
-  onError = () => {},
-}: UpdateBannerProps): Promise<void> => {
+export const makeUpdateBanner = (
+  venueId: string,
+  onError?: (errorMsg: string) => void
+) => async (message?: string): Promise<void> => {
   const params = {
     venueId,
-    banner: banner ?? firebase.firestore.FieldValue.delete(),
+    bannerMessage: message ?? "",
   };
 
   await firebase
@@ -25,9 +16,9 @@ export const updateBanner = async ({
     .catch((e) => {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("context", {
-          location: "api/bannerAdmin::updateBanner",
+          location: "api/bannerAdmin::makeUpdateBanner",
           venueId,
-          banner,
+          message,
         });
       });
       onError?.(e.toString());

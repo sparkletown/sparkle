@@ -9,8 +9,10 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useIsOnline } from "hooks/useIsOnline";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 
@@ -24,12 +26,14 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   user,
   containerClassName,
 }) => {
-  const { sovereignVenue } = useRelatedVenues();
+  const venueId = useVenueId();
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
-  const lastSeenIn = user.lastVenueIdSeenIn;
-  const isCurrentUser = useIsCurrentUser(user.id);
-
+  const { lastSeenIn } = useIsOnline(user.id);
+  const isCurrentUser = useIsCurrentUser(user);
   const { user: firebaseUser } = useUser();
+
+  const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
 
   const userStatus =
     sovereignVenue?.showUserStatus && sovereignVenue?.userStatuses?.[0];
@@ -55,11 +59,11 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
           />
         </div>
       )}
-      {lastSeenIn && !isCurrentUser && (
+      {lastVenue && !isCurrentUser && (
         <div>
           <span>last seen in</span>{" "}
           <span className="ProfileModalBasicTextInfo--underlined">
-            {lastSeenIn}
+            {lastVenue}
           </span>
         </div>
       )}

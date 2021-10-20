@@ -2,51 +2,43 @@ import React, { useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DisplayUser } from "types/User";
-
-import { WithId } from "utils/id";
-
-import { useRecipientChatMessages } from "hooks/chats/private/useRecipientChat";
-import { useRecipientChatActions } from "hooks/chats/private/useRecipientChatActions";
-import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
-import { useRenderInfiniteScroll } from "hooks/chats/util/useRenderInfiniteScroll";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 
 import { Chatbox } from "components/molecules/Chatbox";
-import { ChatboxContextProvider } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
-
 export interface RecipientChatProps {
-  recipient: WithId<DisplayUser>;
+  recipientId: string;
 }
 
-export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
+export const RecipientChat: React.FC<RecipientChatProps> = ({
+  recipientId,
+}) => {
   const {
-    messagesToDisplay: allMessagesToDisplay,
-    replies,
-  } = useRecipientChatMessages(recipient);
+    messagesToDisplay,
+    recipient,
 
-  const actions = useRecipientChatActions(recipient);
+    sendMessageToSelectedRecipient,
+    markMessageRead,
+    sendThreadReply,
+  } = useRecipientChat(recipientId);
 
   useEffect(() => {
-    const unreadCounterpartyMessages = allMessagesToDisplay.filter(
-      (message) => !message.isRead && message.fromUser.id === recipient.id
+    const unreadCounterpartyMessages = messagesToDisplay.filter(
+      (message) => !message.isRead && message.from === recipientId
     );
 
     if (unreadCounterpartyMessages.length > 0) {
       unreadCounterpartyMessages.forEach((message) =>
-        actions.markMessageRead(message.id)
+        markMessageRead(message.id)
       );
     }
-  }, [allMessagesToDisplay, recipient.id, actions]);
+  }, [messagesToDisplay, recipientId, markMessageRead]);
 
   const { selectPrivateChat } = useChatSidebarControls();
-
-  const [messagesToDisplay, infiniteProps] = useRenderInfiniteScroll(
-    allMessagesToDisplay
-  );
 
   return (
     <div className="recipient-chat">
@@ -59,13 +51,13 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
         <UserAvatar user={recipient} showStatus size="small" />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <ChatboxContextProvider preloadedThreads={replies} {...actions}>
+      <div className="recipient-chat__chatbox">
         <Chatbox
-          containerClassName="recipient-chat__chatbox"
           messages={messagesToDisplay}
-          {...infiniteProps}
+          sendMessage={sendMessageToSelectedRecipient}
+          sendThreadReply={sendThreadReply}
         />
-      </ChatboxContextProvider>
+      </div>
     </div>
   );
 };

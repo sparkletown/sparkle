@@ -8,8 +8,9 @@ export const BUGSNAG_API_KEY = process.env.REACT_APP_BUGSNAG_API_KEY;
 export const LOGROCKET_APP_ID = process.env.REACT_APP_LOGROCKET_APP_ID;
 export const MIXPANEL_PROJECT_TOKEN =
   process.env.REACT_APP_MIXPANEL_PROJECT_TOKEN;
-export const ALGOLIA_API_SEARCH_KEY =
-  process.env.REACT_APP_ALGOLIA_API_SEARCH_KEY;
+
+export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
+export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;

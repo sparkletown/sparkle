@@ -5,7 +5,6 @@ import firebase from "firebase/app";
 export interface UseFetchAssetsReturn {
   assets: string[];
   isLoading: boolean;
-  error: Error | undefined;
 }
 
 /**
@@ -17,7 +16,7 @@ export interface UseFetchAssetsReturn {
 export const useFetchAssets = (path: string): UseFetchAssetsReturn => {
   const [assets, setAssets] = useState<string[]>([]);
 
-  const [{ loading: isLoading, error }, fetchAssets] = useAsyncFn(async () => {
+  const [{ loading: isLoading }, fetchAssets] = useAsyncFn(async () => {
     const storageRef = firebase.storage().ref();
 
     const list = await storageRef.child(`assets/${path}`).listAll();
@@ -32,5 +31,5 @@ export const useFetchAssets = (path: string): UseFetchAssetsReturn => {
     fetchAssets();
   }, [fetchAssets, path]);
 
-  return { assets, isLoading, error };
+  return { assets, isLoading };
 };

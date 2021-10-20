@@ -11,8 +11,6 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { NotFound } from "components/atoms/NotFound";
-
 import VenueLandingPageContent from "./VenueLandingPageContent";
 
 import "./VenueLandingPage.scss";
@@ -42,11 +40,7 @@ export const VenueLandingPage: React.FC = () => {
   }, [venue]);
 
   if (venueRequestStatus && !venue) {
-    return (
-      <WithNavigationBar hasBackButton>
-        <NotFound />
-      </WithNavigationBar>
-    );
+    return <>This venue does not exist</>;
   }
 
   if (!venue) {
@@ -54,7 +48,7 @@ export const VenueLandingPage: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton withSchedule>
+    <WithNavigationBar>
       <VenueLandingPageContent venue={venue} />
     </WithNavigationBar>
   );

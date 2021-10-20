@@ -1,185 +1,89 @@
-import React, { useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
-import classNames from "classnames";
+import React, { useCallback, useRef, useState } from "react";
 
-import { updateBanner } from "api/bannerAdmin";
+import { makeUpdateBanner } from "api/bannerAdmin";
 
-import { Banner } from "types/banner";
 import { AnyVenue } from "types/venues";
-
-import { useShowHide } from "hooks/useShowHide";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { Checkbox } from "components/atoms/Checkbox";
-import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { InputField } from "components/atoms/InputField";
-
-import "./BannerAdmin.scss";
 
 interface BannerAdminProps {
   venueId?: string;
   venue: AnyVenue;
-  onClose?: () => void;
 }
 
-export const BannerAdmin: React.FC<BannerAdminProps> = ({
-  venueId,
-  venue,
-  onClose,
-}) => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-    reset,
-    watch,
-    setValue,
-  } = useForm<Banner>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
-  const isUrlButtonActive = watch(
-    "isActionButton",
-    venue?.banner?.isActionButton
-  );
+// @debt This component is almost exactly the same as IframeAdmin, we should refactor them both to use the same generic base component
+//   BannerAdmin is the 'canonical example' to follow when we do this
+export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
+  const existingBannerMessage = venue?.bannerMessage ?? "";
 
-  const {
-    isShown: isShowBannerChangeModal,
-    show: showBannerChangeModal,
-    hide: hideBannerChangeModal,
-  } = useShowHide();
+  const textareaFieldRef = useRef<HTMLTextAreaElement>(null);
+  const [error, setError] = useState<string | null>();
 
-  const [{ loading: isUpdatingBanner }, saveBanner] = useAsyncFn(
-    async (banner?: Banner) => {
+  const handleInputChange = useCallback(() => {
+    setError(null);
+  }, []);
+
+  const updateBannerInFirestore = useCallback(
+    (msg?: string) => {
       if (!venueId) return;
 
-      await updateBanner({ venueId, banner });
-      onClose && onClose();
+      makeUpdateBanner(venueId, (errorMsg) => setError(errorMsg))(msg);
     },
-    [venueId, onClose]
+    [venueId]
   );
 
-  const clearBanner = useCallback(() => {
-    showBannerChangeModal();
+  const saveBanner = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
 
-    reset();
-  }, [showBannerChangeModal, reset]);
+      if (!textareaFieldRef.current) return;
 
-  const confirmChangeBannerData = useCallback(() => {
-    saveBanner();
-    hideBannerChangeModal();
-  }, [saveBanner, hideBannerChangeModal]);
+      updateBannerInFirestore(textareaFieldRef.current.value);
+    },
+    [updateBannerInFirestore]
+  );
 
-  useEffect(() => {
-    if (!isUrlButtonActive) {
-      setValue("isForceFunnel", false);
-    }
-  }, [isUrlButtonActive, setValue]);
-
-  const forceFunnelLabelClasses = classNames("BannerAdmin__checkbox__label", {
-    BannerAdmin__checkbox__label__disabled: !isUrlButtonActive,
-  });
+  const clearBanner = useCallback(() => updateBannerInFirestore(""), [
+    updateBannerInFirestore,
+  ]);
 
   return (
-    <div className="BannerAdmin">
-      <form onSubmit={handleSubmit(saveBanner)}>
-        <div className="form-group">
-          <textarea
-            ref={register({ required: true })}
-            name="content"
-            defaultValue={venue?.banner?.content}
-            className="BannerAdmin__input-text"
-            placeholder="Please type your announcement"
-          />
-          {errors.content && errors.content.type === "required" && (
-            <span className="input-error">Display content is required</span>
-          )}
+    <div className="container">
+      <div className="row">
+        <div className="col">
+          <form>
+            <div className="form-group">
+              <label htmlFor="bannerMessage">Banner Message</label>
+
+              <textarea
+                ref={textareaFieldRef}
+                defaultValue={existingBannerMessage}
+                onChange={handleInputChange}
+                placeholder="Enter banner message here..."
+                autoComplete="off"
+              />
+
+              {error && <span className="error">{error}</span>}
+            </div>
+
+            <div className="form-inline justify-content-between">
+              <button
+                className="btn btn-danger"
+                type="reset"
+                onClick={clearBanner}
+              >
+                Clear Banner
+              </button>
+
+              <button
+                className="btn btn-primary"
+                type="submit"
+                onClick={saveBanner}
+              >
+                Save Banner
+              </button>
+            </div>
+          </form>
         </div>
-
-        <Checkbox
-          containerClassName="BannerAdmin__checkbox BannerAdmin__checkbox--action"
-          labelClassName="BannerAdmin__checkbox__label"
-          name="isActionButton"
-          label="Call to Action Button"
-          toggler
-          forwardedRef={register}
-          defaultChecked={venue?.banner?.isActionButton}
-        />
-
-        <div className="BannerAdmin__action-container">
-          <InputField
-            ref={register}
-            name="buttonUrl"
-            placeholder="Button URL"
-            defaultValue={venue?.banner?.buttonUrl}
-            containerClassName="BannerAdmin__input-container"
-            inputClassName="BannerAdmin__input-text"
-            disabled={!isUrlButtonActive}
-            autoComplete="off"
-          />
-          <InputField
-            ref={register}
-            name="buttonDisplayText"
-            placeholder="Button display text"
-            defaultValue={venue?.banner?.buttonDisplayText}
-            containerClassName="BannerAdmin__input-container"
-            inputClassName="BannerAdmin__input-text"
-            disabled={!isUrlButtonActive}
-            autoComplete="off"
-          />
-        </div>
-        <Checkbox
-          forwardedRef={register}
-          containerClassName="BannerAdmin__checkbox"
-          labelClassName="BannerAdmin__checkbox__label"
-          name="isFullScreen"
-          label="Set fullscreen announcement"
-          toggler
-          defaultChecked={venue?.banner?.isFullScreen}
-        />
-
-        <Checkbox
-          forwardedRef={register}
-          containerClassName="BannerAdmin__checkbox"
-          labelClassName={forceFunnelLabelClasses}
-          name="isForceFunnel"
-          label="Force funnel (users will have to click your button)"
-          toggler
-          defaultChecked={venue?.banner?.isForceFunnel}
-          disabled={!isUrlButtonActive}
-        />
-
-        <div className="BannerAdmin__button-container">
-          <ButtonNG
-            className="BannerAdmin__button BannerAdmin__button--close"
-            onClick={clearBanner}
-            disabled={isUpdatingBanner}
-          >
-            Clear banner
-          </ButtonNG>
-          <ButtonNG
-            className="BannerAdmin__button"
-            type="submit"
-            disabled={isUpdatingBanner}
-            variant="primary"
-          >
-            Save
-          </ButtonNG>
-        </div>
-      </form>
-
-      <ConfirmationModal
-        show={isShowBannerChangeModal}
-        onConfirm={confirmChangeBannerData}
-        onCancel={hideBannerChangeModal}
-        header={"Erase your beautiful work?"}
-        message={"Are you sure you want to clear this banner?"}
-        saveBtnLabel="Yes, clear"
-        cancelBtnLabel="Cancel"
-        isCentered
-        confirmVariant="danger"
-      />
+      </div>
     </div>
   );
 };

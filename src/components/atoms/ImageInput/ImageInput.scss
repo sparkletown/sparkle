@@ -9,12 +9,12 @@
     justify-content: center;
     border-radius: $border-radius--xl;
     background-size: cover;
-    background-color: $secondary--live;
+    background-color: $dark;
     background-position: center;
     cursor: pointer;
 
     &--error {
-      border: 2px solid var(--danger--under);
+      border: $image-input-border--error;
     }
 
     &--disabled {
@@ -31,7 +31,7 @@
   &__error {
     display: block;
 
-    color: var(--danger--under);
+    color: red;
     font-style: italic;
   }
 

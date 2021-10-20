@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$map-default-size: 64px;
+$map-default-size: 50px;
 
 .BackgroundSelect {
   display: flex;
@@ -10,48 +10,38 @@ $map-default-size: 64px;
   padding: $spacing--xl 0;
   position: relative;
   background-size: cover;
-  background-color: $secondary--live;
+  background-color: $dark;
   background-position: center;
   text-align: center;
 
   &__maps-header {
     font-size: $font-size--md;
     font-weight: normal;
-    color: var(--content--over-50a);
+    color: opaque-white(0.5);
     margin: $spacing--xxl auto $spacing--md auto;
   }
 
   &__map-grid {
     width: 100%;
-    padding: 0 $spacing--lg;
     display: grid;
-    grid-gap: $spacing--sm;
+    grid-gap: $spacing--md;
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .FileButton .ButtonNG {
-    height: font-size--parent(4);
-  }
-
-  .ButtonNG.BackgroundSelect__map {
-    height: $map-default-size;
+  &__map {
+    width: 100%;
+    padding-bottom: $map-default-size;
     border-radius: $border-radius--lg;
-    background-color: $content--under;
+    background: $black;
     background-size: cover;
     background-position: center;
     cursor: pointer;
-    border: solid 2px var(--content--over-20a);
-    display: grid;
-    place-content: center center;
+    border: solid $border-radius--xxs;
+    margin-bottom: $spacing--sm;
 
-    &:hover,
-    &:focus {
-      border: 2px solid var(--content--over);
-    }
-
-    .ButtonNG__icon--loading {
-      color: var(--content--over);
-      @include square-size($map-default-size / 2);
+    &:hover {
+      border: $border-radius--xxs solid $white;
+      padding-bottom: $map-default-size - $border-radius--xxs;
     }
   }
 }

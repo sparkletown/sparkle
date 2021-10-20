@@ -4,7 +4,7 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { TableComponentPropsType } from "types/Table";
 
-import { currentVenueSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
@@ -14,14 +14,20 @@ import "./TableComponent.scss";
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
+  nameOfVideoRoom,
+  experienceName,
   imageSize = 50,
   table,
   tableLocked,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
-  const venue = useSelector(currentVenueSelector);
+  const venue = useSelector(currentVenueSelectorData);
   const locked = tableLocked(table.reference);
-  const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
+  const usersSeatedAtTable = users.filter(
+    (u) => u.data?.[experienceName]?.table === table.reference
+  );
+  const numberOfSeatsLeft =
+    table.capacity && table.capacity - usersSeatedAtTable.length;
   const full = numberOfSeatsLeft === 0;
   return (
     <div className={`table-component-container ${table.reference}`}>
@@ -37,11 +43,11 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
         </div>
         <div className="table-number">{table.title}</div>
 
-        {users &&
-          users.length >= 0 &&
-          users.map((user) => (
+        {usersSeatedAtTable &&
+          usersSeatedAtTable.length >= 0 &&
+          usersSeatedAtTable.map((user) => (
             <img
-              onClick={() => openUserProfileModal(user.id)}
+              onClick={() => openUserProfileModal(user)}
               key={user.id}
               className="profile-icon table-participant-picture"
               src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
@@ -53,13 +59,15 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
               height={imageSize}
             />
           ))}
-        {users &&
+        {usersSeatedAtTable &&
           table.capacity &&
-          table.capacity - users.length >= 0 &&
-          [...Array(table.capacity - users.length)].map((e, i) => (
+          table.capacity - usersSeatedAtTable.length >= 0 &&
+          [...Array(table.capacity - usersSeatedAtTable.length)].map((e, i) => (
             <span
               key={i}
-              onClick={() => onJoinClicked(table.reference, locked)}
+              onClick={() =>
+                onJoinClicked(table.reference, locked, nameOfVideoRoom)
+              }
               id={`join-table-${venue?.name}-${table.reference}`}
               className="add-participant-button"
             >

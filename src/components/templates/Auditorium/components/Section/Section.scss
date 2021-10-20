@@ -15,7 +15,6 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 .Section {
   background-attachment: fixed;
   background-position: center;
-  background-size: cover;
 
   position: relative;
   overflow: auto;
@@ -77,7 +76,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   &__iframe {
     pointer-events: all;
 
-    border: thin $content--under;
+    border: thin $black;
     border-radius: $border-radius--lg;
   }
 
@@ -119,7 +118,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     border-radius: 100%;
     margin: $section-seat-spacing;
 
-    color: $content--under;
+    color: $black;
     user-select: none;
   }
 

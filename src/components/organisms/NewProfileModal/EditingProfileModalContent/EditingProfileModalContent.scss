@@ -4,8 +4,9 @@ $edit-buttons-margin-top: 2rem;
 
 .EditingProfileModalContent {
   &__section {
-    &:not(:first-child) {
-      margin-top: $section-gap-editable;
+    margin-top: $section-gap-editable;
+    &:first-child {
+      margin-top: 0;
     }
   }
 

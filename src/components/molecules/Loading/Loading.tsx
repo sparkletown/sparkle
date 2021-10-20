@@ -16,6 +16,7 @@ export const Loading: React.FC<LoadingProps> = ({
   label,
 }) => {
   const containerClasses = classNames("Loading", containerClassName);
+
   return (
     <div className={containerClasses}>
       <img className="Loading__icon" src={LoadingIcon} alt="loading" />

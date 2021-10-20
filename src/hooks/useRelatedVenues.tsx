@@ -1,26 +1,34 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { useAsync } from "react-use";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { fetchDescendantVenues } from "api/venue";
 
+import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
-import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { findSovereignVenue } from "utils/venue";
+import { tracePromise } from "utils/performance";
+import { isTruthy } from "utils/types";
 
-import { isEmpty } from "./useFirestoreConnect";
+import { useSovereignVenue } from "./useSovereignVenue";
+
+const emptyArray: never[] = [];
 
 export interface RelatedVenuesContextState {
   isLoading: boolean;
+  isError: boolean;
 
+  isSovereignVenueLoading: boolean;
   sovereignVenue?: WithId<AnyVenue>;
   sovereignVenueId?: string;
-  sovereignVenueDescendantIds?: readonly string[];
+  sovereignVenueError?: string;
 
   relatedVenues: WithId<AnyVenue>[];
-  descendantVenues: WithId<AnyVenue>[];
   relatedVenueIds: string[];
+
+  isDescendantVenuesLoading: boolean;
+  descendantVenues: WithId<AnyVenue>[];
+  descendantVenuesError?: Error;
 
   findVenueInRelatedVenues: (
     searchedForVenueId?: string
@@ -33,46 +41,46 @@ const RelatedVenuesContext = createContext<
 
 export interface RelatedVenuesProviderProps {
   venueId?: string;
-  worldId?: string;
 }
 
 export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   venueId,
-  worldId,
   children,
 }) => {
-  const firestore = useFirestore();
-  const relatedVenuesRef = firestore
-    .collection("venues")
-    .where("worldId", "==", worldId ?? "")
-    .withConverter(withIdConverter<AnyVenue>());
+  const {
+    sovereignVenue,
+    sovereignVenueId,
+    isSovereignVenueLoading,
+    errorMsg: sovereignVenueError,
+  } = useSovereignVenue({
+    venueId,
+  });
 
-  const { data: relatedVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
-    relatedVenuesRef,
-    {
-      initialData: ALWAYS_EMPTY_ARRAY,
-    }
-  );
+  const {
+    loading: isDescendantVenuesLoading,
+    error: descendantVenuesError,
+    value: descendantVenues = emptyArray,
+  } = useAsync(async () => {
+    if (!sovereignVenueId) return emptyArray;
 
-  const sovereignVenueSearchResult = useMemo(() => {
-    if (!venueId || isEmpty(relatedVenues)) return;
+    return tracePromise(
+      "RelatedVenuesProvider::fetchDescendantVenues",
+      async () => fetchDescendantVenues(sovereignVenueId),
+      {
+        attributes: { sovereignVenueId },
+      }
+    );
+  }, [sovereignVenueId]);
 
-    return findSovereignVenue(venueId, relatedVenues);
-  }, [venueId, relatedVenues]);
+  const relatedVenues = useMemo(() => {
+    if (!sovereignVenue) return descendantVenues;
 
-  const sovereignVenue = sovereignVenueSearchResult?.sovereignVenue;
-  const sovereignVenueDescendantIds =
-    sovereignVenueSearchResult?.checkedVenueIds;
-  const sovereignVenueId = sovereignVenue?.id;
+    return [...descendantVenues, sovereignVenue];
+  }, [descendantVenues, sovereignVenue]);
 
   const relatedVenueIds = useMemo(
     () => relatedVenues.map((venue) => venue.id),
     [relatedVenues]
-  );
-
-  const descendantVenues = useMemo(
-    () => relatedVenues.filter((venue) => venue.id !== sovereignVenueId),
-    [relatedVenues, sovereignVenueId]
   );
 
   const findVenueInRelatedVenues = useCallback(
@@ -86,27 +94,34 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
-      isLoading: false,
+      isLoading: isSovereignVenueLoading || isDescendantVenuesLoading,
+      isError: isTruthy(sovereignVenueError || descendantVenuesError),
 
+      isSovereignVenueLoading,
       sovereignVenue,
       sovereignVenueId,
-      sovereignVenueDescendantIds,
+      sovereignVenueError,
 
       relatedVenues,
       relatedVenueIds,
 
+      isDescendantVenuesLoading,
       descendantVenues,
+      descendantVenuesError,
 
       findVenueInRelatedVenues,
     }),
     [
-      relatedVenues,
-      relatedVenueIds,
-      descendantVenues,
-      findVenueInRelatedVenues,
+      isSovereignVenueLoading,
       sovereignVenue,
       sovereignVenueId,
-      sovereignVenueDescendantIds,
+      sovereignVenueError,
+      relatedVenues,
+      relatedVenueIds,
+      isDescendantVenuesLoading,
+      descendantVenues,
+      descendantVenuesError,
+      findVenueInRelatedVenues,
     ]
   );
 
@@ -139,12 +154,10 @@ export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenueId?: string;
 }
 
-export function useRelatedVenues(props: RelatedVenuesProps): RelatedVenuesData;
-export function useRelatedVenues(): RelatedVenuesContextState;
-
-// eslint-disable-next-line func-style, prefer-arrow/prefer-arrow-functions
-export function useRelatedVenues(props?: RelatedVenuesProps) {
-  const { currentVenueId } = props ?? {};
+export const useRelatedVenues: ReactHook<
+  RelatedVenuesProps,
+  RelatedVenuesData
+> = ({ currentVenueId }): RelatedVenuesData => {
   const relatedVenuesState = useRelatedVenuesContext();
 
   const { findVenueInRelatedVenues } = relatedVenuesState;
@@ -161,9 +174,5 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
 
   const parentVenueId = parentVenue?.id;
 
-  if (!props) {
-    return relatedVenuesState;
-  }
-
   return { ...relatedVenuesState, currentVenue, parentVenue, parentVenueId };
-}
+};

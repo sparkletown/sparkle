@@ -10,10 +10,10 @@ import {
 } from "store/reducers/AnimateMap";
 
 import { Firebarrel } from "types/animateMap";
-import { User } from "types/User";
 
-import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
+
+import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
@@ -28,11 +28,6 @@ import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import playerModel from "./Structures/PlayerModel";
-
-interface TEMPORARY_USERS_TYPE_REPLACEMENT {
-  isRecentWorldUsersLoaded: boolean;
-  recentWorldUsers: readonly WithId<User>[];
-}
 
 interface CloudDataProviderSetting {
   playerId: string;
@@ -202,7 +197,7 @@ export class CloudDataProvider
 
   private isUpdateUsersLocked = false;
 
-  public async updateUsersAsync(data: TEMPORARY_USERS_TYPE_REPLACEMENT) {
+  public async updateUsersAsync(data: RecentWorldUsersData) {
     if (this.isUpdateUsersLocked) return;
 
     this.isUpdateUsersLocked = true;
@@ -210,7 +205,7 @@ export class CloudDataProvider
     this.isUpdateUsersLocked = false;
   }
 
-  public updateUsers(data: TEMPORARY_USERS_TYPE_REPLACEMENT) {
+  public updateUsers(data: RecentWorldUsersData) {
     if (!data?.isRecentWorldUsersLoaded) return;
 
     // new entities scenario

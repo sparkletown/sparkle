@@ -1,61 +1,106 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { useAsyncFn } from "react-use";
+import { useHistory } from "react-router-dom";
 import firebase from "firebase/app";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { LoadingSpinner } from "components/atoms/LoadingSpinner";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import "./VenueDeleteModal.scss";
 
-export interface VenueDeleteModalProps {
-  venueId?: string;
-  venueName: string;
+interface PropsType {
+  venue: WithId<AnyVenue>;
   show: boolean;
-  onHide?: () => void;
-  onDelete?: () => void;
-  onCancel: () => void;
+  onHide: () => void;
 }
 
-const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
-  venueId,
-  venueName,
+const VenueDeleteModal: React.FunctionComponent<PropsType> = ({
+  venue,
   show,
   onHide,
-  onDelete,
-  onCancel,
 }) => {
-  const [{ error, loading: isDeleting }, deleteVenue] = useAsyncFn(async () => {
-    await firebase.functions().httpsCallable("venue-deleteVenue")({
-      id: venueId,
-    });
-    onDelete?.();
-  }, [onDelete, venueId]);
+  const [deleting, setDeleting] = useState(false);
+  const [deleted, setDeleted] = useState(false);
+  const [error, setError] = useState<string>();
+  const history = useHistory();
+
+  const closeDeleteModal = () => {
+    if (deleted) {
+      history.push("/admin");
+    } else {
+      onHide();
+      setDeleted(false);
+    }
+  };
+
+  const deleteVenue = useCallback(async () => {
+    setDeleting(true);
+    try {
+      await firebase.functions().httpsCallable("venue-deleteVenue")({
+        id: venue.id,
+      });
+      setDeleted(true);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setDeleting(false);
+    }
+  }, [venue.id]);
 
   return (
-    <Modal show={show} onHide={onHide}>
-      <div className="VenueDeleteModal">
-        <h2 className="centered">Delete space</h2>
+    <Modal show={show} onHide={closeDeleteModal}>
+      <div className="venue-delete-modal-container">
+        <h2 className="centered">Delete venue</h2>
         <div className="secondary-action">
-          WARNING: This action cannot be undone and will permanently remove the
-          space <b>{venueName}</b>!
+          WARNING: Permanently removes a venue from SparkleVerse
         </div>
-
-        {isDeleting && <LoadingSpinner />}
-
-        <div className="VenueDeleteModal__buttons">
-          <ButtonNG
-            disabled={isDeleting}
-            variant="danger"
-            onClick={deleteVenue}
-          >
-            Yes, Delete
-          </ButtonNG>
-          <ButtonNG disabled={isDeleting} variant="primary" onClick={onCancel}>
-            No, Cancel
-          </ButtonNG>
-        </div>
-        {error && <span className="input-error">{error}</span>}
+        {!deleted && (
+          <>
+            <div className="input-group">
+              <span className="info">
+                WARNING: This action cannot be undone! Are you sure you wish to
+                delete {venue.name}?
+              </span>
+            </div>
+            {deleting && (
+              <div className="centered-flex" style={{ marginBottom: 10 }}>
+                <div className="spinner-border">
+                  <span className="sr-only">Loading...</span>
+                </div>
+              </div>
+            )}
+            <div className="input-group">
+              <button
+                disabled={deleting}
+                className="btn btn-danger btn-block btn-centered"
+                onClick={deleteVenue}
+              >
+                Yes, Delete
+              </button>
+              {error && <span className="input-error">{error}</span>}
+              <button
+                disabled={deleting}
+                className="btn btn-primary btn-block btn-centered"
+                onClick={closeDeleteModal}
+              >
+                No, Cancel
+              </button>
+            </div>
+          </>
+        )}
+        {deleted && (
+          <div className="input-group">
+            <span className="info">Venue has been permanently deleted.</span>
+            <button
+              className="btn btn-primary btn-block btn-centered"
+              type="submit"
+              onClick={closeDeleteModal}
+            >
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </Modal>
   );

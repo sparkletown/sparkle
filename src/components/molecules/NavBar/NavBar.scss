@@ -1,21 +1,20 @@
 @import "scss/constants.scss";
 
-$photobooth-button-margin: 140px 0px 0px;
-$photobooth-button-text-margin: 38px 0px 0px;
-$photobooth-button-background-size: 35px;
+$border-radius: 28px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
 }
 
 .navbar-container {
-  background: $content--under;
+  background: $black;
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   .log-in-button {
     cursor: pointer;
+    margin-right: 10px;
     font-size: 18px;
   }
 
@@ -30,8 +29,8 @@ $photobooth-button-background-size: 35px;
   }
 
   .notification-card {
-    background: var(--danger--under);
-    color: $content--over;
+    background: $red;
+    color: $white;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -66,7 +65,7 @@ $photobooth-button-background-size: 35px;
 
       &:hover {
         background: #ebebeb;
-        color: $secondary--live;
+        color: $dark;
       }
     }
   }
@@ -80,7 +79,7 @@ $photobooth-button-background-size: 35px;
   display: flex;
   height: $navbar-height;
   padding: 0 15px;
-  background-color: $secondary--live;
+  background-color: $dark;
 
   #sound-cloud-player {
     border: none;
@@ -102,15 +101,12 @@ $photobooth-button-background-size: 35px;
 .nav-sparkle-logo_small {
   position: relative;
   margin-right: 12px;
-
   &:hover {
     width: 120px;
   }
-
   &.nav-sparkle-logo_small {
     display: none;
   }
-
   div {
     position: relative;
     display: block;
@@ -118,7 +114,6 @@ $photobooth-button-background-size: 35px;
     height: 35px;
     background-image: url(/assets/icons/sparkle-nav-logo.png);
     background-size: 25px 35px;
-
     &:before {
       position: absolute;
       content: "";
@@ -132,7 +127,6 @@ $photobooth-button-background-size: 35px;
       transform: translateX(-40px) scale(0.75);
       transition: opacity 200ms, transform 400ms $transition-function;
     }
-
     @keyframes sparklelogoanimate {
       100% {
         background-position: -75px;
@@ -145,23 +139,20 @@ $photobooth-button-background-size: 35px;
       background-size: 75px 35px;
       background-position: 0 0;
       animation: sparklelogoanimate 0.4s steps(3) infinite;
-
       &:before {
         opacity: 1;
         pointer-events: all;
         transform: translateX(0px) scale(1);
       }
     }
-
     &:active {
       opacity: 0.7;
     }
   }
 }
-
 .nav-party-logo {
   position: relative;
-  background-color: opaque-white(0.08);
+  background-color: rgba($white, 0.08);
   height: 60px;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -175,22 +166,19 @@ $photobooth-button-background-size: 35px;
   transition: transform 400ms $transition-function;
   border: none;
   appearance: none;
-  color: $content--over;
+  color: $white;
 
   img {
     height: 40px;
   }
-
   &:hover,
   &:focus {
     border: none;
-    background-color: opaque-white(0.14);
-
+    background-color: rgba($white, 0.14);
     &:after {
       opacity: 0.7;
     }
   }
-
   &:after {
     content: "";
     position: absolute;
@@ -204,20 +192,18 @@ $photobooth-button-background-size: 35px;
     transform: rotate(0deg);
     transition: transform 400ms $transition-function;
   }
-
   &.clicked {
     &:after {
       transform: rotate(180deg);
     }
   }
-
   &.slide {
     transform: translateX(110px);
   }
 }
 
 .schedule-text {
-  background-color: $accent--under;
+  background-color: $primary;
   border-radius: 10px;
   margin-left: 8px;
   padding: 0px 10px;
@@ -260,7 +246,6 @@ $photobooth-button-background-size: 35px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
-    color: $content--over;
 
     margin-right: $spacing--md;
 
@@ -272,29 +257,5 @@ $photobooth-button-background-size: 35px;
 
   &__profile-popover {
     height: 100%;
-  }
-
-  &__photobooth-button {
-    position: absolute;
-    top: 130px;
-    left: -($spacing--lg);
-    border-radius: 0px $border-radius--md $border-radius--md 0px;
-    padding: $spacing--xs $spacing--md;
-    cursor: pointer;
-    background-color: $lighter-intermediate-grey;
-    background-image: url(/assets/icons/photobooth-icon.png);
-    background-size: $photobooth-button-background-size;
-    background-position: 50% 10%;
-    background-repeat: no-repeat;
-
-    &:hover {
-      background-color: $light-grey;
-    }
-  }
-
-  &__photobooth-title {
-    text-decoration: none;
-    margin: $photobooth-button-text-margin;
-    font-size: $font-size--sm;
   }
 }

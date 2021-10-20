@@ -3,32 +3,39 @@
 $border-radius: 22px;
 $spacing: 20px;
 
-.RoomModal {
-  &__modal-body {
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    max-height: 80vh;
-    background-color: $secondary--live;
-    background-repeat: no-repeat;
-    background-size: cover;
+.room-modal {
+  padding: $spacing;
+
+  background-color: $saturated-black;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  h2 {
+    text-align: center;
   }
 
   &__title {
-    font-weight: $font-weight--700;
-    font-size: $font-size--xxl;
-  }
+    font-weight: 700;
 
-  &__subtitle {
-    font-weight: $font-weight--300;
-    font-size: $font-size--lg;
+    margin-top: $spacing;
+    margin-bottom: $spacing;
   }
 
   &__main {
-    padding: $spacing;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
+
+    > * {
+      flex: 1;
+      height: fit-content;
+      margin-left: $spacing;
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
   }
 
   &__icon {
@@ -36,52 +43,42 @@ $spacing: 20px;
     height: 180px;
     width: 180px;
     border-radius: $border-radius;
-    background-color: $content--under;
-    background-size: cover;
+    background-color: $black;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
   }
 
-  .modal-content {
-    background: $secondary--live;
+  &__content {
+    background: $dark;
+    padding: 10px $spacing;
     border-radius: $border-radius;
     height: fit-content;
   }
 
-  &__content {
-    flex: 1;
-    margin-left: $spacing;
-  }
-
   &__btn-enter {
     width: 100%;
-    margin-top: 10px;
   }
 
   &__userlist {
-    margin: $spacing 0;
+    margin-top: $spacing;
   }
 
   &__description {
-    @include scrollbar;
+    margin-top: $spacing;
+    margin-bottom: $spacing;
     padding: 10px $spacing;
 
-    background: $secondary--live;
+    background: $dark;
     border-radius: $border-radius;
 
     max-height: 25vh;
     overflow-y: auto;
-
-    font-size: $font-size--md;
-    font-weight: $font-weight--400;
-    color: opaque-white(0.6);
   }
 
   &__events {
-    @include scrollbar;
     max-height: 35vh;
     overflow-y: auto;
-
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {

@@ -5,7 +5,7 @@ import { EntranceStepTemplate } from "types/EntranceStep";
 
 import { withId } from "utils/id";
 import { isCompleteProfile } from "utils/profile";
-import { currentVenueSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
@@ -25,7 +25,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const venueId = useVenueId();
 
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
+  const venue = useSelector(currentVenueSelectorData);
 
   if (!venue || !venueId) {
     return <LoadingPage />;

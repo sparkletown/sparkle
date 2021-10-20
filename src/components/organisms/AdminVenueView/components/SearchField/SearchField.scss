@@ -8,7 +8,7 @@
   align-items: center;
 
   background: opaque-white(0.12);
-  border: 1px solid var(--accent--over-10a);
+  border: 1px solid opaque-white(0.1);
   box-sizing: border-box;
   border-radius: $border-radius--xl;
 
@@ -27,7 +27,6 @@
     flex: 1;
     margin: $spacing--xs 1em;
     cursor: pointer;
-    color: $content--over;
   }
 
   &__input,

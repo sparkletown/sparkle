@@ -38,6 +38,7 @@ export const useConnectCurrentVenueNG = (venueId?: string) => {
 
   const currentVenueNG = useSelector(currentVenueNGSelector);
   const currentVenueEventsNG = useSelector(currentVenueEventsNGSelector);
+
   return useMemo(
     () => ({
       currentVenue:

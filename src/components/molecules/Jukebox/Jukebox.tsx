@@ -5,19 +5,22 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
+import { CHAT_MESSAGE_TIMEOUT, YOUTUBE_SHORT_URL_STRING } from "settings";
+
+import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { isValidUrl } from "utils/url";
+import { getYoutubeEmbedFromUrl, isValidUrl } from "utils/url";
 
-import { useJukeboxChat } from "hooks/chats/jukebox/useJukeboxChat";
+import { useJukeboxChat } from "hooks/jukebox";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useUser } from "hooks/useUser";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -25,14 +28,14 @@ import { InputField } from "components/atoms/InputField";
 import "./Jukebox.scss";
 
 type JukeboxTypeProps = {
+  recentVenueUsers: readonly WithId<User>[];
   updateIframeUrl: Dispatch<SetStateAction<string>>;
   venue: WithId<AnyVenue>;
-  tableRef: string | undefined;
 };
 
 export const Jukebox: React.FC<JukeboxTypeProps> = ({
+  recentVenueUsers,
   updateIframeUrl,
-  tableRef,
   venue,
 }) => {
   const { register, handleSubmit, watch, reset } = useForm<{
@@ -40,9 +43,13 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   }>({
     mode: "onSubmit",
   });
+  const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
+  const { userId } = useUser();
+  const [filteredUser] = recentVenueUsers.filter(({ id }) => id === userId);
+  const tableRef = filteredUser?.data?.[venue.name]?.table;
 
-  const { sendChatMessage, messagesToDisplay } = useJukeboxChat({
+  const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
     tableId: tableRef,
   });
@@ -52,21 +59,40 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
 
   useEffect(() => {
     const [lastMessage] = messagesToDisplay.slice(-1);
+    let urlToEmbed = lastMessage?.text;
 
-    if (!isValidUrl(lastMessage?.text)) {
-      return;
+    if (
+      urlToEmbed?.includes(YOUTUBE_SHORT_URL_STRING) &&
+      isValidUrl(urlToEmbed)
+    ) {
+      urlToEmbed = getYoutubeEmbedFromUrl(lastMessage?.text);
     }
 
-    const urlToEmbed = convertToEmbeddableUrl({ url: lastMessage?.text });
-
-    updateIframeUrl(urlToEmbed);
+    if (isValidUrl(urlToEmbed)) {
+      updateIframeUrl(urlToEmbed);
+    }
   }, [messagesToDisplay, updateIframeUrl]);
 
-  const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
-    async ({ jukeboxMessage }) =>
-      sendChatMessage({ text: jukeboxMessage }).then(() => reset()),
-    [reset, sendChatMessage]
-  );
+  const sendMessageToChat = handleSubmit(async ({ jukeboxMessage }) => {
+    setMessageSending(true);
+
+    await sendJukeboxMsg({ message: jukeboxMessage });
+    reset();
+  });
+
+  // @debt replace with useDebounce
+  // This logic disallows users to spam into the chat. There should be a delay, between each message
+  useEffect(() => {
+    if (!isSendingMessage) return;
+
+    const timeoutId = setTimeout(() => {
+      setMessageSending(false);
+    }, CHAT_MESSAGE_TIMEOUT);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isSendingMessage]);
 
   const isBtnDisabled = !chatValue || isSendingMessage;
   const submitButtonClasses = classNames("Jukebox__buttons-submit", {
@@ -91,9 +117,9 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           <div key={msg.id} className="Jukebox__chat-messages">
             <span
               className="Jukebox__chat-author button--a"
-              onClick={() => openUserProfileModal(msg.fromUser.id)}
+              onClick={() => openUserProfileModal(msg.author)}
             >
-              {msg.fromUser.partyName}
+              {msg.author.partyName}
             </span>{" "}
             <span>
               {isUrl && "changed video source to "}
@@ -117,10 +143,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           {jukeboxChatMessages}
           <div ref={messagesEndRef} />
         </div>
-        <form
-          className="Jukebox__form"
-          onSubmit={handleSubmit(sendMessageToChat)}
-        >
+        <form className="Jukebox__form" onSubmit={sendMessageToChat}>
           <InputField
             containerClassName="Jukebox__input-container"
             inputClassName="Jukebox__input"

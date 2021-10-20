@@ -33,11 +33,11 @@ export const chatReducer = (
     }
 
     case ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED: {
-      const { openedChatType, recipient } = action.payload;
+      const { openedChatType, recipientId } = action.payload;
 
       return {
         ...state,
-        settings: { openedChatType, recipient },
+        settings: { openedChatType, recipientId },
       };
     }
 

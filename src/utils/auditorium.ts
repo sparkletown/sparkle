@@ -10,6 +10,8 @@ import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "./id";
 
+const emptyFilteredUsers: WithId<User>[] = [];
+
 export interface ConvertCoordinateProps {
   index: number;
   totalAmount: number;
@@ -78,3 +80,14 @@ export interface GetSeatedUsersProps {
   venueId?: string;
   sectionId?: string;
 }
+
+export const getAuditoriumSeatedUsers = ({
+  auditoriumUsers,
+  venueId,
+  sectionId,
+}: GetSeatedUsersProps) =>
+  venueId && sectionId
+    ? auditoriumUsers.filter(
+        (user) => user.data?.[venueId]?.sectionId === sectionId
+      )
+    : emptyFilteredUsers;

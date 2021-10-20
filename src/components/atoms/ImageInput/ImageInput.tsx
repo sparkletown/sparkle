@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -9,20 +8,10 @@ import { useImageInputCompression } from "hooks/useImageInputCompression";
 
 import { ImageOverlay } from "components/atoms/ImageOverlay";
 
-import { ButtonNG } from "../ButtonNG";
-
 import "./ImageInput.scss";
 
 export interface ImageInputProps {
-  onChange?: (
-    url: string,
-    extra: {
-      nameUrl: string;
-      valueUrl: string;
-      nameFile: string;
-      valueFile: File;
-    }
-  ) => void;
+  onChange?: (url: string) => void;
   name: string;
   imgUrl?: string;
   error?: FieldError;
@@ -30,12 +19,10 @@ export interface ImageInputProps {
   small?: boolean;
   register: ReturnType<typeof useForm>["register"];
   nameWithUnderscore?: boolean;
-  text?: string;
-  isInputHidden?: boolean;
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
-  onChange,
+  onChange = () => {},
   name,
   imgUrl,
   error,
@@ -43,11 +30,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   register,
   setValue,
   nameWithUnderscore = false,
-  isInputHidden = false,
-  text = "Upload",
 }) => {
-  const inputFileRef = useRef<HTMLInputElement>(null);
-
   const [imageUrl, setImageUrl] = useState(imgUrl);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
@@ -66,41 +49,29 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
       setImageUrl(url);
       setValue(fileName, [compressedFile], false);
-      setValue(fileUrl, url, false);
-
-      onChange?.(url, {
-        nameUrl: fileUrl,
-        valueUrl: url,
-        nameFile: fileName,
-        valueFile: compressedFile,
-      });
+      onChange(url);
     },
-    [handleFileInputChange, fileUrl, onChange, setValue, fileName]
+    [handleFileInputChange, onChange, setValue, fileName]
   );
-
-  const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
-
-  const labelStyle = useCss({
-    "background-image": imageUrl ? `url(${imageUrl})` : undefined,
-  });
-
-  const labelClasses = classNames("ImageInput__container", labelStyle, {
-    "ImageInput__container--error": !!error?.message,
-    "ImageInput__container--small": small,
-    "ImageInput__container--disabled": loading,
-    "mod--hidden": isInputHidden,
-  });
 
   return (
     <>
-      <label className={labelClasses}>
+      <label
+        className={classNames("ImageInput__container", {
+          "ImageInput__container--error": !!error?.message,
+          "ImageInput__container--small": small,
+          "ImageInput__container--disabled": loading,
+        })}
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+        }}
+      >
         <input
           accept={ACCEPTED_IMAGE_TYPES}
           hidden
           id={name}
           onChange={handleFileInputChangeWrapper}
           type="file"
-          ref={inputFileRef}
         />
         {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
@@ -114,12 +85,13 @@ const ImageInput: React.FC<ImageInputProps> = ({
         </span>
       </label>
 
-      <input type="hidden" name={fileUrl} ref={register} readOnly />
-      {isInputHidden && (
-        <ButtonNG onClick={onButtonClick} variant="primary">
-          {text}
-        </ButtonNG>
-      )}
+      <input
+        type="hidden"
+        name={fileUrl}
+        ref={register}
+        value={imageUrl}
+        readOnly
+      />
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );

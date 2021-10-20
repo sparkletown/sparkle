@@ -1,34 +1,53 @@
-import { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useCallback, useMemo } from "react";
 
 import { Room } from "types/rooms";
 
-import {
-  enterVenue,
-  getLastUrlParam,
-  getUrlWithoutTrailingSlash,
-} from "utils/url";
+import { getExternalRoomSlug } from "utils/room";
+import { enterVenue } from "utils/url";
+import { enterExternalRoom } from "utils/userLocation";
+
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentLocationUsers } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 export interface UseRoomProps {
   room?: Room;
+  venueName: string;
 }
-export const useRoom = ({ room }: UseRoomProps) => {
+// @debt refactor useRoom to take venueId instead of venueName
+export const useRoom = ({ room, venueName }: UseRoomProps) => {
+  const { user } = useUser();
+  const userId = user?.uid;
+
   const roomUrl = room?.url ?? "";
 
-  const { push: openUrlUsingRouter } = useHistory();
+  // @debt pass venueId taken from UseRoomProps through to useRelatedVenues
+  const { relatedVenues } = useRelatedVenues({});
 
-  const noTrailSlashPortalUrl = roomUrl && getUrlWithoutTrailingSlash(roomUrl);
+  const roomVenue = useMemo(
+    () => relatedVenues.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
+    [roomUrl, relatedVenues]
+  );
 
-  const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
+  // @debt we should replace externalRoomSlug with preferrably room id
+  const roomSlug = roomVenue
+    ? roomVenue.name
+    : getExternalRoomSlug({ roomTitle: room?.title, venueName });
+
+  const { recentLocationUsers } = useRecentLocationUsers({
+    locationName: roomSlug,
+  });
 
   const enterRoom = useCallback(() => {
-    if (!portalVenueId) return;
+    if (!userId) return;
 
-    enterVenue(portalVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [portalVenueId, openUrlUsingRouter]);
+    roomVenue
+      ? enterVenue(roomVenue.id)
+      : enterExternalRoom({ userId, roomUrl, locationName: roomSlug });
+  }, [roomSlug, roomUrl, userId, roomVenue]);
 
   return {
     enterRoom,
-    portalVenueId,
+    recentRoomUsers: recentLocationUsers,
   };
 };

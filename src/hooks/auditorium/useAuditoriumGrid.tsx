@@ -4,13 +4,13 @@ import { GridPosition } from "types/grid";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
-import { GetUserByPosition } from "../useGetUserByPosition";
+import { GetUserByPostion } from "../useGetUserByPosition";
 
 export interface UseAuditoriumGridProps {
   isUserAudioMuted: boolean;
   rows: number;
   columns: number;
-  getUserBySeat: GetUserByPosition;
+  getUserBySeat: GetUserByPostion;
   checkIfSeat: (gridData: GridPosition) => boolean;
   takeSeat: (gridData: GridPosition) => Promise<void> | undefined;
 }

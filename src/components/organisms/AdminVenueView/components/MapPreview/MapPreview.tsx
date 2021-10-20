@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { Room } from "types/rooms";
+import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { useCheckImage } from "hooks/useCheckImage";
@@ -14,10 +14,10 @@ import "./MapPreview.scss";
 
 export interface MapPreviewProps {
   mapBackground?: string;
-  rooms: Room[];
+  rooms: RoomData_v2[];
   isEditing: boolean;
-  selectedRoom?: Room;
-  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
+  selectedRoom?: RoomData_v2;
+  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
   onResizeRoom?: (size: Dimensions) => void;
   onMoveRoom?: (position: Position) => void;
 }
@@ -32,7 +32,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const iconsMap: RoomIcon[] = useMemo(() => {
     return rooms.map((room, index: number) => ({
-      title: room.title ?? "",
       width: room.width_percent ?? 0,
       height: room.height_percent ?? 0,
       top: room.y_percent ?? 0,

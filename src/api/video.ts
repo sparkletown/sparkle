@@ -11,8 +11,8 @@ export type VideoToken = string;
 export const getTwilioVideoToken = async ({
   userId,
   roomName,
-}: GetTwilioVideoTokenProps) =>
-  firebase
+}: GetTwilioVideoTokenProps): Promise<VideoToken> => {
+  return firebase
     .functions()
     .httpsCallable("video-getTwilioToken")({
       identity: userId,
@@ -30,6 +30,7 @@ export const getTwilioVideoToken = async ({
 
       throw err;
     });
+};
 
 export interface GetAgoraTokenProps {
   channelName: string;

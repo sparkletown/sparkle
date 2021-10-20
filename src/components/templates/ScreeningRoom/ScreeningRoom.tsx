@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { IFRAME_ALLOW, SCREENING_ROOM_TAXON } from "settings";
+import { IFRAME_ALLOW } from "settings";
 
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { GenericVenue } from "types/venues";
@@ -117,7 +117,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
 
   return (
     <div className="ScreeningRoom">
-      <p className="ScreeningRoom__title">{SCREENING_ROOM_TAXON.capital}</p>
+      <p className="ScreeningRoom__title">Screening room</p>
       {selectedVideo && (
         <div className="ScreeningRoom__video-container">
           {/* We need this additional wrapper to properly place the close button over the iframe */}

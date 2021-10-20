@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
-import { ADMIN_V1_ROOMS_URL, ROOM_TAXON, ROOMS_TAXON } from "settings";
-
 import { Room } from "types/rooms";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
@@ -28,16 +26,14 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
   return (
     <div className="rooms-list-container">
       <div className="room-stats">
-        <div className="rooms-counter">
-          {rooms?.length ?? 0} {ROOMS_TAXON.capital}
-        </div>
+        <div className="rooms-counter">{rooms?.length ?? 0} Rooms</div>
         <div className="add-room-button">
           {canHaveSubvenues(venue) && (
             <Link
-              to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
+              to={`/admin/venue/rooms/${venue.id}`}
               className="btn btn-block"
             >
-              Add a {ROOM_TAXON.capital}
+              Add a Room
             </Link>
           )}
         </div>

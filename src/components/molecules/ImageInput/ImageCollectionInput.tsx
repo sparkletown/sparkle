@@ -130,7 +130,12 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
             )}
         </div>
       </div>
-      <input type="hidden" name={`${fieldName}Url`} ref={register} />
+      <input
+        type="hidden"
+        name={`${fieldName}Url`}
+        ref={register}
+        value={imageUrlForPreview}
+      />
       {error?.message && <span className="input-error">{error.message}</span>}
       {hasImageCollections && (
         <div style={{ marginTop: 10, fontSize: "16px" }}>

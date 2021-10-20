@@ -1,32 +1,17 @@
 @import "scss/constants.scss";
 
 .EventsView {
-  padding: 5vh;
+  background-color: $black;
+  position: relative;
+  height: 75%;
   width: 85%;
-
-  &__container {
-    height: 60vh;
-    background-color: $content--under;
-    border-radius: $border-radius--xl;
-    box-shadow: box-shadow--large();
-    overflow-y: scroll;
-  }
-
-  &__header {
-    margin: $spacing--xl $spacing--xxl;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  &__checkbox {
-    font-size: $font-size--lg;
-    user-select: none;
-  }
+  border-radius: $border-radius--xl;
+  box-shadow: box-shadow--large();
+  overflow: scroll;
 
   &__title {
-    margin: 0;
-    font-weight: $font-weight--700;
+    margin: $spacing--lg;
+    font-weight: $font-weight--500;
     font-size: $font-size--xl;
   }
 
@@ -52,7 +37,7 @@
 
       &-start {
         font-weight: $font-weight--700;
-        color: $content--over;
+        color: $white;
         margin-top: $spacing--xl;
       }
     }
@@ -60,7 +45,7 @@
     &__details {
       &-name {
         font-weight: $font-weight--700;
-        color: $content--over;
+        color: $white;
         font-size: $spacing--lg;
       }
 
@@ -95,10 +80,10 @@
       justify-content: center;
       align-items: center;
       margin: auto;
-      background-color: $accent--under;
+      background-color: $primary;
 
       &__icon {
-        color: $content--over;
+        color: $white;
       }
     }
   }
@@ -111,10 +96,15 @@
     left: 50%;
     transform: translate(-50%, -50%);
   }
+}
 
-  &__create {
-    margin-top: $spacing--sm;
-    display: flex;
-    justify-content: flex-end;
+.create-button {
+  width: 85%;
+  margin-top: $spacing--sm;
+
+  .btn {
+    width: 200px;
+    display: inline;
+    float: right;
   }
 }

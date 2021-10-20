@@ -1,8 +1,5 @@
 import { ChatTypes, PrivateChatSettings, VenueChatSettings } from "types/chat";
 import { ReduxAction } from "types/redux";
-import { DisplayUser } from "types/User";
-
-import { WithId } from "utils/id";
 
 export enum ChatActionTypes {
   SET_CHAT_SIDEBAR_VISIBILITY = "SET_CHAT_SIDEBAR_VISIBILITY",
@@ -40,12 +37,12 @@ export const setVenueChatTabOpened = (): SetVenueChatTabOpenedAction => ({
 });
 
 export const setPrivateChatTabOpened = (
-  recipient?: WithId<DisplayUser>
+  recipientId?: string
 ): SetPrivateChatTabOpenedAction => ({
   type: ChatActionTypes.SET_PRIVATE_CHAT_TAB_OPENED,
   payload: {
     openedChatType: ChatTypes.PRIVATE_CHAT,
-    recipient,
+    recipientId,
   },
 });
 

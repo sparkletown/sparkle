@@ -3,51 +3,44 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { Button } from "components/atoms/Button";
 
 import "./EditProfileModalButtons.scss";
 
 export interface UserProfileModalButtonsProps extends ContainerClassName {
   onCancelClick: () => void;
-  onChangePasswordClick: () => void;
-  isChangePasswordShown: boolean;
   isSubmitting: boolean;
 }
 
 export const EditProfileModalButtons: React.FC<UserProfileModalButtonsProps> = ({
   onCancelClick,
-  onChangePasswordClick,
-  isChangePasswordShown,
   containerClassName,
   isSubmitting,
 }) => {
   return (
-    <div className={classNames("EditProfileModalButtons", containerClassName)}>
-      {isChangePasswordShown && (
-        <ButtonNG
-          variant="secondary"
-          className="EditProfileModalButtons__button"
-          onClick={onChangePasswordClick}
-        >
-          Change Password
-        </ButtonNG>
-      )}
-      <ButtonNG
-        className="EditProfileModalButtons__button"
-        variant="secondary"
+    <div className={containerClassName}>
+      <Button
+        customClass={classNames("EditProfileModalButtons__button", {
+          "EditProfileModalButtons__button--disabled": isSubmitting,
+        })}
         disabled={isSubmitting}
         onClick={onCancelClick}
       >
         Cancel
-      </ButtonNG>
-      <ButtonNG
+      </Button>
+      <Button
         type="submit"
-        className="EditProfileModalButtons__button"
-        variant="primary"
+        customClass={classNames(
+          "EditProfileModalButtons__button",
+          "EditProfileModalButtons__button--primary",
+          {
+            "EditProfileModalButtons__button--disabled": isSubmitting,
+          }
+        )}
         disabled={isSubmitting}
       >
         {isSubmitting ? "Saving..." : "Save changes"}
-      </ButtonNG>
+      </Button>
     </div>
   );
 };

@@ -7,11 +7,17 @@ $vertical-padding: 20px;
 $side-padding: 30px;
 $border-radius: 28px;
 $large-shadow: box-shadow--large(0.34);
-$auth-icon-sso-size: 35px;
+$login-max-width: 540px;
 $login-wide-max-width: 1140px;
-$auth-body-max-width: 365px;
 
+$black: #000000;
+$white: #fff;
+
+$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+
+$dark: #1a1d24;
 $modal-max-width: 540px;
+$page-max-width: 1240px;
 
 .checkbox {
   display: block;
@@ -27,18 +33,18 @@ $modal-max-width: 540px;
     height: 30px;
     width: 30px;
     border-radius: 15px;
-    background-color: opaque-white(0.12);
-    box-shadow: 0 0 0 2px opaque-white(0.4);
+    background-color: rgba($white, 0.12);
+    box-shadow: 0 0 0 2px rgba($white, 0.4);
   }
   &:hover {
     &:before {
-      box-shadow: 0 0 0 2px opaque-white(1);
+      box-shadow: 0 0 0 2px rgba($white, 1);
     }
   }
   &.checkbox-checked {
     &:before {
-      background-color: $primary--over;
-      box-shadow: 0 0 0 2px opaque-white(0);
+      background-color: $primaryColor;
+      box-shadow: 0 0 0 2px rgba($white, 0);
       background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
@@ -46,7 +52,7 @@ $modal-max-width: 540px;
 }
 
 .page-container {
-  background-color: $secondary--live;
+  background-color: $dark;
   flex-direction: column;
   flex: 1;
   padding-bottom: $spacing--xxl;
@@ -80,12 +86,7 @@ $modal-max-width: 540px;
 
   .login-welcome-subtitle {
     text-align: center;
-    padding-bottom: $spacing--xxl;
-  }
-
-  .create-account__button {
-    background: $login-rainbox-gradient;
-    align-self: center;
+    padding-bottom: 30px;
   }
 }
 
@@ -109,6 +110,46 @@ $modal-max-width: 540px;
   }
 }
 
+.auth-container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
+  background-color: #1a1d24;
+  height: 100vh;
+
+  .logo-container {
+    width: $login-max-width / 2;
+    padding-bottom: 50px;
+  }
+
+  .auth-form-container {
+    .form-container {
+      display: inline-table;
+      flex: 0;
+      width: $login-max-width;
+      margin: 0 auto;
+      padding: $side-padding;
+      background-color: $black;
+      box-shadow: $large-shadow;
+      text-align: center;
+      border-radius: $border-radius;
+
+      .form {
+        margin-top: 2rem;
+      }
+    }
+
+    .register-form-title {
+      font-weight: 900;
+      font-style: italic;
+      font-size: 2em;
+      color: $white;
+    }
+  }
+}
+
 .secondary-action {
   margin-top: 2rem;
   font-size: 1.2em;
@@ -118,7 +159,7 @@ $modal-max-width: 540px;
   text-align: center;
 }
 
-@media (max-width: $auth-container-max-width) {
+@media (max-width: $login-max-width) {
   .login-container {
     border-radius: 0;
   }
@@ -142,10 +183,10 @@ $modal-max-width: 540px;
   }
   .step0-container {
     top: 50%;
-    max-width: $auth-container-max-width;
+    max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $secondary--live;
+    background-color: $dark;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -161,9 +202,11 @@ $modal-max-width: 540px;
     height: 100px;
     line-height: 100px;
     font-size: 45px;
+    //background-color: $sand;
+    //border: solid 1px black;
     font-weight: bolder;
     color: black;
-    text-shadow: 1px 1px $content--over;
+    text-shadow: 1px 1px $white;
   }
   .enter-the-burn {
     position: absolute;
@@ -180,10 +223,10 @@ $modal-max-width: 540px;
     }
   }
   .ten-principles-burning {
-    max-width: $auth-container-max-width;
+    max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $content--under;
+    background-color: $black;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -232,10 +275,10 @@ $modal-max-width: 540px;
   .step4-container {
     top: 20%;
     bottom: 20%;
-    max-width: $auth-container-max-width;
+    max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $content--under;
+    background-color: $black;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -243,24 +286,24 @@ $modal-max-width: 540px;
       width: 100%;
       padding: 15px;
       border-radius: $border-radius;
-      background-color: $secondary--live;
+      background-color: $dark;
       margin-bottom: 20px;
       cursor: pointer;
       height: 130px;
       transition: all 400ms $transition-function;
       &:hover {
-        box-shadow: 0 0 0 4px opaque-white(0.62);
-        background-color: lighten($secondary--live, 4%);
+        box-shadow: 0 0 0 4px rgba($white, 0.62);
+        background-color: lighten($dark, 4%);
       }
     }
   }
   .step5-container {
     top: 8%;
     bottom: 8%;
-    max-width: $auth-container-max-width;
+    max-width: $login-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $content--under;
+    background-color: $black;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -282,7 +325,7 @@ $modal-max-width: 540px;
     max-width: $login-wide-max-width;
     margin: 0 auto;
     padding: $side-padding;
-    background-color: $secondary--live;
+    background-color: $dark;
     box-shadow: $large-shadow;
     text-align: center;
     border-radius: $border-radius;
@@ -333,7 +376,7 @@ $modal-max-width: 540px;
   max-width: $modal-max-width;
   margin: 0 auto;
   padding: 20px 0 0 0;
-  background-color: $content--under;
+  background-color: $black;
   box-shadow: $large-shadow;
   text-align: left;
   border-radius: $border-radius;
@@ -346,7 +389,7 @@ $modal-max-width: 540px;
     align-items: center; /* Align Items Vertically */
     justify-content: space-around;
     margin-bottom: 2rem;
-    border-bottom: 1px solid var(--accent--over-20a);
+    border-bottom: 1px solid rgba($white, 0.2);
     overflow-x: auto;
     overflow-y: hidden;
     button {
@@ -354,7 +397,7 @@ $modal-max-width: 540px;
       border: none;
       display: block;
       position: relative;
-      color: $content--over;
+      color: $white;
       text-align: center;
       padding: 4px 10px;
       opacity: 0.7;
@@ -373,7 +416,7 @@ $modal-max-width: 540px;
           height: 2px;
           border-radius: 4px;
           width: 100%;
-          background-color: $content--over;
+          background-color: $white;
           left: 0;
           bottom: -1px;
         }

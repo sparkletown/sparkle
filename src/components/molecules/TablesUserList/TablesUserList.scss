@@ -52,7 +52,7 @@
   cursor: pointer;
 
   &:hover {
-    color: $primary--over;
+    color: $primaryColor;
   }
 }
 
@@ -109,7 +109,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: $secondary--live;
+  background-color: $dark;
   border: thin $concrete solid;
   -webkit-transition: 0.4s;
   transition: 0.4s;
@@ -130,10 +130,10 @@
 }
 
 input:checked + .slider {
-  background-color: $accent--under;
-  border-color: $content--over;
+  background-color: $primary;
+  border-color: $white;
   &::before {
-    background-color: $content--over;
+    background-color: $white;
   }
 }
 

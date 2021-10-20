@@ -12,10 +12,9 @@ import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { VenueDetailsForm } from "pages/Admin/Venue/VenueDetailsForm";
-
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { DetailsForm } from "./DetailsForm";
 import { TemplateForm } from "./TemplateForm";
 
 import "./Venue.scss";
@@ -34,7 +33,6 @@ interface WizardFormState {
     venue: AnyVenue;
   };
 }
-
 type WizardActions =
   | {
       type: "SUBMIT_TEMPLATE_PAGE";
@@ -110,7 +108,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   // @debt replace this with LoadingPage or Loading as appropriate
   if (!state.detailsPage) return <div>Loading...</div>;
 
-  return <VenueDetailsForm venueId={venueId} state={state} />;
+  return <DetailsForm venueId={venueId} state={state} />;
 };
 
 const VenueWizardCreate: React.FC = () => {
@@ -147,7 +145,7 @@ const VenueWizardCreate: React.FC = () => {
       case 1:
         return <TemplateForm next={next} state={state} />;
       case 2:
-        return <VenueDetailsForm previous={previous} state={state} />;
+        return <DetailsForm previous={previous} state={state} />;
       default:
         return <TemplateForm next={next} state={state} />;
     }

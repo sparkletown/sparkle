@@ -20,6 +20,6 @@
 
   &__error {
     margin-top: 0.5rem;
-    color: var(--danger--under);
+    color: $input--invalid;
   }
 }

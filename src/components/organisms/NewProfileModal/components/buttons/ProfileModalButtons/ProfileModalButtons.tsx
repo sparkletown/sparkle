@@ -7,8 +7,9 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
+import { useIsOnline } from "hooks/useIsOnline";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { Button } from "components/atoms/Button";
 
 import "./ProfileModalButtons.scss";
 
@@ -22,19 +23,22 @@ export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
   onClick,
   user,
 }) => {
-  const isCurrentUser = useIsCurrentUser(user.id);
+  const { isOnline } = useIsOnline(user.id);
+  const isCurrentUser = useIsCurrentUser(user);
 
   return (
-    <ButtonNG
-      // @debt until temporarily disable is online functionality
-      variant={!isCurrentUser ? "primary" : "secondary"}
-      className={classNames("ProfileModalButtons", containerClassName, {
-        // @debt until temporarily disable is online functionality
-        // "ProfileModalButtons--online": !isCurrentUser && isOnline,
-      })}
-      onClick={onClick}
-    >
-      {isCurrentUser ? "Log out" : "Send message"}
-    </ButtonNG>
+    <>
+      <div className={containerClassName}>
+        <Button
+          customClass={classNames("ProfileModalButtons__button", {
+            "ProfileModalButtons__button--online": !isCurrentUser && isOnline,
+            "ProfileModalButtons__button--primary": !isCurrentUser && !isOnline,
+          })}
+          onClick={onClick}
+        >
+          {isCurrentUser ? "Log out" : "Send message"}
+        </Button>
+      </div>
+    </>
   );
 };

@@ -1,32 +1,31 @@
 import React from "react";
+import {
+  FontAwesomeIcon,
+  FontAwesomeIconProps,
+} from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-
 import "./ProfileModalRoundIcon.scss";
 
 export interface ProfileModalRoundIconProps
-  extends ContainerClassName,
-    Pick<ButtonProps, "iconName" | "iconSize"> {
+  extends FontAwesomeIconProps,
+    ContainerClassName {
   onClick?: () => void;
 }
 
 export const ProfileModalRoundIcon: React.FC<ProfileModalRoundIconProps> = ({
   containerClassName,
   onClick,
-  iconName,
-  iconSize,
+  ...rest
 }) => {
   return (
-    <ButtonNG
+    <div
       className={classNames("ProfileModalRoundIcon", containerClassName)}
       onClick={onClick}
-      iconOnly
-      iconName={iconName}
-      iconSize={iconSize}
-    />
+    >
+      <FontAwesomeIcon {...rest} />
+    </div>
   );
 };

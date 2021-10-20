@@ -55,9 +55,7 @@ initFirebaseAdminApp(projectId, {
     console.log(
       `Venue: ${doc.id} (${doc.data().name}) is owned by emails: ${doc
         .data()
-        .owners.map(
-          (uid: string) => allUsers.find((u) => u.uid === uid)?.email ?? uid
-        )
+        .owners.map((uid) => allUsers.find((u) => u.uid === uid)?.email ?? uid)
         .join(", ")}`
     );
   });

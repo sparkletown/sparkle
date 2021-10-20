@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
 import { groupBy } from "lodash";
 
-import { ADMIN_V1_ROOMS_URL, ROOM_TAXON, ROOMS_TAXON } from "settings";
-
 import { Room } from "types/rooms";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
@@ -36,17 +34,15 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
   return (
     <div className="RunTabRooms__container">
       <div className="RunTabRooms__top RunTabRooms--spacing">
-        <div className="RunTabRooms__counter">
-          {rooms?.length ?? 0} {ROOMS_TAXON.capital}
-        </div>
+        <div className="RunTabRooms__counter">{rooms?.length ?? 0} Rooms</div>
         <div className="RunTabRooms__add">
           {venueWithRooms && (
             <ButtonNG
               isLink={true}
-              linkTo={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
+              linkTo={`/admin/venue/rooms/${venue.id}`}
               variant="primary"
             >
-              Add a {ROOM_TAXON.capital}
+              Add a Room
             </ButtonNG>
           )}
         </div>
@@ -57,6 +53,7 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
             key={index}
             index={index}
             venueId={venue.id}
+            venueName={venue.name}
             room={room}
             events={groupedEvents[room.title]}
           />

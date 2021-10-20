@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { groupBy } from "lodash";
+import firebase from "firebase/app";
 
 import {
   ALLOWED_EMPTY_TABLES_NUMBER,
@@ -9,16 +9,15 @@ import {
   DEFAULT_TABLE_ROWS,
 } from "settings";
 
-import { setTableSeat } from "api/venue";
-
 import { Table, TableComponentPropsType } from "types/Table";
-import { TableSeatedUser } from "types/User";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+import { getUserExperience } from "utils/user";
 
-import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
+import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
@@ -42,14 +41,26 @@ const createTable = (i: number): Table => {
   };
 };
 
+// @debt Remove this eslint-disable + fix the any type properly + move to api/* or remove outright
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const firestoreUpdate = (doc: string, update: any) => {
+  const firestore = firebase.firestore();
+  firestore
+    .doc(doc)
+    .update(update)
+    .catch(() => {
+      firestore.doc(doc).set(update);
+    });
+};
+
 const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
   createTable(i)
 );
 
 export interface TablesUserListProps {
-  venueId: string;
+  venueName: string;
   setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string | undefined;
+  seatedAtTable: string;
   customTables: Table[];
   showOnlyAvailableTables?: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
@@ -58,7 +69,7 @@ export interface TablesUserListProps {
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
-  venueId,
+  venueName,
   setSeatedAtTable,
   seatedAtTable,
   customTables,
@@ -79,57 +90,70 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   } = useShowHide(false);
 
   const [joiningTable, setJoiningTable] = useState("");
+  const [videoRoom, setVideoRoom] = useState("");
 
-  const { userWithId } = useUser();
+  const { user, profile } = useUser();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
+    venueName,
+  });
   const experience = useSelector(experienceSelector);
 
   const tables: Table[] = customTables || defaultTables;
 
-  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
-    venueId
-  );
-
-  const userTableReference = seatedTableUsers.find(
-    (u) => u.id === userWithId?.id
-  )?.path?.tableReference;
+  const { table: userTable } = getUserExperience(venueName)(profile) ?? {};
 
   useEffect(() => {
-    userTableReference
-      ? setSeatedAtTable(userTableReference)
-      : setSeatedAtTable("");
-  }, [setSeatedAtTable, userTableReference]);
+    userTable ? setSeatedAtTable(userTable) : setSeatedAtTable("");
+  }, [setSeatedAtTable, userTable]);
 
-  const isSeatedAtTable = !!seatedAtTable;
+  const isSeatedAtTable = seatedAtTable !== "";
 
+  // @debt can we refactor this to make use of makeUpdateUserGridLocation ?
+  // @debt refactor this into api/* layer or similar?
   const takeSeat = useCallback(
-    async (table: string) => {
-      if (!userWithId) return;
+    (table: string) => {
+      if (!user) return;
 
-      await setTableSeat(userWithId, {
-        venueId,
-        tableReference: table,
-      });
+      const doc = `users/${user.uid}`;
+      const existingData = recentVenueUsers.find((u) => u.id === user.uid)
+        ?.data;
+
+      const update = {
+        data: {
+          ...existingData,
+          [venueName]: {
+            table,
+            videoRoom,
+          },
+        },
+      };
+
+      firestoreUpdate(doc, update);
     },
-    [userWithId, venueId]
+    [recentVenueUsers, user, venueName, videoRoom]
   );
 
-  const usersSeatedAtTables: Record<
-    string,
-    WithId<TableSeatedUser>[]
-  > = useMemo(() => {
-    const tableReferences = tables.map((t) => t.reference);
+  const usersAtTableReducer = useCallback(
+    (obj: Record<string, WithId<User>[]>, table: Table) => ({
+      ...obj,
+      [table.reference]: recentVenueUsers.filter(
+        (user: User) =>
+          getUserExperience(venueName)(user)?.table === table.reference
+      ),
+    }),
+    [recentVenueUsers, venueName]
+  );
 
-    const filteredUsers = seatedTableUsers.filter((user) =>
-      tableReferences.includes(user.path.tableReference)
-    );
-    return groupBy(filteredUsers, (user) => user.path.tableReference);
-  }, [seatedTableUsers, tables]);
+  const usersSeatedAtTables = useMemo(
+    () => tables.reduce(usersAtTableReducer, {}),
+    [tables, usersAtTableReducer]
+  );
 
   const isFullTable = useCallback(
     (table: Table) => {
       const numberOfSeatsLeft =
         table.capacity &&
-        table.capacity - (usersSeatedAtTables?.[table.reference]?.length ?? 0);
+        table.capacity - usersSeatedAtTables[table.reference].length;
       return numberOfSeatsLeft === 0;
     },
     [usersSeatedAtTables]
@@ -138,7 +162,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const tableLocked = useCallback(
     (tableReference: string) => {
       // Empty tables are never locked
-      if (!usersSeatedAtTables?.[tableReference]?.length) return false;
+      if (!usersSeatedAtTables[tableReference].length) return false;
 
       // Locked state is in the experience record
       return isTruthy(experience?.tables?.[tableReference]?.locked);
@@ -147,10 +171,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const onAcceptJoinMessage = useCallback(
-    async (table: string) => {
+    (table: string) => {
       window.scrollTo(0, 0);
       hideJoinMessage();
-      await takeSeat(table);
+      takeSeat(table);
       setSeatedAtTable(table);
     },
     [hideJoinMessage, setSeatedAtTable, takeSeat]
@@ -162,11 +186,12 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const onJoinClicked = useCallback(
-    (table: string, locked: boolean) => {
+    (table: string, locked: boolean, videoRoom: string) => {
       if (locked) {
         showLockedMessage();
       } else {
         setJoiningTable(table);
+        setVideoRoom(videoRoom);
         joinMessage ? showJoinMessage() : onAcceptJoinMessage(table);
       }
     },
@@ -175,7 +200,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const emptyTables = useMemo(
     () =>
-      tables.filter((table) => !usersSeatedAtTables?.[table.reference]?.length),
+      tables.filter((table) => !usersSeatedAtTables[table.reference].length),
     [tables, usersSeatedAtTables]
   );
 
@@ -191,28 +216,32 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         )
       : tables;
 
-    return tablesToShow.map((table: Table) => (
+    return tablesToShow.map((table: Table, index: number) => (
       <TableComponent
         key={table.reference}
         // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
-        users={usersSeatedAtTables?.[table.reference] ?? []}
+        experienceName={venueName}
+        users={recentVenueUsers}
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
+        // @debt should this be using the table.reference (rather than index) for nameOfVideoRoom?
+        nameOfVideoRoom={`${venueName}-table${index + 1}`}
       />
     ));
   }, [
-    isSeatedAtTable,
-    showOnlyAvailableTables,
-    tables,
-    isFullTable,
-    tableLocked,
     TableComponent,
-    usersSeatedAtTables,
+    isSeatedAtTable,
     onJoinClicked,
+    recentVenueUsers,
+    tableLocked,
+    tables,
+    showOnlyAvailableTables,
+    isFullTable,
+    venueName,
   ]);
 
-  if (!isSeatedTableUsersLoaded) return <Loading />;
+  if (!isRecentVenueUsersLoaded) return <Loading />;
 
   return (
     <>

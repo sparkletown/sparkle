@@ -6,17 +6,10 @@ import {
   Switch,
 } from "react-router-dom";
 
-import {
-  ADMIN_V1_ROOT_URL,
-  ADMIN_V3_ROOT_URL,
-  SPARKLEVERSE_HOMEPAGE_URL,
-} from "settings";
+import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
 import { tracePromise } from "utils/performance";
 import { venueLandingUrl } from "utils/url";
-
-import { useSettings } from "hooks/useSettings";
-import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
@@ -26,9 +19,6 @@ import { Provided } from "components/organisms/AppRouter/Provided";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { Forbidden } from "components/atoms/Forbidden";
-import { NotFound } from "components/atoms/NotFound";
-
 const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
     import("./AccountSubrouter").then(({ AccountSubrouter }) => ({
@@ -37,18 +27,10 @@ const AccountSubrouter = lazy(() =>
   )
 );
 
-const AdminV1Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
-    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
-      default: AdminV1Subrouter,
-    }))
-  )
-);
-
-const AdminV3Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV3Subrouter", () =>
-    import("./AdminV3Subrouter").then(({ AdminV3Subrouter }) => ({
-      default: AdminV3Subrouter,
+const AdminSubrouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AdminSubrouter", () =>
+    import("./AdminSubrouter").then(({ AdminSubrouter }) => ({
+      default: AdminSubrouter,
     }))
   )
 );
@@ -94,36 +76,16 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
-  const { isLoaded, settings } = useSettings();
-  const { user } = useUser();
-
-  if (!isLoaded) return <LoadingPage />;
-
-  const { enableAdmin1 } = settings;
-
   return (
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
           <Route path="/enter" component={EnterSubrouter} />
-
-          <Route path="/account">
+          <Route path="/account" component={AccountSubrouter} />
+          <Route path="/admin" component={AdminSubrouter} />
+          <Route path="/admin-ng">
             <Provided withRelatedVenues>
-              <AccountSubrouter />
-            </Provided>
-          </Route>
-
-          {enableAdmin1 && (
-            <Route path={ADMIN_V1_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV1Subrouter />
-              </Provided>
-            </Route>
-          )}
-
-          <Route path={ADMIN_V3_ROOT_URL}>
-            <Provided withRelatedVenues>
-              <AdminV3Subrouter />
+              <AdminSubrouter />
             </Provided>
           </Route>
 
@@ -135,7 +97,7 @@ export const AppRouter: React.FC = () => {
           {/*<Route path="/login" component={Login} />*/}
 
           <Route path="/v/:venueId">
-            <Provided withRelatedVenues>
+            <Provided withWorldUsers withRelatedVenues>
               <VenueLandingPage />
             </Provided>
           </Route>
@@ -146,12 +108,12 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
           <Route path="/in/:venueId">
-            <Provided withRelatedVenues>
+            <Provided withWorldUsers withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
           <Route path="/m/:venueId">
-            <Provided withRelatedVenues>
+            <Provided withWorldUsers withRelatedVenues>
               <EmergencyViewPage />
             </Provided>
           </Route>
@@ -175,10 +137,10 @@ export const AppRouter: React.FC = () => {
 
           <Route
             path="/"
-            render={() =>
-              // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
-              user ? <NotFound /> : <Forbidden />
-            }
+            render={() => {
+              window.location.href = DEFAULT_REDIRECT_URL;
+              return <LoadingPage />;
+            }}
           />
         </Switch>
       </Suspense>

@@ -5,7 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
-import { DisplayUser, User } from "types/User";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -14,30 +14,26 @@ export enum ChatMessageType {
 }
 
 export type BaseChatMessage = {
-  fromUser: WithId<DisplayUser>;
+  from: string;
   text: string;
-  timestamp: firebase.firestore.Timestamp;
-  isQuestion?: boolean;
-  threadId?: string;
+  ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
+  threadId?: string;
+  isQuestion?: boolean;
 };
 
-export interface PrivateChatMessage extends BaseChatMessage {
-  toUser: WithId<DisplayUser>;
+export type PrivateChatMessage = BaseChatMessage & {
+  to: string;
   isRead?: boolean;
-}
+};
 
-export type VenueChatMessage = BaseChatMessage & MessageWithReplies;
+export type VenueChatMessage = BaseChatMessage;
 
-export interface PollMessage extends BaseChatMessage {
+export type PollMessage = BaseChatMessage & {
   type: ChatMessageType.poll;
   poll: PollValues;
   votes: PollVote[];
-}
-
-export interface JukeboxMessage extends BaseChatMessage {
-  tableId: string;
-}
+};
 
 export type PollVoteBase = {
   questionId: number;
@@ -48,73 +44,48 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type ChatMessage =
-  | VenueChatMessage
-  | PrivateChatMessage
-  | PollMessage
-  | JukeboxMessage;
+export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 
-export type MessageWithReplies = {
-  repliesCount?: number;
+export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
+  author: WithId<User>;
+  isMine: boolean;
 };
 
-export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T &
-  MessageWithReplies;
+export type MessageToDisplay<
+  T extends ChatMessage = ChatMessage
+> = BaseMessageToDisplay<T> & {
+  replies: WithId<BaseMessageToDisplay<T>>[];
+};
 
-export interface SendMessagePropsBase {
-  text: string;
-}
-
-export interface SendChatMessageProps extends SendMessagePropsBase {
+export interface SendMessageProps {
+  message: string;
   isQuestion?: boolean;
 }
 
-export interface SendThreadMessageProps extends SendMessagePropsBase {
+export type SendMessage = (
+  sendMessageProps: SendMessageProps
+) => Promise<void> | undefined;
+
+export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
+
+export interface SendChatReplyProps {
+  replyText: string;
   threadId: string;
 }
 
-export type SendChatMessage<T extends SendMessagePropsBase> = (
-  sendMessageProps: T
-) => Promise<void>;
-
-export interface DeleteChatMessageProps {
-  messageId: string;
-}
-
-export interface DeleteThreadMessageProps extends DeleteChatMessageProps {
-  threadId: string;
-}
-
-export type DeleteChatMessage<T extends DeleteChatMessageProps> = (
-  props: T
-) => Promise<void>;
-
-export type MarkMessageRead = (messageId: string) => Promise<void>;
+export type SendChatReply = (
+  props: SendChatReplyProps
+) => Promise<void> | undefined;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;
 };
 
-export interface ChatActions {
-  sendChatMessage: SendChatMessage<SendChatMessageProps>;
-  deleteChatMessage?: DeleteChatMessage<DeleteChatMessageProps>;
-  sendThreadMessage: SendChatMessage<SendThreadMessageProps>;
-  deleteThreadMessage?: DeleteChatMessage<DeleteThreadMessageProps>;
-}
-
-export interface InfiniteScrollProps {
-  hasMore: boolean;
-  loadMore: () => void;
-}
-
-export interface PrivateChatActions
-  extends Exclude<ChatActions, "deleteMessage" | "deleteThreadReply"> {
-  markMessageRead: MarkMessageRead;
-}
-
-export type JukeboxChatActions = Pick<ChatActions, "sendChatMessage">;
-
 export type PreviewChatMessageMap = { [key: string]: PreviewChatMessage };
+
+export type PreviewChatMessageToDisplay = PreviewChatMessage & {
+  isMine: boolean;
+};
 
 export enum ChatTypes {
   WORLD_CHAT = "WORLD_CHAT",
@@ -124,7 +95,7 @@ export enum ChatTypes {
 
 export type PrivateChatSettings = {
   openedChatType: ChatTypes.PRIVATE_CHAT;
-  recipient?: WithId<DisplayUser>;
+  recipientId?: string;
 };
 
 export type VenueChatSettings = {

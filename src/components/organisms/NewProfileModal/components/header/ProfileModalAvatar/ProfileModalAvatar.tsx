@@ -11,6 +11,7 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 import { userProfileModalFormProp as formProp } from "utils/propName";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
 
@@ -37,6 +38,8 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   setPictureUrl,
   containerClassName,
 }: ProfileModalAvatarProps) => {
+  const isCurrentUser = useIsCurrentUser(user);
+
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
@@ -76,7 +79,7 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
           imageClassName="ProfileModalAvatar__image"
           user={userWithOverriddenPictureUrl}
           size="full"
-          showStatus
+          showStatus={!isCurrentUser}
         />
         {editMode && (
           <ImageOverlay

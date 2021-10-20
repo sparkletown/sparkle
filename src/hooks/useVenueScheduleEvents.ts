@@ -26,8 +26,10 @@ const minRangeValue = 0;
 const todaysDate = new Date();
 
 const useVenueScheduleEvents = ({
+  venueId,
   userEventIds,
 }: {
+  venueId: string;
   userEventIds: Partial<Record<string, string[]>>;
 }) => {
   const {
@@ -36,7 +38,9 @@ const useVenueScheduleEvents = ({
     isLoading,
     sovereignVenue,
     relatedVenues,
-  } = useRelatedVenues();
+  } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
@@ -95,9 +99,8 @@ const useVenueScheduleEvents = ({
     [liveAndFutureEvents, firstRangeDateInSeconds]
   );
 
-  const endScheduleDate = sovereignVenue?.end_utc_seconds;
   const daysInBetween = differenceInDays(
-    fromUnixTime(endScheduleDate || maxDate),
+    fromUnixTime(maxDate),
     fromUnixTime(firstRangeDateInSeconds)
   );
 

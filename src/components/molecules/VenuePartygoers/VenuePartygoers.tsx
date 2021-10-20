@@ -1,18 +1,41 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentWorldUsers } from "hooks/users";
 
 import "./VenuePartygoers.scss";
 
-export const VenuePartygoers: React.FC = () => {
-  const { sovereignVenue } = useRelatedVenues();
+export interface VenuePartygoersProps {
+  venueId: string;
+}
 
-  const numberOfRecentWorldUsers = sovereignVenue?.recentUserCount;
-  const attendeesTitle = sovereignVenue?.attendeesTitle ?? "attendees";
+export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
+  venueId,
+}) => {
+  const { isLoading, parentVenue, currentVenue } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
 
-  return (
-    <div className="venue-partygoers-container">
-      {numberOfRecentWorldUsers} {attendeesTitle} online
-    </div>
-  );
+  const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
+
+  const numberOfRecentWorldUsers = recentWorldUsers.length;
+
+  const title = useMemo<string>(() => {
+    if (isLoading || !isRecentWorldUsersLoaded) return "";
+
+    const attendeesTitle =
+      parentVenue?.attendeesTitle ??
+      currentVenue?.attendeesTitle ??
+      "attendees";
+
+    return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
+  }, [
+    isLoading,
+    isRecentWorldUsersLoaded,
+    parentVenue?.attendeesTitle,
+    currentVenue?.attendeesTitle,
+    numberOfRecentWorldUsers,
+  ]);
+
+  return <div className="venue-partygoers-container">{title}</div>;
 };

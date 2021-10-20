@@ -68,7 +68,7 @@ $tab-item-room-width: 180px;
     margin: $spacing--md;
 
     &--active {
-      border-bottom: $border-radius--xs solid $accent--under;
+      border-bottom: $border-radius--xs solid $primary--live;
     }
   }
 
@@ -122,7 +122,7 @@ $tab-item-room-width: 180px;
 
     &-status {
       display: flex;
-      background-color: $accent--under;
+      background-color: $primary--live;
       border-radius: $border-radius--md;
       padding: $spacing--sm;
       width: $spacing--xxl * 2;

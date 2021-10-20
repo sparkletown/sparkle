@@ -2,7 +2,7 @@ import React from "react";
 
 import { PartyMapVenue } from "types/venues";
 
-import { currentVenueSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -19,7 +19,7 @@ export const PartyTitle: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
   withCountDown,
 }) => {
-  const venue = useSelector(currentVenueSelector) as PartyMapVenue;
+  const venue = useSelector(currentVenueSelectorData) as PartyMapVenue;
 
   return (
     <div className="col">

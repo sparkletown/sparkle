@@ -15,36 +15,31 @@ import {
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
 } from "utils/selectors";
-import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
-import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
-  updateLocationData,
+  setLocationData,
+  updateCurrentLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUserLocation } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { updateUserProfile } from "pages/Account/helpers";
-
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import { NotFound } from "components/atoms/NotFound";
-
+// import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
@@ -75,9 +70,9 @@ export const VenuePage: React.FC = () => {
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
-  const { user, profile, userLocation } = useUser();
-  const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
-    userLocation ?? {};
+  const { user, profile } = useUser();
+  const { userLocation } = useWorldUserLocation(user?.uid);
+  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -100,6 +95,9 @@ export const VenuePage: React.FC = () => {
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
+
+  // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
+  useFirestoreConnect("venues");
 
   const userId = user?.uid;
 
@@ -125,42 +123,18 @@ export const VenuePage: React.FC = () => {
   useInterval(() => {
     if (!userId || !userLastSeenIn) return;
 
-    updateLocationData({
+    updateCurrentLocationData({
       userId,
-      newLocationPath: userLastSeenIn,
+      profileLocationData: userLastSeenIn,
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
-
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
+    if (!userId || !venueName) return;
 
-    const allVenueIds = [
-      ...sovereignVenueDescendantIds,
-      sovereignVenueId,
-    ].reverse();
-
-    const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
-
-    updateLocationData({ userId, newLocationPath: locationPath });
-  }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
-
-  useEffect(() => {
-    if (
-      user &&
-      profile &&
-      !isCompleteProfile(profile) &&
-      isCompleteUserInfo(user)
-    ) {
-      const profileData = {
-        pictureUrl: user.photoURL ?? "",
-        partyName: user.displayName ?? "",
-      };
-      updateUserProfile(user?.uid, profileData);
-    }
-  }, [user, profile]);
+    setLocationData({ userId, locationName: venueName });
+  }, [userId, venueName]);
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
@@ -179,12 +153,18 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
+    if (
+      !venueId ||
+      !userId ||
+      !profile ||
+      profile?.enteredVenueIds?.includes(venueId)
+    ) {
       return;
     }
 
-    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
-  }, [enteredVenueIds, userLocation, userId, venueId, profile]);
+    updateProfileEnteredVenueIds(profile?.enteredVenueIds, userId, venueId);
+  }, [profile, userId, venueId]);
+
   // NOTE: User's timespent updates
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -205,14 +185,11 @@ export const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
-    return (
-      <WithNavigationBar hasBackButton>
-        <NotFound />
-      </WithNavigationBar>
-    );
+    return <>This venue does not exist</>;
   }
 
   if (!venue || !venueId) {
+    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 
@@ -228,7 +205,11 @@ export const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
+  // if (isAccessDenied) {
+  //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
+  // }
   const { entrance, template, hasPaidEvents } = venue;
+  const { enteredVenueIds } = profile;
 
   const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
   const hasEntered = enteredVenueIds?.includes(venueId);

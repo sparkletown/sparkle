@@ -1,15 +1,17 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { SECTION_PREVIEW_USER_DISPLAY_COUNT } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { getSectionCapacity } from "utils/auditorium";
+import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
 import { WithId } from "utils/id";
+
+import { useRecentVenueUsers } from "hooks/users";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -26,11 +28,25 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+
   const sectionCapacity = getSectionCapacity(venue, section);
 
   const sectionId = section.id;
+  const venueId = venue.id;
 
-  const seatedUsersCount = section.seatedUsersCount ?? 0;
+  // @debt refactor this into a hook that more efficiently encapsultes the required selector logic + uses selector to memoise
+  const seatedUsers = useMemo(
+    () =>
+      getAuditoriumSeatedUsers({
+        auditoriumUsers: recentVenueUsers,
+        venueId,
+        sectionId,
+      }),
+    [recentVenueUsers, venueId, sectionId]
+  );
+
+  const seatedUsersCount = seatedUsers.length;
 
   const isFull = seatedUsersCount >= sectionCapacity;
   const isEmpty = seatedUsersCount === 0;
@@ -63,9 +79,10 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
       </div>
 
       <UserList
-        usersSample={section.seatedUsersSample ?? ALWAYS_EMPTY_ARRAY}
-        userCount={section.seatedUsersCount ?? 0}
+        users={seatedUsers}
         showTitle={false}
+        limit={SECTION_PREVIEW_USER_DISPLAY_COUNT}
+        showMoreUsersToggler={false}
         cellClassName="SectionPreview__avatar"
       />
     </div>

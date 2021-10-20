@@ -75,9 +75,9 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const openProfileModal = useCallback(() => openUserProfileModal(user?.id), [
+  const openProfileModal = useCallback(() => openUserProfileModal(user), [
     openUserProfileModal,
-    user?.id,
+    user,
   ]);
 
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,

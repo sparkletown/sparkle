@@ -19,8 +19,8 @@ $status--spacing: $icon--spacing 0;
     justify-content: center;
     align-items: center;
     border-radius: $border-radius--max;
-    @include square-size($picker-icon--size);
-    margin-left: $icon--spacing;
+    width: $picker-icon--size;
+    height: $picker-icon--size;
     cursor: pointer;
 
     &:hover {
@@ -29,6 +29,7 @@ $status--spacing: $icon--spacing 0;
   }
 
   &__delete-icon {
+    margin-left: $icon--spacing;
     background-color: $lighter-intermediate-grey;
   }
 }

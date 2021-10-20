@@ -2,8 +2,6 @@ import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
-import { ADMIN_V1_ROOMS_URL, ADMIN_V1_ROOT_URL, ROOM_TAXON } from "settings";
-
 import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
@@ -72,7 +70,7 @@ export const AdminVenueRoomDetails = ({
 
       await upsertRoom(roomValues, venue.id, user, index);
 
-      history.push(`${ADMIN_V1_ROOT_URL}/${venue.id}`);
+      history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {
@@ -100,7 +98,7 @@ export const AdminVenueRoomDetails = ({
                 <img
                   className="banner-image"
                   src={room.image_url}
-                  alt={`${ROOM_TAXON.lower} icon`}
+                  alt="room icon"
                 />
               </div>
               <div>
@@ -114,10 +112,10 @@ export const AdminVenueRoomDetails = ({
                 <div className="edit-room">
                   {
                     <Link
-                      to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${index}`}
+                      to={`/admin/venue/rooms/${venue.id}?roomIndex=${index}`}
                       className="btn btn-block"
                     >
-                      Edit {ROOM_TAXON.capital}
+                      Edit Room
                     </Link>
                   }
                 </div>
@@ -129,11 +127,7 @@ export const AdminVenueRoomDetails = ({
                     onChange={() => {
                       updateRoom(!room.isEnabled);
                     }}
-                    label={
-                      room.isEnabled
-                        ? `Turn ${ROOM_TAXON.lower} Off`
-                        : `Turn ${ROOM_TAXON.lower} On`
-                    }
+                    label={room.isEnabled ? "Turn room Off" : "Turn room On"}
                   />
                 </div>
               </div>

@@ -38,11 +38,11 @@ $expand--width: 40px;
     background-color: $secondary--schedule-event-users;
 
     &:hover {
-      background-color: $content--over;
+      background-color: $white;
     }
 
     .ScheduleEvent__bookmark {
-      color: $content--under;
+      color: $black;
     }
   }
 
@@ -90,15 +90,15 @@ $expand--width: 40px;
   }
 
   &--live {
-    background-color: $accent--under;
-    color: $content--over;
+    background-color: $primary--live;
+    color: $white;
 
     &:hover {
       background-color: $primary--live-hover;
     }
 
     .ScheduleEvent__bookmark {
-      color: $accent--over;
+      color: $white;
     }
   }
 
@@ -131,19 +131,23 @@ $expand--width: 40px;
     align-items: center;
     padding: $bookmark--padding;
     margin-left: auto;
-    color: $content--over;
+
     &:hover {
       padding-top: $bookmark-hover--padding-top;
     }
   }
 
   &__expand {
-    color: var(--greyscale-lighter-20pp);
+    color: $concrete--dark;
     border: none;
     background-color: transparent;
 
     &:focus {
       outline: none;
+    }
+
+    &--hidden {
+      display: none;
     }
 
     &--square {
@@ -170,7 +174,7 @@ $expand--width: 40px;
     }
 
     &--live {
-      color: $accent--over;
+      color: $white;
     }
   }
 

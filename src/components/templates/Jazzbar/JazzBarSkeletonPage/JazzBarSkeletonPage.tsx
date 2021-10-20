@@ -1,6 +1,6 @@
 import React from "react";
 
-import { currentVenueSelector } from "utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -18,7 +18,7 @@ interface PropsType {
 const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
 }) => {
-  const venue = useSelector(currentVenueSelector);
+  const venue = useSelector(currentVenueSelectorData);
 
   return (
     <div className="jazz-bar-container">

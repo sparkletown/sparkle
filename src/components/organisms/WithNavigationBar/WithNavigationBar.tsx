@@ -24,13 +24,11 @@ const NavBar = lazy(() =>
 export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
-  withPhotobooth?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
-  withSchedule,
-  withPhotobooth,
+  withSchedule = true,
   children,
 }) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
@@ -46,13 +44,9 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
+      <RelatedVenuesProvider venueId={venueId}>
         <Suspense fallback={<Loading />}>
-          <NavBar
-            hasBackButton={hasBackButton}
-            withSchedule={withSchedule}
-            withPhotobooth={withPhotobooth}
-          />
+          <NavBar hasBackButton={hasBackButton} withSchedule={withSchedule} />
         </Suspense>
       </RelatedVenuesProvider>
 

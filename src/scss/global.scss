@@ -1,7 +1,12 @@
+@import "constants.scss";
+
+:root {
+  --primary-color: #f6e652;
+}
+
 @import "node_modules/bootswatch/dist/darkly/variables";
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
-@import "./colors.scss";
 @import "./constants.scss";
 @import "./modifiers.scss";
 @import "./customOverrides";
@@ -18,8 +23,8 @@ body {
     sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
-  background-color: $content--under;
-  color: $content--over;
+  background-color: $black;
+  color: $white;
   display: flex;
   justify-content: center;
   font-family: "Rubik", sans-serif;
@@ -45,7 +50,7 @@ h6 {
   line-height: 1.2;
 
   &.primary {
-    color: $accent--under;
+    color: $primary;
   }
 
   &.italic {
@@ -79,11 +84,6 @@ h6 {
 }
 
 // Buttons
-
-button:focus {
-  outline: 1px dotted $content--over;
-}
-
 button.btn,
 a.btn,
 input.btn {
@@ -95,28 +95,28 @@ input.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: var(--primary--under-24a);
+  background-color: rgba($primary, 0.24);
   transition: all 400ms $transition-function;
-  color: $content--over;
+  color: $white;
   transform: translateY(0);
 
   &:hover {
     transform: translateY(-1px);
-    background-color: var(--primary--under-18a);
+    background-color: rgba($primary, 0.18);
   }
 
   &.btn-primary {
-    color: $content--over;
+    color: $white;
     background-image: $gradient;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: var(--primary--under-darker-14pp);
+      background-color: darken($primary, 14%);
     }
   }
 
   &.btn-secondary {
-    color: $content--over;
+    color: $white;
     background-color: rgba(124, 70, 251, 0.4);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
@@ -126,13 +126,13 @@ input.btn {
   }
 
   &.btn-danger {
-    color: $content--over;
+    color: $white;
     background: $danger-gradient;
     border-color: rgba(0, 0, 0, 0);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: var(--danger--under-darker-14pp);
+      background-color: darken($red, 14%);
     }
   }
 
@@ -154,19 +154,19 @@ input.btn {
 
   &.disabled,
   &[type="submit"]:disabled {
-    color: opaque-white(0.5);
-    background-color: opaque-white(0.15);
+    color: rgba($white, 0.5);
+    background-color: rgba($white, 0.15);
 
     &.btn-primary {
-      color: opaque-white(0.5);
+      color: rgba($white, 0.5);
       background-image: none;
-      background-color: opaque-white(0.15);
+      background-color: rgba($white, 0.15);
     }
   }
 }
 
 .input-error {
-  color: var(--danger--under);
+  color: red;
 }
 
 button.btn {
@@ -180,9 +180,9 @@ button.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: $primary--over;
+  background-color: $primaryColor;
   transition: all 400ms $transition-function;
-  color: $content--under;
+  color: $black;
   transform: translateY(0);
 
   &:hover:enabled {
@@ -208,7 +208,7 @@ button.btn {
   &.btn-primary {
     // Background image has to be set to 'none' because by default the Button has gradient image
     background-image: none;
-    background-color: $accent--under;
+    background-color: $primary;
 
     &:hover {
       background-image: none;
@@ -218,7 +218,7 @@ button.btn {
 
   &.btn-secondary {
     // Background image has to be set to 'none' because by default the Button has gradient image
-    background-color: var(--greyscale-lighter-10pp);
+    background-color: $secondary--light;
 
     &:hover {
       background-image: none;
@@ -227,7 +227,7 @@ button.btn {
   }
 
   &.disabled {
-    color: opaque-white(0.2);
+    color: rgba($white, 0.2);
     background-image: linear-gradient(
       0deg,
       rgba(0, 0, 0, 0.2) 0%,
@@ -243,7 +243,7 @@ textarea {
   -webkit-appearance: none;
   border: none;
   outline: none;
-  background-color: opaque-white(0.12);
+  background-color: rgba($white, 0.12);
   width: 100%;
   position: relative;
   cursor: pointer;
@@ -251,7 +251,7 @@ textarea {
   padding: 12px;
   border-radius: 22px;
   text-align: center;
-  color: $content--over;
+  color: $white;
 
   &:-webkit-autofill,
   &:-webkit-autofill:hover,
@@ -261,11 +261,11 @@ textarea {
   }
 
   &:hover {
-    background-color: opaque-white(0.16);
+    background-color: rgba($white, 0.16);
   }
 
   &:focus {
-    box-shadow: 0 0 0 2px opaque-white(1);
+    box-shadow: 0 0 0 2px rgba($white, 1);
   }
 
   &[type="checkbox"]:focus {
@@ -330,7 +330,7 @@ textarea {
 
   .input-error {
     text-align: center;
-    color: var(--danger--under);
+    color: #e30b0b;
     font-size: 0.9em;
     font-weight: bold;
   }
@@ -353,14 +353,14 @@ textarea {
   cursor: pointer;
   border-radius: 10px;
   padding: $spacer * 0.25 $spacer * 0.75;
-  background: $content--under;
-  color: $content--over;
+  background: $black;
+  color: $white;
 
   &.positioned {
     position: absolute;
     opacity: 0.5;
-    background: $content--over;
-    color: $content--under;
+    background: $white;
+    color: $black;
   }
 
   .icon {
@@ -376,11 +376,11 @@ textarea {
 
 a,
 .button--a {
-  color: $content--over;
+  color: $white;
   text-decoration: underline;
 
   &:hover {
-    color: $primary--over;
+    color: $primaryColor;
   }
 }
 
@@ -409,11 +409,11 @@ h4 {
 }
 
 .primary {
-  color: $primary--over;
+  color: $primaryColor;
 }
 
 .modal-backdrop {
-  background: $secondary--live;
+  background: $dark;
 
   &.show {
     opacity: 0.8;
@@ -431,7 +431,7 @@ h4 {
 .modal-content {
   border: none;
   border-radius: 22px;
-  background: $content--under;
+  background: $black;
   box-shadow: box-shadow--large(0.34);
 }
 
@@ -463,7 +463,7 @@ h4 {
   }
 
   .table-container {
-    background: $secondary--live;
+    background: $dark;
     border-radius: 0 0 22px 22px;
     transition: all 0.1s linear;
     padding: 0;
@@ -508,21 +508,14 @@ h4 {
 
   .youtube-video {
     transition: all 0.1s linear;
-    background-color: $secondary--live;
-    color: $content--over;
+    background-color: $dark;
+    color: $white;
   }
-}
-
-.participant--video-disabled {
-  position: absolute;
-  background-color: $light-grey;
-  width: 100%;
-  height: 100%;
 }
 
 .full-page-container,
 .friendship-container,
-.conversation-space {
+.conversation-space-container {
   .content {
     .wrapper {
       display: grid;
@@ -536,7 +529,6 @@ h4 {
   }
 
   .participant {
-    position: relative;
     display: flex;
     height: 100%;
     padding: 0;
@@ -559,10 +551,12 @@ h4 {
       bottom: 10px;
       left: 0;
       right: 0;
+      text-align: center;
+      display: flex;
+      justify-content: center;
     }
 
     .mute-other-container {
-      cursor: pointer;
       position: absolute;
       top: 10px;
       right: 10px;
@@ -590,7 +584,7 @@ h4 {
     .participant {
       display: flex;
       flex-grow: 1;
-      background: $content--under;
+      background: $black;
 
       .mirrored {
         transform: scale(-1, 1);
@@ -626,12 +620,12 @@ h4 {
   height: calc(100vh - 220px);
 
   .modal-body {
-    background: $secondary--live;
+    background: $dark;
     border-radius: 22px;
   }
 
   .chatbox-container {
-    border: 2px solid $content--under;
+    border: 2px solid $black;
   }
 }
 
@@ -645,7 +639,7 @@ input.btn.btn-primary.btn-success {
 }
 
 .popover {
-  background: $secondary--live;
+  background: $dark;
   border-radius: 22px;
   overflow-y: auto;
   height: calc(100vh - 120px);
@@ -654,47 +648,47 @@ input.btn.btn-primary.btn-success {
 .bs-popover-bottom-end {
   width: 300px;
   max-width: 99%;
-  background: $content--under;
+  background: $black;
   border: 1px solid $light-grey;
   background-image: linear-gradient(
     0deg,
-    opaque-white(0.05) 0%,
-    opaque-white(0.05) 100%
+    rgba($white, 0.05) 0%,
+    rgba($white, 0.05) 100%
   );
 
   .chatbox-container {
-    background: $content--under;
+    background: $black;
     background-image: linear-gradient(
       0deg,
-      opaque-white(0.05) 0%,
-      opaque-white(0.05) 100%
+      rgba($white, 0.05) 0%,
+      rgba($white, 0.05) 100%
     );
 
     .bubble {
       padding: 10px;
       border-radius: 10px;
-      color: $content--over;
+      color: $white;
 
       &.global {
-        background: $secondary--live;
+        background: $dark;
       }
 
       &.private {
-        background: $secondary--live;
+        background: $dark;
       }
 
       &.room {
-        background: $secondary--live;
+        background: $dark;
       }
     }
   }
 
   .chat-input {
-    background: $secondary--live;
+    background: $dark;
     margin-bottom: 10px;
 
     &:hover {
-      background: rgba($secondary--live, 0.7);
+      background: rgba($dark, 0.7);
     }
   }
 }
@@ -711,7 +705,7 @@ span.link {
   text-decoration: underline;
 
   &:hover {
-    color: $primary--over;
+    color: $primaryColor;
   }
 }
 
@@ -838,7 +832,7 @@ span.link {
 }
 
 .host-icon-container {
-  background: $content--under;
+  background: $black;
   padding: 10px;
   width: 200px;
   height: 200px;

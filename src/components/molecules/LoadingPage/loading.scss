@@ -1,5 +1,19 @@
 @import "scss/constants";
 
+$side-padding: 30px;
+$primary: $primary--live;
+$black: #000000;
+$white: #fff;
+
+$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+
+$dark: #1a1d24;
+$border-radius: 28px;
+$large-shadow: box-shadow--large(0.34);
+$login-max-width: 540px;
+$modal-max-width: 540px;
+$page-max-width: 1240px;
+
 body {
   &.no-scroll {
     overflow: hidden;
@@ -12,7 +26,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: $accent--under;
+  background-color: $primary;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -57,7 +71,7 @@ body {
 
     -webkit-mask-box-image: url(./img/burningman-logo-2.png);
     mask-box-image: url(./img/burningman-logo-2.png);
-    background-color: opaque-white(0.2);
+    background-color: rgba($white, 0.2);
     animation: sparkleanim 4s cubic-bezier(0.77, 0, 0.175, 1) infinite;
 
     .burningman-loading-anim {
@@ -66,7 +80,7 @@ body {
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: $content--over;
+      background-color: $white;
       opacity: 1;
       height: 0;
       animation: loadingburningman 2s cubic-bezier(0.77, 0, 0.175, 1) infinite;

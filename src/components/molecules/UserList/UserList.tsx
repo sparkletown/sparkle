@@ -9,6 +9,7 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useShowHide } from "hooks/useShowHide";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -17,26 +18,40 @@ import "./UserList.scss";
 const noop = () => {};
 
 interface UserListProps extends ContainerClassName {
-  usersSample: readonly WithId<User>[];
-  userCount: number;
+  users: readonly WithId<User>[];
+  limit?: number;
   activity?: string;
   cellClassName?: string;
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
+  showMoreUsersToggler?: boolean;
   showTitle?: boolean;
 }
 
 export const UserList: React.FC<UserListProps> = ({
-  usersSample,
-  userCount,
+  users,
+  limit,
   activity = "partying",
   containerClassName,
   cellClassName,
   hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
+  showMoreUsersToggler = true,
   showTitle = true,
 }) => {
-  const hasExcessiveUserCount = userCount > usersSample.length;
+  const { isShown: isExpanded, toggle: toggleExpanded } = useShowHide(false);
+
+  const usersSanitized = users.filter(
+    (user) => !user.anonMode && user.partyName && user.id
+  );
+
+  const usersToDisplay = isExpanded
+    ? usersSanitized
+    : usersSanitized?.slice(0, limit);
+
+  const userCount = usersSanitized.length;
+
+  const hasExcessiveUserCount = limit !== undefined && userCount > limit;
 
   const label = `${userCount} ${
     userCount === 1 ? "person" : "people"
@@ -49,18 +64,18 @@ export const UserList: React.FC<UserListProps> = ({
 
   const renderedUserAvatars = useMemo(
     () =>
-      usersSample.map((user) => (
+      usersToDisplay.map((user) => (
         <div key={user.id} className={cellClasses}>
           <UserAvatar
             user={user}
             containerClassName="UserList__avatar"
             onClick={
-              hasClickableAvatars ? () => openUserProfileModal(user.id) : noop
+              hasClickableAvatars ? () => openUserProfileModal(user) : noop
             }
           />
         </div>
       )),
-    [usersSample, cellClasses, hasClickableAvatars, openUserProfileModal]
+    [usersToDisplay, cellClasses, hasClickableAvatars, openUserProfileModal]
   );
 
   if (!showEvenWhenNoUsers && userCount < 1) return null;
@@ -68,7 +83,13 @@ export const UserList: React.FC<UserListProps> = ({
   return (
     <div className={containerClasses}>
       <div className="UserList__label">
-        {showTitle && <p className="UserList__label-text">{label}</p>}
+        {showTitle && <p>{label}</p>}
+
+        {showMoreUsersToggler && hasExcessiveUserCount && (
+          <p className="UserList__toggler-text" onClick={toggleExpanded}>
+            See {isExpanded ? "less" : "all"}
+          </p>
+        )}
       </div>
 
       <div className="UserList__avatars">

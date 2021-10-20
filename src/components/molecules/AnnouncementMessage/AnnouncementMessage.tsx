@@ -1,108 +1,59 @@
-import React, { useEffect } from "react";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import React, { useCallback, useEffect, useState } from "react";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { isDefined } from "utils/types";
-
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useShowHide } from "hooks/useShowHide";
-import { useVenueId } from "hooks/useVenueId";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { LinkButton } from "components/atoms/LinkButton";
-
 import "./AnnouncementMessage.scss";
 
-export interface AnnouncementMessageProps {
-  isAnnouncementUserView?: boolean;
-}
+type AnnouncementMessageProps = {
+  message?: string;
+};
 
 export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
-  isAnnouncementUserView = false,
+  message = "",
 }) => {
-  const {
-    isShown: isAnnouncementMessageShown,
-    show: showAnnouncementMessage,
-    hide: hideAnnouncementMessage,
-  } = useShowHide();
+  const [isVisible, setVisibility] = useState<boolean>(false);
+  const { isExpanded } = useChatSidebarControls();
 
-  const venueId = useVenueId();
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-
-  const { banner } = venue ?? {};
+  const hideAnnouncement = useCallback(() => {
+    setVisibility(false);
+  }, []);
 
   useEffect(() => {
-    if (isDefined(banner?.content)) {
-      showAnnouncementMessage();
+    if (message) {
+      setVisibility(true);
     }
-  }, [banner, showAnnouncementMessage]);
+  }, [message]);
 
-  const isWithButton = banner?.buttonDisplayText && banner?.isActionButton;
-
-  const isAnnouncementCloseable = !banner?.isForceFunnel;
-
-  const containerClasses = classNames("AnnouncementMessage__container", {
-    "AnnouncementMessage__container--centered": banner?.isFullScreen,
-    "AnnouncementMessage__container--admin": !isAnnouncementUserView,
-    "AnnouncementMessage__container--withButton": isWithButton,
-  });
-
-  const announcementMessageClasses = classNames("AnnouncementMessage", {
-    AnnouncementMessage__fullscreen: banner?.isFullScreen,
-    AnnouncementMessage__admin: !isAnnouncementUserView,
-    "AnnouncementMessage__fullscreen--admin":
-      banner?.isFullScreen && !isAnnouncementUserView,
-  });
-
-  const actionButtonClasses = classNames("AnnouncementMessage__action-button", {
-    "AnnouncementMessage__action-button-admin": !isAnnouncementUserView,
-  });
-
-  const handleBannerModalClose = () => {
-    if (banner?.isForceFunnel) return;
-    hideAnnouncementMessage();
-  };
-
-  if (!isAnnouncementUserView && !banner?.content)
-    return (
-      <div className={announcementMessageClasses}>
-        <span className="AnnouncementMessage__default-text">
-          No announcement
-        </span>
-      </div>
-    );
-
-  if (!banner?.content || !isAnnouncementMessageShown) return null;
+  if (!isVisible || !message) return null;
 
   return (
-    <>
-      <div className={containerClasses} onClick={handleBannerModalClose}>
-        <div className={announcementMessageClasses}>
-          <div className="AnnouncementMessage__content">
-            <RenderMarkdown text={banner.content} />
-          </div>
-
-          {isWithButton && banner.buttonUrl && (
-            <LinkButton
-              href={banner.buttonUrl}
-              className={actionButtonClasses}
-              onClick={hideAnnouncementMessage}
-            >
-              {banner.buttonDisplayText}
-            </LinkButton>
-          )}
-
-          {isAnnouncementCloseable && (
-            <FontAwesomeIcon
-              className="AnnouncementMessage__close-button"
-              icon={faTimes}
-              onClick={handleBannerModalClose}
-            />
-          )}
-        </div>
+    <div
+      aria-labelledby="announcement-container-message"
+      role="dialog"
+      className={classNames("announcement-container", {
+        centered: !isExpanded,
+      })}
+    >
+      <div className="announcement-message" id="announcement-container-message">
+        <RenderMarkdown text={message} />
       </div>
-    </>
+      <button
+        aria-label="Close announcement message"
+        className="close-button"
+        onClick={hideAnnouncement}
+      >
+        <FontAwesomeIcon icon={faTimesCircle} />
+      </button>
+    </div>
   );
 };
+
+/**
+ * @deprecated use named export instead
+ */
+export default AnnouncementMessage;

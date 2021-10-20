@@ -8,14 +8,6 @@ import { adminNGSettingsUrl } from "utils/url";
 
 import MapPreview from "pages/Admin/MapPreview";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import {
-  AdminSidebarFooter,
-  AdminSidebarFooterProps,
-} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
@@ -26,14 +18,11 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabView.scss";
 
-export interface RunTabViewProps extends AdminSidebarFooterProps {
+export interface RunTabViewProps {
   venue?: WithId<AnyVenue>;
 }
 
-export const RunTabView: React.FC<RunTabViewProps> = ({
-  venue,
-  ...sidebarFooterProps
-}) => {
+export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   if (!venue) {
     return <LoadingPage />;
   }
@@ -41,34 +30,26 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
   const venueId = venue.id;
 
   return (
-    <AdminPanel className="RunTabView">
-      <AdminSidebar>
-        <AdminSidebarTitle>Run your space</AdminSidebarTitle>
-        <AdminSidebarFooter {...sidebarFooterProps} />
-        <div className="RunTabView__content">
-          <ButtonNG
-            isLink
-            className="RunTabView__advanced"
-            linkTo={adminNGSettingsUrl(venueId)}
-            iconName={faCog}
-          >
-            Advanced Settings
-          </ButtonNG>
-          <RunTabUsers venueId={venueId} />
-        </div>
-      </AdminSidebar>
-      <AdminShowcase className="RunTabView__main">
+    <div className="RunTabView">
+      <div className="RunTabView__sidebar">
+        <div className="RunTabView__title">Run your space</div>
+        <ButtonNG
+          isLink
+          className="RunTabView__advanced"
+          linkTo={adminNGSettingsUrl(venueId)}
+          iconName={faCog}
+        >
+          Advanced Settings
+        </ButtonNG>
+        <RunTabUsers venueId={venueId} />
+      </div>
+      <div className="RunTabView__main">
         <div className="RunTabView__toolbar RunTabView--spacing">
-          <RunTabToolbar
-            venueId={venueId}
-            venueName={venue.name}
-            announcement={venue.banner}
-          />
+          <RunTabToolbar venueId={venueId} />
         </div>
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
             isEditing
-            worldId={venue.worldId}
             venueId={venue.id}
             venueName={venue.name}
             mapBackground={venue.mapBackgroundImageUrl}
@@ -78,7 +59,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
         <div className="RunTabView__cards RunTabView--spacing">
           <RunTabRooms venue={venue} />
         </div>
-      </AdminShowcase>
-    </AdminPanel>
+      </div>
+    </div>
   );
 };

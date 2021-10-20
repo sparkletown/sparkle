@@ -51,7 +51,7 @@
   .quotation-container {
     display: flex;
     flex-direction: column;
-    color: $content--over;
+    color: $white;
     align-items: center;
     margin-bottom: 10px;
 
@@ -72,16 +72,16 @@
     width: 40%;
     margin: auto;
     background: $light-green;
-    color: $content--under;
+    color: $black;
 
     .toast-header {
       background: $dark-green;
-      color: $content--under;
+      color: $black;
       display: flex;
       justify-content: space-between;
 
       button {
-        color: $content--under;
+        color: $black;
         opacity: 0.7;
         margin: 0;
         outline: none;
@@ -111,7 +111,7 @@
     object-fit: cover;
 
     .secret-password-form-wrapper {
-      background: opaque-black(0.75);
+      background: rgba($black, 0.75);
       padding: 20px;
       width: 250px;
       margin-right: 40px;
@@ -147,7 +147,7 @@
 
     .check-icon-container {
       margin-right: 10px;
-      color: $primary--over;
+      color: $primaryColor;
       font-size: 25px;
     }
 
@@ -178,7 +178,7 @@
   }
   .date {
     font-size: 15px;
-    color: $content--over;
+    color: $white;
     margin-bottom: 5px;
   }
   .event-description {
@@ -192,7 +192,7 @@
     align-items: center;
   }
   .disabled {
-    background: rgba($secondary--live, 0.6);
+    background: rgba($dark, 0.6);
   }
   .information-card-container {
     margin-bottom: 20px;

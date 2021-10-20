@@ -1,11 +1,11 @@
 // TODO: this wasn't scoped specifically to AvatarGrid, so might be used by something else in the platform accidentally
 //$primary: #d0021b;
 //$secondary: #69000d;
-//$content--over: #ffffff;
+//$white: #ffffff;
 //
 //.room-container {
 //  padding: 20px;
-//  background-color: $secondary--dark;
+//  background-color: #19181a;
 //  background-repeat: no-repeat;
 //  background-size: cover;
 //}
@@ -36,11 +36,11 @@
 //}
 //
 //.room-entry-button {
-//  background-color: $accent--under;
+//  background-color: $primary;
 //}
 //
 //.live {
-//  color: $accent--under;
+//  color: $primary;
 //}
 //
 //.profile-avatar {
@@ -68,23 +68,23 @@
 //  }
 //
 //  &.btn-active {
-//    background-color: $accent--under;
-//    color: $content--over;
+//    background-color: $primary;
+//    color: $white;
 //    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 //
 //    &:hover {
-//      color: $content--over;
-//      background-color: var(--accent--under-darker-5pp);
+//      color: $white;
+//      background-color: darken($primary, 5%);
 //    }
 //  }
 //
 //  &.btn-live {
 //    background-color: $secondary;
-//    color: $content--over;
+//    color: $white;
 //    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 //
 //    &:hover {
-//      color: $content--over;
+//      color: $white;
 //      background-color: darken($secondary, 5%);
 //    }
 //  }

@@ -7,9 +7,14 @@ $user-list-cell-size: 30px;
     display: flex;
     flex-direction: column;
     align-items: center;
+  }
 
-    &-text {
-      z-index: z(user-list-label);
+  &__toggler-text {
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      color: $primaryColor;
     }
   }
 
@@ -41,7 +46,7 @@ $user-list-cell-size: 30px;
   }
 
   &__dots-icon {
-    color: var(--greyscale-lighter-10pp);
+    color: $secondary--light;
     width: 100%;
     height: 100%;
   }

@@ -37,7 +37,8 @@ export const ProfileModalBasicInfo: React.FC<ProfileModalBasicInfoProps> = ({
           <ProfileModalRoundIcon
             containerClassName="ProfileModalBasicInfo--section"
             onClick={onEdit}
-            iconName={faPen}
+            icon={faPen}
+            size="sm"
           />
         )}
       </div>

@@ -58,6 +58,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const { enterRoom } = useRoom({
     room: eventRoom,
+    venueName: eventVenue?.name ?? "",
   });
 
   const eventLocationToDisplay =

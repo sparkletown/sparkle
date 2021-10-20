@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 export const useShowHide = (isShownByDefault: boolean = false) => {
   const [isShown, setShown] = useState<boolean>(isShownByDefault);
@@ -15,15 +15,12 @@ export const useShowHide = (isShownByDefault: boolean = false) => {
     setShown((prev) => !prev);
   }, []);
 
-  return useMemo(
-    () => ({
-      isShown,
+  return {
+    isShown,
 
-      show,
-      hide,
-      toggle,
-      setShown,
-    }),
-    [hide, isShown, show, toggle]
-  );
+    show,
+    hide,
+    toggle,
+    setShown,
+  };
 };

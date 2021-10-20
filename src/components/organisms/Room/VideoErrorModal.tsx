@@ -21,7 +21,7 @@ const errorMessages: { [key: string]: string } = {
     "There was a problem with the camera, please try again.",
 };
 
-export const VideoErrorModal: FC<PropsType> = ({
+const VideoErrorModal: FC<PropsType> = ({
   show,
   errorMessage,
   onHide,
@@ -48,3 +48,5 @@ export const VideoErrorModal: FC<PropsType> = ({
     </Modal>
   );
 };
+
+export default VideoErrorModal;

@@ -93,8 +93,8 @@ $poster-cell-optimal-height: 195px;
   }
 
   &__control--stop {
-    background-color: var(--danger--under);
-    color: $accent--over;
+    background-color: $red;
+    color: $white;
     opacity: 0.8;
   }
 
@@ -119,16 +119,16 @@ $poster-cell-optimal-height: 195px;
     justify-content: center;
     align-items: center;
 
-    color: $content--over;
+    color: $white;
     font-size: $font-size--xxl;
 
     cursor: pointer;
 
-    border: dashed $secondary--live thin;
+    border: dashed $dark-grey thin;
     border-radius: $border-radius--md;
 
     &:hover {
-      background-color: $secondary--live;
+      background-color: $dark;
     }
   }
 

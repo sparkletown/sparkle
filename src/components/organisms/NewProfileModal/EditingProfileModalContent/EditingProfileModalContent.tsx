@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
+import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 import { useAsyncFn } from "react-use";
 import { pick, uniq } from "lodash";
@@ -18,7 +18,6 @@ import { propName, userProfileModalFormProp as formProp } from "utils/propName";
 import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 import { useProfileQuestions } from "hooks/useProfileQuestions";
-import { useShowHide } from "hooks/useShowHide";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -34,12 +33,16 @@ export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
+  handleSubmitWrapper: (
+    handler: OnSubmit<UserProfileModalFormData>
+  ) => OnSubmit<UserProfileModalFormData>;
 }
 
 export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
-  user,
   venue,
+  user,
   onCancelEditing,
+  handleSubmitWrapper,
 }) => {
   const { questions, answers } = useProfileQuestions(user, venue.id);
   const firebaseUser = useFirebase().auth()?.currentUser;
@@ -51,11 +54,6 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   const checkOldPassword = useCheckOldPassword();
-
-  const {
-    isShown: isChangePasswordShown,
-    show: showChangePassword,
-  } = useShowHide();
 
   const {
     register,
@@ -106,7 +104,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     [setValue]
   );
 
-  const [{ loading: isSubmitting }, onSubmit] = useAsyncFn(
+  const [submitState, onSubmit] = useAsyncFn(
     async (data: UserProfileModalFormData) => {
       if (!firebaseUser) return;
 
@@ -145,8 +143,8 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       onCancelEditing();
     },
     [
-      firebaseUser,
       formState.dirtyFields,
+      firebaseUser,
       onCancelEditing,
       checkOldPassword,
       setError,
@@ -155,8 +153,9 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(handleSubmitWrapper(onSubmit))}>
       <ProfileModalEditBasicInfo
+        venueId={venue.id}
         user={user}
         containerClassName="EditingProfileModalContent__section"
         register={register}
@@ -181,22 +180,18 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         onDeleteLink={removeLink}
         onAddLink={addLinkHandler}
       />
-      {isChangePasswordShown && (
-        <ProfileModalChangePassword
-          containerClassName="EditingProfileModalContent__section"
-          register={register}
-          getValues={getValues}
-          errors={pick<
-            FieldErrors<UserProfileModalFormData>,
-            "oldPassword" | "newPassword" | "confirmNewPassword"
-          >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
-        />
-      )}
+      <ProfileModalChangePassword
+        containerClassName="EditingProfileModalContent__section"
+        register={register}
+        getValues={getValues}
+        errors={pick<
+          FieldErrors<UserProfileModalFormData>,
+          "oldPassword" | "newPassword" | "confirmNewPassword"
+        >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
+      />
       <EditProfileModalButtons
-        isChangePasswordShown={!isChangePasswordShown}
-        onChangePasswordClick={showChangePassword}
         onCancelClick={cancelEditing}
-        isSubmitting={isSubmitting}
+        isSubmitting={submitState.loading}
         containerClassName="EditingProfileModalContent__edit-buttons"
       />
     </form>

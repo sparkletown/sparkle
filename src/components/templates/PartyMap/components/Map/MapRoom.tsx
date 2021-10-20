@@ -10,12 +10,13 @@ import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { RoomAttendance } from "../RoomAttendance";
 
 import "./MapRoom.scss";
+
+const noop = () => {};
 
 export interface MapRoomProps {
   venue: PartyMapVenue;
@@ -28,34 +29,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { portalVenueId } = useRoom({ room });
+  const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
+  const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
-  const { findVenueInRelatedVenues } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-  const portalVenue = findVenueInRelatedVenues(portalVenueId);
-
-  const hasRecentRoomUsers =
-    portalVenue?.recentUserCount && portalVenue?.recentUserCount > 0;
-
-  const isUnclickable =
-    room.visibility === RoomVisibility.unclickable ||
-    room.type === RoomType.unclickable;
+  const isUnclickable = room.type === RoomType.unclickable;
   const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
-  const isLabelHidden =
-    (room.visibility === RoomVisibility.none ||
-      room.visibility === RoomVisibility.unclickable) ??
-    false;
+  const isLabelHidden = room.isLabelHidden ?? false;
   const shouldShowLabel = !isCovertRoom && !isLabelHidden;
-  const shouldBeClickable = !isCovertRoom && !isUnclickable;
-
-  const roomLabelConditions =
-    room.visibility === RoomVisibility.nameCount ||
-    (room.visibility === RoomVisibility.count && hasRecentRoomUsers);
-  const venueLabelConditions =
-    venue.roomVisibility === RoomVisibility.nameCount ||
-    (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers);
 
   const dispatch = useDispatch();
 
@@ -74,14 +55,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     "maproom--unclickable": isUnclickable,
     "maproom--iframe": isMapFrame,
     "maproom--always-show-label":
-      shouldShowLabel && (roomLabelConditions || venueLabelConditions),
+      shouldShowLabel &&
+      (venue.roomVisibility === RoomVisibility.nameCount ||
+        (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
 
   const titleClasses = classNames("maproom__title", {
     "maproom__title--count":
-      !isCovertRoom &&
-      (room.visibility === RoomVisibility.count ||
-        venue.roomVisibility === RoomVisibility.count),
+      !isCovertRoom && venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomInlineStyles = useMemo(
@@ -115,9 +96,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <button
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={shouldBeClickable ? selectRoomWithSound : undefined}
-      onMouseEnter={shouldBeClickable ? handleRoomHovered : undefined}
-      onMouseLeave={shouldBeClickable ? handleRoomUnhovered : undefined}
+      onClick={isCovertRoom ? noop : selectRoomWithSound}
+      onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
+      onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
     >
       {isMapFrame ? (
         <iframe
@@ -134,7 +115,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
-          <RoomAttendance room={room} />
+          <RoomAttendance venue={venue} room={room} />
         </div>
       )}
     </button>

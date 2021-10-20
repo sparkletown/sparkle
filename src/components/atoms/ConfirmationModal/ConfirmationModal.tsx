@@ -1,10 +1,7 @@
-import React, { useCallback, useState } from "react";
-import { Modal } from "react-bootstrap";
+import React, { FC, useCallback, useState } from "react";
+import { Button, Modal } from "react-bootstrap";
 
 import { isTruthy } from "utils/types";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
-import { ButtonVariant } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./ConfirmationModal.scss";
 
@@ -12,24 +9,16 @@ interface ConfirmationModalProps {
   show?: boolean;
   header?: string;
   message: string;
-  confirmVariant?: ButtonVariant;
-  cancelBtnLabel?: string;
-  saveBtnLabel?: string;
   onConfirm: () => void;
   onCancel?: () => void;
-  isCentered?: boolean;
 }
 
-export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   show,
   header,
   message,
   onConfirm,
   onCancel,
-  cancelBtnLabel = "No",
-  saveBtnLabel = "Yes",
-  isCentered = false,
-  confirmVariant = "primary",
 }) => {
   const [isVisible, setIsVisible] = useState(true);
 
@@ -52,21 +41,18 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const isShown = show !== undefined ? show : isVisible;
 
   return (
-    <Modal
-      className="ConfirmationModal"
-      show={isShown}
-      onHide={hide}
-      centered={isCentered}
-    >
+    <Modal show={isShown} onHide={hide}>
       <Modal.Body>
-        <div>
-          {hasHeader && <h4>{header}</h4>}
-          <div className="ConfirmationModal__message">{message}</div>
-          <div className="ConfirmationModal__buttons">
-            <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
-            <ButtonNG variant={confirmVariant} onClick={confirm}>
-              {saveBtnLabel}
-            </ButtonNG>
+        <div className="confirmation-modal">
+          {hasHeader && <h2 className="confirm-header">{header}</h2>}
+          <div className="confirm-message">{message}</div>
+          <div className="confirmation-buttons">
+            <Button className="cancel-button" onClick={cancel}>
+              No
+            </Button>
+            <Button className="confirm-button" onClick={confirm}>
+              Yes
+            </Button>
           </div>
         </div>
       </Modal.Body>

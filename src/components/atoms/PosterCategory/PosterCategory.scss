@@ -3,7 +3,7 @@
 .PosterCategory {
   display: flex;
   font-size: $font-size--xxs;
-  color: $content--over;
+  color: $white;
   padding: $spacing--xs $spacing--sm;
   margin: $spacing--xs;
   border-radius: $border-radius--lg;
@@ -11,6 +11,6 @@
   font-weight: $font-weight--500;
 
   &--active {
-    background-color: $accent--under;
+    background-color: $primary;
   }
 }

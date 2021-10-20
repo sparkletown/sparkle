@@ -18,7 +18,7 @@
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: $content--under;
+    background-color: $black;
   }
 
   &__avatar {
@@ -31,7 +31,7 @@
   }
 
   &:hover {
-    background-color: opaque-white(0.1);
+    background-color: rgba($white, 0.1);
   }
 
   &:last-child {

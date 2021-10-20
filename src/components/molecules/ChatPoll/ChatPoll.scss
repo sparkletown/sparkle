@@ -9,10 +9,10 @@ button.ChatPoll__question {
   display: block;
   margin-bottom: $spacing--lg;
   width: 100%;
-  background-color: var(--greyscale-lighter-10pp);
+  background-color: $secondary--light;
 
   &:hover {
-    background-color: var(--greyscale-lighter-20pp);
+    background-color: $secondary--lightest;
   }
 }
 .ChatPoll {
@@ -54,7 +54,7 @@ button.ChatPoll__question {
 
     .ChatPoll {
       &__bulb {
-        background-color: $accent--under;
+        background-color: $primary;
         border-radius: $poll-text-border-radius-me;
       }
 
@@ -81,7 +81,7 @@ button.ChatPoll__question {
     &-background {
       position: absolute;
       z-index: z(chat-poll-text-background);
-      background-color: $secondary--live;
+      background-color: $dark-grey;
       border-radius: $border-radius--xl;
       top: 0;
       left: 0;

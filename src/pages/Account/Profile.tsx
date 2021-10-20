@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
+import { IS_BURN } from "secrets";
+
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { useUser } from "hooks/useUser";
@@ -10,8 +12,6 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "firebase/storage";
 
@@ -64,7 +64,7 @@ export const Profile: React.FC = () => {
         ? `/account/questions?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
-      history.push(nextUrl);
+      history.push(IS_BURN ? `/enter/step3` : nextUrl);
     },
     [history, returnUrl, user, venueId]
   );
@@ -117,14 +117,13 @@ export const Profile: React.FC = () => {
           </div>
 
           <div className="input-group">
-            <ButtonNG
+            <button
               type="submit"
-              className="create-account__button"
-              variant="primary"
+              className="btn btn-primary btn-block btn-centered"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile
-            </ButtonNG>
+            </button>
             {isUpdating && <Loading />}
             {httpError && (
               <span className="input-error">{httpError.message}</span>

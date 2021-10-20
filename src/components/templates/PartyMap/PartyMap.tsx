@@ -12,7 +12,10 @@ import {
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import { Map, RoomModal } from "./components";
 
@@ -24,8 +27,9 @@ export interface PartyMapProps {
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
-  const { relatedVenues } = useRelatedVenues();
+  const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 
   const selfAndChildVenueIds = useMemo(
     () =>
@@ -71,7 +75,14 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   return (
     <div className="party-venue-container">
-      <Map user={user} venue={venue} selectRoom={selectRoom} />
+      <Map
+        user={user}
+        profileData={profile.data}
+        venue={venue}
+        partygoers={recentVenueUsers}
+        selectRoom={selectRoom}
+        unselectRoom={unselectRoom}
+      />
 
       <RoomModal
         room={selectedRoom}
@@ -80,6 +91,12 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />
+
+      {venue.config?.showRangers && (
+        <div className="sparkle-fairies">
+          <SparkleFairiesPopUp />
+        </div>
+      )}
     </div>
   );
 };

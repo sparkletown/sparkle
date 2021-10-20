@@ -1,16 +1,12 @@
 import React, { CSSProperties, useMemo } from "react";
-import { useCss } from "react-use";
-import classNames from "classnames";
 import { format } from "date-fns";
 
-import { DEFAULT_VENUE_BANNER_COLOR, IFRAME_ALLOW } from "settings";
+import { IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
-
-import { useValidImage } from "hooks/useCheckImage";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -27,7 +23,6 @@ const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.themecamp]: "Camp Info:",
   [VenueTemplate.artpiece]: "Art Piece Info:",
   [VenueTemplate.partymap]: "Party Map Info:",
-  [VenueTemplate.viewingwindow]: "Viewing Window Info:",
 };
 
 export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
@@ -37,7 +32,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   const templateSpecificListItems = useMemo(() => {
     switch (venue.template) {
       case VenueTemplate.artpiece:
-      case VenueTemplate.viewingwindow:
         return (
           <>
             <div>
@@ -55,7 +49,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               <iframe
                 className="iframe-preview"
                 title="art-piece-video"
-                src={convertToEmbeddableUrl({ url: venue.iframeUrl })}
+                src={ConvertToEmbeddableUrl(venue.iframeUrl)}
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
                 allowFullScreen
@@ -85,7 +79,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
             </span>
             <MapPreview
               isEditing
-              worldId={partyMapVenue.worldId}
               venueId={partyMapVenue.id}
               venueName={partyMapVenue.name}
               mapBackground={partyMapVenue.mapBackgroundImageUrl}
@@ -99,18 +92,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   }, [venue]);
 
   const venueTypeText = infoTextByVenue[venue.template] ?? "Experience Info:";
-
-  const [validBannerImageUrl] = useValidImage(
-    venue.config?.landingPageConfig.bannerImageUrl ??
-      venue.config?.landingPageConfig.coverImageUrl,
-    DEFAULT_VENUE_BANNER_COLOR
-  );
-
-  const imageVars = useCss({
-    background: `url("${validBannerImageUrl}")`,
-  });
-
-  const imageClasses = classNames("icon", imageVars);
 
   return (
     <div style={containerStyle}>
@@ -169,7 +150,14 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               Banner photo
             </div>
             <div className="content">
-              <div className={imageClasses} />
+              <img
+                className="icon"
+                src={
+                  venue.config?.landingPageConfig.bannerImageUrl ??
+                  venue.config?.landingPageConfig.coverImageUrl
+                }
+                alt="icon"
+              />
             </div>
           </div>
           {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}

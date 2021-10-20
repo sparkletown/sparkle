@@ -10,8 +10,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ROOM_TAXON } from "settings";
-
 import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room, RoomType } from "types/rooms";
@@ -20,7 +18,6 @@ import { VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 import { openRoomUrl } from "utils/url";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 import { useUser } from "hooks/useUser";
 
@@ -36,6 +33,7 @@ interface RoomCardProps {
   room: Room;
   index: number;
   venueId: string;
+  venueName: string;
   events?: WithVenueId<WithId<VenueEvent>>[];
 }
 
@@ -43,16 +41,12 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   room,
   index,
   venueId,
+  venueName,
   events,
 }) => {
   const { user } = useUser();
 
-  const { portalVenueId } = useRoom({ room });
-
-  const { findVenueInRelatedVenues } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
-  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+  const { recentRoomUsers } = useRoom({ room, venueName });
 
   const isRoomUnclickable = room.type === RoomType.unclickable;
 
@@ -90,7 +84,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({
         <Card.Title className="RoomCard__title">{room.title}</Card.Title>
         <div className="RoomCard__counter">
           <FontAwesomeIcon icon={faUserFriends} />
-          {portalVenue?.recentUserCount}
+          {recentRoomUsers.length}
         </div>
         <div className="RoomCard__type">{room.template}</div>
         <div className="RoomCard__link">
@@ -107,18 +101,14 @@ export const RoomCard: React.FC<RoomCardProps> = ({
             iconName={room.isEnabled ? faEye : faEyeSlash}
             disabled={isTogglingRoom}
             onClick={toggleRoom}
-            title={`click to ${room.isEnabled ? "hide" : "show"} ${
-              ROOM_TAXON.lower
-            }`}
+            title={`click to ${room.isEnabled ? "hide" : "show"} room`}
           />
           <ButtonNG
             iconOnly={true}
             iconName={isRoomUnclickable ? faBan : faHandPointer}
             disabled={isTogglingClickability}
             onClick={toggleRoomClickablility}
-            title={`make ${ROOM_TAXON.lower} ${
-              isRoomUnclickable ? "" : "un"
-            }clickable`}
+            title={`make room ${isRoomUnclickable ? "" : "un"}clickable`}
           />
         </div>
       </div>

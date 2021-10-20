@@ -1,18 +1,41 @@
 import React, { useState } from "react";
 
+import { IS_BURN } from "secrets";
+
 import { useInterval } from "hooks/useInterval";
 
 import "./loading.scss";
 
-const QUOTES = ["Loading..."];
-const QUOTE_INTERVAL = undefined;
+const quotes = IS_BURN
+  ? [
+      "Navigating dust storms...",
+      "Roadtripping across Nevada...",
+      "In a traffic jam in Gerlach...",
+      "Biking out to deep playa...",
+      "Fixing tyre punctures...",
+      "Reimagining the real...",
+      "Dodging cow pats in the paddock...",
+      "Fighting dropbears...",
+      "Herding koalas...",
+      "Learning the local lingo...",
+      "Becoming good friends with the NEEEEEIGHBOURS...",
+      "Throwing shrimp on the barbie...",
+      "Watering the speakers...",
+      "Massaging minds...",
+      "Laying out the croissants...",
+      "Adjusting microphone volumes...",
+    ]
+  : ["Loading..."];
 
 export const LoadingPage = () => {
   const [quote, setQuote] = useState("Loading...");
 
-  useInterval(() => {
-    setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
-  }, QUOTE_INTERVAL);
+  useInterval(
+    () => {
+      setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+    },
+    IS_BURN ? 1000 : undefined
+  );
 
   return (
     <div className="loading-screen">

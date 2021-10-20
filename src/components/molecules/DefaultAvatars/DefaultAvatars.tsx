@@ -7,32 +7,31 @@ import { DEFAULT_AVATARS } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import "firebase/storage";
 
 import "./DefaultAvatars.scss";
 
 export interface DefaultAvatarsProps extends ContainerClassName {
+  venueId: string;
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
   avatarClassName?: string;
-  avatarPictureClassName?: string;
 }
 
 export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
+  venueId,
   onAvatarClick,
   isLoadingExternal,
   avatarClassName,
-  avatarPictureClassName,
   containerClassName,
 }) => {
   const firebase = useFirebase();
 
-  const {
-    sovereignVenueId,
-    isLoading: isSovereignVenueLoading,
-  } = useRelatedVenues();
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
+    venueId,
+  });
 
   const {
     value: customAvatars,
@@ -72,20 +71,12 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
       >
         <img
           src={avatar}
-          className={classNames(
-            "DefaultAvatars__picture-preview profile-icon",
-            avatarPictureClassName
-          )}
+          className="DefaultAvatars__picture-preview profile-icon"
           alt={`default avatar ${index}`}
         />
       </button>
     ));
-  }, [
-    avatarClassName,
-    avatarPictureClassName,
-    defaultAvatars,
-    uploadDefaultAvatar,
-  ]);
+  }, [avatarClassName, defaultAvatars, uploadDefaultAvatar]);
 
   const isLoading =
     (isSovereignVenueLoading || isLoadingCustomAvatars) &&

@@ -11,8 +11,16 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ScheduleVenueDescription.scss";
 
-export const ScheduleVenueDescription: FC = () => {
-  const { sovereignVenue } = useRelatedVenues();
+export interface ScheduleVenueDescriptionProps {
+  venueId: string;
+}
+
+export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
+  venueId,
+}) => {
+  const { sovereignVenue } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
 
   const [venueIcon] = useValidImage(
     sovereignVenue?.host?.icon,

@@ -1,27 +1,61 @@
 @import "scss/constants.scss";
 
-$navbar-schedule-width: 40%;
-$navbar-schedule-padding: 20px;
+$NavBarSchedule--width: 40%;
+$NavBarSchedule--padding: 20px;
 
-$weekday-padding: 8px 10px;
-$weekday-margin-right: 10px;
+$weekday--padding: 8px 10px;
+$weekday--margin-right: 10px;
 
-$schedule-button-padding: 0.35em 1em;
+$schedule-btn--padding: 0.35em 1em;
 
-$schedule-button-height: 51px;
+$schedule-btn--height: 51px;
 
-$schedule-weekdays-height: 40px;
+.NavBarWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &__download-buttons {
+    position: fixed;
+    bottom: 0;
+    width: 40%;
+    z-index: z(navbar-schedule-download);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: opaque-black(0.9);
+    height: $schedule-btn--height;
+    padding-left: $NavBarSchedule--padding;
+  }
+
+  // @debt: overwrites default btn btn-primary styles
+  & .NavBarWrapper__download-schedule-btn {
+    cursor: pointer;
+    opacity: 0.8;
+
+    margin-right: $spacing--sm;
+
+    text-shadow: 0 2px 4px opaque-black(0.3);
+    box-shadow: 0 3px 6px opaque-black(0.2);
+    padding: $schedule-btn--padding;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}
 
 .NavBarSchedule {
   position: fixed;
   z-index: z(navbar-schedule);
   top: 0;
   left: 0;
-  height: calc(100% - #{$footer-height});
-  width: $navbar-schedule-width;
+  height: calc(100% - #{$schedule-btn--height});
+  width: $NavBarSchedule--width;
 
   padding-top: $navbar-height;
-  padding-left: $navbar-schedule-padding;
+  padding-left: $NavBarSchedule--padding;
 
   background-color: opaque-black(0.8);
   overflow: auto;
@@ -29,16 +63,9 @@ $schedule-weekdays-height: 40px;
   pointer-events: none;
   opacity: 0;
   backdrop-filter: blur(5px);
-  transform: translateX(-$navbar-schedule-width);
+  transform: translateX(-$NavBarSchedule--width);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
-
-  &__wrapper {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
 
   &--show {
     pointer-events: all;
@@ -46,37 +73,31 @@ $schedule-weekdays-height: 40px;
     transform: translateY(0);
   }
 
-  &__breadcrumbs {
-    margin: $spacing--sm 0;
-  }
-
   &__weekdays {
     display: flex;
     overflow: auto;
     cursor: default;
     background-color: opaque-black(1);
-    margin-left: -$navbar-schedule-padding;
-    flex: 0 0 $schedule-weekdays-height;
-  }
-
-  &__weekday-button {
-    border: none;
-    background: inherit;
-    color: $accent--over;
-
-    &:focus {
-      color: $content--over;
-      opacity: 1;
-      outline: none;
-    }
   }
 
   &__weekday {
     display: inline;
     cursor: pointer;
-    padding: $weekday-padding;
-    margin-right: $weekday-margin-right;
+    padding: $weekday--padding;
+    margin-right: $weekday--margin-right;
     opacity: 0.8;
+
+    &-button {
+      border: none;
+      background: inherit;
+      color: $white;
+
+      &:focus {
+        color: $white;
+        opacity: 1;
+        outline: none;
+      }
+    }
 
     &--active {
       opacity: 1;
@@ -103,30 +124,5 @@ $schedule-weekdays-height: 40px;
   &__bookmarked-toggle {
     justify-content: left;
     padding: $spacing--sm 0px;
-  }
-
-  &__download-buttons {
-    position: sticky;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    z-index: z(navbar-schedule-download);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    background-color: opaque-black(0.9);
-    height: $schedule-button-height;
-    padding-left: $navbar-schedule-padding;
-  }
-
-  &__download-schedule-button {
-    opacity: 0.8;
-    margin-right: $spacing--sm;
-    padding: $schedule-button-padding;
-
-    &:hover,
-    &:focus {
-      opacity: 1;
-    }
   }
 }

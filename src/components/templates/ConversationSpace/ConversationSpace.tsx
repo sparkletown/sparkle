@@ -1,20 +1,20 @@
 import React, { useCallback, useState } from "react";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
-import { GenericVenue, VenueTemplate } from "types/venues";
+import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
-import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import { Room } from "components/organisms/Room";
+import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
@@ -24,7 +24,6 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { TABLES } from "./constants";
 
@@ -41,17 +40,14 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     currentVenueId: venue?.id,
   });
 
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+
   const {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
   } = useShowHide();
 
-  const [seatedAtTable, setSeatedAtTable] = useState<string>();
-
-  useUpdateTableRecentSeatedUsers(
-    VenueTemplate.conversationspace,
-    seatedAtTable && venue?.id
-  );
+  const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
 
@@ -79,14 +75,23 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
           </div>
         </InformationCard>
       </InformationLeftColumn>
-      <VenueWithOverlay venue={venue} containerClassNames="conversation-space">
+      <div className="conversation-space-container">
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton
             onClick={backToParentVenue}
             locationName={parentVenue.name}
           />
         )}
-        <div className={`scrollable-area ${seatedAtTable && "at-table"}`}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 3,
+            flexBasis: 0,
+            overflow: "hidden",
+          }}
+          className={`scrollable-area ${seatedAtTable && "at-table"}`}
+        >
           {venue.description?.text && (
             <div className="row">
               <div className="col">
@@ -102,7 +107,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                 <TableHeader
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
-                  venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
                 />
@@ -110,9 +114,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               {seatedAtTable && (
                 <div className="participants-container">
                   <Room
-                    setSeatedAtTable={setSeatedAtTable}
-                    venueId={venue.id}
-                    roomName={`${venue.id}-${seatedAtTable}`}
+                    venueName={venue.name}
+                    roomName={`${venue.name}-${seatedAtTable}`}
+                    setUserList={() => {}}
                   />
                 </div>
               )}
@@ -129,7 +133,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
-              venueId={venue.id}
+              venueName={venue.name}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
@@ -137,12 +141,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             />
           </div>
           <UserList
-            usersSample={venue.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-            userCount={venue.recentUserCount ?? 0}
+            users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
+            limit={DEFAULT_USER_LIST_LIMIT}
+            showMoreUsersToggler
           />
         </div>
-      </VenueWithOverlay>
+      </div>
     </>
   );
 };

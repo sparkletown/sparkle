@@ -4,13 +4,17 @@ import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { PollMessage, PollQuestion } from "types/chat";
+import {
+  BaseMessageToDisplay,
+  DeleteMessage,
+  PollMessage,
+  PollQuestion,
+  PollVoteBase,
+} from "types/chat";
 
 import { WithId } from "utils/id";
 
-import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useUser } from "hooks/useUser";
-import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -22,18 +26,20 @@ import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollMessage: WithId<PollMessage>;
-  voteInPoll: ReturnType<typeof useVenuePoll>["voteInPoll"];
+  pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
+  deletePollMessage?: DeleteMessage;
+  voteInPoll: (pollVote: PollVoteBase) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
   voteInPoll,
+  deletePollMessage,
 }) => {
   const { userId } = useUser();
-  const { id, poll, votes } = pollMessage;
+
+  const { id, poll, votes, isMine } = pollMessage;
   const { questions, topic } = poll;
-  const isMine = useIsCurrentUser(pollMessage.fromUser.id);
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
@@ -46,7 +52,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   });
 
   const [{ loading: isVoting }, handleVote] = useAsyncFn(
-    (question) =>
+    async (question) =>
       voteInPoll({
         questionId: question.id,
         pollId: id,
@@ -122,6 +128,11 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     return renderQuestions;
   };
 
+  const deleteThisPollMessage = useCallback(() => deletePollMessage?.(id), [
+    id,
+    deletePollMessage,
+  ]);
+
   return (
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
@@ -136,7 +147,11 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         </div>
       </div>
 
-      <ChatMessageInfo message={message} reversed={isMine} />
+      <ChatMessageInfo
+        message={message}
+        reversed={isMine}
+        deleteMessage={deletePollMessage && deleteThisPollMessage}
+      />
     </div>
   );
 };

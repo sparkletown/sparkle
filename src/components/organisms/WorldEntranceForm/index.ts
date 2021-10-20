@@ -1,1 +1,0 @@
-export { WorldEntranceForm } from "./WorldEntranceForm";

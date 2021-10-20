@@ -12,9 +12,7 @@ import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
 import update from "immutability-helper";
 
-import { ROOM_TAXON } from "settings";
-
-import { Room } from "types/rooms";
+import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
@@ -23,7 +21,7 @@ import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
 
-import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
+import { CenterContent } from "components/atoms/CenterContent";
 
 import "./VenueRoomsEditor.scss";
 
@@ -33,7 +31,6 @@ const styles: React.CSSProperties = {
 };
 
 export interface RoomIcon {
-  title: string;
   top: number;
   left: number;
   url: string;
@@ -69,9 +66,9 @@ export interface VenueRoomsEditorProps {
   backgroundImageClassName?: string;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
-  rooms: Room[];
-  selectedRoom?: Room;
-  setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
+  rooms: RoomData_v2[];
+  selectedRoom: RoomData_v2 | undefined;
+  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
 }
 
 export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
@@ -290,7 +287,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
                 "Container__room-image--disabled": !room.isEnabled,
               })}
               src={room.image_url}
-              alt={`${ROOM_TAXON.lower} logo`}
+              alt="room-logo"
               title={room.title}
             />
             <div className="Container__room-title">{room.title}</div>
@@ -308,7 +305,11 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
         onResize={(width, height) => setImageDims({ width, height })}
       />
       {!backgroundImage ? (
-        <MapBackgroundPlaceholder />
+        <div className="Container__background-image-placeholder">
+          <CenterContent>
+            Pick a background for your map{"\n"}(2000x1200px recommended size)
+          </CenterContent>
+        </div>
       ) : (
         <img
           alt="draggable background "
