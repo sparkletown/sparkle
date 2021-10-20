@@ -25,7 +25,7 @@ export const useCurrentWorld: ReactHook<
   const worldRef = firestore
     .collection("worlds")
     .doc(worldId)
-    .withConverter(withIdConverter);
+    .withConverter(withIdConverter<World>());
 
   const { data: world, status } = useFirestoreDocData<WithId<World>>(worldRef);
 
