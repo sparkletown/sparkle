@@ -103,7 +103,7 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";

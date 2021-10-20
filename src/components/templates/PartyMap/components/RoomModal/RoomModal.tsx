@@ -13,6 +13,7 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
+import { openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
@@ -29,6 +30,9 @@ import { ScheduleItem } from "..";
 import "./RoomModal.scss";
 
 const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
+
+const isExternalPortal: (portal: Room) => boolean = (portal) =>
+  portal?.template === "external" || portal?.url.startsWith("http");
 
 export interface RoomModalProps {
   onHide: () => void;
@@ -108,15 +112,16 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const [enterWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enterRoomWithSound: () => void = useCallback(_enterRoomWithSound, [
-    _enterRoomWithSound,
-  ]);
+  const enter: () => void = useCallback(
+    () => void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound()),
+    [enterWithSound, room]
+  );
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
@@ -129,10 +134,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        enterEventLocation={enterRoomWithSound}
+        enterEventLocation={enter}
       />
     ));
-  }, [enterRoomWithSound, showSchedule, venueEvents]);
+  }, [enter, showSchedule, venueEvents]);
 
   const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
@@ -168,7 +173,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
             className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
-            onClick={enterRoomWithSound}
+            onClick={enter}
           >
             Join {ROOM_TAXON.capital}
           </button>

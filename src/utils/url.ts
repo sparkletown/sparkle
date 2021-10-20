@@ -9,16 +9,11 @@ import {
   ADMIN_V3_WORLD_SPACES_PARAM_URL,
   ENTRANCE_ROOT_URL,
   VALID_URL_PROTOCOLS,
+  VENUE_INSIDE_PARAM_URL,
+  VENUE_INSIDE_URL,
+  VENUE_LANDING_URL,
   WORLD_ROOT_URL,
 } from "settings";
-
-export const venueLandingUrl = (venueId: string) => {
-  return `/v/${venueId}`;
-};
-
-export const venueInsideUrl = (venueId: string) => {
-  return `/in/${venueId}`;
-};
 
 export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
@@ -34,6 +29,17 @@ export const adminCreateWorldSpace = (worldId?: string) =>
 
 export const adminWorldSpacesUrl = (worldId?: string) =>
   generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldId });
+
+export const venueInsideFullUrl = (venueId?: string) =>
+  generatePath(VENUE_INSIDE_PARAM_URL, { venueId });
+
+export const venueInsideUrl = (venueId: string) => {
+  return `${VENUE_INSIDE_URL}/${venueId}`;
+};
+
+export const venueLandingUrl = (venueId: string) => {
+  return `${VENUE_LANDING_URL}/${venueId}`;
+};
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
