@@ -542,7 +542,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "zilloween";
+export const DEFAULT_VENUE = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -638,7 +638,8 @@ export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
-export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const CHATBOX_NEXT_FETCH_SIZE = 50;
+export const SECTIONS_NEXT_FETCH_SIZE = 50;
 
 export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 
@@ -676,3 +677,8 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
+
+// Issue related features that have been enabled/disabled
+
+// disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
+export const DISABLED_DUE_TO_1253 = true;

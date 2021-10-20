@@ -3,7 +3,12 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_USER_STATUS, ROOM_TAXON, ROOMS_TAXON } from "settings";
+import {
+  DEFAULT_USER_STATUS,
+  DISABLED_DUE_TO_1253,
+  ROOM_TAXON,
+  ROOMS_TAXON,
+} from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -174,20 +179,26 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           />
         </div>
 
-        <div className="AdvancedSettings__form-field">
-          <Toggler forwardedRef={register} name="showGrid" title="Show grid" />
-          <Form.Label>Number of columns: </Form.Label>
-          <InputField
-            name="columns"
-            type="number"
-            autoComplete="off"
-            placeholder="Enter number of grid columns"
-            error={errors.columns}
-            ref={register}
-            disabled={!values.showGrid}
-            min={1}
-          />
-        </div>
+        {!DISABLED_DUE_TO_1253 && (
+          <div className="AdvancedSettings__form-field">
+            <Toggler
+              forwardedRef={register}
+              name="showGrid"
+              title="Show grid"
+            />
+            <Form.Label>Number of columns: </Form.Label>
+            <InputField
+              name="columns"
+              type="number"
+              autoComplete="off"
+              placeholder="Enter number of grid columns"
+              error={errors.columns}
+              ref={register}
+              disabled={!values.showGrid}
+              min={1}
+            />
+          </div>
+        )}
 
         <div className="AdvancedSettings__form-field">
           <Toggler

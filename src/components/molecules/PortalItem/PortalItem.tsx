@@ -13,7 +13,7 @@ import {
   RoomInput_v2,
 } from "api/admin";
 
-import { venueInsideUrl } from "utils/url";
+import { venueInsideFullUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
 import { useCheckImage } from "hooks/useCheckImage";
@@ -21,7 +21,12 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { createSpaceSchema } from "pages/Admin/Details/ValidationSchema";
+import {
+  createPortalSchema,
+  createSpaceSchema,
+} from "pages/Admin/Details/ValidationSchema";
+
+import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -51,7 +56,8 @@ export const PortalItem: React.FC<PortalItemProps> = ({
   const venueId = useVenueId();
 
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema: createSpaceSchema,
+    validationSchema:
+      template === "external" ? createPortalSchema : createSpaceSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -60,22 +66,23 @@ export const PortalItem: React.FC<PortalItemProps> = ({
     },
   });
 
-  const [{ loading: isLoading }, addRoom] = useAsyncFn(async () => {
+  const [
+    { loading: isLoading, error: submitError },
+    addRoom,
+  ] = useAsyncFn(async () => {
     if (!user || !venueId || !template) return;
 
-    const roomValues = getValues();
+    const { roomUrl, venueName } = getValues();
 
-    const venueUrlName = createUrlSafeName(roomValues.venueName);
-
-    // @debt instead of using window.origin here, link should be able to be derived by generatePath or similar in url.ts
-    const roomUrl = window.origin + venueInsideUrl(venueUrlName);
+    const slug = createUrlSafeName(venueName);
+    const url = template === "external" ? roomUrl : venueInsideFullUrl(slug);
 
     const roomData: RoomInput_v2 = {
-      title: roomValues.venueName,
+      title: venueName,
       about: "",
       isEnabled: true,
       image_url: icon,
-      url: roomUrl,
+      url,
       width_percent: 5,
       height_percent: 5,
       x_percent: 50,
@@ -83,9 +90,11 @@ export const PortalItem: React.FC<PortalItemProps> = ({
       template,
     };
 
-    const venueData = buildEmptyVenue(roomValues.venueName, template);
+    if (template !== "external") {
+      const venueData = buildEmptyVenue(venueName, template);
+      await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
+    }
 
-    await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
     await createRoom(roomData, venueId, user);
     await hideModal();
   }, [getValues, hideModal, icon, template, user, venueId, worldId]);
@@ -93,11 +102,10 @@ export const PortalItem: React.FC<PortalItemProps> = ({
   const { isValid } = useCheckImage(poster);
 
   const portalItemClasses = classNames({
-    PortalItem: true,
+    [`PortalItem PortalItem--${template}`]: true,
     "mod--hidden": hidden,
   });
 
-  // NOTE: tabIndex allows tab behavior https://allyjs.io/data-tables/focusable.html
   return (
     <div className={portalItemClasses}>
       <Modal
@@ -118,7 +126,6 @@ export const PortalItem: React.FC<PortalItemProps> = ({
             )}
             <div className="PortalItem__description">{description}</div>
             <InputField
-              className="PortalItem__modal-input"
               name="venueName"
               type="text"
               autoComplete="off"
@@ -127,7 +134,18 @@ export const PortalItem: React.FC<PortalItemProps> = ({
               ref={register()}
               disabled={isLoading}
             />
-
+            {template === "external" && (
+              <InputField
+                name="roomUrl"
+                type="text"
+                autoComplete="off"
+                placeholder={`${SPACE_TAXON.capital} url`}
+                error={errors.roomUrl}
+                ref={register()}
+                disabled={isLoading}
+              />
+            )}
+            <SubmitError error={submitError} />
             <div className="PortalItem__modal-buttons">
               <ButtonNG
                 variant="primary"
@@ -141,6 +159,9 @@ export const PortalItem: React.FC<PortalItemProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
+      {
+        // NOTE: tabIndex allows tab behavior, @see https://allyjs.io/data-tables/focusable.html
+      }
       <div
         className="PortalItem__list-item"
         onClick={showModal}
