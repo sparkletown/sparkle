@@ -126,10 +126,14 @@ export const createWorld: (
     await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
 
     // 3. initial venue is created
-    await firebase.functions().httpsCallable("venue-createVenue_v2")({
-      ...fullInput,
-      worldId,
-    });
+    // Temporary disabled due to possible complications and edge cases.
+    // What if the inital venue has to be a template of choice
+    // What if the venue already exists and it collides with the world name
+    // etc..
+    // await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    //   ...fullInput,
+    //   worldId,
+    // });
 
     // worldId might be useful for caller
     return { worldId };
