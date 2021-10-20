@@ -15,6 +15,8 @@ import {
   WORLD_ROOT_URL,
 } from "settings";
 
+import { Room } from "types/rooms";
+
 export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
 
@@ -63,12 +65,12 @@ export const isExternalUrl = (url: string) => {
   }
 };
 
-// @debt I feel like we could construct this url in a better way
-export const getRoomUrl = (roomUrl: string) =>
-  roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+export const isExternalPortal: (portal: Room) => boolean = (portal) =>
+  portal?.template === "external" || portal?.url.startsWith("http");
 
 export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
-  openUrl(getRoomUrl(url), options);
+  // @debt I feel like we could construct this url in a better way
+  openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
 export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
