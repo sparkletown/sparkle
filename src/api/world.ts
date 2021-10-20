@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { pick } from "lodash";
+import { omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -42,6 +42,8 @@ export const createFirestoreWorldStartInput: (
 
   // upload the files
   for (const [key, value] of Object.entries(imageInputs)) {
+    imageInputData[key] = "";
+
     const file = value?.[0];
 
     if (!file) continue;
@@ -59,7 +61,7 @@ export const createFirestoreWorldStartInput: (
   }
 
   const worldUpdateData: Partial<WithId<World>> = {
-    ...input,
+    ...omit(input, Object.keys(imageInputs)),
     ...imageInputData,
     id,
     slug,
