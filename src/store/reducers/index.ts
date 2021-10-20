@@ -1,3 +1,5 @@
+import { worldEditStartValuesReducer } from "store/reducers/WorldEdit";
+
 import { VenueTemplate } from "types/venues";
 
 import { animateMapReducer } from "./AnimateMap";
@@ -19,4 +21,5 @@ export const MiscReducers = {
   location: locationReducer,
   room: roomReducer,
   userProfile: userProfileReducer,
+  worldEditStartValues: worldEditStartValuesReducer,
 };

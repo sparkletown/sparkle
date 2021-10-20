@@ -20,7 +20,7 @@ export interface WorldCardProps {
 
 export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
   const cardVars = useCss({
-    backgroundImage: `url(${world.config.landingPageConfig.coverImageUrl})`,
+    backgroundImage: `url(${world.config?.landingPageConfig?.coverImageUrl})`,
   });
 
   const cardClasses = classNames("WorldCard", cardVars);
@@ -38,7 +38,7 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
         <div className="WorldCard__titles">
           <div className="WorldCard__world-name">{world.name}</div>
           <div className="WorldCard__world-description">
-            {world.config.landingPageConfig.description}
+            {world.config?.landingPageConfig?.description}
           </div>
         </div>
       </div>

@@ -5,11 +5,14 @@ export const VALID_URL_PROTOCOLS = Object.freeze(["http:", "https:"]);
 // Attendee URLs
 export const ENTRANCE_ROOT_URL = "/e";
 export const WORLD_ROOT_URL = "/w";
+export const VENUE_LANDING_URL = "/v";
+
+export const VENUE_INSIDE_URL = "/in";
+export const VENUE_INSIDE_PARAM_URL = `${VENUE_INSIDE_URL}/:venueId`;
 
 // Admin root URLs
-export const ADMIN_ROOT_URL = "/admin";
 export const ADMIN_V1_ROOT_URL = "/a1";
-export const ADMIN_V3_ROOT_URL = "/a3";
+export const ADMIN_V3_ROOT_URL = "/admin";
 
 // Admin v1 URLs
 export const ADMIN_V1_CREATE_URL = `${ADMIN_V1_ROOT_URL}/venue/creation`;

@@ -110,3 +110,10 @@ export interface FirestoreOrdered {
   venueEvents?: WithId<VenueEvent>[];
   worldEdit?: WithId<World>[];
 }
+
+export interface DistributedCounterValue {
+  value: number;
+}
+export interface DistributedCounterShard {
+  count: number;
+}
