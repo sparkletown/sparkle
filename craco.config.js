@@ -35,6 +35,8 @@ module.exports = {
         instanceOfMiniCssExtractPlugin.options.ignoreOrder = true;
       }
 
+      webpackConfig.optimization.minimize = false;
+
       return webpackConfig;
     },
   },
