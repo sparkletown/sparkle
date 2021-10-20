@@ -217,6 +217,7 @@ export interface BaseVenue {
   showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
+  sectionsCount?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
@@ -312,7 +313,6 @@ export interface PosterPageVenue extends BaseVenue {
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
   title?: string;
-  sectionsCount?: number;
 }
 
 export interface AnimateMapVenue extends BaseVenue {
