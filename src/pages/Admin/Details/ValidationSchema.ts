@@ -148,12 +148,21 @@ export interface SpaceSchema {
   venueName?: string;
 }
 
+export interface PortalSchema extends SpaceSchema {
+  roomUrl?: string;
+}
+
 const roomImageUrlSchema = Yup.string().required(
   `${ROOM_TAXON.capital} image is required`
 );
 
 export const createSpaceSchema = Yup.object().shape<SpaceSchema>({
   venueName: venueNameSchema,
+});
+
+export const createPortalSchema = Yup.object().shape<PortalSchema>({
+  venueName: venueNameSchema,
+  roomUrl: roomUrlSchema,
 });
 
 export const roomEditSchema = Yup.object().shape({

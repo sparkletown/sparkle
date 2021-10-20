@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
@@ -7,6 +7,7 @@ import { VenueInput_v2 } from "api/admin";
 import {
   AnyVenue,
   JazzbarVenue,
+  PortalTemplate,
   urlFromImage,
   VenueTemplate,
 } from "types/venues";
@@ -179,20 +180,24 @@ export const findSovereignVenue = (
   });
 };
 
-const spaceEditForms = () => {
-  const templatesList: VenueTemplate[] = Object.values(VenueTemplate).filter(
-    (template) => template !== VenueTemplate.auditorium
-  );
-  const templatelistNG = {
-    [VenueTemplate.auditorium]: SpaceEditFormNG,
-  };
+export const SPACE_EDIT_FORM_TEMPLATES = (() => {
+  // these are the original templates, they all share one old form
+  const ogTemplates: [VenueTemplate, ReactNode][] = Object.values(
+    VenueTemplate
+  ).map((template) => [template, SpaceEditForm]);
 
-  return templatesList.reduce(
-    (acc, template) => ({ ...acc, [template]: SpaceEditForm }),
-    templatelistNG
-  );
-};
-export const SPACE_EDIT_FORM_TEMPLATES: Record<
-  string,
-  React.FC<SpaceEditFormNGProps | SpaceEditFormProps>
-> = spaceEditForms();
+  // these are the new templates, some will override the old ones
+  const ngTemplates: [PortalTemplate | "undefined" | "", ReactNode][] = [
+    [VenueTemplate.auditorium, SpaceEditFormNG],
+    ["external", SpaceEditForm],
+    // this is a deliberate attempt in providing default form for missing portal template
+    ["", SpaceEditForm],
+    ["undefined", SpaceEditForm],
+  ];
+
+  // mapping is created with NG overriding OG and type set as the record generated from the arrays
+  return Object.fromEntries([...ogTemplates, ...ngTemplates]) as Record<
+    string,
+    React.FC<SpaceEditFormNGProps | SpaceEditFormProps>
+  >;
+})();

@@ -77,6 +77,8 @@ export enum VenueTemplate {
   playa = "playa",
 }
 
+export type PortalTemplate = VenueTemplate | "external";
+
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
@@ -222,7 +224,6 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
-  sectionsCount?: number;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: WithId<User>[];
@@ -311,6 +312,7 @@ export interface PosterPageVenue extends BaseVenue {
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
   title?: string;
+  sectionsCount?: number;
 }
 
 export interface AnimateMapVenue extends BaseVenue {

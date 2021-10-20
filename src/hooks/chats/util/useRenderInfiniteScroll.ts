@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePrevious } from "react-use";
 
-import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
+import { CHATBOX_NEXT_FETCH_SIZE } from "settings";
 
 import { ChatMessage, InfiniteScrollProps, MessageToDisplay } from "types/chat";
 
@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 
 export const useRenderMessagesCount = (): [number, () => void] => {
   const getNextMessagesRenderCount = useCallback(
-    (currentCount: number) => currentCount + CHATBOX_NEXT_RENDER_SIZE,
+    (currentCount: number) => currentCount + CHATBOX_NEXT_FETCH_SIZE,
     []
   );
 
