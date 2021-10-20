@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { addUserLookupAndCommit, removeWithUserLookup } from "api/user";
+import { batchUserLookup, removeWithUserLookup } from "api/user";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
@@ -163,7 +163,7 @@ export const setAuditoriumSectionSeat = async (
     path,
   };
 
-  return addUserLookupAndCommit(
+  return batchUserLookup(
     seatedUserData,
     user.id,
     getUserInSectionRef(user.id, path)
@@ -189,7 +189,7 @@ export const setTableSeat = async (
     ...pickDisplayUserFromUser(user),
     path,
   };
-  return addUserLookupAndCommit(
+  return batchUserLookup(
     data,
     user.id,
     getUserSeatedTableRef(user.id, path.venueId)

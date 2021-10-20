@@ -1,11 +1,18 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
+import firebase from "firebase/app";
 
+import { updateBatchWithUserLookup } from "api/user";
 import { getVenueRef } from "api/venue";
 
-import { JukeboxChatActions, JukeboxMessage } from "types/chat";
+import {
+  JukeboxChatActions,
+  JukeboxMessage,
+  SendMessagePropsBase,
+} from "types/chat";
 
 import { useChatMessages } from "hooks/chats/common/useChatMessages";
 import { useSendChatMessage } from "hooks/chats/common/useSendMessage";
+import { useUser } from "hooks/useUser";
 
 export const useJukeboxChat = ({
   venueId,
@@ -28,7 +35,9 @@ const useJukeboxActions = (
   venueId?: string,
   tableId?: string | null
 ): JukeboxChatActions => {
-  const messagesRefs = useMemo(
+  const { userId } = useUser();
+
+  const collectionRefs = useMemo(
     () => (venueId ? [getVenueRef(venueId).collection("jukeboxMessages")] : []),
     [venueId]
   );
@@ -39,9 +48,28 @@ const useJukeboxActions = (
     [tableId]
   );
 
+  const processBatch = useCallback(
+    (
+      props: SendMessagePropsBase,
+      messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
+      batch: firebase.firestore.WriteBatch
+    ) => {
+      if (!userId) return;
+
+      if (messageRefs.length !== 1) {
+        console.error("Invalid messageRefs", messageRefs);
+        return;
+      }
+
+      updateBatchWithUserLookup(batch, userId, messageRefs[0], "fromUser");
+    },
+    [userId]
+  );
+
   const sendMessage = useSendChatMessage<JukeboxMessage>(
-    messagesRefs,
-    additionalFields
+    collectionRefs,
+    additionalFields,
+    processBatch
   );
 
   return { sendChatMessage: sendMessage };

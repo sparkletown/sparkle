@@ -7,6 +7,7 @@ import {
   VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT,
 } from "settings";
 
+import { updateBatchWithUserLookup } from "api/user";
 import { getVenueRef } from "api/venue";
 
 import {
@@ -23,6 +24,7 @@ import { propName } from "utils/propName";
 
 import { UseDeleteMessageProps } from "hooks/chats/common/useDeleteMessage";
 import { UseSendMessageProps } from "hooks/chats/common/useSendMessage";
+import { useUser } from "hooks/useUser";
 
 export const getChatsRef = (venueId: string) =>
   getVenueRef(venueId).collection("chats");
@@ -79,10 +81,17 @@ export const useProcessBatchForThread = <T extends ThreadVariant>(
 export const useProcessBatchForChat = <T extends ChatVariant>(
   venueId: string | undefined,
   variant: T
-): ChatActionsProps<T>["processResultingBatch"] =>
-  useCallback(
-    (props, batch: firebase.firestore.WriteBatch) => {
+): ChatActionsProps<T>["processResultingBatch"] => {
+  const { userId } = useUser();
+
+  return useCallback(
+    (
+      props,
+      messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
+      batch: firebase.firestore.WriteBatch
+    ) => {
       if (!venueId) return;
+
       const randomShard = getVenueRef(venueId)
         .collection("chatMessagesCounter")
         .doc(random(VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT - 1).toString());
@@ -91,6 +100,15 @@ export const useProcessBatchForChat = <T extends ChatVariant>(
         propName<DistributedCounterShard>("count"),
         firebase.firestore.FieldValue.increment(variant === "sendChat" ? 1 : -1)
       );
+
+      if (messageRefs.length !== 1) {
+        console.error("Invalid messageRefs", messageRefs);
+        return;
+      }
+
+      if (userId)
+        updateBatchWithUserLookup(batch, userId, messageRefs[0], "fromUser");
     },
-    [variant, venueId]
+    [userId, variant, venueId]
   );
+};

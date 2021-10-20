@@ -20,7 +20,11 @@ import { useUser } from "hooks/useUser";
 
 export const useSendChatMessage = <T extends BaseChatMessage>(
   chats: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
-  additionalMessageFields: ExcludeBuiltMessage<T>
+  additionalMessageFields: ExcludeBuiltMessage<T>,
+  processResultingBatch: UseSendMessageProps<
+    T,
+    SendChatMessageProps
+  >["processResultingBatch"] = noop
 ): SendChatMessage<SendChatMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
   const getAdditionalFields = useCallback(() => additionalMessageFields, [
@@ -30,12 +34,17 @@ export const useSendChatMessage = <T extends BaseChatMessage>(
   return useSendMessage<T, SendChatMessageProps>({
     getCollections,
     getAdditionalFields,
+    processResultingBatch,
   });
 };
 
 export const useSendThreadMessage = <T extends BaseChatMessage>(
   chats: firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[],
-  spreadOnMessage: ExcludeBuiltMessage<T>
+  spreadOnMessage: ExcludeBuiltMessage<T>,
+  processResultingBatch: UseSendMessageProps<
+    T,
+    SendThreadMessageProps
+  >["processResultingBatch"] = noop
 ): SendChatMessage<SendThreadMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
   const getAdditionalFields: (
@@ -48,6 +57,7 @@ export const useSendThreadMessage = <T extends BaseChatMessage>(
   return useSendMessage<T, SendThreadMessageProps>({
     getCollections,
     getAdditionalFields,
+    processResultingBatch,
   });
 };
 
@@ -61,6 +71,7 @@ export interface UseSendMessageProps<
   getAdditionalFields: (props: K) => ExcludeBuiltMessage<T>;
   processResultingBatch?: (
     props: K,
+    messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
     batch: firebase.firestore.WriteBatch
   ) => void;
 }
@@ -88,9 +99,10 @@ export const useSendMessage = <
         const batch = firestore.batch();
 
         const collections = getCollections(props);
-        collections.forEach((ref) => batch.set(ref.doc(), processedMessage));
+        const newMessageRefs = collections.map((ref) => ref.doc());
+        newMessageRefs.forEach((ref) => batch.set(ref, processedMessage));
 
-        processResultingBatch(props, batch);
+        processResultingBatch(props, newMessageRefs, batch);
 
         await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
       } catch (e) {

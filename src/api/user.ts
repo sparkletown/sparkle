@@ -6,7 +6,16 @@ export const getUserLookupTableRef = () =>
 export const getUserLookupRef = (userId: string) =>
   getUserLookupTableRef().doc(userId).collection("paths");
 
-export const addUserLookupAndCommit = <T>(
+export const updateBatchWithUserLookup = (
+  batch: firebase.firestore.WriteBatch,
+  userId: string,
+  ref: firebase.firestore.DocumentReference,
+  docPath: string = ""
+) => {
+  batch.set(getUserLookupRef(userId).doc(ref.path), { path: docPath });
+};
+
+export const batchUserLookup = <T>(
   data: T,
   userId: string,
   ref: firebase.firestore.DocumentReference

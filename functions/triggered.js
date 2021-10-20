@@ -112,3 +112,10 @@ exports.removeDanglingAfterSeatLeave = functions.firestore
     const { venueId, userId } = context.params;
     return removePreviousDanglingSeat(beforeSnap, undefined, venueId, userId);
   });
+
+exports.onUserUpdate = functions.firestore
+  .document("/users/{userId}")
+  .onDelete(async (beforeSnap, context) => {
+    const { venueId, userId } = context.params;
+    return removePreviousDanglingSeat(beforeSnap, undefined, venueId, userId);
+  });

@@ -1,11 +1,14 @@
 import { useCallback, useMemo } from "react";
+import firebase from "firebase/app";
 
 import { getUserChatsCollectionRef, setChatMessageRead } from "api/chat";
+import { updateBatchWithUserLookup } from "api/user";
 
 import {
   MarkMessageRead,
   PrivateChatActions,
   PrivateChatMessage,
+  SendMessagePropsBase,
 } from "types/chat";
 import { DisplayUser } from "types/User";
 
@@ -47,13 +50,34 @@ export const useRecipientChatActions = (
     [recipient]
   );
 
+  const processBatch = useCallback(
+    (
+      props: SendMessagePropsBase,
+      messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
+      batch: firebase.firestore.WriteBatch
+    ) => {
+      if (!userId) return;
+      if (messageRefs.length !== 2) {
+        console.error("Invalid messageRefs", messageRefs);
+        return;
+      }
+
+      updateBatchWithUserLookup(batch, userId, messageRefs[0], "fromUser");
+      updateBatchWithUserLookup(batch, recipient.id, messageRefs[1], "toUser");
+    },
+    [recipient.id, userId]
+  );
+
   const sendMessage = useSendChatMessage<PrivateChatMessage>(
     refs,
-    additionalMessageFields
+    additionalMessageFields,
+    processBatch
   );
+
   const sendThreadReply = useSendThreadMessage<PrivateChatMessage>(
     refs,
-    additionalMessageFields
+    additionalMessageFields,
+    processBatch
   );
 
   return useMemo(
