@@ -8,6 +8,8 @@ const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 const { ROOM_TAXON } = require("./taxonomy.js");
 
+const { isNil } = require("lodash");
+
 const PLAYA_VENUE_ID = "jamonline";
 const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
@@ -413,27 +415,27 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showShoutouts = data.showShoutouts;
   }
 
-  if (data.userStatuses) {
+  if (!isNil(data.userStatuses)) {
     updated.userStatuses = data.userStatuses;
   }
 
-  if (data.attendeesTitle) {
+  if (!isNil(data.attendeesTitle)) {
     updated.attendeesTitle = data.attendeesTitle;
   }
 
-  if (data.chatTitle) {
+  if (!isNil(data.chatTitle)) {
     updated.chatTitle = data.chatTitle;
   }
 
-  if (data.code_of_conduct_questions) {
+  if (!isNil(data.code_of_conduct_questions)) {
     updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
-  if (data.showNametags) {
+  if (!isNil(data.showNametags)) {
     updated.showNametags = data.showNametags;
   }
 
-  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
+  updated.autoPlay = !isNil(data.autoPlay) ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
   return updated;
@@ -815,7 +817,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt in updateVenue this is configured as:
   //   updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl
   //     Should they be the same? If so, which is correct?
-  if (data.bannerImageUrl) {
+  if (!isNil(data.bannerImageUrl)) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
 
