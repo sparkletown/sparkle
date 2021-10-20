@@ -9,6 +9,7 @@ import {
   eventsByStartUtcSecondsSorter,
   isEventLiveOrFuture,
 } from "utils/event";
+import { isExternalPortal, openUrl } from "utils/url";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -60,7 +61,11 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const selectRoom = useCallback((room: Room) => {
     if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
 
-    setSelectedRoom(room);
+    if (isExternalPortal(room)) {
+      openUrl(room.url);
+    } else {
+      setSelectedRoom(room);
+    }
   }, []);
 
   const unselectRoom = useCallback(() => {
