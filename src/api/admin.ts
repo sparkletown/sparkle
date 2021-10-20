@@ -349,10 +349,22 @@ export const createVenue_v2 = async (
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")({
+
+  const venueResponse = await firebase
+    .functions()
+    .httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
     worldId: input.worldId,
   });
+
+  if (input.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: firestoreVenueInput.name,
+      numberOfSections: 1,
+    });
+  }
+
+  return venueResponse;
 };
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
