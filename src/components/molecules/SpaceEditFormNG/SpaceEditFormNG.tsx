@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
+  DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
@@ -87,7 +88,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
       isReactionsMuted: portal?.isReactionsMuted ?? false,
-      numberOfSections: portal?.sectionsCount ?? 0,
+      numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
     }),
     [room.image_url, portal]
   );

@@ -1,7 +1,7 @@
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 
 export const DEFAULT_SECTIONS_AMOUNT = 1;
-export const MIN_SECTIONS_AMOUNT = 0;
+export const MIN_SECTIONS_AMOUNT = 1;
 export const MAX_SECTIONS_AMOUNT = 50;
 
 // These must both be odd, otherwise the video won't be centered properly
