@@ -7,6 +7,8 @@ import {
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
+  MAX_SECTIONS_AMOUNT,
+  MIN_SECTIONS_AMOUNT,
   ROOM_TAXON,
 } from "settings";
 import { DEFAULT_EMBED_URL } from "settings/embedUrlSettings";
@@ -53,6 +55,7 @@ const HANDLED_ERRORS: string[] = [
   "iframeUrl",
   "autoPlay",
   "bannerImageUrl",
+  "numberOfSections",
 ];
 
 export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
@@ -273,6 +276,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 ref={register}
                 name="numberOfSections"
                 type="number"
+                min={MIN_SECTIONS_AMOUNT}
+                max={MAX_SECTIONS_AMOUNT}
+                error={errors.numberOfSections}
               />
 
               <div>x 200</div>

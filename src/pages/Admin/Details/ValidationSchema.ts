@@ -2,6 +2,8 @@ import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
+  MAX_SECTIONS_AMOUNT,
+  MIN_SECTIONS_AMOUNT,
   PLAYA_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
@@ -180,6 +182,12 @@ export const roomEditNGSchema = Yup.object().shape({
     iframeUrl: Yup.string().notRequired(),
     autoplay: Yup.boolean().notRequired(),
   }),
+  numberOfSections: Yup.number()
+    .required(
+      `The number of sections needs to be between ${MIN_SECTIONS_AMOUNT} and ${MAX_SECTIONS_AMOUNT}`
+    )
+    .min(MIN_SECTIONS_AMOUNT)
+    .max(MAX_SECTIONS_AMOUNT),
 });
 
 // this is used to transform the api data to conform to the yup schema
