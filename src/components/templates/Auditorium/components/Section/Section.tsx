@@ -4,6 +4,8 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
+import { DEFAULT_SECTIONS_AMOUNT } from "settings";
+
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -96,7 +98,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
-  const sectionsCount = venue.sectionsCount ?? 0;
+  const sectionsCount = venue.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT;
   const hasOnlyOneSection = sectionsCount === 1;
 
   const renderReactions = () => {

@@ -458,6 +458,53 @@ const initializeVenueChatMessagesCounter = (venueRef, batch) => {
   batch.set(counterCollection.doc("sum"), { value: 0 });
 };
 
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const venueDoc = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = venueDoc.docs.length;
+
+    // Don't update anything if the number of sections is the same.
+    if (currentNumberOfSections === numberOfSections) {
+      return;
+    }
+
+    // Adds the old sections to the batch and deletes them.
+    // Not very optimal, minimal fast change because time is limited.
+    // Ideally there should be a check for the new number of sections that compares the current one,
+    // then the logic should decide if it will add sections or remove from the last ones.
+    venueDoc.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    for (let section = 1; section <= numberOfSections; section++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    await batch.commit();
+  }
+);
+
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
