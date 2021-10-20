@@ -1,10 +1,6 @@
 @import "scss/constants";
 
 .DetailsForm {
-  &__edit {
-    margin-bottom: $footer-height;
-  }
-
   &__wrapper {
     padding: 1em 5em;
   }
@@ -14,7 +10,7 @@
     padding: 1em 5em;
     justify-content: flex-end;
 
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: 1px solid var(--accent--over-20a);
   }
 
   &__input {

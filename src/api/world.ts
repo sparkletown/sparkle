@@ -89,35 +89,56 @@ export const createFirestoreWorldAdvancedInput: (
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
+  return pick(input, [
+    "id",
+    "attendeesTitle",
+    "chatTitle",
+    "showNametags",
+    "showBadges",
+  ]);
 };
 
-export const createWorld = async (
+export const createWorld: (
   world: WorldStartFormInput,
   user: firebase.UserInfo
-) => {
-  // NOTE: due to interdependence on id and upload files' URLs:
+) => Promise<{
+  worldId?: string;
+  error?: Error;
+}> = async (world, user) => {
+  // a way to share value between try and catch blocks
+  let worldId = "";
+  try {
+    // NOTE: due to interdependence on id and upload files' URLs:
 
-  // 1. first a world stub is created
-  const stubInput = await createFirestoreWorldCreateInput(world, user);
+    // 1. first a world stub is created
+    const stubInput = await createFirestoreWorldCreateInput(world, user);
 
-  const worldId = (
-    await firebase.functions().httpsCallable("world-createWorld")(stubInput)
-  )?.data;
+    worldId = (
+      await firebase.functions().httpsCallable("world-createWorld")(stubInput)
+    )?.data;
 
-  // 2. then world is properly updated, having necessary id
-  const fullInput = await createFirestoreWorldStartInput(
-    withId(world, worldId),
-    user
-  );
+    // 2. then world is properly updated, having necessary id
+    const fullInput = await createFirestoreWorldStartInput(
+      withId(world, worldId),
+      user
+    );
 
-  await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
+    await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
 
-  // 3. initial venue is created
-  await firebase.functions().httpsCallable("venue-createVenue_v2")({
-    ...fullInput,
-    worldId,
-  });
+    // 3. initial venue is created
+    await firebase.functions().httpsCallable("venue-createVenue_v2")({
+      ...fullInput,
+      worldId,
+    });
+
+    // worldId might be useful for caller
+    return { worldId };
+  } catch (error) {
+    // in order to prevent new worlds getting created due to subsequent errors
+    // if an error is thrown here, but a world stub actually did get created
+    // return the id along with the error so that caller can proceed with update instead
+    return worldId ? { worldId, error } : { error };
+  }
 };
 
 export const updateWorldStartSettings = async (

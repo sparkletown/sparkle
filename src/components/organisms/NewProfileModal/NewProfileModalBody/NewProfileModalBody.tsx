@@ -8,7 +8,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { venueLandingUrl } from "utils/url";
 
-import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useShowHide } from "hooks/useShowHide";
 

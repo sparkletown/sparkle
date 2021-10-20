@@ -7,17 +7,16 @@ import {
 } from "react-router-dom";
 
 import {
-  ADMIN_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ROOT_URL,
-  DEFAULT_REDIRECT_URL,
   SPARKLEVERSE_HOMEPAGE_URL,
 } from "settings";
 
 import { tracePromise } from "utils/performance";
-import { resolveAdminRootUrl, venueLandingUrl } from "utils/url";
+import { venueLandingUrl } from "utils/url";
 
 import { useSettings } from "hooks/useSettings";
+import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
@@ -26,6 +25,9 @@ import { VersionPage } from "pages/VersionPage/VersionPage";
 import { Provided } from "components/organisms/AppRouter/Provided";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { Forbidden } from "components/atoms/Forbidden";
+import { NotFound } from "components/atoms/NotFound";
 
 const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
@@ -93,11 +95,11 @@ const EmergencyViewPage = lazy(() =>
 
 export const AppRouter: React.FC = () => {
   const { isLoaded, settings } = useSettings();
+  const { user } = useUser();
 
   if (!isLoaded) return <LoadingPage />;
 
-  const { enableAdmin1, enableAdmin3 } = settings;
-  const adminRootUrl = resolveAdminRootUrl(settings);
+  const { enableAdmin1 } = settings;
 
   return (
     <Router basename="/">
@@ -111,10 +113,6 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route path={ADMIN_ROOT_URL}>
-            <Redirect to={adminRootUrl} />
-          </Route>
-
           {enableAdmin1 && (
             <Route path={ADMIN_V1_ROOT_URL}>
               <Provided withRelatedVenues>
@@ -123,13 +121,11 @@ export const AppRouter: React.FC = () => {
             </Route>
           )}
 
-          {enableAdmin3 && (
-            <Route path={ADMIN_V3_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV3Subrouter />
-              </Provided>
-            </Route>
-          )}
+          <Route path={ADMIN_V3_ROOT_URL}>
+            <Provided withRelatedVenues>
+              <AdminV3Subrouter />
+            </Provided>
+          </Route>
 
           <Route
             path="/login/:venueId/:customToken"
@@ -179,10 +175,10 @@ export const AppRouter: React.FC = () => {
 
           <Route
             path="/"
-            render={() => {
-              window.location.href = DEFAULT_REDIRECT_URL;
-              return <LoadingPage />;
-            }}
+            render={() =>
+              // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
+              user ? <NotFound /> : <Forbidden />
+            }
           />
         </Switch>
       </Suspense>

@@ -2,7 +2,6 @@ const admin = require("firebase-admin");
 
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const { removeWithUserLookup } = require("./src/api/user");
 
 exports.incrementSectionsCount = functions.firestore
   .document("venues/{venueId}/sections/{sectionId}")
@@ -53,7 +52,7 @@ const removePreviousDanglingSeat = async (
     afterVenueSpecificData && afterVenueSpecificData.sectionId;
 
   switch (template) {
-    case "auditorium": {
+    case "auditorium":
       if (!beforeSectionId)
         throw new HttpsError(
           "invalid-argument",
@@ -61,35 +60,30 @@ const removePreviousDanglingSeat = async (
         );
       if (beforeSectionId === afterSectionId) return;
 
-      await removeWithUserLookup(
-        userId,
-        admin
-          .firestore()
-          .collection("venues")
-          .doc(venueId)
-          .collection("sections")
-          .doc(beforeSectionId)
-          .collection("seatedSectionUsers")
-          .doc(userId)
-      );
+      await admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc(beforeSectionId)
+        .collection("seatedSectionUsers")
+        .doc(userId)
+        .delete();
 
       break;
-    }
     case "jazzbar":
     case "conversationspace":
       //Don't delete seatedTableUser if recentSeatedUser is being updated
       //As there is now dangling data
       if (afterSnap) return;
 
-      await removeWithUserLookup(
-        userId,
-        admin
-          .firestore()
-          .collection("venues")
-          .doc(venueId)
-          .collection("seatedTableUsers")
-          .doc(userId)
-      );
+      await admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("seatedTableUsers")
+        .doc(userId)
+        .delete();
 
       break;
     default:

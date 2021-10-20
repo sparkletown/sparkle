@@ -18,11 +18,11 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
-import { AdminWorldUrlSection } from "components/molecules/AdminWorldUrlSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { Toggler } from "components/atoms/Toggler";
 
 import "./WorldAdvancedForm.scss";
 
@@ -47,6 +47,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       attendeesTitle: world.attendeesTitle,
       chatTitle: world.chatTitle,
       showNametags: world.showNametags,
+      showBadges: world.showBadges,
     }),
     [world]
   );
@@ -72,8 +73,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
     await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
 
-    reset(defaultValues);
-  }, [worldId, user, values, reset, defaultValues]);
+    reset(values);
+  }, [worldId, user, values, reset]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
@@ -91,7 +92,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
-        <AdminWorldUrlSection slug={world.slug} />
         <AdminSection
           title="Title of your venues attendees"
           subtitle="(For example: guests, attendees, partygoers)"
@@ -127,6 +127,9 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             <option value="none">None</option>
             <option value="hover">Inline and hover</option>
           </Form.Control>
+        </AdminSection>
+        <AdminSection title="Show badges" withLabel>
+          <Toggler forwardedRef={register} name="showBadges" />
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />

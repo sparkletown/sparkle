@@ -90,6 +90,7 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
+  bannerImageUrl?: string;
   mapBackgroundImage_url?: string;
   mapBackgroundImage_file?: FileList;
 };

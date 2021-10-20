@@ -31,7 +31,7 @@ $sorting-option--font-size: 0.8rem;
     width: 100%;
     height: 48px;
     background-color: $content--under;
-    border-bottom: 1px solid opaque-white(0.2);
+    border-bottom: 1px solid var(--accent--over-20a);
     box-shadow: box-shadow--large(0.62);
 
     .navbar-container {
@@ -78,7 +78,7 @@ $sorting-option--font-size: 0.8rem;
         top: $sorting-dropdown--top;
         left: $sorting-dropdown--left;
         width: $sorting-dropdown--width;
-        background: $room-card-background;
+        background: var(--content--under-lighter-20pp);
         border-radius: $border-radius--lg;
         padding: $spacing--lg $spacing--sm;
       }
@@ -284,7 +284,7 @@ $sorting-option--font-size: 0.8rem;
 
           .venue-preview {
             margin: 15px;
-            border: 4px solid opaque-white(0.2);
+            border: 4px solid var(--accent--over-20a);
             background-color: opaque-white(0.1);
             padding: 20px;
             border-radius: 10px;
@@ -414,7 +414,7 @@ $sorting-option--font-size: 0.8rem;
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: #cccccc;
+      background-color: var(--greyscale-lighter-20pp);
       -webkit-transition: 0.4s;
       transition: 0.4s;
 
@@ -457,7 +457,7 @@ $sorting-option--font-size: 0.8rem;
     }
 
     .venue-room-details {
-      background: #1a1d24;
+      background: $secondary--live;
       border-radius: 50px;
       padding: 30px;
       margin-bottom: 20px;
