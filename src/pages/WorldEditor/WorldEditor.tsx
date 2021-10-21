@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { ADMIN_V3_WORLDS_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { WorldNavTab } from "types/world";
 
@@ -29,9 +29,10 @@ export const WorldEditor: React.FC = () => {
   const history = useHistory();
   const { worldId, selectedTab } = useWorldEditParams();
 
-  const navigateToHome = useCallback(() => history.push(ADMIN_V3_WORLDS_URL), [
-    history,
-  ]);
+  const navigateToHome = useCallback(
+    () => history.push(ADMIN_V3_WORLDS_BASE_URL),
+    [history]
+  );
 
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
