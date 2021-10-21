@@ -7,7 +7,10 @@ import {
   VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT,
 } from "settings";
 
-import { updateBatchWithUserLookup } from "api/user";
+import {
+  updateBatchWithAddUserLookup,
+  updateBatchWithDeleteUserLookup,
+} from "api/user";
 import { getVenueRef } from "api/venue";
 
 import {
@@ -107,7 +110,14 @@ export const useProcessBatchForChat = <T extends ChatVariant>(
       }
 
       if (userId)
-        updateBatchWithUserLookup(batch, userId, messageRefs[0], "fromUser");
+        if (variant === "sendChat")
+          updateBatchWithAddUserLookup(
+            batch,
+            userId,
+            messageRefs[0],
+            "fromUser"
+          );
+        else updateBatchWithDeleteUserLookup(batch, userId, messageRefs[0]);
     },
     [userId, variant, venueId]
   );

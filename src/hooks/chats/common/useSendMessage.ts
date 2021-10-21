@@ -98,11 +98,11 @@ export const useSendMessage = <
 
         const batch = firestore.batch();
 
-        const collections = getCollections(props);
-        const newMessageRefs = collections.map((ref) => ref.doc());
-        newMessageRefs.forEach((ref) => batch.set(ref, processedMessage));
+        const collectionRefs = getCollections(props);
+        const messageRefs = collectionRefs.map((ref) => ref.doc());
+        messageRefs.forEach((ref) => batch.set(ref, processedMessage));
 
-        processResultingBatch(props, newMessageRefs, batch);
+        processResultingBatch(props, messageRefs, batch);
 
         await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
       } catch (e) {

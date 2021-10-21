@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import firebase from "firebase/app";
 
 import { getUserChatsCollectionRef, setChatMessageRead } from "api/chat";
-import { updateBatchWithUserLookup } from "api/user";
+import { updateBatchWithAddUserLookup } from "api/user";
 
 import {
   MarkMessageRead,
@@ -62,8 +62,13 @@ export const useRecipientChatActions = (
         return;
       }
 
-      updateBatchWithUserLookup(batch, userId, messageRefs[0], "fromUser");
-      updateBatchWithUserLookup(batch, recipient.id, messageRefs[1], "toUser");
+      updateBatchWithAddUserLookup(batch, userId, messageRefs[0], "fromUser");
+      updateBatchWithAddUserLookup(
+        batch,
+        recipient.id,
+        messageRefs[1],
+        "toUser"
+      );
     },
     [recipient.id, userId]
   );

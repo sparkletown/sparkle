@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import firebase from "firebase/app";
 
-import { updateBatchWithUserLookup } from "api/user";
+import { updateBatchWithAddUserLookup } from "api/user";
 import { getVenueRef } from "api/venue";
 
 import {
@@ -61,7 +61,7 @@ const useJukeboxActions = (
         return;
       }
 
-      updateBatchWithUserLookup(batch, userId, messageRefs[0], "fromUser");
+      updateBatchWithAddUserLookup(batch, userId, messageRefs[0], "fromUser");
     },
     [userId]
   );

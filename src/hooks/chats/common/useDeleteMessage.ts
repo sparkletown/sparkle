@@ -14,6 +14,7 @@ export interface UseDeleteMessageProps<T extends DeleteChatMessageProps> {
   ) => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[];
   processResultingBatch?: (
     props: T,
+    messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
     batch: firebase.firestore.WriteBatch
   ) => void;
 }
@@ -25,10 +26,12 @@ export const useDeleteMessage = <T extends DeleteChatMessageProps>({
   useCallback(
     async (props) => {
       const batch = firebase.firestore().batch();
-      const collectionRefs = getCollections(props);
 
-      collectionRefs.forEach((ref) => batch.delete(ref.doc(props.messageId)));
-      processResultingBatch(props, batch);
+      const collectionRefs = getCollections(props);
+      const messageRefs = collectionRefs.map((ref) => ref.doc(props.messageId));
+      messageRefs.forEach((ref) => batch.delete(ref));
+
+      processResultingBatch(props, messageRefs, batch);
 
       await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
     },

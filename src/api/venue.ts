@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { batchUserLookup, removeWithUserLookup } from "api/user";
+import { addWithUserLookup, removeWithUserLookup } from "api/user";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
@@ -135,8 +135,8 @@ const getUserSeatedTableRef = (userId: string, venueId: string) =>
 export const unsetAuditoriumSectionSeat = async (
   userId: string,
   path: AuditoriumSectionPath
-) => {
-  return removeWithUserLookup(userId, getUserInSectionRef(userId, path)).catch(
+) =>
+  removeWithUserLookup(userId, getUserInSectionRef(userId, path)).catch(
     (err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
@@ -150,7 +150,6 @@ export const unsetAuditoriumSectionSeat = async (
       throw err;
     }
   );
-};
 
 export const setAuditoriumSectionSeat = async (
   user: WithId<DisplayUser>,
@@ -163,7 +162,7 @@ export const setAuditoriumSectionSeat = async (
     path,
   };
 
-  return batchUserLookup(
+  return addWithUserLookup(
     seatedUserData,
     user.id,
     getUserInSectionRef(user.id, path)
@@ -189,7 +188,7 @@ export const setTableSeat = async (
     ...pickDisplayUserFromUser(user),
     path,
   };
-  return batchUserLookup(
+  return addWithUserLookup(
     data,
     user.id,
     getUserSeatedTableRef(user.id, path.venueId)
