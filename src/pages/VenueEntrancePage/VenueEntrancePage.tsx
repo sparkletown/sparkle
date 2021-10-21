@@ -5,7 +5,11 @@ import { EntranceStepTemplate } from "types/EntranceStep";
 
 import { isCompleteProfile } from "utils/profile";
 import { currentVenueSelector } from "utils/selectors";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import {
+  accountProfileVenueUrl,
+  venueEntranceUrl,
+  venueInsideUrl,
+} from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -46,7 +50,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
+    return <Redirect to={accountProfileVenueUrl(venueId)} />;
   }
 
   const proceed = () => {
