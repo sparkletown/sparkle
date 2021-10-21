@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import firebase from "firebase/app";
 
 import { getUserChatsCollectionRef, setChatMessageRead } from "api/chat";
-import { updateBatchWithAddUserLookup } from "api/user";
+import { updateBatchWithAddUserLookup } from "api/userLookup";
 
 import {
   MarkMessageRead,

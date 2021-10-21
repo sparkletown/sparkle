@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { addWithUserLookup, removeWithUserLookup } from "api/user";
+import { addWithUserLookup, removeWithUserLookup } from "api/userLookup";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";

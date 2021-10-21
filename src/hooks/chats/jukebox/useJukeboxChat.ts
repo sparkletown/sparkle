@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import firebase from "firebase/app";
 
-import { updateBatchWithAddUserLookup } from "api/user";
+import { updateBatchWithAddUserLookup } from "api/userLookup";
 import { getVenueRef } from "api/venue";
 
 import {

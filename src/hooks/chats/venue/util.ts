@@ -10,7 +10,7 @@ import {
 import {
   updateBatchWithAddUserLookup,
   updateBatchWithDeleteUserLookup,
-} from "api/user";
+} from "api/userLookup";
 import { getVenueRef } from "api/venue";
 
 import {

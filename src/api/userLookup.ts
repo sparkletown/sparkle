@@ -6,6 +6,14 @@ export const getUserLookupTableRef = () =>
 export const getUserLookupRef = (userId: string) =>
   getUserLookupTableRef().doc(userId).collection("paths");
 
+export type UserLookupLocation =
+  | "venueChat"
+  | "venueChatThread"
+  | "privateChat"
+  | "privateChatThread"
+  | "jukeboxChat"
+  | "auditoriumSection";
+
 export const updateBatchWithAddUserLookup = (
   batch: firebase.firestore.WriteBatch,
   userId: string,
