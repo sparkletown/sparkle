@@ -18,6 +18,7 @@ export interface UseUserResult {
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
   userId?: string;
+  isTester: boolean;
 }
 
 export const useUser = (): UseUserResult => {
@@ -63,6 +64,8 @@ export const useUser = (): UseUserResult => {
     return withId(profileData, userId);
   }, [user, userId, profile]);
 
+  const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
+
   return useMemo(
     () => ({
       user,
@@ -70,7 +73,8 @@ export const useUser = (): UseUserResult => {
       userLocation,
       userWithId,
       userId,
+      isTester,
     }),
-    [user, profile, userLocation, userWithId, userId]
+    [user, profile, userLocation, userWithId, userId, isTester]
   );
 };
