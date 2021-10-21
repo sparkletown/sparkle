@@ -33,27 +33,23 @@ if (!projectId) {
   process.exit(1);
 }
 
-const app = initFirebaseAdminApp(projectId, {
+initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath ? resolve(credentialPath) : undefined,
 });
 
-const appBatch = app.firestore().batch();
-
 (async () => {
-  const venuesCollection = admin
+  const { docs: venueDocs } = await admin
     .firestore()
     .collection("venues")
-    .where("template", "==", "audience");
-  const venueDocs = (await venuesCollection.get()).docs;
+    .where("template", "==", "audience")
+    .get();
 
-  await venueDocs.forEach(async (venueDoc) => {
+  venueDocs.forEach(async (venueDoc) => {
     const destVenueSectionRef = venueDoc.ref.collection("sections").doc();
-    appBatch.set(destVenueSectionRef, { isVip: false });
+    destVenueSectionRef.set({ isVip: false });
 
-    appBatch.update(venueDoc.ref, { template: "auditorium" });
+    venueDoc.ref.update({ template: "auditorium" });
   });
-
-  await appBatch.commit();
 
   console.log(
     "Successfully transormed the following venues to auditorium:",
