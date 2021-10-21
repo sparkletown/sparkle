@@ -4,9 +4,12 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
+  DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
+  MAX_SECTIONS_AMOUNT,
+  MIN_SECTIONS_AMOUNT,
   ROOM_TAXON,
 } from "settings";
 import { DEFAULT_EMBED_URL } from "settings/embedUrlSettings";
@@ -33,6 +36,7 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
+import { InputField } from "components/atoms/InputField";
 import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditFormNG.scss";
@@ -52,6 +56,7 @@ const HANDLED_ERRORS: string[] = [
   "iframeUrl",
   "autoPlay",
   "bannerImageUrl",
+  "numberOfSections",
 ];
 
 export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
@@ -83,6 +88,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
       isReactionsMuted: portal?.isReactionsMuted ?? false,
+      numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
     }),
     [room.image_url, portal]
   );
@@ -123,10 +129,23 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         showShoutouts: values.showShoutouts,
         showReactions: values.showReactions,
         isReactionsMuted: values.isReactionsMuted,
+        numberOfSections: values.numberOfSections,
+        template: portal?.template,
       },
       user
     );
-  }, [portalId, user, values]);
+  }, [
+    portal?.template,
+    portalId,
+    user,
+    values.autoPlay,
+    values.bannerImageUrl,
+    values.iframeUrl,
+    values.isReactionsMuted,
+    values.numberOfSections,
+    values.showReactions,
+    values.showShoutouts,
+  ]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
@@ -245,6 +264,28 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               containerClassName="SpaceEditFormNG__toggler"
               label="Audible"
             />
+          </AdminSection>
+          <AdminSection title="Capacity (optional)">
+            <div className="SpaceEditFormNG__capacity">
+              <div># Sections</div>
+
+              <div># Seats</div>
+
+              <div>Max seats</div>
+
+              <InputField
+                ref={register}
+                name="numberOfSections"
+                type="number"
+                min={MIN_SECTIONS_AMOUNT}
+                max={MAX_SECTIONS_AMOUNT}
+                error={errors.numberOfSections}
+              />
+
+              <div>x 200</div>
+
+              <div>= {200 * values.numberOfSections}</div>
+            </div>
           </AdminSection>
         </AdminSpacesListItem>
         <ButtonNG
