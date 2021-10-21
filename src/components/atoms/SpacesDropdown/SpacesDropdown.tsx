@@ -4,7 +4,7 @@ import { FieldError, useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ADMIN_V1_ROOMS_URL, SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import { ADMIN_V1_ROOMS_BASE_URL, SPACE_PORTALS_ICONS_MAPPING } from "settings";
 
 import { Room } from "types/rooms";
 
@@ -60,7 +60,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       <ReactBootstrapDropdown.Item
         key="create-space"
         className="SpacesDropdown__item"
-        href={`${ADMIN_V1_ROOMS_URL}/${venueId}`}
+        href={`${ADMIN_V1_ROOMS_BASE_URL}/${venueId}`}
       >
         <FontAwesomeIcon
           className="SpacesDropdown__item-icon"

@@ -22,8 +22,8 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
   ADMIN_V1_CREATE_URL,
-  ADMIN_V1_EDIT_URL,
-  ADMIN_V1_ROOMS_URL,
+  ADMIN_V1_EDIT_BASE_URL,
+  ADMIN_V1_ROOMS_BASE_URL,
   ADMIN_V1_ROOT_URL,
   DEFAULT_VENUE,
   ROOM_TAXON,
@@ -342,14 +342,14 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               Visit space
             </Link>
             <Link
-              to={`${ADMIN_V1_EDIT_URL}/${venue.id}`}
+              to={`${ADMIN_V1_EDIT_BASE_URL}/${venue.id}`}
               className="btn btn-block"
             >
               Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
-                to={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
+                to={`${ADMIN_V1_ROOMS_BASE_URL}/${venue.id}`}
                 className="btn btn-block"
               >
                 Add a {ROOM_TAXON.capital}
@@ -357,7 +357,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             )}
             {isVenueWithRooms(venue) && typeof roomIndex !== "undefined" && (
               <Link
-                to={`${ADMIN_V1_ROOMS_URL}/${venue.id}?roomIndex=${roomIndex}`}
+                to={`${ADMIN_V1_ROOMS_BASE_URL}/${venue.id}?roomIndex=${roomIndex}`}
                 className="btn btn-block"
               >
                 Edit {ROOM_TAXON.capital}
