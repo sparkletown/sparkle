@@ -7,9 +7,21 @@ import {
 } from "react-router-dom";
 
 import {
+  ACCOUNT_ROOT_URL,
   ADMIN_V1_ROOT_URL,
   ADMIN_V3_ROOT_URL,
-  SPARKLEVERSE_HOMEPAGE_URL,
+  ENTER_ROOT_URL,
+  ENTRANCE_STEP_VENUE_PARAM_URL,
+  EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
+  LOGIN_CUSTOM_TOKEN_PARAM_URL,
+  ROOT_URL,
+  SPARKLEVERSE_REDIRECT_URL,
+  VENUE_EMERGENCY_PARAM_URL,
+  VENUE_INSIDE_ADMIN_PARAM_URL,
+  VENUE_INSIDE_PARAM_URL,
+  VENUE_LANDING_PARAM_URL,
+  VENUE_REDIRECT_PARAM_URL,
+  VERSION_URL,
 } from "settings";
 
 import { tracePromise } from "utils/performance";
@@ -105,9 +117,9 @@ export const AppRouter: React.FC = () => {
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
-          <Route path="/enter" component={EnterSubrouter} />
+          <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
 
-          <Route path="/account">
+          <Route path={ACCOUNT_ROOT_URL}>
             <Provided withRelatedVenues>
               <AccountSubrouter />
             </Provided>
@@ -128,57 +140,61 @@ export const AppRouter: React.FC = () => {
           </Route>
 
           <Route
-            path="/login/:venueId/:customToken"
+            path={LOGIN_CUSTOM_TOKEN_PARAM_URL}
             component={LoginWithCustomToken}
           />
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
-          {/*<Route path="/login" component={Login} />*/}
+          {/*<Route path={LOGIN_URL} component={Login} />*/}
 
-          <Route path="/v/:venueId">
+          <Route path={VENUE_LANDING_PARAM_URL}>
             <Provided withRelatedVenues>
               <VenueLandingPage />
             </Provided>
           </Route>
-          <Route path="/e/:step/:venueId">
+
+          <Route path={ENTRANCE_STEP_VENUE_PARAM_URL}>
             <Provided withRelatedVenues>
               <VenueEntrancePage />
             </Provided>
           </Route>
-          <Route path="/in/:venueId/admin">
+
+          <Route path={VENUE_INSIDE_ADMIN_PARAM_URL}>
             <Provided withRelatedVenues>
               <VenueAdminPage />
             </Provided>
           </Route>
-          <Route path="/in/:venueId">
+
+          <Route path={VENUE_INSIDE_PARAM_URL}>
             <Provided withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
-          <Route path="/m/:venueId">
+
+          <Route path={VENUE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>
           </Route>
 
-          <Route path="/version" component={VersionPage} />
+          <Route path={VERSION_URL} component={VersionPage} />
 
           <Route
-            path="/venue/*"
+            path={VENUE_REDIRECT_PARAM_URL}
             render={(props) => (
               <Redirect to={venueLandingUrl(props.match.params[0])} />
             )}
           />
 
           <Route
-            path="/sparkleverse"
+            path={SPARKLEVERSE_REDIRECT_URL}
             render={() => {
-              window.location.href = SPARKLEVERSE_HOMEPAGE_URL;
+              window.location.href = EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL;
               return <LoadingPage />;
             }}
           />
 
           <Route
-            path="/"
+            path={ROOT_URL}
             render={() =>
               // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
               user ? <NotFound /> : <Forbidden />
