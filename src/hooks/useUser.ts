@@ -4,16 +4,18 @@ import { isEqual } from "lodash";
 
 import { RootState } from "store";
 
-import { User } from "types/User";
+import { User, UserLocation } from "types/User";
 
 import { WithId, withId } from "utils/id";
 import { authSelector, profileSelector } from "utils/selectors";
+import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 import { useSelector } from "hooks/useSelector";
 
 export interface UseUserResult {
   user?: FirebaseReducer.AuthState;
   profile?: FirebaseReducer.Profile<User>;
+  userLocation?: UserLocation;
   userWithId?: WithId<User>;
   userId?: string;
 }
@@ -25,7 +27,7 @@ export const useUser = (): UseUserResult => {
     return !auth.isEmpty ? auth : undefined;
   }, isEqual);
 
-  const profile = useSelector((state: RootState) => {
+  const profileWithLocation = useSelector((state: RootState) => {
     const profile = profileSelector(state);
 
     return !profile.isEmpty ? profile : undefined;
@@ -33,19 +35,42 @@ export const useUser = (): UseUserResult => {
 
   const userId = user?.uid;
 
-  const userWithId = useMemo(() => {
-    if (!userId || !profile) return;
+  const profile = useMemo(
+    () =>
+      profileWithLocation
+        ? omitLocationFromUser(profileWithLocation)
+        : undefined,
+    [profileWithLocation]
+  );
 
-    return withId(profile, userId);
-  }, [profile, userId]);
+  const userLocation = useMemo(
+    () =>
+      profileWithLocation
+        ? extractLocationFromUser(profileWithLocation)
+        : undefined,
+    [profileWithLocation]
+  );
+
+  const userWithId = useMemo(() => {
+    if (!userId || !user || !profile) return;
+
+    const profileData = {
+      ...profile,
+      partyName: profile.partyName ?? user.displayName ?? "",
+      pictureUrl: profile.pictureUrl ?? user.photoURL ?? "",
+    };
+
+    return withId(profileData, userId);
+  }, [user, userId, profile]);
 
   return useMemo(
     () => ({
       user,
       profile,
+      userLocation,
       userWithId,
       userId,
     }),
-    [user, profile, userId, userWithId]
+    [user, profile, userLocation, userWithId, userId]
   );
 };

@@ -2,19 +2,8 @@
 
 import * as Yup from "yup";
 
-export interface Experience {
-  // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
-  bartender: User;
-  table?: string | null;
-  row?: number | null;
-  column?: number | null;
-  sectionId?: string;
-}
-
-// @debt typing I think this is correct from Room.tsx, need to confirm
-// @debt This should probably be Partial<Record<string, Experience>> as otherwise it implies that an entry exists
-//   for literally any arbitrary string
-export type UserExperienceData = Record<string, Experience>;
+import { GridPosition } from "types/grid";
+import { VenueTablePath } from "types/venues";
 
 // Store all things related to video chat where they can't be tampered with by other users
 export type VideoState = {
@@ -36,7 +25,6 @@ export interface BaseUser {
   anonMode?: boolean;
   mirrorVideo?: boolean;
   status?: string;
-  data?: UserExperienceData;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   profileLinks?: ProfileLink[];
 
@@ -55,9 +43,20 @@ export interface BaseUser {
 }
 
 export interface User extends BaseUser {
-  lastSeenIn?: never;
+  lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
+  enteredVenueIds?: never;
 }
+
+export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
+
+export type GridSeatedUser = DisplayUser & {
+  position: Partial<GridPosition>;
+};
+
+export type TableSeatedUser = DisplayUser & {
+  path: VenueTablePath;
+};
 
 export interface UserStatus {
   status: string;
@@ -65,7 +64,7 @@ export interface UserStatus {
 }
 
 export interface UserLocation {
-  lastSeenIn: { [key: string]: number };
+  lastVenueIdSeenIn: string | null;
   lastSeenAt: number;
   enteredVenueIds?: string[];
 }

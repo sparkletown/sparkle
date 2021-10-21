@@ -1,0 +1,15 @@
+@import "scss/constants";
+
+$height: 2rem;
+
+.AdminShowcaseTitle {
+  place-content: center start;
+  min-height: $height;
+  line-height: $height;
+  font-size: $height * 0.75;
+  font-weight: $font-weight--600;
+  margin: $spacing--md;
+  padding: 0;
+  text-transform: capitalize;
+  text-shadow: $text-shadow--outline;
+}

@@ -1,8 +1,7 @@
 @import "scss/constants";
 
-$sand: #937c63;
-$white: #ffffff;
 $border-radius: 28px;
+$avatarpulse-box-shadow-color: var(--primary--under-65a);
 
 .party-map-map-component {
   display: flex;
@@ -34,11 +33,6 @@ $border-radius: 28px;
   z-index: z(map-background);
   border-radius: 15px;
   height: 100%;
-}
-
-.party-map-grid-container > *:first-child {
-  grid-row: 1 / 1;
-  grid-column: 1 / 1;
 }
 
 .party-map-grid-container {
@@ -108,7 +102,7 @@ $border-radius: 28px;
 
     .avatar {
       opacity: 0.025;
-      background-color: $white;
+      background-color: $content--over;
     }
   }
 
@@ -116,7 +110,7 @@ $border-radius: 28px;
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: $white;
+    background-color: $content--over;
     opacity: 0.025;
     border-radius: 100%;
 
@@ -144,16 +138,19 @@ $border-radius: 28px;
   //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
-      background-color: $primary;
-      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+      background-color: $accent--under;
+      box-shadow: 0 0 0 3px $accent--under,
+        0 0 20px $avatarpulse-box-shadow-color;
     }
     50% {
-      background-color: lighten($primary, 10%);
-      box-shadow: 0 0 0 3px $primary, 0 0 20px 10px rgba($primary, 0.65);
+      background-color: var(--primary--under-lighter-10pp);
+      box-shadow: 0 0 0 3px $accent--under,
+        0 0 20px 10px $avatarpulse-box-shadow-color;
     }
     100% {
-      background-color: $primary;
-      box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+      background-color: $accent--under;
+      box-shadow: 0 0 0 3px $accent--under,
+        0 0 20px $avatarpulse-box-shadow-color;
     }
   }
 

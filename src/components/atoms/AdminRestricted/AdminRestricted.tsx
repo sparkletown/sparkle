@@ -3,7 +3,9 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { venueLandingUrl } from "utils/url";
+import { DEFAULT_VENUE } from "settings";
+
+import { venueInsideUrl, venueLandingUrl } from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useUser } from "hooks/useUser";
@@ -29,11 +31,12 @@ export const AdminRestricted: React.FC = ({ children }) => {
     history.push(venueId ? venueLandingUrl(venueId) : "/");
   }, [firebase, history, venueId]);
 
-  if (isAdminUser) {
-    return (
-      <div className="AdminRestricted AdminRestricted--allowed">{children}</div>
-    );
-  }
+  const redirectToDefaultRoute = () =>
+    history.push(venueInsideUrl(DEFAULT_VENUE));
+
+  const authHandler = userId ? logout : redirectToDefaultRoute;
+
+  if (isAdminUser) return <>{children}</>;
 
   if (isCheckingRole)
     return (
@@ -63,9 +66,9 @@ export const AdminRestricted: React.FC = ({ children }) => {
           variant="primary"
           loading={isLoggingOut}
           disabled={isLoggingOut}
-          onClick={logout}
+          onClick={authHandler}
         >
-          Switch Account
+          {userId ? "Log Out" : "Log In"}
         </ButtonNG>
       </div>
     </div>

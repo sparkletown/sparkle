@@ -1,16 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_SHOW_SCHEDULE,
+  ROOM_TAXON,
+} from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
-import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
+import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
@@ -22,7 +25,7 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { RoomModalOngoingEvent, ScheduleItem } from "..";
+import { ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
@@ -59,10 +62,10 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} centered>
-      <div className="room-modal">
+    <Modal show={show} onHide={onHide} className="RoomModal" centered>
+      <Modal.Body className="RoomModal__modal-body">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
-      </div>
+      </Modal.Body>
     </Modal>
   );
 };
@@ -78,7 +81,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venue,
   venueEvents,
 }) => {
-  const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
+  const { showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
   const dispatch = useDispatch();
 
@@ -96,27 +99,26 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     currentVenueId: venue.id,
   });
 
-  const noTrailSlashPortalUrl = getUrlWithoutTrailingSlash(room.url);
+  const { enterRoom, portalVenueId } = useRoom({
+    room,
+  });
 
-  const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
-  const userList = recentRoomUsers as readonly WithId<User>[];
-
-  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const [enterWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enterRoomWithSound: () => void = useCallback(_enterRoomWithSound, [
-    _enterRoomWithSound,
-  ]);
+  const enter: () => void = useCallback(
+    () => void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound()),
+    [enterWithSound, room]
+  );
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
@@ -129,11 +131,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        enterEventLocation={enterRoomWithSound}
-        roomUrl={room.url}
+        enterEventLocation={enter}
       />
     ));
-  }, [enterRoomWithSound, room.url, showSchedule, venueEvents]);
+  }, [enter, showSchedule, venueEvents]);
 
   const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
@@ -151,51 +152,46 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   return (
     <>
-      <h2>{roomTitle}</h2>
+      <div className="RoomModal__main">
+        <div className="RoomModal__icon" style={iconStyles} />
 
-      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
+        <div className="RoomModal__content">
+          <div className="RoomModal__title">{roomTitle}</div>
 
-      <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyles} />
-
-        <div className="room-modal__content">
-          {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
+          {roomSubtitle && (
+            <div className="RoomModal__subtitle">{roomSubtitle}</div>
+          )}
 
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
           {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
           <button
             ref={enterButtonref}
             autoFocus
-            className="btn btn-primary room-modal__btn-enter"
+            className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
-            onClick={enterRoomWithSound}
+            onClick={enter}
           >
-            Enter
+            Join {ROOM_TAXON.capital}
           </button>
         </div>
       </div>
 
-      <UserList
-        containerClassName="room-modal__userlist"
-        users={userList}
-        limit={11}
-        activity="in this room"
-        hasClickableAvatars
-      />
-
       {room.about && (
-        <div className="room-modal__description">
+        <div className="RoomModal__description">
           <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
-      {showRoomEvents && (
-        <div className="room-modal__events">
-          <div className="room-modal__title">Room Schedule</div>
+      <UserList
+        containerClassName="RoomModal__userlist"
+        usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+        userCount={portalVenue?.recentUserCount ?? 0}
+        activity={`in this ${ROOM_TAXON.lower}`}
+      />
 
-          {renderedRoomEvents}
-        </div>
+      {showRoomEvents && (
+        <div className="RoomModal__events">{renderedRoomEvents}</div>
       )}
     </>
   );

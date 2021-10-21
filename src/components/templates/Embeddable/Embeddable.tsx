@@ -4,7 +4,9 @@ import { IFRAME_ALLOW_ADVANCED } from "settings";
 
 import { EmbeddableVenue } from "types/venues";
 
-import { convertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import "./Embeddable.scss";
 
@@ -24,7 +26,11 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
   if (!iframeUrl) return <p>Error: iframeUrl is missing</p>;
 
   return (
-    <div className="embeddable" style={containerStyles}>
+    <VenueWithOverlay
+      venue={venue}
+      containerClassNames="embeddable"
+      style={containerStyles}
+    >
       <iframe
         title="embeddable-iframe"
         src={convertToEmbeddableUrl({ url: iframeUrl, autoPlay })}
@@ -34,6 +40,6 @@ export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
         allowFullScreen
         {...iframeOptions}
       />
-    </div>
+    </VenueWithOverlay>
   );
 };

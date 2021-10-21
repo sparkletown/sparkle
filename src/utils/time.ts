@@ -263,3 +263,17 @@ export const isDateRangeStartWithinToday = ({
 }) => {
   return max([dateValue, targetDateValue]) <= startOfToday();
 };
+
+export const getDateTimeFromUtc = (utcSeconds: number | undefined) => {
+  const unixTime = utcSeconds ?? Date.now() / 1000;
+
+  const time = format(fromUnixTime(unixTime), "HH:mm");
+  const date = format(fromUnixTime(unixTime), "yyyy-MM-dd");
+  return {
+    date,
+    time,
+  };
+};
+
+export const getUtcFromDateTime = (dateTimeValue: string) =>
+  getUnixTime(new Date(dateTimeValue));

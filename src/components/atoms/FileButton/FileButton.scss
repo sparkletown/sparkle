@@ -1,23 +1,19 @@
 @import "scss/constants";
 
-$label-margin: $spacing--sm 0 $spacing--sm 0;
-
 .FileButton {
   display: flex;
   margin-bottom: $spacing--sm;
   flex-direction: column;
 
-  .btn {
-    padding: 0px;
-  }
-
   &__label {
     width: 100%;
     cursor: pointer;
-    margin: $label-margin;
+    margin: 0;
+    padding: 0;
   }
 
   &__description {
-    color: $light-grey--lightest;
+    color: var(--content--over-50a);
+    margin-top: $spacing--xs;
   }
 }

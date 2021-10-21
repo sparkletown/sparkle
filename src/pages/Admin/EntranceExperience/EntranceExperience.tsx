@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 // Hooks
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -15,10 +15,14 @@ import { useUser } from "hooks/useUser";
 import EntranceInput from "pages/Admin/Venue/EntranceInput";
 import QuestionInput from "pages/Admin/Venue/QuestionInput";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 // Styles
 import * as S from "../Admin.styles";
 
 import { EntranceExperienceProps } from "./EntranceExperience.types";
+
+import "./EntranceExperience.scss";
 
 type ProfileQuestion = VenueInput_v2["profile_questions"];
 type CodeOfConductQuestion = VenueInput_v2["code_of_conduct_questions"];
@@ -50,7 +54,6 @@ const validationSchema = Yup.object().shape({
 
 const EntranceExperience: React.FC<EntranceExperienceProps> = ({
   venue,
-  sovereignVenue,
   onSave,
 }) => {
   const { register, handleSubmit, errors } = useForm<Venue_v2_EntranceConfig>({
@@ -59,7 +62,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
     validationSchema: validationSchema,
     defaultValues: {
       code_of_conduct_questions: venue.code_of_conduct_questions,
-      profile_questions: sovereignVenue?.profile_questions,
+      profile_questions: venue.profile_questions,
       entrance: venue.entrance,
     },
   });
@@ -79,6 +82,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
       await updateVenue_v2(
         {
           name: venue.name,
+          worldId: venue.worldId,
           ...entranceData,
         },
         user
@@ -86,7 +90,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
 
       onSave();
     },
-    [onSave, user, venue.name]
+    [onSave, user, venue.name, venue.worldId]
   );
 
   return (
@@ -117,12 +121,11 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
             <QuestionInput
               fieldName="profile_questions"
               register={register}
-              editing={sovereignVenue?.profile_questions}
+              editing={venue.profile_questions}
               errors={errors.profile_questions}
             />
           </S.ItemBody>
         </S.ItemWrapper>
-
         <S.ItemWrapper>
           <S.ItemHeader>
             <S.ItemTitle>Venue Entrance</S.ItemTitle>
@@ -138,7 +141,9 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
           </S.ItemBody>
         </S.ItemWrapper>
 
-        <Button type="submit">Save</Button>
+        <ButtonNG className="EntranceExperience__save-button" type="submit">
+          Save
+        </ButtonNG>
       </Form>
     </div>
   );

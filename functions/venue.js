@@ -6,8 +6,10 @@ const { addAdmin, removeAdmin } = require("./src/api/roles");
 
 const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const { ROOM_TAXON } = require("./taxonomy.js");
 
 const PLAYA_VENUE_ID = "jamonline";
+const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
@@ -27,6 +29,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
+  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**
@@ -61,6 +64,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
   VenueTemplate.zoomroom,
   VenueTemplate.screeningroom,
 ];
@@ -74,6 +78,7 @@ const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.viewingwindow,
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
@@ -223,6 +228,7 @@ const createVenueData = (data, context) => {
     radioStations: data.radioStations ? [data.radioStations] : [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    hasSocialLoginEnabled: data.hasSocialLoginEnabled || false,
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -291,16 +297,13 @@ const createVenueData_v2 = (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
         description: data.description,
       },
     },
-    theme: {
-      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-    },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
@@ -309,6 +312,9 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    parentId: data.parentId || "",
+    worldId: data.worldId,
+    ...(data.parentId && { parentId: data.parentId }),
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -371,17 +377,12 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
-  if (data.bannerMessage) {
-    updated.bannerMessage = data.bannerMessage;
-  }
-
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.parentId === "string") {
+    updated.parentId = data.parentId;
   }
 
   if (typeof data.showSchedule === "boolean") {
@@ -398,6 +399,10 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
@@ -440,6 +445,65 @@ const dataOrUpdateKey = (data, updated, key) =>
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
+
+const initializeVenueChatMessagesCounter = (venueRef, batch) => {
+  const counterCollection = venueRef.collection("chatMessagesCounter");
+  for (
+    let shardId = 0;
+    shardId < VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT;
+    shardId++
+  ) {
+    batch.set(counterCollection.doc(shardId.toString()), { count: 0 });
+  }
+  batch.set(counterCollection.doc("sum"), { value: 0 });
+};
+
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const venueDoc = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = venueDoc.docs.length;
+
+    // Don't update anything if the number of sections is the same.
+    if (currentNumberOfSections === numberOfSections) {
+      return;
+    }
+
+    // Adds the old sections to the batch and deletes them.
+    // Not very optimal, minimal fast change because time is limited.
+    // Ideally there should be a check for the new number of sections that compares the current one,
+    // then the logic should decide if it will add sections or remove from the last ones.
+    venueDoc.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+
+    for (let section = 1; section <= numberOfSections; section++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    await batch.commit();
+  }
+);
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -489,11 +553,16 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
+  const batch = admin.firestore().batch();
   // @debt this should be typed
   const venueData = createVenueData(data, context);
   const venueId = getVenueId(data.name);
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  batch.set(venueRef, venueData);
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
 
   return venueData;
 });
@@ -502,10 +571,25 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  const venueData = createVenueData_v2(data, context);
-  const venueId = getVenueId(data.name);
+  const batch = admin.firestore().batch();
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  const venueId = getVenueId(data.name);
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
+  const venueDoc = await venueRef.get();
+
+  if (venueDoc.exists) {
+    throw new HttpsError(
+      "already-exists",
+      `The venue ${data.name} already exists. Please try with another name.`
+    );
+  }
+
+  const venueData = createVenueData_v2(data, context);
+
+  batch.create(venueRef, venueData);
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
 
   return venueData;
 });
@@ -546,7 +630,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   //if the room exists under the same name, find it
   const index = rooms.findIndex((val) => val.title === room.title);
   if (index === -1) {
-    throw new HttpsError("not-found", "Room does not exist");
+    throw new HttpsError("not-found", `${ROOM_TAXON.capital} does not exist`);
   } else {
     docData.rooms.splice(index, 1);
   }
@@ -707,6 +791,13 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
   // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -726,6 +817,14 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+
+  if (data.start_utc_seconds) {
+    updated.start_utc_seconds = data.start_utc_seconds;
+  }
+
+  if (data.end_utc_seconds) {
+    updated.end_utc_seconds = data.end_utc_seconds;
   }
 
   // @debt aside from the data.columns part, this is exactly the same as in updateVenue
@@ -749,6 +848,171 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   // @debt this is exactly the same as in updateVenue
   admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
+exports.updateMapBackground = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+});
+
+exports.updateVenueNG = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
+  await checkUserIsOwner(data.id, context.auth.token.user_id);
+
+  const updated = {};
+  updated.updatedAt = Date.now();
+
+  if (data.subtitle || data.subtitle === "") {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+
+  if (data.description || data.description === "") {
+    updated.config.landingPageConfig.description = data.description;
+  }
+
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
+  if (typeof data.zoomUrl === "string") {
+    updated.zoomUrl = data.zoomUrl;
+  }
+
+  if (typeof data.iframeUrl === "string") {
+    updated.iframeUrl = data.iframeUrl;
+  }
+
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.isReactionsMuted === "boolean") {
+    updated.isReactionsMuted = data.isReactionsMuted;
+  }
+
+  if (typeof data.enableJukebox === "boolean") {
+    updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
+  }
+
+  if (typeof data.showUserStatus === "boolean") {
+    updated.showUserStatus = data.showUserStatus;
+  }
+
+  if (typeof data.showShoutouts === "boolean") {
+    updated.showShoutouts = data.showShoutouts;
+  }
+
+  if (data.userStatuses) {
+    updated.userStatuses = data.userStatuses;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
+  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
+
+  if (data.bannerImageUrl) {
+    updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
+  }
+
+  if (typeof data.showGrid === "boolean") {
+    updated.showGrid = data.showGrid;
+  }
+
+  if (typeof data.columns === "number") {
+    updated.columns = data.columns;
+  }
+
+  if (typeof data.requiresDateOfBirth === "boolean") {
+    updated.requiresDateOfBirth = data.requiresDateOfBirth;
+  }
+
+  if (typeof data.showRadio === "boolean") {
+    updated.showRadio = data.showRadio;
+  }
+
+  if (data.radioStations) {
+    updated.radioStations = [data.radioStations];
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(data.id)
+    .set(updated, { merge: true });
 });
 
 exports.updateTables = functions.https.onCall((data, context) => {
@@ -888,7 +1152,7 @@ exports.adminUpdateBannerMessage = functions.https.onCall(
       .firestore()
       .collection("venues")
       .doc(data.venueId)
-      .update({ bannerMessage: data.bannerMessage || null });
+      .update({ banner: data.banner || null });
   }
 );
 

@@ -1,87 +1,38 @@
-import React from "react";
-import { Button, Form } from "react-bootstrap";
+import React, { useCallback, useMemo, useState } from "react";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import * as Yup from "yup";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import {
-  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
-  MINIMUM_PARTYMAP_COLUMNS_COUNT,
+  DEFAULT_USER_STATUS,
+  DISABLED_DUE_TO_1253,
+  ROOM_TAXON,
+  ROOMS_TAXON,
 } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
-import { UsernameVisibility } from "types/User";
-import { Venue_v2_AdvancedConfig } from "types/venues";
+import { UserStatus } from "types/User";
+import { AnyVenue, VenueAdvancedConfig } from "types/venues";
+
+import { WithId } from "utils/id";
+import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
+import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
-import { Checkbox } from "components/atoms/Checkbox";
+import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
-import * as S from "../Admin.styles";
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { InputField } from "components/atoms/InputField";
+import { Toggler } from "components/atoms/Toggler";
 
-import { AdvancedSettingsProps } from "./AdvancedSettings.types";
+import "./AdvancedSettings.scss";
 
-// TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
-interface ToggleElementProps {
-  title: string;
-  name: string;
-  forwardRef?: (
-    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
-  ) => void;
-  isChecked?: boolean;
+export interface AdvancedSettingsProps {
+  venue: WithId<AnyVenue>;
+  onSave: () => void;
 }
-const ToggleElement: React.FC<ToggleElementProps> = ({
-  title,
-  name,
-  forwardRef,
-  isChecked,
-  children,
-}) => (
-  <S.ItemWrapper>
-    <S.ItemHeader>
-      <S.TitleWrapper>
-        <S.ItemTitle>{title}</S.ItemTitle>
-      </S.TitleWrapper>
-    </S.ItemHeader>
-
-    <S.ItemBody>
-      <Checkbox
-        name={name}
-        forwardedRef={forwardRef}
-        defaultChecked={isChecked}
-        toggler
-      />
-
-      {children}
-    </S.ItemBody>
-  </S.ItemWrapper>
-);
-
-const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
-  showGrid: Yup.boolean().notRequired(),
-  columns: Yup.number().when("showGrid", {
-    is: true,
-    then: Yup.number()
-      .required(
-        `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_PARTYMAP_COLUMNS_COUNT}.`
-      )
-      .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
-      .max(MAXIMUM_PARTYMAP_COLUMNS_COUNT),
-  }),
-  radioStations: Yup.string().when("showRadio", {
-    is: true,
-    then: Yup.string().required("Radio stream is required!"),
-  }),
-  requiresDateOfBirth: Yup.bool().notRequired(),
-  showBadges: Yup.bool().notRequired(),
-  showNametags: Yup.mixed()
-    .oneOf(Object.values(UsernameVisibility))
-    .notRequired(),
-  showRadio: Yup.bool().notRequired(),
-
-  // TODO: Figure out how to validate with enum values
-  // roomVisibility: Yup.string().notRequired()
-});
 
 const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   venue,
@@ -92,243 +43,310 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     formState: { dirty, isSubmitting },
     register,
     errors,
+    setError,
     handleSubmit,
-  } = useForm<Venue_v2_AdvancedConfig>({
+  } = useForm<VenueAdvancedConfig>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: validationSchema,
+    validationSchema: advancedSettingsSchema,
     defaultValues: {
-      columns: venue.columns,
+      columns: venue.columns ?? 0,
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
+      parentId: venue.parentId ?? "",
+      roomVisibility: venue.roomVisibility,
+      showUserStatus: venue.showUserStatus,
+      userStatuses: venue.userStatuses,
+      hasSocialLoginEnabled: venue.hasSocialLoginEnabled,
     },
   });
+
+  const { worldParentVenues } = useWorldVenues(venue.worldId);
 
   const { user } = useUser();
 
   const values = watch();
 
-  const onSubmit = (data: Venue_v2_AdvancedConfig) => {
+  const validateParentId = useCallback(
+    (parentId, checkedIds) => {
+      if (checkedIds.includes(parentId)) return false;
+
+      if (!parentId) return true;
+
+      const parentVenue = worldParentVenues.find(
+        (venue) => venue.id === parentId
+      );
+
+      if (!parentVenue) return true;
+
+      validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
+    },
+    [worldParentVenues]
+  );
+
+  // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
+  const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
     if (!user) return;
+
+    const isValidParentId = validateParentId(data.parentId, [venue.id]);
+
+    if (!isValidParentId) {
+      setError(
+        "parentId",
+        "manual",
+        "This parent id is invalid because it will create a loop of parent venues. If venue 'A' is a parent of venue 'B', venue 'B' can't be a parent of venue 'A'."
+      );
+      return;
+    }
 
     updateVenue_v2(
       {
         name: venue.name,
+        worldId: venue.worldId,
         ...data,
+        userStatuses,
       },
       user
-    );
+    ).catch((e) => console.error(AdvancedSettings.name, e));
 
     onSave();
   };
 
-  const renderShowGridToggle = () => (
-    <ToggleElement
-      forwardRef={register}
-      isChecked={values.showGrid}
-      name="showGrid"
-      title="Show Grid"
-    >
-      <Form.Group>
-        <Form.Label>Number of columns:</Form.Label>
-        <Form.Control
-          name="columns"
-          type="number"
-          placeholder="Enter number of grid columns"
-          ref={register}
-          custom
-          disabled={!values.showGrid}
-          min={1}
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
+    values.userStatuses ?? []
+  );
+
+  const addUserStatus = useCallback(
+    () =>
+      setUserStatuses([
+        ...userStatuses,
+        { status: "", color: DEFAULT_USER_STATUS.color },
+      ]),
+    [userStatuses, setUserStatuses]
+  );
+
+  const deleteStatus = useCallback(
+    (index: number) => {
+      const statuses = [...userStatuses];
+      statuses.splice(index, 1);
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const changeInput = useCallback(
+    (event: React.FormEvent<HTMLInputElement>, index: number) => {
+      const statuses = [...userStatuses];
+
+      statuses[index] = {
+        color: statuses[index].color,
+        status: event.currentTarget.value,
+      };
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const pickColor = useCallback(
+    (color: string, index: number) => {
+      const statuses = [...userStatuses];
+      statuses[index] = { color, status: statuses[index].status };
+      setUserStatuses(statuses);
+    },
+    [userStatuses, setUserStatuses]
+  );
+
+  const renderVenueUserStatuses = useMemo(
+    () =>
+      userStatuses.map((userStatus, index) => (
+        <UserStatusPanel
+          key={`${userStatus}-${index}`}
+          userStatus={userStatus}
+          onPickColor={(color) => pickColor(color, index)}
+          onChangeInput={(value) => changeInput(value, index)}
+          onDelete={() => deleteStatus(index)}
         />
-        {errors.columns && (
-          <span className="input-error">{errors.columns.message}</span>
-        )}
-      </Form.Group>
-    </ToggleElement>
-  );
-
-  const renderRadioToggle = () => (
-    <ToggleElement
-      forwardRef={register}
-      isChecked={values.showRadio}
-      name="showRadio"
-      title="Enable venue radio"
-    >
-      <Form.Group>
-        <Form.Label>Radio station stream URL:</Form.Label>
-        <Form.Control
-          name="radioStations"
-          ref={register}
-          custom
-          disabled={!values.showRadio}
-        />
-        {errors.radioStations && (
-          <span className="input-error">{errors.radioStations.message}</span>
-        )}
-      </Form.Group>
-    </ToggleElement>
-  );
-
-  const renderShowNametags = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Show Nametags</S.ItemTitle>
-        </S.TitleWrapper>
-
-        <S.ItemSubtitle>Display user names on their avatars</S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control as="select" custom name="showNametags" ref={register}>
-          <option value="none">None</option>
-          {/* TODO: Implement Inline state */}
-          {/* <option value="inline">Inline</option> */}
-          <option value="hover">Inline and hover</option>
-        </Form.Control>
-      </S.ItemBody>
-    </S.ItemWrapper>
-  );
-
-  const renderRoomVisibility = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Room appearance</S.ItemTitle>
-        </S.TitleWrapper>
-
-        <S.ItemSubtitle>
-          Choose how you&apos;d like your rooms to appear on the map
-        </S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control as="select" custom name="roomVisibility" ref={register}>
-          <option value="hover">Hover</option>
-          <option value="count">Count</option>
-          <option value="count/name">Count and names</option>
-        </Form.Control>
-      </S.ItemBody>
-    </S.ItemWrapper>
-  );
-
-  const renderAnnouncementInput = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Venue announcement</S.ItemTitle>
-        </S.TitleWrapper>
-        <S.ItemSubtitle>
-          Show an announcement in the venue (or leave blank for none)
-        </S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control
-          name="bannerMessage"
-          placeholder="Enter your announcement"
-          ref={register}
-          custom
-          type="text"
-        />
-        {errors.bannerMessage && (
-          <span className="input-error">{errors.bannerMessage.message}</span>
-        )}
-      </S.ItemBody>
-    </S.ItemWrapper>
-  );
-
-  const renderAttendeesTitleInput = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Title of your venues attendees</S.ItemTitle>
-        </S.TitleWrapper>
-        <S.ItemSubtitle>
-          For example: guests, attendees, partygoers.
-        </S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control
-          name="attendeesTitle"
-          placeholder="Attendees title"
-          ref={register}
-          custom
-          type="text"
-        />
-        {errors.attendeesTitle && (
-          <span className="input-error">{errors.attendeesTitle.message}</span>
-        )}
-      </S.ItemBody>
-    </S.ItemWrapper>
-  );
-
-  const renderChatTitleInput = () => (
-    <S.ItemWrapper>
-      <S.ItemHeader>
-        <S.TitleWrapper>
-          <S.ItemTitle>Your venue chat label</S.ItemTitle>
-        </S.TitleWrapper>
-        <S.ItemSubtitle>For example: Party, Event, Meeting</S.ItemSubtitle>
-      </S.ItemHeader>
-
-      <S.ItemBody>
-        <Form.Control
-          name="chatTitle"
-          placeholder="Event label"
-          ref={register}
-          custom
-          type="text"
-        />
-        {errors.chatTitle && (
-          <span className="input-error">{errors.chatTitle.message}</span>
-        )}
-      </S.ItemBody>
-    </S.ItemWrapper>
+      )),
+    [changeInput, deleteStatus, pickColor, userStatuses]
   );
 
   return (
-    <div>
+    <div className="AdvancedSettings">
       <h1>Advanced settings</h1>
 
-      <Form onSubmit={handleSubmit(onSubmit)}>
-        {renderAnnouncementInput()}
-        {renderAttendeesTitleInput()}
-        {renderChatTitleInput()}
+      <Form
+        className="AdvancedSettings__form-container"
+        onSubmit={handleSubmit(updateAdvancedSettings)}
+      >
+        <div className="AdvancedSettings__form-field">
+          <Form.Label>
+            Title of your venues attendees (For example: guests, attendees,
+            partygoers)
+          </Form.Label>
+          <InputField
+            name="attendeesTitle"
+            autoComplete="off"
+            placeholder="Attendees title"
+            error={errors.attendeesTitle}
+            ref={register}
+          />
+        </div>
 
-        {renderShowGridToggle()}
+        <div className="AdvancedSettings__form-field">
+          <Form.Label>
+            Your venue chat label (For example: Party, Event, Meeting)
+          </Form.Label>
+          <InputField
+            name="chatTitle"
+            autoComplete="off"
+            placeholder="Event label"
+            error={errors.chatTitle}
+            ref={register}
+          />
+        </div>
 
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.showBadges}
-          name="showBadges"
-          title="Show badges"
-        />
+        {!DISABLED_DUE_TO_1253 && (
+          <div className="AdvancedSettings__form-field">
+            <Toggler
+              forwardedRef={register}
+              name="showGrid"
+              title="Show grid"
+            />
+            <Form.Label>Number of columns: </Form.Label>
+            <InputField
+              name="columns"
+              type="number"
+              autoComplete="off"
+              placeholder="Enter number of grid columns"
+              error={errors.columns}
+              ref={register}
+              disabled={!values.showGrid}
+              min={1}
+            />
+          </div>
+        )}
 
-        {renderShowNametags()}
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="showBadges"
+            title="Show badges"
+          />
+        </div>
 
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.requiresDateOfBirth}
-          name="requiresDateOfBirth"
-          title="Require date of birth on register"
-        />
+        <div className="AdvancedSettings__form-field">
+          <Form.Label>
+            Show Nametags (Display user names on their avatars)
+          </Form.Label>
+          <Form.Control as="select" custom name="showNametags" ref={register}>
+            <option value="none">None</option>
+            <option value="hover">Inline and hover</option>
+          </Form.Control>
+        </div>
 
-        {renderRadioToggle()}
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="requiresDateOfBirth"
+            title="Require date of birth on register"
+          />
+        </div>
 
-        {renderRoomVisibility()}
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="showRadio"
+            title="Enable venue radio"
+          />
+          <Form.Label>Radio station stream URL: </Form.Label>
+          <InputField
+            name="radioStations"
+            error={errors.radioStations}
+            ref={register}
+            disabled={!values.showRadio}
+          />
+        </div>
 
-        <Button type="submit" disabled={!dirty || isSubmitting}>
-          Save
-        </Button>
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="hasSocialLoginEnabled"
+            title="Social Login"
+          />
+          <Form.Label>
+            Users can login using Google/Facebook/Okta social networks
+          </Form.Label>
+        </div>
+
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="showUserStatus"
+            title="Show user status"
+          />
+          {values.showUserStatus && (
+            <>
+              {renderVenueUserStatuses}
+              <ButtonNG
+                variant="primary"
+                iconName={faPlus}
+                onClick={addUserStatus}
+              >
+                Add a status
+              </ButtonNG>
+            </>
+          )}
+        </div>
+
+        <div className="AdvancedSettings__form-field">
+          <Form.Label>{ROOM_TAXON.capital} appearance</Form.Label>
+          <div>
+            Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
+            the map
+          </div>
+          <Form.Control as="select" custom name="roomVisibility" ref={register}>
+            <option value="hover">Hover</option>
+            <option value="count">Count</option>
+            <option value="count/name">Count and names</option>
+          </Form.Control>
+        </div>
+
+        <div className="AdvancedSettings__form-field">
+          <Form.Label>
+            Enter the parent venue ID, for the &quot; back&quot; button to go
+            to, and for sharing events in the schedule
+          </Form.Label>
+          <div>
+            The nav bar can show a &quot; back&quot; button if you enter an ID
+            here.Clicking &quot; back&quot; will return the user to the venue
+            whose ID you enter.Additionally, the events you add here will be
+            shown to users while they are on all other venues which share the
+            parent venue ID you enter here, as well as in the parent venue.The
+            value is a venue ID.Enter the venue ID you wish to use.A venue ID is
+            the part of the URL after /in/, so eg.for{" "}
+            <i>sparkle.space/in/abcdef</i> you would enter <i>abcdef</i>
+            below
+          </div>
+          <InputField name="parentId" error={errors.parentId} ref={register} />
+        </div>
+
+        <div className="AdvancedSettings__form-field">
+          <ButtonNG
+            className="AdvancedSettings__save-button"
+            type="submit"
+            variant="primary"
+            loading={isSubmitting}
+            disabled={!dirty || isSubmitting}
+          >
+            Save
+          </ButtonNG>
+        </div>
       </Form>
     </div>
   );
