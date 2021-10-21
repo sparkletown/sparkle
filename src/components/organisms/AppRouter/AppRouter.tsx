@@ -139,7 +139,11 @@ export const AppRouter: React.FC = () => {
               <VenueLandingPage />
             </Provided>
           </Route>
-          <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
+          <Route path="/e/:step/:venueId">
+            <Provided withRelatedVenues>
+              <VenueEntrancePage />
+            </Provided>
+          </Route>
           <Route path="/in/:venueId/admin">
             <Provided withRelatedVenues>
               <VenueAdminPage />
