@@ -33,7 +33,11 @@ export const useDeleteMessage = <T extends DeleteChatMessageProps>({
 
       processResultingBatch(props, messageRefs, batch);
 
-      await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
+      try {
+        await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
+      } catch (e) {
+        console.error(e);
+      }
     },
     [getCollections, processResultingBatch]
   );

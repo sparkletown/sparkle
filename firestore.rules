@@ -22,6 +22,9 @@ service cloud.firestore {
         allow write: if request.auth.uid == userId;
       }
     }
+    match /userLookup/{userId}/{rest=**} {
+      allow read,write,delete,create: if request.auth.uid == userId;
+    }
     match /userprivate/{userId} {
       allow read,write: if request.auth.uid == userId;
     }

@@ -1,10 +1,9 @@
 import firebase from "firebase/app";
 
-export const getUserLookupTableRef = () =>
-  firebase.firestore().collection("usersLookup");
-
-export const getUserLookupRef = (userId: string) =>
-  getUserLookupTableRef().doc(userId).collection("paths");
+export const getUserLookupRef = (
+  userId: string,
+  ref: firebase.firestore.DocumentReference
+) => firebase.firestore().doc(`userLookup/${userId}/${ref.path}`);
 
 export type UserLookupLocation =
   | "venueChat"
@@ -20,7 +19,7 @@ export const updateBatchWithAddUserLookup = (
   ref: firebase.firestore.DocumentReference,
   docPath = ""
 ) => {
-  batch.set(getUserLookupRef(userId).doc(ref.path), { path: docPath });
+  batch.set(getUserLookupRef(userId, ref), { path: docPath });
 };
 
 export const updateBatchWithDeleteUserLookup = (
@@ -28,7 +27,7 @@ export const updateBatchWithDeleteUserLookup = (
   userId: string,
   ref: firebase.firestore.DocumentReference
 ) => {
-  batch.delete(getUserLookupRef(userId).doc(ref.path));
+  batch.delete(getUserLookupRef(userId, ref));
 };
 
 export const addWithUserLookup = <T>(
