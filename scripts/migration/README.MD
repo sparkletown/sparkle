@@ -23,3 +23,5 @@ Actions to take:
   - Perform first-time import of the documents from `users` collection to Algolia index as described in the extension [docs](https://github.com/algolia/firestore-algolia-search/blob/main/POSTINSTALL.md#optional-import-existing-documents-or-reindex-after-configuration-changes).
 - Migrate venue chats structure:
   - Run `scripts/migration/migrate-venue-chats.ts`
+- Transform audience-venues to auditorium-venues
+  - Run `scripts/migration/replace-audience-venues-with-auditorium.ts`
