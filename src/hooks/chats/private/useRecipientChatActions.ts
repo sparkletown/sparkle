@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 import firebase from "firebase/app";
 
 import { getUserChatsCollectionRef, setChatMessageRead } from "api/chat";
-import { updateBatchWithAddUserLookup } from "api/userLookup";
+import { processBatchForUserLookup } from "api/userLookup";
 
 import {
   MarkMessageRead,
@@ -50,28 +50,29 @@ export const useRecipientChatActions = (
     [recipient]
   );
 
-  const processBatch = useCallback(
-    (
-      props: SendMessagePropsBase,
-      messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
-      batch: firebase.firestore.WriteBatch
-    ) => {
-      if (!userId) return;
-      if (messageRefs.length !== 2) {
-        console.error("Invalid messageRefs", messageRefs);
-        return;
-      }
+  const processBatch = (
+    props: SendMessagePropsBase,
+    messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
+    batch: firebase.firestore.WriteBatch
+  ) => {
+    if (!userId) return;
 
-      updateBatchWithAddUserLookup(batch, userId, messageRefs[0], "fromUser");
-      updateBatchWithAddUserLookup(
-        batch,
+    if (messageRefs.length !== 2) {
+      console.error("Invalid messageRefs.length. Expected 2", messageRefs);
+      return;
+    }
+
+    return (Promise.all([
+      processBatchForUserLookup(userId, batch, [messageRefs[0]], false),
+      processBatchForUserLookup(
         recipient.id,
-        messageRefs[1],
+        batch,
+        [messageRefs[1]],
+        false,
         "toUser"
-      );
-    },
-    [recipient.id, userId]
-  );
+      ),
+    ]) as unknown) as Promise<void>;
+  };
 
   const sendMessage = useSendChatMessage<PrivateChatMessage>(
     refs,

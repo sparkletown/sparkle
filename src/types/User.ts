@@ -58,6 +58,11 @@ export type TableSeatedUser = DisplayUser & {
   path: VenueTablePath;
 };
 
+export type UserLookup = {
+  firebasePath: string;
+  docPath: string;
+};
+
 export interface UserStatus {
   status: string;
   color: string;

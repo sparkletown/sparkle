@@ -136,10 +136,11 @@ exports.onUserUpdate = functions.firestore
     await Promise.all(
       chunk(paths, BATCH_MAX_OPS).map((pathsChunk) => {
         const batch = admin.firestore().batch();
-        for (const pathRef of pathsChunk) {
-          const pathInDoc = pathRef.data().path;
-          const data = pathInDoc ? set({}, pathInDoc, after) : after;
-          batch.update(admin.firestore().doc(pathRef.id), data);
+        for (const ref of pathsChunk) {
+          const { firebasePath, docPath } = ref.data();
+
+          const data = docPath ? set({}, docPath, after) : after;
+          batch.update(admin.firestore().doc(firebasePath), data);
         }
         return batch.commit();
       })

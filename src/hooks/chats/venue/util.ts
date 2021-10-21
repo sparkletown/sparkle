@@ -7,10 +7,7 @@ import {
   VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT,
 } from "settings";
 
-import {
-  updateBatchWithAddUserLookup,
-  updateBatchWithDeleteUserLookup,
-} from "api/userLookup";
+import { processBatchForUserLookup } from "api/userLookup";
 import { getVenueRef } from "api/venue";
 
 import {
@@ -66,9 +63,10 @@ export const useGetVenueThreadCollectionRef = (venueId: string | undefined) =>
 export const useProcessBatchForThread = <T extends ThreadVariant>(
   venueId: string | undefined,
   variant: T
-): ChatActionsProps<T>["processResultingBatch"] =>
-  useCallback(
-    ({ threadId }, batch) => {
+): ChatActionsProps<T>["processResultingBatch"] => {
+  const { userId } = useUser();
+  return useCallback(
+    async ({ threadId }, messageRefs, batch) => {
       if (!venueId) return;
       batch.update(
         getChatsRef(venueId).doc(threadId),
@@ -77,9 +75,17 @@ export const useProcessBatchForThread = <T extends ThreadVariant>(
           variant === "sendThread" ? 1 : -1
         )
       );
+
+      await processBatchForUserLookup(
+        userId,
+        batch,
+        messageRefs,
+        variant === "deleteThread"
+      );
     },
-    [variant, venueId]
+    [userId, variant, venueId]
   );
+};
 
 export const useProcessBatchForChat = <T extends ChatVariant>(
   venueId: string | undefined,
@@ -88,7 +94,7 @@ export const useProcessBatchForChat = <T extends ChatVariant>(
   const { userId } = useUser();
 
   return useCallback(
-    (
+    async (
       props,
       messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
       batch: firebase.firestore.WriteBatch
@@ -104,20 +110,12 @@ export const useProcessBatchForChat = <T extends ChatVariant>(
         firebase.firestore.FieldValue.increment(variant === "sendChat" ? 1 : -1)
       );
 
-      if (messageRefs.length !== 1) {
-        console.error("Invalid messageRefs", messageRefs);
-        return;
-      }
-
-      if (userId)
-        if (variant === "sendChat")
-          updateBatchWithAddUserLookup(
-            batch,
-            userId,
-            messageRefs[0],
-            "fromUser"
-          );
-        else updateBatchWithDeleteUserLookup(batch, userId, messageRefs[0]);
+      await processBatchForUserLookup(
+        userId,
+        batch,
+        messageRefs,
+        variant === "deleteChat"
+      );
     },
     [userId, variant, venueId]
   );

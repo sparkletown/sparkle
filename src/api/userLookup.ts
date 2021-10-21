@@ -1,33 +1,53 @@
 import firebase from "firebase/app";
 
-export const getUserLookupRef = (
-  userId: string,
-  ref: firebase.firestore.DocumentReference
-) => firebase.firestore().doc(`userLookup/${userId}/${ref.path}`);
+import { UserLookup } from "types/User";
 
-export type UserLookupLocation =
-  | "venueChat"
-  | "venueChatThread"
-  | "privateChat"
-  | "privateChatThread"
-  | "jukeboxChat"
-  | "auditoriumSection";
+import { propName } from "utils/propName";
 
-export const updateBatchWithAddUserLookup = (
+export const getUserLookupRef = (userId: string) =>
+  firebase.firestore().collection("userLookup").doc(userId).collection("paths");
+
+export const processBatchForUserLookup = async (
+  userId: string | undefined,
+  batch: firebase.firestore.WriteBatch,
+  refs: firebase.firestore.DocumentReference[],
+  isDelete: boolean,
+  docPath = "fromUser"
+) => {
+  if (refs.length !== 1) {
+    console.error("Invalid messageRefs.length. Expected 1", refs);
+    return;
+  }
+  const ref = refs[0];
+
+  if (!userId) return;
+
+  if (isDelete) await updateBatchWithDeleteUserLookup(batch, userId, ref);
+  else updateBatchWithAddUserLookup(batch, userId, ref, docPath);
+};
+
+const updateBatchWithAddUserLookup = (
   batch: firebase.firestore.WriteBatch,
   userId: string,
   ref: firebase.firestore.DocumentReference,
   docPath = ""
 ) => {
-  batch.set(getUserLookupRef(userId, ref), { path: docPath });
+  const userLookupData: UserLookup = {
+    firebasePath: ref.path,
+    docPath,
+  };
+  batch.set(getUserLookupRef(userId).doc(), userLookupData);
 };
 
-export const updateBatchWithDeleteUserLookup = (
+const updateBatchWithDeleteUserLookup = async (
   batch: firebase.firestore.WriteBatch,
   userId: string,
   ref: firebase.firestore.DocumentReference
 ) => {
-  batch.delete(getUserLookupRef(userId, ref));
+  const lookups = await getUserLookupRef(userId)
+    .where(propName<UserLookup>("firebasePath"), "==", ref.path)
+    .get();
+  lookups.forEach(({ ref }) => batch.delete(ref));
 };
 
 export const addWithUserLookup = <T>(
@@ -42,12 +62,12 @@ export const addWithUserLookup = <T>(
   return batch.commit();
 };
 
-export const removeWithUserLookup = (
+export const removeWithUserLookup = async (
   userId: string,
   ref: firebase.firestore.DocumentReference
 ) => {
   const batch = firebase.firestore().batch();
   batch.delete(ref);
-  updateBatchWithDeleteUserLookup(batch, userId, ref);
+  await updateBatchWithDeleteUserLookup(batch, userId, ref);
   return batch.commit();
 };

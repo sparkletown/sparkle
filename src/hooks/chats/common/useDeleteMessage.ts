@@ -16,7 +16,7 @@ export interface UseDeleteMessageProps<T extends DeleteChatMessageProps> {
     props: T,
     messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
     batch: firebase.firestore.WriteBatch
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 export const useDeleteMessage = <T extends DeleteChatMessageProps>({
@@ -31,7 +31,7 @@ export const useDeleteMessage = <T extends DeleteChatMessageProps>({
       const messageRefs = collectionRefs.map((ref) => ref.doc(props.messageId));
       messageRefs.forEach((ref) => batch.delete(ref));
 
-      processResultingBatch(props, messageRefs, batch);
+      await processResultingBatch(props, messageRefs, batch);
 
       try {
         await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());

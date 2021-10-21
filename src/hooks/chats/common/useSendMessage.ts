@@ -73,7 +73,7 @@ export interface UseSendMessageProps<
     props: K,
     messageRefs: firebase.firestore.DocumentReference<firebase.firestore.DocumentData>[],
     batch: firebase.firestore.WriteBatch
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 export const useSendMessage = <
@@ -102,7 +102,7 @@ export const useSendMessage = <
         const messageRefs = collectionRefs.map((ref) => ref.doc());
         messageRefs.forEach((ref) => batch.set(ref, processedMessage));
 
-        processResultingBatch(props, messageRefs, batch);
+        await processResultingBatch(props, messageRefs, batch);
 
         await waitAtLeast(CHAT_MESSAGE_TIMEOUT, batch.commit());
       } catch (e) {

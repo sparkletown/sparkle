@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import firebase from "firebase/app";
 
-import { updateBatchWithAddUserLookup } from "api/userLookup";
+import { processBatchForUserLookup } from "api/userLookup";
 import { getVenueRef } from "api/venue";
 
 import {
@@ -56,12 +56,7 @@ const useJukeboxActions = (
     ) => {
       if (!userId) return;
 
-      if (messageRefs.length !== 1) {
-        console.error("Invalid messageRefs", messageRefs);
-        return;
-      }
-
-      updateBatchWithAddUserLookup(batch, userId, messageRefs[0], "fromUser");
+      return processBatchForUserLookup(userId, batch, messageRefs, false);
     },
     [userId]
   );
