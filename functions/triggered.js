@@ -3,9 +3,9 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { pick, isEqual, chunk, set } = require("lodash");
-const { BATCH_MAX_OPS } = require("functions/scheduled");
+const { BATCH_MAX_OPS } = require("./scheduled");
 
-const DISPLAY_USER_FIELDS = ["partyName" | "pictureUrl" | "anonMode"];
+const DISPLAY_USER_FIELDS = ["partyName", "pictureUrl", "anonMode"];
 
 exports.incrementSectionsCount = functions.firestore
   .document("venues/{venueId}/sections/{sectionId}")
@@ -122,27 +122,36 @@ exports.onUserUpdate = functions.firestore
   .onUpdate(async (change, context) => {
     const { userId } = context.params;
 
-    const before = pick(change.before, DISPLAY_USER_FIELDS);
-    const after = pick(change.after, DISPLAY_USER_FIELDS);
-    if (isEqual(before, after)) return;
+    const beforePick = pick(change.before.data(), DISPLAY_USER_FIELDS);
+    const afterPick = pick(change.after.data(), DISPLAY_USER_FIELDS);
+    if (isEqual(beforePick, afterPick)) return;
 
     const { docs: paths } = await admin
       .firestore()
-      .collection("usersLookup")
+      .collection("userLookup")
       .doc(userId)
       .collection("paths")
       .get();
 
+    let updatedPlacesCount = 0;
     await Promise.all(
       chunk(paths, BATCH_MAX_OPS).map((pathsChunk) => {
         const batch = admin.firestore().batch();
         for (const ref of pathsChunk) {
           const { firebasePath, docPath } = ref.data();
 
-          const data = docPath ? set({}, docPath, after) : after;
+          const data = docPath
+            ? set({}, docPath, { ...afterPick, id: userId })
+            : afterPick;
           batch.update(admin.firestore().doc(firebasePath), data);
+          updatedPlacesCount++;
         }
         return batch.commit();
       })
     );
+
+    if (updatedPlacesCount)
+      console.log(
+        `Updated user ${userId} data in ${updatedPlacesCount} places`
+      );
   });
