@@ -54,7 +54,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
-  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  const [imageUrl, setImageUrl] = useState<string | undefined>();
   useEffect(() => setImageUrl(imgUrl), [imgUrl]);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
