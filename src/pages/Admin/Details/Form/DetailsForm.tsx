@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -71,6 +71,18 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     [user, worldId, venueId, history]
   );
 
+  const defaultValues = useMemo(
+    () => ({
+      name: editData?.name,
+      subtitle: editData?.subtitle,
+      description: editData?.description,
+      bannerImageUrl: editData?.bannerImageUrl ?? "",
+      logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
+      showGrid: editData?.showGrid,
+    }),
+    [editData]
+  );
+
   const {
     watch,
     formState: { isSubmitting, dirty },
@@ -79,14 +91,18 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     errors,
     handleSubmit,
     triggerValidation,
+    reset,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     validationSchema: validationSchema_v2,
+    defaultValues,
     validationContext: {
       editing: !!venueId,
     },
   });
+
+  useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
 
@@ -102,19 +118,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const nameDisabled = isSubmitting || !!venueId;
 
   const defaultVenue = createJazzbar({});
-
-  useEffect(() => {
-    if (editData && venueId) {
-      setValue([
-        { name: editData?.name },
-        { subtitle: editData?.subtitle },
-        { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl ?? "" },
-        { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
-        { showGrid: editData?.showGrid },
-      ]);
-    }
-  }, [editData, setValue, venueId]);
 
   const handleBannerUpload = (url: string) => {
     setBannerURL(dispatch, url);
@@ -188,7 +191,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         error={errors.bannerImageFile || errors.bannerImageUrl}
         setValue={setValue}
         register={register}
-        imgUrl={editData?.bannerImageUrl}
+        imgUrl={values.bannerImageUrl}
         isInputHidden={!values.bannerImageUrl}
         text="Upload Highlight image"
       />
@@ -205,7 +208,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         error={errors.logoImageFile || errors.logoImageUrl}
         setValue={setValue}
         register={register}
-        imgUrl={editData?.logoImageUrl}
+        imgUrl={values.logoImageUrl}
+        isInputHidden={!values.logoImageUrl}
       />
     </div>
   );
