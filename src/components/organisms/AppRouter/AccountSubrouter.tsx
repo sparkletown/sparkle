@@ -1,6 +1,12 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
+import {
+  ACCOUNT_CODE_URL,
+  ACCOUNT_PROFILE_URL,
+  ACCOUNT_QUESTIONS_URL,
+} from "settings";
+
 import { CodeOfConduct } from "pages/Account/CodeOfConduct";
 import { Profile } from "pages/Account/Profile";
 import { Questions } from "pages/Account/Questions";
@@ -8,9 +14,9 @@ import { Questions } from "pages/Account/Questions";
 export const AccountSubrouter: React.FC = () => {
   return (
     <Switch>
-      <Route path="/account/profile" component={Profile} />
-      <Route path="/account/questions" component={Questions} />
-      <Route path="/account/code-of-conduct" component={CodeOfConduct} />
+      <Route path={ACCOUNT_PROFILE_URL} component={Profile} />
+      <Route path={ACCOUNT_QUESTIONS_URL} component={Questions} />
+      <Route path={ACCOUNT_CODE_URL} component={CodeOfConduct} />
     </Switch>
   );
 };

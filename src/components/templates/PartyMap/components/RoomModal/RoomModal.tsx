@@ -13,7 +13,7 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
-import { openUrl } from "utils/url";
+import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
@@ -31,9 +31,6 @@ import { ScheduleItem } from "..";
 import "./RoomModal.scss";
 
 const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
-
-const isExternalPortal: (portal: Room) => boolean = (portal) =>
-  portal?.template === "external" || portal?.url.startsWith("http");
 
 export interface RoomModalProps {
   onHide: () => void;
