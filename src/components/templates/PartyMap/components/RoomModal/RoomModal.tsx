@@ -16,6 +16,7 @@ import { WithId, WithVenueId } from "utils/id";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -103,6 +104,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     room,
   });
 
+  const analytics = useAnalytics({ venue });
+
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
@@ -115,10 +118,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enter: () => void = useCallback(
-    () => void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound()),
-    [enterWithSound, room]
-  );
+  const enter: () => void = useCallback(() => {
+    analytics.trackEnterRoomEvent(room.title, room.template);
+    void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound());
+  }, [analytics, enterWithSound, room]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
@@ -145,6 +148,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomTitle = room.title || portalVenue?.name;
   const roomSubtitle = room.subtitle || portalVenueSubtitle;
   const roomDescription = room.about || portalVenueDescription;
+
+  useEffect(() => {
+    analytics.trackOpenRoomModalEvent(roomTitle);
+  }, [analytics, roomTitle]);
 
   // @debt maybe refactor this, but autoFocus property working very bad.
   const enterButtonref = useRef<HTMLButtonElement>(null);
