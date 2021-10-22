@@ -36,12 +36,8 @@ module.exports = {
       }
 
       webpackConfig.optimization.minimizer.forEach((minimizer) => {
-        if (
-          minimizer &&
-          minimizer.options &&
-          minimizer.options.parallel === true
-        ) {
-          minimizer.options.parallel = 2;
+        if (minimizer && minimizer.options) {
+          minimizer.options.parallel = 1;
         }
       });
 
