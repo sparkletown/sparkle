@@ -58,7 +58,6 @@ export interface FirestoreStatus {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
-  currentWorld: World;
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
   currentVenue?: AnyVenue;
