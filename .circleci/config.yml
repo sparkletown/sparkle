@@ -403,6 +403,24 @@ jobs:
                 }
               }'
       - *notify-on-fail
+  build-js-only:
+    executor: node/default
+    resource_class: "large"
+    steps:
+      - checkout
+      - node/install-packages
+      - run:
+          command: |
+            PREFIX=STAGING_
+            ENV=staging
+            TARGET=staging
+            RELEASE_STAGE=staging
+
+            ./scripts/init-env.sh $PREFIX
+
+            /usr/bin/time --verbose npm run build -- --profile
+      - *notify-on-fail
+
 workflows:
   build-test-deploy:
     jobs:
@@ -413,6 +431,38 @@ workflows:
           filters:
             branches:
               only:
+                - master
+                - staging
+                - sparkleverse
+                - sparkle1
+                - sparkle2
+                - sparkle3
+                - sparkle4
+                - sparkle5
+                - sparkle6
+                - sparkle7
+                - sparkle8
+                - sparkle9
+                - sparkle10
+                - bigtop
+                - deloitte
+                - env/kotr
+                - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
+                - env/demo
+                - env/unity
+                - env/clever
+                - env/burn
+                - env/burn-staging
+                - env/github
+                - env/summit-hack
+                - env/northwell
+      - build-js-only:
+          filters:
+            branches:
+              ignore:
                 - master
                 - staging
                 - sparkleverse
