@@ -23,7 +23,7 @@ service cloud.firestore {
       }
     }
     match /userLookup/{userId}/{rest=**} {
-      allow read,write,delete,create: if request.auth.uid == userId;
+      allow read,write: if request.auth.uid != null;
     }
     match /userprivate/{userId} {
       allow read,write: if request.auth.uid == userId;
