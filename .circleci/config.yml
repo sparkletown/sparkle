@@ -415,6 +415,7 @@ jobs:
 
             ./scripts/output-memory-usage.sh &
             MEM_SCRIPT_PID=$!
+            npm --version
 
             ./scripts/init-env.sh $PREFIX
 
