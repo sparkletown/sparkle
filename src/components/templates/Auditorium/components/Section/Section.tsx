@@ -12,6 +12,7 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
@@ -72,12 +73,22 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   useUpdateAuditoriumRecentSeatedUsers(venueId, isUserSeated && sectionId);
 
+  const analytics = useAnalytics({ venue });
+
   // Ensure the user leaves their seat when they leave the section
   useEffect(() => {
     return () => {
       leaveSeat();
     };
   }, [leaveSeat]);
+
+  useEffect(() => {
+    analytics.trackEnterAuditoriumSectionEvent();
+  }, [analytics]);
+
+  useEffect(() => {
+    isUserSeated && analytics.trackTakeSeatEvent();
+  }, [analytics, isUserSeated]);
 
   const centralScreenVars = useCss({
     "--central-screen-width-in-seats": screenWidthInSeats,
