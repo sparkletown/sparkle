@@ -35,6 +35,16 @@ module.exports = {
         instanceOfMiniCssExtractPlugin.options.ignoreOrder = true;
       }
 
+      webpackConfig.optimization.minimizer.forEach((minimizer) => {
+        if (
+          minimizer &&
+          minimizer.options &&
+          minimizer.options.parallel === true
+        ) {
+          minimizer.options.parallel = 2;
+        }
+      });
+
       return webpackConfig;
     },
   },
