@@ -57,4 +57,10 @@ $icon-size: $icon-padding + $icon-base-size;
     display: flex;
     justify-content: center;
   }
+
+  &__form {
+    .InputField {
+      margin: font-size--parent(3) 0;
+    }
+  }
 }

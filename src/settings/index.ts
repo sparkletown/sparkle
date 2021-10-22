@@ -44,23 +44,11 @@ export * from "./embedUrlSettings";
 export const ENABLE_POPUPS_URL =
   "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 
-export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
-export const SPARKLE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklespaces.com/terms-of-use/";
-export const SPARKLE_PRIVACY_POLICY =
-  "https://sparklespaces.com/privacy-policy/";
-
 // Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
-export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
-export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
-
-export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
-
-export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
@@ -92,9 +80,6 @@ export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
-export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
-export const SPARKLEVERSE_COMMUNITY_URL =
-  "https://www.facebook.com/groups/sparkleverse/";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -542,7 +527,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "zilloween";
+export const DEFAULT_VENUE = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -638,7 +623,8 @@ export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
-export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const CHATBOX_NEXT_FETCH_SIZE = 50;
+export const SECTIONS_NEXT_FETCH_SIZE = 50;
 
 export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 
