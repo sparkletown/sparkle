@@ -408,6 +408,7 @@ jobs:
       - image: cimg/node:current
     steps:
       - checkout
+      - node/install-packages
       - run:
           command: |
             PREFIX=STAGING_
