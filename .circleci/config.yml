@@ -404,7 +404,6 @@ jobs:
       - *notify-on-fail
   build-js-only:
     executor: node/default
-    resource_class: "large"
     steps:
       - checkout
       - node/install-packages
