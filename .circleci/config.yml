@@ -58,6 +58,8 @@ orbs:
   slack: circleci/slack@4.1.1
 jobs:
   lint-and-test:
+    docker:
+      - image: docker
     steps:
       - checkout
       - node/install-packages
@@ -402,6 +404,8 @@ jobs:
               }'
       - *notify-on-fail
   build-js-only:
+    docker:
+      - image: docker
     steps:
       - checkout
       - run:
