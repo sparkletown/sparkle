@@ -419,7 +419,6 @@ jobs:
 
             ./scripts/init-env.sh $PREFIX
 
-            npm run build -- --profile
             kill $MEM_SCRIPT_PID
             cat /sys/fs/cgroup/memory/memory.max_usage_in_bytes
       - *notify-on-fail
