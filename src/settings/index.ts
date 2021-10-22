@@ -32,14 +32,16 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export * from "./taxonomy";
+// NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./disableSettings";
+export * from "./embedUrlSettings";
 export * from "./mapBackgrounds";
 export * from "./portalSettings";
 export * from "./sectionSettings";
+export * from "./spacesSettings";
+export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
-export * from "./spacesSettings";
-export * from "./embedUrlSettings";
 
 export const ENABLE_POPUPS_URL =
   "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
@@ -675,8 +677,3 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
-
-// Issue related features that have been enabled/disabled
-
-// disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
-export const DISABLED_DUE_TO_1253 = true;
