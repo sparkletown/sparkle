@@ -416,9 +416,13 @@ jobs:
             TARGET=staging
             RELEASE_STAGE=staging
 
+            ./scripts/output-memory-usage.sh &
+            MEM_SCRIPT_PID=$!
+
             ./scripts/init-env.sh $PREFIX
 
-            /usr/bin/time --verbose npm run build -- --profile
+            npm run build -- --profile
+            kill $MEM_SCRIPT_PID
       - *notify-on-fail
 
 workflows:
