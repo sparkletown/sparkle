@@ -59,7 +59,7 @@ orbs:
 jobs:
   lint-and-test:
     docker:
-      - image: docker
+      - image: cimg/node:current
     steps:
       - checkout
       - node/install-packages
@@ -405,7 +405,7 @@ jobs:
       - *notify-on-fail
   build-js-only:
     docker:
-      - image: docker
+      - image: cimg/node:current
     steps:
       - checkout
       - run:
