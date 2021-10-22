@@ -54,11 +54,10 @@ notify-on-fail: &notify-on-fail
 
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
+  node: circleci/node@4.7.0
   slack: circleci/slack@4.1.1
 jobs:
   lint-and-test:
-    executor: node/default
     steps:
       - checkout
       - node/install-packages
@@ -403,7 +402,6 @@ jobs:
               }'
       - *notify-on-fail
   build-js-only:
-    executor: node/default
     steps:
       - checkout
       - run:
