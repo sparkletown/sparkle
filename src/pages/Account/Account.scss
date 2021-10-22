@@ -162,7 +162,7 @@ $modal-max-width: 540px;
     line-height: 100px;
     font-size: 45px;
     font-weight: bolder;
-    color: black;
+    color: $content--under;
     text-shadow: 1px 1px $content--over;
   }
   .enter-the-burn {
@@ -266,7 +266,7 @@ $modal-max-width: 540px;
     border-radius: $border-radius;
     .microphone {
       width: 410px;
-      background-color: black;
+      background-color: $content--under;
     }
     .microphone-button {
       width: 200px;

@@ -29,8 +29,8 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
     toggleSidebar,
-    togglePrivateChatSidebar,
     newPrivateMessageRecived,
+    togglePrivateChatSidebar,
     chatSettings,
     selectVenueChat,
     selectPrivateChat,

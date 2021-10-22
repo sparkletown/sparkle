@@ -5,6 +5,33 @@ import * as Yup from "yup";
 import { GridPosition } from "types/grid";
 import { VenueTablePath } from "types/venues";
 
+import { WithId } from "../utils/id";
+
+export enum PlaceInTalkShowStudioVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+  isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
+}
+
+export interface Experience extends TalkShowStudioExperience {
+  bartender?: User;
+  table?: string | null;
+  row?: number | null;
+  column?: number | null;
+  sectionId?: string;
+}
+
+export type UserExperienceData = Record<string, Experience>;
+
 // Store all things related to video chat where they can't be tampered with by other users
 export type VideoState = {
   inRoomOwnedBy?: string;
@@ -25,8 +52,10 @@ export interface BaseUser {
   anonMode?: boolean;
   mirrorVideo?: boolean;
   status?: string;
+  data?: UserExperienceData;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   profileLinks?: ProfileLink[];
+  talkShowExperience?: TalkShowStudioExperience;
 
   // forward compatible type: true/false now, can have other constants for finer grained access in the future
   // e.g. beta tester, demo or POC, maybe able to test A or B functionality not both etc.
@@ -45,10 +74,12 @@ export interface BaseUser {
 export interface User extends BaseUser {
   lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
-  enteredVenueIds?: never;
+  enteredVenueIds?: string[];
 }
 
 export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
+
+export type TalkShowStudioUser = DisplayUser & Pick<User, "talkShowExperience">;
 
 export type GridSeatedUser = DisplayUser & {
   position: Partial<GridPosition>;
@@ -96,3 +127,11 @@ export const MyPersonalizedScheduleSchema = Yup.lazy<
 
   return Yup.object().shape(lazyObjectShape).noUnknown();
 });
+
+export const userWithLocationToUser = (
+  user: WithId<UserWithLocation>
+): WithId<BaseUser> => {
+  const { lastVenueIdSeenIn, lastSeenAt, ...userWithoutLocation } = user;
+
+  return userWithoutLocation;
+};

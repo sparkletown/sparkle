@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { AnyGridData } from "types/grid";
-import { ProfileLink, User } from "types/User";
+import { ProfileLink, TalkShowStudioExperience, User } from "types/User";
 import { VenueEvent } from "types/venues";
 
 import { WithId, withId, WithVenueId } from "utils/id";
@@ -195,6 +195,40 @@ export const updateUserCollection = async ({
         userId,
         removeMode,
         event,
+      });
+
+      throw err;
+    });
+  });
+};
+
+export interface updateTalkShowStudioExperienceProps {
+  venueId: string;
+  userId: string;
+  experience: TalkShowStudioExperience;
+}
+
+export const updateTalkShowStudioExperience = async ({
+  venueId,
+  userId,
+  experience,
+}: updateTalkShowStudioExperienceProps) => {
+  const userProfileRef = getUserRef(userId);
+
+  const userData = (await userProfileRef.get()).data();
+
+  const newData = {
+    [`data.${venueId}`]: { ...userData?.data?.[venueId], ...experience },
+  };
+
+  userProfileRef.update(newData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateTalkShowStudioExperience",
+        venueId,
+        userId,
+        event,
+        experience,
       });
 
       throw err;

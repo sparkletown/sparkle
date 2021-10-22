@@ -1,0 +1,121 @@
+@import "scss/constants";
+
+$user-avatar-size: 30px;
+$reaction-position: -6px;
+$control-user-button-size: 30px;
+$control-scene-button-width: 157px;
+
+.AdminPanel {
+  width: 100%;
+  height: 100%;
+  padding: $spacing--md 0;
+
+  &__peopleOnStage {
+    padding-bottom: $spacing--md;
+  }
+
+  &__sectionLabel {
+    color: opaque-white(0.5);
+    font-size: $font-size--md;
+    margin: $spacing--sm $spacing--lg;
+  }
+
+  .AdminPanelSlot,
+  .AdminPanelUser {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 $spacing--lg;
+    cursor: pointer;
+
+    &__info {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      color: opaque-white(0.7);
+      font-size: $font-size--md;
+    }
+
+    &__picture {
+      position: relative;
+      width: $user-avatar-size;
+      height: $user-avatar-size;
+      border: solid 0;
+      border-radius: $border-radius--max;
+      background-color: opaque-white(0.1);
+      margin: $spacing--sm $spacing--sm $spacing--sm 0;
+
+      img {
+        width: $user-avatar-size;
+        height: $user-avatar-size;
+        border-radius: $border-radius--max;
+      }
+    }
+
+    &:hover {
+      background-color: $content--under;
+    }
+  }
+
+  .AdminPanelUser {
+    &__buttons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
+
+    &__picture {
+      &-reaction {
+        position: absolute;
+        bottom: $reaction-position;
+        right: $reaction-position;
+      }
+    }
+
+    &__controlUserButton {
+      visibility: hidden;
+      background-color: #404040;
+      cursor: pointer;
+      width: $control-user-button-size;
+      height: $control-user-button-size;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: $content--over;
+      border: solid 0;
+      border-radius: $border-radius--max;
+
+      &:not(:first-child) {
+        margin-left: $spacing--sm;
+      }
+
+      &-off {
+        visibility: visible;
+        background: $primary--under;
+      }
+
+      &:hover {
+        box-shadow: 0 2px 10px 0 #ffffff4d;
+      }
+    }
+
+    &:hover {
+      background-color: $content--under;
+
+      .AdminPanelUser__controlUserButton {
+        visibility: visible;
+      }
+    }
+  }
+
+  &__controlSceneButton {
+    margin-left: $spacing--lg;
+    margin-top: $spacing--lg;
+    width: $control-scene-button-width;
+    background-color: opaque-white(0.2);
+    padding: $spacing--sm $spacing--lg;
+    font-size: $font-size--md;
+  }
+}

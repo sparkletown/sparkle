@@ -33,6 +33,7 @@ export enum VenueTemplate {
   screeningroom = "screeningroom",
   viewingwindow = "viewingwindow",
   zoomroom = "zoomroom",
+  talkshowstudio = "talkshowstudio",
 
   /**
    * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
@@ -90,6 +91,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
   | VenueTemplate.viewingwindow
+  | VenueTemplate.talkshowstudio
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -101,7 +103,8 @@ export type AnyVenue =
   | JazzbarVenue
   | PartyMapVenue
   | PosterPageVenue
-  | ViewingWindowVenue;
+  | ViewingWindowVenue
+  | TalkShowStudioVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -322,6 +325,11 @@ export interface AnimateMapVenue extends BaseVenue {
   playerioFrequencyUpdate?: number;
   //@dept Right now advanced mode in develop, don't add this flag to venue!
   playerioAdvancedMode?: boolean;
+}
+
+export interface TalkShowStudioVenue extends BaseVenue {
+  template: VenueTemplate.talkshowstudio;
+  requestToJoinStage?: boolean;
 }
 
 export interface Question {

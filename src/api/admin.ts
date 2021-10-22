@@ -5,7 +5,11 @@ import { omit } from "lodash";
 import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
 import { Room } from "types/rooms";
-import { UsernameVisibility, UserStatus } from "types/User";
+import {
+  TalkShowStudioExperience,
+  UsernameVisibility,
+  UserStatus,
+} from "types/User";
 import {
   Venue_v2_EntranceConfig,
   VenueAdvancedConfig,
@@ -130,6 +134,7 @@ export interface VenueInput_v2
   parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
+  requestToJoinStage?: boolean;
 }
 
 // NOTE: world might have many fields, please keep them in alphabetic order
@@ -666,4 +671,17 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
   firebase.functions().httpsCallable("venue-removeVenueOwner")({
     venueId,
     ownerId,
+  });
+
+export const updateUserTalkShowStudioExperience = async (
+  venueId: string,
+  userId: string,
+  experience: TalkShowStudioExperience
+) =>
+  firebase
+    .functions()
+    .httpsCallable("venue-updateUserTalkShowStudioExperience")({
+    venueId,
+    userId,
+    experience,
   });

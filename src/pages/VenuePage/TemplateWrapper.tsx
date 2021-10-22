@@ -31,6 +31,8 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { TalkShowStudio } from "../../components/templates/TalkShowStudio";
+
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
@@ -107,6 +109,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.screeningroom:
       template = <ScreeningRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.talkshowstudio:
+      template = <TalkShowStudio venue={venue} />;
       break;
 
     case VenueTemplate.friendship:

@@ -12,7 +12,7 @@ $message-container-width: 28rem;
   place-items: center;
 
   // NOTE: this should specifically be black color to match the images
-  background-color: black;
+  background-color: $content--under;
   background-image: url(/assets/images/starfield.jpg);
   background-size: cover;
   background-position: center;

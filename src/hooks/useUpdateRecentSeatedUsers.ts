@@ -51,7 +51,6 @@ const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
   venueSpecificData: RecentSeatedUserData<T>["venueSpecificData"] | FalseyValue
 ) => {
   const { userId } = useUser();
-
   const intervalRunning = Boolean(venueSpecificData && venueId);
   useInterval(
     () => {
@@ -78,6 +77,16 @@ export const useUpdateAuditoriumRecentSeatedUsers = (
     VenueTemplate.auditorium,
     venueId,
     useMemo(() => (sectionId ? { sectionId } : undefined), [sectionId])
+  );
+};
+
+export const useUpdateTalkShowRecentSeatedUsers = (
+  venueId: string | undefined
+) => {
+  useUpdateRecentSeatedUsers(
+    VenueTemplate.talkshowstudio as VenueTemplate,
+    venueId,
+    ALWAYS_EMPTY_OBJECT
   );
 };
 

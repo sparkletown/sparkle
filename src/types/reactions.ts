@@ -13,6 +13,7 @@ export enum EmojiReactionType {
   boo = "boo",
   burn = "burn",
   sparkle = "sparkle",
+  request = "request",
 }
 
 export const TextReactionType = "messageToTheBand" as const;
@@ -102,6 +103,17 @@ export const EMOJI_REACTIONS: Readonly<ReactionData<EmojiReactionType>[]> = [
     text: "✨",
     ariaLabel: "sparkle-emoji",
     audioPath: "/sounds/sparkle.mp3",
+  },
+];
+
+export const AllEmojiReactions: ReactionData<EmojiReactionType>[] = [
+  ...EMOJI_REACTIONS,
+  {
+    type: EmojiReactionType.request,
+    name: "request",
+    text: "✋",
+    ariaLabel: "request-emoji",
+    audioPath: "",
   },
 ];
 

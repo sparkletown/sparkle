@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 import { World } from "api/admin";
 
 import { DistributedCounterValue } from "types/Firestore";
+import { TalkShowSeatedUser } from "types/talkShow";
 
 import { WithId, withId } from "utils/id";
 
@@ -26,6 +27,19 @@ export const distributedCounterValueConverter: firebase.firestore.FirestoreDataC
   }: DistributedCounterValue): firebase.firestore.DocumentData => ({
     value,
   }),
+};
+
+export const talkShowSeatedUserConverter: firebase.firestore.FirestoreDataConverter<
+  WithId<TalkShowSeatedUser>
+> = {
+  toFirestore: (
+    venue: WithId<TalkShowSeatedUser>
+  ): firebase.firestore.DocumentData => venue,
+
+  fromFirestore: (
+    snapshot: firebase.firestore.QueryDocumentSnapshot
+  ): WithId<TalkShowSeatedUser> =>
+    withId(snapshot.data() as TalkShowSeatedUser, snapshot.id),
 };
 
 export const worldConverter: firebase.firestore.FirestoreDataConverter<

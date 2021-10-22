@@ -223,3 +223,7 @@ export const worldEditSelector: SparkleSelector<World | undefined> = (state) =>
 export const worldEditStartValuesSelector: SparkleSelector<
   Partial<WithOptionalWorldId<WorldStartFormInput>>
 > = (state) => state.worldEditStartValues;
+
+export const currentWorldSelector: SparkleSelector<World | undefined> = (
+  state
+) => state.firestore.data.currentWorld;

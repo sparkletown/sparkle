@@ -1,0 +1,102 @@
+@import "scss/constants";
+
+$header-height: 45px;
+$controller-closed-height: 55px;
+$controller-closed-width: 100px;
+$controller-closed-position-top: 132px;
+$controller-opened-width: 50px;
+$settings-sidebar-position-top: 66px;
+$settings-sidebar-height: calc(100vh - 96px);
+$tab-content-height: calc(100% - #{$header-height});
+$controller-border-radius: $border-radius--lg 0 0 $border-radius--lg;
+
+.settings-sidebar {
+  transform: translateX(100%);
+  transition: transform 0.2s;
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  top: $settings-sidebar-position-top;
+  right: 0;
+  width: $chat-sidebar-width;
+  height: $settings-sidebar-height;
+  background-color: $secondary--dark;
+  z-index: z(sidebar);
+
+  &--expanded {
+    transform: translateX(0);
+    transition: transform 0.3s;
+    background-color: opaque-black(0.9);
+    box-shadow: -10px 0 40px opaque-black(0.5);
+    z-index: z(admin-sidebar);
+  }
+
+  &__controller-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  &__controller-text {
+    font-size: $font-size--md;
+  }
+
+  .header {
+    height: $header-height;
+  }
+
+  .tabs {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: $content--under;
+  }
+
+  .tab {
+    display: flex;
+    font-size: $font-size--md;
+    justify-content: center;
+    align-items: center;
+    border-bottom: rgba(0, 0, 0, 0) thin solid;
+    width: 100%;
+    height: 100%;
+    background-color: $content--under;
+    border-bottom: white 2px solid;
+    color: $content--over;
+  }
+
+  .controller-closed {
+    color: $content--over;
+    background-color: $secondary;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 $spacing--sm;
+    height: $controller-closed-height;
+    width: $controller-closed-width;
+    border-radius: $controller-border-radius;
+    top: $controller-closed-position-top;
+    position: absolute;
+    transform: translateX(-100%);
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+    }
+  }
+
+  .controller-opened {
+    position: absolute;
+    top: $spacing--md;
+    width: $controller-opened-width;
+  }
+
+  .tab-content {
+    flex: 1 1 auto;
+    height: $tab-content-height;
+    width: 100%;
+  }
+}

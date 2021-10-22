@@ -80,6 +80,15 @@ const removeDanglingSeatedUsers = async () => {
                   .doc(userId)
               );
               break;
+            case "talkshowstudio":
+              batch.delete(
+                firestore
+                  .collection("venues")
+                  .doc(venueId)
+                  .collection("seatedTalkShowUsers")
+                  .doc(userId)
+              );
+              break;
             default:
               console.warn(
                 `Found unsupported venue template ${seatedUserData.template}`
