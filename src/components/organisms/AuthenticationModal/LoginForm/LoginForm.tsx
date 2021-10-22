@@ -18,11 +18,11 @@ import gIcon from "assets/icons/google-social-icon.svg";
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
-  closeAuthenticationModal: () => void;
-  afterUserIsLoggedIn?: () => void;
+  closeAuthenticationModal?: () => void;
+  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
 }
 
-interface LoginFormData {
+export interface LoginFormData {
   email: string;
   password: string;
   code: string;
@@ -62,10 +62,10 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
-  const postSignInCheck = () => {
-    afterUserIsLoggedIn && afterUserIsLoggedIn();
+  const postSignInCheck = (data?: LoginFormData) => {
+    afterUserIsLoggedIn?.(data);
 
-    closeAuthenticationModal();
+    closeAuthenticationModal?.();
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -73,7 +73,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     try {
       await signIn(data);
 
-      postSignInCheck();
+      postSignInCheck(data);
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
