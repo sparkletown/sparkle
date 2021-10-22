@@ -15,7 +15,7 @@ import { setBannerURL, setSquareLogoUrl } from "../redux/actions";
 import { VenueWizardEditProps } from "./VenueWizardEdit.types";
 
 const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
-  venueId,
+  worldId,
   state,
   dispatch,
 }) => {
@@ -25,7 +25,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   const fetchVenueFromAPI = useCallback(async () => {
     const venueSnapshot = await firestore
       .collection("venues")
-      .doc(venueId)
+      .doc(worldId)
       .get();
 
     if (!venueSnapshot.exists) return;
@@ -42,11 +42,11 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
     });
     setBannerURL(dispatch, data.config.landingPageConfig.coverImageUrl);
     setSquareLogoUrl(dispatch, data.host.icon);
-  }, [dispatch, firestore, venueId]);
+  }, [dispatch, firestore, worldId]);
 
   useEffect(() => {
     fetchVenueFromAPI();
-  }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
+  }, [dispatch, fetchVenueFromAPI, firestore, worldId]);
 
   return <Details data={state} dispatch={dispatch} />;
 };

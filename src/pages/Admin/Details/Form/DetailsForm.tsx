@@ -13,7 +13,6 @@ import { adminWorldSpacesUrl, venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import {
@@ -33,7 +32,6 @@ import "./DetailsForm.scss";
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const history = useHistory();
-  const venueId = useVenueId();
   const { user } = useUser();
 
   const { worldId } = useWorldEditParams();
@@ -43,10 +41,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       if (!user || !worldId) return;
 
       try {
-        if (venueId) {
+        if (worldId) {
           const updatedVenue = {
             ...vals,
-            id: venueId,
             worldId,
           };
 
@@ -68,7 +65,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         console.error(e);
       }
     },
-    [user, worldId, venueId, history]
+    [user, worldId, history]
   );
 
   const defaultValues = useMemo(
@@ -98,7 +95,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     validationSchema: validationSchema_v2,
     defaultValues,
     validationContext: {
-      editing: !!venueId,
+      editing: !!worldId,
     },
   });
 
@@ -115,7 +112,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   // @debt Should this be hardcoded here like this? At the very least maybe it should reference a constant/be defined outside of this component render
   const templateID = VenueTemplate.partymap;
-  const nameDisabled = isSubmitting || !!venueId;
+  const nameDisabled = isSubmitting || !!worldId;
 
   const defaultVenue = createJazzbar({});
 
@@ -133,7 +130,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     <div className="DetailsForm__input-container">
       <h4 className="italic">Name your space</h4>
       <input
-        disabled={disable || !!venueId}
+        disabled={disable || !!worldId}
         name="name"
         ref={register}
         className="align-left"
@@ -239,7 +236,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           ref={register}
         />
         <h4 className="italic" style={{ fontSize: "30px" }}>
-          {venueId ? "Edit your space" : "Create your space"}
+          {worldId ? "Edit your space" : "Create your space"}
         </h4>
         <p
           className="small light"
@@ -262,7 +259,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
           type="submit"
           loading={isSubmitting}
         >
-          {venueId ? "Update Space" : "Create Space"}
+          {worldId ? "Update Space" : "Create Space"}
         </ButtonNG>
       </div>
     </Form>

@@ -20,8 +20,8 @@ import { Room } from "types/rooms";
 export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
 
-export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
+export const adminNGSettingsUrl = (worldId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { worldId, selectedTab });
 
 export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });

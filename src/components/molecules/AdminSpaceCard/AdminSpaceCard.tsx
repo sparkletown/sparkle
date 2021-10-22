@@ -40,7 +40,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
       <ButtonNG linkTo={adminNGVenueUrl(venue.id)} variant="primary">
         Manage Space
       </ButtonNG>
-      <ButtonNG linkTo={adminNGSettingsUrl(venue.id)} variant="primary">
+      <ButtonNG linkTo={adminNGSettingsUrl(venue.worldId)} variant="primary">
         Advanced Settings
       </ButtonNG>
     </div>

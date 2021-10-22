@@ -28,7 +28,7 @@ export enum AdminAdvancedTab {
 }
 
 export interface AdminAdvancedSettingsRouteParams {
-  venueId?: string;
+  worldId?: string;
   selectedTab?: AdminAdvancedTab;
 }
 
@@ -41,14 +41,14 @@ const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, String>> = {
 export const AdminAdvancedSettings: React.FC = () => {
   const history = useHistory();
   const {
-    venueId,
+    worldId,
     selectedTab = AdminAdvancedTab.basicInfo,
   } = useParams<AdminAdvancedSettingsRouteParams>();
 
   const {
     currentVenue: venue,
     isCurrentVenueLoaded,
-  } = useConnectCurrentVenueNG(venueId);
+  } = useConnectCurrentVenueNG(worldId);
 
   const renderAdminAdvancedTabs = useMemo(() => {
     return Object.entries(adminAdvancedTabLabelMap).map(([key, label]) => (
@@ -58,16 +58,16 @@ export const AdminAdvancedSettings: React.FC = () => {
           AdminVenueView__tab: true,
           "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        to={adminNGSettingsUrl(venueId, key)}
+        to={adminNGSettingsUrl(worldId, key)}
       >
         {label}
       </Link>
     ));
-  }, [selectedTab, venueId]);
+  }, [selectedTab, worldId]);
 
   const navigateToDefaultTab = useCallback(
-    () => history.push(adminNGSettingsUrl(venueId, AdminAdvancedTab.basicInfo)),
-    [venueId, history]
+    () => history.push(adminNGSettingsUrl(worldId, AdminAdvancedTab.basicInfo)),
+    [worldId, history]
   );
 
   if (!isCurrentVenueLoaded) {
