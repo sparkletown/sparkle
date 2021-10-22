@@ -11,12 +11,12 @@ import {
   WorldStartFormInput,
 } from "types/world";
 
-import { generateFirestoreId, WithId, withId } from "utils/id";
+import { WithId } from "utils/id";
 
 export const createFirestoreWorldCreateInput: (
   input: WorldStartFormInput,
   user: firebase.UserInfo
-) => Promise<Partial<World>> = async (input, user) => {
+) => Promise<Partial<World>> = async (input) => {
   const name = input.name;
   const slug = createUrlSafeName(name);
 
@@ -24,12 +24,9 @@ export const createFirestoreWorldCreateInput: (
 };
 
 export const createFirestoreWorldStartInput: (
-  input: WithId<WorldStartFormInput>,
+  input: WorldStartFormInput,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
-  // NOTE: id is needed before world is created to upload the images
-  const id = input?.id ?? generateFirestoreId({ emulated: true });
-
   const slug = createUrlSafeName(input.name);
   const storageRef = firebase.storage().ref();
 
@@ -51,7 +48,7 @@ export const createFirestoreWorldStartInput: (
 
     const extension = type.split("/").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/worlds/${id}/background.${extension}`
+      `users/${user.uid}/worlds/${slug}/background.${extension}`
     );
 
     await uploadFileRef.put(file);
@@ -61,7 +58,6 @@ export const createFirestoreWorldStartInput: (
   const worldUpdateData: Partial<WithId<World>> = {
     ...omit(input, Object.keys(imageInputs)),
     ...imageInputData,
-    id,
     slug,
   };
 
@@ -106,24 +102,20 @@ export const createWorld: (
   error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
-  let worldId = "";
+  const worldSlug = createUrlSafeName(world.name);
   try {
     // NOTE: due to interdependence on id and upload files' URLs:
 
     // 1. first a world stub is created
-    const stubInput = await createFirestoreWorldCreateInput(world, user);
-
-    worldId = (
-      await firebase.functions().httpsCallable("world-createWorld")(stubInput)
-    )?.data;
+    const stubInput = {
+      ...world,
+      slug: worldSlug,
+    };
 
     // 2. then world is properly updated, having necessary id
-    const fullInput = await createFirestoreWorldStartInput(
-      withId(world, worldId),
-      user
-    );
+    const fullInput = await createFirestoreWorldStartInput(stubInput, user);
 
-    await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
+    await firebase.functions().httpsCallable("world-createWorld")(fullInput);
 
     // 3. initial venue is created
     // Temporary disabled due to possible complications and edge cases.
@@ -136,12 +128,12 @@ export const createWorld: (
     // });
 
     // worldId might be useful for caller
-    return { worldId };
+    return { worldSlug };
   } catch (error) {
     // in order to prevent new worlds getting created due to subsequent errors
     // if an error is thrown here, but a world stub actually did get created
     // return the id along with the error so that caller can proceed with update instead
-    return worldId ? { worldId, error } : { error };
+    return worldSlug ? { worldSlug, error } : { error };
   }
 };
 

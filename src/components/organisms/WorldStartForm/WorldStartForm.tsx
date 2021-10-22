@@ -107,8 +107,8 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user) return;
 
-    if (worldId) {
-      await updateWorldStartSettings({ ...values, id: worldId }, user);
+    if (worldId && world) {
+      await updateWorldStartSettings({ ...values, id: world.slug }, user);
       //TODO: Change this to the most appropriate url when product decides the perfect UX
       history.push(ADMIN_V3_WORLDS_BASE_URL);
     } else {
@@ -129,7 +129,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     }
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, defaultValues, history]);
+  }, [values, user, worldId, world, reset, defaultValues, history]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({

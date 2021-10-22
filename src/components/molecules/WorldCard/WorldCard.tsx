@@ -45,7 +45,7 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       <ButtonNG
         variant="dark"
         isLink
-        linkTo={adminWorldSpacesUrl(world.id)}
+        linkTo={adminWorldSpacesUrl(world.slug)}
         iconName={faSignInAlt}
         className="WorldCard__button"
       >
@@ -53,7 +53,7 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       </ButtonNG>
       <ButtonNG
         isLink
-        linkTo={adminWorldUrl(world.id)}
+        linkTo={adminWorldUrl(world.slug)}
         variant="dark"
         iconName={faCog}
         className="WorldCard__button"

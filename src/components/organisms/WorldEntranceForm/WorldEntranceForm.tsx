@@ -36,7 +36,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world.id;
+  const worldId = world.slug;
   const { user } = useUser();
 
   const defaultValues = useMemo<WorldEntranceFormInput>(
@@ -65,10 +65,10 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
 
-    await updateWorldEntranceSettings({ ...values, id: worldId }, user);
+    await updateWorldEntranceSettings({ ...values, id: world.slug }, user);
 
     reset(defaultValues);
-  }, [worldId, user, values, reset, defaultValues]);
+  }, [values, user, worldId, world.slug, reset, defaultValues]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({

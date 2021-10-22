@@ -39,7 +39,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world.id;
+  const worldId = world.slug;
   const { user } = useUser();
 
   const defaultValues = useMemo<WorldAdvancedFormInput>(
@@ -71,10 +71,10 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
 
-    await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
+    await updateWorldAdvancedSettings(withId({ ...values }, world.slug), user);
 
     reset(values);
-  }, [worldId, user, values, reset]);
+  }, [values, user, worldId, world.slug, reset]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
