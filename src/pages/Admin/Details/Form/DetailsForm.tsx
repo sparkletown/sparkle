@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -68,18 +68,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     [user, worldId, history]
   );
 
-  const defaultValues = useMemo(
-    () => ({
-      name: editData?.name,
-      subtitle: editData?.subtitle,
-      description: editData?.description,
-      bannerImageUrl: editData?.bannerImageUrl ?? "",
-      logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
-      showGrid: editData?.showGrid,
-    }),
-    [editData]
-  );
-
   const {
     watch,
     formState: { isSubmitting, dirty },
@@ -88,18 +76,14 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
     errors,
     handleSubmit,
     triggerValidation,
-    reset,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
     validationSchema: validationSchema_v2,
-    defaultValues,
     validationContext: {
       editing: !!worldId,
     },
   });
-
-  useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
 
@@ -115,6 +99,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const nameDisabled = isSubmitting || !!worldId;
 
   const defaultVenue = createJazzbar({});
+
+  useEffect(() => {
+    if (editData) {
+      setValue([
+        { name: editData?.name },
+        { subtitle: editData?.subtitle },
+        { description: editData?.description },
+        { bannerImageUrl: editData?.bannerImageUrl ?? "" },
+        { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
+        { showGrid: editData?.showGrid },
+      ]);
+    }
+  }, [editData, setValue]);
 
   const handleBannerUpload = (url: string) => {
     setBannerURL(dispatch, url);

@@ -1,4 +1,10 @@
-import React, { ChangeEvent, useCallback, useRef, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { FieldError, useForm } from "react-hook-form";
 import { useCss } from "react-use";
 import classNames from "classnames";
@@ -48,7 +54,8 @@ const ImageInput: React.FC<ImageInputProps> = ({
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
-  const [imageUrl, setImageUrl] = useState(imgUrl);
+  const [imageUrl, setImageUrl] = useState<string | undefined>(undefined);
+  useEffect(() => setImageUrl(imgUrl), [imgUrl]);
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
