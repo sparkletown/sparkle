@@ -406,7 +406,6 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - node/install-packages
       - run:
           command: |
             PREFIX=STAGING_
