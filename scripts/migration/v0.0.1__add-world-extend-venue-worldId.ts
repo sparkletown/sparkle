@@ -1,34 +1,14 @@
-#!/usr/bin/env node -r esm -r ts-node/register
+import { stdin, stdout } from "process";
+import readline from "readline";
 
-import { resolve } from "path";
+import { MigrateOptions } from "fireway";
 
-import admin from "firebase-admin";
-
-import { initFirebaseAdminApp, makeScriptUsage } from "../lib/helpers";
-
-const usage = makeScriptUsage({
-  description: "Migrate the environment to the world architecture",
-  usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
-  exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
-});
-
-const [projectId, credentialPath] = process.argv.slice(2);
-
-// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
-if (!projectId) {
-  usage();
-}
-
-initFirebaseAdminApp(projectId, {
-  credentialPath: credentialPath ? resolve(credentialPath) : undefined,
-});
-
-export interface FetchSovereignVenueOptions {
+interface FetchSovereignVenueOptions {
   previouslyCheckedVenueIds?: readonly string[];
   maxDepth?: number;
 }
 
-export interface FetchSovereignVenueReturn {
+interface FetchSovereignVenueReturn {
   sovereignVenue: FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>;
   checkedVenueIds: readonly string[];
 }
@@ -65,21 +45,41 @@ const fetchSovereignVenue = async (
   });
 };
 
-(async () => {
-  const venuesCollection = admin.firestore().collection("venues");
+const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
+  const venuesCollection = firestore.collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
-  venueDocs.forEach(async (venueDoc) => {
-    const venueId = venueDoc.id;
-    const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
-    const sovereignVenueId = sovereignVenue.id;
+  await Promise.all(
+    venueDocs.map(async (venueDoc) => {
+      const venueId = venueDoc.id;
+      const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
+      const sovereignVenueId = sovereignVenue.id;
 
-    await admin
-      .firestore()
-      .collection("worlds")
-      .doc(sovereignVenueId)
-      .set(sovereignVenue.data());
+      await firestore
+        .collection("worlds")
+        .doc(sovereignVenueId)
+        .set(sovereignVenue.data());
 
-    await venueDoc.ref.update({ worldId: sovereignVenueId });
+      await venueDoc.ref.update({ worldId: sovereignVenueId });
+    })
+  );
+};
+
+export const migrate = async ({ firestore }: MigrateOptions) => {
+  const rl = readline.createInterface({ input: stdin, output: stdout });
+  await new Promise<void>((resolve, reject) => {
+    rl.question(
+      "Have you configured algoila as described in the README? [yes|no]",
+      async (answer) => {
+        if (answer.toLowerCase() !== "yes") {
+          reject("Abandoning migration");
+          return;
+        }
+
+        await doMigration(firestore);
+        resolve();
+      }
+    );
   });
-})();
+  rl.close();
+};
