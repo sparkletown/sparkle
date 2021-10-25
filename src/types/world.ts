@@ -1,5 +1,5 @@
+import { Question } from "types/Question";
 import { UsernameVisibility } from "types/User";
-import { Question } from "types/venues";
 
 export enum WorldNavTab {
   start = "start",
@@ -18,8 +18,8 @@ export interface WorldStartFormInput {
 }
 
 export interface WorldEntranceFormInput {
-  code_of_conduct_questions: Question[];
-  profile_questions: Question[];
+  code: Question[];
+  profile: Question[];
 }
 
 export interface WorldAdvancedFormInput {

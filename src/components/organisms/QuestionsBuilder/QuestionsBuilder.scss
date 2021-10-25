@@ -1,0 +1,16 @@
+@import "scss/constants";
+
+.QuestionsBuilder {
+  padding: font-size--parent(1);
+  border: 1px solid var(--accent--over-20a);
+  border-radius: $border-radius--lg;
+
+  > *:not(:last-child) {
+    margin-bottom: font-size--parent(2);
+  }
+
+  &__buttons {
+    display: flex;
+    place-content: center;
+  }
+}

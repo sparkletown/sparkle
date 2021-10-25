@@ -4,7 +4,7 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
 
-const { isNil } = require("lodash");
+const { isNil, isEmpty } = require("lodash");
 
 const checkIsAdmin = async (uid) => {
   try {
@@ -103,6 +103,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     logoImageUrl,
     name,
     profile_questions,
+    questions,
     rooms,
     showNametags,
     showBadges,
@@ -136,6 +137,15 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     }
   }
 
+  // @debt remove after making sure FE doesn't send code_of_conduct_questions and profile_questions anymore
+  const questionsConfig = {};
+  if (!isEmpty(questions) || !isNil(code_of_conduct_questions)) {
+    questionsConfig.code = code_of_conduct_questions || questions.code || [];
+  }
+  if (!isEmpty(questions) || !isNil(profile_questions)) {
+    questionsConfig.profile = profile_questions || questions.profile || [];
+  }
+
   const worldData = {
     updatedAt: Date.now(),
     ...(!isNil(attendeesTitle) && { attendeesTitle }),
@@ -146,6 +156,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
     ...(!isNil(name) && { name }),
     ...(!isNil(profile_questions) && { profile_questions }),
+    ...(!isEmpty(questionsConfig) && { questions: questionsConfig }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
     ...(!isNil(slug) && { slug }),
