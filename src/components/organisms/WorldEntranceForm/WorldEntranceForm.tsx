@@ -118,9 +118,9 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
 
       await updateWorldEntranceSettings({ ...input, id: worldId }, user);
 
-      reset(defaultValues);
+      reset(input);
     },
-    [worldId, user, reset, defaultValues]
+    [worldId, user, reset]
   );
 
   const saveButtonProps: ButtonProps = useMemo(
