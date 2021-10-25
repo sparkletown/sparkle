@@ -29,7 +29,7 @@
     "firebase:emulate-functions-hosting": "npm run firebase -- emulators:start --only functions,hosting",
     "firebase:emulate-functions-hosting:debug": "npm run firebase -- emulators:start --only functions,hosting --inspect-functions",
     "browserslist:update-db": "npx browserslist@latest --update-db",
-    "migrate": "fireway migrate"
+    "migrate": "fireway migrate --require=\"ts-node/register\""
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
