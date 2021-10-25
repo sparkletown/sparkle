@@ -81,6 +81,7 @@ export interface FirestoreData {
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
   worldEdit?: World;
+  currentWorld?: World;
 }
 
 // note: these entries should be sorted alphabetically
