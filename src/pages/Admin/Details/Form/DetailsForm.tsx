@@ -83,7 +83,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     async (vals: FormValues) => {
       if (!user) return;
 
-      const isValidParentId = validateParentId(values.parentId, [venueId]);
+      const isValidParentId = validateParentId(values.parentId, [
+        venueId ?? createUrlSafeName(vals.name),
+      ]);
 
       if (!isValidParentId) {
         setError(
