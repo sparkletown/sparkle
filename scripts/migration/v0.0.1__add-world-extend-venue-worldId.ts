@@ -49,53 +49,20 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
   const venuesCollection = firestore.collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
-  for (const venueDoc of venueDocs) {
-    const venueId = venueDoc.id;
-
-    if (venueDoc.data().worldId) {
-      const venueWorld = await firestore
-        .collection("worlds")
-        .doc(venueDoc.data().worldId)
-        .get();
-
-      if (venueWorld.exists) {
-        console.log(`Skipping ${venueId} as it has already been done`);
-        continue;
-      }
-    }
-
-    try {
+  await Promise.all(
+    venueDocs.map(async (venueDoc) => {
+      const venueId = venueDoc.id;
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
 
-      const { docs: existedWorlds } = await firestore
+      await firestore
         .collection("worlds")
-        .where("slug", "==", sovereignVenueId)
-        .get();
+        .doc(sovereignVenueId)
+        .set(sovereignVenue.data());
 
-      if (existedWorlds[0]) {
-        await venueDoc.ref.update({ worldId: existedWorlds[0].id });
-      } else {
-        const newWorld = venueDoc.data().worldId
-          ? await firestore.collection("worlds").doc(venueDoc.data().worldId)
-          : await firestore.collection("worlds").doc();
-
-        newWorld.set({
-          ...sovereignVenue.data(),
-          slug: sovereignVenueId,
-          questions: {
-            code: sovereignVenue.data().code_of_conduct_questions ?? [],
-            profile: sovereignVenue.data().profile_questions ?? [],
-          },
-        });
-
-        await venueDoc.ref.update({ worldId: newWorld.id });
-      }
-    } catch (e) {
-      console.error(e);
-      console.log(`Failed to migrate venue ${venueId}. Skipping`);
-    }
-  }
+      await venueDoc.ref.update({ worldId: sovereignVenueId });
+    })
+  );
 };
 
 export const migrate = async ({ firestore }: MigrateOptions) => {
@@ -109,12 +76,7 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           return;
         }
 
-        try {
-          await doMigration(firestore);
-        } catch (e) {
-          console.error(e);
-          reject(e);
-        }
+        await doMigration(firestore);
         resolve();
       }
     );
