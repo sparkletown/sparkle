@@ -19,7 +19,7 @@ import { NewProfileModalBody } from "./NewProfileModalBody";
 import "./NewProfileModal.scss";
 
 interface NewProfileModalProps {
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
 }
 
 export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {

@@ -32,35 +32,25 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export * from "./taxonomy";
+// NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./disableSettings";
+export * from "./embedUrlSettings";
 export * from "./mapBackgrounds";
 export * from "./portalSettings";
 export * from "./sectionSettings";
+export * from "./spacesSettings";
+export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
-export * from "./spacesSettings";
-export * from "./embedUrlSettings";
 
 export const ENABLE_POPUPS_URL =
   "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 
-export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
-export const SPARKLE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklespaces.com/terms-of-use/";
-export const SPARKLE_PRIVACY_POLICY =
-  "https://sparklespaces.com/privacy-policy/";
-
 // Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
-export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
-export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
-
-export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
-
-export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
@@ -92,9 +82,6 @@ export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
-export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
-export const SPARKLEVERSE_COMMUNITY_URL =
-  "https://www.facebook.com/groups/sparkleverse/";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -542,7 +529,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "zilloween";
+export const DEFAULT_VENUE = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",
@@ -599,6 +586,19 @@ export const DEFAULT_USER_STATUS = {
   color: "#53E52A",
 };
 
+// Analytics
+export const DEFAULT_ANALYTICS_GROUP_KEY = "world";
+export const DEFAULT_ANALYTICS_WORLD_NAME = "Undefined World";
+export const LOG_IN_EVENT_NAME = "Login successful";
+export const SIGN_UP_EVENT_NAME = "Sign up";
+export const VENUE_PAGE_LOADED_EVENT_NAME = "VenuePage loaded";
+export const OPEN_ROOM_MODAL_EVENT_NAME = "Open room modal";
+export const ENTER_ROOM_EVENT_NAME = "Enter room";
+export const ENTER_AUDITORIUM_SECTION_EVENT_NAME = "Enter auditorium section";
+export const SELECT_TABLE_EVENT_NAME = "Select table";
+export const TAKE_SEAT_EVENT_NAME = "Take a seat";
+export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
+
 // SCHEDULE
 export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
@@ -638,7 +638,8 @@ export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
-export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const CHATBOX_NEXT_FETCH_SIZE = 50;
+export const SECTIONS_NEXT_FETCH_SIZE = 50;
 
 export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 
@@ -676,8 +677,3 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
-
-// Issue related features that have been enabled/disabled
-
-// disabled as per https://github.com/sparkletown/internal-sparkle-issues/issues/1253
-export const DISABLED_DUE_TO_1253 = true;

@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 import { omit } from "lodash";
 import * as Yup from "yup";
 
-import { ADMIN_V3_WORLDS_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { createUrlSafeName, World } from "api/admin";
 import { createWorld, updateWorldStartSettings } from "api/world";
@@ -110,7 +110,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     if (worldId) {
       await updateWorldStartSettings({ ...values, id: worldId }, user);
       //TODO: Change this to the most appropriate url when product decides the perfect UX
-      history.push(ADMIN_V3_WORLDS_URL);
+      history.push(ADMIN_V3_WORLDS_BASE_URL);
     } else {
       const { worldId: id, error } = await createWorld(values, user);
 
@@ -125,7 +125,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
       }
 
       //TODO: Change this to the most appropriate url when product decides the perfect UX
-      history.push(ADMIN_V3_WORLDS_URL);
+      history.push(ADMIN_V3_WORLDS_BASE_URL);
     }
 
     reset(defaultValues);

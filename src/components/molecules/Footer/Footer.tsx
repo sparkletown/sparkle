@@ -1,9 +1,9 @@
 import React from "react";
 
 import {
-  HOMEPAGE_URL,
-  PRIVACY_POLICY,
-  TERMS_AND_CONDITIONS_URL,
+  EXTERNAL_SPARKLE_HOMEPAGE_URL,
+  EXTERNAL_SPARKLE_PRIVACY_POLICY,
+  EXTERNAL_SPARKLE_TOC_URL,
 } from "settings";
 
 import { getExtraLinkProps } from "utils/url";
@@ -12,20 +12,20 @@ import "./Footer.scss";
 
 export const Footer = () => (
   <div className="footer-wrapper">
-    <a href={TERMS_AND_CONDITIONS_URL} {...getExtraLinkProps(true)}>
+    <a href={EXTERNAL_SPARKLE_TOC_URL} {...getExtraLinkProps(true)}>
       Terms of Use
     </a>
 
     <div>|</div>
 
-    <a href={PRIVACY_POLICY} {...getExtraLinkProps(true)}>
+    <a href={EXTERNAL_SPARKLE_PRIVACY_POLICY} {...getExtraLinkProps(true)}>
       Privacy Policy
     </a>
 
     <div>|</div>
 
     <div>
-      <a href={HOMEPAGE_URL} {...getExtraLinkProps(true)}>
+      <a href={EXTERNAL_SPARKLE_HOMEPAGE_URL} {...getExtraLinkProps(true)}>
         Made with{" "}
         <span role="img" aria-label="heart">
           ❤️

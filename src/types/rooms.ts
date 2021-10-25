@@ -5,7 +5,7 @@ import { DisplayUser } from "types/User";
 import { WithId } from "utils/id";
 
 import { SoundConfigReference } from "./sounds";
-import { RoomVisibility, VenueTemplate } from "./venues";
+import { PortalTemplate, RoomVisibility } from "./venues";
 
 export enum RoomType {
   unclickable = "UNCLICKABLE",
@@ -28,7 +28,7 @@ export interface Room {
   visibility?: RoomVisibility;
   image_url: string;
   enterSound?: SoundConfigReference;
-  template?: VenueTemplate;
+  template?: PortalTemplate;
 }
 
 export type ParticipantWithUser<
