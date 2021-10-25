@@ -74,16 +74,14 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     add: addCodeQuestion,
     clear: clearCodeQuestions,
     remove: removeCodeQuestion,
-  } = useArray<Question>(
-    world.questions?.code ?? world.code_of_conduct_questions
-  );
+  } = useArray<Question>(world.questions?.code);
 
   const {
     items: profileQuestions,
     add: addProfileQuestion,
     clear: clearProfileQuestions,
     remove: removeProfileQuestion,
-  } = useArray<Question>(world.questions?.profile ?? world.profile_questions);
+  } = useArray<Question>(world.questions?.profile);
 
   const {
     items: entranceSteps,

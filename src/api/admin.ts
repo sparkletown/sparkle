@@ -138,8 +138,6 @@ export interface VenueInput_v2
 export interface World {
   attendeesTitle?: string;
   chatTitle?: string;
-  // @debt Should be removed after this legacy field is no longer supported
-  code_of_conduct_questions?: Question[];
   config: {
     landingPageConfig: {
       coverImageUrl: string;
@@ -154,8 +152,6 @@ export interface World {
   };
   name: string;
   owners: string[];
-  // @debt Should be removed after this legacy field is no longer supported
-  profile_questions?: Question[];
   questions?: {
     code?: Question[];
     profile?: Question[];

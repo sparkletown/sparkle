@@ -74,9 +74,6 @@ export const createFirestoreWorldEntranceInput: (
 ) => Promise<Partial<World>> = async (input, user) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
-    // save only to new place for new worlds, and check first there on read, then the old ones for legacy worlds
-    // code_of_conduct_questions: input?.code,
-    // profile_questions: input?.profile,
     questions: {
       code: input?.code ?? [],
       profile: input?.profile ?? [],
