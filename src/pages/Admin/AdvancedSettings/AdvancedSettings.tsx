@@ -72,20 +72,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
   const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
 
-  const validateParentId = useCallback((parentId, checkedIds) => {
-    if (checkedIds.includes(parentId)) return false;
-
-    if (!parentId) return true;
-
-    const parentVenue = worldParentVenues.find(
-      (venue) => venue.id === parentId
-    );
-
-    if (!parentVenue) return true;
-
-    validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
-  }, []);
-
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
     if (!user) return;
