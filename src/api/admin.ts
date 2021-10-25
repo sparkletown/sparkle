@@ -98,7 +98,6 @@ export type VenueInput = AdvancedVenueInput &
     parentId?: string;
     owners?: string[];
     chatTitle?: string;
-    attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];

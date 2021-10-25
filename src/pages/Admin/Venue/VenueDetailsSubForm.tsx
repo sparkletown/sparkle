@@ -229,26 +229,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderAttendeesTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Title of your venues attendees</h4>
-      <div style={{ fontSize: "16px" }}>
-        For example: guests, attendees, partygoers.
-      </div>
-      <input
-        type="text"
-        disabled={disable}
-        name="attendeesTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Attendees title"
-      />
-      {errors.attendeesTitle && (
-        <span className="input-error">{errors.attendeesTitle.message}</span>
-      )}
-    </div>
-  );
-
   const renderChatTitleInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Your venue type label</h4>
@@ -690,9 +670,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
         {renderHighlightImageInput()}
         {renderLogoInput()}
-
-        {/* ATTENDEES (multiple) TITLE */}
-        {renderAttendeesTitleInput()}
 
         {/* EVENT CHAT TITLE */}
         {renderChatTitleInput()}

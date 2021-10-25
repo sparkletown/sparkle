@@ -134,7 +134,6 @@ export interface Venue_v2_Base {
 }
 
 export interface VenueAdvancedConfig {
-  attendeesTitle?: string;
   chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
@@ -209,7 +208,6 @@ export interface BaseVenue {
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
   chatTitle?: string;

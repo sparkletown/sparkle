@@ -55,7 +55,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      attendeesTitle: venue.attendeesTitle,
       chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
       roomVisibility: venue.roomVisibility,
@@ -152,20 +151,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         className="AdvancedSettings__form-container"
         onSubmit={handleSubmit(updateAdvancedSettings)}
       >
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Title of your venues attendees (For example: guests, attendees,
-            partygoers)
-          </Form.Label>
-          <InputField
-            name="attendeesTitle"
-            autoComplete="off"
-            placeholder="Attendees title"
-            error={errors.attendeesTitle}
-            ref={register}
-          />
-        </div>
-
         <div className="AdvancedSettings__form-field">
           <Form.Label>
             Your venue chat label (For example: Party, Event, Meeting)
