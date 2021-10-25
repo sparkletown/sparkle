@@ -134,7 +134,6 @@ export interface Venue_v2_Base {
 }
 
 export interface VenueAdvancedConfig {
-  chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
@@ -210,7 +209,6 @@ export interface BaseVenue {
   end_utc_seconds?: number;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  chatTitle?: string;
   showReactions?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;

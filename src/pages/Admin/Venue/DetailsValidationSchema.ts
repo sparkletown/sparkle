@@ -91,8 +91,6 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
-    chatTitle: Yup.string().notRequired().default("Party"),
-
     bannerImageUrl: Yup.string(),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     zoomUrl: Yup.string().when(
@@ -190,7 +188,6 @@ export const editVenueCastSchema = Yup.object()
   .from("hasSocialLoginEnabled", "hasSocialLoginEnabled")
   .from("showShoutouts", "showShoutouts")
   .from("columns", "columns")
-  .from("chatTitle", "chatTitle")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")

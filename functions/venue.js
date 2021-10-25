@@ -218,7 +218,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -414,10 +413,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
   }
 
   if (data.code_of_conduct_questions) {
@@ -954,10 +949,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
   }
 
   if (data.code_of_conduct_questions) {

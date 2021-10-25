@@ -55,7 +55,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
@@ -151,19 +150,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         className="AdvancedSettings__form-container"
         onSubmit={handleSubmit(updateAdvancedSettings)}
       >
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Your venue chat label (For example: Party, Event, Meeting)
-          </Form.Label>
-          <InputField
-            name="chatTitle"
-            autoComplete="off"
-            placeholder="Event label"
-            error={errors.chatTitle}
-            ref={register}
-          />
-        </div>
-
         {!DISABLED_DUE_TO_1253 && (
           <div className="AdvancedSettings__form-field">
             <Toggler
