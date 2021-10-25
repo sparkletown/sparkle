@@ -7,6 +7,7 @@ import * as Yup from "yup";
 import { World } from "api/admin";
 import { updateWorldEntranceSettings } from "api/world";
 
+import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
 import { WorldEntranceFormInput } from "types/world";
 
@@ -17,6 +18,7 @@ import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
+import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
 import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
 import { AdminSection } from "components/molecules/AdminSection";
@@ -28,7 +30,7 @@ import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import "./WorldEntranceForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
-const HANDLED_ERRORS: string[] = [];
+const HANDLED_ERRORS: string[] = ["entrance"];
 
 const questionScheme = Yup.array<Question>()
   .ensure()
@@ -83,12 +85,20 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     remove: removeProfileQuestion,
   } = useArray<Question>(world.questions?.profile ?? world.profile_questions);
 
+  const {
+    items: entranceSteps,
+    add: addEntranceStep,
+    clear: clearEntranceSteps,
+    remove: removeEntranceStep,
+  } = useArray<EntranceStepConfig>(world.entrance);
+
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
       code: codeQuestions,
       profile: profileQuestions,
+      entrance: entranceSteps,
     }),
-    [codeQuestions, profileQuestions]
+    [codeQuestions, profileQuestions, entranceSteps]
   );
 
   const {
@@ -153,6 +163,17 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             onAdd={addProfileQuestion}
             onRemove={removeProfileQuestion}
             onClear={clearProfileQuestions}
+            register={register}
+          />
+        </AdminSection>
+        <AdminSection title="Space Entrance">
+          <EntranceStepsBuilder
+            errors={errors.entrance}
+            items={entranceSteps}
+            name="entrance"
+            onAdd={addEntranceStep}
+            onRemove={removeEntranceStep}
+            onClear={clearEntranceSteps}
             register={register}
           />
         </AdminSection>

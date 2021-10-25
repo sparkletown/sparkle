@@ -34,7 +34,7 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
   onClear,
   onRemove,
 }) => (
-  <div className="QuestionsBuilder" style={{ marginBottom: "1.5rem" }}>
+  <div className="QuestionsBuilder">
     {title && (
       <AdminSidebarSectionSubTitle>{title}</AdminSidebarSectionSubTitle>
     )}

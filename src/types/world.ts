@@ -1,3 +1,4 @@
+import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
 import { UsernameVisibility } from "types/User";
 
@@ -20,6 +21,7 @@ export interface WorldStartFormInput {
 export interface WorldEntranceFormInput {
   code: Question[];
   profile: Question[];
+  entrance?: EntranceStepConfig[];
 }
 
 export interface WorldAdvancedFormInput {

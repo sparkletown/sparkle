@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { omit, pick } from "lodash";
+import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -81,6 +81,7 @@ export const createFirestoreWorldEntranceInput: (
       code: input?.code ?? [],
       profile: input?.profile ?? [],
     },
+    entrance: isEmpty(input.entrance) ? undefined : input.entrance,
   };
 
   return worldUpdateData;

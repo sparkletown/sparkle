@@ -4,6 +4,7 @@ import { omit } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
+import { EntranceStepConfig } from "types/EntranceStep";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
@@ -147,6 +148,7 @@ export interface World {
     };
   };
   createdAt: Date;
+  entrance?: EntranceStepConfig[];
   host: {
     icon: string;
   };
