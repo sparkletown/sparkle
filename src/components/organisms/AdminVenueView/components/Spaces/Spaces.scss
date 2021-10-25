@@ -47,19 +47,6 @@ $icon-size: 20px;
     font-weight: bolder;
   }
 
-  &__venue-rooms {
-    padding: $spacing--md;
-    background-color: $saturated-black;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid opaque-white(0.1);
-
-    &:hover {
-      background-color: lighten($saturated-black, 5%);
-    }
-  }
-
   &__venue-room {
     padding: $spacing--md;
     display: flex;
@@ -67,7 +54,7 @@ $icon-size: 20px;
     align-items: center;
 
     &:hover {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 
@@ -77,7 +64,7 @@ $icon-size: 20px;
     background-size: contain;
     background-position: center;
     border-radius: $border-radius--xs;
-    box-shadow: 0 0 0 3px $primary;
+    box-shadow: 0 0 0 3px $accent--under;
   }
 
   &__appearance {

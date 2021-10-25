@@ -36,15 +36,15 @@
     align-items: center;
     margin-left: $spacing--md;
 
-    background-color: $primary;
+    background-color: $accent--under;
 
     &:disabled {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 
   &__submit-button-icon {
-    color: $white;
+    color: $accent--over;
   }
 
   &__emoji-picker {

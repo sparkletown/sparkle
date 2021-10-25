@@ -44,11 +44,23 @@ service cloud.firestore {
         allow read: if true;
         allow write: if request.auth.uid in venueData().owners;
       }
-      match /chats/{restOfPath=**} {
-        allow read,create: if request.auth.uid != null;
-        allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
-          isUpdateRestrictedToField(request, 'deleted');
+
+      match /chatMessagesCounter/{shardId} {
+        allow read,write: if request.auth.uid != null;
+        allow delete: if false;
       }
+      match /chats/{messageId} {
+        allow read,create: if request.auth.uid != null;
+        allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
+        allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'repliesCount');
+
+        match /thread/{messageId} {
+          allow read,create: if request.auth.uid != null;
+          allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
+          allow update: if false;
+        }
+      }
+
       match /jukeboxMessages/{restOfPath=**} {
         allow read,create: if request.auth.uid != null;
         allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
@@ -110,7 +122,8 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/worlds/$(worldId)).data;
       }
 
-      allow update,delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+      allow read: if true;
+      allow update, delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
     }
   }
 }

@@ -16,16 +16,16 @@ $start-table-internal-indent: 25px;
   min-height: $start-table-height;
 
   width: 100%;
-  background: $dark;
+  background: $secondary--live;
   border: none;
   border-radius: 22px;
-  color: $white;
+  color: $content--over;
   margin: calc(2 * #{$start-table-button-indent}) $start-table-button-indent
     $start-table-button-indent;
   cursor: pointer;
 
   &:hover {
-    background-color: lighten($dark, 10%);
+    background-color: lighten($secondary--live, 10%);
     transform: scale(1.05);
 
     .StartTable__sign {

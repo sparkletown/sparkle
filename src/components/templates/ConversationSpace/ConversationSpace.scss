@@ -33,8 +33,8 @@
     flex-shrink: 0;
 
     .table-header {
-      background: $dark;
-      color: $white;
+      background: $secondary--live;
+      color: $content--over;
       padding: 10px 20px;
       border-radius: 22px 22px 0 0;
     }
@@ -69,7 +69,7 @@
     }
 
     .call-out-band-container-at-table {
-      background: $dark;
+      background: $secondary--live;
       padding: 10px;
       margin-top: 15px;
       border-radius: 0px 0px 22px 22px;
@@ -193,7 +193,7 @@
       justify-content: space-around;
       border-radius: 0 0 22px 22px;
       padding-top: 4px;
-      background: $dark;
+      background: $secondary--live;
     }
 
     .emoji-container {
@@ -228,7 +228,7 @@
         margin-left: 10px;
         width: 100px;
         &[type="submit"]:disabled {
-          color: rgba($white, 0.2);
+          color: opaque-white(0.2);
           background-color: rgba(green, 0.5);
         }
       }
@@ -270,7 +270,7 @@
   }
 
   .seated-area {
-    border: 0px solid $white;
+    border: 0px solid $content--over;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;

@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { FieldErrors, useForm } from "react-hook-form";
 import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
+  DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -298,13 +300,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
       {/* note: the default embedded video is the "Intro to Sparkle" video*/}
       <textarea
+        placeholder={DEFAULT_EMBED_URL}
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-      >
-        https://player.vimeo.com/video/512606583?h=84853fbd28
-      </textarea>
+      />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
       )}
@@ -553,6 +554,15 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     );
   };
 
+  const renderSocialLoginToggle = () => {
+    return (
+      <div className="toggle-room DetailsForm">
+        <h4 className="italic input-header">Enable Social Login</h4>
+        <Toggler name="hasSocialLoginEnabled" forwardedRef={register} />
+      </div>
+    );
+  };
+
   const renderRadioStationInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Radio station stream URL:</h4>
@@ -643,12 +653,23 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     setUserStatuses(statuses);
   };
 
+  const updateVenue = useCallback(
+    (values: Partial<FormValues>) =>
+      void onSubmit(
+        {
+          ...values,
+          iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+        },
+        userStatuses,
+        hasUserStatuses
+      ),
+    [onSubmit, userStatuses, hasUserStatuses]
+  );
+
   return (
     <form
       className="full-height-container"
-      onSubmit={handleSubmit((vals) =>
-        onSubmit(vals, userStatuses, hasUserStatuses)
-      )}
+      onSubmit={handleSubmit(updateVenue)}
     >
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
@@ -709,9 +730,11 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         />
 
         {renderShowScheduleToggle()}
-        {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
+
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
         {templateID &&
@@ -734,6 +757,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 
         {renderJukeboxToggle()}
 
+        {renderSocialLoginToggle()}
+
         <UserStatusManager
           venueId={venueId}
           checked={hasUserStatuses}
@@ -745,7 +770,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           onChangeInput={updateStatusText}
         />
 
-        {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid &&
           renderGridDimensionsInputs()}

@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 $profile-picture-size--sm: 40px;
-$profile-picture-size--lg: 80px;
+$profile-picture-size--lg: 116px;
 
 $upload-button-max-width: 300px;
 
@@ -21,11 +21,11 @@ $upload-button-max-width: 300px;
     display: flex;
     align-items: center;
     border-radius: $border-radius--xl;
-    border: solid $primary;
+    border: solid $accent--under;
     padding: $spacing--lg 50px;
     margin: $spacing--lg 0;
     font-weight: $font-weight--700;
-    color: $white;
+    color: $content--over;
     background-color: transparent;
 
     &:hover {
@@ -35,7 +35,7 @@ $upload-button-max-width: 300px;
         rgba(0, 0, 0, 0.6) 0%,
         rgba(0, 0, 0, 0.6) 100%
       );
-      background-color: darken($primary, 20%);
+      background-color: var(--primary--under-darker-20pp);
     }
   }
 }
@@ -50,7 +50,8 @@ $upload-button-max-width: 300px;
   &__image {
     width: $profile-picture-size--lg;
     height: $profile-picture-size--lg;
-    border: 3px solid $white;
+    margin-bottom: -($spacing--xl);
+    border: 3px solid $content--over;
 
     &--small {
       width: $profile-picture-size--sm;

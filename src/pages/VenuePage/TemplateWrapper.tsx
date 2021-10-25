@@ -17,12 +17,13 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
-import { Jazzbar } from "components/templates/Jazzbar";
+import { JazzBarPage } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ReactionPage } from "components/templates/ReactionPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
+import { ViewingWindow } from "components/templates/ViewingWindow";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -50,7 +51,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route render={() => <Jazzbar venue={venue} />} />
+          <Route render={() => <JazzBarPage venue={venue} />} />
         </Switch>
       );
       // NOTE: Remove the back button, because we don't need it in Table view
@@ -70,6 +71,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
     case VenueTemplate.zoomroom:
       template = <ExternalRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.viewingwindow:
+      template = <ViewingWindow venue={venue} />;
       break;
 
     case VenueTemplate.auditorium:
