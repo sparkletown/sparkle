@@ -14,14 +14,10 @@ Actions to take:
   - Click `Export`
   - Click `Export entire database`
   - Choose `sparkle_data_backups` bucket
-- Create worlds from sovereign venues:
-  - Run `scripts/migration/add-world-extend-venue-worldId.ts` script to create worlds & copy the relevant data from sovereign venue & assign the world id to the proper venues
 - Setup Algolia full-text search:
   - Add [Algolia search](https://www.algolia.com/developers/firebase-search-extension/) firebase extension to your firebase project.
   - In the Firebase console point it to `users` collection and set indexable fields to `partyName,pictureUrl,anonMode,enteredVenueIds`.
   - Create a separate org and index create a new index in aloglia. Go through the required steps as they suggest
   - Perform first-time import of the documents from `users` collection to Algolia index as described in the extension [docs](https://github.com/algolia/firestore-algolia-search/blob/main/POSTINSTALL.md#optional-import-existing-documents-or-reindex-after-configuration-changes).
-- Migrate venue chats structure:
-  - Run `scripts/migration/migrate-venue-chats.ts`
-- Transform audience-venues to auditorium-venues
-  - Run `scripts/migration/replace-audience-venues-with-auditorium.ts`
+- Run all pending migrations:
+  - Run `npm run migrate -- --path=scripts/migration --projectId=<project ID>`
