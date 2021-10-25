@@ -50,14 +50,6 @@ const AccountSubrouter = lazy(() =>
   )
 );
 
-const AdminV1Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
-    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
-      default: AdminV1Subrouter,
-    }))
-  )
-);
-
 const AdminV3Subrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminV3Subrouter", () =>
     import("./AdminV3Subrouter").then(({ AdminV3Subrouter }) => ({
@@ -128,9 +120,7 @@ export const AppRouter: React.FC = () => {
 
           {enableAdmin1 && (
             <Route path={ADMIN_V1_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV1Subrouter />
-              </Provided>
+              <Redirect to={ADMIN_V3_ROOT_URL} />
             </Route>
           )}
 
