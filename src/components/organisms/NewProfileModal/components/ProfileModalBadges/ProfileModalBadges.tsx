@@ -10,7 +10,7 @@ import { Badges } from "components/organisms/Badges";
 
 export interface ProfileModalBadgesProps extends ContainerClassName {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
 }
 
 export const ProfileModalBadges: React.FC<ProfileModalBadgesProps> = ({

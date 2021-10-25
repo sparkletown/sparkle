@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
 import { DisplayUser, TableSeatedUser } from "types/User";
-import { AnyVenue, VenueTablePath } from "types/venues";
+import { AnyVenue, VenueTablePath, VenueTemplate } from "types/venues";
 
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
@@ -91,6 +91,7 @@ type VenueInputForm = Partial<WithId<AnyVenue>> & {
   bannerImageUrl?: string;
   mapBackgroundImage_url?: string;
   mapBackgroundImage_file?: FileList;
+  numberOfSections?: number;
 };
 
 export const updateVenueNG = async (
@@ -109,7 +110,18 @@ export const updateVenueNG = async (
     venue.mapBackgroundImageUrl = downloadUrl;
   }
 
-  return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
+  const updateResponse = await firebase
+    .functions()
+    .httpsCallable("venue-updateVenueNG")(venue);
+
+  if (venue.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: venue.id,
+      numberOfSections: venue.numberOfSections,
+    });
+  }
+
+  return updateResponse;
 };
 
 const getUserInSectionRef = (userId: string, path: AuditoriumSectionPath) =>

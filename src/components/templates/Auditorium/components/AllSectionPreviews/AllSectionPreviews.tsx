@@ -5,6 +5,8 @@ import { Redirect, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { sample } from "lodash";
 
+import { DEFAULT_SECTIONS_AMOUNT } from "settings";
+
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
@@ -52,7 +54,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     availableSections,
   } = useAllAuditoriumSections(venue);
 
-  const sectionsCount = venue.sectionsCount ?? 0;
+  const sectionsCount = venue.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT;
   const hasOnlyOneSection = sectionsCount === 1;
   const [firstSection] = auditoriumSections;
 
