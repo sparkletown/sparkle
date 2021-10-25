@@ -32,7 +32,7 @@ import "./WorldEntranceForm.scss";
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["entrance"];
 
-const questionScheme = Yup.array<Question>()
+const questionSchema = Yup.array<Question>()
   .ensure()
   .defined()
   .transform((value) =>
@@ -40,8 +40,8 @@ const questionScheme = Yup.array<Question>()
   );
 
 const validationSchema = Yup.object().shape({
-  code_of_conduct_questions: questionScheme,
-  profile_questions: questionScheme,
+  code: questionSchema,
+  profile: questionSchema,
   entrance: Yup.array(
     Yup.object().shape({
       videoUrl: Yup.string().required("Video URL is required."),
