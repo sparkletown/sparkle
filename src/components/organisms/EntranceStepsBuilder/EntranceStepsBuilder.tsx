@@ -43,16 +43,17 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
 
       {Array.from({ length: count }).map((_, index) => {
         handledErrors.push(`${index}`);
+        // @debt any arbitrary step should be able to be removed, not just the last one
+        // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
+        const isLast = count && index === count - 1;
         return (
-          // @debt any arbitrary step should be able to be removed, not just the last one
-          // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
           <EntranceStepsInputFieldSet
             item={items?.[index]}
             errors={errors?.[index]}
             index={index}
             key={`${name}-${index}`}
             name={name}
-            onRemove={count && index === count - 1 ? onRemove : undefined}
+            onRemove={isLast ? onRemove : undefined}
             register={register}
           />
         );
@@ -62,7 +63,7 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
         <ButtonNG variant="primary" onClick={onAdd}>
           Add entrance step
         </ButtonNG>
-        {(count ?? 0) > 0 && (
+        {count > 0 && (
           <ButtonNG variant="danger" onClick={onClear}>
             Remove all steps
           </ButtonNG>

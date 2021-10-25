@@ -41,25 +41,28 @@ export const EntranceButtonsBuilder: React.FC<EntranceButtonsBuilderProps> = ({
         <AdminSidebarSectionSubTitle>{title}</AdminSidebarSectionSubTitle>
       )}
 
-      {Array.from({ length: count }).map((_, index) => (
+      {Array.from({ length: count }).map((_, index) => {
         // @debt any arbitrary button should be able to be removed, not just the last one
         // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
-        <EntranceButtonsInputFieldSet
-          errors={errors}
-          hasLink={hasLink}
-          index={index}
-          key={`${name}-${index}`}
-          name={name}
-          onRemove={count && index === count - 1 ? onRemove : undefined}
-          register={register}
-        />
-      ))}
+        const isLast = count && index === count - 1;
+        return (
+          <EntranceButtonsInputFieldSet
+            errors={errors}
+            hasLink={hasLink}
+            index={index}
+            key={`${name}-${index}`}
+            name={name}
+            onRemove={isLast ? onRemove : undefined}
+            register={register}
+          />
+        );
+      })}
 
       <div className="EntranceButtonsBuilder__buttons">
         <ButtonNG variant="primary" onClick={onAdd}>
           Add button
         </ButtonNG>
-        {(count ?? 0) > 0 && (
+        {count > 0 && (
           <ButtonNG variant="danger" onClick={onClear}>
             Remove all buttons
           </ButtonNG>

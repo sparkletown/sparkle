@@ -1,5 +1,7 @@
 import React from "react";
-import { Control, FieldErrors, FieldValues } from "react-hook-form";
+import { FieldErrors, FieldValues } from "react-hook-form";
+
+import { Question } from "types/Question";
 
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
@@ -10,8 +12,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./QuestionsBuilder.scss";
 
 export interface QuestionsBuilderProps {
-  control?: Control;
-  count?: number;
+  items: Question[];
   name: string;
   hasLink?: boolean;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
@@ -23,8 +24,7 @@ export interface QuestionsBuilderProps {
 }
 
 export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
-  control,
-  count,
+  items,
   name,
   hasLink,
   register,
@@ -33,35 +33,41 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
   onAdd,
   onClear,
   onRemove,
-}) => (
-  <div className="QuestionsBuilder">
-    {title && (
-      <AdminSidebarSectionSubTitle>{title}</AdminSidebarSectionSubTitle>
-    )}
-
-    {Array.from({ length: count ?? 0 }).map((_, index) => (
-      // @debt any arbitrary question should be able to be removed, not just the last one
-      // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
-      <QuestionFieldSet
-        errors={errors}
-        hasLink={hasLink}
-        index={index}
-        key={`${name}-${index}`}
-        name={name}
-        onRemove={count && index === count - 1 ? onRemove : undefined}
-        register={register}
-      />
-    ))}
-
-    <div className="QuestionsBuilder__buttons">
-      <ButtonNG variant="primary" onClick={onAdd}>
-        Add question
-      </ButtonNG>
-      {(count ?? 0) > 0 && (
-        <ButtonNG variant="danger" onClick={onClear}>
-          Remove all
-        </ButtonNG>
+}) => {
+  const count = items?.length ?? 0;
+  return (
+    <div className="QuestionsBuilder">
+      {title && (
+        <AdminSidebarSectionSubTitle>{title}</AdminSidebarSectionSubTitle>
       )}
+
+      {Array.from({ length: count }).map((_, index) => {
+        // @debt any arbitrary question should be able to be removed, not just the last one
+        // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
+        const isLast = count && index === count - 1;
+        return (
+          <QuestionFieldSet
+            errors={errors}
+            hasLink={hasLink}
+            index={index}
+            key={`${name}-${index}`}
+            name={name}
+            onRemove={isLast ? onRemove : undefined}
+            register={register}
+          />
+        );
+      })}
+
+      <div className="QuestionsBuilder__buttons">
+        <ButtonNG variant="primary" onClick={onAdd}>
+          Add question
+        </ButtonNG>
+        {count > 0 && (
+          <ButtonNG variant="danger" onClick={onClear}>
+            Remove all
+          </ButtonNG>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};

@@ -100,7 +100,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   );
 
   const {
-    control,
     reset,
     register,
     formState: { dirty, isSubmitting },
@@ -144,19 +143,18 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           <QuestionsBuilder
             errors={errors}
             hasLink
-            count={codeQuestions.length}
+            items={codeQuestions}
             name="code"
             onAdd={addCodeQuestion}
             onRemove={removeCodeQuestion}
             onClear={clearCodeQuestions}
             register={register}
-            control={control}
           />
         </AdminSection>
         <AdminSection title="Profile questions">
           <QuestionsBuilder
             errors={errors}
-            count={profileQuestions.length}
+            items={profileQuestions}
             name="profile"
             onAdd={addProfileQuestion}
             onRemove={removeProfileQuestion}
