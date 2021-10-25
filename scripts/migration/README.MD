@@ -20,4 +20,4 @@ Actions to take:
   - Create a separate org and index create a new index in aloglia. Go through the required steps as they suggest
   - Perform first-time import of the documents from `users` collection to Algolia index as described in the extension [docs](https://github.com/algolia/firestore-algolia-search/blob/main/POSTINSTALL.md#optional-import-existing-documents-or-reindex-after-configuration-changes).
 - Run all pending migrations:
-  - Run `npm run migrate -- --path=scripts/migration --projectId=<project ID>`
+  - Run `npm run migrate -- --projectId=<project ID>`
