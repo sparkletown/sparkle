@@ -143,6 +143,13 @@ $text-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
   -1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
   1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2);
 
+// NOTE: line comments prevent tools to do automatic folding of the code into a single line
+$drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
+  drop-shadow(-1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(-1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2)); //
+
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
 $image-overlay-padding: 0.3rem;

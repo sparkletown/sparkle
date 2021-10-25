@@ -89,7 +89,13 @@ export const createFirestoreWorldAdvancedInput: (
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
+  return pick(input, [
+    "id",
+    "attendeesTitle",
+    "chatTitle",
+    "showNametags",
+    "showBadges",
+  ]);
 };
 
 export const createWorld: (
@@ -97,7 +103,7 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";
@@ -120,10 +126,14 @@ export const createWorld: (
     await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
 
     // 3. initial venue is created
-    await firebase.functions().httpsCallable("venue-createVenue_v2")({
-      ...fullInput,
-      worldId,
-    });
+    // Temporary disabled due to possible complications and edge cases.
+    // What if the inital venue has to be a template of choice
+    // What if the venue already exists and it collides with the world name
+    // etc..
+    // await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    //   ...fullInput,
+    //   worldId,
+    // });
 
     // worldId might be useful for caller
     return { worldId };

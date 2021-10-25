@@ -70,7 +70,7 @@ export const Timing: React.FC<TimingProps> = ({
         <div className="Timing__content">
           <DateTimeField
             title="Global starting time"
-            subTitle="When does your party start?"
+            subTitle="When does your event start? Use your local time zone, it will be automatically converted for anyone visiting from around the world."
             dateTimeValue={startUtcSeconds}
             onChange={setStartUtcSeconds}
           />

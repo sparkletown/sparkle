@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
@@ -7,6 +7,7 @@ import { GenericVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
@@ -37,6 +38,8 @@ export interface ConversationSpaceProps {
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   venue,
 }) => {
+  const analytics = useAnalytics({ venue });
+
   const { parentVenue, parentVenueId } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
@@ -52,6 +55,10 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     VenueTemplate.conversationspace,
     seatedAtTable && venue?.id
   );
+
+  useEffect(() => {
+    if (seatedAtTable) analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
 
   useExperiences(venue?.name);
 

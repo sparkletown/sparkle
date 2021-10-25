@@ -195,12 +195,7 @@ export const takeSeatAtTable: (
     )
     .then(() => (stats.writes = increment(stats.writes)));
 
-  const recentSeatPromise = updateRecentSeat(
-    venueId,
-    userRef,
-    "jazzbar",
-    undefined
-  );
+  const recentSeatPromise = updateRecentSeat(venueId, userRef, "jazzbar", {});
 
   await Promise.all([locationPromise, seatPromise, recentSeatPromise]);
 

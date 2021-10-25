@@ -22,7 +22,8 @@ export type ButtonVariant =
   | "danger"
   | "admin-gradient"
   | "danger-gradient"
-  | "normal-gradient";
+  | "normal-gradient"
+  | "login-gradient";
 
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
@@ -105,7 +106,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
           icon={faCircleNotch}
           spin
           size={iconSize}
-          className="ButtonNG__icon"
+          className="ButtonNG__icon ButtonNG__icon--loading"
         />
       </button>
     );

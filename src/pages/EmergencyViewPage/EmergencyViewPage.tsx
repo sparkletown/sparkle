@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 import { addDays } from "date-fns";
@@ -16,17 +16,19 @@ import { formatDateRelativeToNow } from "utils/time";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
+import Login from "pages/Account/Login";
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubListNG } from "components/molecules/ScheduleEventListNG/ScheduleEventSubListNG";
+
+import { NotFound } from "components/atoms/NotFound";
 
 import EmergencyViewPageRooms from "./EmergencyViewPageRooms";
 import EmergencyViewTabs from "./EmergencyViewTabs";
@@ -41,9 +43,12 @@ export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
   const venueId = useVenueId() || "";
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const {
+    currentVenue: venue,
+    isCurrentVenueLoaded,
+  } = useConnectCurrentVenueNG(venueId);
 
-  const { userWithId } = useUser();
+  const { user, userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
@@ -56,9 +61,6 @@ export const EmergencyViewPage: React.FC = () => {
     userEventIds,
   });
 
-  const venueRequestStatus = useSelector(
-    (state) => state.firestore.status.requested.currentVenue
-  );
   const redirectUrl = venue?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
@@ -115,12 +117,24 @@ export const EmergencyViewPage: React.FC = () => {
 
   const containerClasses = classNames("EmergencyView", containerVars);
 
-  if (venueRequestStatus && !venue && !venueId) {
-    return <>This venue does not exist</>;
+  if (!venueId || (isCurrentVenueLoaded && !venue)) {
+    return (
+      <WithNavigationBar>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
   if (!venue) {
     return <LoadingPage />;
+  }
+
+  if (!user) {
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <Login venueId={venueId} />
+      </Suspense>
+    );
   }
 
   return (

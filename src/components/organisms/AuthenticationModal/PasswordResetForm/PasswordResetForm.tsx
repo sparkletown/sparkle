@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 
 interface PropsType {
   displayLoginForm: () => void;
-  closeAuthenticationModal: () => void;
+  closeAuthenticationModal?: () => void;
 }
 
 interface PasswordResetFormData {
@@ -43,7 +43,7 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   };
 
   const onClose = () => {
-    closeAuthenticationModal();
+    closeAuthenticationModal?.();
   };
 
   return (

@@ -13,7 +13,11 @@ $world-card-logo-size: 70px;
   background-size: cover;
 
   &__logo {
-    @include square-size($world-card-logo-size);
+    @include square-size(
+      $world-card-logo-size,
+      $world-card-logo-size,
+      $world-card-logo-size
+    );
     border-radius: $border-radius--max;
     background-size: cover;
     background-color: var(--greyscale-darker-50pp);
