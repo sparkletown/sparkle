@@ -19,7 +19,6 @@ import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
-import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
@@ -44,7 +43,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     formState: { dirty, isSubmitting },
     register,
     errors,
-    setError,
     handleSubmit,
   } = useForm<VenueAdvancedConfig>({
     mode: "onSubmit",
@@ -68,45 +66,29 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     },
   });
 
-  const { worldParentVenues } = useWorldVenues(venue.worldId);
-
   const { user } = useUser();
 
   const values = watch();
 
   const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
 
-  const validateParentId = useCallback(
-    (parentId, checkedIds) => {
-      if (checkedIds.includes(parentId)) return false;
+  const validateParentId = useCallback((parentId, checkedIds) => {
+    if (checkedIds.includes(parentId)) return false;
 
-      if (!parentId) return true;
+    if (!parentId) return true;
 
-      const parentVenue = worldParentVenues.find(
-        (venue) => venue.id === parentId
-      );
+    const parentVenue = worldParentVenues.find(
+      (venue) => venue.id === parentId
+    );
 
-      if (!parentVenue) return true;
+    if (!parentVenue) return true;
 
-      validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
-    },
-    [worldParentVenues]
-  );
+    validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
+  }, []);
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
     if (!user) return;
-
-    const isValidParentId = validateParentId(data.parentId, [venue.id]);
-
-    if (!isValidParentId) {
-      setError(
-        "parentId",
-        "manual",
-        "This parent id is invalid because it will create a loop of parent venues. If venue 'A' is a parent of venue 'B', venue 'B' can't be a parent of venue 'A'."
-      );
-      return;
-    }
 
     updateVenue_v2(
       {
@@ -315,25 +297,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             the map
           </div>
           <PortalVisibility updateRoomVisibility={updateRoomVisibility} />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Enter the parent venue ID, for the &quot; back&quot; button to go
-            to, and for sharing events in the schedule
-          </Form.Label>
-          <div>
-            The nav bar can show a &quot; back&quot; button if you enter an ID
-            here.Clicking &quot; back&quot; will return the user to the venue
-            whose ID you enter.Additionally, the events you add here will be
-            shown to users while they are on all other venues which share the
-            parent venue ID you enter here, as well as in the parent venue.The
-            value is a venue ID.Enter the venue ID you wish to use.A venue ID is
-            the part of the URL after /in/, so eg.for{" "}
-            <i>sparkle.space/in/abcdef</i> you would enter <i>abcdef</i>
-            below
-          </div>
-          <InputField name="parentId" error={errors.parentId} ref={register} />
         </div>
 
         <div className="AdvancedSettings__form-field">
