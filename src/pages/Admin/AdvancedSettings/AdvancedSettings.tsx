@@ -52,7 +52,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
-      showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
       parentId: venue.parentId ?? "",
@@ -177,16 +176,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             name="showBadges"
             title="Show badges"
           />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Show Nametags (Display user names on their avatars)
-          </Form.Label>
-          <Form.Control as="select" custom name="showNametags" ref={register}>
-            <option value="none">None</option>
-            <option value="hover">Inline and hover</option>
-          </Form.Control>
         </div>
 
         <div className="AdvancedSettings__form-field">

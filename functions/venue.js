@@ -419,10 +419,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
-  }
-
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
@@ -953,10 +949,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.code_of_conduct_questions) {
     updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

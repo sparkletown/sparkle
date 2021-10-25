@@ -16,7 +16,6 @@ import {
 
 import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
 
-import { UsernameVisibility } from "types/User";
 import { VenueTemplate } from "types/venues";
 
 import {
@@ -144,9 +143,6 @@ export const validationSchema = Yup.object()
     enableJukebox: Yup.bool().notRequired(),
     hasSocialLoginEnabled: Yup.bool().notRequired(),
     showShoutouts: Yup.bool().notRequired(),
-    showNametags: Yup.mixed()
-      .oneOf(Object.values(UsernameVisibility))
-      .notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(

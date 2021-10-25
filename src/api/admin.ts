@@ -97,7 +97,6 @@ export type VenueInput = AdvancedVenueInput &
     height?: number;
     parentId?: string;
     owners?: string[];
-    chatTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
@@ -106,7 +105,6 @@ export type VenueInput = AdvancedVenueInput &
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
-    showNametags?: UsernameVisibility;
     showUserStatus?: boolean;
     hasSocialLoginEnabled?: boolean;
   };

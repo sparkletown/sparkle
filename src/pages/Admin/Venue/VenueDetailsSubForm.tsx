@@ -477,22 +477,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderShowNametagsToggle = () => (
-    <>
-      <h4 className="italic input-header">
-        Display user names on their avatars
-      </h4>
-      <label className="input-container">
-        <Form.Control as="select" name="showNametags" ref={register} custom>
-          <option value="none">None</option>
-          {/* TODO: Implement Inline state */}
-          {/* <option value="inline">Inline</option> */}
-          <option value="hover">Inline and hover</option>
-        </Form.Control>
-      </label>
-    </>
-  );
-
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
@@ -692,7 +676,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           renderShowGridToggle()}
 
         {renderShowBadgesToggle()}
-        {renderShowNametagsToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
