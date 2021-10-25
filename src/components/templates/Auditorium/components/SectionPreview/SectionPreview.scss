@@ -14,7 +14,7 @@ $avatar-size: 20px;
   height: 100%;
   width: 100%;
 
-  background-color: $dark;
+  background-color: $secondary--live;
   border-radius: $border-radius--lg;
 
   cursor: pointer;
@@ -27,7 +27,7 @@ $avatar-size: 20px;
     cursor: not-allowed;
 
     .SectionPreview__people-count {
-      color: $red;
+      color: var(--danger--under);
     }
   }
 
@@ -38,7 +38,7 @@ $avatar-size: 20px;
   }
 
   &--vip {
-    background-color: $primary;
+    background-color: $accent--under;
   }
 
   &__vip-label {
@@ -68,10 +68,15 @@ $avatar-size: 20px;
     margin-left: $spacing--xs;
   }
 
-  &__avatar {
+  // @debt increasing specificity
+  .SectionPreview__avatar {
     min-height: $avatar-size;
     min-width: $avatar-size;
     height: $avatar-size;
     width: $avatar-size;
+  }
+
+  .VenueWithOverlay {
+    margin: -($spacing--md);
   }
 }

@@ -2,7 +2,7 @@
 
 .tab-navigation-container {
   border-radius: 22px;
-  background: $dark;
+  background: $secondary--live;
   display: flex;
   flex-shrink: 0;
   margin-bottom: 10px;
@@ -19,7 +19,7 @@
   }
 
   .selected-tab-item {
-    background: $primaryColor;
-    color: $black;
+    background: $primary--over;
+    color: $content--under;
   }
 }

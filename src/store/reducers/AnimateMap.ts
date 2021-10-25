@@ -34,10 +34,19 @@ export interface ReplicatedUser extends AnimateMapEntity {
   data: ReplicatedUserData;
 }
 
+export interface ReplicatedArtcar extends ReplicatedVenue {
+  radiusX: number;
+  radiusY: number;
+  angle: number;
+  color: number;
+  colorIndex: number;
+}
+
 export interface ReplicatedVenueData extends Room {
   id: number;
   isLive: boolean;
   countUsers: number;
+  withoutPlate?: boolean;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
@@ -49,7 +58,7 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 }
 
 export interface ReplicatedFirebarrelData extends Firebarrel {
-  connectedUsers: ReplicatedUser[];
+  connectedUsers?: string[];
 }
 
 export interface ReplicatedFirebarrel extends AnimateMapEntity {

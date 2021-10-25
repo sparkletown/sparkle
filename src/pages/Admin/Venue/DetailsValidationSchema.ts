@@ -3,7 +3,6 @@ import * as Yup from "yup";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  IFRAME_TEMPLATES,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_AUDITORIUM_COLUMNS_COUNT,
@@ -95,7 +94,7 @@ export const validationSchema = Yup.object()
     attendeesTitle: Yup.string().notRequired().default("Guests"),
     chatTitle: Yup.string().notRequired().default("Party"),
 
-    bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
+    bannerImageUrl: Yup.string(),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     zoomUrl: Yup.string().when(
       "$template.template",
@@ -106,19 +105,7 @@ export const validationSchema = Yup.object()
               .test("zoomUrl", "URL required", (val: string) => val.length > 0)
           : schema.notRequired()
     ),
-    iframeUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
-        IFRAME_TEMPLATES.includes(template)
-          ? schema
-              .required("Required")
-              .test(
-                "iframeUrl",
-                "Video URL required",
-                (val: string) => val.length > 0
-              )
-          : schema.notRequired()
-    ),
+    iframeUrl: Yup.string().notRequired(),
 
     width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
     height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
@@ -155,9 +142,10 @@ export const validationSchema = Yup.object()
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
-    bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
+    enableJukebox: Yup.bool().notRequired(),
+    hasSocialLoginEnabled: Yup.bool().notRequired(),
     showShoutouts: Yup.bool().notRequired(),
     showNametags: Yup.mixed()
       .oneOf(Object.values(UsernameVisibility))
@@ -199,6 +187,8 @@ export const editVenueCastSchema = Yup.object()
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
+  .from("enableJukebox", "enableJukebox")
+  .from("hasSocialLoginEnabled", "hasSocialLoginEnabled")
   .from("showShoutouts", "showShoutouts")
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")

@@ -10,12 +10,10 @@ import {
 } from "store/reducers/AnimateMap";
 
 import { Firebarrel } from "types/animateMap";
-import { Room } from "types/rooms";
+import { User } from "types/User";
 
+import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
-import { WithVenue } from "utils/venue";
-
-import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
@@ -30,6 +28,11 @@ import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import playerModel from "./Structures/PlayerModel";
+
+interface TEMPORARY_USERS_TYPE_REPLACEMENT {
+  isRecentWorldUsersLoaded: boolean;
+  recentWorldUsers: readonly WithId<User>[];
+}
 
 interface CloudDataProviderSetting {
   playerId: string;
@@ -117,12 +120,6 @@ export class CloudDataProvider
     this.player.release();
   }
 
-  // player provider
-  // public async initPlayerPositionAsync(x: number, y: number) {
-  //   //TODO: REWORK
-  //   return this.player.initPositionAsync(x, y);
-  // }
-
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
   }
@@ -130,9 +127,7 @@ export class CloudDataProvider
   public venuesData: ReplicatedVenue[] = [];
   public firebarrelsData: ReplicatedFirebarrel[] = [];
 
-  public updateRooms(
-    data: RoomWithFullData<WithVenue<Room> | Room>[] | undefined
-  ) {
+  public updateRooms(data?: RoomWithFullData[]) {
     if (!data) return;
 
     const newVenues = data.filter(
@@ -148,7 +143,24 @@ export class CloudDataProvider
       (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
 
-    const existedVenues = this.venuesData
+    const createReplicatedVenue = (room: RoomWithFullData) => {
+      return {
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
+        data: {
+          ...room,
+          countUsers: room.countUsers ?? 0,
+          image_url: getFirebaseStorageResizedImage(room.image_url, {
+            width: 256,
+            height: 256,
+            fit: "crop",
+          }),
+          withoutPlate: room.title === "Temple" || room.title === "The Man",
+        },
+      } as ReplicatedVenue;
+    };
+
+    const modifiedVenues = this.venuesData
       .filter((venue) => {
         const room = data.find((room) => room.id === venue.data.id);
 
@@ -171,54 +183,26 @@ export class CloudDataProvider
       .map((venue) => {
         const room = data.find((item) => item.id === venue.data.id);
         if (!room) return venue;
-        const vn = {
-          x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-          y: (room.y_percent / 100) * 9920 + 50,
-          data: {
-            ...room,
-            countUsers: room.countUsers ?? 0,
-            image_url: getFirebaseStorageResizedImage(room.image_url, {
-              width: 256,
-              height: 256,
-              fit: "crop",
-            }),
-          },
-        } as ReplicatedVenue;
-        return vn;
+        return createReplicatedVenue(room);
       });
-    existedVenues.forEach((venue) => {
-      this.emit(DataProviderEvent.VENUE_UPDATED, venue);
+    modifiedVenues.forEach((modifiedVenue) => {
+      const indx = this.venuesData.findIndex(
+        (venue) => venue.data.id === modifiedVenue.data.id
+      );
+      if (indx >= 0) this.venuesData[indx] = modifiedVenue;
+      this.emit(DataProviderEvent.VENUE_UPDATED, modifiedVenue);
     });
 
     newVenues.forEach((room) => {
-      const countUsers = "countUsers" in room ? room.countUsers : 0;
-      const vn = {
-        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
-        y: (room.y_percent / 100) * 9920 + 50,
-        data: {
-          ...room,
-          countUsers: countUsers,
-          image_url: getFirebaseStorageResizedImage(room.image_url, {
-            width: 256,
-            height: 256,
-            fit: "crop",
-          }),
-        },
-      } as ReplicatedVenue;
+      const vn = createReplicatedVenue(room);
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
-    // const fff = this.venuesData.filter(item => item.data.countUsers);
-    // eslint-disable-next-line no-debugger
-    // debugger;
   }
-
-  // public usersData: ReplicatedUser[] = []
-  private countersForVenue = new Map<string, number>();
 
   private isUpdateUsersLocked = false;
 
-  public async updateUsersAsync(data: RecentWorldUsersData) {
+  public async updateUsersAsync(data: TEMPORARY_USERS_TYPE_REPLACEMENT) {
     if (this.isUpdateUsersLocked) return;
 
     this.isUpdateUsersLocked = true;
@@ -226,7 +210,7 @@ export class CloudDataProvider
     this.isUpdateUsersLocked = false;
   }
 
-  public updateUsers(data: RecentWorldUsersData) {
+  public updateUsers(data: TEMPORARY_USERS_TYPE_REPLACEMENT) {
     if (!data?.isRecentWorldUsersLoaded) return;
 
     // new entities scenario
@@ -296,6 +280,8 @@ export class CloudDataProvider
           firebarrel.iconSrc === existFirebarrel.data.iconSrc &&
           firebarrel.trackSrc === existFirebarrel.data.trackSrc &&
           firebarrel.isLocked === existFirebarrel.data.isLocked &&
+          firebarrel.connectedUsers?.length ===
+            existFirebarrel.data.connectedUsers?.length &&
           firebarrel.maxUserCount === existFirebarrel.data.maxUserCount
         );
       })
@@ -315,6 +301,10 @@ export class CloudDataProvider
       });
 
     existFirebarrels.forEach((firebarrel) => {
+      const index = this.firebarrelsData.findIndex(
+        (fb) => fb.data.id === firebarrel.data.id
+      );
+      this.firebarrelsData[index] = firebarrel;
       this.emit(DataProviderEvent.FIREBARREL_UPDATED, firebarrel);
     });
 

@@ -84,7 +84,7 @@
       },
       {
         "name": "mixpanel-browser",
-        "message": "Import safe version from hooks/useMixpanel instead"
+        "message": "Import safe version from hooks/useAnalytics instead"
       }
     ],
     "react/prop-types": "off",

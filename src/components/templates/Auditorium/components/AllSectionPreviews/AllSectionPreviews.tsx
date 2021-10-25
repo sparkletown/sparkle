@@ -1,22 +1,30 @@
-import React, { useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { useRouteMatch } from "react-router";
+import { Redirect, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { sample } from "lodash";
+
+import { DEFAULT_SECTIONS_AMOUNT } from "settings";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
 import { chooseAuditoriumSize } from "utils/auditorium";
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
+import { Loading } from "components/molecules/Loading";
+
 import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
+import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { SectionPreview } from "../SectionPreview";
 
@@ -29,6 +37,7 @@ export interface SectionPreviewsProps {
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   venue,
 }) => {
+  const match = useRouteMatch();
   const { push: openUrlUsingRouter } = useHistory();
 
   const { parentVenue } = useRelatedVenues({
@@ -38,41 +47,30 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   const {
     auditoriumSections,
+    loadMore,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
     enterSection,
     availableSections,
   } = useAllAuditoriumSections(venue);
 
-  const sectionsCount = auditoriumSections.length;
+  const sectionsCount = venue.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT;
+  const hasOnlyOneSection = sectionsCount === 1;
+  const [firstSection] = auditoriumSections;
 
   const auditoriumSize = chooseAuditoriumSize(sectionsCount);
 
-  const sectionPreviews = useMemo(
-    () =>
-      auditoriumSections.map((section) => (
-        <SectionPreview
-          key={section.id}
-          section={section}
-          venue={venue}
-          enterSection={enterSection}
-        />
-      )),
-    [auditoriumSections, venue, enterSection]
-  );
+  const [iframeUrl, setIframeUrl] = useState("");
+  useLayoutEffect(() => {
+    if (!venue) return;
 
-  const emptyBlocks = useMemo(
-    () =>
-      Array(AuditoriumEmptyBlocksCount[auditoriumSize])
-        .fill(0)
-        .map((_, index) => (
-          <div
-            key={index}
-            className={`AllSectionPreviews__empty-block--${index + 1}`}
-          />
-        )),
-    [auditoriumSize]
-  );
+    setIframeUrl(
+      convertToEmbeddableUrl({
+        url: venue.iframeUrl,
+        autoPlay: venue.autoPlay,
+      })
+    );
+  }, [venue]);
 
   const availableSectionIds = useMemo(
     () => availableSections.map((section) => section.id),
@@ -97,6 +95,10 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     `AllSectionPreviews--${auditoriumSize}`
   );
 
+  if (hasOnlyOneSection && firstSection) {
+    return <Redirect to={`${match.url}/section/${firstSection.id}`} />;
+  }
+
   return (
     <>
       {parentVenue && (
@@ -105,33 +107,61 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           locationName={parentVenue.name}
         />
       )}
-      <div className={containerClasses}>
-        {emptyBlocks}
+      <VenueWithOverlay venue={venue} containerClassNames="">
+        <InfiniteScroll
+          dataLength={auditoriumSections.length}
+          className={`AllSectionPreviews ${containerClasses}`}
+          next={loadMore}
+          hasMore={
+            venue.sectionsCount
+              ? auditoriumSections.length < venue.sectionsCount
+              : true
+          }
+          loader={<Loading containerClassName="AllSectionPreviews__loader" />}
+        >
+          {Array(AuditoriumEmptyBlocksCount[auditoriumSize])
+            .fill(0)
+            .map((_, index) => (
+              <div
+                key={index}
+                className={`AllSectionPreviews__empty-block--${index + 1}`}
+              />
+            ))}
 
-        <div className="AllSectionPreviews__main">
-          <IFrame
-            src={venue.iframeUrl}
-            containerClassName="AllSectionPreviews__iframe-overlay"
-            iframeClassname="AllSectionPreviews__iframe"
-          />
-          <div className="AllSectionPreviews__welcome-text">{venue.title}</div>
-          <div className="AllSectionPreviews__description-text">
-            {venue.description}
-          </div>
-          <div className="AllSectionPreviews__action-buttons">
-            <Checkbox
-              defaultChecked={isFullAuditoriumsHidden}
-              onChange={toggleFullAuditoriums}
-              containerClassName="AllSectionPreviews__toggler"
-              label="Hide full sections"
+          <div className="AllSectionPreviews__main">
+            <IFrame
+              src={iframeUrl}
+              containerClassName="AllSectionPreviews__iframe-overlay"
+              iframeClassname="AllSectionPreviews__iframe"
             />
+            <div className="AllSectionPreviews__welcome-text">
+              {venue.title}
+            </div>
+            <div className="AllSectionPreviews__description-text">
+              {venue.description}
+            </div>
+            <div className="AllSectionPreviews__action-buttons">
+              <Checkbox
+                defaultChecked={isFullAuditoriumsHidden}
+                onChange={toggleFullAuditoriums}
+                containerClassName="AllSectionPreviews__toggler"
+                label="Hide full sections"
+              />
 
-            <Button onClick={enterRandomSection}>Enter random section</Button>
+              <Button onClick={enterRandomSection}>Enter random section</Button>
+            </div>
           </div>
-        </div>
 
-        {sectionPreviews}
-      </div>
+          {auditoriumSections.map((section) => (
+            <SectionPreview
+              key={section.id}
+              section={section}
+              venue={venue}
+              enterSection={enterSection}
+            />
+          ))}
+        </InfiniteScroll>
+      </VenueWithOverlay>
     </>
   );
 };

@@ -2,46 +2,70 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { WithVenueId } from "utils/id";
+import { AuditoriumSectionPath } from "types/auditorium";
+
+import { WithId, WithVenueId } from "utils/id";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
+import { Banner } from "./banner";
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UsernameVisibility, UserStatus } from "./User";
+import { User, UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  artcar = "artcar",
-  artpiece = "artpiece",
-  audience = "audience",
   auditorium = "auditorium",
   conversationspace = "conversationspace",
-  embeddable = "embeddable",
   firebarrel = "firebarrel",
-  friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
   animatemap = "animatemap",
-  performancevenue = "performancevenue",
   posterhall = "posterhall",
   posterpage = "posterpage",
   screeningroom = "screeningroom",
-  themecamp = "themecamp",
+  viewingwindow = "viewingwindow",
   zoomroom = "zoomroom",
 
   /**
+   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
+   */
+  artpiece = "artpiece",
+  /**
+   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
+   */
+  embeddable = "embeddable",
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
+   */
+  audience = "audience",
+  /**
+   * @deprecated Legacy template removed
+   */
+  artcar = "artcar",
+  /**
+   * @deprecated Legacy template removed
+   */
+  friendship = "friendship",
+  /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
+  themecamp = "themecamp",
+  /**
+   * @deprecated Legacy template removed
+   */
+  performancevenue = "performancevenue",
+  /**
+   * @deprecated Legacy template removed
+   */
   avatargrid = "avatargrid",
-
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
@@ -53,6 +77,8 @@ export enum VenueTemplate {
   playa = "playa",
 }
 
+export type PortalTemplate = VenueTemplate | "external";
+
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
@@ -63,6 +89,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
+  | VenueTemplate.viewingwindow
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
@@ -73,12 +100,13 @@ export type AnyVenue =
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | PosterPageVenue;
+  | PosterPageVenue
+  | ViewingWindowVenue;
 
 // --- VENUE V2
 export interface Venue_v2
   extends Venue_v2_Base,
-    Venue_v2_AdvancedConfig,
+    VenueAdvancedConfig,
     Venue_v2_EntranceConfig {}
 
 export interface Venue_v2_Base {
@@ -101,11 +129,11 @@ export interface Venue_v2_Base {
   id: string;
   rooms?: Room[];
   mapBackgroundImageUrl?: string;
+  worldId: string;
 }
 
-export interface Venue_v2_AdvancedConfig {
+export interface VenueAdvancedConfig {
   attendeesTitle?: string;
-  bannerMessage?: string;
   chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
@@ -115,7 +143,10 @@ export interface Venue_v2_AdvancedConfig {
   showGrid?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
-  showRangers?: boolean;
+  parentId?: string;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
+  hasSocialLoginEnabled?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -141,6 +172,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
+  autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   placement?: VenuePlacement;
   zoomUrl?: string;
@@ -150,7 +182,7 @@ export interface BaseVenue {
   radioTitle?: string;
   dustStorm?: boolean;
   activity?: string;
-  bannerMessage?: string;
+  banner?: Banner;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
@@ -175,15 +207,17 @@ export interface BaseVenue {
   };
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
+  end_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
+  isReactionsMuted?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
+  sectionsCount?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
@@ -192,7 +226,12 @@ export interface BaseVenue {
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
   createdAt?: number;
+  recentUserCount?: number;
+  recentUsersSample?: WithId<User>[];
+  recentUsersSampleSize?: number;
   updatedAt?: number;
+  worldId: string;
+  hasSocialLoginEnabled?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -245,6 +284,7 @@ export interface JazzbarVenue extends BaseVenue {
   host: {
     icon: string;
   };
+  enableJukebox?: boolean;
 }
 
 export interface EmbeddableVenue extends BaseVenue {
@@ -253,6 +293,15 @@ export interface EmbeddableVenue extends BaseVenue {
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
+}
+
+export interface ViewingWindowVenue extends BaseVenue {
+  template: VenueTemplate.viewingwindow;
+  iframeUrl?: string;
+  containerStyles?: CSSProperties;
+  iframeStyles?: CSSProperties;
+  iframeOptions?: Record<string, string>;
+  isWithParticipants?: boolean;
 }
 
 export interface PosterPageVenue extends BaseVenue {
@@ -291,6 +340,8 @@ export enum RoomVisibility {
   hover = "hover",
   count = "count",
   nameCount = "count/name",
+  none = "none",
+  unclickable = "unclickable",
 }
 
 export interface VenueConfig {
@@ -303,7 +354,6 @@ export interface VenueConfig {
   landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
-  showRangers?: boolean;
   tables?: Table[];
 }
 
@@ -372,6 +422,30 @@ export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;
   liveAudience: number;
+}
+
+export interface VenueTablePath {
+  venueId: string;
+  tableReference: string;
+}
+
+export type TableSeatedUsersVenuesTemplates =
+  | VenueTemplate.jazzbar
+  | VenueTemplate.conversationspace;
+
+export type RecentSeatedUserData<T extends VenueTemplate> = {
+  template: T;
+  venueId: string;
+  venueSpecificData: T extends VenueTemplate.auditorium
+    ? Pick<AuditoriumSectionPath, "sectionId">
+    : T extends TableSeatedUsersVenuesTemplates
+    ? {}
+    : never;
+};
+
+export interface RecentSeatedUserTimestamp<T extends VenueTemplate>
+  extends RecentSeatedUserData<T> {
+  lastSittingTimeMs: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

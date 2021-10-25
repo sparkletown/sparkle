@@ -4,12 +4,13 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { FirebaseAppProvider } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
+import { activatePolyFills } from "polyfills";
 import { createFirestoreInstance } from "redux-firestore";
 import { ThemeProvider } from "styled-components";
 
@@ -20,16 +21,20 @@ import {
   BUILD_SHA1,
   BUILD_TAG,
   LOGROCKET_APP_ID,
-  MIXPANEL_PROJECT_TOKEN,
 } from "secrets";
 
 import { FIREBASE_CONFIG } from "settings";
 
-import { traceReactScheduler } from "utils/performance";
-import { authSelector } from "utils/selectors";
+import { store } from "store";
 
+import { traceReactScheduler } from "utils/performance";
+import { authSelector, currentVenueSelector } from "utils/selectors";
+
+import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 import { AppRouter } from "components/organisms/AppRouter";
 
@@ -42,9 +47,7 @@ import "firebase/firestore";
 import "firebase/functions";
 import "firebase/performance";
 
-import { activatePolyFills } from "./polyfills";
 import * as serviceWorker from "./serviceWorker";
-import { store } from "./store";
 
 import { theme } from "theme/theme";
 
@@ -184,17 +187,20 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
-}
-
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
+  const { userWithId } = useUser();
+  const venue = useSelector(currentVenueSelector);
+  const analytics = useAnalytics({ venue });
   const auth = useSelector(authSelector);
 
   useEffect(() => {
-    if (!auth || !auth.uid) return;
+    analytics.initAnalytics();
+  }, [analytics]);
+
+  useEffect(() => {
+    if (!auth || !auth.uid || !userWithId) return;
 
     const displayName = auth.displayName || "N/A";
     const email = auth.email || "N/A";
@@ -206,10 +212,11 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
-    }
-  }, [auth]);
+    analytics.identifyUser({
+      email,
+      name: userWithId.partyName,
+    });
+  }, [analytics, auth, userWithId]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 
@@ -222,16 +229,20 @@ traceReactScheduler("initial render", performance.now(), () => {
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
-            <ReactReduxFirebaseProvider {...rrfProps}>
-              <AuthIsLoaded>
-                <CustomSoundsProvider
-                  loadingComponent={<LoadingPage />}
-                  waitTillConfigLoaded
-                >
-                  <AppRouter />
-                </CustomSoundsProvider>
-              </AuthIsLoaded>
-            </ReactReduxFirebaseProvider>
+            <FirebaseAppProvider firebaseApp={firebaseApp}>
+              <ReactReduxFirebaseProvider {...rrfProps}>
+                <AuthIsLoaded>
+                  <AlgoliaSearchProvider>
+                    <CustomSoundsProvider
+                      loadingComponent={<LoadingPage />}
+                      waitTillConfigLoaded
+                    >
+                      <AppRouter />
+                    </CustomSoundsProvider>
+                  </AlgoliaSearchProvider>
+                </AuthIsLoaded>
+              </ReactReduxFirebaseProvider>
+            </FirebaseAppProvider>
           </ReduxStoreProvider>
         </DndProvider>
       </ThemeProvider>

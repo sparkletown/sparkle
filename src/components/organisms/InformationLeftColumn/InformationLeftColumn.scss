@@ -23,8 +23,8 @@
   .left-column {
     z-index: z(left-column);
 
-    position: absolute;
-    top: 50px;
+    position: fixed;
+    top: $spacing--xxl * 7;
     width: 70px;
 
     padding: 10px;
@@ -33,8 +33,8 @@
     flex-direction: column;
     align-items: center;
 
-    background: $dark;
-    box-shadow: 0 0 30px $black;
+    background: $secondary--live;
+    box-shadow: 0 0 30px $content--under;
     border-radius: 0 22px 22px 0;
     cursor: pointer;
 

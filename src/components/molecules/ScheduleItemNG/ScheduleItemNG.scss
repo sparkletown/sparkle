@@ -36,7 +36,7 @@ $online-container-min-width: 50px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: $black;
+    background-color: $content--under;
   }
 
   &__details {
@@ -56,6 +56,7 @@ $online-container-min-width: 50px;
     line-height: 17px;
   }
 
+  &__until,
   &__time,
   &__date {
     display: block;
@@ -73,7 +74,7 @@ $online-container-min-width: 50px;
     justify-content: center;
     align-items: center;
 
-    background: $primary;
+    background: $accent--under;
     border-radius: $border-radius--xl;
 
     font-size: $font-size--md;

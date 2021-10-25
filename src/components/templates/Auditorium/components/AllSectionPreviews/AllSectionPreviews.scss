@@ -17,6 +17,14 @@ $all-section-previews-bottom-spacing: 50px;
   grid-auto-rows: $section-height;
   grid-auto-columns: minmax($section-min-width, 1fr);
 
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+
+  .VenueWithOverlay {
+    margin: -($spacing--md);
+  }
+
   &--extra-small {
     grid-template-areas:
       "empty-1 empty-1  main  main  main  main empty-2 empty-2"
@@ -78,6 +86,7 @@ $all-section-previews-bottom-spacing: 50px;
     grid-area: main;
     display: flex;
     flex-flow: column;
+    z-index: z(auditorium-iframe);
   }
 
   &__welcome-text {
@@ -112,5 +121,10 @@ $all-section-previews-bottom-spacing: 50px;
   &__iframe {
     height: 100%;
     width: 100%;
+  }
+
+  &__loader {
+    justify-self: center;
+    align-self: center;
   }
 }

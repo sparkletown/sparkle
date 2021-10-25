@@ -49,7 +49,6 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
   }
 
   &__schedule {
-    @include scrollbar;
     flex-grow: 1;
     overflow-x: auto;
     position: relative;
@@ -76,7 +75,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
       content: "";
       display: block;
       height: $timeline-delimeter--height;
-      border-left: $timeline-delimeter--width solid $white;
+      border-left: $timeline-delimeter--width solid $content--over;
       margin-left: $half-hour-width;
       margin-top: $timeline-delimeter--margin-top;
     }
@@ -94,7 +93,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
     width: $current-timeline-delimeter--width;
     height: $timeline-delimeter--height;
     left: calc(#{$current-time--position} * 1px);
-    background-color: $primary;
+    background-color: $accent--under;
   }
 
   &__no-events {

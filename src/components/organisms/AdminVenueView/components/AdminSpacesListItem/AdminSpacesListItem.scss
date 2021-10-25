@@ -1,0 +1,15 @@
+@import "scss/constants";
+
+.AdminSpacesListItem__label {
+  display: flex;
+  justify-content: space-between;
+  padding: $spacing--md;
+  margin: 0;
+  background-color: $secondary--dark;
+  border-bottom: 1px solid opaque-white(0.1);
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten($secondary--dark, 5%);
+  }
+}

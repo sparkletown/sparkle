@@ -2,15 +2,18 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import useAsync from "react-use/lib/useAsync";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
 import {
+  ADMIN_V1_ROOT_URL,
   ALL_VENUE_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   PLAYA_ICON_SIDE_PERCENTAGE,
   PLAYA_IMAGE,
   PLAYA_VENUE_STYLES,
+  ROOM_TAXON,
 } from "settings";
 
 import { RoomInput, upsertRoom } from "api/admin";
@@ -19,7 +22,6 @@ import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
-import { withId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 
 import { useQuery } from "hooks/useQuery";
@@ -33,7 +35,10 @@ import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import RoomDeleteModal from "./RoomDeleteModal";
@@ -46,37 +51,34 @@ export const RoomsForm: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
-  const [venue, setVenue] = useState<PartyMapVenue>();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  useEffect(() => {
+  const { loading: isLoading, value: venue } = useAsync(async () => {
     if (!venueId) return history.replace("/admin");
 
-    const fetchVenueFromAPI = async () => {
-      const venueSnapshot = await firestore
-        .collection("venues")
-        .doc(venueId)
-        .get();
+    const venueSnapshot = await firestore
+      .collection("venues")
+      .doc(venueId)
+      .get();
 
-      if (!venueSnapshot.exists) return history.replace("/admin");
+    if (!venueSnapshot.exists) return history.replace("/admin");
 
-      const data = venueSnapshot.data() as AnyVenue;
-      //find the template
-      const template = ALL_VENUE_TEMPLATES.find(
-        (template) => data.template === template.template
-      );
+    const data = venueSnapshot.data() as AnyVenue;
+    //find the template
+    const template = ALL_VENUE_TEMPLATES.find(
+      (template) => data.template === template.template
+    );
 
-      if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
-        history.replace("/admin");
-      }
-      setVenue(data as PartyMapVenue);
-    };
-    fetchVenueFromAPI();
-  }, [firestore, venueId, history]);
+    if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
+      history.replace("/admin");
+    }
+
+    return data as PartyMapVenue;
+  }, [firestore, history, venueId]);
 
   const room = useMemo(() => {
     if (
@@ -90,20 +92,24 @@ export const RoomsForm: React.FC = () => {
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
+  if (isLoading) return <LoadingPage />;
+
   if (!venue || !venueId) return null;
 
   if (!user) {
-    return <Login formType="login" venue={withId(venue, venueId)} />;
+    return <Login formType="login" venueId={venueId} />;
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
-      <RoomInnerForm
-        venueId={venueId}
-        venue={venue}
-        editingRoom={room}
-        editingRoomIndex={queryRoomIndex}
-      />
+    <WithNavigationBar>
+      <AdminRestricted>
+        <RoomInnerForm
+          venueId={venueId}
+          venue={venue}
+          editingRoom={room}
+          editingRoomIndex={queryRoomIndex}
+        />
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };
@@ -160,7 +166,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
           ...vals,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
-        history.push(`/admin/${venueId}`);
+        history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
@@ -215,6 +221,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
               left: values.x_percent || 0,
               top: values.y_percent || 0,
               url: imageUrl,
+              title: values.title,
             },
           }
         : {},
@@ -224,6 +231,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
       values.y_percent,
       values.width_percent,
       values.height_percent,
+      values.title,
     ]
   );
 
@@ -240,21 +248,25 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <div className="scrollable-content">
-                  <h4 className="italic">{`${
-                    editingRoom ? "Edit your" : "Add a"
-                  } room`}</h4>
+                  <h4 className="italic">
+                    {`${editingRoom ? "Edit your" : "Add a"} ${
+                      ROOM_TAXON.lower
+                    }`}
+                  </h4>
                   <p className="small light" style={{ marginBottom: "2rem" }}>
                     You can update everything in this form at a later date on
                     the edit page
                   </p>
                   <div className="input-container">
-                    <div className="input-title">Name your Room</div>
+                    <div className="input-title">
+                      Name your {ROOM_TAXON.lower}
+                    </div>
                     <input
                       disabled={disable}
                       name="title"
                       ref={register}
                       className="align-left"
-                      placeholder={`My room title`}
+                      placeholder={`My ${ROOM_TAXON.lower} title`}
                     />
                     {errors.title && (
                       <span className="input-error">
@@ -265,8 +277,8 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
 
                   <div className="input-container">
                     <div className="input-title">
-                      Upload an image for how your room should appear on the
-                      Space map
+                      Upload an image for how your {ROOM_TAXON.lower} should
+                      appear on the Space map
                     </div>
                     <ImageInput
                       disabled={disable}
@@ -281,13 +293,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="input-container">
-                    <div className="input-title">Give your room a subtitle</div>
+                    <div className="input-title">
+                      Give your {ROOM_TAXON.lower} a subtitle
+                    </div>
                     <input
                       name="subtitle"
                       disabled={disable}
                       ref={register}
                       className="align-left"
-                      placeholder={`My room subtitle`}
+                      placeholder={`My ${ROOM_TAXON.lower} subtitle`}
                     />
                     {errors.subtitle && (
                       <span className="input-error">
@@ -296,13 +310,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="input-container">
-                    <div className="input-title">About your room</div>
+                    <div className="input-title">
+                      About your {ROOM_TAXON.lower}
+                    </div>
                     <textarea
                       disabled={disable}
                       name={"about"}
                       ref={register}
                       className="wide-input-block input-centered align-left"
-                      placeholder={"Describe your room in detail"}
+                      placeholder={`Describe your ${ROOM_TAXON.lower} in detail`}
                     />
                     {errors.about && (
                       <span className="input-error">
@@ -311,13 +327,15 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="input-container">
-                    <div className="input-title">The room url</div>
+                    <div className="input-title">
+                      The {ROOM_TAXON.lower} url
+                    </div>
                     <input
                       disabled={disable}
                       name={"url"}
                       ref={register}
                       className="wide-input-block align-left"
-                      placeholder={"The url this room will redirect to"}
+                      placeholder={`The url this ${ROOM_TAXON.lower} will redirect to`}
                     />
                     {errors.url && (
                       <span className="input-error">{errors.url.message}</span>
@@ -333,13 +351,10 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
-                    <div className="input-title">Is label hidden?</div>
-                    <Toggler
-                      name="isLabelHidden"
-                      forwardedRef={register}
-                      disabled={disable}
-                    />
+                    <div className="input-title">
+                      Change label appearance (overrides global settings)
+                    </div>
+                    <PortalVisibility register={register} />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
@@ -355,7 +370,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                         className="btn btn-danger"
                         onClick={() => setShowDeleteModal(true)}
                       >
-                        Delete room
+                        Delete {ROOM_TAXON.lower}
                       </button>
                     )}
                   </div>
@@ -387,7 +402,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             className="italic"
             style={{ textAlign: "center", fontSize: "22px" }}
           >
-            Position your room in the Space
+            Position your {ROOM_TAXON.lower} in the Space
           </h4>
           <p>
             First upload or select the icon you would like to appear in your
@@ -445,7 +460,7 @@ const SubmitButton: React.FC<SubmitButtonProps> = ({
     </div>
   ) : (
     <button className="btn btn-primary" type="submit">
-      {editing ? "Update room" : "Create room"}
+      {editing ? `Update ${ROOM_TAXON.lower}` : `Create ${ROOM_TAXON.lower}`}
     </button>
   );
 };

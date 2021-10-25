@@ -4,48 +4,77 @@ import { isEqual } from "lodash";
 
 import { RootState } from "store";
 
-import { User } from "types/User";
+import { User, UserLocation } from "types/User";
 
 import { WithId, withId } from "utils/id";
 import { authSelector, profileSelector } from "utils/selectors";
+import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 import { useSelector } from "hooks/useSelector";
 
 export interface UseUserResult {
   user?: FirebaseReducer.AuthState;
   profile?: FirebaseReducer.Profile<User>;
+  userLocation?: UserLocation;
   userWithId?: WithId<User>;
   userId?: string;
+  isTester: boolean;
 }
 
 export const useUser = (): UseUserResult => {
-  const auth = useSelector((state: RootState) => {
+  const user = useSelector((state: RootState) => {
     const auth = authSelector(state);
 
     return !auth.isEmpty ? auth : undefined;
   }, isEqual);
 
-  const profile = useSelector((state: RootState) => {
+  const profileWithLocation = useSelector((state: RootState) => {
     const profile = profileSelector(state);
 
     return !profile.isEmpty ? profile : undefined;
   }, isEqual);
 
-  const userId = auth?.uid;
+  const userId = user?.uid;
+
+  const profile = useMemo(
+    () =>
+      profileWithLocation
+        ? omitLocationFromUser(profileWithLocation)
+        : undefined,
+    [profileWithLocation]
+  );
+
+  const userLocation = useMemo(
+    () =>
+      profileWithLocation
+        ? extractLocationFromUser(profileWithLocation)
+        : undefined,
+    [profileWithLocation]
+  );
 
   const userWithId = useMemo(() => {
-    if (!userId || !profile) return;
+    if (!userId || !user || !profile) return;
 
-    return withId(profile, userId);
-  }, [profile, userId]);
+    const profileData = {
+      ...profile,
+      partyName: profile.partyName ?? user.displayName ?? "",
+      pictureUrl: profile.pictureUrl ?? user.photoURL ?? "",
+    };
+
+    return withId(profileData, userId);
+  }, [user, userId, profile]);
+
+  const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
 
   return useMemo(
     () => ({
-      user: auth,
+      user,
       profile,
+      userLocation,
       userWithId,
       userId,
+      isTester,
     }),
-    [auth, profile, userId, userWithId]
+    [user, profile, userLocation, userWithId, userId, isTester]
   );
 };

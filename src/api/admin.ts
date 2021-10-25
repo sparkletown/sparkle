@@ -2,17 +2,19 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { Room, RoomData_v2 } from "types/rooms";
+import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
+
+import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
 } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithWorldId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
@@ -65,7 +67,7 @@ export type RoomInput = Omit<Room, "image_url"> & {
   image_file?: FileList;
 };
 
-export type RoomInput_v2 = RoomData_v2 & {
+export type RoomInput_v2 = Room & {
   venueName?: string;
   useUrl?: boolean;
   image_url?: string;
@@ -82,6 +84,7 @@ export type VenueInput = AdvancedVenueInput &
     description?: string;
     zoomUrl?: string;
     iframeUrl?: string;
+    autoPlay?: boolean;
     template: VenueTemplate;
     rooms?: Array<Room>;
     placement?: Omit<VenuePlacement, "state">;
@@ -91,25 +94,25 @@ export type VenueInput = AdvancedVenueInput &
     columns?: number;
     width?: number;
     height?: number;
-    bannerMessage?: string;
     parentId?: string;
     owners?: string[];
-    showRangers?: boolean;
     chatTitle?: string;
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
     userStatuses?: UserStatus[];
     showReactions?: boolean;
+    enableJukebox?: boolean;
     showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
     showNametags?: UsernameVisibility;
     showUserStatus?: boolean;
+    hasSocialLoginEnabled?: boolean;
   };
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
@@ -123,6 +126,34 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  autoPlay?: boolean;
+  parentId?: string;
+  start_utc_seconds?: number;
+  end_utc_seconds?: number;
+}
+
+// NOTE: world might have many fields, please keep them in alphabetic order
+// @debt move to src/types/world
+export interface World {
+  attendeesTitle?: string;
+  chatTitle?: string;
+  config: {
+    landingPageConfig: {
+      coverImageUrl: string;
+      description?: string;
+      subtitle?: string;
+    };
+  };
+  createdAt: Date;
+  host: {
+    icon: string;
+  };
+  name: string;
+  owners: string[];
+  showNametags?: UsernameVisibility;
+  showBadges?: boolean;
+  slug: string;
+  updatedAt: Date;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -131,6 +162,7 @@ type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
     template: VenueTemplate;
+    parentId?: string;
   };
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
@@ -147,9 +179,6 @@ export type PlacementInput = {
   width: number;
   height: number;
 };
-
-// add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-const randomPrefix = () => Math.random().toString();
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
@@ -168,7 +197,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -200,7 +229,7 @@ const createFirestoreVenueInput = async (
     const randomPrefix = Math.random().toString();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
+      `users/${user.uid}/venues/${slug}/${randomPrefix}-${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -225,6 +254,8 @@ const createFirestoreVenueInput = async (
     owners,
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -235,8 +266,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -259,13 +289,19 @@ const createFirestoreVenueInput_v2 = async (
   let imageInputData = {};
 
   // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
-    const file = fileArr[0];
+  for (const { fileKey, urlKey } of imageKeys) {
+    const files = input[fileKey];
+    const file = files?.[0];
+
+    if (!file) continue;
+
+    const type = file.type;
+    if (!ACCEPTED_IMAGE_TYPES.includes(type)) continue;
+
+    const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix()}-${file.name}`
+      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -273,7 +309,7 @@ const createFirestoreVenueInput_v2 = async (
 
     imageInputData = {
       ...imageInputData,
-      [entry.urlKey]: downloadUrl,
+      [urlKey]: downloadUrl,
     };
   }
 
@@ -284,6 +320,9 @@ const createFirestoreVenueInput_v2 = async (
     ),
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
+    parentId: input.parentId ?? "",
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -300,7 +339,7 @@ export const createVenue = async (
 };
 
 export const createVenue_v2 = async (
-  input: VenueInput_v2,
+  input: WithWorldId<VenueInput_v2>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
@@ -310,11 +349,25 @@ export const createVenue_v2 = async (
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")(
-    firestoreVenueInput
-  );
+
+  const venueResponse = await firebase
+    .functions()
+    .httpsCallable("venue-createVenue_v2")({
+    ...firestoreVenueInput,
+    worldId: input.worldId,
+  });
+
+  if (input.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: firestoreVenueInput.name,
+      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
+    });
+  }
+
+  return venueResponse;
 };
 
+// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 export const updateVenue = async (
   input: WithId<VenueInput>,
   user: firebase.UserInfo
@@ -327,11 +380,10 @@ export const updateVenue = async (
 };
 
 export const updateVenue_v2 = async (
-  input: VenueInput_v2,
+  input: WithWorldId<VenueInput_v2>,
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
-
   return firebase
     .functions()
     .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
@@ -339,6 +391,30 @@ export const updateVenue_v2 = async (
       const msg = `[updateVenue_v2] updating venue ${input.name}`;
       const context = {
         location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
+      });
+      throw error;
+    });
+};
+
+export const updateMapBackground = async (
+  input: WithWorldId<VenueInput_v2>,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateMapBackground")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateMapBackground] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateMapBackground",
       };
 
       Bugsnag.notify(msg, (event) => {
@@ -479,7 +555,7 @@ export const upsertRoom = async (
     });
 };
 
-export const deleteRoom = async (venueId: string, room: RoomData_v2) => {
+export const deleteRoom = async (venueId: string, room: Room) => {
   return await firebase
     .functions()
     .httpsCallable("venue-deleteRoom")({

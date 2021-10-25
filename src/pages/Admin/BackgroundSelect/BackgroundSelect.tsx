@@ -1,89 +1,104 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useAsyncFn } from "react-use";
 
-import { updateVenue_v2 } from "api/admin";
+import { DEFAULT_BACKGROUNDS } from "settings";
 
-import { useFetchAssets } from "hooks/useFetchAssets";
+import { updateMapBackground } from "api/admin";
+
 import { useUser } from "hooks/useUser";
 
+import { Loading } from "components/molecules/Loading";
+import { SubmitError } from "components/molecules/SubmitError";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { FileButton } from "components/atoms/FileButton";
 
 import "./BackgroundSelect.scss";
 
 export interface BackgroundSelectProps {
   venueName: string;
-  mapBackground?: string;
+  worldId: string;
+  mapBackgrounds: string[];
+  isLoadingBackgrounds: boolean;
 }
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   venueName,
-  mapBackground,
+  mapBackgrounds,
+  isLoadingBackgrounds,
+  worldId,
 }) => {
   const { user } = useUser();
-  const {
-    assets: mapBackgrounds,
-    isLoading: isLoadingBackgrounds,
-  } = useFetchAssets("mapBackgrounds");
+  const [selected, setSelected] = useState("");
 
-  const [{ loading: isUploading }, uploadMapBackground] = useAsyncFn(
+  const [{ loading: isUploading, error }, uploadMapBackground] = useAsyncFn(
     async (url: string, file?: FileList) => {
+      setSelected(url);
+
       if (!user) return;
 
-      const hasCustomBackground = !!(file && file.length);
-
-      return await updateVenue_v2(
+      return await updateMapBackground(
         {
+          worldId: worldId,
           name: venueName,
-          ...(hasCustomBackground && { mapBackgroundImageFile: file }),
+          mapBackgroundImageFile: file,
           mapBackgroundImageUrl: url,
         },
         user
       );
     },
-    [user, venueName]
+    [user, venueName, worldId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
 
-  const renderMapBackgrounds = useMemo(
-    () =>
-      mapBackgrounds.map((mapBackground, index) => (
-        <button
-          className="BackgroundSelect__map"
-          disabled={isUploading}
-          style={{ backgroundImage: `url(${mapBackground})` }}
-          key={index}
-          onClick={() => uploadMapBackground(mapBackground)}
-        />
-      )),
-    [isUploading, mapBackgrounds, uploadMapBackground]
+  const renderedBackground = useCallback(
+    (mapBackground, key) => (
+      <ButtonNG
+        className="BackgroundSelect__map"
+        disabled={isUploading}
+        loading={isUploading && mapBackground === selected}
+        style={{ backgroundImage: `url(${mapBackground})` }}
+        key={key}
+        onClick={() => uploadMapBackground(mapBackground)}
+      />
+    ),
+    [isUploading, uploadMapBackground, selected]
+  );
+
+  const renderedMapBackgrounds = useMemo(
+    () => mapBackgrounds.map(renderedBackground),
+    [mapBackgrounds, renderedBackground]
+  );
+
+  const renderedDefaultBackgrounds = useMemo(
+    () => DEFAULT_BACKGROUNDS.map(renderedBackground),
+    [renderedBackground]
   );
 
   return (
     <div className="BackgroundSelect">
-      {!mapBackground && (
-        <>
-          <FileButton
-            disabled={isUploading}
-            title="Import a map background"
-            description="Recommended size: 2000px / 1200px"
-            onChange={uploadMapBackground}
-          />
+      <>
+        <FileButton
+          disabled={isUploading}
+          loading={isUploading}
+          title="Import a map background"
+          description="Recommended size: 2000px / 1200px"
+          onChange={uploadMapBackground}
+        />
 
-          <h3 className="BackgroundSelect__maps-header">
-            Or select one of our map backgrounds
-          </h3>
-          {isLoadingBackgrounds && <div>Loading maps...</div>}
+        <h3 className="BackgroundSelect__maps-header">
+          Or select one of our map backgrounds
+        </h3>
 
-          <div className="BackgroundSelect__map-grid">
-            {hasBackgrounds && renderMapBackgrounds}
-          </div>
-        </>
-      )}
+        <div className="BackgroundSelect__map-grid">
+          {renderedDefaultBackgrounds}
+          {hasBackgrounds && renderedMapBackgrounds}
+        </div>
 
-      {mapBackground && (
-        <img width="100%" src={mapBackground} alt="Venue map background" />
-      )}
+        {isLoadingBackgrounds && <Loading label="Loading maps..." />}
+        <SubmitError error={error} />
+      </>
     </div>
   );
 };

@@ -12,18 +12,6 @@
     width: 100%;
   }
 
-  &__background-image-placeholder {
-    position: relative;
-    width: 100%;
-    height: 80vh;
-    border-radius: $border-radius--lg;
-    box-shadow: $venue-rooms-editor-background-placeholder-box-shadow;
-    background: $venue-rooms-editor-background;
-    text-align: center;
-    color: opaque-white(0.5);
-    white-space: pre;
-  }
-
   &__room-image {
     width: 100%;
     height: 100%;

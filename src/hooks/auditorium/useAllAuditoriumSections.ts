@@ -1,38 +1,25 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
+import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { noop } from "lodash";
 
+import { ALWAYS_EMPTY_ARRAY, SECTIONS_NEXT_FETCH_SIZE } from "settings";
+
+import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
+import { getSectionCapacity } from "utils/auditorium";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
-import { currentAuditoriumSectionsSelector } from "utils/selectors";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
-import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
-import { useRecentVenueUsers } from "../users";
-import { useSelector } from "../useSelector";
 import { useShowHide } from "../useShowHide";
-
-export const useConnectAllAuditoriumSections = (venueId?: string) => {
-  useFirestoreConnect(() => {
-    if (!venueId) return [];
-
-    return [
-      {
-        collection: "venues",
-        doc: venueId,
-        subcollections: [{ collection: "sections" }],
-        storeAs: "currentAuditoriumSections",
-      },
-    ];
-  });
-};
 
 export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
   const venueId = venue.id;
-  useConnectAllAuditoriumSections(venueId);
 
   const history = useHistory();
+  const firestore = useFirestore();
 
   const {
     isShown: isFullAuditoriumsShown,
@@ -41,9 +28,24 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const [fetchSectionsCount, setFetchSectionsCount] = useState(
+    SECTIONS_NEXT_FETCH_SIZE
+  );
 
-  const sections = useSelector(currentAuditoriumSectionsSelector);
+  const loadMore = useCallback(() => {
+    setFetchSectionsCount((prev) => prev + SECTIONS_NEXT_FETCH_SIZE);
+  }, []);
+
+  const sectionsRef = firestore
+    .collection("venues")
+    .doc(venueId)
+    .collection("sections")
+    .limit(fetchSectionsCount)
+    .withConverter(withIdConverter<AuditoriumSection>());
+
+  const { data: sections = ALWAYS_EMPTY_ARRAY } = useFirestoreCollectionData<
+    WithId<AuditoriumSection>
+  >(sectionsRef);
 
   const enterSection = useCallback(
     (sectionId: string) => {
@@ -60,31 +62,30 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     if (!sections) return;
 
     return sections.filter((section) => {
+      const seatedUsersCount = section?.seatedUsersCount ?? 0;
       const sectionCapacity = getSectionCapacity(venue, section);
-      const seatedUsers = getAuditoriumSeatedUsers({
-        venueId,
-        auditoriumUsers: recentVenueUsers,
-        sectionId: section.id,
-      });
 
-      return seatedUsers.length < sectionCapacity;
+      return seatedUsersCount < sectionCapacity;
     });
-  }, [recentVenueUsers, venue, venueId, sections]);
+  }, [venue, sections]);
 
   return useMemo(
     () => ({
       auditoriumSections:
-        (isFullAuditoriumsHidden ? availableSections : sections) ?? [],
-      isAuditoriumSectionsLoaded: isLoaded(sections),
+        (isFullAuditoriumsHidden ? availableSections : sections) ??
+        ALWAYS_EMPTY_ARRAY,
+      loadMore: isFullAuditoriumsShown ? loadMore : noop,
       isFullAuditoriumsHidden,
-      availableSections: availableSections ?? [],
+      availableSections: availableSections ?? ALWAYS_EMPTY_ARRAY,
       toggleFullAuditoriums,
       enterSection,
     }),
     [
-      sections,
-      availableSections,
       isFullAuditoriumsHidden,
+      availableSections,
+      sections,
+      isFullAuditoriumsShown,
+      loadMore,
       toggleFullAuditoriums,
       enterSection,
     ]

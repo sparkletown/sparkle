@@ -1,39 +1,61 @@
 import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
-import { VALID_URL_PROTOCOLS } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ADMIN_V3_ADVANCED_PARAM_URL,
+  ADMIN_V3_CREATE_PARAM_URL,
+  ADMIN_V3_OLD_WORLD_PARAM_URL,
+  ADMIN_V3_VENUE_PARAM_URL,
+  ADMIN_V3_WORLD_SPACES_PARAM_URL,
+  ENTRANCE_BASE_URL,
+  VALID_URL_PROTOCOLS,
+  VENUE_INSIDE_BASE_URL,
+  VENUE_INSIDE_PARAM_URL,
+  VENUE_LANDING_BASE_URL,
+  WORLD_ROOT_URL,
+} from "settings";
 
-export const venueLandingUrl = (venueId: string) => {
-  return `/v/${venueId}`;
-};
+import { Room } from "types/rooms";
+
+export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
+
+export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
+
+export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });
+
+export const adminCreateWorldSpace = (worldId?: string) =>
+  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldId });
+
+export const adminWorldSpacesUrl = (worldId?: string) =>
+  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldId });
+
+export const venueInsideFullUrl = (venueId?: string) =>
+  generatePath(VENUE_INSIDE_PARAM_URL, { venueId });
 
 export const venueInsideUrl = (venueId: string) => {
-  return `/in/${venueId}`;
+  return `${VENUE_INSIDE_BASE_URL}/${venueId}`;
 };
 
-const createAdminUrlHelperFor = (segment: string) => (
-  venueId?: string,
-  selectedTab?: string
-) =>
-  segment
-    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
-        segment: segment,
-        venueId: venueId,
-        selectedTab: selectedTab,
-      })
-    : generatePath("/admin-ng");
-
-export const adminNGRootUrl = createAdminUrlHelperFor("");
-export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
-export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const venueLandingUrl = (venueId: string) => {
+  return `${VENUE_LANDING_BASE_URL}/${venueId}`;
+};
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
 };
 
 export const venueEntranceUrl = (venueId: string, step?: number) => {
-  return `/e/${step ?? 1}/${venueId}`;
+  return `${ENTRANCE_BASE_URL}/${step ?? 1}/${venueId}`;
 };
+
+export const accountProfileVenueUrl = (venueId: string) =>
+  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { venueId });
+
+export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 
 export const isExternalUrl = (url: string) => {
   try {
@@ -47,12 +69,12 @@ export const isExternalUrl = (url: string) => {
   }
 };
 
-// @debt I feel like we could construct this url in a better way
-export const getRoomUrl = (roomUrl: string) =>
-  roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+export const isExternalPortal: (portal: Room) => boolean = (portal) =>
+  portal?.template === "external" || portal?.url.startsWith("http");
 
 export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
-  openUrl(getRoomUrl(url), options);
+  // @debt I feel like we could construct this url in a better way
+  openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
 export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
@@ -66,7 +88,8 @@ export interface OpenUrlOptions {
 export const openUrl = (url: string, options?: OpenUrlOptions) => {
   const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
 
-  if (!isValidUrl(url)) {
+  // @debt possible replace with isValidUrl, see isCurrentLocationValidUrl for deprecation comments
+  if (!isCurrentLocationValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
       new Error(
@@ -92,11 +115,30 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
   }
 };
 
-export const isValidUrl = (url: string): boolean => {
+/**
+ * @deprecated This function doesn't perform a url check and returns true each time;
+ * Use isValidUrl instead if you want to validate that URL is correct
+ */
+export const isCurrentLocationValidUrl = (url: string): boolean => {
   try {
     return VALID_URL_PROTOCOLS.includes(
       new URL(url, window.location.origin).protocol
     );
+  } catch (e) {
+    if (e.name === "TypeError") {
+      return false;
+    }
+    throw e;
+  }
+};
+
+export const isValidUrl = (urlString: string) => {
+  if (!urlString) return false;
+
+  try {
+    const url = new URL(urlString);
+
+    return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
     if (e.name === "TypeError") {
       return false;
@@ -126,4 +168,17 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
+};
+
+export const resolveUrlPath: (path: string) => string = (path) => {
+  const base = window.location.href;
+  try {
+    return new URL(path, base).href;
+  } catch (error) {
+    Bugsnag.notify(new Error(error), (event) => {
+      event.severity = "info";
+      event.addMetadata("utils/url::resolveUrlPath", { path, base });
+    });
+    return "";
+  }
 };
