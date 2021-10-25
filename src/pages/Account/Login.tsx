@@ -3,9 +3,6 @@ import { useAsync } from "react-use";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
@@ -30,14 +27,13 @@ import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
-  venue: WithId<AnyVenue>;
+  venueId: string;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
-  venue,
+  venueId,
 }) => {
-  const venueId = venue.id;
   const { sovereignVenue } = useRelatedVenues();
   const [formToDisplay, setFormToDisplay] = useState(formType);
   const analytics = useAnalytics({ venue });

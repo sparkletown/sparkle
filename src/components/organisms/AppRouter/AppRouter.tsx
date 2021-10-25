@@ -153,10 +153,11 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route
-            path={ENTRANCE_STEP_VENUE_PARAM_URL}
-            component={VenueEntrancePage}
-          />
+          <Route path={ENTRANCE_STEP_VENUE_PARAM_URL}>
+            <Provided withRelatedVenues>
+              <VenueEntrancePage />
+            </Provided>
+          </Route>
 
           <Route path={VENUE_INSIDE_ADMIN_PARAM_URL}>
             <Provided withRelatedVenues>
