@@ -468,29 +468,18 @@ exports.setAuditoriumSections = functions.https.onCall(
 
     const batch = admin.firestore().batch();
 
-    const venueDoc = await admin
+    const { docs: sections } = await admin
       .firestore()
       .collection("venues")
       .doc(venueId)
       .collection("sections")
       .get();
 
-    const currentNumberOfSections = venueDoc.docs.length;
+    const currentNumberOfSections = sections.length;
 
-    // Don't update anything if the number of sections is the same.
-    if (currentNumberOfSections === numberOfSections) {
-      return;
-    }
-
-    // Adds the old sections to the batch and deletes them.
-    // Not very optimal, minimal fast change because time is limited.
-    // Ideally there should be a check for the new number of sections that compares the current one,
-    // then the logic should decide if it will add sections or remove from the last ones.
-    venueDoc.docs.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-
-    for (let section = 1; section <= numberOfSections; section++) {
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
       const sectionRef = admin
         .firestore()
         .collection("venues")
@@ -499,6 +488,12 @@ exports.setAuditoriumSections = functions.https.onCall(
         .doc();
 
       batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
     }
 
     await batch.commit();

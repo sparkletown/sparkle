@@ -3,7 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, DISABLED_DUE_TO_1324 } from "settings";
 
 import { venueInsideUrl, venueLandingUrl } from "utils/url";
 
@@ -61,15 +61,17 @@ export const AdminRestricted: React.FC = ({ children }) => {
           If you don’t have an Admin Account, please contact your event
           organiser.
         </p>
-        <ButtonNG
-          className="AdminRestricted__switch-button"
-          variant="primary"
-          loading={isLoggingOut}
-          disabled={isLoggingOut}
-          onClick={authHandler}
-        >
-          {userId ? "Log Out" : "Log In"}
-        </ButtonNG>
+        {DISABLED_DUE_TO_1324 && (
+          <ButtonNG
+            className="AdminRestricted__switch-button"
+            variant="primary"
+            loading={isLoggingOut}
+            disabled={isLoggingOut}
+            onClick={authHandler}
+          >
+            {userId ? "Log Out" : "Log In"}
+          </ButtonNG>
+        )}
       </div>
     </div>
   );

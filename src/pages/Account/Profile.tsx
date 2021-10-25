@@ -120,7 +120,7 @@ export const Profile: React.FC = () => {
             <ButtonNG
               type="submit"
               className="create-account__button"
-              variant="primary"
+              variant="login-gradient"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile

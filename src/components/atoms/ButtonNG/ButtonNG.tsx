@@ -22,7 +22,8 @@ export type ButtonVariant =
   | "danger"
   | "admin-gradient"
   | "danger-gradient"
-  | "normal-gradient";
+  | "normal-gradient"
+  | "login-gradient";
 
 export type ButtonIconSize = "1x" | "2x" | "3x";
 

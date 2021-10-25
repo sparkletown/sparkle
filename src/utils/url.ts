@@ -2,6 +2,7 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
   ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_OLD_WORLD_PARAM_URL,
@@ -50,6 +51,9 @@ export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
 export const venueEntranceUrl = (venueId: string, step?: number) => {
   return `${ENTRANCE_BASE_URL}/${step ?? 1}/${venueId}`;
 };
+
+export const accountProfileVenueUrl = (venueId: string) =>
+  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { venueId });
 
 export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 
