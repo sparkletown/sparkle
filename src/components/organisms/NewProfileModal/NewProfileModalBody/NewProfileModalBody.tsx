@@ -17,7 +17,7 @@ import { ProfileModalContent } from "../ProfileModalContent";
 
 export interface NewProfileModalBodyProps {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
   closeUserProfileModal: () => void;
 }
 
@@ -41,8 +41,8 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     await firebase.auth().signOut();
     closeUserProfileModal();
 
-    history.push(venue.id ? venueLandingUrl(venue.id) : "/");
-  }, [closeUserProfileModal, firebase, history, venue.id]);
+    history.push(venue?.id ? venueLandingUrl(venue.id) : "/");
+  }, [closeUserProfileModal, firebase, history, venue?.id]);
 
   const { selectRecipientChat } = useChatSidebarControls();
 

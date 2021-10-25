@@ -17,7 +17,7 @@ import "./ProfileModalContent.scss";
 
 export interface ProfileModalContentProps {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
   onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }

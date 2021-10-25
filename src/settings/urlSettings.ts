@@ -46,7 +46,8 @@ export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:venueId/:customT
 
 // Account URLs
 export const ACCOUNT_CODE_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct`;
-export const ACCOUNT_PROFILE_URL = `${ACCOUNT_ROOT_URL}/profile`;
+export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
+export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}?venueId=:venueId`;
 export const ACCOUNT_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 
 // Admin v3 URLs

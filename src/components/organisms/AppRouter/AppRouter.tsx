@@ -35,6 +35,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -152,10 +153,11 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route
-            path={ENTRANCE_STEP_VENUE_PARAM_URL}
-            component={VenueEntrancePage}
-          />
+          <Route path={ENTRANCE_STEP_VENUE_PARAM_URL}>
+            <Provided withRelatedVenues>
+              <VenueEntrancePage />
+            </Provided>
+          </Route>
 
           <Route path={VENUE_INSIDE_ADMIN_PARAM_URL}>
             <Provided withRelatedVenues>
@@ -195,8 +197,14 @@ export const AppRouter: React.FC = () => {
           <Route
             path={ROOT_URL}
             render={() =>
-              // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
-              user ? <NotFound /> : <Forbidden />
+              user ? (
+                <NotFound />
+              ) : (
+                // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
+                <WithNavigationBar>
+                  <Forbidden />
+                </WithNavigationBar>
+              )
             }
           />
         </Switch>
