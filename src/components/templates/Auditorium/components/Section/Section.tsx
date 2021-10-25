@@ -4,14 +4,16 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
+import { DEFAULT_SECTIONS_AMOUNT } from "settings";
+
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
@@ -30,7 +32,7 @@ export interface SectionProps {
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
-    false
+    venue.isReactionsMuted ?? false
   );
 
   const { parentVenue } = useRelatedVenues({
@@ -71,7 +73,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   useUpdateAuditoriumRecentSeatedUsers(venueId, isUserSeated && sectionId);
 
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
+  const analytics = useAnalytics({ venue });
 
   // Ensure the user leaves their seat when they leave the section
   useEffect(() => {
@@ -79,6 +81,14 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       leaveSeat();
     };
   }, [leaveSeat]);
+
+  useEffect(() => {
+    analytics.trackEnterAuditoriumSectionEvent();
+  }, [analytics]);
+
+  useEffect(() => {
+    isUserSeated && analytics.trackTakeSeatEvent();
+  }, [analytics, isUserSeated]);
 
   const centralScreenVars = useCss({
     "--central-screen-width-in-seats": screenWidthInSeats,
@@ -99,14 +109,12 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
-  const sectionsCount = venue.sectionsCount ?? 0;
+  const sectionsCount = venue.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT;
   const hasOnlyOneSection = sectionsCount === 1;
-
-  const shouldShowReactions = areSettingsLoaded && settings.showReactions;
 
   const renderReactions = () => {
     return (
-      shouldShowReactions && (
+      venue.showReactions && (
         <div className="Section__reactions">
           <ReactionsBar
             venueId={venueId}

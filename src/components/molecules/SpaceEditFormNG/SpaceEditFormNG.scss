@@ -10,6 +10,15 @@
     width: max-content;
   }
 
+  &__capacity {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    align-items: center;
+    text-align: center;
+  }
+
   .AdminSidebarTitle {
     margin: $spacing--xxl $spacing--xl $spacing--md;
   }

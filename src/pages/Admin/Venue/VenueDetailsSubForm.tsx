@@ -10,6 +10,7 @@ import {
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
+  DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -729,9 +730,11 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         />
 
         {renderShowScheduleToggle()}
-        {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
+
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
         {templateID &&
@@ -767,7 +770,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           onChangeInput={updateStatusText}
         />
 
-        {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid &&
           renderGridDimensionsInputs()}

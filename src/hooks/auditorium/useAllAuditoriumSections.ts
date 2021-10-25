@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { noop } from "lodash";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SECTIONS_NEXT_FETCH_SIZE } from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -27,18 +28,24 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
+  const [fetchSectionsCount, setFetchSectionsCount] = useState(
+    SECTIONS_NEXT_FETCH_SIZE
+  );
+
+  const loadMore = useCallback(() => {
+    setFetchSectionsCount((prev) => prev + SECTIONS_NEXT_FETCH_SIZE);
+  }, []);
+
   const sectionsRef = firestore
     .collection("venues")
     .doc(venueId)
     .collection("sections")
+    .limit(fetchSectionsCount)
     .withConverter(withIdConverter<AuditoriumSection>());
 
-  const {
-    data: sections = ALWAYS_EMPTY_ARRAY,
-    status,
-  } = useFirestoreCollectionData<WithId<AuditoriumSection>>(sectionsRef);
-
-  const isSectionsLoaded = status !== "loading";
+  const { data: sections = ALWAYS_EMPTY_ARRAY } = useFirestoreCollectionData<
+    WithId<AuditoriumSection>
+  >(sectionsRef);
 
   const enterSection = useCallback(
     (sectionId: string) => {
@@ -67,17 +74,18 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       auditoriumSections:
         (isFullAuditoriumsHidden ? availableSections : sections) ??
         ALWAYS_EMPTY_ARRAY,
-      isAuditoriumSectionsLoaded: isSectionsLoaded,
+      loadMore: isFullAuditoriumsShown ? loadMore : noop,
       isFullAuditoriumsHidden,
       availableSections: availableSections ?? ALWAYS_EMPTY_ARRAY,
       toggleFullAuditoriums,
       enterSection,
     }),
     [
-      sections,
-      availableSections,
-      isSectionsLoaded,
       isFullAuditoriumsHidden,
+      availableSections,
+      sections,
+      isFullAuditoriumsShown,
+      loadMore,
       toggleFullAuditoriums,
       enterSection,
     ]

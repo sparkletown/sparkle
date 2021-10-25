@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { ACCEPTED_IMAGE_TYPES } from "settings";
+import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
@@ -153,6 +153,7 @@ export interface World {
   name: string;
   owners: string[];
   showNametags?: UsernameVisibility;
+  showBadges?: boolean;
   slug: string;
   updatedAt: Date;
 }
@@ -350,10 +351,22 @@ export const createVenue_v2 = async (
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")({
+
+  const venueResponse = await firebase
+    .functions()
+    .httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
     worldId: input.worldId,
   });
+
+  if (input.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: firestoreVenueInput.name,
+      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
+    });
+  }
+
+  return venueResponse;
 };
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.

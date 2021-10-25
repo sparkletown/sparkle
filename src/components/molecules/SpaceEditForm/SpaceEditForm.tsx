@@ -7,6 +7,7 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SHOUTOUTS,
+  DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -356,7 +357,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   </div>
                 )}
 
-              {room.template &&
+              {!DISABLED_DUE_TO_1253 &&
+                room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
                   <div className="toggle-room">
                     <h4 className="italic input-header">Show grid layout</h4>
@@ -433,7 +435,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 </>
               )}
 
-              {room.template &&
+              {!DISABLED_DUE_TO_1253 &&
+                room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
                 venueValues.showGrid && (
                   <>

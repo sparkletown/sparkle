@@ -297,13 +297,13 @@ const createVenueData_v2 = (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
         description: data.description,
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
@@ -457,6 +457,48 @@ const initializeVenueChatMessagesCounter = (venueRef, batch) => {
   }
   batch.set(counterCollection.doc("sum"), { value: 0 });
 };
+
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const { docs: sections } = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = sections.length;
+
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
+    }
+
+    await batch.commit();
+  }
+);
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
