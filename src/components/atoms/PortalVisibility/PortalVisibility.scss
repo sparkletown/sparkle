@@ -5,12 +5,10 @@
   justify-content: flex-start;
   width: 100%;
   align-items: center;
-  margin-left: -10px;
 
   &__item {
     border-radius: $border-radius--xl;
     background-color: opaque-white(0.12);
-    // padding: $spacing--md $spacing--xl $spacing--md $spacing--md;
     text-align: center;
     width: 110px;
     height: 160px;

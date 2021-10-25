@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ADMIN_V1_ROOMS_BASE_URL, SPACE_PORTALS_ICONS_MAPPING } from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { PortalTemplate } from "types/venues";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
@@ -14,7 +14,7 @@ import "./SpacesDropdown.scss";
 
 export interface SpacesDropdownProps {
   defaultSpace?: string;
-  venueSpaces: { template?: VenueTemplate; name: string }[];
+  venueSpaces: { template?: PortalTemplate; name: string }[];
   venueId?: string;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];

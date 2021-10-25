@@ -22,7 +22,7 @@
   &__input {
     text-align: left;
     &::placeholder {
-      word-break: break-all;
+      word-break: break-word;
     }
   }
 }

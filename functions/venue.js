@@ -871,7 +871,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
-  const updated = { config: { landingPageConfig: {} } };
+  const updated = {};
   updated.updatedAt = Date.now();
 
   if (data.subtitle || data.subtitle === "") {

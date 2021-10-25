@@ -36,7 +36,7 @@ export const Login: React.FC<LoginProps> = ({
 }) => {
   const { sovereignVenue } = useRelatedVenues();
   const [formToDisplay, setFormToDisplay] = useState(formType);
-  const analytics = useAnalytics({ venue });
+  const analytics = useAnalytics({ venue: sovereignVenue });
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     sovereignVenue?.samlAuthProviderId
