@@ -150,7 +150,6 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
                 description:
                   sovereignVenue.config?.landingPageConfig.description ?? "",
                 adultContent: sovereignVenue.adultContent ?? false,
-                profile_questions: sovereignVenue.profile_questions,
                 code_of_conduct_questions:
                   sovereignVenue.code_of_conduct_questions,
                 userStatuses,

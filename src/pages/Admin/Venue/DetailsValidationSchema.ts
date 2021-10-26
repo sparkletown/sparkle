@@ -30,7 +30,6 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
-type ProfileQuestion = VenueInput["profile_questions"][number];
 type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
@@ -113,15 +112,6 @@ export const validationSchema = Yup.object()
       })
       .default(initialMapIconPlacement),
 
-    // @debt provide some validation error messages for invalid questions
-    // advanced options
-    profile_questions: Yup.array<ProfileQuestion>()
-      .ensure()
-      .defined()
-      .transform((val: Array<ProfileQuestion>) =>
-        val.filter((s) => !!s.name && !!s.text)
-      ), // ensure questions are not empty strings
-
     code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
       .ensure()
       .defined()
@@ -175,7 +165,6 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
@@ -191,8 +180,7 @@ export const editVenueCastSchema = Yup.object()
 
   .from("auditoriumColumns", "auditoriumColumns")
   .from("auditoriumRows", "auditoriumRows")
-  .from("code_of_conduct_questions", "code_of_conduct_questions")
-  .from("profile_questions", "profile_questions");
+  .from("code_of_conduct_questions", "code_of_conduct_questions");
 
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()

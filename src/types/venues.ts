@@ -148,14 +148,13 @@ export interface VenueAdvancedConfig {
 }
 
 export interface Venue_v2_EntranceConfig {
-  profile_questions?: Array<Question>;
   code_of_conduct_questions?: Array<Question>;
   entrance?: EntranceStepConfig[];
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-//   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
+//   code_of_conduct_questions, termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
@@ -166,7 +165,6 @@ export interface BaseVenue {
   host?: {
     icon: string;
   };
-  profile_questions: Question[];
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;

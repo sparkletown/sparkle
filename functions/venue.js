@@ -210,7 +210,6 @@ const createVenueData = (data, context) => {
     },
     owners,
     code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -361,10 +360,6 @@ const createBaseUpdateVenueData = (data, doc) => {
       updated.host = {};
     }
     updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
   }
 
   if (data.entrance) {
@@ -873,10 +868,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
       updated.host = {};
     }
     updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
   }
 
   if (data.entrance) {

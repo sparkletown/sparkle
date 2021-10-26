@@ -656,12 +656,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           hasLink
           editing={state.detailsPage?.venue.code_of_conduct_questions}
         />
-        <QuestionInput
-          title="Profile questions"
-          fieldName="profile_questions"
-          register={register}
-          editing={state.detailsPage?.venue.profile_questions}
-        />
 
         <EntranceInput
           fieldName="entrance"

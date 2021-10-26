@@ -36,7 +36,6 @@ interface Question {
 }
 
 export interface AdvancedVenueInput {
-  profile_questions: Array<Question>;
   code_of_conduct_questions: Array<Question>;
 }
 

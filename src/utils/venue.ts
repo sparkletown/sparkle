@@ -84,7 +84,6 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
       icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
     },
     owners: [],
-    profile_questions: values.profile_questions ?? [],
     code_of_conduct_questions: [],
     termsAndConditions: [],
     adultContent: values.adultContent || false,
