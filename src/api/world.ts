@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { omit, pick } from "lodash";
+import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -74,11 +74,13 @@ export const createFirestoreWorldEntranceInput: (
 ) => Promise<Partial<World>> = async (input, user) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
-    // save only to new place for new worlds, and if missing, read old ones for legacy worlds
-    // questions: {
-    //   code: input.code_of_conduct_questions,
-    //   profile: input.profile_questions,
-    // },
+    adultContent: input?.adultContent,
+    requiresDateOfBirth: input?.requiresDateOfBirth,
+    questions: {
+      code: input?.code ?? [],
+      profile: input?.profile ?? [],
+    },
+    entrance: isEmpty(input.entrance) ? undefined : input.entrance,
   };
 
   return worldUpdateData;

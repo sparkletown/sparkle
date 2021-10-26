@@ -199,7 +199,6 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
