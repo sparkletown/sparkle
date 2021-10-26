@@ -34,38 +34,44 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
 
   return (
     <div className="PortalVisibility">
-      {LABEL_VISIBILITY_OPTIONS.map((el) => {
-        const visibilitySubtitle = el?.subtitle?.split(", ");
+      {LABEL_VISIBILITY_OPTIONS.map(({ subtitle, label, value }) => {
+        const visibilitySubtitleArray = subtitle?.split(", ");
+
+        const portalStatusClasses =
+          selectedVisibility && selectedVisibility === value
+            ? "PortalVisibility__item--selected"
+            : "";
+
         return (
           <div
-            key={el.label}
-            onClick={() => updateVisibility(el.value)}
-            className={`PortalVisibility__item ${
-              selectedVisibility && selectedVisibility === el.value
-                ? "PortalVisibility__item--selected"
-                : ""
-            }`}
+            key={label}
+            onClick={() => updateVisibility(value)}
+            className={`PortalVisibility__item ${portalStatusClasses}`}
           >
             <div className="PortalVisibility__item-image">
-              {!!visibilitySubtitle?.length && (
+              {!!visibilitySubtitleArray?.length && (
                 <div className="PortalVisibility__item-subtitle">
-                  {visibilitySubtitle?.map((el) => (
+                  {visibilitySubtitleArray?.map((visibilitySubtitleText) => (
                     <div
-                      key={el}
+                      key={visibilitySubtitleText}
                       className="PortalVisibility__item-subtitle-item"
                     >
                       <FontAwesomeIcon
-                        icon={el === "Venue title" ? solidSun : solidUsers}
+                        icon={
+                          visibilitySubtitleText === "Venue title"
+                            ? solidSun
+                            : solidUsers
+                        }
                       />
                       <span className="PortalVisibility__item-subtitle-item-text">
-                        {el}
+                        {visibilitySubtitleText}
                       </span>
                     </div>
                   ))}
                 </div>
               )}
             </div>
-            {el.label}
+            {label}
           </div>
         );
       })}
