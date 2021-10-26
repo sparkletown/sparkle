@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
 import {
   DEFAULT_USER_STATUS,
@@ -13,7 +14,7 @@ import {
 import { updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueAdvancedConfig } from "types/venues";
+import { AnyVenue, VenueAdvancedConfig, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
@@ -62,12 +63,17 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
       hasSocialLoginEnabled: venue.hasSocialLoginEnabled,
+      enableJukebox: venue.enableJukebox,
     },
   });
 
   const { user } = useUser();
 
   const values = watch();
+
+  const jukeboxToggleClasses = classNames("AdvancedSettings__form-field", {
+    "mod--hidden": venue.template !== VenueTemplate.jazzbar,
+  });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
@@ -250,6 +256,14 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           <Form.Label>
             Users can login using Google/Facebook/Okta social networks
           </Form.Label>
+        </div>
+
+        <div className={jukeboxToggleClasses}>
+          <Toggler
+            forwardedRef={register}
+            name="enableJukebox"
+            title="Enable Jukebox"
+          />
         </div>
 
         <div className="AdvancedSettings__form-field">
