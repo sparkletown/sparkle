@@ -71,10 +71,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
   const values = watch();
 
-  const isJazzbar = venue.template === VenueTemplate.jazzbar;
-
   const jukeboxToggleClasses = classNames("AdvancedSettings__form-field", {
-    "mod--hidden": !isJazzbar,
+    "mod--hidden": venue.template !== VenueTemplate.jazzbar,
   });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI

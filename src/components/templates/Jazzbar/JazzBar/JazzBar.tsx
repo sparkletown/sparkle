@@ -52,7 +52,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
   const embedIframeUrl = convertToEmbeddableUrl({ url: venue.iframeUrl });
-  const [iframeUrl, changeIframeUrl] = useState(embedIframeUrl);
+  const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
@@ -177,7 +177,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                 )}
                 {shouldShowJukebox && (
                   <Jukebox
-                    updateIframeUrl={changeIframeUrl}
+                    updateIframeUrl={setIframeUrl}
                     venue={venue}
                     tableRef={seatedAtTable}
                   />

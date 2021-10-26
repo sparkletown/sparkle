@@ -539,10 +539,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const isJazzbar = templateID === VenueTemplate.jazzbar;
-
   const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
-    "toggle-room DetailsForm--hidden": isJazzbar,
+    "toggle-room DetailsForm--hidden": templateID !== VenueTemplate.jazzbar,
   });
 
   const renderJukeboxToggle = () => {
