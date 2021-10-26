@@ -58,7 +58,13 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
       await firestore
         .collection("worlds")
         .doc(sovereignVenueId)
-        .set(sovereignVenue.data());
+        .set({
+          ...sovereignVenue.data(),
+          questions: {
+            code: sovereignVenue.data().code_of_conduct_questions ?? [],
+            profile: sovereignVenue.data().profile_questions ?? [],
+          },
+        });
 
       await venueDoc.ref.update({ worldId: sovereignVenueId });
     })
