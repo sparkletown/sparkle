@@ -9,6 +9,7 @@ import {
 
 import { JazzbarVenue, VenueTemplate } from "types/venues";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
@@ -50,7 +51,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
-  const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
+  const embedIframeUrl = convertToEmbeddableUrl({ url: venue.iframeUrl });
+  const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
@@ -175,7 +177,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                 )}
                 {shouldShowJukebox && (
                   <Jukebox
-                    updateIframeUrl={changeIframeUrl}
+                    updateIframeUrl={setIframeUrl}
                     venue={venue}
                     tableRef={seatedAtTable}
                   />
