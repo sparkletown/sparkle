@@ -3,7 +3,6 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
-import { Question } from "types/Question";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -148,13 +147,12 @@ export interface VenueAdvancedConfig {
 }
 
 export interface Venue_v2_EntranceConfig {
-  code_of_conduct_questions?: Array<Question>;
   entrance?: EntranceStepConfig[];
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-//   code_of_conduct_questions, termsAndConditions, width, height
+//   termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
@@ -165,7 +163,6 @@ export interface BaseVenue {
   host?: {
     icon: string;
   };
-  code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
   autoPlay?: boolean;

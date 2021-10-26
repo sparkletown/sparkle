@@ -30,8 +30,6 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
-type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
-
 const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>().test(
     name,
@@ -112,13 +110,6 @@ export const validationSchema = Yup.object()
       })
       .default(initialMapIconPlacement),
 
-    code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
-      .ensure()
-      .defined()
-      .transform((val: Array<CodeOfConductQuestion>) =>
-        val.filter((s) => !!s.name && !!s.text)
-      ),
-
     showRadio: Yup.bool().notRequired(),
     radioStations: Yup.string().when("showRadio", {
       is: true,
@@ -179,8 +170,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
 
   .from("auditoriumColumns", "auditoriumColumns")
-  .from("auditoriumRows", "auditoriumRows")
-  .from("code_of_conduct_questions", "code_of_conduct_questions");
+  .from("auditoriumRows", "auditoriumRows");
 
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()

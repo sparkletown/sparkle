@@ -209,7 +209,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -408,10 +407,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
@@ -936,10 +931,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

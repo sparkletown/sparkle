@@ -45,7 +45,6 @@ import { Toggler } from "components/atoms/Toggler";
 import "firebase/functions";
 
 import EntranceInput from "./EntranceInput";
-import QuestionInput from "./QuestionInput";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
@@ -648,14 +647,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {templateID &&
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
-
-        <QuestionInput
-          title="Code of conduct questions"
-          fieldName="code_of_conduct_questions"
-          register={register}
-          hasLink
-          editing={state.detailsPage?.venue.code_of_conduct_questions}
-        />
 
         <EntranceInput
           fieldName="entrance"
