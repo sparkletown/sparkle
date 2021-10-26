@@ -41,7 +41,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   venue,
   onCancelEditing,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
   const firebaseUser = useFirebase().auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(

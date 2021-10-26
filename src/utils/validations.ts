@@ -5,7 +5,6 @@ import {
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
-import { UsernameVisibility } from "types/User";
 import { RoomVisibility, VenueAdvancedConfig } from "types/venues";
 
 export const advancedSettingsSchema = Yup.object().shape<VenueAdvancedConfig>({
@@ -25,9 +24,6 @@ export const advancedSettingsSchema = Yup.object().shape<VenueAdvancedConfig>({
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
-  showNametags: Yup.mixed()
-    .oneOf(Object.values(UsernameVisibility))
-    .notRequired(),
   showRadio: Yup.bool().notRequired(),
   roomVisibility: Yup.mixed()
     .oneOf(Object.values(RoomVisibility))

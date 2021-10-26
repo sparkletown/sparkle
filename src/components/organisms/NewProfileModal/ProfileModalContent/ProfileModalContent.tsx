@@ -28,7 +28,7 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   onEditMode,
   venue,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
 
   return (
     <>
