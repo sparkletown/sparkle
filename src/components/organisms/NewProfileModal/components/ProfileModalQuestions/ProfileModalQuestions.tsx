@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { FormFieldProps } from "types/forms";
+import { Question } from "types/Question";
 import { ContainerClassName } from "types/utility";
-import { Question } from "types/venues";
 
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader";

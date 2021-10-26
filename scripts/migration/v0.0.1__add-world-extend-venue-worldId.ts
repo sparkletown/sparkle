@@ -1,3 +1,6 @@
+import { stdin, stdout } from "process";
+import readline from "readline";
+
 import { MigrateOptions } from "fireway";
 
 interface FetchSovereignVenueOptions {
@@ -42,7 +45,7 @@ const fetchSovereignVenue = async (
   });
 };
 
-export const migrate = async ({ firestore }: MigrateOptions) => {
+const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
   const venuesCollection = firestore.collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
@@ -55,9 +58,34 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
       await firestore
         .collection("worlds")
         .doc(sovereignVenueId)
-        .set(sovereignVenue.data());
+        .set({
+          ...sovereignVenue.data(),
+          questions: {
+            code: sovereignVenue.data().code_of_conduct_questions ?? [],
+            profile: sovereignVenue.data().profile_questions ?? [],
+          },
+        });
 
       await venueDoc.ref.update({ worldId: sovereignVenueId });
     })
   );
+};
+
+export const migrate = async ({ firestore }: MigrateOptions) => {
+  const rl = readline.createInterface({ input: stdin, output: stdout });
+  await new Promise<void>((resolve, reject) => {
+    rl.question(
+      "Have you configured algoila as described in the README? [yes|no]",
+      async (answer) => {
+        if (answer.toLowerCase() !== "yes") {
+          reject("Abandoning migration");
+          return;
+        }
+
+        await doMigration(firestore);
+        resolve();
+      }
+    );
+  });
+  rl.close();
 };

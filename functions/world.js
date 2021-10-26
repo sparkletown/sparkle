@@ -4,7 +4,7 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
 
-const { isNil } = require("lodash");
+const { isNil, isEmpty } = require("lodash");
 
 const checkIsAdmin = async (uid) => {
   try {
@@ -93,16 +93,17 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const {
+    adultContent,
     attendeesTitle,
     bannerImageUrl,
     chatTitle,
-    code_of_conduct_questions,
     description,
     entrance,
     id: worldId,
     logoImageUrl,
     name,
-    profile_questions,
+    questions,
+    requiresDateOfBirth,
     rooms,
     showNametags,
     showBadges,
@@ -136,16 +137,22 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     }
   }
 
+  const questionsConfig = {
+    code: (questions && questions.code) || [],
+    profile: (questions && questions.profile) || [],
+  };
+
   const worldData = {
     updatedAt: Date.now(),
+    ...(!isNil(adultContent) && { adultContent }),
     ...(!isNil(attendeesTitle) && { attendeesTitle }),
     ...(!isNil(chatTitle) && { chatTitle }),
-    ...(!isNil(code_of_conduct_questions) && { code_of_conduct_questions }),
     ...(!isNil(entrance) && { entrance }),
     ...(!isNil(landingPageConfig) && { config: { landingPageConfig } }),
     ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
     ...(!isNil(name) && { name }),
-    ...(!isNil(profile_questions) && { profile_questions }),
+    ...(!isEmpty(questions) && { questions: questionsConfig }),
+    ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
     ...(!isNil(slug) && { slug }),

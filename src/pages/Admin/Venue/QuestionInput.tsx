@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Form } from "react-bootstrap";
 
-import { Question } from "types/venues";
+import { Question } from "types/Question";
 
 import { useDynamicInput } from "hooks/useDynamicInput";
 
