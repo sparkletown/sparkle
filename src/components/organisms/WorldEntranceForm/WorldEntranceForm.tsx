@@ -7,15 +7,21 @@ import * as Yup from "yup";
 import { World } from "api/admin";
 import { updateWorldEntranceSettings } from "api/world";
 
+import { EntranceStepConfig } from "types/EntranceStep";
+import { Question } from "types/Question";
 import { WorldEntranceFormInput } from "types/world";
 
 import { WithId } from "utils/id";
 
+import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
+import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
+import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
+import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -24,9 +30,32 @@ import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import "./WorldEntranceForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
-const HANDLED_ERRORS: string[] = [];
+const HANDLED_ERRORS: string[] = ["entrance"];
 
-const validationSchema = Yup.object().shape({});
+const questionSchema = Yup.array<Question>()
+  .ensure()
+  .defined()
+  .transform((value) =>
+    value.filter(({ name, text }: Question) => !!name && !!text)
+  );
+
+const validationSchema = Yup.object().shape({
+  code: questionSchema,
+  profile: questionSchema,
+  entrance: Yup.array(
+    Yup.object().shape({
+      videoUrl: Yup.string().required("Video URL is required."),
+      autoplay: Yup.boolean().notRequired(),
+      buttons: Yup.array(
+        Yup.object().shape({
+          isProceed: Yup.boolean().required(),
+          text: Yup.string().notRequired(),
+          href: Yup.string().notRequired(),
+        })
+      ),
+    })
+  ),
+});
 
 export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
   world: WithId<World>;
@@ -39,17 +68,40 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const worldId = world.slug;
   const { user } = useUser();
 
+  // @debt sync useArray with the form changes or try useFieldArray
+  const {
+    items: codeQuestions,
+    add: addCodeQuestion,
+    clear: clearCodeQuestions,
+    remove: removeCodeQuestion,
+  } = useArray<Question>(world.questions?.code);
+
+  const {
+    items: profileQuestions,
+    add: addProfileQuestion,
+    clear: clearProfileQuestions,
+    remove: removeProfileQuestion,
+  } = useArray<Question>(world.questions?.profile);
+
+  const {
+    items: entranceSteps,
+    add: addEntranceStep,
+    clear: clearEntranceSteps,
+    remove: removeEntranceStep,
+  } = useArray<EntranceStepConfig>(world.entrance);
+
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
-      profile_questions: [],
-      code_of_conduct_questions: [],
+      code: codeQuestions,
+      profile: profileQuestions,
+      entrance: entranceSteps,
     }),
-    []
+    [codeQuestions, profileQuestions, entranceSteps]
   );
 
   const {
     reset,
-    watch,
+    register,
     formState: { dirty, isSubmitting },
     errors,
     handleSubmit,
@@ -60,15 +112,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     defaultValues,
   });
 
-  const values = watch();
+  const [{ error, loading: isSaving }, submit] = useAsyncFn(
+    async (input: WorldEntranceFormInput) => {
+      if (!user || !worldId) return;
 
-  const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user || !worldId) return;
+      await updateWorldEntranceSettings({ ...input, id: worldId }, user);
 
-    await updateWorldEntranceSettings({ ...values, id: world.slug }, user);
-
-    reset(defaultValues);
-  }, [values, user, worldId, world.slug, reset, defaultValues]);
+      reset(input);
+    },
+    [worldId, user, reset]
+  );
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
@@ -86,6 +139,40 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
+        <AdminSection title="Code of conduct questions">
+          <QuestionsBuilder
+            errors={errors}
+            hasLink
+            items={codeQuestions}
+            name="code"
+            onAdd={addCodeQuestion}
+            onRemove={removeCodeQuestion}
+            onClear={clearCodeQuestions}
+            register={register}
+          />
+        </AdminSection>
+        <AdminSection title="Profile questions">
+          <QuestionsBuilder
+            errors={errors}
+            items={profileQuestions}
+            name="profile"
+            onAdd={addProfileQuestion}
+            onRemove={removeProfileQuestion}
+            onClear={clearProfileQuestions}
+            register={register}
+          />
+        </AdminSection>
+        <AdminSection title="Space Entrance">
+          <EntranceStepsBuilder
+            errors={errors.entrance}
+            items={entranceSteps}
+            name="entrance"
+            onAdd={addEntranceStep}
+            onRemove={removeEntranceStep}
+            onClear={clearEntranceSteps}
+            register={register}
+          />
+        </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
       </Form>

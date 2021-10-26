@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
+import { Question } from "types/Question";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -322,12 +323,6 @@ export interface AnimateMapVenue extends BaseVenue {
   playerioFrequencyUpdate?: number;
   //@dept Right now advanced mode in develop, don't add this flag to venue!
   playerioAdvancedMode?: boolean;
-}
-
-export interface Question {
-  name: string;
-  text: string;
-  link?: string;
 }
 
 interface TermOfService {

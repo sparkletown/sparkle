@@ -4,7 +4,7 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory, useLocation } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { QuestionType } from "types/Question";
+import { Question } from "types/Question";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -110,7 +110,7 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {profileQuestions?.map((question: QuestionType) => (
+          {profileQuestions?.map((question: Question) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
                 <strong>{question.name}</strong>
