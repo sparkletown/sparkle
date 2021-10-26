@@ -33,4 +33,5 @@ export const advancedSettingsSchema = Yup.object().shape<VenueAdvancedConfig>({
     .oneOf(Object.values(RoomVisibility))
     .notRequired(),
   hasSocialLoginEnabled: Yup.bool().notRequired(),
+  enableJukebox: Yup.bool().notRequired(),
 });

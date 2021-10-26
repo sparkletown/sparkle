@@ -148,6 +148,7 @@ export interface VenueAdvancedConfig {
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -233,6 +234,7 @@ export interface BaseVenue {
   updatedAt?: number;
   worldId: string;
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
