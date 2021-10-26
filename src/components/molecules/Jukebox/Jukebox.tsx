@@ -46,12 +46,13 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     venueId: venue.id,
     tableId: tableRef,
   });
-  const filteredMessages = messagesToDisplay.filter(
-    ({ tableId }) => tableId === tableRef
-  );
+
+  const filteredMessages = messagesToDisplay
+    .filter(({ tableId }) => tableId === tableRef)
+    .reverse();
 
   useEffect(() => {
-    const [lastMessage] = messagesToDisplay;
+    const [lastMessage] = filteredMessages.slice(-1);
 
     if (!isValidUrl(lastMessage?.text)) {
       return;
@@ -60,7 +61,7 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     const urlToEmbed = convertToEmbeddableUrl({ url: lastMessage?.text });
 
     updateIframeUrl(urlToEmbed);
-  }, [messagesToDisplay, updateIframeUrl, venue.id]);
+  }, [filteredMessages, updateIframeUrl, venue.id]);
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ jukeboxMessage }) =>
