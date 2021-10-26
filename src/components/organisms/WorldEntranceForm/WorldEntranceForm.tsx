@@ -26,6 +26,8 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { Checkbox } from "components/atoms/Checkbox";
+import { Toggler } from "components/atoms/Toggler";
 
 import "./WorldEntranceForm.scss";
 
@@ -40,8 +42,10 @@ const questionSchema = Yup.array<Question>()
   );
 
 const validationSchema = Yup.object().shape({
-  code: questionSchema,
-  profile: questionSchema,
+  adultContent: Yup.bool().notRequired(),
+  requiresDateOfBirth: Yup.bool().notRequired(),
+  code: questionSchema.notRequired(),
+  profile: questionSchema.notRequired(),
   entrance: Yup.array(
     Yup.object().shape({
       videoUrl: Yup.string().required("Video URL is required."),
@@ -54,7 +58,7 @@ const validationSchema = Yup.object().shape({
         })
       ),
     })
-  ),
+  ).notRequired(),
 });
 
 export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
@@ -95,8 +99,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
       code: codeQuestions,
       profile: profileQuestions,
       entrance: entranceSteps,
+      adultContent: world.adultContent ?? false,
+      requiresDateOfBirth: world.requiresDateOfBirth ?? false,
     }),
-    [codeQuestions, profileQuestions, entranceSteps]
+    [
+      codeQuestions,
+      profileQuestions,
+      entranceSteps,
+      world.adultContent,
+      world.requiresDateOfBirth,
+    ]
   );
 
   const {
@@ -139,6 +151,18 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
+        <AdminSection title="Limit access to world">
+          <Toggler
+            name="adultContent"
+            label="Restrict entry to adults aged 18+"
+            forwardedRef={register}
+          />
+          <Checkbox
+            name="requiresDateOfBirth"
+            label="Require date of birth on register"
+            forwardedRef={register}
+          />
+        </AdminSection>
         <AdminSection title="Code of conduct questions">
           <QuestionsBuilder
             errors={errors}

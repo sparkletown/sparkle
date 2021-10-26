@@ -74,6 +74,8 @@ export const createFirestoreWorldEntranceInput: (
 ) => Promise<Partial<World>> = async (input, user) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
+    adultContent: input?.adultContent,
+    requiresDateOfBirth: input?.requiresDateOfBirth,
     questions: {
       code: input?.code ?? [],
       profile: input?.profile ?? [],
