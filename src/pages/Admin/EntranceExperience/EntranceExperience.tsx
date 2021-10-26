@@ -1,23 +1,20 @@
 import React, { useCallback } from "react";
 import { Form } from "react-bootstrap";
-// Hooks
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
 import { updateVenue_v2, VenueInput_v2 } from "api/admin";
 
-// Typings
-import { Question, Venue_v2_EntranceConfig } from "types/venues";
+import { Question } from "types/Question";
+import { Venue_v2_EntranceConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
-// Pages
 import EntranceInput from "pages/Admin/Venue/EntranceInput";
 import QuestionInput from "pages/Admin/Venue/QuestionInput";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-// Styles
 import * as S from "../Admin.styles";
 
 import { EntranceExperienceProps } from "./EntranceExperience.types";
