@@ -51,6 +51,12 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
 
   for (const venueDoc of venueDocs) {
     const venueId = venueDoc.id;
+
+    if (venueDoc.data().worldId) {
+      console.log(`Skipping ${venueId} as it has already been done`);
+      continue;
+    }
+
     try {
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
