@@ -24,7 +24,7 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
   return (
     <AdminPanel>
       <AdminSidebar>
-        <AdminSidebarTitle>Title goes here</AdminSidebarTitle>
+        <AdminSidebarTitle>Entrance Experience</AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
         {isLoaded ? (
           world ? (

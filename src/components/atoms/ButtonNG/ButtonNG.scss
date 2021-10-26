@@ -127,4 +127,8 @@ $variants-enum: (
   &--normal-gradient:enabled {
     background-image: $gradient;
   }
+
+  &--login-gradient:enabled {
+    background-image: $login-rainbox-gradient;
+  }
 }

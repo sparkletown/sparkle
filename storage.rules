@@ -6,9 +6,7 @@ service firebase.storage {
     }
     match /users/{uid}/{allPaths=**} {
         allow read;
-        // Allow users to create new files under their unique path.
-        // Don't allow updating files so we can cache files long-term
-        allow write: if request.auth.uid == uid && resource == null;
+        allow write: if request.auth.uid == uid;
     }
   }
 }

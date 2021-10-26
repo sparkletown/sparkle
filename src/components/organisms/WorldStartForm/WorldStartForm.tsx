@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 import { omit } from "lodash";
 import * as Yup from "yup";
 
-import { ADMIN_V3_WORLDS_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { createUrlSafeName, World } from "api/admin";
 import { createWorld, updateWorldStartSettings } from "api/world";
@@ -104,32 +104,35 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
 
   const values = watch();
 
-  const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user) return;
+  const [{ error, loading: isSaving }, submit] = useAsyncFn(
+    async (input: WorldStartFormInput) => {
+      if (!values || !user) return;
 
-    if (worldId) {
-      await updateWorldStartSettings({ ...values, id: worldId }, user);
-      //TODO: Change this to the most appropriate url when product decides the perfect UX
-      history.push(ADMIN_V3_WORLDS_URL);
-    } else {
-      const { worldId: id, error } = await createWorld(values, user);
+      if (worldId) {
+        await updateWorldStartSettings({ ...values, id: worldId }, user);
+        //TODO: Change this to the most appropriate url when product decides the perfect UX
+        history.push(ADMIN_V3_WORLDS_BASE_URL);
+      } else {
+        const { worldId: id, error } = await createWorld(values, user);
 
-      if (id) {
-        setWorldId(id);
+        if (id) {
+          setWorldId(id);
+        }
+
+        if (error) {
+          // Note, a more complex option when id exists is a redirect
+          // that doesn't lose the error message for the user
+          throw error;
+        }
+
+        //TODO: Change this to the most appropriate url when product decides the perfect UX
+        history.push(ADMIN_V3_WORLDS_BASE_URL);
       }
 
-      if (error) {
-        // Note, a more complex option when id exists is a redirect
-        // that doesn't lose the error message for the user
-        throw error;
-      }
-
-      //TODO: Change this to the most appropriate url when product decides the perfect UX
-      history.push(ADMIN_V3_WORLDS_URL);
-    }
-
-    reset(defaultValues);
-  }, [worldId, user, values, reset, defaultValues, history]);
+      reset(input);
+    },
+    [worldId, user, values, reset, history]
+  );
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({

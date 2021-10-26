@@ -209,8 +209,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -218,8 +216,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -297,13 +293,13 @@ const createVenueData_v2 = (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
         description: data.description,
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
@@ -365,10 +361,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -417,22 +409,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.userStatuses = data.userStatuses;
   }
 
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
-  }
-
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
@@ -457,6 +433,48 @@ const initializeVenueChatMessagesCounter = (venueRef, batch) => {
   }
   batch.set(counterCollection.doc("sum"), { value: 0 });
 };
+
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const { docs: sections } = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = sections.length;
+
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
+    }
+
+    await batch.commit();
+  }
+);
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -847,10 +865,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -895,6 +909,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.isReactionsMuted === "boolean") {
+    updated.isReactionsMuted = data.isReactionsMuted;
+  }
+
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
   }
@@ -913,22 +931,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

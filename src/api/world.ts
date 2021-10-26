@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import { omit, pick } from "lodash";
+import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
@@ -74,11 +74,13 @@ export const createFirestoreWorldEntranceInput: (
 ) => Promise<Partial<World>> = async (input, user) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
-    // save only to new place for new worlds, and if missing, read old ones for legacy worlds
-    // questions: {
-    //   code: input.code_of_conduct_questions,
-    //   profile: input.profile_questions,
-    // },
+    adultContent: input?.adultContent,
+    requiresDateOfBirth: input?.requiresDateOfBirth,
+    questions: {
+      code: input?.code ?? [],
+      profile: input?.profile ?? [],
+    },
+    entrance: isEmpty(input.entrance) ? undefined : input.entrance,
   };
 
   return worldUpdateData;
@@ -89,7 +91,13 @@ export const createFirestoreWorldAdvancedInput: (
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
+  return pick(input, [
+    "id",
+    "attendeesTitle",
+    "chatTitle",
+    "showNametags",
+    "showBadges",
+  ]);
 };
 
 export const createWorld: (
@@ -97,7 +105,7 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";
@@ -120,10 +128,14 @@ export const createWorld: (
     await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
 
     // 3. initial venue is created
-    await firebase.functions().httpsCallable("venue-createVenue_v2")({
-      ...fullInput,
-      worldId,
-    });
+    // Temporary disabled due to possible complications and edge cases.
+    // What if the inital venue has to be a template of choice
+    // What if the venue already exists and it collides with the world name
+    // etc..
+    // await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    //   ...fullInput,
+    //   worldId,
+    // });
 
     // worldId might be useful for caller
     return { worldId };

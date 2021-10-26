@@ -3,7 +3,9 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { venueLandingUrl } from "utils/url";
+import { DEFAULT_VENUE, DISABLED_DUE_TO_1324 } from "settings";
+
+import { venueInsideUrl, venueLandingUrl } from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useUser } from "hooks/useUser";
@@ -28,6 +30,11 @@ export const AdminRestricted: React.FC = ({ children }) => {
     await firebase.auth().signOut();
     history.push(venueId ? venueLandingUrl(venueId) : "/");
   }, [firebase, history, venueId]);
+
+  const redirectToDefaultRoute = () =>
+    history.push(venueInsideUrl(DEFAULT_VENUE));
+
+  const authHandler = userId ? logout : redirectToDefaultRoute;
 
   if (isAdminUser) return <>{children}</>;
 
@@ -54,15 +61,17 @@ export const AdminRestricted: React.FC = ({ children }) => {
           If you don’t have an Admin Account, please contact your event
           organiser.
         </p>
-        <ButtonNG
-          className="AdminRestricted__switch-button"
-          variant="primary"
-          loading={isLoggingOut}
-          disabled={isLoggingOut}
-          onClick={logout}
-        >
-          Log Out
-        </ButtonNG>
+        {DISABLED_DUE_TO_1324 && (
+          <ButtonNG
+            className="AdminRestricted__switch-button"
+            variant="primary"
+            loading={isLoggingOut}
+            disabled={isLoggingOut}
+            onClick={authHandler}
+          >
+            {userId ? "Log Out" : "Log In"}
+          </ButtonNG>
+        )}
       </div>
     </div>
   );

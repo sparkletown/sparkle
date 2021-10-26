@@ -122,4 +122,9 @@ $all-section-previews-bottom-spacing: 50px;
     height: 100%;
     width: 100%;
   }
+
+  &__loader {
+    justify-self: center;
+    align-self: center;
+  }
 }
