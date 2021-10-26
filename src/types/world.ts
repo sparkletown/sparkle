@@ -22,6 +22,8 @@ export interface WorldEntranceFormInput {
   code: Question[];
   profile: Question[];
   entrance?: EntranceStepConfig[];
+  adultContent?: boolean;
+  requiresDateOfBirth?: boolean;
 }
 
 export interface WorldAdvancedFormInput {
