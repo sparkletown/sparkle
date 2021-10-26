@@ -39,7 +39,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world.slug;
+  const worldId = world.id;
   const { user } = useUser();
 
   const defaultValues = useMemo<WorldAdvancedFormInput>(

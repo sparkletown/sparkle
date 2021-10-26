@@ -34,19 +34,17 @@ const checkIsAdmin = async (uid) => {
 
 const checkIsWorldOwner = async (worldId, uid) => {
   try {
-    const worldsData = await admin
+    const worldDoc = await admin
       .firestore()
       .collection("worlds")
-      .where("slug", "==", worldId ?? "")
+      .doc(worldId)
       .get();
 
-    const hasWorldDoc = Boolean(worldsData.docs.length);
-
-    if (!hasWorldDoc) {
+    if (!worldDoc || !worldDoc.exists) {
       throw new HttpsError("not-found", `World ${worldId} does not exist`);
     }
 
-    const world = worldsData.docs[0].data();
+    const world = worldDoc.data();
 
     if (world.owners && world.owners.includes(uid)) {
       return;
@@ -87,23 +85,10 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     updatedAt: Date.now(),
   };
 
-  const { docs } = await admin
-    .firestore()
-    .collection("worlds")
-    .where("slug", "==", data.slug)
-    .get();
-
-  const slugExists = docs.length;
-
-  if (slugExists) {
-    throw new HttpsError(
-      "already-exists",
-      `The world slug '${data.slug}' already belongs to another world, please try again with another slug.`
-    );
-  }
-
   const worldDoc = admin.firestore().collection("worlds").doc();
-  return await worldDoc.create(worldData).then(() => worldData);
+  return await worldDoc
+    .create(worldData)
+    .then(() => ({ ...worldData, id: worldDoc.id }));
 });
 
 exports.updateWorld = functions.https.onCall(async (data, context) => {
@@ -133,24 +118,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     );
   }
 
-  const { docs } = await admin
-    .firestore()
-    .collection("worlds")
-    .where("slug", "==", worldId)
-    .get();
-
-  const hasWorld = docs.length;
-
-  if (!hasWorld) {
-    throw new HttpsError(
-      "not-found",
-      `World with the slug ${worldId} does not exist.`
-    );
-  }
-
-  const world = docs[0].data();
-
-  await checkIsWorldOwner(slug, context.auth.token.user_id);
+  await checkIsWorldOwner(worldId, context.auth.token.user_id);
   await checkIsAdmin(context.auth.token.user_id);
 
   let landingPageConfig;
@@ -175,7 +143,6 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   };
 
   const worldData = {
-    ...world,
     updatedAt: Date.now(),
     ...(!isNil(attendeesTitle) && { attendeesTitle }),
     ...(!isNil(chatTitle) && { chatTitle }),
@@ -190,7 +157,12 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(showBadges) && { showBadges }),
   };
 
-  await docs[0].ref.set(worldData);
+  await admin
+    .firestore()
+    .collection("worlds")
+    .doc(worldId)
+    .set(worldData, { merge: true });
+
   return worldData;
 });
 
@@ -203,20 +175,5 @@ exports.deleteWorld = functions.https.onCall(async (data, context) => {
   await checkIsWorldOwner(worldId, context.auth.token.user_id);
   await checkIsAdmin(context.auth.token.user_id);
 
-  const { docs } = await admin
-    .firestore()
-    .collection("worlds")
-    .where("slug", "==", worldId)
-    .get();
-
-  const hasWorld = docs.length;
-
-  if (!hasWorld) {
-    throw new HttpsError(
-      "not-found",
-      `World with the slug ${worldId} does not exist.`
-    );
-  }
-
-  await docs[0].ref.delete();
+  admin.firestore().collection("worlds").doc(worldId).delete();
 });

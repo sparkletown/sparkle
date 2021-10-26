@@ -65,7 +65,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
   ...sidebarFooterProps
 }) => {
-  const worldId = world.slug;
+  const worldId = world.id;
   const { user } = useUser();
 
   // @debt sync useArray with the form changes or try useFieldArray
