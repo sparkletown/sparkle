@@ -151,6 +151,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
           type="submit"
           variant="primary"
           disabled={!dirty || isSubmitting}
+          loading={isSubmitting}
         >
           Save
         </ButtonNG>
