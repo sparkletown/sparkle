@@ -109,7 +109,7 @@ export const Questions: React.FC = () => {
           {profileQuestions?.map((question: Question) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
-                <strong>{question.name}</strong>
+                <strong>{question.text}</strong>
                 <textarea
                   className="input-block input-centered"
                   name={question.name}
