@@ -49,9 +49,9 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
   const venuesCollection = firestore.collection("venues");
   const venueDocs = (await venuesCollection.get()).docs;
 
-  await Promise.all(
-    venueDocs.map(async (venueDoc) => {
-      const venueId = venueDoc.id;
+  for (const venueDoc of venueDocs) {
+    const venueId = venueDoc.id;
+    try {
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
 
@@ -67,8 +67,11 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
         });
 
       await venueDoc.ref.update({ worldId: sovereignVenueId });
-    })
-  );
+    } catch (e) {
+      console.error(e);
+      console.log(`Failed to migrate venue ${venueId}. Skipping`);
+    }
+  }
 };
 
 export const migrate = async ({ firestore }: MigrateOptions) => {
@@ -82,7 +85,12 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           return;
         }
 
-        await doMigration(firestore);
+        try {
+          await doMigration(firestore);
+        } catch (e) {
+          console.error(e);
+          reject(e);
+        }
         resolve();
       }
     );
