@@ -71,9 +71,9 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
     <div className="RunTabUsers">
       <div className="RunTabUsers__row RunTabUsers__manage">
         <span className="RunTabUsers__info">
-          {sovereignVenue?.recentUserCount} people live
+          {sovereignVenue?.recentUserCount ?? 0} people online
         </span>
-        <ButtonNG>Manage users</ButtonNG>
+        <ButtonNG className="mod--hidden">Manage users</ButtonNG>
       </div>
       <div>
         {foundUsers.map((user) => (

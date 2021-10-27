@@ -10,14 +10,20 @@ import DetailsPreview from "./Preview";
 // Styles
 import "../Venue/Venue.scss";
 
-const Details: React.FC<DetailsProps> = ({ previous, dispatch, data }) => (
+const Details: React.FC<DetailsProps> = ({ venue }) => (
   <S.DetailsContainer>
     <S.DetailsFormWrapper>
-      <DetailsForm previous={previous} editData={data} dispatch={dispatch} />
+      <DetailsForm venue={venue} />
     </S.DetailsFormWrapper>
 
     <S.PreviewWrapper>
-      <DetailsPreview {...data} />
+      <DetailsPreview
+        name={venue?.name}
+        subtitle={venue?.config?.landingPageConfig.subtitle}
+        description={venue?.config?.landingPageConfig.description}
+        bannerImageUrl={venue?.config?.landingPageConfig.coverImageUrl}
+        logoImageUrl={venue?.host?.icon}
+      />
     </S.PreviewWrapper>
   </S.DetailsContainer>
 );

@@ -17,7 +17,7 @@ import "./ProfileModalContent.scss";
 
 export interface ProfileModalContentProps {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
   onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }
@@ -28,7 +28,7 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   onEditMode,
   venue,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
 
   return (
     <>

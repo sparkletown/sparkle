@@ -89,7 +89,7 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
     poster: "",
     description: "",
     template: VenueTemplate.embeddable,
-    hidden: true,
+    hidden: false,
   },
   {
     text: "Screening Room",

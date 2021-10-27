@@ -2,16 +2,17 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
   ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_OLD_WORLD_PARAM_URL,
   ADMIN_V3_VENUE_PARAM_URL,
   ADMIN_V3_WORLD_SPACES_PARAM_URL,
-  ENTRANCE_ROOT_URL,
+  ENTRANCE_BASE_URL,
   VALID_URL_PROTOCOLS,
+  VENUE_INSIDE_BASE_URL,
   VENUE_INSIDE_PARAM_URL,
-  VENUE_INSIDE_URL,
-  VENUE_LANDING_URL,
+  VENUE_LANDING_BASE_URL,
   WORLD_ROOT_URL,
 } from "settings";
 
@@ -36,11 +37,11 @@ export const venueInsideFullUrl = (venueId?: string) =>
   generatePath(VENUE_INSIDE_PARAM_URL, { venueId });
 
 export const venueInsideUrl = (venueId: string) => {
-  return `${VENUE_INSIDE_URL}/${venueId}`;
+  return `${VENUE_INSIDE_BASE_URL}/${venueId}`;
 };
 
 export const venueLandingUrl = (venueId: string) => {
-  return `${VENUE_LANDING_URL}/${venueId}`;
+  return `${VENUE_LANDING_BASE_URL}/${venueId}`;
 };
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
@@ -48,8 +49,11 @@ export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
 };
 
 export const venueEntranceUrl = (venueId: string, step?: number) => {
-  return `${ENTRANCE_ROOT_URL}/${step ?? 1}/${venueId}`;
+  return `${ENTRANCE_BASE_URL}/${step ?? 1}/${venueId}`;
 };
+
+export const accountProfileVenueUrl = (venueId: string) =>
+  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { venueId });
 
 export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 

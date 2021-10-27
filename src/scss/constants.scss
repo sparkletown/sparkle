@@ -205,6 +205,10 @@ $z-layers: (
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
+  admin-sidebar: $z-layer-sidebar,
+  admin-sidebar-content: $z-layer-sidebar + 10,
+  admin-sidebar-title: $z-layer-sidebar + 20,
+  admin-sidebar-footer: $z-layer-sidebar + 30,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   jazzbar-header: $z-layer-jazz-header,

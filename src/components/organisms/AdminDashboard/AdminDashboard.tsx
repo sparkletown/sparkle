@@ -5,7 +5,7 @@ import {
 } from "react-bootstrap";
 import classNames from "classnames";
 
-import { ADMIN_V3_WORLDS_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { isPartyMapVenue } from "types/venues";
 
@@ -81,7 +81,11 @@ export const AdminDashboard: React.FC = () => {
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
           <div className="AdminDashboard__header">
-            <ButtonNG variant="secondary" isLink linkTo={ADMIN_V3_WORLDS_URL}>
+            <ButtonNG
+              variant="secondary"
+              isLink
+              linkTo={ADMIN_V3_WORLDS_BASE_URL}
+            >
               Back to worlds
             </ButtonNG>
 

@@ -209,8 +209,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -218,8 +216,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -365,10 +361,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -417,22 +409,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.userStatuses = data.userStatuses;
   }
 
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
-  }
-
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
@@ -468,29 +444,18 @@ exports.setAuditoriumSections = functions.https.onCall(
 
     const batch = admin.firestore().batch();
 
-    const venueDoc = await admin
+    const { docs: sections } = await admin
       .firestore()
       .collection("venues")
       .doc(venueId)
       .collection("sections")
       .get();
 
-    const currentNumberOfSections = venueDoc.docs.length;
+    const currentNumberOfSections = sections.length;
 
-    // Don't update anything if the number of sections is the same.
-    if (currentNumberOfSections === numberOfSections) {
-      return;
-    }
-
-    // Adds the old sections to the batch and deletes them.
-    // Not very optimal, minimal fast change because time is limited.
-    // Ideally there should be a check for the new number of sections that compares the current one,
-    // then the logic should decide if it will add sections or remove from the last ones.
-    venueDoc.docs.forEach((doc) => {
-      batch.delete(doc.ref);
-    });
-
-    for (let section = 1; section <= numberOfSections; section++) {
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
       const sectionRef = admin
         .firestore()
         .collection("venues")
@@ -499,6 +464,12 @@ exports.setAuditoriumSections = functions.https.onCall(
         .doc();
 
       batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
     }
 
     await batch.commit();
@@ -894,10 +865,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -964,22 +931,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

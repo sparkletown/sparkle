@@ -1,5 +1,4 @@
-import React, { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 
 import { useUser } from "hooks/useUser";
 
@@ -15,17 +14,8 @@ import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import { VenueWizardCreateProps } from "./VenueWizardCreate.types";
 
-const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
-  state,
-  dispatch,
-}) => {
-  const history = useHistory();
+const VenueWizardCreate: React.FC<VenueWizardCreateProps> = () => {
   const { user } = useUser();
-
-  const previous = useCallback(
-    () => history.push(`${history.location.pathname}`),
-    [history]
-  );
 
   if (!user) {
     return (
@@ -41,7 +31,7 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
 
   return (
     <AdminRestricted>
-      <Details previous={previous} dispatch={dispatch} data={state} />
+      <Details />
     </AdminRestricted>
   );
 };

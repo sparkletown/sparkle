@@ -9,23 +9,24 @@ import { addToBugsnagEventOnError, BugsnagErrorBoundary } from "bugsnag";
 import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
 import { activatePolyFills } from "polyfills";
 import { createFirestoreInstance } from "redux-firestore";
 import { ThemeProvider } from "styled-components";
 
-import { BUILD_SHA1, LOGROCKET_APP_ID, MIXPANEL_PROJECT_TOKEN } from "secrets";
+import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
 import { FIREBASE_CONFIG } from "settings";
 
 import { store } from "store";
 
 import { traceReactScheduler } from "utils/performance";
-import { authSelector } from "utils/selectors";
+import { authSelector, currentVenueSelector } from "utils/selectors";
 
 import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 import { AppRouter } from "components/organisms/AppRouter";
 
@@ -80,17 +81,20 @@ const rrfProps = {
   createFirestoreInstance,
 };
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
-}
-
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
+  const { userWithId } = useUser();
+  const venue = useSelector(currentVenueSelector);
+  const analytics = useAnalytics({ venue });
   const auth = useSelector(authSelector);
 
   useEffect(() => {
-    if (!auth || !auth.uid) return;
+    analytics.initAnalytics();
+  }, [analytics]);
+
+  useEffect(() => {
+    if (!auth || !auth.uid || !userWithId) return;
 
     const displayName = auth.displayName || "N/A";
     const email = auth.email || "N/A";
@@ -102,10 +106,11 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
       });
     }
 
-    if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
-    }
-  }, [auth]);
+    analytics.identifyUser({
+      email,
+      name: userWithId.partyName,
+    });
+  }, [analytics, auth, userWithId]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 
