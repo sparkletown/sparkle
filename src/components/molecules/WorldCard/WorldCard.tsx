@@ -31,6 +31,8 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
 
   const logoClasses = classNames("WorldCard__logo", logoVars);
 
+  console.log(world.id);
+
   return (
     <div className={cardClasses}>
       <div className="WorldCard__info">
@@ -45,7 +47,8 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       <ButtonNG
         variant="dark"
         isLink
-        linkTo={adminWorldSpacesUrl(world.slug)}
+        disabled={!world.slug}
+        linkTo={adminWorldSpacesUrl(world.id)}
         iconName={faSignInAlt}
         className="WorldCard__button"
       >
@@ -53,9 +56,10 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       </ButtonNG>
       <ButtonNG
         isLink
-        linkTo={adminWorldUrl(world.slug)}
+        linkTo={adminWorldUrl(world.id)}
         variant="dark"
         iconName={faCog}
+        disabled={!world.slug}
         className="WorldCard__button"
       >
         Configure world

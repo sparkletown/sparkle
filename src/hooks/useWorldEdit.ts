@@ -1,4 +1,4 @@
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { useFirestore, useFirestoreDocData } from "reactfire";
 
 import { World } from "api/admin";
 
@@ -17,20 +17,20 @@ export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
 
   const worldsRef = firestore
     .collection("worlds")
-    .where("slug", "==", worldId ?? "")
+    .doc(worldId)
     .withConverter(worldConverter);
 
-  const { data: worlds, status } = useFirestoreCollectionData<WithId<World>>(
+  const { data: world, status } = useFirestoreDocData<WithId<World>>(
     worldsRef,
     {
       initialData: undefined,
     }
   );
 
-  const isWorldLoaded = status === "success";
+  const isWorldLoaded = status !== "loading";
 
   return {
-    world: worlds?.[0],
+    world,
     isLoaded: isWorldLoaded,
   };
 };

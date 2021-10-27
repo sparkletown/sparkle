@@ -122,7 +122,7 @@ export const createWorld: (
       user
     );
 
-    await firebase.functions().httpsCallable("world-createWorld")(fullInput);
+    await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
 
     // 3. initial venue is created
     // Temporary disabled due to possible complications and edge cases.
