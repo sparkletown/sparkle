@@ -45,7 +45,6 @@ import { Toggler } from "components/atoms/Toggler";
 import "firebase/functions";
 
 import EntranceInput from "./EntranceInput";
-import QuestionInput from "./QuestionInput";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
@@ -226,44 +225,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         imageClassName="host-icon"
         error={errors.logoImageFile || errors.logoImageUrl}
       />
-    </div>
-  );
-
-  const renderAttendeesTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Title of your venues attendees</h4>
-      <div style={{ fontSize: "16px" }}>
-        For example: guests, attendees, partygoers.
-      </div>
-      <input
-        type="text"
-        disabled={disable}
-        name="attendeesTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Attendees title"
-      />
-      {errors.attendeesTitle && (
-        <span className="input-error">{errors.attendeesTitle.message}</span>
-      )}
-    </div>
-  );
-
-  const renderChatTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Your venue type label</h4>
-      <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
-      <input
-        type="text"
-        disabled={disable}
-        name="chatTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Event label"
-      />
-      {errors.chatTitle && (
-        <span className="input-error">{errors.chatTitle.message}</span>
-      )}
     </div>
   );
 
@@ -515,22 +476,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderShowNametagsToggle = () => (
-    <>
-      <h4 className="italic input-header">
-        Display user names on their avatars
-      </h4>
-      <label className="input-container">
-        <Form.Control as="select" name="showNametags" ref={register} custom>
-          <option value="none">None</option>
-          {/* TODO: Implement Inline state */}
-          {/* <option value="inline">Inline</option> */}
-          <option value="hover">Inline and hover</option>
-        </Form.Control>
-      </label>
-    </>
-  );
-
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
@@ -539,10 +484,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const isJazzbar = templateID === VenueTemplate.jazzbar;
-
   const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
-    "toggle-room DetailsForm--hidden": isJazzbar,
+    "toggle-room DetailsForm--hidden": templateID !== VenueTemplate.jazzbar,
   });
 
   const renderJukeboxToggle = () => {
@@ -691,12 +634,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderHighlightImageInput()}
         {renderLogoInput()}
 
-        {/* ATTENDEES (multiple) TITLE */}
-        {renderAttendeesTitleInput()}
-
-        {/* EVENT CHAT TITLE */}
-        {renderChatTitleInput()}
-
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && renderUrlInput()}
@@ -708,20 +645,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {templateID &&
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
-
-        <QuestionInput
-          title="Code of conduct questions"
-          fieldName="code_of_conduct_questions"
-          register={register}
-          hasLink
-          editing={state.detailsPage?.venue.code_of_conduct_questions}
-        />
-        <QuestionInput
-          title="Profile questions"
-          fieldName="profile_questions"
-          register={register}
-          editing={state.detailsPage?.venue.profile_questions}
-        />
 
         <EntranceInput
           fieldName="entrance"
@@ -736,7 +659,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           renderShowGridToggle()}
 
         {renderShowBadgesToggle()}
-        {renderShowNametagsToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}

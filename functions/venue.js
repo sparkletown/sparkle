@@ -209,8 +209,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -218,8 +216,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -366,10 +362,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -416,22 +408,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
@@ -889,10 +865,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -959,22 +931,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

@@ -10,4 +10,5 @@ $min-height: 2rem;
   margin: $spacing--md;
   padding: 0;
   text-transform: capitalize;
+  z-index: z(admin-sidebar-title);
 }
