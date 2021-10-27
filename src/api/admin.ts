@@ -2,11 +2,14 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
+import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
+
+import { EntranceStepConfig } from "types/EntranceStep";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
-  Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
+  VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
@@ -30,11 +33,6 @@ interface Question {
   name: string;
   text: string;
   link?: string;
-}
-
-export interface AdvancedVenueInput {
-  profile_questions: Array<Question>;
-  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
@@ -72,44 +70,41 @@ export type RoomInput_v2 = Room & {
   image_file?: FileList;
 };
 
-export type VenueInput = AdvancedVenueInput &
-  VenueImageUrls & {
-    name: string;
-    bannerImageFile?: FileList;
-    logoImageFile?: FileList;
-    mapBackgroundImageFile?: FileList;
-    subtitle?: string;
-    description?: string;
-    zoomUrl?: string;
-    iframeUrl?: string;
-    autoPlay?: boolean;
-    template: VenueTemplate;
-    rooms?: Array<Room>;
-    placement?: Omit<VenuePlacement, "state">;
-    placementRequests?: string;
-    adultContent: boolean;
-    showGrid?: boolean;
-    columns?: number;
-    width?: number;
-    height?: number;
-    parentId?: string;
-    owners?: string[];
-    chatTitle?: string;
-    attendeesTitle?: string;
-    auditoriumRows?: number;
-    auditoriumColumns?: number;
-    userStatuses?: UserStatus[];
-    showReactions?: boolean;
-    enableJukebox?: boolean;
-    showShoutouts?: boolean;
-    showRadio?: boolean;
-    radioStations?: string;
-    showNametags?: UsernameVisibility;
-    showUserStatus?: boolean;
-  };
+export type VenueInput = VenueImageUrls & {
+  name: string;
+  bannerImageFile?: FileList;
+  logoImageFile?: FileList;
+  mapBackgroundImageFile?: FileList;
+  subtitle?: string;
+  description?: string;
+  zoomUrl?: string;
+  iframeUrl?: string;
+  autoPlay?: boolean;
+  template: VenueTemplate;
+  rooms?: Array<Room>;
+  placement?: Omit<VenuePlacement, "state">;
+  placementRequests?: string;
+  adultContent: boolean;
+  showGrid?: boolean;
+  columns?: number;
+  width?: number;
+  height?: number;
+  parentId?: string;
+  owners?: string[];
+  auditoriumRows?: number;
+  auditoriumColumns?: number;
+  userStatuses?: UserStatus[];
+  showReactions?: boolean;
+  enableJukebox?: boolean;
+  showShoutouts?: boolean;
+  showRadio?: boolean;
+  radioStations?: string;
+  showUserStatus?: boolean;
+  hasSocialLoginEnabled?: boolean;
+};
 
 export interface VenueInput_v2
-  extends Venue_v2_AdvancedConfig,
+  extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
   description?: string;
@@ -129,32 +124,34 @@ export interface VenueInput_v2
   end_utc_seconds?: number;
 }
 
-export interface WorldFormInput {
-  name: string;
-  description?: string;
-  subtitle?: string;
-  bannerImageFile?: FileList;
-  bannerImageUrl?: string;
-  logoImageFile?: FileList;
-  logoImageUrl?: string;
-  mapBackgroundImageFile?: FileList;
-  mapBackgroundImageUrl?: string;
-}
-
+// NOTE: world might have many fields, please keep them in alphabetic order
+// @debt move to src/types/world
 export interface World {
-  name: string;
+  adultContent?: boolean;
+  attendeesTitle?: string;
+  chatTitle?: string;
   config: {
     landingPageConfig: {
       coverImageUrl: string;
-      subtitle?: string;
       description?: string;
+      subtitle?: string;
     };
   };
+  createdAt: Date;
+  entrance?: EntranceStepConfig[];
   host: {
     icon: string;
   };
+  name: string;
   owners: string[];
-  createdAt: Date;
+  questions?: {
+    code?: Question[];
+    profile?: Question[];
+  };
+  requiresDateOfBirth?: boolean;
+  showNametags?: UsernameVisibility;
+  showBadges?: boolean;
+  slug: string;
   updatedAt: Date;
 }
 
@@ -199,7 +196,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -231,7 +228,7 @@ const createFirestoreVenueInput = async (
     const randomPrefix = Math.random().toString();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/${randomPrefix}-${file.name}`
+      `users/${user.uid}/venues/${slug}/${randomPrefix}-${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -256,6 +253,8 @@ const createFirestoreVenueInput = async (
     owners,
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -266,8 +265,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-
-  const urlVenueName = createUrlSafeName(input.name);
+  const slug = createUrlSafeName(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -290,13 +288,19 @@ const createFirestoreVenueInput_v2 = async (
   let imageInputData = {};
 
   // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
-    const file = fileArr[0];
+  for (const { fileKey, urlKey } of imageKeys) {
+    const files = input[fileKey];
+    const file = files?.[0];
+
+    if (!file) continue;
+
+    const type = file.type;
+    if (!ACCEPTED_IMAGE_TYPES.includes(type)) continue;
+
+    const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${urlVenueName}/background.${file.type}`
+      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -304,7 +308,7 @@ const createFirestoreVenueInput_v2 = async (
 
     imageInputData = {
       ...imageInputData,
-      [entry.urlKey]: downloadUrl,
+      [urlKey]: downloadUrl,
     };
   }
 
@@ -316,6 +320,8 @@ const createFirestoreVenueInput_v2 = async (
     ...imageInputData,
     template: input.template ?? VenueTemplate.partymap,
     parentId: input.parentId ?? "",
+    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
+    name: slug,
   };
 
   return firestoreVenueInput;
@@ -342,35 +348,22 @@ export const createVenue_v2 = async (
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")({
+
+  const venueResponse = await firebase
+    .functions()
+    .httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
     worldId: input.worldId,
   });
-};
 
-export const createWorld = async (
-  world: WorldFormInput,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
-  const worldResponse = await firebase
-    .functions()
-    .httpsCallable("world-createWorld")(firestoreVenueInput);
-  const worldId = worldResponse?.data;
-  await firebase.functions().httpsCallable("venue-createVenue_v2")({
-    ...firestoreVenueInput,
-    worldId,
-  });
-};
+  if (input.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: firestoreVenueInput.name,
+      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
+    });
+  }
 
-export const updateWorld = async (
-  world: WithId<WorldFormInput>,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(world, user);
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    firestoreVenueInput
-  );
+  return venueResponse;
 };
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
@@ -390,7 +383,6 @@ export const updateVenue_v2 = async (
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
-
   return firebase
     .functions()
     .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
@@ -398,6 +390,30 @@ export const updateVenue_v2 = async (
       const msg = `[updateVenue_v2] updating venue ${input.name}`;
       const context = {
         location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
+      });
+      throw error;
+    });
+};
+
+export const updateMapBackground = async (
+  input: WithWorldId<VenueInput_v2>,
+  user: firebase.UserInfo
+) => {
+  const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
+
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateMapBackground")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateMapBackground] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateMapBackground",
       };
 
       Bugsnag.notify(msg, (event) => {

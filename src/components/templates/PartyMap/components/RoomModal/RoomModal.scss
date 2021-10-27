@@ -9,7 +9,7 @@ $spacing: 20px;
     display: flex;
     flex-direction: column;
     max-height: 80vh;
-    background-color: $dark;
+    background-color: $secondary--live;
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -36,14 +36,14 @@ $spacing: 20px;
     height: 180px;
     width: 180px;
     border-radius: $border-radius;
-    background-color: $black;
+    background-color: $content--under;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
   }
 
   .modal-content {
-    background: $dark;
+    background: $secondary--live;
     border-radius: $border-radius;
     height: fit-content;
   }
@@ -66,7 +66,7 @@ $spacing: 20px;
     @include scrollbar;
     padding: 10px $spacing;
 
-    background: $dark;
+    background: $secondary--live;
     border-radius: $border-radius;
 
     max-height: 25vh;

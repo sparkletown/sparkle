@@ -23,7 +23,7 @@ $logo-background-width: 195px;
   }
 
   &__url-text {
-    color: $secondary--lightest;
+    color: var(--greyscale-lighter-20pp);
     padding: 0 $spacing--xxl;
   }
 

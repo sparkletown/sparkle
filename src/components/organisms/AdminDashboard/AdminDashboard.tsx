@@ -5,15 +5,20 @@ import {
 } from "react-bootstrap";
 import classNames from "classnames";
 
-import { ADMIN_V3_CREATE_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { isPartyMapVenue } from "types/venues";
 
+import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
 
-import { AdminVenueCard } from "components/molecules/AdminVenueCard";
+import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -22,7 +27,13 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./AdminDashboard.scss";
 
 export const AdminDashboard: React.FC = () => {
-  const { ownedVenues: venues, isLoading } = useOwnedVenues({});
+  const { ownedVenues, isLoading } = useOwnedVenues({});
+
+  const { worldId } = useWorldEditParams();
+
+  const venues = worldId
+    ? ownedVenues.filter((venue) => venue.worldId === worldId)
+    : ownedVenues;
 
   const [
     currentSortingOption,
@@ -38,14 +49,14 @@ export const AdminDashboard: React.FC = () => {
     () =>
       sortedVenues
         ?.filter(isPartyMapVenue)
-        .map((venue) => <AdminVenueCard key={venue.id} venue={venue} />),
+        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
     [sortedVenues]
   );
 
   const sortingOptions = useMemo(
     () => (
       // @debt align the style of the SpacesDropdown with the Dropdown component
-      <DropdownButton variant="secondary" title="Sort venues">
+      <DropdownButton variant="secondary" title="Sort spaces">
         {Object.values(VenueSortingOptions).map((sortingOption) => (
           <ReactBootstrapDropdown.Item
             key={sortingOption}
@@ -66,33 +77,47 @@ export const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <AdminRestricted>
-      <div className="AdminDashboard">
-        <div className="AdminDashboard__header">
-          <div className="AdminDashboard__header-content">
-            <div className="AdminDashboard__header-title">Admin Dashboard</div>
-            {sortingOptions}
+    <div className="AdminDashboard">
+      <WithNavigationBar hasBackButton withSchedule>
+        <AdminRestricted>
+          <div className="AdminDashboard__header">
+            <ButtonNG
+              variant="secondary"
+              isLink
+              linkTo={ADMIN_V3_WORLDS_BASE_URL}
+            >
+              Back to worlds
+            </ButtonNG>
+
+            <div className="AdminDashboard__header-content">
+              <AdminShowcaseTitle>Spaces</AdminShowcaseTitle>
+              {sortingOptions}
+            </div>
+            <ButtonNG
+              variant="primary"
+              isLink
+              linkTo={adminCreateWorldSpace(worldId)}
+            >
+              Create a new space
+            </ButtonNG>
           </div>
-          <ButtonNG variant="primary" isLink linkTo={ADMIN_V3_CREATE_URL}>
-            Create a new space
-          </ButtonNG>
-        </div>
-        <div
-          className={classNames("AdminDashboard__cards", {
-            "AdminDashboard__cards--empty": !hasVenues,
-          })}
-        >
-          {!hasVenues && (
-            <>
-              <div className="AdminDashboard__welcome-message">Welcome!</div>
-              <div className="AdminDashboard__welcome-message">
-                Create your first Sparkle space
-              </div>
-            </>
-          )}
-          {hasVenues && renderedPartyVenues}
-        </div>
-      </div>
-    </AdminRestricted>
+          <div
+            className={classNames("AdminDashboard__cards", {
+              "AdminDashboard__cards--empty": !hasVenues,
+            })}
+          >
+            {!hasVenues && (
+              <>
+                <div className="AdminDashboard__welcome-message">Welcome!</div>
+                <div className="AdminDashboard__welcome-message">
+                  Create your first Sparkle space
+                </div>
+              </>
+            )}
+            {hasVenues && renderedPartyVenues}
+          </div>
+        </AdminRestricted>
+      </WithNavigationBar>
+    </div>
   );
 };

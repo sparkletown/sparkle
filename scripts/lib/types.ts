@@ -17,6 +17,8 @@ export import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 export import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import Timestamp = admin.firestore.Timestamp;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
+export import WriteBatch = admin.firestore.WriteBatch;
 
 export type LogFunction = typeof console.log;
 
@@ -201,7 +203,6 @@ export interface TruncatedVenueType {
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
   chatTitle?: string;

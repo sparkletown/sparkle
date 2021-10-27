@@ -2,9 +2,9 @@ import React from "react";
 
 import {
   CREATE_EDIT_URL,
+  EXTERNAL_SPARKLEVERSE_COMMUNITY_URL,
+  EXTERNAL_SPARKLEVERSITY_URL,
   PLAYA_VENUE_NAME,
-  SPARKLEVERSE_COMMUNITY_URL,
-  SPARKLEVERSITY_URL,
 } from "settings";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -34,7 +34,7 @@ const CreateEditPopUp: React.FC = () => {
             SparkleVersity.
           </p>
           <a
-            href={SPARKLEVERSITY_URL}
+            href={EXTERNAL_SPARKLEVERSITY_URL}
             rel="noopener noreferrer"
             target="_blank"
             className="btn btn-primary join-button"
@@ -48,7 +48,7 @@ const CreateEditPopUp: React.FC = () => {
             discover and learn.
           </p>
           <a
-            href={SPARKLEVERSE_COMMUNITY_URL}
+            href={EXTERNAL_SPARKLEVERSE_COMMUNITY_URL}
             rel="noopener noreferrer"
             target="_blank"
             className="btn btn-primary join-button"

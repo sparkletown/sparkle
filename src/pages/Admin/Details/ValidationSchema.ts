@@ -1,8 +1,9 @@
-import dayjs from "dayjs";
 import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
+  MAX_SECTIONS_AMOUNT,
+  MIN_SECTIONS_AMOUNT,
   PLAYA_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
@@ -114,6 +115,24 @@ const venueNameSchema = Yup.string()
   .max(
     VENUE_NAME_MAX_CHAR_COUNT,
     ({ max }) => `Name must be less than ${max} characters`
+  )
+  .test(
+    "name",
+    "Must have alphanumeric characters",
+    (val: string) => createUrlSafeName(val).length > 0
+  )
+  .test(
+    "name",
+    "This name is already taken",
+    async (val: string) =>
+      !val ||
+      !(
+        await firebase
+          .firestore()
+          .collection("venues")
+          .doc(createUrlSafeName(val))
+          .get()
+      ).exists
   );
 
 export const roomUrlSchema = Yup.string()
@@ -126,63 +145,26 @@ export const roomUrlSchema = Yup.string()
     isCurrentLocationValidUrl
   );
 
-export interface VenueRoomSchema {
+export interface SpaceSchema {
   template?: string;
-  roomTitle: string;
   venueName?: string;
-  roomUrl?: string;
 }
 
-export const venueRoomSchema = Yup.object().shape<VenueRoomSchema>({
-  roomTitle: roomTitleSchema,
-  venueName: venueNameSchema,
-});
-
-export const roomSchema = Yup.object().shape<VenueRoomSchema>({
-  roomTitle: roomTitleSchema,
-  roomUrl: roomUrlSchema,
-});
+export interface PortalSchema extends SpaceSchema {
+  roomUrl?: string;
+}
 
 const roomImageUrlSchema = Yup.string().required(
   `${ROOM_TAXON.capital} image is required`
 );
 
-export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
-  useUrl: Yup.boolean().required(),
-  title: roomTitleSchema,
-  venueName: Yup.string()
-    .when("useUrl", {
-      is: false,
-      then: roomTitleSchema,
-    })
-    .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
-      !useUrl
-        ? schema
-            .test(
-              "name",
-              "Must have alphanumeric characters",
-              (val: string) => createUrlSafeName(val).length > 0
-            )
-            .test(
-              "name",
-              "This venue name is already taken",
-              async (val: string) =>
-                !val ||
-                !(
-                  await firebase
-                    .firestore()
-                    .collection("venues")
-                    .doc(createUrlSafeName(val))
-                    .get()
-                ).exists
-            )
-        : schema
-    ),
-  url: Yup.string().when("useUrl", {
-    is: true,
-    then: roomUrlSchema,
-  }),
-  image_url: roomImageUrlSchema,
+export const createSpaceSchema = Yup.object().shape<SpaceSchema>({
+  venueName: venueNameSchema,
+});
+
+export const createPortalSchema = Yup.object().shape<PortalSchema>({
+  venueName: venueNameSchema,
+  roomUrl: roomUrlSchema,
 });
 
 export const roomEditSchema = Yup.object().shape({
@@ -191,6 +173,21 @@ export const roomEditSchema = Yup.object().shape({
     url: roomUrlSchema,
     image_url: roomImageUrlSchema,
   }),
+});
+
+export const roomEditNGSchema = Yup.object().shape({
+  image_url: Yup.string().notRequired(),
+  bannerImageUrl: Yup.string().notRequired(),
+  venue: Yup.object().shape({
+    iframeUrl: Yup.string().notRequired(),
+    autoplay: Yup.boolean().notRequired(),
+  }),
+  numberOfSections: Yup.number()
+    .required(
+      `The number of sections needs to be between ${MIN_SECTIONS_AMOUNT} and ${MAX_SECTIONS_AMOUNT}`
+    )
+    .min(MIN_SECTIONS_AMOUNT)
+    .max(MAX_SECTIONS_AMOUNT),
 });
 
 // this is used to transform the api data to conform to the yup schema
@@ -202,7 +199,6 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
@@ -241,13 +237,6 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
     .matches(
       /\d{4}-\d{2}-\d{2}/,
       'Start date must have the format "yyyy-mm-dd"'
-    )
-    .test(
-      "start_date_future",
-      "Start date must be in the futur",
-      (start_date) => {
-        return dayjs(start_date).isSameOrAfter(dayjs(), "day");
-      }
     ),
   start_time: Yup.string().required("Start time required"),
   duration_hours: Yup.number()

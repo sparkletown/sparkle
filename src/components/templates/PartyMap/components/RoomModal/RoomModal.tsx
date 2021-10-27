@@ -13,8 +13,10 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
+import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -102,21 +104,24 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     room,
   });
 
+  const analytics = useAnalytics({ venue });
+
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const [enterWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enterRoomWithSound: () => void = useCallback(_enterRoomWithSound, [
-    _enterRoomWithSound,
-  ]);
+  const enter: () => void = useCallback(() => {
+    analytics.trackEnterRoomEvent(room.title, room.template);
+    void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound());
+  }, [analytics, enterWithSound, room]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
@@ -129,10 +134,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        enterEventLocation={enterRoomWithSound}
+        enterEventLocation={enter}
       />
     ));
-  }, [enterRoomWithSound, showSchedule, venueEvents]);
+  }, [enter, showSchedule, venueEvents]);
 
   const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
@@ -143,6 +148,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomTitle = room.title || portalVenue?.name;
   const roomSubtitle = room.subtitle || portalVenueSubtitle;
   const roomDescription = room.about || portalVenueDescription;
+
+  useEffect(() => {
+    analytics.trackOpenRoomModalEvent(roomTitle);
+  }, [analytics, roomTitle]);
 
   // @debt maybe refactor this, but autoFocus property working very bad.
   const enterButtonref = useRef<HTMLButtonElement>(null);
@@ -168,7 +177,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
             className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
-            onClick={enterRoomWithSound}
+            onClick={enter}
           >
             Join {ROOM_TAXON.capital}
           </button>

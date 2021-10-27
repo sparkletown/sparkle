@@ -9,6 +9,7 @@ const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 const { ROOM_TAXON } = require("./taxonomy.js");
 
 const PLAYA_VENUE_ID = "jamonline";
+const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
@@ -28,6 +29,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
+  viewingwindow: "viewingwindow",
   zoomroom: "zoomroom",
 
   /**
@@ -62,6 +64,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.viewingwindow,
   VenueTemplate.zoomroom,
   VenueTemplate.screeningroom,
 ];
@@ -75,6 +78,7 @@ const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.viewingwindow,
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
@@ -205,8 +209,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -214,8 +216,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -224,6 +224,7 @@ const createVenueData = (data, context) => {
     radioStations: data.radioStations ? [data.radioStations] : [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    hasSocialLoginEnabled: data.hasSocialLoginEnabled || false,
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -292,13 +293,13 @@ const createVenueData_v2 = (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
         description: data.description,
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
@@ -360,10 +361,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -372,12 +369,12 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.parentId === "string") {
+    updated.parentId = data.parentId;
   }
 
   if (typeof data.showSchedule === "boolean") {
@@ -396,6 +393,10 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
+  }
+
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -406,22 +407,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
@@ -436,6 +421,60 @@ const dataOrUpdateKey = (data, updated, key) =>
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
+
+const initializeVenueChatMessagesCounter = (venueRef, batch) => {
+  const counterCollection = venueRef.collection("chatMessagesCounter");
+  for (
+    let shardId = 0;
+    shardId < VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT;
+    shardId++
+  ) {
+    batch.set(counterCollection.doc(shardId.toString()), { count: 0 });
+  }
+  batch.set(counterCollection.doc("sum"), { value: 0 });
+};
+
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const { docs: sections } = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = sections.length;
+
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
+    }
+
+    await batch.commit();
+  }
+);
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -485,11 +524,16 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
+  const batch = admin.firestore().batch();
   // @debt this should be typed
   const venueData = createVenueData(data, context);
   const venueId = getVenueId(data.name);
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  batch.set(venueRef, venueData);
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
 
   return venueData;
 });
@@ -498,10 +542,25 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  const venueData = createVenueData_v2(data, context);
-  const venueId = getVenueId(data.name);
+  const batch = admin.firestore().batch();
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  const venueId = getVenueId(data.name);
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
+  const venueDoc = await venueRef.get();
+
+  if (venueDoc.exists) {
+    throw new HttpsError(
+      "already-exists",
+      `The venue ${data.name} already exists. Please try with another name.`
+    );
+  }
+
+  const venueData = createVenueData_v2(data, context);
+
+  batch.create(venueRef, venueData);
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
 
   return venueData;
 });
@@ -762,6 +821,26 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+exports.updateMapBackground = functions.https.onCall(async (data, context) => {
+  const venueId = getVenueId(data.name);
+  checkAuth(context);
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World id is missing and the update can not be executed."
+    );
+  }
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+});
+
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -786,10 +865,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -810,6 +885,14 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
+  if (data.auditoriumColumns) {
+    updated.auditoriumColumns = data.auditoriumColumns;
+  }
+
+  if (data.auditoriumRows) {
+    updated.auditoriumRows = data.auditoriumRows;
+  }
+
   if (typeof data.showSchedule === "boolean") {
     updated.showSchedule = data.showSchedule;
   }
@@ -826,8 +909,16 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.isReactionsMuted === "boolean") {
+    updated.isReactionsMuted = data.isReactionsMuted;
+  }
+
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
+  }
+
+  if (typeof data.hasSocialLoginEnabled === "boolean") {
+    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
@@ -840,22 +931,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
