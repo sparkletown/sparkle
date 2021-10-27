@@ -4,12 +4,11 @@ $height: 2rem;
 
 .AdminSidebarTitle {
   place-content: center start;
-  height: $height;
-  max-height: $height;
-  line-height: $height;
+  min-height: $height;
   font-size: $height * 0.75;
   font-weight: $font-weight--600;
   margin: $spacing--md;
   padding: 0;
   text-transform: capitalize;
+  z-index: z(admin-sidebar-title);
 }

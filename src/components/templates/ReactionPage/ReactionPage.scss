@@ -16,12 +16,12 @@
   }
 
   .message-bubble {
-    background: $primaryColor;
+    background: $primary--over;
   }
 
   .partyname-bubble {
-    background: $white;
-    color: $dark;
+    background: $content--over;
+    color: $secondary--live;
     margin-right: 20px;
   }
 

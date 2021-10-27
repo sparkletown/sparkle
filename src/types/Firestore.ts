@@ -1,5 +1,7 @@
 import { Settings } from "./settings";
 
+import { World } from "api/admin";
+
 import { AuditoriumSeatedUser } from "types/auditorium";
 import {
   JukeboxMessage,
@@ -78,6 +80,8 @@ export interface FirestoreData {
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
+  worldEdit?: World;
+  currentWorld?: World;
 }
 
 // note: these entries should be sorted alphabetically
@@ -104,4 +108,12 @@ export interface FirestoreOrdered {
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
+  worldEdit?: WithId<World>[];
+}
+
+export interface DistributedCounterValue {
+  value: number;
+}
+export interface DistributedCounterShard {
+  count: number;
 }

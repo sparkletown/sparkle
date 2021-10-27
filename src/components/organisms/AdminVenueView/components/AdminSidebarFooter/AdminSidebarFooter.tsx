@@ -2,16 +2,26 @@ import React from "react";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./AdminSidebarFooter.scss";
 
 // NOTE: Based on design, Back and Next might be completely replaced by Cancel and Save in future, but for now, allow options
 export interface AdminSidebarFooterProps {
+  // support for basic navigation
   onClickHome?: () => void;
   onClickBack?: () => void;
   onClickNext?: () => void;
+
+  // support for a cancel button
   onClickCancel?: () => void;
+  cancelButtonProps?: ButtonProps;
+  cancelButtonText?: string;
+
+  // support for a save button
   onClickSave?: () => void;
+  saveButtonProps?: ButtonProps;
+  saveButtonText?: string;
 }
 
 export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
@@ -19,7 +29,11 @@ export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
   onClickBack,
   onClickNext,
   onClickCancel,
+  cancelButtonProps,
+  cancelButtonText = "Cancel",
   onClickSave,
+  saveButtonProps,
+  saveButtonText = "Save",
   children,
 }) => {
   return (
@@ -52,22 +66,25 @@ export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
           </ButtonNG>
         )}
 
-        {onClickCancel && (
+        {(onClickCancel || cancelButtonProps) && (
           <ButtonNG
             className="AdminSidebarFooter__button AdminSidebarFooter__button--smaller"
             onClick={onClickCancel}
             variant="danger"
+            {...cancelButtonProps}
           >
-            Cancel
+            {cancelButtonText}
           </ButtonNG>
         )}
-        {onClickSave && (
+
+        {(onClickSave || saveButtonProps) && (
           <ButtonNG
             className="AdminSidebarFooter__button AdminSidebarFooter__button--larger"
-            onClick={onClickSave}
             variant="primary"
+            onClick={onClickSave}
+            {...saveButtonProps}
           >
-            Save
+            {saveButtonText}
           </ButtonNG>
         )}
         {children}

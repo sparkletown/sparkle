@@ -5,7 +5,7 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { AnyVenue } from "types/venues";
 
-import { venueConverter } from "utils/converters";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { findSovereignVenue } from "utils/venue";
 
@@ -45,7 +45,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   const relatedVenuesRef = firestore
     .collection("venues")
     .where("worldId", "==", worldId ?? "")
-    .withConverter(venueConverter);
+    .withConverter(withIdConverter<AnyVenue>());
 
   const { data: relatedVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
     relatedVenuesRef,

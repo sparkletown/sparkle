@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback, useRef, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -13,7 +14,15 @@ import { ButtonNG } from "../ButtonNG";
 import "./ImageInput.scss";
 
 export interface ImageInputProps {
-  onChange?: (url: string) => void;
+  onChange?: (
+    url: string,
+    extra: {
+      nameUrl: string;
+      valueUrl: string;
+      nameFile: string;
+      valueFile: File;
+    }
+  ) => void;
   name: string;
   imgUrl?: string;
   error?: FieldError;
@@ -26,7 +35,7 @@ export interface ImageInputProps {
 }
 
 const ImageInput: React.FC<ImageInputProps> = ({
-  onChange = () => {},
+  onChange,
   name,
   imgUrl,
   error,
@@ -57,26 +66,34 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
       setImageUrl(url);
       setValue(fileName, [compressedFile], false);
-      onChange(url);
+      setValue(fileUrl, url, false);
+
+      onChange?.(url, {
+        nameUrl: fileUrl,
+        valueUrl: url,
+        nameFile: fileName,
+        valueFile: compressedFile,
+      });
     },
-    [handleFileInputChange, onChange, setValue, fileName]
+    [handleFileInputChange, fileUrl, onChange, setValue, fileName]
   );
 
   const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
+  const labelStyle = useCss({
+    "background-image": imageUrl ? `url(${imageUrl})` : undefined,
+  });
+
+  const labelClasses = classNames("ImageInput__container", labelStyle, {
+    "ImageInput__container--error": !!error?.message,
+    "ImageInput__container--small": small,
+    "ImageInput__container--disabled": loading,
+    "mod--hidden": isInputHidden,
+  });
+
   return (
     <>
-      <label
-        className={classNames("ImageInput__container", {
-          "ImageInput__container--error": !!error?.message,
-          "ImageInput__container--small": small,
-          "ImageInput__container--disabled": loading,
-          "mod--hidden": isInputHidden,
-        })}
-        style={{
-          backgroundImage: `url(${imageUrl})`,
-        }}
-      >
+      <label className={labelClasses}>
         <input
           accept={ACCEPTED_IMAGE_TYPES}
           hidden
@@ -97,13 +114,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         </span>
       </label>
 
-      <input
-        type="hidden"
-        name={fileUrl}
-        ref={register}
-        value={imageUrl}
-        readOnly
-      />
+      <input type="hidden" name={fileUrl} ref={register} readOnly />
       {isInputHidden && (
         <ButtonNG onClick={onButtonClick} variant="primary">
           {text}

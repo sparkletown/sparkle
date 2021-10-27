@@ -28,7 +28,11 @@ $spacing-map: (
   }
 
   &--error {
-    color: $red;
+    color: var(--danger--under);
+  }
+
+  &--subdued {
+    color: var(--content--over-50a);
   }
 
   &--anamorphic {

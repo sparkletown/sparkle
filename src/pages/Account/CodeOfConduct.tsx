@@ -4,11 +4,10 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { currentVenueSelector } from "utils/selectors";
 import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -48,10 +47,11 @@ export const CodeOfConduct: React.FC = () => {
 
   const venueId = useVenueId();
 
-  // @debt this should probably be retrieving the sovereign venue
-  // @debt replace this with useConnectCurrentVenueNG or similar?
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
+  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
+    worldId: venue?.worldId,
+  });
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>
@@ -67,18 +67,17 @@ export const CodeOfConduct: React.FC = () => {
   }, [history, returnUrl, venueId]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!isWorldLoaded) return;
 
     // Skip this screen if there are no code of conduct questions for the venue
-    if (!venue?.code_of_conduct_questions?.length) {
+    if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [proceed, venue]);
+  }, [isWorldLoaded, proceed, venue, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
       if (!user) return;
-
       await updateUserProfile(user.uid, data);
 
       proceed();
@@ -101,11 +100,11 @@ export const CodeOfConduct: React.FC = () => {
     return <>Error: venue not found for venueId={venueId}</>;
   }
 
-  if (!venue) {
+  if (!venue || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
-  const codeOfConductQuestions = venue?.code_of_conduct_questions ?? [];
+  const codeOfConductQuestions = world?.questions?.code ?? [];
 
   return (
     <div className="CodeOfConduct page-container">
@@ -124,6 +123,7 @@ export const CodeOfConduct: React.FC = () => {
                     watch(question.name) && "checkbox-checked"
                   }`}
                 >
+                  {question.name}:{" "}
                   {question.link && (
                     <a href={question.link} {...externalUrlAdditionalProps}>
                       {question.text}

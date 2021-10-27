@@ -18,6 +18,7 @@ export interface UseUserResult {
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
   userId?: string;
+  isTester: boolean;
 }
 
 export const useUser = (): UseUserResult => {
@@ -52,10 +53,18 @@ export const useUser = (): UseUserResult => {
   );
 
   const userWithId = useMemo(() => {
-    if (!userId || !profile) return;
+    if (!userId || !user || !profile) return;
 
-    return withId(profile, userId);
-  }, [profile, userId]);
+    const profileData = {
+      ...profile,
+      partyName: profile.partyName ?? user.displayName ?? "",
+      pictureUrl: profile.pictureUrl ?? user.photoURL ?? "",
+    };
+
+    return withId(profileData, userId);
+  }, [user, userId, profile]);
+
+  const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
 
   return useMemo(
     () => ({
@@ -64,7 +73,8 @@ export const useUser = (): UseUserResult => {
       userLocation,
       userWithId,
       userId,
+      isTester,
     }),
-    [user, profile, userLocation, userWithId, userId]
+    [user, profile, userLocation, userWithId, userId, isTester]
   );
 };

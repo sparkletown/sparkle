@@ -8,7 +8,7 @@
     grid-template-columns: 1fr 9fr;
     margin: 0;
     padding: 0;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .AdminSidebarTitle,
@@ -31,7 +31,7 @@
     height: 100%;
     display: grid;
     grid-template-rows: 1fr 9fr;
-    background-color: $dark;
+    background-color: $secondary--live;
   }
 
   .AdminSidebarFooter {
@@ -50,5 +50,22 @@
 
   &__messages-container {
     text-align: center;
+  }
+
+  &__worlds-list {
+    background-color: $secondary--live;
+
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: max-content;
+    grid-gap: 1rem;
+  }
+
+  &__world-panel {
+    border: 1px solid $content--over;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }

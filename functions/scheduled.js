@@ -9,6 +9,8 @@ const {
   uniq,
   differenceWith,
   flatten,
+  sum,
+  has,
 } = require("lodash");
 const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
@@ -16,6 +18,8 @@ const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 60 * 1000;
 const BATCH_MAX_OPS = 500;
+
+exports.BATCH_MAX_OPS = BATCH_MAX_OPS;
 
 const removeDanglingSeatedUsers = async () => {
   const firestore = admin.firestore();
@@ -30,52 +34,64 @@ const removeDanglingSeatedUsers = async () => {
 
   let removedUsersCount = 0;
   return Promise.all(
-    chunk(recentSeatedUsers, BATCH_MAX_OPS / 2).map((userDocsBatch) => {
-      const batch = firestore.batch();
-      userDocsBatch.forEach((userDoc) => {
-        const seatedUserData = userDoc.data();
-        const userId = userDoc.id;
-        const venueId = seatedUserData.venueId;
+    chunk(recentSeatedUsers, BATCH_MAX_OPS / 2).map(async (userDocsBatch) => {
+      try {
+        const batch = firestore.batch();
+        userDocsBatch.forEach((userDoc) => {
+          const seatedUserData = userDoc.data();
+          const userId = userDoc.id;
+          const venueId = seatedUserData.venueId;
 
-        batch.delete(
-          firestore
-            .collection("venues")
-            .doc(venueId)
-            .collection("recentSeatedUsers")
-            .doc(userId)
-        );
-        removedUsersCount += 1;
+          batch.delete(
+            firestore
+              .collection("venues")
+              .doc(venueId)
+              .collection("recentSeatedUsers")
+              .doc(userId)
+          );
+          removedUsersCount += 1;
 
-        switch (seatedUserData.template) {
-          case "auditorium":
-            batch.delete(
-              firestore
-                .collection("venues")
-                .doc(venueId)
-                .collection("sections")
-                .doc(seatedUserData.venueSpecificData.sectionId)
-                .collection("seatedSectionUsers")
-                .doc(userId)
-            );
-            break;
-          case "jazzbar":
-          case "conversationspace":
-            batch.delete(
-              firestore
-                .collection("venues")
-                .doc(venueId)
-                .collection("seatedTableUsers")
-                .doc(userId)
-            );
-            break;
-          default:
-            console.warn(
-              `Found unsupported venue template ${seatedUserData.template}`
-            );
-            break;
-        }
-      });
-      return batch.commit();
+          switch (seatedUserData.template) {
+            case "auditorium":
+              if (!has(seatedUserData.venueSpecificData, "sectionId")) {
+                console.error(
+                  "No sectionId prop in seatedUserData.venueSpecificData in" +
+                    `/venues/${venueId}/recentSeatedUsers/${userId}`
+                );
+                break;
+              }
+              batch.delete(
+                firestore
+                  .collection("venues")
+                  .doc(venueId)
+                  .collection("sections")
+                  .doc(seatedUserData.venueSpecificData.sectionId)
+                  .collection("seatedSectionUsers")
+                  .doc(userId)
+              );
+              break;
+            case "jazzbar":
+            case "conversationspace":
+              batch.delete(
+                firestore
+                  .collection("venues")
+                  .doc(venueId)
+                  .collection("seatedTableUsers")
+                  .doc(userId)
+              );
+              break;
+            default:
+              console.warn(
+                `Found unsupported venue template ${seatedUserData.template}`
+              );
+              break;
+          }
+        });
+        return batch.commit();
+      } catch (e) {
+        console.error(e);
+        return null;
+      }
     })
   ).then(() => console.log(`Removed ${removedUsersCount} dangling users`));
 };
@@ -259,4 +275,32 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
 
       return batch.commit();
     });
+  });
+
+exports.updateVenuesChatCounters = functions.pubsub
+  .schedule("every 5 minutes")
+  .onRun(async () => {
+    const venueRefs = await admin
+      .firestore()
+      .collection("venues")
+      .get()
+      .then(({ docs }) => docs.map((d) => d.ref));
+
+    return Promise.all(
+      venueRefs.map(async (venue) => {
+        const counter = sum(
+          await venue
+            .collection("chatMessagesCounter")
+            .where(admin.firestore.FieldPath.documentId(), "!==", "sum")
+            .get()
+            .then(({ docs }) =>
+              docs.map((d) => d.data().count).filter((c) => Boolean(c))
+            )
+        );
+        await venue
+          .collection("chatMessagesCounter")
+          .doc("sum")
+          .update({ value: counter });
+      })
+    );
   });

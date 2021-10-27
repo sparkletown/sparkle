@@ -13,18 +13,18 @@ import {
 
 import "./ButtonNG.scss";
 
-export type ButtonGradientType =
-  | "gradient"
-  | "admin-gradient"
-  | "danger-gradient";
-
 export type ButtonType = "button" | "reset" | "submit";
 export type ButtonVariant =
   | "primary"
   | "secondary"
   | "white"
   | "dark"
-  | "danger";
+  | "danger"
+  | "admin-gradient"
+  | "danger-gradient"
+  | "normal-gradient"
+  | "login-gradient";
+
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
 export interface ButtonProps {
@@ -36,7 +36,6 @@ export interface ButtonProps {
   linkTo?: string;
   newTab?: boolean;
   loading?: boolean;
-  gradient?: ButtonGradientType;
   type?: ButtonType;
   variant?: ButtonVariant;
   iconOnly?: boolean;
@@ -52,7 +51,6 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   loading,
   onClick,
   type = "button",
-  gradient = "",
   isLink = false,
   linkTo = "",
   disabled = false,
@@ -92,7 +90,6 @@ export const ButtonNG: React.FC<ButtonProps> = ({
     "ButtonNG--loading": loading,
     [`ButtonNG--icon-only ButtonNG--${iconSize}`]: iconOnly,
     [`ButtonNG--icon-text`]: !iconOnly,
-    [`ButtonNG--${gradient}`]: gradient && !disabled,
     [`ButtonNG--${variant}`]: variant && !disabled,
     [className]: className,
   });
@@ -109,7 +106,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
           icon={faCircleNotch}
           spin
           size={iconSize}
-          className="ButtonNG__icon"
+          className="ButtonNG__icon ButtonNG__icon--loading"
         />
       </button>
     );

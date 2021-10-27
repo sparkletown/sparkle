@@ -6,15 +6,14 @@ import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ADMIN_V3_ROOT_URL } from "settings";
-
-import { adminNGVenueUrl } from "utils/url";
+import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 
 import { WithNavigationBar } from "../WithNavigationBar";
 
@@ -79,9 +78,10 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const navigateToHome = useCallback(() => history.push(ADMIN_V3_ROOT_URL), [
-    history,
-  ]);
+  const navigateToHome = useCallback(
+    () => history.push(adminWorldSpacesUrl(venue?.worldId)),
+    [history, venue?.worldId]
+  );
 
   const navigateToSpaces = useCallback(
     () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.spaces)),
@@ -103,12 +103,17 @@ export const AdminVenueView: React.FC = () => {
   }
 
   if (!venue) {
-    // @debt replace null with a `NotFound` component for better UX
-    return null;
+    return (
+      <WithNavigationBar withSchedule>
+        <AdminRestricted>
+          <NotFound />
+        </AdminRestricted>
+      </WithNavigationBar>
+    );
   }
 
   return (
-    <WithNavigationBar hasBackButton withSchedule>
+    <WithNavigationBar withSchedule>
       <AdminRestricted>
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>

@@ -9,7 +9,7 @@ $photobooth-button-background-size: 35px;
 }
 
 .navbar-container {
-  background: $black;
+  background: $content--under;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -30,8 +30,8 @@ $photobooth-button-background-size: 35px;
   }
 
   .notification-card {
-    background: $red;
-    color: $white;
+    background: var(--danger--under);
+    color: $content--over;
     position: absolute;
     bottom: 0;
     right: 0;
@@ -66,7 +66,7 @@ $photobooth-button-background-size: 35px;
 
       &:hover {
         background: #ebebeb;
-        color: $dark;
+        color: $secondary--live;
       }
     }
   }
@@ -80,7 +80,7 @@ $photobooth-button-background-size: 35px;
   display: flex;
   height: $navbar-height;
   padding: 0 15px;
-  background-color: $dark;
+  background-color: $secondary--live;
 
   #sound-cloud-player {
     border: none;
@@ -161,7 +161,7 @@ $photobooth-button-background-size: 35px;
 
 .nav-party-logo {
   position: relative;
-  background-color: rgba($white, 0.08);
+  background-color: opaque-white(0.08);
   height: 60px;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -175,7 +175,7 @@ $photobooth-button-background-size: 35px;
   transition: transform 400ms $transition-function;
   border: none;
   appearance: none;
-  color: $white;
+  color: $content--over;
 
   img {
     height: 40px;
@@ -184,7 +184,7 @@ $photobooth-button-background-size: 35px;
   &:hover,
   &:focus {
     border: none;
-    background-color: rgba($white, 0.14);
+    background-color: opaque-white(0.14);
 
     &:after {
       opacity: 0.7;
@@ -217,7 +217,7 @@ $photobooth-button-background-size: 35px;
 }
 
 .schedule-text {
-  background-color: $primary;
+  background-color: $accent--under;
   border-radius: 10px;
   margin-left: 8px;
   padding: 0px 10px;
@@ -260,6 +260,7 @@ $photobooth-button-background-size: 35px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
+    color: $content--over;
 
     margin-right: $spacing--md;
 

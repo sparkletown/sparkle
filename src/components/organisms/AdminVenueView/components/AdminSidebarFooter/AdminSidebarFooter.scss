@@ -8,8 +8,8 @@
   flex-direction: row;
   justify-content: space-between;
 
-  background-color: $black;
-  border-top: 1px solid opaque-white(0.2);
+  background-color: $content--under;
+  border-top: 1px solid var(--accent--over-20a);
 
   padding: $spacing--xs;
 
@@ -20,6 +20,8 @@
 
   font-size: 1rem;
   line-height: 1rem;
+
+  z-index: z(admin-sidebar-footer);
 
   &__buttons {
     display: flex;
