@@ -309,7 +309,7 @@ const createVenueData_v2 = (data, context) => {
     showGrid: data.showGrid || false,
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
-    showSchedule: data.showSchedule ?? false,
+    showSchedule: data.showSchedule || false,
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
