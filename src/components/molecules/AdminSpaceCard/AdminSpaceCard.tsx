@@ -21,7 +21,7 @@ export interface AdminSpaceCardProps {
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
   const backgroundStyle = useCss({
-    "background-image": `url(${venue.mapBackgroundImageUrl})`,
+    "background-image": `url(${venue.config?.landingPageConfig.coverImageUrl})`,
   });
   const backgroundClasses = classNames("AdminSpaceCard__bg", backgroundStyle);
 

@@ -15,7 +15,7 @@ const VenueWizard: React.FC = () => {
   return (
     <AdminRestricted>
       {venueId ? (
-        <VenueWizardEdit venueId={venueId} />
+        <VenueWizardEdit state={state} dispatch={dispatch} venueId={venueId} />
       ) : (
         <VenueWizardCreate state={state} dispatch={dispatch} />
       )}

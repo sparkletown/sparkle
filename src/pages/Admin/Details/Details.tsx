@@ -1,27 +1,28 @@
 import React from "react";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { useCheckImage } from "hooks/useCheckImage";
 
+import * as S from "./Details.styles";
+// Typings
 import { DetailsProps } from "./Details.types";
+// Components
 import DetailsForm from "./Form";
 import DetailsPreview from "./Preview";
 
-import "./SpaceEditorStartPanel.scss";
-import { useCheckImage } from "hooks/useCheckImage";
+// Styles
+import "../Venue/Venue.scss";
 
-export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue, state, dispatch }) => {
+const Details: React.FC<DetailsProps> = ({ venue, state, dispatch }) => {
   const { isValid: hasBannerImage } = useCheckImage(state.bannerImageUrl);
   const { isValid: hasLogoImage } = useCheckImage(state.logoImageUrl);
 
   return (
-    <AdminPanel className="SpaceEditorStartPanel">
-      <AdminSidebar>
+    <S.DetailsContainer>
+      <S.DetailsFormWrapper>
         <DetailsForm dispatch={dispatch} venue={venue} />
-      </AdminSidebar>
+      </S.DetailsFormWrapper>
 
-      <AdminShowcase>
+      <S.PreviewWrapper>
         <DetailsPreview
           name={state.name ? state.name : venue?.name}
           subtitle={
@@ -41,7 +42,9 @@ export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue, state, di
           }
           logoImageUrl={hasLogoImage ? state.logoImageUrl : venue?.host?.icon}
         />
-      </AdminShowcase>
-    </AdminPanel>
-  )
+      </S.PreviewWrapper>
+    </S.DetailsContainer>
+  );
 };
+
+export default Details;

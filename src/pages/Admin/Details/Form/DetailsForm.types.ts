@@ -2,7 +2,7 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { WizardState } from "pages/Admin/Venue/VenueWizard/redux";
+import { WizardAction, WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 
 export interface FormValues extends WizardState {
   name: string;
@@ -15,5 +15,6 @@ export interface FormValues extends WizardState {
 }
 
 export interface DetailsFormProps {
+  dispatch: React.Dispatch<WizardAction>;
   venue?: WithId<AnyVenue>;
 }

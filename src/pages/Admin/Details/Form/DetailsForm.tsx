@@ -18,6 +18,12 @@ import { useVenueId } from "hooks/useVenueId";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
+import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux";
+import {
+  setBannerURL,
+  setSquareLogoUrl
+} from "pages/Admin/Venue/VenueWizard/redux/actions";
+
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 
 import { FormErrors } from "components/molecules/FormErrors";
@@ -45,7 +51,7 @@ const HANDLED_ERRORS: string[] = [
   "parentId",
 ];
 
-const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
+const DetailsForm: React.FC<DetailsFormProps> = ({ venue, dispatch }) => {
   const history = useHistory();
   const venueId = useVenueId();
   const { user } = useUser();
@@ -189,16 +195,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     venueId,
   ]);
 
-  const handleBannerUpload = (url: string) => {
-    setValue("bannerImage", url);
-    void triggerValidation();
-  };
-
-  const handleLogoUpload = (url: string) => {
-    setValue("logoImage", url);
-    void triggerValidation();
-  };
-
   const renderVenueName = () => (
     <div className="DetailsForm__input-container">
       <h4 className="italic">Name your space</h4>
@@ -334,8 +330,33 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     [dirty, isSaving, isSubmitting]
   );
 
+  const handleBannerUpload = (url: string) => {
+    setBannerURL(dispatch, url);
+    void triggerValidation();
+  };
+
+  const handleLogoUpload = (url: string) => {
+    setSquareLogoUrl(dispatch, url);
+    void triggerValidation();
+  };
+
+  const handleOnChange = () => {
+    dispatch({
+      type: SET_FORM_VALUES,
+      payload: {
+        name: values.name,
+        subtitle: values.subtitle,
+        description: values.description,
+      },
+    });
+  };
+
   return (
-    <Form onSubmit={handleSubmit(setVenue)} className="DetailsForm">
+    <Form
+      onSubmit={handleSubmit(setVenue)}
+      onChange={handleOnChange}
+      className="DetailsForm"
+    >
       <div className="DetailsForm__wrapper">
         <input
           type="hidden"

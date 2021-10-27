@@ -12,7 +12,7 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = () => {
   return (
     <WithNavigationBar>
       <AdminRestricted>
-        <SpaceEditorStartPanel />
+        <SpaceEditorStartPanel state={state} dispatch={dispatch} />
       </AdminRestricted>
     </WithNavigationBar>
   );
