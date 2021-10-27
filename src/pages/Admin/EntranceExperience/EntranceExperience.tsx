@@ -3,15 +3,13 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 
-import { updateVenue_v2, VenueInput_v2 } from "api/admin";
+import { updateVenue_v2 } from "api/admin";
 
-import { Question } from "types/Question";
 import { Venue_v2_EntranceConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
 import EntranceInput from "pages/Admin/Venue/EntranceInput";
-import QuestionInput from "pages/Admin/Venue/QuestionInput";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -21,18 +19,7 @@ import { EntranceExperienceProps } from "./EntranceExperience.types";
 
 import "./EntranceExperience.scss";
 
-type ProfileQuestion = VenueInput_v2["profile_questions"];
-type CodeOfConductQuestion = VenueInput_v2["code_of_conduct_questions"];
-
 const validationSchema = Yup.object().shape({
-  code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
-    .ensure()
-    .defined()
-    .transform((val) => val.filter((s: Question) => !!s.name && !!s.text)),
-  profile_questions: Yup.array<ProfileQuestion>()
-    .ensure()
-    .defined()
-    .transform((val) => val.filter((s: Question) => !!s.name && !!s.text)),
   entrance: Yup.array(
     Yup.object().shape({
       // template: Yup.string().matches(/welcomevideo/).required('Template is required'),
@@ -63,8 +50,6 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
     reValidateMode: "onChange",
     validationSchema: validationSchema,
     defaultValues: {
-      code_of_conduct_questions: venue.code_of_conduct_questions,
-      profile_questions: venue.profile_questions,
       entrance: venue.entrance,
     },
   });
@@ -76,8 +61,6 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
       if (!user) return;
 
       const entranceData = {
-        code_of_conduct_questions: data.code_of_conduct_questions ?? [],
-        profile_questions: data.profile_questions ?? [],
         entrance: data.entrance ?? [],
       };
 
@@ -100,34 +83,6 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
       <h1>Entrance Experience</h1>
 
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <S.ItemWrapper>
-          <S.ItemHeader>
-            <S.ItemTitle>Code of conduct questions</S.ItemTitle>
-          </S.ItemHeader>
-          <S.ItemBody>
-            <QuestionInput
-              fieldName="code_of_conduct_questions"
-              register={register}
-              hasLink
-              editing={venue.code_of_conduct_questions}
-              errors={errors.code_of_conduct_questions}
-            />
-          </S.ItemBody>
-        </S.ItemWrapper>
-
-        <S.ItemWrapper>
-          <S.ItemHeader>
-            <S.ItemTitle>Profile questions</S.ItemTitle>
-          </S.ItemHeader>
-          <S.ItemBody>
-            <QuestionInput
-              fieldName="profile_questions"
-              register={register}
-              editing={venue.profile_questions}
-              errors={errors.profile_questions}
-            />
-          </S.ItemBody>
-        </S.ItemWrapper>
         <S.ItemWrapper>
           <S.ItemHeader>
             <S.ItemTitle>Venue Entrance</S.ItemTitle>
