@@ -282,7 +282,10 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
             the map
           </div>
-          <PortalVisibility updateRoomVisibility={updateRoomVisibility} />
+          <PortalVisibility
+            updateRoomVisibility={updateRoomVisibility}
+            visibilityState={venue.roomVisibility}
+          />
         </div>
 
         <div className="AdvancedSettings__form-field">

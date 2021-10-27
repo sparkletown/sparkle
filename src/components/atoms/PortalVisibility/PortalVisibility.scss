@@ -1,5 +1,10 @@
 @import "scss/constants.scss";
 
+$visibility-width: 90px;
+$visibility-item-height: 160px;
+$portal-image-height: $visibility-width;
+$portal-image-width: 75px;
+
 .PortalVisibility {
   display: flex;
   justify-content: flex-start;
@@ -10,34 +15,34 @@
     border-radius: $border-radius--xl;
     background-color: opaque-white(0.12);
     text-align: center;
-    width: 110px;
-    height: 160px;
-    margin: 6px 2px $spacing--xl 2px;
-    padding: 6px;
+    width: $visibility-width;
+    height: $visibility-item-height;
+    margin: $spacing--sm $spacing--xs $spacing--xl $spacing--xs;
     cursor: pointer;
     font-size: $font-size--sm;
-    padding: 8px;
+    padding: $spacing--sm;
     align-items: center;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    border: 2px solid transparent;
+    border: $border-radius--xxs solid transparent;
 
     &:hover {
       background-color: opaque-white(0.16);
     }
+
     &-image {
       background-image: url(/assets/images/label-carousel.png);
-      height: 87px;
-      width: 77px;
-      margin-bottom: 8px;
+      height: $portal-image-height;
+      width: $portal-image-width;
+      margin-bottom: $spacing--sm;
       background-size: contain;
       background-repeat: no-repeat;
       display: flex;
     }
 
     &--selected {
-      border: 2px solid $primary--light;
+      border: $border-radius--xxs solid $primary--light;
     }
 
     &-subtitle {
@@ -46,15 +51,15 @@
       background-color: $primary--light;
       margin: auto;
       width: 90%;
-      padding: 4px;
-      border-radius: 12px;
+      padding: $spacing--xs;
+      border-radius: $border-radius--md;
 
       &-item {
         display: flex;
         justify-content: center;
         align-items: center;
         &-text {
-          margin-left: 4px;
+          margin-left: $spacing--xs;
         }
       }
     }

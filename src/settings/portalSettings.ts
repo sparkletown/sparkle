@@ -10,6 +10,7 @@ export const LABEL_VISIBILITY_OPTIONS: LabelVisibilityOption[] = [
   {
     label: "No Label",
     value: RoomVisibility.none,
+    subtitle: "",
   },
   {
     label: "Show title on hover",

@@ -485,7 +485,10 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the map
       </h4>
       <div className="input-container">
-        <PortalVisibility updateRoomVisibility={updateRoomVisibility} />
+        <PortalVisibility
+          updateRoomVisibility={updateRoomVisibility}
+          visibilityState={values.roomVisibility}
+        />
       </div>
     </>
   );
