@@ -2,11 +2,12 @@ import { useMemo } from "react";
 
 import { User } from "types/User";
 
-import { useRelatedVenues } from "./useRelatedVenues";
+import { useCurrentWorld } from "./useCurrentWorld";
 
-export const useProfileQuestions = (user?: User, venueId?: string) => {
-  const { sovereignVenue } = useRelatedVenues();
-  const questions = sovereignVenue?.profile_questions;
+export const useProfileQuestions = (user?: User, worldId?: string) => {
+  const { world } = useCurrentWorld({ worldId });
+
+  const questions = world?.questions?.profile;
   const answers = useMemo(
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore User type doesn't accept string indexing.

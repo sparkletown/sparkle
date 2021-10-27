@@ -23,6 +23,8 @@ import { fetchVenue, updateVenueNG } from "api/venue";
 import { Room } from "types/rooms";
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -147,11 +149,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const updateVenueRoom = useCallback(async () => {
     if (!user || !roomVenueId) return;
+
+    const embedUrl = convertToEmbeddableUrl({ url: venueValues.iframeUrl });
+
     await updateVenueNG(
       {
         id: roomVenueId,
         ...venueValues,
-        iframeUrl: venueValues.iframeUrl || DEFAULT_EMBED_URL,
+        iframeUrl: embedUrl || DEFAULT_EMBED_URL,
       },
       user
     );

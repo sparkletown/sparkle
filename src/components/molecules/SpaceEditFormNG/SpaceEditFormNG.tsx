@@ -21,6 +21,8 @@ import { fetchVenue, updateVenueNG } from "api/venue";
 import { Room } from "types/rooms";
 import { RoomVisibility } from "types/venues";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -132,10 +134,12 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const updateVenueRoom = useCallback(async () => {
     if (!user || !portalId) return;
 
+    const embedUrl = convertToEmbeddableUrl({ url: values.iframeUrl });
+
     await updateVenueNG(
       {
         id: portalId,
-        iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+        iframeUrl: embedUrl || DEFAULT_EMBED_URL,
         autoPlay: values.autoPlay,
         bannerImageUrl: values.bannerImageUrl,
         name: values.name,
@@ -156,7 +160,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     user,
     values.autoPlay,
     values.bannerImageUrl,
-    values.iframeUrl,
     values.isReactionsMuted,
     values.numberOfSections,
     values.showReactions,
@@ -165,6 +168,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     values.description,
     values.name,
     values.subtitle,
+    values.iframeUrl,
   ]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
