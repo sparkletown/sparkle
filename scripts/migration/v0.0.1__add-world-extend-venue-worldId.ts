@@ -53,26 +53,33 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
     const venueId = venueDoc.id;
 
     if (venueDoc.data().worldId) {
-      console.log(`Skipping ${venueId} as it has already been done`);
-      continue;
+      const venueWorld = await firestore
+        .collection("worlds")
+        .doc(venueDoc.data().worldId)
+        .get();
+
+      if (venueWorld.exists) {
+        console.log(`Skipping ${venueId} as it has already been done`);
+        continue;
+      }
     }
 
     try {
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
 
-      await firestore
-        .collection("worlds")
-        .doc(sovereignVenueId)
-        .set({
-          ...sovereignVenue.data(),
-          questions: {
-            code: sovereignVenue.data().code_of_conduct_questions ?? [],
-            profile: sovereignVenue.data().profile_questions ?? [],
-          },
-        });
+      const newWorld = await firestore.collection("worlds").doc();
 
-      await venueDoc.ref.update({ worldId: sovereignVenueId });
+      newWorld.set({
+        ...sovereignVenue.data(),
+        slug: sovereignVenueId,
+        questions: {
+          code: sovereignVenue.data().code_of_conduct_questions ?? [],
+          profile: sovereignVenue.data().profile_questions ?? [],
+        },
+      });
+
+      await venueDoc.ref.update({ worldId: newWorld.id });
     } catch (e) {
       console.error(e);
       console.log(`Failed to migrate venue ${venueId}. Skipping`);
