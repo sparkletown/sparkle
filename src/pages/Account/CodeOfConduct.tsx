@@ -123,7 +123,7 @@ export const CodeOfConduct: React.FC = () => {
                     watch(question.name) && "checkbox-checked"
                   }`}
                 >
-                  {`${question.name}: `}
+                  {question.name}:{" "}
                   {question.link && (
                     <a href={question.link} {...externalUrlAdditionalProps}>
                       {question.text}
