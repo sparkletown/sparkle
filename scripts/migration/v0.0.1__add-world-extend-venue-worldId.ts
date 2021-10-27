@@ -68,7 +68,9 @@ const doMigration = async (firestore: FirebaseFirestore.Firestore) => {
       const { sovereignVenue } = await fetchSovereignVenue(venueId, venueDocs);
       const sovereignVenueId = sovereignVenue.id;
 
-      const newWorld = await firestore.collection("worlds").doc();
+      const newWorld = venueDoc.data().worldId
+        ? await firestore.collection("worlds").doc(venueDoc.data().worldId)
+        : await firestore.collection("worlds").doc();
 
       newWorld.set({
         ...sovereignVenue.data(),
