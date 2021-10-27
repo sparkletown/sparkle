@@ -40,7 +40,12 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
   venue,
   onSave,
 }) => {
-  const { register, handleSubmit, errors } = useForm<Venue_v2_EntranceConfig>({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState: { dirty, isSubmitting },
+  } = useForm<Venue_v2_EntranceConfig>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: validationSchema,
@@ -93,7 +98,13 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
           </S.ItemBody>
         </S.ItemWrapper>
 
-        <ButtonNG className="EntranceExperience__save-button" type="submit">
+        <ButtonNG
+          className="EntranceExperience__save-button"
+          type="submit"
+          variant="primary"
+          disabled={!dirty || isSubmitting}
+          loading={isSubmitting}
+        >
           Save
         </ButtonNG>
       </Form>
