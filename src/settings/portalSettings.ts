@@ -1,3 +1,5 @@
+import { SPACE_TAXON } from "settings";
+
 import { RoomVisibility } from "types/venues";
 
 export type LabelVisibilityOption = {
@@ -15,7 +17,7 @@ export const LABEL_VISIBILITY_OPTIONS: LabelVisibilityOption[] = [
   {
     label: "Show title on hover",
     value: RoomVisibility.hover,
-    subtitle: "Venue title",
+    subtitle: `${SPACE_TAXON.title} title`,
   },
   {
     label: "Show people count only",

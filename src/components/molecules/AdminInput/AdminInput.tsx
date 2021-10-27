@@ -34,7 +34,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     [label, name]
   );
 
-  const inputVars = useCss({ height: `${height}px` ?? "auto" });
+  const inputVars = useCss({ height: height ? `${height}px` : "auto" });
 
   const inputClasses = classNames("AdminInput__input", inputVars);
 

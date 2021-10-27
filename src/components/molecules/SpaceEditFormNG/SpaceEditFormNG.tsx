@@ -269,7 +269,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 defaultSpace={values.parentId}
               />
             </AdminSection>
-            {/* <AdminSection title="Livestream URL" withLabel>
+            <AdminSection title="Livestream URL" withLabel>
               <AdminInput
                 name="iframeUrl"
                 placeholder="Livestream URL"
@@ -285,7 +285,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 label="Autoplay"
               />
             </AdminSection>
-            */}
           </>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Appearance" isOpened>
