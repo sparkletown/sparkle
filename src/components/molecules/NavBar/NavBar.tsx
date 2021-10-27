@@ -238,7 +238,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 venueId && !isAdminContext && <div>{navbarTitle}</div>
               )}
 
-              {venueId && !isAdminContext && <VenuePartygoers />}
+              {venueId && !isAdminContext && (
+                <VenuePartygoers worldId={currentVenue?.worldId} />
+              )}
             </div>
 
             {withPhotobooth && (

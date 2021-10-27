@@ -1,12 +1,32 @@
 @import "scss/constants.scss";
 
-$room-icon-size: 34px;
+$icon-padding: $spacing--xs;
+$icon-base-size: 34px;
+$icon-size: $icon-padding + $icon-base-size;
 
 .PortalItem {
-  padding: $spacing--md;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  margin: 0;
+  padding: 0;
+
+  &__list-item {
+    padding: $spacing--md;
+    margin: $spacing--xs;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: $border-radius--md;
+    text-transform: capitalize;
+
+    &:focus,
+    &:focus-within {
+      outline: 1px dotted $content--over;
+    }
+
+    &:hover {
+      background-color: $secondary--dark;
+      cursor: pointer;
+    }
+  }
 
   &__title,
   &__description {
@@ -18,27 +38,29 @@ $room-icon-size: 34px;
   &__poster {
     width: 100%;
     height: 100%;
-    border: 2px solid opaque-white(0.2);
+    border: 2px solid var(--content--over-20a);
     border-radius: $border-radius--md;
   }
 
-  &:hover {
-    background-color: $secondary--dark;
-  }
-
-  &__room-icon {
-    height: $room-icon-size;
-    width: $room-icon-size;
+  &__icon {
+    @include square-size($icon-size);
+    padding: $icon-padding;
     margin-right: $spacing--sm;
     background-size: contain;
     background-position: center;
     border-radius: $border-radius--xs;
-    box-shadow: 0 0 0 3px $accent--under;
+    box-shadow: 0 0 0 2px $accent--under;
   }
 
-  &__center-content {
+  &__modal-buttons {
     margin-top: $spacing--lg;
     display: flex;
     justify-content: center;
+  }
+
+  &__form {
+    .InputField {
+      margin: font-size--parent(3) 0;
+    }
   }
 }

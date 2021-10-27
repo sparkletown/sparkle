@@ -9,6 +9,7 @@ const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 const { ROOM_TAXON } = require("./taxonomy.js");
 
 const PLAYA_VENUE_ID = "jamonline";
+const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
@@ -208,8 +209,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -217,8 +216,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -296,13 +293,13 @@ const createVenueData_v2 = (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
         description: data.description,
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
@@ -364,10 +361,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -416,22 +409,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.userStatuses = data.userStatuses;
   }
 
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
-  }
-
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
@@ -444,6 +421,60 @@ const dataOrUpdateKey = (data, updated, key) =>
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
+
+const initializeVenueChatMessagesCounter = (venueRef, batch) => {
+  const counterCollection = venueRef.collection("chatMessagesCounter");
+  for (
+    let shardId = 0;
+    shardId < VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT;
+    shardId++
+  ) {
+    batch.set(counterCollection.doc(shardId.toString()), { count: 0 });
+  }
+  batch.set(counterCollection.doc("sum"), { value: 0 });
+};
+
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const { docs: sections } = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = sections.length;
+
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
+    }
+
+    await batch.commit();
+  }
+);
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -493,11 +524,16 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
+  const batch = admin.firestore().batch();
   // @debt this should be typed
   const venueData = createVenueData(data, context);
   const venueId = getVenueId(data.name);
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  batch.set(venueRef, venueData);
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
 
   return venueData;
 });
@@ -506,13 +542,11 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
-  const venueId = getVenueId(data.name);
+  const batch = admin.firestore().batch();
 
-  const venueDoc = await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get();
+  const venueId = getVenueId(data.name);
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
+  const venueDoc = await venueRef.get();
 
   if (venueDoc.exists) {
     throw new HttpsError(
@@ -523,7 +557,10 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
 
   const venueData = createVenueData_v2(data, context);
 
-  await admin.firestore().collection("venues").doc(venueId).create(venueData);
+  batch.create(venueRef, venueData);
+  initializeVenueChatMessagesCounter(venueRef, batch);
+
+  await batch.commit();
 
   return venueData;
 });
@@ -828,10 +865,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -876,6 +909,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.isReactionsMuted === "boolean") {
+    updated.isReactionsMuted = data.isReactionsMuted;
+  }
+
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
   }
@@ -894,22 +931,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

@@ -2,8 +2,9 @@ import React from "react";
 import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import classNames from "classnames";
 
-import { ROOM_TAXON, SPACE_TAXON } from "settings";
+import { ROOM_TAXON, SPACE_TAXON, SpacePortalsListItem } from "settings";
 
 import {
   createRoom,
@@ -12,9 +13,7 @@ import {
   RoomInput_v2,
 } from "api/admin";
 
-import { VenueTemplate } from "types/venues";
-
-import { venueInsideUrl } from "utils/url";
+import { venueInsideFullUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
 import { useCheckImage } from "hooks/useCheckImage";
@@ -22,7 +21,12 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { createSpaceSchema } from "pages/Admin/Details/ValidationSchema";
+import {
+  createPortalSchema,
+  createSpaceSchema,
+} from "pages/Admin/Details/ValidationSchema";
+
+import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -30,22 +34,17 @@ import { InputField } from "components/atoms/InputField";
 import "./PortalItem.scss";
 
 export interface PortalItemProps {
-  icon: string;
-  text: string;
-  poster: string;
-  description: string;
-  template?: VenueTemplate;
+  item: SpacePortalsListItem;
   worldId: string;
+  tabIndex?: number;
 }
 
 export const PortalItem: React.FC<PortalItemProps> = ({
-  icon,
-  text,
-  poster,
-  description,
-  template,
+  item,
   worldId,
+  tabIndex,
 }) => {
+  const { icon, text, poster, description, template, hidden } = item;
   const {
     isShown: isModalVisible,
     show: showModal,
@@ -57,7 +56,8 @@ export const PortalItem: React.FC<PortalItemProps> = ({
   const venueId = useVenueId();
 
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema: createSpaceSchema,
+    validationSchema:
+      template === "external" ? createPortalSchema : createSpaceSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -66,21 +66,23 @@ export const PortalItem: React.FC<PortalItemProps> = ({
     },
   });
 
-  const [{ loading: isLoading }, addRoom] = useAsyncFn(async () => {
+  const [
+    { loading: isLoading, error: submitError },
+    addRoom,
+  ] = useAsyncFn(async () => {
     if (!user || !venueId || !template) return;
 
-    const roomValues = getValues();
+    const { roomUrl, venueName } = getValues();
 
-    const venueUrlName = createUrlSafeName(roomValues.venueName);
-
-    const roomUrl = window.origin + venueInsideUrl(venueUrlName);
+    const slug = createUrlSafeName(venueName);
+    const url = template === "external" ? roomUrl : venueInsideFullUrl(slug);
 
     const roomData: RoomInput_v2 = {
-      title: roomValues.venueName,
+      title: venueName,
       about: "",
       isEnabled: true,
       image_url: icon,
-      url: roomUrl,
+      url,
       width_percent: 5,
       height_percent: 5,
       x_percent: 50,
@@ -88,22 +90,39 @@ export const PortalItem: React.FC<PortalItemProps> = ({
       template,
     };
 
-    const venueData = buildEmptyVenue(roomValues.venueName, template);
+    if (template !== "external") {
+      const venueData = buildEmptyVenue(venueName, template);
+      await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
+    }
 
-    await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
-    await createRoom(roomData, venueId, user).then(() => hideModal());
+    await createRoom(roomData, venueId, user);
+    await hideModal();
   }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
   const { isValid } = useCheckImage(poster);
 
+  const portalItemClasses = classNames({
+    [`PortalItem PortalItem--${template}`]: true,
+    "mod--hidden": hidden,
+  });
+
   return (
-    <>
-      <Modal show={isModalVisible} onHide={hideModal}>
+    <div className={portalItemClasses}>
+      <Modal
+        className="PortalItem__modal"
+        show={isModalVisible}
+        onHide={hideModal}
+        centered
+      >
         <Modal.Body>
-          <Form onSubmit={handleSubmit(addRoom)}>
+          <Form className="PortalItem__form" onSubmit={handleSubmit(addRoom)}>
             <div className="PortalItem__title">{text}</div>
             {isValid && (
-              <img className="PortalItem__poster" alt={text} src={poster} />
+              <img
+                className="PortalItem__poster"
+                alt={`${text} representation`}
+                src={poster}
+              />
             )}
             <div className="PortalItem__description">{description}</div>
             <InputField
@@ -115,8 +134,19 @@ export const PortalItem: React.FC<PortalItemProps> = ({
               ref={register()}
               disabled={isLoading}
             />
-
-            <div className="PortalItem__center-content">
+            {template === "external" && (
+              <InputField
+                name="roomUrl"
+                type="text"
+                autoComplete="off"
+                placeholder={`${SPACE_TAXON.capital} url`}
+                error={errors.roomUrl}
+                ref={register()}
+                disabled={isLoading}
+              />
+            )}
+            <SubmitError error={submitError} />
+            <div className="PortalItem__modal-buttons">
               <ButtonNG
                 variant="primary"
                 disabled={isLoading}
@@ -129,14 +159,21 @@ export const PortalItem: React.FC<PortalItemProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
-      <div className="PortalItem" onClick={showModal}>
+      {
+        // NOTE: tabIndex allows tab behavior, @see https://allyjs.io/data-tables/focusable.html
+      }
+      <div
+        className="PortalItem__list-item"
+        onClick={showModal}
+        tabIndex={tabIndex}
+      >
         <img
+          className="PortalItem__icon"
           alt={`${ROOM_TAXON.lower} icon ${icon}`}
           src={icon}
-          className="PortalItem__room-icon"
         />
-        <div>{text}</div>
+        <div className="PortalItem__name">{text}</div>
       </div>
-    </>
+    </div>
   );
 };

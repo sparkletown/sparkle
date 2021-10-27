@@ -32,7 +32,7 @@ import "./EditingProfileModalContent.scss";
 
 export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
   onCancelEditing: () => void;
 }
 
@@ -41,7 +41,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   venue,
   onCancelEditing,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
   const firebaseUser = useFirebase().auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(

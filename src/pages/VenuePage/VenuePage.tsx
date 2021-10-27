@@ -25,11 +25,11 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-// import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useInterval } from "hooks/useInterval";
-import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
@@ -38,8 +38,12 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateTheme } from "./helpers";
 
@@ -67,7 +71,11 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const mixpanel = useMixpanel();
+  const venue = useSelector(currentVenueSelector);
+  const analytics = useAnalytics({ venue });
+  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
+    worldId: venue?.worldId,
+  });
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
@@ -77,7 +85,7 @@ export const VenuePage: React.FC = () => {
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
+
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   const assetsToPreload = useMemo(
@@ -100,7 +108,6 @@ export const VenuePage: React.FC = () => {
   const userId = user?.uid;
 
   const venueName = venue?.name ?? "";
-  const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
 
@@ -188,31 +195,31 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (user && profile && venueId && venueTemplate) {
-      mixpanel.track("VenuePage loaded", {
-        venueId,
-        template: venueTemplate,
-      });
-    }
-  }, [user, profile, venueId, venueTemplate, mixpanel]);
+    if (!isWorldLoaded || !world || !user) return;
+
+    analytics.trackVenuePageLoadedEvent();
+  }, [analytics, isWorldLoaded, user, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+    return (
+      <WithNavigationBar hasBackButton>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
   if (!venue || !venueId) {
-    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venue={venue} />
+        <Login venueId={venueId} />
       </Suspense>
     );
   }

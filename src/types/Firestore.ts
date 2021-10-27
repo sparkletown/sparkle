@@ -81,6 +81,7 @@ export interface FirestoreData {
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
   worldEdit?: World;
+  currentWorld?: World;
 }
 
 // note: these entries should be sorted alphabetically
@@ -108,4 +109,11 @@ export interface FirestoreOrdered {
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
   worldEdit?: WithId<World>[];
+}
+
+export interface DistributedCounterValue {
+  value: number;
+}
+export interface DistributedCounterShard {
+  count: number;
 }

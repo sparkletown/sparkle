@@ -23,6 +23,7 @@ export const Toggler: React.FC<TogglerProps> = ({
       toggler
       defaultChecked={defaultToggled}
       checked={toggled}
+      containerClassName="Toggler"
     />
   </>
 );

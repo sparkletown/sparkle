@@ -5,12 +5,10 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from "react";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
-
-import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -18,7 +16,7 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { isValidUrl } from "utils/url";
 
-import { useJukeboxChat } from "hooks/jukebox";
+import { useJukeboxChat } from "hooks/chats/jukebox/useJukeboxChat";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -42,19 +40,19 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
   }>({
     mode: "onSubmit",
   });
-  const [isSendingMessage, setMessageSending] = useState(false);
   const chatValue = watch("jukeboxMessage");
 
-  const { sendJukeboxMsg, messagesToDisplay } = useJukeboxChat({
+  const { sendChatMessage, messagesToDisplay } = useJukeboxChat({
     venueId: venue.id,
     tableId: tableRef,
   });
-  const filteredMessages = messagesToDisplay.filter(
-    ({ tableId }) => tableId === tableRef
-  );
+
+  const filteredMessages = messagesToDisplay
+    .filter(({ tableId }) => tableId === tableRef)
+    .reverse();
 
   useEffect(() => {
-    const [lastMessage] = messagesToDisplay.slice(-1);
+    const [lastMessage] = filteredMessages.slice(-1);
 
     if (!isValidUrl(lastMessage?.text)) {
       return;
@@ -63,27 +61,13 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
     const urlToEmbed = convertToEmbeddableUrl({ url: lastMessage?.text });
 
     updateIframeUrl(urlToEmbed);
-  }, [messagesToDisplay, updateIframeUrl]);
+  }, [filteredMessages, updateIframeUrl, venue.id]);
 
-  const sendMessageToChat = handleSubmit(async ({ jukeboxMessage }) => {
-    setMessageSending(true);
-    await sendJukeboxMsg({ message: jukeboxMessage });
-    reset();
-  });
-
-  // @debt replace with useDebounce
-  // This logic disallows users to spam into the chat. There should be a delay, between each message
-  useEffect(() => {
-    if (!isSendingMessage) return;
-
-    const timeoutId = setTimeout(() => {
-      setMessageSending(false);
-    }, CHAT_MESSAGE_TIMEOUT);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isSendingMessage]);
+  const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
+    async ({ jukeboxMessage }) =>
+      sendChatMessage({ text: jukeboxMessage }).then(() => reset()),
+    [reset, sendChatMessage]
+  );
 
   const isBtnDisabled = !chatValue || isSendingMessage;
   const submitButtonClasses = classNames("Jukebox__buttons-submit", {
@@ -134,7 +118,10 @@ export const Jukebox: React.FC<JukeboxTypeProps> = ({
           {jukeboxChatMessages}
           <div ref={messagesEndRef} />
         </div>
-        <form className="Jukebox__form" onSubmit={sendMessageToChat}>
+        <form
+          className="Jukebox__form"
+          onSubmit={handleSubmit(sendMessageToChat)}
+        >
           <InputField
             containerClassName="Jukebox__input-container"
             inputClassName="Jukebox__input"

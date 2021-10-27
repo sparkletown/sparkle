@@ -4,4 +4,4 @@ export interface SendMessageProps {
 
 export type SendJukeboxMessage = (
   sendMessageProps: SendMessageProps
-) => Promise<void> | undefined;
+) => Promise<void | undefined>;

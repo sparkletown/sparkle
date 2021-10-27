@@ -1,7 +1,8 @@
-import React from "react";
+import { AnyVenue } from "types/venues";
 
-import { WizardAction, WizardState } from "pages/Admin/Venue/VenueWizard/redux";
-import { TVenueWizard } from "pages/Admin/Venue/VenueWizard/VenueWizard.types";
+import { WithId } from "utils/id";
+
+import { WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 
 export interface FormValues extends WizardState {
   name: string;
@@ -10,10 +11,9 @@ export interface FormValues extends WizardState {
   showGrid?: boolean;
   columns?: number;
   worldId?: string;
+  parentId?: string;
 }
 
 export interface DetailsFormProps {
-  previous: TVenueWizard["previous"];
-  dispatch: React.Dispatch<WizardAction>;
-  editData?: WizardState;
+  venue?: WithId<AnyVenue>;
 }

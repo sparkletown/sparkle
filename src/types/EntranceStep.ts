@@ -2,7 +2,7 @@ export enum EntranceStepTemplate {
   WelcomeVideo = "welcomevideo",
 }
 
-type EntranceStepButtonConfig = {
+export type EntranceStepButtonConfig = {
   isProceed: boolean;
   text?: string;
   className?: string;

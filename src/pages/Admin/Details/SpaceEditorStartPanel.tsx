@@ -10,18 +10,20 @@ import DetailsPreview from "./Preview";
 
 import "./SpaceEditorStartPanel.scss";
 
-export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({
-  previous,
-  dispatch,
-  data,
-}) => (
+export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue }) => (
   <AdminPanel className="SpaceEditorStartPanel">
     <AdminSidebar>
-      <DetailsForm previous={previous} editData={data} dispatch={dispatch} />
+      <DetailsForm venue={venue} />
     </AdminSidebar>
 
     <AdminShowcase>
-      <DetailsPreview {...data} />
+      <DetailsPreview
+        name={venue?.name}
+        subtitle={venue?.config?.landingPageConfig.subtitle}
+        description={venue?.config?.landingPageConfig.description}
+        bannerImageUrl={venue?.config?.landingPageConfig.coverImageUrl}
+        logoImageUrl={venue?.host?.icon}
+      />
     </AdminShowcase>
   </AdminPanel>
 );

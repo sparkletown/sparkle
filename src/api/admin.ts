@@ -2,8 +2,9 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { ACCEPTED_IMAGE_TYPES } from "settings";
+import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
+import { EntranceStepConfig } from "types/EntranceStep";
 import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
@@ -32,11 +33,6 @@ interface Question {
   name: string;
   text: string;
   link?: string;
-}
-
-export interface AdvancedVenueInput {
-  profile_questions: Array<Question>;
-  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
@@ -74,42 +70,38 @@ export type RoomInput_v2 = Room & {
   image_file?: FileList;
 };
 
-export type VenueInput = AdvancedVenueInput &
-  VenueImageUrls & {
-    name: string;
-    bannerImageFile?: FileList;
-    logoImageFile?: FileList;
-    mapBackgroundImageFile?: FileList;
-    subtitle?: string;
-    description?: string;
-    zoomUrl?: string;
-    iframeUrl?: string;
-    autoPlay?: boolean;
-    template: VenueTemplate;
-    rooms?: Array<Room>;
-    placement?: Omit<VenuePlacement, "state">;
-    placementRequests?: string;
-    adultContent: boolean;
-    showGrid?: boolean;
-    columns?: number;
-    width?: number;
-    height?: number;
-    parentId?: string;
-    owners?: string[];
-    chatTitle?: string;
-    attendeesTitle?: string;
-    auditoriumRows?: number;
-    auditoriumColumns?: number;
-    userStatuses?: UserStatus[];
-    showReactions?: boolean;
-    enableJukebox?: boolean;
-    showShoutouts?: boolean;
-    showRadio?: boolean;
-    radioStations?: string;
-    showNametags?: UsernameVisibility;
-    showUserStatus?: boolean;
-    hasSocialLoginEnabled?: boolean;
-  };
+export type VenueInput = VenueImageUrls & {
+  name: string;
+  bannerImageFile?: FileList;
+  logoImageFile?: FileList;
+  mapBackgroundImageFile?: FileList;
+  subtitle?: string;
+  description?: string;
+  zoomUrl?: string;
+  iframeUrl?: string;
+  autoPlay?: boolean;
+  template: VenueTemplate;
+  rooms?: Array<Room>;
+  placement?: Omit<VenuePlacement, "state">;
+  placementRequests?: string;
+  adultContent: boolean;
+  showGrid?: boolean;
+  columns?: number;
+  width?: number;
+  height?: number;
+  parentId?: string;
+  owners?: string[];
+  auditoriumRows?: number;
+  auditoriumColumns?: number;
+  userStatuses?: UserStatus[];
+  showReactions?: boolean;
+  enableJukebox?: boolean;
+  showShoutouts?: boolean;
+  showRadio?: boolean;
+  radioStations?: string;
+  showUserStatus?: boolean;
+  hasSocialLoginEnabled?: boolean;
+};
 
 export interface VenueInput_v2
   extends VenueAdvancedConfig,
@@ -135,6 +127,7 @@ export interface VenueInput_v2
 // NOTE: world might have many fields, please keep them in alphabetic order
 // @debt move to src/types/world
 export interface World {
+  adultContent?: boolean;
   attendeesTitle?: string;
   chatTitle?: string;
   config: {
@@ -145,12 +138,19 @@ export interface World {
     };
   };
   createdAt: Date;
+  entrance?: EntranceStepConfig[];
   host: {
     icon: string;
   };
   name: string;
   owners: string[];
+  questions?: {
+    code?: Question[];
+    profile?: Question[];
+  };
+  requiresDateOfBirth?: boolean;
   showNametags?: UsernameVisibility;
+  showBadges?: boolean;
   slug: string;
   updatedAt: Date;
 }
@@ -348,10 +348,22 @@ export const createVenue_v2 = async (
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")({
+
+  const venueResponse = await firebase
+    .functions()
+    .httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
     worldId: input.worldId,
   });
+
+  if (input.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: firestoreVenueInput.name,
+      numberOfSections: DEFAULT_SECTIONS_AMOUNT,
+    });
+  }
+
+  return venueResponse;
 };
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.

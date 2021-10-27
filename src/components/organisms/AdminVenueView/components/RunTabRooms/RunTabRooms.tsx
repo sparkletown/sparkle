@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { groupBy } from "lodash";
 
-import { ADMIN_V1_ROOMS_URL, ROOM_TAXON, ROOMS_TAXON } from "settings";
+import { ADMIN_V1_ROOMS_BASE_URL, ROOM_TAXON, ROOMS_TAXON } from "settings";
 
 import { Room } from "types/rooms";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
@@ -43,7 +43,7 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
           {venueWithRooms && (
             <ButtonNG
               isLink={true}
-              linkTo={`${ADMIN_V1_ROOMS_URL}/${venue.id}`}
+              linkTo={`${ADMIN_V1_ROOMS_BASE_URL}/${venue.id}`}
               variant="primary"
             >
               Add a {ROOM_TAXON.capital}
