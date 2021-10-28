@@ -53,11 +53,9 @@ body {
     width: 76px;
     margin: 0 auto 30px;
 
-    -moz-mask-box-image: url(./img/burningman-logo-2.png);
-
-    -webkit-mask-box-image: url(./img/burningman-logo-2.png);
-    mask-box-image: url(./img/burningman-logo-2.png);
-    background-color: opaque-white(0.2);
+    // background-image: url(./img/loading-sparkle-icon.png);
+    background-image: url(./img/burningman-logo-2.png);
+    background-size: cover;
     animation: sparkleanim 4s cubic-bezier(0.77, 0, 0.175, 1) infinite;
 
     .burningman-loading-anim {

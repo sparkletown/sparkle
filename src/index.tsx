@@ -1,151 +1,91 @@
-import React, { useEffect } from "react";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
-import { render } from "react-dom";
-import { Provider as ReduxStoreProvider } from "react-redux";
-import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
-import { FirebaseAppProvider } from "reactfire";
-import { addToBugsnagEventOnError, BugsnagErrorBoundary } from "bugsnag";
-import firebase from "firebase/app";
-import LogRocket from "logrocket";
-// eslint-disable-next-line no-restricted-imports
-import { activatePolyFills } from "polyfills";
-import { createFirestoreInstance } from "redux-firestore";
-import { ThemeProvider } from "styled-components";
+import logoOutline from "assets/loading/logo-outline.svg";
 
-import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
+import "scss/initial.scss";
 
-import { FIREBASE_CONFIG } from "settings";
-
-import { store } from "store";
-
-import { traceReactScheduler } from "utils/performance";
-import { authSelector, currentVenueSelector } from "utils/selectors";
-
-import { AlgoliaSearchProvider } from "hooks/algolia/context";
-import { CustomSoundsProvider } from "hooks/sounds";
-import { useAnalytics } from "hooks/useAnalytics";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-
-import { AppRouter } from "components/organisms/AppRouter";
-
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-
-import "./wdyr";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/performance";
-
-import * as serviceWorker from "./serviceWorker";
-
-import { theme } from "theme/theme";
-
-import "scss/global.scss";
-
-activatePolyFills();
-
-if (LOGROCKET_APP_ID) {
-  LogRocket.init(LOGROCKET_APP_ID, {
-    release: BUILD_SHA1,
-  });
-
-  addToBugsnagEventOnError((event) => {
-    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
-  });
-}
-
-const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
-firebaseApp.analytics();
-firebaseApp.auth();
-firebaseApp.firestore();
-const firebaseFunctions = firebase.functions();
-firebase.performance();
-
-// Enable the functions emulator when running in development
-if (process.env.NODE_ENV === "development") {
-  firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
-}
-
-const rrfConfig = {
-  userProfile: "users",
-  useFirestoreForProfile: true,
+const asyncLoadImage = (path: string, cb: () => void) => {
+  const asyncImage = new Image();
+  asyncImage.onload = cb;
+  asyncImage.src = path;
 };
 
-const rrfProps = {
-  firebase,
-  config: rrfConfig,
-  dispatch: store.dispatch,
-  createFirestoreInstance,
+const getEl = (id: string) => document.getElementById(id);
+
+const fade = (el: HTMLElement, direction: string, duration: string) => {
+  el.style.transition = `opacity ${duration} ease`;
+  if (direction === "in") {
+    el.style.opacity = "1";
+  } else {
+    el.style.opacity = "0";
+  }
+
+  //el.style.animation = `loading-fade${direction} ${duration} forwards`;
 };
 
-const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
-  children,
-}) => {
-  const { userWithId } = useUser();
-  const venue = useSelector(currentVenueSelector);
-  const analytics = useAnalytics({ venue });
-  const auth = useSelector(authSelector);
+let fadeInTimer: number | undefined;
 
-  useEffect(() => {
-    analytics.initAnalytics();
-  }, [analytics]);
+document.addEventListener("DOMContentLoaded", () => {
+  document.body.className = "loading";
+  document.documentElement.className = "loading";
 
-  useEffect(() => {
-    if (!auth || !auth.uid || !userWithId) return;
+  const loadingOverlayEl = getEl("loading-overlay");
 
-    const displayName = auth.displayName || "N/A";
-    const email = auth.email || "N/A";
-
-    if (LOGROCKET_APP_ID) {
-      LogRocket.identify(auth.uid, {
-        displayName,
-        email,
-      });
+  // Only display the loading overlay after a short wait, otherwise we get
+  // janky effects when loading from cache or on fast connections.
+  fadeInTimer = window.setTimeout(() => {
+    if (loadingOverlayEl) {
+      fade(loadingOverlayEl, "in", "2s");
     }
 
-    analytics.identifyUser({
-      email,
-      name: userWithId.partyName,
+    asyncLoadImage(logoOutline, () => {
+      const logoEl = getEl("loading-logo");
+      if (logoEl) {
+        logoEl.style.backgroundImage = `url(${logoOutline})`;
+        fade(logoEl, "in", "2s");
+      }
     });
-  }, [analytics, auth, userWithId]);
 
-  if (!isLoaded(auth)) return <LoadingPage />;
+    const visibleEl = getEl("loading-text-a");
+    const invisibleEl = getEl("loading-text-b");
 
-  return <>{children}</>;
-};
+    if (visibleEl && invisibleEl) {
+      // The loading text uses invisible text to ensure that spacing is kept
+      // consistent and the words don't bounce around.
+      let i = 0;
+      window.setInterval(() => {
+        i += 1;
 
-traceReactScheduler("initial render", performance.now(), () => {
-  render(
-    <BugsnagErrorBoundary>
-      <ThemeProvider theme={theme}>
-        <DndProvider backend={HTML5Backend}>
-          <ReduxStoreProvider store={store}>
-            <FirebaseAppProvider firebaseApp={firebaseApp}>
-              <ReactReduxFirebaseProvider {...rrfProps}>
-                <AuthIsLoaded>
-                  <AlgoliaSearchProvider>
-                    <CustomSoundsProvider
-                      loadingComponent={<LoadingPage />}
-                      waitTillConfigLoaded
-                    >
-                      <AppRouter />
-                    </CustomSoundsProvider>
-                  </AlgoliaSearchProvider>
-                </AuthIsLoaded>
-              </ReactReduxFirebaseProvider>
-            </FirebaseAppProvider>
-          </ReduxStoreProvider>
-        </DndProvider>
-      </ThemeProvider>
-    </BugsnagErrorBoundary>,
-    document.getElementById("root")
-  );
+        const maxPeriods = 3;
+        const numVisiblePeriods = i % (maxPeriods + 1);
+        visibleEl.innerText = "Loading " + ".".repeat(numVisiblePeriods);
+        invisibleEl.innerText = ".".repeat(maxPeriods - numVisiblePeriods);
+      }, 500);
+    }
+
+    // Wipe the fadeInTimer so that we know if we've displayed the
+    // loading animation.
+    fadeInTimer = undefined;
+  }, 1000);
+
+  // Now load everything else
+  import("./main").then(() => {
+    document.body.className = "";
+    const rootEl = getEl("root");
+    if (!rootEl) {
+      return;
+    }
+
+    if (fadeInTimer) {
+      window.clearTimeout(fadeInTimer);
+
+      // We've not triggered loading animations so display the app straight away
+      rootEl.style.opacity = "1";
+    } else {
+      if (loadingOverlayEl) {
+        fade(loadingOverlayEl, "out", "1s");
+      }
+      window.setTimeout(() => {
+        fade(rootEl, "in", "0.5s");
+      }, 500);
+    }
+  });
 });
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

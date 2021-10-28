@@ -71,10 +71,21 @@ BUILD_REPOSITORY_URL : %REACT_APP_BUILD_REPOSITORY_URL%
     />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Sparkle</title>
+    <style>
+      body {
+        background: black;
+      }
+    </style>
   </head>
 
   <body>
     <noscript>You need to enable JavaScript to use Sparkle.</noscript>
-    <div id="root">Loading...</div>
+    <div id="loading-overlay">
+      <div class="row">
+        <div id="loading-logo"></div>
+        <div id="loading-text"><span id="loading-text-a">Loading </span><span id="loading-text-b">...</span></div>
+      </div>
+    </div>
+    <div id="root"></div>
   </body>
 </html>
