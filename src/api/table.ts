@@ -10,7 +10,7 @@ export interface UpdateVenueTableProps {
   tables: Table[];
   title: string;
   subtitle?: string;
-  capacity: number;
+  capacity: number | string;
 }
 
 export const updateVenueTable = async ({
@@ -22,14 +22,15 @@ export const updateVenueTable = async ({
   capacity,
 }: UpdateVenueTableProps) => {
   // @debt: capacity type equals number, but incoming value is string. Needs to be fixed in table types
-  const updatedCapacity = parseInt(capacity.toString(), 10);
+  const capacityInteger = parseInt(capacity.toString(), 10);
   const tableColumns = tableOfUser?.columns ?? MIN_TABLE_CAPACITY;
   const updatedTable = {
     ...tableOfUser,
     title,
     subtitle,
-    capacity: updatedCapacity,
-    rows: Math.ceil(updatedCapacity / tableColumns),
+    capacity: capacityInteger,
+    // Math.ceil is used so that seats container displays with corrent height with uneven capacity
+    rows: Math.ceil(capacityInteger / tableColumns),
   };
 
   return await firebase.functions().httpsCallable("venue-updateTables")({
