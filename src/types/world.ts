@@ -31,6 +31,8 @@ export interface WorldAdvancedFormInput {
   chatTitle?: string;
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  radioStations?: string;
   showSchedule?: boolean;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];

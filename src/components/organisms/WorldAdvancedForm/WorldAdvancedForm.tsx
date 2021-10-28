@@ -27,7 +27,6 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { Toggler } from "components/atoms/Toggler";
 
 import "./WorldAdvancedForm.scss";
 
@@ -206,12 +205,50 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           </Form.Control>
         </AdminSection>
 
-        <AdminSection title="Show badges" withLabel>
-          <Toggler forwardedRef={register} name="showBadges" />
+        <AdminSection>
+          <AdminCheckbox
+            name="showBadges"
+            label="Show badges"
+            variant="toggler"
+            register={register}
+          />
         </AdminSection>
 
-        <AdminSection title="Show schedule" withLabel>
-          <Toggler forwardedRef={register} name="showSchedule" />
+        <AdminSection>
+          <AdminCheckbox
+            name="showRadio"
+            label="Enable space radio"
+            variant="toggler"
+            errors={errors}
+            register={register}
+          />
+          <AdminInput
+            name="radioStations"
+            errors={errors}
+            register={register}
+            label="Radio station stream URL:"
+            disabled={!values.showRadio}
+          />
+        </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="hasSocialLoginEnabled"
+            label="Social Login"
+            subtext="Users can login using Google/Facebook/Okta social networks"
+            variant="toggler"
+            errors={errors}
+            register={register}
+          />
+        </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="showSchedule"
+            label="Show schedule"
+            variant="toggler"
+            register={register}
+          />
         </AdminSection>
 
         <AdminSection>
