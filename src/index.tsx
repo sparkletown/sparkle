@@ -5,8 +5,7 @@ import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { FirebaseAppProvider } from "reactfire";
-import Bugsnag from "@bugsnag/js";
-import BugsnagPluginReact from "@bugsnag/plugin-react";
+import { addToBugsnagEventOnError, BugsnagErrorBoundary } from "bugsnag";
 import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
@@ -14,14 +13,7 @@ import { activatePolyFills } from "polyfills";
 import { createFirestoreInstance } from "redux-firestore";
 import { ThemeProvider } from "styled-components";
 
-import {
-  BUGSNAG_API_KEY,
-  BUILD_BRANCH,
-  BUILD_PULL_REQUESTS,
-  BUILD_SHA1,
-  BUILD_TAG,
-  LOGROCKET_APP_ID,
-} from "secrets";
+import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
 import { FIREBASE_CONFIG } from "settings";
 
@@ -60,7 +52,7 @@ if (LOGROCKET_APP_ID) {
     release: BUILD_SHA1,
   });
 
-  Bugsnag.addOnError((event) => {
+  addToBugsnagEventOnError((event) => {
     event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
   });
 }
@@ -88,104 +80,6 @@ const rrfProps = {
   dispatch: store.dispatch,
   createFirestoreInstance,
 };
-
-if (BUGSNAG_API_KEY) {
-  const DEVELOPMENT = "development";
-  const TEST = "test";
-  const STAGING = "staging";
-  const PRODUCTION = "production";
-  const SPARKLE_ENVS = [
-    "sparkleverse",
-    "sparkle1",
-    "sparkle2",
-    "sparkle3",
-    "sparkle4",
-    "sparkle5",
-    "sparkle6",
-    "sparkle7",
-    "sparkle8",
-    "sparkle9",
-    "sparkle10",
-    "bigtop",
-    "deloitte",
-    "env/kotr",
-    "env/memrise",
-    "env/unesco",
-    "env/ohbm",
-    "env/pa",
-    "env/demo",
-    "env/unity",
-    "env/clever",
-    "env/burn",
-    "env/burn-staging",
-    "env/github",
-    "env/summit-hack",
-    "env/northwell",
-  ];
-
-  const releaseStage = () => {
-    if (
-      window.location.host.includes("localhost") ||
-      process.env.NODE_ENV === DEVELOPMENT
-    ) {
-      return DEVELOPMENT;
-    }
-
-    if (process.env.NODE_ENV === TEST) {
-      return TEST;
-    }
-
-    if (
-      window.location.host.includes(STAGING) ||
-      BUILD_BRANCH?.includes(STAGING)
-    ) {
-      return STAGING;
-    }
-
-    if (BUILD_BRANCH?.includes("master")) {
-      return PRODUCTION;
-    }
-
-    if (BUILD_BRANCH !== undefined && SPARKLE_ENVS.includes(BUILD_BRANCH)) {
-      return BUILD_BRANCH;
-    }
-
-    return process.env.NODE_ENV;
-  };
-
-  Bugsnag.start({
-    apiKey: BUGSNAG_API_KEY,
-    plugins: [new BugsnagPluginReact()],
-    appType: "client",
-    appVersion: BUILD_SHA1,
-    enabledReleaseStages: [STAGING, PRODUCTION, ...SPARKLE_ENVS], // don't track errors in development/test
-    releaseStage: releaseStage(),
-    maxEvents: 25,
-    metadata: {
-      BUILD_SHA1,
-      BUILD_TAG,
-      BUILD_BRANCH,
-      BUILD_PULL_REQUESTS,
-    },
-    onError: (event) => {
-      const { currentUser } = firebase.auth();
-
-      if (!currentUser) return;
-
-      // Add user context to help locate related errors for support
-      event.setUser(
-        currentUser.uid,
-        currentUser.email || undefined,
-        currentUser.displayName || undefined
-      );
-    },
-  });
-}
-
-// When BUGSNAG_API_KEY not set, stub out BugsnagErrorBoundary with a noop
-const BugsnagErrorBoundary = BUGSNAG_API_KEY
-  ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
-  : React.Fragment;
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,

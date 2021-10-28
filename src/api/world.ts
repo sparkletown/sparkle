@@ -51,7 +51,7 @@ export const createFirestoreWorldStartInput: (
 
     const extension = type.split("/").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/worlds/${id}/background.${extension}`
+      `users/${user.uid}/worlds/${id}/${key}.${extension}`
     );
 
     await uploadFileRef.put(file);
