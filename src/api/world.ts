@@ -97,6 +97,7 @@ export const createFirestoreWorldAdvancedInput: (
     "chatTitle",
     "showNametags",
     "showBadges",
+    "showSchedule",
   ]);
 };
 
@@ -118,7 +119,6 @@ export const createWorld: (
     worldId = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
-
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),
