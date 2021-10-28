@@ -26,7 +26,8 @@ import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput"
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./WorldAdvancedForm.scss";
 
