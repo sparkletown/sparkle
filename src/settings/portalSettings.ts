@@ -1,4 +1,4 @@
-import { SPACE_TAXON } from "settings";
+import { SPACE_TAXON } from "settings/taxonomy";
 
 import { RoomVisibility } from "types/venues";
 

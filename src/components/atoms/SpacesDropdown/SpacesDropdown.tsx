@@ -80,7 +80,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   }, [venueSpaces, setValue, fieldName, venueId]);
 
   const renderSpaceValue = useMemo(() => {
-    if (!spaceValue) return;
+    if (!spaceValue) {
+      return "Select a space";
+    }
 
     const space = venueSpaces.find((space) => space.name === spaceValue);
     const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
@@ -101,8 +103,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     // @debt align the style of the SpacesDropdown with the Dropdown component
     <>
       <div className="SpacesDropdown">
-        {renderSpaceValue}
-        <Dropdown title="Select a space" options={spaceOptions} />
+        <Dropdown title={renderSpaceValue} options={spaceOptions} />
         <input type="hidden" ref={register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}

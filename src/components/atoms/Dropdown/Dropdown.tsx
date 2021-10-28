@@ -4,7 +4,7 @@ import { DropdownButton } from "react-bootstrap";
 import "./Dropdown.scss";
 
 export interface DropdownProps {
-  title: string;
+  title: string | JSX.Element;
   options: JSX.Element[];
 }
 
