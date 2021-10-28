@@ -13,6 +13,7 @@ import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useWorldBySlug } from "hooks/useWorldBySlug";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
@@ -29,10 +30,13 @@ import "./AdminDashboard.scss";
 export const AdminDashboard: React.FC = () => {
   const { ownedVenues, isLoading } = useOwnedVenues({});
 
-  const { worldId } = useWorldEditParams();
+  const { worldSlug } = useWorldEditParams();
 
-  const venues = worldId
-    ? ownedVenues.filter((venue) => venue.worldId === worldId)
+  const { world, isLoaded } = useWorldBySlug(worldSlug);
+
+  console.log(world);
+  const venues = world
+    ? ownedVenues.filter((venue) => venue.worldId === world.id)
     : ownedVenues;
 
   const [
@@ -72,7 +76,7 @@ export const AdminDashboard: React.FC = () => {
 
   const hasVenues = renderedPartyVenues.length > 0;
 
-  if (isLoading) {
+  if (isLoading || !isLoaded) {
     return <LoadingPage />;
   }
 
@@ -96,7 +100,7 @@ export const AdminDashboard: React.FC = () => {
             <ButtonNG
               variant="primary"
               isLink
-              linkTo={adminCreateWorldSpace(worldId)}
+              linkTo={adminCreateWorldSpace(world?.slug)}
             >
               Create a new space
             </ButtonNG>

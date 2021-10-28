@@ -24,14 +24,14 @@ export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
 export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
 
-export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });
+export const adminWorldUrl = (worldSlug?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldSlug, selectedTab });
 
-export const adminCreateWorldSpace = (worldId?: string) =>
-  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldId });
+export const adminCreateWorldSpace = (worldSlug?: string) =>
+  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldSlug });
 
-export const adminWorldSpacesUrl = (worldId?: string) =>
-  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldId });
+export const adminWorldSpacesUrl = (worldSlug?: string) =>
+  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldSlug });
 
 export const venueInsideFullUrl = (venueId?: string) =>
   generatePath(VENUE_INSIDE_PARAM_URL, { venueId });

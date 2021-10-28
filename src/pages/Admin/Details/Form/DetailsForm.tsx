@@ -14,6 +14,7 @@ import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useWorldEdit } from "hooks/useWorldEdit";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
@@ -36,6 +37,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const { worldVenuesIds, worldParentVenues } = useWorldVenues(
     worldId ?? venue?.worldId ?? ""
   );
+  const { world, isLoaded } = useWorldEdit(worldId ?? venue?.worldId);
 
   const { subtitle, description, coverImageUrl } =
     venue?.config?.landingPageConfig ?? {};
@@ -81,7 +83,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const setVenue = useCallback(
     async (vals: FormValues) => {
-      if (!user) return;
+      if (!user || !isLoaded) return;
 
       const isValidParentId = validateParentId(values.parentId, [
         venueId ?? createUrlSafeName(vals.name),
@@ -107,7 +109,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
           await updateVenue_v2(updatedVenue, user);
 
-          history.push(adminWorldSpacesUrl(venue?.worldId));
+          history.push(adminWorldSpacesUrl(world?.slug));
         } else {
           const newVenue = {
             ...vals,
@@ -118,7 +120,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
           await createVenue_v2(newVenue, user);
 
-          history.push(adminWorldSpacesUrl(worldId));
+          history.push(adminWorldSpacesUrl(world?.slug));
         }
       } catch (e) {
         console.error(e);
@@ -126,12 +128,14 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     },
     [
       history,
+      isLoaded,
       setError,
       user,
       validateParentId,
       values.parentId,
       venue?.worldId,
       venueId,
+      world?.slug,
       worldId,
     ]
   );
