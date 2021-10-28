@@ -99,6 +99,7 @@ export const createFirestoreWorldAdvancedInput: (
     "showBadges",
     "showNametags",
     "showRadio",
+    "showSchedule",
   ]);
 
   // Form input is just a single string, but DB structure is string[]
@@ -127,7 +128,6 @@ export const createWorld: (
     worldId = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
-
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),

@@ -48,6 +48,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       chatTitle: world.chatTitle,
       showNametags: world.showNametags,
       showBadges: world.showBadges,
+      showSchedule: world.showSchedule,
     }),
     [world]
   );
@@ -70,7 +71,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
-
     await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
 
     reset(values);
@@ -163,6 +163,14 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             subtext="Users can login using Google/Facebook/Okta social networks"
             variant="toggler"
             errors={errors}
+            register={register}
+          />
+        </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="showSchedule"
+            label="Show schedule"
             register={register}
           />
         </AdminSection>

@@ -41,7 +41,6 @@ export const generateTables: (props: {
 
     const rowsCount =
       rows ?? Math.floor((capacity + columnsCount - 1) / columnsCount);
-
     return {
       title,
       capacity,

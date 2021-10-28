@@ -32,4 +32,5 @@ export interface WorldAdvancedFormInput {
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
   radioStations?: string;
+  showSchedule?: boolean;
 }
