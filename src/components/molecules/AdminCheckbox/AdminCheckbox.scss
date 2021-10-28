@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 $size: 32px;
-$tick: 28px;
+$tick: 26px;
 $offset: 2px;
 
 $checkbox-transition: all 200ms $transition-function;
@@ -14,6 +14,11 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
   justify-content: flex-start;
   position: relative;
   margin: $spacing--xs 0;
+
+  &:focus &__box,
+  &:focus-within &__box {
+    border: 1px solid var(--content--over);
+  }
 
   &__error,
   &__subtext {
@@ -28,6 +33,15 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     margin: 0;
     padding: 0;
     color: var(--content--over-50a);
+  }
+
+  &__input {
+    // NOTE: !important is necessary evil here to make the original checkbox hidden but tabbable
+    display: inline !important;
+    visibility: visible !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
   &__label {
@@ -101,7 +115,7 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     background-color: var(--accent--under-50a);
 
     &::after {
-      left: 2 * $size - $tick - $offset - 1px;
+      left: 2 * $size - $tick - 2 * $offset;
       background-color: var(--accent--under);
     }
   }
