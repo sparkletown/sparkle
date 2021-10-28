@@ -41,7 +41,9 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
           <Loading />
         )}
       </AdminSidebar>
-      <AdminShowcase>{world && <WorldShowcase world={world} />}</AdminShowcase>
+      <AdminShowcase>
+        <WorldShowcase world={world} />
+      </AdminShowcase>
     </AdminPanel>
   );
 };
