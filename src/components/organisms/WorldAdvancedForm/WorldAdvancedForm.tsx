@@ -48,6 +48,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       chatTitle: world.chatTitle,
       showNametags: world.showNametags,
       showBadges: world.showBadges,
+      showSchedule: world.showSchedule,
     }),
     [world]
   );
@@ -70,7 +71,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
-
     await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
 
     reset(values);
@@ -130,6 +130,9 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
         </AdminSection>
         <AdminSection title="Show badges" withLabel>
           <Toggler forwardedRef={register} name="showBadges" />
+        </AdminSection>
+        <AdminSection title="Show schedule" withLabel>
+          <Toggler forwardedRef={register} name="showSchedule" />
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />

@@ -35,7 +35,7 @@
   &__cards {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     grid-template-rows: max-content;
     grid-gap: font-size--root(1);
 
