@@ -179,7 +179,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
             onMouseOut={clearAttendance}
             onClick={enter}
           >
-            Join {ROOM_TAXON.capital}
+            Enter
           </button>
         </div>
       </div>
