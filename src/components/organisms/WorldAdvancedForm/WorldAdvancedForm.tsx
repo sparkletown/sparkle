@@ -171,6 +171,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           <AdminCheckbox
             name="showSchedule"
             label="Show schedule"
+            variant="toggler"
             register={register}
           />
         </AdminSection>
