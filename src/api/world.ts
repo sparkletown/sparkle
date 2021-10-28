@@ -98,6 +98,8 @@ export const createFirestoreWorldAdvancedInput: (
     "showNametags",
     "showBadges",
     "showSchedule",
+    "showUserStatus",
+    "userStatuses",
   ]);
 };
 

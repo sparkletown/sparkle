@@ -152,8 +152,10 @@ export interface World {
   showNametags?: UsernameVisibility;
   showBadges?: boolean;
   showSchedule?: boolean;
+  showUserStatus?: boolean;
   slug: string;
   updatedAt: Date;
+  userStatuses?: UserStatus[];
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
