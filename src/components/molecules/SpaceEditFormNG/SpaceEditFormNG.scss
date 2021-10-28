@@ -1,0 +1,37 @@
+@import "scss/constants.scss";
+
+.SpaceEditFormNG {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &__toggler {
+    width: max-content;
+  }
+
+  .AdminSidebarTitle {
+    margin: $spacing--xxl $spacing--xl $spacing--md;
+  }
+
+  .AdminSidebarSubTitle {
+    margin: 0 $spacing--xl $spacing--xl;
+  }
+
+  .AdminSection {
+    padding: $spacing--sm $spacing--xl;
+  }
+
+  .AdminSidebarFooter__buttons {
+    width: 100%;
+  }
+
+  &__capacity {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    align-items: center;
+    text-align: center;
+  }
+}

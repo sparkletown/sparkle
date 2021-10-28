@@ -6,8 +6,8 @@ import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
+import { Question } from "types/Question";
 import { User } from "types/User";
-import { Question } from "types/venues";
 
 import { WithId } from "utils/id";
 

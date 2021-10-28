@@ -2,19 +2,24 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
-import { DEFAULT_USER_STATUS, ROOM_TAXON, ROOMS_TAXON } from "settings";
+import {
+  DEFAULT_USER_STATUS,
+  DISABLED_DUE_TO_1253,
+  ROOM_TAXON,
+  ROOMS_TAXON,
+} from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueAdvancedConfig } from "types/venues";
+import { AnyVenue, VenueAdvancedConfig, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
-import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
@@ -38,7 +43,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     formState: { dirty, isSubmitting },
     register,
     errors,
-    setError,
     handleSubmit,
   } = useForm<VenueAdvancedConfig>({
     mode: "onSubmit",
@@ -49,55 +53,28 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
-      showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      attendeesTitle: venue.attendeesTitle,
-      chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
+      hasSocialLoginEnabled: venue.hasSocialLoginEnabled,
+      enableJukebox: venue.enableJukebox,
     },
   });
-
-  const { worldParentVenues } = useWorldVenues(venue.worldId);
 
   const { user } = useUser();
 
   const values = watch();
 
-  const validateParentId = useCallback(
-    (parentId, checkedIds) => {
-      if (checkedIds.includes(parentId)) return false;
-
-      if (!parentId) return true;
-
-      const parentVenue = worldParentVenues.find(
-        (venue) => venue.id === parentId
-      );
-
-      if (!parentVenue) return true;
-
-      validateParentId(parentVenue?.parentId, [...checkedIds, parentId]);
-    },
-    [worldParentVenues]
-  );
+  const jukeboxToggleClasses = classNames("AdvancedSettings__form-field", {
+    "mod--hidden": venue.template !== VenueTemplate.jazzbar,
+  });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
     if (!user) return;
-
-    const isValidParentId = validateParentId(data.parentId, [venue.id]);
-
-    if (!isValidParentId) {
-      setError(
-        "parentId",
-        "manual",
-        "This parent id is invalid because it will create a loop of parent venues. If venue 'A' is a parent of venue 'B', venue 'B' can't be a parent of venue 'A'."
-      );
-      return;
-    }
 
     updateVenue_v2(
       {
@@ -178,47 +155,26 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         className="AdvancedSettings__form-container"
         onSubmit={handleSubmit(updateAdvancedSettings)}
       >
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Title of your venues attendees (For example: guests, attendees,
-            partygoers)
-          </Form.Label>
-          <InputField
-            name="attendeesTitle"
-            autoComplete="off"
-            placeholder="Attendees title"
-            error={errors.attendeesTitle}
-            ref={register}
-          />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Your venue chat label (For example: Party, Event, Meeting)
-          </Form.Label>
-          <InputField
-            name="chatTitle"
-            autoComplete="off"
-            placeholder="Event label"
-            error={errors.chatTitle}
-            ref={register}
-          />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Toggler forwardedRef={register} name="showGrid" title="Show grid" />
-          <Form.Label>Number of columns: </Form.Label>
-          <InputField
-            name="columns"
-            type="number"
-            autoComplete="off"
-            placeholder="Enter number of grid columns"
-            error={errors.columns}
-            ref={register}
-            disabled={!values.showGrid}
-            min={1}
-          />
-        </div>
+        {!DISABLED_DUE_TO_1253 && (
+          <div className="AdvancedSettings__form-field">
+            <Toggler
+              forwardedRef={register}
+              name="showGrid"
+              title="Show grid"
+            />
+            <Form.Label>Number of columns: </Form.Label>
+            <InputField
+              name="columns"
+              type="number"
+              autoComplete="off"
+              placeholder="Enter number of grid columns"
+              error={errors.columns}
+              ref={register}
+              disabled={!values.showGrid}
+              min={1}
+            />
+          </div>
+        )}
 
         <div className="AdvancedSettings__form-field">
           <Toggler
@@ -226,16 +182,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             name="showBadges"
             title="Show badges"
           />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Show Nametags (Display user names on their avatars)
-          </Form.Label>
-          <Form.Control as="select" custom name="showNametags" ref={register}>
-            <option value="none">None</option>
-            <option value="hover">Inline and hover</option>
-          </Form.Control>
         </div>
 
         <div className="AdvancedSettings__form-field">
@@ -258,6 +204,25 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             error={errors.radioStations}
             ref={register}
             disabled={!values.showRadio}
+          />
+        </div>
+
+        <div className="AdvancedSettings__form-field">
+          <Toggler
+            forwardedRef={register}
+            name="hasSocialLoginEnabled"
+            title="Social Login"
+          />
+          <Form.Label>
+            Users can login using Google/Facebook/Okta social networks
+          </Form.Label>
+        </div>
+
+        <div className={jukeboxToggleClasses}>
+          <Toggler
+            forwardedRef={register}
+            name="enableJukebox"
+            title="Enable Jukebox"
           />
         </div>
 
@@ -292,25 +257,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             <option value="count">Count</option>
             <option value="count/name">Count and names</option>
           </Form.Control>
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Enter the parent venue ID, for the &quot; back&quot; button to go
-            to, and for sharing events in the schedule
-          </Form.Label>
-          <div>
-            The nav bar can show a &quot; back&quot; button if you enter an ID
-            here.Clicking &quot; back&quot; will return the user to the venue
-            whose ID you enter.Additionally, the events you add here will be
-            shown to users while they are on all other venues which share the
-            parent venue ID you enter here, as well as in the parent venue.The
-            value is a venue ID.Enter the venue ID you wish to use.A venue ID is
-            the part of the URL after /in/, so eg.for{" "}
-            <i>sparkle.space/in/abcdef</i> you would enter <i>abcdef</i>
-            below
-          </div>
-          <InputField name="parentId" error={errors.parentId} ref={register} />
         </div>
 
         <div className="AdvancedSettings__form-field">

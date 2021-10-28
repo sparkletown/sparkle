@@ -3,18 +3,17 @@ import { useAsync } from "react-use";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
+import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 
@@ -28,16 +27,18 @@ import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
-  venue: WithId<AnyVenue>;
+  venueId: string;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
-  venue,
+  venueId,
 }) => {
-  const venueId = venue.id;
-  const { sovereignVenue } = useRelatedVenues();
+  const { currentVenue, sovereignVenue } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
   const [formToDisplay, setFormToDisplay] = useState(formType);
+  const analytics = useAnalytics({ venue: currentVenue });
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     sovereignVenue?.samlAuthProviderId
@@ -82,7 +83,11 @@ export const Login: React.FC<LoginProps> = ({
     setFormToDisplay("passwordReset");
   };
 
-  const redirectAfterLogin = () => {};
+  const afterUserIsLoggedIn = (data?: LoginFormData) => {
+    if (!data) return;
+
+    analytics.trackLogInEvent(data.email);
+  };
 
   if (isCustomAuthConfigLoading) return <LoadingPage />;
 
@@ -128,23 +133,17 @@ export const Login: React.FC<LoginProps> = ({
           <RegisterForm
             displayLoginForm={displayLoginForm}
             displayPasswordResetForm={displayPasswordResetForm}
-            afterUserIsLoggedIn={redirectAfterLogin}
-            closeAuthenticationModal={() => null}
           />
         )}
         {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
             displayPasswordResetForm={displayPasswordResetForm}
-            closeAuthenticationModal={() => null}
-            afterUserIsLoggedIn={redirectAfterLogin}
+            afterUserIsLoggedIn={afterUserIsLoggedIn}
           />
         )}
         {formToDisplay === "passwordReset" && (
-          <PasswordResetForm
-            displayLoginForm={displayLoginForm}
-            closeAuthenticationModal={redirectAfterLogin}
-          />
+          <PasswordResetForm displayLoginForm={displayLoginForm} />
         )}
       </div>
     </div>

@@ -1,62 +1,47 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { ADMIN_V3_NEW_WORLD_URL, ADMIN_V3_WORLDS_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { useWorldEdit } from "hooks/useWorldEdit";
-import { useWorldId } from "hooks/useWorldId";
+import { WorldNavTab } from "types/world";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+import { useWorldEditParams } from "hooks/useWorldEditParams";
+
+import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedPanel";
+import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
+import { WorldEditorStartPanel } from "pages/WorldEditor/WorldEditorStartPanel";
+
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { WorldForm } from "components/organisms/WorldForm";
-import { WorldNav } from "components/organisms/WorldForm/components/WorldNav";
 
-import { Loading } from "components/molecules/Loading";
+import { WorldNav } from "components/molecules/WorldNav";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WorldEditor.scss";
 
+const PANEL_MAP = Object.freeze({
+  [WorldNavTab.start]: WorldEditorStartPanel,
+  [WorldNavTab.entrance]: WorldEditorEntrancePanel,
+  [WorldNavTab.advanced]: WorldEditorAdvancedPanel,
+});
+
 export const WorldEditor: React.FC = () => {
-  const worldId = useWorldId();
   const history = useHistory();
+  const { worldId, selectedTab } = useWorldEditParams();
 
-  const { isLoaded, world } = useWorldEdit(worldId);
+  const navigateToHome = useCallback(
+    () => history.push(ADMIN_V3_WORLDS_BASE_URL),
+    [history]
+  );
 
-  const navigateToHome = useCallback(() => history.push(ADMIN_V3_WORLDS_URL), [
-    history,
-  ]);
-
-  const title = worldId ? "Configure your world" : "Create a new world";
+  const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
   return (
     <div className="WorldEditor">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
           <WorldNav />
-          <AdminPanel>
-            <AdminSidebar>
-              <AdminSidebarTitle>{title}</AdminSidebarTitle>
-              <AdminSidebarFooter onClickHome={navigateToHome} />
-              {isLoaded || !worldId ? (
-                <WorldForm world={world} onClickCancel={navigateToHome} />
-              ) : (
-                <Loading />
-              )}
-            </AdminSidebar>
-            <AdminShowcase>
-              <div className="WorldEditor__new">
-                <ButtonNG gradient="gradient" linkTo={ADMIN_V3_NEW_WORLD_URL}>
-                  Create a new world
-                </ButtonNG>
-              </div>
-            </AdminShowcase>
-          </AdminPanel>
+          <WorldEditorPanel worldId={worldId} onClickHome={navigateToHome} />
         </AdminRestricted>
       </WithNavigationBar>
     </div>

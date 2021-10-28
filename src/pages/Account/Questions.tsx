@@ -4,9 +4,10 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory, useLocation } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { QuestionType } from "types/Question";
+import { Question } from "types/Question";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -34,13 +35,12 @@ export const Questions: React.FC = () => {
   const { user } = useUser();
 
   const venueId = useVenueId();
-  const {
-    sovereignVenue,
-    currentVenue: venue,
-    isLoading: isSovereignVenueLoading,
-  } = useRelatedVenues({ currentVenueId: venueId });
 
-  // @debt this should probably be retrieving the sovereign venue
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
+  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
+    worldId: venue?.worldId,
+  });
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
@@ -51,13 +51,13 @@ export const Questions: React.FC = () => {
   }, [history, location.search]);
 
   useEffect(() => {
-    if (!sovereignVenue) return;
+    if (!isWorldLoaded) return;
 
-    // Skip this screen if there are no profile questions for the venue
-    if (!sovereignVenue.profile_questions?.length) {
+    // Skip this screen if there are no profile questions for the world
+    if (!world?.questions?.profile?.length) {
       proceed();
     }
-  }, [proceed, sovereignVenue]);
+  }, [isWorldLoaded, proceed, world]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: QuestionsFormData) => {
@@ -85,11 +85,12 @@ export const Questions: React.FC = () => {
     return <>Error: venue not found for venueId={venueId}</>;
   }
 
-  if (!venue || isSovereignVenueLoading) {
+  if (!venue || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = sovereignVenue?.profile_questions?.length ?? 0;
+  const profileQuestions = world?.questions?.profile;
+  const numberOfQuestions = profileQuestions?.length ?? 0;
   const headerMessage = `Now complete your profile by answering ${
     numberOfQuestions === 1 ? "this question" : "some short questions"
   }`;
@@ -105,10 +106,10 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions?.map((question: QuestionType) => (
+          {profileQuestions?.map((question: Question) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
-                <strong>{question.name}</strong>
+                <strong>{question.text}</strong>
                 <textarea
                   className="input-block input-centered"
                   name={question.name}

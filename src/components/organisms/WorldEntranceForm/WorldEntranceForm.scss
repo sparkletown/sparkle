@@ -1,0 +1,21 @@
+@import "scss/constants";
+
+.WorldEntranceForm {
+  .AdminSection {
+    display: flex;
+    flex-direction: column;
+    gap: font-size--parent(1);
+
+    .Checkbox {
+      justify-content: flex-start;
+
+      &:not(.Toggler) .Checkbox__custom-input {
+        margin-left: font-size--parent(1.5);
+      }
+
+      &.Toggler .Checkbox__custom-input {
+        width: font-size--parent(2);
+      }
+    }
+  }
+}

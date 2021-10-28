@@ -4,6 +4,8 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
 
+const { isNil, isEmpty } = require("lodash");
+
 const checkIsAdmin = async (uid) => {
   try {
     const adminDoc = await admin
@@ -67,15 +69,16 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     name: data.name,
+    slug: data.slug,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle || "",
         description: data.description || "",
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     createdAt: Date.now(),
@@ -86,20 +89,27 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
   return await worldDoc.create(worldData).then(() => worldDoc.id);
 });
 
-// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
 exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
+
   const {
-    id: worldId,
-    name,
+    adultContent,
+    attendeesTitle,
     bannerImageUrl,
-    code_of_conduct_questions,
+    chatTitle,
     description,
     entrance,
+    id: worldId,
     logoImageUrl,
-    profile_questions,
+    name,
+    questions,
+    requiresDateOfBirth,
     rooms,
+    showNametags,
+    showBadges,
+    slug,
     subtitle,
+    showSchedule,
   } = data;
 
   if (!worldId) {
@@ -128,15 +138,27 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     }
   }
 
+  const questionsConfig = {
+    code: (questions && questions.code) || [],
+    profile: (questions && questions.profile) || [],
+  };
+
   const worldData = {
     updatedAt: Date.now(),
-    ...(name && { name }),
-    ...(logoImageUrl && { host: { icon: logoImageUrl } }),
-    ...(rooms && { rooms }),
-    ...(code_of_conduct_questions && { code_of_conduct_questions }),
-    ...(profile_questions && { profile_questions }),
-    ...(entrance && { entrance }),
-    ...(landingPageConfig && { config: { landingPageConfig } }),
+    ...(!isNil(adultContent) && { adultContent }),
+    ...(!isNil(attendeesTitle) && { attendeesTitle }),
+    ...(!isNil(chatTitle) && { chatTitle }),
+    ...(!isNil(entrance) && { entrance }),
+    ...(!isNil(landingPageConfig) && { config: { landingPageConfig } }),
+    ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
+    ...(!isNil(name) && { name }),
+    ...(!isEmpty(questions) && { questions: questionsConfig }),
+    ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
+    ...(!isNil(rooms) && { rooms }),
+    ...(!isNil(showNametags) && { showNametags }),
+    ...(!isNil(showSchedule) && { showSchedule }),
+    ...(!isNil(slug) && { slug }),
+    ...(!isNil(showBadges) && { showBadges }),
   };
 
   await admin

@@ -4,9 +4,7 @@ $height: 1.5rem;
 
 .AdminSidebarSectionTitle {
   place-content: center start;
-  height: $height;
-  max-height: $height;
-  line-height: $height;
+  min-height: $height;
   font-size: $height * 0.75;
   font-weight: $font-weight--600;
   margin: $spacing--xs 0;
