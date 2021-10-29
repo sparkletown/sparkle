@@ -148,9 +148,12 @@ export interface World {
     code?: Question[];
     profile?: Question[];
   };
+  radioStations?: string[];
   requiresDateOfBirth?: boolean;
-  showNametags?: UsernameVisibility;
   showBadges?: boolean;
+  showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  showSchedule?: boolean;
   slug: string;
   updatedAt: Date;
 }
@@ -323,7 +326,6 @@ const createFirestoreVenueInput_v2 = async (
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
   };
-
   return firestoreVenueInput;
 };
 
