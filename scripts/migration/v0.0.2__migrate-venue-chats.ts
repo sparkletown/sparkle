@@ -1,13 +1,6 @@
-#!/usr/bin/env node -r esm -r ts-node/register
-
+import { MigrateOptions } from "fireway";
 import { chunk, difference, groupBy, range } from "lodash";
 
-import {
-  checkFileExists,
-  initFirebaseAdminApp,
-  makeScriptUsage,
-  parseCredentialFile,
-} from "../lib/helpers";
 import {
   CollectionReference,
   DocumentData,
@@ -15,37 +8,14 @@ import {
   QueryDocumentSnapshot,
 } from "../lib/types";
 
-const usage = makeScriptUsage({
-  description:
-    "Migrate venue chats data after worlds refactoring. " +
-    "If no venueId is provided script will execute over all venues",
-  usageParams: "CREDENTIAL_PATH venueId",
-  exampleParams: "fooAccountKey.json mypartymap",
-});
-
-const [credentialPath, venueId] = process.argv.slice(2);
-if (!credentialPath) {
-  usage();
-}
-
-if (!checkFileExists(credentialPath)) {
-  console.error("Credential file path does not exists:", credentialPath);
-  process.exit(1);
-}
-
-const { project_id: projectId } = parseCredentialFile(credentialPath);
-
-if (!projectId) {
-  console.error("Credential file has no project_id:", credentialPath);
-  process.exit(1);
-}
-
 const BATCH_MAX_OPS = 500;
 const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
-const app = initFirebaseAdminApp(projectId, { credentialPath });
 
-const updateChatMessagesCounter = async (venueRef: DocumentReference) => {
-  const batch = app.firestore().batch();
+const updateChatMessagesCounter = async (
+  firestore: FirebaseFirestore.Firestore,
+  venueRef: DocumentReference
+) => {
+  const batch = firestore.batch();
   const counterCollectionRef = venueRef.collection("chatMessagesCounter");
   const messagesRef = await venueRef.collection("chats").listDocuments();
   const allShards = await counterCollectionRef.listDocuments();
@@ -76,7 +46,7 @@ const updateChatMessagesCounter = async (venueRef: DocumentReference) => {
 
     await Promise.all(
       chunk(otherShardIds, BATCH_MAX_OPS).map((chunk: string[]) => {
-        const batch = app.firestore().batch();
+        const batch = firestore.batch();
         chunk.forEach((shardId) => {
           batch.delete(counterCollectionRef.doc(shardId));
         });
@@ -87,11 +57,10 @@ const updateChatMessagesCounter = async (venueRef: DocumentReference) => {
 };
 
 const deleteOldSchemaMessages = async (
+  firestore: FirebaseFirestore.Firestore,
   chatsRef: CollectionReference,
   field: string
 ) => {
-  const firestore = app.firestore();
-
   const { docs: messagesToDelete } = await chatsRef.orderBy(field).get();
   console.log(
     `\tDeleting ${messagesToDelete.length} old schema messages with '${field}' field...`
@@ -108,8 +77,10 @@ const deleteOldSchemaMessages = async (
   );
 };
 
-const cleanupThreads = async (chatsRef: CollectionReference) => {
-  const firestore = app.firestore();
+const cleanupThreads = async (
+  firestore: FirebaseFirestore.Firestore,
+  chatsRef: CollectionReference
+) => {
   const { docs: threadMessages } = await chatsRef.orderBy("threadId").get();
   console.log(
     `\tMoving ${threadMessages.length} thread messages to corresponding collections..`
@@ -168,9 +139,10 @@ const cleanupThreads = async (chatsRef: CollectionReference) => {
   }
 };
 
-(async () => {
-  const firestore = app.firestore();
-
+const getVenueRefs = async (
+  firestore: FirebaseFirestore.Firestore,
+  venueId?: string
+) => {
   if (
     venueId &&
     !(await firestore.collection("venues").doc(venueId).get()).exists
@@ -179,19 +151,26 @@ const cleanupThreads = async (chatsRef: CollectionReference) => {
     return;
   }
 
-  const venueRefs = venueId
+  return venueId
     ? [firestore.collection("venues").doc(venueId)]
     : await firestore.collection("venues").listDocuments();
+};
+
+export const migrate = async ({ firestore }: MigrateOptions) => {
+  const venueRefs = await getVenueRefs(firestore);
+  if (!venueRefs) {
+    return;
+  }
 
   for (const venueRef of venueRefs) {
     console.log(`Processing venue ${venueRef.id}`);
     const chatsRef = venueRef.collection("chats");
 
-    await deleteOldSchemaMessages(chatsRef, "deleted");
-    await deleteOldSchemaMessages(chatsRef, "from");
-    await deleteOldSchemaMessages(chatsRef, "ts_utc");
-    await cleanupThreads(chatsRef);
+    await deleteOldSchemaMessages(firestore, chatsRef, "deleted");
+    await deleteOldSchemaMessages(firestore, chatsRef, "from");
+    await deleteOldSchemaMessages(firestore, chatsRef, "ts_utc");
+    await cleanupThreads(firestore, chatsRef);
 
-    await updateChatMessagesCounter(venueRef);
+    await updateChatMessagesCounter(firestore, venueRef);
   }
-})();
+};

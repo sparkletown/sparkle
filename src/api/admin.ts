@@ -150,9 +150,11 @@ export interface World {
     code?: Question[];
     profile?: Question[];
   };
+  radioStations?: string[];
   requiresDateOfBirth?: boolean;
-  showNametags?: UsernameVisibility;
   showBadges?: boolean;
+  showNametags?: UsernameVisibility;
+  showRadio?: boolean;
   showSchedule?: boolean;
   slug: string;
   updatedAt: Date;
