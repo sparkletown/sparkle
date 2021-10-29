@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { World } from "api/admin";
 import { updateWorldEntranceSettings } from "api/world";
 
-import { EntranceStepConfig } from "types/EntranceStep";
+import { EntranceStepConfig, EntranceStepTemplate } from "types/EntranceStep";
 import { Question } from "types/Question";
 import { WorldEntranceFormInput } from "types/world";
 
@@ -26,6 +26,8 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { Checkbox } from "components/atoms/Checkbox";
+import { Toggler } from "components/atoms/Toggler";
 
 import "./WorldEntranceForm.scss";
 
@@ -40,8 +42,10 @@ const questionSchema = Yup.array<Question>()
   );
 
 const validationSchema = Yup.object().shape({
-  code: questionSchema,
-  profile: questionSchema,
+  adultContent: Yup.bool().notRequired(),
+  requiresDateOfBirth: Yup.bool().notRequired(),
+  code: questionSchema.notRequired(),
+  profile: questionSchema.notRequired(),
   entrance: Yup.array(
     Yup.object().shape({
       videoUrl: Yup.string().required("Video URL is required."),
@@ -54,7 +58,7 @@ const validationSchema = Yup.object().shape({
         })
       ),
     })
-  ),
+  ).notRequired(),
 });
 
 export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
@@ -74,6 +78,8 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     add: addCodeQuestion,
     clear: clearCodeQuestions,
     remove: removeCodeQuestion,
+    isDirty: isDirtyCode,
+    clearDirty: clearDirtyCode,
   } = useArray<Question>(world.questions?.code);
 
   const {
@@ -81,6 +87,8 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     add: addProfileQuestion,
     clear: clearProfileQuestions,
     remove: removeProfileQuestion,
+    isDirty: isDirtyProfile,
+    clearDirty: clearDirtyProfile,
   } = useArray<Question>(world.questions?.profile);
 
   const {
@@ -88,18 +96,35 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     add: addEntranceStep,
     clear: clearEntranceSteps,
     remove: removeEntranceStep,
-  } = useArray<EntranceStepConfig>(world.entrance);
+    isDirty: isDirtyEntrance,
+    clearDirty: clearDirtyEntrance,
+  } = useArray<EntranceStepConfig>(world.entrance, {
+    create: () => ({ template: EntranceStepTemplate.WelcomeVideo }),
+    prepare: (item) => ({
+      ...item,
+      template: item.template || EntranceStepTemplate.WelcomeVideo,
+    }),
+  });
 
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
       code: codeQuestions,
       profile: profileQuestions,
       entrance: entranceSteps,
+      adultContent: world.adultContent ?? false,
+      requiresDateOfBirth: world.requiresDateOfBirth ?? false,
     }),
-    [codeQuestions, profileQuestions, entranceSteps]
+    [
+      codeQuestions,
+      profileQuestions,
+      entranceSteps,
+      world.adultContent,
+      world.requiresDateOfBirth,
+    ]
   );
 
   const {
+    getValues,
     reset,
     register,
     formState: { dirty, isSubmitting },
@@ -119,18 +144,49 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
       await updateWorldEntranceSettings({ ...input, id: worldId }, user);
 
       reset(input);
+      clearDirtyCode();
+      clearDirtyProfile();
+      clearDirtyEntrance();
     },
-    [worldId, user, reset]
+    [
+      worldId,
+      user,
+      clearDirtyCode,
+      clearDirtyProfile,
+      clearDirtyEntrance,
+      reset,
+    ]
+  );
+
+  const isSaveLoading = isSubmitting || isSaving;
+  const isSaveDisabled = !(
+    dirty ||
+    isSaving ||
+    isSubmitting ||
+    isDirtyCode ||
+    isDirtyProfile ||
+    isDirtyEntrance
   );
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
       type: "submit",
-      disabled: !dirty && !isSaving && !isSubmitting,
-      loading: isSubmitting || isSaving,
+      disabled: isSaveDisabled,
+      loading: isSaveLoading,
     }),
-    [dirty, isSaving, isSubmitting]
+    [isSaveDisabled, isSaveLoading]
   );
+
+  useEffect(() => {
+    const values: Partial<WorldEntranceFormInput> = getValues();
+    reset({
+      code: codeQuestions,
+      profile: profileQuestions,
+      entrance: entranceSteps,
+      adultContent: values.adultContent ?? false,
+      requiresDateOfBirth: values.requiresDateOfBirth ?? false,
+    });
+  }, [codeQuestions, profileQuestions, entranceSteps, getValues, reset]);
 
   return (
     <div className="WorldEntranceForm">
@@ -139,6 +195,18 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           {...sidebarFooterProps}
           saveButtonProps={saveButtonProps}
         />
+        <AdminSection title="Limit access to world">
+          <Toggler
+            name="adultContent"
+            label="Restrict entry to adults aged 18+"
+            forwardedRef={register}
+          />
+          <Checkbox
+            name="requiresDateOfBirth"
+            label="Require date of birth on register"
+            forwardedRef={register}
+          />
+        </AdminSection>
         <AdminSection title="Code of conduct questions">
           <QuestionsBuilder
             errors={errors}

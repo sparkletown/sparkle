@@ -80,9 +80,9 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
       description: world?.config?.landingPageConfig?.description,
       subtitle: world?.config?.landingPageConfig?.subtitle,
       bannerImageFile: undefined,
-      bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl,
+      bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImageFile: undefined,
-      logoImageUrl: world?.host?.icon,
+      logoImageUrl: world?.host?.icon ?? "",
     }),
     [world]
   );

@@ -22,10 +22,15 @@ export interface WorldEntranceFormInput {
   code: Question[];
   profile: Question[];
   entrance?: EntranceStepConfig[];
+  adultContent?: boolean;
+  requiresDateOfBirth?: boolean;
 }
 
 export interface WorldAdvancedFormInput {
   attendeesTitle?: string;
   chatTitle?: string;
   showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  radioStations?: string;
+  showSchedule?: boolean;
 }

@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
 
 import {
   DEFAULT_USER_STATUS,
@@ -13,7 +14,7 @@ import {
 import { updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueAdvancedConfig } from "types/venues";
+import { AnyVenue, VenueAdvancedConfig, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
@@ -52,22 +53,24 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
-      showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      attendeesTitle: venue.attendeesTitle,
-      chatTitle: venue.chatTitle,
       parentId: venue.parentId ?? "",
       roomVisibility: venue.roomVisibility,
       showUserStatus: venue.showUserStatus,
       userStatuses: venue.userStatuses,
       hasSocialLoginEnabled: venue.hasSocialLoginEnabled,
+      enableJukebox: venue.enableJukebox,
     },
   });
 
   const { user } = useUser();
 
   const values = watch();
+
+  const jukeboxToggleClasses = classNames("AdvancedSettings__form-field", {
+    "mod--hidden": venue.template !== VenueTemplate.jazzbar,
+  });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
   const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
@@ -152,33 +155,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         className="AdvancedSettings__form-container"
         onSubmit={handleSubmit(updateAdvancedSettings)}
       >
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Title of your venues attendees (For example: guests, attendees,
-            partygoers)
-          </Form.Label>
-          <InputField
-            name="attendeesTitle"
-            autoComplete="off"
-            placeholder="Attendees title"
-            error={errors.attendeesTitle}
-            ref={register}
-          />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Your venue chat label (For example: Party, Event, Meeting)
-          </Form.Label>
-          <InputField
-            name="chatTitle"
-            autoComplete="off"
-            placeholder="Event label"
-            error={errors.chatTitle}
-            ref={register}
-          />
-        </div>
-
         {!DISABLED_DUE_TO_1253 && (
           <div className="AdvancedSettings__form-field">
             <Toggler
@@ -206,16 +182,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             name="showBadges"
             title="Show badges"
           />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>
-            Show Nametags (Display user names on their avatars)
-          </Form.Label>
-          <Form.Control as="select" custom name="showNametags" ref={register}>
-            <option value="none">None</option>
-            <option value="hover">Inline and hover</option>
-          </Form.Control>
         </div>
 
         <div className="AdvancedSettings__form-field">
@@ -250,6 +216,14 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           <Form.Label>
             Users can login using Google/Facebook/Okta social networks
           </Form.Label>
+        </div>
+
+        <div className={jukeboxToggleClasses}>
+          <Toggler
+            forwardedRef={register}
+            name="enableJukebox"
+            title="Enable Jukebox"
+          />
         </div>
 
         <div className="AdvancedSettings__form-field">

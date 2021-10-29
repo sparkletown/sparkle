@@ -3,7 +3,6 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
-import { Question } from "types/Question";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -16,7 +15,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { User, UsernameVisibility, UserStatus } from "./User";
+import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -134,31 +133,27 @@ export interface Venue_v2_Base {
 }
 
 export interface VenueAdvancedConfig {
-  attendeesTitle?: string;
-  chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
-  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
-  profile_questions?: Array<Question>;
-  code_of_conduct_questions?: Array<Question>;
   entrance?: EntranceStepConfig[];
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-//   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
+//   termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
@@ -169,8 +164,6 @@ export interface BaseVenue {
   host?: {
     icon: string;
   };
-  profile_questions: Question[];
-  code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
@@ -209,10 +202,8 @@ export interface BaseVenue {
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  chatTitle?: string;
   showReactions?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
@@ -224,7 +215,6 @@ export interface BaseVenue {
   userStatuses?: UserStatus[];
   showRadio?: boolean;
   showBadges?: boolean;
-  showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
@@ -233,6 +223,7 @@ export interface BaseVenue {
   updatedAt?: number;
   worldId: string;
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
