@@ -100,6 +100,8 @@ export const createFirestoreWorldAdvancedInput: (
     "showNametags",
     "showRadio",
     "showSchedule",
+    "showUserStatus",
+    "userStatuses",
   ]);
 
   // Form input is just a single string, but DB structure is string[]
