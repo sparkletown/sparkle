@@ -99,6 +99,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
+        autoPlay: roomVenue?.autoPlay ?? false,
       },
     }),
     [
@@ -118,6 +119,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       roomVenue?.showReactions,
       roomVenue?.showShoutouts,
       roomVenue?.zoomUrl,
+      roomVenue?.autoPlay,
       venueVisibility,
     ]
   );
@@ -339,6 +341,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         {errors?.venue?.iframeUrl}
                       </span>
                     )}
+                    <h4 className="italic input-header">Enable autoplay</h4>
+                    <Toggler name="venue.autoPlay" forwardedRef={register} />
                   </>
                 )}
 
