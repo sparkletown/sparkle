@@ -12,6 +12,7 @@ import {
 } from "types/world";
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
+import { isDefined } from "utils/types";
 
 export const createFirestoreWorldCreateInput: (
   input: WorldStartFormInput,
@@ -90,15 +91,23 @@ export const createFirestoreWorldAdvancedInput: (
   input: WithId<WorldAdvancedFormInput>,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
-  // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, [
+  // mapping is mostly 1:1, so just filtering out unintended extra fields
+  const picked = pick(input, [
     "id",
     "attendeesTitle",
     "chatTitle",
-    "showNametags",
     "showBadges",
+    "showNametags",
+    "showRadio",
     "showSchedule",
   ]);
+
+  // Form input is just a single string, but DB structure is string[]
+  const radioStations = isDefined(input.radioStations)
+    ? [input.radioStations]
+    : undefined;
+
+  return { ...picked, radioStations };
 };
 
 export const createWorld: (

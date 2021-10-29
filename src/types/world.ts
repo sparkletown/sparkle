@@ -30,5 +30,7 @@ export interface WorldAdvancedFormInput {
   attendeesTitle?: string;
   chatTitle?: string;
   showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  radioStations?: string;
   showSchedule?: boolean;
 }
