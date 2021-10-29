@@ -177,7 +177,7 @@
     "remark-external-links": "^8.0.0",
     "remark-gfm": "^1.0.0",
     "sass": "^1.32.5",
-    "scheduler": "^0.19.1",
+    "scheduler": "^0.20.2",
     "styled-components": "^5.2.1",
     "tslib": "^2.3.1",
     "twilio-video": "^2.9.0",
