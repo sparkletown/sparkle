@@ -12,6 +12,7 @@ import {
   ADMIN_V3_ROOT_URL,
   ENTER_ROOT_URL,
   ENTRANCE_STEP_VENUE_PARAM_URL,
+  EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
@@ -190,6 +191,16 @@ export const AppRouter: React.FC = () => {
             path={SPARKLEVERSE_REDIRECT_URL}
             render={() => {
               window.location.href = EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL;
+              return <LoadingPage />;
+            }}
+          />
+
+          <Route
+            // NOTE: must have exact here so it doesn't override the default that folloes
+            exact
+            path={ROOT_URL}
+            render={() => {
+              window.location.href = EXTERNAL_SPARKLE_HOMEPAGE_URL;
               return <LoadingPage />;
             }}
           />
