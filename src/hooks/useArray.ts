@@ -10,8 +10,9 @@ export type UseArrayOptions<T> = {
 export type UseArrayResult<T> = {
   items: T[];
   add: () => T[];
+  set: (options: { index: number; item: T }) => T[];
   clear: () => T[];
-  remove: (context: { index: number }) => T[];
+  remove: (options: { index: number }) => T[];
   isDirty: boolean;
   setDirty: () => void;
   clearDirty: () => void;
@@ -37,6 +38,18 @@ export const useArray = <T>(
     return result;
   }, [items, create]);
 
+  const set = useCallback(
+    ({ index, item }) => {
+      const before = items.slice(0, index);
+      const after = items.slice(index + 1);
+      const result: T[] = [...before, item, ...after];
+      setItems(result);
+      setIsDirty(true);
+      return result;
+    },
+    [items]
+  );
+
   const remove = useCallback(
     ({ index }) => {
       const result = [...items.filter((_, i) => i !== index)];
@@ -57,6 +70,7 @@ export const useArray = <T>(
   return {
     items,
     add,
+    set,
     remove,
     clear,
     isDirty,

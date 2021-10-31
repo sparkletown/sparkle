@@ -1,6 +1,6 @@
 import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
-import { UsernameVisibility } from "types/User";
+import { UsernameVisibility, UserStatus } from "types/User";
 
 export enum WorldNavTab {
   start = "start",
@@ -29,6 +29,11 @@ export interface WorldEntranceFormInput {
 export interface WorldAdvancedFormInput {
   attendeesTitle?: string;
   chatTitle?: string;
+  showBadges?: boolean;
   showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  radioStations?: string;
   showSchedule?: boolean;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }
