@@ -14,5 +14,13 @@
 
   &__content {
     padding: $spacing--md;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__button {
+    margin-top: auto;
+    align-self: center;
   }
 }

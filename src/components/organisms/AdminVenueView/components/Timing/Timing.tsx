@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
@@ -23,6 +24,8 @@ import { AdminSidebarTitle } from "components/organisms/AdminVenueView/component
 import { FormErrors } from "components/molecules/FormErrors";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import { DateTimeField } from "../DateTimeField";
 import { EventsView } from "../EventsView";
 
@@ -45,7 +48,13 @@ export const Timing: React.FC<TimingProps> = ({
   ...sidebarFooterProps
 }) => {
   const { user } = useUser();
-  const { register, handleSubmit, errors, triggerValidation } = useForm({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    triggerValidation,
+    formState: { isSubmitting },
+  } = useForm({
     mode: "onChange",
     validationSchema: roomEditSchema,
     defaultValues: {
@@ -63,8 +72,7 @@ export const Timing: React.FC<TimingProps> = ({
     triggerValidation("endTime");
   }, [endUtcSeconds, startUtcSeconds, triggerValidation]);
 
-  const [, handleVenueUpdate] = useAsyncFn(async () => {
-    onClickNext?.();
+  const [{ loading: isSaving }, handleVenueUpdate] = useAsyncFn(async () => {
     if (!venue?.name || !user) return;
 
     updateVenue_v2(
@@ -76,7 +84,7 @@ export const Timing: React.FC<TimingProps> = ({
       },
       user
     ).catch((e) => console.error(Timing.name, e));
-  }, [venue, user, startUtcSeconds, endUtcSeconds, onClickNext]);
+  }, [venue, user, startUtcSeconds, endUtcSeconds]);
 
   if (!venue) {
     return <LoadingPage />;
@@ -84,16 +92,18 @@ export const Timing: React.FC<TimingProps> = ({
 
   const isErrorsExist = !!Object.entries(errors).length;
 
+  const isSaveDisabled = isErrorsExist || isSubmitting || isSaving;
+
   return (
     <AdminPanel className="Timing">
       <AdminSidebar>
         <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          onClickNext={handleSubmit(handleVenueUpdate)}
+          onClickNext={onClickNext}
           disabled={isErrorsExist}
         />
-        <div className="Timing__content">
+        <Form className="Timing__content">
           <DateTimeField
             title="Global starting time"
             subTitle="When does your event start? Use your local time zone, it will be automatically converted for anyone visiting from around the world."
@@ -110,7 +120,15 @@ export const Timing: React.FC<TimingProps> = ({
             ref={register}
           />
           <FormErrors errors={errors} />
-        </div>
+          <ButtonNG
+            className="Timing__button"
+            variant="primary"
+            onClick={handleSubmit(handleVenueUpdate)}
+            disabled={isSaveDisabled}
+          >
+            Save
+          </ButtonNG>
+        </Form>
       </AdminSidebar>
       <AdminShowcase className="Timing__events-wrapper">
         <EventsView venueId={venue.id} venue={venue} />
