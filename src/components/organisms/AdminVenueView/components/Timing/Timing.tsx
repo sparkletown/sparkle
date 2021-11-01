@@ -105,7 +105,6 @@ export const Timing: React.FC<TimingProps> = ({
           <DateTimeField
             title="Global ending time"
             dateTimeValue={endUtcSeconds}
-            minDateTimeValue={startUtcSeconds}
             onChange={setEndUtcSeconds}
             name="endTime"
             ref={register}

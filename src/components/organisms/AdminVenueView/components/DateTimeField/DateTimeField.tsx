@@ -8,7 +8,6 @@ export interface DateFieldProps {
   title: string;
   subTitle?: string;
   dateTimeValue?: number;
-  minDateTimeValue?: number;
   onChange: (value: number) => void;
   name: string;
 }
@@ -16,10 +15,7 @@ export interface DateFieldProps {
 const _DateTimeField: React.ForwardRefRenderFunction<
   HTMLInputElement,
   DateFieldProps
-> = (
-  { title, subTitle, dateTimeValue, minDateTimeValue, onChange, name },
-  ref
-) => {
+> = ({ title, subTitle, dateTimeValue, onChange, name }, ref) => {
   const { date, time } = getDateTimeFromUtc(dateTimeValue);
 
   const [dateValue, setDateValue] = useState(date);
