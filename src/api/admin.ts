@@ -309,7 +309,7 @@ const createFirestoreVenueInput_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
+      `users/${user.uid}/venues/${slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
