@@ -114,32 +114,28 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         return;
       }
 
-      try {
-        if (venueId) {
-          const updatedVenue = {
-            ...vals,
-            id: venueId,
-            worldId: venue?.worldId ?? "",
-            parentId: values.parentId,
-          };
+      if (venueId) {
+        const updatedVenue = {
+          ...vals,
+          id: venueId,
+          worldId: venue?.worldId ?? "",
+          parentId: values.parentId,
+        };
 
-          await updateVenue_v2(updatedVenue, user);
+        await updateVenue_v2(updatedVenue, user);
 
-          history.push(adminWorldSpacesUrl(world?.slug));
-        } else {
-          const newVenue = {
-            ...vals,
-            id: createUrlSafeName(vals.name),
-            worldId: worldId ?? "",
-            parentId: values.parentId ?? "",
-          };
+        history.push(adminWorldSpacesUrl(world?.slug));
+      } else {
+        const newVenue = {
+          ...vals,
+          id: createUrlSafeName(vals.name),
+          worldId: worldId ?? "",
+          parentId: values.parentId ?? "",
+        };
 
-          await createVenue_v2(newVenue, user);
+        await createVenue_v2(newVenue, user);
 
-          history.push(adminWorldSpacesUrl(world?.slug));
-        }
-      } catch (e) {
-        console.error(e);
+        history.push(adminWorldSpacesUrl(world?.slug));
       }
     },
     [

@@ -15,8 +15,7 @@ import { generateFirestoreId, WithId, withId } from "utils/id";
 import { isDefined } from "utils/types";
 
 export const createFirestoreWorldCreateInput: (
-  input: WorldStartFormInput,
-  user: firebase.UserInfo
+  input: WorldStartFormInput
 ) => Promise<Partial<World>> = async (input) => {
   const name = input.name;
   const slug = createUrlSafeName(name);
@@ -124,7 +123,7 @@ export const createWorld: (
     // NOTE: due to interdependence on id and upload files' URLs:
 
     // 1. first a world stub is created
-    const stubInput = await createFirestoreWorldCreateInput(world, user);
+    const stubInput = await createFirestoreWorldCreateInput(world);
 
     worldId = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)

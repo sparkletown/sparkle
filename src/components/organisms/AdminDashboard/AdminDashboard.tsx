@@ -28,13 +28,12 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./AdminDashboard.scss";
 
 export const AdminDashboard: React.FC = () => {
-  const { ownedVenues, isLoading } = useOwnedVenues({});
+  const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({});
 
   const { worldSlug } = useWorldEditParams();
 
-  const { world, isLoaded } = useWorldBySlug(worldSlug);
+  const { world, isWorldLoaded } = useWorldBySlug(worldSlug);
 
-  console.log(world);
   const venues = world
     ? ownedVenues.filter((venue) => venue.worldId === world.id)
     : ownedVenues;
@@ -76,7 +75,7 @@ export const AdminDashboard: React.FC = () => {
 
   const hasVenues = renderedPartyVenues.length > 0;
 
-  if (isLoading || !isLoaded) {
+  if (isLoadingSpaces || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
