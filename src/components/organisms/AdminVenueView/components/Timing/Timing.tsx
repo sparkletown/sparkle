@@ -24,8 +24,6 @@ import { AdminSidebarTitle } from "components/organisms/AdminVenueView/component
 import { FormErrors } from "components/molecules/FormErrors";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import { DateTimeField } from "../DateTimeField";
 import { EventsView } from "../EventsView";
 
@@ -44,7 +42,6 @@ export const roomEditSchema = Yup.object().shape({
 
 export const Timing: React.FC<TimingProps> = ({
   venue,
-  onClickNext,
   ...sidebarFooterProps
 }) => {
   const { user } = useUser();
@@ -90,9 +87,8 @@ export const Timing: React.FC<TimingProps> = ({
     return <LoadingPage />;
   }
 
-  const isErrorsExist = !!Object.entries(errors).length;
-
-  const isSaveDisabled = isErrorsExist || isSubmitting || isSaving;
+  const isSaveDisabled =
+    !!Object.entries(errors).length || isSubmitting || isSaving;
 
   return (
     <AdminPanel className="Timing">
@@ -100,8 +96,8 @@ export const Timing: React.FC<TimingProps> = ({
         <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          onClickNext={onClickNext}
-          disabled={isErrorsExist}
+          onClickSave={handleSubmit(handleVenueUpdate)}
+          disabled={isSaveDisabled}
         />
         <Form className="Timing__content">
           <DateTimeField
@@ -120,14 +116,6 @@ export const Timing: React.FC<TimingProps> = ({
             ref={register}
           />
           <FormErrors errors={errors} />
-          <ButtonNG
-            className="Timing__button"
-            variant="primary"
-            onClick={handleSubmit(handleVenueUpdate)}
-            disabled={isSaveDisabled}
-          >
-            Save
-          </ButtonNG>
         </Form>
       </AdminSidebar>
       <AdminShowcase className="Timing__events-wrapper">
