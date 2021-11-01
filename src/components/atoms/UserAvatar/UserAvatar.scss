@@ -37,6 +37,8 @@
 
   &__image {
     @include square-size($default-image-size);
+    @include circle-avatar;
+
     border-radius: 50%;
     vertical-align: unset;
   }

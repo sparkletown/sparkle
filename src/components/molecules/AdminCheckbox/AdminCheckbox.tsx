@@ -53,13 +53,13 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
         name={name}
         ref={register}
       />
-      <div className="AdminCheckbox__box">
+      <span className="AdminCheckbox__box">
         <FontAwesomeIcon
           className="AdminCheckbox__tick"
           icon={faCheck}
           size="sm"
         />
-      </div>
+      </span>
     </>
   );
 
