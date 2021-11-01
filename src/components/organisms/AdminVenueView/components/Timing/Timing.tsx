@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import * as Yup from "yup";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -18,6 +20,7 @@ import {
 } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 
+import { FormErrors } from "components/molecules/FormErrors";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { DateTimeField } from "../DateTimeField";
@@ -29,16 +32,36 @@ interface TimingProps extends AdminSidebarFooterProps {
   venue?: WithId<AnyVenue>;
 }
 
+export const roomEditSchema = Yup.object().shape({
+  startTime: Yup.number().required(),
+  endTime: Yup.number()
+    .required()
+    .moreThan(Yup.ref("startTime"), "End time must always be after start time"),
+});
+
 export const Timing: React.FC<TimingProps> = ({
   venue,
   onClickNext,
   ...sidebarFooterProps
 }) => {
   const { user } = useUser();
+  const { register, handleSubmit, errors, triggerValidation } = useForm({
+    mode: "onChange",
+    validationSchema: roomEditSchema,
+    defaultValues: {
+      startTime: venue?.start_utc_seconds,
+      endTime: venue?.end_utc_seconds,
+    },
+  });
+
   const [startUtcSeconds, setStartUtcSeconds] = useState(
     venue?.start_utc_seconds
   );
   const [endUtcSeconds, setEndUtcSeconds] = useState(venue?.end_utc_seconds);
+
+  useEffect(() => {
+    triggerValidation("endTime");
+  }, [endUtcSeconds, startUtcSeconds, triggerValidation]);
 
   const [, handleVenueUpdate] = useAsyncFn(async () => {
     onClickNext?.();
@@ -59,13 +82,16 @@ export const Timing: React.FC<TimingProps> = ({
     return <LoadingPage />;
   }
 
+  const isErrorsExist = !!Object.entries(errors).length;
+
   return (
     <AdminPanel className="Timing">
       <AdminSidebar>
         <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
         <AdminSidebarFooter
           {...sidebarFooterProps}
-          onClickNext={handleVenueUpdate}
+          onClickNext={handleSubmit(handleVenueUpdate)}
+          disabled={isErrorsExist}
         />
         <div className="Timing__content">
           <DateTimeField
@@ -73,12 +99,18 @@ export const Timing: React.FC<TimingProps> = ({
             subTitle="When does your event start? Use your local time zone, it will be automatically converted for anyone visiting from around the world."
             dateTimeValue={startUtcSeconds}
             onChange={setStartUtcSeconds}
+            name="startTime"
+            ref={register}
           />
           <DateTimeField
             title="Global ending time"
             dateTimeValue={endUtcSeconds}
+            minDateTimeValue={startUtcSeconds}
             onChange={setEndUtcSeconds}
+            name="endTime"
+            ref={register}
           />
+          <FormErrors errors={errors} />
         </div>
       </AdminSidebar>
       <AdminShowcase className="Timing__events-wrapper">

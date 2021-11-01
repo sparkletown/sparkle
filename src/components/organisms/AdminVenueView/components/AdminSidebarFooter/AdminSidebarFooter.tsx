@@ -22,6 +22,7 @@ export interface AdminSidebarFooterProps {
   onClickSave?: () => void;
   saveButtonProps?: ButtonProps;
   saveButtonText?: string;
+  disabled?: boolean;
 }
 
 export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
@@ -35,6 +36,7 @@ export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
   saveButtonProps,
   saveButtonText = "Save",
   children,
+  disabled,
 }) => {
   return (
     <div className="AdminSidebarFooter AdminSidebarFooter__footer">
@@ -61,6 +63,7 @@ export const AdminSidebarFooter: React.FC<AdminSidebarFooterProps> = ({
             className="AdminSidebarFooter__button"
             onClick={onClickNext}
             variant="primary"
+            disabled={disabled}
           >
             Next
           </ButtonNG>
