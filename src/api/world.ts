@@ -3,7 +3,7 @@ import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-import { createUrlSafeName, World } from "api/admin";
+import { createSlug, World } from "api/admin";
 
 import {
   WorldAdvancedFormInput,
@@ -19,7 +19,7 @@ export const createFirestoreWorldCreateInput: (
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   const name = input.name;
-  const slug = createUrlSafeName(name);
+  const slug = createSlug(name);
 
   return { name, slug };
 };
@@ -31,7 +31,7 @@ export const createFirestoreWorldStartInput: (
   // NOTE: id is needed before world is created to upload the images
   const id = input?.id ?? generateFirestoreId({ emulated: true });
 
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   const storageRef = firebase.storage().ref();
 
   const imageInputData: Record<string, string> = {};

@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { createUrlSafeName, createVenue_v2, updateVenue_v2 } from "api/admin";
+import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -100,7 +100,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       if (!user) return;
 
       const isValidParentId = validateParentId(values.parentId, [
-        venueId ?? createUrlSafeName(vals.name),
+        venueId ?? createSlug(vals.name),
       ]);
 
       if (!isValidParentId) {
@@ -126,7 +126,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       } else {
         const newVenue = {
           ...vals,
-          id: createUrlSafeName(vals.name),
+          id: createSlug(vals.name),
           worldId: worldId ?? "",
           parentId: values.parentId ?? "",
         };
@@ -149,9 +149,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   );
 
   const urlSafeName = values.name
-    ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
+    ? `${window.location.host}${venueLandingUrl(createSlug(values.name))}`
     : undefined;
   const disable = isSubmitting;
 
