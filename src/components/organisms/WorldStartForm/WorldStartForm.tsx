@@ -8,7 +8,7 @@ import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { createUrlSafeName, World } from "api/admin";
+import { createSlug, World } from "api/admin";
 import { createWorld, updateWorldStartSettings } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
@@ -52,7 +52,7 @@ const validationSchema = Yup.object().shape({
     .test(
       "name",
       "Must have alphanumeric characters",
-      (val: string) => createUrlSafeName(val).length > 0
+      (val: string) => createSlug(val).length > 0
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
