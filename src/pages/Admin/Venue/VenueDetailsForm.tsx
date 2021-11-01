@@ -12,12 +12,7 @@ import * as Yup from "yup";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import {
-  createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
-} from "api/admin";
+import { createSlug, createVenue, updateVenue, VenueInput } from "api/admin";
 
 import { UserStatus } from "types/User";
 
@@ -167,7 +162,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
           );
 
         vals.name
-          ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
+          ? history.push(`/admin/${createSlug(venueId ?? vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);

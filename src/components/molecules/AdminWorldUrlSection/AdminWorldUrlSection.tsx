@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { WORLD_ROOT_URL } from "settings";
 
-import { createUrlSafeName } from "api/admin";
+import { createSlug } from "api/admin";
 
 import { isDefined } from "utils/types";
 
@@ -21,7 +21,7 @@ export const AdminWorldUrlSection: React.FC<AdminWorldUrlSectionProps> = ({
   const memoizedSlug = useMemo(
     () =>
       // if name is provided, it might be a preview for new slug, otherwise just reuse the old
-      isDefined(name) ? createUrlSafeName(name) : slug ?? "",
+      isDefined(name) ? createSlug(name) : slug ?? "",
     [slug, name]
   );
 

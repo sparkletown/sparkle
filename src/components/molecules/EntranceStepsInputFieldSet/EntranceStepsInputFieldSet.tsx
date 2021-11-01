@@ -64,6 +64,7 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
         register={register}
       />
       <AdminInput
+        disabled
         name={inputTemplate}
         label="Template"
         register={register}
