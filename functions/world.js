@@ -93,6 +93,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const {
+    adultContent,
     attendeesTitle,
     bannerImageUrl,
     chatTitle,
@@ -102,11 +103,15 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     logoImageUrl,
     name,
     questions,
+    requiresDateOfBirth,
     rooms,
     showNametags,
     showBadges,
+    showUserStatus,
     slug,
     subtitle,
+    showSchedule,
+    userStatuses,
   } = data;
 
   if (!worldId) {
@@ -142,6 +147,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
 
   const worldData = {
     updatedAt: Date.now(),
+    ...(!isNil(adultContent) && { adultContent }),
     ...(!isNil(attendeesTitle) && { attendeesTitle }),
     ...(!isNil(chatTitle) && { chatTitle }),
     ...(!isNil(entrance) && { entrance }),
@@ -149,8 +155,12 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
     ...(!isNil(name) && { name }),
     ...(!isEmpty(questions) && { questions: questionsConfig }),
+    ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
+    ...(!isNil(showSchedule) && { showSchedule }),
+    ...(!isEmpty(userStatuses) && { userStatuses }),
+    ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
   };

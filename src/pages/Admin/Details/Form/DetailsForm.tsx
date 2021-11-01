@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Dropdown as ReactBootstrapDropdown, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
@@ -17,6 +18,9 @@ import { useVenueId } from "hooks/useVenueId";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
+import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Dropdown } from "components/atoms/Dropdown";
 import ImageInput from "components/atoms/ImageInput";
@@ -26,6 +30,18 @@ import { validationSchema_v2 } from "../ValidationSchema";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
 import "./DetailsForm.scss";
+
+// NOTE: add the keys of those errors that their respective fields have handled
+const HANDLED_ERRORS: string[] = [
+  "name",
+  "subtitle",
+  "description",
+  "bannerImageFile",
+  "bannerImageUrl",
+  "logoImageFile",
+  "logoImageUrl",
+  "parentId",
+];
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const history = useHistory();
@@ -79,7 +95,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     [worldParentVenues]
   );
 
-  const setVenue = useCallback(
+  const [{ error: submitError, loading: isSaving }, setVenue] = useAsyncFn(
     async (vals: FormValues) => {
       if (!user) return;
 
@@ -96,32 +112,28 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         return;
       }
 
-      try {
-        if (venueId) {
-          const updatedVenue = {
-            ...vals,
-            id: venueId,
-            worldId: venue?.worldId ?? "",
-            parentId: values.parentId,
-          };
+      if (venueId) {
+        const updatedVenue = {
+          ...vals,
+          id: venueId,
+          worldId: venue?.worldId ?? "",
+          parentId: values.parentId,
+        };
 
-          await updateVenue_v2(updatedVenue, user);
+        await updateVenue_v2(updatedVenue, user);
 
-          history.push(adminWorldSpacesUrl(venue?.worldId));
-        } else {
-          const newVenue = {
-            ...vals,
-            id: createUrlSafeName(vals.name),
-            worldId: worldId ?? "",
-            parentId: values.parentId ?? "",
-          };
+        history.push(adminWorldSpacesUrl(venue?.worldId));
+      } else {
+        const newVenue = {
+          ...vals,
+          id: createUrlSafeName(vals.name),
+          worldId: worldId ?? "",
+          parentId: values.parentId ?? "",
+        };
 
-          await createVenue_v2(newVenue, user);
+        await createVenue_v2(newVenue, user);
 
-          history.push(adminWorldSpacesUrl(worldId));
-        }
-      } catch (e) {
-        console.error(e);
+        history.push(adminWorldSpacesUrl(worldId));
       }
     },
     [
@@ -332,12 +344,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         {renderedParentIdDropdown}
       </div>
 
+      <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+      <SubmitError error={submitError} />
+
       <div className="DetailsForm__footer">
         <ButtonNG
           variant="primary"
-          disabled={isSubmitting || !dirty}
           type="submit"
-          loading={isSubmitting}
+          disabled={isSubmitting || isSaving || !dirty}
+          loading={isSubmitting || isSaving}
         >
           {venueId ? "Update Space" : "Create Space"}
         </ButtonNG>
