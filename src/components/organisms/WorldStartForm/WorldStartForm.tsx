@@ -3,6 +3,7 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/app";
 import { omit } from "lodash";
 import * as Yup from "yup";
 
@@ -53,6 +54,20 @@ const validationSchema = Yup.object().shape({
       "name",
       "Must have alphanumeric characters",
       (val: string) => createUrlSafeName(val).length > 0
+    )
+    .test(
+      "name",
+      "This world slug is already taken",
+      // @debt Replace with a function from api/worlds
+      async (val: string) =>
+        !val ||
+        !(
+          await firebase
+            .firestore()
+            .collection("worlds")
+            .where("slug", "==", createUrlSafeName(val))
+            .get()
+        ).docs.length
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
