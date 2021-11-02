@@ -40,7 +40,7 @@ export const WorldEditor: React.FC = () => {
     <div className="WorldEditor">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
-          <WorldNav />
+          {worldId && <WorldNav />}
           <WorldEditorPanel worldId={worldId} onClickHome={navigateToHome} />
         </AdminRestricted>
       </WithNavigationBar>
