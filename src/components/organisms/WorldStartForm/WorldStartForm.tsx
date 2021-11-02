@@ -3,12 +3,13 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/app";
 import { omit } from "lodash";
 import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { createUrlSafeName, World } from "api/admin";
+import { createSlug, World } from "api/admin";
 import { createWorld, updateWorldStartSettings } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
@@ -52,7 +53,21 @@ const validationSchema = Yup.object().shape({
     .test(
       "name",
       "Must have alphanumeric characters",
-      (val: string) => createUrlSafeName(val).length > 0
+      (val: string) => createSlug(val).length > 0
+    )
+    .test(
+      "name",
+      "This world slug is already taken",
+      // @debt Replace with a function from api/worlds
+      async (val: string) =>
+        !val ||
+        !(
+          await firebase
+            .firestore()
+            .collection("worlds")
+            .where("slug", "==", createSlug(val))
+            .get()
+        ).docs.length
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
@@ -80,9 +95,9 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
       description: world?.config?.landingPageConfig?.description,
       subtitle: world?.config?.landingPageConfig?.subtitle,
       bannerImageFile: undefined,
-      bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl,
+      bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImageFile: undefined,
-      logoImageUrl: world?.host?.icon,
+      logoImageUrl: world?.host?.icon ?? "",
     }),
     [world]
   );

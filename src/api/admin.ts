@@ -2,7 +2,11 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  DEFAULT_SECTIONS_AMOUNT,
+  INVALID_SLUG_CHARS_REGEX,
+} from "settings";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 import { Room } from "types/rooms";
@@ -148,11 +152,16 @@ export interface World {
     code?: Question[];
     profile?: Question[];
   };
+  radioStations?: string[];
   requiresDateOfBirth?: boolean;
-  showNametags?: UsernameVisibility;
   showBadges?: boolean;
+  showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  showSchedule?: boolean;
+  showUserStatus?: boolean;
   slug: string;
   updatedAt: Date;
+  userStatuses?: UserStatus[];
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -179,8 +188,8 @@ export type PlacementInput = {
   height: number;
 };
 
-export const createUrlSafeName = (name: string) =>
-  name.replace(/\W/g, "").toLowerCase();
+export const createSlug = (name: string) =>
+  name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
 
 export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
@@ -196,7 +205,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -265,7 +274,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -300,7 +309,7 @@ const createFirestoreVenueInput_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
+      `users/${user.uid}/venues/${slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -323,7 +332,6 @@ const createFirestoreVenueInput_v2 = async (
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
   };
-
   return firestoreVenueInput;
 };
 
@@ -432,7 +440,7 @@ const createFirestoreRoomInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlRoomName = createUrlSafeName(
+  const urlRoomName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -479,7 +487,7 @@ const createFirestoreRoomInput_v2 = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlRoomName = createUrlSafeName(
+  const urlRoomName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {

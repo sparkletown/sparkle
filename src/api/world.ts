@@ -3,7 +3,7 @@ import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-import { createUrlSafeName, World } from "api/admin";
+import { createSlug, World } from "api/admin";
 
 import {
   WorldAdvancedFormInput,
@@ -12,13 +12,14 @@ import {
 } from "types/world";
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
+import { isDefined } from "utils/types";
 
 export const createFirestoreWorldCreateInput: (
   input: WorldStartFormInput,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   const name = input.name;
-  const slug = createUrlSafeName(name);
+  const slug = createSlug(name);
 
   return { name, slug };
 };
@@ -30,7 +31,7 @@ export const createFirestoreWorldStartInput: (
   // NOTE: id is needed before world is created to upload the images
   const id = input?.id ?? generateFirestoreId({ emulated: true });
 
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   const storageRef = firebase.storage().ref();
 
   const imageInputData: Record<string, string> = {};
@@ -51,7 +52,7 @@ export const createFirestoreWorldStartInput: (
 
     const extension = type.split("/").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/worlds/${id}/background.${extension}`
+      `users/${user.uid}/worlds/${id}/${key}.${extension}`
     );
 
     await uploadFileRef.put(file);
@@ -90,14 +91,25 @@ export const createFirestoreWorldAdvancedInput: (
   input: WithId<WorldAdvancedFormInput>,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
-  // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, [
+  // mapping is mostly 1:1, so just filtering out unintended extra fields
+  const picked = pick(input, [
     "id",
     "attendeesTitle",
     "chatTitle",
-    "showNametags",
     "showBadges",
+    "showNametags",
+    "showRadio",
+    "showSchedule",
+    "showUserStatus",
+    "userStatuses",
   ]);
+
+  // Form input is just a single string, but DB structure is string[]
+  const radioStations = isDefined(input.radioStations)
+    ? [input.radioStations]
+    : undefined;
+
+  return { ...picked, radioStations };
 };
 
 export const createWorld: (
@@ -118,7 +130,6 @@ export const createWorld: (
     worldId = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
-
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),
