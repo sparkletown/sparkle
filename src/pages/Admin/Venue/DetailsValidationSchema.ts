@@ -14,7 +14,7 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
+import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
 import { VenueTemplate } from "types/venues";
 
@@ -48,7 +48,7 @@ export const validationSchema = Yup.object()
               .test(
                 "name",
                 "Must have alphanumeric characters",
-                (val: string) => createUrlSafeName(val).length > 0
+                (val: string) => createSlug(val).length > 0
               )
               .test(
                 "name",
@@ -59,7 +59,7 @@ export const validationSchema = Yup.object()
                     await firebase
                       .firestore()
                       .collection("venues")
-                      .doc(createUrlSafeName(val))
+                      .doc(createSlug(val))
                       .get()
                   ).exists
               )

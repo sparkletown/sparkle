@@ -2,6 +2,7 @@ import { PortalTemplate, VenueTemplate } from "types/venues";
 
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import IconAuditorium from "assets/icons/icon-room-auditorium.svg";
+import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import IconConversation from "assets/icons/icon-room-conversation.svg";
 import IconEmbeddable from "assets/icons/icon-room-embeddable.svg";
 import IconExperience from "assets/icons/icon-room-experience.svg";
@@ -52,6 +53,14 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
     template: VenueTemplate.jazzbar,
   },
   {
+    text: "Burn Firebarrel",
+    icon: IconBurnBarrel,
+    template: VenueTemplate.firebarrel,
+    poster: "",
+    description: "",
+    hidden: true,
+  },
+  {
     text: "Art Piece",
     icon: IconArtPiece,
     poster: PosterArtPiece,
@@ -89,7 +98,7 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
     poster: "",
     description: "",
     template: VenueTemplate.embeddable,
-    hidden: true,
+    hidden: false,
   },
   {
     text: "Screening Room",

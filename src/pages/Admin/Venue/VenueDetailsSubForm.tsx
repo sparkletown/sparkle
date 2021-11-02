@@ -22,7 +22,7 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { createUrlSafeName } from "api/admin";
+import { createSlug } from "api/admin";
 
 import { UserStatus } from "types/User";
 import { AnyVenue, VenueTemplate } from "types/venues";
@@ -98,9 +98,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
 }) => {
   const values = watch();
   const urlSafeName = values.name
-    ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
+    ? `${window.location.host}${venueLandingUrl(createSlug(values.name))}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;

@@ -107,8 +107,11 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     rooms,
     showNametags,
     showBadges,
+    showUserStatus,
     slug,
     subtitle,
+    showSchedule,
+    userStatuses,
   } = data;
 
   if (!worldId) {
@@ -155,6 +158,9 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
+    ...(!isNil(showSchedule) && { showSchedule }),
+    ...(!isEmpty(userStatuses) && { userStatuses }),
+    ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
   };

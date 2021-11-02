@@ -8,7 +8,7 @@ import { ROOM_TAXON, SPACE_TAXON, SpacePortalsListItem } from "settings";
 
 import {
   createRoom,
-  createUrlSafeName,
+  createSlug,
   createVenue_v2,
   RoomInput_v2,
 } from "api/admin";
@@ -74,7 +74,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     const { roomUrl, venueName } = getValues();
 
-    const slug = createUrlSafeName(venueName);
+    const slug = createSlug(venueName);
     const url = template === "external" ? roomUrl : venueInsideFullUrl(slug);
 
     const roomData: RoomInput_v2 = {
