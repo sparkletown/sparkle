@@ -32,13 +32,33 @@ import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 
+import { AdminCheckbox } from "components/molecules/AdminCheckbox";
+import { AdminInput } from "components/molecules/AdminInput";
+import { AdminTextarea } from "components/molecules/AdminTextarea";
+import { FormErrors } from "components/molecules/FormErrors";
+import { SubmitError } from "components/molecules/SubmitError";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
-import { Toggler } from "components/atoms/Toggler";
 
 import "./SpaceEditForm.scss";
+
+const HANDLED_ERRORS = [
+  "room.template",
+  "room.title",
+  "room.subtitle",
+  "room.about",
+  "room.url",
+  "room.image_url",
+  "venue.mapBackgroundImage",
+  "venue.iframeUrl",
+  "venue.zoomUrl",
+  "venue.auditoriumColumns",
+  "venue.auditoriumRows",
+  "venue.columns",
+];
 
 export interface SpaceEditFormProps {
   room: Room;
@@ -67,7 +87,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const {
     loading: isLoadingRoomVenue,
-    error: roomVenueError,
+    error: fetchError,
     value: roomVenue,
   } = useAsync(async () => {
     if (!roomVenueId) return;
@@ -160,7 +180,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     );
   }, [roomVenueId, user, venueValues]);
 
-  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
+  const [
+    { loading: isUpdating, error: updateError },
+    updateSelectedRoom,
+  ] = useAsyncFn(async () => {
     if (!user || !venueId) return;
 
     const roomData: RoomInput = {
@@ -185,7 +208,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   ]);
 
   const [
-    { loading: isDeleting, error },
+    { loading: isDeleting, error: deleteError },
     deleteSelectedRoom,
   ] = useAsyncFn(async () => {
     if (!venueId) return;
@@ -202,56 +225,50 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
-          <Form.Label>{ROOM_TAXON.capital} type</Form.Label>
-          <InputField
+          <AdminInput
             name="room.template"
-            type="text"
             autoComplete="off"
             placeholder={`${ROOM_TAXON.capital} template`}
-            error={errors?.room?.template}
-            ref={register()}
+            label={`${ROOM_TAXON.capital} type`}
+            register={register}
+            errors={errors}
             disabled
           />
 
-          <Form.Label>Name your {ROOM_TAXON.lower}</Form.Label>
-          <InputField
+          <AdminInput
             name="room.title"
-            type="text"
             autoComplete="off"
             placeholder={`${ROOM_TAXON.capital} name`}
-            error={errors?.room?.title}
-            ref={register()}
+            label={`Name your ${ROOM_TAXON.lower}`}
+            register={register}
+            errors={errors}
           />
 
-          <Form.Label>{ROOM_TAXON.capital} subtitle</Form.Label>
-          <InputField
+          <AdminInput
             name="room.subtitle"
-            type="textarea"
             autoComplete="off"
             placeholder="Subtitle (optional)"
-            error={errors?.room?.subtitle}
-            ref={register()}
+            label={`${ROOM_TAXON.capital} subtitle`}
+            register={register}
+            errors={errors}
           />
 
-          <Form.Label>{ROOM_TAXON.capital} description</Form.Label>
-          <textarea
+          <AdminTextarea
             name="room.about"
             autoComplete="off"
             placeholder="Description (optional)"
-            ref={register()}
+            label={`${ROOM_TAXON.capital} description`}
+            register={register}
+            errors={errors}
           />
-          {errors?.room?.about && (
-            <span className="input-error">{errors?.room?.about.message}</span>
-          )}
 
-          <Form.Label>{ROOM_TAXON.capital} url</Form.Label>
-          <InputField
+          <AdminInput
             name="room.url"
-            type="text"
             autoComplete="off"
+            label={`${ROOM_TAXON.capital} url`}
             placeholder={`${ROOM_TAXON.capital} url`}
-            error={errors?.room?.url}
-            ref={register()}
+            register={register}
+            errors={errors}
           />
 
           <div>
@@ -277,13 +294,13 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           </Form.Label>
           <PortalVisibility name="room.visibility" register={register} />
 
-          {!roomVenue && roomVenueError && (
+          {!roomVenue && fetchError && (
             <>
               <div>
-                The venue linked to this portal could not be fetched properly.
+                The space linked to this portal could not be fetched properly.
                 Make sure it is a child of this world and try again.
               </div>
-              <div>{roomVenueError.message}</div>
+              <div>{fetchError.message}</div>
             </>
           )}
 
@@ -358,36 +375,36 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               {!DISABLED_DUE_TO_1253 &&
                 room.template &&
                 HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
-                  <div className="toggle-room">
-                    <h4 className="italic input-header">Show grid layout</h4>
-                    <Toggler name="venue.showGrid" forwardedRef={register} />
-                  </div>
+                  <AdminCheckbox
+                    name="venue.showGrid"
+                    label="Show grid layout"
+                    variant="toggler"
+                    register={register}
+                  />
                 )}
 
               {room.template &&
                 HAS_REACTIONS_TEMPLATES.includes(
                   room.template as VenueTemplate
                 ) && (
-                  <div className="toggle-room">
-                    <h4 className="italic input-header">Show reactions</h4>
-                    <Toggler
-                      name="venue.showReactions"
-                      forwardedRef={register}
-                    />
-                  </div>
+                  <AdminCheckbox
+                    name="venue.showReactions"
+                    label="Show reactions"
+                    variant="toggler"
+                    register={register}
+                  />
                 )}
 
               {room.template &&
                 HAS_REACTIONS_TEMPLATES.includes(
                   room.template as VenueTemplate
                 ) && (
-                  <div className="toggle-room">
-                    <h4 className="italic input-header">Show shoutouts</h4>
-                    <Toggler
-                      name="venue.showShoutouts"
-                      forwardedRef={register}
-                    />
-                  </div>
+                  <AdminCheckbox
+                    name="venue.showShoutouts"
+                    label="Show shoutouts"
+                    variant="toggler"
+                    register={register}
+                  />
                 )}
 
               {room.template === VenueTemplate.auditorium && (
@@ -467,6 +484,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             </>
           )}
 
+          <SubmitError error={deleteError} />
           <ButtonNG
             variant="danger"
             loading={isUpdating || isDeleting}
@@ -475,7 +493,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           >
             Delete {ROOM_TAXON.lower}
           </ButtonNG>
-          {error && <div>Error: {error}</div>}
+
+          <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+          <SubmitError error={updateError} />
         </div>
 
         {isLoadingRoomVenue && (

@@ -3,6 +3,7 @@ import { FieldErrors, FieldValues } from "react-hook-form";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
+import { get } from "lodash";
 
 import { CheckboxProps } from "components/atoms/Checkbox";
 
@@ -32,7 +33,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   variant = "checkbox",
   ...inputProps
 }) => {
-  const error = errors?.[name];
+  const error = get(errors, name);
 
   const parentClasses = classNames({
     "AdminCheckbox AdminCheckbox--disabled": disabled,
