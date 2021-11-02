@@ -126,6 +126,8 @@ export interface VenueInput_v2
   parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
+  showShoutouts?: boolean;
+  showReactions?: boolean;
 }
 
 // NOTE: world might have many fields, please keep them in alphabetic order

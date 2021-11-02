@@ -4,7 +4,13 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import { ROOM_TAXON, SPACE_TAXON, SpacePortalsListItem } from "settings";
+import {
+  DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
+  ROOM_TAXON,
+  SPACE_TAXON,
+  SpacePortalsListItem,
+} from "settings";
 
 import {
   createRoom,
@@ -92,7 +98,16 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     if (template !== "external") {
       const venueData = buildEmptyVenue(venueName, template);
-      await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
+      await createVenue_v2(
+        {
+          ...venueData,
+          worldId,
+          parentId: venueId,
+          showShoutouts: DEFAULT_SHOW_SHOUTOUTS,
+          showReactions: DEFAULT_SHOW_REACTIONS,
+        },
+        user
+      );
     }
 
     await createRoom(roomData, venueId, user);
