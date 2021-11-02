@@ -39,7 +39,7 @@ export const SpaceTimingPanel: React.FC<SpaceTimingPanelProps> = ({
         <AdminSidebarFooter {...sidebarFooterProps} />
         <SpaceTimingForm venue={venue} />
       </AdminSidebar>
-      <AdminShowcase className="SpaceTimingPanel__events">
+      <AdminShowcase>
         <EventsView venueId={venue.id} venue={venue} />
       </AdminShowcase>
     </AdminPanel>
