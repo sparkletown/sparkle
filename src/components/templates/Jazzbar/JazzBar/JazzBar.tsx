@@ -86,7 +86,11 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   }, [analytics, seatedAtTable]);
 
   const shouldShowReactions =
-    seatedAtTable && areSettingsLoaded && settings.showReactions;
+    seatedAtTable &&
+    areSettingsLoaded &&
+    settings.showReactions &&
+    venue.showReactions;
+
   const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =
