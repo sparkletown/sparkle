@@ -3,7 +3,12 @@ import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
-import { ALWAYS_EMPTY_ARRAY, HAS_ROOMS_TEMPLATES } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DAYJS_INPUT_DATE_FORMAT,
+  DAYJS_INPUT_TIME_FORMAT,
+  HAS_ROOMS_TEMPLATES,
+} from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -60,8 +65,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
-        start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
+        start_date: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_DATE_FORMAT),
+        start_time: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: Math.floor(event.duration_minutes / 60),
         duration_minutes: event.duration_minutes % 60,
         host: event.host,
@@ -181,7 +190,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <div className="TimingEventModal__container">
                   <input
                     type="date"
-                    min={dayjs().format("YYYY-MM-DD")}
+                    min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
                     name="start_date"
                     className="input-group__modal-input"
                     ref={register}

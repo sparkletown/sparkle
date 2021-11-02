@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import dayjs from "dayjs";
 
+import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
+
 import { deleteEvent, EventInput } from "api/admin";
 
 import { VenueEvent } from "types/venues";
@@ -35,8 +37,12 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
-        start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
+        start_date: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_DATE_FORMAT),
+        start_time: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: event.duration_minutes / 60,
       });
     }

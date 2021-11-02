@@ -19,7 +19,7 @@ import { WithNavigationBar } from "../WithNavigationBar";
 
 import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
-import { Timing } from "./components/Timing";
+import { SpaceTimingPanel } from "./components/Timing/SpaceTimingPanel";
 
 import "./AdminVenueView.scss";
 
@@ -127,7 +127,7 @@ export const AdminVenueView: React.FC = () => {
           />
         )}
         {selectedTab === AdminVenueTab.timing && (
-          <Timing
+          <SpaceTimingPanel
             onClickHome={navigateToHome}
             onClickBack={navigateToSpaces}
             onClickNext={navigateToRun}

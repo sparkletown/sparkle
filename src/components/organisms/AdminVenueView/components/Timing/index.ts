@@ -1,1 +1,1 @@
-export { Timing } from "./Timing";
+export { SpaceTimingPanel } from "./SpaceTimingPanel";
