@@ -6,14 +6,25 @@ import { Room } from "../../src/types/rooms";
 
 const isVenueRegex = /\/in\/(\w+)$/;
 
-const createVenueFromPortal = async (
-  firestore: FirebaseFirestore.Firestore,
-  portal: Room
-) => {
+interface CreateVenueFromPortalProps {
+  firestore: FirebaseFirestore.Firestore;
+  portal: Room;
+  parentVenueId: string;
+  parentWorldId: string;
+}
+
+const createVenueFromPortal = async ({
+  firestore,
+  portal,
+  parentVenueId,
+  parentWorldId,
+}: CreateVenueFromPortalProps) => {
   const venueData = {
     name: portal.title,
     template: "zoomroom",
     zoomUrl: portal.url ?? "",
+    parentId: parentVenueId,
+    worldId: parentWorldId,
   };
 
   let venueExists = true;
@@ -51,28 +62,32 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           if (room.template) return;
 
           if (isVenueRegex.test(room.url)) {
-            const [, venueId] = room.url.match(isVenueRegex);
+            const [, targetVenueId] = room.url.match(isVenueRegex);
 
-            const venueDoc = await firestore
+            const targetVenueDoc = await firestore
               .collection("venues")
-              .doc(venueId)
+              .doc(targetVenueId)
               .get();
 
-            if (venueDoc.exists) {
-              room.template = venueDoc.data().template;
+            if (targetVenueDoc.exists) {
+              room.template = targetVenueDoc.data().template;
             } else {
-              const externalExperienceUrl = await createVenueFromPortal(
+              const externalExperienceUrl = await createVenueFromPortal({
                 firestore,
-                room
-              );
+                portal: room,
+                parentVenueId: venueDoc.id,
+                parentWorldId: venueDoc.data().worldId,
+              });
               room.template = "zoomroom";
               room.url = externalExperienceUrl;
             }
           } else {
-            const externalExperienceUrl = await createVenueFromPortal(
+            const externalExperienceUrl = await createVenueFromPortal({
               firestore,
-              room
-            );
+              portal: room,
+              parentVenueId: venueDoc.id,
+              parentWorldId: venueDoc.data().worldId,
+            });
 
             room.template = "zoomroom";
             room.url = externalExperienceUrl;
