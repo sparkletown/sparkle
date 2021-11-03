@@ -319,8 +319,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   );
 
   const navigateToHome = useCallback(() => {
-    history.push(adminWorldSpacesUrl(worldId ?? values?.worldId));
-  }, [values?.worldId, history, worldId]);
+    history.push(
+      adminWorldSpacesUrl(worldId ?? values?.worldId ?? venue?.worldId)
+    );
+  }, [history, worldId, values?.worldId, venue?.worldId]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
