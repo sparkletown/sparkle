@@ -21,7 +21,6 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 import { AdminDateTime } from "components/molecules/AdminDateTime";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
-import { LoadingPage } from "components/molecules/LoadingPage";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -98,7 +97,7 @@ const validationSchema = Yup.object().shape({
 });
 
 export interface SpaceTimingFormProps extends AdminSidebarFooterProps {
-  venue?: WithId<AnyVenue>;
+  venue: WithId<AnyVenue>;
 }
 
 export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
@@ -108,12 +107,12 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
     const {
       inputFormattedDateSegment: startDate,
       inputFormattedTimeSegment: startTime,
-    } = convertDateFromUtcSeconds(venue?.start_utc_seconds ?? NaN);
+    } = convertDateFromUtcSeconds(venue.start_utc_seconds ?? NaN);
 
     const {
       inputFormattedDateSegment: endDate,
       inputFormattedTimeSegment: endTime,
-    } = convertDateFromUtcSeconds(venue?.end_utc_seconds ?? NaN);
+    } = convertDateFromUtcSeconds(venue.end_utc_seconds ?? NaN);
 
     return {
       startTime,
@@ -121,7 +120,7 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
       endTime,
       endDate,
     };
-  }, [venue?.start_utc_seconds, venue?.end_utc_seconds]);
+  }, [venue.start_utc_seconds, venue.end_utc_seconds]);
 
   const {
     reset,
@@ -138,12 +137,12 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: SpaceTimingFormInput) => {
-      if (!venue?.name || !user) return;
+      if (!venue.name || !user) return;
 
       await updateVenue_v2(
         {
-          name: venue?.name,
-          worldId: venue?.worldId,
+          name: venue.name,
+          worldId: venue.worldId,
           start_utc_seconds: convertUtcSecondsFromInputDateAndTime({
             date: input.startDate,
             time: input.startTime,
@@ -167,10 +166,6 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
     // Object.keys(errors).length ||
     (dirty || isSaving || isSubmitting)
   );
-
-  if (!venue) {
-    return <LoadingPage />;
-  }
 
   return (
     <div className="SpaceTimingForm">

@@ -10,6 +10,8 @@ import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
+import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
+
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -19,7 +21,6 @@ import { WithNavigationBar } from "../WithNavigationBar";
 
 import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
-import { SpaceTimingPanel } from "./components/Timing/SpaceTimingPanel";
 
 import "./AdminVenueView.scss";
 

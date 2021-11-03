@@ -14,8 +14,6 @@ import {
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { SpaceTimingForm } from "components/organisms/SpaceTimingForm";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import { EventsView } from "../EventsView";
 
 import "./SpaceTimingPanel.scss";
@@ -27,21 +25,15 @@ export interface SpaceTimingPanelProps extends AdminSidebarFooterProps {
 export const SpaceTimingPanel: React.FC<SpaceTimingPanelProps> = ({
   venue,
   ...sidebarFooterProps
-}) => {
-  if (!venue) {
-    return <LoadingPage />;
-  }
-
-  return (
-    <AdminPanel className="SpaceTimingPanel">
-      <AdminSidebar>
-        <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
-        <AdminSidebarFooter {...sidebarFooterProps} />
-        <SpaceTimingForm venue={venue} />
-      </AdminSidebar>
-      <AdminShowcase>
-        <EventsView venueId={venue.id} venue={venue} />
-      </AdminShowcase>
-    </AdminPanel>
-  );
-};
+}) => (
+  <AdminPanel className="SpaceTimingPanel">
+    <AdminSidebar>
+      <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
+      <AdminSidebarFooter {...sidebarFooterProps} />
+      <SpaceTimingForm venue={venue} />
+    </AdminSidebar>
+    <AdminShowcase>
+      <EventsView venueId={venue.id} venue={venue} />
+    </AdminShowcase>
+  </AdminPanel>
+);
