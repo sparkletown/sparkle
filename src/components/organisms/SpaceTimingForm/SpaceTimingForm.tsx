@@ -26,8 +26,6 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./SpaceTimingForm.scss";
-
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = [
   "start",
