@@ -1,10 +1,17 @@
 import React from "react";
 import { FieldErrors } from "react-hook-form";
-import { omit } from "lodash";
+import { isEmpty } from "lodash";
+
+import { objectEntries, ObjectEntry } from "utils/object";
 
 import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 
 import "./FormErrors.scss";
+
+const hasMessage = ([path]: ObjectEntry) => path.endsWith(".message");
+
+const isNotInOmitted = (omitted: string[] = []) => ([path]: ObjectEntry) =>
+  omitted.every((prefix) => !path.startsWith(prefix));
 
 export interface FormErrorsProps {
   errors?: FieldErrors<object>;
@@ -12,9 +19,7 @@ export interface FormErrorsProps {
 }
 
 export const FormErrors: React.FC<FormErrorsProps> = ({ errors, omitted }) => {
-  const entries = Object.entries(
-    omitted ? omit(errors, omitted) : errors ?? {}
-  );
+  const entries = objectEntries(errors).filter(isNotInOmitted(omitted));
 
   if (entries.length === 0) {
     return null;
@@ -27,9 +32,9 @@ export const FormErrors: React.FC<FormErrorsProps> = ({ errors, omitted }) => {
     <section className="FormErrors">
       <AdminSidebarSectionTitle>Errors:</AdminSidebarSectionTitle>
       <ul className="FormErrors__list">
-        {entries.map(([key, e]) => (
-          <li className="FormErrors__item" key={key}>
-            {e?.message ?? "Unknown error"}
+        {entries.filter(hasMessage).map(([key, message]) => (
+          <li className="FormErrors__item" data-key={key} key={key}>
+            {isEmpty(message) ? "Unknown error" : String(message)}
           </li>
         ))}
       </ul>

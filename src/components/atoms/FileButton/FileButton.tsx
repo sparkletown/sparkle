@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 
-import { ACCEPTED_IMAGE_TYPES } from "settings";
+import { ACCEPTED_IMAGE_TYPES, INVALID_SLUG_CHARS_REGEX } from "settings";
 
 import { generateId } from "utils/string";
 
@@ -39,7 +39,8 @@ export const FileButton: React.FC<FileButtonProps> = ({
   );
 
   const id = useMemo(
-    () => generateId("FileButton-" + title.replace(/\W/g, "-")),
+    () =>
+      generateId("FileButton-" + title.replace(INVALID_SLUG_CHARS_REGEX, "-")),
     [title]
   );
 

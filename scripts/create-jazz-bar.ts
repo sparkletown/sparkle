@@ -56,7 +56,8 @@ const jazzbar: JazzbarVenue = {
   code_of_conduct_questions,
 };
 
-const venueId = name.replace(/\W/g, "").toLowerCase();
+const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;
+const venueId = name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
 
 initFirebaseAdminApp(projectId);
 
