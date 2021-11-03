@@ -1,9 +1,37 @@
 import { MigrateOptions } from "fireway";
 import { isEqual } from "lodash";
 
+import { getVenueId } from "../../functions/src/utils/venue";
 import { Room } from "../../src/types/rooms";
 
 const isVenueRegex = /\/in\/(\w+)$/;
+
+const createVenueFromPortal = async (
+  firestore: FirebaseFirestore.Firestore,
+  portal: Room
+) => {
+  const venueData = {
+    name: portal.title,
+    template: "zoomroom",
+    zoomUrl: portal.url ?? "",
+  };
+
+  let venueExists = true;
+  let index = -1;
+  const baseVenueId = getVenueId(portal.title);
+  let venueId = baseVenueId;
+  while (venueExists) {
+    index += 1;
+    venueId =
+      (baseVenueId || "externalexperience") + (index === 0 ? "" : index);
+    const venue = await firestore.collection("venues").doc(venueId).get();
+    venueExists = venue.exists;
+  }
+
+  await firestore.collection("venues").doc(venueId).set(venueData);
+
+  return `/in/${venueId}`;
+};
 
 export const migrate = async ({ firestore }: MigrateOptions) => {
   const { docs: venueDocs } = await firestore
@@ -25,25 +53,29 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           if (isVenueRegex.test(room.url)) {
             const [, venueId] = room.url.match(isVenueRegex);
 
-            // console.log("room venue id", venueId);
             const venueDoc = await firestore
               .collection("venues")
               .doc(venueId)
               .get();
 
             if (venueDoc.exists) {
-              // console.log(
-              //   "found venue",
-              //   venueId,
-              //   venueDoc.data().template,
-              //   venueDoc.data()
-              // );
               room.template = venueDoc.data().template;
             } else {
-              room.template = "external";
+              const externalExperienceUrl = await createVenueFromPortal(
+                firestore,
+                room
+              );
+              room.template = "zoomroom";
+              room.url = externalExperienceUrl;
             }
           } else {
-            room.template = "external";
+            const externalExperienceUrl = await createVenueFromPortal(
+              firestore,
+              room
+            );
+
+            room.template = "zoomroom";
+            room.url = externalExperienceUrl;
           }
         })
       );
@@ -61,21 +93,12 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
       }));
 
       if (!isEqual(wasRooms, nowRooms)) {
-        console.log("-------------------------------");
-        console.log("venudId: ", venueDoc.id);
-        console.log("now", wasRooms);
-        console.log("will be", nowRooms);
+        // console.log("-------------------------------");
+        // console.log("venudId: ", venueDoc.id);
+        // console.log("now", wasRooms);
+        // console.log("will be", nowRooms);
+        await firestore.collection("venues").doc(venueDoc.id).update({ rooms });
       }
-
-      // const destVenueSectionRef = venueDoc.ref.collection("sections").doc();
-      // destVenueSectionRef.set({ isVip: false });
-
-      // await venueDoc.ref.update({ template: "auditorium" });
     })
   );
-
-  // console.log(
-  //   "Successfully transormed the following venues to auditorium:",
-  //   venueDocs.map((doc) => doc.id)
-  // );
 };
