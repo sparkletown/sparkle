@@ -20,7 +20,7 @@ export const WorldNav: React.FC = () => {
     return Object.entries(WorldNavLabelMap).map(([key, label]) => (
       <Link
         key={key}
-        to={adminWorldUrl(worldId, key)}
+        to={worldId ? adminWorldUrl(worldId, key) : "#"}
         className={classNames({
           WorldNav__tab: true,
           "WorldNav__tab--selected": selectedTab === key,
