@@ -37,7 +37,7 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
     }
   }, [updateRoomVisibility, selectedVisibility]);
 
-  const renderPortalItems = useMemo(() => {
+  const renderedPortalItems = useMemo(() => {
     return LABEL_VISIBILITY_OPTIONS.map(({ subtitle, label, value }) => {
       const visibilitySubtitleArray = subtitle?.split(", ");
 
@@ -46,6 +46,11 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
           selectedVisibility && selectedVisibility === value,
       });
 
+      const isIconSun =
+        value === RoomVisibility.nameCount || value === RoomVisibility.hover;
+
+      const hasSubtitles = !!visibilitySubtitleArray?.length;
+
       return (
         <div
           key={label}
@@ -53,20 +58,14 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
           className={portalStatusClasses}
         >
           <div className="PortalVisibility__item-image">
-            {!!visibilitySubtitleArray?.length && (
+            {hasSubtitles && (
               <div className="PortalVisibility__item-subtitle">
                 {visibilitySubtitleArray?.map((visibilitySubtitleText) => (
                   <div
                     key={visibilitySubtitleText}
                     className="PortalVisibility__item-subtitle-item"
                   >
-                    <FontAwesomeIcon
-                      icon={
-                        visibilitySubtitleText === "Venue title"
-                          ? solidSun
-                          : solidUsers
-                      }
-                    />
+                    <FontAwesomeIcon icon={isIconSun ? solidSun : solidUsers} />
                     <span className="PortalVisibility__item-subtitle-item-text">
                       {visibilitySubtitleText}
                     </span>
@@ -81,5 +80,5 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
     });
   }, [selectedVisibility]);
 
-  return <div className="PortalVisibility">{renderPortalItems}</div>;
+  return <div className="PortalVisibility">{renderedPortalItems}</div>;
 };

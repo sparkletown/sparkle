@@ -46,7 +46,6 @@ import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import { Toggler } from "components/atoms/Toggler";
 
-// import { Toggler } from "components/atoms/Toggler";
 import "./SpaceEditFormNG.scss";
 
 export interface SpaceEditFormNGProps {
@@ -213,9 +212,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const venueSpaces = ownedVenues.map((venue) => ({
-    name: venue.name,
-    template: venue.template,
+  const venueSpaces = ownedVenues.map(({ name, template }) => ({
+    name,
+    template,
   }));
 
   return (
@@ -252,8 +251,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
                 placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
                 register={register}
                 errors={errors}
-                height="120"
-                isTextarea
               />
             </AdminSection>
             <AdminSection

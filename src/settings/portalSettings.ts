@@ -27,6 +27,6 @@ export const LABEL_VISIBILITY_OPTIONS: LabelVisibilityOption[] = [
   {
     label: "Show title and people count",
     value: RoomVisibility.nameCount,
-    subtitle: "Venue title, 123",
+    subtitle: `${SPACE_TAXON.title} title, 123`,
   },
 ];

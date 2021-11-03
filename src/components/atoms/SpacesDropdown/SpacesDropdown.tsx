@@ -6,19 +6,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ADMIN_V1_ROOMS_BASE_URL, SPACE_PORTALS_ICONS_MAPPING } from "settings";
 
-import { SpacesDropdownItemList } from "types/venues";
+import { PortalTemplate } from "types/venues";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SpacesDropdown.scss";
 
-export interface SpacesDropdownProps extends SpacesDropdownItemList {
+export interface SpacesDropdownProps {
   defaultSpace?: string;
   venueId?: string;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
   fieldName: string;
   error?: FieldError;
+  venueSpaces: { template?: PortalTemplate; name: string }[];
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
@@ -41,14 +42,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   }, [defaultSpace]);
 
   const spaceOptions = useMemo(() => {
-    const options = venueSpaces.map((space) => {
-      const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space.template ?? ""];
+    const options = venueSpaces.map(({ name, template }) => {
+      const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
       return (
         <ReactBootstrapDropdown.Item
-          key={space.name}
+          key={name}
           onClick={() => {
-            setSpaceValue(space.name);
-            setValue(fieldName, space.name, true);
+            setSpaceValue(name);
+            setValue(fieldName, name, true);
           }}
           className="SpacesDropdown__item"
         >
@@ -57,7 +58,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             src={spaceIcon}
             className="SpacesDropdown__item-icon"
           />
-          {space.name}
+          {name}
         </ReactBootstrapDropdown.Item>
       );
     });
@@ -84,7 +85,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       return "Select a space";
     }
 
-    const space = venueSpaces.find((space) => space.name === spaceValue);
+    const space = venueSpaces.find(({ name }) => name === spaceValue);
     const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
 
     return (

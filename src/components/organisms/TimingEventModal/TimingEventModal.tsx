@@ -104,9 +104,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
-  const dropdownVenueList = venue?.rooms?.map((room) => ({
-    name: room.title,
-    template: room.template,
+  const dropdownVenueList = venue?.rooms?.map(({ title, template }) => ({
+    name: title,
+    template: template,
   }));
 
   return (

@@ -18,11 +18,4 @@
     padding: 0;
     color: var(--content--over-50a);
   }
-
-  &__input {
-    text-align: left;
-    &::placeholder {
-      word-break: break-word;
-    }
-  }
 }

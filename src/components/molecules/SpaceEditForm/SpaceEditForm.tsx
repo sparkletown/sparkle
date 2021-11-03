@@ -38,6 +38,8 @@ import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
+import { AdminCheckbox } from "../AdminCheckbox";
+
 import "./SpaceEditForm.scss";
 
 export interface SpaceEditFormProps {
@@ -342,7 +344,12 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       </span>
                     )}
                     <h4 className="italic input-header">Enable autoplay</h4>
-                    <Toggler name="venue.autoPlay" forwardedRef={register} />
+                    <AdminCheckbox
+                      variant="toggler"
+                      name="venue.autoPlay"
+                      register={register}
+                      label="Enable autoplay"
+                    />
                   </>
                 )}
 

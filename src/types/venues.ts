@@ -435,10 +435,6 @@ export interface RecentSeatedUserTimestamp<T extends VenueTemplate>
   lastSittingTimeMs: number;
 }
 
-export interface SpacesDropdownItemList {
-  venueSpaces: { template?: PortalTemplate; name: string }[];
-}
-
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 
