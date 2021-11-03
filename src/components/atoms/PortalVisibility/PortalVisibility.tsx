@@ -12,8 +12,8 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-// import { useForm } from "react-hook-form";
 import { LABEL_VISIBILITY_OPTIONS } from "settings";
+import { SPACE_TAXON } from "settings/taxonomy";
 
 import { RoomVisibility } from "types/venues";
 
@@ -46,9 +46,6 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
           selectedVisibility && selectedVisibility === value,
       });
 
-      const isIconSun =
-        value === RoomVisibility.nameCount || value === RoomVisibility.hover;
-
       const hasSubtitles = !!visibilitySubtitleArray?.length;
 
       return (
@@ -60,17 +57,24 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
           <div className="PortalVisibility__item-image">
             {hasSubtitles && (
               <div className="PortalVisibility__item-subtitle">
-                {visibilitySubtitleArray?.map((visibilitySubtitleText) => (
-                  <div
-                    key={visibilitySubtitleText}
-                    className="PortalVisibility__item-subtitle-item"
-                  >
-                    <FontAwesomeIcon icon={isIconSun ? solidSun : solidUsers} />
-                    <span className="PortalVisibility__item-subtitle-item-text">
-                      {visibilitySubtitleText}
-                    </span>
-                  </div>
-                ))}
+                {visibilitySubtitleArray?.map((visibilitySubtitleText) => {
+                  const isIconSun =
+                    visibilitySubtitleText === SPACE_TAXON.title;
+
+                  return (
+                    <div
+                      key={visibilitySubtitleText}
+                      className="PortalVisibility__item-subtitle-item"
+                    >
+                      <FontAwesomeIcon
+                        icon={isIconSun ? solidSun : solidUsers}
+                      />
+                      <span className="PortalVisibility__item-subtitle-item-text">
+                        {visibilitySubtitleText}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
