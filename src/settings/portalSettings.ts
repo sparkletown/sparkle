@@ -1,3 +1,9 @@
+import {
+  faSun as solidSun,
+  faUserFriends as solidUsers,
+  IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
+
 import { SPACE_TAXON } from "settings/taxonomy";
 
 import { RoomVisibility } from "types/venues";
@@ -5,28 +11,30 @@ import { RoomVisibility } from "types/venues";
 export type LabelVisibilityOption = {
   label: string;
   value: RoomVisibility;
-  subtitle?: string;
+  subtitle?: { text: string; icon: IconDefinition }[];
 };
 
 export const LABEL_VISIBILITY_OPTIONS: LabelVisibilityOption[] = [
   {
     label: "No Label",
     value: RoomVisibility.none,
-    subtitle: "",
   },
   {
     label: "Show title on hover",
     value: RoomVisibility.hover,
-    subtitle: `${SPACE_TAXON.title} title`,
+    subtitle: [{ text: `${SPACE_TAXON.title} title`, icon: solidSun }],
   },
   {
     label: "Show people count only",
     value: RoomVisibility.count,
-    subtitle: "123",
+    subtitle: [{ text: "123", icon: solidUsers }],
   },
   {
     label: "Show title and people count",
     value: RoomVisibility.nameCount,
-    subtitle: `${SPACE_TAXON.title} title, 123`,
+    subtitle: [
+      { text: `${SPACE_TAXON.title} title`, icon: solidUsers },
+      { text: "123", icon: solidSun },
+    ],
   },
 ];

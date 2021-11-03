@@ -5,15 +5,10 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import {
-  faSun as solidSun,
-  faUserFriends as solidUsers,
-} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { LABEL_VISIBILITY_OPTIONS } from "settings";
-import { SPACE_TAXON } from "settings/taxonomy";
 
 import { RoomVisibility } from "types/venues";
 
@@ -39,14 +34,10 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
 
   const renderedPortalItems = useMemo(() => {
     return LABEL_VISIBILITY_OPTIONS.map(({ subtitle, label, value }) => {
-      const visibilitySubtitleArray = subtitle?.split(", ");
-
       const portalStatusClasses = classNames("PortalVisibility__item", {
         "PortalVisibility__item--selected":
           selectedVisibility && selectedVisibility === value,
       });
-
-      const hasSubtitles = !!visibilitySubtitleArray?.length;
 
       return (
         <div
@@ -55,26 +46,19 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
           className={portalStatusClasses}
         >
           <div className="PortalVisibility__item-image">
-            {hasSubtitles && (
+            {subtitle && (
               <div className="PortalVisibility__item-subtitle">
-                {visibilitySubtitleArray?.map((visibilitySubtitleText) => {
-                  const isIconSun =
-                    visibilitySubtitleText === SPACE_TAXON.title;
-
-                  return (
-                    <div
-                      key={visibilitySubtitleText}
-                      className="PortalVisibility__item-subtitle-item"
-                    >
-                      <FontAwesomeIcon
-                        icon={isIconSun ? solidSun : solidUsers}
-                      />
-                      <span className="PortalVisibility__item-subtitle-item-text">
-                        {visibilitySubtitleText}
-                      </span>
-                    </div>
-                  );
-                })}
+                {subtitle.map(({ text, icon }, index) => (
+                  <div
+                    key={`${text}-${index}`}
+                    className="PortalVisibility__item-subtitle-item"
+                  >
+                    <FontAwesomeIcon icon={icon} />
+                    <span className="PortalVisibility__item-subtitle-item-text">
+                      {text}
+                    </span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
