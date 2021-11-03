@@ -4,13 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import {
-  DEFAULT_SHOW_REACTIONS,
-  DEFAULT_SHOW_SHOUTOUTS,
-  ROOM_TAXON,
-  SPACE_TAXON,
-  SpacePortalsListItem,
-} from "settings";
+import { ROOM_TAXON, SPACE_TAXON, SpacePortalsListItem } from "settings";
 
 import {
   createRoom,
@@ -103,8 +97,6 @@ export const PortalItem: React.FC<PortalItemProps> = ({
           ...venueData,
           worldId,
           parentId: venueId,
-          showShoutouts: DEFAULT_SHOW_SHOUTOUTS,
-          showReactions: DEFAULT_SHOW_REACTIONS,
         },
         user
       );

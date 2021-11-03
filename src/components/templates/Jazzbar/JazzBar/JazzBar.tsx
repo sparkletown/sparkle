@@ -4,6 +4,7 @@ import classNames from "classnames";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_SHOW_REACTIONS,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -88,8 +89,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const shouldShowReactions =
     seatedAtTable &&
     areSettingsLoaded &&
-    settings.showReactions &&
-    venue.showReactions;
+    (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
+    (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
 
   const firstTableReference = jazzbarTables[0].reference;
 
