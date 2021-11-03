@@ -21,6 +21,8 @@ import {
   subHours,
 } from "date-fns";
 
+import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
+
 /**
  * @deprecated in favor of using date-fns functions
  */
@@ -264,16 +266,40 @@ export const isDateRangeStartWithinToday = ({
   return max([dateValue, targetDateValue]) <= startOfToday();
 };
 
-export const getDateTimeFromUtc = (utcSeconds: number | undefined) => {
-  const unixTime = utcSeconds ?? Date.now() / 1000;
+export type ConvertDateFromUtcSecondsResults = {
+  date: Date;
+  inputFormattedDateSegment: string;
+  inputFormattedTimeSegment: string;
+  isoFormattedFullDate: string;
+  unixTime: number;
+  utcSeconds: number | undefined;
+};
 
-  const time = format(fromUnixTime(unixTime), "HH:mm");
-  const date = format(fromUnixTime(unixTime), "yyyy-MM-dd");
+export const convertDateFromUtcSeconds: (
+  utcSeconds: number
+) => ConvertDateFromUtcSecondsResults = (utcSeconds) => {
+  // NOTE: easy to check if argument defaulted by comparing unixTime and utcSeconds from the result
+  const unixTime = Number.isSafeInteger(utcSeconds)
+    ? utcSeconds
+    : Date.now() / 1000;
+
+  const date = fromUnixTime(unixTime);
+
+  const inputFormattedTimeSegment = format(date, DATEFNS_INPUT_TIME_FORMAT);
+  const inputFormattedDateSegment = format(date, DATEFNS_INPUT_DATE_FORMAT);
+  const isoFormattedFullDate = date.toISOString();
+
   return {
     date,
-    time,
+    inputFormattedDateSegment,
+    inputFormattedTimeSegment,
+    isoFormattedFullDate,
+    unixTime,
+    utcSeconds,
   };
 };
 
-export const getUtcFromDateTime = (dateTimeValue: string) =>
-  getUnixTime(new Date(dateTimeValue));
+export const convertUtcSecondsFromInputDateAndTime: (input: {
+  date: string;
+  time: string;
+}) => number = ({ date, time }) => getUnixTime(new Date(`${date} ${time}`));

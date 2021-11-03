@@ -5,7 +5,12 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import * as Yup from "yup";
 
-import { HAS_ROOMS_TEMPLATES, ROOM_TAXON } from "settings";
+import {
+  DAYJS_INPUT_DATE_FORMAT,
+  DAYJS_INPUT_TIME_FORMAT,
+  HAS_ROOMS_TEMPLATES,
+  ROOM_TAXON,
+} from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -80,8 +85,12 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
-        start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
+        start_date: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_DATE_FORMAT),
+        start_time: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: event.duration_minutes / 60,
         host: event.host,
         room: event.room,
@@ -152,7 +161,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
             >{`Don't worry- your event times will be automatically shown in the local times of burners round the world.`}</span>
             <input
               type="date"
-              min={dayjs().format("YYYY-MM-DD")}
+              min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
               name="start_date"
               className="input-block input-centered"
               ref={register}
