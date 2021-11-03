@@ -33,7 +33,9 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
   }, [updateRoomVisibility, selectedVisibility]);
 
   const renderedPortalItems = useMemo(() => {
-    return LABEL_VISIBILITY_OPTIONS.map(({ subtitle, label, value }) => {
+    const visibilityOptionArray = Object.values(LABEL_VISIBILITY_OPTIONS);
+
+    return visibilityOptionArray.map(({ subtitle, label, value }) => {
       const portalStatusClasses = classNames("PortalVisibility__item", {
         "PortalVisibility__item--selected":
           selectedVisibility && selectedVisibility === value,
