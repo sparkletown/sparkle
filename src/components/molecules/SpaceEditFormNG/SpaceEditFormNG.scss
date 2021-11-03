@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$textarea-height: 120px;
+
 .SpaceEditFormNG {
   display: flex;
   flex: 1;
@@ -37,9 +39,14 @@
 
   .AdminInput__input {
     text-align: left;
+
     &::placeholder {
       word-break: break-word;
     }
+  }
+
+  .AdminTextarea__input {
+    height: $textarea-height;
   }
 
   .SpacesDropdown {

@@ -43,8 +43,6 @@ import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 
-import { AdminCheckbox } from "../AdminCheckbox";
-
 import "./SpaceEditForm.scss";
 
 const HANDLED_ERRORS = [

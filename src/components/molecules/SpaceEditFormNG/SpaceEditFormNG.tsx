@@ -36,6 +36,7 @@ import { AdminSpacesListItem } from "components/organisms/AdminVenueView/compone
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -246,7 +247,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               />
             </AdminSection>
             <AdminSection title="Description" withLabel>
-              <AdminInput
+              <AdminTextarea
                 name="description"
                 placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
                 register={register}
