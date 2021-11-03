@@ -7,10 +7,6 @@
     grid-template-columns: repeat(3, 1fr);
   }
 
-  &__sidebar {
-    height: calc(100% - #{$admin-ng-sidebar-footer-height--normal});
-  }
-
   .AdminSpaceCard {
     align-items: center;
   }

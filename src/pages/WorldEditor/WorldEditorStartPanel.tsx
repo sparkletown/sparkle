@@ -28,11 +28,9 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
   const isUpdatingWorld = isLoaded && worldId && world;
   const isCreatingWorld = isLoaded && !world && !worldId;
 
-  const sidebarClassName = !worldId ? "AdminDashboard__sidebar" : "";
-
   return (
     <AdminPanel>
-      <AdminSidebar className={sidebarClassName}>
+      <AdminSidebar>
         <AdminSidebarTitle>
           {worldId ? "Configure your world" : "Create a new world"}
         </AdminSidebarTitle>
