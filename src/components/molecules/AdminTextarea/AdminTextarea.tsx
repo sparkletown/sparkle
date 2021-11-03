@@ -4,10 +4,10 @@ import { get } from "lodash";
 
 import { generateId } from "utils/string";
 
-import "./AdminInput.scss";
+import "./AdminTextarea.scss";
 
-export interface AdminInputProps
-  extends Omit<React.HTMLProps<HTMLInputElement>, "label"> {
+export interface AdminTextareaProps
+  extends Omit<React.HTMLProps<HTMLTextAreaElement>, "label"> {
   name: string;
   label?: ReactNode | string;
   subtext?: ReactNode | string;
@@ -15,7 +15,7 @@ export interface AdminInputProps
   errors?: FieldErrors<FieldValues>;
 }
 
-export const AdminInput: React.FC<AdminInputProps> = ({
+export const AdminTextarea: React.FC<AdminTextareaProps> = ({
   name,
   label,
   subtext,
@@ -25,25 +25,25 @@ export const AdminInput: React.FC<AdminInputProps> = ({
 }) => {
   const error = get(errors, name);
   const id = useMemo(
-    () => (label ? generateId("AdminInput-" + name) : undefined),
+    () => (label ? generateId("AdminTextarea-" + name) : undefined),
     [label, name]
   );
   return (
-    <p className="AdminInput">
+    <p className="AdminTextarea">
       {label && (
-        <label className="AdminInput__label" htmlFor={id}>
+        <label className="AdminTextarea__label" htmlFor={id}>
           {label}
         </label>
       )}
-      <input
+      <textarea
         {...inputProps}
-        className="AdminInput__input"
+        className="AdminTextarea__input"
         name={name}
         ref={register}
         id={id}
       />
-      {subtext && <span className="AdminInput__subtext">{subtext}</span>}
-      {error && <span className="AdminInput__error">{error?.message}</span>}
+      {subtext && <span className="AdminTextarea__subtext">{subtext}</span>}
+      {error && <span className="AdminTextarea__error">{error?.message}</span>}
     </p>
   );
 };
