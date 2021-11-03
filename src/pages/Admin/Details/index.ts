@@ -1,1 +1,1 @@
-export { default } from "./Details";
+export { SpaceEditorStartPanel } from "./SpaceEditorStartPanel";
