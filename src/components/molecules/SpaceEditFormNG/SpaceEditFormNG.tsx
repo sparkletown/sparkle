@@ -157,7 +157,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     const portalData: RoomInput = {
       ...(room as RoomInput),
       ...(updatedRoom as RoomInput),
-      image_url: values.image_url,
+      ...values,
     };
 
     await upsertRoom(portalData, venueId, user, roomIndex);
