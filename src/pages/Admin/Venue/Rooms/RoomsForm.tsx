@@ -166,7 +166,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
         const roomValues: RoomInput = {
           ...editingRoom,
           ...input,
-          visibility: input.visibility,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);

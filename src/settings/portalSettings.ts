@@ -38,7 +38,7 @@ export const LABEL_VISIBILITY_OPTIONS: Record<
     value: RoomVisibility.nameCount,
     subtitle: [
       { text: `${SPACE_TAXON.title} title`, icon: solidUsers },
-      { text: "12345", icon: solidSun },
+      { text: "123", icon: solidSun },
     ],
   },
 };

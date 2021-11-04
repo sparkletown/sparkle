@@ -52,14 +52,14 @@ $textarea-height: 120px;
   .SpacesDropdown {
     .Dropdown {
       width: 100%;
-      background-color: opaque-white(0.12);
+      background-color: var(--content--over-10a);
       border-radius: $border-radius--xl;
 
       .Dropdown__button {
         width: 100%;
 
         &:hover {
-          background: opaque-white(0.2);
+          background-color: var(--content--over-20a);
         }
 
         &:after {

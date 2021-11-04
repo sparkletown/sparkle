@@ -378,7 +378,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         {errors?.venue?.iframeUrl}
                       </span>
                     )}
-                    <h4 className="italic input-header">Enable autoplay</h4>
                     <AdminCheckbox
                       variant="toggler"
                       name="venue.autoPlay"
