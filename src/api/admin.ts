@@ -5,6 +5,8 @@ import { omit } from "lodash";
 import {
   ACCEPTED_IMAGE_TYPES,
   DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
   INVALID_SLUG_CHARS_REGEX,
 } from "settings";
 
@@ -128,6 +130,8 @@ export interface VenueInput_v2
   parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
+  showShoutouts?: boolean;
+  showReactions?: boolean;
 }
 
 // NOTE: world might have many fields, please keep them in alphabetic order
@@ -354,6 +358,8 @@ export const createVenue_v2 = async (
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
     {
       ...input,
+      showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+      showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
       rooms: [],
     },
     user

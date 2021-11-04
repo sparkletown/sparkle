@@ -1,10 +1,10 @@
 @import "scss/constants.scss";
 
-.Timing {
+.SpaceTimingPanel {
   display: grid;
   grid-template-columns: auto 1fr;
 
-  &__events-wrapper {
+  .AdminShowcase {
     display: grid;
     place-items: center;
     padding: $spacing--lg;
@@ -12,7 +12,7 @@
     align-items: start;
   }
 
-  &__content {
+  .SpaceTimingForm {
     padding: $spacing--md;
   }
 }

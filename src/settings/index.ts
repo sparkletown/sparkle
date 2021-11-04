@@ -33,6 +33,7 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
 export * from "./mapBackgrounds";
