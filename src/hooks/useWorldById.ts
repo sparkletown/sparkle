@@ -10,7 +10,7 @@ type UseWorldEditResult = {
   isLoaded: boolean;
 };
 
-export const useWorldEdit: (worldId?: string) => UseWorldEditResult = (
+export const useWorldById: (worldId?: string) => UseWorldEditResult = (
   worldId
 ) => {
   const firestore = useFirestore();

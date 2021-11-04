@@ -59,7 +59,8 @@ $variants-enum: (
     text-decoration: none;
   }
 
-  &:focus {
+  &:focus,
+  &:focus:hover {
     outline: none;
     box-shadow: 0 0 0 2px opaque-white(0.25);
   }

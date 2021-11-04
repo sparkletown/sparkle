@@ -1,0 +1,48 @@
+@import "scss/constants";
+
+.SoundCloudRadio {
+  position: relative;
+  padding: 0.5em;
+
+  &__button {
+    display: block;
+    height: 40px;
+    width: 40px;
+    background-color: opaque-black(0.4);
+    border-radius: 20px;
+    margin: 1px $margin-right--navbar-links 1px 1px;
+
+    background-image: url(/assets/icons/navbar-link-radio.png);
+    background-size: 80px 40px;
+    animation: radioanim 2s steps(2) infinite;
+
+    cursor: pointer;
+    object-fit: contain;
+
+    &:hover {
+      box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &--off &__button {
+    background-image: url(/assets/icons/navbar-link-radio-off.png);
+    background-size: 40px 40px;
+    animation: none;
+  }
+
+  &__wrapper {
+    position: absolute;
+    top: 100%;
+    right: 0;
+  }
+
+  &--visible &__wrapper {
+    visibility: visible;
+    user-select: auto;
+  }
+
+  &--invisible &__wrapper {
+    visibility: hidden;
+    user-select: none;
+  }
+}
