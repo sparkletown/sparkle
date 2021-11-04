@@ -20,7 +20,7 @@ import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { AnyVenue, PartyMapVenue, RoomVisibility } from "types/venues";
+import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 
@@ -130,8 +130,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     editingRoom,
   ]);
 
-  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
-
   const {
     watch,
     register,
@@ -139,6 +137,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     errors,
     formState: { isSubmitting },
     setValue,
+    getValues,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -147,6 +146,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     defaultValues: {
       ...defaultValues,
       url: defaultValues.url ?? venueInsideUrl(venueId),
+      visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });
 
@@ -159,14 +159,14 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const [formError, setFormError] = useState(false);
 
   const onSubmit = useCallback(
-    async (vals: FormValues) => {
+    async (input: FormValues) => {
       if (!user) return;
 
       try {
         const roomValues: RoomInput = {
           ...editingRoom,
-          ...vals,
-          visibility: roomVisibility,
+          ...input,
+          visibility: input.visibility,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
@@ -175,13 +175,13 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
         Bugsnag.notify(e, (event) => {
           event.addMetadata("Admin::RoomsForm::onSubmit", {
             venueId,
-            vals,
+            vals: input,
             editingRoomIndex,
           });
         });
       }
     },
-    [user, history, venueId, editingRoomIndex, editingRoom, roomVisibility]
+    [user, history, venueId, editingRoomIndex, editingRoom]
   );
 
   useEffect(() => {
@@ -354,14 +354,12 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    <div className="input-title">
-                      Change label appearance (overrides global settings)
-                    </div>
                     <PortalVisibility
-                      updateRoomVisibility={updateRoomVisibility}
-                      visibilityState={
-                        editingRoom?.visibility ?? venue.roomVisibility
-                      }
+                      getValues={getValues}
+                      label="Change label appearance (overrides global settings)"
+                      name="visibility"
+                      register={register}
+                      setValue={setValue}
                     />
                   </div>
                 </div>

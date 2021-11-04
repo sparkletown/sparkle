@@ -14,18 +14,14 @@ import {
 import { updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import {
-  AnyVenue,
-  RoomVisibility,
-  VenueAdvancedConfig,
-  VenueTemplate,
-} from "types/venues";
+import { AnyVenue, VenueAdvancedConfig, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
 
+import { AdminSection } from "components/molecules/AdminSection";
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -45,6 +41,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   onSave,
 }) => {
   const {
+    getValues,
+    setValue,
     watch,
     formState: { dirty, isSubmitting },
     register,
@@ -74,23 +72,20 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
 
   const values = watch();
 
-  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
-
   const jukeboxToggleClasses = classNames("AdvancedSettings__form-field", {
     "mod--hidden": venue.template !== VenueTemplate.jazzbar,
   });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
-  const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
+  const updateAdvancedSettings = (input: VenueAdvancedConfig) => {
     if (!user) return;
 
     updateVenue_v2(
       {
         name: venue.name,
         worldId: venue.worldId,
-        ...data,
+        ...input,
         userStatuses,
-        roomVisibility,
       },
       user
     ).catch((e) => console.error(AdvancedSettings.name, e));
@@ -255,17 +250,18 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           )}
         </div>
 
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>{ROOM_TAXON.capital} appearance</Form.Label>
-          <div>
-            Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
-            the map
-          </div>
+        <AdminSection
+          withLabel
+          title={`${ROOM_TAXON.capital} appearance`}
+          subtitle={`Choose how you'd like your ${ROOMS_TAXON.lower} to appear on the map`}
+        >
           <PortalVisibility
-            updateRoomVisibility={updateRoomVisibility}
-            visibilityState={venue.roomVisibility}
+            getValues={getValues}
+            name="roomVisibility"
+            register={register}
+            setValue={setValue}
           />
-        </div>
+        </AdminSection>
 
         <div className="AdvancedSettings__form-field">
           <ButtonNG

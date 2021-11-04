@@ -13,7 +13,6 @@ export interface AdminInputProps
   subtext?: ReactNode | string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   errors?: FieldErrors<FieldValues>;
-  height?: string;
 }
 
 export const AdminInput: React.FC<AdminInputProps> = ({
@@ -22,7 +21,6 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   subtext,
   register,
   errors,
-  height,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -30,7 +28,6 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     () => (label ? generateId("AdminInput-" + name) : undefined),
     [label, name]
   );
-
   return (
     <p className="AdminInput">
       {label && (

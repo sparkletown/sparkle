@@ -70,6 +70,7 @@ export type RoomInput = Omit<Room, "image_url"> & {
   image_file?: FileList;
 };
 
+// @debt Since the additional 2 fields are optional, they can probably be moved to RoomInput
 export type RoomInput_v2 = Room & {
   venueName?: string;
   useUrl?: boolean;

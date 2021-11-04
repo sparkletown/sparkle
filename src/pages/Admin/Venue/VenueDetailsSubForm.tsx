@@ -24,7 +24,7 @@ import {
 import { createSlug } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, RoomVisibility, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
@@ -77,6 +77,7 @@ interface VenueDetailsSubFormProps
   editing?: boolean;
   formError: boolean;
   setFormError: (value: boolean) => void;
+  getValues: () => Record<string, unknown>;
 }
 
 export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
@@ -93,6 +94,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   onSubmit,
   handleSubmit,
   setValue,
+  getValues,
   formError,
   setFormError,
 }) => {
@@ -105,8 +107,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   const templateID = state.templatePage?.template.template;
 
   const defaultVenue = createJazzbar({});
-
-  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
 
   const renderVenueNameInput = () => {
     return !editing ? (
@@ -444,8 +444,10 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
       </h4>
       <div className="input-container">
         <PortalVisibility
-          updateRoomVisibility={updateRoomVisibility}
-          visibilityState={values.roomVisibility}
+          getValues={getValues}
+          name="roomVisibility"
+          register={register}
+          setValue={setValue}
         />
       </div>
     </>
@@ -596,17 +598,17 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   };
 
   const updateVenue = useCallback(
-    (values: Partial<FormValues>) =>
+    (input: Partial<FormValues>) =>
       void onSubmit(
         {
-          ...values,
-          iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
-          roomVisibility,
+          ...input,
+          iframeUrl: input.iframeUrl || DEFAULT_EMBED_URL,
+          roomVisibility: input.roomVisibility,
         },
         userStatuses,
         hasUserStatuses
       ),
-    [onSubmit, userStatuses, hasUserStatuses, roomVisibility]
+    [onSubmit, userStatuses, hasUserStatuses]
   );
 
   return (

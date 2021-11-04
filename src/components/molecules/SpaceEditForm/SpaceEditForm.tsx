@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
@@ -35,6 +35,7 @@ import { AdminSidebarFooter } from "components/organisms/AdminVenueView/componen
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
+import { AdminSection } from "components/molecules/AdminSection";
 import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
@@ -85,8 +86,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const venueId = useVenueId();
 
   const roomVenueId = room?.url?.split("/").pop();
-
-  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
 
   const {
     loading: isLoadingRoomVenue,
@@ -145,7 +144,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     ]
   );
 
-  const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    errors,
+  } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditSchema,
     defaultValues,
@@ -188,31 +195,33 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const [
     { loading: isUpdating, error: updateError },
     updateSelectedRoom,
-  ] = useAsyncFn(async () => {
-    if (!user || !venueId) return;
+  ] = useAsyncFn(
+    async (input) => {
+      if (!user || !venueId) return;
 
-    const roomData: RoomInput = {
-      ...(room as RoomInput),
-      ...(updatedRoom as RoomInput),
-      ...values,
-      visibility: roomVisibility,
-    };
+      const roomData: RoomInput = {
+        ...(room as RoomInput),
+        ...(updatedRoom as RoomInput),
+        ...values,
+        visibility: input.room.visibility,
+      };
 
-    await upsertRoom(roomData, venueId, user, roomIndex);
-    room.template && (await updateVenueRoom());
+      await upsertRoom(roomData, venueId, user, roomIndex);
+      room.template && (await updateVenueRoom());
 
-    onEdit && onEdit();
-  }, [
-    onEdit,
-    room,
-    roomIndex,
-    updateVenueRoom,
-    updatedRoom,
-    user,
-    values,
-    venueId,
-    roomVisibility,
-  ]);
+      onEdit?.();
+    },
+    [
+      onEdit,
+      room,
+      roomIndex,
+      updateVenueRoom,
+      updatedRoom,
+      user,
+      values,
+      venueId,
+    ]
+  );
 
   const [
     { loading: isDeleting, error: deleteError },
@@ -301,13 +310,18 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             )}
           </div>
 
-          <Form.Label>
-            Change label appearance (overrides global settings)
-          </Form.Label>
-          <PortalVisibility
-            updateRoomVisibility={updateRoomVisibility}
-            visibilityState={room?.visibility ?? roomVenue?.roomVisibility}
-          />
+          <AdminSection
+            withLabel
+            title="Change label appearance"
+            subtitle="(overrides global settings)"
+          >
+            <PortalVisibility
+              getValues={getValues}
+              name="room.visibility"
+              register={register}
+              setValue={setValue}
+            />
+          </AdminSection>
 
           {!roomVenue && fetchError && (
             <>
