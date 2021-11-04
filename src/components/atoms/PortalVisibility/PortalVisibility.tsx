@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { get } from "lodash";
 
-import { VISIBILITY_LABEL_OPTIONS } from "settings";
+import { LABEL_VISIBILITY_OPTIONS } from "settings";
 
 import { RoomVisibility } from "types/venues";
 
@@ -34,7 +34,7 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
 
   const renderedItems = useMemo(
     () =>
-      Object.values(VISIBILITY_LABEL_OPTIONS).map(
+      Object.values(LABEL_VISIBILITY_OPTIONS).map(
         ({ subtitle, label, value }) => {
           const isSelected = isDefined(selected) && selected === value;
           const itemClasses = classNames({

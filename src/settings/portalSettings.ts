@@ -14,7 +14,7 @@ export type VisibilityLabelOption = {
   subtitle?: { text: string; icon: IconDefinition }[];
 };
 
-export const VISIBILITY_LABEL_OPTIONS: Record<
+export const LABEL_VISIBILITY_OPTIONS: Record<
   // @debt: please add a clarification (or link to such) as to why unclickable is excluded
   Exclude<RoomVisibility, RoomVisibility.unclickable>,
   VisibilityLabelOption
