@@ -111,7 +111,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         {/* @debt sort these out. Preferably using some kind of enum */}
         {hasSelectedThread && (
           <ChatboxThreadControls
-            text="asking a question"
+            text="Replying to"
             closeThread={unselectOption}
           />
         )}
