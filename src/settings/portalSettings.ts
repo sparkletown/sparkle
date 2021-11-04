@@ -8,40 +8,37 @@ import { SPACE_TAXON } from "settings/taxonomy";
 
 import { RoomVisibility } from "types/venues";
 
-type VisibilityOption = {
+export type VisibilityLabelOption = {
   label: string;
   value: RoomVisibility;
   subtitle?: { text: string; icon: IconDefinition }[];
 };
 
-export type LabelVisibilityOptions = {
-  noLabel: VisibilityOption;
-  hoverTitle: VisibilityOption;
-  countOnly: VisibilityOption;
-  titleAndCount: VisibilityOption;
-};
-
-export const LABEL_VISIBILITY_OPTIONS: LabelVisibilityOptions = {
-  noLabel: {
+export const VISIBILITY_LABEL_OPTIONS: Record<
+  // @debt: please add a clarification (or link to such) as to why unclickable is excluded
+  Exclude<RoomVisibility, RoomVisibility.unclickable>,
+  VisibilityLabelOption
+> = {
+  [RoomVisibility.none]: {
     label: "No Label",
     value: RoomVisibility.none,
   },
-  hoverTitle: {
+  [RoomVisibility.hover]: {
     label: "Show title on hover",
     value: RoomVisibility.hover,
     subtitle: [{ text: `${SPACE_TAXON.title} title`, icon: solidSun }],
   },
-  countOnly: {
+  [RoomVisibility.count]: {
     label: "Show people count only",
     value: RoomVisibility.count,
     subtitle: [{ text: "123", icon: solidUsers }],
   },
-  titleAndCount: {
+  [RoomVisibility.nameCount]: {
     label: "Show title and people count",
     value: RoomVisibility.nameCount,
     subtitle: [
       { text: `${SPACE_TAXON.title} title`, icon: solidUsers },
-      { text: "123", icon: solidSun },
+      { text: "12345", icon: solidSun },
     ],
   },
 };

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Form, Spinner } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
@@ -19,7 +19,6 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
-import { RoomVisibility } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
@@ -79,8 +78,6 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const venueId = useVenueId();
 
-  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
-
   const portalId = room?.url?.split("/").pop();
 
   const { loading: isLoadingPortal, value: portal } = useAsync(async () => {
@@ -108,7 +105,15 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     [room.image_url, portal, room?.visibility]
   );
 
-  const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    errors,
+  } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditNGSchema,
     defaultValues,
@@ -171,31 +176,33 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     values.iframeUrl,
   ]);
 
-  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
-    if (!user || !venueId) return;
+  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
+    async (input) => {
+      if (!user || !venueId) return;
 
-    const portalData: RoomInput = {
-      ...(room as RoomInput),
-      ...(updatedRoom as RoomInput),
-      visibility: roomVisibility,
-      ...values,
-    };
+      const portalData: RoomInput = {
+        ...(room as RoomInput),
+        ...(updatedRoom as RoomInput),
+        visibility: input.roomVisibility,
+        ...values,
+      };
 
-    await upsertRoom(portalData, venueId, user, roomIndex);
-    await updateVenueRoom();
+      await upsertRoom(portalData, venueId, user, roomIndex);
+      await updateVenueRoom();
 
-    onEdit?.();
-  }, [
-    onEdit,
-    room,
-    roomIndex,
-    updateVenueRoom,
-    updatedRoom,
-    user,
-    values,
-    venueId,
-    roomVisibility,
-  ]);
+      onEdit?.();
+    },
+    [
+      onEdit,
+      room,
+      roomIndex,
+      updateVenueRoom,
+      updatedRoom,
+      user,
+      values,
+      venueId,
+    ]
+  );
 
   const [
     { loading: isDeleting, error },
@@ -286,10 +293,12 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Appearance" isOpened>
-          <AdminSection title="Default portal appearence">
+          <AdminSection title="Default portal appearance">
             <PortalVisibility
-              updateRoomVisibility={updateRoomVisibility}
-              visibilityState={room?.visibility}
+              getValues={getValues}
+              name="roomVisibility"
+              register={register}
+              setValue={setValue}
             />
           </AdminSection>
           <AdminSection title="Upload a highlight image">

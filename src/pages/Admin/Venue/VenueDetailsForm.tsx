@@ -64,6 +64,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
     watch,
     formState,
     register,
+    getValues,
     setValue,
     control,
     handleSubmit,
@@ -198,6 +199,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
             <VenueDetailsSubForm
               venueId={venueId}
               setValue={setValue}
+              getValues={getValues}
               state={state}
               previous={previous}
               sovereignVenue={sovereignVenue}

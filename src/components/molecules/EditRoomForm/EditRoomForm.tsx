@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -20,6 +20,8 @@ import {
   AdminSidebarFooterProps,
 } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 
+import { AdminSection } from "components/molecules/AdminSection";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
@@ -37,6 +39,7 @@ interface EditRoomFormProps extends AdminSidebarFooterProps {
   venueVisibility?: RoomVisibility;
 }
 
+// @debt Is this form used anywhere anymore? Remove if not so
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   room,
   updatedRoom,
@@ -51,9 +54,14 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
 
   const venueId = useVenueId();
 
-  const [roomVisibility, updateRoomVisibility] = useState<RoomVisibility>();
-
-  const { register, handleSubmit, setValue, watch, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    errors,
+  } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditSchema,
     defaultValues: {
@@ -75,28 +83,23 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
     [setValue]
   );
 
-  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
-    if (!user || !venueId) return;
+  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
+    async (input) => {
+      if (!user || !venueId) return;
 
-    const roomData: RoomInput = {
-      ...(room as RoomInput),
-      ...(updatedRoom as RoomInput),
-      ...values,
-      visibility: roomVisibility,
-    };
+      const roomData: RoomInput = {
+        ...(room as RoomInput),
+        ...(updatedRoom as RoomInput),
+        ...values,
+        visibility: input.visibility,
+      };
 
-    await upsertRoom(roomData, venueId, user, roomIndex);
-    onEdit && onEdit();
-  }, [
-    onEdit,
-    room,
-    roomIndex,
-    updatedRoom,
-    user,
-    values,
-    venueId,
-    roomVisibility,
-  ]);
+      await upsertRoom(roomData, venueId, user, roomIndex);
+
+      onEdit?.();
+    },
+    [onEdit, room, roomIndex, updatedRoom, user, values, venueId]
+  );
 
   const [
     { loading: isDeleting, error },
@@ -183,13 +186,18 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
           <span className="input-error">{errors.image_url.message}</span>
         )}
 
-        <Form.Label>
-          Change label appearance (overrides global settings)
-        </Form.Label>
-        <PortalVisibility
-          updateRoomVisibility={updateRoomVisibility}
-          visibilityState={room.visibility ?? venueVisibility}
-        />
+        <AdminSection
+          withLabel
+          title="Change label appearance"
+          subtitle="(overrides global settings)"
+        >
+          <PortalVisibility
+            getValues={getValues}
+            name="visibility"
+            register={register}
+            setValue={setValue}
+          />
+        </AdminSection>
 
         <ButtonNG
           disabled={isUpdating || isDeleting}
