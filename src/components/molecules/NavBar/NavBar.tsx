@@ -60,12 +60,14 @@ export interface NavBarPropsType {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
+  hideLoginButton?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
+  hideLoginButton,
 }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
@@ -255,7 +257,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               </div>
             )}
 
-            {!user && <NavBarLogin />}
+            {!hideLoginButton && !user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
