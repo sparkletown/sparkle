@@ -11,7 +11,10 @@ import { AuditoriumVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
+import {
+  useAuditoriumGrid,
+  useAuditoriumSection as useAuditoriumSectionDI,
+} from "hooks/auditorium";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
@@ -28,9 +31,13 @@ import "./Section.scss";
 
 export interface SectionProps {
   venue: WithId<AuditoriumVenue>;
+  useAuditoriumSection?: typeof useAuditoriumSectionDI;
 }
 
-export const Section: React.FC<SectionProps> = ({ venue }) => {
+export const Section: React.FC<SectionProps> = ({
+  venue,
+  useAuditoriumSection = useAuditoriumSectionDI,
+}) => {
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
     venue.isReactionsMuted ?? false
   );

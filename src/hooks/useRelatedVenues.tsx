@@ -27,7 +27,7 @@ export interface RelatedVenuesContextState {
   ) => WithId<AnyVenue> | undefined;
 }
 
-const RelatedVenuesContext = createContext<
+export const RelatedVenuesContext = createContext<
   RelatedVenuesContextState | undefined
 >(undefined);
 

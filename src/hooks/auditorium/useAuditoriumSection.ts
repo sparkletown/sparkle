@@ -12,7 +12,7 @@ import {
   unsetAuditoriumSectionSeat,
 } from "api/venue";
 
-import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumSeatedUser, AuditoriumSection } from "types/auditorium";
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
@@ -28,36 +28,33 @@ import { useAuditoriumSeatedUsers } from "hooks/useAuditoriumSeatedUsers";
 import { useGetUserByPosition } from "../useGetUserByPosition";
 import { useUser } from "../useUser";
 
+export interface UseCommonAuditoriumSectionProps {
+  venue: WithId<AuditoriumVenue>;
+  sectionId: string;
+  section?: WithId<AuditoriumSection>;
+  status?: string;
+  seatedUsers: WithId<AuditoriumSeatedUser>[];
+}
 export interface UseAuditoriumSectionProps {
   venue: WithId<AuditoriumVenue>;
   sectionId: string;
 }
 
-export const useAuditoriumSection = ({
+export const useCommonAuditoriumSection = ({
   venue,
   sectionId,
-}: UseAuditoriumSectionProps) => {
+  section,
+  status,
+  seatedUsers,
+}: UseCommonAuditoriumSectionProps) => {
   const {
     id: venueId,
     auditoriumColumns: venueColumnsCount,
     auditoriumRows: venueRowsCount,
   } = venue;
 
-  const firestore = useFirestore();
-
   const { userWithId } = useUser();
   const userId = userWithId?.id;
-
-  const sectionRef = firestore
-    .collection("venues")
-    .doc(venueId)
-    .collection("sections")
-    .doc(sectionId)
-    .withConverter(withIdConverter<AuditoriumSection>());
-
-  const { data: section, status } = useFirestoreDocData<
-    WithId<AuditoriumSection>
-  >(sectionRef);
 
   const isSectionLoaded = status !== "loading";
 
@@ -73,8 +70,6 @@ export const useAuditoriumSection = ({
   const screenHeightInSeats =
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
   const screenWidthInSeats = videoWidthInSeats;
-
-  const seatedUsers = useAuditoriumSeatedUsers({ venueId, sectionId });
 
   const isUserSeated = useMemo(
     () => seatedUsers?.some((seatedUser) => seatedUser.id === userId),
@@ -148,4 +143,35 @@ export const useAuditoriumSection = ({
     leaveSeat,
     checkIfSeat,
   };
+};
+
+export const useAuditoriumSection = ({
+  venue,
+  sectionId,
+}: UseAuditoriumSectionProps) => {
+  const firestore = useFirestore();
+
+  const sectionRef = firestore
+    .collection("venues")
+    .doc(venue.id)
+    .collection("sections")
+    .doc(sectionId)
+    .withConverter(withIdConverter<AuditoriumSection>());
+
+  const { data: section, status } = useFirestoreDocData<
+    WithId<AuditoriumSection>
+  >(sectionRef);
+
+  const seatedUsers = useAuditoriumSeatedUsers({
+    venueId: venue.id,
+    sectionId,
+  });
+
+  return useCommonAuditoriumSection({
+    venue,
+    sectionId,
+    section,
+    status,
+    seatedUsers,
+  });
 };

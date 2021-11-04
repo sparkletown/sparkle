@@ -17,9 +17,9 @@ export interface ReactionsContextState {
   reactions: Reaction[];
 }
 
-const ReactionsContext = createContext<ReactionsContextState | undefined>(
-  undefined
-);
+export const ReactionsContext = createContext<
+  ReactionsContextState | undefined
+>(undefined);
 
 export interface ReactionsProviderProps {
   venueId?: string;

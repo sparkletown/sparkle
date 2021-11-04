@@ -35,6 +35,8 @@ import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
+import { AuditoriumDemo } from "components/templates/Auditorium/Auditorium";
+
 import { Provided } from "components/organisms/AppRouter/Provided";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -120,6 +122,8 @@ export const AppRouter: React.FC = () => {
       <Suspense fallback={<LoadingPage />}>
         <Switch>
           <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
+
+          <Route path="/demo-me-this" component={AuditoriumDemo} />
 
           <Route path={ACCOUNT_ROOT_URL}>
             <Provided withRelatedVenues>
