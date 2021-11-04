@@ -24,6 +24,7 @@ import { Room } from "types/rooms";
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { isExternalPortal } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -268,14 +269,19 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             errors={errors}
           />
 
-          <AdminInput
-            name="room.url"
-            autoComplete="off"
-            label={`${ROOM_TAXON.capital} url`}
-            placeholder={`${ROOM_TAXON.capital} url`}
-            register={register}
-            errors={errors}
-          />
+          {isExternalPortal(room) ? (
+            <AdminInput
+              name="room.url"
+              autoComplete="off"
+              label={`${ROOM_TAXON.capital} url`}
+              placeholder={`${ROOM_TAXON.capital} url`}
+              register={register}
+              errors={errors}
+            />
+          ) : (
+            // NOTE: Save button doesn't work if the value is missing
+            <input name="room.url" type="hidden" ref={register} />
+          )}
 
           <div>
             <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
