@@ -150,7 +150,7 @@ const styles: Record<string, CSSProperties> = {
     height: "100%",
     display: "flex",
     position: "relative",
-    border: "1px solid white",
+    border: " 1px solid var(--content--over)",
   },
   resizeTab: {
     position: "absolute",
