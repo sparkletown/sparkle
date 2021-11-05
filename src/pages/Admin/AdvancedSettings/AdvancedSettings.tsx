@@ -4,12 +4,7 @@ import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import {
-  DEFAULT_USER_STATUS,
-  DISABLED_DUE_TO_1253,
-  ROOM_TAXON,
-  ROOMS_TAXON,
-} from "settings";
+import { DEFAULT_USER_STATUS, DISABLED_DUE_TO_1253 } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -21,12 +16,10 @@ import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
 
-import { AdminSection } from "components/molecules/AdminSection";
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
-import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import "./AdvancedSettings.scss";
@@ -41,8 +34,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   onSave,
 }) => {
   const {
-    getValues,
-    setValue,
     watch,
     formState: { dirty, isSubmitting },
     register,
@@ -249,19 +240,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             </>
           )}
         </div>
-
-        <AdminSection
-          withLabel
-          title={`${ROOM_TAXON.capital} appearance`}
-          subtitle={`Choose how you'd like your ${ROOMS_TAXON.lower} to appear on the map`}
-        >
-          <PortalVisibility
-            getValues={getValues}
-            name="roomVisibility"
-            register={register}
-            setValue={setValue}
-          />
-        </AdminSection>
 
         <div className="AdvancedSettings__form-field">
           <ButtonNG
