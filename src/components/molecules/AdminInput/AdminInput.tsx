@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
+import { get } from "lodash";
 
 import { generateId } from "utils/string";
 
@@ -22,11 +23,12 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   errors,
   ...inputProps
 }) => {
-  const error = errors?.[name];
+  const error = get(errors, name);
   const id = useMemo(
     () => (label ? generateId("AdminInput-" + name) : undefined),
     [label, name]
   );
+
   return (
     <p className="AdminInput">
       {label && (

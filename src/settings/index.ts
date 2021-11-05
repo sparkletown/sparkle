@@ -33,6 +33,7 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
 export * from "./mapBackgrounds";
@@ -679,3 +680,5 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
+
+export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;

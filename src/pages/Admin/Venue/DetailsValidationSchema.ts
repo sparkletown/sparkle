@@ -14,9 +14,9 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
+import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
-import { VenueTemplate } from "types/venues";
+import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import {
   roomTitleSchema,
@@ -48,7 +48,7 @@ export const validationSchema = Yup.object()
               .test(
                 "name",
                 "Must have alphanumeric characters",
-                (val: string) => createUrlSafeName(val).length > 0
+                (val: string) => createSlug(val).length > 0
               )
               .test(
                 "name",
@@ -59,7 +59,7 @@ export const validationSchema = Yup.object()
                     await firebase
                       .firestore()
                       .collection("venues")
-                      .doc(createUrlSafeName(val))
+                      .doc(createSlug(val))
                       .get()
                   ).exists
               )
@@ -99,6 +99,9 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
     iframeUrl: Yup.string().notRequired(),
+    roomVisibility: Yup.mixed()
+      .oneOf(Object.values(RoomVisibility))
+      .notRequired(),
 
     width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
     height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),

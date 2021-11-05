@@ -137,6 +137,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     errors,
     formState: { isSubmitting },
     setValue,
+    getValues,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -145,6 +146,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     defaultValues: {
       ...defaultValues,
       url: defaultValues.url ?? venueInsideUrl(venueId),
+      visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });
 
@@ -157,13 +159,13 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const [formError, setFormError] = useState(false);
 
   const onSubmit = useCallback(
-    async (vals: FormValues) => {
+    async (input: FormValues) => {
       if (!user) return;
 
       try {
         const roomValues: RoomInput = {
           ...editingRoom,
-          ...vals,
+          ...input,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
@@ -172,7 +174,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
         Bugsnag.notify(e, (event) => {
           event.addMetadata("Admin::RoomsForm::onSubmit", {
             venueId,
-            vals,
+            vals: input,
             editingRoomIndex,
           });
         });
@@ -351,10 +353,13 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    <div className="input-title">
-                      Change label appearance (overrides global settings)
-                    </div>
-                    <PortalVisibility register={register} />
+                    <PortalVisibility
+                      getValues={getValues}
+                      label="Change label appearance (overrides global settings)"
+                      name="visibility"
+                      register={register}
+                      setValue={setValue}
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">

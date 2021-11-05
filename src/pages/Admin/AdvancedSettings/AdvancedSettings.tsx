@@ -4,12 +4,7 @@ import { useForm } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import {
-  DEFAULT_USER_STATUS,
-  DISABLED_DUE_TO_1253,
-  ROOM_TAXON,
-  ROOMS_TAXON,
-} from "settings";
+import { DEFAULT_USER_STATUS, DISABLED_DUE_TO_1253 } from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -73,14 +68,14 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
-  const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
+  const updateAdvancedSettings = (input: VenueAdvancedConfig) => {
     if (!user) return;
 
     updateVenue_v2(
       {
         name: venue.name,
         worldId: venue.worldId,
-        ...data,
+        ...input,
         userStatuses,
       },
       user
@@ -244,19 +239,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
               </ButtonNG>
             </>
           )}
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>{ROOM_TAXON.capital} appearance</Form.Label>
-          <div>
-            Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
-            the map
-          </div>
-          <Form.Control as="select" custom name="roomVisibility" ref={register}>
-            <option value="hover">Hover</option>
-            <option value="count">Count</option>
-            <option value="count/name">Count and names</option>
-          </Form.Control>
         </div>
 
         <div className="AdvancedSettings__form-field">

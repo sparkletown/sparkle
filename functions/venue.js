@@ -17,6 +17,7 @@ const VenueTemplate = {
   artcar: "artcar",
   artpiece: "artpiece",
   audience: "audience",
+  auditorium: "auditorium",
   conversationspace: "conversationspace",
   embeddable: "embeddable",
   firebarrel: "firebarrel",
@@ -86,7 +87,11 @@ const IFRAME_TEMPLATES = [
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
+const HAS_REACTIONS_TEMPLATES = [
+  VenueTemplate.audience,
+  VenueTemplate.jazzbar,
+  VenueTemplate.auditorium,
+];
 
 // @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
@@ -854,8 +859,13 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  if (data.name) {
+    updated.name = data.name;
+  }
+
   if (data.description || data.description === "") {
-    updated.config.landingPageConfig.description = data.description;
+    updated.config.landingPageConfig.description =
+      data.description && data.description.text;
   }
 
   if (data.logoImageUrl) {
