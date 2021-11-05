@@ -45,7 +45,6 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       <ButtonNG
         variant="dark"
         isLink
-        disabled={!world.slug}
         linkTo={adminWorldSpacesUrl(world.slug)}
         iconName={faSignInAlt}
         className="WorldCard__button"
@@ -57,7 +56,6 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
         linkTo={adminWorldUrl(world.slug)}
         variant="dark"
         iconName={faCog}
-        disabled={!world.slug}
         className="WorldCard__button"
       >
         Configure world
