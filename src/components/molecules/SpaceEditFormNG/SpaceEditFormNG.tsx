@@ -139,7 +139,10 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const updateVenueRoom = useCallback(async () => {
     if (!user || !portalId) return;
 
-    const embedUrl = convertToEmbeddableUrl({ url: values.iframeUrl });
+    const embedUrl = convertToEmbeddableUrl({
+      url: values.iframeUrl,
+      autoPlay: values.autoPlay,
+    });
 
     await updateVenueNG(
       {

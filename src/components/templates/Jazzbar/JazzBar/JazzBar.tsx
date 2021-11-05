@@ -52,7 +52,10 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
-  const embedIframeUrl = convertToEmbeddableUrl({ url: venue.iframeUrl });
+  const embedIframeUrl = convertToEmbeddableUrl({
+    url: venue.iframeUrl,
+    autoPlay: venue.autoPlay,
+  });
   const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
 
