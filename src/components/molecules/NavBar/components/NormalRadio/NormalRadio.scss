@@ -1,8 +1,13 @@
 @import "scss/constants";
 
-.SoundCloudRadio {
-  position: relative;
+.NormalRadio {
+  // @debt replace the popover component from Bootstrap with something else, then remove these !important workarounds
+  transform: none !important;
+  position: relative !important;
+  top: $navbar-height !important;
+
   padding: font-size--parent(0.5);
+  width: 100%;
 
   &__button {
     @include square-size(40px);
@@ -15,33 +20,20 @@
 
     background-image: url(/assets/icons/navbar-link-radio.png);
     background-size: 80px 40px;
-    // NOTE: Currently station is displayed in iframe so no info exists to know when it is on/off
-    // animation: radioanim 2s steps(2) infinite;
+    animation: radioanim 2s steps(2) infinite;
+
+    &:hover {
+      box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
+    }
 
     &--off {
       background-image: url(/assets/icons/navbar-link-radio-off.png);
       background-size: 40px 40px;
       animation: none;
     }
-
-    &:hover {
-      box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
-    }
   }
 
-  &__wrapper {
-    position: absolute;
-    top: 100%;
-    right: 0;
-  }
-
-  &--visible &__wrapper {
-    visibility: visible;
-    user-select: auto;
-  }
-
-  &--invisible &__wrapper {
-    visibility: hidden;
-    user-select: none;
+  .popover {
+    height: unset;
   }
 }

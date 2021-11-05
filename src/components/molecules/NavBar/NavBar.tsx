@@ -25,8 +25,8 @@ import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
+import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
@@ -253,33 +253,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 )}
 
                 {showNormalRadio && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={
-                      <Popover id="radio-popover">
-                        <Popover.Content>
-                          <RadioModal
-                            {...{
-                              volume,
-                              setVolume,
-                              title: currentVenue?.radioTitle,
-                            }}
-                            onEnableHandler={handleRadioEnable}
-                            isRadioPlaying={isRadioPlaying}
-                          />
-                        </Popover.Content>
-                      </Popover>
-                    }
-                    rootClose={true}
+                  <NormalRadio
+                    volume={volume}
+                    setVolume={setVolume}
+                    title={currentVenue?.radioTitle}
+                    onEnableHandler={handleRadioEnable}
+                    radioPlaying={isRadioPlaying}
                     defaultShow={showRadioOverlay}
-                  >
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
-                    />
-                  </OverlayTrigger>
+                  />
                 )}
 
                 {showSoundCloudRadio && (

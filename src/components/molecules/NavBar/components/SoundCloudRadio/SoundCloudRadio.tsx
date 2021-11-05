@@ -1,5 +1,7 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
+
+import { generateId } from "utils/string";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -14,6 +16,8 @@ export const SoundCloudRadio: React.FC<SoundCloudRadioProps> = ({
   station,
   volume,
 }) => {
+  const id = useMemo(() => generateId("SoundCloudRadio-player"), []);
+
   const [visible, setVisible] = useState(false);
 
   const toggleVisible = useCallback(
@@ -29,14 +33,19 @@ export const SoundCloudRadio: React.FC<SoundCloudRadioProps> = ({
     "SoundCloudRadio--invisible": !visible,
   });
 
+  const buttonClasses = classNames({
+    "SoundCloudRadio__button SoundCloudRadio__button--on": volume,
+    "SoundCloudRadio__button SoundCloudRadio__button--off": !volume,
+  });
+
   return (
     <div className={parentClasses}>
-      <ButtonNG className="SoundCloudRadio__button" onClick={toggleVisible} />
+      <ButtonNG className={buttonClasses} onClick={toggleVisible} />
 
       <div className="SoundCloudRadio__wrapper">
         <iframe
-          title="venueRadio"
-          id="sound-cloud-player"
+          id={id}
+          title="radio"
           scrolling="no"
           allow="autoplay"
           src={`https://w.soundcloud.com/player/?url=${station}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
