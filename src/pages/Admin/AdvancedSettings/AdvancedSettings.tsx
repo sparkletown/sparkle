@@ -21,10 +21,12 @@ import { advancedSettingsSchema } from "utils/validations";
 
 import { useUser } from "hooks/useUser";
 
+import { AdminSection } from "components/molecules/AdminSection";
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import "./AdvancedSettings.scss";
@@ -39,6 +41,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   onSave,
 }) => {
   const {
+    getValues,
+    setValue,
     watch,
     formState: { dirty, isSubmitting },
     register,
@@ -73,14 +77,14 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
   });
 
   // @debt consider useAsyncFn for updating to back end and displaying loading/error in the UI
-  const updateAdvancedSettings = (data: VenueAdvancedConfig) => {
+  const updateAdvancedSettings = (input: VenueAdvancedConfig) => {
     if (!user) return;
 
     updateVenue_v2(
       {
         name: venue.name,
         worldId: venue.worldId,
-        ...data,
+        ...input,
         userStatuses,
       },
       user
@@ -246,18 +250,18 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           )}
         </div>
 
-        <div className="AdvancedSettings__form-field">
-          <Form.Label>{ROOM_TAXON.capital} appearance</Form.Label>
-          <div>
-            Choose how you&apos; d like your {ROOMS_TAXON.lower} to appear on
-            the map
-          </div>
-          <Form.Control as="select" custom name="roomVisibility" ref={register}>
-            <option value="hover">Hover</option>
-            <option value="count">Count</option>
-            <option value="count/name">Count and names</option>
-          </Form.Control>
-        </div>
+        <AdminSection
+          withLabel
+          title={`${ROOM_TAXON.capital} appearance`}
+          subtitle={`Choose how you'd like your ${ROOMS_TAXON.lower} to appear on the map`}
+        >
+          <PortalVisibility
+            getValues={getValues}
+            name="roomVisibility"
+            register={register}
+            setValue={setValue}
+          />
+        </AdminSection>
 
         <div className="AdvancedSettings__form-field">
           <ButtonNG

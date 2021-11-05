@@ -19,10 +19,12 @@ import { useWorldEdit } from "hooks/useWorldEdit";
 import { useWorldEditParams } from "hooks/useWorldEditParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
+import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import { Dropdown } from "components/atoms/Dropdown";
 import ImageInput from "components/atoms/ImageInput";
 
@@ -50,6 +52,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const { user } = useUser();
 
   const { worldId } = useWorldEditParams();
+
   const { worldVenuesIds, worldParentVenues } = useWorldVenues(
     worldId ?? venue?.worldId ?? ""
   );
@@ -319,6 +322,22 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     [errors.parentId, parentIdDropdownOptions, register, values.parentId]
   );
 
+  const navigateToHome = useCallback(() => {
+    history.push(
+      adminWorldSpacesUrl(worldId ?? values?.worldId ?? venue?.worldId)
+    );
+  }, [history, worldId, values?.worldId, venue?.worldId]);
+
+  const saveButtonProps: ButtonProps = useMemo(
+    () => ({
+      type: "submit",
+      variant: "primary",
+      disabled: isSubmitting || isSaving || !dirty,
+      loading: isSubmitting || isSaving,
+    }),
+    [dirty, isSaving, isSubmitting]
+  );
+
   return (
     <Form onSubmit={handleSubmit(setVenue)} className="DetailsForm">
       <div className="DetailsForm__wrapper">
@@ -345,20 +364,14 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         {renderLogoUpload()}
         {renderedParentIdDropdown}
       </div>
-
       <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
       <SubmitError error={submitError} />
 
-      <div className="DetailsForm__footer">
-        <ButtonNG
-          variant="primary"
-          type="submit"
-          disabled={isSubmitting || isSaving || !dirty}
-          loading={isSubmitting || isSaving}
-        >
-          {venueId ? "Update Space" : "Create Space"}
-        </ButtonNG>
-      </div>
+      <AdminSidebarFooter
+        onClickHome={navigateToHome}
+        saveButtonProps={saveButtonProps}
+        saveButtonText={venueId ? "Update Space" : "Create Space"}
+      />
     </Form>
   );
 };

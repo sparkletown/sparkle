@@ -3,7 +3,11 @@ import { useCss } from "react-use";
 import classNames from "classnames";
 import { format } from "date-fns";
 
-import { DEFAULT_VENUE_BANNER_COLOR, IFRAME_ALLOW } from "settings";
+import {
+  DATEFNS_TIME_AND_DATE_FORMAT,
+  DEFAULT_VENUE_BANNER_COLOR,
+  IFRAME_ALLOW,
+} from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
@@ -156,11 +160,13 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
 
           <div>
             <span className="title">Created At:</span>
-            {venue.createdAt && format(venue.createdAt, "yyyy-MM-dd HH:mm:ss")}
+            {venue.createdAt &&
+              format(venue.createdAt, DATEFNS_TIME_AND_DATE_FORMAT)}
           </div>
           <div>
             <span className="title">Updated At:</span>
-            {venue.updatedAt && format(venue.updatedAt, "yyyy-MM-dd HH:mm:ss")}
+            {venue.updatedAt &&
+              format(venue.updatedAt, DATEFNS_TIME_AND_DATE_FORMAT)}
           </div>
         </div>
         <div className="content-group" style={{ display: "flex" }}>

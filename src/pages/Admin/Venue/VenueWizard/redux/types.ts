@@ -9,6 +9,7 @@ export interface WizardState {
   description?: string;
   showGrid?: boolean;
   columns?: number;
+  worldId?: string;
 }
 
 export interface SetBannerUrl {
@@ -29,6 +30,7 @@ export interface SetFormValues {
     description?: string;
     showGrid?: boolean;
     columns?: number;
+    worldId?: string;
   };
 }
 

@@ -24,6 +24,7 @@ import { Room } from "types/rooms";
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { isExternalPortal } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -34,6 +35,7 @@ import { AdminSidebarFooter } from "components/organisms/AdminVenueView/componen
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
+import { AdminSection } from "components/molecules/AdminSection";
 import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
@@ -117,6 +119,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
+        autoPlay: roomVenue?.autoPlay ?? false,
       },
     }),
     [
@@ -136,11 +139,20 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       roomVenue?.showReactions,
       roomVenue?.showShoutouts,
       roomVenue?.zoomUrl,
+      roomVenue?.autoPlay,
       venueVisibility,
     ]
   );
 
-  const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    errors,
+  } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditSchema,
     defaultValues,
@@ -183,29 +195,33 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const [
     { loading: isUpdating, error: updateError },
     updateSelectedRoom,
-  ] = useAsyncFn(async () => {
-    if (!user || !venueId) return;
+  ] = useAsyncFn(
+    async (input) => {
+      if (!user || !venueId) return;
 
-    const roomData: RoomInput = {
-      ...(room as RoomInput),
-      ...(updatedRoom as RoomInput),
-      ...values,
-    };
+      const roomData: RoomInput = {
+        ...(room as RoomInput),
+        ...(updatedRoom as RoomInput),
+        ...values,
+        visibility: input.room.visibility,
+      };
 
-    await upsertRoom(roomData, venueId, user, roomIndex);
-    room.template && (await updateVenueRoom());
+      await upsertRoom(roomData, venueId, user, roomIndex);
+      room.template && (await updateVenueRoom());
 
-    onEdit && onEdit();
-  }, [
-    onEdit,
-    room,
-    roomIndex,
-    updateVenueRoom,
-    updatedRoom,
-    user,
-    values,
-    venueId,
-  ]);
+      onEdit?.();
+    },
+    [
+      onEdit,
+      room,
+      roomIndex,
+      updateVenueRoom,
+      updatedRoom,
+      user,
+      values,
+      venueId,
+    ]
+  );
 
   const [
     { loading: isDeleting, error: deleteError },
@@ -262,14 +278,19 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             errors={errors}
           />
 
-          <AdminInput
-            name="room.url"
-            autoComplete="off"
-            label={`${ROOM_TAXON.capital} url`}
-            placeholder={`${ROOM_TAXON.capital} url`}
-            register={register}
-            errors={errors}
-          />
+          {isExternalPortal(room) ? (
+            <AdminInput
+              name="room.url"
+              autoComplete="off"
+              label={`${ROOM_TAXON.capital} url`}
+              placeholder={`${ROOM_TAXON.capital} url`}
+              register={register}
+              errors={errors}
+            />
+          ) : (
+            // NOTE: Save button doesn't work if the value is missing
+            <input name="room.url" type="hidden" ref={register} />
+          )}
 
           <div>
             <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
@@ -289,10 +310,18 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             )}
           </div>
 
-          <Form.Label>
-            Change label appearance (overrides global settings)
-          </Form.Label>
-          <PortalVisibility name="room.visibility" register={register} />
+          <AdminSection
+            withLabel
+            title="Change label appearance"
+            subtitle="(overrides global settings)"
+          >
+            <PortalVisibility
+              getValues={getValues}
+              name="room.visibility"
+              register={register}
+              setValue={setValue}
+            />
+          </AdminSection>
 
           {!roomVenue && fetchError && (
             <>
@@ -349,6 +378,12 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         {errors?.venue?.iframeUrl}
                       </span>
                     )}
+                    <AdminCheckbox
+                      variant="toggler"
+                      name="venue.autoPlay"
+                      register={register}
+                      label="Enable autoplay"
+                    />
                   </>
                 )}
 
