@@ -32,7 +32,7 @@ export const AdminDashboard: React.FC = () => {
 
   const { worldSlug } = useWorldEditParams();
 
-  const { world, isWorldLoaded } = useWorldBySlug(worldSlug);
+  const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 
   const venues = world
     ? ownedVenues.filter((venue) => venue.worldId === world.id)

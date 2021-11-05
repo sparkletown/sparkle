@@ -61,6 +61,7 @@ export const createFirestoreWorldStartInput: (
   const worldUpdateData: Partial<WithId<World>> = {
     ...omit(input, Object.keys(imageInputs)),
     ...imageInputData,
+    id,
     slug,
   };
 
