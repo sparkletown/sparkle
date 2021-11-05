@@ -9,9 +9,8 @@ const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;
 const getVenueId = (name) =>
   name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
 
-const generateSlug = (name) => {
-  return name.replace(/\W/g, "").toLowerCase();
-};
+const generateSlug = (name) =>
+  name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
 
 const checkIfValidVenueId = (venueId) => VenueIdSchema.isValidSync(venueId);
 
