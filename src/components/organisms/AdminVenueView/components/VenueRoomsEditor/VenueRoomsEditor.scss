@@ -28,7 +28,7 @@
   &__room-title {
     position: absolute;
     left: 50%;
-    bottom: -25px;
+    bottom: font-size--parent(-2);
     transform: translateX(-50%);
     display: flex;
     align-content: center;
