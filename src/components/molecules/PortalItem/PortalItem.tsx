@@ -92,7 +92,14 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     if (template !== "external") {
       const venueData = buildEmptyVenue(venueName, template);
-      await createVenue_v2({ ...venueData, worldId, parentId: venueId }, user);
+      await createVenue_v2(
+        {
+          ...venueData,
+          worldId,
+          parentId: venueId,
+        },
+        user
+      );
     }
 
     await createRoom(roomData, venueId, user);
