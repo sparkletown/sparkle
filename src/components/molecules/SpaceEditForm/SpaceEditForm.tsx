@@ -180,7 +180,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const updateVenueRoom = useCallback(async () => {
     if (!user || !roomVenueId) return;
 
-    const embedUrl = convertToEmbeddableUrl({ url: venueValues.iframeUrl });
+    const embedUrl = convertToEmbeddableUrl({
+      url: venueValues.iframeUrl,
+      autoPlay: roomVenue?.autoPlay,
+    });
 
     await updateVenueNG(
       {
@@ -190,7 +193,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       },
       user
     );
-  }, [roomVenueId, user, venueValues]);
+  }, [roomVenueId, user, venueValues, roomVenue?.autoPlay]);
 
   const [
     { loading: isUpdating, error: updateError },

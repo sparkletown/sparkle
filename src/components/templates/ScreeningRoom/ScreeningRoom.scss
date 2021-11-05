@@ -57,14 +57,12 @@ $video-container-height: 500px;
     padding: $spacing--md;
     font-size: $font-size--md;
     cursor: pointer;
-    text-transform: capitalize;
   }
 
   &__subcategory {
     padding: $spacing--sm;
     font-size: $font-size--sm;
     cursor: pointer;
-    text-transform: capitalize;
   }
 
   &__categories {

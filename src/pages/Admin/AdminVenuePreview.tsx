@@ -59,7 +59,10 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               <iframe
                 className="iframe-preview"
                 title="art-piece-video"
-                src={convertToEmbeddableUrl({ url: venue.iframeUrl })}
+                src={convertToEmbeddableUrl({
+                  url: venue.iframeUrl,
+                  autoPlay: venue.autoPlay,
+                })}
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
                 allowFullScreen
