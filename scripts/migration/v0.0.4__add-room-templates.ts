@@ -45,11 +45,33 @@ const createVenueFromPortal = async ({
 };
 
 export const migrate = async ({ firestore }: MigrateOptions) => {
+  // Replace "themecamps" -> "partymap"
+  const { docs: thememaps } = await firestore
+    .collection("venues")
+    .where("template", "==", "themecamp")
+    .get();
+
+  console.log(
+    "thememaps: ",
+    thememaps.map((doc) => doc.id)
+  );
+
+  await Promise.all(
+    thememaps.map(
+      async (doc) =>
+        await doc.ref.update({
+          template: "partymap",
+        })
+    )
+  );
+
+  // Fetch all the "partymap"s
   const { docs: venueDocs } = await firestore
     .collection("venues")
     .where("template", "==", "partymap")
     .get();
 
+  // Update the rooms of the partymaps
   await Promise.all(
     venueDocs.map(async (venueDoc) => {
       const rooms: Room[] = venueDoc.data().rooms ?? [];
@@ -57,6 +79,10 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
         rooms?.map(async (room) => {
           if (room.template === "audience") {
             room.template = "auditorium";
+          }
+
+          if (room.template === "themecamp") {
+            room.template = "partymap";
           }
 
           if (room.template) return;
