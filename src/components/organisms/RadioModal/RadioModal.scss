@@ -1,26 +1,23 @@
 @import "scss/constants.scss";
 
 .RadioModal {
-  padding: 25px;
+  padding: $spacing--sm;
+  margin: 0 $spacing--md;
   display: flex;
   flex-direction: column;
-  cursor: pointer;
 
   &__title-radio {
-    font-size: 25px;
-    font-weight: bold;
-    margin-bottom: 5px;
+    font-size: font-size--root(1.5);
+    font-weight: $font-weight--600;
+    margin-bottom: $spacing--xs;
   }
 
   &__text-radio {
-    font-size: 15px;
-    margin-bottom: 10px;
+    font-size: font-size--root(1);
+    margin-bottom: $spacing--md;
   }
 
   &__img-radio {
-    margin-left: 20px;
-    width: 210px;
-    height: 120px;
-    margin-bottom: 15px;
+    margin-bottom: $spacing--lg;
   }
 }
