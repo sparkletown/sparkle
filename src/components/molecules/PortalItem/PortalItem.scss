@@ -15,7 +15,6 @@ $icon-size: $icon-padding + $icon-base-size;
     flex-direction: row;
     align-items: center;
     border-radius: $border-radius--md;
-    text-transform: capitalize;
 
     &:focus,
     &:focus-within {
