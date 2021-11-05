@@ -40,6 +40,7 @@ $label-visible: flex;
     .maproom__image {
       filter: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.4)) contrast(110%)
         saturate(110%);
+      object-fit: contain;
     }
   }
 
