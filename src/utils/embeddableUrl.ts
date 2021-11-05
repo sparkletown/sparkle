@@ -8,7 +8,7 @@ import {
   YOUTUBE_SHORT_URL_STRING,
 } from "settings";
 
-const autoplayEnabledURLValue = "1";
+const AUTOPLAY_ENABLED_URL_VALUE = "1";
 
 const withParameters = (urlObject: URL, urlParams?: URLSearchParams) => {
   if (!urlParams) {
@@ -28,7 +28,7 @@ const withAutoPlay = ({
   autoPlay?: boolean;
 }) => {
   if (autoPlay) {
-    urlObject.searchParams.set("autoplay", autoplayEnabledURLValue);
+    urlObject.searchParams.set("autoplay", AUTOPLAY_ENABLED_URL_VALUE);
   } else {
     urlObject.searchParams.delete("autoplay");
   }
