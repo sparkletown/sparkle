@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
+  ALWAYS_EMPTY_ARRAY,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -26,12 +27,14 @@ import { RoomVisibility, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
@@ -44,6 +47,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
+import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 import "./SpaceEditForm.scss";
 
@@ -120,6 +124,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
         autoPlay: roomVenue?.autoPlay ?? false,
+        parentId: roomVenue?.parentId ?? "",
       },
     }),
     [
@@ -140,6 +145,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       roomVenue?.showShoutouts,
       roomVenue?.zoomUrl,
       roomVenue?.autoPlay,
+      roomVenue?.parentId,
       venueVisibility,
     ]
   );
@@ -237,92 +243,309 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
+  const { ownedVenues } = useOwnedVenues({});
+
+  const venueSpaces = ownedVenues.map(({ name, template }) => ({
+    name,
+    template,
+  }));
+
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
-          <AdminInput
-            name="room.template"
-            autoComplete="off"
-            placeholder={`${ROOM_TAXON.capital} template`}
-            label={`${ROOM_TAXON.capital} type`}
-            register={register}
-            errors={errors}
-            disabled
-          />
-
-          <AdminInput
-            name="room.title"
-            autoComplete="off"
-            placeholder={`${ROOM_TAXON.capital} name`}
-            label={`Name your ${ROOM_TAXON.lower}`}
-            register={register}
-            errors={errors}
-          />
-
-          <AdminInput
-            name="room.subtitle"
-            autoComplete="off"
-            placeholder="Subtitle (optional)"
-            label={`${ROOM_TAXON.capital} subtitle`}
-            register={register}
-            errors={errors}
-          />
-
-          <AdminTextarea
-            name="room.about"
-            autoComplete="off"
-            placeholder="Description (optional)"
-            label={`${ROOM_TAXON.capital} description`}
-            register={register}
-            errors={errors}
-          />
-
-          {isExternalPortal(room) ? (
+          <AdminSpacesListItem title="The basics" isOpened>
             <AdminInput
-              name="room.url"
+              name="room.template"
               autoComplete="off"
-              label={`${ROOM_TAXON.capital} url`}
-              placeholder={`${ROOM_TAXON.capital} url`}
+              placeholder={`${ROOM_TAXON.capital} template`}
+              label={`${ROOM_TAXON.capital} type`}
+              register={register}
+              errors={errors}
+              disabled
+            />
+
+            <AdminInput
+              name="room.title"
+              autoComplete="off"
+              placeholder={`${ROOM_TAXON.capital} name`}
+              label={`Name your ${ROOM_TAXON.lower}`}
               register={register}
               errors={errors}
             />
-          ) : (
-            // NOTE: Save button doesn't work if the value is missing
-            <input name="room.url" type="hidden" ref={register} />
-          )}
 
-          <div>
-            <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
-            <ImageInput
-              onChange={changeRoomImageUrl}
-              name="room.image"
-              setValue={setValue}
+            <AdminInput
+              name="room.subtitle"
+              autoComplete="off"
+              placeholder="Subtitle (optional)"
+              label={`${ROOM_TAXON.capital} subtitle`}
               register={register}
-              small
-              nameWithUnderscore
-              imgUrl={room.image_url}
+              errors={errors}
             />
-            {errors?.room?.image_url && (
-              <span className="input-error">
-                {errors?.room?.image_url.message}
-              </span>
+
+            <AdminTextarea
+              name="room.about"
+              autoComplete="off"
+              placeholder="Description (optional)"
+              label={`${ROOM_TAXON.capital} description`}
+              register={register}
+              errors={errors}
+            />
+
+            {isExternalPortal(room) ? (
+              <AdminInput
+                name="room.url"
+                autoComplete="off"
+                label={`${ROOM_TAXON.capital} url`}
+                placeholder={`${ROOM_TAXON.capital} url`}
+                register={register}
+                errors={errors}
+              />
+            ) : (
+              // NOTE: Save button doesn't work if the value is missing
+              <input name="room.url" type="hidden" ref={register} />
             )}
-          </div>
 
-          <AdminSection
-            withLabel
-            title="Change label appearance"
-            subtitle="(overrides global settings)"
-          >
-            <PortalVisibility
-              getValues={getValues}
-              name="room.visibility"
-              register={register}
-              setValue={setValue}
-            />
-          </AdminSection>
+            <AdminSection
+              title="Select the parent space for the “back” button"
+              withLabel
+            >
+              <SpacesDropdown
+                venueSpaces={venueSpaces ?? ALWAYS_EMPTY_ARRAY}
+                venueId={venueId}
+                setValue={setValue}
+                register={register}
+                fieldName="venue.parentId"
+                defaultSpace={venueValues.parentId}
+              />
+            </AdminSection>
+          </AdminSpacesListItem>
+          <AdminSpacesListItem title="Appearance" isOpened>
+            <AdminSection
+              withLabel
+              title={`${ROOM_TAXON.capital} image`}
+              subtitle="(overrides global settings)"
+            >
+              <ImageInput
+                onChange={changeRoomImageUrl}
+                name="room.image"
+                setValue={setValue}
+                register={register}
+                small
+                nameWithUnderscore
+                imgUrl={room.image_url}
+              />
+              {errors?.room?.image_url && (
+                <span className="input-error">
+                  {errors?.room?.image_url.message}
+                </span>
+              )}
+            </AdminSection>
 
+            <AdminSection
+              withLabel
+              title="Change label appearance"
+              subtitle="(overrides global settings)"
+            >
+              <PortalVisibility
+                getValues={getValues}
+                name="room.visibility"
+                register={register}
+                setValue={setValue}
+              />
+            </AdminSection>
+            {!isLoadingRoomVenue && !!roomVenue && (
+              <>
+                {room.template &&
+                  BACKGROUND_IMG_TEMPLATES.includes(
+                    room.template as VenueTemplate
+                  ) && (
+                    <>
+                      <Form.Label>{ROOM_TAXON.capital} background</Form.Label>
+                      <ImageInput
+                        onChange={changeBackgroundImageUrl}
+                        name="venue.mapBackgroundImage"
+                        setValue={setValue}
+                        register={register}
+                        small
+                        nameWithUnderscore
+                        imgUrl={
+                          roomVenue?.mapBackgroundImageUrl ??
+                          venueValues.mapBackgroundImage
+                        }
+                      />
+                      {errors?.venue?.mapBackgroundImage && (
+                        <span className="input-error">
+                          {errors?.venue?.mapBackgroundImage.message}
+                        </span>
+                      )}
+                    </>
+                  )}
+
+                {room.template &&
+                  IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
+                    <>
+                      <Form.Label>Livestream URL</Form.Label>
+                      <InputField
+                        name="venue.iframeUrl"
+                        type="text"
+                        autoComplete="off"
+                        placeholder="Livestream URL"
+                        error={errors?.venue?.iframeUrl}
+                        ref={register()}
+                      />
+                      {errors?.venue?.iframeUrl && (
+                        <span className="input-error">
+                          {errors?.venue?.iframeUrl}
+                        </span>
+                      )}
+                      <AdminCheckbox
+                        variant="toggler"
+                        name="venue.autoPlay"
+                        register={register}
+                        label="Enable autoplay"
+                      />
+                    </>
+                  )}
+
+                {room.template &&
+                  ZOOM_URL_TEMPLATES.includes(
+                    room.template as VenueTemplate
+                  ) && (
+                    <div>
+                      <Form.Label>URL</Form.Label>
+                      <InputField
+                        name="venue.zoomUrl"
+                        type="text"
+                        autoComplete="off"
+                        placeholder="URL"
+                        error={errors?.venue?.zoomUrl}
+                        ref={register()}
+                      />
+                      {errors?.venue?.zoomUrl && (
+                        <span className="input-error">
+                          {errors?.venue?.zoomUrl.message}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                {!DISABLED_DUE_TO_1253 &&
+                  room.template &&
+                  HAS_GRID_TEMPLATES.includes(
+                    room.template as VenueTemplate
+                  ) && (
+                    <AdminCheckbox
+                      name="venue.showGrid"
+                      label="Show grid layout"
+                      variant="toggler"
+                      register={register}
+                    />
+                  )}
+
+                {room.template &&
+                  HAS_REACTIONS_TEMPLATES.includes(
+                    room.template as VenueTemplate
+                  ) && (
+                    <AdminCheckbox
+                      name="venue.showReactions"
+                      label="Show reactions"
+                      variant="toggler"
+                      register={register}
+                    />
+                  )}
+
+                {room.template &&
+                  HAS_REACTIONS_TEMPLATES.includes(
+                    room.template as VenueTemplate
+                  ) && (
+                    <AdminCheckbox
+                      name="venue.showShoutouts"
+                      label="Show shoutouts"
+                      variant="toggler"
+                      register={register}
+                    />
+                  )}
+
+                {room.template === VenueTemplate.auditorium && (
+                  <>
+                    <div className="input-container">
+                      <h4 className="italic input-header">
+                        Number of seats columns
+                      </h4>
+                      <input
+                        defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
+                        min={5}
+                        name="venue.auditoriumColumns"
+                        type="number"
+                        ref={register}
+                        className="align-left"
+                        placeholder="Number of seats columns"
+                      />
+                      {errors?.venue?.auditoriumColumns ? (
+                        <span className="input-error">
+                          {errors?.venue?.auditoriumColumns.message}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="input-container">
+                      <h4 className="italic input-header">
+                        Number of seats rows
+                      </h4>
+                      <input
+                        defaultValue={SECTION_DEFAULT_ROWS_COUNT}
+                        name="venue.auditoriumRows"
+                        type="number"
+                        ref={register}
+                        className="align-left"
+                        placeholder="Number of seats rows"
+                        min={5}
+                      />
+                      {errors?.venue?.auditoriumRows ? (
+                        <span className="input-error">
+                          {errors?.venue?.auditoriumRows.message}
+                        </span>
+                      ) : null}
+                    </div>
+                  </>
+                )}
+
+                {!DISABLED_DUE_TO_1253 &&
+                  room.template &&
+                  HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
+                  venueValues.showGrid && (
+                    <>
+                      <div className="input-container">
+                        <h4 className="italic input-header">
+                          Number of columns
+                        </h4>
+                        <input
+                          defaultValue={1}
+                          name="venue.columns"
+                          type="number"
+                          ref={register}
+                          className="align-left"
+                          placeholder={`Number of grid columns`}
+                        />
+                        {errors?.venue?.columns ? (
+                          <span className="input-error">
+                            {errors?.venue?.columns.message}
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="input-container">
+                        <h4 className="italic input-header">Number of rows</h4>
+                        <div>
+                          Not editable. The number of rows is derived from the
+                          number of specified columns and the width:height ratio
+                          of the party map, to keep the two aligned.
+                        </div>
+                      </div>
+                    </>
+                  )}
+              </>
+            )}
+          </AdminSpacesListItem>
           {!roomVenue && fetchError && (
             <>
               <div>
@@ -330,192 +553,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 Make sure it is a child of this world and try again.
               </div>
               <div>{fetchError.message}</div>
-            </>
-          )}
-
-          {!isLoadingRoomVenue && !!roomVenue && (
-            <>
-              {room.template &&
-                BACKGROUND_IMG_TEMPLATES.includes(
-                  room.template as VenueTemplate
-                ) && (
-                  <>
-                    <Form.Label>{ROOM_TAXON.capital} background</Form.Label>
-                    <ImageInput
-                      onChange={changeBackgroundImageUrl}
-                      name="venue.mapBackgroundImage"
-                      setValue={setValue}
-                      register={register}
-                      small
-                      nameWithUnderscore
-                      imgUrl={
-                        roomVenue?.mapBackgroundImageUrl ??
-                        venueValues.mapBackgroundImage
-                      }
-                    />
-                    {errors?.venue?.mapBackgroundImage && (
-                      <span className="input-error">
-                        {errors?.venue?.mapBackgroundImage.message}
-                      </span>
-                    )}
-                  </>
-                )}
-
-              {room.template &&
-                IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
-                  <>
-                    <Form.Label>Livestream URL</Form.Label>
-                    <InputField
-                      name="venue.iframeUrl"
-                      type="text"
-                      autoComplete="off"
-                      placeholder="Livestream URL"
-                      error={errors?.venue?.iframeUrl}
-                      ref={register()}
-                    />
-                    {errors?.venue?.iframeUrl && (
-                      <span className="input-error">
-                        {errors?.venue?.iframeUrl}
-                      </span>
-                    )}
-                    <AdminCheckbox
-                      variant="toggler"
-                      name="venue.autoPlay"
-                      register={register}
-                      label="Enable autoplay"
-                    />
-                  </>
-                )}
-
-              {room.template &&
-                ZOOM_URL_TEMPLATES.includes(room.template as VenueTemplate) && (
-                  <div>
-                    <Form.Label>URL</Form.Label>
-                    <InputField
-                      name="venue.zoomUrl"
-                      type="text"
-                      autoComplete="off"
-                      placeholder="URL"
-                      error={errors?.venue?.zoomUrl}
-                      ref={register()}
-                    />
-                    {errors?.venue?.zoomUrl && (
-                      <span className="input-error">
-                        {errors?.venue?.zoomUrl.message}
-                      </span>
-                    )}
-                  </div>
-                )}
-
-              {!DISABLED_DUE_TO_1253 &&
-                room.template &&
-                HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) && (
-                  <AdminCheckbox
-                    name="venue.showGrid"
-                    label="Show grid layout"
-                    variant="toggler"
-                    register={register}
-                  />
-                )}
-
-              {room.template &&
-                HAS_REACTIONS_TEMPLATES.includes(
-                  room.template as VenueTemplate
-                ) && (
-                  <AdminCheckbox
-                    name="venue.showReactions"
-                    label="Show reactions"
-                    variant="toggler"
-                    register={register}
-                  />
-                )}
-
-              {room.template &&
-                HAS_REACTIONS_TEMPLATES.includes(
-                  room.template as VenueTemplate
-                ) && (
-                  <AdminCheckbox
-                    name="venue.showShoutouts"
-                    label="Show shoutouts"
-                    variant="toggler"
-                    register={register}
-                  />
-                )}
-
-              {room.template === VenueTemplate.auditorium && (
-                <>
-                  <div className="input-container">
-                    <h4 className="italic input-header">
-                      Number of seats columns
-                    </h4>
-                    <input
-                      defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
-                      min={5}
-                      name="venue.auditoriumColumns"
-                      type="number"
-                      ref={register}
-                      className="align-left"
-                      placeholder="Number of seats columns"
-                    />
-                    {errors?.venue?.auditoriumColumns ? (
-                      <span className="input-error">
-                        {errors?.venue?.auditoriumColumns.message}
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="input-container">
-                    <h4 className="italic input-header">
-                      Number of seats rows
-                    </h4>
-                    <input
-                      defaultValue={SECTION_DEFAULT_ROWS_COUNT}
-                      name="venue.auditoriumRows"
-                      type="number"
-                      ref={register}
-                      className="align-left"
-                      placeholder="Number of seats rows"
-                      min={5}
-                    />
-                    {errors?.venue?.auditoriumRows ? (
-                      <span className="input-error">
-                        {errors?.venue?.auditoriumRows.message}
-                      </span>
-                    ) : null}
-                  </div>
-                </>
-              )}
-
-              {!DISABLED_DUE_TO_1253 &&
-                room.template &&
-                HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
-                venueValues.showGrid && (
-                  <>
-                    <div className="input-container">
-                      <h4 className="italic input-header">Number of columns</h4>
-                      <input
-                        defaultValue={1}
-                        name="venue.columns"
-                        type="number"
-                        ref={register}
-                        className="align-left"
-                        placeholder={`Number of grid columns`}
-                      />
-                      {errors?.venue?.columns ? (
-                        <span className="input-error">
-                          {errors?.venue?.columns.message}
-                        </span>
-                      ) : null}
-                    </div>
-                    <div className="input-container">
-                      <h4 className="italic input-header">Number of rows</h4>
-                      <div>
-                        Not editable. The number of rows is derived from the
-                        number of specified columns and the width:height ratio
-                        of the party map, to keep the two aligned.
-                      </div>
-                    </div>
-                  </>
-                )}
             </>
           )}
 
