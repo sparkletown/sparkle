@@ -157,7 +157,7 @@ const styles: Record<string, CSSProperties> = {
     width: 10,
     height: 10,
     backgroundColor: "white",
-    border: "1px solid white",
+    border: " 1px solid var(--content--over)",
   },
   resizeableImageContainer: {
     overflow: "hidden",
