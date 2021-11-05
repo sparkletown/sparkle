@@ -47,7 +47,7 @@ const HANDLED_ERRORS = [
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
 const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
 
-const createWorldSchema = Yup.object().shape({
+const validationSchema = Yup.object().shape({
   name: Yup.string()
     .required()
     .test(
@@ -55,35 +55,23 @@ const createWorldSchema = Yup.object().shape({
       "Must have alphanumeric characters",
       (val: string) => createSlug(val).length > 0
     )
-    .test(
-      "name",
-      "This world slug is already taken",
-      // @debt Replace with a function from api/worlds
-      async (val: string) =>
-        !val ||
-        !(
-          await firebase
-            .firestore()
-            .collection("worlds")
-            .where("slug", "==", createSlug(val))
-            .get()
-        ).docs.length
-    ),
-  description: Yup.string().notRequired(),
-  subtitle: Yup.string().notRequired(),
-  bannerImageFile: Yup.mixed<FileList>().notRequired(),
-  bannerImageUrl: Yup.string(),
-  logoImageFile: Yup.mixed<FileList>().notRequired(),
-  logoImageUrl: Yup.string(),
-});
-
-const updateWorldSchema = Yup.object().shape({
-  name: Yup.string()
-    .required()
-    .test(
-      "name",
-      "Must have alphanumeric characters",
-      (val: string) => createSlug(val).length > 0
+    .when("$creating", (creating: boolean, schema: Yup.StringSchema) =>
+      creating
+        ? schema.test(
+            "name",
+            "This world slug is already taken",
+            // @debt Replace with a function from api/worlds
+            async (val: string) =>
+              !val ||
+              !(
+                await firebase
+                  .firestore()
+                  .collection("worlds")
+                  .where("slug", "==", createSlug(val))
+                  .get()
+              ).docs.length
+          )
+        : schema
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
@@ -129,7 +117,10 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   } = useForm<WorldStartFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: world ? updateWorldSchema : createWorldSchema,
+    validationSchema,
+    validationContext: {
+      creating: !worldId,
+    },
     defaultValues,
   });
 
