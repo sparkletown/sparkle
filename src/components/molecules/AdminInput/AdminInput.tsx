@@ -28,6 +28,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     () => (label ? generateId("AdminInput-" + name) : undefined),
     [label, name]
   );
+
   return (
     <p className="AdminInput">
       {label && (

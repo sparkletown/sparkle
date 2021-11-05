@@ -16,7 +16,7 @@ import {
 
 import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
-import { VenueTemplate } from "types/venues";
+import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import {
   roomTitleSchema,
@@ -99,6 +99,9 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
     iframeUrl: Yup.string().notRequired(),
+    roomVisibility: Yup.mixed()
+      .oneOf(Object.values(RoomVisibility))
+      .notRequired(),
 
     width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
     height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
