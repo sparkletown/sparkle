@@ -126,9 +126,12 @@ export const createWorld: (
     // 1. first a world stub is created
     const stubInput = await createFirestoreWorldCreateInput(world);
 
-    worldId = (
+    const newWorld = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
+
+    worldId = newWorld.id;
+
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),

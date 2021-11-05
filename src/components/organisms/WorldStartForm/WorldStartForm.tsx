@@ -47,7 +47,7 @@ const HANDLED_ERRORS = [
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
 const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
 
-const validationSchema = Yup.object().shape({
+const createWorldSchema = Yup.object().shape({
   name: Yup.string()
     .required()
     .test(
@@ -68,6 +68,22 @@ const validationSchema = Yup.object().shape({
             .where("slug", "==", createSlug(val))
             .get()
         ).docs.length
+    ),
+  description: Yup.string().notRequired(),
+  subtitle: Yup.string().notRequired(),
+  bannerImageFile: Yup.mixed<FileList>().notRequired(),
+  bannerImageUrl: Yup.string(),
+  logoImageFile: Yup.mixed<FileList>().notRequired(),
+  logoImageUrl: Yup.string(),
+});
+
+const updateWorldSchema = Yup.object().shape({
+  name: Yup.string()
+    .required()
+    .test(
+      "name",
+      "Must have alphanumeric characters",
+      (val: string) => createSlug(val).length > 0
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
@@ -113,7 +129,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   } = useForm<WorldStartFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: world ? updateWorldSchema : createWorldSchema,
     defaultValues,
   });
 

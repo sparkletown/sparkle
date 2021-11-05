@@ -15,12 +15,12 @@ import { WorldNavLabelMap } from "./WorldNavLabelMap";
 import "./WorldNav.scss";
 
 export const WorldNav: React.FC = () => {
-  const { worldId, selectedTab } = useWorldEditParams();
+  const { worldSlug, selectedTab } = useWorldEditParams();
   const renderedTabs = useMemo(() => {
     return Object.entries(WorldNavLabelMap).map(([key, label]) => (
       <Link
         key={key}
-        to={worldId ? adminWorldUrl(worldId, key) : "#"}
+        to={worldSlug ? adminWorldUrl(worldSlug, key) : "#"}
         className={classNames({
           WorldNav__tab: true,
           "WorldNav__tab--selected": selectedTab === key,
@@ -33,7 +33,7 @@ export const WorldNav: React.FC = () => {
         {label}
       </Link>
     ));
-  }, [selectedTab, worldId]);
+  }, [selectedTab, worldSlug]);
 
   return <div className="AdminVenueView__options">{renderedTabs}</div>;
 };
