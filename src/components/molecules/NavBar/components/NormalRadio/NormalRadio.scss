@@ -1,13 +1,15 @@
 @import "scss/constants";
 
+$popup-width: 340px;
+
 .NormalRadio {
   // @debt replace the popover component from Bootstrap with something else, then remove these !important workarounds
   transform: none !important;
-  position: relative !important;
   top: $navbar-height !important;
+  left: calc(100% - #{$popup-width}) !important;
 
   padding: font-size--parent(0.5);
-  width: 100%;
+  width: $popup-width;
 
   &__button {
     @include square-size(40px);
