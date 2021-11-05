@@ -55,19 +55,23 @@ const validationSchema = Yup.object().shape({
       "Must have alphanumeric characters",
       (val: string) => createSlug(val).length > 0
     )
-    .test(
-      "name",
-      "This world slug is already taken",
-      // @debt Replace with a function from api/worlds
-      async (val: string) =>
-        !val ||
-        !(
-          await firebase
-            .firestore()
-            .collection("worlds")
-            .where("slug", "==", createSlug(val))
-            .get()
-        ).docs.length
+    .when("$creating", (creating: boolean, schema: Yup.StringSchema) =>
+      creating
+        ? schema.test(
+            "name",
+            "This world slug is already taken",
+            // @debt Replace with a function from api/worlds
+            async (val: string) =>
+              !val ||
+              !(
+                await firebase
+                  .firestore()
+                  .collection("worlds")
+                  .where("slug", "==", createSlug(val))
+                  .get()
+              ).docs.length
+          )
+        : schema
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
@@ -114,6 +118,9 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
+    validationContext: {
+      creating: !worldId,
+    },
     defaultValues,
   });
 
