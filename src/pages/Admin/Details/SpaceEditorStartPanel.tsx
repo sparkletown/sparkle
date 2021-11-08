@@ -1,5 +1,7 @@
 import React from "react";
 
+import { useCheckImage } from "hooks/useCheckImage";
+
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
@@ -9,9 +11,12 @@ import DetailsForm from "./Form";
 import DetailsPreview from "./Preview";
 
 import "./SpaceEditorStartPanel.scss";
-import { useCheckImage } from "hooks/useCheckImage";
 
-export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue, state, dispatch }) => {
+export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({
+  venue,
+  state,
+  dispatch,
+}) => {
   const { isValid: hasBannerImage } = useCheckImage(state.bannerImageUrl);
   const { isValid: hasLogoImage } = useCheckImage(state.logoImageUrl);
 
@@ -43,5 +48,5 @@ export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue, state, di
         />
       </AdminShowcase>
     </AdminPanel>
-  )
+  );
 };
