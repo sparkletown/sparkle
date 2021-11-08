@@ -206,7 +206,7 @@ export const VenuePage: React.FC = () => {
 
   if (venueRequestStatus && !venue) {
     return (
-      <WithNavigationBar hasBackButton>
+      <WithNavigationBar hasBackButton withHiddenLoginButton>
         <NotFound />
       </WithNavigationBar>
     );
