@@ -34,8 +34,14 @@ const defaultWorld = {
 export const setAnalyticsGroup = (groupKey: string, groupName: string) => {
   if (!MIXPANEL_PROJECT_TOKEN) return;
 
-  mixpanel.set_group(groupKey, groupName);
-  mixpanel.get_group(groupKey, groupName).set({ $name: groupName });
+  try {
+    mixpanel.set_group(groupKey, groupName);
+
+    const group = mixpanel.get_group(groupKey, groupName);
+    group.set({ $name: groupName });
+  } catch (e) {
+    console.error(setAnalyticsGroup.name, e);
+  }
 };
 
 export const initAnalytics = (opts?: Object) => {
@@ -44,17 +50,25 @@ export const initAnalytics = (opts?: Object) => {
     return;
   }
 
-  return mixpanel.init(MIXPANEL_PROJECT_TOKEN, opts);
+  try {
+    return mixpanel.init(MIXPANEL_PROJECT_TOKEN, opts);
+  } catch (e) {
+    console.error(initAnalytics.name, e);
+  }
 };
 
 export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
   if (!MIXPANEL_PROJECT_TOKEN) return;
 
-  mixpanel.identify(email);
-  mixpanel.people.set({
-    $email: email,
-    $name: `${name} (${email})`,
-  });
+  try {
+    mixpanel.identify(email);
+    mixpanel.people.set({
+      $email: email,
+      $name: `${name} (${email})`,
+    });
+  } catch (e) {
+    console.error(identifyUser.name, e);
+  }
 };
 
 export interface UseAnalyticsProps {
@@ -102,13 +116,17 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
       const worldString = `${worldName} (${worldId})`;
       setAnalyticsGroup(DEFAULT_ANALYTICS_GROUP_KEY, worldString);
 
-      return mixpanel.track_with_groups(
-        eventName,
-        { email: user?.email, venueId: venue.id, ...properties },
-        {
-          [DEFAULT_ANALYTICS_GROUP_KEY]: worldString,
-        }
-      );
+      try {
+        return mixpanel.track_with_groups(
+          eventName,
+          { email: user?.email, venueId: venue.id, ...properties },
+          {
+            [DEFAULT_ANALYTICS_GROUP_KEY]: worldString,
+          }
+        );
+      } catch (e) {
+        console.error(trackWithWorld.name, e);
+      }
     },
     [user, venue, worldIdAndName]
   );

@@ -3,6 +3,9 @@
 .Container {
   &__room-preview {
     position: absolute;
+    background-position: center;
+    background-size: contain, cover;
+    background-repeat: no-repeat;
   }
 
   &__background-image {
@@ -25,6 +28,7 @@
   &__room-title {
     position: absolute;
     left: 50%;
+    bottom: font-size--parent(-2);
     transform: translateX(-50%);
     display: flex;
     align-content: center;
