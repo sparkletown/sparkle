@@ -77,7 +77,7 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
       trigger="click"
       placement="bottom-end"
       overlay={renderedOverlay}
-      rootClose={true}
+      rootClose
       defaultShow={defaultShow}
     >
       <ButtonNG className={buttonClasses} />
