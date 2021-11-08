@@ -15,7 +15,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { User, UsernameVisibility, UserStatus } from "./User";
+import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -77,6 +77,8 @@ export enum VenueTemplate {
   playa = "playa",
 }
 
+export type PortalTemplate = VenueTemplate | "external";
+
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
@@ -131,31 +133,27 @@ export interface Venue_v2_Base {
 }
 
 export interface VenueAdvancedConfig {
-  attendeesTitle?: string;
-  chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
-  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
-  profile_questions?: Array<Question>;
-  code_of_conduct_questions?: Array<Question>;
   entrance?: EntranceStepConfig[];
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-//   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
+//   termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
@@ -166,8 +164,6 @@ export interface BaseVenue {
   host?: {
     icon: string;
   };
-  profile_questions: Question[];
-  code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
@@ -203,26 +199,24 @@ export interface BaseVenue {
   description?: {
     text: string;
   };
+  subtitle?: string;
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  chatTitle?: string;
   showReactions?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
+  sectionsCount?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
   showRadio?: boolean;
   showBadges?: boolean;
-  showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
-  sectionsCount?: number;
   createdAt?: number;
   recentUserCount?: number;
   recentUsersSample?: WithId<User>[];
@@ -230,6 +224,7 @@ export interface BaseVenue {
   updatedAt?: number;
   worldId: string;
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -320,12 +315,6 @@ export interface AnimateMapVenue extends BaseVenue {
   playerioFrequencyUpdate?: number;
   //@dept Right now advanced mode in develop, don't add this flag to venue!
   playerioAdvancedMode?: boolean;
-}
-
-export interface Question {
-  name: string;
-  text: string;
-  link?: string;
 }
 
 interface TermOfService {

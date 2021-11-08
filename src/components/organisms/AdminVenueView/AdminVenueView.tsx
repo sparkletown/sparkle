@@ -10,6 +10,8 @@ import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
+import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
+
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -19,7 +21,6 @@ import { WithNavigationBar } from "../WithNavigationBar";
 
 import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
-import { Timing } from "./components/Timing";
 
 import "./AdminVenueView.scss";
 
@@ -104,7 +105,7 @@ export const AdminVenueView: React.FC = () => {
 
   if (!venue) {
     return (
-      <WithNavigationBar withSchedule>
+      <WithNavigationBar withSchedule withHiddenLoginButton>
         <AdminRestricted>
           <NotFound />
         </AdminRestricted>
@@ -127,7 +128,7 @@ export const AdminVenueView: React.FC = () => {
           />
         )}
         {selectedTab === AdminVenueTab.timing && (
-          <Timing
+          <SpaceTimingPanel
             onClickHome={navigateToHome}
             onClickBack={navigateToSpaces}
             onClickNext={navigateToRun}

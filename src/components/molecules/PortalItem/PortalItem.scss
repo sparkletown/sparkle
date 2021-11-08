@@ -15,7 +15,6 @@ $icon-size: $icon-padding + $icon-base-size;
     flex-direction: row;
     align-items: center;
     border-radius: $border-radius--md;
-    text-transform: capitalize;
 
     &:focus,
     &:focus-within {
@@ -56,5 +55,11 @@ $icon-size: $icon-padding + $icon-base-size;
     margin-top: $spacing--lg;
     display: flex;
     justify-content: center;
+  }
+
+  &__form {
+    .InputField {
+      margin: font-size--parent(3) 0;
+    }
   }
 }

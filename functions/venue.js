@@ -17,6 +17,7 @@ const VenueTemplate = {
   artcar: "artcar",
   artpiece: "artpiece",
   audience: "audience",
+  auditorium: "auditorium",
   conversationspace: "conversationspace",
   embeddable: "embeddable",
   firebarrel: "firebarrel",
@@ -86,7 +87,11 @@ const IFRAME_TEMPLATES = [
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
+const HAS_REACTIONS_TEMPLATES = [
+  VenueTemplate.audience,
+  VenueTemplate.jazzbar,
+  VenueTemplate.auditorium,
+];
 
 // @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
@@ -209,8 +214,6 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
@@ -218,8 +221,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
@@ -297,18 +298,19 @@ const createVenueData_v2 = (data, context) => {
     name: data.name,
     config: {
       landingPageConfig: {
-        coverImageUrl: data.bannerImageUrl,
+        coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
         description: data.description,
       },
     },
     host: {
-      icon: data.logoImageUrl,
+      icon: data.logoImageUrl || "",
     },
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
+    showSchedule: data.showSchedule || false,
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
@@ -365,10 +367,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -417,22 +415,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.userStatuses = data.userStatuses;
   }
 
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
-  }
-
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
   updated.updatedAt = Date.now();
 
@@ -457,6 +439,48 @@ const initializeVenueChatMessagesCounter = (venueRef, batch) => {
   }
   batch.set(counterCollection.doc("sum"), { value: 0 });
 };
+
+exports.setAuditoriumSections = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, numberOfSections } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const batch = admin.firestore().batch();
+
+    const { docs: sections } = await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("sections")
+      .get();
+
+    const currentNumberOfSections = sections.length;
+
+    // Adding sections if needed
+    const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+    for (let i = 1; i <= numberOfSectionsToAdd; i++) {
+      const sectionRef = admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("sections")
+        .doc();
+
+      batch.set(sectionRef, { isVip: false });
+    }
+
+    // Removing sections if needed
+    const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+    for (let i = 1; i <= numberOfSectionsToRemove; i++) {
+      batch.delete(sections[currentNumberOfSections - i].ref);
+    }
+
+    await batch.commit();
+  }
+);
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -538,7 +562,6 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   const venueData = createVenueData_v2(data, context);
-
   batch.create(venueRef, venueData);
   initializeVenueChatMessagesCounter(venueRef, batch);
 
@@ -836,8 +859,13 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  if (data.name) {
+    updated.name = data.name;
+  }
+
   if (data.description || data.description === "") {
-    updated.config.landingPageConfig.description = data.description;
+    updated.config.landingPageConfig.description =
+      data.description && data.description.text;
   }
 
   if (data.logoImageUrl) {
@@ -845,10 +873,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
       updated.host = {};
     }
     updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
   }
 
   if (data.entrance) {
@@ -917,22 +941,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;

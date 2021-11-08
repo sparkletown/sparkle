@@ -5,4 +5,5 @@
   min-width: $admin-ng-sidebar-width--min;
   height: calc(100% - #{$admin-ng-sidebar-footer-height--max});
   overflow: scroll;
+  z-index: z(admin-sidebar-content);
 }

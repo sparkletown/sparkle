@@ -119,7 +119,7 @@ export const EmergencyViewPage: React.FC = () => {
 
   if (!venueId || (isCurrentVenueLoaded && !venue)) {
     return (
-      <WithNavigationBar>
+      <WithNavigationBar withHiddenLoginButton>
         <NotFound />
       </WithNavigationBar>
     );
@@ -132,7 +132,7 @@ export const EmergencyViewPage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venue={venue} />
+        <Login venueId={venueId} />
       </Suspense>
     );
   }

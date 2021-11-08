@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Form } from "react-bootstrap";
 import { FieldErrors, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -10,6 +9,7 @@ import {
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
+  DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
@@ -21,7 +21,7 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { createUrlSafeName } from "api/admin";
+import { createSlug } from "api/admin";
 
 import { UserStatus } from "types/User";
 import { AnyVenue, VenueTemplate } from "types/venues";
@@ -39,12 +39,12 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
 
+import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
 import "firebase/functions";
 
 import EntranceInput from "./EntranceInput";
-import QuestionInput from "./QuestionInput";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
@@ -77,6 +77,7 @@ interface VenueDetailsSubFormProps
   editing?: boolean;
   formError: boolean;
   setFormError: (value: boolean) => void;
+  getValues: () => Record<string, unknown>;
 }
 
 export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
@@ -93,14 +94,13 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   onSubmit,
   handleSubmit,
   setValue,
+  getValues,
   formError,
   setFormError,
 }) => {
   const values = watch();
   const urlSafeName = values.name
-    ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
+    ? `${window.location.host}${venueLandingUrl(createSlug(values.name))}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;
@@ -225,44 +225,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         imageClassName="host-icon"
         error={errors.logoImageFile || errors.logoImageUrl}
       />
-    </div>
-  );
-
-  const renderAttendeesTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Title of your venues attendees</h4>
-      <div style={{ fontSize: "16px" }}>
-        For example: guests, attendees, partygoers.
-      </div>
-      <input
-        type="text"
-        disabled={disable}
-        name="attendeesTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Attendees title"
-      />
-      {errors.attendeesTitle && (
-        <span className="input-error">{errors.attendeesTitle.message}</span>
-      )}
-    </div>
-  );
-
-  const renderChatTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Your venue type label</h4>
-      <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
-      <input
-        type="text"
-        disabled={disable}
-        name="chatTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Event label"
-      />
-      {errors.chatTitle && (
-        <span className="input-error">{errors.chatTitle.message}</span>
-      )}
     </div>
   );
 
@@ -481,11 +443,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         Choose how you&apos;d like your {ROOMS_TAXON.lower} to appear on the map
       </h4>
       <div className="input-container">
-        <Form.Control as="select" name="roomVisibility" ref={register} custom>
-          <option value="hover">Hover</option>
-          <option value="count">Count</option>
-          <option value="count/name">Count and names</option>
-        </Form.Control>
+        <PortalVisibility
+          getValues={getValues}
+          name="roomVisibility"
+          register={register}
+          setValue={setValue}
+        />
       </div>
     </>
   );
@@ -514,22 +477,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderShowNametagsToggle = () => (
-    <>
-      <h4 className="italic input-header">
-        Display user names on their avatars
-      </h4>
-      <label className="input-container">
-        <Form.Control as="select" name="showNametags" ref={register} custom>
-          <option value="none">None</option>
-          {/* TODO: Implement Inline state */}
-          {/* <option value="inline">Inline</option> */}
-          <option value="hover">Inline and hover</option>
-        </Form.Control>
-      </label>
-    </>
-  );
-
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
@@ -538,10 +485,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const isJazzbar = templateID === VenueTemplate.jazzbar;
-
   const jukeboxContainerClasses = classNames("toggle-room DetailsForm", {
-    "toggle-room DetailsForm--hidden": isJazzbar,
+    "toggle-room DetailsForm--hidden": templateID !== VenueTemplate.jazzbar,
   });
 
   const renderJukeboxToggle = () => {
@@ -653,11 +598,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   };
 
   const updateVenue = useCallback(
-    (values: Partial<FormValues>) =>
+    (input: Partial<FormValues>) =>
       void onSubmit(
         {
-          ...values,
-          iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+          ...input,
+          iframeUrl: input.iframeUrl || DEFAULT_EMBED_URL,
+          roomVisibility: input.roomVisibility,
         },
         userStatuses,
         hasUserStatuses
@@ -690,12 +636,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderHighlightImageInput()}
         {renderLogoInput()}
 
-        {/* ATTENDEES (multiple) TITLE */}
-        {renderAttendeesTitleInput()}
-
-        {/* EVENT CHAT TITLE */}
-        {renderChatTitleInput()}
-
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && renderUrlInput()}
@@ -708,20 +648,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
 
-        <QuestionInput
-          title="Code of conduct questions"
-          fieldName="code_of_conduct_questions"
-          register={register}
-          hasLink
-          editing={state.detailsPage?.venue.code_of_conduct_questions}
-        />
-        <QuestionInput
-          title="Profile questions"
-          fieldName="profile_questions"
-          register={register}
-          editing={state.detailsPage?.venue.profile_questions}
-        />
-
         <EntranceInput
           fieldName="entrance"
           register={register}
@@ -729,11 +655,12 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         />
 
         {renderShowScheduleToggle()}
-        {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
+
         {renderShowBadgesToggle()}
-        {renderShowNametagsToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
@@ -767,7 +694,8 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           onChangeInput={updateStatusText}
         />
 
-        {templateID &&
+        {!DISABLED_DUE_TO_1253 &&
+          templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid &&
           renderGridDimensionsInputs()}

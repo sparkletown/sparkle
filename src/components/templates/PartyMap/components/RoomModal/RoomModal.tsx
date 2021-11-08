@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFAULT_SHOW_SCHEDULE,
-  ROOM_TAXON,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -13,11 +9,14 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
+import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
+import { useWorldEdit } from "hooks/useWorldEdit";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -80,8 +79,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venue,
   venueEvents,
 }) => {
-  const { showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
-
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -98,9 +95,13 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     currentVenueId: venue.id,
   });
 
+  const { world } = useWorldEdit(venue?.worldId);
+
   const { enterRoom, portalVenueId } = useRoom({
     room,
   });
+
+  const analytics = useAnalytics({ venue });
 
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
@@ -108,18 +109,19 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const [enterWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enterRoomWithSound: () => void = useCallback(_enterRoomWithSound, [
-    _enterRoomWithSound,
-  ]);
+  const enter: () => void = useCallback(() => {
+    analytics.trackEnterRoomEvent(room.title, room.template);
+    void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound());
+  }, [analytics, enterWithSound, room]);
 
   const renderedRoomEvents = useMemo(() => {
-    if (!showSchedule) return [];
+    if (!world?.showSchedule) return [];
 
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
@@ -129,12 +131,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        enterEventLocation={enterRoomWithSound}
+        enterEventLocation={enter}
       />
     ));
-  }, [enterRoomWithSound, showSchedule, venueEvents]);
+  }, [enter, venueEvents, world?.showSchedule]);
 
-  const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
+  const showRoomEvents = world?.showSchedule && renderedRoomEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
@@ -143,6 +145,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomTitle = room.title || portalVenue?.name;
   const roomSubtitle = room.subtitle || portalVenueSubtitle;
   const roomDescription = room.about || portalVenueDescription;
+
+  useEffect(() => {
+    analytics.trackOpenRoomModalEvent(roomTitle);
+  }, [analytics, roomTitle]);
 
   // @debt maybe refactor this, but autoFocus property working very bad.
   const enterButtonref = useRef<HTMLButtonElement>(null);
@@ -168,9 +174,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
             className="btn btn-primary RoomModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
-            onClick={enterRoomWithSound}
+            onClick={enter}
           >
-            Join {ROOM_TAXON.capital}
+            Enter
           </button>
         </div>
       </div>

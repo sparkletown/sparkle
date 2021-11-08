@@ -1,7 +1,6 @@
-import React, { useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useMemo } from "react";
 
-import { ADMIN_V3_NEW_WORLD_URL, ADMIN_V3_ROOT_URL } from "settings";
+import { ADMIN_V3_NEW_WORLD_URL } from "settings";
 
 import { useUser } from "hooks/useUser";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
@@ -11,7 +10,6 @@ import { AdminShowcase } from "components/organisms/AdminVenueView/components/Ad
 import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -26,11 +24,6 @@ import ARROW from "assets/images/admin/dashboard-arrow.svg";
 import "./WorldsDashboard.scss";
 
 export const WorldsDashboard: React.FC = () => {
-  const history = useHistory();
-  const navigateToHome = useCallback(() => history.push(ADMIN_V3_ROOT_URL), [
-    history,
-  ]);
-
   const user = useUser();
 
   const worlds = useOwnWorlds(user.userId);
@@ -71,7 +64,6 @@ export const WorldsDashboard: React.FC = () => {
                 This can be an event or a series of events in the sparkly
                 universe
               </AdminSidebarSubTitle>
-              <AdminSidebarFooter onClickHome={navigateToHome} />
             </AdminSidebar>
             <AdminShowcase className="WorldsDashboard__worlds">
               <div className="WorldsDashboard__new">

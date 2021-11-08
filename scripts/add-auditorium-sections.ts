@@ -54,6 +54,6 @@ const appBatch = app.firestore().batch();
   await appBatch.commit();
 
   console.log(
-    `Succesfully created ${numberOfSections} sections in the ${venueName} venue.`
+    `Successfully created ${numberOfSections} sections in the ${venueName} venue.`
   );
 })();

@@ -25,12 +25,14 @@ export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
+  withHiddenLoginButton?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
+  withHiddenLoginButton,
   children,
 }) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
@@ -52,6 +54,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
             hasBackButton={hasBackButton}
             withSchedule={withSchedule}
             withPhotobooth={withPhotobooth}
+            withHiddenLoginButton={withHiddenLoginButton}
           />
         </Suspense>
       </RelatedVenuesProvider>
@@ -59,7 +62,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
       <div className="navbar-margin">{children}</div>
 
       <Footer />
-      {venue && <NewProfileModal venue={venue} />}
+      <NewProfileModal venue={venue} />
     </>
   );
 };

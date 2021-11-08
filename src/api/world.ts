@@ -1,9 +1,9 @@
 import firebase from "firebase/app";
-import { omit, pick } from "lodash";
+import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-import { createUrlSafeName, World } from "api/admin";
+import { createSlug, World } from "api/admin";
 
 import {
   WorldAdvancedFormInput,
@@ -12,13 +12,14 @@ import {
 } from "types/world";
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
+import { isDefined } from "utils/types";
 
 export const createFirestoreWorldCreateInput: (
   input: WorldStartFormInput,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   const name = input.name;
-  const slug = createUrlSafeName(name);
+  const slug = createSlug(name);
 
   return { name, slug };
 };
@@ -30,7 +31,7 @@ export const createFirestoreWorldStartInput: (
   // NOTE: id is needed before world is created to upload the images
   const id = input?.id ?? generateFirestoreId({ emulated: true });
 
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   const storageRef = firebase.storage().ref();
 
   const imageInputData: Record<string, string> = {};
@@ -51,7 +52,7 @@ export const createFirestoreWorldStartInput: (
 
     const extension = type.split("/").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/worlds/${id}/background.${extension}`
+      `users/${user.uid}/worlds/${id}/${key}.${extension}`
     );
 
     await uploadFileRef.put(file);
@@ -74,11 +75,13 @@ export const createFirestoreWorldEntranceInput: (
 ) => Promise<Partial<World>> = async (input, user) => {
   const worldUpdateData: Partial<WithId<World>> = {
     id: input.id,
-    // save only to new place for new worlds, and if missing, read old ones for legacy worlds
-    // questions: {
-    //   code: input.code_of_conduct_questions,
-    //   profile: input.profile_questions,
-    // },
+    adultContent: input?.adultContent,
+    requiresDateOfBirth: input?.requiresDateOfBirth,
+    questions: {
+      code: input?.code ?? [],
+      profile: input?.profile ?? [],
+    },
+    entrance: isEmpty(input.entrance) ? undefined : input.entrance,
   };
 
   return worldUpdateData;
@@ -88,8 +91,25 @@ export const createFirestoreWorldAdvancedInput: (
   input: WithId<WorldAdvancedFormInput>,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
-  // mapping is 1:1, so just filtering out unintended extra fields
-  return pick(input, ["id", "attendeesTitle", "chatTitle", "showNametags"]);
+  // mapping is mostly 1:1, so just filtering out unintended extra fields
+  const picked = pick(input, [
+    "id",
+    "attendeesTitle",
+    "chatTitle",
+    "showBadges",
+    "showNametags",
+    "showRadio",
+    "showSchedule",
+    "showUserStatus",
+    "userStatuses",
+  ]);
+
+  // Form input is just a single string, but DB structure is string[]
+  const radioStations = isDefined(input.radioStations)
+    ? [input.radioStations]
+    : undefined;
+
+  return { ...picked, radioStations };
 };
 
 export const createWorld: (
@@ -97,7 +117,7 @@ export const createWorld: (
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
-  error?: Error;
+  error?: Error | unknown;
 }> = async (world, user) => {
   // a way to share value between try and catch blocks
   let worldId = "";
@@ -110,7 +130,6 @@ export const createWorld: (
     worldId = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
-
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),
@@ -120,10 +139,14 @@ export const createWorld: (
     await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
 
     // 3. initial venue is created
-    await firebase.functions().httpsCallable("venue-createVenue_v2")({
-      ...fullInput,
-      worldId,
-    });
+    // Temporary disabled due to possible complications and edge cases.
+    // What if the inital venue has to be a template of choice
+    // What if the venue already exists and it collides with the world name
+    // etc..
+    // await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    //   ...fullInput,
+    //   worldId,
+    // });
 
     // worldId might be useful for caller
     return { worldId };

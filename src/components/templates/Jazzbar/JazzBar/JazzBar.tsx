@@ -1,17 +1,20 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_SHOW_REACTIONS,
   IFRAME_ALLOW,
 } from "settings";
 
 import { JazzbarVenue, VenueTemplate } from "types/venues";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
@@ -49,7 +52,12 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
-  const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
+  const embedIframeUrl = convertToEmbeddableUrl({
+    url: venue.iframeUrl,
+    autoPlay: venue.autoPlay,
+  });
+  const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
+  const analytics = useAnalytics({ venue });
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
@@ -73,8 +81,20 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const isUserAudioMuted = !isUserAudioOn;
 
+  useEffect(() => {
+    analytics.trackEnterJazzBarEvent();
+  }, [analytics]);
+
+  useEffect(() => {
+    seatedAtTable && analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
+
   const shouldShowReactions =
-    seatedAtTable && areSettingsLoaded && settings.showReactions;
+    seatedAtTable &&
+    areSettingsLoaded &&
+    (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
+    (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
+
   const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =
@@ -165,7 +185,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                 )}
                 {shouldShowJukebox && (
                   <Jukebox
-                    updateIframeUrl={changeIframeUrl}
+                    updateIframeUrl={setIframeUrl}
                     venue={venue}
                     tableRef={seatedAtTable}
                   />

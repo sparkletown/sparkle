@@ -1,13 +1,17 @@
 import { useMemo } from "react";
 
+import { DEFAULT_CHAT_TITLE } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
 
 export const useChatSidebarInfo = (venue: AnyVenue) => {
   const numberOfUnreadChats = useNumberOfUnreadChats();
-  const chatTitle = venue?.chatTitle ?? "Venue";
+  const { world } = useCurrentWorld({ worldId: venue.worldId });
+  const chatTitle = world?.chatTitle ?? DEFAULT_CHAT_TITLE;
 
   return {
     privateChatTabTitle: `Direct Messages ${

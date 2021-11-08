@@ -12,12 +12,7 @@ import * as Yup from "yup";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import {
-  createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
-} from "api/admin";
+import { createSlug, createVenue, updateVenue, VenueInput } from "api/admin";
 
 import { UserStatus } from "types/User";
 
@@ -69,6 +64,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
     watch,
     formState,
     register,
+    getValues,
     setValue,
     control,
     handleSubmit,
@@ -150,12 +146,10 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
                 description:
                   sovereignVenue.config?.landingPageConfig.description ?? "",
                 adultContent: sovereignVenue.adultContent ?? false,
-                profile_questions: sovereignVenue.profile_questions,
-                code_of_conduct_questions:
-                  sovereignVenue.code_of_conduct_questions,
                 userStatuses,
                 showUserStatus: showUserStatuses,
                 template: sovereignVenue.template,
+                roomVisibility: sovereignVenue.roomVisibility,
               },
               user
             );
@@ -170,7 +164,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
           );
 
         vals.name
-          ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
+          ? history.push(`/admin/${createSlug(venueId ?? vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
@@ -205,6 +199,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
             <VenueDetailsSubForm
               venueId={venueId}
               setValue={setValue}
+              getValues={getValues}
               state={state}
               previous={previous}
               sovereignVenue={sovereignVenue}

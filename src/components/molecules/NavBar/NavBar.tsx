@@ -25,6 +25,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useWorldEdit } from "hooks/useWorldEdit";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
@@ -59,12 +60,14 @@ export interface NavBarPropsType {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
+  withHiddenLoginButton?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
+  withHiddenLoginButton,
 }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
@@ -78,6 +81,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const { world } = useWorldEdit(relatedVenue?.worldId);
 
   const { currentVenue: ownedVenue } = useOwnedVenues({
     currentVenueId: venueId,
@@ -105,7 +110,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+    withSchedule && (world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -238,7 +243,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 venueId && !isAdminContext && <div>{navbarTitle}</div>
               )}
 
-              {venueId && !isAdminContext && <VenuePartygoers />}
+              {venueId && !isAdminContext && (
+                <VenuePartygoers worldId={currentVenue?.worldId} />
+              )}
             </div>
 
             {withPhotobooth && (
@@ -250,7 +257,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               </div>
             )}
 
-            {!user && <NavBarLogin />}
+            {!withHiddenLoginButton && !user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">

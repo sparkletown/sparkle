@@ -10,6 +10,7 @@ const {
   differenceWith,
   flatten,
   sum,
+  has,
 } = require("lodash");
 const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
@@ -52,7 +53,7 @@ const removeDanglingSeatedUsers = async () => {
 
           switch (seatedUserData.template) {
             case "auditorium":
-              if (!("sectionId" in seatedUserData.venueSpecificData)) {
+              if (!has(seatedUserData.venueSpecificData, "sectionId")) {
                 console.error(
                   "No sectionId prop in seatedUserData.venueSpecificData in" +
                     `/venues/${venueId}/recentSeatedUsers/${userId}`
