@@ -36,10 +36,10 @@ export interface ArtPieceProps {
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
-  const { name, host, config, iframeUrl, videoAspect } = venue ?? {};
+  const { name, host, config, iframeUrl, videoAspect, autoPlay } = venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
-  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
+  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl, autoPlay });
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({

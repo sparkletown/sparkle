@@ -8,6 +8,8 @@ import {
   YOUTUBE_SHORT_URL_STRING,
 } from "settings";
 
+const AUTOPLAY_ENABLED_URL_VALUE = "1";
+
 const withParameters = (urlObject: URL, urlParams?: URLSearchParams) => {
   if (!urlParams) {
     return;
@@ -23,10 +25,10 @@ const withAutoPlay = ({
   autoPlay,
 }: {
   urlObject: URL;
-  autoPlay?: string | false | null;
+  autoPlay?: boolean;
 }) => {
-  if (autoPlay === "1" || autoPlay === "true") {
-    urlObject.searchParams.set("autoplay", autoPlay);
+  if (autoPlay) {
+    urlObject.searchParams.set("autoplay", AUTOPLAY_ENABLED_URL_VALUE);
   } else {
     urlObject.searchParams.delete("autoplay");
   }
@@ -95,13 +97,7 @@ export const convertToEmbeddableUrl: (
   const urlObject = new URL(urlString);
   const { host, searchParams, pathname } = urlObject;
 
-  const urlAutoPlayValue =
-    searchParams.get("autoplay") === "1" ||
-    searchParams.get("autoplay") === "true"
-      ? searchParams.get("autoplay")
-      : false;
-
-  withAutoPlay({ urlObject, autoPlay: autoPlay && urlAutoPlayValue });
+  withAutoPlay({ urlObject, autoPlay });
 
   const isTwitch = host.includes(TWITCH_SHORT_URL);
 

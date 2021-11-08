@@ -36,11 +36,18 @@ export interface ViewingWindowProps {
 
 export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
   // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
-  const { name, host, config, iframeUrl, videoAspect, isWithParticipants } =
-    venue ?? {};
+  const {
+    name,
+    host,
+    config,
+    iframeUrl,
+    videoAspect,
+    isWithParticipants,
+    autoPlay,
+  } = venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
-  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
+  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl, autoPlay });
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({
