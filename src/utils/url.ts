@@ -3,9 +3,9 @@ import Bugsnag from "@bugsnag/js";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
-  ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_OLD_WORLD_PARAM_URL,
+  ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_VENUE_PARAM_URL,
   ADMIN_V3_WORLD_SPACES_PARAM_URL,
   ENTRANCE_BASE_URL,
@@ -22,7 +22,7 @@ export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
 
 export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
+  generatePath(ADMIN_V3_SPACE_SETTINGS_PARAM_URL, { venueId, selectedTab });
 
 export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });

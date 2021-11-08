@@ -52,7 +52,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
             linkTo={adminNGSettingsUrl(venueId)}
             iconName={faCog}
           >
-            Advanced Settings
+            Space Settings
           </ButtonNG>
           <RunTabUsers venueId={venueId} />
         </div>

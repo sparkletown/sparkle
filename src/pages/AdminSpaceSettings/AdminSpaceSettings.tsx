@@ -9,7 +9,6 @@ import { adminNGSettingsUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
@@ -19,32 +18,32 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
-import "./AdminAdvancedSettings.scss";
+import "./AdminSpaceSettings.scss";
 
-export enum AdminAdvancedTab {
+export enum AdminSpaceSettingsTab {
   basicInfo = "basic-info",
   entranceExperience = "entrance-experience",
-  advancedMapSettings = "advanced-map-settings",
 }
 
-export interface AdminAdvancedSettingsRouteParams {
+export interface AdminSpaceSettingsRouteParams {
   venueId?: string;
-  selectedTab?: AdminAdvancedTab;
+  selectedTab?: AdminSpaceSettingsTab;
 }
 
-const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, String>> = {
-  [AdminAdvancedTab.basicInfo]: "Start",
-  [AdminAdvancedTab.entranceExperience]: "Entrance",
-  [AdminAdvancedTab.advancedMapSettings]: "Advanced",
+const adminAdvancedTabLabelMap: Readonly<
+  Record<AdminSpaceSettingsTab, String>
+> = {
+  [AdminSpaceSettingsTab.basicInfo]: "Start",
+  [AdminSpaceSettingsTab.entranceExperience]: "Entrance",
 };
 
-export const AdminAdvancedSettings: React.FC = () => {
+export const AdminSpaceSettings: React.FC = () => {
   const history = useHistory();
   const {
     venueId,
-    selectedTab = AdminAdvancedTab.basicInfo,
-  } = useParams<AdminAdvancedSettingsRouteParams>();
-
+    selectedTab = AdminSpaceSettingsTab.basicInfo,
+  } = useParams<AdminSpaceSettingsRouteParams>();
+  console.log("??");
   const {
     currentVenue: venue,
     isCurrentVenueLoaded,
@@ -66,7 +65,10 @@ export const AdminAdvancedSettings: React.FC = () => {
   }, [selectedTab, venueId]);
 
   const navigateToDefaultTab = useCallback(
-    () => history.push(adminNGSettingsUrl(venueId, AdminAdvancedTab.basicInfo)),
+    () =>
+      history.push(
+        adminNGSettingsUrl(venueId, AdminSpaceSettingsTab.basicInfo)
+      ),
     [venueId, history]
   );
 
@@ -82,21 +84,18 @@ export const AdminAdvancedSettings: React.FC = () => {
   return (
     <WithNavigationBar>
       <AdminRestricted>
-        <div className="AdminAdvancedSettings">
-          <div className="AdminAdvancedSettings__options">
+        <div className="AdminSpaceSettings">
+          <div className="AdminSpaceSettings__options">
             {renderAdminAdvancedTabs}
           </div>
         </div>
-        {selectedTab === AdminAdvancedTab.basicInfo && <VenueWizard />}
-        {selectedTab === AdminAdvancedTab.entranceExperience && (
+        {selectedTab === AdminSpaceSettingsTab.basicInfo && <VenueWizard />}
+        {selectedTab === AdminSpaceSettingsTab.entranceExperience && (
           <EntranceExperience
             // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
             venue={venue as Venue_v2}
             onSave={navigateToDefaultTab}
           />
-        )}
-        {selectedTab === AdminAdvancedTab.advancedMapSettings && (
-          <AdvancedSettings venue={venue} onSave={navigateToDefaultTab} />
         )}
       </AdminRestricted>
     </WithNavigationBar>
