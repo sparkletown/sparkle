@@ -2,6 +2,13 @@
 
 $popup-width: 340px;
 
+$image-on-url: url(/assets/icons/navbar-link-radio.png);
+$image-on-height: 40px;
+$image-on-width: 2 * $image-on-height;
+
+$image-off-url: url(/assets/icons/navbar-link-radio-off.png);
+$image-off-size: 40px;
+
 .NormalRadio {
   // @debt replace the popover component from Bootstrap with something else, then remove these !important workarounds
   transform: none !important;
@@ -20,8 +27,8 @@ $popup-width: 340px;
     cursor: pointer;
     object-fit: contain;
 
-    background-image: url(/assets/icons/navbar-link-radio.png);
-    background-size: 80px 40px;
+    background-image: $image-on-url;
+    background-size: $image-on-width $image-on-height;
     animation: radioanim 2s steps(2) infinite;
 
     &:hover {
@@ -29,8 +36,8 @@ $popup-width: 340px;
     }
 
     &--off {
-      background-image: url(/assets/icons/navbar-link-radio-off.png);
-      background-size: 40px 40px;
+      background-image: $image-off-url;
+      background-size: $image-off-size $image-off-size;
       animation: none;
     }
   }

@@ -22,7 +22,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   subtext,
   register,
   errors,
-  hidden,
+  hidden: isHidden,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -31,7 +31,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     [label, name]
   );
 
-  return hidden ? (
+  return isHidden ? (
     <input
       {...inputProps}
       className="AdminInput AdminInput--hidden AdminInput__input"

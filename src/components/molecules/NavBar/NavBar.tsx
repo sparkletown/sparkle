@@ -118,7 +118,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
-  const isSoundCloud = !!firstStation && firstStation.includes("soundcloud");
+  const isSoundCloud = firstStation?.includes("soundcloud");
 
   const sound = useMemo(
     () => (firstStation && !isSoundCloud ? new Audio(firstStation) : undefined),
