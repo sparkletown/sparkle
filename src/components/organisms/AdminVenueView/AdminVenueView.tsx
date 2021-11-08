@@ -105,7 +105,7 @@ export const AdminVenueView: React.FC = () => {
 
   if (!venue) {
     return (
-      <WithNavigationBar withSchedule>
+      <WithNavigationBar withSchedule withHiddenLoginButton>
         <AdminRestricted>
           <NotFound />
         </AdminRestricted>
