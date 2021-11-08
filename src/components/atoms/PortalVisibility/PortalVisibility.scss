@@ -1,22 +1,68 @@
 @import "scss/constants.scss";
 
-.PortalVisibility {
-  appearance: none;
-  border-radius: $border-radius--xl;
-  color: $content--over;
-  background-color: opaque-white(0.12);
-  padding: $spacing--md $spacing--xl $spacing--md $spacing--md;
-  text-align: center;
-  width: 100%;
-  margin-bottom: $spacing--xl;
-  cursor: pointer;
+$visibility-width: 90px;
+$visibility-item-height: 160px;
+$portal-image-height: $visibility-width;
+$portal-image-width: 75px;
 
-  &:hover {
-    background-color: opaque-white(0.16);
+.PortalVisibility {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  align-items: center;
+
+  &__item {
+    border-radius: $border-radius--lg;
+    background-color: var(--content--over-10a);
+    text-align: center;
+    width: $visibility-width;
+    height: $visibility-item-height;
+    margin: $spacing--md $spacing--xs;
+    cursor: pointer;
+    font-size: font-size--root(0.75);
+    padding: font-size--root(0.5);
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    border: $border-width--bold solid transparent;
+
+    &:hover {
+      background-color: var(--content--over-20a);
+    }
+
+    &--selected {
+      border: $border-width--bold solid var(--primary--under-lighter-10pp);
+    }
   }
 
-  option {
-    color: $content--over;
-    background-color: $secondary--dark;
+  &__image {
+    background-image: url(/assets/images/label-carousel.png);
+    height: $portal-image-height;
+    width: $portal-image-width;
+    margin-bottom: $spacing--sm;
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: flex;
+  }
+
+  &__subtitle {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary--under-lighter-10pp);
+    margin: auto;
+    width: 90%;
+    padding: $spacing--xs;
+    border-radius: $border-radius--lg;
+  }
+
+  &__subtitle-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__subtitle-text {
+    margin-left: $spacing--xs;
   }
 }

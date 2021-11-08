@@ -113,6 +113,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
+  const dropdownVenueList = venue?.rooms?.map(({ title, template }) => ({
+    name: title,
+    template: template,
+  }));
+
   return (
     <>
       <Modal
@@ -127,7 +132,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <SpacesDropdown
-                  venueSpaces={venue.rooms ?? ALWAYS_EMPTY_ARRAY}
+                  venueSpaces={dropdownVenueList ?? ALWAYS_EMPTY_ARRAY}
                   venueId={venueId}
                   setValue={setValue}
                   register={register}
