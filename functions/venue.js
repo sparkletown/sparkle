@@ -859,8 +859,13 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  if (data.name) {
+    updated.name = data.name;
+  }
+
   if (data.description || data.description === "") {
-    updated.config.landingPageConfig.description = data.description;
+    updated.config.landingPageConfig.description =
+      data.description && data.description.text;
   }
 
   if (data.logoImageUrl) {
