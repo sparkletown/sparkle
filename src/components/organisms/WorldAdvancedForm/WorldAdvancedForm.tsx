@@ -5,8 +5,7 @@ import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import * as Yup from "yup";
 
-import { World } from "api/admin";
-import { updateWorldAdvancedSettings } from "api/world";
+import { updateWorldAdvancedSettings, World } from "api/world";
 
 import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";

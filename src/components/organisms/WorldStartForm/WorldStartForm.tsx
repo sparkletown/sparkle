@@ -9,8 +9,8 @@ import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { createSlug, World } from "api/admin";
-import { createWorld, updateWorldStartSettings } from "api/world";
+import { createSlug } from "api/admin";
+import { createWorld, updateWorldStartSettings, World } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
 

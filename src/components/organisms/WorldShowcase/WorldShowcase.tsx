@@ -8,7 +8,7 @@ import {
   DEFAULT_VENUE_LOGO,
 } from "settings";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { WithId } from "utils/id";
 import { worldEditStartValuesSelector } from "utils/selectors";
