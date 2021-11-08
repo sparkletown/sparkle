@@ -119,7 +119,7 @@ export const EmergencyViewPage: React.FC = () => {
 
   if (!venueId || (isCurrentVenueLoaded && !venue)) {
     return (
-      <WithNavigationBar hideLoginButton>
+      <WithNavigationBar withHiddenLoginButton>
         <NotFound />
       </WithNavigationBar>
     );

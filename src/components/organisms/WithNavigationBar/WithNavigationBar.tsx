@@ -25,14 +25,14 @@ export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
-  hideLoginButton?: boolean;
+  withHiddenLoginButton?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
-  hideLoginButton,
+  withHiddenLoginButton,
   children,
 }) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
@@ -54,7 +54,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
             hasBackButton={hasBackButton}
             withSchedule={withSchedule}
             withPhotobooth={withPhotobooth}
-            hideLoginButton={hideLoginButton}
+            withHiddenLoginButton={withHiddenLoginButton}
           />
         </Suspense>
       </RelatedVenuesProvider>
