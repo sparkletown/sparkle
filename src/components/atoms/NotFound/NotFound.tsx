@@ -9,6 +9,8 @@ import SPARKLEVERSE_LANDSCAPE from "assets/images/Sparkle_logo_white_yellow.png"
 
 import "./NotFound.scss";
 
+const JUST_CURRENT_PAGE_HISTORY_LENGTH = 1;
+
 export interface NotFoundProps {
   fullScreen?: boolean;
 }
@@ -34,13 +36,15 @@ export const NotFound: React.FC<NotFoundProps> = ({ fullScreen }) => {
           src={TV_IMAGE}
         />
         <p className="NotFound__move-along-text">Nothing to see here.</p>
-        <ButtonNG
-          className="NotFound__button"
-          variant="primary"
-          onClick={history.goBack}
-        >
-          Go Back
-        </ButtonNG>
+        {history.length > JUST_CURRENT_PAGE_HISTORY_LENGTH && (
+          <ButtonNG
+            className="NotFound__button"
+            variant="primary"
+            onClick={history.goBack}
+          >
+            Go Back
+          </ButtonNG>
+        )}
       </div>
     </div>
   );
