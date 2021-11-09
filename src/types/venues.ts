@@ -137,7 +137,6 @@ export interface VenueAdvancedConfig {
   radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
   roomVisibility?: RoomVisibility;
-  showBadges?: boolean;
   showGrid?: boolean;
   showRadio?: boolean;
   parentId?: string;
@@ -215,7 +214,6 @@ export interface BaseVenue {
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
   showRadio?: boolean;
-  showBadges?: boolean;
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;

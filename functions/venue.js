@@ -387,10 +387,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.showSchedule = data.showSchedule;
   }
 
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
-  }
-
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
   }
@@ -905,10 +901,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showSchedule === "boolean") {
     updated.showSchedule = data.showSchedule;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showRangers === "boolean") {

@@ -299,14 +299,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowBadgesToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show badges</h4>
-      <Toggler name="showBadges" forwardedRef={register} />
-    </div>
-  );
-
   const renderSeatingNumberInput = () => (
     <>
       <div className="input-container">
@@ -660,7 +652,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
 
-        {renderShowBadgesToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}

@@ -23,7 +23,6 @@ export const advancedSettingsSchema = Yup.object().shape<VenueAdvancedConfig>({
     then: Yup.string().required("Radio stream is required!"),
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
-  showBadges: Yup.bool().notRequired(),
   showRadio: Yup.bool().notRequired(),
   roomVisibility: Yup.mixed()
     .oneOf(Object.values(RoomVisibility))
