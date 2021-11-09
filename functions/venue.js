@@ -221,7 +221,6 @@ const createVenueData = (data, context) => {
       typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
     showUserStatus:
@@ -741,10 +740,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
-  // @debt the logic here differs from updateVenue_v2,
-  // @debt this would currently allow any value to be set in this field, not just booleans
-  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
-
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
     updated.iframeUrl = data.iframeUrl;
@@ -808,11 +803,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.showGrid = data.showGrid;
     // @debt the logic here differs from updateVenue, as data.columns is always set when present there
     updated.columns = data.columns;
-  }
-
-  // @debt the logic here differs from updateVenue
-  if (typeof data.requiresDateOfBirth === "boolean") {
-    updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
@@ -955,10 +945,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.columns === "number") {
     updated.columns = data.columns;
-  }
-
-  if (typeof data.requiresDateOfBirth === "boolean") {
-    updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
   if (typeof data.showRadio === "boolean") {

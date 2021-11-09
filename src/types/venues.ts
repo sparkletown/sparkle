@@ -135,7 +135,6 @@ export interface Venue_v2_Base {
 export interface VenueAdvancedConfig {
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
-  requiresDateOfBirth?: boolean;
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
@@ -202,7 +201,6 @@ export interface BaseVenue {
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  requiresDateOfBirth?: boolean;
   ticketUrl?: string;
   showReactions?: boolean;
   isReactionsMuted?: boolean;

@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
+
+import { DEFAULT_REQUIRES_DOB } from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
@@ -13,11 +16,11 @@ import { isTruthy } from "utils/types";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
+import { useWorldEdit } from "hooks/useWorldEdit";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
 import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
-import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -26,14 +29,12 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
-interface PropsType {
-  displayLoginForm: () => void;
-  displayPasswordResetForm: () => void;
-  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
-  closeAuthenticationModal?: () => void;
-}
+const validateDateOfBirth = (stringDate: string) => {
+  const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
+  return yearsDifference >= 18 && yearsDifference <= 100;
+};
 
-interface RegisterFormData {
+export interface RegisterFormInput {
   email: string;
   password: string;
   code: string;
@@ -45,20 +46,28 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
-const RegisterForm: React.FunctionComponent<PropsType> = ({
+export interface RegisterFormProps {
+  displayLoginForm: () => void;
+  displayPasswordResetForm: () => void;
+  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
+  closeAuthenticationModal?: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({
   displayLoginForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
   const venue = useSelector(venueSelector);
+  const { world, isLoaded: isWorldLoaded } = useWorldEdit(venue?.worldId);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const analytics = useAnalytics({ venue });
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const signUp = ({ email, password }: RegisterFormData) => {
+  const signUp = ({ email, password }: RegisterFormInput) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
@@ -71,7 +80,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError,
     watch,
     getValues,
-  } = useForm<RegisterFormData & Record<string, string>>({
+  } = useForm<RegisterFormInput & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
@@ -84,7 +93,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     return <>Loading...</>;
   }
 
-  const checkVenueAccessLevels = async (data: RegisterFormData) => {
+  const checkVenueAccessLevels = async (data: RegisterFormInput) => {
     if (venue.access === VenueAccessMode.Emails) {
       const isEmailWhitelisted = await checkIsEmailWhitelisted({
         venueId: venue.id,
@@ -120,9 +129,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const postRegisterCheck = (
     authResult: firebase.auth.UserCredential,
-    data: RegisterFormData
+    data: RegisterFormInput
   ) => {
-    if (authResult.user && venue.requiresDateOfBirth) {
+    if (authResult.user && isDobRequired) {
       updateUserPrivate(authResult.user.uid, {
         date_of_birth: data.date_of_birth,
       }).catch((e) => console.error(RegisterForm.name, e));
@@ -134,7 +143,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     closeAuthenticationModal?.();
   };
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormInput) => {
     try {
       setShowLoginModal(false);
 
@@ -215,6 +224,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     await firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
+  const isDobRequired =
+    isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
+
   return (
     <div className="form-container">
       {showLoginModal && (
@@ -287,9 +299,31 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
-        {venue.requiresDateOfBirth && (
-          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+        {isDobRequired && (
+          <div className="input-group">
+            <input
+              name="date_of_birth"
+              className="input-block input-centered"
+              type="date"
+              ref={register({ required: true, validate: validateDateOfBirth })}
+            />
+            <small className="input-info">
+              You need to be 18 years old to attend this event. Please confirm
+              your age.
+            </small>
+            {errors?.date_of_birth && (
+              <span className="input-error">
+                {errors?.date_of_birth?.type === "required" && (
+                  <>Date of birth is required</>
+                )}
+                {errors?.date_of_birth?.type === "validate" && (
+                  <div>You need to be at least 18 years of age.</div>
+                )}
+              </span>
+            )}
+          </div>
         )}
+
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
             const required = errors?.[term.name]?.type === "required";

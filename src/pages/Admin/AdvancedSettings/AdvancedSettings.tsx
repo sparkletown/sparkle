@@ -46,7 +46,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     defaultValues: {
       columns: venue.columns ?? 0,
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
-      requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
@@ -176,14 +175,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
             forwardedRef={register}
             name="showBadges"
             title="Show badges"
-          />
-        </div>
-
-        <div className="AdvancedSettings__form-field">
-          <Toggler
-            forwardedRef={register}
-            name="requiresDateOfBirth"
-            title="Require date of birth on register"
           />
         </div>
 
