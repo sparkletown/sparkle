@@ -2,7 +2,7 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO, SPACE_TAXON } from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -38,10 +38,10 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
         <AdminShowcaseSubTitle>{venue.name}</AdminShowcaseSubTitle>
       </div>
       <ButtonNG linkTo={adminNGVenueUrl(venue.id)} variant="primary">
-        Manage Space
+        Manage {SPACE_TAXON.capital} Settings
       </ButtonNG>
       <ButtonNG linkTo={adminNGSettingsUrl(venue.id)} variant="primary">
-        Space Settings
+        {SPACE_TAXON.capital} Settings
       </ButtonNG>
     </div>
   );

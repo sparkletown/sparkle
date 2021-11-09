@@ -348,7 +348,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   });
 
   return (
-    <Form className="DetailsForm" onSubmit={handleSubmit(setVenue)}>
+    <Form onSubmit={handleSubmit(setVenue)} className="DetailsForm">
       <div className="DetailsForm__wrapper">
         <input
           type="hidden"

@@ -43,7 +43,7 @@ export const AdminSpaceSettings: React.FC = () => {
     venueId,
     selectedTab = AdminSpaceSettingsTab.basicInfo,
   } = useParams<AdminSpaceSettingsRouteParams>();
-  console.log("??");
+
   const {
     currentVenue: venue,
     isCurrentVenueLoaded,

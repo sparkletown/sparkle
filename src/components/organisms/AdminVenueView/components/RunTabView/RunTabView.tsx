@@ -1,6 +1,8 @@
 import React from "react";
 import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
+import { SPACE_TAXON } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -43,7 +45,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
   return (
     <AdminPanel className="RunTabView">
       <AdminSidebar>
-        <AdminSidebarTitle>Run your space</AdminSidebarTitle>
+        <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
         <AdminSidebarFooter {...sidebarFooterProps} />
         <div className="RunTabView__content">
           <ButtonNG
@@ -52,7 +54,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
             linkTo={adminNGSettingsUrl(venueId)}
             iconName={faCog}
           >
-            Space Settings
+            {SPACE_TAXON.capital} Settings
           </ButtonNG>
           <RunTabUsers venueId={venueId} />
         </div>

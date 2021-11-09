@@ -360,6 +360,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             {!isLoadingRoomVenue && !!roomVenue && (
               <>
                 {room.template &&
+                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   BACKGROUND_IMG_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
@@ -386,6 +387,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   )}
 
                 {room.template &&
+                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
                     <>
                       <Form.Label>Livestream URL</Form.Label>
@@ -412,6 +414,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   )}
 
                 {room.template &&
+                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   ZOOM_URL_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
@@ -435,6 +438,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
                 {!DISABLED_DUE_TO_1253 &&
                   room.template &&
+                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   HAS_GRID_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
@@ -447,6 +451,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   )}
 
                 {room.template &&
+                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   HAS_REACTIONS_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
@@ -459,6 +464,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   )}
 
                 {room.template &&
+                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   HAS_REACTIONS_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
