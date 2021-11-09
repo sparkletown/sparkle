@@ -5,7 +5,6 @@ import classNames from "classnames";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
-  DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
@@ -275,18 +274,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         name="autoPlay"
         forwardedRef={register}
         defaultToggled={DEFAULT_VENUE_AUTOPLAY}
-      />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowScheduleToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Schedule</h4>
-      <Toggler
-        name="showSchedule"
-        forwardedRef={register}
-        defaultToggled={DEFAULT_SHOW_SCHEDULE}
       />
     </div>
   );
@@ -654,7 +641,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           editing={state.detailsPage?.venue.entrance}
         />
 
-        {renderShowScheduleToggle()}
         {!DISABLED_DUE_TO_1253 &&
           templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
