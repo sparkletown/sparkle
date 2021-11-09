@@ -176,7 +176,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const handleGoogleSignIn = async () => {
     const { email, password, code, date_of_birth } = getValues();
     const formValues = { email, password, code, date_of_birth };
-    checkVenueAccessLevels(formValues);
+    checkVenueAccessLevels(formValues).catch((e) =>
+      console.error(RegisterForm.name, e)
+    );
     try {
       const auth = await signInWithGoogle();
       postRegisterCheck(auth, formValues);
@@ -187,7 +189,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const handleFacebookSignIn = async () => {
     const { email, password, code, date_of_birth } = getValues();
     const formValues = { email, password, code, date_of_birth };
-    checkVenueAccessLevels(formValues);
+    checkVenueAccessLevels(formValues).catch((e) =>
+      console.error(RegisterForm.name, e)
+    );
     try {
       const auth = await signInWithFacebook();
 
