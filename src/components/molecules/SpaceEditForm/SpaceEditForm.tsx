@@ -240,6 +240,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
+  console.log(venueValues);
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
@@ -426,8 +427,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   room.template as VenueTemplate
                 ) && (
                   <AdminCheckbox
-                    name="venue.showReactions"
-                    label="Show reactions"
+                    name="venue.showShoutouts"
+                    label="Show shoutouts"
                     variant="toggler"
                     register={register}
                   />
@@ -437,12 +438,24 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 HAS_REACTIONS_TEMPLATES.includes(
                   room.template as VenueTemplate
                 ) && (
-                  <AdminCheckbox
-                    name="venue.showShoutouts"
-                    label="Show shoutouts"
-                    variant="toggler"
-                    register={register}
-                  />
+                  <>
+                    <AdminCheckbox
+                      name="venue.showReactions"
+                      label="Show reactions"
+                      variant="toggler"
+                      register={register}
+                    />
+                    <AdminSection>
+                      <AdminCheckbox
+                        variant="toggler"
+                        name="venue.isReactionsMuted"
+                        labelBefore="Muted"
+                        register={register}
+                        disabled={!venueValues.showReactions}
+                        label="Audible"
+                      />
+                    </AdminSection>
+                  </>
                 )}
 
               {room.template === VenueTemplate.auditorium && (

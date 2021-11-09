@@ -14,7 +14,8 @@ export interface AdminCheckboxProps
   className?: string;
   errors?: FieldErrors<FieldValues>;
   label?: ReactNode | string;
-  labelPosition?: "before" | "after";
+  labelAfter?: string;
+  labelBefore?: string;
   name: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   subtext?: ReactNode | string;
@@ -26,7 +27,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   disabled,
   errors,
   label,
-  labelPosition = "after",
+  labelBefore,
   name,
   register,
   subtext,
@@ -34,12 +35,10 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   ...inputProps
 }) => {
   const error = get(errors, name);
-
   const parentClasses = classNames({
     "AdminCheckbox AdminCheckbox--disabled": disabled,
     "AdminCheckbox AdminCheckbox--enabled": !disabled,
     [`AdminCheckbox--${variant}`]: variant,
-    [`AdminCheckbox--label-${labelPosition}`]: labelPosition,
     [className]: className,
   });
 
@@ -50,6 +49,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
         className="AdminCheckbox__input"
         type="checkbox"
         hidden
+        disabled={disabled}
         name={name}
         ref={register}
       />
@@ -67,9 +67,11 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     <p className={parentClasses}>
       {label ? (
         <label className="AdminCheckbox__label">
-          {labelPosition === "before" && label}
+          {labelBefore && (
+            <span className="AdminCheckbox__label--before">{labelBefore}</span>
+          )}
           {input}
-          {labelPosition === "after" && label}
+          {label && label}
         </label>
       ) : (
         input

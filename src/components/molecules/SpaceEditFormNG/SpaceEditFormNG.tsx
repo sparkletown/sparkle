@@ -46,6 +46,8 @@ import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import { Toggler } from "components/atoms/Toggler";
 
+import { AdminCheckbox } from "../AdminCheckbox";
+
 import "./SpaceEditFormNG.scss";
 
 export interface SpaceEditFormNGProps {
@@ -346,9 +348,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             />
           </AdminSection>
           <AdminSection>
-            <Toggler
+            <AdminCheckbox
+              variant="toggler"
+              labelBefore="Muted"
               name="isReactionsMuted"
-              forwardedRef={register}
+              register={register}
               disabled={!values.showReactions}
               containerClassName="SpaceEditFormNG__toggler"
               label="Audible"

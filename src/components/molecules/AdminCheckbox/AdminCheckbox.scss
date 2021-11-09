@@ -47,6 +47,10 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
   &__label {
     display: flex;
     align-items: center;
+
+    &--before {
+      margin-right: $spacing--md;
+    }
   }
 
   &__box {
