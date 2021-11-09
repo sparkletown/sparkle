@@ -125,7 +125,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     if (authResult.user && venue.requiresDateOfBirth) {
       updateUserPrivate(authResult.user.uid, {
         date_of_birth: data.date_of_birth,
-      });
+      }).catch((e) => console.error(RegisterForm.name, e));
     }
 
     analytics.trackSignUpEvent(data.email);
@@ -138,7 +138,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     try {
       setShowLoginModal(false);
 
-      checkVenueAccessLevels(data);
+      checkVenueAccessLevels(data).catch((e) =>
+        console.error(RegisterForm.name, e)
+      );
 
       const auth = await signUp(data);
 

@@ -180,7 +180,6 @@ export interface BaseVenue {
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
-  adultContent?: boolean;
   samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;

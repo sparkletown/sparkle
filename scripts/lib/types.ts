@@ -191,7 +191,6 @@ export interface TruncatedVenueType {
   activity?: string;
   bannerMessage?: string;
   miniAvatars?: boolean;
-  adultContent?: boolean;
   samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;

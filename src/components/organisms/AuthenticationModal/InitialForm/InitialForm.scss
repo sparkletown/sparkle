@@ -1,32 +1,8 @@
 @import "scss/constants.scss";
 
-.initial-form {
-  .create-account-button {
-    border-radius: $border-radius--sm;
-    box-shadow: inset 0 0 0 3px $accent--under !important;
-    background-color: $accent--under !important;
-    color: white !important;
-
-    &:focus,
-    &:hover {
-      background-color: var(--primary--under-darker-20pp) !important;
-    }
-  }
-
-  .buttons-separator {
-    padding: 20px 0 20px 0;
+.InitialForm {
+  &__separator {
+    padding: $spacing--xl 0;
     text-align: center;
-  }
-
-  .login-button {
-    box-shadow: inset 0 0 0 3px $accent--under !important;
-    color: white !important;
-    background: none !important;
-    border-radius: $border-radius--sm;
-    &:focus,
-    &:hover {
-      background-color: var(--primary--under-darker-20pp);
-      opacity: 0.8;
-    }
   }
 }

@@ -172,26 +172,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderRestrictToAdultsInput = () => (
-    <div className="input-container">
-      <label
-        htmlFor={"chkadultContent"}
-        className={`checkbox ${
-          watch("adultContent", false) && "checkbox-checked"
-        }`}
-      >
-        Restrict entry to adults aged 18+
-      </label>
-      <input
-        type="checkbox"
-        id={"chkadultContent"}
-        name={"adultContent"}
-        defaultChecked={values.adultContent}
-        ref={register}
-      />
-    </div>
-  );
-
   const renderHighlightImageInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Upload Highlight image</h4>
@@ -631,7 +611,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderVenueNameInput()}
         {renderTaglineInput()}
         {renderDescriptionInput()}
-        {renderRestrictToAdultsInput()}
 
         {renderHighlightImageInput()}
         {renderLogoInput()}
