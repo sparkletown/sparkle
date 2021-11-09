@@ -30,7 +30,7 @@ export interface SpaceEditorRouteParams {
   selectedTab?: SpaceEditorTab;
 }
 
-const adminAdvancedTabLabelMap: Readonly<Record<SpaceEditorTab, String>> = {
+const spaceEditorTabLabelMap: Readonly<Record<SpaceEditorTab, String>> = {
   [SpaceEditorTab.basicInfo]: "Start",
   [SpaceEditorTab.entranceExperience]: "Entrance",
 };
@@ -47,8 +47,8 @@ export const SpaceEditor: React.FC = () => {
     isCurrentVenueLoaded,
   } = useConnectCurrentVenueNG(venueId);
 
-  const renderAdminAdvancedTabs = useMemo(() => {
-    return Object.entries(adminAdvancedTabLabelMap).map(([key, label]) => (
+  const renderedSpaceEditorTabs = useMemo(() => {
+    return Object.entries(spaceEditorTabLabelMap).map(([key, label]) => (
       <Link
         key={key}
         className={classNames({
@@ -80,7 +80,7 @@ export const SpaceEditor: React.FC = () => {
     <WithNavigationBar>
       <AdminRestricted>
         <div className="SpaceEditor">
-          <div className="SpaceEditor__options">{renderAdminAdvancedTabs}</div>
+          <div className="SpaceEditor__options">{renderedSpaceEditorTabs}</div>
         </div>
         {selectedTab === SpaceEditorTab.basicInfo && <VenueWizard />}
         {selectedTab === SpaceEditorTab.entranceExperience && (
