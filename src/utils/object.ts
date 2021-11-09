@@ -1,5 +1,16 @@
 export type ObjectEntry = [string, unknown];
 
+export const isPlainObject: (object: unknown) => boolean = (object) => {
+  const isObject = object !== null && typeof object == "object";
+
+  if (!isObject) {
+    return false;
+  }
+
+  const proto = Object.getPrototypeOf(object);
+  return proto === Object.prototype || proto === null;
+};
+
 export const objectEntries: (
   object: object | null | undefined,
   options?: { parent: string; separator: string }
@@ -9,7 +20,7 @@ export const objectEntries: (
 
   return Object.entries(object ?? {}).flatMap(([key, val]) => {
     const path = parent ? parent + separator + key : key;
-    return typeof val === "object"
+    return isPlainObject(val)
       ? objectEntries(val, { parent: path, separator })
       : [[path, val]];
   });
