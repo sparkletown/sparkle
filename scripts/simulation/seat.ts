@@ -1,6 +1,7 @@
 import { strict as assert } from "assert";
 
 import chalk from "chalk";
+import { chunk } from "lodash";
 
 import { takeSeatInAudience as actualTakeSeat } from "../lib/bot";
 import { getSectionsRef } from "../lib/collections";
@@ -8,11 +9,12 @@ import { getAuditoriumGridSize } from "../lib/documents";
 import { withErrorReporter } from "../lib/log";
 import {
   DocumentReference,
-  GridPosition,
+  Grid,
   GridSize,
+  SeatedUsersMap,
   SimContext,
 } from "../lib/types";
-import { determineWhereToSeat, pickValueFrom, sleep } from "../lib/utils";
+import { findFreeSeat, getGridFromGridSize, sleep } from "../lib/utils";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;
 export const DEFAULT_SEAT_TICK_MS = 1000;
@@ -54,7 +56,7 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
   );
 
   // Manual config should take precedence if the col/row values are provided
-  const grid: GridSize = {
+  const gridSize: GridSize = {
     ...DEFAULT_GRID_SIZE,
     ...(await getAuditoriumGridSize(options)),
     ...conf.venue,
@@ -64,57 +66,64 @@ export const simSeat: (options: SimContext) => Promise<void> = async (
     await getSectionsRef(options)
   ).listDocuments();
 
+  assert.ok(
+    sectionRefs.length > 0,
+    chalk`${simSeat.name}(): venue must have at least one section`
+  );
+
+  const sectionIds = sectionRefs.map((x) => x.id);
   // keep track of who's already seated
-  const seatedUsers: Record<string, GridPosition | undefined> = {};
-  const seatedPositions: Record<string, true | undefined> = {};
+  const grids: Record<string, Grid> = {};
+  for (const sectionId of sectionIds) {
+    grids[sectionId] = getGridFromGridSize(gridSize);
+  }
+  const seatedUsersMap: SeatedUsersMap = {};
 
   const takeSeat = withErrorReporter(conf.log, actualTakeSeat);
 
   // flag that will not let loop going on when user pressed CTRL+C
   let isStopped = false;
-  stop.then(() => (isStopped = true));
+  stop.then(() => {
+    return (isStopped = true);
+  });
 
-  const loop = async () => {
-    for (let i = 0, j = userRefs.length; !isStopped && i < j; i += chunkSize) {
-      await Promise.all(
-        userRefs.slice(i, i + chunkSize).map(async (userRef) => {
-          const userId = userRef.id;
+  while (!isStopped) {
+    for (const usersChunk of chunk(userRefs, chunkSize)) {
+      for (const userRef of usersChunk) {
+        const userId = userRef.id;
 
-          // affinity works only for those already seated
-          if (seatedUsers[userId] && Math.random() >= affinity) {
-            return;
-          }
+        // affinity works only for those already seated
+        if (seatedUsersMap[userId] && Math.random() >= affinity) {
+          continue;
+        }
 
-          // more impatient users will sit down fast, then affinity to move will kick in
-          if (!seatedUsers[userId] && Math.random() >= impatience) {
-            return;
-          }
+        // more impatient users will sit down fast, then affinity to move will kick in
+        if (!seatedUsersMap[userId] && Math.random() >= impatience) {
+          continue;
+        }
 
-          const sectionId = pickValueFrom(sectionRefs)?.id;
+        const pos = findFreeSeat(userId, sectionIds, seatedUsersMap, grids);
 
-          const pos = determineWhereToSeat(
-            userId,
-            grid,
-            seatedUsers,
-            seatedPositions
-          );
+        if (!pos) {
+          console.log(chalk`${simSeat.name}(): all seats are occupied`);
+          return;
+        }
 
-          await takeSeat({
-            ...options,
-            userRef,
-            user: usersById[userRef.id],
-            ...pos,
-            sectionId,
-          });
-        })
-      );
+        await takeSeat({
+          ...options,
+          userRef,
+          user: usersById[userRef.id],
+          pos,
+        });
+      }
+
+      if (isStopped) break;
       // explicit sleep between the chunks
-      !isStopped && (await sleep(tick));
+      else await sleep(tick);
     }
-    // implicit sleep between the loops
-    !isStopped && setTimeout(loop, tick);
-  };
 
-  // start looping the move updates
-  return loop();
+    if (isStopped) break;
+    // implicit sleep between the loops
+    else await sleep(tick);
+  }
 };
