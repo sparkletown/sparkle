@@ -160,8 +160,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
-  const values = watch("room");
+  const roomValues = watch("room");
   const venueValues = watch("venue");
+  const values = watch();
 
   const changeRoomImageUrl = useCallback(
     (val: string) => {
@@ -205,7 +206,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       const roomData: RoomInput = {
         ...(room as RoomInput),
         ...(updatedRoom as RoomInput),
-        ...values,
+        ...roomValues,
         visibility: input.room.visibility,
       };
 
@@ -221,7 +222,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       updateVenueRoom,
       updatedRoom,
       user,
-      values,
+      roomValues,
       venueId,
     ]
   );
@@ -240,7 +241,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
-  console.log(venueValues);
+  const isReactionsMutedDisabled = !(
+    values?.venue?.showReactions ?? venueValues?.showReactions
+  );
+
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
@@ -447,12 +451,12 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     />
                     <AdminSection>
                       <AdminCheckbox
-                        variant="toggler"
+                        variant="flip-switch"
                         name="venue.isReactionsMuted"
-                        labelBefore="Muted"
+                        textOff="Muted"
                         register={register}
-                        disabled={!venueValues.showReactions}
-                        label="Audible"
+                        disabled={isReactionsMutedDisabled}
+                        textOn="Audible"
                       />
                     </AdminSection>
                   </>

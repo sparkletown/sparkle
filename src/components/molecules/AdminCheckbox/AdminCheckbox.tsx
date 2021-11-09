@@ -10,16 +10,17 @@ import { CheckboxProps } from "components/atoms/Checkbox";
 import "./AdminCheckbox.scss";
 
 export interface AdminCheckboxProps
-  extends Omit<CheckboxProps, "label" | "toggler"> {
+  extends Omit<CheckboxProps, "label" | "toggler" | "flip-switch"> {
   className?: string;
   errors?: FieldErrors<FieldValues>;
   label?: ReactNode | string;
   labelAfter?: string;
-  labelBefore?: string;
   name: string;
+  textOn?: string;
+  textOff?: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   subtext?: ReactNode | string;
-  variant?: "toggler" | "checkbox";
+  variant?: "toggler" | "checkbox" | "flip-switch";
 }
 
 export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
@@ -27,8 +28,9 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   disabled,
   errors,
   label,
-  labelBefore,
   name,
+  textOn,
+  textOff,
   register,
   subtext,
   variant = "checkbox",
@@ -63,15 +65,19 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     </>
   );
 
+  const isToggleFlip = variant === "flip-switch";
+  const isInputWithLabel = label || isToggleFlip;
+
   return (
     <p className={parentClasses}>
-      {label ? (
+      {isInputWithLabel ? (
         <label className="AdminCheckbox__label">
-          {labelBefore && (
-            <span className="AdminCheckbox__label--before">{labelBefore}</span>
+          {isToggleFlip && (
+            <span className="AdminCheckbox__label--before">{textOff}</span>
           )}
           {input}
           {label && label}
+          {isToggleFlip && textOn}
         </label>
       ) : (
         input

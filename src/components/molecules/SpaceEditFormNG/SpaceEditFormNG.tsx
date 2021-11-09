@@ -349,13 +349,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </AdminSection>
           <AdminSection>
             <AdminCheckbox
-              variant="toggler"
-              labelBefore="Muted"
+              variant="flip-switch"
+              textOff="Muted"
               name="isReactionsMuted"
               register={register}
               disabled={!values.showReactions}
               containerClassName="SpaceEditFormNG__toggler"
-              label="Audible"
+              textOn="Audible"
             />
           </AdminSection>
           <AdminSection title="Capacity (optional)">
