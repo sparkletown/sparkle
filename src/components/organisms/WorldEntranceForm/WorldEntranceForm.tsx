@@ -27,7 +27,6 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { Checkbox } from "components/atoms/Checkbox";
 import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./WorldEntranceForm.scss";
@@ -205,10 +204,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
               register={register}
             />
           </TesterRestricted>
-          <Checkbox
+          <AdminCheckbox
             name="requiresDateOfBirth"
-            label="Require date of birth on register"
-            forwardedRef={register}
+            label={
+              <>
+                Restrict registration to 18+
+                <br />
+                (adds a date of birth picker)
+              </>
+            }
+            register={register}
           />
         </AdminSection>
         <AdminSection title="Code of conduct questions">
