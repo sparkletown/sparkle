@@ -248,10 +248,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const venueSpaces = ownedVenues.map(({ name, template }) => ({
-    name,
-    template,
-  }));
+  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
+    if (venueId === id) {
+      return null;
+    }
+
+    return {
+      name,
+      template,
+    };
+  });
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -314,7 +320,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={venueSpaces ?? ALWAYS_EMPTY_ARRAY}
+                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
                 venueId={venueId}
                 setValue={setValue}
                 register={register}
@@ -329,6 +335,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               title={`${ROOM_TAXON.capital} image`}
               subtitle="(overrides global settings)"
             >
+              {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
+              {/* ie. PortalVisibility/AdminInput */}
               <ImageInput
                 onChange={changeRoomImageUrl}
                 name="room.image"
@@ -366,6 +374,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   ) && (
                     <>
                       <Form.Label>{ROOM_TAXON.capital} background</Form.Label>
+                      {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
+                      {/* ie. PortalVisibility/AdminInput */}
                       <ImageInput
                         onChange={changeBackgroundImageUrl}
                         name="venue.mapBackgroundImage"

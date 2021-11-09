@@ -223,10 +223,16 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const venueSpaces = ownedVenues.map(({ name, template }) => ({
-    name,
-    template,
-  }));
+  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
+    if (venueId === id) {
+      return null;
+    }
+
+    return {
+      name,
+      template,
+    };
+  });
 
   return (
     <div className="SpaceEditFormNG">
@@ -269,7 +275,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={venueSpaces ?? ALWAYS_EMPTY_ARRAY}
+                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
                 venueId={venueId}
                 setValue={setValue}
                 register={register}

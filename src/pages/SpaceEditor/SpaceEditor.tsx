@@ -18,31 +18,29 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
-import "./AdminSpaceSettings.scss";
+import "./SpaceEditor.scss";
 
-export enum AdminSpaceSettingsTab {
+export enum SpaceEditorTab {
   basicInfo = "basic-info",
   entranceExperience = "entrance-experience",
 }
 
-export interface AdminSpaceSettingsRouteParams {
+export interface SpaceEditorRouteParams {
   venueId?: string;
-  selectedTab?: AdminSpaceSettingsTab;
+  selectedTab?: SpaceEditorTab;
 }
 
-const adminAdvancedTabLabelMap: Readonly<
-  Record<AdminSpaceSettingsTab, String>
-> = {
-  [AdminSpaceSettingsTab.basicInfo]: "Start",
-  [AdminSpaceSettingsTab.entranceExperience]: "Entrance",
+const adminAdvancedTabLabelMap: Readonly<Record<SpaceEditorTab, String>> = {
+  [SpaceEditorTab.basicInfo]: "Start",
+  [SpaceEditorTab.entranceExperience]: "Entrance",
 };
 
-export const AdminSpaceSettings: React.FC = () => {
+export const SpaceEditor: React.FC = () => {
   const history = useHistory();
   const {
     venueId,
-    selectedTab = AdminSpaceSettingsTab.basicInfo,
-  } = useParams<AdminSpaceSettingsRouteParams>();
+    selectedTab = SpaceEditorTab.basicInfo,
+  } = useParams<SpaceEditorRouteParams>();
 
   const {
     currentVenue: venue,
@@ -65,10 +63,7 @@ export const AdminSpaceSettings: React.FC = () => {
   }, [selectedTab, venueId]);
 
   const navigateToDefaultTab = useCallback(
-    () =>
-      history.push(
-        adminNGSettingsUrl(venueId, AdminSpaceSettingsTab.basicInfo)
-      ),
+    () => history.push(adminNGSettingsUrl(venueId, SpaceEditorTab.basicInfo)),
     [venueId, history]
   );
 
@@ -84,13 +79,11 @@ export const AdminSpaceSettings: React.FC = () => {
   return (
     <WithNavigationBar>
       <AdminRestricted>
-        <div className="AdminSpaceSettings">
-          <div className="AdminSpaceSettings__options">
-            {renderAdminAdvancedTabs}
-          </div>
+        <div className="SpaceEditor">
+          <div className="SpaceEditor__options">{renderAdminAdvancedTabs}</div>
         </div>
-        {selectedTab === AdminSpaceSettingsTab.basicInfo && <VenueWizard />}
-        {selectedTab === AdminSpaceSettingsTab.entranceExperience && (
+        {selectedTab === SpaceEditorTab.basicInfo && <VenueWizard />}
+        {selectedTab === SpaceEditorTab.entranceExperience && (
           <EntranceExperience
             // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
             venue={venue as Venue_v2}

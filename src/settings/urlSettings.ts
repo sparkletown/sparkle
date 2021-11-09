@@ -53,7 +53,7 @@ export const ACCOUNT_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 // Admin v3 URLs
 export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/create/venue/:worldId`;
 export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_V3_ROOT_URL}/edit/:venueId`;
-export const ADMIN_V3_VENUE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:selectedTab?`;
+export const ADMIN_V3_SPACE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:selectedTab?`;
 export const ADMIN_V3_SPACE_SETTINGS_PARAM_URL = `${ADMIN_V3_ROOT_URL}/settings/:venueId?/:selectedTab?`;
 
 export const ADMIN_V3_WORLDS_BASE_URL = `${ADMIN_V3_ROOT_URL}/worlds`;
