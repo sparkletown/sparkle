@@ -37,14 +37,8 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldEditResult = (
   const isWorldLoaded = status !== "loading";
 
   if (!worlds?.[0]) {
-    Bugsnag.notify(
-      `World with the following slug: ${worldSlug} does not exist.`,
-      (event) => {
-        event.severity = "warning";
-        event.addMetadata("hooks/worlds::useWorldBySlug", {
-          worldSlug,
-        });
-      }
+    throw new Error(
+      `World with the following slug: ${worldSlug} does not exist.`
     );
   }
 
