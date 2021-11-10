@@ -180,6 +180,9 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+/**
+ * @deprecated Use createVenueData_v2 instead.
+ */
 // @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
 const createVenueData = (data, context) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
@@ -315,6 +318,7 @@ const createVenueData_v2 = (data, context) => {
     updatedAt: Date.now(),
     parentId: data.parentId || "",
     worldId: data.worldId,
+    slug: data.slug,
     ...(data.parentId && { parentId: data.parentId }),
   };
 
@@ -525,6 +529,9 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   if (snap.empty) removeAdmin(ownerId);
 });
 
+/**
+ * @deprecated This is legacy function used in the legacy version of the admin. Use createVenue_v2 instead.
+ */
 // @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -549,14 +556,19 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
 
   const batch = admin.firestore().batch();
 
-  const venueId = getVenueId(data.name);
-  const venueRef = admin.firestore().collection("venues").doc(venueId);
-  const venueDoc = await venueRef.get();
+  const venueRef = admin.firestore().collection("venues").doc();
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+  const venueExists = venuesRef.docs.length;
 
-  if (venueDoc.exists) {
+  if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The venue ${data.name} already exists. Please try with another name.`
+      `The venue slug ${data.slug} already exists in this world. Please try with another slug.`
     );
   }
 

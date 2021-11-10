@@ -66,25 +66,11 @@ export const validationSchema_v2 = Yup.object()
       "$editing",
       (editing: boolean, schema: Yup.StringSchema) =>
         !editing
-          ? schema
-              .test(
-                "name",
-                "Must have alphanumeric characters",
-                (val: string) => createSlug(val).length > 0
-              )
-              .test(
-                "name",
-                "This venue name is already taken",
-                async (val: string) =>
-                  !val ||
-                  !(
-                    await firebase
-                      .firestore()
-                      .collection("venues")
-                      .doc(createSlug(val))
-                      .get()
-                  ).exists
-              )
+          ? schema.test(
+              "name",
+              "Must have alphanumeric characters",
+              (val: string) => createSlug(val).length > 0
+            )
           : schema //will be set from the data from the api. Does not need to be unique
     ),
     subtitle: Yup.string().matches(/.{3,}/, {

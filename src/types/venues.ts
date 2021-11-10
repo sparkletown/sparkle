@@ -111,6 +111,7 @@ export interface Venue_v2
 
 export interface Venue_v2_Base {
   name: string;
+  slug: string;
   config: {
     landingPageConfig: {
       subtitle?: string;
@@ -157,6 +158,7 @@ export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
+  slug: string;
   access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
   config?: VenueConfig;

@@ -80,6 +80,7 @@ export type RoomInput_v2 = Room & {
 
 export type VenueInput = VenueImageUrls & {
   name: string;
+  slug?: string;
   bannerImageFile?: FileList;
   logoImageFile?: FileList;
   mapBackgroundImageFile?: FileList;
@@ -115,6 +116,7 @@ export interface VenueInput_v2
   extends VenueAdvancedConfig,
     Venue_v2_EntranceConfig {
   name: string;
+  slug: string;
   description?: string;
   subtitle?: string;
   bannerImageFile?: FileList;
@@ -270,6 +272,7 @@ const createFirestoreVenueInput = async (
     rooms: [], // eventually we will be getting the rooms from the form
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
+    slug,
   };
 
   return firestoreVenueInput;
@@ -337,6 +340,7 @@ const createFirestoreVenueInput_v2 = async (
     parentId: input.parentId ?? "",
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
+    slug,
   };
   return firestoreVenueInput;
 };

@@ -73,6 +73,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
     updateVenue_v2(
       {
         name: venue.name,
+        slug: venue.slug,
         worldId: venue.worldId,
         ...input,
         userStatuses,

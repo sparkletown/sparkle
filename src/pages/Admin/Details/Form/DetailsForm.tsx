@@ -118,7 +118,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       if (venueId) {
         const updatedVenue = {
           ...vals,
-          id: venueId,
+          slug: createSlug(vals.name),
           worldId: venue?.worldId ?? "",
           parentId: values.parentId,
         };
@@ -129,7 +129,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       } else {
         const newVenue = {
           ...vals,
-          id: createSlug(vals.name),
+          slug: createSlug(vals.name),
           worldId: worldId ?? "",
           parentId: values.parentId ?? "",
         };
