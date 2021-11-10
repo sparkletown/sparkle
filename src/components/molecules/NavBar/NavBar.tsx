@@ -25,7 +25,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
@@ -82,7 +82,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     currentVenueId: venueId,
   });
 
-  const { world } = useWorldEdit(relatedVenue?.worldId);
+  const { world } = useWorldById(relatedVenue?.worldId);
 
   const { currentVenue: ownedVenue } = useOwnedVenues({
     currentVenueId: venueId,
