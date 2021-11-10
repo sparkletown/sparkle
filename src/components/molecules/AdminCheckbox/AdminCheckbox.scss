@@ -47,6 +47,10 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
   &__label {
     display: flex;
     align-items: center;
+
+    &--before {
+      margin-right: $spacing--md;
+    }
   }
 
   &__box {
@@ -88,7 +92,8 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__box {
+  &--toggler &__box,
+  &--flip-switch &__box {
     height: $size;
     min-height: $size;
     width: 2 * $size;
@@ -111,7 +116,12 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__input:checked ~ &__box {
+  &--flip-switch &__box {
+    margin-left: font-size--parent(1);
+  }
+
+  &--toggler &__input:checked ~ &__box,
+  &--flip-switch &__input:checked ~ &__box {
     background-color: var(--accent--under-50a);
 
     &::after {
@@ -120,7 +130,13 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__tick {
+  &--toggler &__tick,
+  &--flip-switch &__tick {
     display: none;
+  }
+
+  &__flip-wrapper {
+    display: flex;
+    align-items: center;
   }
 }

@@ -10,15 +10,17 @@ import { CheckboxProps } from "components/atoms/Checkbox";
 import "./AdminCheckbox.scss";
 
 export interface AdminCheckboxProps
-  extends Omit<CheckboxProps, "label" | "toggler"> {
+  extends Omit<CheckboxProps, "label" | "toggler" | "flip-switch"> {
   className?: string;
   errors?: FieldErrors<FieldValues>;
   label?: ReactNode | string;
   labelPosition?: "before" | "after";
   name: string;
+  displayOn?: ReactNode | string;
+  displayOff?: ReactNode | string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   subtext?: ReactNode | string;
-  variant?: "toggler" | "checkbox";
+  variant?: "toggler" | "checkbox" | "flip-switch";
 }
 
 export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
@@ -28,6 +30,8 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   label,
   labelPosition = "after",
   name,
+  displayOn,
+  displayOff,
   register,
   subtext,
   variant = "checkbox",
@@ -43,24 +47,46 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     [className]: className,
   });
 
+  const ev = (tag: string) => console.log.bind(console, tag);
+  // console.log(AdminCheckbox.name, { disabled });
+
   const input = (
-    <>
-      <input
-        {...inputProps}
-        className="AdminCheckbox__input"
-        type="checkbox"
-        hidden
-        name={name}
-        ref={register}
-      />
-      <span className="AdminCheckbox__box">
-        <FontAwesomeIcon
-          className="AdminCheckbox__tick"
-          icon={faCheck}
-          size="sm"
+    <span className="AdminCheckbox__flip-wrapper">
+      {variant === "flip-switch" && (
+        <span className="AdminCheckbox__off" onClick={ev("off.onClick")}>
+          {displayOff}
+        </span>
+      )}
+      {/* NOTE: must always have label around input and the following span for the click to be shared */}
+      {/* NOTE: multiple labels per input are OK, so keep this one empty of any text, use surrounding label for it */}
+      <label className="AdminCheckbox__input-wrapper">
+        <input
+          {...inputProps}
+          className="AdminCheckbox__input"
+          type="checkbox"
+          hidden
+          disabled={disabled}
+          name={name}
+          ref={register}
+          onClick={ev("input.onClick")}
         />
-      </span>
-    </>
+        <span
+          className="AdminCheckbox__box"
+          // onClick={ev("box.onClick")}
+        >
+          <FontAwesomeIcon
+            className="AdminCheckbox__tick"
+            icon={faCheck}
+            size="sm"
+          />
+        </span>
+      </label>
+      {variant === "flip-switch" && (
+        <span className="AdminCheckbox__on" onClick={ev("on.onClick")}>
+          {displayOn}
+        </span>
+      )}
+    </span>
   );
 
   return (
