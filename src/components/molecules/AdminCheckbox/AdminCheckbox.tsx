@@ -47,15 +47,10 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     [className]: className,
   });
 
-  const ev = (tag: string) => console.log.bind(console, tag);
-  // console.log(AdminCheckbox.name, { disabled });
-
   const input = (
     <span className="AdminCheckbox__flip-wrapper">
       {variant === "flip-switch" && (
-        <span className="AdminCheckbox__off" onClick={ev("off.onClick")}>
-          {displayOff}
-        </span>
+        <span className="AdminCheckbox__off">{displayOff}</span>
       )}
       {/* NOTE: must always have label around input and the following span for the click to be shared */}
       {/* NOTE: multiple labels per input are OK, so keep this one empty of any text, use surrounding label for it */}
@@ -68,7 +63,6 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
           disabled={disabled}
           name={name}
           ref={register}
-          onClick={ev("input.onClick")}
         />
         <span
           className="AdminCheckbox__box"
@@ -82,9 +76,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
         </span>
       </label>
       {variant === "flip-switch" && (
-        <span className="AdminCheckbox__on" onClick={ev("on.onClick")}>
-          {displayOn}
-        </span>
+        <span className="AdminCheckbox__on">{displayOn}</span>
       )}
     </span>
   );
