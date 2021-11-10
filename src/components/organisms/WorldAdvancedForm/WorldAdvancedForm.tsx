@@ -209,11 +209,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
         <AdminSection>
           <AdminCheckbox
             name="showBadges"
-            // label="Air conditioning"
-            labelPosition="above"
-            displayOff={"❄️"}
-            displayOn={"🔥"}
-            variant="flip-switch"
+            label="Show badges"
+            variant="toggler"
             register={register}
           />
         </AdminSection>
