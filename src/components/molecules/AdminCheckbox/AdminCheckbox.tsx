@@ -64,10 +64,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
           name={name}
           ref={register}
         />
-        <span
-          className="AdminCheckbox__box"
-          // onClick={ev("box.onClick")}
-        >
+        <span className="AdminCheckbox__box">
           <FontAwesomeIcon
             className="AdminCheckbox__tick"
             icon={faCheck}
