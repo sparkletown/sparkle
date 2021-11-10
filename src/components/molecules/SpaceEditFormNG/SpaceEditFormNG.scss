@@ -21,15 +21,6 @@ $textarea-height: 120px;
     text-align: center;
   }
 
-  &__reactions-muted {
-    align-items: center;
-
-    .toggler-label {
-      height: $spacing--xl;
-      margin-right: $spacing--md;
-    }
-  }
-
   .AdminSidebarTitle {
     margin: $spacing--xxl $spacing--xl $spacing--md;
   }

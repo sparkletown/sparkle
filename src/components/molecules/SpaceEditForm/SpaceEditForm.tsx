@@ -453,23 +453,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       variant="toggler"
                       register={register}
                     />
-                    {!isReactionsMutedDisabled && (
-                      <AdminSection>
-                        <div className="SpaceEditForm__reactions-muted">
-                          <span className="toggler-label">Muted</span>
-                          <AdminCheckbox
-                            variant="toggler"
-                            name="venue.isReactionsMuted"
-                            register={register}
-                            disabled={isReactionsMutedDisabled}
-                            // @debt: remove when AdminCheckbox without label prop is fixed. Currently
-                            // the tick isn't working without the label
-                            label={<></>}
-                          />
-                          <span className="toggler-label">Audible</span>
-                        </div>
-                      </AdminSection>
-                    )}
+                    <AdminSection>
+                      <AdminCheckbox
+                        variant="flip-switch"
+                        name="venue.isReactionsMuted"
+                        register={register}
+                        disabled={isReactionsMutedDisabled}
+                        displayOn="Audible"
+                        displayOff="Muted"
+                      />
+                    </AdminSection>
                   </>
                 )}
 
