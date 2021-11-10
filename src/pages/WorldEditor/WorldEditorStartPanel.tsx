@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/useWorldById";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -23,7 +23,7 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
   onClickHome,
   worldId,
 }) => {
-  const { isLoaded, world } = useWorldEdit(worldId);
+  const { isLoaded, world } = useWorldById(worldId);
 
   const isUpdatingWorld = isLoaded && worldId && world;
   const isCreatingWorld = isLoaded && !world && !worldId;
