@@ -349,7 +349,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </AdminSection>
           {values.showReactions && (
             <AdminSection>
-              <div className="mod--flex-row">
+              <div className="SpaceEditFormNG__reactions-muted">
                 <span className="toggler-label">Muted</span>
                 <AdminCheckbox
                   variant="toggler"

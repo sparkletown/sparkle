@@ -455,7 +455,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     />
                     {!isReactionsMutedDisabled && (
                       <AdminSection>
-                        <div className="mod--flex-row">
+                        <div className="SpaceEditForm__reactions-muted">
                           <span className="toggler-label">Muted</span>
                           <AdminCheckbox
                             variant="toggler"
