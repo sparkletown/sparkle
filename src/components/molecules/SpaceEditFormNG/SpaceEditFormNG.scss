@@ -41,6 +41,14 @@ $textarea-height: 120px;
 
   .AdminSection {
     padding: $spacing--sm $spacing--xl;
+    .mod--flex-row {
+      align-items: center;
+
+      .toggler-label {
+        height: $spacing--xl;
+        margin-right: $spacing--md;
+      }
+    }
   }
 
   .AdminSidebarFooter__buttons {

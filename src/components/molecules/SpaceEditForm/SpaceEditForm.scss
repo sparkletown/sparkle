@@ -38,4 +38,15 @@
     // NOTE: Magic number determined empirically to fill the footer space in just this one case
     width: 2 * $admin-ng-sidebar-footer-buttons-width--magic-number;
   }
+
+  .AdminSection {
+    .mod--flex-row {
+      align-items: center;
+
+      .toggler-label {
+        height: $spacing--xl;
+        margin-right: $spacing--md;
+      }
+    }
+  }
 }

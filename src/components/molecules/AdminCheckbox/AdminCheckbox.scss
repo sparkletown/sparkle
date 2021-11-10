@@ -92,8 +92,7 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__box,
-  &--flip-switch &__box {
+  &--toggler &__box {
     height: $size;
     min-height: $size;
     width: 2 * $size;
@@ -116,8 +115,7 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__input:checked ~ &__box,
-  &--flip-switch &__input:checked ~ &__box {
+  &--toggler &__input:checked ~ &__box {
     background-color: var(--accent--under-50a);
 
     &::after {
@@ -126,8 +124,7 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__tick,
-  &--flip-switch &__tick {
+  &--toggler &__tick {
     display: none;
   }
 }

@@ -347,17 +347,23 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               label="Reaction emojis"
             />
           </AdminSection>
-          <AdminSection>
-            <AdminCheckbox
-              variant="flip-switch"
-              textOff="Muted"
-              name="isReactionsMuted"
-              register={register}
-              disabled={!values.showReactions}
-              containerClassName="SpaceEditFormNG__toggler"
-              textOn="Audible"
-            />
-          </AdminSection>
+          {values.showReactions && (
+            <AdminSection>
+              <div className="mod--flex-row">
+                <span className="toggler-label">Muted</span>
+                <AdminCheckbox
+                  variant="toggler"
+                  name="isReactionsMuted"
+                  register={register}
+                  disabled={!values.showReactions}
+                  // @debt: remove when AdminCheckbox without label prop is fixed. Currently
+                  // the tick isn't working without the label
+                  label={<></>}
+                />
+                <span className="toggler-label">Audible</span>
+              </div>
+            </AdminSection>
+          )}
           <AdminSection title="Capacity (optional)">
             <div className="SpaceEditFormNG__capacity">
               <div># Sections</div>

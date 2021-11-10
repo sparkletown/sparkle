@@ -10,17 +10,17 @@ import { CheckboxProps } from "components/atoms/Checkbox";
 import "./AdminCheckbox.scss";
 
 export interface AdminCheckboxProps
-  extends Omit<CheckboxProps, "label" | "toggler" | "flip-switch"> {
+  extends Omit<CheckboxProps, "label" | "toggler"> {
   className?: string;
   errors?: FieldErrors<FieldValues>;
+  labelPosition?: "before" | "after";
   label?: ReactNode | string;
-  labelAfter?: string;
   name: string;
-  textOn?: string;
-  textOff?: string;
+  displayOn?: ReactNode | string;
+  displayOff?: ReactNode | string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   subtext?: ReactNode | string;
-  variant?: "toggler" | "checkbox" | "flip-switch";
+  variant?: "toggler" | "checkbox";
 }
 
 export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
@@ -28,9 +28,8 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   disabled,
   errors,
   label,
+  labelPosition = "after",
   name,
-  textOn,
-  textOff,
   register,
   subtext,
   variant = "checkbox",
@@ -41,6 +40,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     "AdminCheckbox AdminCheckbox--disabled": disabled,
     "AdminCheckbox AdminCheckbox--enabled": !disabled,
     [`AdminCheckbox--${variant}`]: variant,
+    [`AdminCheckbox--label-${labelPosition}`]: labelPosition,
     [className]: className,
   });
 
@@ -51,7 +51,6 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
         className="AdminCheckbox__input"
         type="checkbox"
         hidden
-        disabled={disabled}
         name={name}
         ref={register}
       />
@@ -65,19 +64,14 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     </>
   );
 
-  const isToggleFlip = variant === "flip-switch";
-  const isInputWithLabel = label || isToggleFlip;
-
   return (
     <p className={parentClasses}>
-      {isInputWithLabel ? (
+      {/* @debt: Need to fix SCSS to make {input} tick/toggle work without provided label*/}
+      {/* Currently if no label is provided checkbox/toggle don't change their state */}
+      {label ? (
         <label className="AdminCheckbox__label">
-          {isToggleFlip && (
-            <span className="AdminCheckbox__label--before">{textOff}</span>
-          )}
           {input}
           {label && label}
-          {isToggleFlip && textOn}
         </label>
       ) : (
         input
