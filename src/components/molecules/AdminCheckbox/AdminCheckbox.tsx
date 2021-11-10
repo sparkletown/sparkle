@@ -13,11 +13,9 @@ export interface AdminCheckboxProps
   extends Omit<CheckboxProps, "label" | "toggler"> {
   className?: string;
   errors?: FieldErrors<FieldValues>;
-  labelPosition?: "before" | "after";
   label?: ReactNode | string;
+  labelPosition?: "before" | "after";
   name: string;
-  displayOn?: ReactNode | string;
-  displayOff?: ReactNode | string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   subtext?: ReactNode | string;
   variant?: "toggler" | "checkbox";
@@ -36,6 +34,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   ...inputProps
 }) => {
   const error = get(errors, name);
+
   const parentClasses = classNames({
     "AdminCheckbox AdminCheckbox--disabled": disabled,
     "AdminCheckbox AdminCheckbox--enabled": !disabled,
@@ -70,8 +69,9 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
       {/* Currently if no label is provided checkbox/toggle don't change their state */}
       {label ? (
         <label className="AdminCheckbox__label">
+          {labelPosition === "before" && label}
           {input}
-          {label && label}
+          {labelPosition === "after" && label}
         </label>
       ) : (
         input

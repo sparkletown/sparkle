@@ -24,16 +24,6 @@
     padding: $spacing--xl;
   }
 
-  &__input {
-    &-reactionMute {
-      display: flex;
-    }
-
-    &-subtext {
-      margin-right: $spacing--md;
-    }
-  }
-
   .AdminSidebarFooter__buttons {
     // NOTE: Magic number determined empirically to fill the footer space in just this one case
     width: 2 * $admin-ng-sidebar-footer-buttons-width--magic-number;

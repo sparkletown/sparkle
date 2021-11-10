@@ -21,16 +21,6 @@ $textarea-height: 120px;
     text-align: center;
   }
 
-  &__input {
-    &-reactionMute {
-      display: flex;
-    }
-
-    &-subtext {
-      margin-right: $spacing--md;
-    }
-  }
-
   .AdminSidebarTitle {
     margin: $spacing--xxl $spacing--xl $spacing--md;
   }
