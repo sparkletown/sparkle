@@ -6,7 +6,7 @@ import { World } from "api/admin";
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseWorldEditResult = {
+type UseWorldBySlugResult = {
   world?: WithId<World>;
   isLoaded: boolean;
 };
@@ -17,7 +17,7 @@ type UseWorldEditResult = {
  * @param worldSlug
  * @returns
  */
-export const useWorldBySlug: (worldSlug?: string) => UseWorldEditResult = (
+export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
   worldSlug
 ) => {
   const firestore = useFirestore();
