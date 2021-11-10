@@ -14,7 +14,7 @@ export interface AdminCheckboxProps
   className?: string;
   errors?: FieldErrors<FieldValues>;
   label?: ReactNode | string;
-  labelPosition?: "before" | "after";
+  labelPosition?: "before" | "after" | "above";
   name: string;
   displayOn?: ReactNode | string;
   displayOff?: ReactNode | string;
@@ -93,9 +93,15 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
     <p className={parentClasses}>
       {label ? (
         <label className="AdminCheckbox__label">
-          {labelPosition === "before" && label}
+          {(labelPosition === "before" || labelPosition === "above") && (
+            <span className="AdminCheckbox__label-wrapper">{label}</span>
+          )}
+
           {input}
-          {labelPosition === "after" && label}
+
+          {labelPosition === "after" && (
+            <span className="AdminCheckbox__label-wrapper">{label}</span>
+          )}
         </label>
       ) : (
         input

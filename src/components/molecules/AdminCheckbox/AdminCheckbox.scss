@@ -44,12 +44,25 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     height: 0 !important;
   }
 
+  label {
+    // NOTE: this undoes another global.scss damage, remove after that one is removed
+    margin-bottom: unset;
+  }
+
   &__label {
     display: flex;
     align-items: center;
 
     &--before {
       margin-right: $spacing--md;
+    }
+  }
+
+  &--label-above &__label {
+    flex-direction: column;
+
+    > * + * {
+      margin-top: font-size--parent(0.5);
     }
   }
 
