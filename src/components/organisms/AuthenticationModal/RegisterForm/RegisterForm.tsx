@@ -16,7 +16,7 @@ import { isTruthy } from "utils/types";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
@@ -60,7 +60,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const history = useHistory();
   const venue = useSelector(venueSelector);
-  const { world, isLoaded: isWorldLoaded } = useWorldEdit(venue?.worldId);
+  const { world, isLoaded: isWorldLoaded } = useWorldById(venue?.worldId);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const analytics = useAnalytics({ venue });
