@@ -91,7 +91,6 @@ export type VenueInput = VenueImageUrls & {
   rooms?: Array<Room>;
   placement?: Omit<VenuePlacement, "state">;
   placementRequests?: string;
-  adultContent: boolean;
   showGrid?: boolean;
   columns?: number;
   width?: number;
