@@ -200,7 +200,6 @@ export interface TruncatedVenueType {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showSchedule?: boolean;
   showGrid?: boolean;
   width: number;
   height: number;
