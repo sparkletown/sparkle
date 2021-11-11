@@ -13,7 +13,7 @@ import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useWorldEditParams } from "hooks/useWorldEditParams";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -29,7 +29,7 @@ import "./AdminDashboard.scss";
 export const AdminDashboard: React.FC = () => {
   const { ownedVenues, isLoading } = useOwnedVenues({});
 
-  const { worldId } = useWorldEditParams();
+  const { worldId } = useWorldParams();
 
   const venues = worldId
     ? ownedVenues.filter((venue) => venue.worldId === worldId)
