@@ -378,10 +378,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.parentId = data.parentId;
   }
 
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
-  }
-
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
   }
@@ -883,10 +879,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showRangers === "boolean") {

@@ -216,7 +216,6 @@ export interface TruncatedVenueType {
   auditoriumColumns?: number;
   auditoriumRows?: number;
   showRadio?: boolean;
-  showBadges?: boolean;
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;

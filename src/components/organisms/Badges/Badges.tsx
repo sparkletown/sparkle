@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { User } from "@bugsnag/js";
-import classNames from "classnames";
 import { chunk } from "lodash";
 
 import {
@@ -12,22 +11,47 @@ import {
 import { getUserRef } from "api/profile";
 
 import { UserVisit } from "types/Firestore";
-import { ContainerClassName } from "types/utility";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
 
+import { useWorldEdit } from "hooks/useWorldEdit";
+
 import { BadgeImage } from "./BadgeImage";
 
 import "./Badges.scss";
 
-export const Badges: React.FC<
-  {
-    user: WithId<User>;
-    currentVenue: WithId<AnyVenue>;
-  } & ContainerClassName
-> = ({ user, currentVenue, containerClassName }) => {
+const findVenueAndRoomByName = (
+  nameOrRoomTitle: string,
+  venues: Array<WithId<AnyVenue>>
+) => {
+  const venue = venues.find(
+    (v) =>
+      v.name === nameOrRoomTitle ||
+      (isVenueWithRooms(v) && v.rooms?.find((r) => r.title === nameOrRoomTitle))
+  );
+
+  if (!venue) return {};
+
+  if (venue.name === nameOrRoomTitle) return { venue };
+
+  return {
+    venue,
+    room:
+      isVenueWithRooms(venue) &&
+      venue.rooms?.find((r) => r.title === nameOrRoomTitle),
+  };
+};
+
+export const Badges: React.FC<{
+  user: WithId<User>;
+  currentVenue: WithId<AnyVenue>;
+}> = ({ user, currentVenue }) => {
+  const { world, isLoaded: isWorldLoaded } = useWorldEdit(
+    currentVenue?.worldId
+  );
+
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -88,7 +112,7 @@ export const Badges: React.FC<
 
   useEffect(() => {
     setIsLoading(true);
-    fetchAllVenues();
+    fetchAllVenues().catch((e) => console.error(Badges.name, e));
   }, [fetchAllVenues]);
 
   const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues]);
@@ -150,8 +174,8 @@ export const Badges: React.FC<
     return <>Visit venues to collect badges!</>;
   }
 
-  return (
-    <div className={classNames("Badges", containerClassName)}>
+  return isWorldLoaded && world?.showBadges ? (
+    <div className="Badges">
       <div className="Badges__visits">
         <div className="Badges__visit">
           <span className="Badges__visit-value">
@@ -173,27 +197,5 @@ export const Badges: React.FC<
         <ul className="Badges__list">{badgeList}</ul>
       </div>
     </div>
-  );
-};
-
-const findVenueAndRoomByName = (
-  nameOrRoomTitle: string,
-  venues: Array<WithId<AnyVenue>>
-) => {
-  const venue = venues.find(
-    (v) =>
-      v.name === nameOrRoomTitle ||
-      (isVenueWithRooms(v) && v.rooms?.find((r) => r.title === nameOrRoomTitle))
-  );
-
-  if (!venue) return {};
-
-  if (venue.name === nameOrRoomTitle) return { venue };
-
-  return {
-    venue,
-    room:
-      isVenueWithRooms(venue) &&
-      venue.rooms?.find((r) => r.title === nameOrRoomTitle),
-  };
+  ) : null;
 };
