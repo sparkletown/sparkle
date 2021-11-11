@@ -101,11 +101,13 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const [{ error: submitError, loading: isSaving }, setVenue] = useAsyncFn(
     async (vals: FormValues) => {
-      if (!user || !worldId) return;
+      if (!user) return;
 
       const isValidParentId = validateParentId(values.parentId, [
         venueId ?? createSlug(vals.name),
       ]);
+
+      const spaceSlug = createSlug(vals.name);
 
       if (!isValidParentId) {
         setError(
@@ -116,24 +118,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         return;
       }
 
-      const slugAlreadyExists = await checkSpaceExistsInWorld(
-        createSlug(vals.name),
-        worldId
-      );
-
-      if (slugAlreadyExists) {
-        setError(
-          "name",
-          "manual",
-          "This space slug already exists in this world."
-        );
-        return;
-      }
-
       if (venueId) {
         const updatedVenue = {
           ...vals,
-          slug: createSlug(vals.name),
+          slug: spaceSlug,
           worldId: venue?.worldId ?? "",
           parentId: values.parentId,
         };
@@ -142,10 +130,26 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
         history.push(adminWorldSpacesUrl(venue?.worldId));
       } else {
+        if (!worldId) return;
+
+        const slugAlreadyExists = await checkSpaceExistsInWorld(
+          spaceSlug,
+          worldId
+        );
+
+        if (slugAlreadyExists) {
+          setError(
+            "name",
+            "manual",
+            "This space slug already exists in this world."
+          );
+          return;
+        }
+
         const newVenue = {
           ...vals,
-          slug: createSlug(vals.name),
-          worldId: worldId ?? "",
+          slug: spaceSlug,
+          worldId: worldId,
           parentId: values.parentId ?? "",
         };
 
@@ -160,7 +164,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       user,
       validateParentId,
       values.parentId,
-      venue?.worldId,
+      venue,
       venueId,
       worldId,
     ]
