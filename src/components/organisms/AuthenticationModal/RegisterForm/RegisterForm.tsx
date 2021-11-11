@@ -16,7 +16,7 @@ import { isTruthy } from "utils/types";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSelector } from "hooks/useSelector";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useWorldById } from "hooks/useWorldById";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
