@@ -1,5 +1,7 @@
 import React, { FC } from "react";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import "./InitialForm.scss";
 
 interface InitialFormProps {
@@ -12,20 +14,14 @@ export const InitialForm: FC<InitialFormProps> = ({
   displayRegisterForm,
 }) => {
   return (
-    <div className="initial-form">
-      <button
-        className="btn btn-primary btn-block btn-centered create-account-button"
-        onClick={displayRegisterForm}
-      >
+    <div className="InitialForm">
+      <ButtonNG variant="login-primary" onClick={displayRegisterForm}>
         Create your account
-      </button>
-      <div className="buttons-separator">or</div>
-      <button
-        className="btn btn-block btn-centered btn-primary login-button"
-        onClick={displayLoginForm}
-      >
+      </ButtonNG>
+      <div className="InitialForm__separator">or</div>
+      <ButtonNG variant="login-outline" onClick={displayLoginForm}>
         Log In
-      </button>
+      </ButtonNG>
     </div>
   );
 };

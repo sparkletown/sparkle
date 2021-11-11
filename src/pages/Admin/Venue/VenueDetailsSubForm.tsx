@@ -172,26 +172,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderRestrictToAdultsInput = () => (
-    <div className="input-container">
-      <label
-        htmlFor={"chkadultContent"}
-        className={`checkbox ${
-          watch("adultContent", false) && "checkbox-checked"
-        }`}
-      >
-        Restrict entry to adults aged 18+
-      </label>
-      <input
-        type="checkbox"
-        id={"chkadultContent"}
-        name={"adultContent"}
-        defaultChecked={values.adultContent}
-        ref={register}
-      />
-    </div>
-  );
-
   const renderHighlightImageInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Upload Highlight image</h4>
@@ -359,14 +339,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
       <Toggler name="showRangers" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderRestrictDOBToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Require date of birth on register</h4>
-      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -623,7 +595,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderVenueNameInput()}
         {renderTaglineInput()}
         {renderDescriptionInput()}
-        {renderRestrictToAdultsInput()}
 
         {renderHighlightImageInput()}
         {renderLogoInput()}
@@ -659,7 +630,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowShoutouts()}
         {renderShowRangersToggle()}
-        {renderRestrictDOBToggle()}
 
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
