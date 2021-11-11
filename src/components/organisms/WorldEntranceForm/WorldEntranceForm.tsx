@@ -21,13 +21,13 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
 import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
+import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { Checkbox } from "components/atoms/Checkbox";
-import { Toggler } from "components/atoms/Toggler";
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./WorldEntranceForm.scss";
 
@@ -196,15 +196,24 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           saveButtonProps={saveButtonProps}
         />
         <AdminSection title="Limit access to world">
-          <Toggler
-            name="adultContent"
-            label="Restrict entry to adults aged 18+"
-            forwardedRef={register}
-          />
-          <Checkbox
+          <TesterRestricted>
+            <AdminCheckbox
+              variant="toggler"
+              name="adultContent"
+              label="Restrict entry to adults aged 18+"
+              register={register}
+            />
+          </TesterRestricted>
+          <AdminCheckbox
             name="requiresDateOfBirth"
-            label="Require date of birth on register"
-            forwardedRef={register}
+            label={
+              <>
+                Restrict registration to 18+
+                <br />
+                (adds a date of birth picker)
+              </>
+            }
+            register={register}
           />
         </AdminSection>
         <AdminSection title="Code of conduct questions">

@@ -85,7 +85,6 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
     },
     owners: [],
     termsAndConditions: [],
-    adultContent: values.adultContent || false,
     width: values.width ?? 40,
     height: values.width ?? 40,
     // @debt Should these fields be defaulted like this? Or potentially undefined? Or?

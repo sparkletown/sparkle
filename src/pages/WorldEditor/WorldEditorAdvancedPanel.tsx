@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/useWorldById";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -20,7 +20,7 @@ export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> =
   onClickHome,
   worldId,
 }) => {
-  const { isLoaded, world } = useWorldEdit(worldId);
+  const { isLoaded, world } = useWorldById(worldId);
   return (
     <AdminPanel>
       <AdminSidebar>

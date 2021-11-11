@@ -44,9 +44,26 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     height: 0 !important;
   }
 
+  label {
+    // NOTE: this undoes another global.scss damage, remove after that one is removed
+    margin-bottom: unset;
+  }
+
   &__label {
     display: flex;
     align-items: center;
+
+    &--before {
+      margin-right: $spacing--md;
+    }
+  }
+
+  &--label-above &__label {
+    flex-direction: column;
+
+    > * + * {
+      margin-top: font-size--parent(0.5);
+    }
   }
 
   &__box {
@@ -88,7 +105,8 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__box {
+  &--toggler &__box,
+  &--flip-switch &__box {
     height: $size;
     min-height: $size;
     width: 2 * $size;
@@ -111,7 +129,12 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__input:checked ~ &__box {
+  &--flip-switch &__box {
+    margin-left: font-size--parent(1);
+  }
+
+  &--toggler &__input:checked ~ &__box,
+  &--flip-switch &__input:checked ~ &__box {
     background-color: var(--accent--under-50a);
 
     &::after {
@@ -120,7 +143,13 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     }
   }
 
-  &--toggler &__tick {
+  &--toggler &__tick,
+  &--flip-switch &__tick {
     display: none;
+  }
+
+  &__flip-wrapper {
+    display: flex;
+    align-items: center;
   }
 }
