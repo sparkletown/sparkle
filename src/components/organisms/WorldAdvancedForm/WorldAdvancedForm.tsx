@@ -5,6 +5,8 @@ import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import * as Yup from "yup";
 
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
+
 import { World } from "api/admin";
 import { updateWorldAdvancedSettings } from "api/world";
 
@@ -62,7 +64,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       chatTitle: world.chatTitle,
       showNametags: world.showNametags,
       showBadges: world.showBadges,
-      showSchedule: world.showSchedule,
+      showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
       showUserStatus: world.showUserStatus,
       userStatuses: userStatuses,
     }),

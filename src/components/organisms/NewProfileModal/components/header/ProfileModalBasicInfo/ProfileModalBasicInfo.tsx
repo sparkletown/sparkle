@@ -1,9 +1,7 @@
 import React from "react";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
 
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -13,7 +11,7 @@ import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/comp
 
 import "./ProfileModalBasicInfo.scss";
 
-export interface ProfileModalBasicInfoProps extends ContainerClassName {
+export interface ProfileModalBasicInfoProps {
   user: WithId<User>;
   onEdit?: () => void;
 }
@@ -21,10 +19,9 @@ export interface ProfileModalBasicInfoProps extends ContainerClassName {
 export const ProfileModalBasicInfo: React.FC<ProfileModalBasicInfoProps> = ({
   user,
   onEdit,
-  containerClassName,
 }) => {
   return (
-    <div className={classNames("ProfileModalBasicInfo", containerClassName)}>
+    <div className="ProfileModalBasicInfo">
       <div className="ProfileModalBasicInfo__main-container">
         <ProfileModalAvatar user={user} editMode={false} />
         <ProfileModalBasicTextInfo
