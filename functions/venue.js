@@ -753,7 +753,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -813,7 +813,7 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -833,7 +833,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 

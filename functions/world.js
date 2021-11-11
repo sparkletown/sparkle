@@ -117,7 +117,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   if (!worldId) {
     throw new HttpsError(
       "not-found",
-      `World id is missing and the update can not be executed.`
+      `World Id is missing and the update can not be executed.`
     );
   }
 
