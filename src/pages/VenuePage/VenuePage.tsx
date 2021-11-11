@@ -230,10 +230,7 @@ export const VenuePage: React.FC = () => {
 
   const { template, hasPaidEvents } = venue;
 
-  const hasEntrance =
-    world?.entrance &&
-    Array.isArray(world.entrance) &&
-    world.entrance.length > 0;
+  const hasEntrance = !!world?.entrance?.length;
   const hasEntered = enteredVenueIds?.includes(venueId);
 
   if (hasEntrance && !hasEntered) {
