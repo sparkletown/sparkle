@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$image-container-height: 200px;
+
 .SpaceEditForm {
   display: flex;
   flex: 1;
@@ -27,5 +29,20 @@
   .AdminSidebarFooter__buttons {
     // NOTE: Magic number determined empirically to fill the footer space in just this one case
     width: 2 * $admin-ng-sidebar-footer-buttons-width--magic-number;
+  }
+
+  .AdminSection {
+    &__label {
+      display: flex;
+      flex-direction: column;
+
+      .ImageInput__container {
+        position: relative;
+        width: 60%;
+        margin-bottom: -($spacing--lg);
+        align-self: center;
+        height: $image-container-height;
+      }
+    }
   }
 }

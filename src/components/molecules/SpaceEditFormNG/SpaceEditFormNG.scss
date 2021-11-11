@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $textarea-height: 120px;
+$image-container-height: 200px;
 
 .SpaceEditFormNG {
   display: flex;
@@ -31,6 +32,19 @@ $textarea-height: 120px;
 
   .AdminSection {
     padding: $spacing--sm $spacing--xl;
+
+    &__label {
+      display: flex;
+      flex-direction: column;
+
+      .ImageInput__container {
+        position: relative;
+        width: 60%;
+        margin-bottom: -($spacing--lg);
+        align-self: center;
+        height: $image-container-height;
+      }
+    }
   }
 
   .AdminSidebarFooter__buttons {

@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$upload-button-height: 150px;
+
 .ImageInput {
   &__container {
     position: relative;
@@ -35,32 +37,50 @@
     font-style: italic;
   }
 
-  &__upload-button {
-    padding: $image-input-upload-button-padding;
-    margin: 0;
-    border-radius: $border-radius--xl;
-    font-weight: bold;
-    transition: $image-input-upload-button-transition;
-    background-color: $image-input-upload-button-background;
-    &:hover,
-    &:active,
-    &:focus {
-      transform: translateY(-1px);
-      background-color: $image-input-upload-button-background--focus;
+  &__upload {
+    &-container {
+      width: 100%;
+      height: $upload-button-height;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: opaque-white(0.12);
+      border-radius: $border-radius--xl;
     }
-    &--hidden {
-      background-color: transparent;
-      color: transparent;
+
+    &-subtext {
+      font-size: $font-size--md;
+      color: opaque-white(0.5);
+    }
+
+    &-button {
+      padding: $image-input-upload-button-padding;
+      margin: 0;
+      border-radius: $border-radius--xl;
+      font-weight: bold;
+      transition: $image-input-upload-button-transition;
+      background-color: $image-input-upload-button-background;
       &:hover,
       &:active,
       &:focus {
-        transform: none;
-        background-color: initial;
+        transform: translateY(-1px);
+        background-color: $image-input-upload-button-background--focus;
       }
-    }
+      &--hidden {
+        background-color: transparent;
+        color: transparent;
+        &:hover,
+        &:active,
+        &:focus {
+          transform: none;
+          background-color: initial;
+        }
+      }
 
-    &--small {
-      padding: $image-input-upload-button-padding--small;
+      &--small {
+        padding: $image-input-upload-button-padding--small;
+      }
     }
   }
 }

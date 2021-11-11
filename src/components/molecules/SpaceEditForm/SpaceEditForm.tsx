@@ -295,8 +295,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             <input name="room.url" type="hidden" ref={register} />
           )}
 
-          <div>
-            <Form.Label>{ROOM_TAXON.capital} image</Form.Label>
+          <AdminSection
+            withLabel
+            title={`${ROOM_TAXON.capital} icon`}
+            subtitle="(overrides global settings)"
+          >
             <ImageInput
               onChange={changeRoomImageUrl}
               name="room.image"
@@ -305,13 +308,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               small
               nameWithUnderscore
               imgUrl={room.image_url}
+              text="Upload a new icon"
+              subtext="(A transparent 300 px square image works best)"
             />
             {errors?.room?.image_url && (
               <span className="input-error">
                 {errors?.room?.image_url.message}
               </span>
             )}
-          </div>
+          </AdminSection>
 
           <AdminSection
             withLabel
@@ -350,6 +355,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       setValue={setValue}
                       register={register}
                       small
+                      text="Upload a new background image"
                       nameWithUnderscore
                       imgUrl={
                         roomVenue?.mapBackgroundImageUrl ??
