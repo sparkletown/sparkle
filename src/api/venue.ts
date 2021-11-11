@@ -94,6 +94,20 @@ type VenueInputForm = Partial<WithId<AnyVenue>> & {
   numberOfSections?: number;
 };
 
+export const checkSpaceExistsInWorld = async (
+  slug: string,
+  worldId: string
+) => {
+  return !!(
+    await firebase
+      .firestore()
+      .collection("venues")
+      .where("slug", "==", slug)
+      .where("worldId", "==", worldId)
+      .get()
+  ).docs.length;
+};
+
 export const updateVenueNG = async (
   venue: VenueInputForm,
   user: firebase.UserInfo

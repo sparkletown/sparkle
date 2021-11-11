@@ -7,6 +7,7 @@ import { useAsyncFn } from "react-use";
 import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
+import { checkSpaceExistsInWorld } from "api/venue";
 
 import { VenueTemplate } from "types/venues";
 
@@ -100,7 +101,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const [{ error: submitError, loading: isSaving }, setVenue] = useAsyncFn(
     async (vals: FormValues) => {
-      if (!user) return;
+      if (!user || !worldId) return;
 
       const isValidParentId = validateParentId(values.parentId, [
         venueId ?? createSlug(vals.name),
@@ -111,6 +112,20 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
           "parentId",
           "manual",
           "This parent id is invalid because it will create a loop of parent venues. If venue 'A' is a parent of venue 'B', venue 'B' can't be a parent of venue 'A'."
+        );
+        return;
+      }
+
+      const slugAlreadyExists = await checkSpaceExistsInWorld(
+        createSlug(vals.name),
+        worldId
+      );
+
+      if (slugAlreadyExists) {
+        setError(
+          "name",
+          "manual",
+          "This space slug already exists in this world."
         );
         return;
       }
