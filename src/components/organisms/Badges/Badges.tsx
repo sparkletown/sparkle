@@ -16,7 +16,7 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
 
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/useWorldById";
 
 import { BadgeImage } from "./BadgeImage";
 
@@ -48,7 +48,7 @@ export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
-  const { world, isLoaded: isWorldLoaded } = useWorldEdit(
+  const { world, isLoaded: isWorldLoaded } = useWorldById(
     currentVenue?.worldId
   );
 
