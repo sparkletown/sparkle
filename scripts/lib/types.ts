@@ -191,7 +191,6 @@ export interface TruncatedVenueType {
   activity?: string;
   bannerMessage?: string;
   miniAvatars?: boolean;
-  adultContent?: boolean;
   samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
@@ -210,7 +209,6 @@ export interface TruncatedVenueType {
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  requiresDateOfBirth?: boolean;
   ticketUrl?: string;
   chatTitle?: string;
   showReactions?: boolean;
