@@ -5,12 +5,12 @@ import { World } from "api/admin";
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseWorldEditResult = {
+type UseWorldByIdResult = {
   world?: WithId<World>;
   isLoaded: boolean;
 };
 
-export const useWorldById: (worldId?: string) => UseWorldEditResult = (
+export const useWorldById: (worldId?: string) => UseWorldByIdResult = (
   worldId
 ) => {
   const firestore = useFirestore();
