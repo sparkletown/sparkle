@@ -159,24 +159,26 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         isReactionsMuted: values.isReactionsMuted,
         numberOfSections: values.numberOfSections,
         template: portal?.template,
+        worldId: portal?.worldId,
       },
       user
     );
   }, [
-    portal?.template,
-    portalId,
     user,
+    portalId,
+    values.iframeUrl,
     values.autoPlay,
     values.bannerImageUrl,
+    values.name,
+    values.description,
+    values.subtitle,
+    values.parentId,
+    values.showShoutouts,
+    values.showReactions,
     values.isReactionsMuted,
     values.numberOfSections,
-    values.showReactions,
-    values.showShoutouts,
-    values.parentId,
-    values.description,
-    values.name,
-    values.subtitle,
-    values.iframeUrl,
+    portal?.template,
+    portal?.worldId,
   ]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
@@ -379,7 +381,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSpacesListItem>
         <ButtonNG
           variant="danger"
-          loading={isUpdating || isDeleting}
+          loading={isDeleting}
           disabled={isUpdating || isDeleting}
           onClick={deleteSelectedRoom}
         >
@@ -399,6 +401,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             className="AdminSidebarFooter__button--larger"
             type="submit"
             variant="primary"
+            loading={isUpdating}
             disabled={isUpdating || isDeleting}
           >
             Save changes
