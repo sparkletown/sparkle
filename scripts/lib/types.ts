@@ -200,7 +200,6 @@ export interface TruncatedVenueType {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showSchedule?: boolean;
   showGrid?: boolean;
   width: number;
   height: number;
@@ -217,7 +216,6 @@ export interface TruncatedVenueType {
   auditoriumColumns?: number;
   auditoriumRows?: number;
   showRadio?: boolean;
-  showBadges?: boolean;
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;

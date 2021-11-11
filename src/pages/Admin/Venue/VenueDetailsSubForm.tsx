@@ -5,7 +5,6 @@ import classNames from "classnames";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
-  DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
@@ -260,30 +259,10 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowScheduleToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Schedule</h4>
-      <Toggler
-        name="showSchedule"
-        forwardedRef={register}
-        defaultToggled={DEFAULT_SHOW_SCHEDULE}
-      />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
       <Toggler name="showGrid" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowBadgesToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show badges</h4>
-      <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
@@ -625,13 +604,11 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           editing={state.detailsPage?.venue.entrance}
         />
 
-        {renderShowScheduleToggle()}
         {!DISABLED_DUE_TO_1253 &&
           templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
 
-        {renderShowBadgesToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
