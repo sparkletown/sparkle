@@ -15,7 +15,6 @@ import { Room } from "types/rooms";
 import { UsernameVisibility, UserStatus } from "types/User";
 import {
   RoomVisibility,
-  Venue_v2_EntranceConfig,
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
@@ -111,9 +110,7 @@ export type VenueInput = VenueImageUrls & {
   roomVisibility?: RoomVisibility;
 };
 
-export interface VenueInput_v2
-  extends VenueAdvancedConfig,
-    Venue_v2_EntranceConfig {
+export interface VenueInput_v2 extends VenueAdvancedConfig {
   name: string;
   description?: string;
   subtitle?: string;
