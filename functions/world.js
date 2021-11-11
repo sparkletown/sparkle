@@ -162,7 +162,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
     ...(!isNil(showRadio) && { showRadio }),
-    ...(!isNil(showSchedule) && { showSchedule }),
+    ...{ showSchedule: isNil(showSchedule) ? true : showSchedule },
     ...(!isEmpty(userStatuses) && { userStatuses }),
     ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
