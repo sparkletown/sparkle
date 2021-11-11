@@ -228,9 +228,12 @@ export const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const { entrance, template, hasPaidEvents } = venue;
+  const { template, hasPaidEvents } = venue;
 
-  const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
+  const hasEntrance =
+    world?.entrance &&
+    Array.isArray(world.entrance) &&
+    world.entrance.length > 0;
   const hasEntered = enteredVenueIds?.includes(venueId);
 
   if (hasEntrance && !hasEntered) {

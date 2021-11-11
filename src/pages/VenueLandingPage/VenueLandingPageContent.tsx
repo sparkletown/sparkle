@@ -23,6 +23,7 @@ import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -46,6 +47,8 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
   const venueId = useVenueId();
 
+  const { world } = useCurrentWorld({ worldId: venue?.worldId });
+
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_LANDING_BANNER
@@ -60,7 +63,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const onJoinClick = () => {
     if (!venueId) return;
 
-    const venueEntrance = venue.entrance && venue.entrance.length;
+    const venueEntrance = world?.entrance?.length;
     window.location.href =
       user && !venueEntrance
         ? venueInsideUrl(venueId)
