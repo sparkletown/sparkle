@@ -15,7 +15,7 @@ import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useWorldEditParams } from "hooks/useWorldEditParams";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -50,7 +50,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const { worldId } = useWorldEditParams();
+  const { worldId } = useWorldParams();
 
   const { worldVenuesIds, worldParentVenues } = useWorldVenues(
     worldId ?? venue?.worldId ?? ""
