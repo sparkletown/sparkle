@@ -256,16 +256,18 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
-    if (venueId === id) {
-      return null;
-    }
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId }) => {
+      if (venueId === id || worldId !== roomVenue?.worldId) {
+        return null;
+      }
 
-    return {
-      name,
-      template,
-    };
-  });
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>

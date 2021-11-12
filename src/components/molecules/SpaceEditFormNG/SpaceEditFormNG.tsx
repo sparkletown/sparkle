@@ -227,16 +227,18 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
-    if (venueId === id) {
-      return null;
-    }
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId }) => {
+      if (venueId === id || worldId !== portal?.worldId) {
+        return null;
+      }
 
-    return {
-      name,
-      template,
-    };
-  });
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   return (
     <div className="SpaceEditFormNG">
