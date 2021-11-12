@@ -763,7 +763,16 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is exactly the same as in updateVenue_v2
-  await admin.firestore().collection("venues").doc(venueId).update(updated);
+
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs?.[0];
+  venueRef.update(updated);
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
@@ -825,7 +834,15 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is exactly the same as in updateVenue
-  admin.firestore().collection("venues").doc(venueId).update(updated);
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs?.[0];
+  venueRef.update(updated);
 });
 
 exports.updateMapBackground = functions.https.onCall(async (data, context) => {
@@ -841,11 +858,15 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
     );
   }
 
-  admin
+  const venuesRef = await admin
     .firestore()
     .collection("venues")
-    .doc(venueId)
-    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs?.[0];
+  venueRef.update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
 });
 
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {
