@@ -316,7 +316,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
             />
           </AdminSection>
-          <AdminSection title="Upload a highlight image">
+          <AdminSection title="Upload a highlight image" withLabel>
             <ImageInput
               onChange={changeBackgroundImageUrl}
               name="bannerImage"
@@ -327,7 +327,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
             />
           </AdminSection>
-          <AdminSection title="Upload a logo">
+          <AdminSection title="Upload a logo" withLabel>
             <ImageInput
               nameWithUnderscore
               onChange={changePortalImageUrl}
@@ -337,6 +337,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
               register={register}
               small
+              subtext="(A transparent 300 px square image works best)"
             />
           </AdminSection>
         </AdminSpacesListItem>

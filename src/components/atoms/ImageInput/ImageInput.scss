@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$upload-button-height: 150px;
+
 .ImageInput {
   &__container {
     position: relative;
@@ -9,7 +11,6 @@
     justify-content: center;
     border-radius: $border-radius--xl;
     background-size: cover;
-    background-color: $secondary--live;
     background-position: center;
     cursor: pointer;
 
@@ -35,7 +36,23 @@
     font-style: italic;
   }
 
-  &__upload-button {
+  &__wrapper {
+    width: 100%;
+    height: $upload-button-height;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: opaque-white(0.12);
+    border-radius: $border-radius--xl;
+  }
+
+  &__subtext {
+    font-size: $font-size--md;
+    color: opaque-white(0.5);
+  }
+
+  &__button {
     padding: $image-input-upload-button-padding;
     margin: 0;
     border-radius: $border-radius--xl;

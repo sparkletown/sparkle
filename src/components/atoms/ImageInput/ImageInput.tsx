@@ -31,6 +31,7 @@ export interface ImageInputProps {
   register: ReturnType<typeof useForm>["register"];
   nameWithUnderscore?: boolean;
   text?: string;
+  subtext?: string;
   isInputHidden?: boolean;
 }
 
@@ -45,6 +46,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   nameWithUnderscore = false,
   isInputHidden = false,
   text = "Upload",
+  subtext = "",
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
@@ -93,33 +95,33 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
   return (
     <>
-      <label className={labelClasses}>
-        <input
-          accept={ACCEPTED_IMAGE_TYPES}
-          hidden
-          id={name}
-          onChange={handleFileInputChangeWrapper}
-          type="file"
-          ref={inputFileRef}
-        />
-        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
+      {!!imageUrl && (
+        <label className={labelClasses}>
+          <input
+            accept={ACCEPTED_IMAGE_TYPES}
+            hidden
+            id={name}
+            onChange={handleFileInputChangeWrapper}
+            type="file"
+            ref={inputFileRef}
+          />
+          {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
-        <span
-          className={classNames("ImageInput__upload-button", {
-            "ImageInput__upload-button--small": small,
-            "ImageInput__upload-button--hidden": !!imageUrl,
-          })}
-        >
-          Upload
-        </span>
-      </label>
-
-      <input type="hidden" name={fileUrl} ref={register} readOnly />
-      {isInputHidden && (
-        <ButtonNG onClick={onButtonClick} variant="primary">
-          {text}
-        </ButtonNG>
+          <span
+            className={classNames("ImageInput__button", {
+              "ImageInput__button--small": small,
+              "ImageInput__button--hidden": !!imageUrl,
+            })}
+          >
+            Upload
+          </span>
+        </label>
       )}
+      <input type="hidden" name={fileUrl} ref={register} readOnly />
+      <div className="ImageInput__wrapper">
+        <ButtonNG onClick={onButtonClick}>{text}</ButtonNG>
+        <div className="ImageInput__subtext">{subtext}</div>
+      </div>
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );
