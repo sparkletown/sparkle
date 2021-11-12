@@ -16,7 +16,7 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useWorldById } from "hooks/useWorldById";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";

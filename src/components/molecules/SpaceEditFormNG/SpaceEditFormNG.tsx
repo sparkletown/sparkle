@@ -46,6 +46,8 @@ import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import { Toggler } from "components/atoms/Toggler";
 
+import { AdminCheckbox } from "../AdminCheckbox";
+
 import "./SpaceEditFormNG.scss";
 
 export interface SpaceEditFormNGProps {
@@ -159,24 +161,26 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         isReactionsMuted: values.isReactionsMuted,
         numberOfSections: values.numberOfSections,
         template: portal?.template,
+        worldId: portal?.worldId,
       },
       user
     );
   }, [
-    portal?.template,
-    portalId,
     user,
+    portalId,
+    values.iframeUrl,
     values.autoPlay,
     values.bannerImageUrl,
+    values.name,
+    values.description,
+    values.subtitle,
+    values.parentId,
+    values.showShoutouts,
+    values.showReactions,
     values.isReactionsMuted,
     values.numberOfSections,
-    values.showReactions,
-    values.showShoutouts,
-    values.parentId,
-    values.description,
-    values.name,
-    values.subtitle,
-    values.iframeUrl,
+    portal?.template,
+    portal?.worldId,
   ]);
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
@@ -223,10 +227,18 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const venueSpaces = ownedVenues.map(({ name, template }) => ({
-    name,
-    template,
-  }));
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId }) => {
+      if (venueId === id || worldId !== portal?.worldId) {
+        return null;
+      }
+
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   return (
     <div className="SpaceEditFormNG">
@@ -269,7 +281,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={venueSpaces ?? ALWAYS_EMPTY_ARRAY}
+                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
                 venueId={venueId}
                 setValue={setValue}
                 register={register}
@@ -347,12 +359,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             />
           </AdminSection>
           <AdminSection>
-            <Toggler
+            <AdminCheckbox
+              variant="flip-switch"
               name="isReactionsMuted"
-              forwardedRef={register}
+              register={register}
               disabled={!values.showReactions}
-              containerClassName="SpaceEditFormNG__toggler"
-              label="Audible"
+              displayOn="Audible"
+              displayOff="Muted"
             />
           </AdminSection>
           <AdminSection title="Capacity (optional)">
@@ -380,7 +393,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSpacesListItem>
         <ButtonNG
           variant="danger"
-          loading={isUpdating || isDeleting}
+          loading={isDeleting}
           disabled={isUpdating || isDeleting}
           onClick={deleteSelectedRoom}
         >
@@ -400,6 +413,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             className="AdminSidebarFooter__button--larger"
             type="submit"
             variant="primary"
+            loading={isUpdating}
             disabled={isUpdating || isDeleting}
           >
             Save changes

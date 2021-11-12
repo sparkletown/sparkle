@@ -7,7 +7,7 @@ import { WorldNavTab } from "types/world";
 
 import { adminWorldUrl } from "utils/url";
 
-import { useWorldEditParams } from "hooks/useWorldEditParams";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { WorldNavIconMap } from "./WorldNavIconMap";
 import { WorldNavLabelMap } from "./WorldNavLabelMap";
@@ -15,7 +15,7 @@ import { WorldNavLabelMap } from "./WorldNavLabelMap";
 import "./WorldNav.scss";
 
 export const WorldNav: React.FC = () => {
-  const { worldId, selectedTab } = useWorldEditParams();
+  const { worldId, selectedTab } = useWorldParams();
   const renderedTabs = useMemo(() => {
     return Object.entries(WorldNavLabelMap).map(([key, label]) => (
       <Link

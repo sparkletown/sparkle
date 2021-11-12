@@ -11,7 +11,12 @@ $image-container-height: 200px;
   &__portal {
     display: flex;
     flex-direction: column;
-    padding: $spacing--xl;
+
+    .AdminInput,
+    .AdminTextarea,
+    .AdminSection {
+      padding: 0px $spacing--xl;
+    }
   }
 
   &__loading-indicator {

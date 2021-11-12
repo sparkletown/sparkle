@@ -22,9 +22,7 @@
         {
           "start_utc_seconds": 1591466400,
           "duration_hours": 8.0,
-          "entrance_hosted_hours": 2.0,
           "unhosted_entry_video_url": "https://google.com/",
-          "map_url": "https://google.com/",
           "map_viewbox": "0 0 1547 863",
           "password": "ahoy",
           "admin_password": "tsunami",
@@ -75,10 +73,8 @@
         "start_utc_seconds",
         "duration_hours",
         "password",
-        "entrance_hosted_hours",
         "party_name",
         "unhosted_entry_video_url",
-        "map_url",
         "map_viewbox",
         "rooms",
         "profile_questions"
@@ -126,14 +122,6 @@
           "default": 0.0,
           "examples": [8.0]
         },
-        "entrance_hosted_hours": {
-          "$id": "#/properties/entrance_hosted_hours",
-          "type": "number",
-          "title": "The entrance_hosted_hours schema",
-          "description": "Duration the entrance is hosted in hours.",
-          "default": 0.0,
-          "examples": [2.0]
-        },
         "party_name": {
           "$id": "#/properties/party_name",
           "type": "string",
@@ -147,14 +135,6 @@
           "type": "string",
           "title": "The unhosted_entry_video_url schema",
           "description": "URL to the video to show when the entrance is unhosted.",
-          "default": "",
-          "examples": ["https://google.com/"]
-        },
-        "map_url": {
-          "$id": "#/properties/map_url",
-          "type": "string",
-          "title": "The map_url schema",
-          "description": "URL for the event map.",
           "default": "",
           "examples": ["https://google.com/"]
         },

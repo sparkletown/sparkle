@@ -103,10 +103,12 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     logoImageUrl,
     name,
     questions,
+    radioStations,
     requiresDateOfBirth,
     rooms,
-    showNametags,
     showBadges,
+    showNametags,
+    showRadio,
     showUserStatus,
     slug,
     subtitle,
@@ -117,7 +119,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   if (!worldId) {
     throw new HttpsError(
       "not-found",
-      `World id is missing and the update can not be executed.`
+      `World Id is missing and the update can not be executed.`
     );
   }
 
@@ -155,9 +157,11 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
     ...(!isNil(name) && { name }),
     ...(!isEmpty(questions) && { questions: questionsConfig }),
+    ...(!isNil(radioStations) && { radioStations }),
     ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
+    ...(!isNil(showRadio) && { showRadio }),
     ...{ showSchedule: isNil(showSchedule) ? true : showSchedule },
     ...(!isEmpty(userStatuses) && { userStatuses }),
     ...(!isNil(showUserStatus) && { showUserStatus }),
