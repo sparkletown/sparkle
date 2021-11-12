@@ -8,7 +8,7 @@ export interface WorldEditParams {
   selectedTab?: WorldNavTab;
 }
 
-export const useWorldEditParams = () => {
+export const useWorldParams = () => {
   const {
     worldId,
     worldSlug,
