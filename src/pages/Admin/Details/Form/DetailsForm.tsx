@@ -282,7 +282,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const backButtonOptionList = ownedVenues.filter(
     ({ id, name, template, worldId: venueWorldId }) => {
-      if (venueId === id || worldId !== venueWorldId) {
+      if (venueId === id || venue?.worldId !== venueWorldId) {
         return null;
       }
 
