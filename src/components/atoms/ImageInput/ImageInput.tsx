@@ -108,9 +108,9 @@ const ImageInput: React.FC<ImageInputProps> = ({
           {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
           <span
-            className={classNames("ImageInput-button", {
-              "ImageInput-button--small": small,
-              "ImageInput-button--hidden": !!imageUrl,
+            className={classNames("ImageInput__button", {
+              "ImageInput__button--small": small,
+              "ImageInput__button--hidden": !!imageUrl,
             })}
           >
             Upload
@@ -118,9 +118,9 @@ const ImageInput: React.FC<ImageInputProps> = ({
         </label>
       )}
       <input type="hidden" name={fileUrl} ref={register} readOnly />
-      <div className="ImageInput-container">
+      <div className="ImageInput__wrapper">
         <ButtonNG onClick={onButtonClick}>{text}</ButtonNG>
-        <div className="ImageInput-subtext">{subtext}</div>
+        <div className="ImageInput__subtext">{subtext}</div>
       </div>
       {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
