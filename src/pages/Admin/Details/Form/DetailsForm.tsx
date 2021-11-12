@@ -23,6 +23,7 @@ import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
@@ -65,10 +66,15 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const { worldId } = useWorldParams();
+  const { worldSlug } = useWorldParams();
 
-  const { worldParentVenues } = useWorldVenues(worldId ?? venue?.worldId ?? "");
-  const { world, isLoaded } = useWorldById(worldId ?? venue?.worldId);
+  const { world: worldBySlug } = useWorldBySlug(worldSlug);
+
+  const { worldParentVenues } = useWorldVenues(
+    worldBySlug?.id ?? venue?.worldId ?? ""
+  );
+
+  const { world: worldById, isLoaded } = useWorldById(venue?.worldId);
 
   const { subtitle, description, coverImageUrl } =
     venue?.config?.landingPageConfig ?? {};
@@ -98,7 +104,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       subtitle: subtitle ?? "",
       showGrid: showGrid ?? false,
       columns: 0,
-      worldId: worldId ?? "",
+      worldId: worldBySlug ? worldBySlug?.id : venue?.worldId,
       parentId: parentId ?? "",
       showBadges: showBadges,
       radioStations: radioStations ? radioStations[0] : "",
@@ -112,18 +118,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     }),
     [
       name,
-      showGrid,
-      parentId,
-      worldId,
+      coverImageUrl,
       icon,
       description,
       subtitle,
-      coverImageUrl,
+      showGrid,
+      worldBySlug,
+      venue?.worldId,
+      venue?.userStatuses,
+      parentId,
       showBadges,
       radioStations,
       requiresDateOfBirth,
       showUserStatus,
-      venue?.userStatuses,
       hasSocialLoginEnabled,
       enableJukebox,
       showRadio,
@@ -150,9 +157,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     },
     defaultValues,
   });
-  console.log(defaultValues);
   const values = watch();
-  console.log(values);
   const validateParentId = useCallback(
     (parentId, checkedIds) => {
       if (checkedIds.includes(parentId)) return false;
@@ -191,24 +196,24 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         const updatedVenue = {
           ...vals,
           id: venueId,
-          worldId: venue?.worldId ?? "",
+          worldId: values.worldId ?? "",
           parentId: values.parentId,
         };
 
         await updateVenue_v2(updatedVenue, user);
 
-        history.push(adminWorldSpacesUrl(world?.slug));
+        history.push(adminWorldSpacesUrl(worldById?.slug));
       } else {
         const newVenue = {
           ...vals,
           id: createSlug(vals.name),
-          worldId: worldId ?? "",
+          worldId: values.worldId ?? "",
           parentId: values.parentId ?? "",
         };
 
         await createVenue_v2(newVenue, user);
 
-        history.push(adminWorldSpacesUrl(world?.slug));
+        history.push(adminWorldSpacesUrl(worldBySlug?.slug));
       }
     },
     [
@@ -218,10 +223,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       user,
       validateParentId,
       values.parentId,
-      venue?.worldId,
+      values.worldId,
       venueId,
-      world?.slug,
-      worldId,
+      worldById?.slug,
+      worldBySlug?.slug,
     ]
   );
 
@@ -267,10 +272,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   };
 
   const navigateToHome = useCallback(() => {
-    history.push(
-      adminWorldSpacesUrl(worldId ?? values?.worldId ?? venue?.worldId)
-    );
-  }, [history, worldId, values?.worldId, venue?.worldId]);
+    history.push(adminWorldSpacesUrl(values?.worldId ?? ""));
+  }, [history, values?.worldId]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({

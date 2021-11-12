@@ -10,20 +10,22 @@ import DetailsPreview from "./Preview";
 
 import "./SpaceEditorStartPanel.scss";
 
-export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue }) => (
-  <AdminPanel className="SpaceEditorStartPanel">
-    <AdminSidebar>
-      <DetailsForm venue={venue} />
-    </AdminSidebar>
+export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue }) => {
+  return (
+    <AdminPanel className="SpaceEditorStartPanel">
+      <AdminSidebar>
+        <DetailsForm venue={venue} />
+      </AdminSidebar>
 
-    <AdminShowcase>
-      <DetailsPreview
-        name={venue?.name}
-        subtitle={venue?.config?.landingPageConfig.subtitle}
-        description={venue?.config?.landingPageConfig.description}
-        bannerImageUrl={venue?.config?.landingPageConfig.coverImageUrl}
-        logoImageUrl={venue?.host?.icon}
-      />
-    </AdminShowcase>
-  </AdminPanel>
-);
+      <AdminShowcase>
+        <DetailsPreview
+          name={venue?.name}
+          subtitle={venue?.config?.landingPageConfig.subtitle}
+          description={venue?.config?.landingPageConfig.description}
+          bannerImageUrl={venue?.config?.landingPageConfig.coverImageUrl}
+          logoImageUrl={venue?.host?.icon}
+        />
+      </AdminShowcase>
+    </AdminPanel>
+  );
+};
