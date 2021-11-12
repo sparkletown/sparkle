@@ -3,6 +3,7 @@ import { isEqual } from "lodash";
 
 import { getVenueId } from "../../functions/src/utils/venue";
 import { Room } from "../../src/types/rooms";
+import { AnyVenue } from "../../src/types/venues";
 
 const isVenueRegex = /\/in\/(\w+)$/;
 
@@ -105,7 +106,7 @@ const transformRoomAndCreateVenues = async ({ firestore, venueDoc, room }) => {
       firestore,
       portal: room,
       parentVenueId: venueDoc.id,
-      parentWorldId: venueDoc.data().worldId,
+      parentVenue: venueDoc.data(),
     });
 
     room.template = "zoomroom";
@@ -117,21 +118,22 @@ interface CreateVenueFromPortalProps {
   firestore: FirebaseFirestore.Firestore;
   portal: Room;
   parentVenueId: string;
-  parentWorldId: string;
+  parentVenue: AnyVenue;
 }
 
 const createVenueFromPortal = async ({
   firestore,
   portal,
   parentVenueId,
-  parentWorldId,
+  parentVenue,
 }: CreateVenueFromPortalProps) => {
   const venueData = {
     name: portal.title,
     template: "zoomroom",
     zoomUrl: portal.url ?? "",
     parentId: parentVenueId,
-    worldId: parentWorldId,
+    worldId: parentVenue.worldId,
+    owners: parentVenue.owners,
   };
 
   let venueExists = true;
