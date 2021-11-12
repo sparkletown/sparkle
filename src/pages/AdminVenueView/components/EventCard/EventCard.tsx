@@ -12,7 +12,7 @@ import { adminNGVenueUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 
-import { AdminVenueTab } from "components/organisms/AdminVenueView/AdminVenueView";
+import { AdminVenueTab } from "pages/AdminVenueView/AdminVenueView";
 
 import "./EventCard.scss";
 

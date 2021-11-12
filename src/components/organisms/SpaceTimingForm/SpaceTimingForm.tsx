@@ -16,10 +16,9 @@ import {
 
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-
 import { AdminDateTime } from "components/molecules/AdminDateTime";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminSidebarFooterProps } from "components/molecules/AdminSidebarFooter/AdminSidebarFooter";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 

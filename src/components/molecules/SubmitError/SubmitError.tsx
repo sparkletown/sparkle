@@ -2,7 +2,7 @@ import React from "react";
 
 import { isFirebaseError } from "types/errors";
 
-import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
+import { AdminSidebarSectionTitle } from "components/molecules/AdminSidebarSectionTitle";
 
 import "./SubmitError.scss";
 

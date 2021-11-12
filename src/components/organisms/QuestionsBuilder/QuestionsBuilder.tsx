@@ -3,8 +3,7 @@ import { FieldErrors, FieldValues } from "react-hook-form";
 
 import { Question } from "types/Question";
 
-import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
-
+import { AdminSidebarSectionSubTitle } from "components/molecules/AdminSidebarSectionSubTitle";
 import { QuestionFieldSet } from "components/molecules/QuestionInputFieldSet";
 
 import { ButtonNG } from "components/atoms/ButtonNG";

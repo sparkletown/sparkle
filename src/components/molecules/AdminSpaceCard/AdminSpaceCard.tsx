@@ -9,7 +9,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { adminNGSettingsUrl, adminNGVenueUrl } from "utils/url";
 
-import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
+import { AdminShowcaseSubTitle } from "components/molecules/AdminShowcaseSubTitle";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

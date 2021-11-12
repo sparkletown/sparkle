@@ -4,7 +4,7 @@ import { isEmpty } from "lodash";
 
 import { objectEntries, ObjectEntry } from "utils/object";
 
-import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
+import { AdminSidebarSectionTitle } from "components/molecules/AdminSidebarSectionTitle";
 
 import "./FormErrors.scss";
 

@@ -16,9 +16,8 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
-
-import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
-import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
+import { RunTabUserInfo } from "pages/AdminVenueView/components/RunTabUserInfo";
+import { SearchField } from "pages/AdminVenueView/components/SearchField/SearchField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

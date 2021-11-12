@@ -28,13 +28,12 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
-
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminSidebarFooter } from "components/molecules/AdminSidebarFooter";
+import { AdminSidebarSubTitle } from "components/molecules/AdminSidebarSubTitle";
+import { AdminSidebarTitle } from "components/molecules/AdminSidebarTitle";
+import { AdminSpacesListItem } from "components/molecules/AdminSpacesListItem";
 import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";

@@ -14,13 +14,11 @@ import {
 } from "settings";
 
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
+import { AdminDashboard } from "pages/AdminDashboard";
+import { AdminVenueView } from "pages/AdminVenueView";
 import { SpaceEditor } from "pages/SpaceEditor";
 import { WorldEditor } from "pages/WorldEditor";
 import { WorldsDashboard } from "pages/WorldsDashboard";
-
-import { AdminVenueView } from "components/organisms/AdminVenueView";
-
-import { AdminDashboard } from "../AdminDashboard";
 
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>

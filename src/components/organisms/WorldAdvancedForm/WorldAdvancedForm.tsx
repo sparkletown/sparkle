@@ -18,12 +18,11 @@ import { WithId, withId } from "utils/id";
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminSidebarFooter } from "components/molecules/AdminSidebarFooter";
+import { AdminSidebarFooterProps } from "components/molecules/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";

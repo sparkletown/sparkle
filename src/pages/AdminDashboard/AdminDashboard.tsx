@@ -15,9 +15,9 @@ import { sortVenues, VenueSortingOptions } from "utils/venue";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
-import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { AdminShowcaseTitle } from "components/molecules/AdminShowcaseTitle";
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
 

@@ -1,8 +1,8 @@
 import React from "react";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminPanel } from "components/molecules/AdminPanel";
+import { AdminShowcase } from "components/molecules/AdminShowcase";
+import { AdminSidebar } from "components/molecules/AdminSidebar";
 
 import { DetailsProps } from "./Details.types";
 import DetailsForm from "./Form";

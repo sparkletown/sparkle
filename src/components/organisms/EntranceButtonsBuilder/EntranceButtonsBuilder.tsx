@@ -3,8 +3,7 @@ import { FieldErrors, FieldValues } from "react-hook-form";
 
 import { EntranceStepButtonConfig } from "types/EntranceStep";
 
-import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
-
+import { AdminSidebarSectionSubTitle } from "components/molecules/AdminSidebarSectionSubTitle";
 import { EntranceButtonsInputFieldSet } from "components/molecules/EntranceButtonsInputFieldSet";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
