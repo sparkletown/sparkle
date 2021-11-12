@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { DEFAULT_CHAT_TITLE } from "settings/worldDefaultSettings";
+import { DEFAULT_CHAT_TITLE } from "settings";
 
 import { AnyVenue } from "types/venues";
 
