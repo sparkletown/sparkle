@@ -5,7 +5,6 @@ import classNames from "classnames";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
-  DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
@@ -44,8 +43,7 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "firebase/functions";
 
-import EntranceInput from "./EntranceInput";
-
+// import EntranceInput from "./EntranceInput";
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
@@ -172,26 +170,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const renderRestrictToAdultsInput = () => (
-    <div className="input-container">
-      <label
-        htmlFor={"chkadultContent"}
-        className={`checkbox ${
-          watch("adultContent", false) && "checkbox-checked"
-        }`}
-      >
-        Restrict entry to adults aged 18+
-      </label>
-      <input
-        type="checkbox"
-        id={"chkadultContent"}
-        name={"adultContent"}
-        defaultChecked={values.adultContent}
-        ref={register}
-      />
-    </div>
-  );
-
   const renderHighlightImageInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Upload Highlight image</h4>
@@ -280,30 +258,10 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowScheduleToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Schedule</h4>
-      <Toggler
-        name="showSchedule"
-        forwardedRef={register}
-        defaultToggled={DEFAULT_SHOW_SCHEDULE}
-      />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
       <Toggler name="showGrid" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowBadgesToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show badges</h4>
-      <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
@@ -367,14 +325,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
       <Toggler name="showRangers" forwardedRef={register} />
-    </div>
-  );
-
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderRestrictDOBToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Require date of birth on register</h4>
-      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -631,7 +581,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderVenueNameInput()}
         {renderTaglineInput()}
         {renderDescriptionInput()}
-        {renderRestrictToAdultsInput()}
 
         {renderHighlightImageInput()}
         {renderLogoInput()}
@@ -648,19 +597,17 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
 
-        <EntranceInput
+        {/* <EntranceInput
           fieldName="entrance"
           register={register}
           editing={state.detailsPage?.venue.entrance}
-        />
+        /> */}
 
-        {renderShowScheduleToggle()}
         {!DISABLED_DUE_TO_1253 &&
           templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
 
-        {renderShowBadgesToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
@@ -668,7 +615,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowShoutouts()}
         {renderShowRangersToggle()}
-        {renderRestrictDOBToggle()}
 
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&

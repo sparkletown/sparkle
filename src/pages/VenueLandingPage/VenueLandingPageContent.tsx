@@ -26,6 +26,7 @@ import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -46,6 +47,8 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
   const venueId = useVenueId();
 
+  const { world } = useWorldById(venue?.worldId);
+
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_LANDING_BANNER
@@ -60,9 +63,10 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const onJoinClick = () => {
     if (!venueId) return;
 
-    const venueEntrance = venue.entrance && venue.entrance.length;
+    const hasEntrance = world?.entrance?.length;
+
     window.location.href =
-      user && !venueEntrance
+      user && !hasEntrance
         ? venueInsideUrl(venueId)
         : venueEntranceUrl(venueId);
   };

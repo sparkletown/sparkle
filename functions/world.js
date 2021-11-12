@@ -117,7 +117,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
   if (!worldId) {
     throw new HttpsError(
       "not-found",
-      `World id is missing and the update can not be executed.`
+      `World Id is missing and the update can not be executed.`
     );
   }
 
@@ -158,7 +158,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
-    ...(!isNil(showSchedule) && { showSchedule }),
+    ...{ showSchedule: isNil(showSchedule) ? true : showSchedule },
     ...(!isEmpty(userStatuses) && { userStatuses }),
     ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
