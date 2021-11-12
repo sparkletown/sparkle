@@ -32,7 +32,7 @@ export interface WorldAdvancedFormInput {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
-  radioStations?: string;
+  radioStation?: string;
   showSchedule?: boolean;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];

@@ -602,7 +602,6 @@ export const TAKE_SEAT_EVENT_NAME = "Take a seat";
 export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
 
 // SCHEDULE
-export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;

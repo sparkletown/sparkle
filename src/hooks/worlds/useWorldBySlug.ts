@@ -1,7 +1,7 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";

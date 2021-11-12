@@ -1,10 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ADMIN_V1_ROOMS_BASE_URL, SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import { SPACE_PORTALS_ICONS_MAPPING } from "settings";
 
 import { PortalTemplate } from "types/venues";
 
@@ -62,23 +60,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         </ReactBootstrapDropdown.Item>
       );
     });
-    const createSpaceOption = (
-      <ReactBootstrapDropdown.Item
-        key="create-space"
-        className="SpacesDropdown__item"
-        href={`${ADMIN_V1_ROOMS_BASE_URL}/${venueId}`}
-      >
-        <FontAwesomeIcon
-          className="SpacesDropdown__item-icon"
-          icon={faPlus}
-          size="sm"
-        />
-        Create a new space
-      </ReactBootstrapDropdown.Item>
-    );
 
-    return [...options, createSpaceOption];
-  }, [venueSpaces, setValue, fieldName, venueId]);
+    return options;
+  }, [venueSpaces, setValue, fieldName]);
 
   const renderedTitle = useMemo(() => {
     if (!spaceValue) {

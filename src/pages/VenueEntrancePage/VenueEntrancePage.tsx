@@ -12,6 +12,7 @@ import {
 } from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -26,9 +27,11 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const history = useHistory();
   const { step: unparsedStep } = useParams<{ step?: string }>();
   const venueId = useVenueId();
+  const venue = useSelector(currentVenueSelector);
+
+  const { world } = useCurrentWorld({ worldId: venue?.worldId });
 
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
   const parsedStep = Number.parseInt(unparsedStep ?? "", 10);
 
   if (!venue || !venueId) {
@@ -38,9 +41,9 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   if (
     unparsedStep === undefined ||
     !(parsedStep > 0) ||
-    !venue.entrance ||
-    !venue.entrance.length ||
-    venue.entrance.length < parsedStep
+    !world?.entrance ||
+    !world?.entrance.length ||
+    world?.entrance.length < parsedStep
   ) {
     return <Redirect to={venueInsideUrl(venueId)} />;
   }
@@ -57,7 +60,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     history.push(venueEntranceUrl(venueId, parsedStep + 1));
   };
 
-  const stepConfig = venue.entrance[parsedStep - 1];
+  const stepConfig = world.entrance[parsedStep - 1];
   switch (stepConfig.template) {
     case EntranceStepTemplate.WelcomeVideo:
       return (
