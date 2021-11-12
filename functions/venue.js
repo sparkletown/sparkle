@@ -753,7 +753,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -813,7 +813,7 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -830,7 +830,19 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
-  const updated = {};
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World Id is missing and the update can not be executed."
+    );
+  }
+
+  const updated = {
+    config: {
+      landingPageConfig: {},
+    },
+  };
+
   updated.updatedAt = Date.now();
 
   if (data.subtitle || data.subtitle === "") {
