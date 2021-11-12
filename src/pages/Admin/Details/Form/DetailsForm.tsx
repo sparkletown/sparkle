@@ -7,7 +7,6 @@ import { useAsyncFn } from "react-use";
 import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
-import { checkSpaceExistsInWorld } from "api/venue";
 
 import { VenueTemplate } from "types/venues";
 
@@ -109,6 +108,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
       const spaceSlug = createSlug(vals.name);
 
+      //@debt Move this validation to create and update BE functions, instead of this FE form.
       if (!isValidParentId) {
         setError(
           "parentId",
@@ -131,20 +131,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         history.push(adminWorldSpacesUrl(venue?.worldId));
       } else {
         if (!worldId) return;
-
-        const slugAlreadyExists = await checkSpaceExistsInWorld(
-          spaceSlug,
-          worldId
-        );
-
-        if (slugAlreadyExists) {
-          setError(
-            "name",
-            "manual",
-            "This space slug already exists in this world."
-          );
-          return;
-        }
 
         const newVenue = {
           ...vals,

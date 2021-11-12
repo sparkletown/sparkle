@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 
@@ -20,6 +21,7 @@ type UseSpaceBySlugResult = {
 export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
   spaceSlug
 ) => {
+  const [error, setError] = useState<string>();
   const firestore = useFirestore();
 
   const spacesRef = firestore
@@ -37,9 +39,7 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
   const isSpaceLoaded = status !== "loading";
 
   if (!spaces?.[0]) {
-    throw new Error(
-      `Space with the following slug: ${spaceSlug} does not exist.`
-    );
+    setError(`Space with the following slug: ${spaceSlug} does not exist.`);
   }
 
   if (spaces?.length > 1) {
@@ -58,5 +58,6 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
   return {
     space: spaces?.[0],
     isLoaded: isSpaceLoaded,
+    error,
   };
 };

@@ -17,7 +17,7 @@ import "./BackgroundSelect.scss";
 
 export interface BackgroundSelectProps {
   venueName: string;
-  venueSlug: string;
+  spaceSlug: string;
   worldId: string;
   mapBackgrounds: string[];
   isLoadingBackgrounds: boolean;
@@ -25,7 +25,7 @@ export interface BackgroundSelectProps {
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   venueName,
-  venueSlug,
+  spaceSlug,
   mapBackgrounds,
   isLoadingBackgrounds,
   worldId,
@@ -43,14 +43,14 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         {
           worldId: worldId,
           name: venueName,
-          slug: venueSlug,
+          slug: spaceSlug,
           mapBackgroundImageFile: file,
           mapBackgroundImageUrl: url,
         },
         user
       );
     },
-    [user, venueName, venueSlug, worldId]
+    [user, venueName, spaceSlug, worldId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;

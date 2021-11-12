@@ -568,7 +568,7 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The venue slug ${data.slug} already exists in this world. Please try with another slug.`
+      `The space slug ${data.slug} already exists in this world. Please try with another slug.`
     );
   }
 
@@ -771,7 +771,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     .where("worldId", "==", data.worldId)
     .get();
 
-  const venueRef = venuesRef.docs?.[0];
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
   venueRef.update(updated);
 });
 
@@ -841,7 +841,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     .where("worldId", "==", data.worldId)
     .get();
 
-  const venueRef = venuesRef.docs?.[0];
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
   venueRef.update(updated);
 });
 
@@ -865,7 +865,7 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
     .where("worldId", "==", data.worldId)
     .get();
 
-  const venueRef = venuesRef.docs?.[0];
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
   venueRef.update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
 });
 

@@ -12,7 +12,6 @@ import {
   createVenue_v2,
   RoomInput_v2,
 } from "api/admin";
-import { checkSpaceExistsInWorld } from "api/venue";
 
 import { venueInsideFullUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
@@ -56,7 +55,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
   const venueId = useVenueId();
 
-  const { register, getValues, handleSubmit, errors, setError } = useForm({
+  const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
       template === "external" ? createPortalSchema : createSpaceSchema,
     defaultValues: {
@@ -93,28 +92,14 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     if (template !== "external") {
       const venueData = buildEmptyVenue(venueName, template);
-      const venueSlug = createSlug(venueName);
-
-      const slugAlreadyExists = await checkSpaceExistsInWorld(
-        venueSlug,
-        worldId
-      );
-
-      if (slugAlreadyExists) {
-        setError(
-          "venueName",
-          "manual",
-          "This space slug already exists in this world."
-        );
-        return;
-      }
+      const spaceSlug = createSlug(venueName);
 
       await createVenue_v2(
         {
           ...venueData,
           worldId,
           parentId: venueId,
-          slug: venueSlug,
+          slug: spaceSlug,
         },
         user
       );
@@ -122,7 +107,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     await createRoom(roomData, venueId, user);
     await hideModal();
-  }, [getValues, hideModal, icon, setError, template, user, venueId, worldId]);
+  }, [getValues, hideModal, icon, template, user, venueId, worldId]);
 
   const { isValid } = useCheckImage(poster);
 
