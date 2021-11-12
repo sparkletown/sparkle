@@ -3,13 +3,11 @@ import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
-import { Venue_v2 } from "types/venues";
-
 import { adminNGSettingsUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import EntranceExperience from "pages/Admin/EntranceExperience";
+import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -22,7 +20,7 @@ import "./SpaceEditor.scss";
 
 export enum SpaceEditorTab {
   basicInfo = "basic-info",
-  entranceExperience = "entrance-experience",
+  advancedMapSettings = "advanced-map-settings",
 }
 
 export interface SpaceEditorRouteParams {
@@ -32,7 +30,7 @@ export interface SpaceEditorRouteParams {
 
 const spaceEditorTabLabelMap: Readonly<Record<SpaceEditorTab, String>> = {
   [SpaceEditorTab.basicInfo]: "Start",
-  [SpaceEditorTab.entranceExperience]: "Entrance",
+  [SpaceEditorTab.advancedMapSettings]: "Advanced",
 };
 
 export const SpaceEditor: React.FC = () => {
@@ -83,12 +81,8 @@ export const SpaceEditor: React.FC = () => {
           <div className="SpaceEditor__options">{renderedSpaceEditorTabs}</div>
         </div>
         {selectedTab === SpaceEditorTab.basicInfo && <VenueWizard />}
-        {selectedTab === SpaceEditorTab.entranceExperience && (
-          <EntranceExperience
-            // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
-            venue={venue as Venue_v2}
-            onSave={navigateToDefaultTab}
-          />
+        {selectedTab === SpaceEditorTab.advancedMapSettings && (
+          <AdvancedSettings venue={venue} onSave={navigateToDefaultTab} />
         )}
       </AdminRestricted>
     </WithNavigationBar>

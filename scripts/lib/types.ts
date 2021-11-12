@@ -191,7 +191,6 @@ export interface TruncatedVenueType {
   activity?: string;
   bannerMessage?: string;
   miniAvatars?: boolean;
-  adultContent?: boolean;
   samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
@@ -201,7 +200,6 @@ export interface TruncatedVenueType {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showSchedule?: boolean;
   showGrid?: boolean;
   width: number;
   height: number;
@@ -211,7 +209,6 @@ export interface TruncatedVenueType {
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  requiresDateOfBirth?: boolean;
   ticketUrl?: string;
   chatTitle?: string;
   showReactions?: boolean;
@@ -219,7 +216,6 @@ export interface TruncatedVenueType {
   auditoriumColumns?: number;
   auditoriumRows?: number;
   showRadio?: boolean;
-  showBadges?: boolean;
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
