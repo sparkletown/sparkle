@@ -120,6 +120,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
         autoPlay: roomVenue?.autoPlay ?? false,
+        isReactionsMuted: roomVenue?.isReactionsMuted ?? false,
       },
     }),
     [
@@ -140,6 +141,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       roomVenue?.showShoutouts,
       roomVenue?.zoomUrl,
       roomVenue?.autoPlay,
+      roomVenue?.isReactionsMuted,
       venueVisibility,
     ]
   );
@@ -189,12 +191,13 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     await updateVenueNG(
       {
         id: roomVenueId,
+        worldId: roomVenue?.worldId,
         ...venueValues,
         iframeUrl: embedUrl || DEFAULT_EMBED_URL,
       },
       user
     );
-  }, [roomVenueId, user, venueValues, roomVenue?.autoPlay]);
+  }, [roomVenueId, user, venueValues, roomVenue?.autoPlay, roomVenue?.worldId]);
 
   const [
     { loading: isUpdating, error: updateError },
@@ -244,11 +247,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const isReactionsMutedDisabled = !(
     values?.venue?.showReactions ?? venueValues?.showReactions
   );
-  console.log(
-    isReactionsMutedDisabled,
-    values?.venue?.showReactions,
-    venueValues?.showReactions
-  );
+
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
       <div className="SpaceEditForm">
