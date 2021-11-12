@@ -36,12 +36,6 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
 
   const isWorldLoaded = status !== "loading";
 
-  if (!worlds?.[0]) {
-    throw new Error(
-      `World with the following slug: ${worldSlug} does not exist.`
-    );
-  }
-
   if (worlds?.length > 1) {
     Bugsnag.notify(
       `Multiple worlds have been found with the following slug: ${worldSlug}.`,

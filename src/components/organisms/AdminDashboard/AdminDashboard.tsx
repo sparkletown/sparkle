@@ -24,6 +24,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFound } from "components/atoms/NotFound";
 
 import "./AdminDashboard.scss";
 
@@ -34,9 +35,11 @@ export const AdminDashboard: React.FC = () => {
 
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 
-  const venues = world
-    ? ownedVenues.filter((venue) => venue.worldId === world.id)
-    : ownedVenues;
+  const venues = useMemo(
+    () =>
+      world ? ownedVenues.filter((venue) => venue.worldId === world.id) : [],
+    [ownedVenues, world]
+  );
 
   const [
     currentSortingOption,
@@ -77,6 +80,10 @@ export const AdminDashboard: React.FC = () => {
 
   if (isLoadingSpaces || !isWorldLoaded) {
     return <LoadingPage />;
+  }
+
+  if (!world) {
+    return <NotFound />;
   }
 
   return (

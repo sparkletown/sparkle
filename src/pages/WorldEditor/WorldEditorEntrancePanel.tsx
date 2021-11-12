@@ -21,6 +21,7 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
   onClickHome,
 }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
+
   return (
     <AdminPanel>
       <AdminSidebar>
