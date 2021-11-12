@@ -23,8 +23,6 @@ import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
-import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -61,20 +59,13 @@ const HANDLED_ERRORS: string[] = [
   "parentId",
 ];
 
-const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
+const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   const history = useHistory();
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const { worldSlug } = useWorldParams();
-
-  const { world: worldBySlug } = useWorldBySlug(worldSlug);
-
-  const { worldParentVenues } = useWorldVenues(
-    worldBySlug?.id ?? venue?.worldId ?? ""
-  );
-
-  const { world: worldById, isLoaded } = useWorldById(venue?.worldId);
+  const { worldParentVenues } = useWorldVenues(worldId ?? venue?.worldId ?? "");
+  const { world, isLoaded } = useWorldById(worldId ?? venue?.worldId);
 
   const { subtitle, description, coverImageUrl } =
     venue?.config?.landingPageConfig ?? {};
@@ -104,7 +95,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       subtitle: subtitle ?? "",
       showGrid: showGrid ?? false,
       columns: 0,
-      worldId: worldBySlug ? worldBySlug?.id : venue?.worldId,
+      worldId: worldId ?? venue?.worldId ?? "",
       parentId: parentId ?? "",
       showBadges: showBadges,
       radioStations: radioStations ? radioStations[0] : "",
@@ -123,7 +114,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       description,
       subtitle,
       showGrid,
-      worldBySlug,
+      worldId,
       venue?.worldId,
       venue?.userStatuses,
       parentId,
@@ -196,24 +187,24 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
         const updatedVenue = {
           ...vals,
           id: venueId,
-          worldId: values.worldId ?? "",
+          worldId: venue?.worldId ?? "",
           parentId: values.parentId,
         };
 
         await updateVenue_v2(updatedVenue, user);
 
-        history.push(adminWorldSpacesUrl(worldById?.slug));
+        history.push(adminWorldSpacesUrl(world?.slug));
       } else {
         const newVenue = {
           ...vals,
           id: createSlug(vals.name),
-          worldId: values.worldId ?? "",
+          worldId: worldId ?? "",
           parentId: values.parentId ?? "",
         };
 
         await createVenue_v2(newVenue, user);
 
-        history.push(adminWorldSpacesUrl(worldBySlug?.slug));
+        history.push(adminWorldSpacesUrl(world?.slug));
       }
     },
     [
@@ -223,10 +214,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       user,
       validateParentId,
       values.parentId,
-      values.worldId,
+      venue?.worldId,
       venueId,
-      worldById?.slug,
-      worldBySlug?.slug,
+      world?.slug,
+      worldId,
     ]
   );
 
@@ -272,8 +263,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   };
 
   const navigateToHome = useCallback(() => {
-    history.push(adminWorldSpacesUrl(values?.worldId ?? ""));
-  }, [history, values?.worldId]);
+    history.push(
+      adminWorldSpacesUrl(worldId ?? values?.worldId ?? venue?.worldId)
+    );
+  }, [history, worldId, values?.worldId, venue?.worldId]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({

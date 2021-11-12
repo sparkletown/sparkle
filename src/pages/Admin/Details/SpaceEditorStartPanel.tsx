@@ -10,11 +10,14 @@ import DetailsPreview from "./Preview";
 
 import "./SpaceEditorStartPanel.scss";
 
-export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({ venue }) => {
+export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({
+  venue,
+  worldId,
+}) => {
   return (
     <AdminPanel className="SpaceEditorStartPanel">
       <AdminSidebar>
-        <DetailsForm venue={venue} />
+        <DetailsForm venue={venue} worldId={worldId} />
       </AdminSidebar>
 
       <AdminShowcase>
