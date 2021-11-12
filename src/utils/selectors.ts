@@ -1,6 +1,6 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { RootState } from "store";
 

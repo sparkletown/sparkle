@@ -116,7 +116,7 @@ export interface PortalSchema extends SpaceSchema {
 }
 
 const roomImageUrlSchema = Yup.string().required(
-  `${ROOM_TAXON.capital} image is required`
+  `${ROOM_TAXON.capital} icon is required`
 );
 
 export const createSpaceSchema = Yup.object().shape<SpaceSchema>({
