@@ -80,8 +80,6 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
 
   return (
     <p className={parentClasses}>
-      {/* @debt: Need to fix SCSS to make {input} tick/toggle work without provided label*/}
-      {/* Currently if no label is provided checkbox/toggle don't change their state */}
       {label ? (
         <label className="AdminCheckbox__label">
           {(labelPosition === "before" || labelPosition === "above") && (
