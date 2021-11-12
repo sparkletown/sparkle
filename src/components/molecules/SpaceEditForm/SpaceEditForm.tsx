@@ -355,12 +355,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 small
                 nameWithUnderscore
                 imgUrl={room.image_url}
+                error={errors?.room?.image_url}
               />
-              {errors?.room?.image_url && (
-                <span className="input-error">
-                  {errors?.room?.image_url.message}
-                </span>
-              )}
             </AdminSection>
 
             <AdminSection
@@ -397,12 +393,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                           roomVenue?.mapBackgroundImageUrl ??
                           venueValues.mapBackgroundImage
                         }
+                        error={errors?.venue?.mapBackgroundImage}
                       />
-                      {errors?.venue?.mapBackgroundImage && (
-                        <span className="input-error">
-                          {errors?.venue?.mapBackgroundImage.message}
-                        </span>
-                      )}
                     </>
                   )}
 
@@ -419,11 +411,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         error={errors?.venue?.iframeUrl}
                         ref={register()}
                       />
-                      {errors?.venue?.iframeUrl && (
-                        <span className="input-error">
-                          {errors?.venue?.iframeUrl}
-                        </span>
-                      )}
                       <AdminCheckbox
                         variant="toggler"
                         name="venue.autoPlay"
@@ -448,11 +435,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         error={errors?.venue?.zoomUrl}
                         ref={register()}
                       />
-                      {errors?.venue?.zoomUrl && (
-                        <span className="input-error">
-                          {errors?.venue?.zoomUrl.message}
-                        </span>
-                      )}
                     </div>
                   )}
 
