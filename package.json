@@ -29,7 +29,9 @@
     "firebase:emulate-functions-hosting": "npm run firebase -- emulators:start --only functions,hosting",
     "firebase:emulate-functions-hosting:debug": "npm run firebase -- emulators:start --only functions,hosting --inspect-functions",
     "browserslist:update-db": "npx browserslist@latest --update-db",
-    "migrate": "fireway migrate --path=scripts/migration --require=\"ts-node/register\""
+    "migrate": "fireway migrate --path=scripts/migration --require=\"ts-node/register\"",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -59,6 +61,12 @@
   },
   "devDependencies": {
     "@craco/craco": "^6.2.0",
+    "@storybook/addon-actions": "^6.3.12",
+    "@storybook/addon-essentials": "^6.3.12",
+    "@storybook/addon-links": "^6.3.12",
+    "@storybook/node-logger": "^6.3.12",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.3.12",
     "@types/classnames": "^2.2.11",
     "@types/emoji-mart": "^3.0.4",
     "@types/faker": "^5.5.7",
@@ -185,5 +193,17 @@
     "ws": "^7.4.2",
     "xhr2": "^0.2.0",
     "yup": "^0.29.2"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   }
 }
