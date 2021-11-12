@@ -90,33 +90,30 @@ const ImageInput: React.FC<ImageInputProps> = ({
     "ImageInput__container--error": !!error?.message,
     "ImageInput__container--small": small,
     "ImageInput__container--disabled": loading,
-    "mod--hidden": isInputHidden,
+    "mod--hidden": isInputHidden || !imageUrl,
   });
 
   return (
     <>
-      {!!imageUrl && (
-        <label className={labelClasses}>
-          <input
-            accept={ACCEPTED_IMAGE_TYPES}
-            hidden
-            id={name}
-            onChange={handleFileInputChangeWrapper}
-            type="file"
-            ref={inputFileRef}
-          />
-          {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
-
-          <span
-            className={classNames("ImageInput__button", {
-              "ImageInput__button--small": small,
-              "ImageInput__button--hidden": !!imageUrl,
-            })}
-          >
-            Upload
-          </span>
-        </label>
-      )}
+      <label className={labelClasses}>
+        <input
+          accept={ACCEPTED_IMAGE_TYPES}
+          hidden
+          id={name}
+          onChange={handleFileInputChangeWrapper}
+          type="file"
+          ref={inputFileRef}
+        />
+        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
+        <span
+          className={classNames("ImageInput__button", {
+            "ImageInput__button--small": small,
+            "ImageInput__button--hidden": !!imageUrl,
+          })}
+        >
+          Upload
+        </span>
+      </label>
       <input type="hidden" name={fileUrl} ref={register} readOnly />
       <div className="ImageInput__wrapper">
         <ButtonNG onClick={onButtonClick}>{text}</ButtonNG>

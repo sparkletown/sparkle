@@ -223,6 +223,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             </>
           }
           subtitle="A plain 1920 x 1080px image works best."
+          withLabel
         >
           <ImageInput
             name="bannerImage"
@@ -242,6 +243,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             </>
           }
           subtitle="A 400 px square image works best."
+          withLabel
         >
           <ImageInput
             name="logoImage"
