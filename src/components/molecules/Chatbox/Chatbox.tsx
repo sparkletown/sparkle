@@ -54,7 +54,8 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const unselectOption = useCallback(() => {
     setActiveOption(undefined);
-  }, []);
+    closeThread();
+  }, [closeThread]);
 
   const onPollSubmit = useCallback(
     async (data) => {
@@ -72,9 +73,8 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     async ({ text, threadId }) => {
       await sendThreadMessage({ text, threadId });
       unselectOption();
-      closeThread();
     },
-    [unselectOption, closeThread, sendThreadMessage]
+    [unselectOption, sendThreadMessage]
   );
 
   const hasSelectedThread = useHasSelectedReplyThread();
@@ -111,7 +111,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         {/* @debt sort these out. Preferably using some kind of enum */}
         {hasSelectedThread && (
           <ChatboxThreadControls
-            text="asking a question"
+            text="Replying to"
             closeThread={unselectOption}
           />
         )}

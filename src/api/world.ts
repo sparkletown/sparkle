@@ -104,8 +104,8 @@ export const createFirestoreWorldAdvancedInput: (
   ]);
 
   // Form input is just a single string, but DB structure is string[]
-  const radioStations = isDefined(input.radioStations)
-    ? [input.radioStations]
+  const radioStations = isDefined(input.radioStation)
+    ? [input.radioStation]
     : undefined;
 
   return { ...picked, radioStations };

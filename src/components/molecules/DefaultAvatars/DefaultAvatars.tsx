@@ -69,6 +69,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
           avatarClassName
         )}
         onClick={(event) => uploadDefaultAvatar(event, avatar)}
+        type="button"
       >
         <img
           src={avatar}

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWorldBySlug } from "hooks/useWorldBySlug";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";

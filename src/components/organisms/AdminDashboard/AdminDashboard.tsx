@@ -13,8 +13,8 @@ import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useWorldBySlug } from "hooks/useWorldBySlug";
-import { useWorldEditParams } from "hooks/useWorldEditParams";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -30,7 +30,7 @@ import "./AdminDashboard.scss";
 export const AdminDashboard: React.FC = () => {
   const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({});
 
-  const { worldSlug } = useWorldEditParams();
+  const { worldSlug } = useWorldParams();
 
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 

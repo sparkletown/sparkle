@@ -121,7 +121,6 @@ export const validationSchema = Yup.object()
 
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
-    adultContent: Yup.bool().required(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
     enableJukebox: Yup.bool().notRequired(),
@@ -160,7 +159,6 @@ export const editVenueCastSchema = Yup.object()
 
   .from("config.landingPageConfig.description", "description")
   .from("host.icon", "logoImageUrl")
-  .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
   .from("enableJukebox", "enableJukebox")

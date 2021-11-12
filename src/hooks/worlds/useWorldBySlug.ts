@@ -6,7 +6,7 @@ import { World } from "api/admin";
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseWorldEditResult = {
+type UseWorldBySlugResult = {
   world?: WithId<World>;
   isLoaded: boolean;
 };
@@ -17,7 +17,7 @@ type UseWorldEditResult = {
  * @param worldSlug
  * @returns
  */
-export const useWorldBySlug: (worldSlug?: string) => UseWorldEditResult = (
+export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
   worldSlug
 ) => {
   const firestore = useFirestore();
@@ -37,14 +37,8 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldEditResult = (
   const isWorldLoaded = status !== "loading";
 
   if (!worlds?.[0]) {
-    Bugsnag.notify(
-      `World with the following slug: ${worldSlug} does not exist.`,
-      (event) => {
-        event.severity = "warning";
-        event.addMetadata("hooks::useWorldBySlug", {
-          worldSlug,
-        });
-      }
+    throw new Error(
+      `World with the following slug: ${worldSlug} does not exist.`
     );
   }
 
@@ -53,9 +47,9 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldEditResult = (
       `Multiple worlds have been found with the following slug: ${worldSlug}.`,
       (event) => {
         event.severity = "warning";
-        event.addMetadata("hooks::useWorldBySlug", {
+        event.addMetadata("hooks/worlds::useWorldBySlug", {
           worldSlug,
-          worlds: worlds,
+          worlds,
         });
       }
     );
