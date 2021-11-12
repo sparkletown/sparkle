@@ -191,8 +191,19 @@ export type PlacementInput = {
   height: number;
 };
 
-export const createSlug = (name: string) =>
-  name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
+// @debt should probably move createSlug to some src/util/ place
+export const createSlug: (
+  name: string,
+  options?: { addRandomHash: boolean }
+) => string = (name, options) => {
+  let slug = name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
+
+  if (options?.addRandomHash) {
+    slug += `-${Math.random().toString(36).slice(-6)}`;
+  }
+
+  return slug;
+};
 
 export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
