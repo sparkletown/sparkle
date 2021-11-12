@@ -95,14 +95,14 @@ input.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: var(--primary--under-24a);
+  background-color: var(--primary--under-25a);
   transition: all 400ms $transition-function;
   color: $content--over;
   transform: translateY(0);
 
   &:hover {
     transform: translateY(-1px);
-    background-color: var(--primary--under-18a);
+    background-color: var(--primary--under-20a);
   }
 
   &.btn-primary {
@@ -111,7 +111,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: var(--primary--under-darker-14pp);
+      background-color: var(--primary--under-darker-15pp);
     }
   }
 
@@ -132,7 +132,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: var(--danger--under-darker-14pp);
+      background-color: var(--danger--under-darker-15pp);
     }
   }
 

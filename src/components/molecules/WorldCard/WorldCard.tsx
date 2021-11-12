@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { WithId } from "utils/id";
 import { adminWorldSpacesUrl, adminWorldUrl } from "utils/url";
