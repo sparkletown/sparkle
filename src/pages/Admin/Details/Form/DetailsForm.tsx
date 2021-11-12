@@ -148,9 +148,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     },
     defaultValues,
   });
-  console.log(defaultValues);
+
   const values = watch();
-  console.log(values);
+
   const validateParentId = useCallback(
     (parentId, checkedIds) => {
       if (checkedIds.includes(parentId)) return false;
@@ -171,7 +171,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   const [{ error: submitError, loading: isSaving }, setVenue] = useAsyncFn(
     async (vals: FormValues) => {
       if (!user) return;
-      console.log("submit val", vals);
+
       const isValidParentId = validateParentId(values.parentId, [
         venueId ?? createSlug(vals.name),
       ]);
@@ -280,16 +280,18 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
-    if (venueId === id) {
-      return null;
-    }
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId: venueWorldId }) => {
+      if (venueId === id || worldId !== venueWorldId) {
+        return null;
+      }
 
-    return {
-      name,
-      template,
-    };
-  });
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
     values.userStatuses ?? []
