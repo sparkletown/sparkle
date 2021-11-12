@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo } from "react";
-import { useHistory, useParams } from "react-router";
+import React, { useMemo } from "react";
+import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
@@ -7,7 +7,6 @@ import { adminNGSettingsUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -20,7 +19,6 @@ import "./SpaceEditor.scss";
 
 export enum SpaceEditorTab {
   basicInfo = "basic-info",
-  advancedMapSettings = "advanced-map-settings",
 }
 
 export interface SpaceEditorRouteParams {
@@ -30,11 +28,9 @@ export interface SpaceEditorRouteParams {
 
 const spaceEditorTabLabelMap: Readonly<Record<SpaceEditorTab, String>> = {
   [SpaceEditorTab.basicInfo]: "Start",
-  [SpaceEditorTab.advancedMapSettings]: "Advanced",
 };
 
 export const SpaceEditor: React.FC = () => {
-  const history = useHistory();
   const {
     venueId,
     selectedTab = SpaceEditorTab.basicInfo,
@@ -60,11 +56,6 @@ export const SpaceEditor: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const navigateToDefaultTab = useCallback(
-    () => history.push(adminNGSettingsUrl(venueId, SpaceEditorTab.basicInfo)),
-    [venueId, history]
-  );
-
   if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
   }
@@ -81,9 +72,6 @@ export const SpaceEditor: React.FC = () => {
           <div className="SpaceEditor__options">{renderedSpaceEditorTabs}</div>
         </div>
         {selectedTab === SpaceEditorTab.basicInfo && <VenueWizard />}
-        {selectedTab === SpaceEditorTab.advancedMapSettings && (
-          <AdvancedSettings venue={venue} onSave={navigateToDefaultTab} />
-        )}
       </AdminRestricted>
     </WithNavigationBar>
   );
