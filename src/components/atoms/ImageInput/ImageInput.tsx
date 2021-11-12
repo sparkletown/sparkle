@@ -69,7 +69,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
       setImageUrl(url);
       setValue(fileName, [compressedFile], false);
       setValue(fileUrl, url, false);
-      console.log(url);
+
       onChange?.(url, {
         nameUrl: fileUrl,
         valueUrl: url,
