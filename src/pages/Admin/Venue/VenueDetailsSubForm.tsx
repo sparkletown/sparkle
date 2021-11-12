@@ -43,8 +43,7 @@ import { Toggler } from "components/atoms/Toggler";
 
 import "firebase/functions";
 
-import EntranceInput from "./EntranceInput";
-
+// import EntranceInput from "./EntranceInput";
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
@@ -598,11 +597,11 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
 
-        <EntranceInput
+        {/* <EntranceInput
           fieldName="entrance"
           register={register}
           editing={state.detailsPage?.venue.entrance}
-        />
+        /> */}
 
         {!DISABLED_DUE_TO_1253 &&
           templateID &&

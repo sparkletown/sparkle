@@ -22,7 +22,7 @@ import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useWorldById } from "hooks/useWorldById";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 

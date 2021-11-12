@@ -16,7 +16,7 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
 
-import { useWorldById } from "hooks/useWorldById";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { BadgeImage } from "./BadgeImage";
 

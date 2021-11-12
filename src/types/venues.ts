@@ -9,7 +9,6 @@ import { WithId, WithVenueId } from "utils/id";
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
 import { Banner } from "./banner";
-import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
@@ -104,10 +103,7 @@ export type AnyVenue =
   | ViewingWindowVenue;
 
 // --- VENUE V2
-export interface Venue_v2
-  extends Venue_v2_Base,
-    VenueAdvancedConfig,
-    Venue_v2_EntranceConfig {}
+export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
 
 export interface Venue_v2_Base {
   name: string;
@@ -145,10 +141,6 @@ export interface VenueAdvancedConfig {
   enableJukebox?: boolean;
 }
 
-export interface Venue_v2_EntranceConfig {
-  entrance?: EntranceStepConfig[];
-}
-
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
 //   termsAndConditions, width, height
@@ -157,7 +149,6 @@ export interface BaseVenue {
   parentId?: string;
   name: string;
   access?: VenueAccessMode;
-  entrance?: EntranceStepConfig[];
   config?: VenueConfig;
   host?: {
     icon: string;
@@ -219,6 +210,8 @@ export interface BaseVenue {
   worldId: string;
   hasSocialLoginEnabled?: boolean;
   enableJukebox?: boolean;
+  requiresDateOfBirth?: boolean;
+  showBadges?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -253,10 +246,7 @@ export interface PartyMapVenue extends BaseVenue {
 
   start_utc_seconds?: number;
   duration_hours?: number;
-  entrance_hosted_hours?: number;
   party_name?: string;
-  unhosted_entry_video_url?: string;
-  map_url?: string;
   map_viewbox?: string;
   password?: string;
   admin_password?: string;
