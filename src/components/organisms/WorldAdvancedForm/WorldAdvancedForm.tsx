@@ -62,8 +62,10 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     () => ({
       attendeesTitle: world.attendeesTitle,
       chatTitle: world.chatTitle,
-      showNametags: world.showNametags,
+      radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
+      showNametags: world.showNametags,
+      showRadio: world.showRadio,
       showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
       showUserStatus: world.showUserStatus,
       userStatuses: userStatuses,
@@ -90,23 +92,22 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
-    await updateWorldAdvancedSettings(
-      withId(
-        {
-          attendeesTitle: values.attendeesTitle,
-          chatTitle: values.chatTitle,
-          showNametags: values.showNametags,
-          showBadges: values.showBadges,
-          showSchedule: values.showSchedule,
-          showUserStatus: values.showUserStatus,
-          userStatuses,
-        },
-        worldId
-      ),
-      user
-    );
 
-    reset(values);
+    const data = {
+      attendeesTitle: values.attendeesTitle,
+      chatTitle: values.chatTitle,
+      radioStation: values.radioStation,
+      showBadges: values.showBadges,
+      showNametags: values.showNametags,
+      showRadio: values.showRadio,
+      showSchedule: values.showSchedule,
+      showUserStatus: values.showUserStatus,
+      userStatuses,
+    };
+
+    await updateWorldAdvancedSettings(withId(data, worldId), user);
+
+    reset(data);
     clearDirtyStatuses();
   }, [worldId, user, values, reset, userStatuses, clearDirtyStatuses]);
 
@@ -132,8 +133,10 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     reset({
       attendeesTitle: values.attendeesTitle,
       chatTitle: values.chatTitle,
-      showNametags: values.showNametags,
+      radioStation: values.radioStation,
       showBadges: values.showBadges,
+      showNametags: values.showNametags,
+      showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
       userStatuses,
@@ -226,11 +229,11 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             register={register}
           />
           <AdminInput
-            name="radioStations"
+            name="radioStation"
             errors={errors}
             register={register}
             label="Radio station stream URL:"
-            disabled={!values.showRadio}
+            hidden={!values.showRadio}
           />
         </AdminSection>
 
