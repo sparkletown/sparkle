@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { DistributedCounterValue } from "types/Firestore";
 

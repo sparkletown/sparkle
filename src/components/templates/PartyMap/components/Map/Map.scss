@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 $border-radius: 28px;
-$avatarpulse-box-shadow-color: var(--primary--under-65a);
+$avatarpulse-box-shadow-color: var(--primary--under-60a);
 
 .party-map-map-component {
   display: flex;
@@ -74,6 +74,7 @@ $avatarpulse-box-shadow-color: var(--primary--under-65a);
 
     &:hover {
       cursor: pointer;
+
       .not-seat {
         opacity: 0.4;
       }
