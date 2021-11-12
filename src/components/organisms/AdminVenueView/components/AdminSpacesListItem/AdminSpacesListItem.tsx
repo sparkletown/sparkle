@@ -11,6 +11,7 @@ export interface AdminSpacesListItemProps {
   isOpened?: boolean;
 }
 
+// @debt rename to AdminSidebarAccordion, wrap the children in a div, replace label with span etc.
 export const AdminSpacesListItem: React.FC<AdminSpacesListItemProps> = ({
   title,
   isOpened,

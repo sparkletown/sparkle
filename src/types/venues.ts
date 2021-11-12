@@ -210,6 +210,8 @@ export interface BaseVenue {
   worldId: string;
   hasSocialLoginEnabled?: boolean;
   enableJukebox?: boolean;
+  requiresDateOfBirth?: boolean;
+  showBadges?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
