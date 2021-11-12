@@ -66,6 +66,7 @@ $upload-button-height: 150px;
       background-color: $image-input-upload-button-background--focus;
     }
     &--hidden {
+      display: none;
       background-color: transparent;
       color: transparent;
       &:hover,

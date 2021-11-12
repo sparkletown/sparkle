@@ -491,7 +491,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
             setValue={setValue}
           />
         </AdminSection>
-        <AdminSection title="Upload a highlight image">
+        <AdminSection title="Upload a highlight image" withLabel>
           <ImageInput
             onChange={handleBannerUpload}
             name="bannerImage"
@@ -502,7 +502,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
             setValue={setValue}
           />
         </AdminSection>
-        <AdminSection title="Upload a logo">
+        <AdminSection title="Upload a logo" withLabel>
           <ImageInput
             onChange={handleLogoUpload}
             name="logoImage"
