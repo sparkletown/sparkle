@@ -143,9 +143,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     async (input: WorldEntranceFormInput) => {
       if (!user || !worldId) return;
 
-      await updateWorldEntranceSettings({ ...input, id: worldId }, user);
+      const data = {
+        ...input,
+        id: worldId,
+        code: codeQuestions,
+        profile: profileQuestions,
+        entrance: entranceSteps,
+      };
+      await updateWorldEntranceSettings(data, user);
 
-      reset(input);
+      reset(data);
       clearDirtyCode();
       clearDirtyProfile();
       clearDirtyEntrance();
@@ -153,10 +160,13 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     [
       worldId,
       user,
+      reset,
       clearDirtyCode,
       clearDirtyProfile,
       clearDirtyEntrance,
-      reset,
+      codeQuestions,
+      profileQuestions,
+      entranceSteps,
     ]
   );
 
@@ -211,7 +221,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
         </AdminSection>
         <AdminSection title="Code of conduct questions">
           <QuestionsBuilder
-            errors={errors}
+            errors={errors.code}
             hasLink
             items={codeQuestions}
             name="code"
@@ -224,7 +234,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
         </AdminSection>
         <AdminSection title="Profile questions">
           <QuestionsBuilder
-            errors={errors}
+            errors={errors.profile}
             items={profileQuestions}
             name="profile"
             onAdd={addProfileQuestion}

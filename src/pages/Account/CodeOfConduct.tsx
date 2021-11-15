@@ -16,6 +16,8 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into CodeOfConduct.scss
@@ -31,12 +33,6 @@ export interface CodeOfConductFormData {
   tenPrinciples: string;
   termsAndConditions: string;
   regionalBurn: string;
-}
-
-export interface CodeOfConductQuestion {
-  name: keyof CodeOfConductFormData;
-  text: string;
-  link?: string;
 }
 
 export const CodeOfConduct: React.FC = () => {
@@ -147,13 +143,13 @@ export const CodeOfConduct: React.FC = () => {
             ))}
 
             <div className="input-group">
-              <button
+              <ButtonNG
+                variant="primary"
                 type="submit"
-                className="btn btn-primary btn-block btn-centered"
                 disabled={!formState.isValid || isUpdating}
               >
                 Enter the event
-              </button>
+              </ButtonNG>
               {isUpdating && <Loading />}
               {httpError && (
                 <span className="input-error">{httpError.message}</span>

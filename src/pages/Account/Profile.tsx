@@ -19,6 +19,7 @@ import { updateUserProfile } from "./helpers";
 
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
+import "./Profile.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -72,8 +73,8 @@ export const Profile: React.FC = () => {
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
-      <div className="login-container">
+    <div className="Profile page-container-onboarding">
+      <div className="Profile__container login-container">
         <h2 className="login-welcome-title">
           Well done! Now create your profile
         </h2>

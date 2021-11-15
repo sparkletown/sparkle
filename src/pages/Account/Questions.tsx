@@ -16,10 +16,11 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into Questions.scss
-import "./Account.scss";
 import "./Questions.scss";
 
 export interface QuestionsFormData {
@@ -96,9 +97,9 @@ export const Questions: React.FC = () => {
   }`;
 
   return (
-    <div className="Questions page-container">
+    <div className="Questions">
       <div className="hero-logo sparkle" />
-      <div className="login-container">
+      <div className="Questions__container">
         <h2 className="header-message">{headerMessage}</h2>
 
         <p className="subheader-message">
@@ -120,14 +121,14 @@ export const Questions: React.FC = () => {
             </div>
           ))}
 
-          <div className="input-group">
-            <button
+          <div>
+            <ButtonNG
+              variant="primary"
               type="submit"
-              className="btn btn-primary btn-block btn-centered"
               disabled={!formState.isValid || isUpdating}
             >
               Save answers and continue
-            </button>
+            </ButtonNG>
             {isUpdating && <Loading />}
             {httpError && (
               <span className="input-error">{httpError.message}</span>
