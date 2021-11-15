@@ -414,7 +414,7 @@ jobs:
       - run: npm install
       - run: npm run chromatic --project-token=${CHROMATIC_PROJECT_TOKEN}
 workflows:
- chromatic-deploy:
+  chromatic-deploy:
     jobs:
       - chromatic-deployment
   build-test-deploy:
