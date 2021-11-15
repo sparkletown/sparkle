@@ -10,7 +10,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WelcomeVideo.scss";
 
-interface PropsType {
+export interface EntranceStepTemplateProps {
   venueName: string;
   config: EntranceStepConfig;
   proceed: () => void;
@@ -18,7 +18,7 @@ interface PropsType {
 
 const DEFAULT_BUTTON_TEXT = "Proceed";
 
-export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
+export const WelcomeVideo: React.FunctionComponent<EntranceStepTemplateProps> = ({
   venueName,
   config,
   proceed,

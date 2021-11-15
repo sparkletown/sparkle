@@ -16,13 +16,23 @@ import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
-import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
+import {
+  EntranceStepTemplateProps,
+  WelcomeVideo,
+} from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import { NotFound } from "components/atoms/NotFound";
 
-export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
+const ENTRANCE_STEP_TEMPLATE: Record<
+  EntranceStepTemplate,
+  React.FC<EntranceStepTemplateProps>
+> = {
+  [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
+};
+
+export const VenueEntrancePage: React.FC = () => {
   const history = useHistory();
   const venueId = useVenueId();
   const { user, profile } = useUser();
@@ -34,11 +44,11 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { world, isLoaded: isWorldLoaded } = useWorldById(
     currentVenue?.worldId
   );
-  const parsedStep = Number.parseInt(unparsedStep ?? "", 10);
+  const step = Number.parseInt(unparsedStep ?? "", 10);
 
   const proceed = useCallback(
-    () => venueId && history.push(venueEntranceUrl(venueId, parsedStep + 1)),
-    [venueId, parsedStep, history]
+    () => venueId && history.push(venueEntranceUrl(venueId, step + 1)),
+    [venueId, step, history]
   );
 
   if (!isCurrentVenueLoaded || !isWorldLoaded) {
@@ -49,11 +59,8 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     return <NotFound />;
   }
 
-  if (
-    !Number.isSafeInteger(parsedStep) ||
-    parsedStep <= 0 ||
-    (world?.entrance?.length ?? 0) < parsedStep
-  ) {
+  const stepConfig = world?.entrance?.[step - 1];
+  if (!stepConfig) {
     return <Redirect to={venueInsideUrl(venueId)} />;
   }
 
@@ -65,13 +72,15 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     return <Redirect to={accountProfileVenueUrl(venueId)} />;
   }
 
-  const stepConfig = world?.entrance?.[parsedStep - 1];
-  if (stepConfig?.template !== EntranceStepTemplate.WelcomeVideo) {
+  const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =
+    ENTRANCE_STEP_TEMPLATE[stepConfig.template];
+
+  if (!EntranceStepTemplate) {
     return null;
   }
 
   return (
-    <WelcomeVideo
+    <EntranceStepTemplate
       venueName={currentVenue.name}
       config={stepConfig}
       proceed={proceed}
