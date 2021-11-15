@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+import {
+  ACCOUNT_PROFILE_QUESTIONS_URL,
+  DEFAULT_VENUE,
+  DISPLAY_NAME_MAX_CHAR_COUNT,
+} from "settings";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -62,7 +66,7 @@ export const Profile: React.FC = () => {
 
       // @debt Should we throw an error here rather than defaulting to empty string?
       const nextUrl = venueId
-        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
+        ? `${ACCOUNT_PROFILE_QUESTIONS_URL}?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
       history.push(nextUrl);

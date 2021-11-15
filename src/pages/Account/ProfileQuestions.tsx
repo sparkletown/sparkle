@@ -4,6 +4,8 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory, useLocation } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
+import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
+
 import { Question } from "types/Question";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
@@ -21,7 +23,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into Questions.scss
-import "./Questions.scss";
+import "./ProfileQuestions.scss";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -29,7 +31,7 @@ export interface QuestionsFormData {
   likeAboutParties: string;
 }
 
-export const Questions: React.FC = () => {
+export const ProfileQuestions: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
 
@@ -48,7 +50,7 @@ export const Questions: React.FC = () => {
   });
 
   const proceed = useCallback(() => {
-    history.push(`/account/code-of-conduct${location.search}`);
+    history.push(`${ACCOUNT_CODE_QUESTIONS_URL}${location.search}`);
   }, [history, location.search]);
 
   useEffect(() => {
@@ -97,9 +99,9 @@ export const Questions: React.FC = () => {
   }`;
 
   return (
-    <div className="Questions">
+    <div className="ProfileQuestions">
       <div className="hero-logo sparkle" />
-      <div className="Questions__container">
+      <div className="ProfileQuestions__container">
         <h2 className="header-message">{headerMessage}</h2>
 
         <p className="subheader-message">
@@ -108,7 +110,10 @@ export const Questions: React.FC = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {profileQuestions?.map((question: Question) => (
-            <div key={question.name} className="Questions__question form-group">
+            <div
+              key={question.name}
+              className="ProfileQuestions__question form-group"
+            >
               <label className="input-block input-centered">
                 <strong>{question.text}</strong>
                 <textarea
