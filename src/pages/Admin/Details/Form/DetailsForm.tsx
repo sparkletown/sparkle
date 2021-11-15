@@ -280,17 +280,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId: venueWorldId }) => {
-      if (venueId === id || venue?.worldId !== venueWorldId) {
-        return null;
-      }
+  const backButtonOptionList = useMemo(
+    () =>
+      ownedVenues.filter(({ id, name, template, worldId: venueWorldId }) => {
+        if (venueId === id || venue?.worldId !== venueWorldId) {
+          return null;
+        }
 
-      return {
-        name,
-        template,
-      };
-    }
+        return {
+          name,
+          template,
+        };
+      }) ?? ALWAYS_EMPTY_ARRAY,
+    [ownedVenues, venueId, venue?.worldId]
   );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
@@ -407,7 +409,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
             withLabel
           >
             <SpacesDropdown
-              venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
+              venueSpaces={backButtonOptionList}
               venueId={venueId}
               setValue={setValue}
               register={register}

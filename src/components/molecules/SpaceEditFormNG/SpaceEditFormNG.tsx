@@ -227,17 +227,19 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId }) => {
-      if (portalId === id || worldId !== portal?.worldId) {
-        return null;
-      }
+  const backButtonOptionList = useMemo(
+    () =>
+      ownedVenues.filter(({ id, name, template, worldId }) => {
+        if (portalId === id || worldId !== portal?.worldId) {
+          return null;
+        }
 
-      return {
-        name,
-        template,
-      };
-    }
+        return {
+          name,
+          template,
+        };
+      }) ?? ALWAYS_EMPTY_ARRAY,
+    [ownedVenues, portal?.worldId, portalId]
   );
 
   return (
@@ -281,7 +283,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
+                venueSpaces={backButtonOptionList}
                 venueId={venueId}
                 setValue={setValue}
                 register={register}
