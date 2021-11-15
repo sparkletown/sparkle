@@ -3,6 +3,8 @@ import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { ALWAYS_NOOP_FUNCTION } from "settings";
+
 import { addReaction } from "store/actions/Reactions";
 
 import {
@@ -44,6 +46,8 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     "ReactionsBar__mute-button--disabled": isAudioDisabled,
   });
 
+  const handleToggleMute = isAudioDisabled ? ALWAYS_NOOP_FUNCTION : toggleMute;
+
   const sendReaction = useCallback(
     (emojiReaction: EmojiReactionType) => {
       if (!venueId || !userWithId) return;
@@ -74,7 +78,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     <div className="ReactionsBar">
       {renderedReactions}
 
-      <div className={muteClasses} onClick={toggleMute}>
+      <div className={muteClasses} onClick={handleToggleMute}>
         <FontAwesomeIcon icon={isReactionsMuted ? faVolumeMute : faVolumeUp} />
       </div>
 
