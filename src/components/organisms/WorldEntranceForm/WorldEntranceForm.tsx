@@ -76,6 +76,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const {
     items: codeQuestions,
     add: addCodeQuestion,
+    update: updateCodeQuestion,
     clear: clearCodeQuestions,
     remove: removeCodeQuestion,
     isDirty: isDirtyCode,
@@ -85,6 +86,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const {
     items: profileQuestions,
     add: addProfileQuestion,
+    update: updateProfileQuestion,
     clear: clearProfileQuestions,
     remove: removeProfileQuestion,
     isDirty: isDirtyProfile,
@@ -214,6 +216,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             items={codeQuestions}
             name="code"
             onAdd={addCodeQuestion}
+            onUpdate={updateCodeQuestion}
             onRemove={removeCodeQuestion}
             onClear={clearCodeQuestions}
             register={register}
@@ -225,6 +228,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             items={profileQuestions}
             name="profile"
             onAdd={addProfileQuestion}
+            onUpdate={updateProfileQuestion}
             onRemove={removeProfileQuestion}
             onClear={clearProfileQuestions}
             register={register}

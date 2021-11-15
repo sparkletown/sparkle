@@ -7,12 +7,26 @@ export type UseArrayOptions<T> = {
   prepare?: (value: T, index: number, array: T[]) => T;
 };
 
+export type UseArrayAdd<T> = () => T[];
+export type UseArraySet<T> = (options: { index: number; item: T }) => T[];
+export type UseArrayUpdateCallback<T> = (context: {
+  index: number;
+  item: T;
+}) => T;
+export type UseArrayUpdate<T> = (options: {
+  index: number;
+  callback: UseArrayUpdateCallback<T>;
+}) => T[];
+export type UseArrayRemove<T> = (options: { index: number }) => T[];
+export type UseArrayClear<T> = () => T[];
+
 export type UseArrayResult<T> = {
   items: T[];
-  add: () => T[];
-  set: (options: { index: number; item: T }) => T[];
-  clear: () => T[];
-  remove: (options: { index: number }) => T[];
+  add: UseArrayAdd<T>;
+  set: UseArraySet<T>;
+  update: UseArrayUpdate<T>;
+  clear: UseArrayClear<T>;
+  remove: UseArrayRemove<T>;
   isDirty: boolean;
   setDirty: () => void;
   clearDirty: () => void;
@@ -31,14 +45,14 @@ export const useArray = <T>(
   const setDirty = useCallback(() => setIsDirty(true), [setIsDirty]);
   const clearDirty = useCallback(() => setIsDirty(false), [setIsDirty]);
 
-  const add = useCallback(() => {
+  const add: UseArrayAdd<T> = useCallback(() => {
     const result: T[] = [...items, create({ index: items.length })];
     setItems(result);
     setIsDirty(true);
     return result;
   }, [items, create]);
 
-  const set = useCallback(
+  const set: UseArraySet<T> = useCallback(
     ({ index, item }) => {
       const before = items.slice(0, index);
       const after = items.slice(index + 1);
@@ -50,7 +64,16 @@ export const useArray = <T>(
     [items]
   );
 
-  const remove = useCallback(
+  const update: UseArrayUpdate<T> = useCallback(
+    ({ index, callback }) => {
+      const itemBefore = items?.[index];
+      const itemAfter = callback({ index, item: itemBefore });
+      return set({ index, item: itemAfter });
+    },
+    [items, set]
+  );
+
+  const remove: UseArrayRemove<T> = useCallback(
     ({ index }) => {
       const result = [...items.filter((_, i) => i !== index)];
       setItems(result);
@@ -60,7 +83,7 @@ export const useArray = <T>(
     [items]
   );
 
-  const clear = useCallback(() => {
+  const clear: UseArrayClear<T> = useCallback(() => {
     const result: T[] = [];
     setItems(result);
     setIsDirty(true);
@@ -71,6 +94,7 @@ export const useArray = <T>(
     items,
     add,
     set,
+    update,
     remove,
     clear,
     isDirty,
