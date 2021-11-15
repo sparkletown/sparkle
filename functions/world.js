@@ -86,7 +86,9 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
   };
 
   const worldDoc = admin.firestore().collection("worlds").doc();
-  return await worldDoc.create(worldData).then(() => worldDoc.id);
+  return await worldDoc
+    .create(worldData)
+    .then(() => ({ ...worldData, id: worldDoc.id }));
 });
 
 exports.updateWorld = functions.https.onCall(async (data, context) => {
