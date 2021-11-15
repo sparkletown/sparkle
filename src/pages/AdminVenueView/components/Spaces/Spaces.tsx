@@ -12,20 +12,18 @@ import { SPACE_EDIT_FORM_TEMPLATES } from "utils/venue";
 import { useFetchAssets } from "hooks/useFetchAssets";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
+import { MapPreview } from "pages/AdminVenueView/components/MapPreview";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminPanel } from "components/molecules/AdminPanel";
+import { AdminShowcase } from "components/molecules/AdminShowcase";
+import { AdminSidebar } from "components/molecules/AdminSidebar";
 import {
   AdminSidebarFooter,
   AdminSidebarFooterProps,
-} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
-import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
-
+} from "components/molecules/AdminSidebarFooter";
+import { AdminSidebarTitle } from "components/molecules/AdminSidebarTitle";
+import { AdminSpacesListItem } from "components/molecules/AdminSpacesListItem";
 import { PortalItem } from "components/molecules/PortalItem";
-
-import { AdminShowcase } from "../AdminShowcase";
 
 import "./Spaces.scss";
 

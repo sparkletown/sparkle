@@ -5,15 +5,15 @@ import { ADMIN_V3_NEW_WORLD_URL } from "settings";
 import { useUser } from "hooks/useUser";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
-import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { AdminPanel } from "components/molecules/AdminPanel";
+import { AdminShowcase } from "components/molecules/AdminShowcase";
+import { AdminShowcaseSubTitle } from "components/molecules/AdminShowcaseSubTitle";
+import { AdminShowcaseTitle } from "components/molecules/AdminShowcaseTitle";
+import { AdminSidebar } from "components/molecules/AdminSidebar";
+import { AdminSidebarSubTitle } from "components/molecules/AdminSidebarSubTitle";
+import { AdminSidebarTitle } from "components/molecules/AdminSidebarTitle";
 import { WorldCard } from "components/molecules/WorldCard";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";

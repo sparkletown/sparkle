@@ -1,7 +1,7 @@
 import React, { ReactNode } from "react";
 
-import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
-import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
+import { AdminSidebarSectionSubTitle } from "components/molecules/AdminSidebarSectionSubTitle";
+import { AdminSidebarSectionTitle } from "components/molecules/AdminSidebarSectionTitle";
 
 import "./AdminSection.scss";
 

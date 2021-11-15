@@ -10,7 +10,7 @@ import { WithId } from "utils/id";
 
 import { useVenueEvents } from "hooks/events";
 
-import { RoomCard } from "components/organisms/AdminVenueView/components/RoomCard/RoomCard";
+import { RoomCard } from "pages/AdminVenueView/components/RoomCard/RoomCard";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

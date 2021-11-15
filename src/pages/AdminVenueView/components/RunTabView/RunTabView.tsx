@@ -9,19 +9,18 @@ import { WithId } from "utils/id";
 import { adminNGSettingsUrl } from "utils/url";
 
 import MapPreview from "pages/Admin/MapPreview";
+import { RunTabRooms } from "pages/AdminVenueView/components/RunTabRooms/RunTabRooms";
+import { RunTabToolbar } from "pages/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
+import { RunTabUsers } from "pages/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { AdminPanel } from "components/molecules/AdminPanel";
+import { AdminShowcase } from "components/molecules/AdminShowcase";
+import { AdminSidebar } from "components/molecules/AdminSidebar";
 import {
   AdminSidebarFooter,
   AdminSidebarFooterProps,
-} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
-import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
-import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
-
+} from "components/molecules/AdminSidebarFooter";
+import { AdminSidebarTitle } from "components/molecules/AdminSidebarTitle";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";

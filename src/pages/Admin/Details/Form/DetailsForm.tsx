@@ -25,12 +25,11 @@ import { useVenueId } from "hooks/useVenueId";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
-
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminSidebarFooter } from "components/molecules/AdminSidebarFooter";
+import { AdminSpacesListItem } from "components/molecules/AdminSpacesListItem";
 import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";

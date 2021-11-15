@@ -24,9 +24,9 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 import { useUser } from "hooks/useUser";
 
-import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
-import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
-import { RoomIcon } from "components/organisms/AdminVenueView/components/RoomIcon/RoomIcon";
+import { EventCard } from "pages/AdminVenueView/components/EventCard/EventCard";
+import { PrettyLink } from "pages/AdminVenueView/components/PrettyLink";
+import { RoomIcon } from "pages/AdminVenueView/components/RoomIcon/RoomIcon";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

@@ -15,13 +15,13 @@ import { WithId } from "utils/id";
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
 import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminSidebarFooter } from "components/molecules/AdminSidebarFooter";
+import { AdminSidebarFooterProps } from "components/molecules/AdminSidebarFooter/AdminSidebarFooter";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 

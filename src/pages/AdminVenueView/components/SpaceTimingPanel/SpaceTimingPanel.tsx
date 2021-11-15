@@ -4,15 +4,16 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
-import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
-import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
+import { SpaceTimingForm } from "components/organisms/SpaceTimingForm";
+
+import { AdminPanel } from "components/molecules/AdminPanel";
+import { AdminShowcase } from "components/molecules/AdminShowcase";
+import { AdminSidebar } from "components/molecules/AdminSidebar";
 import {
   AdminSidebarFooter,
   AdminSidebarFooterProps,
-} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { SpaceTimingForm } from "components/organisms/SpaceTimingForm";
+} from "components/molecules/AdminSidebarFooter/AdminSidebarFooter";
+import { AdminSidebarTitle } from "components/molecules/AdminSidebarTitle";
 
 import { EventsView } from "../EventsView";
 
