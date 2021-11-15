@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
@@ -43,10 +42,12 @@ export const CodeOfConduct: React.FC = () => {
 
   const venueId = useVenueId();
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: venue?.worldId,
+    worldId: currentVenue?.worldId,
   });
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
@@ -65,11 +66,11 @@ export const CodeOfConduct: React.FC = () => {
   useEffect(() => {
     if (!isWorldLoaded) return;
 
-    // Skip this screen if there are no code of conduct questions for the venue
+    // Skip this screen if there are no code of conduct questions
     if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [isWorldLoaded, proceed, venue, world?.questions?.code?.length]);
+  }, [isWorldLoaded, proceed, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
@@ -82,21 +83,22 @@ export const CodeOfConduct: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!venue) return;
+    if (!currentVenue) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(currentVenue);
+  }, [currentVenue]);
 
   if (!venueId) {
     return <>Error: Missing required venueId param</>;
   }
 
-  if (isLoaded(venue) && !venue) {
+  if (isCurrentVenueLoaded && !currentVenue) {
+    // @debt maybe something more pretty for UX here, in the vein of NotFound (with custom message)
     return <>Error: venue not found for venueId={venueId}</>;
   }
 
-  if (!venue || !isWorldLoaded) {
+  if (!currentVenue || !isWorldLoaded) {
     return <LoadingPage />;
   }
 

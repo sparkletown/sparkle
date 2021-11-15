@@ -2,19 +2,13 @@ import React from "react";
 
 import { ALWAYS_EMPTY_ARRAY, IFRAME_ALLOW } from "settings";
 
-import { EntranceStepConfig } from "types/EntranceStep";
+import { EntranceStepTemplateProps } from "types/EntranceStep";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WelcomeVideo.scss";
-
-export interface EntranceStepTemplateProps {
-  venueName: string;
-  config: EntranceStepConfig;
-  proceed: () => void;
-}
 
 const DEFAULT_BUTTON_TEXT = "Proceed";
 

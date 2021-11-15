@@ -1,7 +1,10 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
-import { EntranceStepTemplate } from "types/EntranceStep";
+import {
+  EntranceStepTemplate,
+  EntranceStepTemplateProps,
+} from "types/EntranceStep";
 
 import { isCompleteProfile } from "utils/profile";
 import {
@@ -16,10 +19,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
-import {
-  EntranceStepTemplateProps,
-  WelcomeVideo,
-} from "pages/entrance/WelcomeVideo";
+import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
