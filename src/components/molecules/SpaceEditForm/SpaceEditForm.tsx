@@ -258,7 +258,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const backButtonOptionList = useMemo(
     () =>
-      ownedVenues.filter(({ id, name, template, worldId }) => {
+      ownedVenues?.filter(({ id, name, template, worldId }) => {
         if (venueId === id || worldId !== roomVenue?.worldId) {
           return null;
         }
