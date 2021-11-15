@@ -8,6 +8,7 @@ $portal-image-width: 75px;
 .PortalVisibility {
   display: flex;
   justify-content: flex-start;
+  flex-wrap: wrap;
   width: 100%;
   align-items: center;
 
