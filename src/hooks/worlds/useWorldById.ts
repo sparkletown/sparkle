@@ -14,6 +14,7 @@ export const useWorldById: (worldId?: string) => UseWorldByIdResult = (
   worldId
 ) => {
   const firestore = useFirestore();
+
   const worldsRef = firestore
     .collection("worlds")
     .doc(worldId)
@@ -26,7 +27,7 @@ export const useWorldById: (worldId?: string) => UseWorldByIdResult = (
     }
   );
 
-  const isWorldLoaded = status === "success";
+  const isWorldLoaded = status !== "loading";
 
   return {
     world,

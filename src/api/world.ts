@@ -53,9 +53,8 @@ export interface World {
 }
 
 export const createFirestoreWorldCreateInput: (
-  input: WorldStartFormInput,
-  user: firebase.UserInfo
-) => Promise<Partial<World>> = async (input, user) => {
+  input: WorldStartFormInput
+) => Promise<Partial<World>> = async (input) => {
   const name = input.name;
   const slug = createSlug(name);
 
@@ -163,11 +162,14 @@ export const createWorld: (
     // NOTE: due to interdependence on id and upload files' URLs:
 
     // 1. first a world stub is created
-    const stubInput = await createFirestoreWorldCreateInput(world, user);
+    const stubInput = await createFirestoreWorldCreateInput(world);
 
-    worldId = (
+    const newWorld = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
+
+    worldId = newWorld.id;
+
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),
