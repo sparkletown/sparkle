@@ -3,8 +3,11 @@ import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-import { createSlug, World } from "api/admin";
+import { createSlug } from "api/admin";
 
+import { EntranceStepConfig } from "types/EntranceStep";
+import { Question } from "types/Question";
+import { UsernameVisibility, UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
@@ -14,10 +17,44 @@ import {
 import { generateFirestoreId, WithId, withId } from "utils/id";
 import { isDefined } from "utils/types";
 
+// NOTE: world might have many fields, please keep them in alphabetic order
+export interface World {
+  adultContent?: boolean;
+  attendeesTitle?: string;
+  chatTitle?: string;
+  config: {
+    landingPageConfig: {
+      coverImageUrl: string;
+      description?: string;
+      subtitle?: string;
+    };
+  };
+  createdAt: Date;
+  entrance?: EntranceStepConfig[];
+  host: {
+    icon: string;
+  };
+  name: string;
+  owners: string[];
+  questions?: {
+    code?: Question[];
+    profile?: Question[];
+  };
+  radioStations?: string[];
+  requiresDateOfBirth?: boolean;
+  showBadges?: boolean;
+  showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  showSchedule?: boolean;
+  showUserStatus?: boolean;
+  slug: string;
+  updatedAt: Date;
+  userStatuses?: UserStatus[];
+}
+
 export const createFirestoreWorldCreateInput: (
-  input: WorldStartFormInput,
-  user: firebase.UserInfo
-) => Promise<Partial<World>> = async (input, user) => {
+  input: WorldStartFormInput
+) => Promise<Partial<World>> = async (input) => {
   const name = input.name;
   const slug = createSlug(name);
 
@@ -105,8 +142,8 @@ export const createFirestoreWorldAdvancedInput: (
   ]);
 
   // Form input is just a single string, but DB structure is string[]
-  const radioStations = isDefined(input.radioStations)
-    ? [input.radioStations]
+  const radioStations = isDefined(input.radioStation)
+    ? [input.radioStation]
     : undefined;
 
   return { ...picked, radioStations };
@@ -125,11 +162,14 @@ export const createWorld: (
     // NOTE: due to interdependence on id and upload files' URLs:
 
     // 1. first a world stub is created
-    const stubInput = await createFirestoreWorldCreateInput(world, user);
+    const stubInput = await createFirestoreWorldCreateInput(world);
 
-    worldId = (
+    const newWorld = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
+
+    worldId = newWorld.id;
+
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),

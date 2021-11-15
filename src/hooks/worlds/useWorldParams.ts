@@ -4,14 +4,16 @@ import { WorldNavTab } from "types/world";
 
 export interface WorldEditParams {
   worldId?: string;
+  worldSlug?: string;
   selectedTab?: WorldNavTab;
 }
 
-export const useWorldEditParams = () => {
+export const useWorldParams = () => {
   const {
     worldId,
+    worldSlug,
     selectedTab = WorldNavTab.start,
   } = useParams<WorldEditParams>();
 
-  return { worldId, selectedTab };
+  return { worldId, worldSlug, selectedTab };
 };

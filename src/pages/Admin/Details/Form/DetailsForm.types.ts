@@ -16,4 +16,5 @@ export interface FormValues extends WizardState {
 
 export interface DetailsFormProps {
   venue?: WithId<AnyVenue>;
+  worldId?: string;
 }

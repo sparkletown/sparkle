@@ -5,6 +5,7 @@ import { EntranceStepConfig } from "types/EntranceStep";
 
 import { useDynamicInput } from "hooks/useDynamicInput";
 
+// @debt Remove component once we switch to admin 3 fully
 interface EntranceButtonInputProps {
   fieldName: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;

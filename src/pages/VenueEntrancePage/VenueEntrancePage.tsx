@@ -13,7 +13,7 @@ import {
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
@@ -31,7 +31,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
     venueId
   );
-  const { world, isLoaded: isWorldLoaded } = useWorldEdit(
+  const { world, isLoaded: isWorldLoaded } = useWorldById(
     currentVenue?.worldId
   );
   const parsedStep = Number.parseInt(unparsedStep ?? "", 10);

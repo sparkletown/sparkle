@@ -1,8 +1,25 @@
 @import "scss/constants";
 
+$image-container-height: 200px;
+
 .WorldStartForm {
   &__name,
   .AdminWorldUrlSection__id {
     color: var(--danger--under);
+  }
+
+  .AdminSection {
+    &__label {
+      display: flex;
+      flex-direction: column;
+
+      .ImageInput__container {
+        position: relative;
+        width: 60%;
+        margin-bottom: -($spacing--lg);
+        align-self: center;
+        height: $image-container-height;
+      }
+    }
   }
 }
