@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -23,6 +24,7 @@ export interface ReactionsBarProps {
   venueId: string;
   reactions?: ReactionData<EmojiReactionType>[];
   isReactionsMuted: boolean;
+  isAudioDisabled: boolean;
   toggleMute: () => void;
   leaveSeat?: () => void;
 }
@@ -30,12 +32,17 @@ export interface ReactionsBarProps {
 export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   venueId,
   isReactionsMuted,
+  isAudioDisabled,
   reactions = EMOJI_REACTIONS,
   toggleMute,
   leaveSeat,
 }) => {
   const dispatch = useDispatch();
   const { userWithId } = useUser();
+
+  const muteClasses = classNames("ReactionsBar__mute-button", {
+    "ReactionsBar__mute-button--disabled": isAudioDisabled,
+  });
 
   const sendReaction = useCallback(
     (emojiReaction: EmojiReactionType) => {
@@ -67,7 +74,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     <div className="ReactionsBar">
       {renderedReactions}
 
-      <div className="ReactionsBar__mute-button" onClick={toggleMute}>
+      <div className={muteClasses} onClick={toggleMute}>
         <FontAwesomeIcon icon={isReactionsMuted ? faVolumeMute : faVolumeUp} />
       </div>
 
