@@ -10,9 +10,8 @@ import {
   INVALID_SLUG_CHARS_REGEX,
 } from "settings";
 
-import { EntranceStepConfig } from "types/EntranceStep";
 import { Room } from "types/rooms";
-import { UsernameVisibility, UserStatus } from "types/User";
+import { UserStatus } from "types/User";
 import {
   RoomVisibility,
   VenueAdvancedConfig,
@@ -33,12 +32,6 @@ export interface EventInput {
   duration_minutes?: number;
   host: string;
   room?: string;
-}
-
-interface Question {
-  name: string;
-  text: string;
-  link?: string;
 }
 
 type VenueImageFileKeys =
@@ -129,42 +122,6 @@ export interface VenueInput_v2 extends VenueAdvancedConfig {
   end_utc_seconds?: number;
   showShoutouts?: boolean;
   showReactions?: boolean;
-}
-
-// NOTE: world might have many fields, please keep them in alphabetic order
-// @debt move to src/types/world
-export interface World {
-  adultContent?: boolean;
-  attendeesTitle?: string;
-  chatTitle?: string;
-  config: {
-    landingPageConfig: {
-      coverImageUrl: string;
-      description?: string;
-      subtitle?: string;
-    };
-  };
-  createdAt: Date;
-  entrance?: EntranceStepConfig[];
-  host: {
-    icon: string;
-  };
-  name: string;
-  owners: string[];
-  questions?: {
-    code?: Question[];
-    profile?: Question[];
-  };
-  radioStations?: string[];
-  requiresDateOfBirth?: boolean;
-  showBadges?: boolean;
-  showNametags?: UsernameVisibility;
-  showRadio?: boolean;
-  showSchedule?: boolean;
-  showUserStatus?: boolean;
-  slug: string;
-  updatedAt: Date;
-  userStatuses?: UserStatus[];
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &

@@ -124,6 +124,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
         autoPlay: roomVenue?.autoPlay ?? false,
+        isReactionsMuted: roomVenue?.isReactionsMuted ?? false,
         parentId: roomVenue?.parentId ?? "",
       },
     }),
@@ -145,6 +146,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       roomVenue?.showShoutouts,
       roomVenue?.zoomUrl,
       roomVenue?.autoPlay,
+      roomVenue?.isReactionsMuted,
       roomVenue?.parentId,
       venueVisibility,
     ]
@@ -166,8 +168,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
-  const values = watch("room");
+  const roomValues = watch("room");
   const venueValues = watch("venue");
+  const values = watch();
 
   const changeRoomImageUrl = useCallback(
     (val: string) => {
@@ -194,12 +197,13 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     await updateVenueNG(
       {
         id: roomVenueId,
+        worldId: roomVenue?.worldId,
         ...venueValues,
         iframeUrl: embedUrl || DEFAULT_EMBED_URL,
       },
       user
     );
-  }, [roomVenueId, user, venueValues, roomVenue?.autoPlay]);
+  }, [roomVenueId, user, venueValues, roomVenue?.autoPlay, roomVenue?.worldId]);
 
   const [
     { loading: isUpdating, error: updateError },
@@ -211,7 +215,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       const roomData: RoomInput = {
         ...(room as RoomInput),
         ...(updatedRoom as RoomInput),
-        ...values,
+        ...roomValues,
         visibility: input.room.visibility,
       };
 
@@ -227,7 +231,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       updateVenueRoom,
       updatedRoom,
       user,
-      values,
+      roomValues,
       venueId,
     ]
   );
@@ -246,18 +250,24 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
+  const isReactionsMutedDisabled = !(
+    values?.venue?.showReactions ?? venueValues?.showReactions
+  );
+
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
-    if (venueId === id) {
-      return null;
-    }
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId }) => {
+      if (venueId === id || worldId !== roomVenue?.worldId) {
+        return null;
+      }
 
-    return {
-      name,
-      template,
-    };
-  });
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -345,12 +355,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 small
                 nameWithUnderscore
                 imgUrl={room.image_url}
+                error={errors?.room?.image_url}
               />
-              {errors?.room?.image_url && (
-                <span className="input-error">
-                  {errors?.room?.image_url.message}
-                </span>
-              )}
             </AdminSection>
 
             <AdminSection
@@ -387,12 +393,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                           roomVenue?.mapBackgroundImageUrl ??
                           venueValues.mapBackgroundImage
                         }
+                        error={errors?.venue?.mapBackgroundImage}
                       />
-                      {errors?.venue?.mapBackgroundImage && (
-                        <span className="input-error">
-                          {errors?.venue?.mapBackgroundImage.message}
-                        </span>
-                      )}
                     </>
                   )}
 
@@ -409,11 +411,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         error={errors?.venue?.iframeUrl}
                         ref={register()}
                       />
-                      {errors?.venue?.iframeUrl && (
-                        <span className="input-error">
-                          {errors?.venue?.iframeUrl}
-                        </span>
-                      )}
                       <AdminCheckbox
                         variant="toggler"
                         name="venue.autoPlay"
@@ -438,11 +435,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         error={errors?.venue?.zoomUrl}
                         ref={register()}
                       />
-                      {errors?.venue?.zoomUrl && (
-                        <span className="input-error">
-                          {errors?.venue?.zoomUrl.message}
-                        </span>
-                      )}
                     </div>
                   )}
 
@@ -465,25 +457,30 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   HAS_REACTIONS_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
-                    <AdminCheckbox
-                      name="venue.showReactions"
-                      label="Show reactions"
-                      variant="toggler"
-                      register={register}
-                    />
-                  )}
-
-                {room.template &&
-                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-                  HAS_REACTIONS_TEMPLATES.includes(
-                    room.template as VenueTemplate
-                  ) && (
-                    <AdminCheckbox
-                      name="venue.showShoutouts"
-                      label="Show shoutouts"
-                      variant="toggler"
-                      register={register}
-                    />
+                    <>
+                      <AdminCheckbox
+                        name="venue.showShoutouts"
+                        label="Show shoutouts"
+                        variant="toggler"
+                        register={register}
+                      />
+                      <AdminCheckbox
+                        name="venue.showReactions"
+                        label="Show reactions"
+                        variant="toggler"
+                        register={register}
+                      />
+                      <AdminSection>
+                        <AdminCheckbox
+                          variant="flip-switch"
+                          name="venue.isReactionsMuted"
+                          register={register}
+                          disabled={isReactionsMutedDisabled}
+                          displayOn="Audible"
+                          displayOff="Muted"
+                        />
+                      </AdminSection>
+                    </>
                   )}
 
                 {room.template === VenueTemplate.auditorium && (

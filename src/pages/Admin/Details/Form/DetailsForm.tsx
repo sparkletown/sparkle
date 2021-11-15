@@ -148,7 +148,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
     },
     defaultValues,
   });
+
   const values = watch();
+
   const validateParentId = useCallback(
     (parentId, checkedIds) => {
       if (checkedIds.includes(parentId)) return false;
@@ -280,16 +282,18 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
-    if (venueId === id) {
-      return null;
-    }
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId: venueWorldId }) => {
+      if (venueId === id || venue?.worldId !== venueWorldId) {
+        return null;
+      }
 
-    return {
-      name,
-      template,
-    };
-  });
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
     values.userStatuses ?? []
@@ -489,7 +493,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
             setValue={setValue}
           />
         </AdminSection>
-        <AdminSection title="Upload a highlight image">
+        <AdminSection title="Upload a highlight image" withLabel>
           <ImageInput
             onChange={handleBannerUpload}
             name="bannerImage"
@@ -500,7 +504,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
             setValue={setValue}
           />
         </AdminSection>
-        <AdminSection title="Upload a logo">
+        <AdminSection title="Upload a logo" withLabel>
           <ImageInput
             onChange={handleLogoUpload}
             name="logoImage"

@@ -18,11 +18,11 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
   const { world } = useCurrentWorld({ worldId });
 
   // @debt recentUserCount should be moved to world
-  const numberOfRecentWorldUsers = sovereignVenue?.recentUserCount;
-  const attendeesTitle = world?.attendeesTitle ?? DEFAULT_ATTENDEES_TITLE;
+  const numberOfRecentWorldUsers = sovereignVenue?.recentUserCount ?? "";
+  const attendeesTitle = world?.attendeesTitle ?? DEFAULT_ATTENDEES_TITLE ?? "";
 
   return (
-    <div className="venue-partygoers-container">
+    <div className="VenuePartygoers">
       {numberOfRecentWorldUsers} {attendeesTitle} online
     </div>
   );

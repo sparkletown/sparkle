@@ -3,8 +3,11 @@ import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-import { createSlug, World } from "api/admin";
+import { createSlug } from "api/admin";
 
+import { EntranceStepConfig } from "types/EntranceStep";
+import { Question } from "types/Question";
+import { UsernameVisibility, UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
@@ -13,6 +16,41 @@ import {
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
 import { isDefined } from "utils/types";
+
+// NOTE: world might have many fields, please keep them in alphabetic order
+export interface World {
+  adultContent?: boolean;
+  attendeesTitle?: string;
+  chatTitle?: string;
+  config: {
+    landingPageConfig: {
+      coverImageUrl: string;
+      description?: string;
+      subtitle?: string;
+    };
+  };
+  createdAt: Date;
+  entrance?: EntranceStepConfig[];
+  host: {
+    icon: string;
+  };
+  name: string;
+  owners: string[];
+  questions?: {
+    code?: Question[];
+    profile?: Question[];
+  };
+  radioStations?: string[];
+  requiresDateOfBirth?: boolean;
+  showBadges?: boolean;
+  showNametags?: UsernameVisibility;
+  showRadio?: boolean;
+  showSchedule?: boolean;
+  showUserStatus?: boolean;
+  slug: string;
+  updatedAt: Date;
+  userStatuses?: UserStatus[];
+}
 
 export const createFirestoreWorldCreateInput: (
   input: WorldStartFormInput
