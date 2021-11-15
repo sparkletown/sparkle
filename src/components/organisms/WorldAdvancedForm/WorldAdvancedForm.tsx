@@ -7,8 +7,7 @@ import * as Yup from "yup";
 
 import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
-import { World } from "api/admin";
-import { updateWorldAdvancedSettings } from "api/world";
+import { updateWorldAdvancedSettings, World } from "api/world";
 
 import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";

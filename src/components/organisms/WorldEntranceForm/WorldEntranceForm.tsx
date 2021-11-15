@@ -4,8 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import * as Yup from "yup";
 
-import { World } from "api/admin";
-import { updateWorldEntranceSettings } from "api/world";
+import { updateWorldEntranceSettings, World } from "api/world";
 
 import { EntranceStepConfig, EntranceStepTemplate } from "types/EntranceStep";
 import { Question } from "types/Question";

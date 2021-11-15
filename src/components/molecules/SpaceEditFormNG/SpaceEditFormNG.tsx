@@ -45,6 +45,8 @@ import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import { Toggler } from "components/atoms/Toggler";
 
+import { AdminCheckbox } from "../AdminCheckbox";
+
 import "./SpaceEditFormNG.scss";
 
 export interface SpaceEditFormNGProps {
@@ -224,16 +226,18 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(({ id, name, template }) => {
-    if (venueId === id) {
-      return null;
-    }
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId }) => {
+      if (venueId === id || worldId !== portal?.worldId) {
+        return null;
+      }
 
-    return {
-      name,
-      template,
-    };
-  });
+      return {
+        name,
+        template,
+      };
+    }
+  );
 
   return (
     <div className="SpaceEditFormNG">
@@ -311,7 +315,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
             />
           </AdminSection>
-          <AdminSection title="Upload a highlight image">
+          <AdminSection title="Upload a highlight image" withLabel>
             <ImageInput
               onChange={changeBackgroundImageUrl}
               name="bannerImage"
@@ -322,7 +326,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
             />
           </AdminSection>
-          <AdminSection title="Upload a logo">
+          <AdminSection title="Upload a logo" withLabel>
             <ImageInput
               nameWithUnderscore
               onChange={changePortalImageUrl}
@@ -332,6 +336,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
               register={register}
               small
+              subtext="(A transparent 300 px square image works best)"
             />
           </AdminSection>
         </AdminSpacesListItem>
@@ -353,12 +358,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             />
           </AdminSection>
           <AdminSection>
-            <Toggler
+            <AdminCheckbox
+              variant="flip-switch"
               name="isReactionsMuted"
-              forwardedRef={register}
+              register={register}
               disabled={!values.showReactions}
-              containerClassName="SpaceEditFormNG__toggler"
-              label="Audible"
+              displayOn="Audible"
+              displayOff="Muted"
             />
           </AdminSection>
           <AdminSection title="Capacity (optional)">
