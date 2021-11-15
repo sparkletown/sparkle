@@ -229,7 +229,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const backButtonOptionList = ownedVenues.filter(
     ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== portal?.worldId) {
+      if (portalId === id || worldId !== portal?.worldId) {
         return null;
       }
 
