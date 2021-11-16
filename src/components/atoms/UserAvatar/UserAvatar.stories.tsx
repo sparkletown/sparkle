@@ -2,7 +2,7 @@ import { ComponentMeta, ComponentStory } from "@storybook/react";
 
 import { UsernameVisibility } from "types/User";
 
-import { UserAvatarPresentation } from "./UserAvatar/UserAvatar";
+import { UserAvatarPresentation } from "./UserAvatar";
 
 export default {
   title: "Atoms/UserAvatar",
