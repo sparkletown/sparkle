@@ -38,14 +38,14 @@ export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
   const inputText = `${fieldset}${fieldText}`;
   const inputLink = `${fieldset}${fieldLink}`;
 
-  const handleRemove = useCallback(() => onRemove?.({ index }), [
+  const handleRemove = useCallback(() => onRemove({ index }), [
     onRemove,
     index,
   ]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     ({ target }) => {
-      const { value, attributes } = target;
+      const { value, attributes, type, checked } = target;
 
       // NOTE: there is possibly more complicated way of using handleChange as a curried function instead of relying on data-, but this works OK
       const name = attributes.getNamedItem("data-field")?.value;
@@ -59,7 +59,10 @@ export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
 
       onUpdate({
         index,
-        callback: ({ item }) => ({ ...item, [name]: value }),
+        callback: ({ item }) => ({
+          ...item,
+          [name]: type === "checkbox" ? checked : value,
+        }),
       });
     },
     [onUpdate, index]

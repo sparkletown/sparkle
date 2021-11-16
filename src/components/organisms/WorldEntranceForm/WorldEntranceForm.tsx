@@ -95,6 +95,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const {
     items: entranceSteps,
     add: addEntranceStep,
+    update: updateEntranceStep,
     clear: clearEntranceSteps,
     remove: removeEntranceStep,
     isDirty: isDirtyEntrance,
@@ -258,6 +259,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             items={entranceSteps}
             name="entrance"
             onAdd={addEntranceStep}
+            onUpdate={updateEntranceStep}
             onRemove={removeEntranceStep}
             onClear={clearEntranceSteps}
             register={register}
