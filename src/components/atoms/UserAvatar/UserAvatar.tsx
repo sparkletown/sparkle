@@ -13,7 +13,7 @@ import {
   ImageResizeOptions,
 } from "utils/image";
 
-import { useDesignVersion } from "hooks/useDesignVersion";
+import { DesignVersion, useDesignVersion } from "hooks/useDesignVersion";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
@@ -128,7 +128,6 @@ export const UserAvatarPresentation: React.FC<UserAvatarPresentationProps> = ({
   isOnline,
 }) => {
   const designVersion = useDesignVersion();
-  console.log("version is", designVersion);
   const imageClasses = classNames("UserAvatar__image", imageClassName);
 
   const nametagClasses = classNames("UserAvatar__nametag", {
@@ -154,6 +153,18 @@ export const UserAvatarPresentation: React.FC<UserAvatarPresentationProps> = ({
     [`UserAvatar--${size}`]: size,
   });
 
+  if (designVersion === DesignVersion.disco) {
+    const divStyles = {
+      backgroundImage: `url(${avatarSrc})`,
+    };
+    return (
+      <div
+        className="relative float-left top-1 -ml-10 w-8 h-8 rounded-full bg-gray-400"
+        style={divStyles}
+      />
+    );
+  }
+
   return (
     <div className={containerClasses}>
       {showNametag && <div className={nametagClasses}>{userDisplayName}</div>}
@@ -163,7 +174,6 @@ export const UserAvatarPresentation: React.FC<UserAvatarPresentationProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      <span>{designVersion}</span>
 
       {userStatus && (
         <span

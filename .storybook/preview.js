@@ -1,5 +1,7 @@
 import { DesignVersionContext } from "hooks/useDesignVersion";
 
+import "scss/global.scss";
+
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: {
