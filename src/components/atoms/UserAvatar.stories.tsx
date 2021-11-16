@@ -15,6 +15,13 @@ export default {
     avatarSrc: "https://avatars.dicebear.com/api/pixel-art/donkey.svg",
     showNametag: UsernameVisibility.none,
   },
+  decorators: [
+    (Story) => (
+      <div className="overflow-hidden py-3 pl-10 pr-3 border-t border-black border-opacity-10">
+        <Story />
+      </div>
+    ),
+  ],
 } as ComponentMeta<typeof UserAvatarPresentation>;
 
 const Template: ComponentStory<typeof UserAvatarPresentation> = (args) => (
