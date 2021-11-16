@@ -16,10 +16,10 @@ const getVersionFromCookie = () =>
 const setVersionInCookie = (designVersion: DesignVersion) =>
   Cookies.set(COOKIE_NAME, designVersion);
 
-export const Context = createContext(getVersionFromCookie());
+export const DesignVersionContext = createContext(getVersionFromCookie());
 
 export const useDesignVersion: ReactHook<void, DesignVersion> = () => {
-  return useContext(Context) as DesignVersion;
+  return useContext(DesignVersionContext) as DesignVersion;
 };
 
 const KEY_UP_ARROW = "ArrowUp";
@@ -73,5 +73,9 @@ export const DesignVersionProvider: React.FunctionComponent<
 
   attachListener(toggleDesignVersion);
 
-  return <Context.Provider value={designVersion}>{children}</Context.Provider>;
+  return (
+    <DesignVersionContext.Provider value={designVersion}>
+      {children}
+    </DesignVersionContext.Provider>
+  );
 };
