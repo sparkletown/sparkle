@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { BaseUser, UsernameVisibility } from "types/User";
+import { BaseUser, UsernameVisibility, UserStatus } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -13,6 +13,7 @@ import {
   ImageResizeOptions,
 } from "utils/image";
 
+import { useDesignVersion } from "hooks/useDesignVersion";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
@@ -30,6 +31,16 @@ export interface UserAvatarProps extends ContainerClassName {
   showStatus?: boolean;
   onClick?: () => void;
   size?: UserAvatarSize;
+}
+export interface UserAvatarPresentationProps extends ContainerClassName {
+  showNametag?: UsernameVisibility;
+  imageClassName?: string;
+  avatarSrc: string;
+  userDisplayName: string;
+  onClick?: () => void;
+  userStatus?: UserStatus;
+  size?: UserAvatarSize;
+  isOnline?: boolean;
 }
 
 // @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.scss
@@ -78,30 +89,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     ? DEFAULT_PARTY_NAME
     : user?.partyName ?? DEFAULT_PARTY_NAME;
 
-  const containerClasses = classNames("UserAvatar", containerClassName, {
-    "UserAvatar--clickable": onClick !== undefined,
-    [`UserAvatar--${size}`]: size,
-  });
-
-  const status = user?.status;
-
-  const nametagClasses = classNames("UserAvatar__nametag", {
-    "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
-  });
-
-  const imageClasses = classNames("UserAvatar__image", imageClassName);
-
-  const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
-    "UserAvatar__status-indicator--online": isOnline,
-    [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    [`UserAvatar__status-indicator--${size}`]: size,
-  });
-
-  const statusIndicatorStyles = useMemo(
-    () => ({ backgroundColor: userStatus.color }),
-    [userStatus.color]
-  );
-
   //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
   //'showStatus' is used to render this conditionally only in some of the screens.
   const hasUserStatus =
@@ -111,17 +98,74 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     showStatus &&
     !!venueUserStatuses.length;
 
+  const componentArgs = {
+    containerClassName,
+    showNametag,
+    imageClassName,
+    avatarSrc,
+    userDisplayName,
+    onClick,
+    userStatus: hasUserStatus ? userStatus : undefined,
+    size,
+    isOnline,
+  };
+
+  return <UserAvatarPresentation {...componentArgs} />;
+};
+
+/*
+ * UserAvatar presentation component that contains no logic.
+ */
+export const UserAvatarPresentation: React.FC<UserAvatarPresentationProps> = ({
+  containerClassName,
+  showNametag,
+  imageClassName,
+  avatarSrc,
+  userDisplayName,
+  onClick,
+  userStatus,
+  size,
+  isOnline,
+}) => {
+  const designVersion = useDesignVersion();
+  console.log("version is", designVersion);
+  const imageClasses = classNames("UserAvatar__image", imageClassName);
+
+  const nametagClasses = classNames("UserAvatar__nametag", {
+    "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
+  });
+
+  const statusIndicatorClasses = userStatus
+    ? classNames("UserAvatar__status-indicator", {
+        "UserAvatar__status-indicator--online": isOnline,
+        [`UserAvatar__status-indicator--${userStatus.status}`]:
+          isOnline && userStatus.status,
+        [`UserAvatar__status-indicator--${size}`]: size,
+      })
+    : "";
+
+  const statusIndicatorStyles = useMemo(
+    () => (userStatus ? { backgroundColor: userStatus.color } : {}),
+    [userStatus]
+  );
+
+  const containerClasses = classNames("UserAvatar", containerClassName, {
+    "UserAvatar--clickable": onClick !== undefined,
+    [`UserAvatar--${size}`]: size,
+  });
+
   return (
     <div className={containerClasses}>
-      {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
+      {showNametag && <div className={nametagClasses}>{userDisplayName}</div>}
       <img
         className={imageClasses}
         src={avatarSrc}
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
+      <span>{designVersion}</span>
 
-      {hasUserStatus && (
+      {userStatus && (
         <span
           className={statusIndicatorClasses}
           style={statusIndicatorStyles}
