@@ -25,6 +25,7 @@ import { authSelector, currentVenueSelector } from "utils/selectors";
 import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useAnalytics } from "hooks/useAnalytics";
+import { DesignVersionProvider } from "hooks/useDesignVersion";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -120,26 +121,28 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 traceReactScheduler("initial render", performance.now(), () => {
   render(
     <BugsnagErrorBoundary>
-      <ThemeProvider theme={theme}>
-        <DndProvider backend={HTML5Backend}>
-          <ReduxStoreProvider store={store}>
-            <FirebaseAppProvider firebaseApp={firebaseApp}>
-              <ReactReduxFirebaseProvider {...rrfProps}>
-                <AuthIsLoaded>
-                  <AlgoliaSearchProvider>
-                    <CustomSoundsProvider
-                      loadingComponent={<LoadingPage />}
-                      waitTillConfigLoaded
-                    >
-                      <AppRouter />
-                    </CustomSoundsProvider>
-                  </AlgoliaSearchProvider>
-                </AuthIsLoaded>
-              </ReactReduxFirebaseProvider>
-            </FirebaseAppProvider>
-          </ReduxStoreProvider>
-        </DndProvider>
-      </ThemeProvider>
+      <DesignVersionProvider>
+        <ThemeProvider theme={theme}>
+          <DndProvider backend={HTML5Backend}>
+            <ReduxStoreProvider store={store}>
+              <FirebaseAppProvider firebaseApp={firebaseApp}>
+                <ReactReduxFirebaseProvider {...rrfProps}>
+                  <AuthIsLoaded>
+                    <AlgoliaSearchProvider>
+                      <CustomSoundsProvider
+                        loadingComponent={<LoadingPage />}
+                        waitTillConfigLoaded
+                      >
+                        <AppRouter />
+                      </CustomSoundsProvider>
+                    </AlgoliaSearchProvider>
+                  </AuthIsLoaded>
+                </ReactReduxFirebaseProvider>
+              </FirebaseAppProvider>
+            </ReduxStoreProvider>
+          </DndProvider>
+        </ThemeProvider>
+      </DesignVersionProvider>
     </BugsnagErrorBoundary>,
     document.getElementById("root")
   );
