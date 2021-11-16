@@ -102,7 +102,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const containerClasses = classNames(
     "UserProfilePicture",
     {
-      UserProfilePicture__onlyIcon: !isVideoEnabled,
+      "UserProfilePicture--only-icon": !isVideoEnabled,
     },
     containerClassName
     // containerVars

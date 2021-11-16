@@ -138,28 +138,28 @@ export const Participant: React.FC<ParticipantProps> = ({
     [audioTracks]
   );
 
+  const videoElementClasses = classNames("", {
+    "Participant--mirrored": profileData?.mirrorVideo,
+  });
+
   const videoAndAudio = useMemo(
     () => (
       <>
-        <video
-          ref={videoRef}
-          autoPlay={true}
-          className={profileData?.mirrorVideo ? "mirrored" : ""}
-        />
+        <video ref={videoRef} autoPlay={true} className={videoElementClasses} />
         <audio ref={audioRef} autoPlay={true} />
       </>
     ),
-    [profileData]
+    [videoElementClasses]
   );
 
-  const profileIconClasses = classNames("profile-icon", {
-    "profile-icon__onlyIcon": !videoEnabled,
-    "profile-icon__onlyIcon--remote": !videoEnabled && !isCurrentUser,
+  const profileIconClasses = classNames("Participant__profile-icon", {
+    "Participant__profile-icon": !videoEnabled,
+    "Participant__profile-icon--remote": !videoEnabled && !isCurrentUser,
   });
 
   return (
-    <div className="col participant">
-      {!videoEnabled && <div className="participant--video-disabled" />}
+    <div className="Participant">
+      {!videoEnabled && <div className="Participant--video-disabled" />}
       {videoAndAudio}
       {showIcon && (
         <div className={profileIconClasses}>
@@ -173,14 +173,14 @@ export const Participant: React.FC<ParticipantProps> = ({
       )}
       {isCurrentUser && (
         <CameraMicrophoneControls
-          containerClassName="mute-container"
+          containerClassName="Participant__mute-container"
           participant={participant}
           defaultMute={defaultMute}
         />
       )}
       {isShowSoundDisable && (
         <VideoOverlayButton
-          containerClassName={"mute-other-container"}
+          containerClassName={"Participant__mute-container--remote"}
           variant="audio"
           defaultValue={!defaultMute}
           onEnabledChanged={changeAudioState}

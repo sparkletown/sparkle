@@ -102,10 +102,11 @@
       margin-left: 0px;
       overflow-y: hidden;
       overflow-x: hidden;
-      .participant {
+
+      .Participant {
         width: 100%;
 
-        .mirrored {
+        &--mirrored {
           transform: scale(-1, 1);
         }
       }

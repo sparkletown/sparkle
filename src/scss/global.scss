@@ -342,7 +342,7 @@ textarea {
   overflow: auto;
 }
 
-.profile-icon {
+.Participant__profile-icon {
   border-radius: 50%;
   margin: 1px;
   cursor: pointer;
@@ -544,18 +544,17 @@ h4 {
 }
 
 .table-container {
-  // min-height: 300px;
   .wrapper {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 10px;
 
-    .participant {
+    .Participant {
       display: flex;
       flex-grow: 1;
       background: $content--under;
 
-      .mirrored {
+      &--mirrored {
         transform: scale(-1, 1);
       }
     }
@@ -571,11 +570,11 @@ h4 {
 }
 
 .participant-container {
-  .participant {
+  .Participant {
     display: flex;
     flex-grow: 1;
 
-    .mirrored {
+    &--mirrored {
       transform: scale(-1, 1);
     }
   }

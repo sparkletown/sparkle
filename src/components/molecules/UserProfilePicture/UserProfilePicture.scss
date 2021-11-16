@@ -17,12 +17,12 @@ $avatarUrl: var(--user-profile-picture-avatar-url, none);
 
   cursor: pointer;
 
-  &__onlyIcon {
+  &--only-icon {
     width: 100px;
     height: 100px;
     bottom: 0;
     left: 0;
-    margin: 7px auto;
+    margin: $spacing--sm auto;
   }
 
   // Note: this is only needed to pass down to UserAvatar, if we go back to using the

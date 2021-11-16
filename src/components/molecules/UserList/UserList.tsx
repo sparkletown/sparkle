@@ -37,7 +37,7 @@ export const UserList: React.FC<UserListProps> = ({
   showTitle = true,
 }) => {
   const hasExcessiveUserCount = userCount > usersSample.length;
-  console.log(usersSample);
+
   const label = `${userCount} ${
     userCount === 1 ? "person" : "people"
   } ${activity}`;
