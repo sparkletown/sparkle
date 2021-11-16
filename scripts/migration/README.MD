@@ -5,6 +5,7 @@ Before the code merge, please, ensure you have the following [environment variab
 - `REACT_APP_AUTH_DOMAIN` - _enables SSO_ - the value of the variable can be found in the in the Firebase project -> `Authentication` item of the left-side menu -> `Sign-in method` tab -> Authorised domain (for example, `co-reality-staging.firebaseapp.com`)
 - `REACT_APP_MIXPANEL_PROJECT_TOKEN` - _enables tracking events for statistics_ - you should have access to the mixpanel Sparkle account -> choose the project (for example, `Sparkle - Staging`) -> Gear Icon ⚙️ in the navbar menu -> `Project Settings` -> `Project Token`
 - `REACT_APP_ALGOLIA_API_SEARCH_KEY=<search api key>` - _enables search engine_ - use Search API Key from [here](https://www.algolia.com/account/api-keys)
+- `REACT_APP_ALGOLIA_APP_ID` - _enables search engine_ - use Application ID from [here](https://www.algolia.com/account/api-keys)
 
 Actions to take:
 
