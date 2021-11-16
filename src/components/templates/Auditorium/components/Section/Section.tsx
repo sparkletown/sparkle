@@ -31,6 +31,8 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
+  const isReactionsAudioDisabled = !venue.isReactionsMuted;
+
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
     venue.isReactionsMuted ?? false
   );
@@ -120,6 +122,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
             venueId={venueId}
             leaveSeat={leaveSeat}
             isReactionsMuted={isUserAudioMuted}
+            isAudioDisabled={isReactionsAudioDisabled}
             toggleMute={toggleUserAudio}
           />
         </div>
