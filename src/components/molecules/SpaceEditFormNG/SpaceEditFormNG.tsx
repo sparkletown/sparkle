@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
+  ALWAYS_EMPTY_ARRAY,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -19,6 +20,9 @@ import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -31,13 +35,18 @@ import { AdminSpacesListItem } from "components/organisms/AdminVenueView/compone
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
+import { PortalVisibility } from "components/atoms/PortalVisibility";
+import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import { Toggler } from "components/atoms/Toggler";
+
+import { AdminCheckbox } from "../AdminCheckbox";
 
 import "./SpaceEditFormNG.scss";
 
@@ -81,24 +90,36 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const defaultValues = useMemo(
     () => ({
+      name: portal?.name ?? "",
+      subtitle: portal?.config?.landingPageConfig?.subtitle ?? "",
+      description: portal?.config?.landingPageConfig?.description ?? "",
       image_url: room.image_url ?? "",
       iframeUrl: portal?.iframeUrl ?? "",
       autoPlay: portal?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
+      roomVisibility: room?.visibility,
+      parentId: portal?.parentId ?? "",
       showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
       isReactionsMuted: portal?.isReactionsMuted ?? false,
       numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
     }),
-    [room.image_url, portal]
+    [room.image_url, portal, room?.visibility]
   );
 
-  const { register, handleSubmit, setValue, watch, reset, errors } = useForm({
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    errors,
+  } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditNGSchema,
     defaultValues,
   });
-
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
@@ -120,56 +141,75 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const updateVenueRoom = useCallback(async () => {
     if (!user || !portalId) return;
 
+    const embedUrl = convertToEmbeddableUrl({
+      url: values.iframeUrl,
+      autoPlay: values.autoPlay,
+    });
+
     await updateVenueNG(
       {
         id: portalId,
-        iframeUrl: values.iframeUrl || DEFAULT_EMBED_URL,
+        iframeUrl: embedUrl || DEFAULT_EMBED_URL,
         autoPlay: values.autoPlay,
         bannerImageUrl: values.bannerImageUrl,
+        name: values.name,
+        description: { text: values.description },
+        subtitle: values.subtitle,
+        parentId: values.parentId,
         showShoutouts: values.showShoutouts,
         showReactions: values.showReactions,
         isReactionsMuted: values.isReactionsMuted,
         numberOfSections: values.numberOfSections,
         template: portal?.template,
+        worldId: portal?.worldId,
       },
       user
     );
   }, [
-    portal?.template,
-    portalId,
     user,
+    portalId,
+    values.iframeUrl,
     values.autoPlay,
     values.bannerImageUrl,
-    values.iframeUrl,
+    values.name,
+    values.description,
+    values.subtitle,
+    values.parentId,
+    values.showShoutouts,
+    values.showReactions,
     values.isReactionsMuted,
     values.numberOfSections,
-    values.showReactions,
-    values.showShoutouts,
+    portal?.template,
+    portal?.worldId,
   ]);
 
-  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(async () => {
-    if (!user || !venueId) return;
+  const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
+    async (input) => {
+      if (!user || !venueId) return;
 
-    const portalData: RoomInput = {
-      ...(room as RoomInput),
-      ...(updatedRoom as RoomInput),
-      image_url: values.image_url,
-    };
+      const portalData: RoomInput = {
+        ...(room as RoomInput),
+        ...(updatedRoom as RoomInput),
+        visibility: input.roomVisibility,
+        ...values,
+      };
 
-    await upsertRoom(portalData, venueId, user, roomIndex);
-    await updateVenueRoom();
+      await upsertRoom(portalData, venueId, user, roomIndex);
+      await updateVenueRoom();
 
-    onEdit?.();
-  }, [
-    onEdit,
-    room,
-    roomIndex,
-    updateVenueRoom,
-    updatedRoom,
-    user,
-    values,
-    venueId,
-  ]);
+      onEdit?.();
+    },
+    [
+      onEdit,
+      room,
+      roomIndex,
+      updateVenueRoom,
+      updatedRoom,
+      user,
+      values,
+      venueId,
+    ]
+  );
 
   const [
     { loading: isDeleting, error },
@@ -185,6 +225,21 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
+  const { ownedVenues } = useOwnedVenues({});
+
+  const backButtonOptionList = ownedVenues.filter(
+    ({ id, name, template, worldId }) => {
+      if (venueId === id || worldId !== portal?.worldId) {
+        return null;
+      }
+
+      return {
+        name,
+        template,
+      };
+    }
+  );
+
   return (
     <div className="SpaceEditFormNG">
       <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -196,6 +251,44 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSidebarSubTitle>
         <AdminSpacesListItem title="The basics" isOpened>
           <>
+            <AdminSection title="Rename your space" withLabel>
+              <AdminInput
+                name="name"
+                placeholder="Space Name"
+                register={register}
+                errors={errors}
+                required
+              />
+            </AdminSection>
+            <AdminSection title="Subtitle" withLabel>
+              <AdminInput
+                name="subtitle"
+                placeholder="Subtitle for your space"
+                register={register}
+                errors={errors}
+              />
+            </AdminSection>
+            <AdminSection title="Description" withLabel>
+              <AdminTextarea
+                name="description"
+                placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
+                register={register}
+                errors={errors}
+              />
+            </AdminSection>
+            <AdminSection
+              title="Select the parent space for the “back” button"
+              withLabel
+            >
+              <SpacesDropdown
+                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
+                venueId={venueId}
+                setValue={setValue}
+                register={register}
+                fieldName="parentId"
+                defaultSpace={values.parentId}
+              />
+            </AdminSection>
             <AdminSection title="Livestream URL" withLabel>
               <AdminInput
                 name="iframeUrl"
@@ -215,7 +308,15 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </>
         </AdminSpacesListItem>
         <AdminSpacesListItem title="Appearance" isOpened>
-          <AdminSection title="Upload a banner photo">
+          <AdminSection title="Default portal appearance">
+            <PortalVisibility
+              getValues={getValues}
+              name="roomVisibility"
+              register={register}
+              setValue={setValue}
+            />
+          </AdminSection>
+          <AdminSection title="Upload a highlight image" withLabel>
             <ImageInput
               onChange={changeBackgroundImageUrl}
               name="bannerImage"
@@ -226,7 +327,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
             />
           </AdminSection>
-          <AdminSection title="Upload a logo">
+          <AdminSection title="Upload a logo" withLabel>
             <ImageInput
               nameWithUnderscore
               onChange={changePortalImageUrl}
@@ -236,6 +337,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               setValue={setValue}
               register={register}
               small
+              subtext="(A transparent 300 px square image works best)"
             />
           </AdminSection>
         </AdminSpacesListItem>
@@ -257,12 +359,13 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             />
           </AdminSection>
           <AdminSection>
-            <Toggler
+            <AdminCheckbox
+              variant="flip-switch"
               name="isReactionsMuted"
-              forwardedRef={register}
+              register={register}
               disabled={!values.showReactions}
-              containerClassName="SpaceEditFormNG__toggler"
-              label="Audible"
+              displayOn="Audible"
+              displayOff="Muted"
             />
           </AdminSection>
           <AdminSection title="Capacity (optional)">
@@ -290,7 +393,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         </AdminSpacesListItem>
         <ButtonNG
           variant="danger"
-          loading={isUpdating || isDeleting}
+          loading={isDeleting}
           disabled={isUpdating || isDeleting}
           onClick={deleteSelectedRoom}
         >
@@ -310,6 +413,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             className="AdminSidebarFooter__button--larger"
             type="submit"
             variant="primary"
+            loading={isUpdating}
             disabled={isUpdating || isDeleting}
           >
             Save changes

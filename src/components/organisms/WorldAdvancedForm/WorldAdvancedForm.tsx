@@ -1,28 +1,34 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import * as Yup from "yup";
 
-import { World } from "api/admin";
-import { updateWorldAdvancedSettings } from "api/world";
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
+import { updateWorldAdvancedSettings, World } from "api/world";
+
+import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId, withId } from "utils/id";
 
+import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 
+import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { Toggler } from "components/atoms/Toggler";
 
 import "./WorldAdvancedForm.scss";
 
@@ -42,17 +48,32 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const worldId = world.id;
   const { user } = useUser();
 
+  const {
+    items: userStatuses,
+    add: addStatus,
+    set: setStatus,
+    remove: removeStatus,
+    isDirty: isDirtyStatuses,
+    clearDirty: clearDirtyStatuses,
+  } = useArray<UserStatus>(world.userStatuses);
+
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
       attendeesTitle: world.attendeesTitle,
       chatTitle: world.chatTitle,
-      showNametags: world.showNametags,
+      radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
+      showNametags: world.showNametags,
+      showRadio: world.showRadio,
+      showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
+      showUserStatus: world.showUserStatus,
+      userStatuses: userStatuses,
     }),
-    [world]
+    [world, userStatuses]
   );
 
   const {
+    getValues,
     reset,
     watch,
     formState: { dirty, isSubmitting },
@@ -71,18 +92,77 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
 
-    await updateWorldAdvancedSettings(withId({ ...values }, worldId), user);
+    const data = {
+      attendeesTitle: values.attendeesTitle,
+      chatTitle: values.chatTitle,
+      radioStation: values.radioStation,
+      showBadges: values.showBadges,
+      showNametags: values.showNametags,
+      showRadio: values.showRadio,
+      showSchedule: values.showSchedule,
+      showUserStatus: values.showUserStatus,
+      userStatuses,
+    };
 
-    reset(values);
-  }, [worldId, user, values, reset]);
+    await updateWorldAdvancedSettings(withId(data, worldId), user);
+
+    reset(data);
+    clearDirtyStatuses();
+  }, [worldId, user, values, reset, userStatuses, clearDirtyStatuses]);
+
+  const isSaveLoading = isSubmitting || isSaving;
+  const isSaveDisabled = !(
+    dirty ||
+    isSaving ||
+    isSubmitting ||
+    isDirtyStatuses
+  );
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
       type: "submit",
-      disabled: !dirty && !isSaving && !isSubmitting,
-      loading: isSubmitting || isSaving,
+      disabled: isSaveDisabled,
+      loading: isSaveLoading,
     }),
-    [dirty, isSaving, isSubmitting]
+    [isSaveDisabled, isSaveLoading]
+  );
+
+  useEffect(() => {
+    const values: Partial<WorldAdvancedFormInput> = getValues();
+    reset({
+      attendeesTitle: values.attendeesTitle,
+      chatTitle: values.chatTitle,
+      radioStation: values.radioStation,
+      showBadges: values.showBadges,
+      showNametags: values.showNametags,
+      showRadio: values.showRadio,
+      showSchedule: values.showSchedule,
+      showUserStatus: values.showUserStatus,
+      userStatuses,
+    });
+  }, [userStatuses, getValues, reset]);
+
+  const renderedUserStatuses = useMemo(
+    () =>
+      userStatuses.map((userStatus, index) => {
+        const key = `${userStatus}-${index}`;
+        const name = `userStatuses[${index}]`;
+
+        const handleChange = (item: UserStatus) => setStatus({ index, item });
+        const handleRemove = () => removeStatus({ index });
+
+        return (
+          <AdminUserStatusInput
+            key={key}
+            name={name}
+            item={userStatuses[index]}
+            register={register}
+            onChange={handleChange}
+            onRemove={handleRemove}
+          />
+        );
+      }),
+    [userStatuses, setStatus, removeStatus, register]
   );
 
   return (
@@ -119,6 +199,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             register={register}
           />
         </AdminSection>
+
         <AdminSection
           title="Show Nametags (Display user names on their avatars)"
           withLabel
@@ -128,9 +209,70 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             <option value="hover">Inline and hover</option>
           </Form.Control>
         </AdminSection>
-        <AdminSection title="Show badges" withLabel>
-          <Toggler forwardedRef={register} name="showBadges" />
+
+        <AdminSection>
+          <AdminCheckbox
+            name="showBadges"
+            label="Show badges"
+            variant="toggler"
+            register={register}
+          />
         </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="showRadio"
+            label="Enable space radio"
+            variant="toggler"
+            errors={errors}
+            register={register}
+          />
+          <AdminInput
+            name="radioStation"
+            errors={errors}
+            register={register}
+            label="Radio station stream URL:"
+            hidden={!values.showRadio}
+          />
+        </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="hasSocialLoginEnabled"
+            label="Social Login"
+            subtext="Users can login using Google/Facebook/Okta social networks"
+            variant="toggler"
+            errors={errors}
+            register={register}
+          />
+        </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="showSchedule"
+            label="Show schedule"
+            variant="toggler"
+            register={register}
+          />
+        </AdminSection>
+
+        <AdminSection>
+          <AdminCheckbox
+            name="showUserStatus"
+            label="Show user status"
+            variant="toggler"
+            register={register}
+          />
+          {values.showUserStatus && (
+            <>
+              {renderedUserStatuses}
+              <ButtonNG variant="primary" iconName={faPlus} onClick={addStatus}>
+                Add a status
+              </ButtonNG>
+            </>
+          )}
+        </AdminSection>
+
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
       </Form>

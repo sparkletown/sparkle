@@ -3,13 +3,14 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/app";
 import { omit } from "lodash";
 import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { createUrlSafeName, World } from "api/admin";
-import { createWorld, updateWorldStartSettings } from "api/world";
+import { createSlug } from "api/admin";
+import { createWorld, updateWorldStartSettings, World } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
 
@@ -52,7 +53,25 @@ const validationSchema = Yup.object().shape({
     .test(
       "name",
       "Must have alphanumeric characters",
-      (val: string) => createUrlSafeName(val).length > 0
+      (val: string) => createSlug(val).length > 0
+    )
+    .when("$creating", (creating: boolean, schema: Yup.StringSchema) =>
+      creating
+        ? schema.test(
+            "name",
+            "This world slug is already taken",
+            // @debt Replace with a function from api/worlds
+            async (val: string) =>
+              !val ||
+              !(
+                await firebase
+                  .firestore()
+                  .collection("worlds")
+                  .where("slug", "==", createSlug(val))
+                  .get()
+              ).docs.length
+          )
+        : schema
     ),
   description: Yup.string().notRequired(),
   subtitle: Yup.string().notRequired(),
@@ -80,9 +99,9 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
       description: world?.config?.landingPageConfig?.description,
       subtitle: world?.config?.landingPageConfig?.subtitle,
       bannerImageFile: undefined,
-      bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl,
+      bannerImageUrl: world?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImageFile: undefined,
-      logoImageUrl: world?.host?.icon,
+      logoImageUrl: world?.host?.icon ?? "",
     }),
     [world]
   );
@@ -99,37 +118,43 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema,
+    validationContext: {
+      creating: !worldId,
+    },
     defaultValues,
   });
 
   const values = watch();
 
-  const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
-    if (!values || !user) return;
+  const [{ error, loading: isSaving }, submit] = useAsyncFn(
+    async (input: WorldStartFormInput) => {
+      if (!values || !user) return;
 
-    if (worldId) {
-      await updateWorldStartSettings({ ...values, id: worldId }, user);
-      //TODO: Change this to the most appropriate url when product decides the perfect UX
-      history.push(ADMIN_V3_WORLDS_BASE_URL);
-    } else {
-      const { worldId: id, error } = await createWorld(values, user);
+      if (worldId) {
+        await updateWorldStartSettings({ ...values, id: worldId }, user);
+        //TODO: Change this to the most appropriate url when product decides the perfect UX
+        history.push(ADMIN_V3_WORLDS_BASE_URL);
+      } else {
+        const { worldId: id, error } = await createWorld(values, user);
 
-      if (id) {
-        setWorldId(id);
+        if (id) {
+          setWorldId(id);
+        }
+
+        if (error) {
+          // Note, a more complex option when id exists is a redirect
+          // that doesn't lose the error message for the user
+          throw error;
+        }
+
+        //TODO: Change this to the most appropriate url when product decides the perfect UX
+        history.push(ADMIN_V3_WORLDS_BASE_URL);
       }
 
-      if (error) {
-        // Note, a more complex option when id exists is a redirect
-        // that doesn't lose the error message for the user
-        throw error;
-      }
-
-      //TODO: Change this to the most appropriate url when product decides the perfect UX
-      history.push(ADMIN_V3_WORLDS_BASE_URL);
-    }
-
-    reset(defaultValues);
-  }, [worldId, user, values, reset, defaultValues, history]);
+      reset(input);
+    },
+    [worldId, user, values, reset, history]
+  );
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({
@@ -198,6 +223,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             </>
           }
           subtitle="A plain 1920 x 1080px image works best."
+          withLabel
         >
           <ImageInput
             name="bannerImage"
@@ -217,6 +243,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             </>
           }
           subtitle="A 400 px square image works best."
+          withLabel
         >
           <ImageInput
             name="logoImage"

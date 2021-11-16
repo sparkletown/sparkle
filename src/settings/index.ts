@@ -33,6 +33,7 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
 export * from "./mapBackgrounds";
@@ -42,6 +43,7 @@ export * from "./spacesSettings";
 export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
+export * from "./worldDefaultSettings";
 
 export const ENABLE_POPUPS_URL =
   "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
@@ -600,7 +602,6 @@ export const TAKE_SEAT_EVENT_NAME = "Take a seat";
 export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
 
 // SCHEDULE
-export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
@@ -677,3 +678,5 @@ export const VENUES_WITH_CHAT_REQUIRED = [
 export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
+
+export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;

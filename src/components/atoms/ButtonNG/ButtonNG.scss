@@ -9,10 +9,32 @@ $normal-button-width: 100%;
 // $normal-bg - the normal background color
 // $hover-bg  - the background color when button is :hover-ed
 $variants-enum: (
-  ("primary", $content--over, $accent--under, $primary--live-hover),
-  ("secondary", $content--over, opaque-white(0.2), opaque-white(0.25)),
-  ("white", $accent--under, $content--over, $content--over),
-  ("dark", $content--over, opaque-black(0.4), opaque-black(0.6)),
+  ("primary", var(--content--over), var(--accent--under), $primary--live-hover),
+  (
+    "secondary",
+    var(--content--over),
+    var(--content--over-20a),
+    var(--content--over-30a)
+  ),
+  ("white", var(--accent--under), var(--content--over), var(--content--over)),
+  (
+    "dark",
+    var(--content--over),
+    var(--content--under-40a),
+    var(--content--under-60a)
+  ),
+  (
+    "login-primary",
+    var(--content--over),
+    var(--accent--under),
+    var(--primary--under-darker-10pp)
+  ),
+  (
+    "login-outline",
+    var(--content--over),
+    transparent,
+    var(--primary--under-darker-10pp)
+  ),
   (
     "danger",
     var(--danger--over),
@@ -47,7 +69,7 @@ $variants-enum: (
   transform: translateY(0);
   transition: transform 0.4s $transition-function;
 
-  color: $content--over;
+  color: var(--content--over);
   text-shadow: $text-shadow--thin;
   background-color: opaque-white(0.2);
   backdrop-filter: blur(10px);
@@ -59,7 +81,8 @@ $variants-enum: (
     text-decoration: none;
   }
 
-  &:focus {
+  &:focus,
+  &:focus:hover {
     outline: none;
     box-shadow: 0 0 0 2px opaque-white(0.25);
   }
@@ -130,5 +153,15 @@ $variants-enum: (
 
   &--login-gradient:enabled {
     background-image: $login-rainbox-gradient;
+  }
+
+  &--login-outline {
+    box-shadow: inset 0 0 0 3px var(--accent--under);
+
+    &:focus,
+    &:hover {
+      opacity: 0.8;
+      background-color: var(--primary--under-darker-10pp);
+    }
   }
 }

@@ -14,10 +14,9 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
+import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
-import { UsernameVisibility } from "types/User";
-import { VenueTemplate } from "types/venues";
+import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import {
   roomTitleSchema,
@@ -30,9 +29,6 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
-
-type ProfileQuestion = VenueInput["profile_questions"][number];
-type CodeOfConductQuestion = VenueInput["code_of_conduct_questions"][number];
 
 const createFileSchema = (name: string, required: boolean) =>
   Yup.mixed<FileList>().test(
@@ -52,7 +48,7 @@ export const validationSchema = Yup.object()
               .test(
                 "name",
                 "Must have alphanumeric characters",
-                (val: string) => createUrlSafeName(val).length > 0
+                (val: string) => createSlug(val).length > 0
               )
               .test(
                 "name",
@@ -63,7 +59,7 @@ export const validationSchema = Yup.object()
                     await firebase
                       .firestore()
                       .collection("venues")
-                      .doc(createUrlSafeName(val))
+                      .doc(createSlug(val))
                       .get()
                   ).exists
               )
@@ -91,9 +87,6 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
 
-    attendeesTitle: Yup.string().notRequired().default("Guests"),
-    chatTitle: Yup.string().notRequired().default("Party"),
-
     bannerImageUrl: Yup.string(),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     zoomUrl: Yup.string().when(
@@ -106,6 +99,9 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
     iframeUrl: Yup.string().notRequired(),
+    roomVisibility: Yup.mixed()
+      .oneOf(Object.values(RoomVisibility))
+      .notRequired(),
 
     width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
     height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
@@ -117,22 +113,6 @@ export const validationSchema = Yup.object()
       })
       .default(initialMapIconPlacement),
 
-    // @debt provide some validation error messages for invalid questions
-    // advanced options
-    profile_questions: Yup.array<ProfileQuestion>()
-      .ensure()
-      .defined()
-      .transform((val: Array<ProfileQuestion>) =>
-        val.filter((s) => !!s.name && !!s.text)
-      ), // ensure questions are not empty strings
-
-    code_of_conduct_questions: Yup.array<CodeOfConductQuestion>()
-      .ensure()
-      .defined()
-      .transform((val: Array<CodeOfConductQuestion>) =>
-        val.filter((s) => !!s.name && !!s.text)
-      ),
-
     showRadio: Yup.bool().notRequired(),
     radioStations: Yup.string().when("showRadio", {
       is: true,
@@ -141,15 +121,11 @@ export const validationSchema = Yup.object()
 
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
-    adultContent: Yup.bool().required(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
     enableJukebox: Yup.bool().notRequired(),
     hasSocialLoginEnabled: Yup.bool().notRequired(),
     showShoutouts: Yup.bool().notRequired(),
-    showNametags: Yup.mixed()
-      .oneOf(Object.values(UsernameVisibility))
-      .notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(
@@ -182,26 +158,20 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
-  .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
   .from("enableJukebox", "enableJukebox")
   .from("hasSocialLoginEnabled", "hasSocialLoginEnabled")
   .from("showShoutouts", "showShoutouts")
   .from("columns", "columns")
-  .from("attendeesTitle", "attendeesTitle")
-  .from("chatTitle", "chatTitle")
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
   .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
 
   .from("auditoriumColumns", "auditoriumColumns")
-  .from("auditoriumRows", "auditoriumRows")
-  .from("code_of_conduct_questions", "code_of_conduct_questions")
-  .from("profile_questions", "profile_questions");
+  .from("auditoriumRows", "auditoriumRows");
 
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()

@@ -7,10 +7,10 @@ $content--over: var(--content--over);
 $content--under: var(--content--under);
 
 // @debt these should probably be replaced with var(--primary-...) referencing theme colors
-$primary--lightest: #a179ff;
-$primary--light: #9669ff;
-$primary--live-hover: #8755fb;
-$primary--darker: #3f247d;
+$primary--lightest: #a179ff; // replace with var(--primary--under-lighter-15pp) // just an approximation from the available
+$primary--light: #9669ff; // replace with var(--primary--under-lighter-10pp) // just an approximation from the available
+$primary--live-hover: #8755fb; // replace with var(--primary--under-lighter-5pp) // just an approximation from the available
+$primary--darker: #3f247d; // replace with var(--primary--under-darker-20pp) // just an approximation from the available
 $primary--over: #f6e652;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
@@ -100,6 +100,10 @@ $border-radius--md: 12px;
 $border-radius--lg: 16px;
 $border-radius--xl: 24px;
 $border-radius--max: 50%;
+
+$border-width--none: 0px;
+$border-width--slim: 1px;
+$border-width--bold: 2px;
 
 $spacing--xs: 4px;
 $spacing--sm: 8px;
@@ -207,6 +211,10 @@ $z-layers: (
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
+  admin-sidebar: $z-layer-sidebar,
+  admin-sidebar-content: $z-layer-sidebar + 10,
+  admin-sidebar-title: $z-layer-sidebar + 20,
+  admin-sidebar-footer: $z-layer-sidebar + 30,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   jazzbar-header: $z-layer-jazz-header,
@@ -330,6 +338,11 @@ $z-layers: (
     color: $hover-color;
     text-decoration: underline $hover-color;
   }
+}
+
+@mixin circle-avatar {
+  object-fit: cover;
+  object-position: top;
 }
 
 @mixin scrollbar {

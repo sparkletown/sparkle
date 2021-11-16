@@ -17,6 +17,7 @@ const VenueTemplate = {
   artcar: "artcar",
   artpiece: "artpiece",
   audience: "audience",
+  auditorium: "auditorium",
   conversationspace: "conversationspace",
   embeddable: "embeddable",
   firebarrel: "firebarrel",
@@ -86,7 +87,11 @@ const IFRAME_TEMPLATES = [
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
+const HAS_REACTIONS_TEMPLATES = [
+  VenueTemplate.audience,
+  VenueTemplate.jazzbar,
+  VenueTemplate.auditorium,
+];
 
 // @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
@@ -209,18 +214,10 @@ const createVenueData = (data, context) => {
       icon: data.logoImageUrl,
     },
     owners,
-    code_of_conduct_questions: data.code_of_conduct_questions || [],
-    profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
-    showSchedule:
-      typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    attendeesTitle: data.attendeesTitle || "partygoers",
-    chatTitle: data.chatTitle || "Party",
-    requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
     showUserStatus:
@@ -365,10 +362,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.host.icon = data.logoImageUrl;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
@@ -383,14 +376,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.parentId === "string") {
     updated.parentId = data.parentId;
-  }
-
-  if (typeof data.showSchedule === "boolean") {
-    updated.showSchedule = data.showSchedule;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showReactions === "boolean") {
@@ -415,22 +400,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (data.userStatuses) {
     updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
@@ -580,7 +549,6 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   const venueData = createVenueData_v2(data, context);
-
   batch.create(venueRef, venueData);
   initializeVenueChatMessagesCounter(venueRef, batch);
 
@@ -760,10 +728,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
-  // @debt the logic here differs from updateVenue_v2,
-  // @debt this would currently allow any value to be set in this field, not just booleans
-  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
-
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
     updated.iframeUrl = data.iframeUrl;
@@ -789,7 +753,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -829,11 +793,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.columns = data.columns;
   }
 
-  // @debt the logic here differs from updateVenue
-  if (typeof data.requiresDateOfBirth === "boolean") {
-    updated.requiresDateOfBirth = data.requiresDateOfBirth;
-  }
-
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
@@ -854,7 +813,7 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -871,15 +830,32 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
-  const updated = {};
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World Id is missing and the update can not be executed."
+    );
+  }
+
+  const updated = {
+    config: {
+      landingPageConfig: {},
+    },
+  };
+
   updated.updatedAt = Date.now();
 
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  if (data.name) {
+    updated.name = data.name;
+  }
+
   if (data.description || data.description === "") {
-    updated.config.landingPageConfig.description = data.description;
+    updated.config.landingPageConfig.description =
+      data.description && data.description.text;
   }
 
   if (data.logoImageUrl) {
@@ -887,10 +863,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
       updated.host = {};
     }
     updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
   }
 
   if (data.entrance) {
@@ -919,14 +891,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
-  }
-
-  if (typeof data.showSchedule === "boolean") {
-    updated.showSchedule = data.showSchedule;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showRangers === "boolean") {
@@ -961,22 +925,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.userStatuses = data.userStatuses;
   }
 
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.showNametags) {
-    updated.showNametags = data.showNametags;
-  }
-
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
 
   if (data.bannerImageUrl) {
@@ -989,10 +937,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.columns === "number") {
     updated.columns = data.columns;
-  }
-
-  if (typeof data.requiresDateOfBirth === "boolean") {
-    updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
   if (typeof data.showRadio === "boolean") {

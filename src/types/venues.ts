@@ -9,13 +9,12 @@ import { WithId, WithVenueId } from "utils/id";
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
 import { Banner } from "./banner";
-import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { User, UsernameVisibility, UserStatus } from "./User";
+import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -104,10 +103,7 @@ export type AnyVenue =
   | ViewingWindowVenue;
 
 // --- VENUE V2
-export interface Venue_v2
-  extends Venue_v2_Base,
-    VenueAdvancedConfig,
-    Venue_v2_EntranceConfig {}
+export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
 
 export interface Venue_v2_Base {
   name: string;
@@ -133,43 +129,30 @@ export interface Venue_v2_Base {
 }
 
 export interface VenueAdvancedConfig {
-  attendeesTitle?: string;
-  chatTitle?: string;
   columns?: number;
   radioStations?: string | string[]; // single string on form, array in DB
-  requiresDateOfBirth?: boolean;
   roomVisibility?: RoomVisibility;
-  showBadges?: boolean;
   showGrid?: boolean;
-  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
-}
-
-export interface Venue_v2_EntranceConfig {
-  profile_questions?: Array<Question>;
-  code_of_conduct_questions?: Array<Question>;
-  entrance?: EntranceStepConfig[];
+  enableJukebox?: boolean;
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
-//   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
+//   termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
   access?: VenueAccessMode;
-  entrance?: EntranceStepConfig[];
   config?: VenueConfig;
   host?: {
     icon: string;
   };
-  profile_questions: Question[];
-  code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
@@ -186,7 +169,6 @@ export interface BaseVenue {
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
-  adultContent?: boolean;
   samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
@@ -196,7 +178,6 @@ export interface BaseVenue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -205,13 +186,11 @@ export interface BaseVenue {
   description?: {
     text: string;
   };
+  subtitle?: string;
   showLearnMoreLink?: boolean;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-  attendeesTitle?: string;
-  requiresDateOfBirth?: boolean;
   ticketUrl?: string;
-  chatTitle?: string;
   showReactions?: boolean;
   isReactionsMuted?: boolean;
   showShoutouts?: boolean;
@@ -222,8 +201,6 @@ export interface BaseVenue {
   termsAndConditions: TermOfService[];
   userStatuses?: UserStatus[];
   showRadio?: boolean;
-  showBadges?: boolean;
-  showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
   createdAt?: number;
   recentUserCount?: number;
@@ -232,6 +209,9 @@ export interface BaseVenue {
   updatedAt?: number;
   worldId: string;
   hasSocialLoginEnabled?: boolean;
+  enableJukebox?: boolean;
+  requiresDateOfBirth?: boolean;
+  showBadges?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -266,10 +246,7 @@ export interface PartyMapVenue extends BaseVenue {
 
   start_utc_seconds?: number;
   duration_hours?: number;
-  entrance_hosted_hours?: number;
   party_name?: string;
-  unhosted_entry_video_url?: string;
-  map_url?: string;
   map_viewbox?: string;
   password?: string;
   admin_password?: string;
@@ -322,12 +299,6 @@ export interface AnimateMapVenue extends BaseVenue {
   playerioFrequencyUpdate?: number;
   //@dept Right now advanced mode in develop, don't add this flag to venue!
   playerioAdvancedMode?: boolean;
-}
-
-export interface Question {
-  name: string;
-  text: string;
-  link?: string;
 }
 
 interface TermOfService {

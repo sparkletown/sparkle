@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Modal } from "react-bootstrap";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFAULT_SHOW_SCHEDULE,
-  ROOM_TAXON,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -20,6 +16,7 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -82,8 +79,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venue,
   venueEvents,
 }) => {
-  const { showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
-
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -99,6 +94,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
+
+  const { world } = useWorldById(venue?.worldId);
 
   const { enterRoom, portalVenueId } = useRoom({
     room,
@@ -124,7 +121,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   }, [analytics, enterWithSound, room]);
 
   const renderedRoomEvents = useMemo(() => {
-    if (!showSchedule) return [];
+    if (!world?.showSchedule) return [];
 
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
@@ -137,9 +134,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         enterEventLocation={enter}
       />
     ));
-  }, [enter, showSchedule, venueEvents]);
+  }, [enter, venueEvents, world?.showSchedule]);
 
-  const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
+  const showRoomEvents = world?.showSchedule && renderedRoomEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
@@ -179,7 +176,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
             onMouseOut={clearAttendance}
             onClick={enter}
           >
-            Join {ROOM_TAXON.capital}
+            Enter
           </button>
         </div>
       </div>

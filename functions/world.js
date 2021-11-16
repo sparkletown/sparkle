@@ -4,7 +4,7 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
 
-const { isNil } = require("lodash");
+const { isNil, isEmpty } = require("lodash");
 
 const checkIsAdmin = async (uid) => {
   try {
@@ -86,34 +86,42 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
   };
 
   const worldDoc = admin.firestore().collection("worlds").doc();
-  return await worldDoc.create(worldData).then(() => worldDoc.id);
+  return await worldDoc
+    .create(worldData)
+    .then(() => ({ ...worldData, id: worldDoc.id }));
 });
 
 exports.updateWorld = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const {
+    adultContent,
     attendeesTitle,
     bannerImageUrl,
     chatTitle,
-    code_of_conduct_questions,
     description,
     entrance,
     id: worldId,
     logoImageUrl,
     name,
-    profile_questions,
+    questions,
+    radioStations,
+    requiresDateOfBirth,
     rooms,
-    showNametags,
     showBadges,
+    showNametags,
+    showRadio,
+    showUserStatus,
     slug,
     subtitle,
+    showSchedule,
+    userStatuses,
   } = data;
 
   if (!worldId) {
     throw new HttpsError(
       "not-found",
-      `World id is missing and the update can not be executed.`
+      `World Id is missing and the update can not be executed.`
     );
   }
 
@@ -136,18 +144,29 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     }
   }
 
+  const questionsConfig = {
+    code: (questions && questions.code) || [],
+    profile: (questions && questions.profile) || [],
+  };
+
   const worldData = {
     updatedAt: Date.now(),
+    ...(!isNil(adultContent) && { adultContent }),
     ...(!isNil(attendeesTitle) && { attendeesTitle }),
     ...(!isNil(chatTitle) && { chatTitle }),
-    ...(!isNil(code_of_conduct_questions) && { code_of_conduct_questions }),
     ...(!isNil(entrance) && { entrance }),
     ...(!isNil(landingPageConfig) && { config: { landingPageConfig } }),
     ...(!isNil(logoImageUrl) && { host: { icon: logoImageUrl } }),
     ...(!isNil(name) && { name }),
-    ...(!isNil(profile_questions) && { profile_questions }),
+    ...(!isEmpty(questions) && { questions: questionsConfig }),
+    ...(!isNil(radioStations) && { radioStations }),
+    ...(!isNil(requiresDateOfBirth) && { requiresDateOfBirth }),
     ...(!isNil(rooms) && { rooms }),
     ...(!isNil(showNametags) && { showNametags }),
+    ...(!isNil(showRadio) && { showRadio }),
+    ...{ showSchedule: isNil(showSchedule) ? true : showSchedule },
+    ...(!isEmpty(userStatuses) && { userStatuses }),
+    ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
   };

@@ -9,6 +9,9 @@ import classNames from "classnames";
 import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useWorldById } from "hooks/worlds/useWorldById";
+
+import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -19,7 +22,6 @@ import { WithNavigationBar } from "../WithNavigationBar";
 
 import { RunTabView } from "./components/RunTabView";
 import { Spaces } from "./components/Spaces";
-import { Timing } from "./components/Timing";
 
 import "./AdminVenueView.scss";
 
@@ -59,6 +61,8 @@ export const AdminVenueView: React.FC = () => {
     currentVenue: venue,
   } = useConnectCurrentVenueNG(venueId);
 
+  const { world } = useWorldById(venue?.worldId);
+
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
       <Link
@@ -79,8 +83,8 @@ export const AdminVenueView: React.FC = () => {
   }, [selectedTab, venueId]);
 
   const navigateToHome = useCallback(
-    () => history.push(adminWorldSpacesUrl(venue?.worldId)),
-    [history, venue?.worldId]
+    () => history.push(adminWorldSpacesUrl(world?.slug)),
+    [history, world?.slug]
   );
 
   const navigateToSpaces = useCallback(
@@ -104,7 +108,7 @@ export const AdminVenueView: React.FC = () => {
 
   if (!venue) {
     return (
-      <WithNavigationBar withSchedule>
+      <WithNavigationBar withSchedule withHiddenLoginButton>
         <AdminRestricted>
           <NotFound />
         </AdminRestricted>
@@ -127,7 +131,7 @@ export const AdminVenueView: React.FC = () => {
           />
         )}
         {selectedTab === AdminVenueTab.timing && (
-          <Timing
+          <SpaceTimingPanel
             onClickHome={navigateToHome}
             onClickBack={navigateToSpaces}
             onClickNext={navigateToRun}

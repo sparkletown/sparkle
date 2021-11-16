@@ -51,15 +51,15 @@ export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}?venu
 export const ACCOUNT_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 
 // Admin v3 URLs
-export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/create/venue/:worldId`;
+export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/create/venue/:worldSlug?`;
 export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_V3_ROOT_URL}/edit/:venueId`;
-export const ADMIN_V3_VENUE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:selectedTab?`;
-export const ADMIN_V3_ADVANCED_PARAM_URL = `${ADMIN_V3_ROOT_URL}/advanced-settings/:venueId?/:selectedTab?`;
+export const ADMIN_V3_SPACE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:selectedTab?`;
+export const ADMIN_V3_SPACE_SETTINGS_PARAM_URL = `${ADMIN_V3_ROOT_URL}/settings/:venueId?/:selectedTab?`;
 
 export const ADMIN_V3_WORLDS_BASE_URL = `${ADMIN_V3_ROOT_URL}/worlds`;
 export const ADMIN_V3_NEW_WORLD_URL = `${ADMIN_V3_WORLDS_BASE_URL}/new`;
-export const ADMIN_V3_OLD_WORLD_PARAM_URL = `${ADMIN_V3_WORLDS_BASE_URL}/old/:worldId?/:selectedTab?`;
-export const ADMIN_V3_WORLD_SPACES_PARAM_URL = `${ADMIN_V3_WORLDS_BASE_URL}/:worldId?/spaces`;
+export const ADMIN_V3_OLD_WORLD_PARAM_URL = `${ADMIN_V3_WORLDS_BASE_URL}/old/:worldSlug?/:selectedTab?`;
+export const ADMIN_V3_WORLD_SPACES_PARAM_URL = `${ADMIN_V3_WORLDS_BASE_URL}/:worldSlug?/spaces`;
 
 // Admin v1 URLs
 export const ADMIN_V1_CREATE_URL = `${ADMIN_V1_ROOT_URL}/venue/creation`;

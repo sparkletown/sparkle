@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { WithId } from "utils/id";
 import { adminWorldSpacesUrl, adminWorldUrl } from "utils/url";
@@ -23,7 +23,9 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
     backgroundImage: `url(${world.config?.landingPageConfig?.coverImageUrl})`,
   });
 
-  const cardClasses = classNames("WorldCard", cardVars);
+  const cardClasses = classNames("WorldCard", cardVars, {
+    "WorldCard--disabled": !world.slug,
+  });
 
   const logoVars = useCss({
     backgroundImage: `url(${world.host?.icon ?? DEFAULT_VENUE_LOGO})`,
@@ -45,7 +47,8 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       <ButtonNG
         variant="dark"
         isLink
-        linkTo={adminWorldSpacesUrl(world.id)}
+        disabled={!world.slug}
+        linkTo={adminWorldSpacesUrl(world.slug)}
         iconName={faSignInAlt}
         className="WorldCard__button"
       >
@@ -53,9 +56,10 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
       </ButtonNG>
       <ButtonNG
         isLink
-        linkTo={adminWorldUrl(world.id)}
+        linkTo={adminWorldUrl(world.slug)}
         variant="dark"
         iconName={faCog}
+        disabled={!world.slug}
         className="WorldCard__button"
       >
         Configure world

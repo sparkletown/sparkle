@@ -1,0 +1,18 @@
+@import "scss/constants.scss";
+
+.SpaceTimingPanel {
+  display: grid;
+  grid-template-columns: auto 1fr;
+
+  .AdminShowcase {
+    display: grid;
+    place-items: center;
+    padding: $spacing--lg;
+    background-color: $secondary--dark;
+    align-items: start;
+  }
+
+  .SpaceTimingForm {
+    padding: $spacing--md;
+  }
+}

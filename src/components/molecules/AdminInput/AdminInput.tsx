@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
+import { get } from "lodash";
 
 import { generateId } from "utils/string";
 
@@ -12,6 +13,7 @@ export interface AdminInputProps
   subtext?: ReactNode | string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   errors?: FieldErrors<FieldValues>;
+  hidden?: boolean;
 }
 
 export const AdminInput: React.FC<AdminInputProps> = ({
@@ -20,15 +22,26 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   subtext,
   register,
   errors,
+  hidden: isHidden,
   ...inputProps
 }) => {
-  const error = errors?.[name];
+  const error = get(errors, name);
   const id = useMemo(
     () => (label ? generateId("AdminInput-" + name) : undefined),
     [label, name]
   );
-  return (
-    <p className="AdminInput">
+
+  return isHidden ? (
+    <input
+      {...inputProps}
+      className="AdminInput AdminInput--hidden AdminInput__input"
+      name={name}
+      ref={register}
+      id={id}
+      type="hidden"
+    />
+  ) : (
+    <p className="AdminInput AdminInput--visible">
       {label && (
         <label className="AdminInput__label" htmlFor={id}>
           {label}

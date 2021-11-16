@@ -12,12 +12,7 @@ import {
   VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
 
-import {
-  createUrlSafeName,
-  EventInput,
-  PlacementInput,
-  VenueInput,
-} from "api/admin";
+import { createSlug, EventInput, PlacementInput, VenueInput } from "api/admin";
 
 import { isCurrentLocationValidUrl } from "utils/url";
 
@@ -75,7 +70,7 @@ export const validationSchema_v2 = Yup.object()
               .test(
                 "name",
                 "Must have alphanumeric characters",
-                (val: string) => createUrlSafeName(val).length > 0
+                (val: string) => createSlug(val).length > 0
               )
               .test(
                 "name",
@@ -86,7 +81,7 @@ export const validationSchema_v2 = Yup.object()
                     await firebase
                       .firestore()
                       .collection("venues")
-                      .doc(createUrlSafeName(val))
+                      .doc(createSlug(val))
                       .get()
                   ).exists
               )
@@ -119,7 +114,7 @@ const venueNameSchema = Yup.string()
   .test(
     "name",
     "Must have alphanumeric characters",
-    (val: string) => createUrlSafeName(val).length > 0
+    (val: string) => createSlug(val).length > 0
   )
   .test(
     "name",
@@ -130,7 +125,7 @@ const venueNameSchema = Yup.string()
         await firebase
           .firestore()
           .collection("venues")
-          .doc(createUrlSafeName(val))
+          .doc(createSlug(val))
           .get()
       ).exists
   );
@@ -155,7 +150,7 @@ export interface PortalSchema extends SpaceSchema {
 }
 
 const roomImageUrlSchema = Yup.string().required(
-  `${ROOM_TAXON.capital} image is required`
+  `${ROOM_TAXON.capital} icon is required`
 );
 
 export const createSpaceSchema = Yup.object().shape<SpaceSchema>({
@@ -199,9 +194,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
-  .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("columns", "columns")
 

@@ -41,7 +41,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   venue,
   onCancelEditing,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
   const firebaseUser = useFirebase().auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(
@@ -84,6 +84,15 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     control,
     name: formProp("profileLinks"),
   });
+
+  const onDeleteLink = useCallback(
+    (i: number) => {
+      // @debt a hacky solution to mark profileLinks field dirty. For some reason, `remove` from useFieldArray is not enough
+      formState.dirtyFields.add("profileLinks");
+      removeLink(i);
+    },
+    [formState.dirtyFields, removeLink]
+  );
 
   const cancelEditing = useCallback(() => {
     onCancelEditing();
@@ -178,7 +187,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         links={links}
         setLinkTitle={setLinkTitle}
         errors={errors?.profileLinks}
-        onDeleteLink={removeLink}
+        onDeleteLink={onDeleteLink}
         onAddLink={addLinkHandler}
       />
       {isChangePasswordShown && (

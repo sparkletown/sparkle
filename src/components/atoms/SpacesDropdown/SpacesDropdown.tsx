@@ -1,12 +1,10 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ADMIN_V1_ROOMS_BASE_URL, SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import { SPACE_PORTALS_ICONS_MAPPING } from "settings";
 
-import { Room } from "types/rooms";
+import { PortalTemplate } from "types/venues";
 
 import { Dropdown } from "components/atoms/Dropdown";
 
@@ -14,12 +12,12 @@ import "./SpacesDropdown.scss";
 
 export interface SpacesDropdownProps {
   defaultSpace?: string;
-  venueSpaces: Room[];
   venueId?: string;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
   fieldName: string;
   error?: FieldError;
+  venueSpaces: { template?: PortalTemplate; name: string }[];
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
@@ -35,15 +33,21 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     defaultSpace
   );
 
-  const spaceOptions = useMemo(() => {
-    const options = venueSpaces.map((space) => {
-      const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space.template ?? ""];
+  useEffect(() => {
+    if (defaultSpace) {
+      setSpaceValue(defaultSpace);
+    }
+  }, [defaultSpace]);
+
+  const renderedOptions = useMemo(() => {
+    const options = venueSpaces.map(({ name, template }) => {
+      const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
       return (
         <ReactBootstrapDropdown.Item
-          key={space.title}
+          key={name}
           onClick={() => {
-            setSpaceValue(space.title);
-            setValue(fieldName, space.title, true);
+            setSpaceValue(name);
+            setValue(fieldName, name, true);
           }}
           className="SpacesDropdown__item"
         >
@@ -52,32 +56,20 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             src={spaceIcon}
             className="SpacesDropdown__item-icon"
           />
-          {space.title}
+          {name}
         </ReactBootstrapDropdown.Item>
       );
     });
-    const createSpaceOption = (
-      <ReactBootstrapDropdown.Item
-        key="create-space"
-        className="SpacesDropdown__item"
-        href={`${ADMIN_V1_ROOMS_BASE_URL}/${venueId}`}
-      >
-        <FontAwesomeIcon
-          className="SpacesDropdown__item-icon"
-          icon={faPlus}
-          size="sm"
-        />
-        Create a new space
-      </ReactBootstrapDropdown.Item>
-    );
 
-    return [...options, createSpaceOption];
-  }, [venueSpaces, setValue, fieldName, venueId]);
+    return options;
+  }, [venueSpaces, setValue, fieldName]);
 
-  const renderSpaceValue = useMemo(() => {
-    if (!spaceValue) return;
+  const renderedTitle = useMemo(() => {
+    if (!spaceValue) {
+      return "Select a space";
+    }
 
-    const space = venueSpaces.find((space) => space.title === spaceValue);
+    const space = venueSpaces.find(({ name }) => name === spaceValue);
     const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
 
     return (
@@ -96,8 +88,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     // @debt align the style of the SpacesDropdown with the Dropdown component
     <>
       <div className="SpacesDropdown">
-        {renderSpaceValue}
-        <Dropdown title="Select a space" options={spaceOptions} />
+        <Dropdown title={renderedTitle} options={renderedOptions} />
         <input type="hidden" ref={register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}

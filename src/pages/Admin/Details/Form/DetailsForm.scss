@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$image-container-height: 200px;
+
 .DetailsForm {
   &__wrapper {
     padding: 1em 5em;
@@ -23,6 +25,23 @@
     &-container {
       margin-top: 15px;
       position: relative;
+    }
+  }
+
+  .AdminSection {
+    padding: $spacing--sm $spacing--xl;
+
+    &__label {
+      display: flex;
+      flex-direction: column;
+
+      .ImageInput__container {
+        position: relative;
+        width: 60%;
+        margin-bottom: -($spacing--lg);
+        align-self: center;
+        height: $image-container-height;
+      }
     }
   }
 }

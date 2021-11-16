@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -15,24 +15,24 @@ import { Loading } from "components/molecules/Loading";
 import "./WorldEditorStartPanel.scss";
 
 export interface WorldEditorStartPanelProps {
-  worldId?: string;
+  worldSlug?: string;
   onClickHome: () => void;
 }
 
 export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
+  worldSlug,
   onClickHome,
-  worldId,
 }) => {
-  const { isLoaded, world } = useWorldEdit(worldId);
+  const { isLoaded, world } = useWorldBySlug(worldSlug);
 
-  const isUpdatingWorld = isLoaded && worldId && world;
-  const isCreatingWorld = isLoaded && !world && !worldId;
+  const isUpdatingWorld = isLoaded && worldSlug && world;
+  const isCreatingWorld = isLoaded && !world && !worldSlug;
 
   return (
     <AdminPanel>
       <AdminSidebar>
         <AdminSidebarTitle>
-          {worldId ? "Configure your world" : "Create a new world"}
+          {worldSlug ? "Configure your world" : "Create a new world"}
         </AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
         {isUpdatingWorld || isCreatingWorld ? (
@@ -41,7 +41,9 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
           <Loading />
         )}
       </AdminSidebar>
-      <AdminShowcase>{world && <WorldShowcase world={world} />}</AdminShowcase>
+      <AdminShowcase>
+        <WorldShowcase world={world} />
+      </AdminShowcase>
     </AdminPanel>
   );
 };

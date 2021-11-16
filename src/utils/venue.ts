@@ -84,10 +84,7 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
       icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
     },
     owners: [],
-    profile_questions: values.profile_questions ?? [],
-    code_of_conduct_questions: [],
     termsAndConditions: [],
-    adultContent: values.adultContent || false,
     width: values.width ?? 40,
     height: values.width ?? 40,
     // @debt Should these fields be defaulted like this? Or potentially undefined? Or?

@@ -2,7 +2,7 @@ import { useFirestore, useFirestoreCollectionData } from "reactfire";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";

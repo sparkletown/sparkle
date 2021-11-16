@@ -2,12 +2,18 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { omit } from "lodash";
 
-import { ACCEPTED_IMAGE_TYPES, DEFAULT_SECTIONS_AMOUNT } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
+  INVALID_SLUG_CHARS_REGEX,
+} from "settings";
 
 import { Room } from "types/rooms";
-import { UsernameVisibility, UserStatus } from "types/User";
+import { UserStatus } from "types/User";
 import {
-  Venue_v2_EntranceConfig,
+  RoomVisibility,
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
@@ -26,17 +32,6 @@ export interface EventInput {
   duration_minutes?: number;
   host: string;
   room?: string;
-}
-
-interface Question {
-  name: string;
-  text: string;
-  link?: string;
-}
-
-export interface AdvancedVenueInput {
-  profile_questions: Array<Question>;
-  code_of_conduct_questions: Array<Question>;
 }
 
 type VenueImageFileKeys =
@@ -67,6 +62,7 @@ export type RoomInput = Omit<Room, "image_url"> & {
   image_file?: FileList;
 };
 
+// @debt Since the additional 2 fields are optional, they can probably be moved to RoomInput
 export type RoomInput_v2 = Room & {
   venueName?: string;
   useUrl?: boolean;
@@ -74,46 +70,40 @@ export type RoomInput_v2 = Room & {
   image_file?: FileList;
 };
 
-export type VenueInput = AdvancedVenueInput &
-  VenueImageUrls & {
-    name: string;
-    bannerImageFile?: FileList;
-    logoImageFile?: FileList;
-    mapBackgroundImageFile?: FileList;
-    subtitle?: string;
-    description?: string;
-    zoomUrl?: string;
-    iframeUrl?: string;
-    autoPlay?: boolean;
-    template: VenueTemplate;
-    rooms?: Array<Room>;
-    placement?: Omit<VenuePlacement, "state">;
-    placementRequests?: string;
-    adultContent: boolean;
-    showGrid?: boolean;
-    columns?: number;
-    width?: number;
-    height?: number;
-    parentId?: string;
-    owners?: string[];
-    chatTitle?: string;
-    attendeesTitle?: string;
-    auditoriumRows?: number;
-    auditoriumColumns?: number;
-    userStatuses?: UserStatus[];
-    showReactions?: boolean;
-    enableJukebox?: boolean;
-    showShoutouts?: boolean;
-    showRadio?: boolean;
-    radioStations?: string;
-    showNametags?: UsernameVisibility;
-    showUserStatus?: boolean;
-    hasSocialLoginEnabled?: boolean;
-  };
+export type VenueInput = VenueImageUrls & {
+  name: string;
+  bannerImageFile?: FileList;
+  logoImageFile?: FileList;
+  mapBackgroundImageFile?: FileList;
+  subtitle?: string;
+  description?: string;
+  zoomUrl?: string;
+  iframeUrl?: string;
+  autoPlay?: boolean;
+  template: VenueTemplate;
+  rooms?: Array<Room>;
+  placement?: Omit<VenuePlacement, "state">;
+  placementRequests?: string;
+  showGrid?: boolean;
+  columns?: number;
+  width?: number;
+  height?: number;
+  parentId?: string;
+  owners?: string[];
+  auditoriumRows?: number;
+  auditoriumColumns?: number;
+  userStatuses?: UserStatus[];
+  showReactions?: boolean;
+  enableJukebox?: boolean;
+  showShoutouts?: boolean;
+  showRadio?: boolean;
+  radioStations?: string;
+  showUserStatus?: boolean;
+  hasSocialLoginEnabled?: boolean;
+  roomVisibility?: RoomVisibility;
+};
 
-export interface VenueInput_v2
-  extends VenueAdvancedConfig,
-    Venue_v2_EntranceConfig {
+export interface VenueInput_v2 extends VenueAdvancedConfig {
   name: string;
   description?: string;
   subtitle?: string;
@@ -130,30 +120,8 @@ export interface VenueInput_v2
   parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-}
-
-// NOTE: world might have many fields, please keep them in alphabetic order
-// @debt move to src/types/world
-export interface World {
-  attendeesTitle?: string;
-  chatTitle?: string;
-  config: {
-    landingPageConfig: {
-      coverImageUrl: string;
-      description?: string;
-      subtitle?: string;
-    };
-  };
-  createdAt: Date;
-  host: {
-    icon: string;
-  };
-  name: string;
-  owners: string[];
-  showNametags?: UsernameVisibility;
-  showBadges?: boolean;
-  slug: string;
-  updatedAt: Date;
+  showShoutouts?: boolean;
+  showReactions?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -180,8 +148,8 @@ export type PlacementInput = {
   height: number;
 };
 
-export const createUrlSafeName = (name: string) =>
-  name.replace(/\W/g, "").toLowerCase();
+export const createSlug = (name: string) =>
+  name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
 
 export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
@@ -197,7 +165,7 @@ const createFirestoreVenueInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: VenueImageFileKeys;
     urlKey: VenueImageUrlKeys;
@@ -266,7 +234,7 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-  const slug = createUrlSafeName(input.name);
+  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -301,7 +269,7 @@ const createFirestoreVenueInput_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/background.${fileExtension}`
+      `users/${user.uid}/venues/${slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -324,7 +292,6 @@ const createFirestoreVenueInput_v2 = async (
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
   };
-
   return firestoreVenueInput;
 };
 
@@ -345,6 +312,8 @@ export const createVenue_v2 = async (
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
     {
       ...input,
+      showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+      showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
       rooms: [],
     },
     user
@@ -433,7 +402,7 @@ const createFirestoreRoomInput = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlRoomName = createUrlSafeName(
+  const urlRoomName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -480,7 +449,7 @@ const createFirestoreRoomInput_v2 = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlRoomName = createUrlSafeName(
+  const urlRoomName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {

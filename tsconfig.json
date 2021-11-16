@@ -22,6 +22,12 @@
     "noFallthroughCasesInSwitch": true,
     "downlevelIteration": true,
   },
+  "ts-node": {
+    "transpileOnly": true,
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
   "include": [
     "src"
   ]

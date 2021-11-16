@@ -25,7 +25,7 @@ export const ChatboxThreadControls: React.FC<ChatboxThreadControlsProps> = ({
         {text}
         {isDefined(threadAuthor) && (
           <span className="ChatboxThreadControls__thread-author">
-            {threadAuthor}&hellip;
+            {threadAuthor}
           </span>
         )}
       </span>

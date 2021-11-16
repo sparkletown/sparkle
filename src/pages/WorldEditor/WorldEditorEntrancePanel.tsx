@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -12,19 +12,20 @@ import { WorldEntranceForm } from "components/organisms/WorldEntranceForm";
 import { Loading } from "components/molecules/Loading";
 
 export interface WorldEditorEntrancePanelProps {
-  worldId?: string;
+  worldSlug?: string;
   onClickHome: () => void;
 }
 
 export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> = ({
+  worldSlug,
   onClickHome,
-  worldId,
 }) => {
-  const { isLoaded, world } = useWorldEdit(worldId);
+  const { isLoaded, world } = useWorldBySlug(worldSlug);
+
   return (
     <AdminPanel>
       <AdminSidebar>
-        <AdminSidebarTitle>Title goes here</AdminSidebarTitle>
+        <AdminSidebarTitle>Entrance Experience</AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
         {isLoaded ? (
           world ? (
