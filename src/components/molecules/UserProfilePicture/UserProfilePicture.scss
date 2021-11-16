@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $avatarUrl: var(--user-profile-picture-avatar-url, none);
+$icon-dimensions: 100px;
 
 .UserProfilePicture {
   width: $avatarSize;
@@ -18,8 +19,7 @@ $avatarUrl: var(--user-profile-picture-avatar-url, none);
   cursor: pointer;
 
   &--only-icon {
-    width: 100px;
-    height: 100px;
+    @include square-size($icon-dimensions);
     bottom: 0;
     left: 0;
     margin: $spacing--sm auto;
