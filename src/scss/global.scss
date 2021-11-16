@@ -6,6 +6,10 @@
 @import "./modifiers.scss";
 @import "./customOverrides";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 html,
 body,
 #root {
