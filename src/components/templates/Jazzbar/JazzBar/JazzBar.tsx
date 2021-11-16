@@ -77,6 +77,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     seatedAtTable && venue?.id
   );
 
+  const isReactionsAudioDisabled = !venue.isReactionsMuted;
+
   const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
     venue.isReactionsMuted
   );
@@ -182,6 +184,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       venueId={venue.id}
                       isReactionsMuted={isUserAudioMuted}
                       toggleMute={toggleUserAudio}
+                      isAudioDisabled={isReactionsAudioDisabled}
                     />
                   </div>
                 )}
