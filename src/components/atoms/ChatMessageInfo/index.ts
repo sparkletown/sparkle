@@ -1,1 +1,1 @@
-export { ChatMessageInfo } from "./ChatMessageInfo";
+export { ChatMessageInfo, ChatMessageInfoPure } from "./ChatMessageInfo";
