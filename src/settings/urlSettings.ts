@@ -45,10 +45,10 @@ export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:step/:venueI
 export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:venueId/:customToken`;
 
 // Account URLs
-export const ACCOUNT_CODE_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct`;
+export const ACCOUNT_CODE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct`;
 export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
 export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}?venueId=:venueId`;
-export const ACCOUNT_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
+export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 
 // Admin v3 URLs
 export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/create/venue/:worldSlug?`;
