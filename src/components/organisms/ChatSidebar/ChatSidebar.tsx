@@ -36,7 +36,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     selectPrivateChat,
   } = useChatSidebarControls();
 
-  const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo(venue);
+  const { privateChatTabTitle } = useChatSidebarInfo(venue);
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
@@ -81,12 +81,12 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
               <button
                 role="tab"
                 id={venueTabId}
-                aria-label={venueChatTabTitle}
+                aria-label="Chat"
                 aria-selected={isVenueChat}
                 className={venueChatTabStyles}
                 onClick={selectVenueChat}
               >
-                {venueChatTabTitle}
+                Chat
               </button>
               <button
                 role="tab"
