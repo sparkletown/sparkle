@@ -45,8 +45,8 @@ export const VenueEntrancePage: React.FC = () => {
   const step = Number.parseInt(unparsedStep ?? "", 10);
 
   const proceed = useCallback(
-    () => venueId && history.push(venueEntranceUrl(venueId, step + 1)),
-    [venueId, step, history]
+    () => spaceSlug && history.push(venueEntranceUrl(spaceSlug, step + 1)),
+    [spaceSlug, step, history]
   );
 
   if (!isSpaceLoaded || !isWorldLoaded) {

@@ -173,7 +173,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
           ...input,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
-        history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
+        history.push(`${ADMIN_V1_ROOT_URL}/${spaceSlug}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
@@ -185,7 +185,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
         });
       }
     },
-    [user, history, venueId, editingRoomIndex, editingRoom]
+    [user, editingRoom, venueId, editingRoomIndex, history, spaceSlug]
   );
 
   useEffect(() => {

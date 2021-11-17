@@ -45,6 +45,12 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         return;
       }
 
+      if (!isDefined(spaceSlug)) {
+        setMessage("Missing spaceSlug");
+        setError(true);
+        return;
+      }
+
       setMessage("Checking password...");
 
       await checkAccess({
@@ -54,7 +60,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         .then((result) => {
           if (isTruthy(result?.data?.token)) {
             setLocalStorageToken(venueId, result.data.token);
-            history.push(venueEntranceUrl(venueId));
+            history.push(venueEntranceUrl(spaceSlug));
           } else {
             setMessage(`Wrong password!`);
             setError(true);
@@ -65,7 +71,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           setError(true);
         });
     },
-    [history, password, venueId]
+    [history, password, spaceSlug, venueId]
   );
 
   return (
