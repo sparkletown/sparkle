@@ -14,10 +14,10 @@ import {
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useValidImage } from "hooks/useCheckImage";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import Login from "pages/Account/Login";
@@ -41,12 +41,11 @@ export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const venueId = useVenueId() || "";
+  const spaceSlug = useSpaceParams() || "";
 
-  const {
-    currentVenue: venue,
-    isCurrentVenueLoaded,
-  } = useConnectCurrentVenueNG(venueId);
+  const { space, isLoaded: isCurrentVenueLoaded } = useSpaceBySlug(spaceSlug);
+
+  const venueId = space?.id;
 
   const { user, userWithId } = useUser();
   const userEventIds =
@@ -61,7 +60,7 @@ export const EmergencyViewPage: React.FC = () => {
     userEventIds,
   });
 
-  const redirectUrl = venue?.config?.redirectUrl ?? "";
+  const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
   useEffect(() => {
@@ -71,11 +70,11 @@ export const EmergencyViewPage: React.FC = () => {
   }, [hostname, redirectUrl]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
   const weekdays = useMemo(() => {
     return range(dayDifference)
@@ -107,7 +106,7 @@ export const EmergencyViewPage: React.FC = () => {
   }, [dayDifference, liveAndFutureEvents, firstScheduleDate]);
 
   const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.bannerImageUrl,
+    space?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
@@ -117,7 +116,7 @@ export const EmergencyViewPage: React.FC = () => {
 
   const containerClasses = classNames("EmergencyView", containerVars);
 
-  if (!venueId || (isCurrentVenueLoaded && !venue)) {
+  if (!venueId || (isCurrentVenueLoaded && !space)) {
     return (
       <WithNavigationBar withHiddenLoginButton>
         <NotFound />
@@ -125,7 +124,7 @@ export const EmergencyViewPage: React.FC = () => {
     );
   }
 
-  if (!venue) {
+  if (!space) {
     return <LoadingPage />;
   }
 

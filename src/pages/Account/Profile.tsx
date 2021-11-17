@@ -6,7 +6,7 @@ import { useAsyncFn, useSearchParam } from "react-use";
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
@@ -29,7 +29,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const venueId = useVenueId() ?? DEFAULT_VENUE;
+  const spaceSlug = useSpaceParams() ?? DEFAULT_VENUE;
 
   const returnUrl: string | undefined =
     useSearchParam("returnUrl") ?? undefined;
@@ -56,17 +56,17 @@ export const Profile: React.FC = () => {
       await updateUserProfile(user.uid, data);
 
       const accountQuestionsUrlParams = new URLSearchParams();
-      accountQuestionsUrlParams.set("venueId", venueId);
+      accountQuestionsUrlParams.set("spaceSlug", spaceSlug);
       returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
 
       // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = venueId
+      const nextUrl = spaceSlug
         ? `/account/questions?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
       history.push(nextUrl);
     },
-    [history, returnUrl, user, venueId]
+    [history, returnUrl, user, spaceSlug]
   );
 
   const pictureUrl = watch("pictureUrl");
@@ -111,7 +111,7 @@ export const Profile: React.FC = () => {
 
             {user && (
               <ProfilePictureInput
-                {...{ venueId, setValue, user, errors, pictureUrl, register }}
+                {...{ setValue, user, errors, pictureUrl, register }}
               />
             )}
           </div>

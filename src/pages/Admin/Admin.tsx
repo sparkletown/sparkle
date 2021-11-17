@@ -44,12 +44,13 @@ import {
   VenueSortingOptions,
 } from "utils/venue";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -427,7 +428,10 @@ export const Admin: React.FC = () => {
     storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
   });
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
+
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString

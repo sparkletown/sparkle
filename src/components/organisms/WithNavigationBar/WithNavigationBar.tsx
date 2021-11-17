@@ -2,9 +2,9 @@ import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 
@@ -35,10 +35,9 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withHiddenLoginButton,
   children,
 }) => {
-  // @debt remove useVenueId from here and just pass it through as a prop/similar
-  const venueId = useVenueId();
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   // @debt remove backButton from Navbar
   return (
@@ -48,7 +47,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
+      <RelatedVenuesProvider venueId={venueId} worldId={space?.worldId}>
         <Suspense fallback={<Loading />}>
           <NavBar
             hasBackButton={hasBackButton}
@@ -62,7 +61,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
       <div className="navbar-margin">{children}</div>
 
       <Footer />
-      <NewProfileModal venue={venue} />
+      <NewProfileModal venue={space} />
     </>
   );
 };

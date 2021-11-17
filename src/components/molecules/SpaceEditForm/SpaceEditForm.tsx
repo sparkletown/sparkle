@@ -27,9 +27,10 @@ import { RoomVisibility, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
@@ -87,7 +88,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   const roomVenueId = room?.url?.split("/").pop();
 

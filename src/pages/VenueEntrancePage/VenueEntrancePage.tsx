@@ -4,18 +4,17 @@ import { Redirect, useHistory, useParams } from "react-router-dom";
 import { EntranceStepTemplate } from "types/EntranceStep";
 
 import { isCompleteProfile } from "utils/profile";
-import { currentVenueSelector } from "utils/selectors";
 import {
   accountProfileVenueUrl,
   venueEntranceUrl,
   venueInsideUrl,
 } from "utils/url";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
@@ -26,15 +25,17 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
   const history = useHistory();
   const { step: unparsedStep } = useParams<{ step?: string }>();
-  const venueId = useVenueId();
-  const venue = useSelector(currentVenueSelector);
 
-  const { world } = useCurrentWorld({ worldId: venue?.worldId });
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
+
+  const { world } = useCurrentWorld({ worldId: space?.worldId });
 
   useConnectCurrentVenue();
   const parsedStep = Number.parseInt(unparsedStep ?? "", 10);
 
-  if (!venue || !venueId) {
+  if (!space || !venueId) {
     return <LoadingPage />;
   }
 
@@ -65,7 +66,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     case EntranceStepTemplate.WelcomeVideo:
       return (
         <WelcomeVideo
-          venueName={venue.name}
+          venueName={space.name}
           config={stepConfig}
           proceed={proceed}
         />

@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
 import { useSearchParam } from "react-use";
 
-interface ParamsTypes {
-  venueId?: string;
+export interface SpaceParams {
+  spaceSlug?: string;
 }
 
 /**
@@ -10,8 +10,8 @@ interface ParamsTypes {
  *
  * @see https://reactrouter.com/web/api/Hooks/useparams
  */
-export const useVenueId: () => string | undefined = () => {
-  const { venueId: urlParamVenueId } = useParams() as ParamsTypes;
+export const useSpaceParams: () => string | undefined = () => {
+  const { spaceSlug: urlParamVenueId } = useParams() as SpaceParams;
 
   // @debt this is a fallback for our legacy ?venueId=foo pattern. Once we eradicate that
   //   from the codebase in favour of using /:venueId/ paths in the URL, we can remove this.

@@ -25,7 +25,6 @@ import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -45,7 +44,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 }) => {
   const venueEvents = useSelector(venueEventsSelector);
 
-  const venueId = useVenueId();
+  const venueId = venue.id;
 
   const { world } = useWorldById(venue?.worldId);
 

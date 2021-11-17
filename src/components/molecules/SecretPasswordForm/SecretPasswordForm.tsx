@@ -7,13 +7,16 @@ import { setLocalStorageToken } from "utils/localStorage";
 import { isDefined, isTruthy } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   const [error, setError] = useState(false);
   const [password, setPassword] = useState<string>();

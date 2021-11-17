@@ -5,17 +5,17 @@ import { DEFAULT_VENUE } from "settings";
 
 import { venueEntranceUrl } from "utils/url";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import "./NavBarLogin.scss";
 
 export const NavBarLogin: FC = () => {
   const history = useHistory();
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
 
   const navigateToDefault = useCallback(
-    () => history.push(venueEntranceUrl(venueId ?? DEFAULT_VENUE)),
-    [history, venueId]
+    () => history.push(venueEntranceUrl(spaceSlug ?? DEFAULT_VENUE)),
+    [history, spaceSlug]
   );
 
   return (

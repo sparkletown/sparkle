@@ -6,10 +6,10 @@ import { useAsyncFn } from "react-use";
 
 import { Question } from "types/Question";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -34,12 +34,11 @@ export const Questions: React.FC = () => {
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: venue?.worldId,
+    worldId: space?.worldId,
   });
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
@@ -71,21 +70,21 @@ export const Questions: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (!venueId) {
-    return <>Error: Missing required venueId param</>;
+  if (!spaceSlug) {
+    return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isLoaded(venue) && !venue) {
-    return <>Error: venue not found for venueId={venueId}</>;
+  if (isLoaded(space) && !space) {
+    return <>Error: venue not found for spaceSlug={spaceSlug}</>;
   }
 
-  if (!venue || !isWorldLoaded) {
+  if (!space || !isWorldLoaded) {
     return <LoadingPage />;
   }
 

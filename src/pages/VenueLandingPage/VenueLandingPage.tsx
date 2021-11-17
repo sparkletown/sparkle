@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -19,13 +18,11 @@ import "./VenueLandingPage.scss";
 
 export const VenueLandingPage: React.FC = () => {
   useConnectCurrentVenue();
-  const venueId = useVenueId() || "";
+  const spaceSlug = useSpaceParams() || "";
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const venueRequestStatus = useSelector(
-    (state) => state.firestore.status.requested.currentVenue
-  );
-  const redirectUrl = venue?.config?.redirectUrl ?? "";
+  const { space, isLoaded } = useSpaceBySlug(spaceSlug);
+
+  const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
   useEffect(() => {
@@ -35,13 +32,13 @@ export const VenueLandingPage: React.FC = () => {
   }, [hostname, redirectUrl]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (venueRequestStatus && !venue) {
+  if (isLoaded && !space) {
     return (
       <WithNavigationBar hasBackButton withHiddenLoginButton>
         <NotFound />
@@ -49,13 +46,13 @@ export const VenueLandingPage: React.FC = () => {
     );
   }
 
-  if (!venue) {
+  if (!space) {
     return <LoadingPage />;
   }
 
   return (
     <WithNavigationBar hasBackButton withSchedule>
-      <VenueLandingPageContent venue={venue} />
+      <VenueLandingPageContent venue={space} />
     </WithNavigationBar>
   );
 };

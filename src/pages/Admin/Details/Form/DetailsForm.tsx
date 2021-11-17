@@ -21,7 +21,6 @@ import { adminWorldSpacesUrl } from "utils/url";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
@@ -61,7 +60,8 @@ const HANDLED_ERRORS: string[] = [
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   const history = useHistory();
-  const venueId = useVenueId();
+  const venueId = venue?.id;
+
   const { user } = useUser();
 
   const { worldParentVenues } = useWorldVenues(worldId ?? venue?.worldId ?? "");

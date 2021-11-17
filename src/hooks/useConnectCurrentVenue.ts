@@ -1,15 +1,18 @@
 import { currentVenueSelector } from "utils/selectors";
 
+import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
-import { useVenueId } from "./useVenueId";
+import { useSpaceParams } from "./useVenueId";
 
 /**
  * @deprecated use useConnectCurrentVenueNG instead
  * @see useConnectCurrentVenueNG
  */
 export const useConnectCurrentVenue = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   useFirestoreConnect(
     venueId
