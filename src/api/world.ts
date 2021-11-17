@@ -21,7 +21,6 @@ import { isDefined } from "utils/types";
 export interface World {
   adultContent?: boolean;
   attendeesTitle?: string;
-  chatTitle?: string;
   config: {
     landingPageConfig: {
       coverImageUrl: string;
@@ -132,7 +131,6 @@ export const createFirestoreWorldAdvancedInput: (
   const picked = pick(input, [
     "id",
     "attendeesTitle",
-    "chatTitle",
     "showBadges",
     "showNametags",
     "showRadio",

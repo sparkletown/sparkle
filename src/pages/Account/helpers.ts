@@ -2,11 +2,12 @@ import firebase from "firebase/app";
 
 import { ProfileLink, UserLocation } from "types/User";
 
+import { QuestionsFormData } from "pages/Account/ProfileQuestions";
+
 import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 
 import { CodeOfConductFormData } from "./CodeOfConduct";
 import { ProfileFormData } from "./Profile";
-import { QuestionsFormData } from "./Questions";
 
 type KidsModeUpdateData = {
   kidsMode: boolean;
