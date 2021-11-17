@@ -60,7 +60,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
       attendeesTitle: world.attendeesTitle,
-      chatTitle: world.chatTitle,
       radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
       showNametags: world.showNametags,
@@ -94,7 +93,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
     const data = {
       attendeesTitle: values.attendeesTitle,
-      chatTitle: values.chatTitle,
       radioStation: values.radioStation,
       showBadges: values.showBadges,
       showNametags: values.showNametags,
@@ -131,7 +129,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     const values: Partial<WorldAdvancedFormInput> = getValues();
     reset({
       attendeesTitle: values.attendeesTitle,
-      chatTitle: values.chatTitle,
       radioStation: values.radioStation,
       showBadges: values.showBadges,
       showNametags: values.showNametags,
@@ -181,20 +178,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             name="attendeesTitle"
             autoComplete="off"
             placeholder="Attendees title"
-            errors={errors}
-            register={register}
-          />
-        </AdminSection>
-
-        <AdminSection
-          title="Your venue chat label"
-          subtitle="(For example: Party, Event, Meeting)"
-          withLabel
-        >
-          <AdminInput
-            name="chatTitle"
-            autoComplete="off"
-            placeholder="Event label"
             errors={errors}
             register={register}
           />
