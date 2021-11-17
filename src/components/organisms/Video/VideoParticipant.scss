@@ -5,7 +5,7 @@
   height: 100%;
 
   &--mirrored {
-    .video-participant__video {
+    .VideoParticipant__video {
       transform: scale(-1, 1);
     }
   }

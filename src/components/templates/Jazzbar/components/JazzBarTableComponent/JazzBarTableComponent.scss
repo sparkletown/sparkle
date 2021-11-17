@@ -59,6 +59,7 @@ $seat-margin: 6px;
 
   .table-participant-picture {
     background: $content--under;
+    border-radius: $border-radius--xl;
   }
 
   .table-number {
@@ -67,10 +68,6 @@ $seat-margin: 6px;
     text-align: center;
     font-style: italic;
     font-weight: 600;
-  }
-
-  .Participant__profile-icon {
-    margin: $seat-margin;
   }
 
   .add-participant-button {

@@ -342,13 +342,6 @@ textarea {
   overflow: auto;
 }
 
-.Participant__profile-icon {
-  border-radius: 50%;
-  margin: 1px;
-  cursor: pointer;
-  object-fit: contain;
-}
-
 .room-attendance {
   cursor: pointer;
   border-radius: 10px;
@@ -513,13 +506,6 @@ h4 {
   }
 }
 
-.participant--video-disabled {
-  position: absolute;
-  background-color: $light-grey;
-  width: 100%;
-  height: 100%;
-}
-
 .full-page-container,
 .friendship-container,
 .conversation-space {
@@ -548,16 +534,6 @@ h4 {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 10px;
-
-    .Participant {
-      display: flex;
-      flex-grow: 1;
-      background: $content--under;
-
-      &--mirrored {
-        transform: scale(-1, 1);
-      }
-    }
   }
 }
 
@@ -566,17 +542,6 @@ h4 {
     padding: 10px;
     display: flex;
     flex-direction: column;
-  }
-}
-
-.participant-container {
-  .Participant {
-    display: flex;
-    flex-grow: 1;
-
-    &--mirrored {
-      transform: scale(-1, 1);
-    }
   }
 }
 
