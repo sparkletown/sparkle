@@ -3,6 +3,13 @@ import { FieldErrors, FieldValues } from "react-hook-form";
 
 import { EntranceStepButtonConfig } from "types/EntranceStep";
 
+import {
+  UseArrayAdd,
+  UseArrayClear,
+  UseArrayRemove,
+  UseArrayUpdate,
+} from "hooks/useArray";
+
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
 import { EntranceButtonsInputFieldSet } from "components/molecules/EntranceButtonsInputFieldSet";
@@ -13,25 +20,25 @@ import "./EntranceButtonsBuilder.scss";
 
 export interface EntranceButtonsBuilderProps {
   name: string;
-  hasLink?: boolean;
   items?: EntranceStepButtonConfig[];
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   title?: string;
   errors?: FieldErrors<FieldValues>;
-  onAdd: () => void;
-  onClear: () => void;
-  onRemove: (context: { index: number }) => void;
+  onAdd: UseArrayAdd<EntranceStepButtonConfig>;
+  onClear: UseArrayClear<EntranceStepButtonConfig>;
+  onUpdate: UseArrayUpdate<EntranceStepButtonConfig>;
+  onRemove: UseArrayRemove<EntranceStepButtonConfig>;
 }
 
 export const EntranceButtonsBuilder: React.FC<EntranceButtonsBuilderProps> = ({
   items,
   name,
-  hasLink,
   register,
   title,
   errors,
   onAdd,
   onClear,
+  onUpdate,
   onRemove,
 }) => {
   const count = items?.length ?? 0;
@@ -42,17 +49,14 @@ export const EntranceButtonsBuilder: React.FC<EntranceButtonsBuilderProps> = ({
       )}
 
       {Array.from({ length: count }).map((_, index) => {
-        // @debt any arbitrary button should be able to be removed, not just the last one
-        // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
-        const isLast = count && index === count - 1;
         return (
           <EntranceButtonsInputFieldSet
             errors={errors}
-            hasLink={hasLink}
             index={index}
             key={`${name}-${index}`}
             name={name}
-            onRemove={isLast ? onRemove : undefined}
+            onRemove={onRemove}
+            onUpdate={onUpdate}
             register={register}
           />
         );

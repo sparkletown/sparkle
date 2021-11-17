@@ -4,6 +4,8 @@ import { isLoaded } from "react-redux-firebase";
 import { useHistory, useLocation } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
+import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
+
 import { Question } from "types/Question";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -16,11 +18,12 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into Questions.scss
-import "./Account.scss";
-import "./Questions.scss";
+import "./ProfileQuestions.scss";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -28,7 +31,7 @@ export interface QuestionsFormData {
   likeAboutParties: string;
 }
 
-export const Questions: React.FC = () => {
+export const ProfileQuestions: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
 
@@ -46,7 +49,7 @@ export const Questions: React.FC = () => {
   });
 
   const proceed = useCallback(() => {
-    history.push(`/account/code-of-conduct${location.search}`);
+    history.push(`${ACCOUNT_CODE_QUESTIONS_URL}${location.search}`);
   }, [history, location.search]);
 
   useEffect(() => {
@@ -95,9 +98,9 @@ export const Questions: React.FC = () => {
   }`;
 
   return (
-    <div className="Questions page-container">
+    <div className="ProfileQuestions">
       <div className="hero-logo sparkle" />
-      <div className="login-container">
+      <div className="ProfileQuestions__container">
         <h2 className="header-message">{headerMessage}</h2>
 
         <p className="subheader-message">
@@ -106,7 +109,10 @@ export const Questions: React.FC = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {profileQuestions?.map((question: Question) => (
-            <div key={question.name} className="Questions__question form-group">
+            <div
+              key={question.name}
+              className="ProfileQuestions__question form-group"
+            >
               <label className="input-block input-centered">
                 <strong>{question.text}</strong>
                 <textarea
@@ -119,14 +125,14 @@ export const Questions: React.FC = () => {
             </div>
           ))}
 
-          <div className="input-group">
-            <button
+          <div>
+            <ButtonNG
+              variant="primary"
               type="submit"
-              className="btn btn-primary btn-block btn-centered"
               disabled={!formState.isValid || isUpdating}
             >
               Save answers and continue
-            </button>
+            </ButtonNG>
             {isUpdating && <Loading />}
             {httpError && (
               <span className="input-error">{httpError.message}</span>

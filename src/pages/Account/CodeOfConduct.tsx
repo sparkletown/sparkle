@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
@@ -15,6 +14,8 @@ import { updateTheme } from "pages/VenuePage/helpers";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import { updateUserProfile } from "./helpers";
 
@@ -33,12 +34,6 @@ export interface CodeOfConductFormData {
   regionalBurn: string;
 }
 
-export interface CodeOfConductQuestion {
-  name: keyof CodeOfConductFormData;
-  text: string;
-  link?: string;
-}
-
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
   const returnUrl = useSearchParam("returnUrl") ?? undefined;
@@ -46,7 +41,7 @@ export const CodeOfConduct: React.FC = () => {
   const { user } = useUser();
 
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
     worldId: space?.worldId,
@@ -68,11 +63,11 @@ export const CodeOfConduct: React.FC = () => {
   useEffect(() => {
     if (!isWorldLoaded) return;
 
-    // Skip this screen if there are no code of conduct questions for the venue
+    // Skip this screen if there are no code of conduct questions
     if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [isWorldLoaded, proceed, space, world?.questions?.code?.length]);
+  }, [isWorldLoaded, proceed, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
@@ -95,7 +90,7 @@ export const CodeOfConduct: React.FC = () => {
     return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isLoaded(space) && !space) {
+  if (isSpaceLoaded && !space) {
     return <>Error: venue not found for spaceSlug={spaceSlug}</>;
   }
 
@@ -146,13 +141,13 @@ export const CodeOfConduct: React.FC = () => {
             ))}
 
             <div className="input-group">
-              <button
+              <ButtonNG
+                variant="primary"
                 type="submit"
-                className="btn btn-primary btn-block btn-centered"
                 disabled={!formState.isValid || isUpdating}
               >
                 Enter the event
-              </button>
+              </ButtonNG>
               {isUpdating && <Loading />}
               {httpError && (
                 <span className="input-error">{httpError.message}</span>

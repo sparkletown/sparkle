@@ -1,3 +1,5 @@
+import Bugsnag from "@bugsnag/js";
+
 import {
   FACEBOOK_EMBED_URL,
   TWITCH_EMBED_URL,
@@ -94,43 +96,55 @@ export const convertToEmbeddableUrl: (
     return "";
   }
 
-  const urlObject = new URL(urlString);
-  const { host, searchParams, pathname } = urlObject;
+  try {
+    const urlObject = new URL(urlString);
+    const { host, searchParams, pathname } = urlObject;
 
-  withAutoPlay({ urlObject, autoPlay });
+    withAutoPlay({ urlObject, autoPlay });
 
-  const isTwitch = host.includes(TWITCH_SHORT_URL);
+    const isTwitch = host.includes(TWITCH_SHORT_URL);
 
-  if (isTwitch) {
-    return convertTwitchUrl({
-      pathname,
-      urlParameters: searchParams,
+    if (isTwitch) {
+      return convertTwitchUrl({
+        pathname,
+        urlParameters: searchParams,
+      });
+    }
+
+    if (
+      host?.includes(YOUTUBE_SHORT_URL_STRING) &&
+      !pathname?.includes("embed")
+    ) {
+      const youtubeUrl = getYoutubeUrl({ pathname, searchParams });
+
+      return youtubeUrl.href;
+    }
+
+    if (
+      host?.includes("vimeo") &&
+      !host?.includes("player") &&
+      // NOTE: If you have a scheduled live event, it gives you a different embed code
+      !urlString?.includes(VIMEO_SHORT_EVENT_URL)
+    ) {
+      const vimeoUrlObject = new URL(`${VIMEO_EMBED_URL}${pathname}`);
+
+      return vimeoUrlObject.href;
+    }
+
+    if (pathname?.includes(FACEBOOK_EMBED_URL)) {
+      searchParams.set("mute", "0");
+    }
+
+    return urlObject.href;
+  } catch (error) {
+    console.error(convertToEmbeddableUrl.name, { urlString, autoPlay }, error);
+    Bugsnag.notify(error, (event) => {
+      event.addMetadata("context", {
+        location: "src/utils::convertToEmbeddableUrl",
+        urlString,
+        autoPlay,
+      });
     });
+    return "";
   }
-
-  if (
-    host?.includes(YOUTUBE_SHORT_URL_STRING) &&
-    !pathname?.includes("embed")
-  ) {
-    const youtubeUrl = getYoutubeUrl({ pathname, searchParams });
-
-    return youtubeUrl.href;
-  }
-
-  if (
-    host?.includes("vimeo") &&
-    !host?.includes("player") &&
-    // NOTE: If you have a scheduled live event, it gives you a different embed code
-    !urlString?.includes(VIMEO_SHORT_EVENT_URL)
-  ) {
-    const vimeoUrlObject = new URL(`${VIMEO_EMBED_URL}${pathname}`);
-
-    return vimeoUrlObject.href;
-  }
-
-  if (pathname?.includes(FACEBOOK_EMBED_URL)) {
-    searchParams.set("mute", "0");
-  }
-
-  return urlObject.href;
 };

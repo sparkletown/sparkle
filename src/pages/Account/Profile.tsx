@@ -3,7 +3,11 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+import {
+  ACCOUNT_PROFILE_QUESTIONS_URL,
+  DEFAULT_VENUE,
+  DISPLAY_NAME_MAX_CHAR_COUNT,
+} from "settings";
 
 import { useUser } from "hooks/useUser";
 import { useSpaceParams } from "hooks/useVenueId";
@@ -19,6 +23,7 @@ import { updateUserProfile } from "./helpers";
 
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
+import "./Profile.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -61,7 +66,7 @@ export const Profile: React.FC = () => {
 
       // @debt Should we throw an error here rather than defaulting to empty string?
       const nextUrl = spaceSlug
-        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
+        ? `${ACCOUNT_PROFILE_QUESTIONS_URL}?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
       history.push(nextUrl);
@@ -72,8 +77,8 @@ export const Profile: React.FC = () => {
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
-      <div className="login-container">
+    <div className="Profile page-container-onboarding">
+      <div className="Profile__container login-container">
         <h2 className="login-welcome-title">
           Well done! Now create your profile
         </h2>

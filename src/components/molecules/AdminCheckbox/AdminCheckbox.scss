@@ -96,13 +96,13 @@ $checkbox-shadow-preset: inset 0 0 0 1px;
     transition: $checkbox-transition;
   }
 
+  &__input:checked ~ &__box &__tick {
+    opacity: 1;
+    transform: scale(1);
+  }
+
   &__input:checked ~ &__box {
     background-color: var(--accent--under);
-
-    &__tick {
-      opacity: 1;
-      transform: scale(1);
-    }
   }
 
   &--toggler &__box,

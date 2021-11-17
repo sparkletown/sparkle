@@ -110,7 +110,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    withSchedule && (world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+    !isAdminContext &&
+    withSchedule &&
+    (world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 

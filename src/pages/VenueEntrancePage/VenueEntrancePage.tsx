@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
-import { EntranceStepTemplate } from "types/EntranceStep";
+import {
+  EntranceStepTemplate,
+  EntranceStepTemplateProps,
+} from "types/EntranceStep";
 
 import { isCompleteProfile } from "utils/profile";
 import {
@@ -11,41 +14,51 @@ import {
 } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
 import { useSpaceParams } from "hooks/useVenueId";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
-  const { user, profile } = useUser();
+import { NotFound } from "components/atoms/NotFound";
+
+const ENTRANCE_STEP_TEMPLATE: Record<
+  EntranceStepTemplate,
+  React.FC<EntranceStepTemplateProps>
+> = {
+  [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
+};
+
+export const VenueEntrancePage: React.FC = () => {
   const history = useHistory();
+  const { user, profile } = useUser();
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
   const venueId = space?.id;
 
-  const { world } = useCurrentWorld({ worldId: space?.worldId });
+  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const step = Number.parseInt(unparsedStep ?? "", 10);
 
-  useConnectCurrentVenue();
-  const parsedStep = Number.parseInt(unparsedStep ?? "", 10);
+  const proceed = useCallback(
+    () => venueId && history.push(venueEntranceUrl(venueId, step + 1)),
+    [venueId, step, history]
+  );
 
-  if (!space || !venueId) {
+  if (!isSpaceLoaded || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
-  if (
-    unparsedStep === undefined ||
-    !(parsedStep > 0) ||
-    !world?.entrance ||
-    !world?.entrance.length ||
-    world?.entrance.length < parsedStep
-  ) {
+  if (!venueId || !space) {
+    return <NotFound />;
+  }
+
+  const stepConfig = world?.entrance?.[step - 1];
+  if (!stepConfig) {
     return <Redirect to={venueInsideUrl(venueId)} />;
   }
 
@@ -57,19 +70,18 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
     return <Redirect to={accountProfileVenueUrl(venueId)} />;
   }
 
-  const proceed = () => {
-    history.push(venueEntranceUrl(venueId, parsedStep + 1));
-  };
+  const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =
+    ENTRANCE_STEP_TEMPLATE[stepConfig.template];
 
-  const stepConfig = world.entrance[parsedStep - 1];
-  switch (stepConfig.template) {
-    case EntranceStepTemplate.WelcomeVideo:
-      return (
-        <WelcomeVideo
-          venueName={space.name}
-          config={stepConfig}
-          proceed={proceed}
-        />
-      );
+  if (!EntranceStepTemplate) {
+    return null;
   }
+
+  return (
+    <EntranceStepTemplate
+      venueName={space.name}
+      config={stepConfig}
+      proceed={proceed}
+    />
+  );
 };
