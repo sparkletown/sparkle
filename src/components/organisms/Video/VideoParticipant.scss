@@ -3,6 +3,9 @@
 .VideoParticipant {
   position: relative;
   height: 100%;
+  max-width: $video-participant-optimal-width;
+  max-height: $video-participant-optimal-height;
+  width: 100%;
 
   &--mirrored {
     .VideoParticipant__video {
@@ -18,9 +21,10 @@
     border-radius: $border-radius--xl;
 
     &-element {
-      width: inherit;
-
       border-radius: $border-radius--xl;
+      width: auto;
+      max-width: $video-participant-optimal-width;
+      height: auto;
 
       &--disabled {
         opacity: 0;
