@@ -1,7 +1,9 @@
 import { FirebaseReducer } from "react-redux-firebase";
 import { omit, pick } from "lodash";
 
-import { User, UserLocation, UserWithLocation } from "types/User";
+import { DEFAULT_PARTY_NAME } from "settings";
+
+import { BaseUser, User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId } from "./id";
 import { wrapIntoSlashes } from "./string";
@@ -37,3 +39,11 @@ export const extractLocationFromUser = <T extends UserWithLocation>(user: T) =>
 
 export const isCompleteUserInfo = (user: FirebaseReducer.AuthState) =>
   isTruthy(user.displayName) && isTruthy(user.photoURL);
+
+export type UserAvatarNameFields = Pick<BaseUser, "partyName" | "anonMode">;
+
+export const getUserDisplayName = (user: UserAvatarNameFields) => {
+  return user?.anonMode
+    ? DEFAULT_PARTY_NAME
+    : user?.partyName ?? DEFAULT_PARTY_NAME;
+};
