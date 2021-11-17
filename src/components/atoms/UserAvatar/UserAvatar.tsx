@@ -2,23 +2,18 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { BaseUser, UsernameVisibility, UserStatus } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-import {
-  getFirebaseStorageResizedImage,
-  ImageResizeOptions,
-} from "utils/image";
 
 import { DesignVersion, useDesignVersion } from "hooks/useDesignVersion";
+import { UserAvatarSize, useUserAvatar } from "hooks/useUserAvatar";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
-
-export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export type UserAvatarUserFields = WithId<
   Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode" | "status">
@@ -43,15 +38,6 @@ export interface UserAvatarPresentationProps extends ContainerClassName {
   isOnline?: boolean;
 }
 
-// @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.scss
-const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
-  small: 25,
-  medium: 40,
-  large: 54,
-  xlarge: 100,
-  full: null,
-};
-
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
@@ -71,19 +57,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     isStatusEnabledForVenue,
   } = useVenueUserStatuses(user);
 
-  const avatarSrc = useMemo((): string => {
-    const url = user?.anonMode
-      ? DEFAULT_PROFILE_IMAGE
-      : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
-
-    const facadeSize = size ? AVATAR_SIZE_MAP[size] : undefined;
-    const resizeOptions: ImageResizeOptions = { fit: "crop" };
-    if (facadeSize) {
-      resizeOptions.width = resizeOptions.height = facadeSize;
-    }
-
-    return getFirebaseStorageResizedImage(url, resizeOptions);
-  }, [user, size]);
+  const avatarSrc = useUserAvatar(user, size);
 
   const userDisplayName: string = user?.anonMode
     ? DEFAULT_PARTY_NAME
