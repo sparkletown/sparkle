@@ -7,7 +7,7 @@ import { createSlug } from "api/admin";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
-import { UsernameVisibility, UserStatus } from "types/User";
+import { UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
@@ -43,7 +43,6 @@ export interface World {
   radioStations?: string[];
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
-  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showSchedule?: boolean;
   showUserStatus?: boolean;
@@ -134,7 +133,6 @@ export const createFirestoreWorldAdvancedInput: (
     "attendeesTitle",
     "chatTitle",
     "showBadges",
-    "showNametags",
     "showRadio",
     "showSchedule",
     "showUserStatus",
