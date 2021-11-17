@@ -10,7 +10,8 @@ import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -41,7 +42,9 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   capacity,
   onHide,
 }) => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   const formDefaultValues = useMemo(
     () => ({

@@ -19,7 +19,7 @@ import { buildEmptyVenue } from "utils/venue";
 import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import {
   createPortalSchema,
@@ -53,7 +53,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
 
   const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
@@ -70,7 +70,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
     { loading: isLoading, error: submitError },
     addRoom,
   ] = useAsyncFn(async () => {
-    if (!user || !venueId || !template) return;
+    if (!user || !spaceSlug || !template) return;
 
     const { roomUrl, venueName } = getValues();
 
@@ -92,22 +92,22 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     if (template !== "external") {
       const venueData = buildEmptyVenue(venueName, template);
-      const spaceSlug = createSlug(venueName);
+      const newSpaceSlug = createSlug(venueName);
 
       await createVenue_v2(
         {
           ...venueData,
           worldId,
-          parentId: venueId,
-          slug: spaceSlug,
+          parentId: spaceSlug,
+          slug: newSpaceSlug,
         },
         user
       );
     }
 
-    await createRoom(roomData, venueId, user);
+    await createRoom(roomData, spaceSlug, user);
     await hideModal();
-  }, [getValues, hideModal, icon, template, user, venueId, worldId]);
+  }, [getValues, hideModal, icon, template, user, spaceSlug, worldId]);
 
   const { isValid } = useCheckImage(poster);
 

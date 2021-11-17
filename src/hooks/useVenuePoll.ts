@@ -11,11 +11,15 @@ import {
 
 import { buildBaseMessage } from "utils/chat";
 
+import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useUser } from "./useUser";
-import { useVenueId } from "./useVenueId";
+import { useSpaceParams } from "./useVenueId";
 
 export const useVenuePoll = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
+
   const { userWithId } = useUser();
 
   const voteInPoll = useCallback(

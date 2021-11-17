@@ -15,13 +15,14 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
@@ -67,8 +68,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   withHiddenLoginButton,
 }) => {
   const { user, userWithId } = useUser();
-  const venueId = useVenueId();
   const isAdminContext = useAdminContextCheck();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   const {
     currentVenue: relatedVenue,

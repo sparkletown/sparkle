@@ -22,9 +22,10 @@ import { Room } from "types/rooms";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
@@ -78,7 +79,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 }) => {
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   const portalId = room?.url?.split("/").pop();
 

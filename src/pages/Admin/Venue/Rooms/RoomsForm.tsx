@@ -24,9 +24,10 @@ import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -47,7 +48,9 @@ import { validationSchema } from "./RoomsValidationSchema";
 import "../Venue.scss";
 
 export const RoomsForm: React.FC = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
   const history = useHistory();
   const { user } = useUser();
   const firestore = useFirestore();
@@ -94,7 +97,7 @@ export const RoomsForm: React.FC = () => {
 
   if (isLoading) return <LoadingPage />;
 
-  if (!venue || !venueId) return null;
+  if (!venue || !venueId || !spaceSlug) return null;
 
   if (!user) {
     return <Login formType="login" venueId={venueId} />;
@@ -104,6 +107,7 @@ export const RoomsForm: React.FC = () => {
     <WithNavigationBar>
       <AdminRestricted>
         <RoomInnerForm
+          spaceSlug={spaceSlug}
           venueId={venueId}
           venue={venue}
           editingRoom={room}
@@ -116,6 +120,7 @@ export const RoomsForm: React.FC = () => {
 
 interface RoomInnerFormProps {
   venueId: string;
+  spaceSlug: string;
   venue: PartyMapVenue;
   editingRoom?: Room;
   editingRoomIndex?: number;
@@ -124,7 +129,7 @@ interface RoomInnerFormProps {
 export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
-  const { venue, venueId, editingRoom, editingRoomIndex } = props;
+  const { venue, venueId, spaceSlug, editingRoom, editingRoomIndex } = props;
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -145,7 +150,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     validationContext: { editing: !!editingRoom },
     defaultValues: {
       ...defaultValues,
-      url: defaultValues.url ?? venueInsideUrl(venueId),
+      url: defaultValues.url ?? venueInsideUrl(spaceSlug),
       visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });

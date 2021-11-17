@@ -4,10 +4,10 @@ import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -21,15 +21,16 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
-  const venueId = useVenueId();
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const venueId = space?.id;
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(
-    currentVenue
+    venueId
       ? {
           collection: "experiences",
-          doc: currentVenue.id,
+          doc: venueId,
           subcollections: [{ collection: "reactions" }],
           orderBy: ["created_at", "desc"],
           storeAs: "reactions",
@@ -49,8 +50,8 @@ export const ReactionPage: React.FC = () => {
 
         <div className="col-4">
           <UserList
-            usersSample={currentVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-            userCount={currentVenue?.recentUserCount ?? 0}
+            usersSample={space?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={space?.recentUserCount ?? 0}
             showEvenWhenNoUsers
           />
         </div>

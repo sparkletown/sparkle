@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useVenueId";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 
@@ -9,13 +9,13 @@ import VenueWizardEdit from "./Edit";
 import { initialState, VenueWizardReducer } from "./redux";
 
 const VenueWizard: React.FC = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
   const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
 
   return (
     <AdminRestricted>
-      {venueId ? (
-        <VenueWizardEdit venueId={venueId} />
+      {spaceSlug ? (
+        <VenueWizardEdit spaceSlug={spaceSlug} />
       ) : (
         <VenueWizardCreate state={state} dispatch={dispatch} />
       )}
