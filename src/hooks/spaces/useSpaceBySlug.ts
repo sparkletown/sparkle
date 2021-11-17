@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 
@@ -7,9 +6,10 @@ import { AnyVenue } from "types/venues";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseSpaceBySlugResult = {
+export type UseSpaceBySlugResult = {
   space?: WithId<AnyVenue>;
   isLoaded: boolean;
+  error?: string;
 };
 
 /**
@@ -37,6 +37,14 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
 
   const isSpaceLoaded = status !== "loading";
 
+  if (!spaces?.[0] && isSpaceLoaded) {
+    return {
+      space: undefined,
+      isLoaded: true,
+      error: `Space with the following slug: ${spaceSlug} does not exist.`,
+    };
+  }
+
   if (spaces?.length > 1) {
     Bugsnag.notify(
       `Multiple spaces have been found with the following slug: ${spaceSlug}.`,
@@ -50,11 +58,8 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
     );
   }
 
-  return useMemo(
-    () => ({
-      space: spaces?.[0],
-      isLoaded: isSpaceLoaded,
-    }),
-    [isSpaceLoaded, spaces]
-  );
+  return {
+    space: spaces?.[0],
+    isLoaded: isSpaceLoaded,
+  };
 };
