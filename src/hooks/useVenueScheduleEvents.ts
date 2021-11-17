@@ -3,6 +3,7 @@ import {
   differenceInDays,
   fromUnixTime,
   getUnixTime,
+  isFuture,
   max,
   millisecondsToSeconds,
   minutesToSeconds,
@@ -95,7 +96,11 @@ const useVenueScheduleEvents = ({
     [liveAndFutureEvents, firstRangeDateInSeconds]
   );
 
-  const endScheduleDate = sovereignVenue?.end_utc_seconds;
+  const endScheduleDate =
+    sovereignVenue?.end_utc_seconds &&
+    isFuture(fromUnixTime(sovereignVenue.end_utc_seconds)) &&
+    sovereignVenue?.end_utc_seconds;
+
   const daysInBetween = differenceInDays(
     fromUnixTime(endScheduleDate || maxDate),
     fromUnixTime(firstRangeDateInSeconds)
