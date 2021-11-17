@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { format } from "date-fns";
 import isToday from "date-fns/isToday";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
@@ -51,7 +52,10 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
       <div className="ScheduleEventListNG">
         <ScheduleEventSubListNG
           events={daysEvents}
-          title={`Events on ${formatDateRelativeToNow(scheduleDate)}`}
+          title={`Coming up ${formatDateRelativeToNow(scheduleDate, {
+            formatTomorrow: () => "tomorrow",
+            formatOtherDate: (date) => "on " + format(date, "do MMM yyyy"),
+          })}`}
         />
       </div>
     );
@@ -59,9 +63,9 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
 
   return (
     <div className="ScheduleEventListNG">
-      <ScheduleEventSubListNG events={liveEvents} title="What’s on now" />
+      <ScheduleEventSubListNG events={liveEvents} title="Happening now" />
       <ScheduleEventSubListNG events={comingSoonEvents} title="Starting soon" />
-      <ScheduleEventSubListNG events={laterEvents} title="More events today" />
+      <ScheduleEventSubListNG events={laterEvents} title="Coming up" />
     </div>
   );
 };
