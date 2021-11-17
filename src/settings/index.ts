@@ -43,6 +43,7 @@ export * from "./spacesSettings";
 export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
+export * from "./worldDefaultSettings";
 
 export const ENABLE_POPUPS_URL =
   "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
@@ -69,8 +70,6 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
-export const DEFAULT_ATTENDEES_TITLE = "attendees";
-export const DEFAULT_CHAT_TITLE = "Space";
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
 export const VENUE_NAME_MAX_CHAR_COUNT = 50;
@@ -603,7 +602,6 @@ export const TAKE_SEAT_EVENT_NAME = "Take a seat";
 export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
 
 // SCHEDULE
-export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;

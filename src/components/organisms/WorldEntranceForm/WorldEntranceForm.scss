@@ -6,14 +6,14 @@
     flex-direction: column;
     gap: font-size--parent(1);
 
-    .Checkbox {
+    .AdminCheckbox {
       justify-content: flex-start;
 
-      &:not(.Toggler) .Checkbox__custom-input {
-        margin-left: font-size--parent(1.5);
+      &--checkbox {
+        margin-left: font-size--parent(2);
       }
 
-      &.Toggler .Checkbox__custom-input {
+      &--toggler &__box {
         width: font-size--parent(2);
       }
     }

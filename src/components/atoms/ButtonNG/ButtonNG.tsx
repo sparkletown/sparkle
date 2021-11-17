@@ -23,7 +23,9 @@ export type ButtonVariant =
   | "admin-gradient"
   | "danger-gradient"
   | "normal-gradient"
-  | "login-gradient";
+  | "login-gradient"
+  | "login-primary"
+  | "login-outline";
 
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
@@ -83,6 +85,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   const resolvedUrl = useMemo(() => linkTo && resolveUrlPath(linkTo), [linkTo]);
 
   const parentClasses = classNames({
+    [className]: className,
     "ButtonNG ButtonNG__link": isLink,
     "ButtonNG ButtonNG__button": !isLink,
     "ButtonNG--disabled": disabled,
@@ -91,7 +94,6 @@ export const ButtonNG: React.FC<ButtonProps> = ({
     [`ButtonNG--icon-only ButtonNG--${iconSize}`]: iconOnly,
     [`ButtonNG--icon-text`]: !iconOnly,
     [`ButtonNG--${variant}`]: variant && !disabled,
-    [className]: className,
   });
 
   const iconClasses = classNames({

@@ -1,0 +1,21 @@
+@import "scss/constants.scss";
+
+.SpaceWizard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  &__pad {
+    min-height: $admin-ng-tab-bar-height;
+  }
+
+  @media (max-width: $media-breakpoint--lg) {
+    align-items: center;
+  }
+
+  @media (max-width: $media-breakpoint--md) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+}

@@ -5,7 +5,7 @@ import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { WorldNavTab } from "types/world";
 
-import { useWorldEditParams } from "hooks/useWorldEditParams";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedPanel";
 import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
@@ -27,7 +27,7 @@ const PANEL_MAP = Object.freeze({
 
 export const WorldEditor: React.FC = () => {
   const history = useHistory();
-  const { worldId, selectedTab } = useWorldEditParams();
+  const { worldSlug, selectedTab } = useWorldParams();
 
   const navigateToHome = useCallback(
     () => history.push(ADMIN_V3_WORLDS_BASE_URL),
@@ -41,7 +41,10 @@ export const WorldEditor: React.FC = () => {
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
           <WorldNav />
-          <WorldEditorPanel worldId={worldId} onClickHome={navigateToHome} />
+          <WorldEditorPanel
+            worldSlug={worldSlug}
+            onClickHome={navigateToHome}
+          />
         </AdminRestricted>
       </WithNavigationBar>
     </div>

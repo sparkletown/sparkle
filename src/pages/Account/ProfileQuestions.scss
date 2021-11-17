@@ -1,0 +1,17 @@
+@import "scss/constants";
+
+.ProfileQuestions {
+  height: 100vh;
+  background-color: transparent;
+
+  &,
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__question {
+    text-align: center;
+  }
+}
