@@ -210,7 +210,6 @@ export interface TruncatedVenueType {
   start_utc_seconds?: number;
   end_utc_seconds?: number;
   ticketUrl?: string;
-  chatTitle?: string;
   showReactions?: boolean;
   showShoutouts?: boolean;
   auditoriumColumns?: number;
