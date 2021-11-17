@@ -28,7 +28,6 @@ export interface WorldEntranceFormInput {
 
 export interface WorldAdvancedFormInput {
   attendeesTitle?: string;
-  chatTitle?: string;
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
