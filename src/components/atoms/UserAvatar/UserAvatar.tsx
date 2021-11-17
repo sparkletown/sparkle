@@ -19,6 +19,8 @@ export type UserAvatarUserFields = WithId<
   Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode" | "status">
 >;
 
+export type { UserAvatarSize };
+
 export interface UserAvatarProps extends ContainerClassName {
   user?: UserAvatarUserFields;
   imageClassName?: string;
