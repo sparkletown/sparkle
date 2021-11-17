@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 
@@ -7,9 +6,10 @@ import { AnyVenue } from "types/venues";
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseSpaceBySlugResult = {
+export type UseSpaceBySlugResult = {
   space?: WithId<AnyVenue>;
   isLoaded: boolean;
+  error?: string;
 };
 
 /**
@@ -21,7 +21,6 @@ type UseSpaceBySlugResult = {
 export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
   spaceSlug
 ) => {
-  const [error, setError] = useState<string>();
   const firestore = useFirestore();
 
   const spacesRef = firestore
@@ -38,8 +37,12 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
 
   const isSpaceLoaded = status !== "loading";
 
-  if (!spaces?.[0]) {
-    setError(`Space with the following slug: ${spaceSlug} does not exist.`);
+  if (!spaces?.[0] && isSpaceLoaded) {
+    return {
+      space: undefined,
+      isLoaded: true,
+      error: `Space with the following slug: ${spaceSlug} does not exist.`,
+    };
   }
 
   if (spaces?.length > 1) {
@@ -58,6 +61,5 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
   return {
     space: spaces?.[0],
     isLoaded: isSpaceLoaded,
-    error,
   };
 };
