@@ -237,7 +237,6 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -272,7 +271,7 @@ const createFirestoreVenueInput_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/${urlKey}.${fileExtension}`
+      `users/${user.uid}/venues/${input.slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -293,8 +292,8 @@ const createFirestoreVenueInput_v2 = async (
     template: input.template ?? VenueTemplate.partymap,
     parentId: input.parentId ?? "",
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
-    name: slug,
-    slug,
+    name: input.name,
+    slug: input.slug,
   };
   return firestoreVenueInput;
 };
