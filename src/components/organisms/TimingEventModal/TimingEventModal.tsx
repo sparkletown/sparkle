@@ -121,8 +121,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const parentRoom = venue?.rooms?.find(({ title }) => title === event?.room);
 
   const parentSpace = {
-    name: parentRoom?.title ?? "",
-    template: parentRoom?.template,
+    name: parentRoom?.title ?? venue.name,
+    template: parentRoom?.template ?? venue.template,
   };
 
   return (
