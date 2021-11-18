@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSpaceParams } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -17,7 +16,6 @@ import VenueLandingPageContent from "./VenueLandingPageContent";
 import "./VenueLandingPage.scss";
 
 export const VenueLandingPage: React.FC = () => {
-  useConnectCurrentVenue();
   const spaceSlug = useSpaceParams() || "";
 
   const { space, isLoaded } = useSpaceBySlug(spaceSlug);
@@ -38,16 +36,16 @@ export const VenueLandingPage: React.FC = () => {
     updateTheme(space);
   }, [space]);
 
-  if (isLoaded && !space) {
+  if (!isLoaded) {
+    return <LoadingPage />;
+  }
+
+  if (!space) {
     return (
       <WithNavigationBar hasBackButton withHiddenLoginButton>
         <NotFound />
       </WithNavigationBar>
     );
-  }
-
-  if (!space) {
-    return <LoadingPage />;
   }
 
   return (

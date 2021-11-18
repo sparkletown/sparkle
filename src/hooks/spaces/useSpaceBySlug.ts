@@ -28,11 +28,9 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
     .where("slug", "==", spaceSlug ?? "")
     .withConverter(withIdConverter<AnyVenue>());
 
+  // Note: Avoid using the option 'initialData' because it will make status always return 'success'
   const { data: spaces, status } = useFirestoreCollectionData<WithId<AnyVenue>>(
-    spacesRef,
-    {
-      initialData: undefined,
-    }
+    spacesRef
   );
 
   const isSpaceLoaded = status !== "loading";

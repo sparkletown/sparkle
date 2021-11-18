@@ -202,11 +202,11 @@ export const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (!space || !venueId) {
+  if (!isLoaded || !venueId) {
     return <LoadingPage />;
   }
 
-  if (isLoaded && !space) {
+  if (!space) {
     return (
       <WithNavigationBar hasBackButton withHiddenLoginButton>
         <NotFound />
