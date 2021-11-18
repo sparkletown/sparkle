@@ -118,6 +118,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     template: template,
   }));
 
+  const parentRoom = venue?.rooms?.find(({ title }) => title === event?.room);
+
+  const parentSpace = {
+    name: parentRoom?.title ?? "",
+    template: parentRoom?.template,
+  };
+
   return (
     <>
       <Modal
@@ -136,7 +143,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   setValue={setValue}
                   register={register}
                   fieldName="room"
-                  defaultSpace={venue}
+                  defaultSpace={parentSpace}
                   error={errors.room}
                 />
               </div>

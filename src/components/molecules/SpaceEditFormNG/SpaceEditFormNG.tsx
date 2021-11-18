@@ -241,7 +241,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   );
 
   const parentSpace = ownedVenues.find(
-    ({ id, name, template }) => id === portal?.parentId && { name, template }
+    ({ id, name, template }) => id === portal?.parentId
   );
 
   return (

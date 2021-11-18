@@ -270,7 +270,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   );
 
   const parentSpace = ownedVenues.find(
-    ({ id, name, template }) => id === roomVenue?.parentId && { name, template }
+    ({ id, name, template }) => id === roomVenue?.parentId
   );
 
   return (

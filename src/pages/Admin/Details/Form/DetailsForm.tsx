@@ -298,7 +298,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   );
 
   const parentSpace = filteredWorlds.find(
-    ({ id, name, template }) => id === venue?.parentId && { name, template }
+    ({ id, name, template }) => id === venue?.parentId
   );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
