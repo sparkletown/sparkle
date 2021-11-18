@@ -7,9 +7,7 @@ import React, {
 import algoliasearch, { SearchClient, SearchIndex } from "algoliasearch/lite";
 import { keyBy } from "lodash";
 
-import { ALGOLIA_API_SEARCH_KEY } from "secrets";
-
-import { ALGOLIA_APP_ID } from "settings";
+import { ALGOLIA_API_SEARCH_KEY, ALGOLIA_APP_ID } from "secrets";
 
 import { AlgoliaSearchIndex } from "types/algolia";
 
@@ -48,6 +46,15 @@ export const AlgoliaSearchProvider: React.FC<PropsWithChildren<unknown>> = ({
       console.warn(
         "Algolia API search key is missing! Search among users will not work."
       );
+
+      return undefined;
+    }
+
+    if (!ALGOLIA_APP_ID) {
+      console.warn(
+        "Algolia Application id key is missing! Search among users will not work."
+      );
+
       return undefined;
     }
     return initState(ALGOLIA_APP_ID, ALGOLIA_API_SEARCH_KEY);
