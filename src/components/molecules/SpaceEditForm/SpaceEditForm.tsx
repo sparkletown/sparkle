@@ -258,7 +258,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const backButtonOptionList = ownedVenues.filter(
     ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== roomVenue?.worldId) {
+      if (roomVenue?.worldId !== worldId || id === roomVenueId) {
         return null;
       }
 
@@ -267,6 +267,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         template,
       };
     }
+  );
+
+  const parentSpace = ownedVenues.find(
+    ({ id, name, template }) => id === roomVenue?.parentId && { name, template }
   );
 
   return (
@@ -331,11 +335,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             >
               <SpacesDropdown
                 venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={venueId}
                 setValue={setValue}
                 register={register}
                 fieldName="venue.parentId"
-                defaultSpace={venueValues.parentId}
+                defaultSpace={parentSpace}
+                error={errors?.venue?.parentId}
               />
             </AdminSection>
           </AdminSpacesListItem>

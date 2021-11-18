@@ -280,9 +280,13 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId: venueWorldId }) => {
-      if (venueId === id || venue?.worldId !== venueWorldId) {
+  const filteredWorlds = ownedVenues.filter(
+    (venue) => venue.id === venue.worldId
+  );
+
+  const backButtonOptionList = filteredWorlds.filter(
+    ({ id, name, template }) => {
+      if (venueId === id) {
         return null;
       }
 
@@ -291,6 +295,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
         template,
       };
     }
+  );
+
+  const parentSpace = filteredWorlds.find(
+    ({ id, name, template }) => id === venue?.parentId && { name, template }
   );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
@@ -408,11 +416,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
           >
             <SpacesDropdown
               venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-              venueId={venueId}
               setValue={setValue}
               register={register}
               fieldName="parentId"
-              defaultSpace={values.parentId}
+              defaultSpace={parentSpace}
+              error={errors.parentId}
             />
           </AdminSection>
           <AdminCheckbox

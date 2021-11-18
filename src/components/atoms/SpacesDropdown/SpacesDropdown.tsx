@@ -10,28 +10,25 @@ import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SpacesDropdown.scss";
 
+type SpaceProperty = { template?: PortalTemplate; name: string };
 export interface SpacesDropdownProps {
-  defaultSpace?: string;
-  venueId?: string;
+  defaultSpace?: SpaceProperty;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
   fieldName: string;
   error?: FieldError;
-  venueSpaces: { template?: PortalTemplate; name: string }[];
+  venueSpaces: SpaceProperty[];
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   defaultSpace,
   venueSpaces,
-  venueId,
   setValue,
   register,
   fieldName,
   error,
 }) => {
-  const [spaceValue, setSpaceValue] = useState<string | undefined>(
-    defaultSpace
-  );
+  const [spaceValue, setSpaceValue] = useState(defaultSpace);
 
   useEffect(() => {
     if (defaultSpace) {
@@ -42,11 +39,12 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   const renderedOptions = useMemo(() => {
     const options = venueSpaces.map(({ name, template }) => {
       const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
+
       return (
         <ReactBootstrapDropdown.Item
           key={name}
           onClick={() => {
-            setSpaceValue(name);
+            setSpaceValue({ name, template });
             setValue(fieldName, name, true);
           }}
           className="SpacesDropdown__item"
@@ -69,7 +67,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       return "Select a space";
     }
 
-    const space = venueSpaces.find(({ name }) => name === spaceValue);
+    const space =
+      venueSpaces.find(({ name }) => name === spaceValue.name) ?? defaultSpace;
+
     const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
 
     return (
@@ -79,10 +79,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           src={spaceIcon}
           className="SpacesDropdown__item-icon"
         />
-        {spaceValue}
+        {spaceValue.name}
       </span>
     );
-  }, [venueSpaces, spaceValue]);
+  }, [venueSpaces, spaceValue, defaultSpace]);
 
   return (
     // @debt align the style of the SpacesDropdown with the Dropdown component

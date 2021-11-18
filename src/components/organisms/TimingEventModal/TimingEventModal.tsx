@@ -133,11 +133,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               <div className="input-group dropdown-container">
                 <SpacesDropdown
                   venueSpaces={dropdownVenueList ?? ALWAYS_EMPTY_ARRAY}
-                  venueId={venueId}
                   setValue={setValue}
                   register={register}
                   fieldName="room"
-                  defaultSpace={event?.room}
+                  defaultSpace={venue}
                   error={errors.room}
                 />
               </div>

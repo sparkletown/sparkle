@@ -229,7 +229,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const backButtonOptionList = ownedVenues.filter(
     ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== portal?.worldId) {
+      if (portal?.worldId !== worldId || id === portalId) {
         return null;
       }
 
@@ -238,6 +238,10 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         template,
       };
     }
+  );
+
+  const parentSpace = ownedVenues.find(
+    ({ id, name, template }) => id === portal?.parentId && { name, template }
   );
 
   return (
@@ -282,11 +286,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             >
               <SpacesDropdown
                 venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={venueId}
                 setValue={setValue}
                 register={register}
                 fieldName="parentId"
-                defaultSpace={values.parentId}
+                defaultSpace={parentSpace}
+                error={errors?.parentId}
               />
             </AdminSection>
             <AdminSection title="Livestream URL" withLabel>
