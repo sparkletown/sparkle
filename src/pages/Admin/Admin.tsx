@@ -25,7 +25,7 @@ import {
   ADMIN_V1_EDIT_BASE_URL,
   ADMIN_V1_ROOMS_BASE_URL,
   ADMIN_V1_ROOT_URL,
-  DEFAULT_VENUE,
+  DEFAULT_SPACE_SLUG,
   ROOM_TAXON,
   ROOMS_TAXON,
 } from "settings";
@@ -49,8 +49,8 @@ import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -429,8 +429,7 @@ export const Admin: React.FC = () => {
   });
 
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
@@ -443,7 +442,7 @@ export const Admin: React.FC = () => {
     return (
       <WithNavigationBar>
         <AdminRestricted>
-          <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
+          <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />
         </AdminRestricted>
       </WithNavigationBar>
     );
@@ -455,11 +454,11 @@ export const Admin: React.FC = () => {
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">
             <div className="page-container-adminsidebar">
-              <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
+              <VenueList selectedVenueId={spaceId} roomIndex={queryRoomIndex} />
             </div>
             <div className="page-container-adminpanel">
-              {venueId ? (
-                <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+              {spaceId ? (
+                <VenueDetails venueId={spaceId} roomIndex={queryRoomIndex} />
               ) : (
                 <>Select a venue to see its details</>
               )}

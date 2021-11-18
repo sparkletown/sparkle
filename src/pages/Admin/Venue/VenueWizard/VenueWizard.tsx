@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
 
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 

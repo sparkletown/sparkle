@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -16,7 +16,7 @@ import VenueLandingPageContent from "./VenueLandingPageContent";
 import "./VenueLandingPage.scss";
 
 export const VenueLandingPage: React.FC = () => {
-  const spaceSlug = useSpaceParams() || "";
+  const spaceSlug = useSpaceParams();
 
   const { space, isLoaded } = useSpaceBySlug(spaceSlug);
 

@@ -7,7 +7,7 @@ import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -22,15 +22,14 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { space, spaceId } = useSpaceBySlug(spaceSlug);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(
-    venueId
+    spaceId
       ? {
           collection: "experiences",
-          doc: venueId,
+          doc: spaceId,
           subcollections: [{ collection: "reactions" }],
           orderBy: ["created_at", "desc"],
           storeAs: "reactions",

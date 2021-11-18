@@ -24,8 +24,8 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
@@ -80,8 +80,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const { user } = useUser();
 
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const portalId = room?.url?.split("/").pop();
 
@@ -188,7 +187,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
     async (input) => {
-      if (!user || !venueId) return;
+      if (!user || !spaceId) return;
 
       const portalData: RoomInput = {
         ...(room as RoomInput),
@@ -197,7 +196,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         ...values,
       };
 
-      await upsertRoom(portalData, venueId, user, roomIndex);
+      await upsertRoom(portalData, spaceId, user, roomIndex);
       await updateVenueRoom();
 
       onEdit?.();
@@ -210,7 +209,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       updatedRoom,
       user,
       values,
-      venueId,
+      spaceId,
     ]
   );
 
@@ -218,11 +217,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     { loading: isDeleting, error },
     deleteSelectedRoom,
   ] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
-    await deleteRoom(venueId, room);
+    await deleteRoom(spaceId, room);
     onDelete && onDelete();
-  }, [venueId, room, onDelete]);
+  }, [spaceId, room, onDelete]);
 
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);
@@ -232,7 +231,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const backButtonOptionList = ownedVenues.filter(
     ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== portal?.worldId) {
+      if (spaceId === id || worldId !== portal?.worldId) {
         return null;
       }
 
@@ -285,7 +284,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             >
               <SpacesDropdown
                 venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={venueId}
+                venueId={spaceId}
                 setValue={setValue}
                 register={register}
                 fieldName="parentId"

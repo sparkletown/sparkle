@@ -29,8 +29,8 @@ import { isExternalPortal } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
@@ -89,8 +89,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const { user } = useUser();
 
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const roomVenueId = room?.url?.split("/").pop();
 
@@ -213,7 +212,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     updateSelectedRoom,
   ] = useAsyncFn(
     async (input) => {
-      if (!user || !venueId) return;
+      if (!user || !spaceId) return;
 
       const roomData: RoomInput = {
         ...(room as RoomInput),
@@ -222,7 +221,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         visibility: input.room.visibility,
       };
 
-      await upsertRoom(roomData, venueId, user, roomIndex);
+      await upsertRoom(roomData, spaceId, user, roomIndex);
       room.template && (await updateVenueRoom());
 
       onEdit?.();
@@ -235,7 +234,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       updatedRoom,
       user,
       roomValues,
-      venueId,
+      spaceId,
     ]
   );
 
@@ -243,11 +242,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     { loading: isDeleting, error: deleteError },
     deleteSelectedRoom,
   ] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
-    await deleteRoom(venueId, room);
+    await deleteRoom(spaceId, room);
     onDelete && onDelete();
-  }, [venueId, room, onDelete]);
+  }, [spaceId, room, onDelete]);
 
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);
@@ -261,7 +260,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const backButtonOptionList = ownedVenues.filter(
     ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== roomVenue?.worldId) {
+      if (spaceId === id || worldId !== roomVenue?.worldId) {
         return null;
       }
 
@@ -334,7 +333,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             >
               <SpacesDropdown
                 venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={venueId}
+                venueId={spaceId}
                 setValue={setValue}
                 register={register}
                 fieldName="venue.parentId"

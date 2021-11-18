@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { Redirect, useHistory } from "react-router-dom";
 
-import { ALL_VENUE_TEMPLATES, DEFAULT_VENUE, Template } from "settings";
+import { ALL_VENUE_TEMPLATES, DEFAULT_SPACE_SLUG, Template } from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -10,8 +10,8 @@ import { venueInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { VenueDetailsForm } from "pages/Admin/Venue/VenueDetailsForm";
 
@@ -81,7 +81,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { space, spaceId } = useSpaceBySlug(spaceSlug);
 
   // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {
@@ -102,7 +102,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
   // @debt replace this with LoadingPage or Loading as appropriate
   if (!state.detailsPage) return <div>Loading...</div>;
 
-  return <VenueDetailsForm venueId={space?.id} state={state} />;
+  return <VenueDetailsForm venueId={spaceId} state={state} />;
 };
 
 const VenueWizardCreate: React.FC = () => {
@@ -146,7 +146,7 @@ const VenueWizardCreate: React.FC = () => {
   }, [queryPage, next, previous, state]);
 
   if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
+    return <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />;
   }
 
   return <WithNavigationBar>{Page}</WithNavigationBar>;

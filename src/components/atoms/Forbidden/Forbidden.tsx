@@ -5,8 +5,8 @@ import { useAsyncFn } from "react-use";
 
 import { venueLandingUrl } from "utils/url";
 
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";

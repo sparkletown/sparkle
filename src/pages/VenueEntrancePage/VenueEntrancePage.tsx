@@ -14,8 +14,8 @@ import {
 } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
@@ -38,8 +38,7 @@ export const VenueEntrancePage: React.FC = () => {
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
   const spaceSlug = useSpaceParams();
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
   const step = Number.parseInt(unparsedStep ?? "", 10);
@@ -53,21 +52,21 @@ export const VenueEntrancePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (!venueId || !space) {
+  if (!spaceId || !space || !spaceSlug) {
     return <NotFound />;
   }
 
   const stepConfig = world?.entrance?.[step - 1];
   if (!stepConfig) {
-    return <Redirect to={venueInsideUrl(venueId)} />;
+    return <Redirect to={venueInsideUrl(spaceSlug)} />;
   }
 
   if (!user || !profile) {
-    return <Login venueId={venueId} />;
+    return <Login venueId={spaceId} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={accountProfileVenueUrl(venueId)} />;
+    return <Redirect to={accountProfileVenueUrl(spaceSlug)} />;
   }
 
   const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =

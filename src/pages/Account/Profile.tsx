@@ -5,12 +5,12 @@ import { useAsyncFn, useSearchParam } from "react-use";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
-  DEFAULT_VENUE,
+  DEFAULT_SPACE_SLUG,
   DISPLAY_NAME_MAX_CHAR_COUNT,
 } from "settings";
 
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
@@ -34,7 +34,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const spaceSlug = useSpaceParams() ?? DEFAULT_VENUE;
+  const spaceSlug = useSpaceParams() ?? DEFAULT_SPACE_SLUG;
 
   const returnUrl: string | undefined =
     useSearchParam("returnUrl") ?? undefined;
@@ -116,7 +116,11 @@ export const Profile: React.FC = () => {
 
             {user && (
               <ProfilePictureInput
-                {...{ setValue, user, errors, pictureUrl, register }}
+                setValue={setValue}
+                user={user}
+                errors={errors}
+                pictureUrl={pictureUrl}
+                register={register}
               />
             )}
           </div>

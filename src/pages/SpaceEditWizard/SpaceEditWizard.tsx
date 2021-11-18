@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { SpaceEditorStartPanel } from "pages/Admin/Details";
 

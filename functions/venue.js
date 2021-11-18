@@ -556,7 +556,7 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The space slug ${data.slug} already exists in this world. Please try with another slug.`
+      `The slug ${data.slug} is already taken by another space within the world. Please try another.`
     );
   }
 
@@ -760,7 +760,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     .get();
 
   const venueRef = venuesRef.docs && venuesRef.docs[0];
-  venueRef.update(updated);
+
+  if (venueRef) {
+    await venueRef.update(updated);
+  }
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
@@ -830,7 +833,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     .get();
 
   const venueRef = venuesRef.docs && venuesRef.docs[0];
-  venueRef.update(updated);
+
+  if (venueRef) {
+    await venueRef.update(updated);
+  }
 });
 
 exports.updateMapBackground = functions.https.onCall(async (data, context) => {
@@ -854,7 +860,12 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
     .get();
 
   const venueRef = venuesRef.docs && venuesRef.docs[0];
-  venueRef.update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+
+  if (venueRef) {
+    await venueRef.update({
+      mapBackgroundImageUrl: data.mapBackgroundImageUrl,
+    });
+  }
 });
 
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {

@@ -12,28 +12,27 @@ import {
 import { buildBaseMessage } from "utils/chat";
 
 import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
+import { useSpaceParams } from "./useSpaceParams";
 import { useUser } from "./useUser";
-import { useSpaceParams } from "./useVenueId";
 
 export const useVenuePoll = () => {
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const { userWithId } = useUser();
 
   const voteInPoll = useCallback(
     async (pollVote: PollVoteBase) => {
-      if (!venueId) return;
+      if (!spaceId) return;
 
-      return voteInVenuePoll({ pollVote, venueId });
+      return voteInVenuePoll({ pollVote, venueId: spaceId });
     },
-    [venueId]
+    [spaceId]
   );
 
   const createPoll = useCallback(
     async (pollValues: PollValues) => {
-      if (!venueId || !userWithId) return;
+      if (!spaceId || !userWithId) return;
 
       const message = buildBaseMessage<PollMessage>("poll", userWithId, {
         poll: pollValues,
@@ -41,9 +40,9 @@ export const useVenuePoll = () => {
         votes: [],
       });
 
-      return sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId: spaceId, message });
     },
-    [venueId, userWithId]
+    [spaceId, userWithId]
   );
 
   return useMemo(

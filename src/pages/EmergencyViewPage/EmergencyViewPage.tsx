@@ -16,8 +16,8 @@ import { formatDateRelativeToNow } from "utils/time";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useValidImage } from "hooks/useCheckImage";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import Login from "pages/Account/Login";
@@ -41,11 +41,11 @@ export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const spaceSlug = useSpaceParams() || "";
+  const spaceSlug = useSpaceParams();
 
-  const { space, isLoaded: isCurrentVenueLoaded } = useSpaceBySlug(spaceSlug);
-
-  const venueId = space?.id;
+  const { space, spaceId, isLoaded: isCurrentVenueLoaded } = useSpaceBySlug(
+    spaceSlug
+  );
 
   const { user, userWithId } = useUser();
   const userEventIds =
@@ -116,7 +116,7 @@ export const EmergencyViewPage: React.FC = () => {
 
   const containerClasses = classNames("EmergencyView", containerVars);
 
-  if (!venueId || (isCurrentVenueLoaded && !space)) {
+  if (!spaceId || (isCurrentVenueLoaded && !space)) {
     return (
       <WithNavigationBar withHiddenLoginButton>
         <NotFound />
@@ -131,7 +131,7 @@ export const EmergencyViewPage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venueId={venueId} />
+        <Login venueId={spaceId} />
       </Suspense>
     );
   }

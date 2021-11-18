@@ -1,11 +1,11 @@
 import React, { FC, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_SPACE_SLUG } from "settings";
 
 import { venueEntranceUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import "./NavBarLogin.scss";
 
@@ -14,7 +14,7 @@ export const NavBarLogin: FC = () => {
   const spaceSlug = useSpaceParams();
 
   const navigateToDefault = useCallback(
-    () => history.push(venueEntranceUrl(spaceSlug ?? DEFAULT_VENUE)),
+    () => history.push(venueEntranceUrl(spaceSlug ?? DEFAULT_SPACE_SLUG)),
     [history, spaceSlug]
   );
 

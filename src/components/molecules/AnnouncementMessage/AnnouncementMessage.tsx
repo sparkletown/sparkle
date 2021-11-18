@@ -7,7 +7,7 @@ import { isDefined } from "utils/types";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 

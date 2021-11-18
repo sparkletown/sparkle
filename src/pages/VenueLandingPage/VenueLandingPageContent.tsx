@@ -44,7 +44,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 }) => {
   const venueEvents = useSelector(venueEventsSelector);
 
-  const venueId = venue.id;
+  const spaceSlug = venue.slug;
 
   const { world } = useWorldById(venue?.worldId);
 
@@ -60,14 +60,14 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
 
   const onJoinClick = () => {
-    if (!venueId) return;
+    if (!spaceSlug) return;
 
     const hasEntrance = world?.entrance?.length;
 
     window.location.href =
       user && !hasEntrance
-        ? venueInsideUrl(venueId)
-        : venueEntranceUrl(venueId);
+        ? venueInsideUrl(spaceSlug)
+        : venueEntranceUrl(spaceSlug);
   };
 
   const isPasswordRequired = venue.access === VenueAccessMode.Password;
@@ -187,47 +187,45 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
         </div>
 
         <div className="col-lg-6 col-12 oncoming-events">
-          {venueId &&
-            futureOrOngoingVenueEvents &&
-            futureOrOngoingVenueEvents.length > 0 && (
-              <>
-                <div className="upcoming-gigs-title">Upcoming events</div>
-                {futureOrOngoingVenueEvents.map((venueEvent) => {
-                  const startTime = formatTimeLocalised(
-                    eventStartTime(venueEvent)
-                  );
-                  const endTime = formatTimeLocalised(eventEndTime(venueEvent));
-                  const startDay = format(
-                    eventStartTime(venueEvent),
-                    "EEEE LLLL do"
-                  );
+          {futureOrOngoingVenueEvents && futureOrOngoingVenueEvents.length > 0 && (
+            <>
+              <div className="upcoming-gigs-title">Upcoming events</div>
+              {futureOrOngoingVenueEvents.map((venueEvent) => {
+                const startTime = formatTimeLocalised(
+                  eventStartTime(venueEvent)
+                );
+                const endTime = formatTimeLocalised(eventEndTime(venueEvent));
+                const startDay = format(
+                  eventStartTime(venueEvent),
+                  "EEEE LLLL do"
+                );
 
-                  const isNextVenueEvent = venueEvent.id === nextVenueEventId;
-                  return (
-                    <InformationCard
-                      title={venueEvent.name}
-                      key={venueEvent.id}
-                      containerClassName={`${
-                        !isNextVenueEvent ? "disabled" : ""
-                      }`}
-                    >
-                      <div className="date">
-                        {`${startTime}-${endTime} ${startDay}`}
-                      </div>
-                      <div className="event-description">
-                        <RenderMarkdown text={venueEvent.description} />
-                        {venueEvent.descriptions?.map((description, index) => (
-                          <RenderMarkdown
-                            text={description}
-                            key={`${description}#${index}`}
-                          />
-                        ))}
-                      </div>
-                    </InformationCard>
-                  );
-                })}
-              </>
-            )}
+                const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+                return (
+                  <InformationCard
+                    title={venueEvent.name}
+                    key={venueEvent.id}
+                    containerClassName={`${
+                      !isNextVenueEvent ? "disabled" : ""
+                    }`}
+                  >
+                    <div className="date">
+                      {`${startTime}-${endTime} ${startDay}`}
+                    </div>
+                    <div className="event-description">
+                      <RenderMarkdown text={venueEvent.description} />
+                      {venueEvent.descriptions?.map((description, index) => (
+                        <RenderMarkdown
+                          text={description}
+                          key={`${description}#${index}`}
+                        />
+                      ))}
+                    </div>
+                  </InformationCard>
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
     </div>

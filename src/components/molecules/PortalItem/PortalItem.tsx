@@ -18,8 +18,8 @@ import { buildEmptyVenue } from "utils/venue";
 
 import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import {
   createPortalSchema,

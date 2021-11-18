@@ -21,8 +21,8 @@ import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
@@ -70,22 +70,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const {
     currentVenue: relatedVenue,
     parentVenue,
     sovereignVenueId,
   } = useRelatedVenues({
-    currentVenueId: venueId,
+    currentVenueId: spaceId,
   });
 
   const { world } = useWorldById(relatedVenue?.worldId);
   const firstStation = world?.radioStations?.[0];
 
   const { currentVenue: ownedVenue } = useOwnedVenues({
-    currentVenueId: venueId,
+    currentVenueId: spaceId,
   });
 
   // when Admin is displayed, owned venues are used
@@ -97,7 +96,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     push: openUrlUsingRouter,
   } = useHistory();
 
-  const isSovereignVenue = venueId === sovereignVenueId;
+  const isSovereignVenue = spaceId === sovereignVenueId;
 
   const hasSovereignVenue = sovereignVenueId !== undefined;
 
@@ -209,7 +208,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 />
               )}
 
-              {shouldShowSchedule && venueId ? (
+              {shouldShowSchedule && spaceId ? (
                 <button
                   aria-label="Schedule"
                   className={`nav-party-logo ${
@@ -217,14 +216,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {venueId && !isAdminContext && navbarTitle} &nbsp;
+                  {spaceId && !isAdminContext && navbarTitle} &nbsp;
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                venueId && !isAdminContext && <div>{navbarTitle}</div>
+                spaceId && !isAdminContext && <div>{navbarTitle}</div>
               )}
 
-              {venueId && !isAdminContext && (
+              {spaceId && !isAdminContext && (
                 <VenuePartygoers worldId={currentVenue?.worldId} />
               )}
             </div>
@@ -242,8 +241,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                {venueId && !isAdminContext && (
-                  <NavSearchBar venueId={venueId} />
+                {spaceId && !isAdminContext && (
+                  <NavSearchBar venueId={spaceId} />
                 )}
 
                 {hasUpcomingEvents && (
@@ -285,7 +284,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
         </div>
       </header>
 
-      {shouldShowSchedule && venueId && (
+      {shouldShowSchedule && spaceId && (
         <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
           className={`schedule-dropdown-backdrop ${
@@ -296,7 +295,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
           <div className={navBarScheduleClassName}>
             <NavBarSchedule
               isVisible={isEventScheduleVisible}
-              venueId={venueId}
+              venueId={spaceId}
             />
           </div>
         </div>

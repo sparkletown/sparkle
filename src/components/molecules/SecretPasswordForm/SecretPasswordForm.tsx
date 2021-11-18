@@ -8,15 +8,14 @@ import { isDefined, isTruthy } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const [error, setError] = useState(false);
   const [password, setPassword] = useState<string>();
@@ -39,7 +38,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
     async (e) => {
       e.preventDefault();
 
-      if (!isDefined(venueId)) {
+      if (!isDefined(spaceId)) {
         setMessage("Missing venueId");
         setError(true);
         return;
@@ -54,12 +53,12 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
       setMessage("Checking password...");
 
       await checkAccess({
-        venueId,
+        venueId: spaceId,
         password,
       })
         .then((result) => {
           if (isTruthy(result?.data?.token)) {
-            setLocalStorageToken(venueId, result.data.token);
+            setLocalStorageToken(spaceId, result.data.token);
             history.push(venueEntranceUrl(spaceSlug));
           } else {
             setMessage(`Wrong password!`);
@@ -71,7 +70,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           setError(true);
         });
     },
-    [history, password, spaceSlug, venueId]
+    [history, password, spaceSlug, spaceId]
   );
 
   return (

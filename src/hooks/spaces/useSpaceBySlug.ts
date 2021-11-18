@@ -8,6 +8,7 @@ import { WithId } from "utils/id";
 
 export type UseSpaceBySlugResult = {
   space?: WithId<AnyVenue>;
+  spaceId?: string;
   isLoaded: boolean;
   error?: string;
 };
@@ -18,9 +19,7 @@ export type UseSpaceBySlugResult = {
  * @param spaceSlug
  * @returns
  */
-export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
-  spaceSlug
-) => {
+export const useSpaceBySlug = (spaceSlug?: string): UseSpaceBySlugResult => {
   const firestore = useFirestore();
 
   const spacesRef = firestore
@@ -35,9 +34,12 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
 
   const isSpaceLoaded = status !== "loading";
 
-  if (!spaces?.[0] && isSpaceLoaded) {
+  const space = spaces?.[0];
+
+  if (!space && isSpaceLoaded) {
     return {
       space: undefined,
+      spaceId: undefined,
       isLoaded: true,
       error: `Space with the following slug: ${spaceSlug} does not exist.`,
     };
@@ -57,7 +59,8 @@ export const useSpaceBySlug: (spaceSlug?: string) => UseSpaceBySlugResult = (
   }
 
   return {
-    space: spaces?.[0],
+    space: space,
+    spaceId: space?.id,
     isLoaded: isSpaceLoaded,
   };
 };

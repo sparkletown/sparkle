@@ -10,8 +10,8 @@ import { Question } from "types/Question";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -19,6 +19,7 @@ import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
@@ -79,12 +80,13 @@ export const ProfileQuestions: React.FC = () => {
     updateTheme(space);
   }, [space]);
 
+  // @debt Maybe add something more pretty for UX here, in the vein of NotFound (with custom message)
   if (!spaceSlug) {
     return <>Error: Missing required spaceSlug param</>;
   }
 
   if (isLoaded(space) && !space) {
-    return <>Error: venue not found for spaceSlug={spaceSlug}</>;
+    return <NotFound />;
   }
 
   if (!space || !isWorldLoaded) {

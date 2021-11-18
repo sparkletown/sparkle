@@ -15,7 +15,7 @@ import {
 } from "utils/selectors";
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
-import { venueEntranceUrl } from "utils/url";
+import { accountProfileVenueUrl, venueEntranceUrl } from "utils/url";
 import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
@@ -26,13 +26,12 @@ import {
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -72,8 +71,7 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 export const VenuePage: React.FC = () => {
   const { worldSlug } = useWorldParams();
   const spaceSlug = useSpaceParams();
-  const { space, isLoaded } = useSpaceBySlug(spaceSlug);
-  const venueId = useMemo(() => space?.id, [space?.id]);
+  const { space, spaceId, isLoaded } = useSpaceBySlug(spaceSlug);
   const analytics = useAnalytics({ venue: space });
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 
@@ -82,9 +80,6 @@ export const VenuePage: React.FC = () => {
   const { user, profile, userLocation } = useUser();
   const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
     userLocation ?? {};
-
-  // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
-  useConnectCurrentVenue();
 
   const assetsToPreload = useMemo(
     () =>
@@ -99,6 +94,7 @@ export const VenuePage: React.FC = () => {
 
   usePreloadAssets(assetsToPreload);
 
+  // @debt Refactor and use reactfire hook instead of this legacy syntax.
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
@@ -180,12 +176,12 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
+    if (!spaceId || !userId || !profile || enteredVenueIds?.includes(spaceId)) {
       return;
     }
 
-    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
-  }, [enteredVenueIds, userLocation, userId, venueId, profile]);
+    void updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId);
+  }, [enteredVenueIds, userLocation, userId, spaceId, profile]);
   // NOTE: User's timespent updates
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -202,11 +198,11 @@ export const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (!isLoaded || !venueId) {
+  if (!isLoaded || !spaceId) {
     return <LoadingPage />;
   }
 
-  if (!space) {
+  if (!space || !spaceSlug) {
     return (
       <WithNavigationBar hasBackButton withHiddenLoginButton>
         <NotFound />
@@ -217,7 +213,7 @@ export const VenuePage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venueId={venueId} />
+        <Login venueId={spaceId} />
       </Suspense>
     );
   }
@@ -229,10 +225,10 @@ export const VenuePage: React.FC = () => {
   const { template, hasPaidEvents } = space;
 
   const hasEntrance = !!world?.entrance?.length;
-  const hasEntered = enteredVenueIds?.includes(venueId);
+  const hasEntered = enteredVenueIds?.includes(spaceId);
 
   if (hasEntrance && !hasEntered) {
-    return <Redirect to={venueEntranceUrl(venueId)} />;
+    return <Redirect to={venueEntranceUrl(spaceSlug)} />;
   }
 
   if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
@@ -263,7 +259,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={`/account/profile?spaceSlug=${spaceSlug}`} />;
+    return <Redirect to={accountProfileVenueUrl(spaceSlug)} />;
   }
 
   return (

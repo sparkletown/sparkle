@@ -3,13 +3,13 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE, DISABLED_DUE_TO_1324 } from "settings";
+import { DEFAULT_SPACE_SLUG, DISABLED_DUE_TO_1324 } from "settings";
 
 import { venueInsideUrl, venueLandingUrl } from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -32,7 +32,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
   }, [firebase, history, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
-    history.push(venueInsideUrl(DEFAULT_VENUE));
+    history.push(venueInsideUrl(DEFAULT_SPACE_SLUG));
 
   const authHandler = userId ? logout : redirectToDefaultRoute;
 

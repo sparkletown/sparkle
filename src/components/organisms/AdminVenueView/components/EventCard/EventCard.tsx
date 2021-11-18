@@ -10,7 +10,7 @@ import { WithId, WithVenueId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 import { adminNGVenueUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { AdminVenueTab } from "components/organisms/AdminVenueView/AdminVenueView";
 

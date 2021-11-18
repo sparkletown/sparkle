@@ -14,8 +14,8 @@ import { useValidImage } from "hooks/useCheckImage";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useSpaceParams } from "hooks/useVenueId";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -32,8 +32,7 @@ export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
 
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { space, spaceId } = useSpaceBySlug(spaceSlug);
 
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
@@ -93,7 +92,7 @@ export const VenueAdminPage: React.FC = () => {
       <div className="VenueAdminPage__settings">
         {isBannerAdminVisibile && (
           <BannerAdmin
-            venueId={venueId}
+            venueId={spaceId}
             venue={space}
             onClose={hideBannerAdmin}
           />
@@ -108,7 +107,7 @@ export const VenueAdminPage: React.FC = () => {
           </>
         )}
       </div>
-      {isIframeVenue && <IframeAdmin venueId={venueId} venue={space} />}
+      {isIframeVenue && <IframeAdmin venueId={spaceId} venue={space} />}
     </WithNavigationBar>
   );
 };

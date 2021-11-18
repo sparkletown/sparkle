@@ -4,7 +4,7 @@ import { tracePromise } from "utils/performance";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-import { useSpaceParams } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 
@@ -36,8 +36,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   children,
 }) => {
   const spaceSlug = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-  const venueId = space?.id;
+  const { space, spaceId } = useSpaceBySlug(spaceSlug);
 
   // @debt remove backButton from Navbar
   return (
@@ -47,7 +46,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId} worldId={space?.worldId}>
+      <RelatedVenuesProvider venueId={spaceId} worldId={space?.worldId}>
         <Suspense fallback={<Loading />}>
           <NavBar
             hasBackButton={hasBackButton}
