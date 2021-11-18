@@ -43,6 +43,7 @@ export * from "./spacesSettings";
 export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
+export * from "./validationSettings";
 export * from "./worldDefaultSettings";
 
 export const ENABLE_POPUPS_URL =
@@ -71,8 +72,6 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
-export const VENUE_NAME_MIN_CHAR_COUNT = 3;
-export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
 export const GIFT_TICKET_MODAL_URL =
