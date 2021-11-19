@@ -18,7 +18,7 @@ import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
-import { commonTitleSchema } from "forms/commonTitleSchema";
+import { createNameSchema } from "forms/createNameSchema";
 import { createUrlIfNoFileSchema } from "forms/createUrlIfNoFileSchema";
 
 import "firebase/functions";
@@ -38,7 +38,7 @@ const createFileSchema = (name: string, required: boolean) =>
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
-    name: commonTitleSchema.when(
+    name: createNameSchema({ name: "Name", withMin: true }).when(
       "$editing",
       (editing: boolean, schema: Yup.StringSchema) =>
         !editing

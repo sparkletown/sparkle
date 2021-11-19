@@ -2,7 +2,10 @@ import * as Yup from "yup";
 
 import { MAX_SECTIONS_AMOUNT, MIN_SECTIONS_AMOUNT } from "settings";
 
+import { createNameSchema } from "forms/createNameSchema";
+
 export const spaceEditNGSchema = Yup.object().shape({
+  name: createNameSchema({ name: "Name" }),
   image_url: Yup.string().notRequired(),
   bannerImageUrl: Yup.string().notRequired(),
   venue: Yup.object().shape({
