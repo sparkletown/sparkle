@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_SECTIONS_AMOUNT } from "settings";
+import { DEFAULT_REACTIONS_AUDIBLE, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -38,13 +38,13 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     toggle: toggleUserAudio,
     hide: disableUserAudio,
     show: enableUserAudio,
-  } = useShowHide(venue.isReactionsMuted ?? false);
+  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
 
   useEffect(() => {
-    if (!venue.isReactionsMuted) {
-      disableUserAudio();
-    } else {
+    if (venue.isReactionsMuted) {
       enableUserAudio();
+    } else {
+      disableUserAudio();
     }
   }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 

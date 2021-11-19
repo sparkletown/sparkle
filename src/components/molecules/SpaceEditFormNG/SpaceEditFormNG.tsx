@@ -5,6 +5,7 @@ import { useAsync, useAsyncFn } from "react-use";
 
 import {
   ALWAYS_EMPTY_ARRAY,
+  DEFAULT_REACTIONS_AUDIBLE,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -101,7 +102,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       parentId: portal?.parentId ?? "",
       showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      isReactionsMuted: portal?.isReactionsMuted ?? false,
+      isReactionsMuted: portal?.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
       numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
     }),
     [room.image_url, portal, room?.visibility]

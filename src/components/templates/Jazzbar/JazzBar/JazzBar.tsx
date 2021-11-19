@@ -4,6 +4,7 @@ import classNames from "classnames";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_REACTIONS_AUDIBLE,
   DEFAULT_SHOW_REACTIONS,
   IFRAME_ALLOW,
 } from "settings";
@@ -84,13 +85,13 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     toggle: toggleUserAudio,
     hide: disableUserAudio,
     show: enableUserAudio,
-  } = useShowHide(venue.isReactionsMuted);
+  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
 
   useEffect(() => {
-    if (!venue.isReactionsMuted) {
-      disableUserAudio();
-    } else {
+    if (venue.isReactionsMuted) {
       enableUserAudio();
+    } else {
+      disableUserAudio();
     }
   }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 

@@ -563,6 +563,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_REACTIONS_AUDIBLE = true;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 

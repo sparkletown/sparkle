@@ -7,6 +7,7 @@ import {
   ALWAYS_EMPTY_ARRAY,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
+  DEFAULT_REACTIONS_AUDIBLE,
   DEFAULT_SHOW_SHOUTOUTS,
   DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
@@ -124,7 +125,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
         columns: roomVenue?.columns ?? 0,
         autoPlay: roomVenue?.autoPlay ?? false,
-        isReactionsMuted: roomVenue?.isReactionsMuted ?? false,
+        isReactionsMuted:
+          roomVenue?.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
         parentId: roomVenue?.parentId ?? "",
       },
     }),
