@@ -26,6 +26,7 @@ Actions to take:
   - Add [Algolia search](https://www.algolia.com/developers/firebase-search-extension/) firebase extension to your firebase project.
   - In the Firebase console point it to `users` collection and set indexable fields to `partyName,pictureUrl,anonMode,enteredVenueIds`.
   - Create a separate org and index create a new index in aloglia. Go through the required steps as they suggest
+  - in Algolia set the attributes for faceting to `enteredVenueIds` and set its state to filter-only
   - Perform first-time import of the documents from `users` collection to Algolia index as described in the extension [docs](https://github.com/algolia/firestore-algolia-search/blob/main/POSTINSTALL.md#optional-import-existing-documents-or-reindex-after-configuration-changes).
 - Run all pending migrations:
   - Run `npm run migrate -- --projectId=<project ID>`

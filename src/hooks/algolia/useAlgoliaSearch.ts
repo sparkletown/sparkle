@@ -11,35 +11,41 @@ import { isBlank } from "utils/string";
 import { useAlgoliaSearchContext } from "hooks/algolia/context";
 
 export const useAlgoliaSearch = (
-  venueId: string | undefined,
-  searchQuery: string | undefined
+  searchQuery: string | undefined,
+  params?: {
+    sovereignVenueId: string;
+  }
 ) => {
   const context = useAlgoliaSearchContext();
+
+  const { sovereignVenueId } = params ?? {};
 
   const state = useAsync(async () => {
     if (
       !context?.client ||
       !context?.indices ||
-      !venueId ||
       !searchQuery ||
       isBlank(searchQuery)
     )
       return;
-
     const { results } = await context.client.search(
       Object.values(context.indices).map((index) => ({
         indexName: index.indexName,
         query: searchQuery,
-        params: {
-          filters: `${propName<UserWithLocation>(
-            "enteredVenueIds"
-          )}: ${venueId}`,
-        },
+        ...(sovereignVenueId && {
+          params: {
+            filters: `${propName<UserWithLocation>(
+              "enteredVenueIds"
+            )}: ${sovereignVenueId}`,
+          },
+        }),
       }))
     );
 
+    console.log(results);
+
     return keyBy(results, "index") as AlgoliaSearchResult;
-  }, [context?.client, context?.indices, searchQuery, venueId]);
+  }, [context?.client, context?.indices, searchQuery, sovereignVenueId]);
 
   useEffect(() => {
     if (state.error) {
