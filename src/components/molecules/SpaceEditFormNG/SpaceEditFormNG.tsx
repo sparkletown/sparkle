@@ -23,9 +23,10 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
@@ -77,7 +78,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 }) => {
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const portalId = room?.url?.split("/").pop();
 
@@ -184,7 +186,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
     async (input) => {
-      if (!user || !venueId) return;
+      if (!user || !spaceId) return;
 
       const portalData: RoomInput = {
         ...(room as RoomInput),
@@ -193,7 +195,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         ...values,
       };
 
-      await upsertRoom(portalData, venueId, user, roomIndex);
+      await upsertRoom(portalData, spaceId, user, roomIndex);
       await updateVenueRoom();
 
       onEdit?.();
@@ -206,7 +208,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       updatedRoom,
       user,
       values,
-      venueId,
+      spaceId,
     ]
   );
 
@@ -214,11 +216,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     { loading: isDeleting, error },
     deleteSelectedRoom,
   ] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
-    await deleteRoom(venueId, room);
+    await deleteRoom(spaceId, room);
     onDelete && onDelete();
-  }, [venueId, room, onDelete]);
+  }, [spaceId, room, onDelete]);
 
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);

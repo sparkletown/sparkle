@@ -8,10 +8,10 @@ import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
 
 import { Question } from "types/Question";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -19,6 +19,7 @@ import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
@@ -37,12 +38,11 @@ export const ProfileQuestions: React.FC = () => {
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: venue?.worldId,
+    worldId: space?.worldId,
   });
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
@@ -74,21 +74,22 @@ export const ProfileQuestions: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (!venueId) {
-    return <>Error: Missing required venueId param</>;
+  // @debt Maybe add something more pretty for UX here, in the vein of NotFound (with custom message)
+  if (!spaceSlug) {
+    return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isLoaded(venue) && !venue) {
-    return <>Error: venue not found for venueId={venueId}</>;
+  if (isLoaded(space) && !space) {
+    return <NotFound />;
   }
 
-  if (!venue || !isWorldLoaded) {
+  if (!space || !isWorldLoaded) {
     return <LoadingPage />;
   }
 

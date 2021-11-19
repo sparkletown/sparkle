@@ -1,7 +1,7 @@
 import React from "react";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
@@ -15,16 +15,14 @@ import { NotFound } from "components/atoms/NotFound";
 import "./SpaceEditWizard.scss";
 
 export const SpaceEditWizard: React.FC = () => {
-  const venueId = useVenueId();
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
+  const spaceSlug = useSpaceParams();
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
-  if (!isCurrentVenueLoaded) {
+  if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
 
-  if (!currentVenue) {
+  if (!space) {
     return <NotFound />;
   }
 
@@ -33,7 +31,7 @@ export const SpaceEditWizard: React.FC = () => {
       <AdminRestricted>
         <div className="SpaceWizard">
           <div className="SpaceWizard__pad"> </div>
-          <SpaceEditorStartPanel venue={currentVenue} />
+          <SpaceEditorStartPanel venue={space} />
         </div>
       </AdminRestricted>
     </WithNavigationBar>

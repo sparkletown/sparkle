@@ -5,9 +5,9 @@ import classNames from "classnames";
 
 import { isDefined } from "utils/types";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -28,10 +28,10 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     hide: hideAnnouncementMessage,
   } = useShowHide();
 
-  const venueId = useVenueId();
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
 
-  const { banner } = venue ?? {};
+  const { banner } = space ?? {};
 
   useEffect(() => {
     if (isDefined(banner?.content)) {

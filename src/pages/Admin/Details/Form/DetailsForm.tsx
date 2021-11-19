@@ -19,7 +19,6 @@ import { venueV2Schema } from "forms/venueV2Schema";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
@@ -57,7 +56,8 @@ const HANDLED_ERRORS: string[] = [
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   const history = useHistory();
-  const venueId = useVenueId();
+  const venueId = venue?.id;
+
   const { user } = useUser();
 
   const { worldParentVenues } = useWorldVenues(worldId ?? venue?.worldId ?? "");
@@ -172,6 +172,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
         venueId ?? createSlug(vals.name),
       ]);
 
+      const spaceSlug = createSlug(vals.name);
+
+      //@debt Move this validation to create and update BE functions, instead of this FE form.
       if (!isValidParentId) {
         setError(
           "parentId",
@@ -184,7 +187,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       if (venueId) {
         const updatedVenue = {
           ...vals,
-          id: venueId,
+          slug: spaceSlug,
           worldId: venue?.worldId ?? "",
           parentId: values.parentId,
         };
@@ -193,10 +196,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
         history.push(adminWorldSpacesUrl(world?.slug));
       } else {
+        if (!worldId) return;
+
         const newVenue = {
           ...vals,
-          id: createSlug(vals.name),
-          worldId: worldId ?? "",
+          slug: spaceSlug,
+          worldId: worldId,
           parentId: values.parentId ?? "",
         };
 
@@ -212,7 +217,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       user,
       validateParentId,
       values.parentId,
-      venue?.worldId,
+      venue,
       venueId,
       world?.slug,
       worldId,

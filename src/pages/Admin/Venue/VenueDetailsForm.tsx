@@ -163,7 +163,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
           );
 
         vals.name
-          ? history.push(`/admin/${createSlug(venueId ?? vals.name)}`)
+          ? history.push(`/admin/${createSlug(vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
