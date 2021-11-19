@@ -71,12 +71,6 @@ export interface UserLocation {
 
 export type UserWithLocation = BaseUser & UserLocation;
 
-export enum UsernameVisibility {
-  none = "none",
-  hover = "hover",
-  inline = "inline",
-}
-
 export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
   .shape({
     inRoomOwnedBy: Yup.string(),
