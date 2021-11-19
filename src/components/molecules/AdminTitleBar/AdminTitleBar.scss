@@ -1,0 +1,10 @@
+@import "scss/constants";
+
+.AdminTitleBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: $spacing--xs 0;
+  margin: $spacing--lg 0;
+}

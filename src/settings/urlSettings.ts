@@ -61,6 +61,9 @@ export const ADMIN_V3_NEW_WORLD_URL = `${ADMIN_V3_WORLDS_BASE_URL}/new`;
 export const ADMIN_V3_OLD_WORLD_PARAM_URL = `${ADMIN_V3_WORLDS_BASE_URL}/old/:worldSlug?/:selectedTab?`;
 export const ADMIN_V3_WORLD_SPACES_PARAM_URL = `${ADMIN_V3_WORLDS_BASE_URL}/:worldSlug?/spaces`;
 
+export const ADMIN_V4_SPACES_1_PARAM_URL = `${ADMIN_V3_ROOT_URL}/w/:worldSlug`;
+export const ADMIN_V4_SPACES_2_PARAM_URL = `${ADMIN_V3_ROOT_URL}/w/:worldSlug/s`;
+
 // Admin v1 URLs
 export const ADMIN_V1_CREATE_URL = `${ADMIN_V1_ROOT_URL}/venue/creation`;
 
