@@ -261,8 +261,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     () =>
       Object.fromEntries(
         ownedVenues
-          .filter(({ id, worldId }) =>
-            roomVenue?.worldId !== worldId || id === roomVenueId ? false : true
+          .filter(
+            ({ id, worldId }) =>
+              !(roomVenue?.worldId !== worldId || id === roomVenueId)
           )
           .map((venue) => [venue.id, venue])
       ),

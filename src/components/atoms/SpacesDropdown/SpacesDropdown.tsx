@@ -69,7 +69,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             {name}
           </ReactBootstrapDropdown.Item>
         );
-      }) ?? null,
+      }) ?? [],
     [filteredPortals, setValue, fieldName]
   );
 

@@ -289,7 +289,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
     () =>
       Object.fromEntries(
         filteredWorlds
-          .filter(({ id }) => (venueId === id ? false : true))
+          .filter(({ id }) => !(venueId === id))
           .map((world) => [world.id, world])
       ),
     [venueId, filteredWorlds]

@@ -232,8 +232,9 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     () =>
       Object.fromEntries(
         ownedVenues
-          .filter(({ id, worldId }) =>
-            portal?.worldId !== worldId || id === portalId ? false : true
+          .filter(
+            ({ id, worldId }) =>
+              !(portal?.worldId !== worldId || id === portalId)
           )
           .map((venue) => [venue.id, venue])
       ),
