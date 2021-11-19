@@ -16,7 +16,7 @@ import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
+import { eventEditSchema } from "forms/eventEditSchema";
 
 import { AdminSection } from "components/molecules/AdminSection";
 

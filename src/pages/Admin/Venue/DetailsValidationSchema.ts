@@ -18,10 +18,8 @@ import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
-import {
-  roomTitleSchema,
-  urlIfNoFileValidation,
-} from "pages/Admin/Details/ValidationSchema";
+import { commonTitleSchema } from "forms/commonTitleSchema";
+import { createUrlIfNoFileSchema } from "forms/createUrlIfNoFileSchema";
 
 import "firebase/functions";
 
@@ -40,7 +38,7 @@ const createFileSchema = (name: string, required: boolean) =>
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
-    name: roomTitleSchema.when(
+    name: commonTitleSchema.when(
       "$editing",
       (editing: boolean, schema: Yup.StringSchema) =>
         !editing
@@ -83,12 +81,12 @@ export const validationSchema = Yup.object()
       "$template.template",
       (template: VenueTemplate, schema: Yup.StringSchema) =>
         BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          ? createUrlIfNoFileSchema("mapBackgroundImageFile")
           : schema.notRequired()
     ),
 
     bannerImageUrl: Yup.string(),
-    logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+    logoImageUrl: createUrlIfNoFileSchema("logoImageFile"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
