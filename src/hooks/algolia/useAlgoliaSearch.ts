@@ -42,8 +42,6 @@ export const useAlgoliaSearch = (
       }))
     );
 
-    console.log(results);
-
     return keyBy(results, "index") as AlgoliaSearchResult;
   }, [context?.client, context?.indices, searchQuery, sovereignVenueId]);
 
