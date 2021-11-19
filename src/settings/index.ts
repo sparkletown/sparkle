@@ -84,6 +84,8 @@ export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 
+export const DEFAULT_GLOBAL_CHAT_NAME = "global chat";
+
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
@@ -530,7 +532,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "bootstrap";
+export const DEFAULT_SPACE_SLUG = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",

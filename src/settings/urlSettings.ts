@@ -35,26 +35,26 @@ export const VENUE_LANDING_BASE_URL = "/v";
 export const VENUE_REDIRECT_BASE_URL = `/venue`;
 export const WORLD_ROOT_URL = "/w";
 
-export const VENUE_EMERGENCY_PARAM_URL = `${VENUE_EMERGENCY_BASE_URL}/:venueId`;
-export const VENUE_INSIDE_PARAM_URL = `${VENUE_INSIDE_BASE_URL}/:venueId`;
-export const VENUE_INSIDE_ADMIN_PARAM_URL = `${VENUE_INSIDE_BASE_URL}/:venueId/admin`;
-export const VENUE_LANDING_PARAM_URL = `${VENUE_LANDING_BASE_URL}/:venueId`;
+export const VENUE_EMERGENCY_PARAM_URL = `${VENUE_EMERGENCY_BASE_URL}/:spaceSlug`;
+export const VENUE_INSIDE_PARAM_URL = `${VENUE_INSIDE_BASE_URL}/:spaceSlug`;
+export const VENUE_INSIDE_ADMIN_PARAM_URL = `${VENUE_INSIDE_BASE_URL}/:spaceSlug/admin`;
+export const VENUE_LANDING_PARAM_URL = `${VENUE_LANDING_BASE_URL}/:spaceSlug`;
 export const VENUE_REDIRECT_PARAM_URL = `${VENUE_REDIRECT_BASE_URL}/*`;
 
-export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:step/:venueId`;
-export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:venueId/:customToken`;
+export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:step/:spaceSlug`;
+export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:spaceSlug/:customToken`;
 
 // Account URLs
 export const ACCOUNT_CODE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/code-of-conduct`;
 export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
-export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}?venueId=:venueId`;
+export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}?spaceSlug=:spaceSlug`;
 export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 
 // Admin v3 URLs
 export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/create/venue/:worldSlug?`;
-export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_V3_ROOT_URL}/edit/:venueId`;
-export const ADMIN_V3_SPACE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:venueId?/:selectedTab?`;
-export const ADMIN_V3_SPACE_SETTINGS_PARAM_URL = `${ADMIN_V3_ROOT_URL}/settings/:venueId?/:selectedTab?`;
+export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_V3_ROOT_URL}/edit/:spaceSlug`;
+export const ADMIN_V3_SPACE_PARAM_URL = `${ADMIN_V3_ROOT_URL}/venue/:spaceSlug?/:selectedTab?`;
+export const ADMIN_V3_SPACE_SETTINGS_PARAM_URL = `${ADMIN_V3_ROOT_URL}/settings/:spaceSlug?/:selectedTab?`;
 
 export const ADMIN_V3_WORLDS_BASE_URL = `${ADMIN_V3_ROOT_URL}/worlds`;
 export const ADMIN_V3_NEW_WORLD_URL = `${ADMIN_V3_WORLDS_BASE_URL}/new`;
@@ -68,12 +68,12 @@ export const ADMIN_V4_SPACES_2_PARAM_URL = `${ADMIN_V3_ROOT_URL}/w/:worldSlug/s`
 export const ADMIN_V1_CREATE_URL = `${ADMIN_V1_ROOT_URL}/venue/creation`;
 
 export const ADMIN_V1_EDIT_BASE_URL = `${ADMIN_V1_ROOT_URL}/venue/edit`;
-export const ADMIN_V1_EDIT_PARAM_URL = `${ADMIN_V1_EDIT_BASE_URL}/:venueId`;
+export const ADMIN_V1_EDIT_PARAM_URL = `${ADMIN_V1_EDIT_BASE_URL}/:spaceSlug`;
 
-export const ADMIN_V1_VENUE_PARAM_URL = `${ADMIN_V1_ROOT_URL}/:venueId`;
+export const ADMIN_V1_VENUE_PARAM_URL = `${ADMIN_V1_ROOT_URL}/:spaceSlug`;
 
 export const ADMIN_V1_ROOMS_BASE_URL = `${ADMIN_V1_ROOT_URL}/venue/rooms`;
-export const ADMIN_V1_ROOMS_PARAM_URL = `${ADMIN_V1_ROOMS_BASE_URL}/:venueId`;
+export const ADMIN_V1_ROOMS_PARAM_URL = `${ADMIN_V1_ROOMS_BASE_URL}/:spaceSlug`;
 
 // Enter URLs
 export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;

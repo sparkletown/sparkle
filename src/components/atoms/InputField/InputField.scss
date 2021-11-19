@@ -29,10 +29,6 @@ $icon-width: 2.5rem;
     border: 1px solid var(--accent--over-10a);
     border-radius: 22px;
     height: 100%;
-
-    &:focus + .InputField__icon > * {
-      opacity: 0.6;
-    }
   }
 
   &__icon {
@@ -56,6 +52,14 @@ $icon-width: 2.5rem;
     & > * {
       opacity: 0.2;
       max-width: 100%;
+    }
+
+    &--clickable {
+      cursor: pointer;
+
+      &:hover > * {
+        opacity: 1;
+      }
     }
   }
 

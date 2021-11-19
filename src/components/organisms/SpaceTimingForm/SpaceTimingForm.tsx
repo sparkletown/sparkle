@@ -142,6 +142,7 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
       await updateVenue_v2(
         {
           name: venue.name,
+          slug: venue.slug,
           worldId: venue.worldId,
           start_utc_seconds: convertUtcSecondsFromInputDateAndTime({
             date: input.startDate,
