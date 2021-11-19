@@ -98,8 +98,9 @@ const useVenueScheduleEvents = ({
 
   const endScheduleDate =
     sovereignVenue?.end_utc_seconds &&
-    isFuture(fromUnixTime(sovereignVenue.end_utc_seconds)) &&
-    sovereignVenue?.end_utc_seconds;
+    isFuture(fromUnixTime(sovereignVenue.end_utc_seconds))
+      ? sovereignVenue.end_utc_seconds
+      : undefined;
 
   const daysInBetween = differenceInDays(
     fromUnixTime(endScheduleDate || maxDate),
