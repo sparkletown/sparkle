@@ -257,7 +257,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         {venue && sovereignVenue && (
           <Breadcrumbs
             containerClassName="NavBarSchedule__breadcrumbs"
-            label="Events on"
+            label="Schedule for"
             onSelect={onBreacrumbsSelect}
             locations={breadcrumbedLocations}
           />
