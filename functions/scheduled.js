@@ -291,7 +291,7 @@ exports.updateVenuesChatCounters = functions.pubsub
         const counter = sum(
           await venue
             .collection("chatMessagesCounter")
-            .where(admin.firestore.FieldPath.documentId(), "!==", "sum")
+            .where(admin.firestore.FieldPath.documentId(), "!=", "sum")
             .get()
             .then(({ docs }) =>
               docs.map((d) => d.data().count).filter((c) => Boolean(c))

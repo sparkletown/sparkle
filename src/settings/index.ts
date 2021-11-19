@@ -532,7 +532,7 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "bootstrap";
+export const DEFAULT_SPACE_SLUG = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",

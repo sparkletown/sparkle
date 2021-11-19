@@ -5,12 +5,12 @@ import { useAsyncFn, useSearchParam } from "react-use";
 
 import {
   ACCOUNT_PROFILE_QUESTIONS_URL,
-  DEFAULT_VENUE,
+  DEFAULT_SPACE_SLUG,
   DISPLAY_NAME_MAX_CHAR_COUNT,
 } from "settings";
 
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
@@ -34,7 +34,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const venueId = useVenueId() ?? DEFAULT_VENUE;
+  const spaceSlug = useSpaceParams() ?? DEFAULT_SPACE_SLUG;
 
   const returnUrl: string | undefined =
     useSearchParam("returnUrl") ?? undefined;
@@ -61,17 +61,17 @@ export const Profile: React.FC = () => {
       await updateUserProfile(user.uid, data);
 
       const accountQuestionsUrlParams = new URLSearchParams();
-      accountQuestionsUrlParams.set("venueId", venueId);
+      accountQuestionsUrlParams.set("spaceSlug", spaceSlug);
       returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
 
       // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = venueId
+      const nextUrl = spaceSlug
         ? `${ACCOUNT_PROFILE_QUESTIONS_URL}?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
       history.push(nextUrl);
     },
-    [history, returnUrl, user, venueId]
+    [history, returnUrl, user, spaceSlug]
   );
 
   const pictureUrl = watch("pictureUrl");
@@ -116,7 +116,11 @@ export const Profile: React.FC = () => {
 
             {user && (
               <ProfilePictureInput
-                {...{ venueId, setValue, user, errors, pictureUrl, register }}
+                setValue={setValue}
+                user={user}
+                errors={errors}
+                pictureUrl={pictureUrl}
+                register={register}
               />
             )}
           </div>

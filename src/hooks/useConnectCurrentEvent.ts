@@ -2,18 +2,21 @@ import { useState } from "react";
 
 import { oneHourAfterTimestamp } from "utils/time";
 
+import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useVenueId } from "./useVenueId";
+import { useSpaceParams } from "./useSpaceParams";
 
 export const useConnectCurrentEvent = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(spaceSlug);
+
   const [currentTimestamp] = useState(Date.now() / 1000);
 
   useFirestoreConnect(
-    venueId
+    spaceId
       ? {
           collection: "venues",
-          doc: venueId,
+          doc: spaceId,
           subcollections: [{ collection: "events" }],
           where: [
             [

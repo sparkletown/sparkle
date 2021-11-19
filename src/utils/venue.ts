@@ -2,7 +2,7 @@ import React, { ReactNode } from "react";
 
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
-import { VenueInput_v2 } from "api/admin";
+import { createSlug, VenueInput_v2 } from "api/admin";
 
 import {
   AnyVenue,
@@ -47,6 +47,7 @@ export const buildEmptyVenue = (
 
   return {
     name: venueName,
+    slug: createSlug(venueName),
     subtitle: "",
     description: "",
     template: template,
@@ -63,6 +64,7 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
+    slug: values.name ? createSlug(values.name) : createSlug("Your Jazz Bar"),
     config: {
       theme: {
         primaryColor: "yellow",
