@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
+import { DEFAULT_GLOBAL_CHAT_NAME } from "settings";
+
 import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
@@ -101,7 +103,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const recipient =
     chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
       ? chatSettings.recipient?.partyName
-      : "global chat";
+      : DEFAULT_GLOBAL_CHAT_NAME;
 
   const buttonClasses = classNames("Chatbox__submit-button", {
     "Chatbox__submit-button--question": isQuestion,
