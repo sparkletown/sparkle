@@ -335,7 +335,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
         {venue.name && (
           <>
             <Link
-              to={venueInsideUrl(venue.id)}
+              to={venueInsideUrl(venue.slug)}
               target="_blank"
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
