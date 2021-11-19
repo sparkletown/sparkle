@@ -6,11 +6,7 @@ import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFAULT_USER_STATUS,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { DEFAULT_USER_STATUS, DEFAULT_VENUE_LOGO } from "settings";
 
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
 
@@ -282,16 +278,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const backButtonOptionList = useMemo(
     () =>
-      ownedVenues?.filter(({ id, name, template, worldId: venueWorldId }) => {
-        if (venueId === id || venue?.worldId !== venueWorldId) {
-          return null;
-        }
-
-        return {
-          name,
-          template,
-        };
-      }) ?? ALWAYS_EMPTY_ARRAY,
+      ownedVenues?.filter(
+        ({ id, worldId: venueWorldId }) =>
+          venueId !== id && venue?.worldId === venueWorldId
+      ),
     [ownedVenues, venueId, venue?.worldId]
   );
 

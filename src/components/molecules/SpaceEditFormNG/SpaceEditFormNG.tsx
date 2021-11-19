@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -229,17 +228,10 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const backButtonOptionList = useMemo(
     () =>
-      ownedVenues?.filter(({ id, name, template, worldId }) => {
-        if (portalId === id || worldId !== portal?.worldId) {
-          return null;
-        }
-
-        return {
-          name,
-          template,
-        };
-      }) ?? ALWAYS_EMPTY_ARRAY,
-    [ownedVenues, portal?.worldId, portalId]
+      ownedVenues?.filter(
+        ({ id, worldId }) => portalId === id || worldId !== portal?.worldId
+      ),
+    [ownedVenues, portalId, portal?.worldId]
   );
 
   return (
