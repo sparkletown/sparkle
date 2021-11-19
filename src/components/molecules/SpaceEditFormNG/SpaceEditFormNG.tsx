@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -229,17 +228,22 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId }) => {
-      if (spaceId === id || worldId !== portal?.worldId) {
-        return null;
-      }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        ownedVenues
+          .filter(
+            ({ id, worldId }) =>
+              !(portal?.worldId !== worldId || id === portalId)
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [ownedVenues, portal?.worldId, portalId]
+  );
 
-      return {
-        name,
-        template,
-      };
-    }
+  const parentSpace = useMemo(
+    () => ownedVenues.find(({ id }) => id === portal?.parentId),
+    [portal?.parentId, ownedVenues]
   );
 
   return (
@@ -283,12 +287,12 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={spaceId}
+                portals={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="parentId"
-                defaultSpace={values.parentId}
+                parentSpace={parentSpace}
+                error={errors?.parentId}
               />
             </AdminSection>
             <AdminSection title="Livestream URL" withLabel>

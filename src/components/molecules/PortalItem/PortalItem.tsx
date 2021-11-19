@@ -97,6 +97,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
           ...venueData,
           worldId,
           parentId: spaceSlug,
+          logoImageUrl: icon,
           slug: newSpaceSlug,
         },
         user

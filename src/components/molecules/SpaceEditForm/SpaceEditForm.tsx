@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -258,17 +257,22 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId }) => {
-      if (spaceId === id || worldId !== roomVenue?.worldId) {
-        return null;
-      }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        ownedVenues
+          .filter(
+            ({ id, worldId }) =>
+              !(roomVenue?.worldId !== worldId || id === roomVenueId)
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [ownedVenues, roomVenue?.worldId, roomVenueId]
+  );
 
-      return {
-        name,
-        template,
-      };
-    }
+  const parentSpace = useMemo(
+    () => ownedVenues.find(({ id }) => id === roomVenue?.parentId),
+    [ownedVenues, roomVenue?.parentId]
   );
 
   return (
@@ -332,12 +336,12 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={spaceId}
+                portals={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="venue.parentId"
-                defaultSpace={venueValues.parentId}
+                parentSpace={parentSpace}
+                error={errors?.venue?.parentId}
               />
             </AdminSection>
           </AdminSpacesListItem>

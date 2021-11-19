@@ -6,11 +6,7 @@ import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  DEFAULT_USER_STATUS,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { DEFAULT_USER_STATUS, DEFAULT_VENUE_LOGO } from "settings";
 
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
 
@@ -285,17 +281,23 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId: venueWorldId }) => {
-      if (venueId === id || venue?.worldId !== venueWorldId) {
-        return null;
-      }
+  const filteredWorlds = ownedVenues.filter(
+    (venue) => venue.id === venue.worldId
+  );
 
-      return {
-        name,
-        template,
-      };
-    }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        filteredWorlds
+          .filter(({ id }) => !(venueId === id))
+          .map((world) => [world.id, world])
+      ),
+    [venueId, filteredWorlds]
+  );
+
+  const parentSpace = useMemo(
+    () => filteredWorlds.find(({ id }) => id === venue?.parentId),
+    [filteredWorlds, venue?.parentId]
   );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
@@ -412,12 +414,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
             withLabel
           >
             <SpacesDropdown
-              venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-              venueId={venueId}
+              portals={backButtonOptionList}
               setValue={setValue}
               register={register}
               fieldName="parentId"
-              defaultSpace={values.parentId}
+              parentSpace={parentSpace}
+              error={errors.parentId}
             />
           </AdminSection>
           <AdminCheckbox
