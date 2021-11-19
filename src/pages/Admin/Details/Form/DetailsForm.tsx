@@ -15,10 +15,12 @@ import { VenueTemplate } from "types/venues";
 
 import { adminWorldSpacesUrl } from "utils/url";
 
+import { venueV2Schema } from "forms/venueV2Schema";
+
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useWorldParams } from "hooks/worlds/useWorldParams";
+import { useWorldById } from "hooks/worlds/useWorldById";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -37,8 +39,6 @@ import ImageInput from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
-import { validationSchema_v2 } from "../ValidationSchema";
-
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
 import "./DetailsForm.scss";
@@ -55,14 +55,13 @@ const HANDLED_ERRORS: string[] = [
   "parentId",
 ];
 
-const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
+const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   const history = useHistory();
   const venueId = useVenueId();
   const { user } = useUser();
 
-  const { worldId } = useWorldParams();
-
   const { worldParentVenues } = useWorldVenues(worldId ?? venue?.worldId ?? "");
+  const { world, isLoaded } = useWorldById(worldId ?? venue?.worldId);
 
   const { subtitle, description, coverImageUrl } =
     venue?.config?.landingPageConfig ?? {};
@@ -92,7 +91,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
       subtitle: subtitle ?? "",
       showGrid: showGrid ?? false,
       columns: 0,
-      worldId: worldId ?? "",
+      worldId: worldId ?? venue?.worldId ?? "",
       parentId: parentId ?? "",
       showBadges: showBadges,
       radioStations: radioStations ? radioStations[0] : "",
@@ -106,18 +105,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
     }),
     [
       name,
-      showGrid,
-      parentId,
-      worldId,
+      coverImageUrl,
       icon,
       description,
       subtitle,
-      coverImageUrl,
+      showGrid,
+      worldId,
+      venue?.worldId,
+      venue?.userStatuses,
+      parentId,
       showBadges,
       radioStations,
       requiresDateOfBirth,
       showUserStatus,
-      venue?.userStatuses,
       hasSocialLoginEnabled,
       enableJukebox,
       showRadio,
@@ -138,7 +138,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: validationSchema_v2,
+    validationSchema: venueV2Schema,
     validationContext: {
       editing: !!venueId,
     },
@@ -166,7 +166,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
   const [{ error: submitError, loading: isSaving }, setVenue] = useAsyncFn(
     async (vals: FormValues) => {
-      if (!user) return;
+      if (!user || !isLoaded) return;
 
       const isValidParentId = validateParentId(values.parentId, [
         venueId ?? createSlug(vals.name),
@@ -191,7 +191,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
         await updateVenue_v2(updatedVenue, user);
 
-        history.push(adminWorldSpacesUrl(venue?.worldId));
+        history.push(adminWorldSpacesUrl(world?.slug));
       } else {
         const newVenue = {
           ...vals,
@@ -202,17 +202,19 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
 
         await createVenue_v2(newVenue, user);
 
-        history.push(adminWorldSpacesUrl(worldId));
+        history.push(adminWorldSpacesUrl(world?.slug));
       }
     },
     [
       history,
+      isLoaded,
       setError,
       user,
       validateParentId,
       values.parentId,
       venue?.worldId,
       venueId,
+      world?.slug,
       worldId,
     ]
   );
@@ -259,10 +261,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue }) => {
   };
 
   const navigateToHome = useCallback(() => {
-    history.push(
-      adminWorldSpacesUrl(worldId ?? values?.worldId ?? venue?.worldId)
-    );
-  }, [history, worldId, values?.worldId, venue?.worldId]);
+    history.push(adminWorldSpacesUrl(world?.slug));
+  }, [history, world?.slug]);
 
   const saveButtonProps: ButtonProps = useMemo(
     () => ({

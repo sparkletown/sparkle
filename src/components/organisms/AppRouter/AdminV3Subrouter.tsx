@@ -13,8 +13,9 @@ import {
   ADMIN_V3_WORLDS_BASE_URL,
 } from "settings";
 
-import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
+import { SpaceCreateWizard } from "pages/SpaceCreateWizard";
 import { SpaceEditor } from "pages/SpaceEditor";
+import { SpaceEditWizard } from "pages/SpaceEditWizard";
 import { WorldEditor } from "pages/WorldEditor";
 import { WorldsDashboard } from "pages/WorldsDashboard";
 
@@ -30,8 +31,8 @@ export const AdminV3Subrouter: React.FC = () => (
     <Route path={ADMIN_V3_WORLDS_BASE_URL} component={WorldsDashboard} />
     <Route path={ADMIN_V3_SPACE_PARAM_URL} component={AdminVenueView} />
     <Route path={ADMIN_V3_SPACE_SETTINGS_PARAM_URL} component={SpaceEditor} />
-    <Route path={ADMIN_V3_CREATE_PARAM_URL} component={VenueWizardV2} />
-    <Route path={ADMIN_V3_EDIT_PARAM_URL} component={VenueWizardV2} />
+    <Route path={ADMIN_V3_CREATE_PARAM_URL} component={SpaceCreateWizard} />
+    <Route path={ADMIN_V3_EDIT_PARAM_URL} component={SpaceEditWizard} />
     <Route path={ADMIN_V3_ROOT_URL} component={WorldsDashboard} />
   </Switch>
 );

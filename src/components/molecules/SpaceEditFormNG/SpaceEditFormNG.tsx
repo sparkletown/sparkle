@@ -21,11 +21,11 @@ import { Room } from "types/rooms";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
+import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
+
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-
-import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
@@ -116,7 +116,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: roomEditNGSchema,
+    validationSchema: spaceEditNGSchema,
     defaultValues,
   });
   useEffect(() => reset(defaultValues), [defaultValues, reset]);

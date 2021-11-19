@@ -13,6 +13,7 @@ import { adminCreateWorldSpace } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
@@ -27,13 +28,17 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./AdminDashboard.scss";
 
 export const AdminDashboard: React.FC = () => {
-  const { ownedVenues, isLoading } = useOwnedVenues({});
+  const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({});
 
-  const { worldId } = useWorldParams();
+  const { worldSlug } = useWorldParams();
 
-  const venues = worldId
-    ? ownedVenues.filter((venue) => venue.worldId === worldId)
-    : ownedVenues;
+  const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
+
+  const venues = useMemo(
+    () =>
+      world ? ownedVenues.filter((venue) => venue.worldId === world.id) : [],
+    [ownedVenues, world]
+  );
 
   const [
     currentSortingOption,
@@ -72,7 +77,7 @@ export const AdminDashboard: React.FC = () => {
 
   const hasVenues = renderedPartyVenues.length > 0;
 
-  if (isLoading) {
+  if (isLoadingSpaces || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
@@ -96,7 +101,7 @@ export const AdminDashboard: React.FC = () => {
             <ButtonNG
               variant="primary"
               isLink
-              linkTo={adminCreateWorldSpace(worldId)}
+              linkTo={adminCreateWorldSpace(world?.slug)}
             >
               Create a new space
             </ButtonNG>

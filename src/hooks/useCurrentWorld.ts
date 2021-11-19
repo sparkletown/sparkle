@@ -17,6 +17,7 @@ interface UseCurrentWorldReturn {
   world?: WithId<World>;
 }
 
+// @debt duplicate of useWorldById
 export const useCurrentWorld: ReactHook<
   UseCurrentWorldProps,
   UseCurrentWorldReturn

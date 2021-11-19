@@ -3,7 +3,6 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import * as Yup from "yup";
 
 import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
@@ -13,6 +12,8 @@ import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId, withId } from "utils/id";
+
+import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
@@ -34,8 +35,6 @@ import "./WorldAdvancedForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = [];
-
-const validationSchema = Yup.object().shape({});
 
 export interface WorldAdvancedFormProps extends AdminSidebarFooterProps {
   world: WithId<World>;
@@ -60,10 +59,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
       attendeesTitle: world.attendeesTitle,
-      chatTitle: world.chatTitle,
       radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
-      showNametags: world.showNametags,
       showRadio: world.showRadio,
       showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
       showUserStatus: world.showUserStatus,
@@ -83,7 +80,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: emptyObjectSchema,
     defaultValues,
   });
 
@@ -94,10 +91,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
     const data = {
       attendeesTitle: values.attendeesTitle,
-      chatTitle: values.chatTitle,
       radioStation: values.radioStation,
       showBadges: values.showBadges,
-      showNametags: values.showNametags,
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
@@ -131,10 +126,8 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     const values: Partial<WorldAdvancedFormInput> = getValues();
     reset({
       attendeesTitle: values.attendeesTitle,
-      chatTitle: values.chatTitle,
       radioStation: values.radioStation,
       showBadges: values.showBadges,
-      showNametags: values.showNametags,
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
@@ -184,30 +177,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             errors={errors}
             register={register}
           />
-        </AdminSection>
-
-        <AdminSection
-          title="Your venue chat label"
-          subtitle="(For example: Party, Event, Meeting)"
-          withLabel
-        >
-          <AdminInput
-            name="chatTitle"
-            autoComplete="off"
-            placeholder="Event label"
-            errors={errors}
-            register={register}
-          />
-        </AdminSection>
-
-        <AdminSection
-          title="Show Nametags (Display user names on their avatars)"
-          withLabel
-        >
-          <Form.Control as="select" custom name="showNametags" ref={register}>
-            <option value="none">None</option>
-            <option value="hover">Inline and hover</option>
-          </Form.Control>
         </AdminSection>
 
         <AdminSection>

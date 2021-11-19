@@ -7,7 +7,7 @@ import { createSlug } from "api/admin";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
-import { UsernameVisibility, UserStatus } from "types/User";
+import { UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
@@ -21,7 +21,6 @@ import { isDefined } from "utils/types";
 export interface World {
   adultContent?: boolean;
   attendeesTitle?: string;
-  chatTitle?: string;
   config: {
     landingPageConfig: {
       coverImageUrl: string;
@@ -43,7 +42,6 @@ export interface World {
   radioStations?: string[];
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
-  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showSchedule?: boolean;
   showUserStatus?: boolean;
@@ -53,9 +51,8 @@ export interface World {
 }
 
 export const createFirestoreWorldCreateInput: (
-  input: WorldStartFormInput,
-  user: firebase.UserInfo
-) => Promise<Partial<World>> = async (input, user) => {
+  input: WorldStartFormInput
+) => Promise<Partial<World>> = async (input) => {
   const name = input.name;
   const slug = createSlug(name);
 
@@ -133,9 +130,7 @@ export const createFirestoreWorldAdvancedInput: (
   const picked = pick(input, [
     "id",
     "attendeesTitle",
-    "chatTitle",
     "showBadges",
-    "showNametags",
     "showRadio",
     "showSchedule",
     "showUserStatus",
@@ -163,11 +158,14 @@ export const createWorld: (
     // NOTE: due to interdependence on id and upload files' URLs:
 
     // 1. first a world stub is created
-    const stubInput = await createFirestoreWorldCreateInput(world, user);
+    const stubInput = await createFirestoreWorldCreateInput(world);
 
-    worldId = (
+    const newWorld = (
       await firebase.functions().httpsCallable("world-createWorld")(stubInput)
     )?.data;
+
+    worldId = newWorld.id;
+
     // 2. then world is properly updated, having necessary id
     const fullInput = await createFirestoreWorldStartInput(
       withId(world, worldId),

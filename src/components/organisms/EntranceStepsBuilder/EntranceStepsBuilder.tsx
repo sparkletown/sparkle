@@ -3,6 +3,13 @@ import { FieldErrors, FieldValues } from "react-hook-form";
 
 import { EntranceStepConfig } from "types/EntranceStep";
 
+import {
+  UseArrayAdd,
+  UseArrayClear,
+  UseArrayRemove,
+  UseArrayUpdate,
+} from "hooks/useArray";
+
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
 import { EntranceStepsInputFieldSet } from "components/molecules/EntranceStepsInputFieldSet";
@@ -18,9 +25,10 @@ export interface EntranceStepsBuilderProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   title?: string;
   errors?: FieldErrors<FieldValues>;
-  onAdd: () => void;
-  onClear: () => void;
-  onRemove: (context: { index: number }) => void;
+  onAdd: UseArrayAdd<EntranceStepConfig>;
+  onUpdate: UseArrayUpdate<EntranceStepConfig>;
+  onClear: UseArrayClear<EntranceStepConfig>;
+  onRemove: UseArrayRemove<EntranceStepConfig>;
 }
 
 export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
@@ -30,6 +38,7 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
   title,
   errors,
   onAdd,
+  onUpdate,
   onClear,
   onRemove,
 }) => {
@@ -50,6 +59,7 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
             index={index}
             key={`${name}-${index}`}
             name={name}
+            onUpdate={onUpdate}
             onRemove={onRemove}
             register={register}
           />

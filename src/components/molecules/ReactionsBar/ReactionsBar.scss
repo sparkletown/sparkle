@@ -13,6 +13,12 @@
     align-items: center;
     font-size: $font-size--xl;
     cursor: pointer;
+
+    &--disabled {
+      cursor: default;
+      pointer-events: none;
+      color: $lighter-intermediate-grey;
+    }
   }
 
   &__leave-seat-button {

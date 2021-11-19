@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useWorldById } from "hooks/worlds/useWorldById";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -12,15 +12,15 @@ import { WorldAdvancedForm } from "components/organisms/WorldAdvancedForm";
 import { Loading } from "components/molecules/Loading";
 
 export interface WorldEditorAdvancedPanelProps {
-  worldId?: string;
+  worldSlug?: string;
   onClickHome: () => void;
 }
 
 export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> = ({
+  worldSlug,
   onClickHome,
-  worldId,
 }) => {
-  const { isLoaded, world } = useWorldById(worldId);
+  const { isLoaded, world } = useWorldBySlug(worldSlug);
   return (
     <AdminPanel>
       <AdminSidebar>
