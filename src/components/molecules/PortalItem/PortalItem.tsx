@@ -16,15 +16,13 @@ import {
 import { venueInsideFullUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
+import { createPortalSchema } from "forms/createPortalSchema";
+import { createSpaceSchema } from "forms/createSpaceSchema";
+
 import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
 import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-
-import {
-  createPortalSchema,
-  createSpaceSchema,
-} from "pages/Admin/Details/ValidationSchema";
 
 import { SubmitError } from "components/molecules/SubmitError";
 

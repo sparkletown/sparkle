@@ -10,6 +10,7 @@ export const MIXPANEL_PROJECT_TOKEN =
   process.env.REACT_APP_MIXPANEL_PROJECT_TOKEN;
 export const ALGOLIA_API_SEARCH_KEY =
   process.env.REACT_APP_ALGOLIA_API_SEARCH_KEY;
+export const ALGOLIA_APP_ID = process.env.REACT_APP_ALGOLIA_APP_ID;
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;

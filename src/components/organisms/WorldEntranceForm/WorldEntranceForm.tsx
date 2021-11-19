@@ -2,7 +2,6 @@ import React, { useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import * as Yup from "yup";
 
 import { updateWorldEntranceSettings, World } from "api/world";
 
@@ -11,6 +10,8 @@ import { Question } from "types/Question";
 import { WorldEntranceFormInput } from "types/world";
 
 import { WithId } from "utils/id";
+
+import { worldEntranceSchema } from "forms/worldEntranceSchema";
 
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
@@ -32,33 +33,6 @@ import "./WorldEntranceForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["entrance"];
-
-const questionSchema = Yup.array<Question>()
-  .ensure()
-  .defined()
-  .transform((value) =>
-    value.filter(({ name, text }: Question) => !!name && !!text)
-  );
-
-const validationSchema = Yup.object().shape({
-  adultContent: Yup.bool().notRequired(),
-  requiresDateOfBirth: Yup.bool().notRequired(),
-  code: questionSchema.notRequired(),
-  profile: questionSchema.notRequired(),
-  entrance: Yup.array(
-    Yup.object().shape({
-      videoUrl: Yup.string().required("Video URL is required."),
-      autoplay: Yup.boolean().notRequired(),
-      buttons: Yup.array(
-        Yup.object().shape({
-          isProceed: Yup.boolean().required(),
-          text: Yup.string().notRequired(),
-          href: Yup.string().notRequired(),
-        })
-      ),
-    })
-  ).notRequired(),
-});
 
 export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
   world: WithId<World>;
@@ -135,7 +109,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   } = useForm<WorldEntranceFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: worldEntranceSchema,
     defaultValues,
   });
 
