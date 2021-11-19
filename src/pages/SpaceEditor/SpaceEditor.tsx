@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { adminNGSettingsUrl } from "utils/url";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
@@ -22,7 +22,7 @@ export enum SpaceEditorTab {
 }
 
 export interface SpaceEditorRouteParams {
-  venueId?: string;
+  spaceSlug?: string;
   selectedTab?: SpaceEditorTab;
 }
 
@@ -32,14 +32,11 @@ const spaceEditorTabLabelMap: Readonly<Record<SpaceEditorTab, String>> = {
 
 export const SpaceEditor: React.FC = () => {
   const {
-    venueId,
+    spaceSlug,
     selectedTab = SpaceEditorTab.basicInfo,
   } = useParams<SpaceEditorRouteParams>();
 
-  const {
-    currentVenue: venue,
-    isCurrentVenueLoaded,
-  } = useConnectCurrentVenueNG(venueId);
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const renderedSpaceEditorTabs = useMemo(() => {
     return Object.entries(spaceEditorTabLabelMap).map(([key, label]) => (
@@ -49,18 +46,18 @@ export const SpaceEditor: React.FC = () => {
           AdminVenueView__tab: true,
           "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        to={adminNGSettingsUrl(venueId, key)}
+        to={adminNGSettingsUrl(spaceSlug, key)}
       >
         {label}
       </Link>
     ));
-  }, [selectedTab, venueId]);
+  }, [selectedTab, spaceSlug]);
 
-  if (!isCurrentVenueLoaded) {
+  if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
 
-  if (!venue) {
+  if (!space) {
     //@debt Add NotFound page here after it's merged
     return null;
   }
