@@ -10,7 +10,8 @@ import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -41,7 +42,8 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   capacity,
   onHide,
 }) => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const formDefaultValues = useMemo(
     () => ({
@@ -66,16 +68,16 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   // use useAsyncFn for easier error handling, instead of state hook
   const [{ error: httpError, loading: isUpdating }, updateTables] = useAsyncFn(
     async (values: EditTableForm) => {
-      if (!venueId || !tableOfUser) return;
+      if (!spaceId || !tableOfUser) return;
 
       await updateVenueTable({
         ...values,
-        venueId,
+        venueId: spaceId,
         tableOfUser,
         tables,
       }).then(onHide);
     },
-    [onHide, tableOfUser, tables, venueId]
+    [onHide, tableOfUser, tables, spaceId]
   );
 
   const saveButtonClassNames = classNames("btn btn-centered btn-primary", {

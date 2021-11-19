@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 
 import {
-  DEFAULT_VENUE,
+  DEFAULT_SPACE_SLUG,
   PLAYA_IMAGE,
   PLAYA_VENUE_NAME,
   SPARKLEVERSE_LOGO_URL,
@@ -121,7 +121,9 @@ const Step6 = () => {
                 </div>
                 <button
                   className={`btn btn-primary btn-block btn-centered`}
-                  onClick={() => history.push(venueInsideUrl(DEFAULT_VENUE))}
+                  onClick={() =>
+                    history.push(venueInsideUrl(DEFAULT_SPACE_SLUG))
+                  }
                 >
                   Next
                 </button>

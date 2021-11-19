@@ -9,13 +9,13 @@ import {
   isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useValidImage } from "hooks/useCheckImage";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -30,8 +30,10 @@ import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
-  const venueId = useVenueId();
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
+  const spaceSlug = useSpaceParams();
+  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
   const {
@@ -44,7 +46,7 @@ export const VenueAdminPage: React.FC = () => {
   const isLoggedIn = profile && user;
 
   const [mapBackground] = useValidImage(
-    venue?.mapBackgroundImageUrl,
+    space?.mapBackgroundImageUrl,
     DEFAULT_MAP_BACKGROUND
   );
 
@@ -60,8 +62,8 @@ export const VenueAdminPage: React.FC = () => {
     return <div className="admin-page-title">You need to log in first.</div>;
   }
 
-  if (!venue) {
-    return <div className="admin-page-title">This venue does not exist</div>;
+  if (!space) {
+    return <div className="admin-page-title">This space does not exist</div>;
   }
 
   if (!isVenueOwner) {
@@ -70,7 +72,7 @@ export const VenueAdminPage: React.FC = () => {
     );
   }
 
-  const isIframeVenue = IFRAME_TEMPLATES.includes(venue.template);
+  const isIframeVenue = IFRAME_TEMPLATES.includes(space.template);
 
   const announcementWrapperClasses = classNames(
     "VenueAdminPage__announcement-wrapper",
@@ -81,7 +83,7 @@ export const VenueAdminPage: React.FC = () => {
     <WithNavigationBar>
       <div className="VenueAdminPage">
         <h4 className="VenueAdminPage__title">
-          Current Announcement in {venue?.name}
+          Current Announcement in {space?.name}
         </h4>
         <div className={announcementWrapperClasses}>
           <AnnouncementMessage />
@@ -90,8 +92,8 @@ export const VenueAdminPage: React.FC = () => {
       <div className="VenueAdminPage__settings">
         {isBannerAdminVisibile && (
           <BannerAdmin
-            venueId={venueId}
-            venue={venue}
+            venueId={spaceId}
+            venue={space}
             onClose={hideBannerAdmin}
           />
         )}
@@ -99,13 +101,13 @@ export const VenueAdminPage: React.FC = () => {
         {!isBannerAdminVisibile && (
           <>
             <AnnouncementOptions
-              banner={venue.banner}
+              banner={space.banner}
               onEdit={showBannerAdmin}
             />
           </>
         )}
       </div>
-      {isIframeVenue && <IframeAdmin venueId={venueId} venue={venue} />}
+      {isIframeVenue && <IframeAdmin venueId={spaceId} venue={space} />}
     </WithNavigationBar>
   );
 };

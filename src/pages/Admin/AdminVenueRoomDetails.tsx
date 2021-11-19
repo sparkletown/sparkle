@@ -76,7 +76,7 @@ export const AdminVenueRoomDetails = ({
 
       await upsertRoom(roomValues, venue.id, user, index);
 
-      history.push(`${ADMIN_V1_ROOT_URL}/${venue.id}`);
+      history.push(`${ADMIN_V1_ROOT_URL}/${venue.slug}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {
