@@ -33,9 +33,20 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const isReactionsAudioDisabled = !venue.isReactionsMuted;
 
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
-    venue.isReactionsMuted ?? false
-  );
+  const {
+    isShown: isUserAudioOn,
+    toggle: toggleUserAudio,
+    hide: disableUserAudio,
+    show: enableUserAudio,
+  } = useShowHide(venue.isReactionsMuted ?? false);
+
+  useEffect(() => {
+    if (!venue.isReactionsMuted) {
+      disableUserAudio();
+    } else {
+      enableUserAudio();
+    }
+  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,

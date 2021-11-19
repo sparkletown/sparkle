@@ -79,9 +79,20 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const isReactionsAudioDisabled = !venue.isReactionsMuted;
 
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
-    venue.isReactionsMuted
-  );
+  const {
+    isShown: isUserAudioOn,
+    toggle: toggleUserAudio,
+    hide: disableUserAudio,
+    show: enableUserAudio,
+  } = useShowHide(venue.isReactionsMuted);
+
+  useEffect(() => {
+    if (!venue.isReactionsMuted) {
+      disableUserAudio();
+    } else {
+      enableUserAudio();
+    }
+  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   const isUserAudioMuted = !isUserAudioOn;
 
