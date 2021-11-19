@@ -3,7 +3,6 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import * as Yup from "yup";
 
 import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
@@ -13,6 +12,8 @@ import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId, withId } from "utils/id";
+
+import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
@@ -34,8 +35,6 @@ import "./WorldAdvancedForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = [];
-
-const validationSchema = Yup.object().shape({});
 
 export interface WorldAdvancedFormProps extends AdminSidebarFooterProps {
   world: WithId<World>;
@@ -81,7 +80,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: emptyObjectSchema,
     defaultValues,
   });
 
