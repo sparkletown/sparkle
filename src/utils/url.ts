@@ -7,7 +7,7 @@ import {
   ADMIN_V3_OLD_WORLD_PARAM_URL,
   ADMIN_V3_SPACE_PARAM_URL,
   ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
-  ADMIN_V3_WORLD_SPACES_PARAM_URL,
+  ADMIN_V4_SPACES_1_PARAM_URL,
   ENTRANCE_BASE_URL,
   VALID_URL_PROTOCOLS,
   VENUE_INSIDE_BASE_URL,
@@ -31,7 +31,7 @@ export const adminCreateWorldSpace = (worldSlug?: string) =>
   generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldSlug });
 
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
-  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldSlug });
+  generatePath(ADMIN_V4_SPACES_1_PARAM_URL, { worldSlug });
 
 export const venueInsideFullUrl = (spaceSlug?: string) =>
   generatePath(VENUE_INSIDE_PARAM_URL, { spaceSlug });
