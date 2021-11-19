@@ -9,6 +9,13 @@ Before the code merge, please, ensure you have the following [environment variab
 
 Actions to take:
 
+- Make user location updates work
+  - Go to scheduled functions https://console.cloud.google.com/cloudscheduler
+  - Choose proper org and project
+  - View logs of firebase-schedule-scheduled-updateUsersLocations
+  - Find the last failed execution of the above function
+  - The error will contain a link to create an index
+  - Click it and create an index
 - Create the backup of the database
   - Go to https://console.cloud.google.com/firestore/import-export
   - Choose the proper organization/project
