@@ -62,7 +62,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       attendeesTitle: world.attendeesTitle,
       radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
-      showNametags: world.showNametags,
       showRadio: world.showRadio,
       showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
       showUserStatus: world.showUserStatus,
@@ -95,7 +94,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       attendeesTitle: values.attendeesTitle,
       radioStation: values.radioStation,
       showBadges: values.showBadges,
-      showNametags: values.showNametags,
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
@@ -131,7 +129,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       attendeesTitle: values.attendeesTitle,
       radioStation: values.radioStation,
       showBadges: values.showBadges,
-      showNametags: values.showNametags,
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
@@ -181,16 +178,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             errors={errors}
             register={register}
           />
-        </AdminSection>
-
-        <AdminSection
-          title="Show Nametags (Display user names on their avatars)"
-          withLabel
-        >
-          <Form.Control as="select" custom name="showNametags" ref={register}>
-            <option value="none">None</option>
-            <option value="hover">Inline and hover</option>
-          </Form.Control>
         </AdminSection>
 
         <AdminSection>
