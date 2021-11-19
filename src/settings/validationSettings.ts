@@ -1,0 +1,2 @@
+export const VENUE_NAME_MAX_CHAR_COUNT = 50;
+export const VENUE_NAME_MIN_CHAR_COUNT = 3;
