@@ -27,11 +27,11 @@ import { RoomVisibility, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
+import { spaceEditSchema } from "forms/spaceEditSchema";
+
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-
-import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
@@ -162,7 +162,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: roomEditSchema,
+    validationSchema: spaceEditSchema,
     defaultValues,
   });
 

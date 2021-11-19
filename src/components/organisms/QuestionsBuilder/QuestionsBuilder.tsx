@@ -3,6 +3,13 @@ import { FieldErrors, FieldValues } from "react-hook-form";
 
 import { Question } from "types/Question";
 
+import {
+  UseArrayAdd,
+  UseArrayClear,
+  UseArrayRemove,
+  UseArrayUpdate,
+} from "hooks/useArray";
+
 import { AdminSidebarSectionSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionSubTitle";
 
 import { QuestionFieldSet } from "components/molecules/QuestionInputFieldSet";
@@ -18,9 +25,10 @@ export interface QuestionsBuilderProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
   title?: string;
   errors?: FieldErrors<FieldValues>;
-  onAdd: () => void;
-  onClear: () => void;
-  onRemove: (context: { index: number }) => void;
+  onAdd: UseArrayAdd<Question>;
+  onUpdate: UseArrayUpdate<Question>;
+  onClear: UseArrayClear<Question>;
+  onRemove: UseArrayRemove<Question>;
 }
 
 export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
@@ -31,6 +39,7 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
   title,
   errors,
   onAdd,
+  onUpdate,
   onClear,
   onRemove,
 }) => {
@@ -42,9 +51,6 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
       )}
 
       {Array.from({ length: count }).map((_, index) => {
-        // @debt any arbitrary question should be able to be removed, not just the last one
-        // NOTE: due to incomplete array/form logic, only last element gets removed, don't provide remove for the rest
-        const isLast = count && index === count - 1;
         return (
           <QuestionFieldSet
             errors={errors}
@@ -52,7 +58,8 @@ export const QuestionsBuilder: React.FC<QuestionsBuilderProps> = ({
             index={index}
             key={`${name}-${index}`}
             name={name}
-            onRemove={isLast ? onRemove : undefined}
+            onUpdate={onUpdate}
+            onRemove={onRemove}
             register={register}
           />
         );
