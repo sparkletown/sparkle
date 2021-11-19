@@ -37,10 +37,18 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
         <div className={logoClasses} />
         <AdminShowcaseSubTitle>{venue.name}</AdminShowcaseSubTitle>
       </div>
-      <ButtonNG linkTo={adminNGVenueUrl(venue.slug)} variant="primary">
+      <ButtonNG
+        linkTo={adminNGVenueUrl(venue.slug)}
+        disabled={!venue.slug}
+        variant="primary"
+      >
         Manage {SPACE_TAXON.capital} Settings
       </ButtonNG>
-      <ButtonNG linkTo={adminNGSettingsUrl(venue.slug)} variant="primary">
+      <ButtonNG
+        linkTo={adminNGSettingsUrl(venue.slug)}
+        disabled={!venue.slug}
+        variant="primary"
+      >
         {SPACE_TAXON.capital} Settings
       </ButtonNG>
     </div>
