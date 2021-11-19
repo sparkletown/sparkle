@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_OBJECT,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -22,10 +21,9 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
-import { AnyVenue, RoomVisibility, VenueTemplate } from "types/venues";
+import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { WithId } from "utils/id";
 import { isExternalPortal } from "utils/url";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -257,22 +255,22 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList =
-    ownedVenues.reduce(
-      (
-        obj: Record<string, WithId<AnyVenue>> | null,
-        venue: WithId<AnyVenue>
-      ) => {
-        if (roomVenue?.worldId !== venue.worldId || venue.id === roomVenueId) {
-          return obj;
-        }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        ownedVenues
+          .filter(({ id, worldId }) =>
+            roomVenue?.worldId !== worldId || id === roomVenueId ? false : true
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [ownedVenues, roomVenue?.worldId, roomVenueId]
+  );
 
-        return { [venue.id]: venue, ...obj };
-      },
-      {}
-    ) ?? ALWAYS_EMPTY_OBJECT;
-
-  const parentSpace = ownedVenues.find(({ id }) => id === roomVenue?.parentId);
+  const parentSpace = useMemo(
+    () => ownedVenues.find(({ id }) => id === roomVenue?.parentId),
+    [ownedVenues, roomVenue?.parentId]
+  );
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>

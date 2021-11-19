@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_OBJECT,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -19,10 +18,8 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
-import { AnyVenue } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { WithId } from "utils/id";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
@@ -229,22 +226,22 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList =
-    ownedVenues.reduce(
-      (
-        obj: Record<string, WithId<AnyVenue>> | null,
-        venue: WithId<AnyVenue>
-      ) => {
-        if (portal?.worldId !== venue.worldId || venue.id === portalId) {
-          return obj;
-        }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        ownedVenues
+          .filter(({ id, worldId }) =>
+            portal?.worldId !== worldId || id === portalId ? false : true
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [ownedVenues, portal?.worldId, portalId]
+  );
 
-        return { [venue.id]: venue, ...obj };
-      },
-      {}
-    ) ?? ALWAYS_EMPTY_OBJECT;
-
-  const parentSpace = ownedVenues.find(({ id }) => id === portal?.parentId);
+  const parentSpace = useMemo(
+    () => ownedVenues.find(({ id }) => id === portal?.parentId),
+    [portal?.parentId, ownedVenues]
+  );
 
   return (
     <div className="SpaceEditFormNG">

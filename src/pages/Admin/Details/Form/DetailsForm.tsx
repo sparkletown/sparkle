@@ -6,18 +6,13 @@ import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import {
-  ALWAYS_EMPTY_OBJECT,
-  DEFAULT_USER_STATUS,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { DEFAULT_USER_STATUS, DEFAULT_VENUE_LOGO } from "settings";
 
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/venues";
 
-import { WithId } from "utils/id";
 import { adminWorldSpacesUrl } from "utils/url";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -285,22 +280,20 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
     (venue) => venue.id === venue.worldId
   );
 
-  const backButtonOptionList =
-    filteredWorlds.reduce(
-      (
-        obj: Record<string, WithId<AnyVenue>> | null,
-        world: WithId<AnyVenue>
-      ) => {
-        if (venueId === world.id) {
-          return obj;
-        }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        filteredWorlds
+          .filter(({ id }) => (venueId === id ? false : true))
+          .map((world) => [world.id, world])
+      ),
+    [venueId, filteredWorlds]
+  );
 
-        return { [world.id]: world, ...obj };
-      },
-      {}
-    ) ?? ALWAYS_EMPTY_OBJECT;
-
-  const parentSpace = filteredWorlds.find(({ id }) => id === venue?.parentId);
+  const parentSpace = useMemo(
+    () => filteredWorlds.find(({ id }) => id === venue?.parentId),
+    [filteredWorlds, venue?.parentId]
+  );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
     values.userStatuses ?? []

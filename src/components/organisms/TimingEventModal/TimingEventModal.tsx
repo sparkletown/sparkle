@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
 import {
-  ALWAYS_EMPTY_OBJECT,
+  ALWAYS_EMPTY_ARRAY,
   DAYJS_INPUT_DATE_FORMAT,
   DAYJS_INPUT_TIME_FORMAT,
   HAS_ROOMS_TEMPLATES,
@@ -113,19 +113,21 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
-  const dropdownVenueList =
-    venue?.rooms?.reduce(
-      (obj, room) => ({
-        [room.title]: {
-          name: room.title,
-          template: template,
-        },
-        ...obj,
-      }),
-      {}
-    ) ?? ALWAYS_EMPTY_OBJECT;
+  const dropdownVenueList = useMemo(
+    () =>
+      Object.fromEntries(
+        venue?.rooms?.map((room) => [
+          room.title,
+          { ...room, name: room.title },
+        ]) ?? ALWAYS_EMPTY_ARRAY
+      ),
+    [venue?.rooms]
+  );
 
-  const parentRoom = venue?.rooms?.find(({ title }) => title === event?.room);
+  const parentRoom = useMemo(
+    () => venue?.rooms?.find(({ title }) => title === event?.room),
+    [event?.room, venue?.rooms]
+  );
 
   const parentSpace = {
     name: parentRoom?.title ?? venue.name,
