@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -27,11 +26,12 @@ import { RoomVisibility, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useSpaceParams } from "hooks/useSpaceParams";
+import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
@@ -87,7 +87,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const roomVenueId = room?.url?.split("/").pop();
 
@@ -162,7 +163,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: roomEditSchema,
+    validationSchema: spaceEditSchema,
     defaultValues,
   });
 
@@ -210,7 +211,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     updateSelectedRoom,
   ] = useAsyncFn(
     async (input) => {
-      if (!user || !venueId) return;
+      if (!user || !spaceId) return;
 
       const roomData: RoomInput = {
         ...(room as RoomInput),
@@ -219,7 +220,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         visibility: input.room.visibility,
       };
 
-      await upsertRoom(roomData, venueId, user, roomIndex);
+      await upsertRoom(roomData, spaceId, user, roomIndex);
       room.template && (await updateVenueRoom());
 
       onEdit?.();
@@ -232,7 +233,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       updatedRoom,
       user,
       roomValues,
-      venueId,
+      spaceId,
     ]
   );
 
@@ -240,11 +241,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     { loading: isDeleting, error: deleteError },
     deleteSelectedRoom,
   ] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
-    await deleteRoom(venueId, room);
+    await deleteRoom(spaceId, room);
     onDelete && onDelete();
-  }, [venueId, room, onDelete]);
+  }, [spaceId, room, onDelete]);
 
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);
@@ -256,17 +257,22 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== roomVenue?.worldId) {
-        return null;
-      }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        ownedVenues
+          .filter(
+            ({ id, worldId }) =>
+              !(roomVenue?.worldId !== worldId || id === roomVenueId)
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [ownedVenues, roomVenue?.worldId, roomVenueId]
+  );
 
-      return {
-        name,
-        template,
-      };
-    }
+  const parentSpace = useMemo(
+    () => ownedVenues.find(({ id }) => id === roomVenue?.parentId),
+    [ownedVenues, roomVenue?.parentId]
   );
 
   return (
@@ -330,12 +336,12 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={venueId}
+                portals={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="venue.parentId"
-                defaultSpace={venueValues.parentId}
+                parentSpace={parentSpace}
+                error={errors?.venue?.parentId}
               />
             </AdminSection>
           </AdminSpacesListItem>

@@ -3,13 +3,10 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
 import { omit } from "lodash";
-import * as Yup from "yup";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { createSlug } from "api/admin";
 import { createWorld, updateWorldStartSettings, World } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
@@ -17,6 +14,8 @@ import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
 import { WorldStartFormInput } from "types/world";
 
 import { WithId, WithOptionalWorldId } from "utils/id";
+
+import { worldStartSchema } from "forms/worldStartSchema";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
@@ -46,40 +45,6 @@ const HANDLED_ERRORS = [
 
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
 const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
-
-const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required()
-    .test(
-      "name",
-      "Must have alphanumeric characters",
-      (val: string) => createSlug(val).length > 0
-    )
-    .when("$creating", (creating: boolean, schema: Yup.StringSchema) =>
-      creating
-        ? schema.test(
-            "name",
-            "This world slug is already taken",
-            // @debt Replace with a function from api/worlds
-            async (val: string) =>
-              !val ||
-              !(
-                await firebase
-                  .firestore()
-                  .collection("worlds")
-                  .where("slug", "==", createSlug(val))
-                  .get()
-              ).docs.length
-          )
-        : schema
-    ),
-  description: Yup.string().notRequired(),
-  subtitle: Yup.string().notRequired(),
-  bannerImageFile: Yup.mixed<FileList>().notRequired(),
-  bannerImageUrl: Yup.string(),
-  logoImageFile: Yup.mixed<FileList>().notRequired(),
-  logoImageUrl: Yup.string(),
-});
 
 export interface WorldStartFormProps extends AdminSidebarFooterProps {
   world?: WithId<World>;
@@ -117,7 +82,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   } = useForm<WorldStartFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: worldStartSchema,
     validationContext: {
       creating: !worldId,
     },

@@ -16,15 +16,13 @@ import {
 import { venueInsideFullUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
+import { createPortalSchema } from "forms/createPortalSchema";
+import { createSpaceSchema } from "forms/createSpaceSchema";
+
 import { useCheckImage } from "hooks/useCheckImage";
 import { useShowHide } from "hooks/useShowHide";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
-import {
-  createPortalSchema,
-  createSpaceSchema,
-} from "pages/Admin/Details/ValidationSchema";
 
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -53,7 +51,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
 
   const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
@@ -70,7 +68,7 @@ export const PortalItem: React.FC<PortalItemProps> = ({
     { loading: isLoading, error: submitError },
     addRoom,
   ] = useAsyncFn(async () => {
-    if (!user || !venueId || !template) return;
+    if (!user || !spaceSlug || !template) return;
 
     const { roomUrl, venueName } = getValues();
 
@@ -92,19 +90,23 @@ export const PortalItem: React.FC<PortalItemProps> = ({
 
     if (template !== "external") {
       const venueData = buildEmptyVenue(venueName, template);
+      const newSpaceSlug = createSlug(venueName);
+
       await createVenue_v2(
         {
           ...venueData,
           worldId,
-          parentId: venueId,
+          parentId: spaceSlug,
+          logoImageUrl: icon,
+          slug: newSpaceSlug,
         },
         user
       );
     }
 
-    await createRoom(roomData, venueId, user);
+    await createRoom(roomData, spaceSlug, user);
     await hideModal();
-  }, [getValues, hideModal, icon, template, user, venueId, worldId]);
+  }, [getValues, hideModal, icon, template, user, spaceSlug, worldId]);
 
   const { isValid } = useCheckImage(poster);
 

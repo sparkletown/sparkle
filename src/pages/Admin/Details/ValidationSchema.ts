@@ -1,4 +1,3 @@
-import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
@@ -62,30 +61,10 @@ export const roomTitleSchema = Yup.string()
 
 export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
-    name: roomTitleSchema.when(
-      "$editing",
-      (editing: boolean, schema: Yup.StringSchema) =>
-        !editing
-          ? schema
-              .test(
-                "name",
-                "Must have alphanumeric characters",
-                (val: string) => createSlug(val).length > 0
-              )
-              .test(
-                "name",
-                "This venue name is already taken",
-                async (val: string) =>
-                  !val ||
-                  !(
-                    await firebase
-                      .firestore()
-                      .collection("venues")
-                      .doc(createSlug(val))
-                      .get()
-                  ).exists
-              )
-          : schema //will be set from the data from the api. Does not need to be unique
+    name: roomTitleSchema.test(
+      "name",
+      "Must have alphanumeric characters",
+      (val: string) => createSlug(val).length > 0
     ),
     subtitle: Yup.string().matches(/.{3,}/, {
       excludeEmptyString: true,
@@ -115,19 +94,6 @@ const venueNameSchema = Yup.string()
     "name",
     "Must have alphanumeric characters",
     (val: string) => createSlug(val).length > 0
-  )
-  .test(
-    "name",
-    "This name is already taken",
-    async (val: string) =>
-      !val ||
-      !(
-        await firebase
-          .firestore()
-          .collection("venues")
-          .doc(createSlug(val))
-          .get()
-      ).exists
   );
 
 export const roomUrlSchema = Yup.string()

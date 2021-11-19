@@ -1,14 +1,16 @@
 import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import { faSmile } from "@fortawesome/free-regular-svg-icons";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
-import { SendChatMessage, SendThreadMessageProps } from "types/chat";
+import { DEFAULT_GLOBAL_CHAT_NAME } from "settings";
 
+import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
+
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useShowHide } from "hooks/useShowHide";
 
 import {
@@ -18,6 +20,8 @@ import {
 import { EmojiPicker } from "components/molecules/EmojiPicker";
 
 import { InputField } from "components/atoms/InputField";
+
+import SendIcon from "assets/icons/send.svg";
 
 import "./ChatMessageBox.scss";
 
@@ -49,6 +53,8 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   });
 
   const sendMessage = useChatboxSendChatMessage();
+
+  const { chatSettings } = useChatSidebarControls();
 
   const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
     async ({ message }) => {
@@ -93,7 +99,11 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const chatValue = watch("message");
 
-  const placeholderValue = isQuestion ? "question" : "message";
+  const placeholderValue = isQuestion ? "Question" : "Message";
+  const recipient =
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
+      ? chatSettings.recipient?.partyName
+      : DEFAULT_GLOBAL_CHAT_NAME;
 
   const buttonClasses = classNames("Chatbox__submit-button", {
     "Chatbox__submit-button--question": isQuestion,
@@ -111,32 +121,24 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           inputClassName="Chatbox__input"
           ref={register({ required: true })}
           name="message"
-          placeholder={`Write your ${placeholderValue}...`}
+          placeholder={`${placeholderValue} ${recipient}`}
           autoComplete="off"
+          iconEnd={
+            <FontAwesomeIcon
+              icon={faSmile}
+              className="Chatbox__submit-button-icon"
+              size="lg"
+            />
+          }
+          onIconEndClick={toggleEmojiPicker}
         />
-        <button
-          aria-label="Send message"
-          className="Chatbox__submit-button"
-          type="button"
-          onClick={toggleEmojiPicker}
-        >
-          <FontAwesomeIcon
-            icon={faSmile}
-            className="Chatbox__submit-button-icon"
-            size="lg"
-          />
-        </button>
         <button
           aria-label="Send message"
           className={buttonClasses}
           type="submit"
           disabled={!chatValue || isSendingMessage || isReplying}
         >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="Chatbox__submit-button-icon"
-            size="lg"
-          />
+          <img src={SendIcon} alt="sideward airplane" />
         </button>
       </form>
 

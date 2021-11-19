@@ -4,7 +4,7 @@ import { PLAYA_ICON_SIDE_PERCENTAGE } from "settings";
 
 import { RoomInput } from "api/admin";
 
-import { roomUrlSchema } from "pages/Admin/Details/ValidationSchema";
+import { roomUrlSchema } from "forms/roomUrlSchema";
 
 import "firebase/functions";
 
