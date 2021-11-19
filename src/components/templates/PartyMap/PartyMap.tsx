@@ -14,7 +14,7 @@ import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
-import { Map, RoomModal } from "./components";
+import { Map, PortalModal } from "./components";
 
 import "./PartyMap.scss";
 
@@ -73,7 +73,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
     <div className="party-venue-container">
       <Map user={user} venue={venue} selectRoom={selectRoom} />
 
-      <RoomModal
+      <PortalModal
         room={selectedRoom}
         venue={venue}
         venueEvents={selectedRoomEvents}

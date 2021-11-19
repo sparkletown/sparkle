@@ -24,7 +24,7 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { RoomModal } from "components/templates/PartyMap/components";
+import { PortalModal } from "components/templates/PartyMap/components";
 
 import { EventModal } from "components/organisms/EventModal";
 
@@ -57,7 +57,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   );
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
-  const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
+  const hidePortalModal = useCallback(() => setSelectedRoom(undefined), []);
 
   const [selectedRoomVenue, setSelectedRoomVenue] = useState<
     WithId<AnyVenue>
@@ -114,7 +114,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);
-              // @debt we need to find room venue (selectedRoomVenue) because of RoomModal -> useRoom -> externalRoomSlug (which accepts venueName as a parameter)
+              // @debt we need to find room venue (selectedRoomVenue) because of PortalModal -> useRoom -> externalRoomSlug (which accepts venueName as a parameter)
               //  probably would be better to extend Room type with the venueId it's related to, and use it in the `externalRoomSlug` instead of venueName
               setSelectedRoomVenue(
                 relatedVenues.find((venue) =>
@@ -242,12 +242,12 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
       />
 
-      {/* @debt use only one RoomModal instance with state controlled with redux */}
-      <RoomModal
+      {/* @debt use only one PortalModal instance with state controlled with redux */}
+      <PortalModal
         show={isDefined(selectedRoom)}
         room={selectedRoom}
         venue={selectedRoomVenue}
-        onHide={hideRoomModal}
+        onHide={hidePortalModal}
       />
 
       {/* @debt use only one EventModal instance with state controlled with redux */}

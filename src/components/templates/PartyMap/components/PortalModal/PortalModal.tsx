@@ -25,11 +25,11 @@ import { UserList } from "components/molecules/UserList";
 
 import { ScheduleItem } from "..";
 
-import "./RoomModal.scss";
+import "./PortalModal.scss";
 
 const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
 
-export interface RoomModalProps {
+export interface PortalModalProps {
   onHide: () => void;
   show: boolean;
   venue?: WithId<AnyVenue>;
@@ -37,7 +37,7 @@ export interface RoomModalProps {
   venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
 
-export const RoomModal: React.FC<RoomModalProps> = ({
+export const PortalModal: React.FC<PortalModalProps> = ({
   onHide,
   room,
   show,
@@ -60,21 +60,25 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} className="RoomModal" centered>
-      <Modal.Body className="RoomModal__modal-body">
-        <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
+    <Modal show={show} onHide={onHide} className="PortalModal" centered>
+      <Modal.Body className="PortalModal__modal-body">
+        <PortalModalContent
+          room={room}
+          venueEvents={venueEvents}
+          venue={venue}
+        />
       </Modal.Body>
     </Modal>
   );
 };
 
-export interface RoomModalContentProps {
+export interface PortalModalContentProps {
   room: Room;
   venue: WithId<AnyVenue>;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
-export const RoomModalContent: React.FC<RoomModalContentProps> = ({
+export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   room,
   venue,
   venueEvents,
@@ -147,7 +151,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomDescription = room.about || portalVenueDescription;
 
   useEffect(() => {
-    analytics.trackOpenRoomModalEvent(roomTitle);
+    analytics.trackOpenPortalModalEvent(roomTitle);
   }, [analytics, roomTitle]);
 
   // @debt maybe refactor this, but autoFocus property working very bad.
@@ -156,14 +160,14 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   return (
     <>
-      <div className="RoomModal__main">
-        <div className="RoomModal__icon" style={iconStyles} />
+      <div className="PortalModal__main">
+        <div className="PortalModal__icon" style={iconStyles} />
 
-        <div className="RoomModal__content">
-          <div className="RoomModal__title">{roomTitle}</div>
+        <div className="PortalModal__content">
+          <div className="PortalModal__title">{roomTitle}</div>
 
           {roomSubtitle && (
-            <div className="RoomModal__subtitle">{roomSubtitle}</div>
+            <div className="PortalModal__subtitle">{roomSubtitle}</div>
           )}
 
           {/* @debt extract this 'enter room' button/link concept into a reusable component */}
@@ -171,7 +175,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           <button
             ref={enterButtonref}
             autoFocus
-            className="btn btn-primary RoomModal__btn-enter"
+            className="btn btn-primary PortalModal__btn-enter"
             onMouseOver={triggerAttendance}
             onMouseOut={clearAttendance}
             onClick={enter}
@@ -182,20 +186,20 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       </div>
 
       {room.about && (
-        <div className="RoomModal__description">
+        <div className="PortalModal__description">
           <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
       <UserList
-        containerClassName="RoomModal__userlist"
+        containerClassName="PortalModal__userlist"
         usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
         userCount={portalVenue?.recentUserCount ?? 0}
         activity={`in this ${ROOM_TAXON.lower}`}
       />
 
       {showRoomEvents && (
-        <div className="RoomModal__events">{renderedRoomEvents}</div>
+        <div className="PortalModal__events">{renderedRoomEvents}</div>
       )}
     </>
   );
