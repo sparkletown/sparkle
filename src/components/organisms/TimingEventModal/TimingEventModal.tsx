@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
   DAYJS_INPUT_DATE_FORMAT,
   DAYJS_INPUT_TIME_FORMAT,
   HAS_ROOMS_TEMPLATES,
@@ -113,10 +113,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
-  const dropdownVenueList = venue?.rooms?.map(({ title, template }) => ({
-    name: title,
-    template: template,
-  }));
+  const dropdownVenueList =
+    venue?.rooms?.reduce(
+      (obj, room) => ({
+        [room.title]: {
+          name: room.title,
+          template: template,
+        },
+        ...obj,
+      }),
+      {}
+    ) ?? ALWAYS_EMPTY_OBJECT;
 
   const parentRoom = venue?.rooms?.find(({ title }) => title === event?.room);
 
@@ -139,11 +146,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <SpacesDropdown
-                  venueSpaces={dropdownVenueList ?? ALWAYS_EMPTY_ARRAY}
+                  portals={dropdownVenueList}
                   setValue={setValue}
                   register={register}
                   fieldName="room"
-                  defaultSpace={parentSpace}
+                  parentSpace={parentSpace}
                   error={errors.room}
                 />
               </div>

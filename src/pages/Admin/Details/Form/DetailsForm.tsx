@@ -7,7 +7,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_LOGO,
 } from "settings";
@@ -15,8 +15,9 @@ import {
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
+import { WithId } from "utils/id";
 import { adminWorldSpacesUrl } from "utils/url";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -284,22 +285,22 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
     (venue) => venue.id === venue.worldId
   );
 
-  const backButtonOptionList = filteredWorlds.filter(
-    ({ id, name, template }) => {
-      if (venueId === id) {
-        return null;
-      }
+  const backButtonOptionList =
+    filteredWorlds.reduce(
+      (
+        obj: Record<string, WithId<AnyVenue>> | null,
+        world: WithId<AnyVenue>
+      ) => {
+        if (venueId === world.id) {
+          return obj;
+        }
 
-      return {
-        name,
-        template,
-      };
-    }
-  );
+        return { [world.id]: world, ...obj };
+      },
+      {}
+    ) ?? ALWAYS_EMPTY_OBJECT;
 
-  const parentSpace = filteredWorlds.find(
-    ({ id, name, template }) => id === venue?.parentId
-  );
+  const parentSpace = filteredWorlds.find(({ id }) => id === venue?.parentId);
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
     values.userStatuses ?? []
@@ -415,11 +416,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
             withLabel
           >
             <SpacesDropdown
-              venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
+              portals={backButtonOptionList}
               setValue={setValue}
               register={register}
               fieldName="parentId"
-              defaultSpace={parentSpace}
+              parentSpace={parentSpace}
               error={errors.parentId}
             />
           </AdminSection>

@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_OBJECT,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -22,9 +22,10 @@ import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room } from "types/rooms";
-import { RoomVisibility, VenueTemplate } from "types/venues";
+import { AnyVenue, RoomVisibility, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { WithId } from "utils/id";
 import { isExternalPortal } from "utils/url";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -256,22 +257,22 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId }) => {
-      if (roomVenue?.worldId !== worldId || id === roomVenueId) {
-        return null;
-      }
+  const backButtonOptionList =
+    ownedVenues.reduce(
+      (
+        obj: Record<string, WithId<AnyVenue>> | null,
+        venue: WithId<AnyVenue>
+      ) => {
+        if (roomVenue?.worldId !== venue.worldId || venue.id === roomVenueId) {
+          return obj;
+        }
 
-      return {
-        name,
-        template,
-      };
-    }
-  );
+        return { [venue.id]: venue, ...obj };
+      },
+      {}
+    ) ?? ALWAYS_EMPTY_OBJECT;
 
-  const parentSpace = ownedVenues.find(
-    ({ id, name, template }) => id === roomVenue?.parentId
-  );
+  const parentSpace = ownedVenues.find(({ id }) => id === roomVenue?.parentId);
 
   return (
     <Form onSubmit={handleSubmit(updateSelectedRoom)}>
@@ -334,11 +335,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
+                portals={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="venue.parentId"
-                defaultSpace={parentSpace}
+                parentSpace={parentSpace}
                 error={errors?.venue?.parentId}
               />
             </AdminSection>
