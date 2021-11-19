@@ -43,6 +43,7 @@ export * from "./spacesSettings";
 export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
+export * from "./validationSettings";
 export * from "./worldDefaultSettings";
 
 export const ENABLE_POPUPS_URL =
@@ -71,8 +72,6 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
-export const VENUE_NAME_MIN_CHAR_COUNT = 3;
-export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
 export const GIFT_TICKET_MODAL_URL =
@@ -649,8 +648,6 @@ export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
 export const EVENTS_PREVIEW_LIST_LENGTH = 50;
-
-export const ALGOLIA_APP_ID = "RMJ2K10PCV";
 
 // Set these to have images uploaded to Firebase Storage served off of Imgix
 // @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf

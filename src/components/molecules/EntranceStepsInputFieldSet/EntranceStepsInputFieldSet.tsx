@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { ChangeEventHandler, useCallback } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
 
 import {
@@ -6,7 +6,12 @@ import {
   EntranceStepConfig,
 } from "types/EntranceStep";
 
-import { useArray } from "hooks/useArray";
+import {
+  useArray,
+  UseArrayAdd,
+  UseArrayRemove,
+  UseArrayUpdate,
+} from "hooks/useArray";
 
 import { EntranceButtonsBuilder } from "components/organisms/EntranceButtonsBuilder";
 
@@ -22,7 +27,8 @@ export interface EntranceStepsInputFieldSetProps {
   errors?: FieldErrors<FieldValues>;
   index: number;
   name: string;
-  onRemove?: (item: { index: number; fieldset: string }) => void;
+  onUpdate: UseArrayUpdate<EntranceStepConfig>;
+  onRemove: UseArrayRemove<EntranceStepConfig>;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
 }
 
@@ -31,26 +37,83 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
   errors,
   index,
   name,
+  onUpdate,
   onRemove,
   register,
 }) => {
+  const fieldButtons = `buttons`;
+  const fieldUrl = `videoUrl`;
+  const fieldTemplate = `template`;
+  const fieldset = `${name}[${index}]`;
+  const inputButtons = `${fieldset}${fieldButtons}`;
+  const inputUrl = `${fieldset}${fieldUrl}`;
+  const inputTemplate = `${fieldset}${fieldTemplate}`;
+
+  const handleRemove = useCallback(() => onRemove({ index }), [
+    onRemove,
+    index,
+  ]);
+
+  const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    ({ target }) => {
+      const { value, attributes, type, checked } = target;
+
+      // NOTE: there is possibly more complicated way of using handleChange as a curried function instead of relying on data-, but this works OK
+      const name = attributes.getNamedItem("data-field")?.value;
+      if (!name) {
+        return console.error(
+          EntranceStepsInputFieldSet.name,
+          `data-field is missing on`,
+          target
+        );
+      }
+
+      onUpdate({
+        index,
+        callback: ({ item }) => ({
+          ...item,
+          [name]: type === "checkbox" ? checked : value,
+        }),
+      });
+    },
+    [onUpdate, index]
+  );
+
+  // NOTE: buttons are part of the step, so each add/remove/update of them is also an update of the step
   const {
     items: buttons,
     add: addButton,
+    update: updateButton,
     clear: clearButtons,
     remove: removeButton,
   } = useArray<EntranceStepButtonConfig>(item?.buttons);
 
-  const fieldset = `${name}[${index}]`;
-  const inputButtons = `${fieldset}buttons`;
-  const inputUrl = `${fieldset}videoUrl`;
-  const inputTemplate = `${fieldset}template`;
+  const handleAddButton: UseArrayAdd<EntranceStepButtonConfig> = useCallback(
+    (...args) => {
+      const buttons = addButton(...args);
+      onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
+      return buttons;
+    },
+    [addButton, onUpdate, index]
+  );
 
-  const handleRemove = useCallback(() => onRemove?.({ index, fieldset }), [
-    onRemove,
-    index,
-    fieldset,
-  ]);
+  const handleRemoveButton: UseArrayRemove<EntranceStepButtonConfig> = useCallback(
+    (...args) => {
+      const buttons = removeButton(...args);
+      onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
+      return buttons;
+    },
+    [removeButton, onUpdate, index]
+  );
+
+  const handleUpdateButton: UseArrayUpdate<EntranceStepButtonConfig> = useCallback(
+    (...args) => {
+      const buttons = updateButton(...args);
+      onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
+      return buttons;
+    },
+    [updateButton, onUpdate, index]
+  );
 
   return (
     <fieldset className="EntranceStepsInputFieldSet" name={fieldset}>
@@ -58,8 +121,9 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
         errors={errors}
         items={buttons}
         name={inputButtons}
-        onAdd={addButton}
-        onRemove={removeButton}
+        onAdd={handleAddButton}
+        onUpdate={handleUpdateButton}
+        onRemove={handleRemoveButton}
         onClear={clearButtons}
         register={register}
       />
@@ -69,18 +133,20 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
         label="Template"
         register={register}
         errors={errors}
+        data-field={fieldTemplate}
+        onChange={handleChange}
       />
       <AdminInput
         name={inputUrl}
         label="Video URL"
         register={register}
         errors={errors}
+        data-field={fieldUrl}
+        onChange={handleChange}
       />
-      {onRemove && (
-        <ButtonNG variant="secondary" onClick={handleRemove}>
-          Remove entrance step
-        </ButtonNG>
-      )}
+      <ButtonNG variant="secondary" onClick={handleRemove}>
+        Remove entrance step
+      </ButtonNG>
       <FormErrors errors={errors} />
     </fieldset>
   );

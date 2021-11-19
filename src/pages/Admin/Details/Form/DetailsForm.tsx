@@ -19,6 +19,8 @@ import { VenueTemplate } from "types/venues";
 
 import { adminWorldSpacesUrl } from "utils/url";
 
+import { venueV2Schema } from "forms/venueV2Schema";
+
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -40,8 +42,6 @@ import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
-
-import { validationSchema_v2 } from "../ValidationSchema";
 
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
@@ -142,7 +142,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: validationSchema_v2,
+    validationSchema: venueV2Schema,
     validationContext: {
       editing: !!venueId,
     },

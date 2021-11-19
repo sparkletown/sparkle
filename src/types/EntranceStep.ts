@@ -16,3 +16,9 @@ export type EntranceStepConfig = {
   welcomeText?: string;
   buttons?: EntranceStepButtonConfig[];
 };
+
+export interface EntranceStepTemplateProps {
+  venueName: string;
+  config: EntranceStepConfig;
+  proceed: () => void;
+}
