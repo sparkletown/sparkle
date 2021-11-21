@@ -58,7 +58,7 @@
     }
   },
   "devDependencies": {
-    "@craco/craco": "^6.2.0",
+    "@craco/craco": "^6.4.1",
     "@types/classnames": "^2.2.11",
     "@types/emoji-mart": "^3.0.4",
     "@types/faker": "^5.5.7",
