@@ -10,12 +10,12 @@ import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
-import { useSelector } from "hooks/useSelector";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
@@ -25,6 +25,7 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { NotFound } from "components/atoms/NotFound";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
@@ -59,11 +60,14 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector(venueSelector);
-  const { world, isLoaded: isWorldLoaded } = useWorldById(venue?.worldId);
+
+  const spaceSlug = useSpaceParams();
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+
+  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
 
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const analytics = useAnalytics({ venue });
+  const analytics = useAnalytics({ venue: space });
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
@@ -89,14 +93,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     clearError("backend");
   };
 
-  if (!venue) {
+  if (!isSpaceLoaded) {
     return <>Loading...</>;
   }
 
+  if (!space || !spaceId) {
+    return <NotFound />;
+  }
+
   const checkVenueAccessLevels = async (data: RegisterFormInput) => {
-    if (venue.access === VenueAccessMode.Emails) {
+    if (space.access === VenueAccessMode.Emails) {
       const isEmailWhitelisted = await checkIsEmailWhitelisted({
-        venueId: venue.id,
+        venueId: spaceId,
         email: data.email,
       });
 
@@ -110,9 +118,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       }
     }
 
-    if (venue.access === VenueAccessMode.Codes) {
+    if (space.access === VenueAccessMode.Codes) {
       const isCodeValid = await checkIsCodeValid({
-        venueId: venue.id,
+        venueId: spaceId,
         code: data.code,
       });
 
@@ -156,7 +164,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       postRegisterCheck(auth, data);
 
       const accountProfileUrl = `/account/profile${
-        venue.id ? `?venueId=${venue.id}` : ""
+        spaceId ? `?venueId=${spaceId}` : ""
       }`;
 
       history.push(accountProfileUrl);
@@ -168,7 +176,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -216,8 +224,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     }
   };
 
-  const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
-  const termsAndConditions = venue.termsAndConditions;
+  const hasTermsAndConditions = isTruthy(space.termsAndConditions);
+  const termsAndConditions = space.termsAndConditions;
 
   const signIn = async () => {
     const { email, password } = getValues();
@@ -295,7 +303,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           )}
         </div>
 
-        {venue.access === VenueAccessMode.Codes && (
+        {space.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
@@ -368,7 +376,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </ButtonNG>
       </form>
 
-      {venue.hasSocialLoginEnabled && (
+      {space.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

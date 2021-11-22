@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { BaseUser, UsernameVisibility } from "types/User";
+import { BaseUser } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -26,7 +26,6 @@ export type UserAvatarUserFields = WithId<
 export interface UserAvatarProps extends ContainerClassName {
   user?: UserAvatarUserFields;
   imageClassName?: string;
-  showNametag?: UsernameVisibility;
   showStatus?: boolean;
   onClick?: () => void;
   size?: UserAvatarSize;
@@ -46,7 +45,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
-  showNametag,
   onClick,
   showStatus,
   size,
@@ -91,10 +89,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   const status = user?.status;
 
-  const nametagClasses = classNames("UserAvatar__nametag", {
-    "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
-  });
-
   const imageClasses = classNames("UserAvatar__image", imageClassName);
 
   const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
@@ -119,7 +113,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div className={containerClasses}>
-      {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
       <img
         className={imageClasses}
         src={avatarSrc}

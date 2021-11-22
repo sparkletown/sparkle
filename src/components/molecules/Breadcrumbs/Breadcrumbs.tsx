@@ -19,9 +19,9 @@ export interface BreadcrumbsProps {
  * The Breadcrumbs component is used for navigation.
  *
  * Example:
- *     Label: location1 / location 2
+ *     Label location1 / location 2
  *
- *     Events on: Sovereign Venue / Current Venue
+ *     Events on Sovereign Venue / Current Venue
  */
 export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
   containerClassName,
@@ -62,7 +62,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({
 
   return (
     <div className={classNames("Breadcrumbs", containerClassName)}>
-      {label && <span className="Breadcrumbs__label">{label}: </span>}
+      {label && <span className="Breadcrumbs__label">{label}</span>}
       {renderedLocations}
     </div>
   );

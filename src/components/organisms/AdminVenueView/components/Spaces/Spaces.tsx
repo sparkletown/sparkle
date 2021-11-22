@@ -156,6 +156,7 @@ export const Spaces: React.FC<SpacesProps> = ({
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
                 venueName={venue.name}
+                spaceSlug={venue.slug}
                 worldId={venue.worldId}
               />
               {errorFetchBackgrounds && (

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
@@ -16,7 +16,7 @@ import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
+import { eventEditSchema } from "forms/eventEditSchema";
 
 import { AdminSection } from "components/molecules/AdminSection";
 
@@ -113,10 +113,26 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
-  const dropdownVenueList = venue?.rooms?.map(({ title, template }) => ({
-    name: title,
-    template: template,
-  }));
+  const dropdownVenueList = useMemo(
+    () =>
+      Object.fromEntries(
+        venue?.rooms?.map((room) => [
+          room.title,
+          { ...room, name: room.title },
+        ]) ?? ALWAYS_EMPTY_ARRAY
+      ),
+    [venue?.rooms]
+  );
+
+  const parentRoom = useMemo(
+    () => venue?.rooms?.find(({ title }) => title === event?.room),
+    [event?.room, venue?.rooms]
+  );
+
+  const parentSpace = {
+    name: parentRoom?.title ?? venue.name,
+    template: parentRoom?.template ?? venue.template,
+  };
 
   return (
     <>
@@ -132,12 +148,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <SpacesDropdown
-                  venueSpaces={dropdownVenueList ?? ALWAYS_EMPTY_ARRAY}
-                  venueId={venueId}
+                  portals={dropdownVenueList}
                   setValue={setValue}
                   register={register}
                   fieldName="room"
-                  defaultSpace={event?.room}
+                  parentSpace={parentSpace}
                   error={errors.room}
                 />
               </div>

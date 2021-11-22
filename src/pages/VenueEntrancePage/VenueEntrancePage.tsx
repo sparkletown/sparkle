@@ -13,9 +13,9 @@ import {
   venueInsideUrl,
 } from "utils/url";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
@@ -34,42 +34,39 @@ const ENTRANCE_STEP_TEMPLATE: Record<
 
 export const VenueEntrancePage: React.FC = () => {
   const history = useHistory();
-  const venueId = useVenueId();
   const { user, profile } = useUser();
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
-  const { world, isLoaded: isWorldLoaded } = useWorldById(
-    currentVenue?.worldId
-  );
+  const spaceSlug = useSpaceParams();
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+
+  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
   const step = Number.parseInt(unparsedStep ?? "", 10);
 
   const proceed = useCallback(
-    () => venueId && history.push(venueEntranceUrl(venueId, step + 1)),
-    [venueId, step, history]
+    () => spaceSlug && history.push(venueEntranceUrl(spaceSlug, step + 1)),
+    [spaceSlug, step, history]
   );
 
-  if (!isCurrentVenueLoaded || !isWorldLoaded) {
+  if (!isSpaceLoaded || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
-  if (!venueId || !currentVenue) {
+  if (!spaceId || !space || !spaceSlug) {
     return <NotFound />;
   }
 
   const stepConfig = world?.entrance?.[step - 1];
   if (!stepConfig) {
-    return <Redirect to={venueInsideUrl(venueId)} />;
+    return <Redirect to={venueInsideUrl(spaceSlug)} />;
   }
 
   if (!user || !profile) {
-    return <Login venueId={venueId} />;
+    return <Login venueId={spaceId} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={accountProfileVenueUrl(venueId)} />;
+    return <Redirect to={accountProfileVenueUrl(spaceSlug)} />;
   }
 
   const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =
@@ -81,7 +78,7 @@ export const VenueEntrancePage: React.FC = () => {
 
   return (
     <EntranceStepTemplate
-      venueName={currentVenue.name}
+      venueName={space.name}
       config={stepConfig}
       proceed={proceed}
     />

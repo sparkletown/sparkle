@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_REACTIONS_AUDIBLE,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -22,11 +22,12 @@ import { Room } from "types/rooms";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
 
-import { roomEditNGSchema } from "pages/Admin/Details/ValidationSchema";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useSpaceParams } from "hooks/useSpaceParams";
+import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
@@ -78,7 +79,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 }) => {
   const { user } = useUser();
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const portalId = room?.url?.split("/").pop();
 
@@ -101,7 +103,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       parentId: portal?.parentId ?? "",
       showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
       showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-      isReactionsMuted: portal?.isReactionsMuted ?? false,
+      isReactionsMuted: portal?.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
       numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
     }),
     [room.image_url, portal, room?.visibility]
@@ -117,7 +119,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: roomEditNGSchema,
+    validationSchema: spaceEditNGSchema,
     defaultValues,
   });
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
@@ -185,7 +187,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const [{ loading: isUpdating }, updateSelectedRoom] = useAsyncFn(
     async (input) => {
-      if (!user || !venueId) return;
+      if (!user || !spaceId) return;
 
       const portalData: RoomInput = {
         ...(room as RoomInput),
@@ -194,7 +196,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         ...values,
       };
 
-      await upsertRoom(portalData, venueId, user, roomIndex);
+      await upsertRoom(portalData, spaceId, user, roomIndex);
       await updateVenueRoom();
 
       onEdit?.();
@@ -207,7 +209,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
       updatedRoom,
       user,
       values,
-      venueId,
+      spaceId,
     ]
   );
 
@@ -215,11 +217,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     { loading: isDeleting, error },
     deleteSelectedRoom,
   ] = useAsyncFn(async () => {
-    if (!venueId) return;
+    if (!spaceId) return;
 
-    await deleteRoom(venueId, room);
+    await deleteRoom(spaceId, room);
     onDelete && onDelete();
-  }, [venueId, room, onDelete]);
+  }, [spaceId, room, onDelete]);
 
   const handleBackClick = useCallback(() => {
     onBackClick(roomIndex);
@@ -227,17 +229,22 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId }) => {
-      if (venueId === id || worldId !== portal?.worldId) {
-        return null;
-      }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        ownedVenues
+          .filter(
+            ({ id, worldId }) =>
+              !(portal?.worldId !== worldId || id === portalId)
+          )
+          .map((venue) => [venue.id, venue])
+      ),
+    [ownedVenues, portal?.worldId, portalId]
+  );
 
-      return {
-        name,
-        template,
-      };
-    }
+  const parentSpace = useMemo(
+    () => ownedVenues.find(({ id }) => id === portal?.parentId),
+    [portal?.parentId, ownedVenues]
   );
 
   return (
@@ -281,12 +288,12 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               withLabel
             >
               <SpacesDropdown
-                venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-                venueId={venueId}
+                portals={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="parentId"
-                defaultSpace={values.parentId}
+                parentSpace={parentSpace}
+                error={errors?.parentId}
               />
             </AdminSection>
             <AdminSection title="Livestream URL" withLabel>

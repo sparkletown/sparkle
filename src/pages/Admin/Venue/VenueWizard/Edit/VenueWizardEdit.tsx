@@ -1,17 +1,17 @@
 import React from "react";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 
 import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
 export interface VenueWizardEditProps {
-  venueId: string;
+  spaceSlug: string;
 }
 
-const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
+  const { space } = useSpaceBySlug(spaceSlug);
 
-  return <SpaceEditorStartPanel venue={venue} />;
+  return <SpaceEditorStartPanel venue={space} />;
 };
 
 export default VenueWizardEdit;
