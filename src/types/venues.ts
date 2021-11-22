@@ -107,6 +107,7 @@ export interface Venue_v2 extends Venue_v2_Base, VenueAdvancedConfig {}
 
 export interface Venue_v2_Base {
   name: string;
+  slug: string;
   config: {
     landingPageConfig: {
       subtitle?: string;
@@ -148,6 +149,7 @@ export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
+  slug: string;
   access?: VenueAccessMode;
   config?: VenueConfig;
   host?: {
