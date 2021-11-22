@@ -4,6 +4,7 @@
   position: relative;
   height: 100%;
   max-width: $video-participant-optimal-width;
+  min-width: $video-participant-optimal-width;
   max-height: $video-participant-optimal-height;
   width: 100%;
 
@@ -19,16 +20,18 @@
     background-color: $lighter-intermediate-grey;
     pointer-events: none;
     border-radius: $border-radius--xl;
+  }
 
-    &-element {
-      border-radius: $border-radius--xl;
-      width: auto;
-      max-width: $video-participant-optimal-width;
-      height: auto;
+  &__video-element {
+    border-radius: $border-radius--xl;
+    width: 100%;
+    max-width: $video-participant-optimal-width;
+    max-height: $video-participant-optimal-height;
+    height: auto;
+    object-fit: cover;
 
-      &--disabled {
-        opacity: 0;
-      }
+    &--disabled {
+      opacity: 0;
     }
   }
 
