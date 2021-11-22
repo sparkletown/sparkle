@@ -65,30 +65,6 @@ export const Chair = styled.div<ChairProps>`
     padding: 0;
   }
 
-  .mute-container {
-    position: absolute;
-    bottom: 15%;
-    left: 0.5em;
-  }
-
-  .mute-other-container {
-    cursor: pointer;
-    position: absolute;
-    bottom: 15%;
-    right: 0.5em;
-  }
-
-  video {
-    width: 100%;
-    height: 100%;
-
-    border-radius: 28px;
-  }
-
-  .participant {
-    position: relative;
-  }
-
   .av-controls {
     display: flex;
     justify-content: space-around;
