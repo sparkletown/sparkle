@@ -1,31 +1,12 @@
 @import "scss/constants.scss";
 
-.AdminDashboard {
+.SpacesDashboard {
   width: 100%;
   height: 100vh;
   padding: $spacing--lg;
 
   position: relative;
   overflow-y: scroll;
-
-  .AdminShowcaseTitle {
-    font-size: $font-size--xxl;
-    font-weight: $font-weight--500;
-    padding-right: $spacing--md;
-    align-self: center;
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__header-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
 
   &__welcome-message {
     font-size: $font-size--xxl;
