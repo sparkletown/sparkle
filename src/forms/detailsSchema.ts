@@ -21,7 +21,7 @@ export interface VenueV2SchemaShape {
   logoImageUrl: string;
 }
 
-export const venueV2Schema = Yup.object()
+export const detailsSchema = Yup.object()
   .shape<VenueV2SchemaShape>({
     name: createNameSchema({ name: "Name", withMin: true }).when(
       "$editing",

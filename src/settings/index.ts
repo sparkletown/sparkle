@@ -1,5 +1,3 @@
-import { CSSProperties } from "react";
-
 import {
   API_KEY,
   APP_ID,
@@ -37,6 +35,7 @@ export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
 export * from "./mapBackgrounds";
+export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
 export * from "./spacesSettings";
@@ -133,33 +132,6 @@ export const MAXIMUM_AUDITORIUM_COLUMNS_COUNT = 5;
 export const MINIMUM_AUDITORIUM_ROWS_COUNT = 5;
 export const MAXIMUM_AUDITORIUM_ROWS_COUNT = 5;
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
-export const PLAYA_HEIGHT = 2000;
-export const PLAYA_WIDTH = 3000;
-export const PLAYA_AVATAR_SIZE = 48;
-export const PLAYA_VENUE_SIZE = 40;
-export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-// Burning Seed: playa is named paddock
-export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
-export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
-  iconImage: {
-    width: PLAYA_VENUE_SIZE,
-    height: PLAYA_VENUE_SIZE,
-    overflow: "hidden",
-    borderRadius: "25%",
-    background: "rgba(147, 124, 99, 0.2)",
-    border: "2px solid rgba(147, 124, 99, 0.2)",
-    animation: "ripple 4s linear infinite",
-  },
-  draggableIconImage: {
-    width: PLAYA_VENUE_SIZE * 1.5,
-    height: PLAYA_VENUE_SIZE * 1.5,
-    overflow: "hidden",
-    borderRadius: "25%",
-    background: "rgba(147, 124, 99, 0.2)",
-    border: "2px solid rgba(147, 124, 99, 0.2)",
-    animation: "ripple 4s linear infinite",
-  },
-};
 
 export const ACCEPTED_IMAGE_TYPES =
   "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
