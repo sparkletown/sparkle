@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_SECTIONS_AMOUNT } from "settings";
+import { DEFAULT_REACTIONS_AUDIBLE, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -33,9 +33,20 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const isReactionsAudioDisabled = !venue.isReactionsMuted;
 
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
-    venue.isReactionsMuted ?? false
-  );
+  const {
+    isShown: isUserAudioOn,
+    toggle: toggleUserAudio,
+    hide: disableUserAudio,
+    show: enableUserAudio,
+  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
+
+  useEffect(() => {
+    if (venue.isReactionsMuted) {
+      enableUserAudio();
+    } else {
+      disableUserAudio();
+    }
+  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,

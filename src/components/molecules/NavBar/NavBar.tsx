@@ -241,8 +241,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                {spaceId && !isAdminContext && (
-                  <NavSearchBar venueId={spaceId} />
+                {sovereignVenueId && !isAdminContext && (
+                  <NavSearchBar sovereignVenueId={sovereignVenueId} />
                 )}
 
                 {hasUpcomingEvents && (
