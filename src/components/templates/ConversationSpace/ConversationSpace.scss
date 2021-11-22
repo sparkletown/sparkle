@@ -102,14 +102,8 @@
       margin-left: 0px;
       overflow-y: hidden;
       overflow-x: hidden;
-      .participant {
-        width: 100%;
-
-        .mirrored {
-          transform: scale(-1, 1);
-        }
-      }
     }
+
     .table-item {
       margin-top: 10px;
     }
@@ -231,23 +225,6 @@
           color: opaque-white(0.2);
           background-color: rgba(green, 0.5);
         }
-      }
-    }
-
-    .video-participant {
-      display: flex;
-      flex-direction: column;
-
-      .reaction {
-        font-size: 44px;
-      }
-
-      .call-out-band-container {
-        padding: 8px 0 5px 0;
-        width: 100%;
-      }
-      .iframe-container {
-        width: 100%;
       }
     }
   }

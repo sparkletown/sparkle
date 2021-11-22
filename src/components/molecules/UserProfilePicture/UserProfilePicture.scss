@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $avatarUrl: var(--user-profile-picture-avatar-url, none);
+$icon-dimensions: 100px;
 
 .UserProfilePicture {
   width: $avatarSize;
@@ -16,6 +17,13 @@ $avatarUrl: var(--user-profile-picture-avatar-url, none);
   border-radius: 10rem;
 
   cursor: pointer;
+
+  &--only-icon {
+    @include square-size($icon-dimensions);
+    bottom: 0;
+    left: 0;
+    margin: $spacing--sm auto;
+  }
 
   // Note: this is only needed to pass down to UserAvatar, if we go back to using the
   // direct styles above to render the image within this component, then this won't be needed anymore.

@@ -57,6 +57,7 @@ export interface UserProfilePictureProp extends ContainerClassName {
    */
   miniAvatars?: boolean;
   size?: UserAvatarSize;
+  isVideoEnabled?: boolean;
 }
 
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
@@ -65,6 +66,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   containerClassName,
   reactionPosition = "right",
   showStatus = false,
+  isVideoEnabled = true,
   size,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
@@ -97,6 +99,9 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const containerClasses = classNames(
     "UserProfilePicture",
+    {
+      "UserProfilePicture--only-icon": !isVideoEnabled,
+    },
     containerClassName
     // containerVars
   );
