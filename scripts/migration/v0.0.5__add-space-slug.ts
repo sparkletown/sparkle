@@ -1,43 +1,13 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import { MigrateOptions } from "fireway";
+
 import { generateSlug } from "../../functions/src/utils/venue";
-import {
-  checkFileExists,
-  initFirebaseAdminApp,
-  makeScriptUsage,
-  parseCredentialFile,
-} from "../lib/helpers";
 
-const usage = makeScriptUsage({
-  description: `Generates and adds a slug for the spaces that are missing it.`,
-  usageParams: `CREDENTIAL_PATH`,
-  exampleParams: `fooAccountKey.json`,
-});
-
-const [credentialPath] = process.argv.slice(2);
-
-if (!credentialPath) {
-  usage();
-}
-
-if (!checkFileExists(credentialPath)) {
-  console.error("Credential file path does not exists:", credentialPath);
-  process.exit(1);
-}
-
-const { project_id: projectId } = parseCredentialFile(credentialPath);
-
-if (!projectId) {
-  console.error("Credential file has no project_id:", credentialPath);
-  process.exit(1);
-}
-
-const app = initFirebaseAdminApp(projectId, { credentialPath });
-
-(async () => {
+export const migrate = async ({ firestore }: MigrateOptions) => {
   console.log(`Fetching spaces...`);
 
-  const spaces = await app.firestore().collection("venues").get();
+  const spaces = await firestore.collection("venues").get();
 
   console.log(`Updating spaces...`);
 
@@ -74,7 +44,8 @@ const app = initFirebaseAdminApp(projectId, { credentialPath });
   } catch (error) {
     console.log("The script failed to update all of the spaces. Error:");
     console.log(error);
+    return;
   }
 
   console.log("Slugs have been added successfully, script ended.");
-})();
+};
