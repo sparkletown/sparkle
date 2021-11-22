@@ -9,25 +9,27 @@ import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
 import { isPartyMapVenue } from "types/venues";
 
-import { adminCreateWorldSpace } from "utils/url";
+import { adminCreateWorldSpace, adminWorldUrl } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
-import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
+import { AdminTitle } from "components/molecules/AdminTitle";
+import { AdminTitleBar } from "components/molecules/AdminTitleBar";
+import { AdminToolbar } from "components/molecules/AdminToolbar";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./AdminDashboard.scss";
+import "./SpacesDashboard.scss";
 
-export const AdminDashboard: React.FC = () => {
+export const SpacesDashboard: React.FC = () => {
   const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({});
 
   const { worldSlug } = useWorldParams();
@@ -82,20 +84,19 @@ export const AdminDashboard: React.FC = () => {
   }
 
   return (
-    <div className="AdminDashboard">
+    <div className="SpacesDashboard">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
-          <div className="AdminDashboard__header">
+          <AdminToolbar>
             <ButtonNG
               variant="secondary"
               isLink
               linkTo={ADMIN_V3_WORLDS_BASE_URL}
             >
-              Back to worlds
+              Change world
             </ButtonNG>
 
-            <div className="AdminDashboard__header-content">
-              <AdminShowcaseTitle>Spaces</AdminShowcaseTitle>
+            <div className="SpacesDashboard__header-content">
               {sortingOptions}
             </div>
             <ButtonNG
@@ -105,16 +106,26 @@ export const AdminDashboard: React.FC = () => {
             >
               Create a new space
             </ButtonNG>
-          </div>
+          </AdminToolbar>
+          <AdminTitleBar>
+            <AdminTitle>{world?.name} dashboard</AdminTitle>
+            <ButtonNG
+              variant="secondary"
+              isLink
+              linkTo={adminWorldUrl(worldSlug)}
+            >
+              Settings
+            </ButtonNG>
+          </AdminTitleBar>
           <div
-            className={classNames("AdminDashboard__cards", {
-              "AdminDashboard__cards--empty": !hasVenues,
+            className={classNames("SpacesDashboard__cards", {
+              "SpacesDashboard__cards--empty": !hasVenues,
             })}
           >
             {!hasVenues && (
               <>
-                <div className="AdminDashboard__welcome-message">Welcome!</div>
-                <div className="AdminDashboard__welcome-message">
+                <div className="SpacesDashboard__welcome-message">Welcome!</div>
+                <div className="SpacesDashboard__welcome-message">
                   Create your first Sparkle space
                 </div>
               </>
