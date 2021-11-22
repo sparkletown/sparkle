@@ -5,6 +5,7 @@
 }
 .jazz-bar-container {
   margin-top: -($spacing--xxl);
+  height: 100%;
 }
 .content-container {
   display: flex;
@@ -38,11 +39,7 @@
   .userlist-container {
     margin: 10px;
   }
-  .table-item {
-    .profile-icon {
-      margin: 0;
-    }
-  }
+
   .chatbox-wrapper {
     display: flex;
     height: 700px;
