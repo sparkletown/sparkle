@@ -20,6 +20,7 @@ import {
   CollectionReference,
   DocumentReference,
   QueryDocumentSnapshot,
+  SectionGridPosition,
   SimContext,
   SimStats,
   TableInfo,
@@ -85,22 +86,12 @@ export const takeSeatInAudience: (
   options: {
     userRef: DocumentReference;
     user: BotUser;
-    row: number;
-    col: number;
-    sectionId?: string;
+    pos: SectionGridPosition;
   } & SimContext<"venueRef" | "stats" | "log" | "sovereignVenue">
 ) => Promise<void> = async (options) => {
-  const {
-    userRef,
-    user,
-    venueRef,
-    stats,
-    log,
-    row,
-    col,
-    sectionId,
-    sovereignVenue,
-  } = options;
+  const { userRef, user, venueRef, stats, log, pos, sovereignVenue } = options;
+  const { sectionId, row, col } = pos;
+
   const venueId = venueRef.id;
   const venueName = await getVenueName(options);
 

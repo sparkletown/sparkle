@@ -1,71 +1,86 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
-import { EntranceStepTemplate } from "types/EntranceStep";
+import {
+  EntranceStepTemplate,
+  EntranceStepTemplateProps,
+} from "types/EntranceStep";
 
 import { isCompleteProfile } from "utils/profile";
-import { currentVenueSelector } from "utils/selectors";
 import {
   accountProfileVenueUrl,
   venueEntranceUrl,
   venueInsideUrl,
 } from "utils/url";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
-  const { user, profile } = useUser();
+import { NotFound } from "components/atoms/NotFound";
+
+const ENTRANCE_STEP_TEMPLATE: Record<
+  EntranceStepTemplate,
+  React.FC<EntranceStepTemplateProps>
+> = {
+  [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
+};
+
+export const VenueEntrancePage: React.FC = () => {
   const history = useHistory();
+  const { user, profile } = useUser();
   const { step: unparsedStep } = useParams<{ step?: string }>();
-  const venueId = useVenueId();
 
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
-  const parsedStep = Number.parseInt(unparsedStep ?? "", 10);
+  const spaceSlug = useSpaceParams();
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
-  if (!venue || !venueId) {
+  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const step = Number.parseInt(unparsedStep ?? "", 10);
+
+  const proceed = useCallback(
+    () => spaceSlug && history.push(venueEntranceUrl(spaceSlug, step + 1)),
+    [spaceSlug, step, history]
+  );
+
+  if (!isSpaceLoaded || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
-  if (
-    unparsedStep === undefined ||
-    !(parsedStep > 0) ||
-    !venue.entrance ||
-    !venue.entrance.length ||
-    venue.entrance.length < parsedStep
-  ) {
-    return <Redirect to={venueInsideUrl(venueId)} />;
+  if (!spaceId || !space || !spaceSlug) {
+    return <NotFound />;
+  }
+
+  const stepConfig = world?.entrance?.[step - 1];
+  if (!stepConfig) {
+    return <Redirect to={venueInsideUrl(spaceSlug)} />;
   }
 
   if (!user || !profile) {
-    return <Login venueId={venueId} />;
+    return <Login venueId={spaceId} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={accountProfileVenueUrl(venueId)} />;
+    return <Redirect to={accountProfileVenueUrl(spaceSlug)} />;
   }
 
-  const proceed = () => {
-    history.push(venueEntranceUrl(venueId, parsedStep + 1));
-  };
+  const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =
+    ENTRANCE_STEP_TEMPLATE[stepConfig.template];
 
-  const stepConfig = venue.entrance[parsedStep - 1];
-  switch (stepConfig.template) {
-    case EntranceStepTemplate.WelcomeVideo:
-      return (
-        <WelcomeVideo
-          venueName={venue.name}
-          config={stepConfig}
-          proceed={proceed}
-        />
-      );
+  if (!EntranceStepTemplate) {
+    return null;
   }
+
+  return (
+    <EntranceStepTemplate
+      venueName={space.name}
+      config={stepConfig}
+      proceed={proceed}
+    />
+  );
 };

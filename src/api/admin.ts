@@ -5,14 +5,15 @@ import { omit } from "lodash";
 import {
   ACCEPTED_IMAGE_TYPES,
   DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
   INVALID_SLUG_CHARS_REGEX,
 } from "settings";
 
-import { EntranceStepConfig } from "types/EntranceStep";
 import { Room } from "types/rooms";
-import { UsernameVisibility, UserStatus } from "types/User";
+import { UserStatus } from "types/User";
 import {
-  Venue_v2_EntranceConfig,
+  RoomVisibility,
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
@@ -31,12 +32,6 @@ export interface EventInput {
   duration_minutes?: number;
   host: string;
   room?: string;
-}
-
-interface Question {
-  name: string;
-  text: string;
-  link?: string;
 }
 
 type VenueImageFileKeys =
@@ -67,6 +62,7 @@ export type RoomInput = Omit<Room, "image_url"> & {
   image_file?: FileList;
 };
 
+// @debt Since the additional 2 fields are optional, they can probably be moved to RoomInput
 export type RoomInput_v2 = Room & {
   venueName?: string;
   useUrl?: boolean;
@@ -76,6 +72,7 @@ export type RoomInput_v2 = Room & {
 
 export type VenueInput = VenueImageUrls & {
   name: string;
+  slug?: string;
   bannerImageFile?: FileList;
   logoImageFile?: FileList;
   mapBackgroundImageFile?: FileList;
@@ -88,7 +85,6 @@ export type VenueInput = VenueImageUrls & {
   rooms?: Array<Room>;
   placement?: Omit<VenuePlacement, "state">;
   placementRequests?: string;
-  adultContent: boolean;
   showGrid?: boolean;
   columns?: number;
   width?: number;
@@ -105,12 +101,12 @@ export type VenueInput = VenueImageUrls & {
   radioStations?: string;
   showUserStatus?: boolean;
   hasSocialLoginEnabled?: boolean;
+  roomVisibility?: RoomVisibility;
 };
 
-export interface VenueInput_v2
-  extends VenueAdvancedConfig,
-    Venue_v2_EntranceConfig {
+export interface VenueInput_v2 extends VenueAdvancedConfig {
   name: string;
+  slug: string;
   description?: string;
   subtitle?: string;
   bannerImageFile?: FileList;
@@ -126,42 +122,8 @@ export interface VenueInput_v2
   parentId?: string;
   start_utc_seconds?: number;
   end_utc_seconds?: number;
-}
-
-// NOTE: world might have many fields, please keep them in alphabetic order
-// @debt move to src/types/world
-export interface World {
-  adultContent?: boolean;
-  attendeesTitle?: string;
-  chatTitle?: string;
-  config: {
-    landingPageConfig: {
-      coverImageUrl: string;
-      description?: string;
-      subtitle?: string;
-    };
-  };
-  createdAt: Date;
-  entrance?: EntranceStepConfig[];
-  host: {
-    icon: string;
-  };
-  name: string;
-  owners: string[];
-  questions?: {
-    code?: Question[];
-    profile?: Question[];
-  };
-  radioStations?: string[];
-  requiresDateOfBirth?: boolean;
-  showBadges?: boolean;
-  showNametags?: UsernameVisibility;
-  showRadio?: boolean;
-  showSchedule?: boolean;
-  showUserStatus?: boolean;
-  slug: string;
-  updatedAt: Date;
-  userStatuses?: UserStatus[];
+  showShoutouts?: boolean;
+  showReactions?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -264,6 +226,7 @@ const createFirestoreVenueInput = async (
     rooms: [], // eventually we will be getting the rooms from the form
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
+    slug,
   };
 
   return firestoreVenueInput;
@@ -274,7 +237,6 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -309,7 +271,7 @@ const createFirestoreVenueInput_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/${urlKey}.${fileExtension}`
+      `users/${user.uid}/venues/${input.slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -330,7 +292,8 @@ const createFirestoreVenueInput_v2 = async (
     template: input.template ?? VenueTemplate.partymap,
     parentId: input.parentId ?? "",
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
-    name: slug,
+    name: input.name,
+    slug: input.slug,
   };
   return firestoreVenueInput;
 };
@@ -352,6 +315,8 @@ export const createVenue_v2 = async (
   const firestoreVenueInput = await createFirestoreVenueInput_v2(
     {
       ...input,
+      showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+      showReactions: input.showReactions ?? DEFAULT_SHOW_REACTIONS,
       rooms: [],
     },
     user

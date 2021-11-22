@@ -3,10 +3,10 @@ import Bugsnag from "@bugsnag/js";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
-  ADMIN_V3_ADVANCED_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_OLD_WORLD_PARAM_URL,
-  ADMIN_V3_VENUE_PARAM_URL,
+  ADMIN_V3_SPACE_PARAM_URL,
+  ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_WORLD_SPACES_PARAM_URL,
   ENTRANCE_BASE_URL,
   VALID_URL_PROTOCOLS,
@@ -18,42 +18,42 @@ import {
 
 import { Room } from "types/rooms";
 
-export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
+export const adminNGVenueUrl = (spaceSlug?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_SPACE_PARAM_URL, { spaceSlug, selectedTab });
 
-export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
+export const adminNGSettingsUrl = (spaceSlug?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_SPACE_SETTINGS_PARAM_URL, { spaceSlug, selectedTab });
 
-export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });
+export const adminWorldUrl = (worldSlug?: string, selectedTab?: string) =>
+  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldSlug, selectedTab });
 
-export const adminCreateWorldSpace = (worldId?: string) =>
-  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldId });
+export const adminCreateWorldSpace = (worldSlug?: string) =>
+  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldSlug });
 
-export const adminWorldSpacesUrl = (worldId?: string) =>
-  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldId });
+export const adminWorldSpacesUrl = (worldSlug?: string) =>
+  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldSlug });
 
-export const venueInsideFullUrl = (venueId?: string) =>
-  generatePath(VENUE_INSIDE_PARAM_URL, { venueId });
+export const venueInsideFullUrl = (spaceSlug?: string) =>
+  generatePath(VENUE_INSIDE_PARAM_URL, { spaceSlug });
 
-export const venueInsideUrl = (venueId: string) => {
-  return `${VENUE_INSIDE_BASE_URL}/${venueId}`;
+export const venueInsideUrl = (spaceSlug: string) => {
+  return `${VENUE_INSIDE_BASE_URL}/${spaceSlug}`;
 };
 
-export const venueLandingUrl = (venueId: string) => {
-  return `${VENUE_LANDING_BASE_URL}/${venueId}`;
+export const venueLandingUrl = (spaceSlug: string) => {
+  return `${VENUE_LANDING_BASE_URL}/${spaceSlug}`;
 };
 
-export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
-  return `${venueInsideUrl(venueId)}/${roomTitle}`;
+export const venuePreviewUrl = (spaceSlug: string, roomTitle: string) => {
+  return `${venueInsideUrl(spaceSlug)}/${roomTitle}`;
 };
 
-export const venueEntranceUrl = (venueId: string, step?: number) => {
-  return `${ENTRANCE_BASE_URL}/${step ?? 1}/${venueId}`;
+export const venueEntranceUrl = (spaceSlug: string, step?: number) => {
+  return `${ENTRANCE_BASE_URL}/${step ?? 1}/${spaceSlug}`;
 };
 
-export const accountProfileVenueUrl = (venueId: string) =>
-  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { venueId });
+export const accountProfileVenueUrl = (spaceSlug: string) =>
+  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { spaceSlug });
 
 export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 
@@ -77,8 +77,8 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
   openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
-export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
-  openUrl(venueInsideUrl(venueId), options);
+export const enterVenue = (spaceSlug: string, options?: OpenUrlOptions) =>
+  openUrl(venueInsideUrl(spaceSlug), options);
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;
@@ -155,8 +155,8 @@ export const externalUrlAdditionalProps = {
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
 
-export const getFullVenueInsideUrl = (venueId: string) =>
-  new URL(venueInsideUrl(venueId), window.location.origin).href;
+export const getFullVenueInsideUrl = (spaceSlug: string) =>
+  new URL(venueInsideUrl(spaceSlug), window.location.origin).href;
 
 export const getUrlWithoutTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;

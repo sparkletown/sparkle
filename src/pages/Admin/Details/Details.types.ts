@@ -4,4 +4,5 @@ import { WithId } from "utils/id";
 
 export interface DetailsProps {
   venue?: WithId<AnyVenue>;
+  worldId?: string;
 }

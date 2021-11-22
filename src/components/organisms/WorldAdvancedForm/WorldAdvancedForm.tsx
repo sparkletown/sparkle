@@ -3,15 +3,17 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import * as Yup from "yup";
 
-import { World } from "api/admin";
-import { updateWorldAdvancedSettings } from "api/world";
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
+
+import { updateWorldAdvancedSettings, World } from "api/world";
 
 import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId, withId } from "utils/id";
+
+import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
@@ -33,8 +35,6 @@ import "./WorldAdvancedForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = [];
-
-const validationSchema = Yup.object().shape({});
 
 export interface WorldAdvancedFormProps extends AdminSidebarFooterProps {
   world: WithId<World>;
@@ -59,10 +59,10 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   const defaultValues = useMemo<WorldAdvancedFormInput>(
     () => ({
       attendeesTitle: world.attendeesTitle,
-      chatTitle: world.chatTitle,
-      showNametags: world.showNametags,
+      radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
-      showSchedule: world.showSchedule,
+      showRadio: world.showRadio,
+      showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
       showUserStatus: world.showUserStatus,
       userStatuses: userStatuses,
     }),
@@ -80,7 +80,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   } = useForm<WorldAdvancedFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: emptyObjectSchema,
     defaultValues,
   });
 
@@ -88,23 +88,20 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(async () => {
     if (!values || !user || !worldId) return;
-    await updateWorldAdvancedSettings(
-      withId(
-        {
-          attendeesTitle: values.attendeesTitle,
-          chatTitle: values.chatTitle,
-          showNametags: values.showNametags,
-          showBadges: values.showBadges,
-          showSchedule: values.showSchedule,
-          showUserStatus: values.showUserStatus,
-          userStatuses,
-        },
-        worldId
-      ),
-      user
-    );
 
-    reset(values);
+    const data = {
+      attendeesTitle: values.attendeesTitle,
+      radioStation: values.radioStation,
+      showBadges: values.showBadges,
+      showRadio: values.showRadio,
+      showSchedule: values.showSchedule,
+      showUserStatus: values.showUserStatus,
+      userStatuses,
+    };
+
+    await updateWorldAdvancedSettings(withId(data, worldId), user);
+
+    reset(data);
     clearDirtyStatuses();
   }, [worldId, user, values, reset, userStatuses, clearDirtyStatuses]);
 
@@ -129,9 +126,9 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     const values: Partial<WorldAdvancedFormInput> = getValues();
     reset({
       attendeesTitle: values.attendeesTitle,
-      chatTitle: values.chatTitle,
-      showNametags: values.showNametags,
+      radioStation: values.radioStation,
       showBadges: values.showBadges,
+      showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
       userStatuses,
@@ -182,30 +179,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
           />
         </AdminSection>
 
-        <AdminSection
-          title="Your venue chat label"
-          subtitle="(For example: Party, Event, Meeting)"
-          withLabel
-        >
-          <AdminInput
-            name="chatTitle"
-            autoComplete="off"
-            placeholder="Event label"
-            errors={errors}
-            register={register}
-          />
-        </AdminSection>
-
-        <AdminSection
-          title="Show Nametags (Display user names on their avatars)"
-          withLabel
-        >
-          <Form.Control as="select" custom name="showNametags" ref={register}>
-            <option value="none">None</option>
-            <option value="hover">Inline and hover</option>
-          </Form.Control>
-        </AdminSection>
-
         <AdminSection>
           <AdminCheckbox
             name="showBadges"
@@ -224,11 +197,11 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             register={register}
           />
           <AdminInput
-            name="radioStations"
+            name="radioStation"
             errors={errors}
             register={register}
             label="Radio station stream URL:"
-            disabled={!values.showRadio}
+            hidden={!values.showRadio}
           />
         </AdminSection>
 

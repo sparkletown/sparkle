@@ -16,12 +16,10 @@ import {
 
 import { createSlug, PlacementInput, VenueInput } from "api/admin";
 
-import { VenueTemplate } from "types/venues";
+import { RoomVisibility, VenueTemplate } from "types/venues";
 
-import {
-  roomTitleSchema,
-  urlIfNoFileValidation,
-} from "pages/Admin/Details/ValidationSchema";
+import { commonTitleSchema } from "forms/commonTitleSchema";
+import { createUrlIfNoFileSchema } from "forms/createUrlIfNoFileSchema";
 
 import "firebase/functions";
 
@@ -40,7 +38,7 @@ const createFileSchema = (name: string, required: boolean) =>
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
-    name: roomTitleSchema.when(
+    name: commonTitleSchema.when(
       "$editing",
       (editing: boolean, schema: Yup.StringSchema) =>
         !editing
@@ -83,12 +81,12 @@ export const validationSchema = Yup.object()
       "$template.template",
       (template: VenueTemplate, schema: Yup.StringSchema) =>
         BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? urlIfNoFileValidation("mapBackgroundImageFile")
+          ? createUrlIfNoFileSchema("mapBackgroundImageFile")
           : schema.notRequired()
     ),
 
     bannerImageUrl: Yup.string(),
-    logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+    logoImageUrl: createUrlIfNoFileSchema("logoImageFile"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
@@ -99,6 +97,9 @@ export const validationSchema = Yup.object()
           : schema.notRequired()
     ),
     iframeUrl: Yup.string().notRequired(),
+    roomVisibility: Yup.mixed()
+      .oneOf(Object.values(RoomVisibility))
+      .notRequired(),
 
     width: Yup.number().notRequired().min(0).max(PLAYA_WIDTH),
     height: Yup.number().notRequired().min(0).max(PLAYA_HEIGHT),
@@ -118,7 +119,6 @@ export const validationSchema = Yup.object()
 
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
-    adultContent: Yup.bool().required(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
     enableJukebox: Yup.bool().notRequired(),
@@ -157,7 +157,6 @@ export const editVenueCastSchema = Yup.object()
 
   .from("config.landingPageConfig.description", "description")
   .from("host.icon", "logoImageUrl")
-  .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
   .from("enableJukebox", "enableJukebox")

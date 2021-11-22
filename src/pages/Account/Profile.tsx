@@ -3,10 +3,14 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+import {
+  ACCOUNT_PROFILE_QUESTIONS_URL,
+  DEFAULT_SPACE_SLUG,
+  DISPLAY_NAME_MAX_CHAR_COUNT,
+} from "settings";
 
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
@@ -19,6 +23,7 @@ import { updateUserProfile } from "./helpers";
 
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
+import "./Profile.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -29,7 +34,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const venueId = useVenueId() ?? DEFAULT_VENUE;
+  const spaceSlug = useSpaceParams() ?? DEFAULT_SPACE_SLUG;
 
   const returnUrl: string | undefined =
     useSearchParam("returnUrl") ?? undefined;
@@ -56,24 +61,24 @@ export const Profile: React.FC = () => {
       await updateUserProfile(user.uid, data);
 
       const accountQuestionsUrlParams = new URLSearchParams();
-      accountQuestionsUrlParams.set("venueId", venueId);
+      accountQuestionsUrlParams.set("spaceSlug", spaceSlug);
       returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
 
       // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = venueId
-        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
+      const nextUrl = spaceSlug
+        ? `${ACCOUNT_PROFILE_QUESTIONS_URL}?${accountQuestionsUrlParams.toString()}`
         : returnUrl ?? "";
 
       history.push(nextUrl);
     },
-    [history, returnUrl, user, venueId]
+    [history, returnUrl, user, spaceSlug]
   );
 
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
-      <div className="login-container">
+    <div className="Profile page-container-onboarding">
+      <div className="Profile__container login-container">
         <h2 className="login-welcome-title">
           Well done! Now create your profile
         </h2>
@@ -111,7 +116,11 @@ export const Profile: React.FC = () => {
 
             {user && (
               <ProfilePictureInput
-                {...{ venueId, setValue, user, errors, pictureUrl, register }}
+                setValue={setValue}
+                user={user}
+                errors={errors}
+                pictureUrl={pictureUrl}
+                register={register}
               />
             )}
           </div>

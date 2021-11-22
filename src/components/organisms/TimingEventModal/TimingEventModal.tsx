@@ -1,9 +1,14 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
-import { ALWAYS_EMPTY_ARRAY, HAS_ROOMS_TEMPLATES } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DAYJS_INPUT_DATE_FORMAT,
+  DAYJS_INPUT_TIME_FORMAT,
+  HAS_ROOMS_TEMPLATES,
+} from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -11,7 +16,7 @@ import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
+import { eventEditSchema } from "forms/eventEditSchema";
 
 import { AdminSection } from "components/molecules/AdminSection";
 
@@ -60,8 +65,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
-        start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
+        start_date: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_DATE_FORMAT),
+        start_time: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: Math.floor(event.duration_minutes / 60),
         duration_minutes: event.duration_minutes % 60,
         host: event.host,
@@ -104,6 +113,27 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
+  const dropdownVenueList = useMemo(
+    () =>
+      Object.fromEntries(
+        venue?.rooms?.map((room) => [
+          room.title,
+          { ...room, name: room.title },
+        ]) ?? ALWAYS_EMPTY_ARRAY
+      ),
+    [venue?.rooms]
+  );
+
+  const parentRoom = useMemo(
+    () => venue?.rooms?.find(({ title }) => title === event?.room),
+    [event?.room, venue?.rooms]
+  );
+
+  const parentSpace = {
+    name: parentRoom?.title ?? venue.name,
+    template: parentRoom?.template ?? venue.template,
+  };
+
   return (
     <>
       <Modal
@@ -118,12 +148,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <SpacesDropdown
-                  venueSpaces={venue.rooms ?? ALWAYS_EMPTY_ARRAY}
-                  venueId={venueId}
+                  portals={dropdownVenueList}
                   setValue={setValue}
                   register={register}
                   fieldName="room"
-                  defaultSpace={event?.room}
+                  parentSpace={parentSpace}
                   error={errors.room}
                 />
               </div>
@@ -181,7 +210,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <div className="TimingEventModal__container">
                   <input
                     type="date"
-                    min={dayjs().format("YYYY-MM-DD")}
+                    min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
                     name="start_date"
                     className="input-group__modal-input"
                     ref={register}

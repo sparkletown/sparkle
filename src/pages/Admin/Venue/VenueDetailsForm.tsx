@@ -64,6 +64,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
     watch,
     formState,
     register,
+    getValues,
     setValue,
     control,
     handleSubmit,
@@ -144,10 +145,10 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
                   sovereignVenue.config?.landingPageConfig.subtitle ?? "",
                 description:
                   sovereignVenue.config?.landingPageConfig.description ?? "",
-                adultContent: sovereignVenue.adultContent ?? false,
                 userStatuses,
                 showUserStatus: showUserStatuses,
                 template: sovereignVenue.template,
+                roomVisibility: sovereignVenue.roomVisibility,
               },
               user
             );
@@ -162,7 +163,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
           );
 
         vals.name
-          ? history.push(`/admin/${createSlug(venueId ?? vals.name)}`)
+          ? history.push(`/admin/${createSlug(vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
@@ -197,6 +198,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
             <VenueDetailsSubForm
               venueId={venueId}
               setValue={setValue}
+              getValues={getValues}
               state={state}
               previous={previous}
               sovereignVenue={sovereignVenue}

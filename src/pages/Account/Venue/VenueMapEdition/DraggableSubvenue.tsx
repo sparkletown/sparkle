@@ -116,10 +116,9 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
             style={{
               ...styles.resizeableImageContainer,
               borderRadius: rounded ? "50%" : "none",
+              backgroundImage: `url(${url})`,
             }}
-          >
-            <img src={url} alt="subvenue-icon" style={styles.resizeableImage} />
-          </div>
+          ></div>
         </div>
         <div className="DraggableSubvenue__title">{title}</div>
       </Resizable>
@@ -145,23 +144,28 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
   );
 };
 
+// @debt This styles syntax is legacy and should be refactored
 const styles: Record<string, CSSProperties> = {
   dragContainer: {
     height: "100%",
     display: "flex",
     position: "relative",
+    border: " 1px solid var(--content--over)",
   },
   resizeTab: {
     position: "absolute",
     width: 10,
     height: 10,
     backgroundColor: "white",
-    border: "1px solid gray",
+    border: " 1px solid var(--content--over)",
   },
   resizeableImageContainer: {
     overflow: "hidden",
     width: "100%",
     flex: 1,
+    backgroundPosition: "center",
+    backgroundSize: "contain,cover",
+    backgroundRepeat: "no-repeat",
   },
   resizeableImage: {
     width: "100%",

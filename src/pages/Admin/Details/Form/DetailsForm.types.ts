@@ -10,9 +10,11 @@ export interface FormValues extends WizardState {
   logoImageFile?: FileList;
   showGrid?: boolean;
   columns?: number;
+  worldId?: string;
   parentId?: string;
 }
 
 export interface DetailsFormProps {
   venue?: WithId<AnyVenue>;
+  worldId?: string;
 }

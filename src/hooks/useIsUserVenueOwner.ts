@@ -1,12 +1,16 @@
+import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useRelatedVenues } from "./useRelatedVenues";
+import { useSpaceParams } from "./useSpaceParams";
 import { useUser } from "./useUser";
-import { useVenueId } from "./useVenueId";
 
 export const useIsUserVenueOwner = (): boolean => {
   const { user } = useUser();
 
-  const currentVenueId = useVenueId();
-  const { currentVenue, parentVenue } = useRelatedVenues({ currentVenueId });
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+  const { currentVenue, parentVenue } = useRelatedVenues({
+    currentVenueId: space?.id,
+  });
 
   if (!currentVenue || !user) return false;
 

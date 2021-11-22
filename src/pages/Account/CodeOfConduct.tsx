@@ -1,20 +1,22 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
 import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
@@ -33,24 +35,17 @@ export interface CodeOfConductFormData {
   regionalBurn: string;
 }
 
-export interface CodeOfConductQuestion {
-  name: keyof CodeOfConductFormData;
-  text: string;
-  link?: string;
-}
-
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
   const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const spaceSlug = useSpaceParams();
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: venue?.worldId,
+    worldId: space?.worldId,
   });
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
@@ -61,19 +56,19 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = venueId ? venueInsideUrl(venueId) : returnUrl ?? "";
+    const nextUrl = spaceSlug ? venueInsideUrl(spaceSlug) : returnUrl ?? "";
 
     history.push(nextUrl);
-  }, [history, returnUrl, venueId]);
+  }, [history, returnUrl, spaceSlug]);
 
   useEffect(() => {
     if (!isWorldLoaded) return;
 
-    // Skip this screen if there are no code of conduct questions for the venue
+    // Skip this screen if there are no code of conduct questions
     if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [isWorldLoaded, proceed, venue, world?.questions?.code?.length]);
+  }, [isWorldLoaded, proceed, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
@@ -86,21 +81,22 @@ export const CodeOfConduct: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (!venueId) {
-    return <>Error: Missing required venueId param</>;
+  // @debt Maybe add something more pretty for UX here, in the vein of NotFound (with custom message)
+  if (!spaceSlug) {
+    return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isLoaded(venue) && !venue) {
-    return <>Error: venue not found for venueId={venueId}</>;
+  if (isSpaceLoaded && !space) {
+    return <NotFound />;
   }
 
-  if (!venue || !isWorldLoaded) {
+  if (!space || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
@@ -147,13 +143,13 @@ export const CodeOfConduct: React.FC = () => {
             ))}
 
             <div className="input-group">
-              <button
+              <ButtonNG
+                variant="primary"
                 type="submit"
-                className="btn btn-primary btn-block btn-centered"
                 disabled={!formState.isValid || isUpdating}
               >
                 Enter the event
-              </button>
+              </ButtonNG>
               {isUpdating && <Loading />}
               {httpError && (
                 <span className="input-error">{httpError.message}</span>

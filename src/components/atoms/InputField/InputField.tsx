@@ -18,7 +18,8 @@ const isJsxElement = (
 
 const renderIcon = (
   icon: IconProp | JSX.Element,
-  modifiedClassName: string
+  modifiedClassName: string,
+  onIconClick: undefined | (() => void)
 ): JSX.Element => {
   const iconComponent = isJsxElement(icon) ? (
     icon
@@ -26,8 +27,12 @@ const renderIcon = (
     <FontAwesomeIcon icon={icon} />
   );
 
+  const iconClasses = classNames("InputField__icon", modifiedClassName, {
+    "InputField__icon--clickable": onIconClick,
+  });
+
   return (
-    <div className={classNames("InputField__icon", modifiedClassName)}>
+    <div className={iconClasses} onClick={onIconClick}>
       {iconComponent}
     </div>
   );
@@ -43,6 +48,8 @@ interface InputFieldProps
   iconStart?: IconProp | JSX.Element;
   iconEnd?: IconProp | JSX.Element;
   error?: FieldError;
+  onIconStartClick?: () => void;
+  onIconEndClick?: () => void;
 }
 
 export const _InputField: React.ForwardRefRenderFunction<
@@ -56,7 +63,9 @@ export const _InputField: React.ForwardRefRenderFunction<
     iconEndClassName,
     errorTextClassName,
     iconStart,
+    onIconStartClick,
     iconEnd,
+    onIconEndClick,
     error,
     ...extraInputProps
   },
@@ -82,12 +91,14 @@ export const _InputField: React.ForwardRefRenderFunction<
         {iconStart &&
           renderIcon(
             iconStart,
-            classNames("InputField__icon--start", iconStartClassName)
+            classNames("InputField__icon--start", iconStartClassName),
+            onIconStartClick
           )}
         {iconEnd &&
           renderIcon(
             iconEnd,
-            classNames("InputField__icon--end", iconEndClassName)
+            classNames("InputField__icon--end", iconEndClassName),
+            onIconEndClick
           )}
       </div>
       {error && (

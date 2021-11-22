@@ -16,7 +16,7 @@ const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
-const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 60 * 1000;
+const USER_INACTIVE_THRESHOLD = hoursToMilliseconds(3);
 const BATCH_MAX_OPS = 500;
 
 exports.BATCH_MAX_OPS = BATCH_MAX_OPS;
@@ -24,8 +24,7 @@ exports.BATCH_MAX_OPS = BATCH_MAX_OPS;
 const removeDanglingSeatedUsers = async () => {
   const firestore = admin.firestore();
 
-  const expiredSittingTimeMs =
-    Date.now() - VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL;
+  const expiredSittingTimeMs = Date.now() - USER_INACTIVE_THRESHOLD;
 
   const { docs: recentSeatedUsers } = await firestore
     .collectionGroup("recentSeatedUsers")
@@ -96,111 +95,70 @@ const removeDanglingSeatedUsers = async () => {
   ).then(() => console.log(`Removed ${removedUsersCount} dangling users`));
 };
 
-exports.updateSeatedUsersCountInAuditorium = functions.pubsub
-  .schedule("every 5 minutes")
-  .onRun(async () => {
-    await removeDanglingSeatedUsers();
+const updateSeatedUsersCountInAuditorium = async () => {
+  await removeDanglingSeatedUsers();
 
-    const firestore = admin.firestore();
-    let updateOccupiedPromises = [
-      { batch: firestore.batch(), updatesCount: 0 },
-    ];
+  const firestore = admin.firestore();
+  let updateOccupiedPromises = [{ batch: firestore.batch(), updatesCount: 0 }];
 
-    const { bySectionByAuditorium, allOccupiedSectionIds } = await firestore
-      .collectionGroup("seatedSectionUsers")
-      .get()
-      .then(({ docs }) => {
-        const seatedUsers = docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+  const { bySectionByAuditorium, allOccupiedSectionIds } = await firestore
+    .collectionGroup("seatedSectionUsers")
+    .get()
+    .then(({ docs }) => {
+      const seatedUsers = docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
-        const byAuditorium = groupBy(
-          seatedUsers,
-          (seatedUser) => seatedUser.path.venueId
+      const byAuditorium = groupBy(
+        seatedUsers,
+        (seatedUser) => seatedUser.path.venueId
+      );
+      const bySectionByAuditorium = {};
+      for (const auditoriumId in byAuditorium) {
+        bySectionByAuditorium[auditoriumId] = groupBy(
+          byAuditorium[auditoriumId],
+          (seatedUser) => seatedUser.path.sectionId
         );
-        const bySectionByAuditorium = {};
-        for (const auditoriumId in byAuditorium) {
-          bySectionByAuditorium[auditoriumId] = groupBy(
-            byAuditorium[auditoriumId],
-            (seatedUser) => seatedUser.path.sectionId
-          );
-        }
-
-        const allOccupiedSectionIds = uniq(
-          seatedUsers.map((u) => u.path.sectionId)
-        );
-
-        return { bySectionByAuditorium, allOccupiedSectionIds };
-      });
-
-    const { docs: auditoriums } = await admin
-      .firestore()
-      .collection("venues")
-      .where("template", "==", "auditorium")
-      .get();
-
-    const allSectionIds = flatten(
-      await Promise.all(
-        auditoriums.map((auditorium) =>
-          auditorium.ref
-            .collection("sections")
-            .get()
-            .then(({ docs: sections }) =>
-              sections.map((s) => ({ sectionId: s.id, venueId: auditorium.id }))
-            )
-        )
-      )
-    );
-
-    const allEmptySectionIds = differenceWith(
-      allSectionIds,
-      allOccupiedSectionIds,
-      ({ sectionId }, otherSectionId) => sectionId === otherSectionId
-    );
-
-    let updateEmptySectionsCount = 0;
-    const updateEmptyPromises = chunk(allEmptySectionIds, BATCH_MAX_OPS).map(
-      (emptySections) => {
-        const batch = firestore.batch();
-
-        emptySections.forEach(({ sectionId, venueId }) => {
-          updateEmptySectionsCount += 1;
-
-          batch.update(
-            firestore
-              .collection("venues")
-              .doc(venueId)
-              .collection("sections")
-              .doc(sectionId),
-            {
-              seatedUsersCount: 0,
-              seatedUsersSample: [],
-            }
-          );
-        });
-
-        return batch.commit();
       }
-    );
 
-    let updatedOccupiedSectionsCount = 0;
-    Object.entries(bySectionByAuditorium).forEach(([venueId, bySection]) => {
-      Object.entries(bySection).forEach(([sectionId, seatedUsers]) => {
-        const seatedUsersCount = seatedUsers.length;
-        const seatedUsersSample = seatedUsers.splice(
-          0,
-          SECTION_PREVIEW_USER_DISPLAY_COUNT
-        );
+      const allOccupiedSectionIds = uniq(
+        seatedUsers.map((u) => u.path.sectionId)
+      );
 
-        let { batch, updatesCount } = updateOccupiedPromises.pop();
-        if (updatesCount === BATCH_MAX_OPS) {
-          updateOccupiedPromises.push({ batch, updatesCount });
+      return { bySectionByAuditorium, allOccupiedSectionIds };
+    });
 
-          batch = firestore.batch();
-          updatesCount = 0;
-        }
+  const { docs: auditoriums } = await admin
+    .firestore()
+    .collection("venues")
+    .where("template", "==", "auditorium")
+    .get();
 
-        updateOccupiedPromises.push({ batch, updatesCount: updatesCount + 1 });
+  const allSectionIds = flatten(
+    await Promise.all(
+      auditoriums.map((auditorium) =>
+        auditorium.ref
+          .collection("sections")
+          .get()
+          .then(({ docs: sections }) =>
+            sections.map((s) => ({ sectionId: s.id, venueId: auditorium.id }))
+          )
+      )
+    )
+  );
 
-        updatedOccupiedSectionsCount += 1;
+  const allEmptySectionIds = differenceWith(
+    allSectionIds,
+    allOccupiedSectionIds,
+    ({ sectionId }, otherSectionId) => sectionId === otherSectionId
+  );
+
+  let updateEmptySectionsCount = 0;
+  const updateEmptyPromises = chunk(allEmptySectionIds, BATCH_MAX_OPS).map(
+    (emptySections) => {
+      const batch = firestore.batch();
+
+      emptySections.forEach(({ sectionId, venueId }) => {
+        updateEmptySectionsCount += 1;
+
         batch.update(
           firestore
             .collection("venues")
@@ -208,26 +166,65 @@ exports.updateSeatedUsersCountInAuditorium = functions.pubsub
             .collection("sections")
             .doc(sectionId),
           {
-            seatedUsersCount,
-            seatedUsersSample,
+            seatedUsersCount: 0,
+            seatedUsersSample: [],
           }
         );
       });
+
+      return batch.commit();
+    }
+  );
+
+  let updatedOccupiedSectionsCount = 0;
+  Object.entries(bySectionByAuditorium).forEach(([venueId, bySection]) => {
+    Object.entries(bySection).forEach(([sectionId, seatedUsers]) => {
+      const seatedUsersCount = seatedUsers.length;
+      const seatedUsersSample = seatedUsers.splice(
+        0,
+        SECTION_PREVIEW_USER_DISPLAY_COUNT
+      );
+
+      let { batch, updatesCount } = updateOccupiedPromises.pop();
+      if (updatesCount === BATCH_MAX_OPS) {
+        updateOccupiedPromises.push({ batch, updatesCount });
+
+        batch = firestore.batch();
+        updatesCount = 0;
+      }
+
+      updateOccupiedPromises.push({ batch, updatesCount: updatesCount + 1 });
+
+      updatedOccupiedSectionsCount += 1;
+      batch.update(
+        firestore
+          .collection("venues")
+          .doc(venueId)
+          .collection("sections")
+          .doc(sectionId),
+        {
+          seatedUsersCount,
+          seatedUsersSample,
+        }
+      );
     });
-
-    console.log(
-      `Updated ${updatedOccupiedSectionsCount} occupied sections and ${updateEmptySectionsCount} empty sections`
-    );
-
-    return await Promise.all([
-      updateOccupiedPromises.map(({ batch }) => batch.commit()),
-      ...updateEmptyPromises,
-    ]);
   });
 
-exports.aggregateUsersLocationsInVenue = functions.pubsub
-  .schedule("every 5 minutes")
+  console.log(
+    `Updated ${updatedOccupiedSectionsCount} occupied sections and ${updateEmptySectionsCount} empty sections`
+  );
+
+  return await Promise.all([
+    updateOccupiedPromises.map(({ batch }) => batch.commit()),
+    ...updateEmptyPromises,
+  ]);
+};
+
+exports.updateUsersLocations = functions.pubsub
+  .schedule("every 1 minutes")
   .onRun(async () => {
+    await updateSeatedUsersCountInAuditorium();
+
     const venuesPromise = admin
       .firestore()
       .collection("venues")
@@ -236,7 +233,7 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
         snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
       );
 
-    const date3HoursBefore = Date.now() - hoursToMilliseconds(3);
+    const date3HoursBefore = Date.now() - USER_INACTIVE_THRESHOLD;
 
     const usersPromise = admin
       .firestore()
@@ -247,14 +244,17 @@ exports.aggregateUsersLocationsInVenue = functions.pubsub
         snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
       );
 
-    const [users, venues] = await Promise.all([usersPromise, venuesPromise]);
+    const [recentUsers, venues] = await Promise.all([
+      usersPromise,
+      venuesPromise,
+    ]);
 
     // NOTE: Chunk users into batch commit to fasten the operation
     return chunk(venues, BATCH_MAX_OPS).map((venuesChunk) => {
       const batch = admin.firestore().batch();
 
       for (const venue of venuesChunk) {
-        const recentVenueUsers = users.filter(
+        const recentVenueUsers = recentUsers.filter(
           (user) =>
             user.lastVenueIdSeenIn && user.lastVenueIdSeenIn.includes(venue.id)
         );
@@ -291,7 +291,7 @@ exports.updateVenuesChatCounters = functions.pubsub
         const counter = sum(
           await venue
             .collection("chatMessagesCounter")
-            .where(admin.firestore.FieldPath.documentId(), "!==", "sum")
+            .where(admin.firestore.FieldPath.documentId(), "!=", "sum")
             .get()
             .then(({ docs }) =>
               docs.map((d) => d.data().count).filter((c) => Boolean(c))

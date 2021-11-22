@@ -4,6 +4,8 @@ import classNames from "classnames";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_REACTIONS_AUDIBLE,
+  DEFAULT_SHOW_REACTIONS,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -51,7 +53,10 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const parentVenueId = parentVenue?.id;
-  const embedIframeUrl = convertToEmbeddableUrl({ url: venue.iframeUrl });
+  const embedIframeUrl = convertToEmbeddableUrl({
+    url: venue.iframeUrl,
+    autoPlay: venue.autoPlay,
+  });
   const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
 
@@ -73,7 +78,22 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     seatedAtTable && venue?.id
   );
 
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const isReactionsAudioDisabled = !venue.isReactionsMuted;
+
+  const {
+    isShown: isUserAudioOn,
+    toggle: toggleUserAudio,
+    hide: disableUserAudio,
+    show: enableUserAudio,
+  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
+
+  useEffect(() => {
+    if (venue.isReactionsMuted) {
+      enableUserAudio();
+    } else {
+      disableUserAudio();
+    }
+  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   const isUserAudioMuted = !isUserAudioOn;
 
@@ -86,7 +106,11 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   }, [analytics, seatedAtTable]);
 
   const shouldShowReactions =
-    seatedAtTable && areSettingsLoaded && settings.showReactions;
+    seatedAtTable &&
+    areSettingsLoaded &&
+    (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
+    (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
+
   const firstTableReference = jazzbarTables[0].reference;
 
   const shouldShowJukebox =
@@ -172,6 +196,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       venueId={venue.id}
                       isReactionsMuted={isUserAudioMuted}
                       toggleMute={toggleUserAudio}
+                      isAudioDisabled={isReactionsAudioDisabled}
                     />
                   </div>
                 )}

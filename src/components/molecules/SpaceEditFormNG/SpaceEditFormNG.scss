@@ -1,5 +1,8 @@
 @import "scss/constants.scss";
 
+$textarea-height: 120px;
+$image-container-height: 200px;
+
 .SpaceEditFormNG {
   display: flex;
   flex: 1;
@@ -8,6 +11,15 @@
 
   &__toggler {
     width: max-content;
+  }
+
+  &__capacity {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    align-items: center;
+    text-align: center;
   }
 
   .AdminSidebarTitle {
@@ -20,18 +32,54 @@
 
   .AdminSection {
     padding: $spacing--sm $spacing--xl;
+
+    &__label {
+      display: flex;
+      flex-direction: column;
+
+      .ImageInput__container {
+        position: relative;
+        width: 60%;
+        margin-bottom: -($spacing--lg);
+        align-self: center;
+        height: $image-container-height;
+      }
+    }
   }
 
   .AdminSidebarFooter__buttons {
     width: 100%;
   }
 
-  &__capacity {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(2, 1fr);
+  .AdminInput__input {
+    text-align: left;
 
-    align-items: center;
-    text-align: center;
+    &::placeholder {
+      word-break: break-word;
+    }
+  }
+
+  .AdminTextarea__input {
+    height: $textarea-height;
+  }
+
+  .SpacesDropdown {
+    .Dropdown {
+      width: 100%;
+      background-color: var(--content--over-10a);
+      border-radius: $border-radius--xl;
+
+      .Dropdown__button {
+        width: 100%;
+
+        &:hover {
+          background-color: var(--content--over-20a);
+        }
+
+        &:after {
+          margin-left: auto;
+        }
+      }
+    }
   }
 }

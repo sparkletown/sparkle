@@ -16,7 +16,7 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
-import { useWorldEdit } from "hooks/useWorldEdit";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -95,7 +95,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     currentVenueId: venue.id,
   });
 
-  const { world } = useWorldEdit(venue?.worldId);
+  const { world } = useWorldById(venue?.worldId);
 
   const { enterRoom, portalVenueId } = useRoom({
     room,

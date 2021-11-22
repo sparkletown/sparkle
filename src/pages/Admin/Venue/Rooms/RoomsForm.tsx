@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ErrorMessage, useForm } from "react-hook-form";
-import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import useAsync from "react-use/lib/useAsync";
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
@@ -20,13 +18,14 @@ import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { AnyVenue, PartyMapVenue } from "types/venues";
+import { PartyMapVenue } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -38,6 +37,7 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -47,65 +47,51 @@ import { validationSchema } from "./RoomsValidationSchema";
 import "../Venue.scss";
 
 export const RoomsForm: React.FC = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
   const history = useHistory();
   const { user } = useUser();
-  const firestore = useFirestore();
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  const { loading: isLoading, value: venue } = useAsync(async () => {
-    if (!venueId) return history.replace("/admin");
-
-    const venueSnapshot = await firestore
-      .collection("venues")
-      .doc(venueId)
-      .get();
-
-    if (!venueSnapshot.exists) return history.replace("/admin");
-
-    const data = venueSnapshot.data() as AnyVenue;
-    //find the template
-    const template = ALL_VENUE_TEMPLATES.find(
-      (template) => data.template === template.template
-    );
-
-    if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
-      history.replace("/admin");
-    }
-
-    return data as PartyMapVenue;
-  }, [firestore, history, venueId]);
-
   const room = useMemo(() => {
     if (
       typeof queryRoomIndex === "undefined" ||
-      !venue ||
-      !venue.rooms ||
-      venue.rooms.length - 1 < queryRoomIndex
+      !space ||
+      !space.rooms ||
+      space.rooms.length - 1 < queryRoomIndex
     )
       return undefined;
 
-    return venue.rooms[queryRoomIndex];
-  }, [queryRoomIndex, venue]);
+    return space.rooms[queryRoomIndex];
+  }, [queryRoomIndex, space]);
 
-  if (isLoading) return <LoadingPage />;
+  if (!isSpaceLoaded) return <LoadingPage />;
 
-  if (!venue || !venueId) return null;
+  if (!space || !spaceId || !spaceSlug) return <NotFound />;
+
+  const template = ALL_VENUE_TEMPLATES.find(
+    (template) => space.template === template.template
+  );
+
+  if (!template || !HAS_ROOMS_TEMPLATES.includes(template.template)) {
+    history.replace("/admin");
+  }
 
   if (!user) {
-    return <Login formType="login" venueId={venueId} />;
+    return <Login formType="login" venueId={spaceId} />;
   }
 
   return (
     <WithNavigationBar>
       <AdminRestricted>
         <RoomInnerForm
-          venueId={venueId}
-          venue={venue}
+          spaceSlug={spaceSlug}
+          spaceId={spaceId}
+          venue={space as PartyMapVenue}
           editingRoom={room}
           editingRoomIndex={queryRoomIndex}
         />
@@ -115,7 +101,8 @@ export const RoomsForm: React.FC = () => {
 };
 
 interface RoomInnerFormProps {
-  venueId: string;
+  spaceId: string;
+  spaceSlug: string;
   venue: PartyMapVenue;
   editingRoom?: Room;
   editingRoomIndex?: number;
@@ -124,7 +111,7 @@ interface RoomInnerFormProps {
 export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
-  const { venue, venueId, editingRoom, editingRoomIndex } = props;
+  const { venue, spaceId, spaceSlug, editingRoom, editingRoomIndex } = props;
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -137,6 +124,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     errors,
     formState: { isSubmitting },
     setValue,
+    getValues,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -144,7 +132,8 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     validationContext: { editing: !!editingRoom },
     defaultValues: {
       ...defaultValues,
-      url: defaultValues.url ?? venueInsideUrl(venueId),
+      url: defaultValues.url ?? venueInsideUrl(spaceSlug),
+      visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });
 
@@ -157,28 +146,28 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const [formError, setFormError] = useState(false);
 
   const onSubmit = useCallback(
-    async (vals: FormValues) => {
+    async (input: FormValues) => {
       if (!user) return;
 
       try {
         const roomValues: RoomInput = {
           ...editingRoom,
-          ...vals,
+          ...input,
         };
-        await upsertRoom(roomValues, venueId, user, editingRoomIndex);
-        history.push(`${ADMIN_V1_ROOT_URL}/${venueId}`);
+        await upsertRoom(roomValues, spaceId, user, editingRoomIndex);
+        history.push(`${ADMIN_V1_ROOT_URL}/${spaceSlug}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {
           event.addMetadata("Admin::RoomsForm::onSubmit", {
-            venueId,
-            vals,
+            spaceId,
+            vals: input,
             editingRoomIndex,
           });
         });
       }
     },
-    [user, history, venueId, editingRoomIndex, editingRoom]
+    [user, editingRoom, spaceId, editingRoomIndex, history, spaceSlug]
   );
 
   useEffect(() => {
@@ -351,10 +340,13 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     />
                   </div>
                   <div className="toggle-room">
-                    <div className="input-title">
-                      Change label appearance (overrides global settings)
-                    </div>
-                    <PortalVisibility register={register} />
+                    <PortalVisibility
+                      getValues={getValues}
+                      label="Change label appearance (overrides global settings)"
+                      name="visibility"
+                      register={register}
+                      setValue={setValue}
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
@@ -437,7 +429,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
           onHide={() => {
             setShowDeleteModal(false);
           }}
-          venueId={venueId}
+          venueId={spaceId}
           room={editingRoom}
         />
       )}

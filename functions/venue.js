@@ -17,6 +17,7 @@ const VenueTemplate = {
   artcar: "artcar",
   artpiece: "artpiece",
   audience: "audience",
+  auditorium: "auditorium",
   conversationspace: "conversationspace",
   embeddable: "embeddable",
   firebarrel: "firebarrel",
@@ -86,7 +87,11 @@ const IFRAME_TEMPLATES = [
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
+const HAS_REACTIONS_TEMPLATES = [
+  VenueTemplate.audience,
+  VenueTemplate.jazzbar,
+  VenueTemplate.auditorium,
+];
 
 // @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
@@ -175,6 +180,9 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+/**
+ * @deprecated Use createVenueData_v2 instead.
+ */
 // @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
 const createVenueData = (data, context) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
@@ -211,12 +219,8 @@ const createVenueData = (data, context) => {
     owners,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
-    showSchedule:
-      typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     parentId: data.parentId,
-    requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
     showUserStatus:
@@ -305,12 +309,12 @@ const createVenueData_v2 = (data, context) => {
     showGrid: data.showGrid || false,
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
-    showSchedule: data.showSchedule || false,
     rooms: [],
     createdAt: Date.now(),
     updatedAt: Date.now(),
     parentId: data.parentId || "",
     worldId: data.worldId,
+    slug: data.slug,
     ...(data.parentId && { parentId: data.parentId }),
   };
 
@@ -376,14 +380,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.parentId === "string") {
     updated.parentId = data.parentId;
-  }
-
-  if (typeof data.showSchedule === "boolean") {
-    updated.showSchedule = data.showSchedule;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showReactions === "boolean") {
@@ -521,6 +517,9 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   if (snap.empty) removeAdmin(ownerId);
 });
 
+/**
+ * @deprecated This is legacy function used in the legacy version of the admin. Use createVenue_v2 instead.
+ */
 // @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -545,14 +544,19 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
 
   const batch = admin.firestore().batch();
 
-  const venueId = getVenueId(data.name);
-  const venueRef = admin.firestore().collection("venues").doc(venueId);
-  const venueDoc = await venueRef.get();
+  const venueRef = admin.firestore().collection("venues").doc();
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+  const venueExists = venuesRef.docs.length;
 
-  if (venueDoc.exists) {
+  if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The venue ${data.name} already exists. Please try with another name.`
+      `The slug ${data.slug} is already taken by another space within the world. Please try another.`
     );
   }
 
@@ -736,10 +740,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
-  // @debt the logic here differs from updateVenue_v2,
-  // @debt this would currently allow any value to be set in this field, not just booleans
-  updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
-
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
     updated.iframeUrl = data.iframeUrl;
@@ -751,7 +751,19 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is exactly the same as in updateVenue_v2
-  await admin.firestore().collection("venues").doc(venueId).update(updated);
+
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+  if (venueRef) {
+    await venueRef.update(updated);
+  }
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
@@ -765,7 +777,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
@@ -805,11 +817,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.columns = data.columns;
   }
 
-  // @debt the logic here differs from updateVenue
-  if (typeof data.requiresDateOfBirth === "boolean") {
-    updated.requiresDateOfBirth = data.requiresDateOfBirth;
-  }
-
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
@@ -818,7 +825,18 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is exactly the same as in updateVenue
-  admin.firestore().collection("venues").doc(venueId).update(updated);
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+  if (venueRef) {
+    await venueRef.update(updated);
+  }
 });
 
 exports.updateMapBackground = functions.https.onCall(async (data, context) => {
@@ -830,15 +848,24 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
   if (!data.worldId) {
     throw new HttpsError(
       "not-found",
-      "World id is missing and the update can not be executed."
+      "World Id is missing and the update can not be executed."
     );
   }
 
-  admin
+  const venuesRef = await admin
     .firestore()
     .collection("venues")
-    .doc(venueId)
-    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+  if (venueRef) {
+    await venueRef.update({
+      mapBackgroundImageUrl: data.mapBackgroundImageUrl,
+    });
+  }
 });
 
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {
@@ -847,15 +874,32 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
-  const updated = {};
+  if (!data.worldId) {
+    throw new HttpsError(
+      "not-found",
+      "World Id is missing and the update can not be executed."
+    );
+  }
+
+  const updated = {
+    config: {
+      landingPageConfig: {},
+    },
+  };
+
   updated.updatedAt = Date.now();
 
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  if (data.name) {
+    updated.name = data.name;
+  }
+
   if (data.description || data.description === "") {
-    updated.config.landingPageConfig.description = data.description;
+    updated.config.landingPageConfig.description =
+      data.description && data.description.text;
   }
 
   if (data.logoImageUrl) {
@@ -891,14 +935,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
-  }
-
-  if (typeof data.showSchedule === "boolean") {
-    updated.showSchedule = data.showSchedule;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
   }
 
   if (typeof data.showRangers === "boolean") {
@@ -945,10 +981,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.columns === "number") {
     updated.columns = data.columns;
-  }
-
-  if (typeof data.requiresDateOfBirth === "boolean") {
-    updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
   if (typeof data.showRadio === "boolean") {

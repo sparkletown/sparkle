@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { ReactHook } from "types/utility";
 
@@ -17,6 +17,7 @@ interface UseCurrentWorldReturn {
   world?: WithId<World>;
 }
 
+// @debt duplicate of useWorldById
 export const useCurrentWorld: ReactHook<
   UseCurrentWorldProps,
   UseCurrentWorldReturn

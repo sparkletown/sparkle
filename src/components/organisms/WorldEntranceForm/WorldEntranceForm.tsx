@@ -2,16 +2,16 @@ import React, { useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import * as Yup from "yup";
 
-import { World } from "api/admin";
-import { updateWorldEntranceSettings } from "api/world";
+import { updateWorldEntranceSettings, World } from "api/world";
 
 import { EntranceStepConfig, EntranceStepTemplate } from "types/EntranceStep";
 import { Question } from "types/Question";
 import { WorldEntranceFormInput } from "types/world";
 
 import { WithId } from "utils/id";
+
+import { worldEntranceSchema } from "forms/worldEntranceSchema";
 
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
@@ -21,45 +21,18 @@ import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/com
 import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
 import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
+import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import { Checkbox } from "components/atoms/Checkbox";
-import { Toggler } from "components/atoms/Toggler";
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./WorldEntranceForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["entrance"];
-
-const questionSchema = Yup.array<Question>()
-  .ensure()
-  .defined()
-  .transform((value) =>
-    value.filter(({ name, text }: Question) => !!name && !!text)
-  );
-
-const validationSchema = Yup.object().shape({
-  adultContent: Yup.bool().notRequired(),
-  requiresDateOfBirth: Yup.bool().notRequired(),
-  code: questionSchema.notRequired(),
-  profile: questionSchema.notRequired(),
-  entrance: Yup.array(
-    Yup.object().shape({
-      videoUrl: Yup.string().required("Video URL is required."),
-      autoplay: Yup.boolean().notRequired(),
-      buttons: Yup.array(
-        Yup.object().shape({
-          isProceed: Yup.boolean().required(),
-          text: Yup.string().notRequired(),
-          href: Yup.string().notRequired(),
-        })
-      ),
-    })
-  ).notRequired(),
-});
 
 export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
   world: WithId<World>;
@@ -76,6 +49,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const {
     items: codeQuestions,
     add: addCodeQuestion,
+    update: updateCodeQuestion,
     clear: clearCodeQuestions,
     remove: removeCodeQuestion,
     isDirty: isDirtyCode,
@@ -85,6 +59,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const {
     items: profileQuestions,
     add: addProfileQuestion,
+    update: updateProfileQuestion,
     clear: clearProfileQuestions,
     remove: removeProfileQuestion,
     isDirty: isDirtyProfile,
@@ -94,6 +69,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const {
     items: entranceSteps,
     add: addEntranceStep,
+    update: updateEntranceStep,
     clear: clearEntranceSteps,
     remove: removeEntranceStep,
     isDirty: isDirtyEntrance,
@@ -133,7 +109,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   } = useForm<WorldEntranceFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: worldEntranceSchema,
     defaultValues,
   });
 
@@ -141,9 +117,16 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     async (input: WorldEntranceFormInput) => {
       if (!user || !worldId) return;
 
-      await updateWorldEntranceSettings({ ...input, id: worldId }, user);
+      const data = {
+        ...input,
+        id: worldId,
+        code: codeQuestions,
+        profile: profileQuestions,
+        entrance: entranceSteps,
+      };
+      await updateWorldEntranceSettings(data, user);
 
-      reset(input);
+      reset(data);
       clearDirtyCode();
       clearDirtyProfile();
       clearDirtyEntrance();
@@ -151,10 +134,13 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     [
       worldId,
       user,
+      reset,
       clearDirtyCode,
       clearDirtyProfile,
       clearDirtyEntrance,
-      reset,
+      codeQuestions,
+      profileQuestions,
+      entranceSteps,
     ]
   );
 
@@ -196,24 +182,34 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
           saveButtonProps={saveButtonProps}
         />
         <AdminSection title="Limit access to world">
-          <Toggler
-            name="adultContent"
-            label="Restrict entry to adults aged 18+"
-            forwardedRef={register}
-          />
-          <Checkbox
+          <TesterRestricted>
+            <AdminCheckbox
+              variant="toggler"
+              name="adultContent"
+              label="Restrict entry to adults aged 18+"
+              register={register}
+            />
+          </TesterRestricted>
+          <AdminCheckbox
             name="requiresDateOfBirth"
-            label="Require date of birth on register"
-            forwardedRef={register}
+            label={
+              <>
+                Restrict registration to 18+
+                <br />
+                (adds a date of birth picker)
+              </>
+            }
+            register={register}
           />
         </AdminSection>
         <AdminSection title="Code of conduct questions">
           <QuestionsBuilder
-            errors={errors}
+            errors={errors.code}
             hasLink
             items={codeQuestions}
             name="code"
             onAdd={addCodeQuestion}
+            onUpdate={updateCodeQuestion}
             onRemove={removeCodeQuestion}
             onClear={clearCodeQuestions}
             register={register}
@@ -221,10 +217,11 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
         </AdminSection>
         <AdminSection title="Profile questions">
           <QuestionsBuilder
-            errors={errors}
+            errors={errors.profile}
             items={profileQuestions}
             name="profile"
             onAdd={addProfileQuestion}
+            onUpdate={updateProfileQuestion}
             onRemove={removeProfileQuestion}
             onClear={clearProfileQuestions}
             register={register}
@@ -236,6 +233,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             items={entranceSteps}
             name="entrance"
             onAdd={addEntranceStep}
+            onUpdate={updateEntranceStep}
             onRemove={removeEntranceStep}
             onClear={clearEntranceSteps}
             register={register}

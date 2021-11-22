@@ -1,6 +1,6 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { RootState } from "store";
 
@@ -130,9 +130,6 @@ export const venueEventsSelector: SparkleSelector<
 
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;
-
-export const radioStationsSelector = (state: RootState) =>
-  state.firestore.data.currentVenue?.radioStations;
 
 export const posterVenuesSelector: SparkleSelector<
   WithId<PosterPageVenue>[] | undefined

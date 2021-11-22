@@ -1,8 +1,6 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
 
 import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -10,12 +8,11 @@ import { ProfileModalLink } from "components/organisms/NewProfileModal/component
 
 import "./ProfileModalLinks.scss";
 
-export interface ProfileModalLinksProps extends ContainerClassName {
+export interface ProfileModalLinksProps {
   user: WithId<User>;
 }
 
 export const ProfileModalLinks: React.FC<ProfileModalLinksProps> = ({
-  containerClassName,
   user,
 }) => {
   const renderedProfileLinks = useMemo(
@@ -30,9 +27,5 @@ export const ProfileModalLinks: React.FC<ProfileModalLinksProps> = ({
     [user?.profileLinks]
   );
 
-  return (
-    <div className={classNames("ProfileModalLinks", containerClassName)}>
-      {renderedProfileLinks}
-    </div>
-  );
+  return <div className="ProfileModalLinks">{renderedProfileLinks}</div>;
 };
