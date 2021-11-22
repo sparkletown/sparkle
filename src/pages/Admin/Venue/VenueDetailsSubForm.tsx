@@ -4,6 +4,7 @@ import classNames from "classnames";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
+  COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -116,6 +117,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
           ref={register}
           className="align-left"
           placeholder={`My ${templateType} name`}
+          max={COMMON_NAME_MAX_CHAR_COUNT}
         />
         {errors.name ? (
           <span className="input-error">{errors.name.message}</span>
