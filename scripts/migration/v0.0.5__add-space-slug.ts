@@ -7,12 +7,12 @@ import { generateSlug } from "../../functions/src/utils/venue";
 export const migrate = async ({ firestore }: MigrateOptions) => {
   console.log(`Fetching spaces...`);
 
-  const spaces = await firestore.collection("venues").get();
+  const { docs: spaces } = await firestore.collection("venues").get();
 
   console.log(`Updating spaces...`);
 
   try {
-    for (const space of spaces.docs) {
+    for (const space of spaces) {
       const spaceData = space.data();
 
       // If the space doesn't have a name, skip the space because it's impossible to generate a slug.
@@ -25,18 +25,15 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
 
       // If the space already has a slug, skip the space because it will override it.
       if (spaceData.slug) {
-        console.log(`Skipping space ${spaceData.name}. Slug already exists`);
+        console.log(
+          `Skipping space ${spaceData.name} (${space.id}). Slug already exists`
+        );
         continue;
       }
 
       const slug = generateSlug(spaceData.name);
 
-      const spaceWithSlug = {
-        ...spaceData,
-        slug,
-      };
-
-      await space.ref.set(spaceWithSlug);
+      await space.ref.update({ slug });
       console.log(
         `The slug: '${slug}' has been successfully added for venue: ${spaceData.name}`
       );
