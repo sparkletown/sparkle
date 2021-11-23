@@ -245,7 +245,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
       {/* @debt use only one PortalModal instance with state controlled with redux */}
       <PortalModal
         show={isDefined(selectedRoom)}
-        room={selectedRoom}
+        portal={selectedRoom}
         venue={selectedRoomVenue}
         onHide={hidePortalModal}
       />
