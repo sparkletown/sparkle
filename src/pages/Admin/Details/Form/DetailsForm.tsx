@@ -6,7 +6,11 @@ import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import { DEFAULT_USER_STATUS, DEFAULT_VENUE_LOGO } from "settings";
+import {
+  COMMON_NAME_MAX_CHAR_COUNT,
+  DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_LOGO,
+} from "settings";
 
 import { createSlug, createVenue_v2, updateVenue_v2 } from "api/admin";
 
@@ -15,7 +19,7 @@ import { VenueTemplate } from "types/venues";
 
 import { adminWorldSpacesUrl } from "utils/url";
 
-import { venueV2Schema } from "forms/venueV2Schema";
+import { detailsSchema } from "forms/detailsSchema";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
@@ -138,7 +142,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: venueV2Schema,
+    validationSchema: detailsSchema,
     validationContext: {
       editing: !!venueId,
     },
@@ -383,7 +387,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       </div>
       <AdminSpacesListItem title="The basics" isOpened>
         <>
-          <AdminSection title="Rename your space" withLabel>
+          <AdminSection title="Name your space" withLabel>
             <AdminInput
               name="name"
               placeholder="Space Name"
@@ -391,6 +395,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
               errors={errors}
               required
               disabled={nameDisabled}
+              max={COMMON_NAME_MAX_CHAR_COUNT}
             />
           </AdminSection>
           <AdminSection title="Subtitle" withLabel>

@@ -18,6 +18,9 @@ import { UserStatus } from "types/User";
 
 import { isTruthy } from "utils/types";
 
+import { venueDetailsCreateSchema } from "forms/venueDetailsCreateSchema";
+import { venueDetailsEditSchema } from "forms/venueDetailsEditSchema";
+
 import { useQuery } from "hooks/useQuery";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -26,17 +29,15 @@ import { VenueDetailsSubForm } from "pages/Admin/Venue/VenueDetailsSubForm";
 
 import "firebase/functions";
 
-import {
-  editVenueCastSchema,
-  validationSchema,
-} from "./DetailsValidationSchema";
 import { WizardPage } from "./VenueWizard";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
 
-export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
+export type FormValues = Partial<
+  Yup.InferType<typeof venueDetailsCreateSchema>
+>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
 interface DetailsFormProps extends WizardPage {
   venueId?: string;
@@ -50,8 +51,8 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
   const defaultValues = useMemo(
     () =>
       venueId
-        ? editVenueCastSchema.cast(state.detailsPage?.venue)
-        : validationSchema.cast(),
+        ? venueDetailsEditSchema.cast(state.detailsPage?.venue)
+        : venueDetailsCreateSchema.cast(),
     [state.detailsPage, venueId]
   );
 
@@ -73,7 +74,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema: validationSchema,
+    validationSchema: venueDetailsCreateSchema,
     validationContext: {
       template: state.templatePage?.template,
       editing: !!venueId,
