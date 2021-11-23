@@ -7,7 +7,7 @@ import classNames from "classnames";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { isPartyMapVenue } from "types/venues";
+import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { adminCreateWorldSpace, adminWorldUrl } from "utils/url";
 import { sortVenues, VenueSortingOptions } from "utils/venue";
@@ -77,7 +77,16 @@ export const SpacesDashboard: React.FC = () => {
     []
   );
 
-  const hasVenues = renderedPartyVenues.length > 0;
+  const renderedOtherVenues = useMemo(
+    () =>
+      sortedVenues
+        ?.filter(isNotPartyMapVenue)
+        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
+    [sortedVenues]
+  );
+
+  const hasPartyVenues = renderedPartyVenues.length > 0;
+  const hasOtherVenues = renderedOtherVenues.length > 0;
 
   if (isLoadingSpaces || !isWorldLoaded) {
     return <LoadingPage />;
@@ -117,12 +126,14 @@ export const SpacesDashboard: React.FC = () => {
               Settings
             </ButtonNG>
           </AdminTitleBar>
+
+          {hasPartyVenues && <AdminTitle>Party maps</AdminTitle>}
           <div
             className={classNames("SpacesDashboard__cards", {
-              "SpacesDashboard__cards--empty": !hasVenues,
+              "SpacesDashboard__cards--empty": !hasPartyVenues,
             })}
           >
-            {!hasVenues && (
+            {!hasPartyVenues && (
               <>
                 <div className="SpacesDashboard__welcome-message">Welcome!</div>
                 <div className="SpacesDashboard__welcome-message">
@@ -130,7 +141,16 @@ export const SpacesDashboard: React.FC = () => {
                 </div>
               </>
             )}
-            {hasVenues && renderedPartyVenues}
+            {hasPartyVenues && renderedPartyVenues}
+          </div>
+
+          {hasOtherVenues && <AdminTitle>Other maps</AdminTitle>}
+          <div
+            className={classNames("SpacesDashboard__cards", {
+              "SpacesDashboard__cards--empty": !hasOtherVenues,
+            })}
+          >
+            {hasOtherVenues && renderedOtherVenues}
           </div>
         </AdminRestricted>
       </WithNavigationBar>

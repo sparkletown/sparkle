@@ -6,6 +6,8 @@ import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { VenueTemplate } from "types/venues";
+
 import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -36,10 +38,16 @@ export interface AdminVenueViewRouteParams {
   selectedTab?: AdminVenueTab;
 }
 
-const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
+const partySpaceTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",
+};
+
+const otherSpaceTabLabelMap: Partial<
+  Readonly<Record<AdminVenueTab, String>>
+> = {
+  [AdminVenueTab.timing]: "Timing",
 };
 
 const tabIcons = {
@@ -57,16 +65,24 @@ export const AdminVenueView: React.FC = () => {
 
   const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
+  const isPartySpace = space?.template === VenueTemplate.partymap;
+
+  const currentTab = isPartySpace ? selectedTab : AdminVenueTab.timing;
+
+  const tabLabelMap = isPartySpace
+    ? partySpaceTabLabelMap
+    : otherSpaceTabLabelMap;
+
   const { world } = useWorldById(space?.worldId);
 
   const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
+    return Object.entries(tabLabelMap).map(([key, label]) => (
       <Link
         key={key}
         to={adminNGVenueUrl(spaceSlug, key)}
         className={classNames({
           AdminVenueView__tab: true,
-          "AdminVenueView__tab--selected": selectedTab === key,
+          "AdminVenueView__tab--selected": currentTab === key,
         })}
       >
         <FontAwesomeIcon
@@ -76,7 +92,7 @@ export const AdminVenueView: React.FC = () => {
         {label}
       </Link>
     ));
-  }, [selectedTab, spaceSlug]);
+  }, [currentTab, spaceSlug, tabLabelMap]);
 
   const navigateToHome = useCallback(
     () => history.push(adminWorldSpacesUrl(world?.slug)),
@@ -118,7 +134,7 @@ export const AdminVenueView: React.FC = () => {
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
         </div>
-        {selectedTab === AdminVenueTab.spaces && (
+        {currentTab === AdminVenueTab.spaces && (
           <Spaces
             onClickHome={navigateToHome}
             onClickBack={navigateToHome}
@@ -126,15 +142,17 @@ export const AdminVenueView: React.FC = () => {
             venue={space}
           />
         )}
-        {selectedTab === AdminVenueTab.timing && (
+        {currentTab === AdminVenueTab.timing && (
           <SpaceTimingPanel
             onClickHome={navigateToHome}
-            onClickBack={navigateToSpaces}
-            onClickNext={navigateToRun}
             venue={space}
+            {...(isPartySpace && {
+              onClickBack: navigateToSpaces,
+              onClickNext: navigateToRun,
+            })}
           />
         )}
-        {selectedTab === AdminVenueTab.run && (
+        {currentTab === AdminVenueTab.run && (
           <RunTabView
             onClickHome={navigateToHome}
             onClickBack={navigateToTiming}
