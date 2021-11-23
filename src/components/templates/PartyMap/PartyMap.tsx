@@ -74,7 +74,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       <Map user={user} venue={venue} selectRoom={selectRoom} />
 
       <PortalModal
-        room={selectedRoom}
+        portal={selectedRoom}
         venue={venue}
         venueEvents={selectedRoomEvents}
         show={hasSelectedRoom}

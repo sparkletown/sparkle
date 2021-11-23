@@ -57,7 +57,7 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
     <div className="UIOverlay">
       <div className="UIOverlayGrid">
         <PortalModal
-          room={selectedRoom}
+          portal={selectedRoom}
           venue={venue}
           show={hasSelectedRoom}
           onHide={unselectRoom}

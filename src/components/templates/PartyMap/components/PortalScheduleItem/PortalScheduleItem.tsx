@@ -1,61 +1,43 @@
-import React, { useCallback } from "react";
-import classNames from "classnames";
+import React from "react";
+import ShowMoreText from "react-show-more-text";
 
 import { VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import {
+  formatDate,
+  formatDateRelativeToNow,
+  formatTimeLocalised,
+} from "utils/time";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import "./ScheduleItem.scss";
+import "./PortalScheduleItem.scss";
 
 interface PropsType {
   event: VenueEvent;
-  enterEventLocation: () => void;
+  expandableDescription?: boolean;
+  defaultDescriptionLineNumber?: number;
 }
 
 export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
-  enterEventLocation,
+  expandableDescription = false,
+  defaultDescriptionLineNumber = 3,
 }) => {
   const isCurrentEventLive = isEventLive(event);
-
-  const scheduleItemClasses = classNames({
-    ScheduleItem: true,
-    "ScheduleItem--primary": isCurrentEventLive,
-  });
-
-  const enterEventLocationPreventDefault = useCallback(
-    (e) => {
-      // Ensure the <a href> doesn't cause link navigation again when onRoomEnter is already doing it
-      e.preventDefault();
-
-      enterEventLocation();
-    },
-    [enterEventLocation]
-  );
-
   return (
-    <div
-      className={scheduleItemClasses}
-      onClick={enterEventLocationPreventDefault}
-    >
+    <div className="ScheduleItem">
       <div className="ScheduleItem__event-dates">
         <span className="ScheduleItem__event-date">
           {formatDateRelativeToNow(eventStartTime(event), {
             formatToday: () => "",
+            formatTomorrow: formatDate,
           })}
         </span>
 
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventStartTime(event))}
-        </span>
-
-        <span className="ScheduleItem__event-date">
-          {formatDateRelativeToNow(eventEndTime(event), {
-            formatToday: () => "",
-          })}
         </span>
 
         <span className="ScheduleItem__event-end-time">
@@ -73,9 +55,22 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
           <span className="ScheduleItem__event-host-prefix">by </span>
           <span className="ScheduleItem__event-host">{event.host}</span>
         </div>
-        <div className="ScheduleItem__event-description">
-          <RenderMarkdown text={event.description} />
-        </div>
+        {expandableDescription ? (
+          <ShowMoreText
+            lines={defaultDescriptionLineNumber}
+            more="Show more"
+            less="Show less"
+            className="ScheduleItem__event-description"
+            expanded={false}
+            truncatedEndingComponent={"... "}
+          >
+            {event.description}
+          </ShowMoreText>
+        ) : (
+          <div className="ScheduleItem__event-description">
+            <RenderMarkdown text={event.description} />
+          </div>
+        )}
       </div>
     </div>
   );

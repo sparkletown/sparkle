@@ -5,18 +5,31 @@ $spacing: 20px;
 
 .PortalModal {
   &__modal-body {
-    padding: 0;
     display: flex;
     flex-direction: column;
     max-height: 80vh;
     background-color: $secondary--live;
     background-repeat: no-repeat;
     background-size: cover;
+    padding: 0;
+  }
+
+  &__close-icon {
+    @include square-size($spacing--xxl);
+    position: absolute;
+    right: $spacing--lg;
+    top: $spacing--lg;
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &__title {
     font-weight: $font-weight--700;
-    font-size: $font-size--xxl;
+    font-size: $font-size--xl;
   }
 
   &__subtitle {
@@ -25,19 +38,18 @@ $spacing: 20px;
   }
 
   &__main {
-    padding: $spacing;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    margin: $spacing--xxl $spacing--xxl $spacing--lg;
   }
 
   &__icon {
+    @include square-size(112px);
     flex-shrink: 0;
-    height: 180px;
-    width: 180px;
     border-radius: $border-radius;
     background-color: $content--under;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
   }
@@ -53,41 +65,54 @@ $spacing: 20px;
     margin-left: $spacing;
   }
 
+  &__btn-wrapper {
+    display: flex;
+  }
+
   &__btn-enter {
-    width: 100%;
-    margin-top: 10px;
+    margin: $spacing--lg auto;
+    flex-basis: 264px;
   }
 
   &__userlist {
-    margin: $spacing 0;
+    margin-top: $spacing--lg;
+
+    .UserList__label {
+      align-items: flex-start;
+    }
+
+    .UserList__label-text {
+      margin-bottom: $spacing--xs;
+    }
+
+    .UserList__avatars {
+      justify-content: unset;
+    }
   }
 
   &__description {
-    @include scrollbar;
-    padding: 10px $spacing;
-
     background: $secondary--live;
-    border-radius: $border-radius;
-
-    max-height: 25vh;
-    overflow-y: auto;
+    margin: 0 $spacing--xxl;
 
     font-size: $font-size--md;
     font-weight: $font-weight--400;
     color: opaque-white(0.6);
+
+    p {
+      margin-bottom: 0;
+    }
   }
 
   &__events {
     @include scrollbar;
     max-height: 35vh;
     overflow-y: auto;
+    padding-bottom: $spacing--xxl;
 
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {
       margin: -10px;
-      padding: 10px $spacing;
-
       border-radius: $border-radius;
     }
   }

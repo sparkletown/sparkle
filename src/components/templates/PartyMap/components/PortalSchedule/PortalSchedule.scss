@@ -1,0 +1,13 @@
+@import "scss/constants";
+
+.PortalSchedule {
+  overflow-y: auto;
+  margin-bottom: $spacing--lg;
+
+  &__group-title {
+    font-weight: $font-weight--700;
+    text-align: center;
+    font-size: $font-size--xl;
+    margin: $spacing--sm 0;
+  }
+}

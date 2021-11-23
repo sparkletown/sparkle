@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { Modal } from "react-bootstrap";
+import ShowMoreText from "react-show-more-text";
 
 import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
 
@@ -23,7 +24,9 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { ScheduleItem } from "..";
+import { PortalSchedule } from "../PortalSchedule/PortalSchedule";
+
+import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./PortalModal.scss";
 
@@ -33,26 +36,26 @@ export interface PortalModalProps {
   onHide: () => void;
   show: boolean;
   venue?: WithId<AnyVenue>;
-  room?: Room;
+  portal?: Room;
   venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
   onHide,
-  room,
+  portal,
   show,
   venue,
   venueEvents = emptyEvents,
 }) => {
-  if (!venue || !room) return null;
+  if (!venue || !portal) return null;
 
-  if (room.type === RoomType.modalFrame) {
+  if (portal.type === RoomType.modalFrame) {
     return (
       <VideoModal
         show={show}
         onHide={onHide}
-        caption={room.title}
-        url={room.url}
+        caption={portal.title}
+        url={portal.url}
         autoplay
         backdrop
       />
@@ -63,9 +66,16 @@ export const PortalModal: React.FC<PortalModalProps> = ({
     <Modal show={show} onHide={onHide} className="PortalModal" centered>
       <Modal.Body className="PortalModal__modal-body">
         <PortalModalContent
-          room={room}
+          portal={portal}
           venueEvents={venueEvents}
           venue={venue}
+        />
+
+        <img
+          className="PortalModal__close-icon"
+          src={PortalCloseIcon}
+          alt="close portal"
+          onClick={onHide}
         />
       </Modal.Body>
     </Modal>
@@ -73,13 +83,13 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 };
 
 export interface PortalModalContentProps {
-  room: Room;
+  portal: Room;
   venue: WithId<AnyVenue>;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const PortalModalContent: React.FC<PortalModalContentProps> = ({
-  room,
+  portal,
   venue,
   venueEvents,
 }) => {
@@ -102,7 +112,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   const { world } = useWorldById(venue?.worldId);
 
   const { enterRoom, portalVenueId } = useRoom({
-    room,
+    room: portal,
   });
 
   const analytics = useAnalytics({ venue });
@@ -113,46 +123,30 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   const portalVenueDescription =
     portalVenue?.config?.landingPageConfig?.description;
 
-  const [enterWithSound] = useCustomSound(room.enterSound, {
+  const [enterWithSound] = useCustomSound(portal.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
   // note: this is here just to change the type on it in an easy way
   const enter: () => void = useCallback(() => {
-    analytics.trackEnterRoomEvent(room.title, room.template);
-    void (isExternalPortal(room) ? openUrl(room.url) : enterWithSound());
-  }, [analytics, enterWithSound, room]);
+    analytics.trackEnterRoomEvent(portal.title, portal.template);
+    void (isExternalPortal(portal) ? openUrl(portal.url) : enterWithSound());
+  }, [analytics, enterWithSound, portal]);
 
-  const renderedRoomEvents = useMemo(() => {
-    if (!world?.showSchedule) return [];
-
-    return venueEvents.map((event, index: number) => (
-      <ScheduleItem
-        // @debt Ideally event.id would always be a unique identifier, but our types suggest it
-        //   can be undefined. Because we can't use index as a key by itself (as that is unstable
-        //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
-        //   is far less likely to clash
-        key={event.id ?? `${event.room}-${event.name}-${index}`}
-        event={event}
-        enterEventLocation={enter}
-      />
-    ));
-  }, [enter, venueEvents, world?.showSchedule]);
-
-  const showRoomEvents = world?.showSchedule && renderedRoomEvents.length > 0;
+  const showPortalEvents = world?.showSchedule && venueEvents.length > 0;
 
   const iconStyles = {
-    backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
+    backgroundImage: portal.image_url ? `url(${portal.image_url})` : undefined,
   };
 
-  const roomTitle = room.title || portalVenue?.name;
-  const roomSubtitle = room.subtitle || portalVenueSubtitle;
-  const roomDescription = room.about || portalVenueDescription;
+  const portalTitle = portal.title || portalVenue?.name;
+  const portalSubtitle = portal.subtitle || portalVenueSubtitle;
+  const portalDescription = portal.about || portalVenueDescription;
 
   useEffect(() => {
-    analytics.trackOpenPortalModalEvent(roomTitle);
-  }, [analytics, roomTitle]);
+    analytics.trackOpenPortalModalEvent(portalTitle);
+  }, [analytics, portalTitle]);
 
   // @debt maybe refactor this, but autoFocus property working very bad.
   const enterButtonref = useRef<HTMLButtonElement>(null);
@@ -164,43 +158,60 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
         <div className="PortalModal__icon" style={iconStyles} />
 
         <div className="PortalModal__content">
-          <div className="PortalModal__title">{roomTitle}</div>
+          <div className="PortalModal__title">{portalTitle}</div>
 
-          {roomSubtitle && (
-            <div className="PortalModal__subtitle">{roomSubtitle}</div>
+          {portalSubtitle && (
+            <ShowMoreText
+              lines={2}
+              more="Show more"
+              less="Show less"
+              className="PortalModal__subtitle"
+              expanded={false}
+              truncatedEndingComponent={"... "}
+            >
+              {portalSubtitle}
+            </ShowMoreText>
           )}
 
-          {/* @debt extract this 'enter room' button/link concept into a reusable component */}
-          {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
-          <button
-            ref={enterButtonref}
-            autoFocus
-            className="btn btn-primary PortalModal__btn-enter"
-            onMouseOver={triggerAttendance}
-            onMouseOut={clearAttendance}
-            onClick={enter}
-          >
-            Enter
-          </button>
+          <UserList
+            containerClassName="PortalModal__userlist"
+            usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={portalVenue?.recentUserCount ?? 0}
+            activity={`in this ${ROOM_TAXON.lower}`}
+            attendeesTitle={world?.attendeesTitle}
+          />
         </div>
       </div>
 
-      {room.about && (
-        <div className="PortalModal__description">
-          <RenderMarkdown text={roomDescription} />
-        </div>
+      {portalDescription && (
+        <ShowMoreText
+          lines={3}
+          more="Show more"
+          less="Show less"
+          className="PortalModal__description"
+          expanded={false}
+          truncatedEndingComponent={"... "}
+        >
+          <RenderMarkdown text={portalDescription} />
+        </ShowMoreText>
       )}
 
-      <UserList
-        containerClassName="PortalModal__userlist"
-        usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-        userCount={portalVenue?.recentUserCount ?? 0}
-        activity={`in this ${ROOM_TAXON.lower}`}
-      />
+      <div className="PortalModal__btn-wrapper">
+        {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+        {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
+        <button
+          ref={enterButtonref}
+          autoFocus
+          className="btn btn-primary PortalModal__btn-enter"
+          onMouseOver={triggerAttendance}
+          onMouseOut={clearAttendance}
+          onClick={enter}
+        >
+          Enter
+        </button>
+      </div>
 
-      {showRoomEvents && (
-        <div className="PortalModal__events">{renderedRoomEvents}</div>
-      )}
+      {showPortalEvents && <PortalSchedule portalEvents={venueEvents} />}
     </>
   );
 };
