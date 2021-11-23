@@ -14,6 +14,9 @@ import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SpacesDropdown.scss";
 
+const noneOptionName = "None";
+const spaceNoneOption = { none: { name: "", template: undefined } };
+
 export type SpacesDropdownPortal = { template?: PortalTemplate; name: string };
 export interface DropdownRoom extends Room {
   name: string;
@@ -41,6 +44,11 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
   const filteredPortals = omit(portals, VenueTemplate.playa);
 
+  const portalOptions = useMemo(
+    () => ({ ...filteredPortals, ...spaceNoneOption }),
+    [filteredPortals]
+  );
+
   useEffect(() => {
     if (parentSpace) {
       setSelected(parentSpace);
@@ -49,7 +57,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedOptions = useMemo(
     () =>
-      Object.values(filteredPortals).map(({ name, template }) => {
+      Object.values(portalOptions).map(({ name, template }) => {
         const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
 
         return (
@@ -61,16 +69,18 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             }}
             className="SpacesDropdown__item"
           >
-            <img
-              alt={`space-icon-${spaceIcon}`}
-              src={spaceIcon}
-              className="SpacesDropdown__item-icon"
-            />
-            {name}
+            {name !== spaceNoneOption.none.name ? (
+              <img
+                alt={`space-icon-${spaceIcon}`}
+                src={spaceIcon}
+                className="SpacesDropdown__item-icon"
+              />
+            ) : null}
+            {name || noneOptionName}
           </ReactBootstrapDropdown.Item>
         );
       }) ?? [],
-    [filteredPortals, setValue, fieldName]
+    [portalOptions, setValue, fieldName]
   );
 
   const renderedTitle = useMemo(() => {
@@ -84,12 +94,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
     return (
       <span className="SpacesDropdown__value">
-        <img
-          alt={`space-icon-${spaceIcon}`}
-          src={spaceIcon}
-          className="SpacesDropdown__item-icon"
-        />
-        {selected.name}
+        {selected.name !== spaceNoneOption.none.name ? (
+          <img
+            alt={`space-icon-${spaceIcon}`}
+            src={spaceIcon}
+            className="SpacesDropdown__item-icon"
+          />
+        ) : null}
+        {selected.name || noneOptionName}
       </span>
     );
   }, [portals, selected, parentSpace]);

@@ -315,7 +315,6 @@ const createVenueData_v2 = (data, context) => {
     parentId: data.parentId || "",
     worldId: data.worldId,
     slug: data.slug,
-    ...(data.parentId && { parentId: data.parentId }),
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -828,7 +827,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venuesRef = await admin
     .firestore()
     .collection("venues")
-    .where("slug", "==", data.slug)
+    // .where("slug", "==", data.slug)
     .where("worldId", "==", data.worldId)
     .get();
 
@@ -921,7 +920,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.iframeUrl = data.iframeUrl;
   }
 
-  if (data.parentId) {
+  if (typeof data.parentId === "string") {
     updated.parentId = data.parentId;
   }
 

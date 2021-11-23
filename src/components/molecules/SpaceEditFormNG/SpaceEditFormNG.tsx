@@ -243,7 +243,10 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   );
 
   const parentSpace = useMemo(
-    () => ownedVenues.find(({ id }) => id === portal?.parentId),
+    () =>
+      portal?.parentId
+        ? ownedVenues.find(({ id }) => id === portal?.parentId)
+        : { name: "" },
     [portal?.parentId, ownedVenues]
   );
 
