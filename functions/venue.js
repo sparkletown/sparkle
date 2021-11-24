@@ -762,7 +762,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueRef = venuesRef.docs && venuesRef.docs[0];
 
   if (venueRef) {
-    await venueRef.update(updated);
+    await venueRef.ref.update(updated);
   }
 });
 
@@ -862,7 +862,7 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
   const venueRef = venuesRef.docs && venuesRef.docs[0];
 
   if (venueRef) {
-    await venueRef.update({
+    await venueRef.ref.update({
       mapBackgroundImageUrl: data.mapBackgroundImageUrl,
     });
   }
