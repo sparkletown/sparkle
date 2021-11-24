@@ -1,6 +1,8 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
+import { DEFAULT_PORTAL_BOX } from "settings";
+
 import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
 import { ReplicatedArtcar } from "../../../../../../store/reducers/AnimateMap";
 import { Point } from "../../../../../../types/utility";
@@ -105,14 +107,11 @@ export const createArtcarEntity = (
         const currentVenueArtcar = getCurrentArtcar(artcarComponent);
         GameInstance.instance.getStore().dispatch(
           setAnimateMapRoom({
+            ...DEFAULT_PORTAL_BOX,
             title: currentVenueArtcar.data.title,
             subtitle: "",
             url: currentVenueArtcar.data.url,
             about: currentVenueArtcar.data.about,
-            x_percent: 50,
-            y_percent: 50,
-            width_percent: 5,
-            height_percent: 5,
             isEnabled: currentVenueArtcar.data.isEnabled,
             image_url: currentVenueArtcar.data.image_url,
           })

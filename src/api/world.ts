@@ -1,7 +1,8 @@
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { isEmpty, omit, pick } from "lodash";
 
-import { ACCEPTED_IMAGE_TYPES } from "settings";
+import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
 
 import { createSlug } from "api/admin";
 
@@ -219,4 +220,39 @@ export const updateWorldAdvancedSettings = async (
   return await firebase.functions().httpsCallable("world-updateWorld")(
     await createFirestoreWorldAdvancedInput(world, user)
   );
+};
+
+export type FindWorldBySlugOptions = {
+  worldSlug: string;
+};
+
+export const findWorldBySlug = async ({
+  worldSlug,
+}: FindWorldBySlugOptions) => {
+  if (!worldSlug) {
+    throw new Error("The worldSlug should be provided");
+  }
+
+  const worldsRef = await firebase
+    .firestore()
+    .collection(COLLECTION_WORLDS)
+    .where(FIELD_SLUG, "==", worldSlug)
+    .get();
+
+  const worlds = worldsRef.docs;
+
+  if (worlds.length > 1) {
+    Bugsnag.notify(
+      `Multiple worlds have been found with the following slug: ${worldSlug}.`,
+      (event) => {
+        event.severity = "warning";
+        event.addMetadata("api/world::findWorldBySlug", {
+          worldSlug,
+          worlds,
+        });
+      }
+    );
+  }
+
+  return worlds?.[0];
 };

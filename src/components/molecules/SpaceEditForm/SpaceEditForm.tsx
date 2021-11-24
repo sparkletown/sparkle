@@ -18,10 +18,10 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
+import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
-import { Room } from "types/rooms";
+import { Room, RoomInput } from "types/rooms";
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
