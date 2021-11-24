@@ -7,7 +7,7 @@ import { COLLECTION_SPACES, FIELD_SLUG, FIELD_WORLD_ID } from "settings";
 
 import { findWorldBySlug } from "api/world";
 
-export type FindSpaceBySlugAsIdOptions = {
+export type FindSpaceBySlugOptions = {
   spaceSlug: string;
   worldId?: string;
   worldSlug?: string;
@@ -17,7 +17,7 @@ export const findSpaceBySlug = async ({
   spaceSlug,
   worldId,
   worldSlug,
-}: FindSpaceBySlugAsIdOptions) => {
+}: FindSpaceBySlugOptions) => {
   if (!spaceSlug) {
     throw new Error("The spaceSlug should be provided");
   }
@@ -29,11 +29,15 @@ export const findSpaceBySlug = async ({
 
   if (worldId) {
     query = query.where(FIELD_WORLD_ID, "==", worldId);
-  } else if (worldSlug) {
-    // NOTE: if spaces have worldSlug along side worldId, this would be simpler
+  }
+
+  if (!worldId && worldSlug) {
+    // NOTE: if spaces have worldSlug alongside worldId, this would be simpler
     const world = await findWorldBySlug({ worldSlug });
     query = query.where(FIELD_WORLD_ID, "==", world?.id);
-  } else {
+  }
+
+  if (!worldId && !worldSlug) {
     throw new Error("At least one of worldId or worldSlug should be provided");
   }
 
