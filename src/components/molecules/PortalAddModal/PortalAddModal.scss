@@ -1,0 +1,29 @@
+@import "scss/constants";
+
+.PortalAddModal {
+  &__title,
+  &__description {
+    margin-top: $spacing--xl;
+    margin-bottom: $spacing--xl;
+    text-align: center;
+  }
+
+  &__poster {
+    width: 100%;
+    height: 100%;
+    border: $border-width--bold solid var(--content--over-20a);
+    border-radius: $border-radius--md;
+  }
+
+  &__buttons {
+    margin-top: $spacing--lg;
+    display: flex;
+    justify-content: center;
+  }
+
+  &__form {
+    .InputField {
+      margin: font-size--parent(3) 0;
+    }
+  }
+}

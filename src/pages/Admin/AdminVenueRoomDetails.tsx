@@ -8,9 +8,9 @@ import {
   ROOM_TAXON,
 } from "settings";
 
-import { RoomInput, upsertRoom } from "api/admin";
+import { upsertRoom } from "api/admin";
 
-import { Room } from "types/rooms";
+import { Room, RoomInput } from "types/rooms";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";

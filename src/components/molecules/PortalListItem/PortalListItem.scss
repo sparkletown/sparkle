@@ -4,7 +4,7 @@ $icon-padding: $spacing--xs;
 $icon-base-size: 34px;
 $icon-size: $icon-padding + $icon-base-size;
 
-.PortalItem {
+.PortalListItem {
   margin: 0;
   padding: 0;
 
@@ -27,20 +27,6 @@ $icon-size: $icon-padding + $icon-base-size;
     }
   }
 
-  &__title,
-  &__description {
-    margin-top: $spacing--xl;
-    margin-bottom: $spacing--xl;
-    text-align: center;
-  }
-
-  &__poster {
-    width: 100%;
-    height: 100%;
-    border: 2px solid var(--content--over-20a);
-    border-radius: $border-radius--md;
-  }
-
   &__icon {
     @include square-size($icon-size);
     padding: $icon-padding;
@@ -49,17 +35,5 @@ $icon-size: $icon-padding + $icon-base-size;
     background-position: center;
     border-radius: $border-radius--xs;
     box-shadow: 0 0 0 2px $accent--under;
-  }
-
-  &__modal-buttons {
-    margin-top: $spacing--lg;
-    display: flex;
-    justify-content: center;
-  }
-
-  &__form {
-    .InputField {
-      margin: font-size--parent(3) 0;
-    }
   }
 }
