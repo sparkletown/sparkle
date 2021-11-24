@@ -8,7 +8,7 @@ import classNames from "classnames";
 
 import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
@@ -32,7 +32,7 @@ export enum AdminVenueTab {
 }
 
 export interface AdminVenueViewRouteParams {
-  venueId?: string;
+  spaceSlug?: string;
   selectedTab?: AdminVenueTab;
 }
 
@@ -51,23 +51,19 @@ const tabIcons = {
 export const AdminVenueView: React.FC = () => {
   const history = useHistory();
   const {
-    venueId,
+    spaceSlug,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
 
-  // Get and pass venue to child components when working on tabs
-  const {
-    isCurrentVenueLoaded,
-    currentVenue: venue,
-  } = useConnectCurrentVenueNG(venueId);
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
-  const { world } = useWorldById(venue?.worldId);
+  const { world } = useWorldById(space?.worldId);
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
       <Link
         key={key}
-        to={adminNGVenueUrl(venueId, key)}
+        to={adminNGVenueUrl(spaceSlug, key)}
         className={classNames({
           AdminVenueView__tab: true,
           "AdminVenueView__tab--selected": selectedTab === key,
@@ -80,7 +76,7 @@ export const AdminVenueView: React.FC = () => {
         {label}
       </Link>
     ));
-  }, [selectedTab, venueId]);
+  }, [selectedTab, spaceSlug]);
 
   const navigateToHome = useCallback(
     () => history.push(adminWorldSpacesUrl(world?.slug)),
@@ -88,25 +84,25 @@ export const AdminVenueView: React.FC = () => {
   );
 
   const navigateToSpaces = useCallback(
-    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.spaces)),
-    [history, venueId]
+    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.spaces)),
+    [history, spaceSlug]
   );
 
   const navigateToTiming = useCallback(
-    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.timing)),
-    [history, venueId]
+    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.timing)),
+    [history, spaceSlug]
   );
 
   const navigateToRun = useCallback(
-    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.run)),
-    [history, venueId]
+    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.run)),
+    [history, spaceSlug]
   );
 
-  if (!isCurrentVenueLoaded) {
+  if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
 
-  if (!venue) {
+  if (!space) {
     return (
       <WithNavigationBar withSchedule withHiddenLoginButton>
         <AdminRestricted>
@@ -127,7 +123,7 @@ export const AdminVenueView: React.FC = () => {
             onClickHome={navigateToHome}
             onClickBack={navigateToHome}
             onClickNext={navigateToTiming}
-            venue={venue}
+            venue={space}
           />
         )}
         {selectedTab === AdminVenueTab.timing && (
@@ -135,7 +131,7 @@ export const AdminVenueView: React.FC = () => {
             onClickHome={navigateToHome}
             onClickBack={navigateToSpaces}
             onClickNext={navigateToRun}
-            venue={venue}
+            venue={space}
           />
         )}
         {selectedTab === AdminVenueTab.run && (
@@ -143,7 +139,7 @@ export const AdminVenueView: React.FC = () => {
             onClickHome={navigateToHome}
             onClickBack={navigateToTiming}
             onClickNext={navigateToHome}
-            venue={venue}
+            venue={space}
           />
         )}
       </AdminRestricted>

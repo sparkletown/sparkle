@@ -5,8 +5,8 @@ import { useAsyncFn } from "react-use";
 
 import { venueLandingUrl } from "utils/url";
 
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -19,12 +19,12 @@ export const Forbidden: React.FC = ({ children }) => {
   const { user } = useUser();
   const firebase = useFirebase();
   const history = useHistory();
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
 
   const [{ loading }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
-    history.push(venueId ? venueLandingUrl(venueId) : "/");
-  }, [firebase, history, venueId]);
+    history.push(spaceSlug ? venueLandingUrl(spaceSlug) : "/");
+  }, [firebase, history, spaceSlug]);
 
   return (
     <div className="Forbidden">

@@ -5,10 +5,10 @@ import { useAsyncFn, useSearchParam } from "react-use";
 
 import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -16,6 +16,7 @@ import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
@@ -40,14 +41,11 @@ export const CodeOfConduct: React.FC = () => {
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
-
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
+  const spaceSlug = useSpaceParams();
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: currentVenue?.worldId,
+    worldId: space?.worldId,
   });
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
@@ -58,10 +56,10 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = venueId ? venueInsideUrl(venueId) : returnUrl ?? "";
+    const nextUrl = spaceSlug ? venueInsideUrl(spaceSlug) : returnUrl ?? "";
 
     history.push(nextUrl);
-  }, [history, returnUrl, venueId]);
+  }, [history, returnUrl, spaceSlug]);
 
   useEffect(() => {
     if (!isWorldLoaded) return;
@@ -83,22 +81,22 @@ export const CodeOfConduct: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!currentVenue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(currentVenue);
-  }, [currentVenue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (!venueId) {
-    return <>Error: Missing required venueId param</>;
+  // @debt Maybe add something more pretty for UX here, in the vein of NotFound (with custom message)
+  if (!spaceSlug) {
+    return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isCurrentVenueLoaded && !currentVenue) {
-    // @debt maybe something more pretty for UX here, in the vein of NotFound (with custom message)
-    return <>Error: venue not found for venueId={venueId}</>;
+  if (isSpaceLoaded && !space) {
+    return <NotFound />;
   }
 
-  if (!currentVenue || !isWorldLoaded) {
+  if (!space || !isWorldLoaded) {
     return <LoadingPage />;
   }
 

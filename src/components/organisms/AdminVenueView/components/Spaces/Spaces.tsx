@@ -23,7 +23,7 @@ import { AdminSidebarTitle } from "components/organisms/AdminVenueView/component
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import { PortalItem } from "components/molecules/PortalItem";
+import { PortalList } from "components/molecules/PortalList";
 
 import { AdminShowcase } from "../AdminShowcase";
 
@@ -48,7 +48,6 @@ export const Spaces: React.FC<SpacesProps> = ({
     error: errorFetchBackgrounds,
   } = useFetchAssets("mapBackgrounds");
 
-  const worldId = venue.worldId;
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue?.rooms?.length ?? 0;
 
@@ -103,19 +102,6 @@ export const Spaces: React.FC<SpacesProps> = ({
     [venue?.rooms]
   );
 
-  const renderAddRooms = useMemo(
-    () =>
-      SPACE_PORTALS_LIST.map((item, index) => (
-        <PortalItem
-          key={`${index}-${item.template}`}
-          item={item}
-          worldId={worldId}
-          tabIndex={index + 1}
-        />
-      )),
-    [worldId]
-  );
-
   const selectedRoomIndex =
     venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
@@ -156,6 +142,7 @@ export const Spaces: React.FC<SpacesProps> = ({
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
                 venueName={venue.name}
+                spaceSlug={venue.slug}
                 worldId={venue.worldId}
               />
               {errorFetchBackgrounds && (
@@ -174,7 +161,7 @@ export const Spaces: React.FC<SpacesProps> = ({
               {renderVenueRooms}
             </AdminSpacesListItem>
             <AdminSpacesListItem title={`Add ${ROOMS_TAXON.lower}`}>
-              {renderAddRooms}
+              <PortalList items={SPACE_PORTALS_LIST} variant="modal" />
             </AdminSpacesListItem>
           </>
         )}

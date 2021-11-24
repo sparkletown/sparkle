@@ -180,6 +180,9 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+/**
+ * @deprecated Use createVenueData_v2 instead.
+ */
 // @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
 const createVenueData = (data, context) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
@@ -311,6 +314,7 @@ const createVenueData_v2 = (data, context) => {
     updatedAt: Date.now(),
     parentId: data.parentId || "",
     worldId: data.worldId,
+    slug: data.slug,
     ...(data.parentId && { parentId: data.parentId }),
   };
 
@@ -513,6 +517,9 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   if (snap.empty) removeAdmin(ownerId);
 });
 
+/**
+ * @deprecated This is legacy function used in the legacy version of the admin. Use createVenue_v2 instead.
+ */
 // @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -537,14 +544,19 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
 
   const batch = admin.firestore().batch();
 
-  const venueId = getVenueId(data.name);
-  const venueRef = admin.firestore().collection("venues").doc(venueId);
-  const venueDoc = await venueRef.get();
+  const venueRef = admin.firestore().collection("venues").doc();
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+  const venueExists = venuesRef.docs.length;
 
-  if (venueDoc.exists) {
+  if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The venue ${data.name} already exists. Please try with another name.`
+      `The slug ${data.slug} is already taken by another space within the world. Please try another.`
     );
   }
 
@@ -739,7 +751,19 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is exactly the same as in updateVenue_v2
-  await admin.firestore().collection("venues").doc(venueId).update(updated);
+
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+  if (venueRef) {
+    await venueRef.ref.update(updated);
+  }
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
@@ -801,7 +825,18 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is exactly the same as in updateVenue
-  admin.firestore().collection("venues").doc(venueId).update(updated);
+  const venuesRef = await admin
+    .firestore()
+    .collection("venues")
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+  if (venueRef) {
+    await venueRef.ref.update(updated);
+  }
 });
 
 exports.updateMapBackground = functions.https.onCall(async (data, context) => {
@@ -817,11 +852,20 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
     );
   }
 
-  admin
+  const venuesRef = await admin
     .firestore()
     .collection("venues")
-    .doc(venueId)
-    .update({ mapBackgroundImageUrl: data.mapBackgroundImageUrl });
+    .where("slug", "==", data.slug)
+    .where("worldId", "==", data.worldId)
+    .get();
+
+  const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+  if (venueRef) {
+    await venueRef.ref.update({
+      mapBackgroundImageUrl: data.mapBackgroundImageUrl,
+    });
+  }
 });
 
 exports.updateVenueNG = functions.https.onCall(async (data, context) => {

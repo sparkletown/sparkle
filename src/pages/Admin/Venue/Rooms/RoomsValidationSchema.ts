@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 import { PLAYA_ICON_SIDE_PERCENTAGE } from "settings";
 
-import { RoomInput } from "api/admin";
+import { RoomInput } from "types/rooms";
 
 import { roomUrlSchema } from "forms/roomUrlSchema";
 

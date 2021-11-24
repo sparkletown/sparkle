@@ -25,7 +25,7 @@ import {
   ADMIN_V1_EDIT_BASE_URL,
   ADMIN_V1_ROOMS_BASE_URL,
   ADMIN_V1_ROOT_URL,
-  DEFAULT_VENUE,
+  DEFAULT_SPACE_SLUG,
   ROOM_TAXON,
   ROOMS_TAXON,
 } from "settings";
@@ -44,12 +44,13 @@ import {
   VenueSortingOptions,
 } from "utils/venue";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -334,7 +335,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
         {venue.name && (
           <>
             <Link
-              to={venueInsideUrl(venue.id)}
+              to={venueInsideUrl(venue.slug)}
               target="_blank"
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
@@ -427,7 +428,9 @@ export const Admin: React.FC = () => {
     storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
   });
 
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(spaceSlug);
+
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
@@ -439,7 +442,7 @@ export const Admin: React.FC = () => {
     return (
       <WithNavigationBar>
         <AdminRestricted>
-          <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
+          <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />
         </AdminRestricted>
       </WithNavigationBar>
     );
@@ -451,11 +454,11 @@ export const Admin: React.FC = () => {
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">
             <div className="page-container-adminsidebar">
-              <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
+              <VenueList selectedVenueId={spaceId} roomIndex={queryRoomIndex} />
             </div>
             <div className="page-container-adminpanel">
-              {venueId ? (
-                <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+              {spaceId ? (
+                <VenueDetails venueId={spaceId} roomIndex={queryRoomIndex} />
               ) : (
                 <>Select a venue to see its details</>
               )}

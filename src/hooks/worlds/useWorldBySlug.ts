@@ -7,8 +7,10 @@ import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
 type UseWorldBySlugResult = {
-  world?: WithId<World>;
   isLoaded: boolean;
+  world?: WithId<World>;
+  worldId: string | undefined;
+  worldSlug: string | undefined;
 };
 
 /**
@@ -34,8 +36,6 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
     }
   );
 
-  const isWorldLoaded = status !== "loading";
-
   if (worlds?.length > 1) {
     Bugsnag.notify(
       `Multiple worlds have been found with the following slug: ${worldSlug}.`,
@@ -49,8 +49,13 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
     );
   }
 
+  const world = worlds?.[0];
+  const isLoaded = status !== "loading";
+
   return {
-    world: worlds?.[0],
-    isLoaded: isWorldLoaded,
+    isLoaded,
+    world,
+    worldId: world?.id,
+    worldSlug: world?.slug,
   };
 };

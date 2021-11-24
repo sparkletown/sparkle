@@ -4,10 +4,9 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { venueSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
+import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
@@ -39,7 +38,9 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const venue = useSelector(venueSelector);
+  const spaceSlug = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
+
   const {
     register,
     handleSubmit,
@@ -52,7 +53,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     reValidateMode: "onChange",
   });
 
-  if (!venue) return null;
+  if (!space) return null;
 
   const clearBackendErrors = () => {
     clearError("backend");
@@ -69,7 +70,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    if (!venue) return;
+    if (!space) return;
     try {
       await signIn(data);
 
@@ -79,7 +80,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -177,7 +178,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           )}
         </div>
 
-        {venue.access === VenueAccessMode.Codes && (
+        {space.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
@@ -191,7 +192,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         </ButtonNG>
       </form>
 
-      {venue.hasSocialLoginEnabled && (
+      {space.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

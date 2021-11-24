@@ -2,9 +2,14 @@
 
 .VideoParticipant {
   position: relative;
+  height: 100%;
+  max-width: $video-participant-optimal-width;
+  min-width: $video-participant-optimal-width;
+  max-height: $video-participant-optimal-height;
+  width: 100%;
 
   &--mirrored {
-    .video-participant__video {
+    .VideoParticipant__video {
       transform: scale(-1, 1);
     }
   }
@@ -12,27 +17,21 @@
   &__video {
     height: 100%;
     width: 100%;
-
+    background-color: $lighter-intermediate-grey;
     pointer-events: none;
+    border-radius: $border-radius--xl;
+  }
 
-    &-element {
-      height: inherit;
-      width: inherit;
+  &__video-element {
+    border-radius: $border-radius--xl;
+    width: 100%;
+    max-width: $video-participant-optimal-width;
+    max-height: $video-participant-optimal-height;
+    height: auto;
+    object-fit: cover;
 
-      border-radius: $border-radius--xl;
-      &--disabled {
-        opacity: 0;
-      }
-    }
-
-    &--placeholder {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: $lighter-intermediate-grey;
-      border-radius: $border-radius--xl;
+    &--disabled {
+      opacity: 0;
     }
   }
 
@@ -59,6 +58,10 @@
     align-items: flex-start;
 
     padding: $spacing--sm;
+
+    .VideoParticipant__controls-mute {
+      width: $spacing--xl;
+    }
 
     & > * {
       margin: 0 $spacing--xs;

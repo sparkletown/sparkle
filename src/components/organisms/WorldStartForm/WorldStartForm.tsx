@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
 import { omit } from "lodash";
 
-import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
+import { ADMIN_V3_WORLDS_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { createWorld, updateWorldStartSettings, World } from "api/world";
 
@@ -162,6 +162,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             placeholder="World or Event Name"
             register={register}
             errors={errors}
+            max={COMMON_NAME_MAX_CHAR_COUNT}
           />
         </AdminSection>
         <AdminSection title="Add a subtitle">
