@@ -991,11 +991,13 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  // @debt perhaps await is more appropriate in front of admin so the function will return the error
   admin
     .firestore()
     .collection("venues")
     .doc(data.id)
-    .set(updated, { merge: true });
+    .set(updated, { merge: true })
+    .catch((e) => console.error(exports.updateVenueNG.name, e));
 });
 
 exports.updateTables = functions.https.onCall((data, context) => {
