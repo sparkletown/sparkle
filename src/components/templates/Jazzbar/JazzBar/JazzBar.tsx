@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 
 import {
@@ -13,7 +13,6 @@ import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
@@ -52,20 +51,12 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
-  const parentVenueId = parentVenue?.id;
   const embedIframeUrl = convertToEmbeddableUrl({
     url: venue.iframeUrl,
     autoPlay: venue.autoPlay,
   });
   const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
-
-  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    openUrl(venueInsideUrl(parentVenueId));
-  }, [parentVenueId]);
 
   useExperiences(venue.name);
 
@@ -136,10 +127,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         containerClassNames={`music-bar ${containerClasses}`}
       >
         {!seatedAtTable && parentVenue && (
-          <BackButton
-            onClick={backToParentVenue}
-            locationName={parentVenue.name}
-          />
+          <BackButton variant="simple" space={parentVenue} />
         )}
 
         {!seatedAtTable && (
