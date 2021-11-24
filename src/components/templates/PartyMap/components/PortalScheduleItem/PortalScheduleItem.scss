@@ -1,8 +1,9 @@
 @import "scss/constants.scss";
 
-.ScheduleItem {
+.PortalScheduleItem {
   display: flex;
   padding: 10px $spacing--lg;
+  position: relative;
 
   &:hover {
     background-color: $primary--darker;
@@ -73,5 +74,10 @@
   &__event-host {
     font-weight: $font-weight--400;
     font-size: $font-size--md;
+  }
+
+  &__bookmark {
+    position: absolute;
+    right: $spacing--xxl;
   }
 }

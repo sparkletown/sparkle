@@ -1,5 +1,7 @@
 import React from "react";
 import ShowMoreText from "react-show-more-text";
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { VenueEvent } from "types/venues";
 
@@ -14,61 +16,69 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./PortalScheduleItem.scss";
 
-interface PropsType {
+interface PortalScheduleItemProps {
   event: VenueEvent;
   expandableDescription?: boolean;
   defaultDescriptionLineNumber?: number;
+  isSaved?: boolean;
 }
 
-export const ScheduleItem: React.FunctionComponent<PropsType> = ({
+export const PortalScheduleItem: React.FunctionComponent<PortalScheduleItemProps> = ({
   event,
   expandableDescription = false,
   defaultDescriptionLineNumber = 3,
+  isSaved = false,
 }) => {
   const isCurrentEventLive = isEventLive(event);
   return (
-    <div className="ScheduleItem">
-      <div className="ScheduleItem__event-dates">
-        <span className="ScheduleItem__event-date">
+    <div className="PortalScheduleItem">
+      <div className="PortalScheduleItem__event-dates">
+        <span className="PortalScheduleItem__event-date">
           {formatDateRelativeToNow(eventStartTime(event), {
             formatToday: () => "",
             formatTomorrow: formatDate,
           })}
         </span>
 
-        <span className="ScheduleItem__event-time">
+        <span className="PortalScheduleItem__event-time">
           {formatTimeLocalised(eventStartTime(event))}
         </span>
 
-        <span className="ScheduleItem__event-end-time">
+        <span className="PortalScheduleItem__event-end-time">
           {formatTimeLocalised(eventEndTime(event))}
         </span>
 
         {isCurrentEventLive && (
-          <div className="ScheduleItem__event-live-label">Live</div>
+          <div className="PortalScheduleItem__event-live-label">Live</div>
         )}
       </div>
 
-      <div className="ScheduleItem__event-info">
-        <div className="ScheduleItem__event-name">{event.name}</div>
+      <div className="PortalScheduleItem__event-info">
+        <div className="PortalScheduleItem__event-name">{event.name}</div>
         <div>
-          <span className="ScheduleItem__event-host-prefix">by </span>
-          <span className="ScheduleItem__event-host">{event.host}</span>
+          <span className="PortalScheduleItem__event-host-prefix">by </span>
+          <span className="PortalScheduleItem__event-host">{event.host}</span>
         </div>
         {expandableDescription ? (
           <ShowMoreText
             lines={defaultDescriptionLineNumber}
             more="Show more"
             less="Show less"
-            className="ScheduleItem__event-description"
+            className="PortalScheduleItem__event-description"
             expanded={false}
             truncatedEndingComponent={"... "}
           >
             {event.description}
           </ShowMoreText>
         ) : (
-          <div className="ScheduleItem__event-description">
+          <div className="PortalScheduleItem__event-description">
             <RenderMarkdown text={event.description} />
+          </div>
+        )}
+
+        {isSaved && (
+          <div className="PortalScheduleItem__bookmark" title="bookmarked">
+            <FontAwesomeIcon icon={faBookmark} />
           </div>
         )}
       </div>
