@@ -1,5 +1,5 @@
 import { testGeneratesValidSlug, testVenueByNameExists } from "forms/common";
-import { createNameSchema } from "forms/createNameSchema";
+import { createNameSchema } from "forms/factory/createNameSchema";
 
 export const venueNameSchema = createNameSchema({ name: "Venue name" })
   .test("name", "Must have alphanumeric characters", testGeneratesValidSlug)

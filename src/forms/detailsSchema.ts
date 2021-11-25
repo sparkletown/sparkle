@@ -10,7 +10,7 @@ import {
   testGeneratesValidSlug,
   testVenueByNameExists,
 } from "forms/common";
-import { createNameSchema } from "forms/createNameSchema";
+import { createNameSchema } from "forms/factory/createNameSchema";
 
 export interface VenueV2SchemaShape {
   name: string;
