@@ -89,7 +89,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   // when Admin is displayed, owned venues are used
   const currentVenue = relatedVenue ?? ownedVenue;
-  const parentVenueId = parentVenue?.id ?? ownedVenue?.parentId;
 
   const {
     location: { pathname },
@@ -161,12 +160,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
     setEventScheduleVisible(false);
   }, []);
-
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
     if (!sovereignVenueId) return;
@@ -303,10 +296,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
+        <BackButton variant="relative" space={parentVenue} />
       )}
     </>
   );
