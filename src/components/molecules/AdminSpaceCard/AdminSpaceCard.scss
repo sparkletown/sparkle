@@ -24,7 +24,7 @@ $admin-space-card-logo-size: 64px;
 
   &__bg {
     width: 100%;
-    height: 160px;
+    height: 140px;
     background-size: cover;
 
     &-container {
@@ -57,7 +57,6 @@ $admin-space-card-logo-size: 64px;
 
   &__user-count {
     margin-left: auto;
-    margin-top: 18px;
   }
 
   // &:hover &__bg:after {
@@ -71,10 +70,19 @@ $admin-space-card-logo-size: 64px;
   &__body {
     display: flex;
     flex-direction: row;
+    min-height: 80px;
 
     &-info {
       display: flex;
       flex-direction: column;
+
+      flex: 1;
+      min-width: 0; /* or some value */
+      h2 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
   }
 
@@ -94,7 +102,8 @@ $admin-space-card-logo-size: 64px;
   }
 
   &__description {
-    height: 100px;
+    min-height: 100px;
+    margin-bottom: 20px;
     font-size: 14px;
   }
 
@@ -106,9 +115,16 @@ $admin-space-card-logo-size: 64px;
     background-size: cover;
     background-color: $content--under;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
   }
 
   .ButtonNG {
     margin: $admin-space-card-button-margin;
+  }
+}
+
+@media (max-width: $media-breakpoint--xxl) and (min-width: $media-breakpoint--lg) {
+  .AdminSpaceCard__logo {
+    @include square-size(48px);
   }
 }

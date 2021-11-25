@@ -26,10 +26,9 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
   console.log(venue);
   const backgroundStyle = useCss({
     background: `linear-gradient(
-        rgba(25, 24, 26, 0.6),
-        rgba(25, 24, 26, 0.6)
+        rgba(25, 24, 26, 0.8),
+        rgba(25, 24, 26, 0.8)
       ), url('https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg')`,
-    // "background": `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg')`,
   });
   const backgroundClasses = classNames("AdminSpaceCard__bg", backgroundStyle);
 
@@ -68,10 +67,15 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
               ) : null}
             </div>
           </div>
-          <div className="AdminSpaceCard__user-count">
-            <FontAwesomeIcon className="AdminSpaceCard__icon" icon={faUsers} />
-            {"123"}
-          </div>
+          {!venue.recentUserCount && (
+            <div className="AdminSpaceCard__user-count">
+              <FontAwesomeIcon
+                className="AdminSpaceCard__icon"
+                icon={faUsers}
+              />
+              {venue.recentUserCount}
+            </div>
+          )}
         </div>
       </div>
       <div className="AdminSpaceCard__footer">
