@@ -18,10 +18,10 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
+import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
-import { Room } from "types/rooms";
+import { Room, RoomInput } from "types/rooms";
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
@@ -91,17 +91,18 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const spaceSlug = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
-  const roomVenueId = room?.url?.split("/").pop();
+  const spaceSlugFromPortal = room?.url?.split("/").pop();
+  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(spaceSlugFromPortal);
 
   const {
     loading: isLoadingRoomVenue,
     error: fetchError,
     value: roomVenue,
   } = useAsync(async () => {
-    if (!roomVenueId) return;
+    if (!spaceIdFromPortal) return;
 
-    return await fetchVenue(roomVenueId);
-  }, [roomVenueId]);
+    return await fetchVenue(spaceIdFromPortal);
+  }, [spaceIdFromPortal]);
 
   const defaultValues = useMemo(
     () => ({
@@ -190,7 +191,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   );
 
   const updateVenueRoom = useCallback(async () => {
-    if (!user || !roomVenueId) return;
+    if (!user || !spaceIdFromPortal) return;
 
     const embedUrl = convertToEmbeddableUrl({
       url: venueValues.iframeUrl,
@@ -199,14 +200,20 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
     await updateVenueNG(
       {
-        id: roomVenueId,
+        id: spaceIdFromPortal,
         worldId: roomVenue?.worldId,
         ...venueValues,
         iframeUrl: embedUrl || DEFAULT_EMBED_URL,
       },
       user
     );
-  }, [roomVenueId, user, venueValues, roomVenue?.autoPlay, roomVenue?.worldId]);
+  }, [
+    spaceIdFromPortal,
+    user,
+    venueValues,
+    roomVenue?.autoPlay,
+    roomVenue?.worldId,
+  ]);
 
   const [
     { loading: isUpdating, error: updateError },
@@ -265,11 +272,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         ownedVenues
           .filter(
             ({ id, worldId }) =>
-              !(roomVenue?.worldId !== worldId || id === roomVenueId)
+              !(roomVenue?.worldId !== worldId || id === spaceIdFromPortal)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [ownedVenues, roomVenue?.worldId, roomVenueId]
+    [ownedVenues, roomVenue?.worldId, spaceIdFromPortal]
   );
 
   const parentSpace = useMemo(

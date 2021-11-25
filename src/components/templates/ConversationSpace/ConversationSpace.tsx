@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
-import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
@@ -62,13 +61,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   useExperiences(venue?.name);
 
-  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    openUrl(venueInsideUrl(parentVenueId));
-  }, [parentVenueId]);
-
   const tables = venue?.config?.tables ?? TABLES;
 
   return (
@@ -88,10 +80,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
       </InformationLeftColumn>
       <VenueWithOverlay venue={venue} containerClassNames="conversation-space">
         {!seatedAtTable && parentVenueId && parentVenue && (
-          <BackButton
-            onClick={backToParentVenue}
-            locationName={parentVenue.name}
-          />
+          <BackButton variant="simple" space={parentVenue} />
         )}
         <div className={`scrollable-area ${seatedAtTable && "at-table"}`}>
           {venue.description?.text && (

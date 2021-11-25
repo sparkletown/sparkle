@@ -1,3 +1,4 @@
+import { PortalBox, PortalInput } from "types/rooms";
 import { PortalTemplate, VenueTemplate } from "types/venues";
 
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
@@ -127,3 +128,19 @@ export const SPACE_PORTALS_ICONS_MAPPING: Record<
     SPACE_PORTALS_LIST.map(({ template, icon }) => [template, icon])
   )
 );
+
+export const DEFAULT_PORTAL_BOX: PortalBox = {
+  width_percent: 5,
+  height_percent: 5,
+  x_percent: 50,
+  y_percent: 50,
+};
+
+export const DEFAULT_PORTAL_INPUT: PortalInput = {
+  ...DEFAULT_PORTAL_BOX,
+  title: "",
+  about: "",
+  isEnabled: true,
+  image_url: "",
+  url: "",
+};
