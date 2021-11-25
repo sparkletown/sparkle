@@ -12,8 +12,6 @@ import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
 import update from "immutability-helper";
 
-import { ROOM_TAXON } from "settings";
-
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
@@ -286,16 +284,8 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
               backgroundImage: `url(${room.image_url})`,
             }}
             key={`${room.title}-${index}`}
-            onClick={() => !selectedRoom && setSelectedRoom(room)}
+            onClick={() => setSelectedRoom(room)}
           >
-            <img
-              className={classNames("Container__room-image", {
-                "Container__room-image--disabled": !room.isEnabled,
-              })}
-              src={room.image_url}
-              alt={`${ROOM_TAXON.lower} logo`}
-              title={room.title}
-            />
             <div className="Container__room-title">{room.title}</div>
           </div>
         )

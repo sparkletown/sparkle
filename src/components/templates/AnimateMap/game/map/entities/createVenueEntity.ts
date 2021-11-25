@@ -1,6 +1,8 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
+import { DEFAULT_PORTAL_BOX } from "settings";
+
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
@@ -220,14 +222,11 @@ export const createVenueEntity = (
         const currentVenue = getCurrentReplicatedVenue(venueComponent);
         GameInstance.instance.getStore().dispatch(
           setAnimateMapRoom({
+            ...DEFAULT_PORTAL_BOX,
             title: currentVenue.data.title,
             subtitle: currentVenue.data.subtitle,
             url: currentVenue.data.url,
             about: currentVenue.data.about,
-            x_percent: 50,
-            y_percent: 50,
-            width_percent: 5,
-            height_percent: 5,
             isEnabled: currentVenue.data.isEnabled,
             image_url: currentVenue.data.image_url,
           })
