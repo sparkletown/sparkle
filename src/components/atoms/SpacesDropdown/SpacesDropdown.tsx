@@ -45,7 +45,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   const filteredPortals = omit(portals, VenueTemplate.playa);
 
   const portalOptions = useMemo(
-    () => ({ ...filteredPortals, ...spaceNoneOption }),
+    () => ({ ...spaceNoneOption, ...filteredPortals }),
     [filteredPortals]
   );
 

@@ -827,7 +827,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venuesRef = await admin
     .firestore()
     .collection("venues")
-    // .where("slug", "==", data.slug)
+    .where("slug", "==", data.slug)
     .where("worldId", "==", data.worldId)
     .get();
 
