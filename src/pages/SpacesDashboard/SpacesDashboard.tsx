@@ -1,8 +1,4 @@
 import React, { useMemo, useState } from "react";
-import {
-  Dropdown as ReactBootstrapDropdown,
-  DropdownButton,
-} from "react-bootstrap";
 import classNames from "classnames";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
@@ -10,7 +6,7 @@ import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 import { isPartyMapVenue } from "types/venues";
 
 import { adminCreateWorldSpace, adminWorldUrl } from "utils/url";
-import { sortVenues, VenueSortingOptions } from "utils/venue";
+import { SortingOptions, sortVenues } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
@@ -21,11 +17,11 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";
-import { AdminToolbar } from "components/molecules/AdminToolbar";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { SortDropDown } from "components/atoms/SortDropDown";
 
 import "./SpacesDashboard.scss";
 
@@ -45,7 +41,7 @@ export const SpacesDashboard: React.FC = () => {
   const [
     currentSortingOption,
     setCurrentSortingOption,
-  ] = useState<VenueSortingOptions>(VenueSortingOptions.az);
+  ] = useState<SortingOptions>(SortingOptions.az);
 
   const sortedVenues = useMemo(
     () => sortVenues(venues, currentSortingOption) ?? [],
@@ -60,23 +56,6 @@ export const SpacesDashboard: React.FC = () => {
     [sortedVenues]
   );
 
-  const sortingOptions = useMemo(
-    () => (
-      // @debt align the style of the SpacesDropdown with the Dropdown component
-      <DropdownButton variant="secondary" title="Sort spaces">
-        {Object.values(VenueSortingOptions).map((sortingOption) => (
-          <ReactBootstrapDropdown.Item
-            key={sortingOption}
-            onClick={() => setCurrentSortingOption(sortingOption)}
-          >
-            {sortingOption}
-          </ReactBootstrapDropdown.Item>
-        ))}
-      </DropdownButton>
-    ),
-    []
-  );
-
   const hasVenues = renderedPartyVenues.length > 0;
 
   if (isLoadingSpaces || !isWorldLoaded) {
@@ -87,7 +66,7 @@ export const SpacesDashboard: React.FC = () => {
     <div className="SpacesDashboard">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
-          <AdminToolbar>
+          <AdminTitleBar>
             <ButtonNG
               variant="secondary"
               isLink
@@ -95,19 +74,6 @@ export const SpacesDashboard: React.FC = () => {
             >
               Change world
             </ButtonNG>
-
-            <div className="SpacesDashboard__header-content">
-              {sortingOptions}
-            </div>
-            <ButtonNG
-              variant="primary"
-              isLink
-              linkTo={adminCreateWorldSpace(world?.slug)}
-            >
-              Create a new space
-            </ButtonNG>
-          </AdminToolbar>
-          <AdminTitleBar>
             <AdminTitle>{world?.name} dashboard</AdminTitle>
             <ButtonNG
               variant="secondary"
@@ -117,21 +83,31 @@ export const SpacesDashboard: React.FC = () => {
               Settings
             </ButtonNG>
           </AdminTitleBar>
-          <div
-            className={classNames("SpacesDashboard__cards", {
-              "SpacesDashboard__cards--empty": !hasVenues,
+          <main
+            className={classNames("SpacesDashboard__main", {
+              "SpacesDashboard__main--empty": !hasVenues,
             })}
           >
-            {!hasVenues && (
-              <>
-                <div className="SpacesDashboard__welcome-message">Welcome!</div>
+            <div className="SpacesDashboard__cards">
+              {!hasVenues && (
                 <div className="SpacesDashboard__welcome-message">
-                  Create your first Sparkle space
+                  <p>Welcome!</p>
+                  <p>Create your first Sparkle space</p>
                 </div>
-              </>
-            )}
-            {hasVenues && renderedPartyVenues}
-          </div>
+              )}
+              {hasVenues && renderedPartyVenues}
+            </div>
+            <aside className="SpacesDashboard__aside">
+              <SortDropDown onClick={setCurrentSortingOption} />
+              <ButtonNG
+                variant="primary"
+                isLink
+                linkTo={adminCreateWorldSpace(world?.slug)}
+              >
+                Create a new space
+              </ButtonNG>
+            </aside>
+          </main>
         </AdminRestricted>
       </WithNavigationBar>
     </div>
