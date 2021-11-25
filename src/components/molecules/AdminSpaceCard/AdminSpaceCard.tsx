@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useCss } from "react-use";
-import { faLink, faUsers } from "@fortawesome/free-solid-svg-icons";
+import { faExternalLinkAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
@@ -23,17 +23,15 @@ export interface AdminSpaceCardProps {
 }
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
-  console.log(venue);
   const backgroundStyle = useCss({
     background: `linear-gradient(
         rgba(25, 24, 26, 0.8),
         rgba(25, 24, 26, 0.8)
-      ), url('https://www.industrialempathy.com/img/remote/ZiClJf-1920w.jpg')`,
+      ), url(${venue.config?.landingPageConfig?.bannerImageUrl})`,
   });
   const backgroundClasses = classNames("AdminSpaceCard__bg", backgroundStyle);
-
   const logoStyle = useCss({
-    "background-image": `url(${venue.host?.icon ?? DEFAULT_VENUE_LOGO})`,
+    "background-image": `url(${venue.host?.icon || DEFAULT_VENUE_LOGO})`,
   });
   const logoClasses = classNames("AdminSpaceCard__logo", logoStyle);
 
@@ -47,7 +45,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
             {"Visit"}
             <FontAwesomeIcon
               className="AdminSpaceCard__link-icon"
-              icon={faLink}
+              icon={faExternalLinkAlt}
             />
           </Link>
           <div className="AdminSpaceCard__body">
@@ -67,7 +65,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
               ) : null}
             </div>
           </div>
-          {!venue.recentUserCount && (
+          {!!venue.recentUserCount && (
             <div className="AdminSpaceCard__user-count">
               <FontAwesomeIcon
                 className="AdminSpaceCard__icon"
@@ -81,18 +79,14 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
       <div className="AdminSpaceCard__footer">
         <div className="AdminSpaceCard__footer-content">
           <div className="AdminSpaceCard__description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-            commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-            penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-            Donec qu
+            <span className="AdminSpaceCard__description-text">
+              {venue.config?.landingPageConfig?.description ??
+                "Description can be changed in space settings"}
+            </span>
           </div>
           <ButtonNG linkTo={adminNGVenueUrl(venue.slug)} disabled={!venue.slug}>
-            {/* Manage {SPACE_TAXON.capital} Settings */}
             Edit
           </ButtonNG>
-          {/* <ButtonNG linkTo={adminNGSettingsUrl(venue.slug)} disabled={!venue.slug}>
-        {SPACE_TAXON.capital} Settings
-      </ButtonNG> */}
         </div>
       </div>
     </div>

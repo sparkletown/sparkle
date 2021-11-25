@@ -28,7 +28,11 @@
       flex-direction: column;
     }
 
-    @media (max-width: $media-breakpoint--lg) {
+    @media (max-width: $media-breakpoint--xxl) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: $media-breakpoint--xl) {
       grid-template-columns: repeat(2, 1fr);
     }
 
