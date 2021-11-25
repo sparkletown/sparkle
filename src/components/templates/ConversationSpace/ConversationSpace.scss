@@ -87,7 +87,8 @@
     flex-direction: column;
     flex-grow: 3;
     flex-basis: 0;
-    overflow: hidden;
+    height: 100%;
+    overflow: auto;
 
     .description {
       font-weight: 700;
