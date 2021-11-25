@@ -5,6 +5,7 @@
     justify-content: space-between;
 
     label,
+    div,
     input {
       width: 49%;
       display: inline-block;
@@ -14,6 +15,12 @@
 
   .modal-content {
     background-color: $light-grey;
+  }
+
+  .model-content,
+  .modal-dialog {
+    width: 700px;
+    max-width: 700px;
   }
 
   .input-group {
