@@ -98,7 +98,10 @@ export const SpacesDashboard: React.FC = () => {
               {hasVenues && renderedPartyVenues}
             </div>
             <aside className="SpacesDashboard__aside">
-              <SortDropDown onClick={setCurrentSortingOption} />
+              <SortDropDown
+                onClick={setCurrentSortingOption}
+                title="Sort spaces"
+              />
               <ButtonNG
                 variant="primary"
                 isLink
