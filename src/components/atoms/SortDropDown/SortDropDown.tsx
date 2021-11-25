@@ -22,7 +22,7 @@ export const SortDropDown: React.FC<SortDropDownProps> = ({
       {Object.values(SortingOptions).map((sortingOption) => (
         <ReactBootstrapDropdown.Item
           key={sortingOption}
-          onClick={() => onClick?.(sortingOption)}
+          onClick={() => onClick(sortingOption)}
         >
           {sortingOption}
         </ReactBootstrapDropdown.Item>
