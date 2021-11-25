@@ -10,7 +10,7 @@ import "./SortDropDown.scss";
 
 interface SortDropDownProps {
   onClick: (value: SortingOptions) => void;
-  title?: string;
+  title: string;
 }
 
 export const SortDropDown: React.FC<SortDropDownProps> = ({
