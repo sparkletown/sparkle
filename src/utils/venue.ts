@@ -106,7 +106,7 @@ export const withVenue = <T extends object>(
   venue,
 });
 
-export enum VenueSortingOptions {
+export enum SortingOptions {
   az = "A - Z",
   za = "Z - A",
   newestFirst = "Newest First",
@@ -115,19 +115,19 @@ export enum VenueSortingOptions {
 
 export const sortVenues = (
   venueList: WithId<AnyVenue>[],
-  sortingOption: VenueSortingOptions
+  sortingOption: SortingOptions
 ) => {
   switch (sortingOption) {
-    case VenueSortingOptions.az:
+    case SortingOptions.az:
       return [...venueList].sort((a, b) => a.id.localeCompare(b.id));
-    case VenueSortingOptions.za:
+    case SortingOptions.za:
       return [...venueList].sort((a, b) => -1 * a.id.localeCompare(b.id));
-    case VenueSortingOptions.oldestFirst:
+    case SortingOptions.oldestFirst:
       return [...venueList].sort(
         (a, b) =>
           (a.createdAt ?? 0) - (b.createdAt ?? 0) || a.id.localeCompare(b.id)
       );
-    case VenueSortingOptions.newestFirst:
+    case SortingOptions.newestFirst:
       return [...venueList].sort(
         (a, b) =>
           (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
