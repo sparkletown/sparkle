@@ -1,4 +1,8 @@
-import { testGeneratesValidSlug, testVenueByNameExists } from "forms/common";
+import {
+  testGeneratesValidSlug,
+  testVenueByNameExists,
+} from "utils/validation";
+
 import { createNameSchema } from "forms/factory/createNameSchema";
 
 export const venueNameSchema = createNameSchema({ name: "Venue name" })
