@@ -3,8 +3,7 @@ import * as Yup from "yup";
 import { COMMON_STRING_MIN_CHAR_COUNT } from "settings";
 
 import { isCurrentLocationValidUrl } from "utils/url";
-
-import { messageMustBeMinimum } from "forms/common";
+import { messageMustBeMinimum } from "utils/validation";
 
 export const roomUrlSchema = Yup.string()
   .required("Url is required!")
