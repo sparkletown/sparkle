@@ -18,9 +18,9 @@ import { createSlug, VenueInput } from "api/admin";
 
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
-import { createFileSchema } from "forms/createFileSchema";
-import { createNameSchema } from "forms/createNameSchema";
-import { createUrlIfNoFileSchema } from "forms/createUrlIfNoFileSchema";
+import { createFileSchema } from "forms/factory/createFileSchema";
+import { createNameSchema } from "forms/factory/createNameSchema";
+import { createUrlIfNoFileSchema } from "forms/factory/createUrlIfNoFileSchema";
 
 export const venueDetailsCreateSchema = Yup.object()
   .shape<VenueInput>({

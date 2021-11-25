@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 import { ROOM_TAXON } from "settings";
 
-import { createNameSchema } from "forms/createNameSchema";
+import { createNameSchema } from "forms/factory/createNameSchema";
 import { roomUrlSchema } from "forms/roomUrlSchema";
 
 export interface RoomSchemaShape {

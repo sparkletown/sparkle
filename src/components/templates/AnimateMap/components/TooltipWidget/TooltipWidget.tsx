@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { DEFAULT_PORTAL_BOX } from "settings";
+
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
@@ -65,14 +67,11 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
       const prev = state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : current - 1;
       state.itemsData[current].text = venue.data.title;
       state.itemsData[current].room = {
+        ...DEFAULT_PORTAL_BOX,
         title: venue.data.title,
         subtitle: "Subtitle ",
         url: venue.data.url,
         about: "about text #",
-        x_percent: 50,
-        y_percent: 50,
-        width_percent: 5,
-        height_percent: 5,
         isEnabled: true,
         image_url: venue.data.image_url,
       };

@@ -12,9 +12,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ROOM_TAXON } from "settings";
 
-import { RoomInput, upsertRoom } from "api/admin";
+import { upsertRoom } from "api/admin";
 
-import { Room, RoomType } from "types/rooms";
+import { Room, RoomInput, RoomType } from "types/rooms";
 import { VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";

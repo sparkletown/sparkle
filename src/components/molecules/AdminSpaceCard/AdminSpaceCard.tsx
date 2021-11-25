@@ -80,7 +80,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
         <div className="AdminSpaceCard__footer-content">
           <div className="AdminSpaceCard__description">
             <span className="AdminSpaceCard__description-text">
-              {venue.config?.landingPageConfig?.description ??
+              {venue.config?.landingPageConfig?.description ||
                 "Description can be changed in space settings"}
             </span>
           </div>
