@@ -13,6 +13,20 @@
     }
   }
 
+  &__duration_container {
+    input {
+      display: inline-block;
+      width: auto;
+      border: 0.1px solid var(--accent--over-20a);
+      text-align: left;
+    }
+
+    label {
+      margin-left: 4px;
+      margin-right: 8px;
+    }
+  }
+
   .modal-content {
     background-color: $light-grey;
   }
