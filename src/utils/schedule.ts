@@ -1,3 +1,7 @@
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
+
+import { World } from "api/world";
+
 import { LocationEvents } from "types/venues";
 
 export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
@@ -10,3 +14,6 @@ export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
     return nameA.localeCompare(nameB);
   });
 };
+
+export const shouldScheduleBeShown = (world?: World) =>
+  world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;

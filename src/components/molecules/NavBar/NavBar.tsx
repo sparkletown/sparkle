@@ -5,14 +5,11 @@ import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import {
-  DEFAULT_SHOW_SCHEDULE,
-  PLAYA_VENUE_ID,
-  SPARKLE_PHOTOBOOTH_URL,
-} from "settings";
+import { PLAYA_VENUE_ID, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
+import { shouldScheduleBeShown } from "utils/schedule";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -108,9 +105,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    !isAdminContext &&
-    withSchedule &&
-    (world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+    !isAdminContext && withSchedule && shouldScheduleBeShown(world);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
