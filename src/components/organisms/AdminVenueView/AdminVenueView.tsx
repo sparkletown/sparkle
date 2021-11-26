@@ -6,14 +6,22 @@ import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
+import {
+  adminNGVenueUrl,
+  adminWorldSpacesUrl,
+  venueInsideUrl,
+} from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useShowHide } from "hooks/useShowHide";
 import { useWorldById } from "hooks/worlds/useWorldById";
+
+import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
-import { AdminSubheader } from "components/molecules/AdminSubheader";
+import { AdminTitle } from "components/molecules/AdminTitle";
+import { AdminTitleBar } from "components/molecules/AdminTitleBar";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
@@ -56,8 +64,13 @@ export const AdminVenueView: React.FC = () => {
     spaceSlug,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
+  const {
+    isShown: isDeleteModalShown,
+    show: showDeleteModal,
+    hide: closeDeleteModal,
+  } = useShowHide();
 
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world } = useWorldById(space?.worldId);
 
@@ -100,20 +113,6 @@ export const AdminVenueView: React.FC = () => {
     [history, spaceSlug]
   );
 
-  const leftSubheaderComponent = useMemo(() => {
-    return <ButtonNG iconName={faArrowLeft}>Back to Dashboard</ButtonNG>;
-  }, []);
-
-  const rightSubheaderComponent = useMemo(
-    () => (
-      <>
-        <ButtonNG>Delete space</ButtonNG>
-        <ButtonNG>Visit space</ButtonNG>
-      </>
-    ),
-    []
-  );
-
   if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
@@ -131,11 +130,26 @@ export const AdminVenueView: React.FC = () => {
   return (
     <WithNavigationBar withSchedule>
       <AdminRestricted>
-        <AdminSubheader
-          title={`Edit ${space.name}`}
-          leftComponent={leftSubheaderComponent}
-          rightComponent={rightSubheaderComponent}
-        />
+        <AdminTitleBar className="AdminVenueView__title-bar">
+          <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
+            Back to Dashboard
+          </ButtonNG>
+          <AdminTitle>Edit {space.name}</AdminTitle>
+          <div>
+            <ButtonNG variant="danger" onClick={showDeleteModal}>
+              Delete space
+            </ButtonNG>
+            <ButtonNG
+              isLink
+              newTab
+              linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
+              variant="primary"
+            >
+              Visit Space
+            </ButtonNG>
+          </div>
+        </AdminTitleBar>
+
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
         </div>
@@ -163,6 +177,14 @@ export const AdminVenueView: React.FC = () => {
             venue={space}
           />
         )}
+        <VenueDeleteModal
+          venueId={spaceId}
+          venueName={space?.name}
+          show={isDeleteModalShown}
+          onDelete={navigateToHome}
+          onHide={closeDeleteModal}
+          onCancel={closeDeleteModal}
+        />
       </AdminRestricted>
     </WithNavigationBar>
   );

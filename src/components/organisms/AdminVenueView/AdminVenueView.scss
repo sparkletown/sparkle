@@ -14,6 +14,17 @@
     width: 100%;
   }
 
+  &__title-bar {
+    grid-template: 1fr 1fr / $admin-ia-manage-space-columns;
+    padding: $spacing--md * 2 $spacing--md;
+  }
+
+  &__title {
+    font-size: $font-size--xxl;
+    margin: $font-size--md;
+    font-weight: bold;
+  }
+
   &__options {
     display: flex;
     width: 100%;

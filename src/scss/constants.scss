@@ -189,6 +189,8 @@ $admin-ng-panel-height: calc(
 
 $admin-ia-dash-template-columns: 5fr
   minmax(#{$button-width--max + 2 * $spacing--md}, 1fr);
+$admin-ia-manage-space-columns: 5fr
+  minmax(#{$button-width--max * 2 + 2 * $spacing--md}, 1fr);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
