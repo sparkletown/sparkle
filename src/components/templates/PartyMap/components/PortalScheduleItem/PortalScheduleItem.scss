@@ -1,8 +1,9 @@
 @import "scss/constants.scss";
 
-.ScheduleItem {
+.PortalScheduleItem {
   display: flex;
   padding: 10px $spacing--lg;
+  position: relative;
 
   &:hover {
     background-color: $primary--darker;
@@ -13,7 +14,6 @@
     display: flex;
     flex: 1;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
   }
 
@@ -34,10 +34,6 @@
     }
   }
 
-  &--primary {
-    background-color: var(--primary--under-20a);
-  }
-
   &__event-section {
     display: flex;
     width: 100%;
@@ -51,7 +47,8 @@
     border-radius: $border-radius--xl;
   }
 
-  &__event-time {
+  &__event-time,
+  &__event-date {
     font-weight: $font-weight--400;
     font-size: $font-size--md;
   }
@@ -68,12 +65,6 @@
     font-size: $font-size--lg;
   }
 
-  &__event-date {
-    display: block;
-    font-weight: $font-weight--700;
-    color: $concrete;
-  }
-
   &__event-host-prefix {
     font-weight: $font-weight--400;
     font-size: $font-size--md;
@@ -83,5 +74,10 @@
   &__event-host {
     font-weight: $font-weight--400;
     font-size: $font-size--md;
+  }
+
+  &__bookmark {
+    position: absolute;
+    right: $spacing--xxl;
   }
 }
