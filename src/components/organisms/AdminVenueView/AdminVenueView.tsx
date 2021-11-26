@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
@@ -13,9 +13,11 @@ import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
+import { AdminSubheader } from "components/molecules/AdminSubheader";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
 
 import { WithNavigationBar } from "../WithNavigationBar";
@@ -98,6 +100,20 @@ export const AdminVenueView: React.FC = () => {
     [history, spaceSlug]
   );
 
+  const leftSubheaderComponent = useMemo(() => {
+    return <ButtonNG iconName={faArrowLeft}>Back to Dashboard</ButtonNG>;
+  }, []);
+
+  const rightSubheaderComponent = useMemo(
+    () => (
+      <>
+        <ButtonNG>Delete space</ButtonNG>
+        <ButtonNG>Visit space</ButtonNG>
+      </>
+    ),
+    []
+  );
+
   if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
@@ -115,6 +131,11 @@ export const AdminVenueView: React.FC = () => {
   return (
     <WithNavigationBar withSchedule>
       <AdminRestricted>
+        <AdminSubheader
+          title={`Edit ${space.name}`}
+          leftComponent={leftSubheaderComponent}
+          rightComponent={rightSubheaderComponent}
+        />
         <div className="AdminVenueView">
           <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
         </div>

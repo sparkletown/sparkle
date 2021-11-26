@@ -1,0 +1,24 @@
+@import "scss/constants.scss";
+
+.AdminSubheader {
+  width: 100%;
+  padding: 0px $spacing--md;
+
+  &__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__right-component {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    justify-content: flex-end;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+  }
+}
