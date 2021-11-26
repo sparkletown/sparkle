@@ -24,6 +24,7 @@ interface UserListProps extends ContainerClassName {
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
   showTitle?: boolean;
+  attendeesTitle?: string;
 }
 
 export const UserList: React.FC<UserListProps> = ({
@@ -35,11 +36,12 @@ export const UserList: React.FC<UserListProps> = ({
   hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
   showTitle = true,
+  attendeesTitle,
 }) => {
   const hasExcessiveUserCount = userCount > usersSample.length;
 
   const label = `${userCount} ${
-    userCount === 1 ? "person" : "people"
+    attendeesTitle ?? (userCount === 1 ? "person" : "people")
   } ${activity}`;
 
   const containerClasses = classNames("UserList", containerClassName);
