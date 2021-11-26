@@ -9,8 +9,8 @@ import { AnyVenue } from "types/venues";
 import { venueInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useQuery } from "hooks/useQuery";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { VenueDetailsForm } from "pages/Admin/Venue/VenueDetailsForm";
@@ -63,7 +63,7 @@ const reducer = (
 };
 
 export const VenueWizard: React.FC = () => {
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
 
   return spaceSlug ? (
     <VenueWizardEdit spaceSlug={spaceSlug} />

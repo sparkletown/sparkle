@@ -8,7 +8,7 @@ import { DEFAULT_SPACE_SLUG, DISABLED_DUE_TO_1324 } from "settings";
 import { venueInsideUrl, venueLandingUrl } from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -21,7 +21,7 @@ import "./AdminRestricted.scss";
 export const AdminRestricted: React.FC = ({ children }) => {
   const firebase = useFirebase();
   const history = useHistory();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { userId } = useUser();
 
   const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);

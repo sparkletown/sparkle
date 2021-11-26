@@ -158,7 +158,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className="input-group">
-                <label htmlFor="name">Name your event</label>
+                <label htmlFor="name">Name your experience</label>
                 <input
                   id="name"
                   name="name"
@@ -172,7 +172,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className="input-group">
-                <label htmlFor="description">Description</label>
+                <label htmlFor="description">Describe your experience</label>
                 <textarea
                   name="description"
                   className="input-group__modal-input"
@@ -201,26 +201,35 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className="input-group">
-                <label htmlFor="date">Starting time</label>
-                <label>
-                  When does this event start? Use your local time zone, it will
-                  be automatically converted for anyone visiting from around the
-                  world.
+                <label htmlFor="date">
+                  Start date and time (use your own time zone; it will be
+                  automatically localized)
                 </label>
+                <label></label>
                 <div className="TimingEventModal__container">
-                  <input
-                    type="date"
-                    min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
-                    name="start_date"
-                    className="input-group__modal-input"
-                    ref={register}
-                  />
-                  <input
-                    type="time"
-                    name="start_time"
-                    className="input-group__modal-input"
-                    ref={register}
-                  />
+                  {/*
+                  These wrapper divs are here to unmuddle some precedance issues
+                  in the CSS that causes the inputs to have 100% width. This
+                  form is going to have some layout changes applied that should
+                  resolve this..
+                  */}
+                  <div>
+                    <input
+                      type="date"
+                      min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
+                      name="start_date"
+                      className="input-group__modal-input"
+                      ref={register}
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="time"
+                      name="start_time"
+                      className="input-group__modal-input"
+                      ref={register}
+                    />
+                  </div>
                 </div>
 
                 <div className="TimingEventModal__container">
