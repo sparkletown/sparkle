@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
 
-import { isPartyMapVenue } from "types/venues";
+import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { adminCreateWorldSpace, adminWorldUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
@@ -56,7 +56,33 @@ export const SpacesDashboard: React.FC = () => {
     [sortedVenues]
   );
 
-  const hasVenues = renderedPartyVenues.length > 0;
+  // const sortingOptions = useMemo(
+  //   () => (
+  //     // @debt align the style of the SpacesDropdown with the Dropdown component
+  //     <DropdownButton variant="secondary" title="Sort spaces">
+  //       {Object.values(VenueSortingOptions).map((sortingOption) => (
+  //         <ReactBootstrapDropdown.Item
+  //           key={sortingOption}
+  //           onClick={() => setCurrentSortingOption(sortingOption)}
+  //         >
+  //           {sortingOption}
+  //         </ReactBootstrapDropdown.Item>
+  //       ))}
+  //     </DropdownButton>
+  //   ),
+  //   []
+  // );
+
+  const renderedOtherVenues = useMemo(
+    () =>
+      sortedVenues
+        ?.filter(isNotPartyMapVenue)
+        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
+    [sortedVenues]
+  );
+
+  const hasPartyVenues = renderedPartyVenues.length > 0;
+  const hasOtherVenues = renderedOtherVenues.length > 0;
 
   if (isLoadingSpaces || !isWorldLoaded) {
     return <LoadingPage />;
@@ -83,20 +109,28 @@ export const SpacesDashboard: React.FC = () => {
               Settings
             </ButtonNG>
           </AdminTitleBar>
+
+          {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}
           <main
             className={classNames("SpacesDashboard__main", {
-              "SpacesDashboard__main--empty": !hasVenues,
+              "SpacesDashboard__main--empty": !hasPartyVenues,
             })}
           >
             <div className="SpacesDashboard__cards">
-              {!hasVenues && (
-                <div className="SpacesDashboard__welcome-message">
-                  <p>Welcome!</p>
-                  <p>Create your first Sparkle space</p>
-                </div>
+              {!hasPartyVenues && (
+                <>
+                  <div className="SpacesDashboard__welcome-message">
+                    Welcome!
+                  </div>
+                  <div className="SpacesDashboard__welcome-message">
+                    <p>Welcome!</p>
+                    <p>Create your first Sparkle space</p>
+                  </div>
+                </>
               )}
-              {hasVenues && renderedPartyVenues}
+              {hasPartyVenues && renderedPartyVenues}
             </div>
+
             <aside className="SpacesDashboard__aside">
               <SortDropDown
                 onClick={setCurrentSortingOption}
@@ -111,6 +145,15 @@ export const SpacesDashboard: React.FC = () => {
               </ButtonNG>
             </aside>
           </main>
+
+          {hasOtherVenues && <AdminTitle>My other spaces</AdminTitle>}
+          <div
+            className={classNames("SpacesDashboard__cards", {
+              "SpacesDashboard__cards--empty": !hasOtherVenues,
+            })}
+          >
+            {hasOtherVenues && renderedOtherVenues}
+          </div>
         </AdminRestricted>
       </WithNavigationBar>
     </div>
