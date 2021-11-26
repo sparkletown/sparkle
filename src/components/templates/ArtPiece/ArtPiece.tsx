@@ -8,6 +8,7 @@ import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { getDefaultPortalIcon } from "utils/icons";
 import { WithId } from "utils/id";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -58,10 +59,12 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
 
   if (!venue) return <Loading label="Loading..." />;
 
+  const infoIcon = host?.icon || getDefaultPortalIcon(venue.template);
+
   return (
     <>
       <VenueWithOverlay venue={venue} containerClassNames="ArtPiece">
-        <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationLeftColumn iconNameOrPath={infoIcon}>
           <InformationCard title="About the venue">
             <p className="ArtPiece__title-sidebar">{name}</p>
             <p className="ArtPiece__short-description-sidebar">

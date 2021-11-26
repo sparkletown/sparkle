@@ -4,6 +4,7 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
 
+import { getDefaultPortalIcon } from "utils/icons";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
@@ -63,9 +64,11 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const tables = venue?.config?.tables ?? TABLES;
 
+  const infoIcon = venue?.host?.icon || getDefaultPortalIcon(venue.template);
+
   return (
     <>
-      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
+      <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>
