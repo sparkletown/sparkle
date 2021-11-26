@@ -5,14 +5,21 @@ import { faExternalLinkAlt, faUsers } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO, SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import {
+  DEFAULT_VENUE_BANNER_COLOR,
+  DEFAULT_VENUE_LOGO,
+  SPACE_PORTALS_ICONS_MAPPING,
+  SPACE_TAXON,
+} from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl } from "utils/url";
+import { adminNGVenueUrl, venueInsideUrl } from "utils/url";
 
-import { AdminShowcaseSubTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseSubTitle";
+import { useValidImage } from "hooks/useCheckImage";
+
+import { AdminCardTitle } from "components/organisms/AdminVenueView/components/AdminCardTitle";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -23,11 +30,16 @@ export interface AdminSpaceCardProps {
 }
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig.bannerImageUrl,
+    DEFAULT_VENUE_BANNER_COLOR
+  );
+
   const backgroundStyle = useCss({
     background: `linear-gradient(
         rgba(25, 24, 26, 0.8),
         rgba(25, 24, 26, 0.8)
-      ), url(${venue.config?.landingPageConfig?.bannerImageUrl})`,
+      ), url(${validBannerImageUrl})`,
   });
   const backgroundClasses = classNames("AdminSpaceCard__bg", backgroundStyle);
   const logoStyle = useCss({
@@ -37,11 +49,20 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
 
   const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[venue.template];
 
+  const spaceDescriptionText =
+    venue.config?.landingPageConfig?.description ||
+    "Description can be changed in space settings";
+
   return (
     <div className="AdminSpaceCard">
       <div className={backgroundClasses}>
         <div className="AdminSpaceCard__bg-container">
-          <Link className="AdminSpaceCard__link" to="">
+          <Link
+            className="AdminSpaceCard__link"
+            to={venueInsideUrl(venue.slug)}
+            target="_blank"
+            rel="noopener noreferer"
+          >
             {"Visit"}
             <FontAwesomeIcon
               className="AdminSpaceCard__link-icon"
@@ -51,10 +72,10 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
           <div className="AdminSpaceCard__body">
             <div className={logoClasses} />
             <div className="AdminSpaceCard__body-info">
-              <AdminShowcaseSubTitle>{venue.name}</AdminShowcaseSubTitle>
+              <AdminCardTitle>{venue.name}</AdminCardTitle>
               <span className="AdminSpaceCard__text">
                 <img
-                  alt={`space-icon-${spaceIcon}`}
+                  alt={`the ${SPACE_TAXON.lower} icon`}
                   src={spaceIcon}
                   className="SpacesDropdown__item-icon"
                 />
@@ -80,8 +101,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
         <div className="AdminSpaceCard__footer-content">
           <div className="AdminSpaceCard__description">
             <span className="AdminSpaceCard__description-text">
-              {venue.config?.landingPageConfig?.description ||
-                "Description can be changed in space settings"}
+              {spaceDescriptionText}
             </span>
           </div>
           <ButtonNG linkTo={adminNGVenueUrl(venue.slug)} disabled={!venue.slug}>

@@ -1,10 +1,12 @@
 @import "scss/constants.scss";
 
 $admin-space-card-button-margin: $spacing--xs 0;
-$admin-space-card-logo-size: 64px;
+$admin-space-card-logo-size--lg: 64px;
+$admin-space-card-logo-size--sm: 48px;
 $admin-space-card-body-height: 80px;
 $admin-space-card-count-top-margin: 120px;
 $admin-space-card-bg-height: 150px;
+$admin-space-card-description-height: 100px;
 
 .AdminSpaceCard {
   position: relative;
@@ -16,27 +18,18 @@ $admin-space-card-bg-height: 150px;
   border-radius: $border-radius--xl;
   gap: font-size--root(0.5);
   max-height: 450px;
-  box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14),
-    0px 3px 4px rgba(58, 92, 144, 0.12), 0px 1px 5px rgba(58, 92, 144, 0.2);
-
-  .AdminShowcaseSubTitle {
-    font-weight: $font-weight--700;
-    font-size: $font-size--lg;
-    color: $content--over;
-    margin: $spacing--md $spacing--md $spacing--sm;
-    word-break: break-word;
-  }
+  box-shadow: $admin-ng-space-card-box-shadow;
 
   &__bg {
     width: 100%;
     height: $admin-space-card-bg-height;
     background-size: cover;
+  }
 
-    &-container {
-      display: flex;
-      flex-direction: column;
-      padding: $spacing--md $spacing--xl;
-    }
+  &__bg-container {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing--md $spacing--xl;
   }
 
   &__text {
@@ -98,7 +91,7 @@ $admin-space-card-bg-height: 150px;
   }
 
   &__description {
-    min-height: 100px;
+    min-height: $admin-space-card-description-height;
     width: 100%;
     margin-bottom: $spacing--lg;
     font-size: $font-size--md;
@@ -111,12 +104,12 @@ $admin-space-card-bg-height: 150px;
   }
 
   &__logo {
-    @include square-size($admin-space-card-logo-size);
+    @include square-size($admin-space-card-logo-size--lg);
     margin-top: $spacing--lg;
     border-radius: $border-radius--max;
     background-size: cover;
     background-color: $content--under;
-    box-shadow: 0 $spacing--xs $spacing--md rgba(0, 0, 0, 0.4);
+    box-shadow: 0 $spacing--xs $spacing--md opaque-black(0.4);
     flex-shrink: 0;
   }
 
@@ -127,6 +120,6 @@ $admin-space-card-bg-height: 150px;
 
 @media (max-width: $media-breakpoint--xxl) and (min-width: $media-breakpoint--lg) {
   .AdminSpaceCard__logo {
-    @include square-size(48px);
+    @include square-size($admin-space-card-logo-size--sm);
   }
 }
