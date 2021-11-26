@@ -86,7 +86,7 @@ export interface UseAnalyticsResult {
   trackVenuePageLoadedEvent: () => void;
   trackLogInEvent: (email: string) => void;
   trackSignUpEvent: (email: string) => void;
-  trackOpenRoomModalEvent: (roomTitle?: string) => void;
+  trackOpenPortalModalEvent: (roomTitle?: string) => void;
   trackEnterRoomEvent: (roomTitle?: string, roomTemplate?: string) => void;
   trackEnterAuditoriumSectionEvent: () => void;
   trackSelectTableEvent: () => void;
@@ -155,7 +155,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
     [trackWithWorld, venue?.template]
   );
 
-  const trackOpenRoomModalEvent = useCallback(
+  const trackOpenPortalModalEvent = useCallback(
     (roomTitle?: string) =>
       trackWithWorld(OPEN_ROOM_MODAL_EVENT_NAME, {
         roomName: roomTitle,
@@ -204,7 +204,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
       identifyUser,
       trackEnterAuditoriumSectionEvent,
       trackEnterJazzBarEvent,
-      trackOpenRoomModalEvent,
+      trackOpenPortalModalEvent,
       trackEnterRoomEvent,
       trackSelectTableEvent,
       trackLogInEvent,
@@ -215,7 +215,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
     [
       trackEnterAuditoriumSectionEvent,
       trackEnterJazzBarEvent,
-      trackOpenRoomModalEvent,
+      trackOpenPortalModalEvent,
       trackEnterRoomEvent,
       trackSelectTableEvent,
       trackLogInEvent,
