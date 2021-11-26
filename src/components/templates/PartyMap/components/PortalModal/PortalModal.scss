@@ -12,6 +12,7 @@ $spacing: 20px;
     background-repeat: no-repeat;
     background-size: cover;
     padding: 0;
+    overflow-y: auto;
   }
 
   &__close-icon {
@@ -104,9 +105,7 @@ $spacing: 20px;
   }
 
   &__events {
-    @include scrollbar;
     max-height: 35vh;
-    overflow-y: auto;
     padding-bottom: $spacing--xxl;
 
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.

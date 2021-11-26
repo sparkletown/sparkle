@@ -197,7 +197,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
       )}
 
       <div className="PortalModal__btn-wrapper">
-        {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+        {/* @debt extract this 'enter portal' button/link concept into a reusable component */}
         {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
         <button
           ref={enterButtonref}
