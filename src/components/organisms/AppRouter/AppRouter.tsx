@@ -8,7 +8,6 @@ import {
 
 import {
   ACCOUNT_ROOT_URL,
-  ADMIN_V1_ROOT_URL,
   ADMIN_V3_ROOT_URL,
   ENTER_ROOT_URL,
   ENTRANCE_STEP_VENUE_PARAM_URL,
@@ -47,14 +46,6 @@ const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
     import("./AccountSubrouter").then(({ AccountSubrouter }) => ({
       default: AccountSubrouter,
-    }))
-  )
-);
-
-const AdminV1Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
-    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
-      default: AdminV1Subrouter,
     }))
   )
 );
@@ -108,12 +99,10 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
-  const { isLoaded, settings } = useSettings();
+  const { isLoaded } = useSettings();
   const { user } = useUser();
 
   if (!isLoaded) return <LoadingPage />;
-
-  const { enableAdmin1 } = settings;
 
   return (
     <Router basename="/">
@@ -126,14 +115,6 @@ export const AppRouter: React.FC = () => {
               <AccountSubrouter />
             </Provided>
           </Route>
-
-          {enableAdmin1 && (
-            <Route path={ADMIN_V1_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV1Subrouter />
-              </Provided>
-            </Route>
-          )}
 
           <Route path={ADMIN_V3_ROOT_URL}>
             <Provided withRelatedVenues>
