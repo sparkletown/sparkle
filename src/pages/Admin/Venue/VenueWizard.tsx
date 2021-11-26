@@ -2,15 +2,16 @@ import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { Redirect, useHistory } from "react-router-dom";
 
-import { ALL_VENUE_TEMPLATES, DEFAULT_VENUE, Template } from "settings";
+import { ALL_VENUE_TEMPLATES, DEFAULT_SPACE_SLUG, Template } from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
+import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { VenueDetailsForm } from "pages/Admin/Venue/VenueDetailsForm";
 
@@ -62,55 +63,46 @@ const reducer = (
 };
 
 export const VenueWizard: React.FC = () => {
-  const venueId = useVenueId();
+  const spaceSlug = useSpaceParams();
 
-  return venueId ? (
-    <VenueWizardEdit venueId={venueId} />
+  return spaceSlug ? (
+    <VenueWizardEdit spaceSlug={spaceSlug} />
   ) : (
     <VenueWizardCreate />
   );
 };
 
 interface VenueWizardEditProps {
-  venueId: string;
+  spaceSlug: string;
 }
 
-const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
   // get the venue
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+
   // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {
-    const fetchVenueFromAPI = async () => {
-      const venueSnapshot = await firestore
-        .collection("venues")
-        .doc(venueId)
-        .get();
+    if (!space) return;
 
-      if (!venueSnapshot.exists) return;
+    //find the template
+    const template = ALL_VENUE_TEMPLATES.find(
+      (template) => space.template === template.template
+    );
 
-      const data = venueSnapshot.data() as AnyVenue;
+    if (!template) return;
 
-      //find the template
-      const template = ALL_VENUE_TEMPLATES.find(
-        (template) => data.template === template.template
-      );
-
-      if (!template) return;
-
-      // ensure reducer is synchronised with API data
-      dispatch({ type: "SUBMIT_TEMPLATE_PAGE", payload: template });
-      dispatch({ type: "SUBMIT_DETAILS_PAGE", payload: data });
-    };
-
-    fetchVenueFromAPI();
-  }, [firestore, venueId]);
+    // ensure reducer is synchronised with API data
+    dispatch({ type: "SUBMIT_TEMPLATE_PAGE", payload: template });
+    dispatch({ type: "SUBMIT_DETAILS_PAGE", payload: space });
+  }, [firestore, space]);
 
   // @debt replace this with LoadingPage or Loading as appropriate
   if (!state.detailsPage) return <div>Loading...</div>;
 
-  return <VenueDetailsForm venueId={venueId} state={state} />;
+  return <VenueDetailsForm venueId={spaceId} state={state} />;
 };
 
 const VenueWizardCreate: React.FC = () => {
@@ -154,7 +146,7 @@ const VenueWizardCreate: React.FC = () => {
   }, [queryPage, next, previous, state]);
 
   if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
+    return <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />;
   }
 
   return <WithNavigationBar>{Page}</WithNavigationBar>;

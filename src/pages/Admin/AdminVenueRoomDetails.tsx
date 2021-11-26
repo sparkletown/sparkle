@@ -8,9 +8,9 @@ import {
   ROOM_TAXON,
 } from "settings";
 
-import { RoomInput, upsertRoom } from "api/admin";
+import { upsertRoom } from "api/admin";
 
-import { Room } from "types/rooms";
+import { Room, RoomInput } from "types/rooms";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -76,7 +76,7 @@ export const AdminVenueRoomDetails = ({
 
       await upsertRoom(roomValues, venue.id, user, index);
 
-      history.push(`${ADMIN_V1_ROOT_URL}/${venue.id}`);
+      history.push(`${ADMIN_V1_ROOT_URL}/${venue.slug}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {

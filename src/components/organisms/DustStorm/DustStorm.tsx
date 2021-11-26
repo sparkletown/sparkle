@@ -42,6 +42,7 @@ const PotLuck: React.FC<PotLuckProps> = ({ openVenues, afterSelect }) => {
     afterSelect();
 
     if (IFRAME_TEMPLATES.includes(randomVenue?.template))
+      // @debt Refactor to use default spaceSlug, if needed.
       history.push(`/in/${randomVenue.id}`);
     if (ZOOM_URL_TEMPLATES.includes(randomVenue?.template))
       window.open(`${randomVenue.zoomUrl}`);

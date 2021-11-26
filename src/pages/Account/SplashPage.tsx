@@ -21,6 +21,7 @@ export const SplashPage = () => {
   const { user } = useUser();
 
   const onSubmit = () => {
+    // @debt Refactor to be using PLAYA SLUG, if needed in the future.
     history.push(user ? venueInsideUrl(PLAYA_VENUE_ID) : "/enter/step1");
   };
 

@@ -12,9 +12,9 @@ import { isEqual } from "lodash";
 
 import { ROOM_TAXON, ROOMS_TAXON } from "settings";
 
-import { RoomInput_v2, updateRoom } from "api/admin";
+import { updateRoom } from "api/admin";
 
-import { Room } from "types/rooms";
+import { PortalInput, Room } from "types/rooms";
 
 import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
@@ -110,7 +110,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     // Ideally this should be using forEach and promise all to send all of the requests at once, instead of 1 by 1
     // Using forEach will also allow us to use the index param and get rid of roomIndex and it's incremention
     for (const { left, top, width, height } of updatedRooms) {
-      const room: RoomInput_v2 = {
+      const room: PortalInput = {
         ...rooms[roomIndex],
         x_percent: left,
         y_percent: top,

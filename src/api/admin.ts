@@ -4,13 +4,16 @@ import { omit } from "lodash";
 
 import {
   ACCEPTED_IMAGE_TYPES,
+  DEFAULT_PORTAL_BOX,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   INVALID_SLUG_CHARS_REGEX,
 } from "settings";
 
-import { Room } from "types/rooms";
+import { findSpaceBySlug } from "api/space";
+
+import { PortalInput, Room, RoomInput } from "types/rooms";
 import { UserStatus } from "types/User";
 import {
   RoomVisibility,
@@ -57,21 +60,9 @@ type RoomImageUrlKeys = "image_url";
 type VenueImageUrls = Partial<Record<VenueImageUrlKeys, string>>;
 type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
-export type RoomInput = Omit<Room, "image_url"> & {
-  image_url?: string;
-  image_file?: FileList;
-};
-
-// @debt Since the additional 2 fields are optional, they can probably be moved to RoomInput
-export type RoomInput_v2 = Room & {
-  venueName?: string;
-  useUrl?: boolean;
-  image_url?: string;
-  image_file?: FileList;
-};
-
 export type VenueInput = VenueImageUrls & {
   name: string;
+  slug?: string;
   bannerImageFile?: FileList;
   logoImageFile?: FileList;
   mapBackgroundImageFile?: FileList;
@@ -105,6 +96,7 @@ export type VenueInput = VenueImageUrls & {
 
 export interface VenueInput_v2 extends VenueAdvancedConfig {
   name: string;
+  slug: string;
   description?: string;
   subtitle?: string;
   bannerImageFile?: FileList;
@@ -135,7 +127,7 @@ type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
 
 type FirestoreRoomInput = Omit<RoomInput, RoomImageFileKeys> & RoomImageUrls;
 
-type FirestoreRoomInput_v2 = Omit<RoomInput_v2, RoomImageFileKeys> &
+type FirestoreRoomInput_v2 = Omit<PortalInput, RoomImageFileKeys> &
   RoomImageUrls & {
     url?: string;
   };
@@ -224,6 +216,7 @@ const createFirestoreVenueInput = async (
     rooms: [], // eventually we will be getting the rooms from the form
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
     name: slug,
+    slug,
   };
 
   return firestoreVenueInput;
@@ -234,7 +227,6 @@ const createFirestoreVenueInput_v2 = async (
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
-  const slug = createSlug(input.name);
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -268,8 +260,9 @@ const createFirestoreVenueInput_v2 = async (
 
     const fileExtension = file.type.split("/").pop();
 
+    // @debt this may cause missing or wrong image issues if two venues exchange their slugs, should take multiple steps to reproduce
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/${urlKey}.${fileExtension}`
+      `users/${user.uid}/venues/${input.slug}/${urlKey}.${fileExtension}`
     );
 
     await uploadFileRef.put(file);
@@ -290,7 +283,8 @@ const createFirestoreVenueInput_v2 = async (
     template: input.template ?? VenueTemplate.partymap,
     parentId: input.parentId ?? "",
     // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
-    name: slug,
+    name: input.name,
+    slug: input.slug,
   };
   return firestoreVenueInput;
 };
@@ -319,16 +313,24 @@ export const createVenue_v2 = async (
     user
   );
 
+  const worldId = input.worldId;
+  const spaceSlug = firestoreVenueInput.slug;
+
   const venueResponse = await firebase
     .functions()
     .httpsCallable("venue-createVenue_v2")({
     ...firestoreVenueInput,
-    worldId: input.worldId,
+    worldId,
+  });
+
+  const space = await findSpaceBySlug({
+    spaceSlug,
+    worldId,
   });
 
   if (input.template === VenueTemplate.auditorium) {
     await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
-      venueId: firestoreVenueInput.name,
+      venueId: space?.id,
       numberOfSections: DEFAULT_SECTIONS_AMOUNT,
     });
   }
@@ -443,7 +445,7 @@ const createFirestoreRoomInput = async (
 };
 
 const createFirestoreRoomInput_v2 = async (
-  input: RoomInput_v2,
+  input: PortalInput,
   venueId: string,
   user: firebase.UserInfo
 ) => {
@@ -543,7 +545,7 @@ export const deleteRoom = async (venueId: string, room: Room) => {
 };
 
 export const updateRoom = async (
-  input: RoomInput_v2,
+  input: PortalInput,
   venueId: string,
   user: firebase.UserInfo,
   roomIndex: number
@@ -561,10 +563,11 @@ export const updateRoom = async (
   });
 };
 
+// @debt check if not used anywhere and remove
 export const bulkUpdateRooms = async (
   venueId: string,
   user: firebase.UserInfo,
-  rooms: RoomInput_v2[]
+  rooms: PortalInput[]
 ) => {
   const test = rooms.map((firestoreVenueInput, index) => {
     return firebase.functions().httpsCallable("venue-upsertRoom")({
@@ -578,7 +581,7 @@ export const bulkUpdateRooms = async (
 };
 
 export const createRoom = async (
-  input: RoomInput_v2,
+  input: PortalInput,
   venueId: string,
   user: firebase.UserInfo
 ) => {
@@ -594,10 +597,7 @@ export const createRoom = async (
       ...firestoreVenueInput,
       // Initial positions and size
       // TODO: As an alternative to the center positioning, maybe have a Math.random() to place rooms at random
-      x_percent: 50,
-      y_percent: 50,
-      width_percent: 5,
-      height_percent: 5,
+      ...DEFAULT_PORTAL_BOX,
     },
   });
 };

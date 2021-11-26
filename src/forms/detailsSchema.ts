@@ -1,10 +1,17 @@
-import firebase from "firebase/app";
 import * as Yup from "yup";
 
-import { createSlug } from "api/admin";
+import {
+  COMMON_STRING_MIN_CHAR_COUNT,
+  COMMON_STRING_MIN_CHAR_COUNT_RE,
+} from "settings";
 
-import { mustBeMinimum } from "forms/common";
-import { commonTitleSchema } from "forms/commonTitleSchema";
+import {
+  messageMustBeMinimum,
+  testGeneratesValidSlug,
+  testVenueByNameExists,
+} from "utils/validation";
+
+import { createNameSchema } from "forms/factory/createNameSchema";
 
 export interface VenueV2SchemaShape {
   name: string;
@@ -15,9 +22,9 @@ export interface VenueV2SchemaShape {
   logoImageUrl: string;
 }
 
-export const venueV2Schema = Yup.object()
+export const detailsSchema = Yup.object()
   .shape<VenueV2SchemaShape>({
-    name: commonTitleSchema.when(
+    name: createNameSchema({ name: "Name", withMin: true }).when(
       "$editing",
       (editing: boolean, schema: Yup.StringSchema) =>
         !editing
@@ -25,30 +32,25 @@ export const venueV2Schema = Yup.object()
               .test(
                 "name",
                 "Must have alphanumeric characters",
-                (val: string) => createSlug(val).length > 0
+                testGeneratesValidSlug
               )
               .test(
                 "name",
                 "This venue name is already taken",
-                async (val: string) =>
-                  !val ||
-                  !(
-                    await firebase
-                      .firestore()
-                      .collection("venues")
-                      .doc(createSlug(val))
-                      .get()
-                  ).exists
+                testVenueByNameExists
               )
           : schema //will be set from the data from the api. Does not need to be unique
     ),
-    subtitle: Yup.string().matches(/.{3,}/, {
+    subtitle: Yup.string().matches(COMMON_STRING_MIN_CHAR_COUNT_RE, {
       excludeEmptyString: true,
-      message: mustBeMinimum("Subtitle", 3),
+      message: messageMustBeMinimum("Subtitle", COMMON_STRING_MIN_CHAR_COUNT),
     }),
-    description: Yup.string().matches(/.{3,}/, {
+    description: Yup.string().matches(COMMON_STRING_MIN_CHAR_COUNT_RE, {
       excludeEmptyString: true,
-      message: mustBeMinimum("Description", 3),
+      message: messageMustBeMinimum(
+        "Description",
+        COMMON_STRING_MIN_CHAR_COUNT
+      ),
     }),
 
     bannerImageUrl: Yup.string(),

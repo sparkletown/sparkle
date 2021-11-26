@@ -48,10 +48,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
     [owners]
   );
 
-  const algoliaSearchState = useAlgoliaSearch(
-    venueId,
-    searchText.toLowerCase()
-  );
+  const algoliaSearchState = useAlgoliaSearch(searchText.toLowerCase());
 
   const foundUsers = useMemo(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];

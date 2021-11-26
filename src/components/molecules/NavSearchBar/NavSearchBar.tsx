@@ -38,10 +38,12 @@ import { NavSearchResult } from "./NavSearchResult";
 import "./NavSearchBar.scss";
 
 export interface NavSearchBarProps {
-  venueId: string;
+  sovereignVenueId: string;
 }
 
-export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
+export const NavSearchBar: React.FC<NavSearchBarProps> = ({
+  sovereignVenueId,
+}) => {
   const {
     searchInputValue,
     searchQuery,
@@ -131,7 +133,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const algoliaSearchState = useAlgoliaSearch(venueId, searchQuery);
+  const algoliaSearchState = useAlgoliaSearch(searchQuery, {
+    sovereignVenueId,
+  });
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];

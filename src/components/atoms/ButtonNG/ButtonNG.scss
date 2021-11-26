@@ -1,8 +1,5 @@
 @import "scss/constants.scss";
 
-$max-allowed-button-width: 275px;
-$normal-button-width: 100%;
-
 // order of elements:
 // $modifier  - will be used as ButtonNG--modifier
 // $color     - the same foreground color with :hover and without
@@ -52,8 +49,8 @@ $variants-enum: (
 
   padding: $spacing--md;
   margin: $spacing--xs;
-  width: $normal-button-width;
-  max-width: $max-allowed-button-width;
+  width: $button-width--normal;
+  max-width: $button-width--max;
 
   border-radius: $border-radius--xl;
   border: none;

@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_REACTIONS_AUDIBLE,
   DEFAULT_SHOW_REACTIONS,
   IFRAME_ALLOW,
 } from "settings";
@@ -12,7 +13,6 @@ import { JazzbarVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
@@ -51,20 +51,12 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
-  const parentVenueId = parentVenue?.id;
   const embedIframeUrl = convertToEmbeddableUrl({
     url: venue.iframeUrl,
     autoPlay: venue.autoPlay,
   });
   const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
-
-  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    openUrl(venueInsideUrl(parentVenueId));
-  }, [parentVenueId]);
 
   useExperiences(venue.name);
 
@@ -79,9 +71,20 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const isReactionsAudioDisabled = !venue.isReactionsMuted;
 
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(
-    venue.isReactionsMuted
-  );
+  const {
+    isShown: isUserAudioOn,
+    toggle: toggleUserAudio,
+    hide: disableUserAudio,
+    show: enableUserAudio,
+  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
+
+  useEffect(() => {
+    if (venue.isReactionsMuted) {
+      enableUserAudio();
+    } else {
+      disableUserAudio();
+    }
+  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   const isUserAudioMuted = !isUserAudioOn;
 
@@ -124,10 +127,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         containerClassNames={`music-bar ${containerClasses}`}
       >
         {!seatedAtTable && parentVenue && (
-          <BackButton
-            onClick={backToParentVenue}
-            locationName={parentVenue.name}
-          />
+          <BackButton variant="simple" space={parentVenue} />
         )}
 
         {!seatedAtTable && (

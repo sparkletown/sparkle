@@ -1,5 +1,7 @@
 import * as Yup from "yup";
 
+import { START_DATE_FORMAT_RE } from "settings";
+
 import { EventInput } from "api/admin";
 
 export const eventEditSchema = Yup.object().shape<EventInput>({
@@ -8,7 +10,7 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
   start_date: Yup.string()
     .required("Start date required")
     .matches(
-      /\d{4}-\d{2}-\d{2}/,
+      START_DATE_FORMAT_RE,
       'Start date must have the format "yyyy-mm-dd"'
     ),
   start_time: Yup.string().required("Start time required"),

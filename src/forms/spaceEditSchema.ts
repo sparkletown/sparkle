@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 import { ROOM_TAXON } from "settings";
 
-import { commonTitleSchema } from "forms/commonTitleSchema";
+import { createNameSchema } from "forms/factory/createNameSchema";
 import { roomUrlSchema } from "forms/roomUrlSchema";
 
 export interface RoomSchemaShape {
@@ -19,7 +19,7 @@ const roomImageUrlSchema = Yup.string().required(
 
 export const spaceEditSchema = Yup.object().shape({
   room: Yup.object().shape<RoomSchemaShape>({
-    title: commonTitleSchema,
+    title: createNameSchema({ name: "Title", withMin: true }),
     url: roomUrlSchema,
     image_url: roomImageUrlSchema,
   }),

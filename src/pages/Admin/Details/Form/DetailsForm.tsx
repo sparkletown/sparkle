@@ -7,7 +7,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
+  COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_USER_STATUS,
   DEFAULT_VENUE_LOGO,
 } from "settings";
@@ -19,11 +19,10 @@ import { VenueTemplate } from "types/venues";
 
 import { adminWorldSpacesUrl } from "utils/url";
 
-import { venueV2Schema } from "forms/venueV2Schema";
+import { detailsSchema } from "forms/detailsSchema";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useWorldById } from "hooks/worlds/useWorldById";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
@@ -61,7 +60,8 @@ const HANDLED_ERRORS: string[] = [
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   const history = useHistory();
-  const venueId = useVenueId();
+  const venueId = venue?.id;
+
   const { user } = useUser();
 
   const { worldParentVenues } = useWorldVenues(worldId ?? venue?.worldId ?? "");
@@ -142,7 +142,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   } = useForm({
     mode: "onSubmit",
     reValidateMode: "onSubmit",
-    validationSchema: venueV2Schema,
+    validationSchema: detailsSchema,
     validationContext: {
       editing: !!venueId,
     },
@@ -176,6 +176,9 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
         venueId ?? createSlug(vals.name),
       ]);
 
+      const spaceSlug = createSlug(vals.name);
+
+      //@debt Move this validation to create and update BE functions, instead of this FE form.
       if (!isValidParentId) {
         setError(
           "parentId",
@@ -188,7 +191,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       if (venueId) {
         const updatedVenue = {
           ...vals,
-          id: venueId,
+          slug: spaceSlug,
           worldId: venue?.worldId ?? "",
           parentId: values.parentId,
         };
@@ -197,10 +200,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
         history.push(adminWorldSpacesUrl(world?.slug));
       } else {
+        if (!worldId) return;
+
         const newVenue = {
           ...vals,
-          id: createSlug(vals.name),
-          worldId: worldId ?? "",
+          slug: spaceSlug,
+          worldId: worldId,
           parentId: values.parentId ?? "",
         };
 
@@ -216,7 +221,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       user,
       validateParentId,
       values.parentId,
-      venue?.worldId,
+      venue,
       venueId,
       world?.slug,
       worldId,
@@ -280,17 +285,23 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
   const { ownedVenues } = useOwnedVenues({});
 
-  const backButtonOptionList = ownedVenues.filter(
-    ({ id, name, template, worldId: venueWorldId }) => {
-      if (venueId === id || venue?.worldId !== venueWorldId) {
-        return null;
-      }
+  const filteredWorlds = ownedVenues.filter(
+    (venue) => venue.id === venue.worldId
+  );
 
-      return {
-        name,
-        template,
-      };
-    }
+  const backButtonOptionList = useMemo(
+    () =>
+      Object.fromEntries(
+        filteredWorlds
+          .filter(({ id }) => !(venueId === id))
+          .map((world) => [world.id, world])
+      ),
+    [venueId, filteredWorlds]
+  );
+
+  const parentSpace = useMemo(
+    () => filteredWorlds.find(({ id }) => id === venue?.parentId),
+    [filteredWorlds, venue?.parentId]
   );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>(
@@ -376,7 +387,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       </div>
       <AdminSpacesListItem title="The basics" isOpened>
         <>
-          <AdminSection title="Rename your space" withLabel>
+          <AdminSection title="Name your space" withLabel>
             <AdminInput
               name="name"
               placeholder="Space Name"
@@ -384,6 +395,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
               errors={errors}
               required
               disabled={nameDisabled}
+              max={COMMON_NAME_MAX_CHAR_COUNT}
             />
           </AdminSection>
           <AdminSection title="Subtitle" withLabel>
@@ -407,12 +419,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
             withLabel
           >
             <SpacesDropdown
-              venueSpaces={backButtonOptionList ?? ALWAYS_EMPTY_ARRAY}
-              venueId={venueId}
+              portals={backButtonOptionList}
               setValue={setValue}
               register={register}
               fieldName="parentId"
-              defaultSpace={values.parentId}
+              parentSpace={parentSpace}
+              error={errors.parentId}
             />
           </AdminSection>
           <AdminCheckbox

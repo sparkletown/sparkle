@@ -3,42 +3,29 @@ import * as Yup from "yup";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_MAP_ICON_PLACEMENT,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_AUDITORIUM_COLUMNS_COUNT,
   MINIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
   PLAYA_HEIGHT,
-  PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { createSlug, PlacementInput, VenueInput } from "api/admin";
+import { createSlug, VenueInput } from "api/admin";
 
 import { RoomVisibility, VenueTemplate } from "types/venues";
 
-import { commonTitleSchema } from "forms/commonTitleSchema";
-import { createUrlIfNoFileSchema } from "forms/createUrlIfNoFileSchema";
+import { createFileSchema } from "forms/factory/createFileSchema";
+import { createNameSchema } from "forms/factory/createNameSchema";
+import { createUrlIfNoFileSchema } from "forms/factory/createUrlIfNoFileSchema";
 
-import "firebase/functions";
-
-const initialMapIconPlacement: VenueInput["placement"] = {
-  x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
-  y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
-};
-
-const createFileSchema = (name: string, required: boolean) =>
-  Yup.mixed<FileList>().test(
-    name,
-    "Image required",
-    (val: FileList) => !required || val.length > 0
-  );
-
-export const validationSchema = Yup.object()
+export const venueDetailsCreateSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
-    name: commonTitleSchema.when(
+    name: createNameSchema({ name: "Name", withMin: true }).when(
       "$editing",
       (editing: boolean, schema: Yup.StringSchema) =>
         !editing
@@ -63,8 +50,15 @@ export const validationSchema = Yup.object()
               )
           : schema //will be set from the data from the api. Does not need to be unique
     ),
-    bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
-    logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
+    bannerImageFile: createFileSchema({
+      name: "bannerImageFile",
+      required: false,
+    }).notRequired(), // override files to make them non required
+
+    logoImageFile: createFileSchema({
+      name: "logoImageFile",
+      required: false,
+    }).notRequired(),
 
     showGrid: Yup.bool().notRequired(),
     columns: Yup.number().when("showGrid", {
@@ -109,7 +103,7 @@ export const validationSchema = Yup.object()
         x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH),
         y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
       })
-      .default(initialMapIconPlacement),
+      .default(DEFAULT_MAP_ICON_PLACEMENT),
 
     showRadio: Yup.bool().notRequired(),
     radioStations: Yup.string().when("showRadio", {
@@ -146,48 +140,3 @@ export const validationSchema = Yup.object()
       ),
   })
   .required();
-
-// this is used to transform the api data to conform to the yup schema
-// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
-export const editVenueCastSchema = Yup.object()
-  .shape<Partial<VenueInput>>({})
-  // possible locations for the subtitle
-  .from("subtitle", "subtitle")
-  .from("config.landingPageConfig.subtitle", "subtitle")
-
-  .from("config.landingPageConfig.description", "description")
-  .from("host.icon", "logoImageUrl")
-  .from("showGrid", "showGrid")
-  .from("showReactions", "showReactions")
-  .from("enableJukebox", "enableJukebox")
-  .from("hasSocialLoginEnabled", "hasSocialLoginEnabled")
-  .from("showShoutouts", "showShoutouts")
-  .from("columns", "columns")
-
-  // possible locations for the banner image
-  .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
-  .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
-
-  .from("auditoriumColumns", "auditoriumColumns")
-  .from("auditoriumRows", "auditoriumRows");
-
-// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
-export const editPlacementCastSchema = Yup.object()
-  .shape<Partial<PlacementInput>>({})
-
-  .from("placement.addressText", "addressText")
-  .from("placement.notes", "notes")
-  .required();
-
-export const editPlacementSchema = Yup.object().shape<PlacementInput>({
-  addressText: Yup.string(),
-  notes: Yup.string(),
-  width: Yup.number().required("Required"),
-  height: Yup.number().required("Required"),
-  placement: Yup.object()
-    .shape({
-      x: Yup.number().required("Required").min(0).max(PLAYA_WIDTH),
-      y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
-    })
-    .default(initialMapIconPlacement),
-});

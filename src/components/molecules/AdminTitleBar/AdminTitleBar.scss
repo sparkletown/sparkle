@@ -1,0 +1,17 @@
+@import "scss/constants";
+
+.AdminTitleBar {
+  display: grid;
+  grid-template: 1fr 1fr / $admin-ia-dash-template-columns;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: $spacing--xs 0;
+  margin: $spacing--lg 0;
+
+  :first-child {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+  }
+}
