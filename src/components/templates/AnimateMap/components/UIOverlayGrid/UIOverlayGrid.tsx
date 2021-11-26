@@ -10,7 +10,7 @@ import {
 import { Room } from "types/rooms";
 import { AnimateMapVenue } from "types/venues";
 
-import { RoomModal } from "../../../PartyMap/components";
+import { PortalModal } from "../../../PartyMap/components";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
@@ -56,8 +56,8 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
   return (
     <div className="UIOverlay">
       <div className="UIOverlayGrid">
-        <RoomModal
-          room={selectedRoom}
+        <PortalModal
+          portal={selectedRoom}
           venue={venue}
           show={hasSelectedRoom}
           onHide={unselectRoom}

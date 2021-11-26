@@ -13,9 +13,9 @@ import { VenueAccessMode } from "types/VenueAcccess";
 import { isTruthy } from "utils/types";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
@@ -61,7 +61,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const history = useHistory();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);

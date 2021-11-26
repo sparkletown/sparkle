@@ -39,10 +39,12 @@ $yellow: #ffe600;
 $light-green: #3ce348;
 $dark-green: #208a28;
 
+// @deprecated please use var(--content--over-Xa) where X is the opacity e.g. var(--content--over-20a)
 @function opaque-white($opacity) {
   @return rgba(#{var(--content--over-rgb)}, $opacity);
 }
 
+// @deprecated please use var(--content--under-Xa) where X is the opacity e.g. var(--content--over-20a)
 @function opaque-black($opacity) {
   @return rgba(#{var(--content--under-rgb)}, $opacity);
 }
@@ -156,6 +158,9 @@ $drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
+$button-width--max: 300px - 2 * $spacing--md;
+$button-width--normal: 100%;
+
 $image-overlay-padding: 0.3rem;
 $image-overlay-backdrop-filter: blur(10px);
 
@@ -182,8 +187,11 @@ $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
 
+$admin-ia-dash-template-columns: 5fr
+  minmax(#{$button-width--max + 2 * $spacing--md}, 1fr);
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
-//   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
+//   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;

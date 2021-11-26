@@ -762,7 +762,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueRef = venuesRef.docs && venuesRef.docs[0];
 
   if (venueRef) {
-    await venueRef.update(updated);
+    await venueRef.ref.update(updated);
   }
 });
 
@@ -835,7 +835,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueRef = venuesRef.docs && venuesRef.docs[0];
 
   if (venueRef) {
-    await venueRef.update(updated);
+    await venueRef.ref.update(updated);
   }
 });
 
@@ -862,7 +862,7 @@ exports.updateMapBackground = functions.https.onCall(async (data, context) => {
   const venueRef = venuesRef.docs && venuesRef.docs[0];
 
   if (venueRef) {
-    await venueRef.update({
+    await venueRef.ref.update({
       mapBackgroundImageUrl: data.mapBackgroundImageUrl,
     });
   }
@@ -991,11 +991,13 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  // @debt perhaps await is more appropriate in front of admin so the function will return the error
   admin
     .firestore()
     .collection("venues")
     .doc(data.id)
-    .set(updated, { merge: true });
+    .set(updated, { merge: true })
+    .catch((e) => console.error(exports.updateVenueNG.name, e));
 });
 
 exports.updateTables = functions.https.onCall((data, context) => {

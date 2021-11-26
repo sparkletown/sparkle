@@ -1,7 +1,8 @@
 import * as Yup from "yup";
 
-import { testWorldBySlugExists } from "forms/common";
-import { createNameSchema } from "forms/createNameSchema";
+import { testWorldBySlugExists } from "utils/validation";
+
+import { createNameSchema } from "forms/factory/createNameSchema";
 
 export const worldStartSchema = Yup.object().shape({
   name: createNameSchema({ name: "Name" }).when(

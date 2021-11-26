@@ -15,18 +15,18 @@ import {
 } from "settings";
 import { DEFAULT_EMBED_URL } from "settings/embedUrlSettings";
 
-import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
+import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
-import { Room } from "types/rooms";
+import { Room, RoomInput } from "types/rooms";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
 import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -79,16 +79,17 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 }) => {
   const { user } = useUser();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
-  const portalId = room?.url?.split("/").pop();
+  const spaceSlugFromPortal = room?.url?.split("/").pop();
+  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(spaceSlugFromPortal);
 
   const { loading: isLoadingPortal, value: portal } = useAsync(async () => {
-    if (!portalId) return;
+    if (!spaceIdFromPortal) return;
 
-    return await fetchVenue(portalId);
-  }, [portalId]);
+    return await fetchVenue(spaceIdFromPortal);
+  }, [spaceIdFromPortal]);
 
   const defaultValues = useMemo(
     () => ({
@@ -141,7 +142,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   );
 
   const updateVenueRoom = useCallback(async () => {
-    if (!user || !portalId) return;
+    if (!user || !spaceIdFromPortal) return;
 
     const embedUrl = convertToEmbeddableUrl({
       url: values.iframeUrl,
@@ -150,7 +151,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 
     await updateVenueNG(
       {
-        id: portalId,
+        id: spaceIdFromPortal,
         iframeUrl: embedUrl || DEFAULT_EMBED_URL,
         autoPlay: values.autoPlay,
         bannerImageUrl: values.bannerImageUrl,
@@ -169,7 +170,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
     );
   }, [
     user,
-    portalId,
+    spaceIdFromPortal,
     values.iframeUrl,
     values.autoPlay,
     values.bannerImageUrl,
@@ -235,11 +236,11 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
         ownedVenues
           .filter(
             ({ id, worldId }) =>
-              !(portal?.worldId !== worldId || id === portalId)
+              !(portal?.worldId !== worldId || id === spaceIdFromPortal)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [ownedVenues, portal?.worldId, portalId]
+    [ownedVenues, portal?.worldId, spaceIdFromPortal]
   );
 
   const parentSpace = useMemo(

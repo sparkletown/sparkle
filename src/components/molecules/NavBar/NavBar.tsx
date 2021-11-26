@@ -5,23 +5,20 @@ import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import {
-  DEFAULT_SHOW_SCHEDULE,
-  PLAYA_VENUE_ID,
-  SPARKLE_PHOTOBOOTH_URL,
-} from "settings";
+import { PLAYA_VENUE_ID, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
+import { shouldScheduleBeShown } from "utils/schedule";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
@@ -69,7 +66,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 }) => {
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const {
@@ -89,7 +86,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   // when Admin is displayed, owned venues are used
   const currentVenue = relatedVenue ?? ownedVenue;
-  const parentVenueId = parentVenue?.id ?? ownedVenue?.parentId;
 
   const {
     location: { pathname },
@@ -109,9 +105,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    !isAdminContext &&
-    withSchedule &&
-    (world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+    !isAdminContext && withSchedule && shouldScheduleBeShown(world);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -161,12 +155,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
     setEventScheduleVisible(false);
   }, []);
-
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
     if (!sovereignVenueId) return;
@@ -303,10 +291,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
+        <BackButton variant="relative" space={parentVenue} />
       )}
     </>
   );

@@ -14,17 +14,17 @@ import {
   ROOM_TAXON,
 } from "settings";
 
-import { RoomInput, upsertRoom } from "api/admin";
+import { upsertRoom } from "api/admin";
 
-import { Room } from "types/rooms";
+import { Room, RoomInput } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { PartyMapVenue } from "types/venues";
 
 import { venueInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useQuery } from "hooks/useQuery";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import Login from "pages/Account/Login";
@@ -47,7 +47,7 @@ import { validationSchema } from "./RoomsValidationSchema";
 import "../Venue.scss";
 
 export const RoomsForm: React.FC = () => {
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
   const history = useHistory();
   const { user } = useUser();

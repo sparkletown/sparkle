@@ -9,8 +9,8 @@ import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
 import { Question } from "types/Question";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -38,7 +38,7 @@ export const ProfileQuestions: React.FC = () => {
 
   const { user } = useUser();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
