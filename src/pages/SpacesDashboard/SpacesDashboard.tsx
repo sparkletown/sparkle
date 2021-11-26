@@ -127,7 +127,7 @@ export const SpacesDashboard: React.FC = () => {
             </ButtonNG>
           </AdminTitleBar>
 
-          {hasPartyVenues && <AdminTitle>Party maps</AdminTitle>}
+          {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}
           <div
             className={classNames("SpacesDashboard__cards", {
               "SpacesDashboard__cards--empty": !hasPartyVenues,
@@ -144,7 +144,7 @@ export const SpacesDashboard: React.FC = () => {
             {hasPartyVenues && renderedPartyVenues}
           </div>
 
-          {hasOtherVenues && <AdminTitle>Other maps</AdminTitle>}
+          {hasOtherVenues && <AdminTitle>My other spaces</AdminTitle>}
           <div
             className={classNames("SpacesDashboard__cards", {
               "SpacesDashboard__cards--empty": !hasOtherVenues,
