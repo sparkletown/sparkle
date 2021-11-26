@@ -3,8 +3,8 @@ import React, { lazy, Suspense } from "react";
 import { tracePromise } from "utils/performance";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 
@@ -35,7 +35,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withHiddenLoginButton,
   children,
 }) => {
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, spaceId } = useSpaceBySlug(spaceSlug);
 
   // @debt remove backButton from Navbar
