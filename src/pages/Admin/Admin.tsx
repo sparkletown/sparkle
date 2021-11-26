@@ -40,8 +40,8 @@ import {
   canBeDeleted,
   canHavePlacement,
   canHaveSubvenues,
+  SortingOptions,
   sortVenues,
-  VenueSortingOptions,
 } from "utils/venue";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -90,7 +90,7 @@ const VenueList: React.FC<VenueListProps> = ({
   } = useShowHide();
 
   const [currentSortingOption, setCurrentSortingOption] = useState(
-    VenueSortingOptions.az
+    SortingOptions.az
   );
 
   const sortedVenues = useMemo(() => {
@@ -99,7 +99,7 @@ const VenueList: React.FC<VenueListProps> = ({
 
   const sortingOptions = useMemo(
     () =>
-      Object.values(VenueSortingOptions).map((sortingOption) => (
+      Object.values(SortingOptions).map((sortingOption) => (
         <li
           key={sortingOption}
           className={classNames("page-container-adminsidebar__sorting-option", {

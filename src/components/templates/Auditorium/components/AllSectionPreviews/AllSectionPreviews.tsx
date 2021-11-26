@@ -1,7 +1,7 @@
 import React, { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useRouteMatch } from "react-router";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import classNames from "classnames";
 import { sample } from "lodash";
 
@@ -13,7 +13,6 @@ import { AuditoriumVenue } from "types/venues";
 import { chooseAuditoriumSize } from "utils/auditorium";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -38,12 +37,10 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   venue,
 }) => {
   const match = useRouteMatch();
-  const { push: openUrlUsingRouter } = useHistory();
 
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,
   });
-  const parentVenueId = parentVenue?.id;
 
   const {
     auditoriumSections,
@@ -84,12 +81,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     enterSection(randomSectionId);
   }, [enterSection, availableSectionIds]);
 
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
-
   const containerClasses = classNames(
     "AllSectionPreviews",
     `AllSectionPreviews--${auditoriumSize}`
@@ -101,12 +92,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   return (
     <>
-      {parentVenue && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
-      )}
+      {parentVenue && <BackButton variant="relative" space={parentVenue} />}
       <VenueWithOverlay venue={venue} containerClassNames="">
         <InfiniteScroll
           dataLength={auditoriumSections.length}

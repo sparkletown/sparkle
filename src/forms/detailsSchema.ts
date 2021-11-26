@@ -9,8 +9,9 @@ import {
   messageMustBeMinimum,
   testGeneratesValidSlug,
   testVenueByNameExists,
-} from "forms/common";
-import { createNameSchema } from "forms/createNameSchema";
+} from "utils/validation";
+
+import { createNameSchema } from "forms/factory/createNameSchema";
 
 export interface VenueV2SchemaShape {
   name: string;

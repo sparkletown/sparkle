@@ -9,7 +9,7 @@ import {
   messageMustBeMaximum,
   messageMustBeMinimum,
   testGeneratesValidSlug,
-} from "forms/common";
+} from "utils/validation";
 
 export interface CreateNameSchemaOptions {
   name: string;
