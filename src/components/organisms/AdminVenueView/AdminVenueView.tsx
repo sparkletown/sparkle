@@ -130,61 +130,65 @@ export const AdminVenueView: React.FC = () => {
   return (
     <WithNavigationBar withSchedule>
       <AdminRestricted>
-        <AdminTitleBar className="AdminVenueView__title-bar">
-          <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
-            Back to Dashboard
-          </ButtonNG>
-          <AdminTitle>Edit {space.name}</AdminTitle>
-          <div>
-            <ButtonNG variant="danger" onClick={showDeleteModal}>
-              Delete space
-            </ButtonNG>
-            <ButtonNG
-              isLink
-              newTab
-              linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
-              variant="primary"
-            >
-              Visit Space
-            </ButtonNG>
-          </div>
-        </AdminTitleBar>
-
         <div className="AdminVenueView">
-          <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
+          <AdminTitleBar>
+            <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
+              Back to Dashboard
+            </ButtonNG>
+            <AdminTitle>Edit {space.name}</AdminTitle>
+            <div>
+              <ButtonNG variant="danger" onClick={showDeleteModal}>
+                Delete space
+              </ButtonNG>
+              <ButtonNG
+                isLink
+                newTab
+                linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
+                variant="primary"
+              >
+                Visit Space
+              </ButtonNG>
+            </div>
+          </AdminTitleBar>
+          <div className="AdminVenueView__tab-bar">
+            <div className="AdminVenueView__options">
+              {renderAdminVenueTabs}
+            </div>
+          </div>
+
+          {selectedTab === AdminVenueTab.spaces && (
+            <Spaces
+              onClickHome={navigateToHome}
+              onClickBack={navigateToHome}
+              onClickNext={navigateToTiming}
+              venue={space}
+            />
+          )}
+          {selectedTab === AdminVenueTab.timing && (
+            <SpaceTimingPanel
+              onClickHome={navigateToHome}
+              onClickBack={navigateToSpaces}
+              onClickNext={navigateToRun}
+              venue={space}
+            />
+          )}
+          {selectedTab === AdminVenueTab.run && (
+            <RunTabView
+              onClickHome={navigateToHome}
+              onClickBack={navigateToTiming}
+              onClickNext={navigateToHome}
+              venue={space}
+            />
+          )}
+          <VenueDeleteModal
+            venueId={spaceId}
+            venueName={space?.name}
+            show={isDeleteModalShown}
+            onDelete={navigateToHome}
+            onHide={closeDeleteModal}
+            onCancel={closeDeleteModal}
+          />
         </div>
-        {selectedTab === AdminVenueTab.spaces && (
-          <Spaces
-            onClickHome={navigateToHome}
-            onClickBack={navigateToHome}
-            onClickNext={navigateToTiming}
-            venue={space}
-          />
-        )}
-        {selectedTab === AdminVenueTab.timing && (
-          <SpaceTimingPanel
-            onClickHome={navigateToHome}
-            onClickBack={navigateToSpaces}
-            onClickNext={navigateToRun}
-            venue={space}
-          />
-        )}
-        {selectedTab === AdminVenueTab.run && (
-          <RunTabView
-            onClickHome={navigateToHome}
-            onClickBack={navigateToTiming}
-            onClickNext={navigateToHome}
-            venue={space}
-          />
-        )}
-        <VenueDeleteModal
-          venueId={spaceId}
-          venueName={space?.name}
-          show={isDeleteModalShown}
-          onDelete={navigateToHome}
-          onHide={closeDeleteModal}
-          onCancel={closeDeleteModal}
-        />
       </AdminRestricted>
     </WithNavigationBar>
   );
