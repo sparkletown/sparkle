@@ -4,13 +4,14 @@ import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
 
-import { DEFAULT_REQUIRES_DOB } from "settings";
+import { ACCOUNT_PROFILE_BASE_URL, DEFAULT_REQUIRES_DOB } from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
+import { accountProfileUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -163,11 +164,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const accountProfileUrl = `/account/profile${
-        spaceId ? `?spaceSlug=${spaceId}` : ""
-      }`;
+      const profileUrl = spaceSlug
+        ? accountProfileUrl(spaceSlug)
+        : ACCOUNT_PROFILE_BASE_URL;
 
-      history.push(accountProfileUrl);
+      history.push(profileUrl);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setShowLoginModal(true);
