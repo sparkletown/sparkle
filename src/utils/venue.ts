@@ -40,7 +40,7 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
 export const buildEmptyVenue = (
   venueName: string,
   template: VenueTemplate
-): VenueInput_v2 => {
+): Omit<VenueInput_v2, "id"> => {
   const list = new DataTransfer();
 
   const fileList = list.files;
