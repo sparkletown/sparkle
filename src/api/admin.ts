@@ -320,6 +320,10 @@ export const createVenue = async (
 };
 
 export const createVenue_v2 = async (
+  // The default is for "doing something with a venue" to require a venue ID.
+  // Creating a venue is a special case and doesn't want a venue ID.
+  // This is preferred over having to remember to add "needs a venue ID" in
+  // many places.
   input: WithWorldId<Omit<VenueInput_v2, "id">>,
   user: firebase.UserInfo
 ) => {
