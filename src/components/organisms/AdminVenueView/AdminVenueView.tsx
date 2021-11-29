@@ -6,6 +6,8 @@ import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { SPACE_TAXON } from "settings";
+
 import {
   adminNGVenueUrl,
   adminWorldSpacesUrl,
@@ -138,7 +140,7 @@ export const AdminVenueView: React.FC = () => {
             <AdminTitle>Edit {space.name}</AdminTitle>
             <div>
               <ButtonNG variant="danger" onClick={showDeleteModal}>
-                Delete space
+                Delete {SPACE_TAXON.lower}
               </ButtonNG>
               <ButtonNG
                 isLink
@@ -146,7 +148,7 @@ export const AdminVenueView: React.FC = () => {
                 linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
                 variant="primary"
               >
-                Visit Space
+                Visit {SPACE_TAXON.capital}
               </ButtonNG>
             </div>
           </AdminTitleBar>
