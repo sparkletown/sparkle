@@ -4,14 +4,13 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
-
 import { updateWorldAdvancedSettings, World } from "api/world";
 
 import { UserStatus } from "types/User";
 import { WorldAdvancedFormInput } from "types/world";
 
 import { WithId, withId } from "utils/id";
+import { shouldScheduleBeShown } from "utils/schedule";
 
 import { emptyObjectSchema } from "forms/emptyObjectSchema";
 
@@ -62,7 +61,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       radioStation: world.radioStations?.[0],
       showBadges: world.showBadges,
       showRadio: world.showRadio,
-      showSchedule: world.showSchedule ?? DEFAULT_SHOW_SCHEDULE,
+      showSchedule: shouldScheduleBeShown(world),
       showUserStatus: world.showUserStatus,
       userStatuses: userStatuses,
     }),

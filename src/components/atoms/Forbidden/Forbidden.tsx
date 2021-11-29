@@ -5,7 +5,7 @@ import { useAsyncFn } from "react-use";
 
 import { venueLandingUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -19,7 +19,7 @@ export const Forbidden: React.FC = ({ children }) => {
   const { user } = useUser();
   const firebase = useFirebase();
   const history = useHistory();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
 
   const [{ loading }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();

@@ -10,7 +10,7 @@ import { WithId, WithVenueId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 import { adminNGVenueUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
 import { AdminVenueTab } from "components/organisms/AdminVenueView/AdminVenueView";
 
@@ -21,7 +21,7 @@ interface EventCardProps {
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ events }) => {
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const [nextEvent, followingEvent] = sortBy(events ?? [], "start_utc_seconds");
   const live = nextEvent && isEventLive(nextEvent);
 

@@ -8,13 +8,13 @@ import { isDefined, isTruthy } from "utils/types";
 import { venueEntranceUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
 import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const [error, setError] = useState(false);
