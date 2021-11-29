@@ -2,6 +2,8 @@ import * as Yup from "yup";
 
 import { MAX_SECTIONS_AMOUNT, MIN_SECTIONS_AMOUNT } from "settings";
 
+import { validUrlSchema } from "./validUrlSchema";
+
 export const spaceEditNGSchema = Yup.object().shape({
   image_url: Yup.string().notRequired(),
   bannerImageUrl: Yup.string().notRequired(),
@@ -15,4 +17,5 @@ export const spaceEditNGSchema = Yup.object().shape({
     )
     .min(MIN_SECTIONS_AMOUNT)
     .max(MAX_SECTIONS_AMOUNT),
+  iframeUrl: validUrlSchema,
 });
