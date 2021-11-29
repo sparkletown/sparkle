@@ -37,11 +37,35 @@
     max-width: 700px;
   }
 
-  .input-group {
+  &__input-group {
     position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.8rem;
+
+    input.input-block {
+      margin-bottom: 0.3rem;
+    }
+
+    .input-info {
+      font-size: 0.8em;
+      opacity: 0.8;
+      align-self: center;
+    }
+
+    &.input-info {
+      align-self: center;
+    }
+
+    .input-error {
+      text-align: center;
+      color: var(--danger--under);
+      font-size: 0.9em;
+      font-weight: bold;
+    }
 
     &__modal-input {
-      width: 100%;
+      width: 100% !important;
       border: $border-width--slim solid var(--accent--over-20a);
       text-align: left;
 

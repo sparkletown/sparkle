@@ -144,7 +144,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <div className="form-container">
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
-              <div className="input-group dropdown-container">
+              <div className="TimingEventModal__input-group dropdown-container">
                 <SpacesDropdown
                   portals={dropdownVenueList}
                   setValue={setValue}
@@ -155,12 +155,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 />
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="name">Name your experience</label>
                 <input
                   id="name"
                   name="name"
-                  className="input-group__modal-input"
+                  className="TimingEventModal__input-group__modal-input"
                   placeholder="Name"
                   ref={register}
                 />
@@ -169,11 +169,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 )}
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="description">Describe your experience</label>
                 <textarea
                   name="description"
-                  className="input-group__modal-input"
+                  className="TimingEventModal__input-group__modal-input"
                   placeholder="Description"
                   ref={register}
                 />
@@ -184,12 +184,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 )}
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="host">Host (people hosting the event)</label>
                 <input
                   id="host"
                   name="host"
-                  className="input-group__modal-input"
+                  className="TimingEventModal__input-group__modal-input"
                   placeholder="Dottie Longstockings"
                   ref={register}
                 />
@@ -198,7 +198,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 )}
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="date">
                   Start date and time (use your own time zone; it will be
                   automatically localized)
@@ -215,7 +215,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                       type="date"
                       min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
                       name="start_date"
-                      className="input-group__modal-input"
+                      className="TimingEventModal__input-group__modal-input"
                       ref={register}
                     />
                   </div>
@@ -223,7 +223,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     <input
                       type="time"
                       name="start_time"
-                      className="input-group__modal-input"
+                      className="TimingEventModal__input-group__modal-input"
                       ref={register}
                     />
                   </div>
@@ -243,12 +243,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 </div>
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label>Duration</label>
                 <div className="TimingEventModal__duration_container">
                   <input
                     name="duration_hours"
-                    className="input-group__modal-input--indent"
+                    className="TimingEventModal__input-group__modal-input--indent"
                     placeholder="hours"
                     ref={register}
                     size={8}
@@ -256,7 +256,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   <label htmlFor="duration_hours">hour(s)</label>
                   <input
                     name="duration_minutes"
-                    className="input-group__modal-input--indent"
+                    className="TimingEventModal__input-group__modal-input--indent"
                     placeholder="minutes"
                     ref={register}
                     size={8}
