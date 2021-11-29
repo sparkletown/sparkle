@@ -158,7 +158,9 @@ $drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
-$button-width--max: 300px - 2 * $spacing--md;
+$button-width--max-margin: $spacing--md;
+$button-width--max-wrap: 300px;
+$button-width--max: $button-width--max-wrap - 2 * $button-width--max-margin;
 $button-width--normal: 100%;
 
 $image-overlay-padding: 0.3rem;
@@ -187,10 +189,9 @@ $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
 
-$admin-ia-dash-template-columns: 5fr
-  minmax(#{$button-width--max + 2 * $spacing--md}, 1fr);
-$admin-ia-manage-space-columns: 5fr
-  minmax(#{$button-width--max * 2 + 2 * $spacing--md}, 1fr);
+$admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
+$admin-ia-manage-space-template-columns: 5fr
+  minmax(#{2 * $button-width--max-wrap}, 1fr);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)

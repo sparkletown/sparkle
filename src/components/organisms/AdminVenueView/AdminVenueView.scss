@@ -1,8 +1,10 @@
 @import "scss/constants.scss";
 
 .AdminVenueView {
-  display: flex;
-  justify-content: space-around;
+  &__tab-bar {
+    display: flex;
+    justify-content: space-around;
+  }
 
   @media (max-width: $media-breakpoint--lg) {
     align-items: center;
@@ -14,15 +16,8 @@
     width: 100%;
   }
 
-  &__title-bar {
-    grid-template: 1fr 1fr / $admin-ia-manage-space-columns;
-    padding: $spacing--md * 2 $spacing--md;
-  }
-
-  &__title {
-    font-size: $font-size--xxl;
-    margin: $font-size--md;
-    font-weight: bold;
+  .AdminTitleBar {
+    grid-template: 1fr 1fr / $admin-ia-manage-space-template-columns;
   }
 
   &__options {
