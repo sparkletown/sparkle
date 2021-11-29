@@ -27,6 +27,8 @@ import { AdminVenueView } from "components/organisms/AdminVenueView";
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>
     <Route
+      exact
+      strict
       path={[
         ADMIN_V4_SPACES_1_PARAM_URL,
         ADMIN_V4_SPACES_2_PARAM_URL,

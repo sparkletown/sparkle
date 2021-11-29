@@ -17,9 +17,13 @@ import "./AdminSpaceCard.scss";
 
 export interface AdminSpaceCardProps {
   venue: WithId<AnyVenue>;
+  worldSlug?: string;
 }
 
-export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
+export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
+  venue,
+  worldSlug,
+}) => {
   const backgroundStyle = useCss({
     "background-image": `url(${venue.mapBackgroundImageUrl})`,
   });
@@ -37,7 +41,10 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
         <div className={logoClasses} />
         <AdminShowcaseSubTitle>{venue.name}</AdminShowcaseSubTitle>
       </div>
-      <ButtonNG linkTo={adminNGVenueUrl(venue.slug)} disabled={!venue.slug}>
+      <ButtonNG
+        linkTo={adminNGVenueUrl(worldSlug, venue.slug)}
+        disabled={!venue.slug}
+      >
         Manage {SPACE_TAXON.capital} Settings
       </ButtonNG>
       <ButtonNG linkTo={adminNGSettingsUrl(venue.slug)} disabled={!venue.slug}>
