@@ -6,4 +6,5 @@
   height: calc(100% - #{$admin-ng-sidebar-footer-height--max});
   overflow: scroll;
   z-index: z(admin-sidebar-content);
+  padding: $spacing--xs;
 }

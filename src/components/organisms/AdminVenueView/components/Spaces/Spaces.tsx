@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { ROOMS_TAXON, SPACE_PORTALS_LIST } from "settings";
+import { PORTAL_INFO_LIST, ROOMS_TAXON } from "settings";
 
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
@@ -130,7 +130,7 @@ export const Spaces: React.FC<SpacesProps> = ({
   ]);
 
   return (
-    <AdminPanel className="Spaces">
+    <AdminPanel variant="bound" className="Spaces">
       <AdminSidebar>
         {renderSpaceEditForm()}
         {!selectedRoom && (
@@ -161,7 +161,7 @@ export const Spaces: React.FC<SpacesProps> = ({
               {renderVenueRooms}
             </AdminSpacesListItem>
             <AdminSpacesListItem title={`Add ${ROOMS_TAXON.lower}`}>
-              <PortalList items={SPACE_PORTALS_LIST} variant="modal" />
+              <PortalList items={PORTAL_INFO_LIST} variant="modal" />
             </AdminSpacesListItem>
           </>
         )}

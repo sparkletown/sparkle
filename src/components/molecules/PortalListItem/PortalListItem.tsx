@@ -1,18 +1,20 @@
-import React from "react";
+import React, { KeyboardEventHandler, useCallback } from "react";
 import classNames from "classnames";
 
-import { ROOM_TAXON, SpacePortalsListItem } from "settings";
+import { PortalInfoListItem, ROOM_TAXON } from "settings";
 
 import "./PortalListItem.scss";
 
 export interface PortalListItemProps {
-  item: SpacePortalsListItem;
+  item: PortalInfoListItem;
+  selected?: boolean;
   tabIndex: number;
   onClick?: () => void;
 }
 
 export const PortalListItem: React.FC<PortalListItemProps> = ({
   item,
+  selected,
   tabIndex,
   onClick,
 }) => {
@@ -20,8 +22,17 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
 
   const parentClasses = classNames({
     [`PortalListItem PortalListItem--${template}`]: true,
+    "PortalListItem--selected": selected,
     "mod--hidden": hidden,
   });
+
+  const handleKeyPress: KeyboardEventHandler<HTMLDivElement> = useCallback(
+    ({ code }) => {
+      if (code !== "Space" && code !== "Enter") return;
+      onClick?.();
+    },
+    [onClick]
+  );
 
   // NOTE: tabIndex allows tab behavior, @see https://allyjs.io/data-tables/focusable.html
   return (
@@ -29,6 +40,7 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
       <div
         className="PortalListItem__list-item"
         onClick={onClick}
+        onKeyPress={handleKeyPress}
         tabIndex={tabIndex}
       >
         <img

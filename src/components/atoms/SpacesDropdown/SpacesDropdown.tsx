@@ -3,7 +3,7 @@ import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { omit } from "lodash";
 
-import { SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import { PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { Room } from "types/rooms";
 import { AnyVenue, PortalTemplate, VenueTemplate } from "types/venues";
@@ -50,7 +50,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   const renderedOptions = useMemo(
     () =>
       Object.values(filteredPortals).map(({ name, template }) => {
-        const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
+        const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
           <ReactBootstrapDropdown.Item
@@ -80,7 +80,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
     const space = portals?.[selected.name] ?? parentSpace;
 
-    const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
+    const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
       <span className="SpacesDropdown__value">

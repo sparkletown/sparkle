@@ -21,10 +21,10 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
+  ADMIN_OLD_ROOT_URL,
   ADMIN_V1_CREATE_URL,
   ADMIN_V1_EDIT_BASE_URL,
   ADMIN_V1_ROOMS_BASE_URL,
-  ADMIN_V1_ROOT_URL,
   DEFAULT_SPACE_SLUG,
   ROOM_TAXON,
   ROOMS_TAXON,
@@ -140,7 +140,7 @@ const VenueList: React.FC<VenueListProps> = ({
               canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
-            <Link to={`${ADMIN_V1_ROOT_URL}/${venue.id}`}>{venue.name}</Link>
+            <Link to={`${ADMIN_OLD_ROOT_URL}/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms?.map((room, idx) => (
@@ -149,7 +149,7 @@ const VenueList: React.FC<VenueListProps> = ({
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
                     <Link
-                      to={`${ADMIN_V1_ROOT_URL}/${venue.id}?roomIndex=${idx}`}
+                      to={`${ADMIN_OLD_ROOT_URL}/${venue.id}?roomIndex=${idx}`}
                     >
                       {room.title}
                     </Link>
@@ -298,7 +298,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   const navigateToAdmin = useCallback(() => {
-    history.push(ADMIN_V1_ROOT_URL);
+    history.push(ADMIN_OLD_ROOT_URL);
   }, [history]);
 
   useEffect(() => {

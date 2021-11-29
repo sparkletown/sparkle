@@ -2,10 +2,10 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import {
+  ADMIN_OLD_ROOT_URL,
   ADMIN_V1_CREATE_URL,
   ADMIN_V1_EDIT_PARAM_URL,
   ADMIN_V1_ROOMS_PARAM_URL,
-  ADMIN_V1_ROOT_URL,
   ADMIN_V1_VENUE_PARAM_URL,
 } from "settings";
 
@@ -19,6 +19,6 @@ export const AdminV1Subrouter: React.FC = () => (
     <Route path={ADMIN_V1_CREATE_URL} component={VenueWizard} />
     <Route path={ADMIN_V1_EDIT_PARAM_URL} component={VenueWizard} />
     <Route path={ADMIN_V1_VENUE_PARAM_URL} component={Admin} />
-    <Route path={ADMIN_V1_ROOT_URL} component={Admin} />
+    <Route path={ADMIN_OLD_ROOT_URL} component={Admin} />
   </Switch>
 );

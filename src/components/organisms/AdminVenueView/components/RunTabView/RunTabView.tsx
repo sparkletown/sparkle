@@ -43,7 +43,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
   const venueId = venue.id;
 
   return (
-    <AdminPanel className="RunTabView">
+    <AdminPanel variant="bound" className="RunTabView">
       <AdminSidebar>
         <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
         <AdminSidebarFooter {...sidebarFooterProps} />

@@ -29,7 +29,7 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
   const isCreatingWorld = isLoaded && !world && !worldSlug;
 
   return (
-    <AdminPanel>
+    <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>
           {worldSlug ? "Configure your world" : "Create a new world"}

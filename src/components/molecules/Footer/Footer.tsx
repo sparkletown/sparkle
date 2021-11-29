@@ -11,7 +11,7 @@ import { getExtraLinkProps } from "utils/url";
 import "./Footer.scss";
 
 export const Footer = () => (
-  <div className="footer-wrapper">
+  <div className="Footer">
     <a href={EXTERNAL_SPARKLE_TOC_URL} {...getExtraLinkProps(true)}>
       Terms of Use
     </a>

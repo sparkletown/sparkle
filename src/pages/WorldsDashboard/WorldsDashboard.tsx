@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { ADMIN_V3_NEW_WORLD_URL } from "settings";
+import { ADMIN_V3_WORLD_CREATE_URL } from "settings";
 
 import { useUser } from "hooks/useUser";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
@@ -55,7 +55,7 @@ export const WorldsDashboard: React.FC = () => {
     <div className="WorldsDashboard">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
-          <AdminPanel>
+          <AdminPanel variant="bound">
             <AdminSidebar>
               <AdminSidebarTitle>
                 Select or create a world to get started
@@ -69,7 +69,7 @@ export const WorldsDashboard: React.FC = () => {
               <div className="WorldsDashboard__new">
                 <ButtonNG
                   variant="normal-gradient"
-                  linkTo={ADMIN_V3_NEW_WORLD_URL}
+                  linkTo={ADMIN_V3_WORLD_CREATE_URL}
                 >
                   Create a new world
                 </ButtonNG>
