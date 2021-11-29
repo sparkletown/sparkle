@@ -37,6 +37,7 @@
     max-width: 700px;
   }
 
+  // @debt this should be shorter, not having to compensate for `global.scss` interference. remove when no longer necessary
   &__input-group {
     position: relative;
     display: flex;
