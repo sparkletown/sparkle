@@ -11,11 +11,6 @@ on:
       # also occurs whenever the description/title/etc are changed. Keeping commented here for
       # now, but I think we are probably fine without it.
       #- edited
-    paths:
-      - '.github/workflows/firebase-hosting-pull-request.yml'
-      - 'package-lock.json'
-      - 'public/**'
-      - 'src/**'
 
 jobs:
   build_and_preview:
