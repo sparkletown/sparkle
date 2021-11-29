@@ -94,7 +94,7 @@ export type VenueInput = VenueImageUrls & {
   roomVisibility?: RoomVisibility;
 };
 
-export interface VenueInput_v2 extends VenueAdvancedConfig {
+export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   name: string;
   slug: string;
   description?: string;
@@ -222,8 +222,14 @@ const createFirestoreVenueInput = async (
   return firestoreVenueInput;
 };
 
-const createFirestoreVenueInput_v2 = async (
-  input: VenueInput_v2,
+/**
+ * This method creates the payload for an API call for creating/updating venues.
+ * It is only intended to be used in two places:
+ *  * Creating a new venue (and so no ID is needed)
+ *  * By createFirestoreVenueInputWithoutId_v2 which adds the venue ID
+ */
+const createFirestoreVenueInputWithoutId_v2 = async (
+  input: Omit<VenueInput_v2, "id">,
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
@@ -274,7 +280,7 @@ const createFirestoreVenueInput_v2 = async (
     };
   }
 
-  const firestoreVenueInput: FirestoreVenueInput_v2 = {
+  const firestoreVenueInput: Omit<FirestoreVenueInput_v2, "id"> = {
     ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
@@ -289,6 +295,20 @@ const createFirestoreVenueInput_v2 = async (
   return firestoreVenueInput;
 };
 
+const createFirestoreVenueInput_v2 = async (
+  input: VenueInput_v2,
+  user: firebase.UserInfo
+) => {
+  // We temporarily cast the result to unknown so that we can cast to the
+  // same type with the ID added, then we add the missing property.
+  const result = ((await createFirestoreVenueInputWithoutId_v2(
+    input,
+    user
+  )) as unknown) as FirestoreVenueInput_v2;
+  result.id = input.id;
+  return result;
+};
+
 export const createVenue = async (
   input: VenueInput,
   user: firebase.UserInfo
@@ -300,10 +320,10 @@ export const createVenue = async (
 };
 
 export const createVenue_v2 = async (
-  input: WithWorldId<VenueInput_v2>,
+  input: WithWorldId<Omit<VenueInput_v2, "id">>,
   user: firebase.UserInfo
 ) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(
+  const firestoreVenueInput = await createFirestoreVenueInputWithoutId_v2(
     {
       ...input,
       showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
