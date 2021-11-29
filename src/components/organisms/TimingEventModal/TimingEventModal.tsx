@@ -278,10 +278,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className="TimingEventModal__container">
-                {/*
-                  Note: this delete button is being moved to the experience
-                  list component in the near future
-                  */}
+                { 
+                  // @debt: move this delete button to the experience list component
+                 }
                 {showDeleteButton && (
                   <ButtonNG
                     disabled={formState.isSubmitting}
