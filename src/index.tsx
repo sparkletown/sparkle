@@ -61,13 +61,12 @@ const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();
 firebaseApp.auth();
 firebaseApp.firestore();
-const firebaseFunctions = firebase.functions();
 firebase.performance();
 
 // Enable the functions emulator when running in development
-if (process.env.NODE_ENV === "development") {
+/* if (process.env.NODE_ENV === "local-development") {
   firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
-}
+}*/
 
 const rrfConfig = {
   userProfile: "users",
