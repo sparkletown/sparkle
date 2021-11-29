@@ -100,21 +100,6 @@ export const AdminVenueView: React.FC = () => {
     [history, world?.slug]
   );
 
-  const navigateToSpaces = useCallback(
-    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.spaces)),
-    [history, spaceSlug]
-  );
-
-  const navigateToTiming = useCallback(
-    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.timing)),
-    [history, spaceSlug]
-  );
-
-  const navigateToRun = useCallback(
-    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.run)),
-    [history, spaceSlug]
-  );
-
   if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
@@ -158,30 +143,11 @@ export const AdminVenueView: React.FC = () => {
             </div>
           </div>
 
-          {selectedTab === AdminVenueTab.spaces && (
-            <Spaces
-              onClickHome={navigateToHome}
-              onClickBack={navigateToHome}
-              onClickNext={navigateToTiming}
-              venue={space}
-            />
-          )}
+          {selectedTab === AdminVenueTab.spaces && <Spaces venue={space} />}
           {selectedTab === AdminVenueTab.timing && (
-            <SpaceTimingPanel
-              onClickHome={navigateToHome}
-              onClickBack={navigateToSpaces}
-              onClickNext={navigateToRun}
-              venue={space}
-            />
+            <SpaceTimingPanel venue={space} />
           )}
-          {selectedTab === AdminVenueTab.run && (
-            <RunTabView
-              onClickHome={navigateToHome}
-              onClickBack={navigateToTiming}
-              onClickNext={navigateToHome}
-              venue={space}
-            />
-          )}
+          {selectedTab === AdminVenueTab.run && <RunTabView venue={space} />}
           <VenueDeleteModal
             venueId={spaceId}
             venueName={space?.name}
