@@ -58,7 +58,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
 
-  const tables = venue?.config?.tables ?? TABLES;
+  const generatedTables = venue?.config?.tables;
+
+  const tables = generatedTables ?? TABLES;
+
+  const hasGeneratedTables = !!generatedTables;
+
+  const allowCreateEditTable = hasGeneratedTables && !seatedAtTable;
 
   return (
     <>
@@ -108,6 +114,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
+                  allowTableEdit={allowCreateEditTable}
                   tables={tables}
                 />
               )}
@@ -133,8 +140,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
-              venueName={venue.name}
+              venue={venue}
               TableComponent={TableComponent}
+              allowCreateEditTable={allowCreateEditTable}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
               showOnlyAvailableTables={showOnlyAvailableTables}

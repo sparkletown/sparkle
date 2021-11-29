@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -43,39 +43,32 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const formDefaultValues = useMemo(
-    () => ({
+  const { register, handleSubmit, errors } = useForm<EditTableForm>({
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+    defaultValues: {
       title,
       subtitle,
       capacity,
-    }),
-    [capacity, subtitle, title]
-  );
-
-  const { register, handleSubmit, errors, reset } = useForm<EditTableForm>({
-    mode: "onBlur",
-    reValidateMode: "onBlur",
-    defaultValues: formDefaultValues,
+    },
   });
-
-  // Updates the default values whenever they change. This is required because they are cached after the first render.
-  useEffect(() => {
-    reset(formDefaultValues);
-  }, [formDefaultValues, reset, title]);
 
   // use useAsyncFn for easier error handling, instead of state hook
   const [{ error: httpError, loading: isUpdating }, updateTables] = useAsyncFn(
     async (values: EditTableForm) => {
       if (!venueId || !tableOfUser) return;
 
-      await updateVenueTable({
+      const newTable = {
+        ...tableOfUser,
         ...values,
+      };
+
+      await updateVenueTable({
         venueId,
-        tableOfUser,
-        tables,
+        newTable,
       }).then(onHide);
     },
-    [onHide, tableOfUser, tables, venueId]
+    [onHide, tableOfUser, venueId]
   );
 
   const saveButtonClassNames = classNames("btn btn-centered btn-primary", {

@@ -742,26 +742,23 @@ exports.updateTables = functions.https.onCall((data, context) => {
   const venueRef = admin.firestore().collection("venues").doc(data.venueId);
 
   return admin.firestore().runTransaction(async (transaction) => {
-    const venueDoc = await transaction.get(venueRef);
+    const venue = await transaction.get(venueRef);
 
-    if (!venueDoc.exists) {
+    if (!venue.exists) {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
 
-    const venueTables = [...data.tables];
+    const venueTables = (venue.config && venue.config.tables) || [];
 
     const currentTableIndex = venueTables.findIndex(
-      (table) => table.reference === data.updatedTable.reference
+      (table) => table.reference === data.newTable.reference
     );
 
     if (currentTableIndex < 0) {
-      throw new HttpsError(
-        "not-found",
-        `current table does not exist in the venue`
-      );
+      venueTables.push(data.newTable);
+    } else {
+      venueTables[currentTableIndex] = data.updatedTable;
     }
-
-    venueTables[currentTableIndex] = data.updatedTable;
 
     transaction.update(venueRef, { "config.tables": venueTables });
   });

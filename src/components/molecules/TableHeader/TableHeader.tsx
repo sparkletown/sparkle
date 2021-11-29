@@ -32,6 +32,7 @@ export interface TableHeaderProps {
   setSeatedAtTable: (val: string) => void;
   venueName: string;
   tables: Table[];
+  allowTableEdit?: boolean;
 }
 
 export const TableHeader: React.FC<TableHeaderProps> = ({
@@ -39,6 +40,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   setSeatedAtTable,
   venueName,
   tables,
+  allowTableEdit = false,
 }) => {
   const { user, profile } = useUser();
 
@@ -158,9 +160,11 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="row TableHeader__topic">
           {tableTitle}
 
-          <div className="TableHeader__edit-topic-button" onClick={show}>
-            <FontAwesomeIcon icon={faPen} />
-          </div>
+          {allowTableEdit && (
+            <div className="TableHeader__edit-topic-button" onClick={show}>
+              <FontAwesomeIcon icon={faPen} />
+            </div>
+          )}
         </div>
 
         {tableCapacity && (

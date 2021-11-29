@@ -53,7 +53,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
             }`}
           >
             <TablesUserList
-              venueName={venue.name}
+              venue={venue}
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
               TableComponent={TableComponent}
