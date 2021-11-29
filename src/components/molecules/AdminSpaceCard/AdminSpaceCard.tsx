@@ -43,7 +43,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
       </div>
       <ButtonNG
         linkTo={adminNGVenueUrl(worldSlug, venue.slug)}
-        disabled={!venue.slug}
+        disabled={!worldSlug || !venue.slug}
       >
         Manage {SPACE_TAXON.capital} Settings
       </ButtonNG>
