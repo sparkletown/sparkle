@@ -17,7 +17,7 @@
     input {
       display: inline-block;
       width: auto;
-      border: 0.1px solid var(--accent--over-20a);
+      border: $border-width--slim solid var(--accent--over-20a);
       text-align: left;
     }
 
@@ -42,7 +42,7 @@
 
     &__modal-input {
       width: 100%;
-      border: 0.1px solid var(--accent--over-20a);
+      border: $border-width--slim solid var(--accent--over-20a);
       text-align: left;
 
       &--indented {
