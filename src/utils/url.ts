@@ -45,8 +45,8 @@ export const venueInsideUrl = (spaceSlug: string) => {
   return `${VENUE_INSIDE_BASE_URL}/${spaceSlug}`;
 };
 
-export const accountProfileUrl = (spaceSlug: string) => {
-  return `${ACCOUNT_PROFILE_BASE_URL}/${spaceSlug}`;
+export const accountProfileUrlWithSlug = (spaceSlug: string) => {
+  return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}`;
 };
 
 export const venueLandingUrl = (spaceSlug: string) => {
