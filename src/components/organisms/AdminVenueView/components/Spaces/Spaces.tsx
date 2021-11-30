@@ -131,6 +131,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
             <AdminSpacesListItem title="Map background">
               <BackgroundSelect
+                venueId={venue.id}
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
                 venueName={venue.name}
