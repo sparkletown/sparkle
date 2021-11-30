@@ -15,7 +15,9 @@ import { Dropdown } from "components/atoms/Dropdown";
 import "./SpacesDropdown.scss";
 
 const noneOptionName = "None";
-const spaceNoneOption = { none: { name: "", template: undefined } };
+const spaceNoneOption = Object.freeze({
+  none: Object.freeze({ name: "", template: undefined }),
+});
 
 export type SpacesDropdownPortal = { template?: PortalTemplate; name: string };
 export interface DropdownRoom extends Room {
