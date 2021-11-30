@@ -46,8 +46,8 @@ export const PortalAddModal: React.FC<PortalAddModalProps> = ({
   const { description, icon, poster, template, text } = item;
 
   const { user } = useUser();
-  const { spaceSlug } = useSpaceParams();
-  const { worldId } = useWorldBySlug(spaceSlug);
+  const { spaceSlug, worldSlug } = useSpaceParams();
+  const { worldId } = useWorldBySlug(worldSlug);
 
   const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
