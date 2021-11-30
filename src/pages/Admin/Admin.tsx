@@ -40,16 +40,16 @@ import {
   canBeDeleted,
   canHavePlacement,
   canHaveSubvenues,
+  SortingOptions,
   sortVenues,
-  VenueSortingOptions,
 } from "utils/venue";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -90,7 +90,7 @@ const VenueList: React.FC<VenueListProps> = ({
   } = useShowHide();
 
   const [currentSortingOption, setCurrentSortingOption] = useState(
-    VenueSortingOptions.az
+    SortingOptions.az
   );
 
   const sortedVenues = useMemo(() => {
@@ -99,7 +99,7 @@ const VenueList: React.FC<VenueListProps> = ({
 
   const sortingOptions = useMemo(
     () =>
-      Object.values(VenueSortingOptions).map((sortingOption) => (
+      Object.values(SortingOptions).map((sortingOption) => (
         <li
           key={sortingOption}
           className={classNames("page-container-adminsidebar__sorting-option", {
@@ -428,7 +428,7 @@ export const Admin: React.FC = () => {
     storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
   });
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const queryParams = useQuery();

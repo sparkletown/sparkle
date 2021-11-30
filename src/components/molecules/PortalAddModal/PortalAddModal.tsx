@@ -20,8 +20,8 @@ import { buildEmptyVenue } from "utils/venue";
 import { createPortalSchema } from "forms/createPortalSchema";
 import { createSpaceSchema } from "forms/createSpaceSchema";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCheckImage } from "hooks/useCheckImage";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
@@ -46,7 +46,7 @@ export const PortalAddModal: React.FC<PortalAddModalProps> = ({
   const { description, icon, poster, template, text } = item;
 
   const { user } = useUser();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { worldId } = useWorldBySlug(spaceSlug);
 
   const { register, getValues, handleSubmit, errors } = useForm({

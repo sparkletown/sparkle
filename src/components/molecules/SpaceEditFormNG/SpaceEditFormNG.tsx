@@ -25,8 +25,8 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -79,7 +79,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 }) => {
   const { user } = useUser();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const spaceSlugFromPortal = room?.url?.split("/").pop();

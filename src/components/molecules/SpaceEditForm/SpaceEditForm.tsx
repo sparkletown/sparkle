@@ -30,8 +30,8 @@ import { isExternalPortal } from "utils/url";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -88,7 +88,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const spaceSlugFromPortal = room?.url?.split("/").pop();

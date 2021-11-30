@@ -25,7 +25,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
 }) => {
   const spaceSlug = space?.slug;
   const displayName = locationName ?? space?.name;
-  const backButtonText = locationName ? `Back to ${displayName}` : "Back";
+  const backButtonText = displayName ? `Back to ${displayName}` : "Back";
 
   const {
     push: customOpenRelativeUrl,

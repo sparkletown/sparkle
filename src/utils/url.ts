@@ -18,8 +18,12 @@ import {
 
 import { Room } from "types/rooms";
 
-export const adminNGVenueUrl = (spaceSlug?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_SPACE_PARAM_URL, { spaceSlug, selectedTab });
+export const adminNGVenueUrl = (
+  worldSlug?: string,
+  spaceSlug?: string,
+  selectedTab?: string
+) =>
+  generatePath(ADMIN_V3_SPACE_PARAM_URL, { worldSlug, spaceSlug, selectedTab });
 
 export const adminNGSettingsUrl = (spaceSlug?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_SPACE_SETTINGS_PARAM_URL, { spaceSlug, selectedTab });

@@ -14,7 +14,7 @@ import {
 } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
@@ -37,7 +37,7 @@ export const VenueEntrancePage: React.FC = () => {
   const { user, profile } = useUser();
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);

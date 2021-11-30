@@ -24,13 +24,13 @@ import {
 } from "utils/userLocation";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
@@ -70,7 +70,7 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const { worldSlug } = useWorldParams();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded } = useSpaceBySlug(spaceSlug);
   const analytics = useAnalytics({ venue: space });
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);

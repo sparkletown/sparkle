@@ -9,7 +9,7 @@ import {
   DISPLAY_NAME_MAX_CHAR_COUNT,
 } from "settings";
 
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { Loading } from "components/molecules/Loading";
@@ -34,7 +34,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const spaceSlug = useSpaceParams() ?? DEFAULT_SPACE_SLUG;
+  const { spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
   const returnUrl: string | undefined =
     useSearchParam("returnUrl") ?? undefined;
