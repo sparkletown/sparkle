@@ -1,4 +1,4 @@
-const VALID_URL_PROTOCOLS = ["http:", "https:"];
+const VALID_URL_PROTOCOLS = ["https:"];
 
 const isValidUrl = (urlString) => {
   if (!urlString) return false;
