@@ -1,9 +1,13 @@
-import React, { KeyboardEventHandler, useCallback } from "react";
+import React from "react";
 import classNames from "classnames";
 
-import { PortalInfoListItem, ROOM_TAXON } from "settings";
+import { ALWAYS_NOOP_FUNCTION, PortalInfoListItem, ROOM_TAXON } from "settings";
+
+import { useKeyPress } from "hooks/useKeyPress";
 
 import "./PortalListItem.scss";
+
+const HANDLED_KEY_PRESSES = ["Space", "Enter"];
 
 export interface PortalListItemProps {
   item: PortalInfoListItem;
@@ -26,13 +30,10 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
     "mod--hidden": hidden,
   });
 
-  const handleKeyPress: KeyboardEventHandler<HTMLDivElement> = useCallback(
-    ({ code }) => {
-      if (code !== "Space" && code !== "Enter") return;
-      onClick?.();
-    },
-    [onClick]
-  );
+  const handleKeyPress = useKeyPress({
+    keys: HANDLED_KEY_PRESSES,
+    onPress: onClick ?? ALWAYS_NOOP_FUNCTION,
+  });
 
   // NOTE: tabIndex allows tab behavior, @see https://allyjs.io/data-tables/focusable.html
   return (

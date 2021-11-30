@@ -11,7 +11,13 @@
   white-space: nowrap;
 
   a {
-    @include link-style(opaque-white(0.5));
+    color: opaque-white(0.5);
+    text-decoration: underline opaque-white(0.5);
+
+    &:hover {
+      color: opaque-white(0.5);
+      text-decoration: underline opaque-white(0.5);
+    }
   }
 
   &--no-event {

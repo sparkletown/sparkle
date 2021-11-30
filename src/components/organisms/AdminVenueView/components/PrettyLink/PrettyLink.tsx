@@ -1,17 +1,54 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { Link, LinkProps, useHistory } from "react-router-dom";
+import classNames from "classnames";
+
+import { useKeyPress } from "hooks/useKeyPress";
 
 import "./PrettyLink.scss";
 
-interface PrettyLinkProps {
-  title: string;
-  onClick: () => void;
+const HANDLED_KEY_PRESSES = ["Space", "Enter"];
+
+interface PrettyLinkProps extends Omit<LinkProps, "to"> {
+  className?: string;
+  onClick?: () => void;
+  title?: string;
+  to?: string;
 }
 
-export const PrettyLink: React.FC<PrettyLinkProps> = ({ title, onClick }) => {
+export const PrettyLink: React.FC<PrettyLinkProps> = ({
+  children,
+  className,
+  onClick,
+  title,
+  to,
+  ...extraProps
+}) => {
+  const history = useHistory();
+  const navigateTo = useCallback(() => to && history.push(to), [to, history]);
+
+  const handleKeyPress = useKeyPress({
+    keys: HANDLED_KEY_PRESSES,
+    onPress: onClick ?? navigateTo,
+  });
+
+  const contents = children ?? title ?? null;
+  const parentClasses = classNames("PrettyLink", className);
+
   return (
-    <div className="PrettyLink">
-      <span title={title} onClick={onClick}>
-        {title}
+    <div className={parentClasses}>
+      <span
+        className="PrettyLink__wrapper"
+        title={title}
+        onClick={onClick}
+        onKeyPress={handleKeyPress}
+      >
+        {to ? (
+          <Link className="PrettyLink__link" {...extraProps} to={to}>
+            {contents}
+          </Link>
+        ) : (
+          contents
+        )}
       </span>
     </div>
   );

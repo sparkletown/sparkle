@@ -3,12 +3,7 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
-import {
-  PortalInfoListItem,
-  ROOM_TAXON,
-  SPACE_INFO_LIST,
-  SPACE_TAXON,
-} from "settings";
+import { PortalInfoListItem, SPACE_INFO_LIST, SPACE_TAXON } from "settings";
 
 import { createVenue_v2 } from "api/admin";
 
@@ -81,7 +76,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
   );
 
   return (
-    <Form className="SpaceCreateForm__form" onSubmit={handleSubmit(addPortal)}>
+    <Form className="SpaceCreateForm" onSubmit={handleSubmit(addPortal)}>
       <AdminInput
         name="name"
         type="text"
@@ -103,10 +98,10 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
         <ButtonNG
           variant="primary"
           disabled={isLoading}
-          title={`Add ${ROOM_TAXON.lower}`}
+          title={`Create ${SPACE_TAXON.lower}`}
           type="submit"
         >
-          Add {ROOM_TAXON.lower}
+          Create
         </ButtonNG>
       </div>
     </Form>

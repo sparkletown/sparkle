@@ -7,4 +7,12 @@
   overflow: scroll;
   z-index: z(admin-sidebar-content);
   padding: $spacing--xs;
+
+  &--light {
+    background-color: var(--content--over-10a);
+  }
+
+  &--dark {
+    background-color: var(--content--under);
+  }
 }

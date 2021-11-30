@@ -80,7 +80,7 @@ export const SpacesDashboard: React.FC = () => {
     <div className="SpacesDashboard">
       <WithNavigationBar hasBackButton withSchedule>
         <AdminRestricted>
-          <AdminTitleBar>
+          <AdminTitleBar variant="grid-with-tools">
             <ButtonNG
               variant="secondary"
               isLink

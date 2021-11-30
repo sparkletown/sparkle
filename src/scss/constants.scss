@@ -344,16 +344,6 @@ $z-layers: (
   max-width: $max;
 }
 
-@mixin link-style($color, $hover-color: $color) {
-  color: $color;
-  text-decoration: underline $color;
-
-  &:hover {
-    color: $hover-color;
-    text-decoration: underline $hover-color;
-  }
-}
-
 @mixin circle-avatar {
   object-fit: cover;
   object-position: top;
