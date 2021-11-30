@@ -30,9 +30,13 @@ export interface AdminSpaceCardProps {
   worldSlug?: string;
 }
 
-export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
+export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
+  venue,
+  worldSlug,
+}) => {
   const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.bannerImageUrl,
+    venue?.config?.landingPageConfig.coverImageUrl ||
+      venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
@@ -106,7 +110,10 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
               {spaceDescriptionText}
             </span>
           </div>
-          <ButtonNG linkTo={adminNGVenueUrl(venue.slug)} disabled={!venue.slug}>
+          <ButtonNG
+            linkTo={adminNGVenueUrl(worldSlug, venue.slug)}
+            disabled={!venue.slug}
+          >
             Edit
           </ButtonNG>
         </div>
