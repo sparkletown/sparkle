@@ -17,12 +17,10 @@ export const PortalAddModal: React.FC<PortalAddModalProps> = ({
   item,
   onHide,
   show,
-}) => {
-  return (
-    <Modal className="PortalAddModal" show={show} onHide={onHide} centered>
-      <Modal.Body>
-        <PortalAddForm item={item} onDone={onHide} />
-      </Modal.Body>
-    </Modal>
-  );
-};
+}) => (
+  <Modal className="PortalAddModal" show={show} onHide={onHide} centered>
+    <Modal.Body>
+      <PortalAddForm item={item} onDone={onHide} />
+    </Modal.Body>
+  </Modal>
+);

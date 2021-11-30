@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { ADMIN_V3_WORLD_BASE_URL, SPACE_TAXON, SPACES_TAXON } from "settings";
 
-import { isPartyMapVenue } from "types/venues";
+import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import {
   adminCreateSpace,
@@ -61,7 +61,16 @@ export const SpacesDashboard: React.FC = () => {
     [sortedVenues]
   );
 
-  const hasVenues = renderedPartyVenues.length > 0;
+  const renderedOtherVenues = useMemo(
+    () =>
+      sortedVenues
+        ?.filter(isNotPartyMapVenue)
+        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
+    [sortedVenues]
+  );
+
+  const hasPartyVenues = renderedPartyVenues.length > 0;
+  const hasOtherVenues = renderedOtherVenues.length > 0;
 
   if (isLoadingSpaces || !isWorldLoaded) {
     return <LoadingPage />;
@@ -88,20 +97,23 @@ export const SpacesDashboard: React.FC = () => {
               Settings
             </ButtonNG>
           </AdminTitleBar>
+
+          {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}
           <main
             className={classNames("SpacesDashboard__main", {
-              "SpacesDashboard__main--empty": !hasVenues,
+              "SpacesDashboard__main--empty": !hasPartyVenues,
             })}
           >
             <div className="SpacesDashboard__cards">
-              {!hasVenues && (
+              {!hasPartyVenues && (
                 <div className="SpacesDashboard__welcome-message">
                   <p>Welcome!</p>
                   <p>Create your first Sparkle {SPACE_TAXON.lower}</p>
                 </div>
               )}
-              {hasVenues && renderedPartyVenues}
+              {hasPartyVenues && renderedPartyVenues}
             </div>
+
             <aside className="SpacesDashboard__aside">
               <SortDropDown
                 onClick={setCurrentSortingOption}
@@ -127,6 +139,15 @@ export const SpacesDashboard: React.FC = () => {
               </ButtonNG>
             </aside>
           </main>
+
+          {hasOtherVenues && <AdminTitle>My other spaces</AdminTitle>}
+          <div
+            className={classNames("SpacesDashboard__cards", {
+              "SpacesDashboard__cards--empty": !hasOtherVenues,
+            })}
+          >
+            {hasOtherVenues && renderedOtherVenues}
+          </div>
         </AdminRestricted>
       </WithNavigationBar>
     </div>
