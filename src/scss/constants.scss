@@ -135,10 +135,11 @@ $font-weight--500: 500;
 $font-weight--600: 600;
 $font-weight--700: 700;
 
-$media-breakpoint--sm: 576px;
-$media-breakpoint--md: 768px;
-$media-breakpoint--lg: 992px;
-$media-breakpoint--xl: 1200px;
+$media-breakpoint--sm: 576px; // mobile
+$media-breakpoint--md: 768px; // tablet--small
+$media-breakpoint--lg: 992px; // tablet--medium
+$media-breakpoint--xl: 1200px; // tablet--large
+$media-breakpoint--xxl: 1350px; // laptop
 
 $text-shadow--thin: 0 1px 2px rgba(#{var(--content--under-rgb)}, 0.25);
 $text-shadow--medium: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.25);
@@ -158,7 +159,9 @@ $drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
-$button-width--max: 300px - 2 * $spacing--md;
+$button-width--max-margin: $spacing--md;
+$button-width--max-wrap: 300px;
+$button-width--max: $button-width--max-wrap - 2 * $button-width--max-margin;
 $button-width--normal: 100%;
 
 $image-overlay-padding: 0.3rem;
@@ -186,9 +189,11 @@ $admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
 $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
+$admin-ng-space-card-box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14);
 
-$admin-ia-dash-template-columns: 5fr
-  minmax(#{$button-width--max + 2 * $spacing--md}, 1fr);
+$admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
+$admin-ia-manage-space-template-columns: 5fr
+  minmax(#{2 * $button-width--max-wrap}, 1fr);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
@@ -201,6 +206,7 @@ $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
 $z-layer-viewing-window: 5;
+$z-layer-space-card-link: 1;
 $z-layer-on-top-bg: 1;
 $z-layer-jazz-header: $z-layer-on-top-bg;
 $z-layer-user-list-label: $z-layer-on-top-bg;
@@ -269,6 +275,8 @@ $z-layers: (
   map-grid: 3,
   map-room--unclickable: 2,
   map-background: 1,
+  // Admin Space Card
+  space-card-link: $z-layer-space-card-link,
   // Legacy
   account-profile-picture-preview: 1,
   duststorm-container: 100,
