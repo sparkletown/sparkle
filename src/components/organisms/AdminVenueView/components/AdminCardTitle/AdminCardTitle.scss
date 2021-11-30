@@ -9,7 +9,7 @@ $height: 1rem;
   padding: 0;
   text-shadow: $text-shadow--outline;
   font-weight: $font-weight--700;
-  font-size: font-size--parent(1);
+  font-size: font-size--parent();
   color: $content--over;
   margin: $spacing--md $spacing--md $spacing--sm;
   word-break: break-word;

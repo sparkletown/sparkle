@@ -30,16 +30,14 @@ export interface AdminSpaceCardProps {
   worldSlug?: string;
 }
 
-export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
-  venue,
-  worldSlug,
-}) => {
+export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
   const backgroundStyle = useCss({
+    // @debt There should be a way to move the rgba() functions to SCSS and use $color-constant instead of literals
     background: `linear-gradient(
         rgba(25, 24, 26, 0.8),
         rgba(25, 24, 26, 0.8)
@@ -67,7 +65,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
             target="_blank"
             rel="noopener noreferer"
           >
-            {"Visit"}
+            Visit
             <FontAwesomeIcon
               className="AdminSpaceCard__link-icon"
               icon={faExternalLinkAlt}

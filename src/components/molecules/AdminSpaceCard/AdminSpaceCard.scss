@@ -17,7 +17,7 @@ $admin-space-card-description-height: 100px;
   border: none;
   border-radius: $border-radius--xl;
   gap: font-size--root(0.5);
-  max-height: 450px;
+  max-height: 3 * $admin-space-card-bg-height;
   box-shadow: $admin-ng-space-card-box-shadow;
 
   &__bg {
@@ -109,7 +109,7 @@ $admin-space-card-description-height: 100px;
     border-radius: $border-radius--max;
     background-size: cover;
     background-color: $content--under;
-    box-shadow: 0 $spacing--xs $spacing--md opaque-black(0.4);
+    box-shadow: 0 $spacing--xs $spacing--md var(--content--under-40a);
     flex-shrink: 0;
   }
 
