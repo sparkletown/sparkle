@@ -2,13 +2,16 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { IFRAME_ALLOW } from "settings";
+import {
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+  SPACE_PORTALS_ICONS_MAPPING,
+} from "settings";
 
 import { ViewingWindowVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { getDefaultPortalIcon } from "utils/icons";
 import { WithId } from "utils/id";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -67,7 +70,9 @@ export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
 
   if (!venue) return <Loading label="Loading..." />;
 
-  const infoIcon = host?.icon || getDefaultPortalIcon(venue?.template);
+  const infoIcon =
+    host?.icon ||
+    (SPACE_PORTALS_ICONS_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
 
   return (
     <>
