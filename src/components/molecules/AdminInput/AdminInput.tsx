@@ -23,6 +23,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   register,
   errors,
   hidden: isHidden,
+  disabled,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -38,10 +39,15 @@ export const AdminInput: React.FC<AdminInputProps> = ({
       name={name}
       ref={register}
       id={id}
+      disabled={disabled}
       type="hidden"
     />
   ) : (
-    <p className="AdminInput AdminInput--visible">
+    <p
+      className={`AdminInput AdminInput--visible ${
+        error ? "AdminInput--invalid" : ""
+      } ${disabled ? "AdminInput--disabled" : ""}`}
+    >
       {label && (
         <label className="AdminInput__label" htmlFor={id}>
           {label}
@@ -53,6 +59,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
         name={name}
         ref={register}
         id={id}
+        disabled={disabled}
       />
       {subtext && <span className="AdminInput__subtext">{subtext}</span>}
       {error && <span className="AdminInput__error">{error?.message}</span>}

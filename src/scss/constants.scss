@@ -32,7 +32,6 @@ $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $light-grey--lightest: #acadb0;
-$concrete: #a3a6ab;
 
 $green: #4bcc4b;
 $yellow: #ffe600;
@@ -303,8 +302,12 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
-@function box-shadow--large($transparency: 0.5) {
-  @return 0 10px 30px 0 opaque-black($transparency);
+@function box-shadow--input($color) {
+  @return 0 0 0 2px $color;
+}
+
+@function box-shadow--large($color) {
+  @return 0 10px 30px 0 $color;
 }
 
 @function font-size--parent($scale: 1) {

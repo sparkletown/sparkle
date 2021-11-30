@@ -26,7 +26,7 @@ $active-poster-shadows: 0 10px 20px 0 var(--primary--under-50a);
 
   &:hover {
     background-color: $lighter-intermediate-grey;
-    border-color: $concrete;
+    border-color: var(--content--over-60a);
   }
 
   &--live {
