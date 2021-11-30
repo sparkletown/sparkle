@@ -2,20 +2,32 @@ import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGVenueUrl, adminWorldSpacesUrl } from "utils/url";
+import { SPACE_TAXON } from "settings";
+
+import {
+  adminNGVenueUrl,
+  adminWorldSpacesUrl,
+  venueInsideUrl,
+} from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useShowHide } from "hooks/useShowHide";
 import { useWorldById } from "hooks/worlds/useWorldById";
+
+import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
 import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components/SpaceTimingPanel";
 
+import { AdminTitle } from "components/molecules/AdminTitle";
+import { AdminTitleBar } from "components/molecules/AdminTitleBar";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
 
 import { WithNavigationBar } from "../WithNavigationBar";
@@ -54,8 +66,13 @@ export const AdminVenueView: React.FC = () => {
     spaceSlug,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
+  const {
+    isShown: isDeleteModalShown,
+    show: showDeleteModal,
+    hide: closeDeleteModal,
+  } = useShowHide();
 
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world } = useWorldById(space?.worldId);
 
@@ -85,24 +102,6 @@ export const AdminVenueView: React.FC = () => {
     [history, worldSlug]
   );
 
-  const navigateToSpaces = useCallback(
-    () =>
-      history.push(adminNGVenueUrl(worldSlug, spaceSlug, AdminVenueTab.spaces)),
-    [history, spaceSlug, worldSlug]
-  );
-
-  const navigateToTiming = useCallback(
-    () =>
-      history.push(adminNGVenueUrl(worldSlug, spaceSlug, AdminVenueTab.timing)),
-    [history, spaceSlug, worldSlug]
-  );
-
-  const navigateToRun = useCallback(
-    () =>
-      history.push(adminNGVenueUrl(worldSlug, spaceSlug, AdminVenueTab.run)),
-    [history, spaceSlug, worldSlug]
-  );
-
   if (!isSpaceLoaded) {
     return <LoadingPage />;
   }
@@ -121,32 +120,45 @@ export const AdminVenueView: React.FC = () => {
     <WithNavigationBar withSchedule>
       <AdminRestricted>
         <div className="AdminVenueView">
-          <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
+          <AdminTitleBar>
+            <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
+              Back to Dashboard
+            </ButtonNG>
+            <AdminTitle>Edit {space.name}</AdminTitle>
+            <div>
+              <ButtonNG variant="danger" onClick={showDeleteModal}>
+                Delete {SPACE_TAXON.lower}
+              </ButtonNG>
+              <ButtonNG
+                isLink
+                newTab
+                linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
+                variant="primary"
+              >
+                Visit {SPACE_TAXON.capital}
+              </ButtonNG>
+            </div>
+          </AdminTitleBar>
+          <div className="AdminVenueView__tab-bar">
+            <div className="AdminVenueView__options">
+              {renderAdminVenueTabs}
+            </div>
+          </div>
+
+          {selectedTab === AdminVenueTab.spaces && <Spaces venue={space} />}
+          {selectedTab === AdminVenueTab.timing && (
+            <SpaceTimingPanel venue={space} />
+          )}
+          {selectedTab === AdminVenueTab.run && <RunTabView venue={space} />}
+          <VenueDeleteModal
+            venueId={spaceId}
+            venueName={space?.name}
+            show={isDeleteModalShown}
+            onDelete={navigateToHome}
+            onHide={closeDeleteModal}
+            onCancel={closeDeleteModal}
+          />
         </div>
-        {selectedTab === AdminVenueTab.spaces && (
-          <Spaces
-            onClickHome={navigateToHome}
-            onClickBack={navigateToHome}
-            onClickNext={navigateToTiming}
-            venue={space}
-          />
-        )}
-        {selectedTab === AdminVenueTab.timing && (
-          <SpaceTimingPanel
-            onClickHome={navigateToHome}
-            onClickBack={navigateToSpaces}
-            onClickNext={navigateToRun}
-            venue={space}
-          />
-        )}
-        {selectedTab === AdminVenueTab.run && (
-          <RunTabView
-            onClickHome={navigateToHome}
-            onClickBack={navigateToTiming}
-            onClickNext={navigateToHome}
-            venue={space}
-          />
-        )}
       </AdminRestricted>
     </WithNavigationBar>
   );
