@@ -27,9 +27,13 @@ import "./AdminSpaceCard.scss";
 
 export interface AdminSpaceCardProps {
   venue: WithId<AnyVenue>;
+  worldSlug?: string;
 }
 
-export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({ venue }) => {
+export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
+  venue,
+  worldSlug,
+}) => {
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR

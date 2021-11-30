@@ -427,6 +427,9 @@ export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
 export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
+export const isNotPartyMapVenue = (venue: AnyVenue) =>
+  venue.template !== VenueTemplate.partymap;
+
 export const urlFromImage = (
   defaultValue: string,
   filesOrUrl?: FileList | string

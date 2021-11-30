@@ -59,11 +59,13 @@ export const AdminVenueView: React.FC = () => {
 
   const { world } = useWorldById(space?.worldId);
 
+  const worldSlug = world?.slug;
+
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
       <Link
         key={key}
-        to={adminNGVenueUrl(spaceSlug, key)}
+        to={adminNGVenueUrl(worldSlug, spaceSlug, key)}
         className={classNames({
           AdminVenueView__tab: true,
           "AdminVenueView__tab--selected": selectedTab === key,
@@ -76,26 +78,29 @@ export const AdminVenueView: React.FC = () => {
         {label}
       </Link>
     ));
-  }, [selectedTab, spaceSlug]);
+  }, [selectedTab, spaceSlug, worldSlug]);
 
   const navigateToHome = useCallback(
-    () => history.push(adminWorldSpacesUrl(world?.slug)),
-    [history, world?.slug]
+    () => history.push(adminWorldSpacesUrl(worldSlug)),
+    [history, worldSlug]
   );
 
   const navigateToSpaces = useCallback(
-    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.spaces)),
-    [history, spaceSlug]
+    () =>
+      history.push(adminNGVenueUrl(worldSlug, spaceSlug, AdminVenueTab.spaces)),
+    [history, spaceSlug, worldSlug]
   );
 
   const navigateToTiming = useCallback(
-    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.timing)),
-    [history, spaceSlug]
+    () =>
+      history.push(adminNGVenueUrl(worldSlug, spaceSlug, AdminVenueTab.timing)),
+    [history, spaceSlug, worldSlug]
   );
 
   const navigateToRun = useCallback(
-    () => history.push(adminNGVenueUrl(spaceSlug, AdminVenueTab.run)),
-    [history, spaceSlug]
+    () =>
+      history.push(adminNGVenueUrl(worldSlug, spaceSlug, AdminVenueTab.run)),
+    [history, spaceSlug, worldSlug]
   );
 
   if (!isSpaceLoaded) {
