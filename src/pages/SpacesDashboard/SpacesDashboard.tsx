@@ -52,33 +52,20 @@ export const SpacesDashboard: React.FC = () => {
     () =>
       sortedVenues
         ?.filter(isPartyMapVenue)
-        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
-    [sortedVenues]
+        .map((venue) => (
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+        )),
+    [sortedVenues, worldSlug]
   );
-
-  // const sortingOptions = useMemo(
-  //   () => (
-  //     // @debt align the style of the SpacesDropdown with the Dropdown component
-  //     <DropdownButton variant="secondary" title="Sort spaces">
-  //       {Object.values(VenueSortingOptions).map((sortingOption) => (
-  //         <ReactBootstrapDropdown.Item
-  //           key={sortingOption}
-  //           onClick={() => setCurrentSortingOption(sortingOption)}
-  //         >
-  //           {sortingOption}
-  //         </ReactBootstrapDropdown.Item>
-  //       ))}
-  //     </DropdownButton>
-  //   ),
-  //   []
-  // );
 
   const renderedOtherVenues = useMemo(
     () =>
       sortedVenues
         ?.filter(isNotPartyMapVenue)
-        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
-    [sortedVenues]
+        .map((venue) => (
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+        )),
+    [sortedVenues, worldSlug]
   );
 
   const hasPartyVenues = renderedPartyVenues.length > 0;

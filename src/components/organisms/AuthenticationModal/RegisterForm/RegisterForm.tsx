@@ -164,7 +164,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       postRegisterCheck(auth, data);
 
       const accountProfileUrl = `/account/profile${
-        spaceId ? `?venueId=${spaceId}` : ""
+        spaceId ? `?spaceSlug=${spaceId}` : ""
       }`;
 
       history.push(accountProfileUrl);

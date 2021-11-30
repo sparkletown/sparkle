@@ -191,6 +191,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       if (venueId) {
         const updatedVenue = {
           ...vals,
+          id: venueId,
           slug: spaceSlug,
           worldId: venue?.worldId ?? "",
           parentId: values.parentId,
