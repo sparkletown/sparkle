@@ -46,6 +46,8 @@ export const venueInsideUrl = (spaceSlug: string) => {
 };
 
 export const accountProfileUrlWithSlug = (spaceSlug: string) => {
+  // @debt remove query param in favor of path param and/or
+  // add comprehensive `redirect` solution project-wide
   return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}`;
 };
 
