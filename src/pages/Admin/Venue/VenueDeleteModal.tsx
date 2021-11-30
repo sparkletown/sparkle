@@ -10,7 +10,7 @@ import "./VenueDeleteModal.scss";
 
 export interface VenueDeleteModalProps {
   venueId?: string;
-  venueName: string;
+  venueName?: string;
   show: boolean;
   onHide?: () => void;
   onDelete?: () => void;
