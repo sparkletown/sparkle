@@ -236,10 +236,9 @@ button.btn {
   }
 }
 
-// Inputs
+// @debt replace plain input and textarea elements with AdminInput and/or AdminTextarea and/or similar, then remove these global styles
 input,
 textarea {
-  // @debt remove style auto-setting for inputs
   -webkit-appearance: none;
   border: none;
   outline: none;

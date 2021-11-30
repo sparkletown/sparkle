@@ -306,6 +306,14 @@ $z-layers: (
   @return 0 0 0 2px $color;
 }
 
+@function box-shadow--small($color) {
+  @return 0 2px 4px 0 $color;
+}
+
+@function box-shadow--medium($color) {
+  @return 0 4px 10px 0 $color;
+}
+
 @function box-shadow--large($color) {
   @return 0 10px 30px 0 $color;
 }

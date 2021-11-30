@@ -21,6 +21,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
   subtext,
   register,
   errors,
+  disabled,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -29,7 +30,11 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
     [label, name]
   );
   return (
-    <p className="AdminTextarea">
+    <p
+      className={`AdminTextarea AdminTextarea--visible ${
+        error ? "AdminTextarea--invalid" : ""
+      } ${disabled ? "AdminTextarea--disabled" : ""}`}
+    >
       {label && (
         <label className="AdminTextarea__label" htmlFor={id}>
           {label}
@@ -41,6 +46,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
         name={name}
         ref={register}
         id={id}
+        disabled={disabled}
       />
       {subtext && <span className="AdminTextarea__subtext">{subtext}</span>}
       {error && <span className="AdminTextarea__error">{error?.message}</span>}
