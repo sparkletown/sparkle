@@ -417,14 +417,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
                     <>
-                      <Form.Label>Livestream URL</Form.Label>
-                      <InputField
+                      <AdminInput
                         name="venue.iframeUrl"
                         type="text"
                         autoComplete="off"
                         placeholder="Livestream URL"
-                        error={errors?.venue?.iframeUrl}
-                        ref={register()}
+                        label="Livestream URL"
+                        errors={errors}
+                        register={register}
                       />
                       <AdminCheckbox
                         variant="toggler"
