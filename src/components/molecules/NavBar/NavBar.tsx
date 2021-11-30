@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
@@ -91,12 +91,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
-
-  const isSovereignVenue = spaceId === sovereignVenueId;
-
-  const hasSovereignVenue = sovereignVenueId !== undefined;
-
-  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -188,13 +182,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
-              {shouldShowHomeButton && (
-                <FontAwesomeIcon
-                  icon={faHome}
-                  className="NavBar__home-icon"
-                  onClick={navigateToHomepage}
-                />
-              )}
 
               {shouldShowSchedule && spaceId ? (
                 <button
