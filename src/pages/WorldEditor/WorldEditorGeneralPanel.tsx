@@ -7,19 +7,19 @@ import { AdminShowcase } from "components/organisms/AdminVenueView/components/Ad
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
+import { WorldGeneralForm } from "components/organisms/WorldGeneralForm";
 import { WorldShowcase } from "components/organisms/WorldShowcase/WorldShowcase";
-import { WorldStartForm } from "components/organisms/WorldStartForm";
 
 import { Loading } from "components/molecules/Loading";
 
-import "./WorldEditorStartPanel.scss";
+import "./WorldEditorGeneralPanel.scss";
 
-export interface WorldEditorStartPanelProps {
+export interface WorldEditorGeneralPanelProps {
   worldSlug?: string;
   onClickHome: () => void;
 }
 
-export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
+export const WorldEditorGeneralPanel: React.FC<WorldEditorGeneralPanelProps> = ({
   worldSlug,
   onClickHome,
 }) => {
@@ -32,11 +32,11 @@ export const WorldEditorStartPanel: React.FC<WorldEditorStartPanelProps> = ({
     <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>
-          {worldSlug ? "Configure your world" : "Create a new world"}
+          {worldSlug ? "Manage general settings" : "Create a new world"}
         </AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />
         {isUpdatingWorld || isCreatingWorld ? (
-          <WorldStartForm world={world} onClickCancel={onClickHome} />
+          <WorldGeneralForm world={world} onClickCancel={onClickHome} />
         ) : (
           <Loading />
         )}

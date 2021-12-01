@@ -12,7 +12,7 @@ import { UserStatus } from "types/User";
 import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
-  WorldStartFormInput,
+  WorldGeneralFormInput,
 } from "types/world";
 
 import { generateFirestoreId, WithId, withId } from "utils/id";
@@ -52,7 +52,7 @@ export interface World {
 }
 
 export const createFirestoreWorldCreateInput: (
-  input: WorldStartFormInput
+  input: WorldGeneralFormInput
 ) => Promise<Partial<World>> = async (input) => {
   const name = input.name;
   const slug = createSlug(name);
@@ -61,7 +61,7 @@ export const createFirestoreWorldCreateInput: (
 };
 
 export const createFirestoreWorldStartInput: (
-  input: WithId<WorldStartFormInput>,
+  input: WithId<WorldGeneralFormInput>,
   user: firebase.UserInfo
 ) => Promise<Partial<World>> = async (input, user) => {
   // NOTE: id is needed before world is created to upload the images
@@ -147,7 +147,7 @@ export const createFirestoreWorldAdvancedInput: (
 };
 
 export const createWorld: (
-  world: WorldStartFormInput,
+  world: WorldGeneralFormInput,
   user: firebase.UserInfo
 ) => Promise<{
   worldId?: string;
@@ -196,7 +196,7 @@ export const createWorld: (
 };
 
 export const updateWorldStartSettings = async (
-  world: WithId<WorldStartFormInput>,
+  world: WithId<WorldGeneralFormInput>,
   user: firebase.UserInfo
 ) => {
   return await firebase.functions().httpsCallable("world-updateWorld")(
