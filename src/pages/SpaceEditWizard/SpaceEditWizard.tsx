@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
-import { useSpaceParams } from "hooks/useSpaceParams";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
 import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
@@ -15,7 +15,7 @@ import { NotFound } from "components/atoms/NotFound";
 import "./SpaceEditWizard.scss";
 
 export const SpaceEditWizard: React.FC = () => {
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   if (!isSpaceLoaded) {

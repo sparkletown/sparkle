@@ -191,6 +191,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       if (venueId) {
         const updatedVenue = {
           ...vals,
+          id: venueId,
           slug: spaceSlug,
           worldId: venue?.worldId ?? "",
           parentId: values.parentId,
@@ -300,7 +301,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   );
 
   const parentSpace = useMemo(
-    () => filteredWorlds.find(({ id }) => id === venue?.parentId),
+    () =>
+      venue?.parentId
+        ? filteredWorlds.find(({ id }) => id === venue?.parentId)
+        : { name: "" },
     [filteredWorlds, venue?.parentId]
   );
 

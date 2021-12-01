@@ -20,8 +20,9 @@ import { buildEmptyVenue } from "utils/venue";
 import { createPortalSchema } from "forms/createPortalSchema";
 import { createSpaceSchema } from "forms/createSpaceSchema";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCheckImage } from "hooks/useCheckImage";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
@@ -46,8 +47,9 @@ export const PortalAddModal: React.FC<PortalAddModalProps> = ({
   const { description, icon, poster, template, text } = item;
 
   const { user } = useUser();
-  const spaceSlug = useSpaceParams();
-  const { worldId } = useWorldBySlug(spaceSlug);
+  const { spaceSlug, worldSlug } = useSpaceParams();
+  const { worldId } = useWorldBySlug(worldSlug);
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
@@ -64,7 +66,7 @@ export const PortalAddModal: React.FC<PortalAddModalProps> = ({
     { loading: isLoading, error: submitError },
     addPortal,
   ] = useAsyncFn(async () => {
-    if (!user || !spaceSlug || !template || !worldId) return;
+    if (!user || !spaceSlug || !template || !worldId || !spaceId) return;
 
     const { roomUrl, venueName } = getValues();
 
@@ -96,10 +98,9 @@ export const PortalAddModal: React.FC<PortalAddModalProps> = ({
       );
     }
 
-    // @debt this is wrong, for all intents and purposes the venueId a.k.a spaceId is the identifier of the parent space
-    await createRoom(portalData, spaceSlug, user);
+    await createRoom(portalData, spaceId, user);
     await onHide();
-  }, [getValues, worldId, onHide, icon, template, user, spaceSlug]);
+  }, [getValues, worldId, onHide, icon, template, user, spaceSlug, spaceId]);
 
   const { isValid: isPosterValid } = useCheckImage(poster);
 

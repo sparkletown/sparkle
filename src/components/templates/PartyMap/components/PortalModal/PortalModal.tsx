@@ -10,6 +10,7 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
+import { shouldScheduleBeShown } from "utils/schedule";
 import { isExternalPortal, openUrl } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
@@ -134,7 +135,8 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
     void (isExternalPortal(portal) ? openUrl(portal.url) : enterWithSound());
   }, [analytics, enterWithSound, portal]);
 
-  const showPortalEvents = world?.showSchedule && venueEvents.length > 0;
+  const showPortalEvents =
+    shouldScheduleBeShown(world) && venueEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: portal.image_url ? `url(${portal.image_url})` : undefined,

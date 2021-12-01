@@ -6,8 +6,8 @@ import classNames from "classnames";
 import { isDefined } from "utils/types";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useShowHide } from "hooks/useShowHide";
-import { useSpaceParams } from "hooks/useSpaceParams";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -28,7 +28,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     hide: hideAnnouncementMessage,
   } = useShowHide();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space } = useSpaceBySlug(spaceSlug);
 
   const { banner } = space ?? {};

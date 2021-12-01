@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_VENUE_LOGO,
+  SPACE_PORTALS_ICONS_MAPPING,
+} from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
 
@@ -63,9 +67,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const tables = venue?.config?.tables ?? TABLES;
 
+  const infoIcon =
+    venue?.host?.icon ||
+    (SPACE_PORTALS_ICONS_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+
   return (
     <>
-      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
+      <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>

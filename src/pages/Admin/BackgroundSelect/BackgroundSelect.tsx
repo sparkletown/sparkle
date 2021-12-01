@@ -16,6 +16,7 @@ import { FileButton } from "components/atoms/FileButton";
 import "./BackgroundSelect.scss";
 
 export interface BackgroundSelectProps {
+  venueId: string;
   venueName: string;
   spaceSlug: string;
   worldId: string;
@@ -24,6 +25,7 @@ export interface BackgroundSelectProps {
 }
 
 export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
+  venueId,
   venueName,
   spaceSlug,
   mapBackgrounds,
@@ -41,6 +43,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
       return await updateMapBackground(
         {
+          id: venueId,
           worldId: worldId,
           name: venueName,
           slug: spaceSlug,
@@ -50,7 +53,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
         user
       );
     },
-    [user, venueName, spaceSlug, worldId]
+    [user, venueName, spaceSlug, worldId, venueId]
   );
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;

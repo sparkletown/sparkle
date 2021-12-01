@@ -141,6 +141,7 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
       await updateVenue_v2(
         {
+          id: venue.id,
           name: venue.name,
           slug: venue.slug,
           worldId: venue.worldId,

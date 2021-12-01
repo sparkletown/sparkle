@@ -4,18 +4,19 @@ import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
 
-import { DEFAULT_REQUIRES_DOB } from "settings";
+import { ACCOUNT_PROFILE_BASE_URL, DEFAULT_REQUIRES_DOB } from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
+import { accountProfileUrlWithSlug } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
@@ -61,7 +62,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const history = useHistory();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
@@ -163,11 +164,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const accountProfileUrl = `/account/profile${
-        spaceId ? `?venueId=${spaceId}` : ""
-      }`;
+      const profileUrl = spaceSlug
+        ? accountProfileUrlWithSlug(spaceSlug)
+        : ACCOUNT_PROFILE_BASE_URL;
 
-      history.push(accountProfileUrl);
+      history.push(profileUrl);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setShowLoginModal(true);

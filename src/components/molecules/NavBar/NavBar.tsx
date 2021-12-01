@@ -1,27 +1,24 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import {
-  DEFAULT_SHOW_SCHEDULE,
-  PLAYA_VENUE_ID,
-  SPARKLE_PHOTOBOOTH_URL,
-} from "settings";
+import { PLAYA_VENUE_ID, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
+import { shouldScheduleBeShown } from "utils/schedule";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
@@ -69,7 +66,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 }) => {
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const {
@@ -95,12 +92,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     push: openUrlUsingRouter,
   } = useHistory();
 
-  const isSovereignVenue = spaceId === sovereignVenueId;
-
-  const hasSovereignVenue = sovereignVenueId !== undefined;
-
-  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
-
   const { openUserProfileModal } = useProfileModalControls();
 
   const handleAvatarClick = useCallback(() => {
@@ -108,9 +99,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
-    !isAdminContext &&
-    withSchedule &&
-    (world?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
+    !isAdminContext && withSchedule && shouldScheduleBeShown(world);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -193,13 +182,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
-              {shouldShowHomeButton && (
-                <FontAwesomeIcon
-                  icon={faHome}
-                  className="NavBar__home-icon"
-                  onClick={navigateToHomepage}
-                />
-              )}
 
               {shouldShowSchedule && spaceId ? (
                 <button

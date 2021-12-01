@@ -4,13 +4,14 @@
   // NOTE: this dropdown mimics the appearance of the ButtonNG default style
   // NOTE: it is needed to mitigate the effects of the global SCSS file and Bootstrap
 
-  .btn {
-    display: inline-block;
+  display: inline-block;
+  margin: $spacing--xs;
+  width: $button-width--normal;
+  max-width: $button-width--max;
 
+  .btn {
+    width: 100%;
     padding: $spacing--md;
-    margin: $spacing--xs;
-    width: $button-width--normal;
-    max-width: $button-width--max;
 
     border-radius: $border-radius--xl;
     border: none;

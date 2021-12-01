@@ -30,8 +30,8 @@ import { isExternalPortal } from "utils/url";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
@@ -88,7 +88,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const spaceSlugFromPortal = room?.url?.split("/").pop();
@@ -280,7 +280,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   );
 
   const parentSpace = useMemo(
-    () => ownedVenues.find(({ id }) => id === roomVenue?.parentId),
+    () =>
+      roomVenue?.parentId
+        ? ownedVenues.find(({ id }) => id === roomVenue?.parentId)
+        : { name: "" },
     [ownedVenues, roomVenue?.parentId]
   );
 
@@ -417,14 +420,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
                   IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
                     <>
-                      <Form.Label>Livestream URL</Form.Label>
-                      <InputField
+                      <AdminInput
                         name="venue.iframeUrl"
                         type="text"
                         autoComplete="off"
                         placeholder="Livestream URL"
-                        error={errors?.venue?.iframeUrl}
-                        ref={register()}
+                        label="Livestream URL"
+                        errors={errors}
+                        register={register}
                       />
                       <AdminCheckbox
                         variant="toggler"

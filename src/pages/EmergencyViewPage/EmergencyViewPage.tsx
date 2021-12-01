@@ -15,8 +15,8 @@ import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useValidImage } from "hooks/useCheckImage";
-import { useSpaceParams } from "hooks/useSpaceParams";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
@@ -41,7 +41,7 @@ export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const spaceSlug = useSpaceParams();
+  const { spaceSlug } = useSpaceParams();
 
   const { space, spaceId, isLoaded: isCurrentVenueLoaded } = useSpaceBySlug(
     spaceSlug
