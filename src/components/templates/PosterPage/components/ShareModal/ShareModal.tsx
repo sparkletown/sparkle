@@ -8,7 +8,9 @@ import classNames from "classnames";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { getFullVenueInsideUrl } from "utils/url";
+import { getAbsoluteAttendeeSpaceInsideUrl } from "utils/url";
+
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { LinkButton } from "components/atoms/LinkButton";
 
@@ -31,7 +33,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   onHide,
   venue,
 }) => {
-  const url = getFullVenueInsideUrl(venue.id);
+  const { worldSlug } = useWorldParams();
+  const url = getAbsoluteAttendeeSpaceInsideUrl(worldSlug, venue.slug);
   const [{ value: hasCopiedText }, copyToClipboard] = useCopyToClipboard();
 
   const copyThisUrl = useCallback(() => {

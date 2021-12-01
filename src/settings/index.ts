@@ -507,6 +507,7 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_SPACE_SLUG = "bootstrap";
+export const DEFAULT_WORLD_SLUG = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",

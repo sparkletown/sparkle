@@ -7,14 +7,13 @@ import firebase from "firebase/app";
 
 import {
   DISABLED_DUE_TO_1142,
-  PLAYA_VENUE_ID,
-  SPARKLE_PHOTOBOOTH_URL,
+  SPARKLE_PHOTOBOOTH_URL
 } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import { enterVenue } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -74,7 +73,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 }) => {
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const {
@@ -95,10 +94,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   // when Admin is displayed, owned venues are used
   const currentVenue = relatedVenue ?? ownedVenue;
 
-  const {
-    location: { pathname },
-    push: openUrlUsingRouter,
-  } = useHistory();
+  const { push: openUrlUsingRouter } = useHistory();
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -108,8 +104,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const shouldShowSchedule =
     !isAdminContext && withSchedule && shouldScheduleBeShown(world);
-
-  const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -161,8 +155,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const navigateToHomepage = useCallback(() => {
     if (!sovereignVenueId) return;
 
-    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [sovereignVenueId, openUrlUsingRouter]);
+    enterVenue(worldSlug ?? "", sovereignVenueId, {
+      customOpenRelativeUrl: openUrlUsingRouter,
+    });
+  }, [worldSlug, sovereignVenueId, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -182,7 +178,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   return (
     <>
       <header>
-        <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
+        <div className="navbar navbar_playa nonplaya">
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo">
@@ -198,9 +194,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               {shouldShowSchedule && spaceId ? (
                 <button
                   aria-label="Schedule"
-                  className={`nav-party-logo ${
-                    isEventScheduleVisible && "clicked"
-                  }`}
+                  className={`nav-party-logo ${isEventScheduleVisible && "clicked"
+                    }`}
                   onClick={toggleEventSchedule}
                 >
                   {spaceId && !isAdminContext && navbarTitle} &nbsp;
@@ -274,9 +269,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       {shouldShowSchedule && spaceId && (
         <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
-          className={`schedule-dropdown-backdrop ${
-            isEventScheduleVisible ? "show" : ""
-          }`}
+          className={`schedule-dropdown-backdrop ${isEventScheduleVisible ? "show" : ""
+            }`}
           onClick={hideEventSchedule}
         >
           <div className={navBarScheduleClassName}>

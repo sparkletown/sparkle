@@ -24,7 +24,10 @@ import {
 } from "types/venues";
 
 import { WithId, WithWorldId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { attendeeSpaceInsideUrl } from "utils/url";
+
+import { fetchVenue } from "./venue";
+import { fetchWorld } from "./world";
 
 export interface EventInput {
   name: string;
@@ -491,6 +494,9 @@ const createFirestoreRoomInput_v2 = async (
 
   let imageInputData = {};
 
+  const venue = await fetchVenue(venueId);
+  const world = await fetchWorld(venue.worldId);
+
   // upload the files
   for (const entry of imageKeys) {
     const fileArr = input[entry.fileKey];
@@ -513,7 +519,7 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + venueInsideUrl(input.venueName),
+        : window.origin + attendeeSpaceInsideUrl(world.slug, input.venueName),
     ...imageInputData,
   };
 

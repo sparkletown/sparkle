@@ -15,7 +15,7 @@ import {
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl, venueInsideUrl } from "utils/url";
+import { adminNGVenueUrl, attendeeSpaceInsideUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 
@@ -65,7 +65,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
         <div className="AdminSpaceCard__bg-container">
           <Link
             className="AdminSpaceCard__link"
-            to={venueInsideUrl(venue.slug)}
+            to={attendeeSpaceInsideUrl(worldSlug, venue.slug)}
             target="_blank"
             rel="noopener noreferer"
           >

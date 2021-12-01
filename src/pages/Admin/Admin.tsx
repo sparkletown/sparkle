@@ -26,6 +26,7 @@ import {
   ADMIN_V1_EDIT_BASE_URL,
   ADMIN_V1_ROOMS_BASE_URL,
   DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
   ROOM_TAXON,
   ROOMS_TAXON,
 } from "settings";
@@ -35,7 +36,7 @@ import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { attendeeSpaceInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -51,6 +52,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -296,6 +298,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const history = useHistory();
   const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
+  const { worldSlug } = useWorldParams();
 
   const navigateToAdmin = useCallback(() => {
     history.push(ADMIN_OLD_ROOT_URL);
@@ -335,7 +338,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
         {venue.name && (
           <>
             <Link
-              to={venueInsideUrl(venue.slug)}
+              to={attendeeSpaceInsideUrl(worldSlug, venue.slug)}
               target="_blank"
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
@@ -442,7 +445,9 @@ export const Admin: React.FC = () => {
     return (
       <WithNavigationBar>
         <AdminRestricted>
-          <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />
+          <Redirect
+            to={attendeeSpaceInsideUrl(DEFAULT_WORLD_SLUG, DEFAULT_SPACE_SLUG)}
+          />
         </AdminRestricted>
       </WithNavigationBar>
     );

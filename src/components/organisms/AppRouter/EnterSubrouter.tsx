@@ -11,7 +11,6 @@ import {
   ENTER_STEP_6B_URL,
 } from "settings";
 
-// import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
 import Step3 from "pages/Account/Step3";
@@ -31,8 +30,6 @@ export const EnterSubrouter: React.FC = () => {
       <Route path={ENTER_STEP_5_URL} component={Step5} />
       <Route path={ENTER_STEP_6A_URL} component={Step6a} />
       <Route path={ENTER_STEP_6B_URL} component={Step6b} />
-      {/* @debt This appears to be a legacy route related to the old Playa template. Likely to be removed in future. */}
-      {/*<Route path={ENTER_ROOT_URL} component={SplashPage} />*/}
     </Switch>
   );
 };

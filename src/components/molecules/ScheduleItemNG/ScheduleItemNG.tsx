@@ -27,12 +27,13 @@ import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { isDefined } from "utils/types";
-import { enterVenue, getFullVenueInsideUrl } from "utils/url";
+import { enterVenue, getAbsoluteAttendeeSpaceInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -52,6 +53,8 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   const { currentVenue: eventVenue, relatedVenues } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
+
+  const { worldSlug } = useWorldParams();
 
   const relatedVenuesRooms = relatedVenues
     ?.flatMap((venue) => venue.rooms ?? [])
@@ -80,8 +83,13 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e && e.stopPropagation();
 
+      // TODO decide what to do if there isn't a world slug or space slug. Weird edge case.
       const eventLink =
-        eventRoom?.url ?? getFullVenueInsideUrl(eventVenue?.id ?? "");
+        eventRoom?.url ??
+        getAbsoluteAttendeeSpaceInsideUrl(
+          worldSlug ?? "",
+          eventVenue?.slug ?? ""
+        );
       navigator.clipboard.writeText(eventLink);
       setIsEventLinkCopied(true);
       setTimeout(
@@ -89,20 +97,21 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         SCHEDULE_SHOW_COPIED_TEXT_MS
       );
     },
-    [eventRoom, eventVenue]
+    [worldSlug, eventRoom, eventVenue]
   );
 
   const goToEventLocation = useCallback(() => {
     if (eventRoom) {
       enterRoom();
     } else {
-      enterVenue(event.venueId);
+      enterVenue(event.worldSlug, event.venueSlug);
     }
   }, [enterRoom, event, eventRoom]);
 
-  const enterEventVenue = useCallback(() => enterVenue(event.venueId), [
-    event.venueId,
-  ]);
+  const enterEventVenue = useCallback(
+    () => enterVenue(event.worldSlug, event.venueSlug),
+    [event.worldSlug, event.venueSlug]
+  );
 
   const eventImage = getFirebaseStorageResizedImage(
     eventRoom?.image_url ?? event.venueIcon,

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
 
-import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
+import { attendeeSpaceInsideUrl, externalUrlAdditionalProps } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -41,7 +41,7 @@ export const CodeOfConduct: React.FC = () => {
 
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
@@ -56,10 +56,12 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = spaceSlug ? venueInsideUrl(spaceSlug) : returnUrl ?? "";
+    const nextUrl = spaceSlug
+      ? attendeeSpaceInsideUrl(worldSlug, spaceSlug)
+      : returnUrl ?? "";
 
     history.push(nextUrl);
-  }, [history, returnUrl, spaceSlug]);
+  }, [history, returnUrl, worldSlug, spaceSlug]);
 
   useEffect(() => {
     if (!isWorldLoaded) return;

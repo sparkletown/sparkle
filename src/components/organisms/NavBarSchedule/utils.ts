@@ -10,22 +10,25 @@ export interface PrepareForScheduleProps {
   usersEvents: MyPersonalizedSchedule;
   relatedVenues: WithId<AnyVenue>[];
   recentRoomUsersCount?: number;
+  worldSlug: string;
 }
 
 export const prepareForSchedule = ({
   usersEvents,
+  worldSlug,
   relatedVenues = [],
   recentRoomUsersCount = 0,
 }: PrepareForScheduleProps) => (
   event: WithVenueId<VenueEvent>
 ): ScheduledVenueEvent => {
+  const venue = relatedVenues.find((venue) => venue.id === event.venueId);
   return {
     ...event,
     isSaved: arrayIncludes(usersEvents[event.venueId], event.id),
-    venueIcon:
-      relatedVenues.find((venue) => venue.id === event.venueId)?.host?.icon ??
-      DEFAULT_VENUE_LOGO,
+    venueIcon: venue?.host?.icon ?? DEFAULT_VENUE_LOGO,
     liveAudience: recentRoomUsersCount,
     orderPriority: event.orderPriority ?? 0,
+    worldSlug,
+    venueSlug: venue?.slug ?? "",
   };
 };

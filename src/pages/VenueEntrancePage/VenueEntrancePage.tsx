@@ -9,8 +9,8 @@ import {
 import { isCompleteProfile } from "utils/profile";
 import {
   accountProfileVenueUrl,
+  attendeeSpaceInsideUrl,
   venueEntranceUrl,
-  venueInsideUrl,
 } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -58,7 +58,7 @@ export const VenueEntrancePage: React.FC = () => {
 
   const stepConfig = world?.entrance?.[step - 1];
   if (!stepConfig) {
-    return <Redirect to={venueInsideUrl(spaceSlug)} />;
+    return <Redirect to={attendeeSpaceInsideUrl(world?.slug, spaceSlug)} />;
   }
 
   if (!user || !profile) {

@@ -2,11 +2,16 @@ import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { Redirect, useHistory } from "react-router-dom";
 
-import { ALL_VENUE_TEMPLATES, DEFAULT_SPACE_SLUG, Template } from "settings";
+import {
+  ALL_VENUE_TEMPLATES,
+  DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
+  Template,
+} from "settings";
 
 import { AnyVenue } from "types/venues";
 
-import { venueInsideUrl } from "utils/url";
+import { attendeeSpaceInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -146,7 +151,11 @@ const VenueWizardCreate: React.FC = () => {
   }, [queryPage, next, previous, state]);
 
   if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />;
+    return (
+      <Redirect
+        to={attendeeSpaceInsideUrl(DEFAULT_WORLD_SLUG, DEFAULT_SPACE_SLUG)}
+      />
+    );
   }
 
   return <WithNavigationBar>{Page}</WithNavigationBar>;

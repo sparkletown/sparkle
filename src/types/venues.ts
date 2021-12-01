@@ -378,6 +378,8 @@ export interface VenueEvent {
   id?: string;
   orderPriority?: number;
   liveAudience?: number;
+  worldSlug: string;
+  venueSlug: string;
 }
 
 export interface VenueLocation {

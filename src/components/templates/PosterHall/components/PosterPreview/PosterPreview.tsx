@@ -7,6 +7,8 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
+import { useWorldParams } from "hooks/worlds/useWorldParams";
+
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
@@ -29,7 +31,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     contactEmail,
   } = posterVenue.poster ?? {};
 
-  const venueId = posterVenue.id;
+  const { worldSlug } = useWorldParams();
 
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
@@ -38,8 +40,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const { push: openUrlUsingRouter } = useHistory();
 
   const handleEnterVenue = useCallback(
-    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
-    [venueId, openUrlUsingRouter]
+    () =>
+      enterVenue(worldSlug ?? "", posterVenue.slug, {
+        customOpenRelativeUrl: openUrlUsingRouter,
+      }),
+    [worldSlug, posterVenue.slug, openUrlUsingRouter]
   );
 
   const renderedCategories = useMemo(

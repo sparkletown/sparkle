@@ -15,8 +15,9 @@ import "./Account.scss";
 export interface LoginCustomCodeProps {}
 
 export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
-  const { venueId, customToken } = useParams<{
-    venueId?: string;
+  const { worldSlug, spaceSlug, customToken } = useParams<{
+    spaceSlug?: string;
+    worldSlug?: string;
     customToken?: string;
   }>();
 
@@ -29,8 +30,8 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
   const { replace: replaceUrlUsingRouter } = useHistory();
 
   const { loading: isCustomTokenLoginLoading, error } = useAsync(async () => {
-    if (!venueId || !customToken)
-      throw new Error("venueId and customToken are required");
+    if (!spaceSlug || !worldSlug || !customToken)
+      throw new Error("spaceSlug, worldSlug and customToken are required");
 
     if (isLoggedInUser) throw new Error("there is already a logged in user");
 
@@ -45,9 +46,18 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
       //   throw error;
       // });
       .then(() => {
-        enterVenue(venueId, { customOpenRelativeUrl: replaceUrlUsingRouter });
+        enterVenue(worldSlug, spaceSlug, {
+          customOpenRelativeUrl: replaceUrlUsingRouter,
+        });
       });
-  }, [isLoggedInUser, venueId, customToken, firebase, replaceUrlUsingRouter]);
+  }, [
+    isLoggedInUser,
+    worldSlug,
+    spaceSlug,
+    customToken,
+    firebase,
+    replaceUrlUsingRouter,
+  ]);
 
   if (isCustomTokenLoginLoading) return <LoadingPage />;
 

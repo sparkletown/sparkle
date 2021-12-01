@@ -26,10 +26,11 @@ import { createSlug } from "api/admin";
 import { UserStatus } from "types/User";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
-import { venueLandingUrl } from "utils/url";
+import { attendeeSpaceLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useShowHide } from "hooks/useShowHide";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 import { VenueDetailsFormErrors } from "pages/Admin/Venue/VenueDetailsFormErrors";
@@ -97,9 +98,13 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   formError,
   setFormError,
 }) => {
+  const { worldSlug } = useWorldParams();
   const values = watch();
   const urlSafeName = values.name
-    ? `${window.location.host}${venueLandingUrl(createSlug(values.name))}`
+    ? `${window.location.host}${attendeeSpaceLandingUrl(
+        worldSlug,
+        createSlug(values.name)
+      )}`
     : undefined;
   const disable = isSubmitting;
   const templateType = state.templatePage?.template.name;

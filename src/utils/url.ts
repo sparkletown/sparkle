@@ -11,11 +11,10 @@ import {
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
+  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_SPACE_LANDING_URL,
   ENTRANCE_BASE_URL,
   VALID_URL_PROTOCOLS,
-  VENUE_INSIDE_BASE_URL,
-  VENUE_INSIDE_PARAM_URL,
-  VENUE_LANDING_BASE_URL,
   WORLD_ROOT_URL,
 } from "settings";
 
@@ -61,25 +60,32 @@ export const adminCreateSpace = (worldSlug?: string) =>
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
-export const venueInsideFullUrl = (spaceSlug?: string) =>
-  generatePath(VENUE_INSIDE_PARAM_URL, { spaceSlug });
+// TODO Figure out a better way of handling these being optional throughout.
+export const attendeeSpaceInsideUrl = (
+  worldSlug?: string,
+  spaceSlug?: string
+) => generatePath(ATTENDEE_SPACE_INSIDE_URL, { worldSlug, spaceSlug });
 
-export const venueInsideUrl = (spaceSlug: string) => {
-  return `${VENUE_INSIDE_BASE_URL}/${spaceSlug}`;
-};
+// TODO Figure out a better way of handling these being optional throughout.
+export const attendeeSpaceLandingUrl = (
+  worldSlug?: string,
+  spaceSlug?: string
+) => generatePath(ATTENDEE_SPACE_LANDING_URL, { worldSlug, spaceSlug });
+
+export const getAbsoluteAttendeeSpaceInsideUrl = (
+  worldSlug?: string,
+  spaceSlug?: string
+) =>
+  // TODO Figure out a better way of handling these being optional throughout.
+  new URL(
+    attendeeSpaceInsideUrl(worldSlug ?? "", spaceSlug ?? ""),
+    window.location.origin
+  ).href;
 
 export const accountProfileUrlWithSlug = (spaceSlug: string) => {
   // @debt remove query param in favor of path param and/or
   // add comprehensive `redirect` solution project-wide
   return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}`;
-};
-
-export const venueLandingUrl = (spaceSlug: string) => {
-  return `${VENUE_LANDING_BASE_URL}/${spaceSlug}`;
-};
-
-export const venuePreviewUrl = (spaceSlug: string, roomTitle: string) => {
-  return `${venueInsideUrl(spaceSlug)}/${roomTitle}`;
 };
 
 export const venueEntranceUrl = (spaceSlug: string, step?: number) => {
@@ -111,8 +117,11 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
   openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
-export const enterVenue = (spaceSlug: string, options?: OpenUrlOptions) =>
-  openUrl(venueInsideUrl(spaceSlug), options);
+export const enterVenue = (
+  worldSlug: string,
+  spaceSlug: string,
+  options?: OpenUrlOptions
+) => openUrl(attendeeSpaceInsideUrl(worldSlug, spaceSlug), options);
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;
@@ -189,8 +198,10 @@ export const externalUrlAdditionalProps = {
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
 
-export const getFullVenueInsideUrl = (spaceSlug: string) =>
+// TODO delete the below completely
+/*export const getFullVenueInsideUrl = (spaceSlug: string) =>
   new URL(venueInsideUrl(spaceSlug), window.location.origin).href;
+  */
 
 export const getUrlWithoutTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;

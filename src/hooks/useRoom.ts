@@ -9,6 +9,8 @@ import {
   getUrlWithoutTrailingSlash,
 } from "utils/url";
 
+import { useSpaceParams } from "./spaces/useSpaceParams";
+
 export interface UseRoomProps {
   room?: Room;
 }
@@ -16,6 +18,7 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const roomUrl = room?.url ?? "";
 
   const { push: openUrlUsingRouter } = useHistory();
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
   const noTrailSlashPortalUrl = roomUrl && getUrlWithoutTrailingSlash(roomUrl);
 
@@ -24,8 +27,10 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const enterRoom = useCallback(() => {
     if (!portalVenueId) return;
 
-    enterVenue(portalVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [portalVenueId, openUrlUsingRouter]);
+    enterVenue(worldSlug ?? "", spaceSlug ?? "", {
+      customOpenRelativeUrl: openUrlUsingRouter,
+    });
+  }, [portalVenueId, worldSlug, spaceSlug, openUrlUsingRouter]);
 
   return {
     enterRoom,

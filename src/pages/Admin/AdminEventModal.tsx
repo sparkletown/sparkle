@@ -18,6 +18,8 @@ import { VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+
 dayjs.extend(isSameOrAfter);
 
 interface PropsType {
@@ -78,6 +80,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
     validationSchema,
   });
 
+  const { spaceSlug, worldSlug } = useSpaceParams();
+
   useEffect(() => {
     if (!event) {
       reset({});
@@ -108,6 +112,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
           start.unix() || Math.floor(new Date().getTime() / 1000),
         duration_minutes: data.duration_hours * 60,
         host: data.host,
+        venueSlug: spaceSlug ?? "",
+        worldSlug: worldSlug ?? "",
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
         formEvent.room = data.room;
@@ -118,7 +124,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId, template]
+    [event, onHide, venueId, template, worldSlug, spaceSlug]
   );
 
   return (

@@ -25,6 +25,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
@@ -56,6 +57,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const { worldSlug } = useWorldParams();
 
   const { userWithId } = useUser();
   const userEventIds =
@@ -196,6 +199,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       const portalVenue = findVenueInRelatedVenues(event.venueId);
 
       return prepareForSchedule({
+        worldSlug: worldSlug ?? "",
         relatedVenues,
         usersEvents: userEventIds,
         recentRoomUsersCount: portalVenue?.recentUserCount,
@@ -206,6 +210,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
+          worldSlug: worldSlug ?? "",
           relatedVenues,
           usersEvents: userEventIds,
         })
@@ -216,7 +221,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       calendar: createCalendar({ events: allPersonalEvents }),
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
     });
-  }, [liveAndFutureEvents, relatedVenues, userEventIds]);
+  }, [liveAndFutureEvents, relatedVenues, userEventIds, worldSlug]);
 
   const downloadAllEventsCalendar = useCallback(() => {
     downloadCalendar({

@@ -11,7 +11,7 @@ import { SPACE_TAXON } from "settings";
 import {
   adminNGVenueUrl,
   adminWorldSpacesUrl,
-  venueInsideUrl,
+  attendeeSpaceInsideUrl,
 } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -132,7 +132,11 @@ export const AdminVenueView: React.FC = () => {
               <ButtonNG
                 isLink
                 newTab
-                linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
+                linkTo={
+                  spaceSlug
+                    ? attendeeSpaceInsideUrl(worldSlug, spaceSlug)
+                    : undefined
+                }
                 variant="primary"
               >
                 Visit {SPACE_TAXON.capital}

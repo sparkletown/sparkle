@@ -25,20 +25,22 @@ export const ACCOUNT_ROOT_URL = "/account";
 export const ADMIN_OLD_ROOT_URL = "/a1";
 export const ADMIN_ROOT_URL = "/admin";
 export const ENTER_ROOT_URL = "/enter";
+// TODO Next line needs updating with world slugs
 export const ENTRANCE_BASE_URL = "/e";
 export const LOGIN_BASE_URL = `/login`;
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
 export const VERSION_URL = "/version";
 export const VENUE_EMERGENCY_BASE_URL = "/m";
-export const VENUE_INSIDE_BASE_URL = "/in";
-export const VENUE_LANDING_BASE_URL = "/v";
+export const SPACE_INSIDE_BASE_URL = "/in";
+export const SPACE_LANDING_BASE_URL = "/land";
 export const VENUE_REDIRECT_BASE_URL = `/venue`;
 export const WORLD_ROOT_URL = "/w";
 
+// TODO Next line needs addressing
 export const VENUE_EMERGENCY_PARAM_URL = `${VENUE_EMERGENCY_BASE_URL}/:spaceSlug`;
-export const VENUE_INSIDE_PARAM_URL = `${VENUE_INSIDE_BASE_URL}/:spaceSlug`;
-export const VENUE_INSIDE_ADMIN_PARAM_URL = `${VENUE_INSIDE_BASE_URL}/:spaceSlug/admin`;
-export const VENUE_LANDING_PARAM_URL = `${VENUE_LANDING_BASE_URL}/:spaceSlug`;
+export const ATTENDEE_SPACE_INSIDE_URL = `${SPACE_INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
+export const ATTENDEE_SPACE_LANDING_URL = `${SPACE_LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
+// TODO Next line needs addressing
 export const VENUE_REDIRECT_PARAM_URL = `${VENUE_REDIRECT_BASE_URL}/*`;
 
 export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:step/:spaceSlug`;

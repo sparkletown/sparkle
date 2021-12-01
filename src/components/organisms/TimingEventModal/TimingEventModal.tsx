@@ -17,6 +17,8 @@ import { WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
+import { useWorldParams } from "hooks/worlds/useWorldParams";
+
 import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./TimingEventModal.scss";
@@ -55,6 +57,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     validationSchema: eventEditSchema,
   });
 
+  const { worldSlug } = useWorldParams();
+
   useEffect(() => {
     if (event) {
       reset({
@@ -85,6 +89,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_minutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
+        worldSlug: worldSlug ?? "",
+        venueSlug: venue.slug,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
         formEvent.room = data.room;
@@ -97,7 +103,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       }
       onHide();
     },
-    [onHide, venueId, template, event]
+    [onHide, venueId, template, venue, worldSlug, event]
   );
 
   const showDeleteButton =

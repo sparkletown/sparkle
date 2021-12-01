@@ -20,12 +20,13 @@ import { Room, RoomInput } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { PartyMapVenue } from "types/venues";
 
-import { venueInsideUrl } from "utils/url";
+import { attendeeSpaceInsideUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import Login from "pages/Account/Login";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -112,6 +113,7 @@ export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const { venue, spaceId, spaceSlug, editingRoom, editingRoomIndex } = props;
+  const { worldSlug } = useWorldParams();
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -132,7 +134,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     validationContext: { editing: !!editingRoom },
     defaultValues: {
       ...defaultValues,
-      url: defaultValues.url ?? venueInsideUrl(spaceSlug),
+      url: defaultValues.url ?? attendeeSpaceInsideUrl(worldSlug, spaceSlug),
       visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });

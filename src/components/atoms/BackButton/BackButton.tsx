@@ -9,6 +9,7 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import "./BackButton.scss";
 
@@ -23,6 +24,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
   space,
   variant,
 }) => {
+  const { worldSlug } = useWorldBySlug();
   const spaceSlug = space?.slug;
   const displayName = locationName ?? space?.name;
   const backButtonText = displayName ? `Back to ${displayName}` : "Back";
@@ -36,15 +38,21 @@ export const BackButton: React.FC<BackButtonProps> = ({
     if (!spaceSlug) return;
 
     if (variant === "relative") {
-      return enterVenue(spaceSlug, { customOpenRelativeUrl });
+      return enterVenue(worldSlug ?? "", spaceSlug, { customOpenRelativeUrl });
     }
 
     if (variant === "external") {
-      return enterVenue(spaceSlug, { customOpenExternalUrl });
+      return enterVenue(worldSlug ?? "", spaceSlug, { customOpenExternalUrl });
     }
 
-    return enterVenue(spaceSlug);
-  }, [spaceSlug, variant, customOpenExternalUrl, customOpenRelativeUrl]);
+    return enterVenue(worldSlug ?? "", spaceSlug);
+  }, [
+    worldSlug,
+    spaceSlug,
+    variant,
+    customOpenExternalUrl,
+    customOpenRelativeUrl,
+  ]);
 
   const isAdminContext = useAdminContextCheck();
   if (isAdminContext) {

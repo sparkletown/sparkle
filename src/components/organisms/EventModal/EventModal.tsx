@@ -78,7 +78,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     if (event.room) {
       enterRoom();
     } else {
-      enterVenue(event.venueId);
+      enterVenue(event.worldSlug, event.venueSlug);
     }
   };
 
