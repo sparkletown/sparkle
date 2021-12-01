@@ -123,7 +123,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
   ]);
 
   return (
-    <AdminPanel className="Spaces">
+    <AdminPanel variant="bound" className="Spaces">
       <AdminSidebar>
         {renderSpaceEditForm()}
         {!selectedRoom && (

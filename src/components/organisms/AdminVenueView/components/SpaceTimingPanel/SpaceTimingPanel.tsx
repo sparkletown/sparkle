@@ -21,7 +21,7 @@ export interface SpaceTimingPanelProps {
 export const SpaceTimingPanel: React.FC<SpaceTimingPanelProps> = ({
   venue,
 }) => (
-  <AdminPanel className="SpaceTimingPanel">
+  <AdminPanel variant="bound" className="SpaceTimingPanel">
     <AdminSidebar>
       <AdminSidebarTitle>Plan your event</AdminSidebarTitle>
       <SpaceTimingForm venue={venue} />
