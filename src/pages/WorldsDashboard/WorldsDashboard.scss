@@ -1,6 +1,12 @@
 @import "scss/constants.scss";
 
+// @debt: $worlds-dashboard-min-height arbitrary number that makes mobile/horizontal
+// resolution look semi-good compared to inherited values
+$worlds-dashboard-min-height: 500px;
+
 .WorldsDashboard {
+  height: 100%;
+
   .AdminPanel {
     width: 100%;
     height: calc(100vh - #{$reserved-page-height});
@@ -29,9 +35,10 @@
   .AdminShowcase {
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-rows: 1fr 9fr;
+    display: flex;
+    flex-direction: column;
     background-color: $secondary--live;
+    min-height: 500px;
   }
 
   .AdminSidebarFooter {
