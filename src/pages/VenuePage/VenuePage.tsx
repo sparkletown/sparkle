@@ -13,7 +13,6 @@ import {
   currentEventSelector,
   isCurrentEventRequestedSelector,
 } from "utils/selectors";
-import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { accountProfileVenueUrl, venueEntranceUrl } from "utils/url";
 import { isCompleteUserInfo } from "utils/user";
@@ -29,7 +28,6 @@ import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
@@ -128,21 +126,20 @@ export const VenuePage: React.FC = () => {
     });
   }, LOC_UPDATE_FREQ_MS);
 
-  const { sovereignVenueId, sovereignVenueDescendantIds } = useRelatedVenues();
-
+  // @debt Can we safely remove this?
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
-  useEffect(() => {
-    if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
+  // useEffect(() => {
+  //   if (!userId || !sovereignVenueId || !sovereignVenueDescendantIds) return;
 
-    const allVenueIds = [
-      ...sovereignVenueDescendantIds,
-      sovereignVenueId,
-    ].reverse();
+  //   const allVenueIds = [
+  //     ...sovereignVenueDescendantIds,
+  //     sovereignVenueId,
+  //   ].reverse();
 
-    const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
+  //   const locationPath = wrapIntoSlashes(allVenueIds.join("/"));
 
-    updateLocationData({ userId, newLocationPath: locationPath });
-  }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
+  //   updateLocationData({ userId, newLocationPath: locationPath });
+  // }, [userId, sovereignVenueId, sovereignVenueDescendantIds]);
 
   useEffect(() => {
     if (

@@ -2,8 +2,9 @@ import React from "react";
 
 import { DEFAULT_ATTENDEES_TITLE } from "settings";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCurrentWorld } from "hooks/useCurrentWorld";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import "./VenuePartygoers.scss";
 
@@ -14,11 +15,12 @@ export interface VenuePartygoersProps {
 export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
   worldId,
 }) => {
-  const { sovereignVenue } = useRelatedVenues();
+  const { spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
   const { world } = useCurrentWorld({ worldId });
 
   // @debt recentUserCount should be moved to world
-  const numberOfRecentWorldUsers = sovereignVenue?.recentUserCount ?? "";
+  const numberOfRecentWorldUsers = space?.recentUserCount ?? "";
   const attendeesTitle = world?.attendeesTitle ?? DEFAULT_ATTENDEES_TITLE ?? "";
 
   return (

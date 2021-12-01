@@ -6,7 +6,8 @@ import { WithId } from "utils/id";
 
 import { usePrivateChatPreviews } from "hooks/chats/private/usePrivateChatPreviews";
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
@@ -18,7 +19,8 @@ export interface PrivateChatsProps {
 }
 
 export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
-  const { sovereignVenue } = useRelatedVenues();
+  const { spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
 
   const { userId } = useUser();
 
@@ -42,7 +44,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
 
   const renderedUsers = useMemo(
     () =>
-      sovereignVenue?.recentUsersSample
+      space?.recentUsersSample
         ?.filter((x) => x.id !== userId)
         ?.map((user) => (
           <OnlineUser
@@ -51,10 +53,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipient }) => {
             onClick={() => selectRecipientChat(user)}
           />
         )),
-    [sovereignVenue?.recentUsersSample, userId, selectRecipientChat]
+    [space?.recentUsersSample, userId, selectRecipientChat]
   );
 
-  const numberOfUsers = sovereignVenue?.recentUserCount;
+  const numberOfUsers = space?.recentUserCount;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
   if (recipient) {

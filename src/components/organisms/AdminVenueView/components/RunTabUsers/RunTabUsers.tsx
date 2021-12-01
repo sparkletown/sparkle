@@ -12,7 +12,6 @@ import { withId } from "utils/id";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
@@ -30,7 +29,6 @@ interface RunTabSidebarProps {
 
 export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const { sovereignVenue } = useRelatedVenues();
   const [searchText, setSearchText] = useState("");
   const {
     isShown: isShownInviteAdminModal,
@@ -68,7 +66,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
     <div className="RunTabUsers">
       <div className="RunTabUsers__row RunTabUsers__manage">
         <span className="RunTabUsers__info">
-          {sovereignVenue?.recentUserCount ?? 0} people online
+          {venue?.recentUserCount ?? 0} people online
         </span>
         <ButtonNG className="mod--hidden">Manage users</ButtonNG>
       </div>

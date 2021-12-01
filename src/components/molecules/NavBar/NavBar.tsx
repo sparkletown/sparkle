@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
@@ -18,7 +18,6 @@ import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useWorldById } from "hooks/worlds/useWorldById";
 
@@ -67,17 +66,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
   const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { spaceId, space } = useSpaceBySlug(spaceSlug);
 
-  const {
-    currentVenue: relatedVenue,
-    parentVenue,
-    sovereignVenueId,
-  } = useRelatedVenues({
-    currentVenueId: spaceId,
-  });
-
-  const { world } = useWorldById(relatedVenue?.worldId);
+  const { world } = useWorldById(space?.worldId);
   const firstStation = world?.radioStations?.[0];
 
   const { currentVenue: ownedVenue } = useOwnedVenues({
@@ -85,18 +76,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   });
 
   // when Admin is displayed, owned venues are used
-  const currentVenue = relatedVenue ?? ownedVenue;
+  const currentVenue = space ?? ownedVenue;
 
   const {
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
-
-  const isSovereignVenue = spaceId === sovereignVenueId;
-
-  const hasSovereignVenue = sovereignVenueId !== undefined;
-
-  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -157,10 +142,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, []);
 
   const navigateToHomepage = useCallback(() => {
-    if (!sovereignVenueId) return;
+    if (!spaceId) return;
 
-    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [sovereignVenueId, openUrlUsingRouter]);
+    enterVenue(spaceId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [spaceId, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -169,7 +154,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   };
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue?.name;
+  const navbarTitle = space?.name ?? currentVenue?.name;
   const showNormalRadio = (world?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio = (world?.showRadio && isSoundCloud) ?? false;
 
@@ -188,13 +173,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
-              {shouldShowHomeButton && (
-                <FontAwesomeIcon
-                  icon={faHome}
-                  className="NavBar__home-icon"
-                  onClick={navigateToHomepage}
-                />
-              )}
 
               {shouldShowSchedule && spaceId ? (
                 <button
@@ -229,8 +207,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                {sovereignVenueId && !isAdminContext && (
-                  <NavSearchBar sovereignVenueId={sovereignVenueId} />
+                {spaceId && !isAdminContext && (
+                  <NavSearchBar spaceId={spaceId} />
                 )}
 
                 {hasUpcomingEvents && (
@@ -290,8 +268,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       )}
 
       {/* @debt Remove back button from Navbar */}
-      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton variant="relative" space={parentVenue} />
+      {hasBackButton && currentVenue?.parentId && space?.name && (
+        <BackButton variant="relative" space={space} />
       )}
     </>
   );

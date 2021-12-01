@@ -13,12 +13,12 @@ import { useAlgoliaSearchContext } from "hooks/algolia/context";
 export const useAlgoliaSearch = (
   searchQuery: string | undefined,
   params?: {
-    sovereignVenueId: string;
+    spaceId: string;
   }
 ) => {
   const context = useAlgoliaSearchContext();
 
-  const { sovereignVenueId } = params ?? {};
+  const { spaceId } = params ?? {};
 
   const state = useAsync(async () => {
     if (
@@ -32,18 +32,18 @@ export const useAlgoliaSearch = (
       Object.values(context.indices).map((index) => ({
         indexName: index.indexName,
         query: searchQuery,
-        ...(sovereignVenueId && {
+        ...(spaceId && {
           params: {
             filters: `${propName<UserWithLocation>(
               "enteredVenueIds"
-            )}: ${sovereignVenueId}`,
+            )}: ${spaceId}`,
           },
         }),
       }))
     );
 
     return keyBy(results, "index") as AlgoliaSearchResult;
-  }, [context?.client, context?.indices, searchQuery, sovereignVenueId]);
+  }, [context?.client, context?.indices, searchQuery, spaceId]);
 
   useEffect(() => {
     if (state.error) {

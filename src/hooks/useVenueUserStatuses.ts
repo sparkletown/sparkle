@@ -8,13 +8,15 @@ import { User, UserStatus } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRelatedVenues } from "./useRelatedVenues";
+import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
+import { useSpaceParams } from "./spaces/useSpaceParams";
 import { useUser } from "./useUser";
 
 const emptyStatuses: UserStatus[] = [];
 
 export const useVenueUserStatuses = (user?: WithId<User>) => {
-  const { sovereignVenue } = useRelatedVenues();
+  const { spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
   const { userId, profile } = useUser();
 
   // @debt replace this with useAsync / useAsyncFn / similar
@@ -30,7 +32,7 @@ export const useVenueUserStatuses = (user?: WithId<User>) => {
     [userId]
   );
 
-  const venueUserStatuses = sovereignVenue?.userStatuses ?? emptyStatuses;
+  const venueUserStatuses = space?.userStatuses ?? emptyStatuses;
 
   const userStatus = useMemo(
     () =>
@@ -45,7 +47,7 @@ export const useVenueUserStatuses = (user?: WithId<User>) => {
     changeUserStatus,
     venueUserStatuses,
     isStatusEnabledForVenue:
-      sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES,
+      space?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES,
     userStatus,
   };
 };

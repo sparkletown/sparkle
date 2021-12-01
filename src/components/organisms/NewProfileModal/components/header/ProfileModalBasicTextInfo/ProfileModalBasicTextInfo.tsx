@@ -8,8 +8,9 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
@@ -24,15 +25,15 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   user,
   containerClassName,
 }) => {
-  const { sovereignVenue } = useRelatedVenues();
+  const { spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(spaceSlug);
 
   const lastSeenIn = user.lastVenueIdSeenIn;
   const isCurrentUser = useIsCurrentUser(user.id);
 
   const { user: firebaseUser } = useUser();
 
-  const userStatus =
-    sovereignVenue?.showUserStatus && sovereignVenue?.userStatuses?.[0];
+  const userStatus = space?.showUserStatus && space?.userStatuses?.[0];
 
   return (
     <div
@@ -46,11 +47,11 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
           {firebaseUser?.email}
         </div>
       )}
-      {userStatus && sovereignVenue?.userStatuses && (
+      {userStatus && space?.userStatuses && (
         <div className="ProfileModalBasicTextInfo__status">
           is&nbsp;
           <UserStatusDropdown
-            userStatuses={sovereignVenue?.userStatuses}
+            userStatuses={space?.userStatuses}
             showDropdown={isCurrentUser}
           />
         </div>

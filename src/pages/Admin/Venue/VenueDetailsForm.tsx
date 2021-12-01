@@ -14,15 +14,12 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createSlug, createVenue, updateVenue, VenueInput } from "api/admin";
 
-import { UserStatus } from "types/User";
-
 import { isTruthy } from "utils/types";
 
 import { venueDetailsCreateSchema } from "forms/venueDetailsCreateSchema";
 import { venueDetailsEditSchema } from "forms/venueDetailsEditSchema";
 
 import { useQuery } from "hooks/useQuery";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { VenueDetailsSubForm } from "pages/Admin/Venue/VenueDetailsSubForm";
@@ -58,8 +55,6 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
 
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
-
-  const { sovereignVenueId, sovereignVenue } = useRelatedVenues();
 
   const {
     watch,
@@ -112,11 +107,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
   // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
   // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
-    async (
-      vals: Partial<FormValues>,
-      userStatuses: UserStatus[],
-      showUserStatuses: boolean
-    ) => {
+    async (vals: Partial<FormValues>) => {
       if (!user || formError) return;
 
       try {
@@ -126,39 +117,13 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
             {
               ...(vals as VenueInput),
               id: venueId,
-              userStatuses,
-              showUserStatus: showUserStatuses,
             },
             user
           );
-
-          //@debt Create separate function that updates the userStatuses separately by venue id.
-          if (
-            sovereignVenueId &&
-            sovereignVenue &&
-            sovereignVenueId !== venueId
-          )
-            await updateVenue(
-              {
-                id: sovereignVenueId,
-                name: sovereignVenue.name,
-                subtitle:
-                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
-                description:
-                  sovereignVenue.config?.landingPageConfig.description ?? "",
-                userStatuses,
-                showUserStatus: showUserStatuses,
-                template: sovereignVenue.template,
-                roomVisibility: sovereignVenue.roomVisibility,
-              },
-              user
-            );
         } else
           await createVenue(
             {
               ...vals,
-              userStatuses,
-              showUserStatus: showUserStatuses,
             } as VenueInput,
             user
           );
@@ -176,7 +141,7 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, formError, venueId, history, sovereignVenueId, sovereignVenue]
+    [user, formError, venueId, history]
   );
 
   useEffect(() => {
@@ -202,7 +167,6 @@ export const VenueDetailsForm: React.FC<DetailsFormProps> = ({
               getValues={getValues}
               state={state}
               previous={previous}
-              sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
               watch={watch}

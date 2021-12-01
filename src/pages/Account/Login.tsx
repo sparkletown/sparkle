@@ -34,14 +34,14 @@ export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   venueId,
 }) => {
-  const { currentVenue, sovereignVenue } = useRelatedVenues({
+  const { currentVenue } = useRelatedVenues({
     currentVenueId: venueId,
   });
   const [formToDisplay, setFormToDisplay] = useState(formType);
   const analytics = useAnalytics({ venue: currentVenue });
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    sovereignVenue?.samlAuthProviderId
+    currentVenue?.samlAuthProviderId
   );
 
   const {
