@@ -18,9 +18,7 @@ import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import {
   enterVenue,
   getFullVenueInsideUrl,
-  getLastUrlParam,
   getUrlParamFromString,
-  getUrlWithoutTrailingSlash,
   openUrl,
 } from "utils/url";
 
@@ -44,17 +42,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
     currentVenueId: event.venueId,
   });
   const eventRoom = useMemo<Room | undefined>(
-    () =>
-      eventVenue?.rooms?.find((room) => {
-        const { room: eventRoom = "" } = event;
-        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
-
-        const [roomName] = getLastUrlParam(noTrailSlashUrl);
-        const roomUrlParam = getUrlParamFromString(eventRoom);
-        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
-
-        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
-      }),
+    () => eventVenue?.rooms?.find((room) => event.room === room.title),
     [eventVenue, event]
   );
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
@@ -62,6 +50,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
     room: eventRoom,
     venueName: eventVenue?.name ?? "",
   });
+
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
