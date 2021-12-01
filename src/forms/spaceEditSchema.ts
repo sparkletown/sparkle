@@ -19,12 +19,22 @@ const roomImageUrlSchema = Yup.string().required(
   `${ROOM_TAXON.capital} icon is required`
 );
 
+const roomSchema = Yup.object().shape<RoomSchemaShape>({
+  title: createNameSchema({ name: "Title", withMin: true }),
+  image_url: roomImageUrlSchema,
+});
+
+const roomSchemaWithUrl = { ...roomSchema, url: roomUrlSchema };
+
 export const spaceEditSchema = Yup.object().shape({
-  room: Yup.object().shape<RoomSchemaShape>({
-    title: createNameSchema({ name: "Title", withMin: true }),
-    url: roomUrlSchema,
-    image_url: roomImageUrlSchema,
+  room: roomSchema,
+  venue: Yup.object().shape({
+    iframeUrl: validUrlSchema,
   }),
+});
+
+export const externalSpaceEditSchema = Yup.object().shape({
+  room: roomSchemaWithUrl,
   venue: Yup.object().shape({
     iframeUrl: validUrlSchema,
   }),

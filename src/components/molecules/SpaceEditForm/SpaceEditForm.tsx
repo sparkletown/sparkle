@@ -27,7 +27,10 @@ import { RoomVisibility, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
-import { spaceEditSchema } from "forms/spaceEditSchema";
+import {
+  externalSpaceEditSchema,
+  spaceEditSchema,
+} from "forms/spaceEditSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -166,7 +169,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: spaceEditSchema,
+    validationSchema: isExternalPortal(room)
+      ? externalSpaceEditSchema
+      : spaceEditSchema,
     defaultValues,
   });
 
@@ -288,8 +293,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   );
 
   return (
-    <Form onSubmit={handleSubmit(updateSelectedRoom)}>
-      <div className="SpaceEditForm">
+    <div className="SpaceEditForm">
+      <Form onSubmit={handleSubmit(updateSelectedRoom)}>
         <div className="SpaceEditForm__portal">
           <AdminSpacesListItem title="The basics" isOpened>
             <AdminInput
@@ -329,7 +334,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               errors={errors}
             />
 
-            {isExternalPortal(room) ? (
+            {isExternalPortal(room) && (
               <AdminInput
                 name="room.url"
                 autoComplete="off"
@@ -338,9 +343,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 register={register}
                 errors={errors}
               />
-            ) : (
-              // NOTE: Save button doesn't work if the value is missing
-              <input name="room.url" type="hidden" ref={register} />
             )}
 
             <AdminSection
@@ -616,12 +618,13 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             className="AdminSidebarFooter__button--larger"
             type="submit"
             variant="primary"
+            loading={isUpdating}
             disabled={isUpdating || isDeleting}
           >
             Save changes
           </ButtonNG>
         </AdminSidebarFooter>
-      </div>
-    </Form>
+      </Form>
+    </div>
   );
 };
