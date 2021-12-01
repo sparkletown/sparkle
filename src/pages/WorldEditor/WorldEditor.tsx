@@ -38,7 +38,7 @@ export const WorldEditor: React.FC = () => {
 
   return (
     <div className="WorldEditor">
-      <WithNavigationBar hasBackButton withSchedule>
+      <WithNavigationBar>
         <AdminRestricted>
           <WorldNav />
           <WorldEditorPanel

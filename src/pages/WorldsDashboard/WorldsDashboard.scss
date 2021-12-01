@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 
 .WorldsDashboard {
+  height: 100%;
+
   .AdminPanel {
     width: 100%;
     height: calc(100vh - #{$reserved-page-height});
@@ -29,8 +31,8 @@
   .AdminShowcase {
     width: 100%;
     height: 100%;
-    display: grid;
-    grid-template-rows: 1fr 9fr;
+    display: flex;
+    flex-direction: column;
     background-color: $secondary--live;
   }
 

@@ -204,7 +204,7 @@ export const VenuePage: React.FC = () => {
 
   if (!spaceId || !spaceSlug || !space) {
     return (
-      <WithNavigationBar hasBackButton withHiddenLoginButton>
+      <WithNavigationBar hasBackButton withHiddenLoginButton withHome withRadio>
         <NotFound />
       </WithNavigationBar>
     );

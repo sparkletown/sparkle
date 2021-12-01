@@ -24,8 +24,11 @@ const NavBar = lazy(() =>
 export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
+  withRadio?: boolean;
+  withHome?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
+  title?: string;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
@@ -33,6 +36,9 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withSchedule,
   withPhotobooth,
   withHiddenLoginButton,
+  withRadio,
+  withHome,
+  title,
   children,
 }) => {
   const { spaceSlug } = useSpaceParams();
@@ -53,6 +59,9 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
             withSchedule={withSchedule}
             withPhotobooth={withPhotobooth}
             withHiddenLoginButton={withHiddenLoginButton}
+            withRadio={withRadio}
+            withHome={withHome}
+            title={title}
           />
         </Suspense>
       </RelatedVenuesProvider>
