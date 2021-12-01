@@ -293,8 +293,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   );
 
   return (
-    <div className="SpaceEditForm">
-      <Form onSubmit={handleSubmit(updateSelectedRoom)}>
+    <Form onSubmit={handleSubmit(updateSelectedRoom)}>
+      <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
           <AdminSpacesListItem title="The basics" isOpened>
             <AdminInput
@@ -624,7 +624,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             Save changes
           </ButtonNG>
         </AdminSidebarFooter>
-      </Form>
-    </div>
+      </div>
+    </Form>
   );
 };
