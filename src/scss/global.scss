@@ -236,20 +236,18 @@ button.btn {
   }
 }
 
-// Inputs
+// @debt replace plain input and textarea elements with AdminInput and/or AdminTextarea and/or similar, then remove these global styles
 input,
 textarea {
-  // @debt remove style auto-setting for inputs
   -webkit-appearance: none;
   border: none;
   outline: none;
   background-color: opaque-white(0.12);
   width: 100%;
   position: relative;
-  cursor: pointer;
-  font-size: 1em;
-  padding: 12px;
-  border-radius: 22px;
+  font-size: font-size--parent(1);
+  padding: $spacing--md;
+  border-radius: $border-radius--xl;
   text-align: center;
   color: $content--over;
 
@@ -297,7 +295,7 @@ textarea {
   }
 
   &.disabled {
-    background-color: rgba($concrete, 1);
+    background-color: var(--content--over-60a);
     cursor: default;
   }
 }
@@ -425,7 +423,7 @@ h4 {
   border: none;
   border-radius: 22px;
   background: $content--under;
-  box-shadow: box-shadow--large(0.34);
+  box-shadow: box-shadow--large(var(--content--under-30a));
 }
 
 .centered-flex {
@@ -664,7 +662,7 @@ span.link {
     }
 
     .timestamp {
-      color: $concrete;
+      color: var(--content--over-60a);
     }
 
     &.chat-message {

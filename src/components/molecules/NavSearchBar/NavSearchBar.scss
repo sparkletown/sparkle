@@ -31,7 +31,7 @@
     max-height: $search-dropdown-height--max;
     margin-top: $navbar-height;
     background-color: $secondary--dark;
-    box-shadow: box-shadow--large();
+    box-shadow: box-shadow--large(var(--content--under-50a));
     border-radius: 0 0 $border-radius--xl $border-radius--xl;
     transform: translateY(-$navbar-height - $search-dropdown-height--empty);
     transform-origin: top right;

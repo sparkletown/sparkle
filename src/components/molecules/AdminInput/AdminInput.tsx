@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
+import classNames from "classnames";
 import { get } from "lodash";
 
 import { generateId } from "utils/string";
@@ -22,7 +23,8 @@ export const AdminInput: React.FC<AdminInputProps> = ({
   subtext,
   register,
   errors,
-  hidden: isHidden,
+  hidden,
+  disabled,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -31,17 +33,28 @@ export const AdminInput: React.FC<AdminInputProps> = ({
     [label, name]
   );
 
-  return isHidden ? (
+  const parentClasses = classNames({
+    AdminInput: true,
+    "AdminInput--invalid": error,
+    "AdminInput--disabled": disabled,
+    "AdminInput--hidden": hidden,
+    "AdminInput--visible": !hidden,
+  });
+
+  const hiddenClasses = classNames(parentClasses, "AdminInput__input");
+
+  return hidden ? (
     <input
       {...inputProps}
-      className="AdminInput AdminInput--hidden AdminInput__input"
+      className={hiddenClasses}
       name={name}
       ref={register}
       id={id}
+      disabled={disabled}
       type="hidden"
     />
   ) : (
-    <p className="AdminInput AdminInput--visible">
+    <p className={parentClasses}>
       {label && (
         <label className="AdminInput__label" htmlFor={id}>
           {label}
@@ -53,6 +66,7 @@ export const AdminInput: React.FC<AdminInputProps> = ({
         name={name}
         ref={register}
         id={id}
+        disabled={disabled}
       />
       {subtext && <span className="AdminInput__subtext">{subtext}</span>}
       {error && <span className="AdminInput__error">{error?.message}</span>}
