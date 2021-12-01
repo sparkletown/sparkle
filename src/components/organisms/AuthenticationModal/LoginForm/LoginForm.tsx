@@ -38,8 +38,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     register,

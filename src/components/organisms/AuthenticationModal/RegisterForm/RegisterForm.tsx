@@ -17,7 +17,6 @@ import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
@@ -63,9 +62,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   const history = useHistory();
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const { world, space, spaceId, isLoaded } = useSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const analytics = useAnalytics({ venue: space });
@@ -94,7 +94,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     clearError("backend");
   };
 
-  if (!isSpaceLoaded) {
+  if (!isLoaded) {
     return <>Loading...</>;
   }
 
@@ -234,7 +234,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   const isDobRequired =
-    isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
+    isLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   return (
     <div className="form-container">

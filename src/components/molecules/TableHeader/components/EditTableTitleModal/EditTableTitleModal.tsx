@@ -42,8 +42,8 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   capacity,
   onHide,
 }) => {
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const formDefaultValues = useMemo(
     () => ({

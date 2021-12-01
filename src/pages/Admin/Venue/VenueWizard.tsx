@@ -9,7 +9,8 @@ import {
   Template,
 } from "settings";
 
-import { AnyVenue } from "types/venues";
+import { AnyVenue, SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { attendeeSpaceInsideUrl } from "utils/url";
 
@@ -68,25 +69,29 @@ const reducer = (
 };
 
 export const VenueWizard: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
   return spaceSlug ? (
-    <VenueWizardEdit spaceSlug={spaceSlug} />
+    <VenueWizardEdit worldSlug={worldSlug} spaceSlug={spaceSlug} />
   ) : (
     <VenueWizardCreate />
   );
 };
 
 interface VenueWizardEditProps {
-  spaceSlug: string;
+  worldSlug: WorldSlug;
+  spaceSlug: SpaceSlug;
 }
 
-const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
+  worldSlug,
+  spaceSlug,
+}) => {
   // get the venue
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {

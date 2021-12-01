@@ -41,9 +41,10 @@ export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
   const { space, spaceId, isLoaded: isCurrentVenueLoaded } = useSpaceBySlug(
+    worldSlug,
     spaceSlug
   );
 

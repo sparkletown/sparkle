@@ -16,8 +16,8 @@ import { useSpaceParams } from "./spaces/useSpaceParams";
 import { useUser } from "./useUser";
 
 export const useVenuePoll = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const { userWithId } = useUser();
 

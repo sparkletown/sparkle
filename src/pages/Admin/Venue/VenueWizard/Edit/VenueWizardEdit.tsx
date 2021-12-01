@@ -1,15 +1,22 @@
 import React from "react";
 
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
+
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 
 import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
 export interface VenueWizardEditProps {
-  spaceSlug: string;
+  worldSlug: WorldSlug;
+  spaceSlug: SpaceSlug;
 }
 
-const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
-  const { space } = useSpaceBySlug(spaceSlug);
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
+  worldSlug,
+  spaceSlug,
+}) => {
+  const { space } = useSpaceBySlug(worldSlug, spaceSlug);
 
   return <SpaceEditorStartPanel venue={space} />;
 };

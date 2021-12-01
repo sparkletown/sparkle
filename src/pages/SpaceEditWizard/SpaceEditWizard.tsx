@@ -15,8 +15,11 @@ import { NotFound } from "components/atoms/NotFound";
 import "./SpaceEditWizard.scss";
 
 export const SpaceEditWizard: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   if (!isSpaceLoaded) {
     return <LoadingPage />;

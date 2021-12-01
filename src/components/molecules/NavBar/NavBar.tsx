@@ -74,7 +74,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     currentVenue: relatedVenue,

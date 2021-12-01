@@ -7,7 +7,6 @@ import { attendeeSpaceInsideUrl, externalUrlAdditionalProps } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -42,11 +41,7 @@ export const CodeOfConduct: React.FC = () => {
   const { user } = useUser();
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: space?.worldId,
-  });
+  const { world, space, isLoaded } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>
@@ -64,13 +59,13 @@ export const CodeOfConduct: React.FC = () => {
   }, [history, returnUrl, worldSlug, spaceSlug]);
 
   useEffect(() => {
-    if (!isWorldLoaded) return;
+    if (!isLoaded) return;
 
     // Skip this screen if there are no code of conduct questions
     if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [isWorldLoaded, proceed, world?.questions?.code?.length]);
+  }, [isLoaded, proceed, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
@@ -94,11 +89,11 @@ export const CodeOfConduct: React.FC = () => {
     return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isSpaceLoaded && !space) {
+  if (isLoaded && !space) {
     return <NotFound />;
   }
 
-  if (!space || !isWorldLoaded) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 

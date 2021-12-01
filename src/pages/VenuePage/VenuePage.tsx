@@ -32,7 +32,6 @@ import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -69,9 +68,11 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded } = useSpaceBySlug(spaceSlug);
+  const { world, space, spaceId, isLoaded } = useSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
   const analytics = useAnalytics({ venue: space });
-  const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
@@ -187,10 +188,10 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!isWorldLoaded || !world || !user) return;
+    if (!isLoaded || !world || !user) return;
 
     analytics.trackVenuePageLoadedEvent();
-  }, [analytics, isWorldLoaded, user, world]);
+  }, [analytics, isLoaded, user, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

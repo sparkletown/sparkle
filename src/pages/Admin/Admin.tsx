@@ -431,8 +431,8 @@ export const Admin: React.FC = () => {
     storeAs: "venues" as ValidStoreAsKeys, // @debt super hacky, but we're consciously subverting our helper protections
   });
 
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");

@@ -16,7 +16,6 @@ import {
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import Login from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
@@ -38,9 +37,11 @@ export const VenueEntrancePage: React.FC = () => {
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { world, space, spaceId, isLoaded } = useSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
   const step = Number.parseInt(unparsedStep ?? "", 10);
 
   const proceed = useCallback(
@@ -50,17 +51,17 @@ export const VenueEntrancePage: React.FC = () => {
     [worldSlug, spaceSlug, step, history]
   );
 
-  if (!isSpaceLoaded || !isWorldLoaded) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 
-  if (!spaceId || !space || !spaceSlug) {
+  if (!spaceId || !space || !spaceSlug || !world) {
     return <NotFound />;
   }
 
-  const stepConfig = world?.entrance?.[step - 1];
+  const stepConfig = world.entrance?.[step - 1];
   if (!stepConfig) {
-    return <Redirect to={attendeeSpaceInsideUrl(world?.slug, spaceSlug)} />;
+    return <Redirect to={attendeeSpaceInsideUrl(world.slug, spaceSlug)} />;
   }
 
   if (!user || !profile) {

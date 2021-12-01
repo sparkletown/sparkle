@@ -9,6 +9,7 @@ import classNames from "classnames";
 import { SPACE_TAXON } from "settings";
 
 import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import {
   adminNGVenueUrl,
@@ -18,7 +19,6 @@ import {
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
@@ -46,6 +46,7 @@ export enum AdminVenueTab {
 }
 
 export interface AdminVenueViewRouteParams {
+  worldSlug?: WorldSlug;
   spaceSlug?: SpaceSlug;
   selectedTab?: AdminVenueTab;
 }
@@ -65,6 +66,7 @@ const tabIcons = {
 export const AdminVenueView: React.FC = () => {
   const history = useHistory();
   const {
+    worldSlug,
     spaceSlug,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
@@ -74,11 +76,7 @@ export const AdminVenueView: React.FC = () => {
     hide: closeDeleteModal,
   } = useShowHide();
 
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
-
-  const worldSlug = world?.slug;
+  const { space, spaceId, isLoaded } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
@@ -104,7 +102,7 @@ export const AdminVenueView: React.FC = () => {
     [history, worldSlug]
   );
 
-  if (!isSpaceLoaded || !isWorldLoaded) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 

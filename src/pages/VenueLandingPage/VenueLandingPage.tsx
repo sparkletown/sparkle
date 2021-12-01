@@ -16,9 +16,9 @@ import VenueLandingPageContent from "./VenueLandingPageContent";
 import "./VenueLandingPage.scss";
 
 export const VenueLandingPage: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
-  const { space, isLoaded } = useSpaceBySlug(spaceSlug);
+  const { space, isLoaded } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;

@@ -15,7 +15,7 @@ import "./SecretPasswordForm.scss";
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const [error, setError] = useState(false);
   const [password, setPassword] = useState<string>();

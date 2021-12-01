@@ -12,8 +12,8 @@ export const Provided: React.FC<ProvidedProps> = ({
   children,
   withRelatedVenues = false,
 }) => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   if (!withRelatedVenues) return <>{children}</>;
 

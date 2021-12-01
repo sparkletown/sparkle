@@ -28,8 +28,8 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     hide: hideAnnouncementMessage,
   } = useShowHide();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const { banner } = space ?? {};
 

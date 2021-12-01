@@ -6,8 +6,8 @@ import { useUser } from "./useUser";
 export const useIsUserVenueOwner = (): boolean => {
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useSpaceBySlug(worldSlug, spaceSlug);
   const { currentVenue, parentVenue } = useRelatedVenues({
     currentVenueId: space?.id,
   });

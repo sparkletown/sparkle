@@ -31,8 +31,8 @@ import "./VenueAdminPage.scss";
 export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);

@@ -41,8 +41,8 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   variant,
   children,
 }) => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt remove backButton from Navbar
   return (

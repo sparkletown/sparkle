@@ -21,8 +21,8 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(

@@ -22,7 +22,7 @@ import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room, RoomInput } from "types/rooms";
-import { RoomVisibility, VenueTemplate } from "types/venues";
+import { RoomVisibility, SpaceSlug, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
@@ -90,11 +90,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
-  const spaceSlugFromPortal = room?.url?.split("/").pop();
-  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(spaceSlugFromPortal);
+  const spaceSlugFromPortal = room?.url?.split("/").pop() as SpaceSlug;
+  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(
+    worldSlug,
+    spaceSlugFromPortal
+  );
 
   const {
     loading: isLoadingRoomVenue,

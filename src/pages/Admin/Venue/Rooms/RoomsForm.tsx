@@ -48,8 +48,11 @@ import { validationSchema } from "./RoomsValidationSchema";
 import "../Venue.scss";
 
 export const RoomsForm: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
   const history = useHistory();
   const { user } = useUser();
   const queryParams = useQuery();

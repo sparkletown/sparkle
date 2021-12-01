@@ -7,8 +7,8 @@ import { useSpaceParams } from "./spaces/useSpaceParams";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 
 export const useConnectCurrentEvent = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
 
   const [currentTimestamp] = useState(Date.now() / 1000);
 
