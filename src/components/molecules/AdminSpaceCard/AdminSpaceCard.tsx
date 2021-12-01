@@ -8,7 +8,7 @@ import classNames from "classnames";
 import {
   DEFAULT_VENUE_BANNER_COLOR,
   DEFAULT_VENUE_LOGO,
-  SPACE_PORTALS_ICONS_MAPPING,
+  PORTAL_INFO_ICON_MAPPING,
   SPACE_TAXON,
 } from "settings";
 
@@ -53,7 +53,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
   });
   const logoClasses = classNames("AdminSpaceCard__logo", logoStyle);
 
-  const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[venue.template];
+  const spaceIcon = PORTAL_INFO_ICON_MAPPING[venue.template];
 
   const spaceDescriptionText =
     venue.config?.landingPageConfig?.description ||

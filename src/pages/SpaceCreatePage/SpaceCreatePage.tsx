@@ -13,6 +13,7 @@ import { AdminPanel } from "components/organisms/AdminVenueView/components/Admin
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
+import { PortalShowcase } from "components/organisms/PortalShowcase";
 import { SpaceCreateForm } from "components/organisms/SpaceCreateForm";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -65,7 +66,7 @@ export const SpaceCreatePage: React.FC = () => {
               )}
             </AdminSidebar>
             <AdminShowcase>
-              <div>empty for now, images to show later</div>
+              <PortalShowcase />
             </AdminShowcase>
           </AdminPanel>
         </AdminRestricted>

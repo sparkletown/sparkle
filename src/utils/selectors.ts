@@ -1,5 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
+import { SpaceInfoListItem } from "settings";
+
 import { World } from "api/world";
 
 import { RootState } from "store";
@@ -220,3 +222,7 @@ export const worldEditSelector: SparkleSelector<World | undefined> = (state) =>
 export const worldEditStartValuesSelector: SparkleSelector<
   Partial<WithOptionalWorldId<WorldStartFormInput>>
 > = (state) => state.worldEditStartValues;
+
+export const spaceCreateItemSelector: SparkleSelector<SpaceInfoListItem> = (
+  state
+) => state.spaceCreateItem;

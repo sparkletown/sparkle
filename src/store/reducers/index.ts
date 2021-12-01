@@ -1,3 +1,4 @@
+import { spaceCreateItemReducer } from "store/reducers/SpaceEdit";
 import { worldEditStartValuesReducer } from "store/reducers/WorldEdit";
 
 import { VenueTemplate } from "types/venues";
@@ -22,4 +23,5 @@ export const MiscReducers = {
   room: roomReducer,
   userProfile: userProfileReducer,
   worldEditStartValues: worldEditStartValuesReducer,
+  spaceCreateItem: spaceCreateItemReducer,
 };

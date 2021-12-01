@@ -5,9 +5,9 @@ import {
   ACCOUNT_PROFILE_BASE_URL,
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
+  ADMIN_IA_SPACE_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
-  ADMIN_V3_SPACE_PARAM_URL,
   ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
   ENTRANCE_BASE_URL,
@@ -20,12 +20,23 @@ import {
 
 import { Room } from "types/rooms";
 
+// @debt most of these (a,b,c)=>generatePath(PATH,{}) function should be just inlined where called
+// like to={generatePath(params)} or actually have logic inside them that deals with missing params
+
+const DEFAULT_MISSING_PARAM_URL = "#";
+
 export const adminNGVenueUrl = (
   worldSlug?: string,
   spaceSlug?: string,
   selectedTab?: string
 ) =>
-  generatePath(ADMIN_V3_SPACE_PARAM_URL, { worldSlug, spaceSlug, selectedTab });
+  !worldSlug || !spaceSlug
+    ? DEFAULT_MISSING_PARAM_URL
+    : generatePath(ADMIN_IA_SPACE_EDIT_PARAM_URL, {
+        worldSlug,
+        spaceSlug,
+        selectedTab,
+      });
 
 export const adminNGSettingsUrl = (spaceSlug?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_SPACE_SETTINGS_PARAM_URL, { spaceSlug, selectedTab });
@@ -34,12 +45,14 @@ export const adminWorldUrl = (worldSlug?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_WORLD_EDIT_PARAM_URL, { worldSlug, selectedTab });
 
 export const adminCreateWorldSpace = (worldSlug?: string) =>
-  worldSlug ? generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldSlug }) : "#";
+  worldSlug
+    ? generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldSlug })
+    : DEFAULT_MISSING_PARAM_URL;
 
 export const adminCreateSpace = (worldSlug?: string) =>
   worldSlug
     ? generatePath(ADMIN_IA_SPACE_CREATE_PARAM_URL, { worldSlug })
-    : "#";
+    : DEFAULT_MISSING_PARAM_URL;
 
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });

@@ -37,8 +37,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 }) => {
   const [selected, setSelected] = useState(parentSpace);
 
-  // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
-  // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
+  // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and doesn't exist on PORTAL_INFO_ICON_MAPPING
   const filteredPortals = omit(portals, VenueTemplate.playa);
 
   useEffect(() => {

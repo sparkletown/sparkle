@@ -15,7 +15,9 @@ import IconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
 import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
 import PosterConversation from "assets/spaces/add-portal-conversation.png";
+import PosterEmbeddable from "assets/spaces/add-portal-embeddable.png";
 import PosterExperience from "assets/spaces/add-portal-experience.png";
+import PosterExternal from "assets/spaces/add-portal-external.png";
 import PosterMusicBar from "assets/spaces/add-portal-jazzbar.png";
 import PosterMap from "assets/spaces/add-portal-map.png";
 
@@ -105,7 +107,7 @@ export const SPACE_INFO_LIST: SpaceInfoListItem[] = [
   {
     text: "Embeddable",
     icon: IconEmbeddable,
-    poster: "",
+    poster: PosterEmbeddable,
     description: "",
     template: VenueTemplate.embeddable,
     hidden: false,
@@ -125,7 +127,7 @@ export const PORTAL_INFO_LIST: PortalInfoListItem[] = [
   {
     text: "External link",
     icon: IconExternalLink,
-    poster: "",
+    poster: PosterExternal,
     description:
       "New Space will not be created and the Space name will be used as the title for the newly added External Link portal",
     template: "external",

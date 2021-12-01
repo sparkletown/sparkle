@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -7,12 +7,15 @@ import { PortalInfoListItem, SPACE_INFO_LIST, SPACE_TAXON } from "settings";
 
 import { createVenue_v2 } from "api/admin";
 
+import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
+
 import { buildEmptySpace } from "utils/venue";
 
 import { createPortalSchema } from "forms/createPortalSchema";
 import { createSpaceSchema } from "forms/createSpaceSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
@@ -30,6 +33,7 @@ export interface SpaceCreateFormProps {
 }
 
 export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
+  const dispatch = useDispatch();
   const { user } = useUser();
   const { spaceSlug } = useSpaceParams();
   const { worldId } = useWorldBySlug(spaceSlug);
@@ -71,9 +75,15 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
   }, [getValues, worldId, onDone, logoImageUrl, user, spaceSlug]);
 
   const handlePortalClick = useCallback(
-    ({ item }) => setSelectedItem(item),
-    []
+    ({ item }) => {
+      setSelectedItem(item);
+      dispatch(spaceCreatePortalItem(item));
+    },
+    [dispatch]
   );
+
+  // NOTE: palette cleanser when starting new world, run only once on init
+  useEffect(() => void dispatch(spaceCreatePortalItem()), [dispatch]);
 
   return (
     <Form className="SpaceCreateForm" onSubmit={handleSubmit(addPortal)}>
