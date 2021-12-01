@@ -8,7 +8,8 @@ import {
 } from "secrets";
 
 import { RoomType } from "types/rooms";
-import { VenueTemplate } from "types/venues";
+import { SpaceSlug, VenueTemplate } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -506,8 +507,11 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_SPACE_SLUG = "bootstrap";
-export const DEFAULT_WORLD_SLUG = "bootstrap";
+export const DEFAULT_SPACE_SLUG = "bootstrap" as SpaceSlug;
+export const DEFAULT_WORLD_SLUG = "bootstrap" as WorldSlug;
+// @debt This shouldn't be needed
+export const EMPTY_WORLD_SLUG = "" as WorldSlug;
+export const EMPTY_SPACE_SLUG = "" as SpaceSlug;
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",

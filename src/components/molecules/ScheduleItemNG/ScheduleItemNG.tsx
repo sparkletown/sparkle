@@ -13,7 +13,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
+import {
+  EMPTY_SPACE_SLUG,
+  EMPTY_WORLD_SLUG,
+  SCHEDULE_SHOW_COPIED_TEXT_MS,
+} from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -87,8 +91,8 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       const eventLink =
         eventRoom?.url ??
         getAbsoluteAttendeeSpaceInsideUrl(
-          worldSlug ?? "",
-          eventVenue?.slug ?? ""
+          worldSlug ?? EMPTY_WORLD_SLUG,
+          eventVenue?.slug ?? EMPTY_SPACE_SLUG
         );
       navigator.clipboard.writeText(eventLink);
       setIsEventLinkCopied(true);

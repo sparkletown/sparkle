@@ -17,6 +17,7 @@ import { PortalInput, Room, RoomInput } from "types/rooms";
 import { UserStatus } from "types/User";
 import {
   RoomVisibility,
+  SpaceSlug,
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
@@ -519,7 +520,8 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + attendeeSpaceInsideUrl(world.slug, input.venueName),
+        : window.origin +
+          attendeeSpaceInsideUrl(world.slug, input.venueName as SpaceSlug),
     ...imageInputData,
   };
 

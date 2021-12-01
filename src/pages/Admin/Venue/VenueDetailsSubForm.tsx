@@ -24,7 +24,7 @@ import {
 import { createSlug } from "api/admin";
 
 import { UserStatus } from "types/User";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
 
 import { attendeeSpaceLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
@@ -103,7 +103,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   const urlSafeName = values.name
     ? `${window.location.host}${attendeeSpaceLandingUrl(
         worldSlug,
-        createSlug(values.name)
+        createSlug(values.name) as SpaceSlug
       )}`
     : undefined;
   const disable = isSubmitting;

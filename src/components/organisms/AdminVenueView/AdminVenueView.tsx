@@ -8,6 +8,8 @@ import classNames from "classnames";
 
 import { SPACE_TAXON } from "settings";
 
+import { SpaceSlug } from "types/venues";
+
 import {
   adminNGVenueUrl,
   adminWorldSpacesUrl,
@@ -44,7 +46,7 @@ export enum AdminVenueTab {
 }
 
 export interface AdminVenueViewRouteParams {
-  spaceSlug?: string;
+  spaceSlug?: SpaceSlug;
   selectedTab?: AdminVenueTab;
 }
 

@@ -13,12 +13,16 @@ import {
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
   ATTENDEE_SPACE_INSIDE_URL,
   ATTENDEE_SPACE_LANDING_URL,
+  EMPTY_SPACE_SLUG,
+  EMPTY_WORLD_SLUG,
   ENTRANCE_BASE_URL,
   VALID_URL_PROTOCOLS,
   WORLD_ROOT_URL,
 } from "settings";
 
 import { Room } from "types/rooms";
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
 // @debt most of these (a,b,c)=>generatePath(PATH,{}) function should be just inlined where called
 // like to={generatePath(params)} or actually have logic inside them that deals with missing params
@@ -29,8 +33,8 @@ export const generateAdminIaSpacePath = (worldSlug?: string) =>
   !worldSlug ? "" : generatePath(ADMIN_IA_SPACE_BASE_PARAM_URL, { worldSlug });
 
 export const adminNGVenueUrl = (
-  worldSlug?: string,
-  spaceSlug?: string,
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
   selectedTab?: string
 ) =>
   !worldSlug || !spaceSlug
@@ -62,23 +66,26 @@ export const adminWorldSpacesUrl = (worldSlug?: string) =>
 
 // TODO Figure out a better way of handling these being optional throughout.
 export const attendeeSpaceInsideUrl = (
-  worldSlug?: string,
-  spaceSlug?: string
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug
 ) => generatePath(ATTENDEE_SPACE_INSIDE_URL, { worldSlug, spaceSlug });
 
 // TODO Figure out a better way of handling these being optional throughout.
 export const attendeeSpaceLandingUrl = (
-  worldSlug?: string,
-  spaceSlug?: string
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug
 ) => generatePath(ATTENDEE_SPACE_LANDING_URL, { worldSlug, spaceSlug });
 
 export const getAbsoluteAttendeeSpaceInsideUrl = (
-  worldSlug?: string,
-  spaceSlug?: string
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug
 ) =>
   // TODO Figure out a better way of handling these being optional throughout.
   new URL(
-    attendeeSpaceInsideUrl(worldSlug ?? "", spaceSlug ?? ""),
+    attendeeSpaceInsideUrl(
+      worldSlug ?? EMPTY_WORLD_SLUG,
+      spaceSlug ?? EMPTY_SPACE_SLUG
+    ),
     window.location.origin
   ).href;
 
@@ -118,8 +125,8 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
 };
 
 export const enterVenue = (
-  worldSlug: string,
-  spaceSlug: string,
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug,
   options?: OpenUrlOptions
 ) => openUrl(attendeeSpaceInsideUrl(worldSlug, spaceSlug), options);
 

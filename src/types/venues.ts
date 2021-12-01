@@ -5,6 +5,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 import { AuditoriumSectionPath } from "types/auditorium";
 
 import { WithId, WithVenueId } from "utils/id";
+import { Brand } from "utils/types";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -17,6 +18,9 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
+import { WorldSlug } from "./world";
+
+export type SpaceSlug = Brand<string, "SpaceSlug">;
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
@@ -149,7 +153,7 @@ export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
-  slug: string;
+  slug: SpaceSlug;
   access?: VenueAccessMode;
   config?: VenueConfig;
   host?: {
@@ -378,8 +382,8 @@ export interface VenueEvent {
   id?: string;
   orderPriority?: number;
   liveAudience?: number;
-  worldSlug: string;
-  venueSlug: string;
+  worldSlug: WorldSlug;
+  venueSlug: SpaceSlug;
 }
 
 export interface VenueLocation {

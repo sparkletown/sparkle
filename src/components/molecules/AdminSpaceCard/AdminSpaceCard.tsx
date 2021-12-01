@@ -13,6 +13,7 @@ import {
 } from "settings";
 
 import { AnyVenue } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
 import { adminNGVenueUrl, attendeeSpaceInsideUrl } from "utils/url";
@@ -27,7 +28,7 @@ import "./AdminSpaceCard.scss";
 
 export interface AdminSpaceCardProps {
   venue: WithId<AnyVenue>;
-  worldSlug?: string;
+  worldSlug?: WorldSlug;
 }
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({

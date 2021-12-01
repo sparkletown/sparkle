@@ -153,12 +153,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, []);
 
   const navigateToHomepage = useCallback(() => {
-    if (!sovereignVenueId) return;
+    if (!relatedVenue) return;
 
-    enterVenue(worldSlug ?? "", sovereignVenueId, {
+    enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, relatedVenue.slug, {
       customOpenRelativeUrl: openUrlUsingRouter,
     });
-  }, [worldSlug, sovereignVenueId, openUrlUsingRouter]);
+  }, [worldSlug, relatedVenue, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 

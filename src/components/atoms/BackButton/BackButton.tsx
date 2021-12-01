@@ -3,13 +3,15 @@ import { useHistory } from "react-router-dom";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { EMPTY_WORLD_SLUG } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import "./BackButton.scss";
 
@@ -24,7 +26,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
   space,
   variant,
 }) => {
-  const { worldSlug } = useWorldBySlug();
+  const { worldSlug } = useWorldParams();
   const spaceSlug = space?.slug;
   const displayName = locationName ?? space?.name;
   const backButtonText = displayName ? `Back to ${displayName}` : "Back";
@@ -38,14 +40,18 @@ export const BackButton: React.FC<BackButtonProps> = ({
     if (!spaceSlug) return;
 
     if (variant === "relative") {
-      return enterVenue(worldSlug ?? "", spaceSlug, { customOpenRelativeUrl });
+      return enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, spaceSlug, {
+        customOpenRelativeUrl,
+      });
     }
 
     if (variant === "external") {
-      return enterVenue(worldSlug ?? "", spaceSlug, { customOpenExternalUrl });
+      return enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, spaceSlug, {
+        customOpenExternalUrl,
+      });
     }
 
-    return enterVenue(worldSlug ?? "", spaceSlug);
+    return enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, spaceSlug);
   }, [
     worldSlug,
     spaceSlug,

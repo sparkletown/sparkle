@@ -18,7 +18,7 @@ import { upsertRoom } from "api/admin";
 
 import { Room, RoomInput } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { PartyMapVenue } from "types/venues";
+import { PartyMapVenue, SpaceSlug } from "types/venues";
 
 import { attendeeSpaceInsideUrl } from "utils/url";
 
@@ -103,7 +103,7 @@ export const RoomsForm: React.FC = () => {
 
 interface RoomInnerFormProps {
   spaceId: string;
-  spaceSlug: string;
+  spaceSlug: SpaceSlug;
   venue: PartyMapVenue;
   editingRoom?: Room;
   editingRoomIndex?: number;
