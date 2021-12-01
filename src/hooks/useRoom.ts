@@ -27,6 +27,8 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const enterRoom = useCallback(() => {
     if (!portalVenueId) return;
 
+    // TODO This should be using the venue from the portal itself. At the moment
+    // portal URLs are stored using the old way.
     enterVenue(worldSlug ?? "", spaceSlug ?? "", {
       customOpenRelativeUrl: openUrlUsingRouter,
     });

@@ -19,6 +19,7 @@ export type UseSpaceBySlugResult = {
  * @param spaceSlug
  * @returns
  */
+// TODO This needs world slug too. Space Slug is NOT globally unique
 export const useSpaceBySlug = (spaceSlug?: string): UseSpaceBySlugResult => {
   const firestore = useFirestore();
 

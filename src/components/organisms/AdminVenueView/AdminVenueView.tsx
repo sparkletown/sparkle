@@ -76,7 +76,7 @@ export const AdminVenueView: React.FC = () => {
 
   const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
-  const { world } = useWorldById(space?.worldId);
+  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
 
   const worldSlug = world?.slug;
 
@@ -104,7 +104,7 @@ export const AdminVenueView: React.FC = () => {
     [history, worldSlug]
   );
 
-  if (!isSpaceLoaded) {
+  if (!isSpaceLoaded || !isWorldLoaded) {
     return <LoadingPage />;
   }
 
