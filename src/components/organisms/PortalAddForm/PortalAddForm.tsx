@@ -20,6 +20,7 @@ import { buildEmptySpace } from "utils/venue";
 import { createPortalSchema } from "forms/createPortalSchema";
 import { createSpaceSchema } from "forms/createSpaceSchema";
 
+import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
@@ -44,8 +45,9 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
   const { description, icon, poster, template, text } = item;
 
   const { user } = useUser();
-  const { spaceSlug } = useSpaceParams();
-  const { worldId } = useWorldBySlug(spaceSlug);
+  const { spaceSlug, worldSlug } = useSpaceParams();
+  const { worldId } = useWorldBySlug(worldSlug);
+  const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
@@ -62,7 +64,7 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
     { loading: isLoading, error: submitError },
     addPortal,
   ] = useAsyncFn(async () => {
-    if (!user || !spaceSlug || !template || !worldId) return;
+    if (!user || !spaceSlug || !template || !worldId || !spaceId) return;
 
     const { roomUrl, venueName } = getValues();
 
@@ -85,7 +87,9 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
         {
           ...venueData,
           worldId,
-          parentId: spaceSlug, // @debt this should be parent's spaceId and if needed parentSlug: spaceSlug should be added
+          parentId: spaceSlug, // @debt this should be parent's spaceId, and if needed unambiguous identifiers, uncomment the following
+          // parentSpaceId: spaceId,
+          // parentSpaceSlug: spaceSlug,
           logoImageUrl: icon,
           name: newSpaceSlug, // @debt this should be unfiltered venueName once the possible bugs of mixing slug with id are resolved
           slug: newSpaceSlug,
@@ -95,9 +99,9 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
     }
 
     // @debt this is wrong, for all intents and purposes the venueId a.k.a spaceId is the identifier of the parent space
-    await createRoom(portalData, spaceSlug, user);
+    await createRoom(portalData, spaceId, user);
     await onDone();
-  }, [getValues, worldId, onDone, icon, template, user, spaceSlug]);
+  }, [getValues, worldId, onDone, icon, template, user, spaceSlug, spaceId]);
 
   const { isValid: isPosterValid } = useCheckImage(poster);
 

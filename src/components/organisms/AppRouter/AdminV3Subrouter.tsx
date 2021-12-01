@@ -10,12 +10,10 @@ import {
   ADMIN_ROOT_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_EDIT_PARAM_URL,
-  ADMIN_V3_SPACE_PARAM_URL,
   ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_WORLD_BASE_URL,
   ADMIN_V3_WORLD_CREATE_URL,
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
-  ADMIN_V3_WORLD_SPACES_PARAM_URL,
 } from "settings";
 
 import { SpaceCreatePage } from "pages/SpaceCreatePage";
@@ -31,20 +29,14 @@ import { AdminVenueView } from "components/organisms/AdminVenueView";
 // @debt rename to AdminSubRouter once AdminV1Subrouter is removed
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>
-    <Route
-      path={[ADMIN_V3_SPACE_PARAM_URL, ADMIN_IA_SPACE_EDIT_PARAM_URL]}
-      component={AdminVenueView}
-    />
-
+    <Route path={ADMIN_IA_SPACE_EDIT_PARAM_URL} component={AdminVenueView} />
     <Route path={ADMIN_IA_SPACE_CREATE_PARAM_URL} component={SpaceCreatePage} />
 
     <Route
-      path={[
-        ADMIN_IA_WORLD_PARAM_URL,
-        ADMIN_IA_SPACE_BASE_PARAM_URL,
-        // @debt remove the following if unused
-        ADMIN_V3_WORLD_SPACES_PARAM_URL,
-      ]}
+      // @debt there should be an ordering of these routes that doesn't require exact and strict props
+      exact
+      strict
+      path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}
       component={SpacesDashboard}
     />
 

@@ -32,7 +32,6 @@ $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $light-grey--lightest: #acadb0;
-$concrete: #a3a6ab;
 
 $green: #4bcc4b;
 $yellow: #ffe600;
@@ -135,10 +134,11 @@ $font-weight--500: 500;
 $font-weight--600: 600;
 $font-weight--700: 700;
 
-$media-breakpoint--sm: 576px;
-$media-breakpoint--md: 768px;
-$media-breakpoint--lg: 992px;
-$media-breakpoint--xl: 1200px;
+$media-breakpoint--sm: 576px; // mobile
+$media-breakpoint--md: 768px; // tablet--small
+$media-breakpoint--lg: 992px; // tablet--medium
+$media-breakpoint--xl: 1200px; // tablet--large
+$media-breakpoint--xxl: 1350px; // laptop
 
 $text-shadow--thin: 0 1px 2px rgba(#{var(--content--under-rgb)}, 0.25);
 $text-shadow--medium: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.25);
@@ -158,10 +158,10 @@ $drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
-$button-width--normal: 100%;
-$button-width--max-wrap: 300px;
 $button-width--max-margin: $spacing--md;
+$button-width--max-wrap: 300px;
 $button-width--max: $button-width--max-wrap - 2 * $button-width--max-margin;
+$button-width--normal: 100%;
 
 $image-overlay-padding: 0.3rem;
 $image-overlay-backdrop-filter: blur(10px);
@@ -175,7 +175,7 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 
-// NOTE: Magic number determined empirically to fill the footer space in default case
+// @debt: Magic number for the admin footer, remove this when the component is
 $admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
 $admin-ng-sidebar-width--normal: 30vw;
 $admin-ng-sidebar-width--min: max(
@@ -191,8 +191,11 @@ $admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
 $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
+$admin-ng-space-card-box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14);
 
 $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
+$admin-ia-manage-space-template-columns: 5fr
+  minmax(#{2 * $button-width--max-wrap}, 1fr);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
@@ -207,6 +210,7 @@ $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
 $z-layer-viewing-window: 5;
+$z-layer-space-card-link: 1;
 $z-layer-on-top-bg: 1;
 $z-layer-jazz-header: $z-layer-on-top-bg;
 $z-layer-user-list-label: $z-layer-on-top-bg;
@@ -275,6 +279,8 @@ $z-layers: (
   map-grid: 3,
   map-room--unclickable: 2,
   map-background: 1,
+  // Admin Space Card
+  space-card-link: $z-layer-space-card-link,
   // Legacy
   account-profile-picture-preview: 1,
   duststorm-container: 100,
@@ -309,8 +315,20 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
-@function box-shadow--large($transparency: 0.5) {
-  @return 0 10px 30px 0 opaque-black($transparency);
+@function box-shadow--input($color) {
+  @return 0 0 0 2px $color;
+}
+
+@function box-shadow--small($color) {
+  @return 0 2px 4px 0 $color;
+}
+
+@function box-shadow--medium($color) {
+  @return 0 4px 10px 0 $color;
+}
+
+@function box-shadow--large($color) {
+  @return 0 10px 30px 0 $color;
 }
 
 @function font-size--parent($scale: 1) {

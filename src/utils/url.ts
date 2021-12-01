@@ -2,6 +2,7 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
+  ACCOUNT_PROFILE_BASE_URL,
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
@@ -19,8 +20,12 @@ import {
 
 import { Room } from "types/rooms";
 
-export const adminNGVenueUrl = (spaceSlug?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_SPACE_PARAM_URL, { spaceSlug, selectedTab });
+export const adminNGVenueUrl = (
+  worldSlug?: string,
+  spaceSlug?: string,
+  selectedTab?: string
+) =>
+  generatePath(ADMIN_V3_SPACE_PARAM_URL, { worldSlug, spaceSlug, selectedTab });
 
 export const adminNGSettingsUrl = (spaceSlug?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_SPACE_SETTINGS_PARAM_URL, { spaceSlug, selectedTab });
@@ -44,6 +49,12 @@ export const venueInsideFullUrl = (spaceSlug?: string) =>
 
 export const venueInsideUrl = (spaceSlug: string) => {
   return `${VENUE_INSIDE_BASE_URL}/${spaceSlug}`;
+};
+
+export const accountProfileUrlWithSlug = (spaceSlug: string) => {
+  // @debt remove query param in favor of path param and/or
+  // add comprehensive `redirect` solution project-wide
+  return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}`;
 };
 
 export const venueLandingUrl = (spaceSlug: string) => {

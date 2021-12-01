@@ -15,10 +15,6 @@ import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import {
-  AdminSidebarFooter,
-  AdminSidebarFooterProps,
-} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
@@ -29,16 +25,13 @@ import { AdminShowcase } from "../AdminShowcase";
 
 import "./Spaces.scss";
 
-interface SpacesProps extends AdminSidebarFooterProps {
+interface SpacesProps {
   venue: WithId<AnyVenue>;
 }
 
 const emptyRoomsArray: Room[] = [];
 
-export const Spaces: React.FC<SpacesProps> = ({
-  venue,
-  ...sidebarFooterProps
-}) => {
+export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const [updatedRoom, setUpdatedRoom] = useState<Room>();
 
@@ -136,9 +129,9 @@ export const Spaces: React.FC<SpacesProps> = ({
         {!selectedRoom && (
           <>
             <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
-            <AdminSidebarFooter {...sidebarFooterProps} />
             <AdminSpacesListItem title="Map background">
               <BackgroundSelect
+                venueId={venue.id}
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
                 venueName={venue.name}

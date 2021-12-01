@@ -57,16 +57,20 @@ export const SpacesDashboard: React.FC = () => {
     () =>
       sortedVenues
         ?.filter(isPartyMapVenue)
-        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
-    [sortedVenues]
+        .map((venue) => (
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+        )),
+    [sortedVenues, worldSlug]
   );
 
   const renderedOtherVenues = useMemo(
     () =>
       sortedVenues
         ?.filter(isNotPartyMapVenue)
-        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
-    [sortedVenues]
+        .map((venue) => (
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+        )),
+    [sortedVenues, worldSlug]
   );
 
   const hasPartyVenues = renderedPartyVenues.length > 0;
@@ -89,13 +93,15 @@ export const SpacesDashboard: React.FC = () => {
               Change world
             </ButtonNG>
             <AdminTitle>{world?.name} dashboard</AdminTitle>
-            <ButtonNG
-              variant="secondary"
-              isLink
-              linkTo={adminWorldUrl(worldSlug)}
-            >
-              Settings
-            </ButtonNG>
+            <div>
+              <ButtonNG
+                variant="secondary"
+                isLink
+                linkTo={adminWorldUrl(worldSlug)}
+              >
+                Settings
+              </ButtonNG>
+            </div>
           </AdminTitleBar>
 
           {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}

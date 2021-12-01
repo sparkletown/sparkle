@@ -1,4 +1,4 @@
-export const VALID_URL_PROTOCOLS = Object.freeze(["http:", "https:"]);
+export const VALID_URL_PROTOCOLS = Object.freeze(["https:"]);
 
 // External Sparkle URLs
 export const EXTERNAL_SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -50,32 +50,30 @@ export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
 export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}?spaceSlug=:spaceSlug`;
 export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 
+// @debt remove unused v3 URLs and rename the useful ones as IA
 // Admin v3 URLs
 export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_ROOT_URL}/create/venue/:worldSlug?`;
 export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_ROOT_URL}/edit/:spaceSlug`;
-export const ADMIN_V3_SPACE_PARAM_URL = `${ADMIN_ROOT_URL}/venue/:spaceSlug?/:selectedTab?`;
 export const ADMIN_V3_SPACE_SETTINGS_PARAM_URL = `${ADMIN_ROOT_URL}/settings/:spaceSlug?/:selectedTab?`;
 
 export const ADMIN_V3_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/worlds`;
 export const ADMIN_V3_WORLD_CREATE_URL = `${ADMIN_V3_WORLD_BASE_URL}/new`;
 export const ADMIN_V3_WORLD_EDIT_PARAM_URL = `${ADMIN_V3_WORLD_BASE_URL}/old/:worldSlug?/:selectedTab?`;
-export const ADMIN_V3_WORLD_SPACES_PARAM_URL = `${ADMIN_V3_WORLD_BASE_URL}/:worldSlug?/spaces`;
 
+// Admin IA URLs
 export const ADMIN_IA_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/w`; // e.g. /admin/w
 export const ADMIN_IA_WORLD_PARAM_URL = `${ADMIN_IA_WORLD_BASE_URL}/:worldSlug`; // e.g. /admin/w/world123
 export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/:selectedTab?`;
 export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; // e.g. /admin/w/world123/s
-export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug`; // e.g. /admin/w/world123/s/space456
+export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
 
+// @debt remove v1 URLs
 // Admin v1 URLs
 export const ADMIN_V1_CREATE_URL = `${ADMIN_OLD_ROOT_URL}/venue/creation`;
-
 export const ADMIN_V1_EDIT_BASE_URL = `${ADMIN_OLD_ROOT_URL}/venue/edit`;
 export const ADMIN_V1_EDIT_PARAM_URL = `${ADMIN_V1_EDIT_BASE_URL}/:spaceSlug`;
-
 export const ADMIN_V1_VENUE_PARAM_URL = `${ADMIN_OLD_ROOT_URL}/:spaceSlug`;
-
 export const ADMIN_V1_ROOMS_BASE_URL = `${ADMIN_OLD_ROOT_URL}/venue/rooms`;
 export const ADMIN_V1_ROOMS_PARAM_URL = `${ADMIN_V1_ROOMS_BASE_URL}/:spaceSlug`;
 
