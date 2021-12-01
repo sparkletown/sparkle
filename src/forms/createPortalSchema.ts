@@ -8,5 +8,5 @@ import { createUrlSchema } from "./factory/createUrlSchema";
 
 export const createPortalSchema = Yup.object().shape<PortalSchema>({
   venueName: venueNameSchema,
-  roomUrl: createUrlSchema({ name: "Url", required: true }),
+  roomUrl: createUrlSchema({ required: true }),
 });

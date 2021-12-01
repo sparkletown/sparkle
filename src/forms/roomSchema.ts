@@ -26,5 +26,5 @@ export const roomSchema = ({
   Yup.object().shape<RoomSchemaShape>({
     title: createNameSchema({ name: "Title", withMin: true }),
     image_url: roomImageUrlSchema,
-    url: createUrlSchema({ name: "Url", required: urlRequired }),
+    url: createUrlSchema({ required: urlRequired }),
   });
