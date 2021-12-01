@@ -79,7 +79,6 @@ const convertTwitchUrl: (options: ConvertTwitchUrlOptions) => string = ({
   }
 
   withParameters(twitchUrl, urlParameters);
-  twitchUrl.searchParams.set("parent", "localhost");
 
   return twitchUrl.href;
 };
