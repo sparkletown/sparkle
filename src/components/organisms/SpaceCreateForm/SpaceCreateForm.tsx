@@ -21,6 +21,7 @@ import { useUser } from "hooks/useUser";
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { FormCover } from "components/molecules/FormCover";
 import { FormErrors } from "components/molecules/FormErrors";
 import { PortalList } from "components/molecules/PortalList";
 import { SubmitError } from "components/molecules/SubmitError";
@@ -110,46 +111,48 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
 
   return (
     <Form className="SpaceCreateForm" onSubmit={handleSubmit(addPortal)}>
-      <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
-        <AdminInput
-          name="venueName"
-          type="text"
-          autoComplete="off"
-          placeholder={`${SPACE_TAXON.capital} name`}
-          errors={errors}
-          register={register}
-          disabled={isLoading}
-        />
-      </AdminSection>
-      <AdminSection title="Your URL will be">
-        <YourUrlDisplay
-          path={generateAdminIaSpacePath(worldSlug)}
-          slug={slug}
-        />
-      </AdminSection>
-      <AdminSection withLabel title="Pick a template">
-        <PortalList
-          name="template"
-          variant="input"
-          items={SPACE_INFO_LIST}
-          selectedItem={selectedItem}
-          onClick={handlePortalClick}
-          register={register}
-          errors={errors}
-        />
-      </AdminSection>
-      <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
-      <SubmitError error={submitError} />
-      <div className="SpaceCreateForm__buttons">
-        <ButtonNG
-          variant="primary"
-          disabled={isLoading}
-          title={`Create ${SPACE_TAXON.lower}`}
-          type="submit"
-        >
-          Create
-        </ButtonNG>
-      </div>
+      <FormCover displayed={isLoading}>
+        <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
+          <AdminInput
+            name="venueName"
+            type="text"
+            autoComplete="off"
+            placeholder={`${SPACE_TAXON.capital} name`}
+            errors={errors}
+            register={register}
+            disabled={isLoading}
+          />
+        </AdminSection>
+        <AdminSection title="Your URL will be">
+          <YourUrlDisplay
+            path={generateAdminIaSpacePath(worldSlug)}
+            slug={slug}
+          />
+        </AdminSection>
+        <AdminSection withLabel title="Pick a template">
+          <PortalList
+            name="template"
+            variant="input"
+            items={SPACE_INFO_LIST}
+            selectedItem={selectedItem}
+            onClick={handlePortalClick}
+            register={register}
+            errors={errors}
+          />
+        </AdminSection>
+        <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
+        <SubmitError error={submitError} />
+        <div className="SpaceCreateForm__buttons">
+          <ButtonNG
+            variant="primary"
+            disabled={isLoading}
+            title={`Create ${SPACE_TAXON.lower}`}
+            type="submit"
+          >
+            Create
+          </ButtonNG>
+        </div>
+      </FormCover>
     </Form>
   );
 };
