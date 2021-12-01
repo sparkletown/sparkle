@@ -25,7 +25,6 @@ export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withRadio?: boolean;
-  withHome?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
   title?: string;
@@ -37,7 +36,6 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withPhotobooth,
   withHiddenLoginButton,
   withRadio,
-  withHome,
   title,
   children,
 }) => {
@@ -60,7 +58,6 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
             withPhotobooth={withPhotobooth}
             withHiddenLoginButton={withHiddenLoginButton}
             withRadio={withRadio}
-            withHome={withHome}
             title={title}
           />
         </Suspense>

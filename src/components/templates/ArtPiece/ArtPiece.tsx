@@ -2,7 +2,11 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { IFRAME_ALLOW } from "settings";
+import {
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+  SPACE_PORTALS_ICONS_MAPPING,
+} from "settings";
 
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
@@ -58,10 +62,14 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
 
   if (!venue) return <Loading label="Loading..." />;
 
+  const infoIcon =
+    host?.icon ||
+    (SPACE_PORTALS_ICONS_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+
   return (
     <>
       <VenueWithOverlay venue={venue} containerClassNames="ArtPiece">
-        <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationLeftColumn iconNameOrPath={infoIcon}>
           <InformationCard title="About the venue">
             <p className="ArtPiece__title-sidebar">{name}</p>
             <p className="ArtPiece__short-description-sidebar">

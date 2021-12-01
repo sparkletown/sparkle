@@ -1,5 +1,7 @@
 import React from "react";
 
+import { DEFAULT_VENUE_LOGO, SPACE_PORTALS_ICONS_MAPPING } from "settings";
+
 import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
@@ -20,9 +22,13 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
 }) => {
   const venue = useSelector(currentVenueSelector);
 
+  const infoIcon =
+    venue?.host?.icon ||
+    (SPACE_PORTALS_ICONS_MAPPING[venue?.template ?? ""] ?? DEFAULT_VENUE_LOGO);
+
   return (
     <div className="jazz-bar-container">
-      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
+      <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p>
             {venue?.name ? (
