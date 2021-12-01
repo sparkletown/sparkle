@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
 .AdminSidebarFooter {
-  position: absolute;
+  position: fixed;
   bottom: $footer-height;
 
   display: flex;
