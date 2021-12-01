@@ -1,18 +1,11 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { ErrorMessage, useForm } from "react-hook-form";
-import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { updateBanner } from "api/bannerAdmin";
 
 import { Banner } from "types/banner";
-
-import { venueInsideUrl } from "utils/url";
-
-import { useShowHide } from "hooks/useShowHide";
-
-import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
@@ -35,17 +28,6 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
   }>({
     mode: "onSubmit",
   });
-
-  const {
-    isShown: isDeleteModalShown,
-    show: showDeleteModal,
-    hide: closeDeleteModal,
-  } = useShowHide();
-  const history = useHistory();
-
-  const navigateToAdmin = useCallback(() => {
-    history.push("/admin-ng");
-  }, [history]);
 
   const [
     { loading: isUpdatingBanner, error },
@@ -78,27 +60,6 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({
         />
         {error && <ErrorMessage name={error.message} message={error.message} />}
       </form>
-      <div className="RunTabToolbar__toolbar RunTabToolbar__toolbar--right">
-        <ButtonNG variant="danger" onClick={showDeleteModal}>
-          Delete Space
-        </ButtonNG>
-        <ButtonNG
-          isLink
-          newTab
-          linkTo={venueId ? venueInsideUrl(venueId) : undefined}
-          variant="primary"
-        >
-          Visit Space
-        </ButtonNG>
-      </div>
-      <VenueDeleteModal
-        venueId={venueId}
-        venueName={venueName}
-        show={isDeleteModalShown}
-        onDelete={navigateToAdmin}
-        onHide={closeDeleteModal}
-        onCancel={closeDeleteModal}
-      />
     </div>
   );
 };

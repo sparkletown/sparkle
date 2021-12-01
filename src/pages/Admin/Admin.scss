@@ -32,7 +32,7 @@ $sorting-option--font-size: 0.8rem;
     height: 48px;
     background-color: $content--under;
     border-bottom: 1px solid var(--accent--over-20a);
-    box-shadow: box-shadow--large(0.62);
+    box-shadow: box-shadow--large(var(--content--under-60a));
 
     .navbar-container {
       position: relative;

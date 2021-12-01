@@ -88,13 +88,15 @@ export const SpacesDashboard: React.FC = () => {
               Change world
             </ButtonNG>
             <AdminTitle>{world?.name} dashboard</AdminTitle>
-            <ButtonNG
-              variant="secondary"
-              isLink
-              linkTo={adminWorldUrl(worldSlug)}
-            >
-              Settings
-            </ButtonNG>
+            <div>
+              <ButtonNG
+                variant="secondary"
+                isLink
+                linkTo={adminWorldUrl(worldSlug)}
+              >
+                Settings
+              </ButtonNG>
+            </div>
           </AdminTitleBar>
 
           {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}

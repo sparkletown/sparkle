@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
 $side-padding: 30px;
-$large-shadow: box-shadow--large(0.34);
+$large-shadow: box-shadow--large(var(--content--under-30a));
 $border-radius: 28px;
 $auth-body-max-width: 365px;
 $auth-icon-sso-size: 35px;

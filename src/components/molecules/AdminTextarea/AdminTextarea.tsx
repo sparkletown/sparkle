@@ -1,5 +1,6 @@
 import React, { ReactNode, useMemo } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
+import classNames from "classnames";
 import { get } from "lodash";
 
 import { generateId } from "utils/string";
@@ -21,6 +22,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
   subtext,
   register,
   errors,
+  disabled,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -28,8 +30,15 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
     () => (label ? generateId("AdminTextarea-" + name) : undefined),
     [label, name]
   );
+
+  const parentClasses = classNames({
+    AdminTextarea: true,
+    "AdminTextarea--invalid": error,
+    "AdminTextarea--disabled": disabled,
+  });
+
   return (
-    <p className="AdminTextarea">
+    <p className={parentClasses}>
       {label && (
         <label className="AdminTextarea__label" htmlFor={id}>
           {label}
@@ -41,6 +50,7 @@ export const AdminTextarea: React.FC<AdminTextareaProps> = ({
         name={name}
         ref={register}
         id={id}
+        disabled={disabled}
       />
       {subtext && <span className="AdminTextarea__subtext">{subtext}</span>}
       {error && <span className="AdminTextarea__error">{error?.message}</span>}

@@ -36,7 +36,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
     flex-shrink: 0;
     margin-top: $timeline-label--height;
     padding-right: $Schedule--padding;
-    box-shadow: box-shadow--large();
+    box-shadow: box-shadow--large(var(--content--under-50a));
     font-size: 0.8rem;
   }
 

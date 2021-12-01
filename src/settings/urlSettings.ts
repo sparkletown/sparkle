@@ -1,4 +1,4 @@
-export const VALID_URL_PROTOCOLS = Object.freeze(["http:", "https:"]);
+export const VALID_URL_PROTOCOLS = Object.freeze(["https:"]);
 
 // External Sparkle URLs
 export const EXTERNAL_SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
