@@ -11,7 +11,7 @@ $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
   width: 100%;
   height: 66px;
   border-bottom: 1px solid var(--accent--over-20a);
-  box-shadow: box-shadow--large(0.1);
+  box-shadow: box-shadow--large(var(--content--under-10a));
   backdrop-filter: blur(5px);
   background-color: $content--under;
   padding: 0 1rem;
