@@ -27,11 +27,6 @@ $image-container-height: 200px;
     margin: font-size--parent(3) 0;
   }
 
-  &__name,
-  .AdminWorldUrlSection__id {
-    color: var(--danger--under);
-  }
-
   .AdminSection {
     &__label {
       display: flex;

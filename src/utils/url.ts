@@ -4,6 +4,7 @@ import Bugsnag from "@bugsnag/js";
 import {
   ACCOUNT_PROFILE_BASE_URL,
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ADMIN_IA_SPACE_BASE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
@@ -24,6 +25,9 @@ import { Room } from "types/rooms";
 // like to={generatePath(params)} or actually have logic inside them that deals with missing params
 
 const DEFAULT_MISSING_PARAM_URL = "#";
+
+export const generateAdminIaSpacePath = (worldSlug?: string) =>
+  !worldSlug ? "" : generatePath(ADMIN_IA_SPACE_BASE_PARAM_URL, { worldSlug });
 
 export const adminNGVenueUrl = (
   worldSlug?: string,

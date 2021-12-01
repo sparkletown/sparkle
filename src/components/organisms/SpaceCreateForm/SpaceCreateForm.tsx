@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
@@ -6,11 +6,11 @@ import { useAsyncFn } from "react-use";
 
 import { PortalInfoListItem, SPACE_INFO_LIST, SPACE_TAXON } from "settings";
 
-import { createVenue_v2 } from "api/admin";
+import { createSlug, createVenue_v2 } from "api/admin";
 
 import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
 
-import { adminNGVenueUrl } from "utils/url";
+import { adminNGVenueUrl, generateAdminIaSpacePath } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
 
 import { createSpaceSchema } from "forms/createSpaceSchema";
@@ -24,6 +24,7 @@ import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { PortalList } from "components/molecules/PortalList";
 import { SubmitError } from "components/molecules/SubmitError";
+import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -48,7 +49,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   >();
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
-  const { register, getValues, handleSubmit, errors, reset } = useForm({
+  const { register, getValues, handleSubmit, errors, reset, watch } = useForm({
     validationSchema: createSpaceSchema,
     defaultValues: {
       venueName: "",
@@ -72,7 +73,6 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     };
 
     await createVenue_v2(data, user);
-
     history.push(adminNGVenueUrl(worldSlug, data.slug));
   }, [
     getValues,
@@ -83,6 +83,11 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     worldSlug,
     history,
   ]);
+
+  const slug = useMemo(() => {
+    const values = watch();
+    return createSlug(values.venueName);
+  }, [watch]);
 
   const handlePortalClick = useCallback(
     ({ item }) => {
@@ -114,6 +119,12 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
           errors={errors}
           register={register}
           disabled={isLoading}
+        />
+      </AdminSection>
+      <AdminSection title="Your URL will be">
+        <YourUrlDisplay
+          path={generateAdminIaSpacePath(worldSlug)}
+          slug={slug}
         />
       </AdminSection>
       <AdminSection withLabel title="Pick a template">

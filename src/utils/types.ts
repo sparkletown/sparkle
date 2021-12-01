@@ -1,10 +1,8 @@
 export const isTruthy = <T>(item: T): item is NonNullable<T> => !!item;
 
-export const notEmpty = <T>(
+export const isDefined = <T>(
   value: T | null | undefined
 ): value is NonNullable<T> => value !== null && value !== undefined;
-
-export const isDefined = notEmpty;
 
 /**
  * Return a typed array based on the provided element / array of elements.
