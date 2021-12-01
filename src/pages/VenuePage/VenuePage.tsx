@@ -33,7 +33,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
-import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -69,8 +68,7 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
   template === VenueTemplate.jazzbar;
 
 export const VenuePage: React.FC = () => {
-  const { worldSlug } = useWorldParams();
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded } = useSpaceBySlug(spaceSlug);
   const analytics = useAnalytics({ venue: space });
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
@@ -228,7 +226,7 @@ export const VenuePage: React.FC = () => {
   const hasEntered = enteredVenueIds?.includes(spaceId);
 
   if (hasEntrance && !hasEntered) {
-    return <Redirect to={venueEntranceUrl(spaceSlug)} />;
+    return <Redirect to={venueEntranceUrl(worldSlug, spaceSlug)} />;
   }
 
   if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
@@ -259,7 +257,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={accountProfileVenueUrl(spaceSlug)} />;
+    return <Redirect to={accountProfileVenueUrl(worldSlug, spaceSlug)} />;
   }
 
   return (

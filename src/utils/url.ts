@@ -89,18 +89,27 @@ export const getAbsoluteAttendeeSpaceInsideUrl = (
     window.location.origin
   ).href;
 
-export const accountProfileUrlWithSlug = (spaceSlug: string) => {
+export const accountProfileUrlWithSlug = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => {
   // @debt remove query param in favor of path param and/or
   // add comprehensive `redirect` solution project-wide
-  return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}`;
+  return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}&worldSlug=${worldSlug}`;
 };
 
-export const venueEntranceUrl = (spaceSlug: string, step?: number) => {
-  return `${ENTRANCE_BASE_URL}/${step ?? 1}/${spaceSlug}`;
+export const venueEntranceUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug,
+  step?: number
+) => {
+  return `${ENTRANCE_BASE_URL}/${worldSlug}/${spaceSlug}/${step ?? 1}`;
 };
 
-export const accountProfileVenueUrl = (spaceSlug: string) =>
-  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { spaceSlug });
+export const accountProfileVenueUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { worldSlug, spaceSlug });
 
 export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 

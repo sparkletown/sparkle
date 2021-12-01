@@ -62,7 +62,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const history = useHistory();
 
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
 
   const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
@@ -165,7 +165,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       postRegisterCheck(auth, data);
 
       const profileUrl = spaceSlug
-        ? accountProfileUrlWithSlug(spaceSlug)
+        ? accountProfileUrlWithSlug(worldSlug, spaceSlug)
         : ACCOUNT_PROFILE_BASE_URL;
 
       history.push(profileUrl);

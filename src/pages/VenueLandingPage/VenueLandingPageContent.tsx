@@ -10,6 +10,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import {
   DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
+  EMPTY_WORLD_SLUG,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -67,7 +68,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     window.location.href =
       user && !hasEntrance
         ? attendeeSpaceInsideUrl(world?.slug, spaceSlug)
-        : venueEntranceUrl(spaceSlug);
+        : venueEntranceUrl(world?.slug ?? EMPTY_WORLD_SLUG, spaceSlug);
   };
 
   const isPasswordRequired = venue.access === VenueAccessMode.Password;

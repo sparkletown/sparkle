@@ -14,7 +14,7 @@ import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { spaceId } = useSpaceBySlug(spaceSlug);
 
   const [error, setError] = useState(false);
@@ -59,7 +59,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         .then((result) => {
           if (isTruthy(result?.data?.token)) {
             setLocalStorageToken(spaceId, result.data.token);
-            history.push(venueEntranceUrl(spaceSlug));
+            history.push(venueEntranceUrl(worldSlug, spaceSlug));
           } else {
             setMessage(`Wrong password!`);
             setError(true);
@@ -70,7 +70,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           setError(true);
         });
     },
-    [history, password, spaceSlug, spaceId]
+    [history, password, worldSlug, spaceSlug, spaceId]
   );
 
   return (
