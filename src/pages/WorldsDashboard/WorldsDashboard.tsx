@@ -33,7 +33,8 @@ export const WorldsDashboard: React.FC = () => {
     () => (
       <div className="WorldsDashboard__messages-container">
         <AdminShowcaseTitle>
-          Start by creating your {`\n`} first world
+          Start by creating
+          <div>your first world</div>
         </AdminShowcaseTitle>
       </div>
     ),
@@ -89,13 +90,11 @@ export const WorldsDashboard: React.FC = () => {
                 >
                   Create new world
                 </ButtonNG>
-                {!hasWorlds && (
-                  <img
-                    alt="arrow pointing towards the Create a world button"
-                    className="WorldsDashboard__arrow"
-                    src={ARROW}
-                  />
-                )}
+                <img
+                  alt="arrow pointing towards the Create a world button"
+                  className="WorldsDashboard__arrow"
+                  src={ARROW}
+                />
               </div>
               {renderedWelcomePage}
             </AdminShowcase>
