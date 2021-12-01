@@ -1,4 +1,10 @@
-import React, { Fragment, useCallback, useMemo, useState } from "react";
+import React, {
+  Fragment,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
 import { get } from "lodash";
 
@@ -14,6 +20,7 @@ export type PortalListVariant = "input" | "modal";
 export interface PortalListProps {
   errors?: FieldErrors<FieldValues>;
   items: PortalInfoListItem[];
+  label?: ReactNode | string;
   name?: string;
   onClick?: (context: { item: PortalInfoListItem; index: number }) => void;
   register?: (Ref: unknown, RegisterOptions?: unknown) => void;
@@ -24,6 +31,7 @@ export interface PortalListProps {
 export const PortalList: React.FC<PortalListProps> = ({
   errors,
   items,
+  label,
   name,
   onClick,
   register,
@@ -62,18 +70,26 @@ export const PortalList: React.FC<PortalListProps> = ({
     [items, onClick, clearSelectedIndex, selectedIndex, selectedItem, variant]
   );
 
+  const renderedInput = (
+    <input
+      className="PortalList__input"
+      type="hidden"
+      name={name}
+      ref={register}
+    />
+  );
+
+  const renderedLabel = (
+    <label className="PortalList__label">
+      {label} {renderedInput}
+    </label>
+  );
+
   return (
     <div className="PortalList">
-      {variant === "input" && (
-        <input
-          className="PortalList__input"
-          type="hidden"
-          name={name}
-          ref={register}
-        />
-      )}
+      {variant === "input" && (label ? renderedLabel : renderedInput)}
+      {error && <span className="PortalList__error">{error?.message}</span>}
       {renderedItems}
-      {error && <span className="AdminInput__error">{error?.message}</span>}
     </div>
   );
 };

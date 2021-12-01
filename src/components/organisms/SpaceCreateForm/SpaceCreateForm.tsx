@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
 import { PortalInfoListItem, SPACE_INFO_LIST, SPACE_TAXON } from "settings";
@@ -9,17 +10,18 @@ import { createVenue_v2 } from "api/admin";
 
 import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
 
+import { adminNGVenueUrl } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
 
-import { createPortalSchema } from "forms/createPortalSchema";
 import { createSpaceSchema } from "forms/createSpaceSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminInput } from "components/molecules/AdminInput";
+import { AdminSection } from "components/molecules/AdminSection";
+import { FormErrors } from "components/molecules/FormErrors";
 import { PortalList } from "components/molecules/PortalList";
 import { SubmitError } from "components/molecules/SubmitError";
 
@@ -27,27 +29,28 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./SpaceCreateForm.scss";
 
+// NOTE: add the keys of those errors that their respective fields have handled
+const HANDLED_ERRORS: string[] = ["venueName", "template"];
+
 export interface SpaceCreateFormProps {
   worldId?: string;
-  onDone?: () => void;
 }
 
-export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
+export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
+  worldId,
+}) => {
+  const { worldSlug } = useSpaceParams();
+  const history = useHistory();
   const dispatch = useDispatch();
   const { user } = useUser();
-  const { spaceSlug } = useSpaceParams();
-  const { worldId } = useWorldBySlug(spaceSlug);
   const [selectedItem, setSelectedItem] = useState<
     PortalInfoListItem | undefined
   >();
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
-  const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema:
-      template === "external" ? createPortalSchema : createSpaceSchema,
+  const { register, getValues, handleSubmit, errors, reset } = useForm({
+    validationSchema: createSpaceSchema,
     defaultValues: {
-      roomTitle: "",
-      roomUrl: "",
       venueName: "",
       template,
     },
@@ -57,22 +60,29 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
     { loading: isLoading, error: submitError },
     addPortal,
   ] = useAsyncFn(async () => {
-    const { venueName, template } = getValues();
-    if (!user || !spaceSlug || !template || !worldId) return;
+    const values = getValues();
+    const template = selectedItem?.template ?? values?.template;
 
-    if (template !== "external") {
-      await createVenue_v2(
-        {
-          ...buildEmptySpace(venueName, template),
-          worldId,
-          logoImageUrl,
-        },
-        user
-      );
-    }
+    if (!worldId || !user || !template || template === "external") return;
 
-    await onDone?.();
-  }, [getValues, worldId, onDone, logoImageUrl, user, spaceSlug]);
+    const data = {
+      ...buildEmptySpace(values.venueName, template),
+      worldId,
+      logoImageUrl,
+    };
+
+    await createVenue_v2(data, user);
+
+    history.push(adminNGVenueUrl(worldSlug, data.slug));
+  }, [
+    getValues,
+    worldId,
+    logoImageUrl,
+    user,
+    selectedItem,
+    worldSlug,
+    history,
+  ]);
 
   const handlePortalClick = useCallback(
     ({ item }) => {
@@ -82,27 +92,42 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({ onDone }) => {
     [dispatch]
   );
 
-  // NOTE: palette cleanser when starting new world, run only once on init
+  useEffect(() => {
+    const values = getValues();
+    reset({
+      venueName: values.venueName,
+      template: selectedItem?.template ?? values.template,
+    });
+  }, [selectedItem, getValues, reset]);
+
+  // NOTE: palette cleanser when creating new space, run only once on init
   useEffect(() => void dispatch(spaceCreatePortalItem()), [dispatch]);
 
   return (
     <Form className="SpaceCreateForm" onSubmit={handleSubmit(addPortal)}>
-      <AdminInput
-        name="name"
-        type="text"
-        autoComplete="off"
-        placeholder={`${SPACE_TAXON.capital} name`}
-        errors={errors}
-        register={register}
-        disabled={isLoading}
-      />
-      <PortalList
-        items={SPACE_INFO_LIST}
-        selectedItem={selectedItem}
-        variant="input"
-        onClick={handlePortalClick}
-        name="template"
-      />
+      <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
+        <AdminInput
+          name="venueName"
+          type="text"
+          autoComplete="off"
+          placeholder={`${SPACE_TAXON.capital} name`}
+          errors={errors}
+          register={register}
+          disabled={isLoading}
+        />
+      </AdminSection>
+      <AdminSection withLabel title="Pick a template">
+        <PortalList
+          name="template"
+          variant="input"
+          items={SPACE_INFO_LIST}
+          selectedItem={selectedItem}
+          onClick={handlePortalClick}
+          register={register}
+          errors={errors}
+        />
+      </AdminSection>
+      <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
       <SubmitError error={submitError} />
       <div className="SpaceCreateForm__buttons">
         <ButtonNG

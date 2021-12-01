@@ -1,5 +1,4 @@
-import React, { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { SPACE_TAXON } from "settings";
@@ -27,15 +26,10 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./SpaceCreatePage.scss";
 
 export const SpaceCreatePage: React.FC = () => {
-  const history = useHistory();
   const { worldSlug } = useSpaceParams();
   const { isLoaded: isWorldLoaded, worldId } = useWorldBySlug(worldSlug);
 
   const homeUrl = adminWorldSpacesUrl(worldSlug);
-  const navigateToHome = useCallback(() => history.push(homeUrl), [
-    history,
-    homeUrl,
-  ]);
 
   return (
     <div className="SpaceCreatePage">
@@ -56,7 +50,7 @@ export const SpaceCreatePage: React.FC = () => {
             <AdminSidebar variant="light">
               {isWorldLoaded ? (
                 <>
-                  <SpaceCreateForm worldId={worldId} onDone={navigateToHome} />
+                  <SpaceCreateForm worldId={worldId} />
                   <PrettyLink className="SpaceCreatePage__go-back" to={homeUrl}>
                     Cancel &amp; go back
                   </PrettyLink>
