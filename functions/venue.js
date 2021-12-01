@@ -183,7 +183,6 @@ const createVenueData_v2 = (data, context) => {
     parentId: data.parentId || "",
     worldId: data.worldId,
     slug: data.slug,
-    ...(data.parentId && { parentId: data.parentId }),
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -768,7 +767,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.iframeUrl = data.iframeUrl;
   }
 
-  if (data.parentId) {
+  if (typeof data.parentId === "string") {
     updated.parentId = data.parentId;
   }
 
