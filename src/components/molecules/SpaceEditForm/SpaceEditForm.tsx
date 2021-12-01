@@ -27,10 +27,8 @@ import { RoomVisibility, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
-import {
-  externalSpaceEditSchema,
-  spaceEditSchema,
-} from "forms/spaceEditSchema";
+import { externalSpaceEditSchema } from "forms/externalSpaceEditSchema";
+import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";

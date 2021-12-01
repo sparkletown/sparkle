@@ -31,7 +31,7 @@ export const validationSchema = Yup.object()
     title: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
     about: Yup.string().required("Required"),
-    url: roomUrlSchema,
+    url: roomUrlSchema.required("Url is required!"),
     x_percent: Yup.number()
       .default(INITIAL_PERCENTAGE_POS)
       .required("Required")
