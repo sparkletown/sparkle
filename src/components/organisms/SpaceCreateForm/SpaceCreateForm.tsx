@@ -51,6 +51,8 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
   const { register, getValues, handleSubmit, errors, reset, watch } = useForm({
+    mode: "onSubmit",
+    reValidateMode: "onSubmit",
     validationSchema: createSpaceSchema,
     defaultValues: {
       venueName: "",
@@ -58,37 +60,26 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     },
   });
 
+  const { venueName } = getValues();
+
   const [
     { loading: isLoading, error: submitError },
     addPortal,
   ] = useAsyncFn(async () => {
-    const values = getValues();
-    const template = selectedItem?.template ?? values?.template;
-
     if (!worldId || !user || !template || template === "external") return;
 
     const data = {
-      ...buildEmptySpace(values.venueName, template),
+      ...buildEmptySpace(venueName, template),
       worldId,
       logoImageUrl,
     };
 
     await createVenue_v2(data, user);
     history.push(adminNGVenueUrl(worldSlug, data.slug));
-  }, [
-    getValues,
-    worldId,
-    logoImageUrl,
-    user,
-    selectedItem,
-    worldSlug,
-    history,
-  ]);
+  }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
 
-  const slug = useMemo(() => {
-    const values = watch();
-    return createSlug(values.venueName);
-  }, [watch]);
+  const { venueName: watchedName } = watch();
+  const slug = useMemo(() => createSlug(watchedName), [watchedName]);
 
   const handlePortalClick = useCallback(
     ({ item }) => {
@@ -99,15 +90,14 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   );
 
   useEffect(() => {
-    const values = getValues();
-    reset({
-      venueName: values.venueName,
-      template: selectedItem?.template ?? values.template,
-    });
-  }, [selectedItem, getValues, reset]);
+    const { template: inputTemplate, venueName } = getValues();
+    reset({ venueName, template: template ?? inputTemplate });
+  }, [template, getValues, reset]);
 
   // NOTE: palette cleanser when creating new space, run only once on init
   useEffect(() => void dispatch(spaceCreatePortalItem()), [dispatch]);
+
+  const isSaveDisabled = isLoading || !slug || !template;
 
   return (
     <Form className="SpaceCreateForm" onSubmit={handleSubmit(addPortal)}>
@@ -145,7 +135,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
         <div className="SpaceCreateForm__buttons">
           <ButtonNG
             variant="primary"
-            disabled={isLoading}
+            disabled={isSaveDisabled}
             title={`Create ${SPACE_TAXON.lower}`}
             type="submit"
           >
