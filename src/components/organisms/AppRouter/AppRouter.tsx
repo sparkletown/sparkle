@@ -5,6 +5,7 @@ import {
   ACCOUNT_ROOT_URL,
   ADMIN_OLD_ROOT_URL,
   ADMIN_ROOT_URL,
+  ATTENDEE_SPACE_EMERGENCY_PARAM_URL,
   ATTENDEE_SPACE_INSIDE_URL,
   ATTENDEE_SPACE_LANDING_URL,
   ENTER_ROOT_URL,
@@ -14,7 +15,6 @@ import {
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
-  VENUE_EMERGENCY_PARAM_URL,
   VERSION_URL,
 } from "settings";
 
@@ -157,7 +157,7 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route path={VENUE_EMERGENCY_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>

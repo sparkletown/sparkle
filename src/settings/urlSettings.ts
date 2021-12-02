@@ -26,17 +26,15 @@ export const ADMIN_OLD_ROOT_URL = "/a1";
 export const ADMIN_ROOT_URL = "/admin";
 export const ENTER_ROOT_URL = "/enter";
 const ENTRANCE_BASE_URL = "/e";
-export const LOGIN_BASE_URL = `/login`;
+const LOGIN_BASE_URL = `/login`;
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
 export const VERSION_URL = "/version";
-export const VENUE_EMERGENCY_BASE_URL = "/m";
-export const SPACE_INSIDE_BASE_URL = "/in";
-export const SPACE_LANDING_BASE_URL = "/land";
-export const VENUE_REDIRECT_BASE_URL = `/venue`;
+const SPACE_EMERGENCY_BASE_URL = "/m";
+const SPACE_INSIDE_BASE_URL = "/in";
+const SPACE_LANDING_BASE_URL = "/land";
 export const WORLD_ROOT_URL = "/w";
 
-// TODO Next line needs addressing
-export const VENUE_EMERGENCY_PARAM_URL = `${VENUE_EMERGENCY_BASE_URL}/:spaceSlug`;
+export const ATTENDEE_SPACE_EMERGENCY_PARAM_URL = `${SPACE_EMERGENCY_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_SPACE_INSIDE_URL = `${SPACE_INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_SPACE_LANDING_URL = `${SPACE_LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 
