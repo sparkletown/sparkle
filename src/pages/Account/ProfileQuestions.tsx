@@ -45,10 +45,10 @@ export const ProfileQuestions: React.FC = () => {
     mode: "onChange",
   });
 
-  const proceed = useCallback(() => {
-    const nextUrl = accountCodeQuestionsUrl(worldSlug, spaceSlug);
-    history.push(nextUrl);
-  }, [history, worldSlug, spaceSlug]);
+  const proceed = useCallback(
+    () => history.push(accountCodeQuestionsUrl(worldSlug, spaceSlug)),
+    [history, worldSlug, spaceSlug]
+  );
 
   useEffect(() => {
     if (!isLoaded) return;
