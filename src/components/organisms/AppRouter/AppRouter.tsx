@@ -1,10 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import {
   ACCOUNT_ROOT_URL,
@@ -20,12 +15,10 @@ import {
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
   VENUE_EMERGENCY_PARAM_URL,
-  VENUE_REDIRECT_PARAM_URL,
   VERSION_URL,
 } from "settings";
 
 import { tracePromise } from "utils/performance";
-import { attendeeSpaceLandingUrl } from "utils/url";
 
 import { useSettings } from "hooks/useSettings";
 import { useUser } from "hooks/useUser";
@@ -171,19 +164,6 @@ export const AppRouter: React.FC = () => {
           </Route>
 
           <Route path={VERSION_URL} component={VersionPage} />
-
-          {/* TODO Look at this more carefully */}
-          <Route
-            path={VENUE_REDIRECT_PARAM_URL}
-            render={(props) => (
-              <Redirect
-                to={attendeeSpaceLandingUrl(
-                  props.match.params[0],
-                  props.match.params[1]
-                )}
-              />
-            )}
-          />
 
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}
