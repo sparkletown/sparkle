@@ -9,11 +9,7 @@ import {
   startOfToday,
 } from "date-fns";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  EMPTY_WORLD_SLUG,
-  PLATFORM_BRAND_NAME,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
 import { ScheduledVenueEvent } from "types/venues";
 
@@ -203,7 +199,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
 
       return prepareForSchedule({
-        worldSlug: worldSlug ?? EMPTY_WORLD_SLUG,
+        worldSlug,
         relatedVenues,
         usersEvents: userEventIds,
         recentRoomUsersCount: portalVenue?.recentUserCount,
@@ -214,7 +210,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
-          worldSlug: worldSlug ?? EMPTY_WORLD_SLUG,
+          worldSlug: worldSlug,
           relatedVenues,
           usersEvents: userEventIds,
         })

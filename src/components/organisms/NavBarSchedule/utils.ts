@@ -1,4 +1,4 @@
-import { DEFAULT_VENUE_LOGO, EMPTY_SPACE_SLUG } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { MyPersonalizedSchedule } from "types/User";
 import { AnyVenue, ScheduledVenueEvent, VenueEvent } from "types/venues";
@@ -11,7 +11,7 @@ export interface PrepareForScheduleProps {
   usersEvents: MyPersonalizedSchedule;
   relatedVenues: WithId<AnyVenue>[];
   recentRoomUsersCount?: number;
-  worldSlug: WorldSlug;
+  worldSlug?: WorldSlug;
 }
 
 export const prepareForSchedule = ({
@@ -30,6 +30,6 @@ export const prepareForSchedule = ({
     liveAudience: recentRoomUsersCount,
     orderPriority: event.orderPriority ?? 0,
     worldSlug,
-    venueSlug: venue?.slug ?? EMPTY_SPACE_SLUG,
+    venueSlug: venue?.slug,
   };
 };

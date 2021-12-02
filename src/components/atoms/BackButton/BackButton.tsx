@@ -3,8 +3,6 @@ import { useHistory } from "react-router-dom";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { EMPTY_WORLD_SLUG } from "settings";
-
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -40,18 +38,18 @@ export const BackButton: React.FC<BackButtonProps> = ({
     if (!spaceSlug) return;
 
     if (variant === "relative") {
-      return enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, spaceSlug, {
+      return enterVenue(worldSlug, spaceSlug, {
         customOpenRelativeUrl,
       });
     }
 
     if (variant === "external") {
-      return enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, spaceSlug, {
+      return enterVenue(worldSlug, spaceSlug, {
         customOpenExternalUrl,
       });
     }
 
-    return enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, spaceSlug);
+    return enterVenue(worldSlug, spaceSlug);
   }, [
     worldSlug,
     spaceSlug,

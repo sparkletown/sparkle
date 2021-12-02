@@ -155,7 +155,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const navigateToHomepage = useCallback(() => {
     if (!relatedVenue) return;
 
-    enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, relatedVenue.slug, {
+    enterVenue(worldSlug, relatedVenue.slug, {
       customOpenRelativeUrl: openUrlUsingRouter,
     });
   }, [worldSlug, relatedVenue, openUrlUsingRouter]);

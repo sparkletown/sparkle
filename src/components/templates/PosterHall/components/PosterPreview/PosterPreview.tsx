@@ -2,8 +2,6 @@ import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-import { EMPTY_WORLD_SLUG } from "settings";
-
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -43,7 +41,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const handleEnterVenue = useCallback(
     () =>
-      enterVenue(worldSlug ?? EMPTY_WORLD_SLUG, posterVenue.slug, {
+      enterVenue(worldSlug, posterVenue.slug, {
         customOpenRelativeUrl: openUrlUsingRouter,
       }),
     [worldSlug, posterVenue.slug, openUrlUsingRouter]

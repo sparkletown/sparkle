@@ -11,8 +11,6 @@ import {
   startOfToday,
 } from "date-fns";
 
-import { EMPTY_WORLD_SLUG } from "settings";
-
 import { VenueEvent } from "types/venues";
 
 import { getEventDayRange, isEventLiveOrFuture } from "utils/event";
@@ -54,7 +52,7 @@ const useVenueScheduleEvents = ({
     () =>
       relatedVenueEvents.filter(isEventLiveOrFuture).map(
         prepareForSchedule({
-          worldSlug: worldSlug ?? EMPTY_WORLD_SLUG,
+          worldSlug,
           relatedVenues: descendantVenues,
           usersEvents: userEventIds,
         })

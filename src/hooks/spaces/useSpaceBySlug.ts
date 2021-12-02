@@ -1,7 +1,5 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 
-import { EMPTY_SPACE_SLUG, EMPTY_WORLD_SLUG } from "settings";
-
 import { World } from "api/world";
 
 import { AnyVenue, SpaceSlug } from "types/venues";
@@ -32,7 +30,7 @@ export const useSpaceBySlug = (
 
   const spacesRef = firestore
     .collection("venues")
-    .where("slug", "==", spaceSlug ?? EMPTY_SPACE_SLUG)
+    .where("slug", "==", spaceSlug ?? "")
     .withConverter(withIdConverter<AnyVenue>());
 
   // Note: Avoid using the option 'initialData' because it will make status always return 'success'
@@ -42,7 +40,7 @@ export const useSpaceBySlug = (
 
   const worldsRef = firestore
     .collection("worlds")
-    .where("slug", "==", worldSlug ?? EMPTY_WORLD_SLUG)
+    .where("slug", "==", worldSlug ?? "")
     .withConverter(withIdConverter<World>());
   const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
     WithId<World>

@@ -6,7 +6,6 @@ import dayjs from "dayjs";
 import {
   DAYJS_INPUT_DATE_FORMAT,
   DAYJS_INPUT_TIME_FORMAT,
-  EMPTY_WORLD_SLUG,
   HAS_ROOMS_TEMPLATES,
 } from "settings";
 
@@ -90,7 +89,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_minutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
-        worldSlug: worldSlug ?? EMPTY_WORLD_SLUG,
+        worldSlug: worldSlug,
         venueSlug: venue.slug,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))

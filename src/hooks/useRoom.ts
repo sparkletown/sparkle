@@ -1,8 +1,6 @@
 import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { EMPTY_SPACE_SLUG, EMPTY_WORLD_SLUG } from "settings";
-
 import { Room } from "types/rooms";
 import { SpaceSlug } from "types/venues";
 
@@ -32,13 +30,9 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const enterRoom = useCallback(() => {
     if (!portalSpaceSlug) return;
 
-    enterVenue(
-      worldSlug ?? EMPTY_WORLD_SLUG,
-      portalSpaceSlug ?? EMPTY_SPACE_SLUG,
-      {
-        customOpenRelativeUrl: openUrlUsingRouter,
-      }
-    );
+    enterVenue(worldSlug, portalSpaceSlug, {
+      customOpenRelativeUrl: openUrlUsingRouter,
+    });
   }, [portalSpaceSlug, worldSlug, openUrlUsingRouter]);
 
   return {

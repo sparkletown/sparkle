@@ -121,8 +121,8 @@ export const accountProfileQuestionsUrl = (
 };
 
 export const venueEntranceUrl = (
-  worldSlug: WorldSlug,
-  spaceSlug: SpaceSlug,
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
   step?: number
 ) => {
   return generatePath(ENTRANCE_STEP_VENUE_PARAM_URL, {
@@ -161,8 +161,8 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
 };
 
 export const enterVenue = (
-  worldSlug: WorldSlug,
-  spaceSlug: SpaceSlug,
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
   options?: OpenUrlOptions
 ) => openUrl(generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug }), options);
 

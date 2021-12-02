@@ -39,9 +39,6 @@ export const WORLD_ROOT_URL = "/w";
 
 export const DEFAULT_SPACE_SLUG = "bootstrap" as SpaceSlug;
 export const DEFAULT_WORLD_SLUG = "bootstrap" as WorldSlug;
-// @debt This shouldn't be needed
-export const EMPTY_WORLD_SLUG = "" as WorldSlug;
-export const EMPTY_SPACE_SLUG = "" as SpaceSlug;
 
 export const ATTENDEE_SPACE_EMERGENCY_PARAM_URL = `${SPACE_EMERGENCY_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_SPACE_INSIDE_URL = `${SPACE_INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
