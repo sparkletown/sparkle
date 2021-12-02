@@ -8,6 +8,8 @@ import * as Yup from "yup";
 import {
   DAYJS_INPUT_DATE_FORMAT,
   DAYJS_INPUT_TIME_FORMAT,
+  EMPTY_SPACE_SLUG,
+  EMPTY_WORLD_SLUG,
   HAS_ROOMS_TEMPLATES,
   ROOM_TAXON,
 } from "settings";
@@ -112,8 +114,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
           start.unix() || Math.floor(new Date().getTime() / 1000),
         duration_minutes: data.duration_hours * 60,
         host: data.host,
-        venueSlug: spaceSlug ?? "",
-        worldSlug: worldSlug ?? "",
+        venueSlug: spaceSlug ?? EMPTY_SPACE_SLUG,
+        worldSlug: worldSlug ?? EMPTY_WORLD_SLUG,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
         formEvent.room = data.room;

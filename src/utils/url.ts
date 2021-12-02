@@ -65,13 +65,15 @@ export const adminCreateSpace = (worldSlug?: string) =>
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
-// TODO Figure out a better way of handling these being optional throughout.
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
 export const attendeeSpaceInsideUrl = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug
 ) => generatePath(ATTENDEE_SPACE_INSIDE_URL, { worldSlug, spaceSlug });
 
-// TODO Figure out a better way of handling these being optional throughout.
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
 export const attendeeSpaceLandingUrl = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug
@@ -81,7 +83,6 @@ export const getAbsoluteAttendeeSpaceInsideUrl = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug
 ) =>
-  // TODO Figure out a better way of handling these being optional throughout.
   new URL(
     attendeeSpaceInsideUrl(
       worldSlug ?? EMPTY_WORLD_SLUG,
