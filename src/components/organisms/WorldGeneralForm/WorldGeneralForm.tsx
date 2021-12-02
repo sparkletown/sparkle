@@ -47,7 +47,9 @@ export interface WorldGeneralFormProps {
   world?: WithId<World>;
 }
 
-export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({ world }) => {
+export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
+  world,
+}) => {
   const [worldId, setWorldId] = useState(world?.id);
   const history = useHistory();
   const { user } = useUser();
