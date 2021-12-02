@@ -1,4 +1,5 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import Bugsnag from "@bugsnag/js";
 
 import { World } from "api/world";
 
@@ -49,6 +50,19 @@ export const useWorldAndSpaceBySlug = (
   const isSpaceLoaded = spaceStatus !== "loading";
   const isWorldLoaded = worldStatus !== "loading";
 
+  if (worlds?.length > 1) {
+    Bugsnag.notify(
+      `Multiple worlds have been found with the following slug: ${worldSlug}.`,
+      (event) => {
+        event.severity = "warning";
+        event.addMetadata("hooks::useWorldAndSpaceBySlug", {
+          worldSlug,
+          worlds,
+        });
+      }
+    );
+  }
+
   const world = worlds?.[0];
   if (!isWorldLoaded || !isSpaceLoaded) {
     return {
@@ -69,9 +83,26 @@ export const useWorldAndSpaceBySlug = (
     };
   }
 
-  const space = spaces.find(
+  const matchingSpaces = spaces.filter(
     (candidateSpace) => candidateSpace.worldId === world.id
   );
+
+  if (matchingSpaces?.length > 1) {
+    Bugsnag.notify(
+      `Multiple spaces have been found with the following slug: ${spaceSlug}.`,
+      (event) => {
+        event.severity = "warning";
+        event.addMetadata("hooks::useWorldAndSpaceBySlug", {
+          worldSlug,
+          spaceSlug,
+          matchingSpaces,
+        });
+      }
+    );
+  }
+
+  const space = matchingSpaces?.[0];
+
   if (!space) {
     return {
       world: undefined,
