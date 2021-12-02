@@ -237,11 +237,6 @@ export const externalUrlAdditionalProps = {
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
 
-// TODO delete the below completely
-/*export const getFullVenueInsideUrl = (spaceSlug: string) =>
-  new URL(venueInsideUrl(spaceSlug), window.location.origin).href;
-  */
-
 export const getUrlWithoutTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 };
