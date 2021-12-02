@@ -14,17 +14,13 @@ export interface RoomSchemaShape {
   image_url: string;
 }
 
-const roomImageUrlSchema = Yup.string().required(
-  `${ROOM_TAXON.capital} icon is required`
-);
-
 export const roomSchema = ({
-  urlRequired = false,
+  required = false,
 }: {
-  urlRequired?: boolean;
-}) =>
+  required?: boolean;
+} = {}) =>
   Yup.object().shape<RoomSchemaShape>({
     title: createNameSchema({ name: "Title", withMin: true }),
-    image_url: roomImageUrlSchema,
-    url: createUrlSchema({ required: urlRequired }),
+    image_url: Yup.string().required(`${ROOM_TAXON.capital} icon is required`),
+    url: createUrlSchema({ required: required }),
   });
