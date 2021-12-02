@@ -112,13 +112,13 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
 
   const { world } = useWorldById(venue?.worldId);
 
-  const { enterRoom, portalVenueId } = useRoom({
+  const { enterRoom, portalSpaceSlug } = useRoom({
     room: portal,
   });
 
   const analytics = useAnalytics({ venue });
 
-  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+  const portalVenue = findVenueInRelatedVenues({ spaceSlug: portalSpaceSlug });
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =

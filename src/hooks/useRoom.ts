@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 import { Room } from "types/rooms";
+import { SpaceSlug } from "types/venues";
 
 import {
   enterVenue,
@@ -18,24 +19,26 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const roomUrl = room?.url ?? "";
 
   const { push: openUrlUsingRouter } = useHistory();
-  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { worldSlug } = useSpaceParams();
 
   const noTrailSlashPortalUrl = roomUrl && getUrlWithoutTrailingSlash(roomUrl);
 
-  const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
+  const [portalSpaceSlug] = getLastUrlParam(noTrailSlashPortalUrl) as [
+    SpaceSlug
+  ];
 
   const enterRoom = useCallback(() => {
-    if (!portalVenueId) return;
+    if (!portalSpaceSlug) return;
 
     // TODO This should be using the venue from the portal itself. At the moment
     // portal URLs are stored using the old way.
-    enterVenue(worldSlug ?? "", spaceSlug ?? "", {
+    enterVenue(worldSlug ?? "", portalSpaceSlug ?? "", {
       customOpenRelativeUrl: openUrlUsingRouter,
     });
-  }, [portalVenueId, worldSlug, spaceSlug, openUrlUsingRouter]);
+  }, [portalSpaceSlug, worldSlug, openUrlUsingRouter]);
 
   return {
     enterRoom,
-    portalVenueId,
+    portalSpaceSlug,
   };
 };

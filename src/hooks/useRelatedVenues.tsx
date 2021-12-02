@@ -3,13 +3,18 @@ import { useFirestore, useFirestoreCollectionData } from "reactfire";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
-import { AnyVenue } from "types/venues";
+import { AnyVenue, SpaceSlug } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 import { findSovereignVenue } from "utils/venue";
 
 import { isEmpty } from "./useFirestoreConnect";
+
+export type FindVenueInRelatedVenuesArgs = {
+  spaceId?: string;
+  spaceSlug?: SpaceSlug;
+};
 
 export interface RelatedVenuesContextState {
   isLoading: boolean;
@@ -23,7 +28,7 @@ export interface RelatedVenuesContextState {
   relatedVenueIds: string[];
 
   findVenueInRelatedVenues: (
-    searchedForVenueId?: string
+    searchOptions: FindVenueInRelatedVenuesArgs
   ) => WithId<AnyVenue> | undefined;
 }
 
@@ -76,10 +81,30 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   );
 
   const findVenueInRelatedVenues = useCallback(
-    (searchedForVenueId?: string): WithId<AnyVenue> | undefined => {
-      if (!relatedVenues) return;
+    (
+      searchOptions: FindVenueInRelatedVenuesArgs
+    ): WithId<AnyVenue> | undefined => {
+      if (!searchOptions) return;
 
-      return relatedVenues.find((venue) => venue.id === searchedForVenueId);
+      if (searchOptions.spaceSlug) {
+        const foundSpace = relatedVenues.find(
+          (space) => space.slug === searchOptions.spaceSlug
+        );
+        if (foundSpace) {
+          return foundSpace;
+        }
+      }
+
+      if (searchOptions.spaceId) {
+        const foundSpace = relatedVenues.find(
+          (space) => space.id === searchOptions.spaceId
+        );
+        if (foundSpace) {
+          return foundSpace;
+        }
+      }
+
+      return undefined;
     },
     [relatedVenues]
   );
@@ -150,13 +175,13 @@ export function useRelatedVenues(props?: RelatedVenuesProps) {
   const { findVenueInRelatedVenues } = relatedVenuesState;
 
   const currentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
-    return findVenueInRelatedVenues(currentVenueId);
+    return findVenueInRelatedVenues({ spaceId: currentVenueId });
   }, [currentVenueId, findVenueInRelatedVenues]);
 
   const parentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
     if (!currentVenue) return;
 
-    return findVenueInRelatedVenues(currentVenue.parentId);
+    return findVenueInRelatedVenues({ spaceId: currentVenue.parentId });
   }, [currentVenue, findVenueInRelatedVenues]);
 
   const parentVenueId = parentVenue?.id;

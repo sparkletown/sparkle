@@ -200,7 +200,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const scheduleNGWithAttendees = {
     ...scheduleNG,
     daysEvents: scheduleNG.daysEvents.map((event) => {
-      const portalVenue = findVenueInRelatedVenues(event.venueId);
+      const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
 
       return prepareForSchedule({
         worldSlug: worldSlug ?? EMPTY_WORLD_SLUG,
