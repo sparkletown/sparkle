@@ -56,12 +56,16 @@ export interface NavBarPropsType {
   withSchedule?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
+  withRadio?: boolean;
+  title?: string;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
+  withRadio,
+  title,
   withHiddenLoginButton,
 }) => {
   const { user, userWithId } = useUser();
@@ -163,9 +167,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   };
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue?.name;
-  const showNormalRadio = (world?.showRadio && !isSoundCloud) ?? false;
-  const showSoundCloudRadio = (world?.showRadio && isSoundCloud) ?? false;
+  const navbarTitle = title || (parentVenue?.name ?? currentVenue?.name);
+  const showNormalRadio = withRadio
+    ? (world?.showRadio && !isSoundCloud) ?? false
+    : false;
+  const showSoundCloudRadio = withRadio
+    ? (world?.showRadio && isSoundCloud) ?? false
+    : false;
 
   return (
     <>
@@ -195,7 +203,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                spaceId && !isAdminContext && <div>{navbarTitle}</div>
+                <div>{navbarTitle}</div>
               )}
 
               {spaceId && !isAdminContext && (
