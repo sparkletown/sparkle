@@ -38,8 +38,7 @@ export const WorldEditor: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const adminTitle =
-    world !== undefined ? `${world.name} settings` : "Create a new world";
+  const adminTitle = world ? `${world.name} settings` : "Create a new world";
 
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
@@ -48,7 +47,7 @@ export const WorldEditor: React.FC = () => {
       <WithNavigationBar>
         <AdminRestricted>
           <AdminTitleBar>
-            {world !== undefined && (
+            {world && (
               <ButtonNG
                 linkTo={adminWorldSpacesUrl(world.slug)}
                 iconName={faArrowLeft}
