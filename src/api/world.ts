@@ -230,7 +230,7 @@ export type FindWorldBySlugOptions = {
 export const fetchWorld = async (worldId: string) => {
   const venueDoc = await firebase
     .firestore()
-    .collection("worlds")
+    .collection(COLLECTION_WORLDS)
     .doc(worldId)
     .get();
   return venueDoc.data() as World;
