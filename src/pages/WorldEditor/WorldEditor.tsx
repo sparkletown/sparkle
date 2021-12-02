@@ -1,5 +1,4 @@
-import React, { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import { WorldNavTab } from "types/world";
@@ -32,17 +31,8 @@ const PANEL_MAP = Object.freeze({
 });
 
 export const WorldEditor: React.FC = () => {
-  const history = useHistory();
   const { worldSlug, selectedTab } = useWorldParams();
   const { world, isLoaded } = useWorldBySlug(worldSlug);
-
-  const goBack = useCallback(() => {
-    if (history.length) {
-      history.goBack();
-    } else {
-      history.push(adminWorldSpacesUrl(world?.slug));
-    }
-  }, [history, world?.slug]);
 
   if (!isLoaded) {
     return <LoadingPage />;
@@ -69,7 +59,7 @@ export const WorldEditor: React.FC = () => {
             <AdminTitle>{adminTitle}</AdminTitle>
           </AdminTitleBar>
           <WorldNav />
-          <WorldEditorPanel worldSlug={worldSlug} onClickHome={goBack} />
+          <WorldEditorPanel worldSlug={worldSlug} />
         </AdminRestricted>
       </WithNavigationBar>
     </div>

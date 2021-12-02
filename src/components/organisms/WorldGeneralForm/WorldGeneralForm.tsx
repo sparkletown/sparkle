@@ -20,15 +20,12 @@ import { worldStartSchema } from "forms/worldStartSchema";
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
 import "./WorldGeneralForm.scss";
@@ -46,14 +43,11 @@ const HANDLED_ERRORS = [
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
 const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
 
-export interface WorldGeneralFormProps extends AdminSidebarFooterProps {
+export interface WorldGeneralFormProps {
   world?: WithId<World>;
 }
 
-export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
-  world,
-  ...sidebarFooterProps
-}) => {
+export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({ world }) => {
   const [worldId, setWorldId] = useState(world?.id);
   const history = useHistory();
   const { user } = useUser();
@@ -151,10 +145,6 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
   return (
     <div className="WorldGeneralForm">
       <Form onSubmit={handleSubmit(submit)} onChange={handleChange}>
-        <AdminSidebarFooter
-          {...sidebarFooterProps}
-          saveButtonProps={saveButtonProps}
-        />
         <AdminSection title="Name your world" withLabel>
           <AdminInput
             name="name"
@@ -207,6 +197,16 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
+
+        <div className="AdminSidebar__buttons">
+          <ButtonNG
+            className="AdminSidebar__button AdminSidebar__button--larger"
+            variant="primary"
+            {...saveButtonProps}
+          >
+            Save
+          </ButtonNG>
+        </div>
       </Form>
     </div>
   );
