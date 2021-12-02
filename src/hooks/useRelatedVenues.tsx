@@ -11,7 +11,7 @@ import { findSovereignVenue } from "utils/venue";
 
 import { isEmpty } from "./useFirestoreConnect";
 
-export type FindVenueInRelatedVenuesArgs = {
+export type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
   spaceSlug?: SpaceSlug;
 };
@@ -28,7 +28,7 @@ export interface RelatedVenuesContextState {
   relatedVenueIds: string[];
 
   findVenueInRelatedVenues: (
-    searchOptions: FindVenueInRelatedVenuesArgs
+    searchOptions: FindVenueInRelatedVenuesOptions
   ) => WithId<AnyVenue> | undefined;
 }
 
@@ -82,7 +82,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
   const findVenueInRelatedVenues = useCallback(
     (
-      searchOptions: FindVenueInRelatedVenuesArgs
+      searchOptions: FindVenueInRelatedVenuesOptions
     ): WithId<AnyVenue> | undefined => {
       if (!searchOptions) return;
 
