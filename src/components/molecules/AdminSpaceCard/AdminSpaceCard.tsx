@@ -111,7 +111,11 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
             </span>
           </div>
           <ButtonNG
-            linkTo={adminNGVenueUrl(worldSlug, venue.slug)}
+            linkTo={
+              worldSlug && venue.slug
+                ? adminNGVenueUrl(worldSlug, venue.slug)
+                : "#"
+            }
             disabled={!venue.slug}
           >
             Edit
