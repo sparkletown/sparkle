@@ -7,11 +7,16 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_AUDIBLE,
+  DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
+  DEFAULT_VENUE_AUTOPLAY,
   DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
+  MAX_SECTIONS_AMOUNT,
+  MIN_SECTIONS_AMOUNT,
   ROOM_TAXON,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
@@ -22,10 +27,9 @@ import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room, RoomInput } from "types/rooms";
-import { RoomVisibility, VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
-import { isExternalPortal } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
@@ -53,18 +57,16 @@ import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 import "./SpaceEditForm.scss";
 
 const HANDLED_ERRORS = [
-  "room.template",
-  "room.title",
-  "room.subtitle",
-  "room.about",
-  "room.url",
-  "room.image_url",
-  "venue.mapBackgroundImage",
-  "venue.iframeUrl",
-  "venue.zoomUrl",
-  "venue.auditoriumColumns",
-  "venue.auditoriumRows",
-  "venue.columns",
+  "name",
+  "title",
+  "subtitle",
+  "image_url",
+  "mapBackgroundImage",
+  "iframeUrl",
+  "zoomUrl",
+  "auditoriumColumns",
+  "auditoriumRows",
+  "columns",
 ];
 
 export interface SpaceEditFormProps {
@@ -74,14 +76,12 @@ export interface SpaceEditFormProps {
   onBackClick: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
-  venueVisibility?: RoomVisibility;
 }
 
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   room,
   updatedRoom,
   roomIndex,
-  venueVisibility,
   onBackClick,
   onDelete,
   onEdit,
@@ -97,7 +97,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const {
     loading: isLoadingRoomVenue,
     error: fetchError,
-    value: roomVenue,
+    value: portal,
   } = useAsync(async () => {
     if (!spaceIdFromPortal) return;
 
@@ -106,53 +106,47 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const defaultValues = useMemo(
     () => ({
-      room: {
-        title: room.title ?? "",
-        url: room.url ?? "",
-        subtitle: room.subtitle ?? "",
-        about: room.about ?? "",
-        template: room.template ?? undefined,
-        image_url: room.image_url ?? "",
-        visibility: room.visibility ?? venueVisibility,
-      },
-      venue: {
-        mapBackgroundImage: roomVenue?.mapBackgroundImageUrl ?? "",
-        zoomUrl: roomVenue?.zoomUrl ?? "",
-        iframeUrl: roomVenue?.iframeUrl ?? "",
-        showGrid: roomVenue?.showGrid ?? false,
-        showReactions: roomVenue?.showReactions ?? false,
-        showShoutouts: roomVenue?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
-        auditoriumColumns:
-          roomVenue?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
-        auditoriumRows: roomVenue?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
-        columns: roomVenue?.columns ?? 0,
-        autoPlay: roomVenue?.autoPlay ?? false,
-        isReactionsMuted:
-          roomVenue?.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
-        parentId: roomVenue?.parentId ?? "",
-      },
+      name: portal?.name ?? "",
+      subtitle: portal?.config?.landingPageConfig?.subtitle ?? "",
+      description: portal?.config?.landingPageConfig?.description ?? "",
+      mapBackgroundImage: portal?.mapBackgroundImageUrl ?? "",
+      bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
+      zoomUrl: portal?.zoomUrl ?? "",
+      image_url: room.image_url ?? "",
+      iframeUrl: portal?.iframeUrl ?? DEFAULT_EMBED_URL,
+      showGrid: portal?.showGrid ?? false,
+      showReactions: portal?.showReactions ?? DEFAULT_SHOW_REACTIONS,
+      showShoutouts: portal?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
+      auditoriumColumns:
+        portal?.auditoriumColumns ?? SECTION_DEFAULT_COLUMNS_COUNT,
+      auditoriumRows: portal?.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
+      columns: portal?.columns ?? 0,
+      autoPlay: portal?.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
+      isReactionsMuted: portal?.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
+      parentId: portal?.parentId ?? "",
+      numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
+      roomVisibility: room?.visibility,
     }),
     [
-      room.about,
+      portal?.name,
+      portal?.config?.landingPageConfig?.subtitle,
+      portal?.config?.landingPageConfig?.description,
+      portal?.config?.landingPageConfig.coverImageUrl,
+      portal?.mapBackgroundImageUrl,
+      portal?.zoomUrl,
+      portal?.iframeUrl,
+      portal?.showGrid,
+      portal?.showReactions,
+      portal?.showShoutouts,
+      portal?.auditoriumColumns,
+      portal?.auditoriumRows,
+      portal?.columns,
+      portal?.autoPlay,
+      portal?.isReactionsMuted,
+      portal?.parentId,
+      portal?.sectionsCount,
       room.image_url,
-      room.subtitle,
-      room.template,
-      room.title,
-      room.url,
-      room.visibility,
-      roomVenue?.auditoriumColumns,
-      roomVenue?.auditoriumRows,
-      roomVenue?.columns,
-      roomVenue?.iframeUrl,
-      roomVenue?.mapBackgroundImageUrl,
-      roomVenue?.showGrid,
-      roomVenue?.showReactions,
-      roomVenue?.showShoutouts,
-      roomVenue?.zoomUrl,
-      roomVenue?.autoPlay,
-      roomVenue?.isReactionsMuted,
-      roomVenue?.parentId,
-      venueVisibility,
+      room?.visibility,
     ]
   );
 
@@ -168,24 +162,25 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     reValidateMode: "onChange",
     validationSchema: spaceEditSchema,
     defaultValues,
+    validationContext: {
+      template: room.template,
+    },
   });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
-  const roomValues = watch("room");
-  const venueValues = watch("venue");
   const values = watch();
 
   const changeRoomImageUrl = useCallback(
     (val: string) => {
-      setValue("room.image_url", val, false);
+      setValue("image_url", val, false);
     },
     [setValue]
   );
 
   const changeBackgroundImageUrl = useCallback(
     (val: string) => {
-      setValue("venue.mapBackgroundImage", val, false);
+      setValue("mapBackgroundImage", val, false);
     },
     [setValue]
   );
@@ -194,26 +189,23 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     if (!user || !spaceIdFromPortal) return;
 
     const embedUrl = convertToEmbeddableUrl({
-      url: venueValues.iframeUrl,
-      autoPlay: roomVenue?.autoPlay,
+      url: values.iframeUrl,
+      autoPlay: portal?.autoPlay,
     });
 
     await updateVenueNG(
       {
         id: spaceIdFromPortal,
-        worldId: roomVenue?.worldId,
-        ...venueValues,
+        worldId: portal?.worldId,
+        ...values,
+        description: {
+          text: values.description,
+        },
         iframeUrl: embedUrl || DEFAULT_EMBED_URL,
       },
       user
     );
-  }, [
-    spaceIdFromPortal,
-    user,
-    venueValues,
-    roomVenue?.autoPlay,
-    roomVenue?.worldId,
-  ]);
+  }, [user, spaceIdFromPortal, values, portal?.autoPlay, portal?.worldId]);
 
   const [
     { loading: isUpdating, error: updateError },
@@ -225,8 +217,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       const roomData: RoomInput = {
         ...(room as RoomInput),
         ...(updatedRoom as RoomInput),
-        ...roomValues,
-        visibility: input.room.visibility,
+        ...values,
+        visibility: input.visibility,
       };
 
       await upsertRoom(roomData, spaceId, user, roomIndex);
@@ -235,14 +227,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       onEdit?.();
     },
     [
-      onEdit,
+      user,
+      spaceId,
       room,
+      updatedRoom,
+      values,
       roomIndex,
       updateVenueRoom,
-      updatedRoom,
-      user,
-      roomValues,
-      spaceId,
+      onEdit,
     ]
   );
 
@@ -260,9 +252,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     onBackClick(roomIndex);
   }, [onBackClick, roomIndex]);
 
-  const isReactionsMutedDisabled = !(
-    values?.venue?.showReactions ?? venueValues?.showReactions
-  );
+  const isReactionsMutedDisabled = !values?.showReactions;
 
   const { ownedVenues } = useOwnedVenues({});
 
@@ -272,19 +262,19 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         ownedVenues
           .filter(
             ({ id, worldId }) =>
-              !(roomVenue?.worldId !== worldId || id === spaceIdFromPortal)
+              !(portal?.worldId !== worldId || id === spaceIdFromPortal)
           )
           .map((venue) => [venue.id, venue])
       ),
-    [ownedVenues, roomVenue?.worldId, spaceIdFromPortal]
+    [ownedVenues, portal?.worldId, spaceIdFromPortal]
   );
 
   const parentSpace = useMemo(
     () =>
-      roomVenue?.parentId
-        ? ownedVenues.find(({ id }) => id === roomVenue?.parentId)
+      portal?.parentId
+        ? ownedVenues.find(({ id }) => id === portal?.parentId)
         : { name: "" },
-    [ownedVenues, roomVenue?.parentId]
+    [ownedVenues, portal?.parentId]
   );
 
   return (
@@ -292,57 +282,31 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
           <AdminSpacesListItem title="The basics" isOpened>
-            <AdminInput
-              name="room.template"
-              autoComplete="off"
-              placeholder={`${ROOM_TAXON.capital} template`}
-              label={`${ROOM_TAXON.capital} type`}
-              register={register}
-              errors={errors}
-              disabled
-            />
-
-            <AdminInput
-              name="room.title"
-              autoComplete="off"
-              placeholder={`${ROOM_TAXON.capital} name`}
-              label={`Name your ${ROOM_TAXON.lower}`}
-              register={register}
-              errors={errors}
-            />
-
-            <AdminInput
-              name="room.subtitle"
-              autoComplete="off"
-              placeholder="Subtitle (optional)"
-              label={`${ROOM_TAXON.capital} subtitle`}
-              register={register}
-              errors={errors}
-            />
-
-            <AdminTextarea
-              name="room.about"
-              autoComplete="off"
-              placeholder="Description (optional)"
-              label={`${ROOM_TAXON.capital} description`}
-              register={register}
-              errors={errors}
-            />
-
-            {isExternalPortal(room) ? (
+            <AdminSection title="Rename your space" withLabel>
               <AdminInput
-                name="room.url"
-                autoComplete="off"
-                label={`${ROOM_TAXON.capital} url`}
-                placeholder={`${ROOM_TAXON.capital} url`}
+                name="name"
+                placeholder="Space Name"
+                register={register}
+                errors={errors}
+                required
+              />
+            </AdminSection>
+            <AdminSection title="Subtitle" withLabel>
+              <AdminInput
+                name="subtitle"
+                placeholder="Subtitle for your space"
                 register={register}
                 errors={errors}
               />
-            ) : (
-              // NOTE: Save button doesn't work if the value is missing
-              <input name="room.url" type="hidden" ref={register} />
-            )}
-
+            </AdminSection>
+            <AdminSection title="Description" withLabel>
+              <AdminTextarea
+                name="description"
+                placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
+                register={register}
+                errors={errors}
+              />
+            </AdminSection>
             <AdminSection
               title="Select the parent space for the “back” button"
               withLabel
@@ -351,45 +315,69 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 portals={backButtonOptionList}
                 setValue={setValue}
                 register={register}
-                fieldName="venue.parentId"
+                fieldName="parentId"
                 parentSpace={parentSpace}
-                error={errors?.venue?.parentId}
+                error={errors?.parentId}
               />
             </AdminSection>
-          </AdminSpacesListItem>
-          <AdminSpacesListItem title="Appearance" isOpened>
-            <AdminSection
-              withLabel
-              title={`${ROOM_TAXON.capital} image`}
-              subtitle="(overrides global settings)"
-            >
-              {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
-              {/* ie. PortalVisibility/AdminInput */}
-              <ImageInput
-                onChange={changeRoomImageUrl}
-                name="room.image"
-                setValue={setValue}
+            <AdminSection title="Default portal appearance">
+              <PortalVisibility
+                getValues={getValues}
+                name="roomVisibility"
                 register={register}
-                small
-                nameWithUnderscore
-                imgUrl={room.image_url}
-                error={errors?.room?.image_url}
+                setValue={setValue}
               />
             </AdminSection>
 
-            <AdminSection
-              withLabel
-              title="Change label appearance"
-              subtitle="(overrides global settings)"
-            >
-              <PortalVisibility
-                getValues={getValues}
-                name="room.visibility"
+            {/* @debt Is this shown anywhere in the client side? Should we remove this input?  */}
+            <AdminSection title="Upload a highlight image" withLabel>
+              <ImageInput
+                onChange={changeBackgroundImageUrl}
+                name="bannerImage"
+                imgUrl={values.bannerImageUrl}
+                error={errors.bannerImageUrl}
+                isInputHidden={!values.bannerImageUrl}
                 register={register}
                 setValue={setValue}
               />
             </AdminSection>
-            {!isLoadingRoomVenue && !!roomVenue && (
+            <AdminSection title="Upload a logo" withLabel>
+              <ImageInput
+                nameWithUnderscore
+                onChange={changeRoomImageUrl}
+                name="image"
+                imgUrl={values.image_url}
+                error={errors.image_url}
+                setValue={setValue}
+                register={register}
+                small
+                subtext="(A transparent 300 px square image works best)"
+              />
+            </AdminSection>
+          </AdminSpacesListItem>
+          <AdminSpacesListItem title="Embedable content" isOpened>
+            {room.template &&
+              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+              IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
+                <>
+                  <AdminSection title="Livestream URL" withLabel>
+                    <AdminInput
+                      name="iframeUrl"
+                      placeholder="Livestream URL"
+                      register={register}
+                      errors={errors}
+                    />
+                  </AdminSection>
+                  <AdminCheckbox
+                    name="autoPlay"
+                    label="Autoplay"
+                    variant="toggler"
+                    register={register}
+                  />
+                </>
+              )}
+
+            {!isLoadingRoomVenue && !!portal && (
               <>
                 {room.template &&
                   // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
@@ -402,38 +390,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       {/* ie. PortalVisibility/AdminInput */}
                       <ImageInput
                         onChange={changeBackgroundImageUrl}
-                        name="venue.mapBackgroundImage"
+                        name="mapBackgroundImage"
                         setValue={setValue}
                         register={register}
                         small
                         nameWithUnderscore
                         imgUrl={
-                          roomVenue?.mapBackgroundImageUrl ??
-                          venueValues.mapBackgroundImage
+                          portal?.mapBackgroundImageUrl ??
+                          values.mapBackgroundImage
                         }
-                        error={errors?.venue?.mapBackgroundImage}
-                      />
-                    </>
-                  )}
-
-                {room.template &&
-                  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-                  IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
-                    <>
-                      <AdminInput
-                        name="venue.iframeUrl"
-                        type="text"
-                        autoComplete="off"
-                        placeholder="Livestream URL"
-                        label="Livestream URL"
-                        errors={errors}
-                        register={register}
-                      />
-                      <AdminCheckbox
-                        variant="toggler"
-                        name="venue.autoPlay"
-                        register={register}
-                        label="Enable autoplay"
+                        error={errors?.mapBackgroundImage}
                       />
                     </>
                   )}
@@ -446,11 +412,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     <div>
                       <Form.Label>URL</Form.Label>
                       <InputField
-                        name="venue.zoomUrl"
+                        name="zoomUrl"
                         type="text"
                         autoComplete="off"
                         placeholder="URL"
-                        error={errors?.venue?.zoomUrl}
+                        error={errors?.zoomUrl}
                         ref={register()}
                       />
                     </div>
@@ -463,7 +429,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                     room.template as VenueTemplate
                   ) && (
                     <AdminCheckbox
-                      name="venue.showGrid"
+                      name="showGrid"
                       label="Show grid layout"
                       variant="toggler"
                       register={register}
@@ -477,13 +443,13 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   ) && (
                     <>
                       <AdminCheckbox
-                        name="venue.showShoutouts"
+                        name="showShoutouts"
                         label="Show shoutouts"
                         variant="toggler"
                         register={register}
                       />
                       <AdminCheckbox
-                        name="venue.showReactions"
+                        name="showReactions"
                         label="Show reactions"
                         variant="toggler"
                         register={register}
@@ -491,7 +457,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       <AdminSection>
                         <AdminCheckbox
                           variant="flip-switch"
-                          name="venue.isReactionsMuted"
+                          name="isReactionsMuted"
                           register={register}
                           disabled={isReactionsMutedDisabled}
                           displayOn="Audible"
@@ -510,15 +476,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       <input
                         defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
                         min={5}
-                        name="venue.auditoriumColumns"
+                        name="auditoriumColumns"
                         type="number"
                         ref={register}
                         className="align-left"
                         placeholder="Number of seats columns"
                       />
-                      {errors?.venue?.auditoriumColumns ? (
+                      {errors?.auditoriumColumns ? (
                         <span className="input-error">
-                          {errors?.venue?.auditoriumColumns.message}
+                          {errors?.auditoriumColumns.message}
                         </span>
                       ) : null}
                     </div>
@@ -528,16 +494,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                       </h4>
                       <input
                         defaultValue={SECTION_DEFAULT_ROWS_COUNT}
-                        name="venue.auditoriumRows"
+                        name="auditoriumRows"
                         type="number"
                         ref={register}
                         className="align-left"
                         placeholder="Number of seats rows"
                         min={5}
                       />
-                      {errors?.venue?.auditoriumRows ? (
+                      {errors?.auditoriumRows ? (
                         <span className="input-error">
-                          {errors?.venue?.auditoriumRows.message}
+                          {errors?.auditoriumRows.message}
                         </span>
                       ) : null}
                     </div>
@@ -547,7 +513,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                 {!DISABLED_DUE_TO_1253 &&
                   room.template &&
                   HAS_GRID_TEMPLATES.includes(room.template as VenueTemplate) &&
-                  venueValues.showGrid && (
+                  values.showGrid && (
                     <>
                       <div className="input-container">
                         <h4 className="italic input-header">
@@ -555,15 +521,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         </h4>
                         <input
                           defaultValue={1}
-                          name="venue.columns"
+                          name="columns"
                           type="number"
                           ref={register}
                           className="align-left"
                           placeholder={`Number of grid columns`}
                         />
-                        {errors?.venue?.columns ? (
+                        {errors?.columns ? (
                           <span className="input-error">
-                            {errors?.venue?.columns.message}
+                            {errors?.columns.message}
                           </span>
                         ) : null}
                       </div>
@@ -580,7 +546,32 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               </>
             )}
           </AdminSpacesListItem>
-          {!roomVenue && fetchError && (
+
+          {room.template === VenueTemplate.auditorium && (
+            <AdminSpacesListItem title="Extras" isOpened>
+              <AdminSection title="Capacity (optional)">
+                <div className="SpaceEditForm__capacity">
+                  <div># Sections</div>
+                  <div># Seats</div>
+                  <div>Max seats</div>
+
+                  <InputField
+                    ref={register}
+                    name="numberOfSections"
+                    type="number"
+                    min={MIN_SECTIONS_AMOUNT}
+                    max={MAX_SECTIONS_AMOUNT}
+                    error={errors.numberOfSections}
+                  />
+
+                  <div>x 200</div>
+                  <div>= {200 * values.numberOfSections}</div>
+                </div>
+              </AdminSection>
+            </AdminSpacesListItem>
+          )}
+
+          {!portal && fetchError && (
             <>
               <div>
                 The space linked to this portal could not be fetched properly.

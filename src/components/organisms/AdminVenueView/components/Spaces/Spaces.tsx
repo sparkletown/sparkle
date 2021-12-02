@@ -7,7 +7,6 @@ import { Dimensions, Position } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { SPACE_EDIT_FORM_TEMPLATES } from "utils/venue";
 
 import { useFetchAssets } from "hooks/useFetchAssets";
 
@@ -20,6 +19,7 @@ import { AdminSpacesListItem } from "components/organisms/AdminVenueView/compone
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
 import { PortalList } from "components/molecules/PortalList";
+import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 
 import { AdminShowcase } from "../AdminShowcase";
 
@@ -101,11 +101,8 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
   const renderSpaceEditForm = useCallback(() => {
     if (!selectedRoom) return;
 
-    const EditForm = SPACE_EDIT_FORM_TEMPLATES[selectedRoom.template ?? ""];
-
     return (
-      <EditForm
-        venueVisibility={venue.roomVisibility}
+      <SpaceEditForm
         room={selectedRoom}
         updatedRoom={updatedRoom}
         roomIndex={selectedRoomIndex}
@@ -114,13 +111,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
         onEdit={clearSelectedRoom}
       />
     );
-  }, [
-    venue.roomVisibility,
-    selectedRoom,
-    updatedRoom,
-    selectedRoomIndex,
-    clearSelectedRoom,
-  ]);
+  }, [selectedRoom, updatedRoom, selectedRoomIndex, clearSelectedRoom]);
 
   return (
     <AdminPanel className="Spaces">

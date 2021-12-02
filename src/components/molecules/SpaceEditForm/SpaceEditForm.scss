@@ -31,6 +31,15 @@ $image-container-height: 200px;
     padding: $spacing--xl;
   }
 
+  &__capacity {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+
+    align-items: center;
+    text-align: center;
+  }
+
   .AdminSidebarFooter__buttons {
     // NOTE: Magic number determined empirically to fill the footer space in just this one case
     width: 2 * $admin-ng-sidebar-footer-buttons-width--magic-number;
