@@ -117,7 +117,7 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar withSchedule>
+    <WithNavigationBar withSchedule variant="internal-scroll">
       <AdminRestricted>
         <div className="AdminVenueView">
           <AdminTitleBar variant="grid-with-tools">

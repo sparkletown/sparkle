@@ -5,7 +5,11 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import { PLAYA_VENUE_ID, SPARKLE_PHOTOBOOTH_URL } from "settings";
+import {
+  DISABLED_DUE_TO_1142,
+  PLAYA_VENUE_ID,
+  SPARKLE_PHOTOBOOTH_URL,
+} from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -211,7 +215,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               )}
             </div>
 
-            {withPhotobooth && (
+            {!DISABLED_DUE_TO_1142 && withPhotobooth && (
               <div
                 className="NavBar__photobooth-button nav-schedule"
                 onClick={handlePhotoboothRedirect}

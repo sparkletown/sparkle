@@ -14,3 +14,9 @@ export const DISABLED_DUE_TO_1253 = true;
  * @see https://github.com/sparkletown/internal-sparkle-issues/issues/1324
  */
 export const DISABLED_DUE_TO_1324 = true;
+
+/**
+ * Disables Photobooth feature
+ * @see https://github.com/sparkletown/internal-sparkle-issues/issues/1142
+ */
+export const DISABLED_DUE_TO_1142 = true;

@@ -3,14 +3,20 @@ import classNames from "classnames";
 
 import "./AdminShowcase.scss";
 
-export interface AdminPanelProps {
+export interface AdminShowcaseProps {
   className?: string;
+  variant?: "internal-scroll" | "no-scroll";
 }
 
-export const AdminShowcase: React.FC<AdminPanelProps> = ({
+export const AdminShowcase: React.FC<AdminShowcaseProps> = ({
   className,
+  variant = "internal-scroll",
   children,
 }) => {
-  const containerClasses = classNames("AdminShowcase", className);
+  const containerClasses = classNames(
+    "AdminShowcase",
+    className,
+    `AdminShowcase--${variant}`
+  );
   return <div className={containerClasses}>{children}</div>;
 };

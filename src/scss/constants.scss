@@ -193,6 +193,7 @@ $admin-ng-panel-height: calc(
 );
 $admin-ng-space-card-box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14);
 
+$admin-ia-simple-panel-height: calc(100vh - #{$reserved-page-height});
 $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
 $admin-ia-manage-space-template-columns: 5fr
   minmax(#{2 * $button-width--max-wrap}, 1fr);
