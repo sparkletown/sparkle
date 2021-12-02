@@ -28,6 +28,7 @@ export interface WithNavigationBarProps {
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
   title?: string;
+  variant?: "internal-scroll";
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
@@ -37,6 +38,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withHiddenLoginButton,
   withRadio,
   title,
+  variant,
   children,
 }) => {
   const { spaceSlug } = useSpaceParams();
@@ -63,7 +65,15 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
         </Suspense>
       </RelatedVenuesProvider>
 
-      <div className="navbar-margin">{children}</div>
+      {variant === "internal-scroll" ? (
+        <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
+          <div className="WithNavigationBar__slider WithNavigationBar__slider--internal-scroll">
+            {children}
+          </div>
+        </div>
+      ) : (
+        <div className="WithNavigationBar__wrapper">{children}</div>
+      )}
 
       <Footer />
       <NewProfileModal venue={space} />

@@ -77,7 +77,7 @@ export const SpacesDashboard: React.FC = () => {
 
   return (
     <div className="SpacesDashboard">
-      <WithNavigationBar>
+      <WithNavigationBar variant="internal-scroll">
         <AdminRestricted>
           <AdminTitleBar>
             <ButtonNG
