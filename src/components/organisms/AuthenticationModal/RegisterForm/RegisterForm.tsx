@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
 
-import { ACCOUNT_PROFILE_BASE_URL, DEFAULT_REQUIRES_DOB } from "settings";
+import { DEFAULT_REQUIRES_DOB } from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
@@ -164,9 +164,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const profileUrl = spaceSlug
-        ? accountProfileUrlWithSlug(worldSlug, spaceSlug)
-        : ACCOUNT_PROFILE_BASE_URL;
+      const profileUrl = accountProfileUrlWithSlug(worldSlug, spaceSlug);
 
       history.push(profileUrl);
     } catch (error) {

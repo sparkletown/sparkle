@@ -25,8 +25,7 @@ export const ACCOUNT_ROOT_URL = "/account";
 export const ADMIN_OLD_ROOT_URL = "/a1";
 export const ADMIN_ROOT_URL = "/admin";
 export const ENTER_ROOT_URL = "/enter";
-// TODO Next line needs updating with world slugs
-export const ENTRANCE_BASE_URL = "/e";
+const ENTRANCE_BASE_URL = "/e";
 export const LOGIN_BASE_URL = `/login`;
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
 export const VERSION_URL = "/version";
@@ -42,7 +41,7 @@ export const ATTENDEE_SPACE_INSIDE_URL = `${SPACE_INSIDE_BASE_URL}/w/:worldSlug/
 export const ATTENDEE_SPACE_LANDING_URL = `${SPACE_LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 
 export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:worldSlug/:step/:spaceSlug`;
-// TODO This line too
+// @debt I don't think we support custom tokens right now. Probably remove this.
 export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:spaceSlug/:customToken`;
 
 // Account URLs
