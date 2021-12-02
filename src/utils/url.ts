@@ -15,7 +15,7 @@ import {
   ATTENDEE_SPACE_LANDING_URL,
   EMPTY_SPACE_SLUG,
   EMPTY_WORLD_SLUG,
-  ENTRANCE_BASE_URL,
+  ENTRANCE_STEP_VENUE_PARAM_URL,
   VALID_URL_PROTOCOLS,
   WORLD_ROOT_URL,
 } from "settings";
@@ -103,7 +103,11 @@ export const venueEntranceUrl = (
   spaceSlug: SpaceSlug,
   step?: number
 ) => {
-  return `${ENTRANCE_BASE_URL}/${worldSlug}/${spaceSlug}/${step ?? 1}`;
+  return generatePath(ENTRANCE_STEP_VENUE_PARAM_URL, {
+    worldSlug,
+    spaceSlug,
+    step: step ?? 1,
+  });
 };
 
 export const accountProfileVenueUrl = (

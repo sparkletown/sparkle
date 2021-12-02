@@ -41,7 +41,8 @@ export const VENUE_EMERGENCY_PARAM_URL = `${VENUE_EMERGENCY_BASE_URL}/:spaceSlug
 export const ATTENDEE_SPACE_INSIDE_URL = `${SPACE_INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_SPACE_LANDING_URL = `${SPACE_LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 
-export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:step/:spaceSlug`;
+export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:worldSlug/:step/:spaceSlug`;
+// TODO This line too
 export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:spaceSlug/:customToken`;
 
 // Account URLs
