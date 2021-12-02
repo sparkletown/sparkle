@@ -22,7 +22,7 @@ export type UseSpaceBySlugResult = {
  * @param spaceSlug
  * @returns
  */
-export const useSpaceBySlug = (
+export const useWorldAndSpaceBySlug = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug
 ): UseSpaceBySlugResult => {

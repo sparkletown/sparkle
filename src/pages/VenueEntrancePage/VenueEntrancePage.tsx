@@ -13,8 +13,8 @@ import {
   venueEntranceUrl,
 } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
 
 import Login from "pages/Account/Login";
@@ -37,7 +37,7 @@ export const VenueEntrancePage: React.FC = () => {
   const { step: unparsedStep } = useParams<{ step?: string }>();
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId, isLoaded } = useSpaceBySlug(
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );

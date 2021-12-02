@@ -15,8 +15,8 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 import { shouldScheduleBeShown } from "utils/schedule";
 import { enterVenue } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -74,7 +74,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     currentVenue: relatedVenue,

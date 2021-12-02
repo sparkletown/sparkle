@@ -14,8 +14,8 @@ import { WorldSlug } from "types/world";
 
 import { generateAttendeeInsideSpaceUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 
@@ -91,7 +91,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {

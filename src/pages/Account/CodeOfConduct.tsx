@@ -8,8 +8,8 @@ import {
   generateAttendeeInsideSpaceUrl,
 } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -43,7 +43,10 @@ export const CodeOfConduct: React.FC = () => {
   const { user } = useUser();
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, isLoaded } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { world, space, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>

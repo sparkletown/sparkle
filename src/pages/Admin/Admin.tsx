@@ -45,8 +45,8 @@ import {
   sortVenues,
 } from "utils/venue";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
@@ -435,7 +435,7 @@ export const Admin: React.FC = () => {
   });
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");

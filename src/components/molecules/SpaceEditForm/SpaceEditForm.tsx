@@ -31,8 +31,8 @@ import { externalSpaceEditSchema } from "forms/externalSpaceEditSchema";
 import { nonIframeSpaceSchema } from "forms/nonIframeSpaceSchema";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 
@@ -91,10 +91,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const { user } = useUser();
 
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const spaceSlugFromPortal = room?.url?.split("/").pop() as SpaceSlug;
-  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(
+  const { spaceId: spaceIdFromPortal } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlugFromPortal
   );

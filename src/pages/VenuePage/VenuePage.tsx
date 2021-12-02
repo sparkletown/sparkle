@@ -23,8 +23,8 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
@@ -68,7 +68,7 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId, isLoaded } = useSpaceBySlug(
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );

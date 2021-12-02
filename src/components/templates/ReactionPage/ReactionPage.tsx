@@ -4,8 +4,8 @@ import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
@@ -22,7 +22,7 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(

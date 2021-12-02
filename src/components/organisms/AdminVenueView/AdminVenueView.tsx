@@ -17,7 +17,7 @@ import {
   generateAttendeeInsideSpaceUrl,
 } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
 
 import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
@@ -76,7 +76,10 @@ export const AdminVenueView: React.FC = () => {
     hide: closeDeleteModal,
   } = useShowHide();
 
-  const { space, spaceId, isLoaded } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (

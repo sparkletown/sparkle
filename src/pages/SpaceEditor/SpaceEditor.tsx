@@ -8,7 +8,7 @@ import { WorldSlug } from "types/world";
 
 import { adminNGSettingsUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
@@ -41,7 +41,7 @@ export const SpaceEditor: React.FC = () => {
     selectedTab = SpaceEditorTab.basicInfo,
   } = useParams<SpaceEditorRouteParams>();
 
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(
+  const { space, isLoaded: isSpaceLoaded } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );

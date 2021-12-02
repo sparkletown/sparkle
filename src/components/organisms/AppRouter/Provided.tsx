@@ -1,7 +1,7 @@
 import React from "react";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 export interface ProvidedProps {
@@ -13,7 +13,7 @@ export const Provided: React.FC<ProvidedProps> = ({
   withRelatedVenues = false,
 }) => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   if (!withRelatedVenues) return <>{children}</>;
 

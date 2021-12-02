@@ -3,7 +3,7 @@ import React from "react";
 import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { SpaceEditorStartPanel } from "pages/Admin/Details";
 
@@ -16,7 +16,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   worldSlug,
   spaceSlug,
 }) => {
-  const { space } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   return <SpaceEditorStartPanel venue={space} />;
 };

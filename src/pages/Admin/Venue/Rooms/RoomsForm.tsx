@@ -22,8 +22,8 @@ import { PartyMapVenue, SpaceSlug } from "types/venues";
 
 import { generateAttendeeInsideSpaceUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
@@ -49,7 +49,7 @@ import "../Venue.scss";
 
 export const RoomsForm: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );

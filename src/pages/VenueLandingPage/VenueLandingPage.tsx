@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -18,7 +18,7 @@ import "./VenueLandingPage.scss";
 export const VenueLandingPage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
 
-  const { space, isLoaded } = useSpaceBySlug(worldSlug, spaceSlug);
+  const { space, isLoaded } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
