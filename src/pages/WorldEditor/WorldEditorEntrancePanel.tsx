@@ -13,12 +13,10 @@ import { Loading } from "components/molecules/Loading";
 
 export interface WorldEditorEntrancePanelProps {
   worldSlug?: string;
-  onClickHome: () => void;
 }
 
 export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> = ({
   worldSlug,
-  onClickHome,
 }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
 
@@ -26,10 +24,10 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
     <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>Entrance Experience</AdminSidebarTitle>
-        <AdminSidebarFooter onClickHome={onClickHome} />
+        <AdminSidebarFooter />
         {isLoaded ? (
           world ? (
-            <WorldEntranceForm world={world} onClickCancel={onClickHome} />
+            <WorldEntranceForm world={world} />
           ) : (
             // TODO: Display not found component
             "World Not Found"

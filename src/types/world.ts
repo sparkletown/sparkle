@@ -3,12 +3,12 @@ import { Question } from "types/Question";
 import { UserStatus } from "types/User";
 
 export enum WorldNavTab {
-  start = "start",
+  general = "general",
   entrance = "entrance",
   advanced = "advanced",
 }
 
-export interface WorldStartFormInput {
+export interface WorldGeneralFormInput {
   name: string;
   description?: string;
   subtitle?: string;

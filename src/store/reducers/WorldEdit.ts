@@ -1,11 +1,13 @@
-import { WorldStartFormInput } from "types/world";
+import { WorldGeneralFormInput } from "types/world";
 
 import { WithOptionalWorldId } from "utils/id";
 
 import { WORLD_EDIT, WorldEditActions } from "../actions/WorldEdit";
 
 export const worldEditStartValuesReducer: (
-  state: Partial<WithOptionalWorldId<WorldStartFormInput>>,
+  state: Partial<WithOptionalWorldId<WorldGeneralFormInput>>,
   action: WorldEditActions
-) => Partial<WithOptionalWorldId<WorldStartFormInput>> = (state = {}, action) =>
-  action.type === WORLD_EDIT ? { ...action.payload } : state;
+) => Partial<WithOptionalWorldId<WorldGeneralFormInput>> = (
+  state = {},
+  action
+) => (action.type === WORLD_EDIT ? { ...action.payload } : state);

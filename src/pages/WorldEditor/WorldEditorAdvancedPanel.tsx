@@ -13,22 +13,20 @@ import { Loading } from "components/molecules/Loading";
 
 export interface WorldEditorAdvancedPanelProps {
   worldSlug?: string;
-  onClickHome: () => void;
 }
 
 export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> = ({
   worldSlug,
-  onClickHome,
 }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
   return (
     <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>Advanced Settings: {world?.name}</AdminSidebarTitle>
-        <AdminSidebarFooter onClickHome={onClickHome} />
+        <AdminSidebarFooter />
         {isLoaded ? (
           world ? (
-            <WorldAdvancedForm world={world} onClickCancel={onClickHome} />
+            <WorldAdvancedForm world={world} />
           ) : (
             // TODO: Display not found component
             "World Not Found"

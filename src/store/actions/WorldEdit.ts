@@ -1,4 +1,4 @@
-import { WorldStartFormInput } from "types/world";
+import { WorldGeneralFormInput } from "types/world";
 
 import { WithOptionalWorldId } from "utils/id";
 
@@ -6,11 +6,11 @@ export const WORLD_EDIT: string = "WORLD_EDIT";
 
 interface WorldEditAction {
   type: typeof WORLD_EDIT;
-  payload?: WithOptionalWorldId<WorldStartFormInput>;
+  payload?: WithOptionalWorldId<WorldGeneralFormInput>;
 }
 
 export const worldEdit = (
-  payload?: WithOptionalWorldId<WorldStartFormInput>
+  payload?: WithOptionalWorldId<WorldGeneralFormInput>
 ) => ({
   type: WORLD_EDIT,
   payload,
