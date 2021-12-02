@@ -16,7 +16,7 @@ import { AnyVenue } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl, generateAttendeeInsideSpaceUrl } from "utils/url";
+import { adminNGVenueUrl, generateAttendeeInsideUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 
@@ -66,7 +66,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
         <div className="AdminSpaceCard__bg-container">
           <Link
             className="AdminSpaceCard__link"
-            to={generateAttendeeInsideSpaceUrl({
+            to={generateAttendeeInsideUrl({
               worldSlug,
               spaceSlug: venue.slug,
             })}

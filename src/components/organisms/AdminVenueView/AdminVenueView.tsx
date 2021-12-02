@@ -14,7 +14,7 @@ import { WorldSlug } from "types/world";
 import {
   adminNGVenueUrl,
   adminWorldSpacesUrl,
-  generateAttendeeInsideSpaceUrl,
+  generateAttendeeInsideUrl,
 } from "utils/url";
 
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -137,7 +137,7 @@ export const AdminVenueView: React.FC = () => {
                 newTab
                 linkTo={
                   spaceSlug
-                    ? generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug })
+                    ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
                     : undefined
                 }
                 variant="primary"

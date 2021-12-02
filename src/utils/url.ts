@@ -63,7 +63,7 @@ export const adminCreateSpace = (worldSlug?: string) =>
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
-type generateAttendeeInsideSpaceUrlParams = {
+type generateAttendeeInsideUrlParams = {
   worldSlug?: WorldSlug;
   spaceSlug?: SpaceSlug;
   absoluteUrl?: boolean;
@@ -71,11 +71,11 @@ type generateAttendeeInsideSpaceUrlParams = {
 
 // @debt These being optional is a problem waiting to happen. We need a better
 // way of making world / space slug mandatory
-export const generateAttendeeInsideSpaceUrl = ({
+export const generateAttendeeInsideUrl = ({
   worldSlug,
   spaceSlug,
   absoluteUrl = false,
-}: generateAttendeeInsideSpaceUrlParams) => {
+}: generateAttendeeInsideUrlParams) => {
   const relativePath = generatePath(ATTENDEE_SPACE_INSIDE_URL, {
     worldSlug,
     spaceSlug,
@@ -164,7 +164,7 @@ export const enterVenue = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug,
   options?: OpenUrlOptions
-) => openUrl(generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug }), options);
+) => openUrl(generateAttendeeInsideUrl({ worldSlug, spaceSlug }), options);
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;

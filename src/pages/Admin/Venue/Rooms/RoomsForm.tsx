@@ -20,7 +20,7 @@ import { Room, RoomInput } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { PartyMapVenue, SpaceSlug } from "types/venues";
 
-import { generateAttendeeInsideSpaceUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -139,7 +139,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
       ...defaultValues,
       url:
         defaultValues.url ??
-        generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug }),
+        generateAttendeeInsideUrl({ worldSlug, spaceSlug }),
       visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });

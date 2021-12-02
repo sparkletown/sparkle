@@ -36,7 +36,7 @@ import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { generateAttendeeInsideSpaceUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 import {
   canBeDeleted,
   canHavePlacement,
@@ -338,7 +338,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
         {venue.name && (
           <>
             <Link
-              to={generateAttendeeInsideSpaceUrl({
+              to={generateAttendeeInsideUrl({
                 worldSlug: worldSlug,
                 spaceSlug: venue.slug,
               })}
@@ -449,7 +449,7 @@ export const Admin: React.FC = () => {
       <WithNavigationBar>
         <AdminRestricted>
           <Redirect
-            to={generateAttendeeInsideSpaceUrl({
+            to={generateAttendeeInsideUrl({
               worldSlug: DEFAULT_WORLD_SLUG,
               spaceSlug: DEFAULT_SPACE_SLUG,
             })}

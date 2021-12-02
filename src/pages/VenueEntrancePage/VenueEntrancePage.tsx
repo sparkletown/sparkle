@@ -9,7 +9,7 @@ import {
 import { isCompleteProfile } from "utils/profile";
 import {
   accountProfileVenueUrl,
-  generateAttendeeInsideSpaceUrl,
+  generateAttendeeInsideUrl,
   venueEntranceUrl,
 } from "utils/url";
 
@@ -63,7 +63,7 @@ export const VenueEntrancePage: React.FC = () => {
   if (!stepConfig) {
     return (
       <Redirect
-        to={generateAttendeeInsideSpaceUrl({
+        to={generateAttendeeInsideUrl({
           worldSlug: world.slug,
           spaceSlug: spaceSlug,
         })}

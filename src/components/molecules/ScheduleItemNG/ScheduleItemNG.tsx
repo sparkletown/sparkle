@@ -27,7 +27,7 @@ import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { isDefined } from "utils/types";
-import { enterVenue, generateAttendeeInsideSpaceUrl } from "utils/url";
+import { enterVenue, generateAttendeeInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -89,7 +89,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       // space slug too.
       const eventLink =
         eventRoom?.url ??
-        generateAttendeeInsideSpaceUrl({
+        generateAttendeeInsideUrl({
           worldSlug,
           spaceSlug: eventVenue?.slug,
           absoluteUrl: true,

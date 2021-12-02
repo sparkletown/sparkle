@@ -10,7 +10,7 @@ import {
 } from "settings";
 
 import {
-  generateAttendeeInsideSpaceUrl,
+  generateAttendeeInsideUrl,
   generateAttendeeSpaceLandingUrl,
 } from "utils/url";
 
@@ -42,7 +42,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
 
   const redirectToDefaultRoute = () =>
     history.push(
-      generateAttendeeInsideSpaceUrl({
+      generateAttendeeInsideUrl({
         worldSlug: DEFAULT_WORLD_SLUG,
         spaceSlug: DEFAULT_SPACE_SLUG,
       })

@@ -12,7 +12,7 @@ import {
 import { AnyVenue, SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
-import { generateAttendeeInsideSpaceUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -158,7 +158,7 @@ const VenueWizardCreate: React.FC = () => {
   if (!user) {
     return (
       <Redirect
-        to={generateAttendeeInsideSpaceUrl({
+        to={generateAttendeeInsideUrl({
           worldSlug: DEFAULT_WORLD_SLUG,
           spaceSlug: DEFAULT_SPACE_SLUG,
         })}

@@ -5,7 +5,7 @@ import { useAsyncFn } from "react-use";
 
 import {
   externalUrlAdditionalProps,
-  generateAttendeeInsideSpaceUrl,
+  generateAttendeeInsideUrl,
 } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -56,7 +56,7 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug });
+    const nextUrl = generateAttendeeInsideUrl({ worldSlug, spaceSlug });
 
     history.push(nextUrl);
   }, [history, worldSlug, spaceSlug]);

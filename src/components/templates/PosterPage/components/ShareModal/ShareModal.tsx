@@ -8,7 +8,7 @@ import classNames from "classnames";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { generateAttendeeInsideSpaceUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -34,7 +34,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   venue,
 }) => {
   const { worldSlug } = useWorldParams();
-  const url = generateAttendeeInsideSpaceUrl({
+  const url = generateAttendeeInsideUrl({
     worldSlug,
     spaceSlug: venue.slug,
     absoluteUrl: true,

@@ -4,7 +4,7 @@ import { VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
 import { WithVenueId } from "utils/id";
-import { generateAttendeeInsideSpaceUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 export interface CreateCalendarProps {
   events: WithVenueId<VenueEvent>[];
@@ -22,7 +22,7 @@ export const createCalendar = ({
       organizer: `${event.host || "Unknown"} <undefined>`, // string format: "name <email>". email cannot be blank
       description: event.description,
       summary: event.name,
-      url: generateAttendeeInsideSpaceUrl({
+      url: generateAttendeeInsideUrl({
         worldSlug: event.worldSlug,
         spaceSlug: event.venueSlug,
         absoluteUrl: true,

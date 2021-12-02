@@ -25,7 +25,7 @@ import {
 } from "types/venues";
 
 import { WithId, WithWorldId } from "utils/id";
-import { generateAttendeeInsideSpaceUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 import { fetchVenue } from "./venue";
 import { fetchWorld } from "./world";
@@ -521,7 +521,7 @@ const createFirestoreRoomInput_v2 = async (
       input.useUrl || !input.venueName
         ? input.url
         : window.origin +
-          generateAttendeeInsideSpaceUrl({
+          generateAttendeeInsideUrl({
             worldSlug: world.slug,
             spaceSlug: input.venueName as SpaceSlug,
           }),
