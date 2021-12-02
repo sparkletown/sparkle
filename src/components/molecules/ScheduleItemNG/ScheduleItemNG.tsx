@@ -87,7 +87,10 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       // @debt get rid of stopPropagation() in the project allowing a valid event bubbling
       e && e.stopPropagation();
 
-      // TODO decide what to do if there isn't a world slug or space slug. Weird edge case.
+      // @debt Having empty world/space slugs is messy. I think we need to do
+      // something higher up in the stack that guarantees we'll have at least a
+      // world slug by the time we get to this point. Ideally, guarantees a
+      // space slug too.
       const eventLink =
         eventRoom?.url ??
         getAbsoluteAttendeeSpaceInsideUrl(
