@@ -14,11 +14,11 @@ $admin-space-card-description-height: 100px;
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
-  border: none;
   border-radius: $border-radius--xl;
   gap: font-size--root(0.5);
   max-height: 3 * $admin-space-card-bg-height;
-  box-shadow: $admin-ng-space-card-box-shadow;
+  border: none;
+  box-shadow: box-shadow--card(var(--content--over-20a));
 
   &__bg {
     width: 100%;

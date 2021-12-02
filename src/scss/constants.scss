@@ -191,7 +191,6 @@ $admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
 $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
-$admin-ng-space-card-box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14);
 
 $admin-ia-simple-panel-height: calc(100vh - #{$reserved-page-height});
 $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
@@ -318,6 +317,10 @@ $z-layers: (
 
 @function box-shadow--input($color) {
   @return 0 0 0 2px $color;
+}
+
+@function box-shadow--card($color) {
+  @return 0 2px 4px $color;
 }
 
 @function box-shadow--small($color) {
