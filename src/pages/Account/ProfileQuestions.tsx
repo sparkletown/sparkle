@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
-
 import { Question } from "types/Question";
+
+import { accountCodeQuestionsUrl } from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -32,7 +32,6 @@ export interface QuestionsFormData {
 
 export const ProfileQuestions: React.FC = () => {
   const history = useHistory();
-  const location = useLocation();
 
   const { user } = useUser();
 
@@ -44,8 +43,9 @@ export const ProfileQuestions: React.FC = () => {
   });
 
   const proceed = useCallback(() => {
-    history.push(`${ACCOUNT_CODE_QUESTIONS_URL}${location.search}`);
-  }, [history, location.search]);
+    const nextUrl = accountCodeQuestionsUrl(worldSlug, spaceSlug);
+    history.push(nextUrl);
+  }, [history, worldSlug, spaceSlug]);
 
   useEffect(() => {
     if (!isLoaded) return;

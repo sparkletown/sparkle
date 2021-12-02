@@ -2,7 +2,8 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
-  ACCOUNT_PROFILE_BASE_URL,
+  ACCOUNT_CODE_QUESTIONS_URL,
+  ACCOUNT_PROFILE_QUESTIONS_URL,
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
   ADMIN_IA_SPACE_BASE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
@@ -95,7 +96,24 @@ export const accountProfileUrlWithSlug = (
 ) => {
   // @debt remove query param in favor of path param and/or
   // add comprehensive `redirect` solution project-wide
-  return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}&worldSlug=${worldSlug}`;
+  return generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, {
+    spaceSlug,
+    worldSlug,
+  });
+};
+
+export const accountCodeQuestionsUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => {
+  return generatePath(ACCOUNT_CODE_QUESTIONS_URL, { worldSlug, spaceSlug });
+};
+
+export const accountProfileQuestionsUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => {
+  return generatePath(ACCOUNT_PROFILE_QUESTIONS_URL, { worldSlug, spaceSlug });
 };
 
 export const venueEntranceUrl = (
@@ -110,6 +128,7 @@ export const venueEntranceUrl = (
   });
 };
 
+// @debt combine with accountProfileUrlWithSlug
 export const accountProfileVenueUrl = (
   worldSlug: WorldSlug,
   spaceSlug: SpaceSlug

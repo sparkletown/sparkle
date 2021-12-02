@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn, useSearchParam } from "react-use";
+import { useAsyncFn } from "react-use";
 
 import { attendeeSpaceInsideUrl, externalUrlAdditionalProps } from "utils/url";
 
@@ -36,7 +36,6 @@ export interface CodeOfConductFormData {
 
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
-  const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
   const { user } = useUser();
 
@@ -51,12 +50,10 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = spaceSlug
-      ? attendeeSpaceInsideUrl(worldSlug, spaceSlug)
-      : returnUrl ?? "";
+    const nextUrl = attendeeSpaceInsideUrl(worldSlug, spaceSlug);
 
     history.push(nextUrl);
-  }, [history, returnUrl, worldSlug, spaceSlug]);
+  }, [history, worldSlug, spaceSlug]);
 
   useEffect(() => {
     if (!isLoaded) return;

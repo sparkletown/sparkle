@@ -1,13 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn, useSearchParam } from "react-use";
+import { useAsyncFn } from "react-use";
 
-import {
-  ACCOUNT_PROFILE_QUESTIONS_URL,
-  DEFAULT_SPACE_SLUG,
-  DISPLAY_NAME_MAX_CHAR_COUNT,
-} from "settings";
+import { DEFAULT_SPACE_SLUG, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { accountProfileQuestionsUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
@@ -34,10 +32,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const { spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
-
-  const returnUrl: string | undefined =
-    useSearchParam("returnUrl") ?? undefined;
+  const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
   const {
     register,
@@ -60,18 +55,12 @@ export const Profile: React.FC = () => {
 
       await updateUserProfile(user.uid, data);
 
-      const accountQuestionsUrlParams = new URLSearchParams();
-      accountQuestionsUrlParams.set("spaceSlug", spaceSlug);
-      returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
-
       // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = spaceSlug
-        ? `${ACCOUNT_PROFILE_QUESTIONS_URL}?${accountQuestionsUrlParams.toString()}`
-        : returnUrl ?? "";
+      const nextUrl = accountProfileQuestionsUrl(worldSlug, spaceSlug);
 
       history.push(nextUrl);
     },
-    [history, returnUrl, user, spaceSlug]
+    [history, user, worldSlug, spaceSlug]
   );
 
   const pictureUrl = watch("pictureUrl");
