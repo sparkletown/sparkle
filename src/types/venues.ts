@@ -5,7 +5,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 import { AuditoriumSectionPath } from "types/auditorium";
 
 import { WithId, WithVenueId } from "utils/id";
-import { Brand } from "utils/types";
+import { Branded } from "utils/types";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -20,7 +20,7 @@ import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 import { WorldSlug } from "./world";
 
-export type SpaceSlug = Brand<string, "SpaceSlug">;
+export type SpaceSlug = Branded<string, "SpaceSlug">;
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend

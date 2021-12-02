@@ -37,4 +37,4 @@ export const urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-
  *
  * For more info, see this post here: https://medium.com/@KevinBGreene/surviving-the-typescript-ecosystem-branding-and-type-tagging-6cf6e516523d
  */
-export type Brand<K, T extends string> = K & { __brand: T };
+export type Branded<K, T extends string> = K & { __brand: T };
