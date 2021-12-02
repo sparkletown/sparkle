@@ -23,7 +23,7 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
   const { isLoaded, world } = useWorldBySlug(worldSlug);
 
   return (
-    <AdminPanel>
+    <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>Entrance Experience</AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />

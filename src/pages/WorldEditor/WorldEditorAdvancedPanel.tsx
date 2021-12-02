@@ -22,7 +22,7 @@ export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> =
 }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
   return (
-    <AdminPanel>
+    <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>Advanced Settings: {world?.name}</AdminSidebarTitle>
         <AdminSidebarFooter onClickHome={onClickHome} />

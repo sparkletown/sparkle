@@ -58,7 +58,7 @@ export const WorldsDashboard: React.FC = () => {
         <AdminRestricted>
           {hasWorlds ? (
             <>
-              <AdminPanel>
+              <AdminPanel variant="bound">
                 <AdminSidebar>
                   <AdminSidebarTitle>
                     Select or create a world to get started
