@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { attendeeSpaceInsideUrl, externalUrlAdditionalProps } from "utils/url";
+import {
+  externalUrlAdditionalProps,
+  generateAttendeeInsideSpaceUrl,
+} from "utils/url";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -50,7 +53,7 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = attendeeSpaceInsideUrl(worldSlug, spaceSlug);
+    const nextUrl = generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug });
 
     history.push(nextUrl);
   }, [history, worldSlug, spaceSlug]);

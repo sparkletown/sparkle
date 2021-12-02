@@ -21,7 +21,7 @@ import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { WithId } from "utils/id";
 import { venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
-import { attendeeSpaceInsideUrl, venueEntranceUrl } from "utils/url";
+import { generateAttendeeInsideSpaceUrl, venueEntranceUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
@@ -67,7 +67,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
     window.location.href =
       user && !hasEntrance
-        ? attendeeSpaceInsideUrl(world?.slug, spaceSlug)
+        ? generateAttendeeInsideSpaceUrl({ worldSlug: world?.slug, spaceSlug })
         : venueEntranceUrl(world?.slug ?? EMPTY_WORLD_SLUG, spaceSlug);
   };
 

@@ -9,7 +9,10 @@ import {
   DISABLED_DUE_TO_1324,
 } from "settings";
 
-import { attendeeSpaceInsideUrl, attendeeSpaceLandingUrl } from "utils/url";
+import {
+  generateAttendeeInsideSpaceUrl,
+  generateAttendeeSpaceLandingUrl,
+} from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -33,13 +36,16 @@ export const AdminRestricted: React.FC = ({ children }) => {
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     history.push(
-      spaceSlug ? attendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
+      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
   }, [firebase, history, worldSlug, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
     history.push(
-      attendeeSpaceInsideUrl(DEFAULT_WORLD_SLUG, DEFAULT_SPACE_SLUG)
+      generateAttendeeInsideSpaceUrl({
+        worldSlug: DEFAULT_WORLD_SLUG,
+        spaceSlug: DEFAULT_SPACE_SLUG,
+      })
     );
 
   const authHandler = userId ? logout : redirectToDefaultRoute;

@@ -9,7 +9,7 @@ import {
   SPARKLEVERSE_LOGO_URL,
 } from "settings";
 
-import { attendeeSpaceInsideUrl } from "utils/url";
+import { generateAttendeeInsideSpaceUrl } from "utils/url";
 
 import "firebase/storage";
 
@@ -124,10 +124,10 @@ const Step6 = () => {
                   className={`btn btn-primary btn-block btn-centered`}
                   onClick={() =>
                     history.push(
-                      attendeeSpaceInsideUrl(
-                        DEFAULT_WORLD_SLUG,
-                        DEFAULT_SPACE_SLUG
-                      )
+                      generateAttendeeInsideSpaceUrl({
+                        worldSlug: DEFAULT_WORLD_SLUG,
+                        spaceSlug: DEFAULT_SPACE_SLUG,
+                      })
                     )
                   }
                 >

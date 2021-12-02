@@ -26,7 +26,7 @@ import { createSlug } from "api/admin";
 import { UserStatus } from "types/User";
 import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
 
-import { attendeeSpaceLandingUrl } from "utils/url";
+import { generateAttendeeSpaceLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -101,7 +101,7 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
   const { worldSlug } = useWorldParams();
   const values = watch();
   const urlSafeName = values.name
-    ? `${window.location.host}${attendeeSpaceLandingUrl(
+    ? `${window.location.host}${generateAttendeeSpaceLandingUrl(
         worldSlug,
         createSlug(values.name) as SpaceSlug
       )}`

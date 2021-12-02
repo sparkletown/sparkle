@@ -9,7 +9,7 @@ import {
 import { isCompleteProfile } from "utils/profile";
 import {
   accountProfileVenueUrl,
-  attendeeSpaceInsideUrl,
+  generateAttendeeInsideSpaceUrl,
   venueEntranceUrl,
 } from "utils/url";
 
@@ -61,7 +61,14 @@ export const VenueEntrancePage: React.FC = () => {
 
   const stepConfig = world.entrance?.[step - 1];
   if (!stepConfig) {
-    return <Redirect to={attendeeSpaceInsideUrl(world.slug, spaceSlug)} />;
+    return (
+      <Redirect
+        to={generateAttendeeInsideSpaceUrl({
+          worldSlug: world.slug,
+          spaceSlug: spaceSlug,
+        })}
+      />
+    );
   }
 
   if (!user || !profile) {

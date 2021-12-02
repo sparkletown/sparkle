@@ -6,7 +6,7 @@ import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { attendeeSpaceLandingUrl } from "utils/url";
+import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
@@ -44,7 +44,7 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     closeUserProfileModal();
 
     history.push(
-      venue?.slug ? attendeeSpaceLandingUrl(worldSlug, venue.slug) : "/"
+      venue?.slug ? generateAttendeeSpaceLandingUrl(worldSlug, venue.slug) : "/"
     );
   }, [closeUserProfileModal, firebase, history, worldSlug, venue?.slug]);
 

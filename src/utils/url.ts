@@ -14,8 +14,6 @@ import {
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
   ATTENDEE_SPACE_INSIDE_URL,
   ATTENDEE_SPACE_LANDING_URL,
-  EMPTY_SPACE_SLUG,
-  EMPTY_WORLD_SLUG,
   ENTRANCE_STEP_VENUE_PARAM_URL,
   VALID_URL_PROTOCOLS,
   WORLD_ROOT_URL,
@@ -65,31 +63,36 @@ export const adminCreateSpace = (worldSlug?: string) =>
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
-// @debt These being optional is a problem waiting to happen. We need a better
-// way of making world / space slug mandatory
-export const attendeeSpaceInsideUrl = (
-  worldSlug?: WorldSlug,
-  spaceSlug?: SpaceSlug
-) => generatePath(ATTENDEE_SPACE_INSIDE_URL, { worldSlug, spaceSlug });
+type generateAttendeeInsideSpaceUrlParams = {
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
+  absoluteUrl?: boolean;
+};
 
 // @debt These being optional is a problem waiting to happen. We need a better
 // way of making world / space slug mandatory
-export const attendeeSpaceLandingUrl = (
+export const generateAttendeeInsideSpaceUrl = ({
+  worldSlug,
+  spaceSlug,
+  absoluteUrl = false,
+}: generateAttendeeInsideSpaceUrlParams) => {
+  const relativePath = generatePath(ATTENDEE_SPACE_INSIDE_URL, {
+    worldSlug,
+    spaceSlug,
+  });
+  if (absoluteUrl) {
+    return new URL(relativePath, window.location.origin).href;
+  } else {
+    return relativePath;
+  }
+};
+
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
+export const generateAttendeeSpaceLandingUrl = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug
 ) => generatePath(ATTENDEE_SPACE_LANDING_URL, { worldSlug, spaceSlug });
-
-export const getAbsoluteAttendeeSpaceInsideUrl = (
-  worldSlug?: WorldSlug,
-  spaceSlug?: SpaceSlug
-) =>
-  new URL(
-    attendeeSpaceInsideUrl(
-      worldSlug ?? EMPTY_WORLD_SLUG,
-      spaceSlug ?? EMPTY_SPACE_SLUG
-    ),
-    window.location.origin
-  ).href;
 
 export const accountProfileUrlWithSlug = (
   worldSlug: WorldSlug,
@@ -161,7 +164,7 @@ export const enterVenue = (
   worldSlug: WorldSlug,
   spaceSlug: SpaceSlug,
   options?: OpenUrlOptions
-) => openUrl(attendeeSpaceInsideUrl(worldSlug, spaceSlug), options);
+) => openUrl(generateAttendeeInsideSpaceUrl({ worldSlug, spaceSlug }), options);
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;

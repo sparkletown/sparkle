@@ -3,7 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { attendeeSpaceLandingUrl } from "utils/url";
+import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
@@ -24,7 +24,7 @@ export const Forbidden: React.FC = ({ children }) => {
   const [{ loading }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     history.push(
-      spaceSlug ? attendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
+      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
   }, [firebase, history, worldSlug, spaceSlug]);
 

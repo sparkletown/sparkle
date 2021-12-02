@@ -13,11 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import {
-  EMPTY_SPACE_SLUG,
-  EMPTY_WORLD_SLUG,
-  SCHEDULE_SHOW_COPIED_TEXT_MS,
-} from "settings";
+import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -31,7 +27,7 @@ import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { isDefined } from "utils/types";
-import { enterVenue, getAbsoluteAttendeeSpaceInsideUrl } from "utils/url";
+import { enterVenue, generateAttendeeInsideSpaceUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -93,10 +89,11 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       // space slug too.
       const eventLink =
         eventRoom?.url ??
-        getAbsoluteAttendeeSpaceInsideUrl(
-          worldSlug ?? EMPTY_WORLD_SLUG,
-          eventVenue?.slug ?? EMPTY_SPACE_SLUG
-        );
+        generateAttendeeInsideSpaceUrl({
+          worldSlug,
+          spaceSlug: eventVenue?.slug,
+          absoluteUrl: true,
+        });
       navigator.clipboard.writeText(eventLink);
       setIsEventLinkCopied(true);
       setTimeout(
