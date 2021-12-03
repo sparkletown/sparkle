@@ -19,7 +19,6 @@ import { generateAttendeeInsideUrl } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
 
 import { createPortalSchema } from "forms/createPortalSchema";
-import { createSpaceSchema } from "forms/createSpaceSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -49,8 +48,7 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
   const { world, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema:
-      template === "external" ? createPortalSchema : createSpaceSchema,
+    validationSchema: createPortalSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -65,17 +63,14 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
   ] = useAsyncFn(async () => {
     if (!user || !spaceSlug || !template || !world || !spaceId) return;
 
-    const { roomUrl, venueName } = getValues();
+    const { venueName } = getValues();
 
     const slug = createSlug(venueName) as SpaceSlug;
-    const url =
-      template === "external"
-        ? roomUrl
-        : generateAttendeeInsideUrl({
-            worldSlug,
-            spaceSlug: slug,
-            absoluteUrl: true,
-          });
+    const url = generateAttendeeInsideUrl({
+      worldSlug,
+      spaceSlug: slug,
+      absoluteUrl: true,
+    });
 
     const portalData: PortalInput = {
       ...DEFAULT_PORTAL_INPUT,
