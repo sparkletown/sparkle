@@ -28,6 +28,7 @@ import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 import { Provided } from "./Provided";
 
+// @debt rename to AdminSubRouter once AdminV1Subrouter is removed
 // @debt we use Provided a lot here. It's repetive and possibly not actually
 // needed everywhere.
 export const AdminV3Subrouter: React.FC = () => (

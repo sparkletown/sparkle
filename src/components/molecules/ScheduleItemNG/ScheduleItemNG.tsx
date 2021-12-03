@@ -108,13 +108,13 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     if (eventRoom) {
       enterRoom();
     } else {
-      enterSpace(event.worldSlug, event.venueSlug);
+      enterSpace(worldSlug, eventVenue?.slug);
     }
-  }, [enterRoom, event, eventRoom]);
+  }, [enterRoom, worldSlug, eventVenue, eventRoom]);
 
   const enterEventVenue = useCallback(
-    () => enterSpace(event.worldSlug, event.venueSlug),
-    [event.worldSlug, event.venueSlug]
+    () => enterSpace(worldSlug, eventVenue?.slug),
+    [worldSlug, eventVenue]
   );
 
   const eventImage = getFirebaseStorageResizedImage(

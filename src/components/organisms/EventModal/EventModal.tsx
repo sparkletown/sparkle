@@ -16,6 +16,7 @@ import {
   openUrl,
 } from "utils/url";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useInterval } from "hooks/useInterval";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -40,6 +41,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   const { currentVenue: eventVenue } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
+  const { worldSlug } = useSpaceParams();
 
   const eventRoom = useMemo<Room | undefined>(
     () =>
@@ -78,7 +80,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     if (event.room) {
       enterRoom();
     } else {
-      enterSpace(event.worldSlug, event.venueSlug);
+      enterSpace(worldSlug, eventVenue?.slug);
     }
   };
 

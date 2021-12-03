@@ -18,7 +18,6 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
-import { WorldSlug } from "./world";
 
 export type SpaceSlug = Branded<string, "SpaceSlug">;
 
@@ -382,8 +381,6 @@ export interface VenueEvent {
   id?: string;
   orderPriority?: number;
   liveAudience?: number;
-  worldSlug?: WorldSlug;
-  venueSlug?: SpaceSlug; // @debt this needs renaming, but, requires a migration
   spaceId: string;
   worldId: string;
 }

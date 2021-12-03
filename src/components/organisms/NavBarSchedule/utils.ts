@@ -16,7 +16,6 @@ export interface PrepareForScheduleProps {
 
 export const prepareForSchedule = ({
   usersEvents,
-  worldSlug,
   relatedVenues = [],
   recentRoomUsersCount = 0,
 }: PrepareForScheduleProps) => (
@@ -29,7 +28,5 @@ export const prepareForSchedule = ({
     venueIcon: space?.host?.icon ?? DEFAULT_VENUE_LOGO,
     liveAudience: recentRoomUsersCount,
     orderPriority: event.orderPriority ?? 0,
-    worldSlug,
-    venueSlug: space?.slug,
   };
 };

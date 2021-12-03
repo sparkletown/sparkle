@@ -218,17 +218,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       .filter((event) => event.isSaved);
 
     downloadCalendar({
-      calendar: createCalendar({ events: allPersonalEvents }),
+      calendar: createCalendar({
+        worldSlug,
+        relatedVenues,
+        events: allPersonalEvents,
+      }),
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
     });
   }, [liveAndFutureEvents, relatedVenues, userEventIds, worldSlug]);
 
   const downloadAllEventsCalendar = useCallback(() => {
     downloadCalendar({
-      calendar: createCalendar({ events: liveAndFutureEvents }),
+      calendar: createCalendar({
+        worldSlug,
+        relatedVenues,
+        events: liveAndFutureEvents,
+      }),
       calendarName: `${PLATFORM_BRAND_NAME}_Full`,
     });
-  }, [liveAndFutureEvents]);
+  }, [worldSlug, relatedVenues, liveAndFutureEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,

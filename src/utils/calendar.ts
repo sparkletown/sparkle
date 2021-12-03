@@ -1,21 +1,27 @@
 import calendarGenerator, { ICalCalendar } from "ical-generator";
 
-import { VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 export interface CreateCalendarProps {
   events: WithVenueId<VenueEvent>[];
+  worldSlug?: WorldSlug;
+  relatedVenues: WithId<AnyVenue>[];
 }
 
 export const createCalendar = ({
   events,
+  worldSlug,
+  relatedVenues,
 }: CreateCalendarProps): ICalCalendar => {
   const calendar = calendarGenerator();
 
-  events.forEach((event) =>
+  events.forEach((event) => {
+    const space = relatedVenues.find(({ id }) => id === event.venueId);
     calendar.createEvent({
       start: eventStartTime(event),
       end: eventEndTime(event),
@@ -23,12 +29,12 @@ export const createCalendar = ({
       description: event.description,
       summary: event.name,
       url: generateAttendeeInsideUrl({
-        worldSlug: event.worldSlug,
-        spaceSlug: event.venueSlug,
+        worldSlug: worldSlug,
+        spaceSlug: space?.slug,
         absoluteUrl: true,
       }),
-    })
-  );
+    });
+  });
 
   return calendar;
 };
