@@ -89,7 +89,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_minutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
-        worldSlug: worldSlug,
+        worldSlug,
         venueSlug: venue.slug,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
