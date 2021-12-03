@@ -22,14 +22,14 @@ export const prepareForSchedule = ({
 }: PrepareForScheduleProps) => (
   event: WithVenueId<VenueEvent>
 ): ScheduledVenueEvent => {
-  const venue = relatedVenues.find((venue) => venue.id === event.venueId);
+  const space = relatedVenues.find(({ id }) => id === event.venueId);
   return {
     ...event,
     isSaved: arrayIncludes(usersEvents[event.venueId], event.id),
-    venueIcon: venue?.host?.icon ?? DEFAULT_VENUE_LOGO,
+    venueIcon: space?.host?.icon ?? DEFAULT_VENUE_LOGO,
     liveAudience: recentRoomUsersCount,
     orderPriority: event.orderPriority ?? 0,
     worldSlug,
-    venueSlug: venue?.slug,
+    venueSlug: space?.slug,
   };
 };
