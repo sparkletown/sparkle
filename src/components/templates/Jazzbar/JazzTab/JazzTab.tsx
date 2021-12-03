@@ -164,6 +164,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           setSeatedAtTable={setSeatedAtTable}
           venueName={venue.name}
           tables={jazzbarTables}
+          defaultTables={JAZZBAR_TABLES}
         />
       )}
 
@@ -230,10 +231,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <TablesUserList
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
-          venueName={venue.name}
+          venue={venue}
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}
+          defaultTables={JAZZBAR_TABLES}
           showOnlyAvailableTables={showOnlyAvailableTables}
         />
       </div>

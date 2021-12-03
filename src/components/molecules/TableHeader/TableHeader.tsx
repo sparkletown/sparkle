@@ -32,6 +32,7 @@ export interface TableHeaderProps {
   setSeatedAtTable: (val: string) => void;
   venueName: string;
   tables: Table[];
+  defaultTables: Table[];
 }
 
 export const TableHeader: React.FC<TableHeaderProps> = ({
@@ -39,6 +40,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   setSeatedAtTable,
   venueName,
   tables,
+  defaultTables,
 }) => {
   const { user, profile } = useUser();
 
@@ -193,6 +195,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         title={tableTitle}
         subtitle={tableSubtitle}
         capacity={tableCapacity}
+        defaultTables={defaultTables}
         onHide={hide}
         {...{ isShown, tables, tableOfUser }}
       />

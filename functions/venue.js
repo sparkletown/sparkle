@@ -748,20 +748,20 @@ exports.updateTables = functions.https.onCall((data, context) => {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
 
-    const venueTables = [...data.tables];
+    const venue = venueDoc.data();
+
+    const venueTables =
+      (venue.config && venue.config.tables) || data.defaultTables;
 
     const currentTableIndex = venueTables.findIndex(
-      (table) => table.reference === data.updatedTable.reference
+      (table) => table.reference === data.newTable.reference
     );
 
     if (currentTableIndex < 0) {
-      throw new HttpsError(
-        "not-found",
-        `current table does not exist in the venue`
-      );
+      venueTables.push(data.newTable);
+    } else {
+      venueTables[currentTableIndex] = data.newTable;
     }
-
-    venueTables[currentTableIndex] = data.updatedTable;
 
     transaction.update(venueRef, { "config.tables": venueTables });
   });
