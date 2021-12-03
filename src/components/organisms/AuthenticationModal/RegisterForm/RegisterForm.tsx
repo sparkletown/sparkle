@@ -11,7 +11,7 @@ import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
-import { accountProfileUrlWithSlug } from "utils/url";
+import { generateAccountProfileUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -164,7 +164,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const profileUrl = accountProfileUrlWithSlug(worldSlug, spaceSlug);
+      const profileUrl = generateAccountProfileUrl(worldSlug, spaceSlug);
 
       history.push(profileUrl);
     } catch (error) {

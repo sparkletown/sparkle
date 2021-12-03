@@ -94,7 +94,7 @@ export const generateAttendeeSpaceLandingUrl = (
   spaceSlug?: SpaceSlug
 ) => generatePath(ATTENDEE_SPACE_LANDING_URL, { worldSlug, spaceSlug });
 
-export const accountProfileUrlWithSlug = (
+export const generateAccountProfileUrl = (
   worldSlug: WorldSlug,
   spaceSlug: SpaceSlug
 ) => {
@@ -132,7 +132,7 @@ export const venueEntranceUrl = (
   });
 };
 
-// @debt combine with accountProfileUrlWithSlug
+// @debt combine with generateAccountProfileUrl
 export const accountProfileVenueUrl = (
   worldSlug: WorldSlug,
   spaceSlug: SpaceSlug
