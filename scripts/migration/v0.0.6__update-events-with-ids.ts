@@ -36,10 +36,9 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           spaceData.worldId,
           event.room
         );
-        console.log(spaceData.worldId);
         if (!targetSpace) {
           console.log(
-            `WARN: Cannot find space for event with room ${event.room} in ${spaceDoc.id}`
+            `WARN: Cannot find space for event ${eventDoc.id} with room ${event.room} in ${spaceDoc.id}`
           );
           continue;
         }
