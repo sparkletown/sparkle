@@ -6,7 +6,7 @@ import { useKeyPress } from "hooks/useKeyPress";
 
 import "./PrettyLink.scss";
 
-const HANDLED_KEY_PRESSES = ["Space", "Enter"];
+const HANDLED_KEY_PRESSES = ["Enter"];
 
 interface PrettyLinkProps extends Omit<LinkProps, "to"> {
   className?: string;
@@ -36,21 +36,31 @@ export const PrettyLink: React.FC<PrettyLinkProps> = ({
 
   return (
     <div className={parentClasses}>
-      <span
-        className="PrettyLink__wrapper"
-        title={title}
-        onClick={onClick}
-        onKeyPress={handleKeyPress}
-      >
-        {to ? (
-          <Link className="PrettyLink__link" {...extraProps} to={to}>
+      {to ? (
+        <span
+          className="PrettyLink__wrapper PrettyLink__wrapper--actual-link"
+          title={title}
+        >
+          <Link
+            className="PrettyLink__link"
+            {...extraProps}
+            onClick={onClick} // onClick is part of Link props, don't starve it
+            to={to}
+          >
             {contents}
           </Link>
-        ) : (
-          // @debt check if <a> with a token URL or something similar can work here
-          contents
-        )}
-      </span>
+        </span>
+      ) : (
+        <span
+          className="PrettyLink__wrapper PrettyLink__wrapper--raw-contents"
+          title={title}
+          onClick={onClick}
+          onKeyPress={handleKeyPress}
+          tabIndex={0} // Makes it friendly to keyboard navigation
+        >
+          {contents}
+        </span>
+      )}
     </div>
   );
 };
