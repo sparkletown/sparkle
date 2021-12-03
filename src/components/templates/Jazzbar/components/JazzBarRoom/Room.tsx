@@ -62,13 +62,6 @@ const Room: React.FC<RoomProps> = ({
     [participants.length, setParticipantCount]
   );
 
-  const userFriendlyVideoError = (originalMessage: string) => {
-    if (originalMessage.toLowerCase().includes("unknown")) {
-      return `${originalMessage}; common remedies include closing any other programs using your camera, and giving your browser permission to access the camera.`;
-    }
-    return originalMessage;
-  };
-
   // @debt refactor this to use useAsync or similar?
   useEffect(() => {
     if (!user) return;
@@ -78,19 +71,6 @@ const Room: React.FC<RoomProps> = ({
       roomName,
     }).then(setToken);
   }, [firebase, roomName, user]);
-
-  const connectToVideoRoom = () => {
-    if (!token) return;
-    setVideoError("");
-
-    Video.connect(token, {
-      name: roomName,
-    })
-      .then((room) => {
-        setRoom(room);
-      })
-      .catch((error) => setVideoError(userFriendlyVideoError(error.message)));
-  };
 
   useEffect(() => {
     return () => {
@@ -126,20 +106,16 @@ const Room: React.FC<RoomProps> = ({
     setSeatedAtTable && setSeatedAtTable("");
   }, [firebase, profile, setSeatedAtTable, user, venueName]);
 
-  useEffect(() => {
-    if (!token) return;
+  const participantConnected = useCallback((participant: Video.Participant) => {
+    setParticipants((prevParticipants) => [
+      // Hopefully prevents duplicate users in the participant list
+      ...prevParticipants.filter((p) => p.identity !== participant.identity),
+      participant,
+    ]);
+  }, []);
 
-    let localRoom: Video.Room;
-
-    const participantConnected = (participant: Video.Participant) => {
-      setParticipants((prevParticipants) => [
-        // Hopefully prevents duplicate users in the participant list
-        ...prevParticipants.filter((p) => p.identity !== participant.identity),
-        participant,
-      ]);
-    };
-
-    const participantDisconnected = (participant: Video.Participant) => {
+  const participantDisconnected = useCallback(
+    (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
         if (!prevParticipants.find((p) => p === participant)) {
           // @debt Remove when root issue found and fixed
@@ -160,29 +136,51 @@ const Room: React.FC<RoomProps> = ({
         }
         return prevParticipants.filter((p) => p !== participant);
       });
-    };
+    },
+    []
+  );
 
-    Video.connect(token, {
+  const connectToRoom = useCallback(() => {
+    if (!token) return;
+
+    return Video.connect(token, {
       name: roomName,
     })
       .then((room) => {
         setRoom(room);
-        localRoom = room;
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
+
+        return room;
       })
       .catch((error) => setVideoError(error.message));
+  }, [roomName, token, participantConnected, participantDisconnected]);
 
-    return () => {
-      if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach((trackPublication) => {
-          stopLocalTrack(trackPublication.track);
-        });
-        localRoom.disconnect();
-      }
-    };
-  }, [roomName, token, setParticipantCount]);
+  const reconnectToVideoRoom = useCallback(() => {
+    if (!token) return;
+
+    setVideoError("");
+
+    connectToRoom();
+  }, [connectToRoom, token]);
+
+  useEffect(() => {
+    const roomConnection = connectToRoom();
+
+    if (roomConnection) {
+      roomConnection.then((room) => {
+        return () => {
+          if (room && room.localParticipant.state === "connected") {
+            room.localParticipant.tracks.forEach((trackPublication) => {
+              stopLocalTrack(trackPublication.track);
+            });
+            room.disconnect();
+          }
+        };
+      });
+    }
+  }, [connectToRoom]);
 
   useEffect(() => {
     if (!room) return;
@@ -307,7 +305,7 @@ const Room: React.FC<RoomProps> = ({
         show={!!videoError}
         onHide={() => setVideoError("")}
         errorMessage={videoError}
-        onRetry={connectToVideoRoom}
+        onRetry={reconnectToVideoRoom}
         onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
       />
     </>
