@@ -28,6 +28,7 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
 import { externalSpaceEditSchema } from "forms/externalSpaceEditSchema";
+import { nonIframeSpaceSchema } from "forms/nonIframeSpaceSchema";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
@@ -157,6 +158,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     ]
   );
 
+  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+  const isIframeTemplate = IFRAME_TEMPLATES.includes(
+    room.template as VenueTemplate
+  );
+
   const {
     register,
     handleSubmit,
@@ -169,7 +175,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     reValidateMode: "onChange",
     validationSchema: isExternalPortal(room)
       ? externalSpaceEditSchema
-      : spaceEditSchema,
+      : isIframeTemplate
+      ? spaceEditSchema
+      : nonIframeSpaceSchema,
     defaultValues,
   });
 
@@ -418,7 +426,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
                 {room.template &&
                   // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-                  IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
+                  isIframeTemplate && (
                     <>
                       <AdminInput
                         name="venue.iframeUrl"
