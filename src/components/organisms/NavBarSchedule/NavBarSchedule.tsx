@@ -30,7 +30,7 @@ import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 
-// Disabled as per designs. Up for deletion if confirmied not necessary
+// Disabled as per designs. Up for deletion if confirmed not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
