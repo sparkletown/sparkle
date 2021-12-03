@@ -43,9 +43,7 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     await firebase.auth().signOut();
     closeUserProfileModal();
 
-    history.push(
-      venue?.slug ? generateAttendeeSpaceLandingUrl(worldSlug, venue.slug) : "/"
-    );
+    history.push(generateAttendeeSpaceLandingUrl(worldSlug, venue?.slug));
   }, [closeUserProfileModal, firebase, history, worldSlug, venue?.slug]);
 
   const { selectRecipientChat } = useChatSidebarControls();
