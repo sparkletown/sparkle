@@ -27,7 +27,7 @@ export interface EditTableTitleModalProps {
   title: string;
   subtitle?: string;
   capacity: number;
-  tables: Table[];
+  defaultTables: Table[];
   tableOfUser?: Table;
   onHide: () => void;
 }
@@ -35,7 +35,7 @@ export interface EditTableTitleModalProps {
 export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   isShown,
   title,
-  tables,
+  defaultTables,
   tableOfUser,
   subtitle,
   capacity,
@@ -66,9 +66,10 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
       await updateVenueTable({
         venueId,
         newTable,
+        defaultTables,
       }).then(onHide);
     },
-    [onHide, tableOfUser, venueId]
+    [onHide, tableOfUser, venueId, defaultTables]
   );
 
   const saveButtonClassNames = classNames("btn btn-centered btn-primary", {

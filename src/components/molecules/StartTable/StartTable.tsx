@@ -16,12 +16,12 @@ import { Loading } from "components/molecules/Loading";
 import "./StartTable.scss";
 
 export interface StartTablePropsType {
-  tables: Table[];
+  defaultTables: Table[];
   newTable: Table;
 }
 
 export const StartTable: React.FC<StartTablePropsType> = ({
-  tables,
+  defaultTables,
   newTable,
 }) => {
   const venue = useSelector(currentVenueSelector);
@@ -33,8 +33,9 @@ export const StartTable: React.FC<StartTablePropsType> = ({
     await updateVenueTable({
       venueId,
       newTable,
+      defaultTables,
     });
-  }, [newTable, venueId]);
+  }, [newTable, venueId, defaultTables]);
 
   const containerClasses = classNames("StartTable", {
     "StartTable--jazzbar": venue?.template === VenueTemplate.jazzbar,

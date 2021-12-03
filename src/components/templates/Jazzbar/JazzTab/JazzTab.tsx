@@ -130,10 +130,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   if (!venue) return <>Loading...</>;
 
-  const hasGeneratedTables = !!venue.config?.tables;
-
-  const allowCreateEditTable = hasGeneratedTables && !seatedAtTable;
-
   return (
     <div className={containerClasses}>
       {venue.description?.text && (
@@ -168,7 +164,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           setSeatedAtTable={setSeatedAtTable}
           venueName={venue.name}
           tables={jazzbarTables}
-          allowTableEdit={allowCreateEditTable}
+          defaultTables={JAZZBAR_TABLES}
         />
       )}
 
@@ -236,10 +232,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
           venue={venue}
-          allowCreateEditTable={allowCreateEditTable}
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}
+          defaultTables={JAZZBAR_TABLES}
           showOnlyAvailableTables={showOnlyAvailableTables}
         />
       </div>

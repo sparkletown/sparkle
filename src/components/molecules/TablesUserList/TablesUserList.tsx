@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
+import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
+
 import { Table, TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
@@ -39,8 +41,8 @@ export interface TablesUserListProps {
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
   customTables: Table[];
+  defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
-  allowCreateEditTable?: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
@@ -50,13 +52,16 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   venue,
   setSeatedAtTable,
   seatedAtTable,
-  customTables: tables,
+  customTables,
+  defaultTables,
   showOnlyAvailableTables = false,
-  allowCreateEditTable = false,
   TableComponent,
   joinMessage,
 }) => {
   const venueName = venue.name;
+
+  // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
+  const tables = customTables || defaultTables;
 
   const {
     isShown: isLockedMessageVisible,
@@ -177,6 +182,15 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
   );
 
+  const emptyTables = useMemo(
+    () =>
+      tables.filter((table) => !usersSeatedAtTables[table.reference].length),
+    [tables, usersSeatedAtTables]
+  );
+
+  const allowCreateEditTable =
+    emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
+
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
 
@@ -218,7 +232,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       {renderedTables}
       {allowCreateEditTable && (
         <StartTable
-          tables={tables}
+          defaultTables={defaultTables}
           newTable={generateTable({ tableNumber: tables.length })}
         />
       )}

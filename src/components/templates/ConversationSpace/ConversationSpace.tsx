@@ -25,7 +25,7 @@ import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
 
-import { TABLES } from "./constants";
+import { TABLES as DEFAULT_TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
@@ -60,12 +60,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const generatedTables = venue?.config?.tables;
 
-  const tables = generatedTables ?? TABLES;
-
-  const hasGeneratedTables = !!generatedTables;
-
-  const allowCreateEditTable = hasGeneratedTables && !seatedAtTable;
-
+  const tables = generatedTables ?? DEFAULT_TABLES;
   return (
     <>
       <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
@@ -114,8 +109,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
-                  allowTableEdit={allowCreateEditTable}
                   tables={tables}
+                  defaultTables={DEFAULT_TABLES}
                 />
               )}
               {seatedAtTable && (
@@ -142,9 +137,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               seatedAtTable={seatedAtTable}
               venue={venue}
               TableComponent={TableComponent}
-              allowCreateEditTable={allowCreateEditTable}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              defaultTables={DEFAULT_TABLES}
               showOnlyAvailableTables={showOnlyAvailableTables}
             />
           </div>

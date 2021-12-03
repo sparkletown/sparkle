@@ -748,7 +748,8 @@ exports.updateTables = functions.https.onCall((data, context) => {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
 
-    const venueTables = (venue.config && venue.config.tables) || [];
+    const venueTables =
+      (venue.config && venue.config.tables) || data.defaultTables;
 
     const currentTableIndex = venueTables.findIndex(
       (table) => table.reference === data.newTable.reference
@@ -757,7 +758,7 @@ exports.updateTables = functions.https.onCall((data, context) => {
     if (currentTableIndex < 0) {
       venueTables.push(data.newTable);
     } else {
-      venueTables[currentTableIndex] = data.updatedTable;
+      venueTables[currentTableIndex] = data.newTable;
     }
 
     transaction.update(venueRef, { "config.tables": venueTables });
