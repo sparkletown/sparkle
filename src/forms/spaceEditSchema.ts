@@ -4,7 +4,6 @@ import {
   IFRAME_TEMPLATES,
   MAX_SECTIONS_AMOUNT,
   MIN_SECTIONS_AMOUNT,
-  ROOM_TAXON,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -20,7 +19,7 @@ export interface RoomSchemaShape {
 }
 
 export const spaceEditSchema = Yup.object().shape({
-  image_url: Yup.string().required(`${ROOM_TAXON.capital} icon is required`),
+  // image_url: Yup.string().required(`${ROOM_TAXON.capital} icon is required`),
   bannerImageUrl: Yup.string().notRequired(),
   autoplay: Yup.boolean().notRequired(),
   numberOfSections: Yup.number().when(
@@ -39,5 +38,20 @@ export const spaceEditSchema = Yup.object().shape({
     "$template",
     (template: VenueTemplate, schema: Yup.StringSchema) =>
       IFRAME_TEMPLATES.includes(template) ? validUrlSchema : schema
+  ),
+  // @debt de-dupe this
+  auditoriumColumns: Yup.number().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      template === VenueTemplate.auditorium
+        ? schema.required()
+        : schema.notRequired()
+  ),
+  auditoriumRows: Yup.number().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      template === VenueTemplate.auditorium
+        ? schema.required()
+        : schema.notRequired()
   ),
 });
