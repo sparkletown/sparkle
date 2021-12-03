@@ -64,7 +64,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
 
   const [
     { loading: isLoading, error: submitError },
-    addPortal,
+    createSpace,
   ] = useAsyncFn(async () => {
     if (!worldId || !user || !template || template === "external") return;
 
@@ -100,7 +100,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const isSaveDisabled = isLoading || !slug || !template;
 
   return (
-    <Form className="SpaceCreateForm" onSubmit={handleSubmit(addPortal)}>
+    <Form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
         <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
           <AdminInput
