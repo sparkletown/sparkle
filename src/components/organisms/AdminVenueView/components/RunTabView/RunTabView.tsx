@@ -1,12 +1,10 @@
 import React from "react";
-import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import { SPACE_TAXON } from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGSettingsUrl } from "utils/url";
 
 import MapPreview from "pages/Admin/MapPreview";
 
@@ -19,8 +17,6 @@ import { RunTabToolbar } from "components/organisms/AdminVenueView/components/Ru
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabView.scss";
 
@@ -40,14 +36,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
       <AdminSidebar>
         <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
         <div className="RunTabView__content">
-          <ButtonNG
-            isLink
-            className="RunTabView__advanced"
-            linkTo={adminNGSettingsUrl(venueId)}
-            iconName={faCog}
-          >
-            {SPACE_TAXON.capital} Settings
-          </ButtonNG>
           <RunTabUsers venueId={venueId} />
         </div>
       </AdminSidebar>
