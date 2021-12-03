@@ -127,9 +127,7 @@ export const AppRouter: React.FC = () => {
           )}
 
           <Route path={ADMIN_ROOT_URL}>
-            <Provided withRelatedVenues>
-              <AdminV3Subrouter />
-            </Provided>
+            <AdminV3Subrouter />
           </Route>
 
           <Route
