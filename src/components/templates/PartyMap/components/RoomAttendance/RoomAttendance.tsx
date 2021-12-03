@@ -58,5 +58,3 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
     </div>
   );
 };
-
-export default RoomAttendance;

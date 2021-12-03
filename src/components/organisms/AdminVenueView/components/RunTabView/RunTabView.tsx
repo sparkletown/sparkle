@@ -10,7 +10,7 @@ import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
-import MapPreview from "pages/Admin/MapPreview";
+import { MapPreview } from "pages/Admin/MapPreview";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
