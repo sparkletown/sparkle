@@ -21,11 +21,12 @@ import { fetchVenue, updateVenueNG } from "api/venue";
 import { Room, RoomInput } from "types/rooms";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { parsePortalSlug } from "utils/room";
 
 import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 
@@ -79,11 +80,14 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
 }) => {
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const spaceSlugFromPortal = room?.url?.split("/").pop();
-  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(spaceSlugFromPortal);
+  const spaceSlugFromPortal = parsePortalSlug(room);
+  const { spaceId: spaceIdFromPortal } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlugFromPortal
+  );
 
   const { loading: isLoadingPortal, value: portal } = useAsync(async () => {
     if (!spaceIdFromPortal) return;

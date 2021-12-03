@@ -3,8 +3,11 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory, useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
+
 import { isDefined } from "utils/types";
-import { enterVenue } from "utils/url";
+import { enterSpace } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
@@ -15,8 +18,9 @@ import "./Account.scss";
 export interface LoginCustomCodeProps {}
 
 export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
-  const { venueId, customToken } = useParams<{
-    venueId?: string;
+  const { worldSlug, spaceSlug, customToken } = useParams<{
+    spaceSlug?: SpaceSlug;
+    worldSlug?: WorldSlug;
     customToken?: string;
   }>();
 
@@ -29,8 +33,8 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
   const { replace: replaceUrlUsingRouter } = useHistory();
 
   const { loading: isCustomTokenLoginLoading, error } = useAsync(async () => {
-    if (!venueId || !customToken)
-      throw new Error("venueId and customToken are required");
+    if (!spaceSlug || !worldSlug || !customToken)
+      throw new Error("spaceSlug, worldSlug and customToken are required");
 
     if (isLoggedInUser) throw new Error("there is already a logged in user");
 
@@ -45,9 +49,18 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
       //   throw error;
       // });
       .then(() => {
-        enterVenue(venueId, { customOpenRelativeUrl: replaceUrlUsingRouter });
+        enterSpace(worldSlug, spaceSlug, {
+          customOpenRelativeUrl: replaceUrlUsingRouter,
+        });
       });
-  }, [isLoggedInUser, venueId, customToken, firebase, replaceUrlUsingRouter]);
+  }, [
+    isLoggedInUser,
+    worldSlug,
+    spaceSlug,
+    customToken,
+    firebase,
+    replaceUrlUsingRouter,
+  ]);
 
   if (isCustomTokenLoginLoading) return <LoadingPage />;
 

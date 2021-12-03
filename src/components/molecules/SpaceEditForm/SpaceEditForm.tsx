@@ -22,7 +22,7 @@ import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room, RoomInput } from "types/rooms";
-import { RoomVisibility, VenueTemplate } from "types/venues";
+import { RoomVisibility, SpaceSlug, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
@@ -31,8 +31,8 @@ import { externalSpaceEditSchema } from "forms/externalSpaceEditSchema";
 import { nonIframeSpaceSchema } from "forms/nonIframeSpaceSchema";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 
@@ -90,11 +90,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const spaceSlugFromPortal = room?.url?.split("/").pop();
-  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(spaceSlugFromPortal);
+  const spaceSlugFromPortal = room?.url?.split("/").pop() as SpaceSlug;
+  const { spaceId: spaceIdFromPortal } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlugFromPortal
+  );
 
   const {
     loading: isLoadingRoomVenue,

@@ -3,12 +3,13 @@ import { useHistory } from "react-router-dom";
 
 import {
   DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
   PLAYA_IMAGE,
   PLAYA_VENUE_NAME,
   SPARKLEVERSE_LOGO_URL,
 } from "settings";
 
-import { venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 import "firebase/storage";
 
@@ -122,7 +123,12 @@ const Step6 = () => {
                 <button
                   className={`btn btn-primary btn-block btn-centered`}
                   onClick={() =>
-                    history.push(venueInsideUrl(DEFAULT_SPACE_SLUG))
+                    history.push(
+                      generateAttendeeInsideUrl({
+                        worldSlug: DEFAULT_WORLD_SLUG,
+                        spaceSlug: DEFAULT_SPACE_SLUG,
+                      })
+                    )
                   }
                 >
                   Next

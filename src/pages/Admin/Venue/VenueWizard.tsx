@@ -2,14 +2,20 @@ import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { Redirect, useHistory } from "react-router-dom";
 
-import { ALL_VENUE_TEMPLATES, DEFAULT_SPACE_SLUG, Template } from "settings";
+import {
+  ALL_VENUE_TEMPLATES,
+  DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
+  Template,
+} from "settings";
 
-import { AnyVenue } from "types/venues";
+import { AnyVenue, SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
-import { venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 
@@ -63,25 +69,29 @@ const reducer = (
 };
 
 export const VenueWizard: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
   return spaceSlug ? (
-    <VenueWizardEdit spaceSlug={spaceSlug} />
+    <VenueWizardEdit worldSlug={worldSlug} spaceSlug={spaceSlug} />
   ) : (
     <VenueWizardCreate />
   );
 };
 
 interface VenueWizardEditProps {
-  spaceSlug: string;
+  worldSlug: WorldSlug;
+  spaceSlug: SpaceSlug;
 }
 
-const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ spaceSlug }) => {
+const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
+  worldSlug,
+  spaceSlug,
+}) => {
   // get the venue
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {
@@ -146,7 +156,14 @@ const VenueWizardCreate: React.FC = () => {
   }, [queryPage, next, previous, state]);
 
   if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_SPACE_SLUG)} />;
+    return (
+      <Redirect
+        to={generateAttendeeInsideUrl({
+          worldSlug: DEFAULT_WORLD_SLUG,
+          spaceSlug: DEFAULT_SPACE_SLUG,
+        })}
+      />
+    );
   }
 
   return <WithNavigationBar>{Page}</WithNavigationBar>;

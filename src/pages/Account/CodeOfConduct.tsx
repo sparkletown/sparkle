@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn, useSearchParam } from "react-use";
+import { useAsyncFn } from "react-use";
 
-import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
+import {
+  externalUrlAdditionalProps,
+  generateAttendeeInsideUrl,
+} from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useCurrentWorld } from "hooks/useCurrentWorld";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -37,16 +39,14 @@ export interface CodeOfConductFormData {
 
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
-  const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: space?.worldId,
-  });
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>
@@ -56,19 +56,19 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = spaceSlug ? venueInsideUrl(spaceSlug) : returnUrl ?? "";
+    const nextUrl = generateAttendeeInsideUrl({ worldSlug, spaceSlug });
 
     history.push(nextUrl);
-  }, [history, returnUrl, spaceSlug]);
+  }, [history, worldSlug, spaceSlug]);
 
   useEffect(() => {
-    if (!isWorldLoaded) return;
+    if (!isLoaded) return;
 
     // Skip this screen if there are no code of conduct questions
     if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [isWorldLoaded, proceed, world?.questions?.code?.length]);
+  }, [isLoaded, proceed, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
@@ -92,11 +92,11 @@ export const CodeOfConduct: React.FC = () => {
     return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isSpaceLoaded && !space) {
+  if (isLoaded && !space) {
     return <NotFound />;
   }
 
-  if (!space || !isWorldLoaded) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 

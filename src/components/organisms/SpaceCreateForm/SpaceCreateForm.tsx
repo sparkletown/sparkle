@@ -10,6 +10,8 @@ import { createSlug, createVenue_v2 } from "api/admin";
 
 import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
 
+import { SpaceSlug } from "types/venues";
+
 import { adminNGVenueUrl, generateAdminIaSpacePath } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
 
@@ -75,7 +77,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     };
 
     await createVenue_v2(data, user);
-    history.push(adminNGVenueUrl(worldSlug, data.slug));
+    history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
   }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
 
   const { venueName: watchedName } = watch();

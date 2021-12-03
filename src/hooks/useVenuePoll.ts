@@ -11,13 +11,13 @@ import {
 
 import { buildBaseMessage } from "utils/chat";
 
-import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useSpaceParams } from "./spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "./spaces/useWorldAndSpaceBySlug";
 import { useUser } from "./useUser";
 
 export const useVenuePoll = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const { userWithId } = useUser();
 
