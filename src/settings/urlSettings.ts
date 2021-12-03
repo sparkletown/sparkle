@@ -54,7 +54,6 @@ export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions`;
 // Admin v3 URLs
 export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_ROOT_URL}/create/venue/:worldSlug?`;
 export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_ROOT_URL}/edit/:spaceSlug`;
-export const ADMIN_V3_SPACE_SETTINGS_PARAM_URL = `${ADMIN_ROOT_URL}/settings/:spaceSlug?/:selectedTab?`;
 
 export const ADMIN_V3_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/worlds`;
 export const ADMIN_V3_WORLD_CREATE_URL = `${ADMIN_V3_WORLD_BASE_URL}/new`;
@@ -67,6 +66,7 @@ export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/:selec
 export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; // e.g. /admin/w/world123/s
 export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456/timing
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
+export const ADMIN_IA_SPACE_SETTINGS_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/tweak-space/:spaceSlug/:selectedTab?`; // e.g. /admin/w/world123/tweak-space/space456
 
 // @debt remove v1 URLs
 // Admin v1 URLs
