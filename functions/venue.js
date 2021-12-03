@@ -742,11 +742,13 @@ exports.updateTables = functions.https.onCall((data, context) => {
   const venueRef = admin.firestore().collection("venues").doc(data.venueId);
 
   return admin.firestore().runTransaction(async (transaction) => {
-    const venue = await transaction.get(venueRef);
+    const venueDoc = await transaction.get(venueRef);
 
-    if (!venue.exists) {
+    if (!venueDoc.exists) {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
+
+    const venue = venueDoc.data();
 
     const venueTables =
       (venue.config && venue.config.tables) || data.defaultTables;
