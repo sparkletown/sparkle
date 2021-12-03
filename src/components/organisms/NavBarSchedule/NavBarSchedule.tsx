@@ -210,7 +210,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
-          worldSlug: worldSlug,
+          worldSlug,
           relatedVenues,
           usersEvents: userEventIds,
         })
