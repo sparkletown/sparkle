@@ -1,7 +1,10 @@
 @import "scss/constants";
 
 .AdminShowcase {
-  height: $admin-ng-panel-height;
   width: $admin-ng-showcase-width--normal;
-  overflow: auto;
+
+  &--internal-scroll {
+    height: $admin-ng-panel-height;
+    overflow: auto;
+  }
 }

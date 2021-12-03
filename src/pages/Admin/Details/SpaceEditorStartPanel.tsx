@@ -15,7 +15,7 @@ export const SpaceEditorStartPanel: React.FC<DetailsProps> = ({
   worldId,
 }) => {
   return (
-    <AdminPanel className="SpaceEditorStartPanel">
+    <AdminPanel variant="bound" className="SpaceEditorStartPanel">
       <AdminSidebar>
         <DetailsForm venue={venue} worldId={worldId} />
       </AdminSidebar>

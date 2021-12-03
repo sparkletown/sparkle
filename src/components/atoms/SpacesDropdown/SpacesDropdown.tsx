@@ -3,9 +3,8 @@ import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { omit } from "lodash";
 
-import { SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import { PORTAL_INFO_ICON_MAPPING } from "settings";
 
-import { Room } from "types/rooms";
 import { AnyVenue, PortalTemplate, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -16,25 +15,22 @@ import "./SpacesDropdown.scss";
 
 const noneOptionName = "None";
 const spaceNoneOption = Object.freeze({
-  none: Object.freeze({ name: "", template: undefined }),
+  none: Object.freeze({ id: undefined, name: "", template: undefined }),
 });
 
 export type SpacesDropdownPortal = { template?: PortalTemplate; name: string };
-export interface DropdownRoom extends Room {
-  name: string;
-}
 export interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
   fieldName: string;
   error?: FieldError;
-  portals: Record<string, WithId<AnyVenue> | DropdownRoom>;
+  spaces: Record<string, WithId<AnyVenue>>;
 }
 
 export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   parentSpace,
-  portals,
+  spaces,
   setValue,
   register,
   fieldName,
@@ -44,11 +40,11 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
-  const filteredPortals = omit(portals, VenueTemplate.playa);
+  const filteredSpaces = omit(spaces, VenueTemplate.playa);
 
-  const portalOptions = useMemo(
-    () => ({ ...spaceNoneOption, ...filteredPortals }),
-    [filteredPortals]
+  const spaceOptions = useMemo(
+    () => ({ ...spaceNoneOption, ...filteredSpaces }),
+    [filteredSpaces]
   );
 
   useEffect(() => {
@@ -59,15 +55,15 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedOptions = useMemo(
     () =>
-      Object.values(portalOptions).map(({ name, template }) => {
-        const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
+      Object.values(spaceOptions).map(({ id, name, template }) => {
+        const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
           <ReactBootstrapDropdown.Item
-            key={name}
+            key={id}
             onClick={() => {
               setSelected({ name, template });
-              setValue(fieldName, name, true);
+              setValue(fieldName, id, true);
             }}
             className="SpacesDropdown__item"
           >
@@ -82,7 +78,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           </ReactBootstrapDropdown.Item>
         );
       }) ?? [],
-    [portalOptions, setValue, fieldName]
+    [spaceOptions, setValue, fieldName]
   );
 
   const renderedTitle = useMemo(() => {
@@ -90,9 +86,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       return "Select a space";
     }
 
-    const space = portals?.[selected.name] ?? parentSpace;
+    const space = spaces?.[selected.name] ?? parentSpace;
 
-    const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
+    const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
       <span className="SpacesDropdown__value">
@@ -106,7 +102,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         {selected.name || noneOptionName}
       </span>
     );
-  }, [portals, selected, parentSpace]);
+  }, [spaces, selected, parentSpace]);
 
   return (
     // @debt align the style of the SpacesDropdown with the Dropdown component

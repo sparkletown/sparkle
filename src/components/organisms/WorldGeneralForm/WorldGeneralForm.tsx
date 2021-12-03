@@ -5,13 +5,13 @@ import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
 import { omit } from "lodash";
 
-import { ADMIN_V3_WORLDS_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
+import { ADMIN_V3_WORLD_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { createWorld, updateWorldStartSettings, World } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
 
-import { WorldStartFormInput } from "types/world";
+import { WorldGeneralFormInput } from "types/world";
 
 import { WithId, WithOptionalWorldId } from "utils/id";
 
@@ -20,18 +20,17 @@ import { worldStartSchema } from "forms/worldStartSchema";
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
-import "./WorldStartForm.scss";
+import "./WorldGeneralForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS = [
@@ -46,19 +45,18 @@ const HANDLED_ERRORS = [
 // NOTE: file objects are being mutated, so they aren't a good fit for redux store
 const UNWANTED_FIELDS = ["logoImageFile", "bannerImageFile"];
 
-export interface WorldStartFormProps extends AdminSidebarFooterProps {
+export interface WorldGeneralFormProps {
   world?: WithId<World>;
 }
 
-export const WorldStartForm: React.FC<WorldStartFormProps> = ({
+export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
   world,
-  ...sidebarFooterProps
 }) => {
   const [worldId, setWorldId] = useState(world?.id);
   const history = useHistory();
   const { user } = useUser();
 
-  const defaultValues = useMemo<WorldStartFormInput>(
+  const defaultValues = useMemo<WorldGeneralFormInput>(
     () => ({
       name: world?.name ?? "",
       description: world?.config?.landingPageConfig?.description,
@@ -79,7 +77,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
     register,
     errors,
     handleSubmit,
-  } = useForm<WorldStartFormInput>({
+  } = useForm<WorldGeneralFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: worldStartSchema,
@@ -92,13 +90,13 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   const values = watch();
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
-    async (input: WorldStartFormInput) => {
+    async (input: WorldGeneralFormInput) => {
       if (!values || !user) return;
 
       if (worldId) {
         await updateWorldStartSettings({ ...values, id: worldId }, user);
         //TODO: Change this to the most appropriate url when product decides the perfect UX
-        history.push(ADMIN_V3_WORLDS_BASE_URL);
+        history.push(ADMIN_V3_WORLD_BASE_URL);
       } else {
         const { worldId: id, error } = await createWorld(values, user);
 
@@ -113,7 +111,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
         }
 
         //TODO: Change this to the most appropriate url when product decides the perfect UX
-        history.push(ADMIN_V3_WORLDS_BASE_URL);
+        history.push(ADMIN_V3_WORLD_BASE_URL);
       }
 
       reset(input);
@@ -140,7 +138,7 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
           ...omit(values, UNWANTED_FIELDS),
           [nameUrl]: valueUrl,
           worldId,
-        } as WithOptionalWorldId<WorldStartFormInput>)
+        } as WithOptionalWorldId<WorldGeneralFormInput>)
       ),
     [values, worldId, dispatch]
   );
@@ -149,12 +147,8 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
   useEffect(() => void dispatch<WorldEditActions>(worldEdit()), [dispatch]);
 
   return (
-    <div className="WorldStartForm">
+    <div className="WorldGeneralForm">
       <Form onSubmit={handleSubmit(submit)} onChange={handleChange}>
-        <AdminSidebarFooter
-          {...sidebarFooterProps}
-          saveButtonProps={saveButtonProps}
-        />
         <AdminSection title="Name your world" withLabel>
           <AdminInput
             name="name"
@@ -163,22 +157,6 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
             register={register}
             errors={errors}
             max={COMMON_NAME_MAX_CHAR_COUNT}
-          />
-        </AdminSection>
-        <AdminSection title="Add a subtitle">
-          <AdminInput
-            label="What should be the subtitle?"
-            name="subtitle"
-            register={register}
-            errors={errors}
-          />
-        </AdminSection>
-        <AdminSection title="Describe your world">
-          <AdminInput
-            label="How should we describe this world?"
-            name="description"
-            register={register}
-            errors={errors}
           />
         </AdminSection>
         <AdminSection
@@ -223,6 +201,16 @@ export const WorldStartForm: React.FC<WorldStartFormProps> = ({
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
+
+        <AdminSidebarButtons>
+          <ButtonNG
+            className="AdminSidebarButtons__button--larger"
+            variant="primary"
+            {...saveButtonProps}
+          >
+            Save
+          </ButtonNG>
+        </AdminSidebarButtons>
       </Form>
     </div>
   );

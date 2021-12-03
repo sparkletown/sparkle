@@ -1,11 +1,15 @@
 import React, { useMemo, useState } from "react";
 import classNames from "classnames";
 
-import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
+import { ADMIN_V3_WORLD_BASE_URL, SPACE_TAXON, SPACES_TAXON } from "settings";
 
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
-import { adminCreateWorldSpace, adminWorldUrl } from "utils/url";
+import {
+  adminCreateSpace,
+  adminCreateWorldSpace,
+  adminWorldUrl,
+} from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -22,6 +26,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SortDropDown } from "components/atoms/SortDropDown";
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./SpacesDashboard.scss";
 
@@ -77,13 +82,13 @@ export const SpacesDashboard: React.FC = () => {
 
   return (
     <div className="SpacesDashboard">
-      <WithNavigationBar hasBackButton withSchedule>
+      <WithNavigationBar variant="internal-scroll">
         <AdminRestricted>
-          <AdminTitleBar>
+          <AdminTitleBar variant="grid-with-tools">
             <ButtonNG
               variant="secondary"
               isLink
-              linkTo={ADMIN_V3_WORLDS_BASE_URL}
+              linkTo={ADMIN_V3_WORLD_BASE_URL}
             >
               Change world
             </ButtonNG>
@@ -107,15 +112,10 @@ export const SpacesDashboard: React.FC = () => {
           >
             <div className="SpacesDashboard__cards">
               {!hasPartyVenues && (
-                <>
-                  <div className="SpacesDashboard__welcome-message">
-                    Welcome!
-                  </div>
-                  <div className="SpacesDashboard__welcome-message">
-                    <p>Welcome!</p>
-                    <p>Create your first Sparkle space</p>
-                  </div>
-                </>
+                <div className="SpacesDashboard__welcome-message">
+                  <p>Welcome!</p>
+                  <p>Create your first Sparkle {SPACE_TAXON.lower}</p>
+                </div>
               )}
               {hasPartyVenues && renderedPartyVenues}
             </div>
@@ -123,14 +123,25 @@ export const SpacesDashboard: React.FC = () => {
             <aside className="SpacesDashboard__aside">
               <SortDropDown
                 onClick={setCurrentSortingOption}
-                title="Sort spaces"
+                title={`Sort ${SPACES_TAXON.lower}`}
               />
+              <TesterRestricted>
+                <ButtonNG
+                  variant="primary"
+                  isLink
+                  linkTo={adminCreateWorldSpace(world?.slug)}
+                  disabled={!world?.slug}
+                >
+                  OLD Create a new {SPACE_TAXON.lower}
+                </ButtonNG>
+              </TesterRestricted>
               <ButtonNG
                 variant="primary"
                 isLink
-                linkTo={adminCreateWorldSpace(world?.slug)}
+                linkTo={adminCreateSpace(world?.slug)}
+                disabled={!world?.slug}
               >
-                Create a new space
+                Create a new {SPACE_TAXON.lower}
               </ButtonNG>
             </aside>
           </main>

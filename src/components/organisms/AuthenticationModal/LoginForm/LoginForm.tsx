@@ -4,8 +4,8 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
@@ -38,8 +38,8 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     register,

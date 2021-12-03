@@ -15,6 +15,7 @@ $icon-size: $icon-padding + $icon-base-size;
     flex-direction: row;
     align-items: center;
     border-radius: $border-radius--md;
+    cursor: pointer;
 
     &:focus,
     &:focus-within {
@@ -22,9 +23,12 @@ $icon-size: $icon-padding + $icon-base-size;
     }
 
     &:hover {
-      background-color: $secondary--dark;
-      cursor: pointer;
+      background-color: var(--content--over-10a);
     }
+  }
+
+  &--selected &__list-item {
+    background-color: var(--content--over-10a);
   }
 
   &__icon {

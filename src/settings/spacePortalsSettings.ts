@@ -15,20 +15,31 @@ import IconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
 import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
 import PosterConversation from "assets/spaces/add-portal-conversation.png";
+import PosterEmbeddable from "assets/spaces/add-portal-embeddable.png";
 import PosterExperience from "assets/spaces/add-portal-experience.png";
+import PosterExternal from "assets/spaces/add-portal-external.png";
 import PosterMusicBar from "assets/spaces/add-portal-jazzbar.png";
 import PosterMap from "assets/spaces/add-portal-map.png";
 
-export interface SpacePortalsListItem {
+// NOTE: local, use one of SpaceInfoListItem or PortalInfoListItem
+type ListItem = {
   text: string;
   poster: string;
   description: string;
-  template?: PortalTemplate;
   icon: string;
   hidden?: boolean;
-}
+};
 
-export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
+export type SpaceInfoListItem = ListItem & {
+  template?: VenueTemplate;
+};
+
+export type PortalInfoListItem = ListItem & {
+  template?: PortalTemplate;
+};
+
+// NOTE: Generally the PORTAL_INFO_LIST should be used, this one is for cases where narrow definition of Space is needed
+export const SPACE_INFO_LIST: SpaceInfoListItem[] = [
   {
     text: "Conversation Space",
     icon: IconConversation,
@@ -96,7 +107,7 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
   {
     text: "Embeddable",
     icon: IconEmbeddable,
-    poster: "",
+    poster: PosterEmbeddable,
     description: "",
     template: VenueTemplate.embeddable,
     hidden: false,
@@ -109,10 +120,14 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
     template: VenueTemplate.screeningroom,
     hidden: true,
   },
+];
+
+export const PORTAL_INFO_LIST: PortalInfoListItem[] = [
+  ...SPACE_INFO_LIST,
   {
     text: "External link",
     icon: IconExternalLink,
-    poster: "",
+    poster: PosterExternal,
     description:
       "New Space will not be created and the Space name will be used as the title for the newly added External Link portal",
     template: "external",
@@ -120,12 +135,9 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
   },
 ];
 
-export const SPACE_PORTALS_ICONS_MAPPING: Record<
-  string,
-  string
-> = Object.freeze(
+export const PORTAL_INFO_ICON_MAPPING: Record<string, string> = Object.freeze(
   Object.fromEntries(
-    SPACE_PORTALS_LIST.map(({ template, icon }) => [template, icon])
+    PORTAL_INFO_LIST.map(({ template, icon }) => [template, icon])
   )
 );
 

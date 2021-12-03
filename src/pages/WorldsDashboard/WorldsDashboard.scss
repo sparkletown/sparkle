@@ -1,47 +1,40 @@
 @import "scss/constants.scss";
 
 .WorldsDashboard {
-  .AdminPanel {
-    width: 100%;
-    height: calc(100vh - #{$reserved-page-height});
-    display: grid;
-    grid-template-columns: 1fr 9fr;
-    margin: 0;
-    padding: 0;
-    overflow-y: auto;
-  }
-
-  .AdminSidebarTitle,
-  .AdminSidebarSubTitle {
-    margin: $spacing--xl 0;
-  }
-
-  .AdminSidebar {
-    display: flex;
-    flex-direction: column;
-
-    width: $admin-ng-sidebar-width--normal;
-    min-width: $admin-ng-sidebar-width--min;
-
-    padding: $spacing--lg;
-  }
+  height: 100%;
 
   .AdminShowcase {
     width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-rows: 1fr 9fr;
+    height: $admin-ia-simple-panel-height;
+    display: flex;
+    flex-direction: column;
     background-color: $secondary--live;
+    min-height: 500px;
+
+    .AdminShowcaseTitle {
+      padding: $spacing--xxl $spacing--md;
+    }
   }
 
-  .AdminSidebarFooter {
-    width: $admin-ng-sidebar-width--normal;
-    margin-left: -$spacing--lg;
-  }
-
-  &__new {
+  &__arrow-header {
     margin: $spacing--xl;
-    place-self: end;
+    align-self: end;
+    align-items: center;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin: $spacing--xl;
+    align-items: center;
+  }
+
+  &__header-text {
+    font-size: $font-size--xl;
+  }
+
+  &__header-button {
+    margin-left: auto;
   }
 
   &__arrow {

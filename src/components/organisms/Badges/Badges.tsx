@@ -14,7 +14,7 @@ import { UserVisit } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
-import { isTruthy, notEmpty } from "utils/types";
+import { isDefined, isTruthy } from "utils/types";
 
 import { useWorldById } from "hooks/worlds/useWorldById";
 
@@ -158,7 +158,7 @@ export const Badges: React.FC<{
 
   const badgeList = useMemo(
     () =>
-      badges.filter(notEmpty).map((badge) => (
+      badges.filter(isDefined).map((badge) => (
         <li className="Badges__list-item" key={badge.label}>
           <BadgeImage image={badge.image} name={badge.venue.name} />
         </li>

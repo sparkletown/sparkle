@@ -5,6 +5,7 @@ import { createSlug, VenueInput_v2 } from "api/admin";
 import {
   AnyVenue,
   JazzbarVenue,
+  SpaceSlug,
   urlFromImage,
   VenueTemplate,
 } from "types/venues";
@@ -29,8 +30,8 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
   return /[a-z0-9_]{1,250}/.test(venueId);
 };
 
-export const buildEmptyVenue = (
-  venueName: string,
+export const buildEmptySpace = (
+  name: string,
   template: VenueTemplate
 ): Omit<VenueInput_v2, "id"> => {
   const list = new DataTransfer();
@@ -38,11 +39,11 @@ export const buildEmptyVenue = (
   const fileList = list.files;
 
   return {
-    name: venueName,
-    slug: createSlug(venueName),
+    name,
+    slug: createSlug(name) as SpaceSlug,
     subtitle: "",
     description: "",
-    template: template,
+    template,
     bannerImageFile: fileList,
     bannerImageUrl: "",
     logoImageUrl: "",
@@ -56,7 +57,9 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
-    slug: values.name ? createSlug(values.name) : createSlug("Your Jazz Bar"),
+    slug: (values.name
+      ? createSlug(values.name)
+      : createSlug("Your Jazz Bar")) as SpaceSlug,
     config: {
       theme: {
         primaryColor: "yellow",

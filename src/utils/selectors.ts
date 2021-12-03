@@ -1,5 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
+import { SpaceInfoListItem } from "settings";
+
 import { World } from "api/world";
 
 import { RootState } from "store";
@@ -19,7 +21,7 @@ import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
 import { TableSeatedUser, User, UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
-import { WorldStartFormInput } from "types/world";
+import { WorldGeneralFormInput } from "types/world";
 
 import { WithId, WithOptionalWorldId } from "utils/id";
 
@@ -218,5 +220,9 @@ export const worldEditSelector: SparkleSelector<World | undefined> = (state) =>
   state.firestore.data.worldEdit;
 
 export const worldEditStartValuesSelector: SparkleSelector<
-  Partial<WithOptionalWorldId<WorldStartFormInput>>
+  Partial<WithOptionalWorldId<WorldGeneralFormInput>>
 > = (state) => state.worldEditStartValues;
+
+export const spaceCreateItemSelector: SparkleSelector<SpaceInfoListItem> = (
+  state
+) => state.spaceCreateItem;

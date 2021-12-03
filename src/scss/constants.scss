@@ -175,10 +175,8 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 
-// NOTE: Magic number determined empirically to fill the footer space in default case
-$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
 $admin-ng-sidebar-width--normal: 30vw;
-$admin-ng-sidebar-width--min: $admin-ng-sidebar-footer-buttons-width--magic-number;
+$admin-ng-sidebar-width--min: max(#{$button-width--max-wrap}, 15vw);
 $admin-ng-sidebar-width--max: 30vw;
 $admin-ng-sidebar-footer-height--max: 4rem;
 $admin-ng-showcase-width--normal: calc(
@@ -188,8 +186,8 @@ $admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
 $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
-$admin-ng-space-card-box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14);
 
+$admin-ia-simple-panel-height: calc(100vh - #{$reserved-page-height});
 $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
 $admin-ia-manage-space-template-columns: 5fr
   minmax(#{2 * $button-width--max-wrap}, 1fr);
@@ -201,6 +199,8 @@ $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
+$z-layer-admin-sidebar: $z-layer-sidebar;
+$z-layer-footer: $z-layer-admin-sidebar + 100;
 $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
@@ -224,10 +224,10 @@ $z-layers: (
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
-  admin-sidebar: $z-layer-sidebar,
-  admin-sidebar-content: $z-layer-sidebar + 10,
-  admin-sidebar-title: $z-layer-sidebar + 20,
-  admin-sidebar-footer: $z-layer-sidebar + 30,
+  admin-sidebar: $z-layer-admin-sidebar,
+  admin-sidebar-content: $z-layer-admin-sidebar + 10,
+  admin-sidebar-title: $z-layer-admin-sidebar + 20,
+  admin-sidebar-footer: $z-layer-admin-sidebar + 30,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   jazzbar-header: $z-layer-jazz-header,
@@ -293,7 +293,7 @@ $z-layers: (
   // External Link
   external-message: $z-layer-external-message,
   // Unsorted
-  footer: $z-layer-sidebar,
+  footer: $z-layer-footer,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
@@ -312,6 +312,10 @@ $z-layers: (
 
 @function box-shadow--input($color) {
   @return 0 0 0 2px $color;
+}
+
+@function box-shadow--card($color) {
+  @return 0 2px 4px $color;
 }
 
 @function box-shadow--small($color) {
@@ -355,16 +359,6 @@ $z-layers: (
   min-width: $min;
   max-height: $max;
   max-width: $max;
-}
-
-@mixin link-style($color, $hover-color: $color) {
-  color: $color;
-  text-decoration: underline $color;
-
-  &:hover {
-    color: $hover-color;
-    text-decoration: underline $hover-color;
-  }
 }
 
 @mixin circle-avatar {

@@ -35,6 +35,7 @@ export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
+export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
 export * from "./playaSettings";
 export * from "./portalSettings";
@@ -504,8 +505,6 @@ export const FIREBASE_CONFIG = {
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
 };
-
-export const DEFAULT_SPACE_SLUG = "bootstrap";
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",

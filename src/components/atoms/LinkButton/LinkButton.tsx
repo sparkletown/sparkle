@@ -13,6 +13,7 @@ export interface LinkButtonProps
   href: string;
 }
 
+// @deprecated Use ButtonNG instead
 export const LinkButton: React.FC<LinkButtonProps> = ({
   children,
   href,

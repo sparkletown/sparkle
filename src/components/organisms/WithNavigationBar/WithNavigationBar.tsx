@@ -2,8 +2,8 @@ import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
@@ -24,8 +24,11 @@ const NavBar = lazy(() =>
 export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
+  withRadio?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
+  title?: string;
+  variant?: "internal-scroll";
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
@@ -33,10 +36,13 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   withSchedule,
   withPhotobooth,
   withHiddenLoginButton,
+  withRadio,
+  title,
+  variant,
   children,
 }) => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt remove backButton from Navbar
   return (
@@ -53,11 +59,21 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
             withSchedule={withSchedule}
             withPhotobooth={withPhotobooth}
             withHiddenLoginButton={withHiddenLoginButton}
+            withRadio={withRadio}
+            title={title}
           />
         </Suspense>
       </RelatedVenuesProvider>
 
-      <div className="navbar-margin">{children}</div>
+      {variant === "internal-scroll" ? (
+        <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
+          <div className="WithNavigationBar__slider WithNavigationBar__slider--internal-scroll">
+            {children}
+          </div>
+        </div>
+      ) : (
+        <div className="WithNavigationBar__wrapper">{children}</div>
+      )}
 
       <Footer />
       <NewProfileModal venue={space} />

@@ -27,18 +27,21 @@ import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room, RoomInput } from "types/rooms";
-import { VenueTemplate } from "types/venues";
+import { SpaceSlug, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { isExternalPortal } from "utils/url";
 
+import { externalSpaceEditSchema } from "forms/externalSpaceEditSchema";
+import { nonIframeSpaceSchema } from "forms/nonIframeSpaceSchema";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
@@ -88,11 +91,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 }) => {
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const spaceSlugFromPortal = room?.url?.split("/").pop();
-  const { spaceId: spaceIdFromPortal } = useSpaceBySlug(spaceSlugFromPortal);
+  const spaceSlugFromPortal = room?.url?.split("/").pop() as SpaceSlug;
+  const { spaceId: spaceIdFromPortal } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlugFromPortal
+  );
 
   const {
     loading: isLoadingRoomVenue,
@@ -150,6 +156,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     ]
   );
 
+  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+  const isIframeTemplate = IFRAME_TEMPLATES.includes(
+    room.template as VenueTemplate
+  );
+
   const {
     register,
     handleSubmit,
@@ -160,7 +171,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: spaceEditSchema,
+    validationSchema: isExternalPortal(room)
+      ? externalSpaceEditSchema
+      : isIframeTemplate
+      ? spaceEditSchema
+      : nonIframeSpaceSchema,
     defaultValues,
     validationContext: {
       template: room.template,
@@ -312,7 +327,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               withLabel
             >
               <SpacesDropdown
-                portals={backButtonOptionList}
+                spaces={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="parentId"
@@ -594,16 +609,24 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           </div>
         )}
 
-        <AdminSidebarFooter onClickCancel={handleBackClick}>
+        <AdminSidebarButtons>
           <ButtonNG
-            className="AdminSidebarFooter__button--larger"
+            className="AdminSidebarButtons__button--smaller"
+            onClick={handleBackClick}
+            variant="danger"
+          >
+            Cancel
+          </ButtonNG>
+          <ButtonNG
+            className="AdminSidebarButtons__button--larger"
             type="submit"
             variant="primary"
+            loading={isUpdating}
             disabled={isUpdating || isDeleting}
           >
             Save changes
           </ButtonNG>
-        </AdminSidebarFooter>
+        </AdminSidebarButtons>
       </div>
     </Form>
   );

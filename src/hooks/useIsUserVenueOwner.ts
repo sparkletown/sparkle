@@ -1,13 +1,13 @@
-import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useSpaceParams } from "./spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "./spaces/useWorldAndSpaceBySlug";
 import { useRelatedVenues } from "./useRelatedVenues";
 import { useUser } from "./useUser";
 
 export const useIsUserVenueOwner = (): boolean => {
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
   const { currentVenue, parentVenue } = useRelatedVenues({
     currentVenueId: space?.id,
   });

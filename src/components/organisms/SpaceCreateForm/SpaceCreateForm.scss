@@ -1,0 +1,13 @@
+@import "scss/constants";
+
+.SpaceCreateForm {
+  display: flex;
+  flex-direction: column;
+
+  padding: $spacing--md;
+
+  &__buttons {
+    display: flex;
+    justify-content: center;
+  }
+}
