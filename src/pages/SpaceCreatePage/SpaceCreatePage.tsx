@@ -1,7 +1,7 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { SPACE_TAXON } from "settings";
+import { SPACE_TAXON, STRING_AMPERSAND } from "settings";
 
 import { adminWorldSpacesUrl } from "utils/url";
 
@@ -52,7 +52,7 @@ export const SpaceCreatePage: React.FC = () => {
                 <>
                   <SpaceCreateForm worldId={worldId} />
                   <PrettyLink className="SpaceCreatePage__go-back" to={homeUrl}>
-                    Cancel &amp; go back
+                    Cancel {STRING_AMPERSAND} go back
                   </PrettyLink>
                 </>
               ) : (

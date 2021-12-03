@@ -47,6 +47,7 @@ export const PrettyLink: React.FC<PrettyLinkProps> = ({
             {contents}
           </Link>
         ) : (
+          // @debt check if <a> with a token URL or something similar can work here
           contents
         )}
       </span>
