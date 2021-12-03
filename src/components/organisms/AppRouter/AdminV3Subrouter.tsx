@@ -5,12 +5,12 @@ import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
+  ADMIN_IA_SPACE_SETTINGS_PARAM_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
   ADMIN_ROOT_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_EDIT_PARAM_URL,
-  ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_WORLD_BASE_URL,
   ADMIN_V3_WORLD_CREATE_URL,
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
@@ -33,6 +33,12 @@ import { Provided } from "./Provided";
 // needed everywhere.
 export const AdminV3Subrouter: React.FC = () => (
   <Switch>
+    <Route path={ADMIN_IA_SPACE_SETTINGS_PARAM_URL}>
+      <Provided withRelatedVenues>
+        <SpaceEditor />
+      </Provided>
+    </Route>
+
     <Route path={ADMIN_IA_SPACE_EDIT_PARAM_URL}>
       <Provided withRelatedVenues>
         <AdminVenueView />
@@ -75,11 +81,7 @@ export const AdminV3Subrouter: React.FC = () => (
     {
       // @debt remove these routes if/when SpaceEditor, SpaceCreateWizard and SpaceEditWizard are not used anymore
     }
-    <Route path={ADMIN_V3_SPACE_SETTINGS_PARAM_URL}>
-      <Provided withRelatedVenues>
-        <SpaceEditor />
-      </Provided>
-    </Route>
+
     <Route path={ADMIN_V3_CREATE_PARAM_URL}>
       <Provided withRelatedVenues>
         <SpaceCreateWizard />
