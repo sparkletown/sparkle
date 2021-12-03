@@ -1,7 +1,31 @@
 import React, { CSSProperties } from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 
-import * as S from "./Button.styles";
+const StyledButton = styled.button<{
+  hasGradient?: boolean;
+}>`
+  display: inline-block;
+  padding: 0.75em 1em;
+
+  border-radius: 1.375em;
+  border: none;
+  background-color: #6f43ff;
+  background-image: ${({ hasGradient, disabled }) =>
+    hasGradient && !disabled
+      ? "linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%)"
+      : "none"};
+
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+
+  transform: translateY(0);
+
+  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+`;
 
 interface LinkProps {
   isLink?: boolean;
@@ -19,7 +43,7 @@ export interface ButtonProps extends LinkProps {
   notPrimary?: boolean;
 }
 
-export const AppButton: React.FC<ButtonProps> = ({
+export const ButtonOG: React.FC<ButtonProps> = ({
   customClass,
   loading,
   onClick,
@@ -40,19 +64,19 @@ export const AppButton: React.FC<ButtonProps> = ({
 
   if (isLink && linkTo) {
     return (
-      <S.Button
+      <StyledButton
         as={Link}
         className={customClass}
         style={customStyle}
         to={linkTo}
       >
         {children}
-      </S.Button>
+      </StyledButton>
     );
   }
 
   return (
-    <S.Button
+    <StyledButton
       className={customClass}
       style={customStyle}
       type={type}
@@ -61,8 +85,6 @@ export const AppButton: React.FC<ButtonProps> = ({
       disabled={disabled}
     >
       {children}
-    </S.Button>
+    </StyledButton>
   );
 };
-
-export default AppButton;

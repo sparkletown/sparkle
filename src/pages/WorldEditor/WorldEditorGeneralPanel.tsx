@@ -7,7 +7,7 @@ import { AdminShowcase } from "components/organisms/AdminVenueView/components/Ad
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { WorldGeneralForm } from "components/organisms/WorldGeneralForm";
-import { WorldShowcase } from "components/organisms/WorldShowcase/WorldShowcase";
+import { WorldShowcase } from "components/organisms/WorldShowcase";
 
 import { Loading } from "components/molecules/Loading";
 

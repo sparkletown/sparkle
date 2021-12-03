@@ -25,7 +25,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Jukebox } from "components/molecules/Jukebox/Jukebox";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
-import TableHeader from "components/molecules/TableHeader";
+import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
@@ -38,7 +38,7 @@ import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
-import "components/templates/Jazzbar/JazzBar/JazzBar.scss";
+import "./JazzBar.scss";
 
 interface JazzProps {
   venue: WithId<JazzbarVenue>;

@@ -27,7 +27,7 @@ import {
 import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import Legend from "components/atoms/Legend";
+import { Legend } from "components/atoms/Legend";
 
 import "./MapPreview.scss";
 
