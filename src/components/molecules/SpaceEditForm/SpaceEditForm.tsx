@@ -356,7 +356,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
               withLabel
             >
               <SpacesDropdown
-                portals={backButtonOptionList}
+                spaces={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="venue.parentId"
