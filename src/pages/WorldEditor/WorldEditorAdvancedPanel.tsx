@@ -5,7 +5,6 @@ import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { WorldAdvancedForm } from "components/organisms/WorldAdvancedForm";
 
@@ -23,7 +22,6 @@ export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> =
     <AdminPanel variant="bound">
       <AdminSidebar>
         <AdminSidebarTitle>Advanced Settings: {world?.name}</AdminSidebarTitle>
-        <AdminSidebarFooter />
         {isLoaded ? (
           world ? (
             <WorldAdvancedForm world={world} />
@@ -35,7 +33,7 @@ export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> =
           <Loading />
         )}
       </AdminSidebar>
-      <AdminShowcase></AdminShowcase>
+      <AdminShowcase />
     </AdminPanel>
   );
 };

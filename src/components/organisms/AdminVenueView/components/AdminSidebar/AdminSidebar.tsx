@@ -4,11 +4,11 @@ import classNames from "classnames";
 import "./AdminSidebar.scss";
 
 export interface AdminSidebarProps {
-  variant?: "light" | "dark";
+  variant?: "light" | "dark" | "transparent";
 }
 
 export const AdminSidebar: React.FC<AdminSidebarProps> = ({
-  variant,
+  variant = "transparent",
   children,
 }) => {
   const containerClasses = classNames(

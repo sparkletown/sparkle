@@ -3,10 +3,13 @@
 .AdminSidebar {
   width: $admin-ng-sidebar-width--normal;
   min-width: $admin-ng-sidebar-width--min;
-  height: calc(100% - #{$admin-ng-sidebar-footer-height--max});
   overflow: scroll;
   z-index: z(admin-sidebar-content);
   padding: $spacing--xs;
+
+  &--transparent {
+    background-color: transparent;
+  }
 
   &--light {
     background-color: var(--content--over-10a);
@@ -14,30 +17,5 @@
 
   &--dark {
     background-color: var(--content--under);
-  }
-
-  &__buttons {
-    display: flex;
-    width: $admin-ng-sidebar-footer-buttons-width--magic-number;
-  }
-
-  &__button {
-    flex-shrink: 0;
-    flex-grow: 4;
-
-    &--larger {
-      flex-grow: 4;
-      flex-shrink: 0.25;
-    }
-
-    &--smaller {
-      flex-shrink: 4;
-      flex-grow: 1;
-    }
-
-    &--same-size {
-      flex-shrink: 0;
-      flex-grow: 0;
-    }
   }
 }

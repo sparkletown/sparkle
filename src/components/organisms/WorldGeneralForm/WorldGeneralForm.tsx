@@ -20,6 +20,8 @@ import { worldStartSchema } from "forms/worldStartSchema";
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
 
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
+
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
@@ -200,15 +202,15 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
 
-        <div className="AdminSidebar__buttons">
+        <AdminSidebarButtons>
           <ButtonNG
-            className="AdminSidebar__button AdminSidebar__button--larger"
+            className="AdminSidebarButtons__button--larger"
             variant="primary"
             {...saveButtonProps}
           >
             Save
           </ButtonNG>
-        </div>
+        </AdminSidebarButtons>
       </Form>
     </div>
   );

@@ -26,7 +26,6 @@ import { useUser } from "hooks/useUser";
 import { useWorldById } from "hooks/worlds/useWorldById";
 import { useWorldVenues } from "hooks/worlds/useWorldVenues";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
@@ -37,7 +36,7 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 import { UserStatusPanel } from "components/molecules/UserStatusManager/components/UserStatusPanel";
 
-import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
@@ -131,7 +130,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
 
   const {
     watch,
-    formState: { isSubmitting, dirty },
+    formState: { isSubmitting },
     register,
     setValue,
     setError,
@@ -168,7 +167,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
     [worldParentVenues]
   );
 
-  const [{ error: submitError, loading: isSaving }, setVenue] = useAsyncFn(
+  const [{ error: submitError }, setVenue] = useAsyncFn(
     async (vals: FormValues) => {
       if (!user || !isLoaded) return;
 
@@ -269,20 +268,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
     setValue("logoImageUrl", url);
     void triggerValidation();
   };
-
-  const navigateToHome = useCallback(() => {
-    history.push(adminWorldSpacesUrl(world?.slug));
-  }, [history, world?.slug]);
-
-  const saveButtonProps: ButtonProps = useMemo(
-    () => ({
-      type: "submit",
-      variant: "primary",
-      disabled: isSubmitting || isSaving || !dirty,
-      loading: isSubmitting || isSaving,
-    }),
-    [dirty, isSaving, isSubmitting]
-  );
 
   const { ownedVenues } = useOwnedVenues({});
 
@@ -533,11 +518,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
       <SubmitError error={submitError} />
 
-      <AdminSidebarFooter
-        onClickHome={navigateToHome}
-        saveButtonProps={saveButtonProps}
-        saveButtonText={venueId ? "Update Space" : "Create Space"}
-      />
+      {/* THIS FORM IS UNUSED AND SCHEDULED FOR DELETION, NOT GOING TO NEED THE FOOTER */}
+      {/*<AdminSidebarFooter*/}
+      {/*  onClickHome={navigateToHome}*/}
+      {/*  saveButtonProps={saveButtonProps}*/}
+      {/*  saveButtonText={venueId ? "Update Space" : "Create Space"}*/}
+      {/*/>*/}
     </Form>
   );
 };
