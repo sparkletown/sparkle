@@ -19,9 +19,9 @@ import { deleteRoom, upsertRoom } from "api/admin";
 import { fetchVenue, updateVenueNG } from "api/venue";
 
 import { Room, RoomInput } from "types/rooms";
-import { SpaceSlug } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
+import { parsePortalSlug } from "utils/room";
 
 import { spaceEditNGSchema } from "forms/spaceEditNGSchema";
 
@@ -83,7 +83,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const spaceSlugFromPortal = room?.url?.split("/").pop() as SpaceSlug;
+  const spaceSlugFromPortal = parsePortalSlug(room);
   const { spaceId: spaceIdFromPortal } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlugFromPortal
