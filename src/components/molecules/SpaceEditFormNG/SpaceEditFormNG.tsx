@@ -292,7 +292,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
               withLabel
             >
               <SpacesDropdown
-                portals={backButtonOptionList}
+                spaces={backButtonOptionList}
                 setValue={setValue}
                 register={register}
                 fieldName="parentId"

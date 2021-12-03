@@ -408,7 +408,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
             withLabel
           >
             <SpacesDropdown
-              portals={backButtonOptionList}
+              spaces={backButtonOptionList}
               setValue={setValue}
               register={register}
               fieldName="parentId"

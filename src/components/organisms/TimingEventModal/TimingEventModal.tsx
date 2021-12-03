@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   DAYJS_INPUT_DATE_FORMAT,
   DAYJS_INPUT_TIME_FORMAT,
   HAS_ROOMS_TEMPLATES,
@@ -19,7 +18,6 @@ import { WithId } from "utils/id";
 import { eventEditSchema } from "forms/eventEditSchema";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 import "./TimingEventModal.scss";
 
@@ -51,7 +49,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     errors,
     formState,
     reset,
-    setValue,
   } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -111,27 +108,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
-  const dropdownVenueList = useMemo(
-    () =>
-      Object.fromEntries(
-        venue?.rooms?.map((room) => [
-          room.title,
-          { ...room, name: room.title },
-        ]) ?? ALWAYS_EMPTY_ARRAY
-      ),
-    [venue?.rooms]
-  );
-
-  const parentRoom = useMemo(
-    () => venue?.rooms?.find(({ title }) => title === event?.room),
-    [event?.room, venue?.rooms]
-  );
-
-  const parentSpace = {
-    name: parentRoom?.title ?? venue.name,
-    template: parentRoom?.template ?? venue.template,
-  };
-
   return (
     <>
       <Modal
@@ -144,17 +120,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <div className="form-container">
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
-              <div className="TimingEventModal__input-group dropdown-container">
-                <SpacesDropdown
-                  portals={dropdownVenueList}
-                  setValue={setValue}
-                  register={register}
-                  fieldName="room"
-                  parentSpace={parentSpace}
-                  error={errors.room}
-                />
-              </div>
-
               <div className="TimingEventModal__input-group">
                 <label htmlFor="name">Name your experience</label>
                 <input
