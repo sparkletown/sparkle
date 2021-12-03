@@ -8,6 +8,7 @@ import {
   AnyVenue,
   JazzbarVenue,
   PortalTemplate,
+  SpaceSlug,
   urlFromImage,
   VenueTemplate,
 } from "types/venues";
@@ -47,7 +48,7 @@ export const buildEmptySpace = (
 
   return {
     name,
-    slug: createSlug(name),
+    slug: createSlug(name) as SpaceSlug,
     subtitle: "",
     description: "",
     template,
@@ -64,7 +65,9 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
   return {
     template: VenueTemplate.jazzbar,
     name: values.name || "Your Jazz Bar",
-    slug: values.name ? createSlug(values.name) : createSlug("Your Jazz Bar"),
+    slug: (values.name
+      ? createSlug(values.name)
+      : createSlug("Your Jazz Bar")) as SpaceSlug,
     config: {
       theme: {
         primaryColor: "yellow",

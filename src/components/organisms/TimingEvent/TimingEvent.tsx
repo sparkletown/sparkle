@@ -9,6 +9,8 @@ import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+
 export type TimingEventProps = {
   event: WithId<VenueEvent>;
   setShowCreateEventModal: () => void;
@@ -21,6 +23,9 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
   setEditedEvent,
 }) => {
   const [display, setDisplay] = useState(false);
+
+  const { findVenueInRelatedVenues } = useRelatedVenues();
+  const space = findVenueInRelatedVenues({ spaceId: event.spaceId });
 
   const showButton = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -52,7 +57,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
         </p>
         <p className="TimingEvent__details-description">{event.description}</p>
         <p className="TimingEvent__details-room">
-          in <span className="event-details-room-name">{event.room}</span>
+          in <span className="event-details-room-name">{space?.name}</span>
         </p>
       </div>
 

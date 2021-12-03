@@ -13,9 +13,10 @@ import {
 } from "settings";
 
 import { AnyVenue } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl, venueInsideUrl } from "utils/url";
+import { adminNGVenueUrl, generateAttendeeInsideUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 
@@ -27,7 +28,7 @@ import "./AdminSpaceCard.scss";
 
 export interface AdminSpaceCardProps {
   venue: WithId<AnyVenue>;
-  worldSlug?: string;
+  worldSlug?: WorldSlug;
 }
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
@@ -65,7 +66,10 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
         <div className="AdminSpaceCard__bg-container">
           <Link
             className="AdminSpaceCard__link"
-            to={venueInsideUrl(venue.slug)}
+            to={generateAttendeeInsideUrl({
+              worldSlug,
+              spaceSlug: venue.slug,
+            })}
             target="_blank"
             rel="noopener noreferer"
           >

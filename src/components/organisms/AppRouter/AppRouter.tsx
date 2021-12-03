@@ -1,15 +1,13 @@
 import React, { lazy, Suspense } from "react";
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  Switch,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import {
   ACCOUNT_ROOT_URL,
   ADMIN_OLD_ROOT_URL,
   ADMIN_ROOT_URL,
+  ATTENDEE_SPACE_EMERGENCY_PARAM_URL,
+  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_SPACE_LANDING_URL,
   ENTER_ROOT_URL,
   ENTRANCE_STEP_VENUE_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
@@ -17,22 +15,15 @@ import {
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
-  VENUE_EMERGENCY_PARAM_URL,
-  VENUE_INSIDE_ADMIN_PARAM_URL,
-  VENUE_INSIDE_PARAM_URL,
-  VENUE_LANDING_PARAM_URL,
-  VENUE_REDIRECT_PARAM_URL,
   VERSION_URL,
 } from "settings";
 
 import { tracePromise } from "utils/performance";
-import { venueLandingUrl } from "utils/url";
 
 import { useSettings } from "hooks/useSettings";
 import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
-import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
@@ -136,9 +127,7 @@ export const AppRouter: React.FC = () => {
           )}
 
           <Route path={ADMIN_ROOT_URL}>
-            <Provided withRelatedVenues>
-              <AdminV3Subrouter />
-            </Provided>
+            <AdminV3Subrouter />
           </Route>
 
           <Route
@@ -148,7 +137,7 @@ export const AppRouter: React.FC = () => {
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
           {/*<Route path={LOGIN_URL} component={Login} />*/}
 
-          <Route path={VENUE_LANDING_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_LANDING_URL}>
             <Provided withRelatedVenues>
               <VenueLandingPage />
             </Provided>
@@ -160,32 +149,19 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route path={VENUE_INSIDE_ADMIN_PARAM_URL}>
-            <Provided withRelatedVenues>
-              <VenueAdminPage />
-            </Provided>
-          </Route>
-
-          <Route path={VENUE_INSIDE_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_INSIDE_URL}>
             <Provided withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
 
-          <Route path={VENUE_EMERGENCY_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>
           </Route>
 
           <Route path={VERSION_URL} component={VersionPage} />
-
-          <Route
-            path={VENUE_REDIRECT_PARAM_URL}
-            render={(props) => (
-              <Redirect to={venueLandingUrl(props.match.params[0])} />
-            )}
-          />
 
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}

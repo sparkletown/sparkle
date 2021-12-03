@@ -1,30 +1,40 @@
 import calendarGenerator, { ICalCalendar } from "ical-generator";
 
-import { VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithVenueId } from "utils/id";
-import { getFullVenueInsideUrl } from "utils/url";
+import { WithId, WithVenueId } from "utils/id";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 export interface CreateCalendarProps {
   events: WithVenueId<VenueEvent>[];
+  worldSlug?: WorldSlug;
+  relatedVenues: WithId<AnyVenue>[];
 }
 
 export const createCalendar = ({
   events,
+  worldSlug,
+  relatedVenues,
 }: CreateCalendarProps): ICalCalendar => {
   const calendar = calendarGenerator();
 
-  events.forEach((event) =>
+  events.forEach((event) => {
+    const space = relatedVenues.find(({ id }) => id === event.venueId);
     calendar.createEvent({
       start: eventStartTime(event),
       end: eventEndTime(event),
       organizer: `${event.host || "Unknown"} <undefined>`, // string format: "name <email>". email cannot be blank
       description: event.description,
       summary: event.name,
-      url: getFullVenueInsideUrl(event.venueId),
-    })
-  );
+      url: generateAttendeeInsideUrl({
+        worldSlug: worldSlug,
+        spaceSlug: space?.slug,
+        absoluteUrl: true,
+      }),
+    });
+  });
 
   return calendar;
 };

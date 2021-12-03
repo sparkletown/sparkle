@@ -9,8 +9,8 @@ import {
   isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useValidImage } from "hooks/useCheckImage";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useSelector } from "hooks/useSelector";
@@ -31,8 +31,8 @@ import "./VenueAdminPage.scss";
 export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);

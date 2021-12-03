@@ -1,16 +1,14 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { isLoaded } from "react-redux-firebase";
-import { useHistory, useLocation } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
-
-import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
 
 import { Question } from "types/Question";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { accountCodeQuestionsUrl } from "utils/url";
+
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useCurrentWorld } from "hooks/useCurrentWorld";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -34,33 +32,32 @@ export interface QuestionsFormData {
 
 export const ProfileQuestions: React.FC = () => {
   const history = useHistory();
-  const location = useLocation();
 
   const { user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: space?.worldId,
-  });
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
 
-  const proceed = useCallback(() => {
-    history.push(`${ACCOUNT_CODE_QUESTIONS_URL}${location.search}`);
-  }, [history, location.search]);
+  const proceed = useCallback(
+    () => history.push(accountCodeQuestionsUrl(worldSlug, spaceSlug)),
+    [history, worldSlug, spaceSlug]
+  );
 
   useEffect(() => {
-    if (!isWorldLoaded) return;
+    if (!isLoaded) return;
 
     // Skip this screen if there are no profile questions for the world
     if (!world?.questions?.profile?.length) {
       proceed();
     }
-  }, [isWorldLoaded, proceed, world]);
+  }, [isLoaded, proceed, world]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: QuestionsFormData) => {
@@ -85,11 +82,11 @@ export const ProfileQuestions: React.FC = () => {
     return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isLoaded(space) && !space) {
+  if (isLoaded && !space) {
     return <NotFound />;
   }
 
-  if (!space || !isWorldLoaded) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 

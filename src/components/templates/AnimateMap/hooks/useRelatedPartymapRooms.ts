@@ -36,7 +36,7 @@ export const useRelatedPartymapRooms: ReactHook<
         const noTrailSlashPortalUrl = getUrlWithoutTrailingSlash(portal.url);
 
         const [venueId] = getLastUrlParam(noTrailSlashPortalUrl);
-        const portalVenue = findVenueInRelatedVenues(venueId);
+        const portalVenue = findVenueInRelatedVenues({ spaceId: venueId });
 
         return portalVenue ? withVenue(portal, portalVenue) : portal;
       }),

@@ -18,14 +18,15 @@ import { upsertRoom } from "api/admin";
 
 import { Room, RoomInput } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { PartyMapVenue } from "types/venues";
+import { PartyMapVenue, SpaceSlug } from "types/venues";
 
-import { venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import Login from "pages/Account/Login";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -47,8 +48,11 @@ import { validationSchema } from "./RoomsValidationSchema";
 import "../Venue.scss";
 
 export const RoomsForm: React.FC = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId, isLoaded: isSpaceLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
   const history = useHistory();
   const { user } = useUser();
   const queryParams = useQuery();
@@ -102,7 +106,7 @@ export const RoomsForm: React.FC = () => {
 
 interface RoomInnerFormProps {
   spaceId: string;
-  spaceSlug: string;
+  spaceSlug: SpaceSlug;
   venue: PartyMapVenue;
   editingRoom?: Room;
   editingRoomIndex?: number;
@@ -112,6 +116,7 @@ export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const { venue, spaceId, spaceSlug, editingRoom, editingRoomIndex } = props;
+  const { worldSlug } = useWorldParams();
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -132,7 +137,9 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
     validationContext: { editing: !!editingRoom },
     defaultValues: {
       ...defaultValues,
-      url: defaultValues.url ?? venueInsideUrl(spaceSlug),
+      url:
+        defaultValues.url ??
+        generateAttendeeInsideUrl({ worldSlug, spaceSlug }),
       visibility: editingRoom?.visibility ?? venue.roomVisibility,
     },
   });

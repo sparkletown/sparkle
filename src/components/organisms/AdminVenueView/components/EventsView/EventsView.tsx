@@ -3,16 +3,17 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import { venueEventsNGSelector } from "utils/selectors";
 
-import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
-import { useSelector } from "hooks/useSelector";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingSpace } from "components/organisms/TimingSpace";
+
+import { Loading } from "components/molecules/Loading";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
@@ -25,9 +26,12 @@ export type EventsViewProps = {
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
-  useConnectVenueEvents(venueId);
-
-  const events = useSelector(venueEventsNGSelector);
+  const { relatedVenueIds, isLoading: isVenuesLoading } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const { events, isEventsLoading } = useVenueEvents({
+    venueIds: relatedVenueIds,
+  });
 
   const {
     isShown: showCreateEventModal,
@@ -87,6 +91,10 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         )
     );
   }, [events, setShowCreateEventModal, setEditedEvent]);
+
+  if (isVenuesLoading || isEventsLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="EventsView">

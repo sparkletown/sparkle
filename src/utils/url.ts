@@ -2,7 +2,8 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
-  ACCOUNT_PROFILE_BASE_URL,
+  ACCOUNT_CODE_QUESTIONS_URL,
+  ACCOUNT_PROFILE_QUESTIONS_URL,
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
   ADMIN_IA_SPACE_BASE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
@@ -11,15 +12,16 @@ import {
   ADMIN_IA_WORLD_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
-  ENTRANCE_BASE_URL,
+  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_SPACE_LANDING_URL,
+  ENTRANCE_STEP_VENUE_PARAM_URL,
   VALID_URL_PROTOCOLS,
-  VENUE_INSIDE_BASE_URL,
-  VENUE_INSIDE_PARAM_URL,
-  VENUE_LANDING_BASE_URL,
   WORLD_ROOT_URL,
 } from "settings";
 
 import { Room } from "types/rooms";
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
 // @debt most of these (a,b,c)=>generatePath(PATH,{}) function should be just inlined where called
 // like to={generatePath(params)} or actually have logic inside them that deals with missing params
@@ -30,8 +32,8 @@ export const generateAdminIaSpacePath = (worldSlug?: string) =>
   !worldSlug ? "" : generatePath(ADMIN_IA_SPACE_BASE_PARAM_URL, { worldSlug });
 
 export const adminNGVenueUrl = (
-  worldSlug?: string,
-  spaceSlug?: string,
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
   selectedTab?: string
 ) =>
   !worldSlug || !spaceSlug
@@ -79,33 +81,80 @@ export const adminCreateSpace = (worldSlug?: string) =>
 export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
-export const venueInsideFullUrl = (spaceSlug?: string) =>
-  generatePath(VENUE_INSIDE_PARAM_URL, { spaceSlug });
-
-export const venueInsideUrl = (spaceSlug: string) => {
-  return `${VENUE_INSIDE_BASE_URL}/${spaceSlug}`;
+type generateAttendeeInsideUrlParams = {
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
+  absoluteUrl?: boolean;
 };
 
-export const accountProfileUrlWithSlug = (spaceSlug: string) => {
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
+export const generateAttendeeInsideUrl = ({
+  worldSlug,
+  spaceSlug,
+  absoluteUrl = false,
+}: generateAttendeeInsideUrlParams) => {
+  const relativePath = generatePath(ATTENDEE_SPACE_INSIDE_URL, {
+    worldSlug,
+    spaceSlug,
+  });
+  if (absoluteUrl) {
+    return new URL(relativePath, window.location.origin).href;
+  } else {
+    return relativePath;
+  }
+};
+
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
+export const generateAttendeeSpaceLandingUrl = (
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug
+) => generatePath(ATTENDEE_SPACE_LANDING_URL, { worldSlug, spaceSlug });
+
+export const generateAccountProfileUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => {
   // @debt remove query param in favor of path param and/or
   // add comprehensive `redirect` solution project-wide
-  return `${ACCOUNT_PROFILE_BASE_URL}/?spaceSlug=${spaceSlug}`;
+  return generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, {
+    spaceSlug,
+    worldSlug,
+  });
 };
 
-export const venueLandingUrl = (spaceSlug: string) => {
-  return `${VENUE_LANDING_BASE_URL}/${spaceSlug}`;
+export const accountCodeQuestionsUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => {
+  return generatePath(ACCOUNT_CODE_QUESTIONS_URL, { worldSlug, spaceSlug });
 };
 
-export const venuePreviewUrl = (spaceSlug: string, roomTitle: string) => {
-  return `${venueInsideUrl(spaceSlug)}/${roomTitle}`;
+export const accountProfileQuestionsUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => {
+  return generatePath(ACCOUNT_PROFILE_QUESTIONS_URL, { worldSlug, spaceSlug });
 };
 
-export const venueEntranceUrl = (spaceSlug: string, step?: number) => {
-  return `${ENTRANCE_BASE_URL}/${step ?? 1}/${spaceSlug}`;
+export const venueEntranceUrl = (
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
+  step?: number
+) => {
+  return generatePath(ENTRANCE_STEP_VENUE_PARAM_URL, {
+    worldSlug,
+    spaceSlug,
+    step: step ?? 1,
+  });
 };
 
-export const accountProfileVenueUrl = (spaceSlug: string) =>
-  generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { spaceSlug });
+// @debt combine with accountProfileUrlWithSlug
+export const accountProfileVenueUrl = (
+  worldSlug: WorldSlug,
+  spaceSlug: SpaceSlug
+) => generatePath(ACCOUNT_PROFILE_VENUE_PARAM_URL, { worldSlug, spaceSlug });
 
 export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
 
@@ -129,8 +178,11 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
   openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
-export const enterVenue = (spaceSlug: string, options?: OpenUrlOptions) =>
-  openUrl(venueInsideUrl(spaceSlug), options);
+export const enterSpace = (
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
+  options?: OpenUrlOptions
+) => openUrl(generateAttendeeInsideUrl({ worldSlug, spaceSlug }), options);
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;
@@ -206,9 +258,6 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
-
-export const getFullVenueInsideUrl = (spaceSlug: string) =>
-  new URL(venueInsideUrl(spaceSlug), window.location.origin).href;
 
 export const getUrlWithoutTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;

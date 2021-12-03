@@ -3,9 +3,16 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_SPACE_SLUG, DISABLED_DUE_TO_1324 } from "settings";
+import {
+  DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
+  DISABLED_DUE_TO_1324,
+} from "settings";
 
-import { venueInsideUrl, venueLandingUrl } from "utils/url";
+import {
+  generateAttendeeInsideUrl,
+  generateAttendeeSpaceLandingUrl,
+} from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -21,18 +28,25 @@ import "./AdminRestricted.scss";
 export const AdminRestricted: React.FC = ({ children }) => {
   const firebase = useFirebase();
   const history = useHistory();
-  const { spaceSlug } = useSpaceParams();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { userId } = useUser();
 
   const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
-    history.push(spaceSlug ? venueLandingUrl(spaceSlug) : "/");
-  }, [firebase, history, spaceSlug]);
+    history.push(
+      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
+    );
+  }, [firebase, history, worldSlug, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
-    history.push(venueInsideUrl(DEFAULT_SPACE_SLUG));
+    history.push(
+      generateAttendeeInsideUrl({
+        worldSlug: DEFAULT_WORLD_SLUG,
+        spaceSlug: DEFAULT_SPACE_SLUG,
+      })
+    );
 
   const authHandler = userId ? logout : redirectToDefaultRoute;
 

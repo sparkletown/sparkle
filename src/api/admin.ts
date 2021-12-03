@@ -17,6 +17,7 @@ import { PortalInput, Room, RoomInput } from "types/rooms";
 import { UserStatus } from "types/User";
 import {
   RoomVisibility,
+  SpaceSlug,
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
@@ -24,7 +25,10 @@ import {
 } from "types/venues";
 
 import { WithId, WithWorldId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
+
+import { fetchVenue } from "./venue";
+import { fetchWorld } from "./world";
 
 export interface EventInput {
   name: string;
@@ -34,7 +38,6 @@ export interface EventInput {
   duration_hours: number;
   duration_minutes?: number;
   host: string;
-  room?: string;
 }
 
 type VenueImageFileKeys =
@@ -491,6 +494,9 @@ const createFirestoreRoomInput_v2 = async (
 
   let imageInputData = {};
 
+  const venue = await fetchVenue(venueId);
+  const world = await fetchWorld(venue.worldId);
+
   // upload the files
   for (const entry of imageKeys) {
     const fileArr = input[entry.fileKey];
@@ -513,7 +519,11 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + venueInsideUrl(input.venueName),
+        : window.origin +
+          generateAttendeeInsideUrl({
+            worldSlug: world.slug,
+            spaceSlug: input.venueName as SpaceSlug,
+          }),
     ...imageInputData,
   };
 

@@ -5,19 +5,15 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import {
-  DISABLED_DUE_TO_1142,
-  PLAYA_VENUE_ID,
-  SPARKLE_PHOTOBOOTH_URL,
-} from "settings";
+import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import { enterSpace } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -74,8 +70,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 }) => {
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     currentVenue: relatedVenue,
@@ -95,10 +91,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   // when Admin is displayed, owned venues are used
   const currentVenue = relatedVenue ?? ownedVenue;
 
-  const {
-    location: { pathname },
-    push: openUrlUsingRouter,
-  } = useHistory();
+  const { push: openUrlUsingRouter } = useHistory();
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -108,8 +101,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const shouldShowSchedule =
     !isAdminContext && withSchedule && shouldScheduleBeShown(world);
-
-  const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -159,10 +150,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, []);
 
   const navigateToHomepage = useCallback(() => {
-    if (!sovereignVenueId) return;
+    if (!relatedVenue) return;
 
-    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [sovereignVenueId, openUrlUsingRouter]);
+    enterSpace(worldSlug, relatedVenue.slug, {
+      customOpenRelativeUrl: openUrlUsingRouter,
+    });
+  }, [worldSlug, relatedVenue, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -182,7 +175,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   return (
     <>
       <header>
-        <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
+        <div className="navbar navbar_playa nonplaya">
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo">

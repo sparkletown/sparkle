@@ -3,9 +3,12 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
+
 import { adminNGSettingsUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
 
@@ -22,8 +25,8 @@ export enum SpaceEditorTab {
 }
 
 export interface SpaceEditorRouteParams {
-  worldSlug?: string;
-  spaceSlug?: string;
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
   selectedTab?: SpaceEditorTab;
 }
 
@@ -38,7 +41,10 @@ export const SpaceEditor: React.FC = () => {
     selectedTab = SpaceEditorTab.basicInfo,
   } = useParams<SpaceEditorRouteParams>();
 
-  const { space, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
+  const { space, isLoaded: isSpaceLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const renderedSpaceEditorTabs = useMemo(() => {
     return Object.entries(spaceEditorTabLabelMap).map(([key, label]) => (
