@@ -73,7 +73,7 @@ export const WorldsDashboard: React.FC = () => {
               </AdminShowcase>
             ) : (
               <AdminShowcase className="WorldsDashboard__worlds">
-                <div className="WorldsDashboard__header">
+                <div className="WorldsDashboard__arrow-header">
                   <ButtonNG
                     variant="normal-gradient"
                     linkTo={ADMIN_V3_WORLD_CREATE_URL}
