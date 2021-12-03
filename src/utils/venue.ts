@@ -48,7 +48,7 @@ export const buildEmptySpace = (
 
   return {
     name,
-    slug: createSlug(name),
+    slug: createSlug(name) as SpaceSlug,
     subtitle: "",
     description: "",
     template,

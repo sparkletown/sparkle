@@ -5,10 +5,7 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import {
-  DISABLED_DUE_TO_1142,
-  SPARKLE_PHOTOBOOTH_URL
-} from "settings";
+import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -194,8 +191,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               {shouldShowSchedule && spaceId ? (
                 <button
                   aria-label="Schedule"
-                  className={`nav-party-logo ${isEventScheduleVisible && "clicked"
-                    }`}
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
                   onClick={toggleEventSchedule}
                 >
                   {spaceId && !isAdminContext && navbarTitle} &nbsp;
@@ -269,8 +267,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       {shouldShowSchedule && spaceId && (
         <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
-          className={`schedule-dropdown-backdrop ${isEventScheduleVisible ? "show" : ""
-            }`}
+          className={`schedule-dropdown-backdrop ${
+            isEventScheduleVisible ? "show" : ""
+          }`}
           onClick={hideEventSchedule}
         >
           <div className={navBarScheduleClassName}>

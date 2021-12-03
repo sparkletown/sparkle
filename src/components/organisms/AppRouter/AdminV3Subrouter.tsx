@@ -54,7 +54,6 @@ export const AdminV3Subrouter: React.FC = () => (
       </Provided>
     </Route>
 
-
     <Route
       path={[
         ADMIN_IA_WORLD_EDIT_PARAM_URL,
@@ -66,9 +65,7 @@ export const AdminV3Subrouter: React.FC = () => (
         <WorldEditor />
       </Provided>
     </Route>
-    <Route
-      path={[ADMIN_ROOT_URL, ADMIN_V3_WORLD_BASE_URL]}
-    >
+    <Route path={[ADMIN_ROOT_URL, ADMIN_V3_WORLD_BASE_URL]}>
       <Provided withRelatedVenues>
         <WorldsDashboard />
       </Provided>
@@ -92,5 +89,5 @@ export const AdminV3Subrouter: React.FC = () => (
         <SpaceEditWizard />
       </Provided>
     </Route>
-  </Switch >
+  </Switch>
 );

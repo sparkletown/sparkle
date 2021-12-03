@@ -13,18 +13,18 @@ import {
 import { createRoom, createSlug, createVenue_v2 } from "api/admin";
 
 import { PortalInput } from "types/rooms";
+import { SpaceSlug } from "types/venues";
 
-import { venueInsideFullUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
 
 import { createPortalSchema } from "forms/createPortalSchema";
 import { createSpaceSchema } from "forms/createSpaceSchema";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useCheckImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { AdminInput } from "components/molecules/AdminInput";
 import { SubmitError } from "components/molecules/SubmitError";
@@ -46,8 +46,7 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
 
   const { user } = useUser();
   const { spaceSlug, worldSlug } = useSpaceParams();
-  const { worldId } = useWorldBySlug(worldSlug);
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { world, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema:
@@ -64,12 +63,19 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
     { loading: isLoading, error: submitError },
     addPortal,
   ] = useAsyncFn(async () => {
-    if (!user || !spaceSlug || !template || !worldId || !spaceId) return;
+    if (!user || !spaceSlug || !template || !world || !spaceId) return;
 
     const { roomUrl, venueName } = getValues();
 
-    const slug = createSlug(venueName);
-    const url = template === "external" ? roomUrl : venueInsideFullUrl(slug);
+    const slug = createSlug(venueName) as SpaceSlug;
+    const url =
+      template === "external"
+        ? roomUrl
+        : generateAttendeeInsideUrl({
+            worldSlug,
+            spaceSlug: slug,
+            absoluteUrl: true,
+          });
 
     const portalData: PortalInput = {
       ...DEFAULT_PORTAL_INPUT,
@@ -81,17 +87,14 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
 
     if (template !== "external") {
       const venueData = buildEmptySpace(venueName, template);
-      const newSpaceSlug = createSlug(venueName);
+      const newSpaceSlug = createSlug(venueName) as SpaceSlug;
 
       await createVenue_v2(
         {
           ...venueData,
-          worldId,
-          parentId: spaceSlug, // @debt this should be parent's spaceId, and if needed unambiguous identifiers, uncomment the following
-          // parentSpaceId: spaceId,
-          // parentSpaceSlug: spaceSlug,
+          worldId: world.id,
+          parentId: spaceId,
           logoImageUrl: icon,
-          name: newSpaceSlug, // @debt this should be unfiltered venueName once the possible bugs of mixing slug with id are resolved
           slug: newSpaceSlug,
         },
         user
@@ -100,7 +103,17 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
 
     await createRoom(portalData, spaceId, user);
     await onDone();
-  }, [getValues, worldId, onDone, icon, template, user, spaceSlug, spaceId]);
+  }, [
+    getValues,
+    world,
+    onDone,
+    icon,
+    template,
+    user,
+    spaceSlug,
+    spaceId,
+    worldSlug,
+  ]);
 
   const { isValid: isPosterValid } = useCheckImage(poster);
 
