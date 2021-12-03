@@ -359,22 +359,20 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
             {room.template &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
               IFRAME_TEMPLATES.includes(room.template as VenueTemplate) && (
-                <>
-                  <AdminSection title="Livestream URL" withLabel>
-                    <AdminInput
-                      name="iframeUrl"
-                      placeholder="Livestream URL"
-                      register={register}
-                      errors={errors}
-                    />
-                  </AdminSection>
+                <AdminSection title="Livestream URL" withLabel>
+                  <AdminInput
+                    name="iframeUrl"
+                    placeholder="Livestream URL"
+                    register={register}
+                    errors={errors}
+                  />
                   <AdminCheckbox
                     name="autoPlay"
                     label="Autoplay"
                     variant="toggler"
                     register={register}
                   />
-                </>
+                </AdminSection>
               )}
 
             {!isLoadingRoomVenue && !!portal && (
@@ -441,7 +439,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                   HAS_REACTIONS_TEMPLATES.includes(
                     room.template as VenueTemplate
                   ) && (
-                    <>
+                    <AdminSection>
                       <AdminCheckbox
                         name="showShoutouts"
                         label="Show shoutouts"
@@ -454,61 +452,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
                         variant="toggler"
                         register={register}
                       />
-                      <AdminSection>
-                        <AdminCheckbox
-                          variant="flip-switch"
-                          name="isReactionsMuted"
-                          register={register}
-                          disabled={isReactionsMutedDisabled}
-                          displayOn="Audible"
-                          displayOff="Muted"
-                        />
-                      </AdminSection>
-                    </>
+                      <AdminCheckbox
+                        variant="flip-switch"
+                        name="isReactionsMuted"
+                        register={register}
+                        disabled={isReactionsMutedDisabled}
+                        displayOn="Audible"
+                        displayOff="Muted"
+                      />
+                    </AdminSection>
                   )}
-
-                {room.template === VenueTemplate.auditorium && (
-                  <>
-                    <div className="input-container">
-                      <h4 className="italic input-header">
-                        Number of seats columns
-                      </h4>
-                      <input
-                        defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
-                        min={5}
-                        name="auditoriumColumns"
-                        type="number"
-                        ref={register}
-                        className="align-left"
-                        placeholder="Number of seats columns"
-                      />
-                      {errors?.auditoriumColumns ? (
-                        <span className="input-error">
-                          {errors?.auditoriumColumns.message}
-                        </span>
-                      ) : null}
-                    </div>
-                    <div className="input-container">
-                      <h4 className="italic input-header">
-                        Number of seats rows
-                      </h4>
-                      <input
-                        defaultValue={SECTION_DEFAULT_ROWS_COUNT}
-                        name="auditoriumRows"
-                        type="number"
-                        ref={register}
-                        className="align-left"
-                        placeholder="Number of seats rows"
-                        min={5}
-                      />
-                      {errors?.auditoriumRows ? (
-                        <span className="input-error">
-                          {errors?.auditoriumRows.message}
-                        </span>
-                      ) : null}
-                    </div>
-                  </>
-                )}
 
                 {!DISABLED_DUE_TO_1253 &&
                   room.template &&
@@ -549,6 +502,45 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
           {room.template === VenueTemplate.auditorium && (
             <AdminSpacesListItem title="Extras" isOpened>
+              <AdminSection>
+                <div className="input-container">
+                  <h4 className="italic input-header">
+                    Number of seats columns
+                  </h4>
+                  <input
+                    defaultValue={SECTION_DEFAULT_COLUMNS_COUNT}
+                    min={5}
+                    name="auditoriumColumns"
+                    type="number"
+                    ref={register}
+                    className="align-left"
+                    placeholder="Number of seats columns"
+                  />
+                  {errors?.auditoriumColumns ? (
+                    <span className="input-error">
+                      {errors?.auditoriumColumns.message}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="input-container">
+                  <h4 className="italic input-header">Number of seats rows</h4>
+                  <input
+                    defaultValue={SECTION_DEFAULT_ROWS_COUNT}
+                    name="auditoriumRows"
+                    type="number"
+                    ref={register}
+                    className="align-left"
+                    placeholder="Number of seats rows"
+                    min={5}
+                  />
+                  {errors?.auditoriumRows ? (
+                    <span className="input-error">
+                      {errors?.auditoriumRows.message}
+                    </span>
+                  ) : null}
+                </div>
+              </AdminSection>
+
               <AdminSection title="Capacity (optional)">
                 <div className="SpaceEditForm__capacity">
                   <div># Sections</div>
