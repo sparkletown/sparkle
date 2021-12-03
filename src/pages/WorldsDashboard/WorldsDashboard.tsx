@@ -56,6 +56,7 @@ export const WorldsDashboard: React.FC = () => {
           <AdminPanel variant="unbound">
             {hasWorlds ? (
               <AdminShowcase className="WorldsDashboard__worlds">
+                {/* @debt: possibly add <AdminTitleBar to wrap header content */}
                 <AdminShowcaseTitle>Switch World</AdminShowcaseTitle>
                 <div className="WorldsDashboard__header">
                   <span className="WorldsDashboard__header-text">
