@@ -7,7 +7,8 @@ import { DEFAULT_AVATARS } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import "firebase/storage";
 
@@ -29,24 +30,22 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
 }) => {
   const firebase = useFirebase();
 
-  const {
-    sovereignVenueId,
-    isLoading: isSovereignVenueLoading,
-  } = useRelatedVenues();
+  const { worldSlug } = useSpaceParams();
+
+  const { worldId, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 
   const {
     value: customAvatars,
     loading: isLoadingCustomAvatars,
   } = useAsync(async () => {
-    if (!sovereignVenueId) return;
+    if (!worldId) return;
 
+    // @debt Replace with api hook or function.
     const storageRef = firebase.storage().ref();
-    const list = await storageRef
-      .child(`/assets/avatars/${sovereignVenueId}`)
-      .listAll();
+    const list = await storageRef.child(`/assets/avatars/${worldId}`).listAll();
 
     return Promise.all(list.items.map((item) => item.getDownloadURL()));
-  }, [firebase, sovereignVenueId]);
+  }, [firebase, worldId]);
 
   const defaultAvatars = customAvatars?.length
     ? customAvatars
@@ -89,7 +88,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   ]);
 
   const isLoading =
-    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
+    (isWorldLoaded || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || isLoadingExternal !== undefined);
 
   return (

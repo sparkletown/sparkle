@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -6,8 +6,6 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   COMMON_NAME_MAX_CHAR_COUNT,
   DEFAULT_EMBED_URL,
-  DEFAULT_SHOW_USER_STATUSES,
-  DEFAULT_USER_STATUS,
   DEFAULT_VENUE_AUTOPLAY,
   DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
@@ -23,13 +21,10 @@ import {
 
 import { createSlug } from "api/admin";
 
-import { UserStatus } from "types/User";
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/venues";
 
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
-
-import { useShowHide } from "hooks/useShowHide";
 
 import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 import { VenueDetailsFormErrors } from "pages/Admin/Venue/VenueDetailsFormErrors";
@@ -37,7 +32,6 @@ import { WizardPage } from "pages/Admin/Venue/VenueWizard";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
-import { UserStatusManager } from "components/molecules/UserStatusManager";
 
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { Toggler } from "components/atoms/Toggler";
@@ -63,15 +57,10 @@ interface VenueDetailsSubFormProps
     "register" | "watch" | "control" | "handleSubmit" | "setError" | "setValue"
   > {
   venueId?: string;
-  sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
   isSubmitting: boolean;
-  onSubmit: (
-    vals: Partial<FormValues>,
-    userStatuses: UserStatus[],
-    showUserStatuses: boolean
-  ) => Promise<void>;
+  onSubmit: (vals: Partial<FormValues>) => Promise<void>;
   errors: FieldErrors<FormValues>;
   editing?: boolean;
   formError: boolean;
@@ -80,22 +69,17 @@ interface VenueDetailsSubFormProps
 }
 
 export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
-  venueId,
-  sovereignVenue,
   editing,
   state,
   isSubmitting,
   register,
   watch,
   errors,
-  setError,
   previous,
   onSubmit,
   handleSubmit,
   setValue,
   getValues,
-  formError,
-  setFormError,
 }) => {
   const values = watch();
   const urlSafeName = values.name
@@ -476,91 +460,14 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
     </div>
   );
 
-  const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
-
-  const {
-    isShown: hasUserStatuses,
-    show: showUserStatuses,
-    hide: hideUserStatuses,
-    toggle: toggleUserStatus,
-  } = useShowHide(DEFAULT_SHOW_USER_STATUSES);
-
-  // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
-  useEffect(() => {
-    if (!sovereignVenue) return;
-
-    const venueUserStatuses = sovereignVenue?.userStatuses ?? [];
-    const venueShowUserStatus =
-      sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES;
-
-    setUserStatuses(venueUserStatuses);
-
-    if (venueShowUserStatus) {
-      showUserStatuses();
-    } else {
-      hideUserStatuses();
-    }
-  }, [hideUserStatuses, showUserStatuses, sovereignVenue]);
-
-  const removeUserStatus = (index: number) => {
-    const statuses = [...userStatuses];
-    statuses.splice(index, 1);
-    setUserStatuses(statuses);
-  };
-
-  const addUserStatus = () =>
-    setUserStatuses([
-      ...userStatuses,
-      { status: "", color: DEFAULT_USER_STATUS.color },
-    ]);
-
-  const updateStatusColor = (color: string, index: number) => {
-    const statuses = [...userStatuses];
-    statuses[index] = { color, status: statuses[index].status };
-    setUserStatuses(statuses);
-  };
-
-  const updateStatusText = (
-    event: React.FormEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const statuses = [...userStatuses];
-
-    const userStatusExists = statuses.find(
-      (userStatus) => userStatus.status === event.currentTarget.value
-    );
-
-    // @debt Move user statuses to useForm with useDynamicInput, add schema for this validation instead
-    if (userStatusExists) {
-      setError("User statuses", {
-        type: "manual",
-        message: "User status already exists.",
-      });
-      setFormError(true);
-    } else {
-      setError("", "");
-      setFormError(false);
-    }
-
-    statuses[index] = {
-      color: statuses[index].color,
-      status: event.currentTarget.value,
-    };
-    setUserStatuses(statuses);
-  };
-
   const updateVenue = useCallback(
     (input: Partial<FormValues>) =>
-      void onSubmit(
-        {
-          ...input,
-          iframeUrl: input.iframeUrl || DEFAULT_EMBED_URL,
-          roomVisibility: input.roomVisibility,
-        },
-        userStatuses,
-        hasUserStatuses
-      ),
-    [onSubmit, userStatuses, hasUserStatuses]
+      void onSubmit({
+        ...input,
+        iframeUrl: input.iframeUrl || DEFAULT_EMBED_URL,
+        roomVisibility: input.roomVisibility,
+      }),
+    [onSubmit]
   );
 
   return (
@@ -630,17 +537,6 @@ export const VenueDetailsSubForm: React.FC<VenueDetailsSubFormProps> = ({
         {renderJukeboxToggle()}
 
         {renderSocialLoginToggle()}
-
-        <UserStatusManager
-          venueId={venueId}
-          checked={hasUserStatuses}
-          userStatuses={userStatuses}
-          onCheck={toggleUserStatus}
-          onDelete={removeUserStatus}
-          onAdd={addUserStatus}
-          onPickColor={updateStatusColor}
-          onChangeInput={updateStatusText}
-        />
 
         {!DISABLED_DUE_TO_1253 &&
           templateID &&
