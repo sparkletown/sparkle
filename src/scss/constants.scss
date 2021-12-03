@@ -175,13 +175,8 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 
-// @debt: Magic number for the admin footer, remove this when the component is
-$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
 $admin-ng-sidebar-width--normal: 30vw;
-$admin-ng-sidebar-width--min: max(
-  #{$button-width--max-wrap},
-  #{$admin-ng-sidebar-footer-buttons-width--magic-number}
-);
+$admin-ng-sidebar-width--min: max(#{$button-width--max-wrap}, 15vw);
 $admin-ng-sidebar-width--max: 30vw;
 $admin-ng-sidebar-footer-height--max: 4rem;
 $admin-ng-showcase-width--normal: calc(

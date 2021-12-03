@@ -36,7 +36,7 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
@@ -619,9 +619,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           </div>
         )}
 
-        <AdminSidebarFooter onClickCancel={handleBackClick}>
+        <AdminSidebarButtons>
           <ButtonNG
-            className="AdminSidebarFooter__button--larger"
+            className="AdminSidebarButtons__button--smaller"
+            onClick={handleBackClick}
+            variant="danger"
+          >
+            Cancel
+          </ButtonNG>
+          <ButtonNG
+            className="AdminSidebarButtons__button--larger"
             type="submit"
             variant="primary"
             loading={isUpdating}
@@ -629,7 +636,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           >
             Save changes
           </ButtonNG>
-        </AdminSidebarFooter>
+        </AdminSidebarButtons>
       </div>
     </Form>
   );

@@ -29,7 +29,7 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { AdminSidebarSubTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSubTitle";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
@@ -419,9 +419,16 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           </AdminSection>
         )}
 
-        <AdminSidebarFooter onClickCancel={handleBackClick}>
+        <AdminSidebarButtons>
           <ButtonNG
-            className="AdminSidebarFooter__button--larger"
+            className="AdminSidebarButtons__button--smaller"
+            onClick={handleBackClick}
+            variant="danger"
+          >
+            Cancel
+          </ButtonNG>
+          <ButtonNG
+            className="AdminSidebarButtons__button--larger"
             type="submit"
             variant="primary"
             loading={isUpdating}
@@ -429,7 +436,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
           >
             Save changes
           </ButtonNG>
-        </AdminSidebarFooter>
+        </AdminSidebarButtons>
       </Form>
     </div>
   );
