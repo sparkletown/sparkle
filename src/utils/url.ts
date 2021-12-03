@@ -160,7 +160,7 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
   openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
-export const enterVenue = (
+export const enterSpace = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug,
   options?: OpenUrlOptions

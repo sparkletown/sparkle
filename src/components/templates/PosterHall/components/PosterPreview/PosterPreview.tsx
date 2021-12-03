@@ -5,7 +5,7 @@ import classNames from "classnames";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue, externalUrlAdditionalProps } from "utils/url";
+import { enterSpace, externalUrlAdditionalProps } from "utils/url";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -41,7 +41,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const handleEnterVenue = useCallback(
     () =>
-      enterVenue(worldSlug, posterVenue.slug, {
+      enterSpace(worldSlug, posterVenue.slug, {
         customOpenRelativeUrl: openUrlUsingRouter,
       }),
     [worldSlug, posterVenue.slug, openUrlUsingRouter]

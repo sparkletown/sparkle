@@ -9,7 +9,7 @@ import { VenueEvent } from "types/venues";
 import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
 import {
-  enterVenue,
+  enterSpace,
   getLastUrlParam,
   getUrlParamFromString,
   getUrlWithoutTrailingSlash,
@@ -78,7 +78,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     if (event.room) {
       enterRoom();
     } else {
-      enterVenue(event.worldSlug, event.venueSlug);
+      enterSpace(event.worldSlug, event.venueSlug);
     }
   };
 

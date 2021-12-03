@@ -5,7 +5,7 @@ import { Room } from "types/rooms";
 import { SpaceSlug } from "types/venues";
 
 import {
-  enterVenue,
+  enterSpace,
   getLastUrlParam,
   getUrlWithoutTrailingSlash,
 } from "utils/url";
@@ -30,7 +30,7 @@ export const useRoom = ({ room }: UseRoomProps) => {
   const enterRoom = useCallback(() => {
     if (!portalSpaceSlug) return;
 
-    enterVenue(worldSlug, portalSpaceSlug, {
+    enterSpace(worldSlug, portalSpaceSlug, {
       customOpenRelativeUrl: openUrlUsingRouter,
     });
   }, [portalSpaceSlug, worldSlug, openUrlUsingRouter]);

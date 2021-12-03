@@ -27,7 +27,7 @@ import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { isDefined } from "utils/types";
-import { enterVenue, generateAttendeeInsideUrl } from "utils/url";
+import { enterSpace, generateAttendeeInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -108,12 +108,12 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     if (eventRoom) {
       enterRoom();
     } else {
-      enterVenue(event.worldSlug, event.venueSlug);
+      enterSpace(event.worldSlug, event.venueSlug);
     }
   }, [enterRoom, event, eventRoom]);
 
   const enterEventVenue = useCallback(
-    () => enterVenue(event.worldSlug, event.venueSlug),
+    () => enterSpace(event.worldSlug, event.venueSlug),
     [event.worldSlug, event.venueSlug]
   );
 

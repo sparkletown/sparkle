@@ -7,7 +7,7 @@ import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { isDefined } from "utils/types";
-import { enterVenue } from "utils/url";
+import { enterSpace } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
@@ -49,7 +49,7 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
       //   throw error;
       // });
       .then(() => {
-        enterVenue(worldSlug, spaceSlug, {
+        enterSpace(worldSlug, spaceSlug, {
           customOpenRelativeUrl: replaceUrlUsingRouter,
         });
       });

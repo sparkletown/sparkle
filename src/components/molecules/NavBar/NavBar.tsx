@@ -13,7 +13,7 @@ import {
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { enterVenue } from "utils/url";
+import { enterSpace } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -155,7 +155,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const navigateToHomepage = useCallback(() => {
     if (!relatedVenue) return;
 
-    enterVenue(worldSlug, relatedVenue.slug, {
+    enterSpace(worldSlug, relatedVenue.slug, {
       customOpenRelativeUrl: openUrlUsingRouter,
     });
   }, [worldSlug, relatedVenue, openUrlUsingRouter]);
