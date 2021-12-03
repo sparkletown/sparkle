@@ -130,7 +130,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
   );
 
   if (!isLoaded) {
-    // Nothing to display whilst the world is being fetched for this modal
+    // @debt
+    // Figure out what to display whilst the world is being fetched for this modal
     return <></>;
   }
 
