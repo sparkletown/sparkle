@@ -5,12 +5,10 @@ import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
+  ADMIN_IA_WORLD_BASE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
   ADMIN_ROOT_URL,
-  ADMIN_V3_WORLD_BASE_URL,
-  ADMIN_V3_WORLD_CREATE_URL,
-  ADMIN_V3_WORLD_EDIT_PARAM_URL,
 } from "settings";
 
 import { SpaceCreatePage } from "pages/SpaceCreatePage";
@@ -29,35 +27,26 @@ export const AdminSubRouter: React.FC = () => (
         <AdminVenueView />
       </Provided>
     </Route>
+
     <Route path={ADMIN_IA_SPACE_CREATE_PARAM_URL}>
       <Provided withRelatedVenues>
         <SpaceCreatePage />
       </Provided>
     </Route>
 
-    <Route
-      // @debt there should be an ordering of these routes that doesn't require exact and strict props
-      exact
-      strict
-      path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}
-    >
+    <Route path={ADMIN_IA_WORLD_EDIT_PARAM_URL}>
+      <Provided withRelatedVenues>
+        <WorldEditor />
+      </Provided>
+    </Route>
+
+    <Route path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}>
       <Provided withRelatedVenues>
         <SpacesDashboard />
       </Provided>
     </Route>
 
-    <Route
-      path={[
-        ADMIN_IA_WORLD_EDIT_PARAM_URL,
-        ADMIN_V3_WORLD_CREATE_URL,
-        ADMIN_V3_WORLD_EDIT_PARAM_URL,
-      ]}
-    >
-      <Provided withRelatedVenues>
-        <WorldEditor />
-      </Provided>
-    </Route>
-    <Route path={[ADMIN_ROOT_URL, ADMIN_V3_WORLD_BASE_URL]}>
+    <Route path={[ADMIN_ROOT_URL, ADMIN_IA_WORLD_BASE_URL]}>
       <Provided withRelatedVenues>
         <WorldsDashboard />
       </Provided>

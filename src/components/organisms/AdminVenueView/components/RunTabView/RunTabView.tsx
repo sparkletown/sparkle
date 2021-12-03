@@ -1,12 +1,12 @@
 import React from "react";
 import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
-import { SPACE_TAXON } from "settings";
+import { ADMIN_IA_WORLD_EDIT_PARAM_URL, SPACE_TAXON } from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGSettingsUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
@@ -46,10 +46,10 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           <ButtonNG
             isLink
             className="RunTabView__advanced"
-            linkTo={adminNGSettingsUrl({
-              worldSlug,
-              spaceSlug,
-              defaultRoute: "#",
+            linkTo={generateUrl({
+              route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
+              required: ["worldSlug", "spaceSlug"],
+              params: { worldSlug, spaceSlug },
             })}
             iconName={faCog}
           >

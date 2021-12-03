@@ -54,15 +54,6 @@ export const ACCOUNT_PROFILE_BASE_URL = `${ACCOUNT_ROOT_URL}/profile`;
 export const ACCOUNT_PROFILE_VENUE_PARAM_URL = `${ACCOUNT_PROFILE_BASE_URL}/:worldSlug/:spaceSlug?`;
 export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions/:worldSlug/:spaceSlug?`;
 
-// @debt remove unused v3 URLs and rename the useful ones as IA
-// Admin v3 URLs
-export const ADMIN_V3_CREATE_PARAM_URL = `${ADMIN_ROOT_URL}/create/venue/:worldSlug?`;
-export const ADMIN_V3_EDIT_PARAM_URL = `${ADMIN_ROOT_URL}/edit/:spaceSlug`;
-
-export const ADMIN_V3_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/worlds`;
-export const ADMIN_V3_WORLD_CREATE_URL = `${ADMIN_V3_WORLD_BASE_URL}/new`;
-export const ADMIN_V3_WORLD_EDIT_PARAM_URL = `${ADMIN_V3_WORLD_BASE_URL}/old/:worldSlug?/:selectedTab?`;
-
 // Admin IA URLs
 export const ADMIN_IA_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/w`; // e.g. /admin/w
 export const ADMIN_IA_WORLD_PARAM_URL = `${ADMIN_IA_WORLD_BASE_URL}/:worldSlug`; // e.g. /admin/w/world123
@@ -70,16 +61,6 @@ export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/:selec
 export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; // e.g. /admin/w/world123/s
 export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456/timing
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
-export const ADMIN_IA_SPACE_SETTINGS_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/tweak-space/:spaceSlug/:selectedTab?`; // e.g. /admin/w/world123/tweak-space/space456
-
-// @debt remove v1 URLs
-// Admin v1 URLs
-export const ADMIN_V1_CREATE_URL = `${ADMIN_OLD_ROOT_URL}/venue/creation`;
-export const ADMIN_V1_EDIT_BASE_URL = `${ADMIN_OLD_ROOT_URL}/venue/edit`;
-export const ADMIN_V1_EDIT_PARAM_URL = `${ADMIN_V1_EDIT_BASE_URL}/:spaceSlug`;
-export const ADMIN_V1_VENUE_PARAM_URL = `${ADMIN_OLD_ROOT_URL}/:spaceSlug`;
-export const ADMIN_V1_ROOMS_BASE_URL = `${ADMIN_OLD_ROOT_URL}/venue/rooms`;
-export const ADMIN_V1_ROOMS_PARAM_URL = `${ADMIN_V1_ROOMS_BASE_URL}/:spaceSlug`;
 
 // Enter URLs
 export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;
