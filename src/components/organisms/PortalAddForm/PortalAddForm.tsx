@@ -98,7 +98,6 @@ export const PortalAddForm: React.FC<PortalAddFormProps> = ({
       );
     }
 
-    // @debt this is wrong, for all intents and purposes the venueId a.k.a spaceId is the identifier of the parent space
     await createRoom(portalData, spaceId, user);
     await onDone();
   }, [getValues, worldId, onDone, icon, template, user, spaceSlug, spaceId]);
