@@ -1,5 +1,7 @@
 import React from "react";
 
+import { STRING_DOUBLE_SLASH } from "settings";
+
 import "./YourUrlDisplay.scss";
 
 export interface YourUrlDisplayProps {
@@ -14,7 +16,7 @@ export const YourUrlDisplay: React.FC<YourUrlDisplayProps> = ({
   <span className="YourUrlDisplay">
     <span className="YourUrlDisplay__segment YourUrlDisplay__host">
       {window.location.protocol}
-      {"//"}
+      {STRING_DOUBLE_SLASH}
       {window.location.host}
     </span>
     {path && (
