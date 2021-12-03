@@ -12,7 +12,7 @@ export const useWorldParams = () => {
   const {
     worldId,
     worldSlug,
-    selectedTab = WorldNavTab.start,
+    selectedTab = WorldNavTab.general,
   } = useParams<WorldEditParams>();
 
   return { worldId, worldSlug, selectedTab };
