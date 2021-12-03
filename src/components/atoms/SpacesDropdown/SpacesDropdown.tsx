@@ -60,7 +60,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
         return (
           <ReactBootstrapDropdown.Item
-            key={id}
+            key={id + name}
             onClick={() => {
               setSelected({ name, template });
               setValue(fieldName, id, true);

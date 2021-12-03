@@ -32,8 +32,7 @@ import { SpaceSlug, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
-import { externalSpaceEditSchema } from "forms/externalSpaceEditSchema";
-import { nonIframeSpaceSchema } from "forms/nonIframeSpaceSchema";
+import { roomSchema } from "forms/roomSchema";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -113,7 +112,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   const defaultValues = useMemo(
     () => ({
       name: portal?.name ?? "",
-      subtitle: portal?.config?.landingPageConfig?.subtitle ?? "",
+      subtitle: portal?.config?.landingPageConfig?.subtitle ?? room.subtitle,
       description: portal?.config?.landingPageConfig?.description ?? "",
       mapBackgroundImage: portal?.mapBackgroundImageUrl ?? "",
       bannerImageUrl: portal?.config?.landingPageConfig.coverImageUrl ?? "",
@@ -131,6 +130,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       isReactionsMuted: portal?.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
       parentId: portal?.parentId ?? "",
       numberOfSections: portal?.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
+      template: room.template,
+      title: room.title,
+      about: room.about,
+      url: room.url,
       roomVisibility: room?.visibility,
     }),
     [
@@ -151,14 +154,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       portal?.isReactionsMuted,
       portal?.parentId,
       portal?.sectionsCount,
+      room.subtitle,
       room.image_url,
+      room.template,
+      room.title,
+      room.about,
+      room.url,
       room?.visibility,
     ]
-  );
-
-  // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-  const isIframeTemplate = IFRAME_TEMPLATES.includes(
-    room.template as VenueTemplate
   );
 
   const {
@@ -172,10 +175,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   } = useForm({
     reValidateMode: "onChange",
     validationSchema: isExternalPortal(room)
-      ? externalSpaceEditSchema
-      : isIframeTemplate
-      ? spaceEditSchema
-      : nonIframeSpaceSchema,
+      ? roomSchema({ required: true })
+      : spaceEditSchema,
     defaultValues,
     validationContext: {
       template: room.template,
@@ -213,6 +214,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
         id: spaceIdFromPortal,
         worldId: portal?.worldId,
         ...values,
+        template: portal?.template,
         description: {
           text: values.description,
         },
@@ -220,7 +222,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       },
       user
     );
-  }, [user, spaceIdFromPortal, values, portal?.autoPlay, portal?.worldId]);
+  }, [
+    user,
+    spaceIdFromPortal,
+    values,
+    portal?.autoPlay,
+    portal?.worldId,
+    portal?.template,
+  ]);
 
   const [
     { loading: isUpdating, error: updateError },
@@ -297,44 +306,98 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
           <AdminSpacesListItem title="The basics" isOpened>
-            <AdminSection title="Rename your space" withLabel>
-              <AdminInput
-                name="name"
-                placeholder="Space Name"
-                register={register}
-                errors={errors}
-                required
-              />
-            </AdminSection>
-            <AdminSection title="Subtitle" withLabel>
-              <AdminInput
-                name="subtitle"
-                placeholder="Subtitle for your space"
-                register={register}
-                errors={errors}
-              />
-            </AdminSection>
-            <AdminSection title="Description" withLabel>
-              <AdminTextarea
-                name="description"
-                placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
-                register={register}
-                errors={errors}
-              />
-            </AdminSection>
-            <AdminSection
-              title="Select the parent space for the “back” button"
-              withLabel
-            >
-              <SpacesDropdown
-                spaces={backButtonOptionList}
-                setValue={setValue}
-                register={register}
-                fieldName="parentId"
-                parentSpace={parentSpace}
-                error={errors?.parentId}
-              />
-            </AdminSection>
+            {room.template === "external" ? (
+              <>
+                <AdminInput
+                  name="template"
+                  autoComplete="off"
+                  placeholder={`${ROOM_TAXON.capital} template`}
+                  label={`${ROOM_TAXON.capital} type`}
+                  register={register}
+                  errors={errors}
+                  disabled
+                />
+
+                <AdminInput
+                  name="title"
+                  autoComplete="off"
+                  placeholder={`${ROOM_TAXON.capital} name`}
+                  label={`Name your ${ROOM_TAXON.lower}`}
+                  register={register}
+                  errors={errors}
+                />
+
+                <AdminInput
+                  name="subtitle"
+                  autoComplete="off"
+                  placeholder="Subtitle (optional)"
+                  label={`${ROOM_TAXON.capital} subtitle`}
+                  register={register}
+                  errors={errors}
+                />
+
+                <AdminTextarea
+                  name="about"
+                  autoComplete="off"
+                  placeholder="Description (optional)"
+                  label={`${ROOM_TAXON.capital} description`}
+                  register={register}
+                  errors={errors}
+                />
+
+                {isExternalPortal(room) && (
+                  <AdminInput
+                    name="url"
+                    autoComplete="off"
+                    label={`${ROOM_TAXON.capital} url`}
+                    placeholder={`${ROOM_TAXON.capital} url`}
+                    register={register}
+                    errors={errors}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <AdminSection title="Rename your space" withLabel>
+                  <AdminInput
+                    name="name"
+                    placeholder="Space Name"
+                    register={register}
+                    errors={errors}
+                    required
+                  />
+                </AdminSection>
+                <AdminSection title="Subtitle" withLabel>
+                  <AdminInput
+                    name="subtitle"
+                    placeholder="Subtitle for your space"
+                    register={register}
+                    errors={errors}
+                  />
+                </AdminSection>
+                <AdminSection title="Description" withLabel>
+                  <AdminTextarea
+                    name="description"
+                    placeholder={`Let your guests know what they’ll find when they join your space. Keep it short & sweet, around 2-3 sentences maximum. Be sure to indicate any expectations for their participation.`}
+                    register={register}
+                    errors={errors}
+                  />
+                </AdminSection>
+                <AdminSection
+                  title="Select the parent space for the “back” button"
+                  withLabel
+                >
+                  <SpacesDropdown
+                    spaces={backButtonOptionList}
+                    setValue={setValue}
+                    register={register}
+                    fieldName="parentId"
+                    parentSpace={parentSpace}
+                    error={errors?.parentId}
+                  />
+                </AdminSection>
+              </>
+            )}
             <AdminSection title="Default portal appearance">
               <PortalVisibility
                 getValues={getValues}
