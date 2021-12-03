@@ -16,6 +16,12 @@
     }
   }
 
+  &__arrow-header {
+    margin: $spacing--xl;
+    align-self: end;
+    align-items: center;
+  }
+
   &__header {
     display: flex;
     justify-content: space-between;

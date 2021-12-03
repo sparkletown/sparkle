@@ -56,6 +56,7 @@ export const WorldsDashboard: React.FC = () => {
           <AdminPanel variant="unbound">
             {hasWorlds ? (
               <AdminShowcase className="WorldsDashboard__worlds">
+                {/* @debt: possibly add <AdminTitleBar to wrap header content */}
                 <AdminShowcaseTitle>Switch World</AdminShowcaseTitle>
                 <div className="WorldsDashboard__header">
                   <span className="WorldsDashboard__header-text">
@@ -73,7 +74,7 @@ export const WorldsDashboard: React.FC = () => {
               </AdminShowcase>
             ) : (
               <AdminShowcase className="WorldsDashboard__worlds">
-                <div className="WorldsDashboard__header">
+                <div className="WorldsDashboard__arrow-header">
                   <ButtonNG
                     variant="normal-gradient"
                     linkTo={ADMIN_V3_WORLD_CREATE_URL}
