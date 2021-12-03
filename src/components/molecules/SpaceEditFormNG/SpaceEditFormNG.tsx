@@ -238,7 +238,7 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
             ({ id, worldId }) =>
               !(portal?.worldId !== worldId || id === spaceIdFromPortal)
           )
-          .map((venue) => [venue.id, venue])
+          .map((venue) => [venue.slug, venue])
       ),
     [ownedVenues, portal?.worldId, spaceIdFromPortal]
   );
@@ -246,8 +246,8 @@ export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   const parentSpace = useMemo(
     () =>
       portal?.parentId
-        ? ownedVenues.find(({ id }) => id === portal?.parentId)
-        : { name: "" },
+        ? ownedVenues.find(({ slug }) => slug === portal?.parentId)
+        : { slug: "" },
     [portal?.parentId, ownedVenues]
   );
 

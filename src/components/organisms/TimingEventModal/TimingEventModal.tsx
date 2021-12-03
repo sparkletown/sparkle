@@ -116,7 +116,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       Object.fromEntries(
         venue?.rooms?.map((room) => [
           room.title,
-          { ...room, name: room.title },
+          { ...room, name: room.title, slug: room.title },
         ]) ?? ALWAYS_EMPTY_ARRAY
       ),
     [venue?.rooms]
@@ -128,7 +128,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   );
 
   const parentSpace = {
-    name: parentRoom?.title ?? venue.name,
+    slug: parentRoom?.title ?? venue.slug,
     template: parentRoom?.template ?? venue.template,
   };
 

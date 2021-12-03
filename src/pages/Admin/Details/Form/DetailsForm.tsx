@@ -295,7 +295,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
       Object.fromEntries(
         filteredWorlds
           .filter(({ id }) => !(venueId === id))
-          .map((world) => [world.id, world])
+          .map((world) => [world.slug, world])
       ),
     [venueId, filteredWorlds]
   );
@@ -303,8 +303,8 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ venue, worldId }) => {
   const parentSpace = useMemo(
     () =>
       venue?.parentId
-        ? filteredWorlds.find(({ id }) => id === venue?.parentId)
-        : { name: "" },
+        ? filteredWorlds.find(({ slug }) => slug === venue?.parentId)
+        : { slug: "" },
     [filteredWorlds, venue?.parentId]
   );
 
