@@ -38,7 +38,6 @@ export interface EventInput {
   duration_hours: number;
   duration_minutes?: number;
   host: string;
-  room?: string;
 }
 
 type VenueImageFileKeys =

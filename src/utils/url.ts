@@ -132,7 +132,7 @@ export const venueEntranceUrl = (
   });
 };
 
-// @debt combine with generateAccountProfileUrl
+// @debt combine with accountProfileUrlWithSlug
 export const accountProfileVenueUrl = (
   worldSlug: WorldSlug,
   spaceSlug: SpaceSlug

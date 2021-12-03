@@ -17,7 +17,7 @@ import { WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
-import { useWorldParams } from "hooks/worlds/useWorldParams";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -38,7 +38,6 @@ export type TimingEventModalProps = {
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
-  venueId,
   template,
   venue,
   setEditedEvent,
@@ -57,7 +56,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     validationSchema: eventEditSchema,
   });
 
-  const { worldSlug } = useWorldParams();
+  // When we're creating a new event it will default to
+  // being on the space that triggered this modal.
+  const eventSpaceId = event?.spaceId || venue.id;
+  const { findVenueInRelatedVenues } = useRelatedVenues();
+  const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
 
   useEffect(() => {
     if (event) {
@@ -73,10 +76,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_hours: Math.floor(event.duration_minutes / 60),
         duration_minutes: event.duration_minutes % 60,
         host: event.host,
-        room: event.room,
       });
     }
-  }, [event, reset]);
+  }, [event, reset, eventSpaceId]);
 
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
@@ -89,21 +91,21 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_minutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
-        worldSlug,
-        venueSlug: venue.slug,
+        spaceId: eventSpaceId,
+        // @debt this needs figuring out. We shouldn't get to here without
+        // an eventSpace
+        worldId: eventSpace?.worldId ?? "",
       };
-      if (template && HAS_ROOMS_TEMPLATES.includes(template))
-        formEvent.room = data.room;
-      if (venueId) {
+      if (eventSpaceId) {
         if (event) {
-          await updateEvent(venueId, event.id, formEvent);
+          await updateEvent(eventSpaceId, event.id, formEvent);
         } else {
-          await createEvent(venueId, formEvent);
+          await createEvent(eventSpaceId, formEvent);
         }
       }
       onHide();
     },
-    [onHide, venueId, template, venue, worldSlug, event]
+    [onHide, eventSpaceId, eventSpace, event]
   );
 
   const showDeleteButton =
@@ -126,6 +128,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <div className="form-container">
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
+              <p>Your experience is in {eventSpace?.name}</p>
+
               <div className="TimingEventModal__input-group">
                 <label htmlFor="name">Name your experience</label>
                 <input

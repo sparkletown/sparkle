@@ -383,7 +383,9 @@ export interface VenueEvent {
   orderPriority?: number;
   liveAudience?: number;
   worldSlug?: WorldSlug;
-  venueSlug?: SpaceSlug;
+  venueSlug?: SpaceSlug; // @debt this needs renaming, but, requires a migration
+  spaceId: string;
+  worldId: string;
 }
 
 export interface VenueLocation {

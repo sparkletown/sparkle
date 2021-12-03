@@ -19,6 +19,7 @@ import { VenueEvent, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 dayjs.extend(isSameOrAfter);
 
@@ -55,7 +56,6 @@ const validationSchema = Yup.object().shape<EventInput>({
     .required("Duration required"),
   duration_minutes: Yup.number(),
   host: Yup.string().required(),
-  room: Yup.string(),
 });
 
 const AdminEventModal: React.FunctionComponent<PropsType> = ({
@@ -80,7 +80,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
     validationSchema,
   });
 
-  const { spaceSlug, worldSlug } = useSpaceParams();
+  const { worldSlug } = useSpaceParams();
+  const { isLoaded, worldId } = useWorldBySlug(worldSlug);
 
   useEffect(() => {
     if (!event) {
@@ -97,13 +98,16 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
           .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: event.duration_minutes / 60,
         host: event.host,
-        room: event.room,
       });
     }
   }, [event, reset]);
 
   const onSubmit = useCallback(
     async (data: EventInput) => {
+      if (!worldId) {
+        // @debt we need a better way of handling these kind of scenarios
+        return;
+      }
       const start = dayjs(`${data.start_date} ${data.start_time}`);
       const formEvent: VenueEvent = {
         name: data.name,
@@ -112,11 +116,9 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
           start.unix() || Math.floor(new Date().getTime() / 1000),
         duration_minutes: data.duration_hours * 60,
         host: data.host,
-        venueSlug: spaceSlug,
-        worldSlug: worldSlug,
+        spaceId: venueId,
+        worldId,
       };
-      if (template && HAS_ROOMS_TEMPLATES.includes(template))
-        formEvent.room = data.room;
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
       } else {
@@ -124,8 +126,13 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId, template, worldSlug, spaceSlug]
+    [event, onHide, venueId, worldId]
   );
+
+  if (!isLoaded) {
+    // Nothing to display whilst the world is being fetched for this modal
+    return <></>;
+  }
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -226,9 +233,6 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
                 ref={register}
                 value={roomName}
               />
-              {errors.room && (
-                <span className="input-error">{errors.room.message}</span>
-              )}
             </div>
           )}
           <div style={event ? { display: "flex" } : {}}>
