@@ -5,7 +5,7 @@ import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
 import {
-  ADMIN_V1_ROOT_URL,
+  ADMIN_OLD_ROOT_URL,
   ALL_VENUE_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   PLAYA_ICON_SIDE_PERCENTAGE,
@@ -155,7 +155,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
           ...input,
         };
         await upsertRoom(roomValues, spaceId, user, editingRoomIndex);
-        history.push(`${ADMIN_V1_ROOT_URL}/${spaceSlug}`);
+        history.push(`${ADMIN_OLD_ROOT_URL}/${spaceSlug}`);
       } catch (e) {
         setFormError(true);
         Bugsnag.notify(e, (event) => {

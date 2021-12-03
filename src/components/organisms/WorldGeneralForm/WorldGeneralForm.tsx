@@ -5,7 +5,7 @@ import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
 import { omit } from "lodash";
 
-import { ADMIN_V3_WORLDS_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
+import { ADMIN_V3_WORLD_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { createWorld, updateWorldStartSettings, World } from "api/world";
 
@@ -94,7 +94,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
       if (worldId) {
         await updateWorldStartSettings({ ...values, id: worldId }, user);
         //TODO: Change this to the most appropriate url when product decides the perfect UX
-        history.push(ADMIN_V3_WORLDS_BASE_URL);
+        history.push(ADMIN_V3_WORLD_BASE_URL);
       } else {
         const { worldId: id, error } = await createWorld(values, user);
 
@@ -109,7 +109,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
         }
 
         //TODO: Change this to the most appropriate url when product decides the perfect UX
-        history.push(ADMIN_V3_WORLDS_BASE_URL);
+        history.push(ADMIN_V3_WORLD_BASE_URL);
       }
 
       reset(input);

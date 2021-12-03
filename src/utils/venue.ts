@@ -37,8 +37,8 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
   return /[a-z0-9_]{1,250}/.test(venueId);
 };
 
-export const buildEmptyVenue = (
-  venueName: string,
+export const buildEmptySpace = (
+  name: string,
   template: VenueTemplate
 ): Omit<VenueInput_v2, "id"> => {
   const list = new DataTransfer();
@@ -46,11 +46,11 @@ export const buildEmptyVenue = (
   const fileList = list.files;
 
   return {
-    name: venueName,
-    slug: createSlug(venueName),
+    name,
+    slug: createSlug(name),
     subtitle: "",
     description: "",
-    template: template,
+    template,
     bannerImageFile: fileList,
     bannerImageUrl: "",
     logoImageUrl: "",

@@ -120,7 +120,7 @@ export const AdminVenueView: React.FC = () => {
     <WithNavigationBar withSchedule variant="internal-scroll">
       <AdminRestricted>
         <div className="AdminVenueView">
-          <AdminTitleBar>
+          <AdminTitleBar variant="grid-with-tools">
             <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
               Back to Dashboard
             </ButtonNG>

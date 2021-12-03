@@ -402,7 +402,7 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The slug ${data.slug} is already taken by another space within the world. Please try another.`
+      `The slug ${data.slug} is already taken by a space within the world. Please try another.`
     );
   }
 

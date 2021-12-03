@@ -1,8 +1,19 @@
 @import "scss/constants";
 
 .AdminTitleBar {
-  display: grid;
-  grid-template: 1fr 1fr / $admin-ia-dash-template-columns;
+  &--grid-with-tools {
+    display: grid;
+    grid-template: 1fr 1fr / $admin-ia-dash-template-columns;
+  }
+
+  &--two-rows {
+    display: grid;
+    grid-template: 1fr 1fr / 1fr;
+  }
+
+  &--simple-title {
+    display: flex;
+  }
 
   align-items: center;
   justify-content: space-between;

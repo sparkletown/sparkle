@@ -8,8 +8,8 @@ import {
 
 import {
   ACCOUNT_ROOT_URL,
-  ADMIN_V1_ROOT_URL,
-  ADMIN_V3_ROOT_URL,
+  ADMIN_OLD_ROOT_URL,
+  ADMIN_ROOT_URL,
   ENTER_ROOT_URL,
   ENTRANCE_STEP_VENUE_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
@@ -128,14 +128,14 @@ export const AppRouter: React.FC = () => {
           </Route>
 
           {enableAdmin1 && (
-            <Route path={ADMIN_V1_ROOT_URL}>
+            <Route path={ADMIN_OLD_ROOT_URL}>
               <Provided withRelatedVenues>
                 <AdminV1Subrouter />
               </Provided>
             </Route>
           )}
 
-          <Route path={ADMIN_V3_ROOT_URL}>
+          <Route path={ADMIN_ROOT_URL}>
             <Provided withRelatedVenues>
               <AdminV3Subrouter />
             </Provided>

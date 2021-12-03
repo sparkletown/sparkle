@@ -1,3 +1,5 @@
+import { SPACE_TAXON } from "settings";
+
 import {
   testGeneratesValidSlug,
   testVenueByNameExists,
@@ -5,6 +7,8 @@ import {
 
 import { createNameSchema } from "forms/factory/createNameSchema";
 
-export const venueNameSchema = createNameSchema({ name: "Venue name" })
+export const spaceNameSchema = createNameSchema({
+  name: `${SPACE_TAXON.capital} name`,
+})
   .test("name", "Must have alphanumeric characters", testGeneratesValidSlug)
   .test("name", "This name is already taken", testVenueByNameExists);

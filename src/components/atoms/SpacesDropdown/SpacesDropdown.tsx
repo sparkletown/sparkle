@@ -3,7 +3,7 @@ import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { omit } from "lodash";
 
-import { SPACE_PORTALS_ICONS_MAPPING } from "settings";
+import { PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { Room } from "types/rooms";
 import { AnyVenue, PortalTemplate, VenueTemplate } from "types/venues";
@@ -20,9 +20,11 @@ const spaceNoneOption = Object.freeze({
 });
 
 export type SpacesDropdownPortal = { template?: PortalTemplate; name: string };
+
 export interface DropdownRoom extends Room {
   name: string;
 }
+
 export interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
@@ -42,8 +44,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 }) => {
   const [selected, setSelected] = useState(parentSpace);
 
-  // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
-  // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
+  // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and doesn't exist on PORTAL_INFO_ICON_MAPPING
   const filteredPortals = omit(portals, VenueTemplate.playa);
 
   const portalOptions = useMemo(
@@ -60,7 +61,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   const renderedOptions = useMemo(
     () =>
       Object.values(portalOptions).map(({ name, template }) => {
-        const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[template ?? ""];
+        const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
           <ReactBootstrapDropdown.Item
@@ -92,7 +93,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
     const space = portals?.[selected.name] ?? parentSpace;
 
-    const spaceIcon = SPACE_PORTALS_ICONS_MAPPING[space?.template ?? ""];
+    const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
       <span className="SpacesDropdown__value">

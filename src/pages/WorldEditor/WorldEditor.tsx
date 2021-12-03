@@ -46,7 +46,7 @@ export const WorldEditor: React.FC = () => {
     <div className="WorldEditor">
       <WithNavigationBar>
         <AdminRestricted>
-          <AdminTitleBar>
+          <AdminTitleBar variant="two-rows">
             {world && (
               <ButtonNG
                 linkTo={adminWorldSpacesUrl(world.slug)}

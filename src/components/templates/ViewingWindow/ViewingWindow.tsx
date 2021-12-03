@@ -5,7 +5,7 @@ import classNames from "classnames";
 import {
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
-  SPACE_PORTALS_ICONS_MAPPING,
+  PORTAL_INFO_ICON_MAPPING,
 } from "settings";
 
 import { ViewingWindowVenue } from "types/venues";
@@ -72,7 +72,7 @@ export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
 
   const infoIcon =
     host?.icon ||
-    (SPACE_PORTALS_ICONS_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
 
   return (
     <>

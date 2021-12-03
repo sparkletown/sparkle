@@ -3,8 +3,8 @@ import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
 import {
+  ADMIN_OLD_ROOT_URL,
   ADMIN_V1_ROOMS_BASE_URL,
-  ADMIN_V1_ROOT_URL,
   ROOM_TAXON,
 } from "settings";
 
@@ -76,7 +76,7 @@ export const AdminVenueRoomDetails = ({
 
       await upsertRoom(roomValues, venue.id, user, index);
 
-      history.push(`${ADMIN_V1_ROOT_URL}/${venue.slug}`);
+      history.push(`${ADMIN_OLD_ROOT_URL}/${venue.slug}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
         event.addMetadata("AdminVenueRoomDetails::updateRoom", {

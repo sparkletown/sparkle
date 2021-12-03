@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_VENUE_LOGO,
-  SPACE_PORTALS_ICONS_MAPPING,
+  PORTAL_INFO_ICON_MAPPING,
 } from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
@@ -69,7 +69,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const infoIcon =
     venue?.host?.icon ||
-    (SPACE_PORTALS_ICONS_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
 
   return (
     <>

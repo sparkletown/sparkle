@@ -3,11 +3,6 @@
 $image-container-height: 200px;
 
 .WorldGeneralForm {
-  &__name,
-  .AdminWorldUrlSection__id {
-    color: var(--danger--under);
-  }
-
   .AdminSection {
     &__label {
       display: flex;
