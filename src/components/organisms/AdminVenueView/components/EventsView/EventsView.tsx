@@ -20,8 +20,6 @@ import { Checkbox } from "components/atoms/Checkbox";
 
 import "./EventsView.scss";
 
-const emptyRelatedEvents: WithId<VenueEvent>[] = [];
-
 export type EventsViewProps = {
   venueId: string;
   venue: WithId<AnyVenue>;
@@ -31,7 +29,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   const { relatedVenueIds, isLoading: isVenuesLoading } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const { events = emptyRelatedEvents, isEventsLoading } = useVenueEvents({
+  const { events, isEventsLoading } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
 
