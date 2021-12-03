@@ -8,9 +8,9 @@ import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
+  ADMIN_IA_SPACE_SETTINGS_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
   ADMIN_V3_CREATE_PARAM_URL,
-  ADMIN_V3_SPACE_SETTINGS_PARAM_URL,
   ADMIN_V3_WORLD_EDIT_PARAM_URL,
   ATTENDEE_SPACE_INSIDE_URL,
   ATTENDEE_SPACE_LANDING_URL,
@@ -44,8 +44,26 @@ export const adminNGVenueUrl = (
         selectedTab,
       });
 
-export const adminNGSettingsUrl = (spaceSlug?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_SPACE_SETTINGS_PARAM_URL, { spaceSlug, selectedTab });
+// NOTE: this might be a starting point for a higher level URL generator that replaces (or generates) the rest
+export const adminNGSettingsUrl = ({
+  worldSlug,
+  spaceSlug,
+  selectedTab,
+  defaultRoute = "#",
+}: {
+  worldSlug?: string;
+  spaceSlug?: string;
+  selectedTab?: string;
+  defaultRoute?: string;
+}) => {
+  if (!worldSlug || !spaceSlug) return defaultRoute;
+
+  return generatePath(ADMIN_IA_SPACE_SETTINGS_PARAM_URL, {
+    worldSlug,
+    spaceSlug,
+    selectedTab,
+  });
+};
 
 export const adminWorldUrl = (worldSlug?: string, selectedTab?: string) =>
   generatePath(ADMIN_V3_WORLD_EDIT_PARAM_URL, { worldSlug, selectedTab });

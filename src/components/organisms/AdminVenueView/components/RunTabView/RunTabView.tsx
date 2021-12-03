@@ -8,6 +8,8 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { adminNGSettingsUrl } from "utils/url";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+
 import MapPreview from "pages/Admin/MapPreview";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
@@ -29,6 +31,7 @@ export interface RunTabViewProps {
 }
 
 export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
+  const { worldSlug, spaceSlug } = useSpaceParams();
   if (!venue) {
     return <LoadingPage />;
   }
@@ -43,7 +46,11 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           <ButtonNG
             isLink
             className="RunTabView__advanced"
-            linkTo={adminNGSettingsUrl(venueId)}
+            linkTo={adminNGSettingsUrl({
+              worldSlug,
+              spaceSlug,
+              defaultRoute: "#",
+            })}
             iconName={faCog}
           >
             {SPACE_TAXON.capital} Settings

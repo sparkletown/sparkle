@@ -54,12 +54,12 @@ export const SpaceEditor: React.FC = () => {
           AdminVenueView__tab: true,
           "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        to={adminNGSettingsUrl(spaceSlug, key)}
+        to={adminNGSettingsUrl({ worldSlug, spaceSlug, selectedTab: key })}
       >
         {label}
       </Link>
     ));
-  }, [selectedTab, spaceSlug]);
+  }, [selectedTab, spaceSlug, worldSlug]);
 
   if (!isSpaceLoaded) {
     return <LoadingPage />;
