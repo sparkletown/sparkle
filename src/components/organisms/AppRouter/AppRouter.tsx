@@ -8,7 +8,6 @@ import {
 
 import {
   ACCOUNT_ROOT_URL,
-  ADMIN_OLD_ROOT_URL,
   ADMIN_ROOT_URL,
   ATTENDEE_SPACE_EMERGENCY_PARAM_URL,
   ATTENDEE_SPACE_INSIDE_URL,
@@ -30,7 +29,6 @@ import {
 import { tracePromise } from "utils/performance";
 import { generateAttendeeInsideUrl } from "utils/url";
 
-import { useSettings } from "hooks/useSettings";
 import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
@@ -52,19 +50,13 @@ const AccountSubrouter = lazy(() =>
   )
 );
 
-const AdminV1Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
-    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
-      default: AdminV1Subrouter,
-    }))
-  )
-);
-
-const AdminV3Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV3Subrouter", () =>
-    import("./AdminV3Subrouter").then(({ AdminV3Subrouter }) => ({
-      default: AdminV3Subrouter,
-    }))
+const AdminSubRouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
+    import("components/organisms/AppRouter/AdminSubRouter").then(
+      ({ AdminSubRouter }) => ({
+        default: AdminSubRouter,
+      })
+    )
   )
 );
 
@@ -109,11 +101,7 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
-  const { isLoaded, settings } = useSettings();
   const { user } = useUser();
-
-  if (!isLoaded) return <LoadingPage />;
-  const { enableAdmin1 } = settings;
 
   // @debt custom redirects that are to be removed in the future
   // done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
@@ -144,24 +132,14 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          {enableAdmin1 && (
-            <Route path={ADMIN_OLD_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV1Subrouter />
-              </Provided>
-            </Route>
-          )}
-
           <Route path={ADMIN_ROOT_URL}>
-            <AdminV3Subrouter />
+            <AdminSubRouter />
           </Route>
 
           <Route
             path={LOGIN_CUSTOM_TOKEN_PARAM_URL}
             component={LoginWithCustomToken}
           />
-          {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
-          {/*<Route path={LOGIN_URL} component={Login} />*/}
 
           <Route path={ATTENDEE_SPACE_LANDING_URL}>
             <Provided withRelatedVenues>

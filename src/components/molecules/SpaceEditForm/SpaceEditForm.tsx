@@ -79,6 +79,10 @@ export interface SpaceEditFormProps {
   venueVisibility?: RoomVisibility;
 }
 
+/**
+ * @deprecated not needed as we moved the logic to modals; can be removed with the next admin cleanup.
+ * @see https://github.com/sparkletown/sparkle/pull/2655
+ */
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   room,
   updatedRoom,

@@ -3,9 +3,13 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { DEFAULT_SPACE_SLUG, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+import {
+  ACCOUNT_PROFILE_QUESTIONS_URL,
+  DEFAULT_SPACE_SLUG,
+  DISPLAY_NAME_MAX_CHAR_COUNT,
+} from "settings";
 
-import { accountProfileQuestionsUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
@@ -56,7 +60,11 @@ export const Profile: React.FC = () => {
       await updateUserProfile(user.uid, data);
 
       // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = accountProfileQuestionsUrl(worldSlug, spaceSlug);
+      const nextUrl = generateUrl({
+        route: ACCOUNT_PROFILE_QUESTIONS_URL,
+        required: ["worldSlug"],
+        params: { worldSlug, spaceSlug },
+      });
 
       history.push(nextUrl);
     },

@@ -14,7 +14,8 @@ import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
-import { Map, PortalModal } from "./components";
+import { Map } from "components/templates/PartyMap/components/Map";
+import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import "./PartyMap.scss";
 

@@ -3,9 +3,11 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
+import { ACCOUNT_CODE_QUESTIONS_URL } from "settings";
+
 import { Question } from "types/Question";
 
-import { accountCodeQuestionsUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -46,7 +48,14 @@ export const ProfileQuestions: React.FC = () => {
   });
 
   const proceed = useCallback(
-    () => history.push(accountCodeQuestionsUrl(worldSlug, spaceSlug)),
+    () =>
+      history.push(
+        generateUrl({
+          route: ACCOUNT_CODE_QUESTIONS_URL,
+          required: ["worldSlug"],
+          params: { worldSlug, spaceSlug },
+        })
+      ),
     [history, worldSlug, spaceSlug]
   );
 

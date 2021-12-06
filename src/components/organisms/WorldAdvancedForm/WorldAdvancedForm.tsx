@@ -22,7 +22,7 @@ import { AdminSidebarButtons } from "components/organisms/AdminVenueView/compone
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
-import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput/AdminUserStatusInput";
+import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 

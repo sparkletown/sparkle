@@ -1,15 +1,17 @@
 import React, { useMemo, useState } from "react";
 import classNames from "classnames";
 
-import { ADMIN_V3_WORLD_BASE_URL, SPACE_TAXON, SPACES_TAXON } from "settings";
+import {
+  ADMIN_IA_SPACE_CREATE_PARAM_URL,
+  ADMIN_IA_WORLD_BASE_URL,
+  ADMIN_IA_WORLD_EDIT_PARAM_URL,
+  SPACE_TAXON,
+  SPACES_TAXON,
+} from "settings";
 
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
-import {
-  adminCreateSpace,
-  adminCreateWorldSpace,
-  adminWorldUrl,
-} from "utils/url";
+import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -26,7 +28,6 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SortDropDown } from "components/atoms/SortDropDown";
-import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./SpacesDashboard.scss";
 
@@ -88,7 +89,7 @@ export const SpacesDashboard: React.FC = () => {
             <ButtonNG
               variant="secondary"
               isLink
-              linkTo={ADMIN_V3_WORLD_BASE_URL}
+              linkTo={ADMIN_IA_WORLD_BASE_URL}
             >
               Change world
             </ButtonNG>
@@ -97,7 +98,11 @@ export const SpacesDashboard: React.FC = () => {
               <ButtonNG
                 variant="secondary"
                 isLink
-                linkTo={adminWorldUrl(worldSlug)}
+                linkTo={generateUrl({
+                  route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug },
+                })}
               >
                 Settings
               </ButtonNG>
@@ -125,20 +130,14 @@ export const SpacesDashboard: React.FC = () => {
                 onClick={setCurrentSortingOption}
                 title={`Sort ${SPACES_TAXON.lower}`}
               />
-              <TesterRestricted>
-                <ButtonNG
-                  variant="primary"
-                  isLink
-                  linkTo={adminCreateWorldSpace(world?.slug)}
-                  disabled={!world?.slug}
-                >
-                  OLD Create a new {SPACE_TAXON.lower}
-                </ButtonNG>
-              </TesterRestricted>
               <ButtonNG
                 variant="primary"
                 isLink
-                linkTo={adminCreateSpace(world?.slug)}
+                linkTo={generateUrl({
+                  route: ADMIN_IA_SPACE_CREATE_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug: world?.slug },
+                })}
                 disabled={!world?.slug}
               >
                 Create a new {SPACE_TAXON.lower}
