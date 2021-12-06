@@ -45,7 +45,8 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
           return (
             <div
               key={label}
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
                 setSelected(value);
                 setValue(name, value, true);
               }}

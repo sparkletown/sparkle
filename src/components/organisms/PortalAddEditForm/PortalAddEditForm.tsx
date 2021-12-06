@@ -2,17 +2,19 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
-import { useAsyncFn } from "react-use";
+import { useAsyncFn, useToggle } from "react-use";
 
 import {
   DEFAULT_PORTAL_INPUT,
+  DEFAULT_PORTAL_IS_CLICKABLE,
+  DEFAULT_PORTAL_IS_ENABLED,
   DEFAULT_VENUE_LOGO,
   PortalInfoListItem,
   ROOM_TAXON,
   SPACE_TAXON,
 } from "settings";
 
-import { createRoom, upsertRoom } from "api/admin";
+import { createRoom, deleteRoom, upsertRoom } from "api/admin";
 
 import { PortalInput, Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/venues";
@@ -74,7 +76,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       visibility: portal?.visibility ?? venueVisibility,
       spaceId: portal?.spaceId ?? undefined,
       isClickable: portal?.type !== RoomType.unclickable,
-      isEnabled: portal?.isEnabled ?? true,
+      isEnabled: portal?.isEnabled ?? DEFAULT_PORTAL_IS_ENABLED,
     }),
     [
       portal?.title,
@@ -122,8 +124,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       image_url,
       visibility,
       spaceId,
-      isClickable,
-      isEnabled,
+      isClickable = DEFAULT_PORTAL_IS_CLICKABLE,
+      isEnabled = DEFAULT_PORTAL_IS_ENABLED,
     } = getValues();
 
     const portalSource = portal ?? {};
@@ -139,14 +141,33 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       isEnabled,
     };
 
-    if (portal) {
+    if (isEditMode) {
       await upsertRoom(portalData, currentSpaceId, user, portalIndex);
     } else {
       await createRoom(portalData, currentSpaceId, user);
     }
 
     await onDone();
-  }, [currentSpaceId, getValues, onDone, portal, portalIndex, user, world]);
+  }, [
+    currentSpaceId,
+    getValues,
+    isEditMode,
+    onDone,
+    portal,
+    portalIndex,
+    user,
+    world,
+  ]);
+
+  const [
+    { loading: isDeleting, error: deleteError },
+    deletePortal,
+  ] = useAsyncFn(async () => {
+    if (!currentSpaceId || !portal) return;
+
+    await deleteRoom(currentSpaceId, portal);
+    await onDone();
+  });
 
   const { ownedVenues } = useOwnedVenues({});
 
@@ -163,9 +184,18 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     [currentSpaceId, ownedVenues, world?.id]
   );
 
-  // const [isOverrideAppearanceEnabled, setOverridenAppearance] = useState(false);
+  const isAppearanceOverridenInPortal =
+    !!portal &&
+    isTruthy(
+      portal.visibility ||
+        portal.type === RoomType.unclickable ||
+        !portal.isEnabled
+    );
 
-  const isOverrideAppearanceEnabled = true;
+  const [isOverrideAppearanceEnabled, toggleOverrideAppearance] = useToggle(
+    isAppearanceOverridenInPortal
+  );
+
   return (
     <Form
       className="PortalAddEditForm__form"
@@ -218,45 +248,54 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       >
         <Checkbox
           toggler
-          // checked={isOverrideAppearanceEnabled}
-          // onChange={() => setOverridenAppearance(!isOverrideAppearanceEnabled)}
+          checked={isOverrideAppearanceEnabled}
+          onChange={toggleOverrideAppearance}
           name="isAppearanceOverriden"
           label="Override appearance"
         />
-
-        {isOverrideAppearanceEnabled && (
-          <PortalVisibility
-            getValues={getValues}
-            name="visibility"
-            register={register}
-            setValue={setValue}
-          />
-        )}
-
-        {isOverrideAppearanceEnabled && (
-          <AdminCheckbox
-            name="isEnabled"
-            register={register}
-            variant="toggler"
-            label="Portal is visible"
-          />
-        )}
-
-        {isOverrideAppearanceEnabled && (
-          <AdminCheckbox
-            name="isClickable"
-            register={register}
-            variant="toggler"
-            label="Portal is clickable"
-          />
-        )}
       </AdminSection>
 
-      <SubmitError error={submitError} />
+      {isOverrideAppearanceEnabled && (
+        <PortalVisibility
+          getValues={getValues}
+          name="visibility"
+          register={register}
+          setValue={setValue}
+        />
+      )}
+
+      {isOverrideAppearanceEnabled && (
+        <AdminCheckbox
+          name="isEnabled"
+          register={register}
+          variant="toggler"
+          label="Portal is visible"
+        />
+      )}
+
+      {isOverrideAppearanceEnabled && (
+        <AdminCheckbox
+          name="isClickable"
+          register={register}
+          variant="toggler"
+          label="Portal is clickable"
+        />
+      )}
+
+      <SubmitError error={submitError || deleteError} />
       <div className="PortalAddEditForm__buttons">
+        {isEditMode && (
+          <ButtonNG
+            variant="danger"
+            disabled={isLoading || isDeleting}
+            onClick={deletePortal}
+          >
+            Delete
+          </ButtonNG>
+        )}
         <ButtonNG
           variant="primary"
-          disabled={isLoading}
+          disabled={isLoading || isDeleting}
           title={title}
           type="submit"
         >
