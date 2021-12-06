@@ -1,21 +1,26 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
+import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { DEFAULT_PORTAL_IS_ENABLED } from "settings";
 
 import { upsertRoom } from "api/admin";
+import { fetchVenue } from "api/venue";
 
 import { Room } from "types/rooms";
+import { AnyVenue } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import {
   convertClickabilityToPortalType,
   convertPortalTypeToClickability,
 } from "utils/portal";
+import { generateAttendeeInsideUrl } from "utils/url";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
 
 import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
@@ -23,11 +28,33 @@ import { PrettyLink } from "components/organisms/AdminVenueView/components/Prett
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { FormErrors } from "components/molecules/FormErrors";
 import { Loading } from "components/molecules/Loading";
+import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { PortalIcon } from "components/atoms/PortalIcon";
 
 import "./PortalStripForm.scss";
+
+type generateTargetUrlOptions = {
+  worldSlug: WorldSlug;
+  targetSpace?: AnyVenue;
+  portal: Room;
+};
+
+const generateTargetUrl = ({
+  worldSlug,
+  portal,
+  targetSpace,
+}: generateTargetUrlOptions) => {
+  if (targetSpace) {
+    return generateAttendeeInsideUrl({
+      worldSlug,
+      spaceSlug: targetSpace.slug,
+    });
+  } else {
+    return portal.url;
+  }
+};
 
 interface PortalStripFormProps {
   portal: Room;
@@ -40,11 +67,23 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   index,
   spaceId,
 }) => {
-  const { image_url: iconUrl, template, title, url } = portal;
-
+  const {
+    image_url: iconUrl,
+    template,
+    title,
+    spaceId: targetSpaceId,
+  } = portal;
+  const { worldSlug } = useSpaceParams();
   const { user } = useUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  const { value: targetSpace, loading: isSpaceLoading } = useAsync(async () => {
+    if (targetSpaceId) {
+      return fetchVenue(targetSpaceId);
+    }
+  });
 
   const { getValues, register, reset, errors, handleSubmit } = useForm({
     mode: "onSubmit",
@@ -127,50 +166,74 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     [loading, updatingEnabled, values.isEnabled]
   );
 
+  const openModal = useCallback(() => {
+    setShowModal(true);
+  }, [setShowModal]);
+
+  const hideModal = useCallback(() => {
+    setShowModal(false);
+  }, [setShowModal]);
+
+  const targetUrl = !isSpaceLoading
+    ? generateTargetUrl({ worldSlug, portal, targetSpace })
+    : "";
+
   return (
-    <Form className="PortalStripForm">
-      <div className="PortalStripForm__cell PortalStripForm__icon">
-        <PortalIcon src={iconUrl} />
-      </div>
-      <div className="PortalStripForm__cell PortalStripForm__info">
-        <div className="PortalStripForm__title">{title}</div>
-        <div className="PortalStripForm__type">{template}</div>
-        <div className="PortalStripForm__link">
-          <PrettyLink to={url} title={url} />
+    <>
+      <Form className="PortalStripForm">
+        <div className="PortalStripForm__cell PortalStripForm__icon">
+          <PortalIcon src={iconUrl} />
         </div>
-      </div>
-      <div
-        className="PortalStripForm__cell PortalStripForm__visibility"
-        tabIndex={0}
-      >
-        <AdminCheckbox
-          variant="toggler"
-          name="isClickable"
-          register={register}
-          label={renderedClickableLabel}
-          labelPosition="after"
-          onClick={handleClickable}
-        />
-      </div>
-      <div className="PortalStripForm__cell PortalStripForm__clickability">
-        <AdminCheckbox
-          variant="toggler"
-          name="isEnabled"
-          register={register}
-          label={renderedEnabledLabel}
-          labelPosition="after"
-          onClick={handleEnabled}
+        <div className="PortalStripForm__cell PortalStripForm__info">
+          <div className="PortalStripForm__title">{title}</div>
+          <div className="PortalStripForm__type">{template}</div>
+          <div className="PortalStripForm__link">
+            {!isSpaceLoading && <PrettyLink to={targetUrl} title={targetUrl} />}
+          </div>
+        </div>
+        <div
+          className="PortalStripForm__cell PortalStripForm__visibility"
           tabIndex={0}
+        >
+          <AdminCheckbox
+            variant="toggler"
+            name="isClickable"
+            register={register}
+            label={renderedClickableLabel}
+            labelPosition="after"
+            onClick={handleClickable}
+          />
+        </div>
+        <div className="PortalStripForm__cell PortalStripForm__clickability">
+          <AdminCheckbox
+            variant="toggler"
+            name="isEnabled"
+            register={register}
+            label={renderedEnabledLabel}
+            labelPosition="after"
+            onClick={handleEnabled}
+            tabIndex={0}
+          />
+        </div>
+        <div className="PortalStripForm__cell PortalStripForm__edit">
+          <PrettyLink>
+            <FontAwesomeIcon icon={faPen} />
+            <span className="PortalStripForm__edit-text" onClick={openModal}>
+              Edit
+            </span>
+          </PrettyLink>
+        </div>
+        <FormErrors errors={errors} />
+        <SubmitError error={submitError} />
+      </Form>
+      {showModal && (
+        <PortalAddEditModal
+          portal={portal}
+          show={true}
+          onHide={hideModal}
+          portalIndex={index}
         />
-      </div>
-      <div className="PortalStripForm__cell PortalStripForm__edit">
-        <PrettyLink>
-          <FontAwesomeIcon icon={faPen} />
-          <span className="PortalStripForm__edit-text">Edit</span>
-        </PrettyLink>
-      </div>
-      <FormErrors errors={errors} />
-      <SubmitError error={submitError} />
-    </Form>
+      )}
+    </>
   );
 };
