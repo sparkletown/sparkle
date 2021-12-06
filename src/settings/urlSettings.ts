@@ -72,6 +72,13 @@ export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
 export const ADMIN_IA_SPACE_SETTINGS_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/tweak-space/:spaceSlug/:selectedTab?`; // e.g. /admin/w/world123/tweak-space/space456
 
+// @debt custom urls with AppRouter redirects that are to be removed in the future
+// done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+export const googleCloudWestName = "googlecloudwest";
+export const iterableName = "iterable";
+export const googleCloudWestRootUrl = `/v/${googleCloudWestName}`;
+export const iterableRootUrl = `/v/${iterableName}`;
+
 // @debt remove v1 URLs
 // Admin v1 URLs
 export const ADMIN_V1_CREATE_URL = `${ADMIN_OLD_ROOT_URL}/venue/creation`;
