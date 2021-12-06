@@ -6,6 +6,7 @@
   position: relative;
   overflow: hidden;
   border-radius: $border-radius--xl;
+  box-shadow: box-shadow--large(var(--content--under));
 
   &__header {
     padding: $spacing--xl;

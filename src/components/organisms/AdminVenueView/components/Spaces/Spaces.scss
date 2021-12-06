@@ -8,19 +8,12 @@ $icon-size: 20px;
   display: flex;
   flex: 1;
 
-  .MapPreview {
-    width: calc(100% - 1px);
-    height: calc(100% - 1px);
-    margin: 0;
-  }
-
-  &__map {
+  .AdminShowcase {
     background-color: $secondary--dark;
     justify-content: center;
     align-items: center;
     padding: $spacing--lg;
     margin: 0;
-    max-height: $admin-ng-panel-height;
   }
 
   &__upload-background-wrapper {

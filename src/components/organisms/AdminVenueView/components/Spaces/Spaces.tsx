@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { PORTAL_INFO_LIST, ROOMS_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_LIST, ROOMS_TAXON } from "settings";
 
 import { Room } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
@@ -20,6 +20,7 @@ import { MapPreview } from "components/organisms/AdminVenueView/components/MapPr
 
 import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalList } from "components/molecules/PortalList";
+import { PortalsTable } from "components/molecules/PortalsTable";
 
 import { AdminShowcase } from "../AdminShowcase";
 
@@ -29,9 +30,7 @@ interface SpacesProps {
   venue: WithId<AnyVenue>;
 }
 
-const emptyRoomsArray: Room[] = [];
-
-export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
+export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const [updatedRoom, setUpdatedRoom] = useState<Room>();
 
@@ -42,7 +41,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
   } = useFetchAssets("mapBackgrounds");
 
   const hasSelectedRoom = !!selectedRoom;
-  const numberOfRooms = venue?.rooms?.length ?? 0;
+  const numberOfRooms = space?.rooms?.length ?? 0;
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
@@ -79,7 +78,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
 
   const renderVenueRooms = useMemo(
     () =>
-      venue?.rooms?.map((room, index) => (
+      space?.rooms?.map((room, index) => (
         <div
           key={`${index}-${room.title}`}
           className="Spaces__venue-room"
@@ -92,24 +91,24 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
           <div className="Spaces__venue-room-title">{room.title}</div>
         </div>
       )),
-    [venue?.rooms]
+    [space?.rooms]
   );
 
   const selectedRoomIndex =
-    venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
+    space?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
-    <AdminPanel variant="bound" className="Spaces">
+    <AdminPanel variant="unbound" className="Spaces">
       <AdminSidebar>
         <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
         <AdminSpacesListItem title="Map background">
           <BackgroundSelect
-            venueId={venue.id}
+            venueId={space.id}
             isLoadingBackgrounds={isLoadingBackgrounds}
             mapBackgrounds={mapBackgrounds}
-            venueName={venue.name}
-            spaceSlug={venue.slug}
-            worldId={venue.worldId}
+            venueName={space.name}
+            spaceSlug={space.slug}
+            worldId={space.worldId}
           />
           {errorFetchBackgrounds && (
             <>
@@ -128,16 +127,17 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
           <PortalList items={PORTAL_INFO_LIST} variant="modal" />
         </AdminSpacesListItem>
       </AdminSidebar>
-      <AdminShowcase className="Spaces__map">
+      <AdminShowcase variant="no-scroll">
         <MapPreview
           isEditing={hasSelectedRoom}
-          mapBackground={venue?.mapBackgroundImageUrl}
+          mapBackground={space?.mapBackgroundImageUrl}
           setSelectedRoom={setSelectedRoom}
-          rooms={venue?.rooms ?? emptyRoomsArray}
+          rooms={space?.rooms ?? ALWAYS_EMPTY_ARRAY}
           onMoveRoom={updateRoomPosition}
           onResizeRoom={updateRoomSize}
           selectedRoom={selectedRoom}
         />
+        <PortalsTable space={space} />
       </AdminShowcase>
 
       <PortalAddEditModal

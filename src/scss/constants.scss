@@ -15,7 +15,7 @@ $primary--over: #f6e652;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
 $secondary: #333035;
-$secondary--dark: #19181a;
+$secondary--dark: #19181a; // replace with var(--content--under-lighter-10pp);
 $secondary--live: #1a1d24;
 
 // @debt these should probably be replaced with var(...) referencing theme colors

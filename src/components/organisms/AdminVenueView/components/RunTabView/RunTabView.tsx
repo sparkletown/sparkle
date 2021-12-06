@@ -16,7 +16,6 @@ import { AdminPanel } from "components/organisms/AdminVenueView/components/Admin
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
@@ -75,9 +74,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
             mapBackground={venue.mapBackgroundImageUrl}
             rooms={venue.rooms ?? []}
           />
-        </div>
-        <div className="RunTabView__cards RunTabView--spacing">
-          <RunTabRooms venue={venue} />
         </div>
       </AdminShowcase>
     </AdminPanel>

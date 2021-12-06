@@ -17,9 +17,9 @@ export const Loading: React.FC<LoadingProps> = ({
 }) => {
   const containerClasses = classNames("Loading", containerClassName);
   return (
-    <div className={containerClasses}>
+    <span className={containerClasses}>
       <img className="Loading__icon" src={LoadingIcon} alt="loading" />
       <span className="Loading__message">{label}</span>
-    </div>
+    </span>
   );
 };
