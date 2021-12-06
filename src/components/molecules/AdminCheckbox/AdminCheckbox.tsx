@@ -35,6 +35,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   register,
   subtext,
   variant = "checkbox",
+  tabIndex,
   ...inputProps
 }) => {
   const error = get(errors, name);
@@ -79,7 +80,7 @@ export const AdminCheckbox: React.FC<AdminCheckboxProps> = ({
   );
 
   return (
-    <p className={parentClasses}>
+    <p className={parentClasses} tabIndex={tabIndex}>
       {label ? (
         <label className="AdminCheckbox__label">
           {(labelPosition === "before" || labelPosition === "above") && (
