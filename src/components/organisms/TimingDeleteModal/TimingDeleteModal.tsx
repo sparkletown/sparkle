@@ -31,6 +31,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+  const eventSpaceId = event?.spaceId;
 
   useEffect(() => {
     if (event) {
@@ -52,11 +53,11 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     { loading: isDeletingEvent },
     deleteVenueEvent,
   ] = useAsyncFn(async () => {
-    if (event) {
-      await deleteEvent(venueId, event.id);
+    if (event && eventSpaceId) {
+      await deleteEvent(eventSpaceId, event.id);
     }
     onHide();
-  }, [event, onHide, venueId]);
+  }, [event, onHide, eventSpaceId]);
 
   const eventStartTime = event
     ? dayjs(event.start_utc_seconds * 1000).format("ha")

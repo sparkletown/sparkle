@@ -29,8 +29,10 @@ const todaysDate = new Date();
 
 const useVenueScheduleEvents = ({
   userEventIds,
+  refetchIndex = 0,
 }: {
   userEventIds: Partial<Record<string, string[]>>;
+  refetchIndex?: number;
 }) => {
   const {
     descendantVenues,
@@ -47,6 +49,7 @@ const useVenueScheduleEvents = ({
     isEventsLoading,
   } = useVenueEvents({
     venueIds: relatedVenueIds,
+    refetchIndex,
   });
   const liveAndFutureEvents = useMemo(
     () =>

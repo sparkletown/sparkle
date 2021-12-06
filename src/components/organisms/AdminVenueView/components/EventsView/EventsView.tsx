@@ -26,11 +26,17 @@ export type EventsViewProps = {
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
+  // @debt This refetchIndex is used to force a refetch of the data when events
+  // have been edited. It's horrible and needs a rethink. It also doesn't
+  // help the attendee side at all.
+  const [refetchIndex, setRefetchIndex] = useState(0);
+
   const { relatedVenueIds, isLoading: isVenuesLoading } = useRelatedVenues({
     currentVenueId: venueId,
   });
   const { events, isEventsLoading } = useVenueEvents({
     venueIds: relatedVenueIds,
+    refetchIndex,
   });
 
   const {
@@ -55,7 +61,12 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   const adminEventModalOnHide = useCallback(() => {
     setHideCreateEventModal();
     setEditedEvent(undefined);
-  }, [setHideCreateEventModal]);
+    setRefetchIndex(refetchIndex + 1);
+  }, [setHideCreateEventModal, refetchIndex]);
+
+  const triggerRefetch = useCallback(() => {
+    setRefetchIndex(refetchIndex + 1);
+  }, [refetchIndex]);
 
   const hasVenueEvents = events?.length !== 0;
 
@@ -154,6 +165,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           onHide={() => {
             setHideDeleteEventModal();
             setEditedEvent && setEditedEvent(undefined);
+            triggerRefetch();
           }}
           venueId={venue.id}
           event={editedEvent}
