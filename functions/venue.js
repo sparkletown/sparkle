@@ -789,6 +789,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
   // @debt perhaps await is more appropriate in front of admin so the function will return the error
   admin
     .firestore()

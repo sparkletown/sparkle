@@ -57,10 +57,17 @@ export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions/:wor
 // Admin IA URLs
 export const ADMIN_IA_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/w`; // e.g. /admin/w
 export const ADMIN_IA_WORLD_PARAM_URL = `${ADMIN_IA_WORLD_BASE_URL}/:worldSlug`; // e.g. /admin/w/world123
-export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/:selectedTab?`; // e.g. /admin/w/world123/entrance
+export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/settings/:selectedTab?`; // e.g. /admin/w/world123/entrance
 export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; // e.g. /admin/w/world123/s
 export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456/timing
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
+
+// @debt custom urls with AppRouter redirects that are to be removed in the future
+// done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+export const googleCloudWestName = "googlecloudwest";
+export const iterableName = "iterable";
+export const googleCloudWestRootUrl = `/v/${googleCloudWestName}`;
+export const iterableRootUrl = `/v/${iterableName}`;
 
 // Enter URLs
 export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;
