@@ -4,7 +4,7 @@ import { roomSchema } from "./roomSchema";
 import { validUrlSchema } from "./validUrlSchema";
 
 export const spaceEditSchema = Yup.object().shape({
-  room: roomSchema(),
+  room: roomSchema,
   venue: Yup.object().shape({
     iframeUrl: validUrlSchema,
   }),

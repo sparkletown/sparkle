@@ -47,12 +47,12 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 }) => {
   const { user } = useUser();
 
-  const { portalSpaceSlug } = useRoom({ room });
+  const { portalSpaceId } = useRoom({ room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const portalVenue = findVenueInRelatedVenues({ spaceSlug: portalSpaceSlug });
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const isRoomUnclickable = room.type === RoomType.unclickable;
 

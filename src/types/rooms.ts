@@ -32,6 +32,7 @@ export interface Room extends PortalBox {
   image_url: string;
   enterSound?: SoundConfigReference;
   template?: PortalTemplate;
+  spaceId?: string;
 }
 
 export type ParticipantWithUser<

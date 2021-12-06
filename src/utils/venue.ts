@@ -140,6 +140,10 @@ export const findSovereignVenue = (
   });
 };
 
+/**
+ * @deprecated not needed as we moved the logic to modals; can be removed with the next admin cleanup.
+ * @see https://github.com/sparkletown/sparkle/pull/2655
+ */
 export const SPACE_EDIT_FORM_TEMPLATES = (() => {
   // these are the original templates, they all share one old form
   const ogTemplates: [VenueTemplate, ReactNode][] = Object.values(

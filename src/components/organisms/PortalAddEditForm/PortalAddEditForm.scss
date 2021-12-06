@@ -2,12 +2,14 @@
 
 $image-container-height: 200px;
 
-.PortalAddForm {
+.PortalAddEditForm {
   &__title,
   &__description {
     margin-top: $spacing--xl;
     margin-bottom: $spacing--xl;
     text-align: center;
+    font-size: $font-size--xl;
+    font-weight: $font-weight--600;
   }
 
   &__poster {
