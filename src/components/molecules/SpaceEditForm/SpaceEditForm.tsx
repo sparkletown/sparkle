@@ -21,6 +21,7 @@ import {
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
   SUBVENUE_TEMPLATES,
+  ZOOM_URL_TEMPLATES,
 } from "settings";
 
 import { updateVenueNG } from "api/venue";
@@ -55,9 +56,7 @@ import "./SpaceEditForm.scss";
 
 const HANDLED_ERRORS = [
   "name",
-  "title",
   "subtitle",
-  "image_url",
   "mapBackgroundImage",
   "iframeUrl",
   "zoomUrl",
@@ -92,6 +91,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       parentId: space.parentId ?? "",
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
+      zoomUrl: space?.zoomUrl ?? "",
     }),
     [
       space.name,
@@ -110,6 +110,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       space.parentId,
       space.sectionsCount,
       space.roomVisibility,
+      space.zoomUrl,
     ]
   );
 
@@ -289,6 +290,21 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 </>
               )
             }
+
+            {space.template &&
+              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
+              ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
+                <div>
+                  <Form.Label>URL</Form.Label>
+                  <InputField
+                    name="zoomUrl"
+                    type="text"
+                    autoComplete="off"
+                    placeholder="URL"
+                    ref={register}
+                  />
+                </div>
+              )}
 
             {!DISABLED_DUE_TO_1253 &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
