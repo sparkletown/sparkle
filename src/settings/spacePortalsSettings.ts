@@ -7,7 +7,6 @@ import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import IconConversation from "assets/icons/icon-room-conversation.svg";
 import IconEmbeddable from "assets/icons/icon-room-embeddable.svg";
 import IconExperience from "assets/icons/icon-room-experience.svg";
-import IconExternalLink from "assets/icons/icon-room-externallink.svg";
 import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import IconScreening from "assets/icons/icon-room-screening.svg";
@@ -17,7 +16,6 @@ import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
 import PosterConversation from "assets/spaces/add-portal-conversation.png";
 import PosterEmbeddable from "assets/spaces/add-portal-embeddable.png";
 import PosterExperience from "assets/spaces/add-portal-experience.png";
-import PosterExternal from "assets/spaces/add-portal-external.png";
 import PosterMusicBar from "assets/spaces/add-portal-jazzbar.png";
 import PosterMap from "assets/spaces/add-portal-map.png";
 
@@ -124,6 +122,8 @@ export const SPACE_INFO_LIST: SpaceInfoListItem[] = [
 
 export const PORTAL_INFO_LIST: PortalInfoListItem[] = [
   ...SPACE_INFO_LIST,
+  /*
+  // @debt external templates need to be implemented properly again
   {
     text: "External link",
     icon: IconExternalLink,
@@ -133,6 +133,7 @@ export const PORTAL_INFO_LIST: PortalInfoListItem[] = [
     template: "external",
     hidden: true,
   },
+  */
 ];
 
 export const PORTAL_INFO_ICON_MAPPING: Record<string, string> = Object.freeze(

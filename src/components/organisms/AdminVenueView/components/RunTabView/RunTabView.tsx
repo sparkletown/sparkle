@@ -1,14 +1,10 @@
 import React from "react";
-import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
-import { ADMIN_IA_WORLD_EDIT_PARAM_URL, SPACE_TAXON } from "settings";
+import { SPACE_TAXON } from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { generateUrl } from "utils/url";
-
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
 import { MapPreview } from "pages/Admin/MapPreview";
 
@@ -22,8 +18,6 @@ import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunT
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import "./RunTabView.scss";
 
 export interface RunTabViewProps {
@@ -31,7 +25,6 @@ export interface RunTabViewProps {
 }
 
 export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
   if (!venue) {
     return <LoadingPage />;
   }
@@ -43,18 +36,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
       <AdminSidebar>
         <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
         <div className="RunTabView__content">
-          <ButtonNG
-            isLink
-            className="RunTabView__advanced"
-            linkTo={generateUrl({
-              route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
-              required: ["worldSlug", "spaceSlug"],
-              params: { worldSlug, spaceSlug },
-            })}
-            iconName={faCog}
-          >
-            {SPACE_TAXON.capital} Settings
-          </ButtonNG>
           <RunTabUsers venueId={venueId} />
         </div>
       </AdminSidebar>
