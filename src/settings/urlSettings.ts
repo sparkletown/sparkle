@@ -34,7 +34,7 @@ export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
 export const VERSION_URL = "/version";
 const SPACE_EMERGENCY_BASE_URL = "/m";
 const SPACE_INSIDE_BASE_URL = "/in";
-const SPACE_LANDING_BASE_URL = "/land";
+const SPACE_LANDING_BASE_URL = "/v";
 export const WORLD_ROOT_URL = "/w";
 
 export const DEFAULT_SPACE_SLUG = "bootstrap" as SpaceSlug;
