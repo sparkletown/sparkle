@@ -24,8 +24,8 @@ export const WorldNav: React.FC = () => {
         key={key}
         to={generateUrl({
           route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
-          required: ["worldSlug", "spaceSlug"],
-          params: { worldSlug, spaceSlug: key },
+          required: ["worldSlug", "selectedTab"],
+          params: { worldSlug, selectedTab: key },
         })}
         className={classNames({
           WorldNav__tab: true,
