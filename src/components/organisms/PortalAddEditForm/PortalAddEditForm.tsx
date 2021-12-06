@@ -126,6 +126,10 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       spaceId,
       isClickable = DEFAULT_PORTAL_IS_CLICKABLE,
       isEnabled = DEFAULT_PORTAL_IS_ENABLED,
+      // @debt this needs resolving properly
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      image_file,
     } = getValues();
 
     const portalSource = portal ?? {};
@@ -135,6 +139,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       ...portalSource,
       title,
       image_url,
+      image_file,
       visibility,
       spaceId,
       type: !isClickable ? RoomType.unclickable : undefined,
