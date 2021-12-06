@@ -26,7 +26,6 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
 }) => {
   const { sovereignVenue } = useRelatedVenues();
 
-  const lastSeenIn = user.lastVenueIdSeenIn;
   const isCurrentUser = useIsCurrentUser(user.id);
 
   const { user: firebaseUser } = useUser();
@@ -53,14 +52,6 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
             userStatuses={sovereignVenue?.userStatuses}
             showDropdown={isCurrentUser}
           />
-        </div>
-      )}
-      {lastSeenIn && !isCurrentUser && (
-        <div>
-          <span>last seen in</span>{" "}
-          <span className="ProfileModalBasicTextInfo--underlined">
-            {lastSeenIn}
-          </span>
         </div>
       )}
     </div>
