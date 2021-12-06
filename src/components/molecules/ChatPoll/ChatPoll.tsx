@@ -16,7 +16,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Loading } from "components/molecules/Loading";
 
-import Button from "components/atoms/Button";
+import { ButtonOG } from "components/atoms/ButtonOG";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 
 import "./ChatPoll.scss";
@@ -57,7 +57,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   const renderQuestions = useMemo(
     () =>
       questions.map((question) => (
-        <Button
+        <ButtonOG
           key={question.name}
           customClass="ChatPoll__question"
           onClick={() => handleVote(question)}
@@ -68,7 +68,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
               p: "span",
             }}
           />
-        </Button>
+        </ButtonOG>
       )),
     [questions, handleVote]
   );

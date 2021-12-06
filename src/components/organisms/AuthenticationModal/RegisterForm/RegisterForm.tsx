@@ -4,14 +4,17 @@ import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
 
-import { DEFAULT_REQUIRES_DOB } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  DEFAULT_REQUIRES_DOB,
+} from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
-import { generateAccountProfileUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -164,7 +167,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const profileUrl = generateAccountProfileUrl(worldSlug, spaceSlug);
+      const profileUrl = generateUrl({
+        route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      });
 
       history.push(profileUrl);
     } catch (error) {

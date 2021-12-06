@@ -6,7 +6,7 @@ import { WithId } from "utils/id";
 
 import { usePosters } from "hooks/posters";
 
-import { Button } from "components/atoms/Button";
+import { ButtonOG } from "components/atoms/ButtonOG";
 
 import { PosterHallSearch } from "./components/PosterHallSearch";
 import { PosterPreview } from "./components/PosterPreview";
@@ -54,9 +54,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
       <div className="PosterHall__more-button">
         {shouldShowMorePosters && (
-          <Button onClick={increaseDisplayedPosterCount}>
+          <ButtonOG onClick={increaseDisplayedPosterCount}>
             Show more posters
-          </Button>
+          </ButtonOG>
         )}
       </div>
     </div>

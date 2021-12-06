@@ -11,7 +11,7 @@ import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { ChatPoll } from "components/molecules/ChatPoll";
 
-import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage/ChatMessage";
+import { ChatMessage as ChatMessageComponent } from "components/atoms/ChatMessage";
 
 import "./ChatboxMessage.scss";
 

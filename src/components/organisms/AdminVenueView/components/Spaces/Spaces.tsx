@@ -18,8 +18,8 @@ import { AdminSidebarTitle } from "components/organisms/AdminVenueView/component
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
+import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalList } from "components/molecules/PortalList";
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 
 import { AdminShowcase } from "../AdminShowcase";
 
@@ -98,57 +98,35 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
   const selectedRoomIndex =
     venue?.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
-  const renderSpaceEditForm = useCallback(() => {
-    if (!selectedRoom) return;
-
-    return (
-      <SpaceEditForm
-        room={selectedRoom}
-        updatedRoom={updatedRoom}
-        roomIndex={selectedRoomIndex}
-        onBackClick={clearSelectedRoom}
-        onDelete={clearSelectedRoom}
-        onEdit={clearSelectedRoom}
-      />
-    );
-  }, [selectedRoom, updatedRoom, selectedRoomIndex, clearSelectedRoom]);
-
   return (
     <AdminPanel variant="bound" className="Spaces">
       <AdminSidebar>
-        {renderSpaceEditForm()}
-        {!selectedRoom && (
-          <>
-            <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
-            <AdminSpacesListItem title="Map background">
-              <BackgroundSelect
-                venueId={venue.id}
-                isLoadingBackgrounds={isLoadingBackgrounds}
-                mapBackgrounds={mapBackgrounds}
-                venueName={venue.name}
-                spaceSlug={venue.slug}
-                worldId={venue.worldId}
-              />
-              {errorFetchBackgrounds && (
-                <>
-                  <div>
-                    The preset map backgrounds could not be fetched. Please,
-                    refresh the page or upload a custom map background.
-                  </div>
-                  <div>Error: {errorFetchBackgrounds.message}</div>
-                </>
-              )}
-            </AdminSpacesListItem>
-            <AdminSpacesListItem
-              title={`${numberOfRooms} ${ROOMS_TAXON.capital}`}
-            >
-              {renderVenueRooms}
-            </AdminSpacesListItem>
-            <AdminSpacesListItem title={`Add ${ROOMS_TAXON.lower}`}>
-              <PortalList items={PORTAL_INFO_LIST} variant="modal" />
-            </AdminSpacesListItem>
-          </>
-        )}
+        <AdminSidebarTitle>Build your spaces</AdminSidebarTitle>
+        <AdminSpacesListItem title="Map background">
+          <BackgroundSelect
+            venueId={venue.id}
+            isLoadingBackgrounds={isLoadingBackgrounds}
+            mapBackgrounds={mapBackgrounds}
+            venueName={venue.name}
+            spaceSlug={venue.slug}
+            worldId={venue.worldId}
+          />
+          {errorFetchBackgrounds && (
+            <>
+              <div>
+                The preset map backgrounds could not be fetched. Please, refresh
+                the page or upload a custom map background.
+              </div>
+              <div>Error: {errorFetchBackgrounds.message}</div>
+            </>
+          )}
+        </AdminSpacesListItem>
+        <AdminSpacesListItem title={`${numberOfRooms} ${ROOMS_TAXON.capital}`}>
+          {renderVenueRooms}
+        </AdminSpacesListItem>
+        <AdminSpacesListItem title={`Add ${ROOMS_TAXON.lower}`}>
+          <PortalList items={PORTAL_INFO_LIST} variant="modal" />
+        </AdminSpacesListItem>
       </AdminSidebar>
       <AdminShowcase className="Spaces__map">
         <MapPreview
@@ -161,6 +139,13 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
           selectedRoom={selectedRoom}
         />
       </AdminShowcase>
+
+      <PortalAddEditModal
+        portal={selectedRoom}
+        portalIndex={selectedRoomIndex}
+        show={hasSelectedRoom}
+        onHide={clearSelectedRoom}
+      />
     </AdminPanel>
   );
 };

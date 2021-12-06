@@ -4,7 +4,12 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { PortalInfoListItem, SPACE_INFO_LIST, SPACE_TAXON } from "settings";
+import {
+  ADMIN_IA_SPACE_BASE_PARAM_URL,
+  PortalInfoListItem,
+  SPACE_INFO_LIST,
+  SPACE_TAXON,
+} from "settings";
 
 import { createSlug, createVenue_v2 } from "api/admin";
 
@@ -12,7 +17,7 @@ import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
 
 import { SpaceSlug } from "types/venues";
 
-import { adminNGVenueUrl, generateAdminIaSpacePath } from "utils/url";
+import { adminNGVenueUrl, generateUrl } from "utils/url";
 import { buildEmptySpace } from "utils/venue";
 
 import { createSpaceSchema } from "forms/createSpaceSchema";
@@ -117,7 +122,11 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
         </AdminSection>
         <AdminSection title="Your URL will be">
           <YourUrlDisplay
-            path={generateAdminIaSpacePath(worldSlug)}
+            path={generateUrl({
+              route: ADMIN_IA_SPACE_BASE_PARAM_URL,
+              required: ["worldSlug"],
+              params: { worldSlug },
+            })}
             slug={slug}
           />
         </AdminSection>

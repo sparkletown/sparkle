@@ -2,7 +2,11 @@ import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
-import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  LOC_UPDATE_FREQ_MS,
+  PLATFORM_BRAND_NAME,
+} from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -15,7 +19,7 @@ import {
 } from "utils/selectors";
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
-import { accountProfileVenueUrl, venueEntranceUrl } from "utils/url";
+import { generateUrl, venueEntranceUrl } from "utils/url";
 import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
@@ -258,7 +262,15 @@ export const VenuePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={accountProfileVenueUrl(worldSlug, spaceSlug)} />;
+    return (
+      <Redirect
+        to={generateUrl({
+          route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug, spaceSlug },
+        })}
+      />
+    );
   }
 
   return (

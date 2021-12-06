@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
+import { ACCOUNT_PROFILE_VENUE_PARAM_URL } from "settings";
+
 import {
   EntranceStepTemplate,
   EntranceStepTemplateProps,
@@ -8,8 +10,8 @@ import {
 
 import { isCompleteProfile } from "utils/profile";
 import {
-  accountProfileVenueUrl,
   generateAttendeeInsideUrl,
+  generateUrl,
   venueEntranceUrl,
 } from "utils/url";
 
@@ -76,7 +78,15 @@ export const VenueEntrancePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={accountProfileVenueUrl(worldSlug, spaceSlug)} />;
+    return (
+      <Redirect
+        to={generateUrl({
+          route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug, spaceSlug },
+        })}
+      />
+    );
   }
 
   const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =

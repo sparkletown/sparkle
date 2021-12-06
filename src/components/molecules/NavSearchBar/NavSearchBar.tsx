@@ -25,7 +25,7 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { PortalModal } from "components/templates/PartyMap/components";
+import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { EventModal } from "components/organisms/EventModal";
 

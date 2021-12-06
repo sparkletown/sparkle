@@ -3,9 +3,11 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
+import { ADMIN_IA_WORLD_EDIT_PARAM_URL } from "settings";
+
 import { WorldNavTab } from "types/world";
 
-import { adminWorldUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -20,7 +22,11 @@ export const WorldNav: React.FC = () => {
     return Object.entries(WorldNavLabelMap).map(([key, label]) => (
       <Link
         key={key}
-        to={worldSlug ? adminWorldUrl(worldSlug, key) : "#"}
+        to={generateUrl({
+          route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
+          required: ["worldSlug", "spaceSlug"],
+          params: { worldSlug, spaceSlug: key },
+        })}
         className={classNames({
           WorldNav__tab: true,
           "WorldNav__tab--selected": selectedTab === key,

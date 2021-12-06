@@ -32,7 +32,6 @@ import { SpaceSlug, VenueTemplate } from "types/venues";
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { isExternalPortal } from "utils/url";
 
-import { roomSchema } from "forms/roomSchema";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -80,6 +79,10 @@ export interface SpaceEditFormProps {
   onEdit?: () => void;
 }
 
+/**
+ * @deprecated not needed as we moved the logic to modals; can be removed with the next admin cleanup.
+ * @see https://github.com/sparkletown/sparkle/pull/2655
+ */
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
   room,
   updatedRoom,
@@ -174,9 +177,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     errors,
   } = useForm({
     reValidateMode: "onChange",
-    validationSchema: isExternalPortal(room)
-      ? roomSchema({ required: true })
-      : spaceEditSchema,
+    validationSchema: spaceEditSchema,
     defaultValues,
     validationContext: {
       template: room.template,

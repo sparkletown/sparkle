@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useInterval } from "react-use";
 import firebase from "firebase/app";
-import { FalseyValue } from "styled-components";
 
 import {
   ALWAYS_EMPTY_OBJECT,
@@ -31,7 +30,11 @@ const updateSeatedData = async <T extends VenueTemplate>(
   template: T,
   venueId: string | undefined,
   userId: string | undefined,
-  venueSpecificData: RecentSeatedUserData<T>["venueSpecificData"] | FalseyValue
+  venueSpecificData:
+    | RecentSeatedUserData<T>["venueSpecificData"]
+    | undefined
+    | null
+    | false
 ) => {
   if (!venueSpecificData || !venueId || !userId) return;
 
@@ -48,7 +51,11 @@ const updateSeatedData = async <T extends VenueTemplate>(
 const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
   template: T,
   venueId: string | undefined,
-  venueSpecificData: RecentSeatedUserData<T>["venueSpecificData"] | FalseyValue
+  venueSpecificData:
+    | RecentSeatedUserData<T>["venueSpecificData"]
+    | undefined
+    | null
+    | false
 ) => {
   const { userId } = useUser();
 
@@ -72,7 +79,7 @@ const useUpdateRecentSeatedUsers = <T extends VenueTemplate>(
 
 export const useUpdateAuditoriumRecentSeatedUsers = (
   venueId: string | undefined,
-  sectionId: string | FalseyValue
+  sectionId: string | undefined | null | false
 ) => {
   useUpdateRecentSeatedUsers(
     VenueTemplate.auditorium,

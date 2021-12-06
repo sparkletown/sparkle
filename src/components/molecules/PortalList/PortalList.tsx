@@ -10,7 +10,7 @@ import { get } from "lodash";
 
 import { PortalInfoListItem } from "settings";
 
-import { PortalAddModal } from "components/molecules/PortalAddModal";
+import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalListItem } from "components/molecules/PortalListItem";
 
 import "./PortalList.scss";
@@ -59,7 +59,7 @@ export const PortalList: React.FC<PortalListProps> = ({
             }}
           />
           {variant === "modal" && (
-            <PortalAddModal
+            <PortalAddEditModal
               item={item}
               show={selectedIndex === index}
               onHide={clearSelectedIndex}

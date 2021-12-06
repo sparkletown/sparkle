@@ -459,54 +459,6 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
-// @debt this is legacy functionality related to the Playa template, and should be cleaned up along with it
-exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
-  checkAuth(context);
-
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-
-  const doc = await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
-  }
-  const updated = doc.data();
-  updated.dustStorm = !updated.dustStorm;
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .update(updated);
-
-  // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
-  // Fetch the doc again, in case anything changed meanwhile.
-  // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
-  // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
-  if (updated.dustStorm) {
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    await wait(50 * 1000);
-    const doc = await admin
-      .firestore()
-      .collection("venues")
-      .doc(PLAYA_VENUE_ID)
-      .get();
-
-    if (doc && doc.exists) {
-      const updated = doc.data();
-      updated.dustStorm = false;
-      admin
-        .firestore()
-        .collection("venues")
-        .doc(PLAYA_VENUE_ID)
-        .update(updated);
-    }
-  }
-});
-
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id;

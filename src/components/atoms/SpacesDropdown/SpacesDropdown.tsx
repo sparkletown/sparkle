@@ -15,10 +15,15 @@ import "./SpacesDropdown.scss";
 
 const noneOptionName = "None";
 const spaceNoneOption = Object.freeze({
-  none: Object.freeze({ id: undefined, name: "", template: undefined }),
+  none: Object.freeze({ id: "", name: "", template: undefined }),
 });
 
-export type SpacesDropdownPortal = { template?: PortalTemplate; name: string };
+export type SpacesDropdownPortal = {
+  template?: PortalTemplate;
+  name: string;
+  id?: string;
+};
+
 export interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
@@ -36,6 +41,8 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   fieldName,
   error,
 }) => {
+  // @debt SpacesDropdown should not know about the concept of parent spaces
+  // It should be getting the value from the form values instead.
   const [selected, setSelected] = useState(parentSpace);
 
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
@@ -62,7 +69,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           <ReactBootstrapDropdown.Item
             key={id + name}
             onClick={() => {
-              setSelected({ name, template });
+              setSelected({ name, template, id });
               setValue(fieldName, id, true);
             }}
             className="SpacesDropdown__item"
@@ -86,7 +93,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       return "Select a space";
     }
 
-    const space = spaces?.[selected.name] ?? parentSpace;
+    const space = spaces?.[selected.id ?? ""] ?? parentSpace;
 
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 

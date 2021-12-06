@@ -18,10 +18,10 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   room,
   isLive,
 }) => {
-  const { enterRoom, portalSpaceSlug } = useRoom({ room });
+  const { enterRoom, portalSpaceId } = useRoom({ room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({});
-  const portalVenue = findVenueInRelatedVenues({ spaceSlug: portalSpaceSlug });
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const roomImage = getFirebaseStorageResizedImage(room.image_url, {
     fit: "crop",

@@ -1,1 +1,0 @@
-export { VenueCard } from "./VenueCard";
