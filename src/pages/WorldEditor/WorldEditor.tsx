@@ -1,9 +1,9 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { WorldNavTab } from "types/world";
+import { ADMIN_ROOT_URL } from "settings";
 
-import { adminWorldSpacesUrl } from "utils/url";
+import { WorldNavTab } from "types/world";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
@@ -48,10 +48,7 @@ export const WorldEditor: React.FC = () => {
         <AdminRestricted>
           <AdminTitleBar variant="two-rows">
             {world && (
-              <ButtonNG
-                linkTo={adminWorldSpacesUrl(world.slug)}
-                iconName={faArrowLeft}
-              >
+              <ButtonNG linkTo={ADMIN_ROOT_URL} iconName={faArrowLeft}>
                 Back to Dashboard
               </ButtonNG>
             )}
