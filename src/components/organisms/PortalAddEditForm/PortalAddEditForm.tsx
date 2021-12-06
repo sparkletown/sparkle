@@ -193,8 +193,8 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     !!portal &&
     isTruthy(
       portal.visibility ||
-      portal.type === RoomType.unclickable ||
-      !portal.isEnabled
+        portal.type === RoomType.unclickable ||
+        !portal.isEnabled
     );
 
   const [isOverrideAppearanceEnabled, toggleOverrideAppearance] = useToggle(
