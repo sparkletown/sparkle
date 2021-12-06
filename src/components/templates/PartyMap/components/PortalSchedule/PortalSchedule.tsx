@@ -11,7 +11,7 @@ import { arrayIncludes } from "utils/types";
 
 import { useUser } from "hooks/useUser";
 
-import { PortalScheduleItem } from "..";
+import { PortalScheduleItem } from "components/templates/PartyMap/components/PortalScheduleItem";
 
 import "./PortalSchedule.scss";
 

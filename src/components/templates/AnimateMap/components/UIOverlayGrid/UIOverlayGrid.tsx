@@ -10,7 +10,8 @@ import {
 import { Room } from "types/rooms";
 import { AnimateMapVenue } from "types/venues";
 
-import { PortalModal } from "../../../PartyMap/components";
+import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
+
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";

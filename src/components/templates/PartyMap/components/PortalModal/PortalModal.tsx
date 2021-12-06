@@ -25,7 +25,7 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { PortalSchedule } from "../PortalSchedule/PortalSchedule";
+import { PortalSchedule } from "../PortalSchedule";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 

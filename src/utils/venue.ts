@@ -6,14 +6,10 @@ import { createSlug, VenueInput_v2 } from "api/admin";
 
 import {
   AnyVenue,
-  JazzbarVenue,
   PortalTemplate,
   SpaceSlug,
-  urlFromImage,
   VenueTemplate,
 } from "types/venues";
-
-import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
 
 import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 import { SpaceEditFormProps } from "components/molecules/SpaceEditForm/SpaceEditForm";
@@ -58,44 +54,6 @@ export const buildEmptySpace = (
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
-  };
-};
-
-export const createJazzbar = (values: FormValues): JazzbarVenue => {
-  return {
-    template: VenueTemplate.jazzbar,
-    name: values.name || "Your Jazz Bar",
-    slug: (values.name
-      ? createSlug(values.name)
-      : createSlug("Your Jazz Bar")) as SpaceSlug,
-    config: {
-      theme: {
-        primaryColor: "yellow",
-        backgroundColor: "red",
-      },
-      landingPageConfig: {
-        coverImageUrl: urlFromImage(
-          "/default-profile-pic.png",
-          values.bannerImageFile
-        ),
-        subtitle: values.subtitle || "Subtitle for your space",
-        description: values.description || "Description of your space",
-        presentation: [],
-        checkList: [],
-        quotations: [],
-      },
-    },
-    host: {
-      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
-    },
-    owners: [],
-    termsAndConditions: [],
-    width: values.width ?? 40,
-    height: values.width ?? 40,
-    // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
-    iframeUrl: "",
-    logoImageUrl: "",
-    worldId: "",
   };
 };
 

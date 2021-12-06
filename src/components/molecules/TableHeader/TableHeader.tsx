@@ -184,8 +184,3 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
     </div>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default TableHeader;

@@ -24,7 +24,7 @@ import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio/NormalRadio";
+import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";

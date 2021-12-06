@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import {
+  ATTENDEE_SPACE_INSIDE_URL,
   DEFAULT_VENUE_BANNER_COLOR,
   DEFAULT_VENUE_LOGO,
   PORTAL_INFO_ICON_MAPPING,
@@ -16,7 +17,7 @@ import { AnyVenue } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
-import { adminNGVenueUrl, generateAttendeeInsideUrl } from "utils/url";
+import { adminNGVenueUrl, generateUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 
@@ -66,9 +67,10 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
         <div className="AdminSpaceCard__bg-container">
           <Link
             className="AdminSpaceCard__link"
-            to={generateAttendeeInsideUrl({
-              worldSlug,
-              spaceSlug: venue.slug,
+            to={generateUrl({
+              route: ATTENDEE_SPACE_INSIDE_URL,
+              required: ["worldSlug", "spaceSlug"],
+              params: { worldSlug, spaceSlug: venue.slug },
             })}
             target="_blank"
             rel="noopener noreferer"

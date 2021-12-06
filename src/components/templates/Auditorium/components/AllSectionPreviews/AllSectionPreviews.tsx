@@ -20,7 +20,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { Loading } from "components/molecules/Loading";
 
 import { BackButton } from "components/atoms/BackButton";
-import { Button } from "components/atoms/Button";
+import { ButtonOG } from "components/atoms/ButtonOG";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
@@ -134,7 +134,9 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
                 label="Hide full sections"
               />
 
-              <Button onClick={enterRandomSection}>Enter random section</Button>
+              <ButtonOG onClick={enterRandomSection}>
+                Enter random section
+              </ButtonOG>
             </div>
           </div>
 

@@ -13,7 +13,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
-import { RoomAttendance } from "../RoomAttendance";
+import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
 import "./MapRoom.scss";
 

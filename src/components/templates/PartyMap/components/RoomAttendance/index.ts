@@ -1,0 +1,1 @@
+export { RoomAttendance } from "./RoomAttendance";

@@ -71,5 +71,3 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     </DndProvider>
   );
 };
-
-export default MapPreview;

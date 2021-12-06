@@ -23,7 +23,7 @@ import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { Button } from "components/atoms/Button";
+import { ButtonOG } from "components/atoms/ButtonOG";
 
 import "./EventModal.scss";
 
@@ -108,13 +108,13 @@ export const EventModal: React.FC<EventModalProps> = ({
           <RenderMarkdown text={event.description} />
         </div>
 
-        <Button
+        <ButtonOG
           customClass="EventModal__button"
           onClick={goToEventLocation}
           disabled={!isLive}
         >
           {eventStatus} in the {eventLocationToDisplay}
-        </Button>
+        </ButtonOG>
       </div>
     </Modal>
   );
