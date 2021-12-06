@@ -22,7 +22,7 @@ export interface VideoParticipantProps extends ContainerClassName {
   defaultMute?: boolean;
   defaultVideoHidden?: boolean;
 
-  isAudioEffectDisabled?: boolean;
+  isAudioEffectEnabled?: boolean;
 }
 
 export const VideoParticipant: React.FC<VideoParticipantProps> = ({
@@ -32,7 +32,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   defaultMute = false,
   defaultVideoHidden = false,
   containerClassName,
-  isAudioEffectDisabled,
+  isAudioEffectEnabled,
 }) => {
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
@@ -82,7 +82,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           <UserProfilePicture
             user={participantUser}
             reactionPosition="right"
-            isAudioEffectDisabled={isAudioEffectDisabled}
+            isAudioEffectEnabled={isAudioEffectEnabled}
           />
         </div>
       )}

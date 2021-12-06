@@ -49,7 +49,7 @@ import "./UserProfilePicture.scss";
 
 export interface UserProfilePictureProp extends ContainerClassName {
   user?: WithId<User>;
-  isAudioEffectDisabled?: boolean;
+  isAudioEffectEnabled?: boolean;
   reactionPosition?: "left" | "right";
   showStatus?: boolean;
   /**
@@ -62,7 +62,7 @@ export interface UserProfilePictureProp extends ContainerClassName {
 
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   user,
-  isAudioEffectDisabled = true,
+  isAudioEffectEnabled = true,
   containerClassName,
   reactionPosition = "right",
   showStatus = false,
@@ -129,7 +129,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       {userId && (
         <UserReactions
           userId={userId}
-          isMuted={isAudioEffectDisabled}
+          isMuted={isAudioEffectEnabled}
           reactionPosition={reactionPosition}
         />
       )}

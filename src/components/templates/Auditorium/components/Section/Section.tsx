@@ -29,14 +29,15 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const isReactionsAudioDisabled = !venue.isReactionsMuted;
+  const defaultReactionsValue =
+    venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE;
 
   const {
     isShown: isUserAudioOn,
     toggle: toggleUserAudio,
     hide: disableUserAudio,
     show: enableUserAudio,
-  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
+  } = useShowHide(defaultReactionsValue);
 
   useEffect(() => {
     if (venue.isReactionsMuted) {
@@ -50,7 +51,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     currentVenueId: venue.id,
   });
 
-  const isUserAudioMuted = !isUserAudioOn;
   const { iframeUrl, id: venueId } = venue;
   const { sectionId } = useParams<{ sectionId: string }>();
 
@@ -105,7 +105,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   );
 
   const seatsGrid = useAuditoriumGrid({
-    isUserAudioMuted,
+    isUserAudioOn,
     rows: baseRowsCount,
     columns: baseColumnsCount,
     checkIfSeat,
@@ -123,8 +123,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
           <ReactionsBar
             venueId={venueId}
             leaveSeat={leaveSeat}
-            isReactionsMuted={isUserAudioMuted}
-            isAudioDisabled={isReactionsAudioDisabled}
+            isReactionsMuted={isUserAudioOn}
+            isAudioDisabled={defaultReactionsValue}
             toggleMute={toggleUserAudio}
           />
         </div>

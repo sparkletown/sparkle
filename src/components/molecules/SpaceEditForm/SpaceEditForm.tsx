@@ -340,8 +340,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                     name="isReactionsMuted"
                     register={register}
                     disabled={isReactionsMutedDisabled}
-                    displayOn="Audible"
-                    displayOff="Muted"
+                    displayOn="Muted"
+                    displayOff="Audible"
                   />
                 </AdminSection>
               )

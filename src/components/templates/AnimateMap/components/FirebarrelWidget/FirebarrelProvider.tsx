@@ -55,7 +55,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
         onConnectChange(roomId, [], false);
       }}
       setUserList={setUserList}
-      isAudioEffectDisabled={false}
+      isAudioEffectEnabled={false}
     />
   ) : (
     <></>

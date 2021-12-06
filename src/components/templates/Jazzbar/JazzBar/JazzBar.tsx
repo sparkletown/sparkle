@@ -71,10 +71,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   const defaultReactionsValue =
     venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE;
-  const isReactionsAudioDisabled =
-    venue.isReactionsMuted ?? defaultReactionsValue
-      ? false
-      : DEFAULT_REACTIONS_AUDIBLE;
 
   const {
     isShown: isUserAudioOn,
@@ -90,8 +86,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
       disableUserAudio();
     }
   }, [defaultReactionsValue, disableUserAudio, enableUserAudio]);
-
-  const isUserAudioMuted = !isUserAudioOn;
 
   useEffect(() => {
     analytics.trackEnterJazzBarEvent();
@@ -187,9 +181,9 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                   <div className="actions-container">
                     <ReactionsBar
                       venueId={venue.id}
-                      isReactionsMuted={isUserAudioMuted}
+                      isReactionsMuted={isUserAudioOn}
                       toggleMute={toggleUserAudio}
-                      isAudioDisabled={isReactionsAudioDisabled}
+                      isAudioDisabled={defaultReactionsValue}
                     />
                   </div>
                 )}
@@ -216,7 +210,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
               roomName={`${venue.id}-${seatedAtTable}`}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
-              isAudioEffectDisabled={isUserAudioMuted}
+              isAudioEffectEnabled={isUserAudioOn}
             />
           )}
           <TablesUserList
