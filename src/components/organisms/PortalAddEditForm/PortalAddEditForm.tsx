@@ -188,12 +188,20 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     !!portal &&
     isTruthy(
       portal.visibility ||
-        portal.type === RoomType.unclickable ||
-        !portal.isEnabled
+      portal.type === RoomType.unclickable ||
+      !portal.isEnabled
     );
 
   const [isOverrideAppearanceEnabled, toggleOverrideAppearance] = useToggle(
     isAppearanceOverridenInPortal
+  );
+
+  const parentSpace = useMemo(
+    () =>
+      portal?.spaceId
+        ? ownedVenues.find(({ id }) => id === portal?.spaceId)
+        : { name: "" },
+    [ownedVenues, portal?.spaceId]
   );
 
   return (
@@ -216,6 +224,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       <AdminSection title="Which space should we open to?" withLabel>
         <SpacesDropdown
           spaces={backButtonOptionList}
+          parentSpace={parentSpace}
           setValue={setValue}
           register={register}
           fieldName="spaceId"

@@ -41,6 +41,8 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   fieldName,
   error,
 }) => {
+  // @debt SpacesDropdown should not know about the concept of parent spaces
+  // It should be getting the value from the form values instead.
   const [selected, setSelected] = useState(parentSpace);
 
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
