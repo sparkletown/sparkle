@@ -15,10 +15,15 @@ import "./SpacesDropdown.scss";
 
 const noneOptionName = "None";
 const spaceNoneOption = Object.freeze({
-  none: Object.freeze({ id: undefined, name: "", template: undefined }),
+  none: Object.freeze({ id: "", name: "", template: undefined }),
 });
 
-export type SpacesDropdownPortal = { template?: PortalTemplate; name: string };
+export type SpacesDropdownPortal = {
+  template?: PortalTemplate;
+  name: string;
+  id?: string;
+};
+
 export interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
@@ -62,7 +67,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
           <ReactBootstrapDropdown.Item
             key={id}
             onClick={() => {
-              setSelected({ name, template });
+              setSelected({ name, template, id });
               setValue(fieldName, id, true);
             }}
             className="SpacesDropdown__item"
@@ -86,7 +91,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       return "Select a space";
     }
 
-    const space = spaces?.[selected.name] ?? parentSpace;
+    const space = spaces?.[selected.id ?? ""] ?? parentSpace;
 
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
