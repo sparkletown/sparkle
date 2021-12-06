@@ -1,5 +1,10 @@
 import React, { lazy, Suspense } from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from "react-router-dom";
 
 import {
   ACCOUNT_ROOT_URL,
@@ -11,13 +16,21 @@ import {
   ENTRANCE_STEP_VENUE_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
+  googleCloudWestName,
+  googleCloudWestRootUrl,
+  iterableName,
+  iterableRootUrl,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
   VERSION_URL,
 } from "settings";
 
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
+
 import { tracePromise } from "utils/performance";
+import { generateAttendeeInsideUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
@@ -93,10 +106,27 @@ const EmergencyViewPage = lazy(() =>
 export const AppRouter: React.FC = () => {
   const { user } = useUser();
 
+  // @debt custom redirects that are to be removed in the future
+  // done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+  const googleCloudWestWorldUrl = generateAttendeeInsideUrl({
+    worldSlug: googleCloudWestName as WorldSlug,
+    spaceSlug: googleCloudWestName as SpaceSlug,
+  });
+  const iterableWorldUrl = generateAttendeeInsideUrl({
+    worldSlug: iterableName as WorldSlug,
+    spaceSlug: iterableName as SpaceSlug,
+  });
+
   return (
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
+          <Route path={iterableRootUrl}>
+            <Redirect to={iterableWorldUrl} />
+          </Route>
+          <Route path={googleCloudWestRootUrl}>
+            <Redirect to={googleCloudWestWorldUrl} />
+          </Route>
           <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
 
           <Route path={ACCOUNT_ROOT_URL}>
