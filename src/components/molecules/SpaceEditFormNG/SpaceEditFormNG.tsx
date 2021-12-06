@@ -70,6 +70,10 @@ const HANDLED_ERRORS: string[] = [
   "numberOfSections",
 ];
 
+/**
+ * @deprecated not needed as we moved the logic to modals; can be removed with the next admin cleanup.
+ * @see https://github.com/sparkletown/sparkle/pull/2655
+ */
 export const SpaceEditFormNG: React.FC<SpaceEditFormNGProps> = ({
   room,
   updatedRoom,
