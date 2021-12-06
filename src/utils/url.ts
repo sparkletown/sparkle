@@ -71,11 +71,8 @@ export const adminWorldSpacesUrl = (worldSlug?: string) =>
   generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
 type generateAttendeeInsideUrlOptions = {
-  // @debt changes made due to having hardcoded strings as world/space slugs
-  // (| string;) to be removed in the future
-  // done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
-  worldSlug?: WorldSlug | string;
-  spaceSlug?: SpaceSlug | string;
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
   absoluteUrl?: boolean;
 };
 
