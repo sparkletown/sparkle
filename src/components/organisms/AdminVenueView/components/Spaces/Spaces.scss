@@ -8,6 +8,11 @@ $icon-size: 20px;
   display: flex;
   flex: 1;
 
+  &__PreviewContainer {
+    display: flex;
+    flex-direction: column;
+  }
+
   .MapPreview {
     width: calc(100% - 1px);
     height: calc(100% - 1px);

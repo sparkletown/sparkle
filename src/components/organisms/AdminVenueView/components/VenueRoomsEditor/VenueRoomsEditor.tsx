@@ -49,6 +49,13 @@ interface PortalSize {
   height: number;
 }
 
+export interface DimensionProps {
+  x_percent?: number;
+  y_percent?: number;
+  width_percent?: number;
+  height_percent?: number;
+}
+
 export interface VenueRoomsEditorProps {
   snapToGrid?: boolean;
   roomIcons?: RoomIcon[];
@@ -70,6 +77,7 @@ export interface VenueRoomsEditorProps {
   rooms: Room[];
   selectedRoom?: Room;
   setSelectedRoom: Dispatch<SetStateAction<Room | undefined>>;
+  updatedDimensions: Record<string, DimensionProps>;
 }
 
 export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
@@ -89,6 +97,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   setSelectedRoom,
   onResize,
   onMove,
+  updatedDimensions,
 }) => {
   const roomIconsArray = useMemo(() => roomIcons ?? [], [roomIcons]);
 
@@ -268,8 +277,15 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   const renderRoomsPreview = useMemo(
     () =>
-      rooms.map((room, index) =>
-        room === selectedRoom ? (
+      rooms.map((room, index) => {
+        const roomPosition = {
+          x_percent: room.x_percent,
+          y_percent: room.y_percent,
+          width_percent: room.width_percent,
+          height_percent: room.height_percent,
+          ...updatedDimensions[room.title],
+        };
+        return room === selectedRoom ? (
           <div key={`${room.title}-${index}`}>{renderSelectedRoom(index)}</div>
         ) : (
           <div
@@ -277,10 +293,10 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
               "Container__room-image--disabled": !room.isEnabled,
             })}
             style={{
-              top: `${room.y_percent}%`,
-              left: `${room.x_percent}%`,
-              width: `${room.width_percent}%`,
-              height: `${room.height_percent}%`,
+              top: `${roomPosition.y_percent}%`,
+              left: `${roomPosition.x_percent}%`,
+              width: `${roomPosition.width_percent}%`,
+              height: `${roomPosition.height_percent}%`,
               backgroundImage: `url(${room.image_url})`,
             }}
             key={`${room.title}-${index}`}
@@ -288,9 +304,15 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           >
             <div className="Container__room-title">{room.title}</div>
           </div>
-        )
-      ),
-    [renderSelectedRoom, rooms, selectedRoom, setSelectedRoom]
+        );
+      }),
+    [
+      renderSelectedRoom,
+      rooms,
+      selectedRoom,
+      setSelectedRoom,
+      updatedDimensions,
+    ]
   );
 
   return (
