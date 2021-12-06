@@ -1,20 +1,8 @@
-import React, { ReactNode } from "react";
-
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
-import {
-  AnyVenue,
-  PortalTemplate,
-  SpaceSlug,
-  VenueTemplate,
-} from "types/venues";
-
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
-import { SpaceEditFormProps } from "components/molecules/SpaceEditForm/SpaceEditForm";
-import { SpaceEditFormNG } from "components/molecules/SpaceEditFormNG";
-import { SpaceEditFormNGProps } from "components/molecules/SpaceEditFormNG/SpaceEditFormNG";
+import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
@@ -139,29 +127,3 @@ export const findSovereignVenue = (
     maxDepth: maxDepth ? maxDepth - 1 : undefined,
   });
 };
-
-/**
- * @deprecated not needed as we moved the logic to modals; can be removed with the next admin cleanup.
- * @see https://github.com/sparkletown/sparkle/pull/2655
- */
-export const SPACE_EDIT_FORM_TEMPLATES = (() => {
-  // these are the original templates, they all share one old form
-  const ogTemplates: [VenueTemplate, ReactNode][] = Object.values(
-    VenueTemplate
-  ).map((template) => [template, SpaceEditForm]);
-
-  // these are the new templates, some will override the old ones
-  const ngTemplates: [PortalTemplate | "undefined" | "", ReactNode][] = [
-    [VenueTemplate.auditorium, SpaceEditFormNG],
-    ["external", SpaceEditForm],
-    // this is a deliberate attempt in providing default form for missing portal template
-    ["", SpaceEditForm],
-    ["undefined", SpaceEditForm],
-  ];
-
-  // mapping is created with NG overriding OG and type set as the record generated from the arrays
-  return Object.fromEntries([...ogTemplates, ...ngTemplates]) as Record<
-    string,
-    React.FC<SpaceEditFormNGProps | SpaceEditFormProps>
-  >;
-})();
