@@ -88,6 +88,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
           <VideoParticipant
             participant={participant.participant}
             participantUser={participant.user}
+            isAudioEffectDisabled={isAudioEffectDisabled}
           />
         </div>
       ))}
@@ -100,6 +101,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
             <VideoParticipant
               participant={participant.participant}
               participantUser={participant.user}
+              isAudioEffectDisabled={isAudioEffectDisabled}
             />
           </div>
         ))}
