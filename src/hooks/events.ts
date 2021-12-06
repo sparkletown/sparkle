@@ -12,6 +12,8 @@ const emptyArray: never[] = [];
 
 export interface VenueEventsProps {
   venueIds: string[];
+  // A dummy number that is used to trigger a refetch
+  refetchIndex?: number;
 }
 
 export interface VenueEventsData {
@@ -24,6 +26,7 @@ export interface VenueEventsData {
 
 export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
   venueIds,
+  refetchIndex = 0,
 }) => {
   const {
     loading: isEventsLoading,
@@ -38,13 +41,20 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
       {
         metrics: {
           venueIdsLength: venueIds.length,
+          refetchIndex,
         },
       }
     );
-  }, [venueIds]); // TODO: figure out this deps in an efficient way so it doesn't keep re-rendering
+    // @debt This refetchIndex is a hack to force a refetch when we think the
+    // underlying data might have changed. This is because the data structure
+    // makes it hard to subscribe to all events on all venues.
+  }, [refetchIndex, venueIds]); // TODO: figure out this deps in an efficient way so it doesn't keep re-rendering
 
   return {
-    isEventsLoading,
+    // @debt related to the above
+    // To make things seem smoother the loading flag is only set if the
+    // refetchIndex is zero.
+    isEventsLoading: isEventsLoading && refetchIndex === 0,
     isError: eventsError !== undefined,
 
     events,
