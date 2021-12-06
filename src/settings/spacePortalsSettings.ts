@@ -110,7 +110,7 @@ export const SPACE_INFO_LIST: SpaceInfoListItem[] = [
     poster: PosterEmbeddable,
     description: "",
     template: VenueTemplate.embeddable,
-    hidden: false,
+    hidden: true,
   },
   {
     text: "Screening Room",

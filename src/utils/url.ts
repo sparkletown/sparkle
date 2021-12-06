@@ -171,7 +171,7 @@ export const isExternalUrl = (url: string) => {
 };
 
 export const isExternalPortal: (portal: Room) => boolean = (portal) =>
-  portal?.template === "external" || portal?.url.startsWith("http");
+  portal?.template === "external" || !portal?.spaceId;
 
 export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
   // @debt I feel like we could construct this url in a better way

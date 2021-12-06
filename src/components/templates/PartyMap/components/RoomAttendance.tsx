@@ -19,11 +19,11 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {
-  const { portalSpaceSlug } = useRoom({ room });
+  const { portalSpaceId } = useRoom({ room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues();
 
-  const portalVenue = findVenueInRelatedVenues({ spaceSlug: portalSpaceSlug });
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const numberOfUsersInRoom = portalVenue?.recentUserCount ?? 0;
 

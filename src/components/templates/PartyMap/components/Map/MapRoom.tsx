@@ -28,12 +28,12 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { portalSpaceSlug } = useRoom({ room });
+  const { portalSpaceId } = useRoom({ room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
-  const portalVenue = findVenueInRelatedVenues({ spaceSlug: portalSpaceSlug });
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const hasRecentRoomUsers =
     portalVenue?.recentUserCount && portalVenue?.recentUserCount > 0;
