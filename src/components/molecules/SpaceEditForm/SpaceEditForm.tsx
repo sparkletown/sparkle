@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -17,7 +17,6 @@ import {
   IFRAME_TEMPLATES,
   MAX_SECTIONS_AMOUNT,
   MIN_SECTIONS_AMOUNT,
-  ROOM_TAXON,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
   SUBVENUE_TEMPLATES,
@@ -34,7 +33,10 @@ import { WithId } from "utils/id";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useFetchAssets } from "hooks/useFetchAssets";
 import { useUser } from "hooks/useUser";
+
+import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
@@ -47,7 +49,6 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
@@ -131,16 +132,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     },
   });
 
+  const {
+    assets: mapBackgrounds,
+    isLoading: isLoadingBackgrounds,
+    error: errorFetchBackgrounds,
+  } = useFetchAssets("mapBackgrounds");
+
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
   const values = watch();
-
-  const changeBackgroundImageUrl = useCallback(
-    (val: string) => {
-      setValue("mapBackgroundImage", val, false);
-    },
-    [setValue]
-  );
 
   const [{ loading: isUpdating, error: updateError }, updateVenue] = useAsyncFn(
     async (data) => {
@@ -246,6 +246,31 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
               </AdminSection>
             )}
           </AdminSpacesListItem>
+
+          {BACKGROUND_IMG_TEMPLATES.includes(
+            space.template as VenueTemplate
+          ) && (
+            <AdminSpacesListItem title="Map background">
+              <BackgroundSelect
+                isLoadingBackgrounds={isLoadingBackgrounds}
+                mapBackgrounds={mapBackgrounds}
+                venueName={space.name}
+                spaceSlug={space.slug}
+                worldId={space.worldId}
+                venueId={space.id}
+              />
+              {errorFetchBackgrounds && (
+                <>
+                  <div>
+                    The preset map backgrounds could not be fetched. Please,
+                    refresh the page or upload a custom map background.
+                  </div>
+                  <div>Error: {errorFetchBackgrounds.message}</div>
+                </>
+              )}
+            </AdminSpacesListItem>
+          )}
+
           <AdminSpacesListItem title="Embedable content" isOpened>
             {space.template &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
@@ -265,31 +290,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                   />
                 </AdminSection>
               )}
-
-            {
-              // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
-              BACKGROUND_IMG_TEMPLATES.includes(
-                space.template as VenueTemplate
-              ) && (
-                <>
-                  <Form.Label>{ROOM_TAXON.capital} background</Form.Label>
-                  {/* @debt: Create AdminImageInput to wrap ImageInput with error handling and labels */}
-                  {/* ie. PortalVisibility/AdminInput */}
-                  <ImageInput
-                    onChange={changeBackgroundImageUrl}
-                    name="mapBackgroundImage"
-                    setValue={setValue}
-                    register={register}
-                    small
-                    nameWithUnderscore
-                    imgUrl={
-                      space.mapBackgroundImageUrl ?? values.mapBackgroundImage
-                    }
-                    error={errors?.mapBackgroundImage}
-                  />
-                </>
-              )
-            }
 
             {space.template &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags

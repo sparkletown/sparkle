@@ -4,10 +4,7 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { TableComponentPropsType } from "types/Table";
 
-import { currentVenueSelector } from "utils/selectors";
-
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useSelector } from "hooks/useSelector";
 
 import "./TableComponent.scss";
 
@@ -17,9 +14,9 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   imageSize = 50,
   table,
   tableLocked,
+  venue,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
-  const venue = useSelector(currentVenueSelector);
   const locked = tableLocked(table.reference);
   const numberOfSeatsLeft = table.capacity && table.capacity - users.length;
   const full = numberOfSeatsLeft === 0;

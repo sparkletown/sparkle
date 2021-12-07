@@ -15,11 +15,11 @@
     outline: none;
     color: var(--content--over-50a);
     text-decoration: none;
+  }
 
-    &:hover {
-      color: var(--content--over);
-      text-decoration: underline var(--content--over);
-    }
+  :hover * {
+    color: var(--content--over);
+    text-decoration: underline var(--content--over);
   }
 
   &:focus,

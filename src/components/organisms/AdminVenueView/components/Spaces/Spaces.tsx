@@ -10,6 +10,7 @@ import { AdminPanel } from "components/organisms/AdminVenueView/components/Admin
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
+import { PortalsTable } from "components/molecules/PortalsTable";
 import { SpaceEditForm } from "components/molecules/SpaceEditForm";
 
 import { AdminShowcase } from "../AdminShowcase";
@@ -20,22 +21,21 @@ interface SpacesProps {
   venue: WithId<AnyVenue>;
 }
 
-export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
-  return (
-    <AdminPanel variant="bound" className="Spaces">
-      <AdminSidebar>
-        <SpaceEditForm space={venue} />
-      </AdminSidebar>
-      <AdminShowcase className="Spaces__map">
-        {BACKGROUND_IMG_TEMPLATES.includes(venue.template as VenueTemplate) && (
-          <MapPreview
-            isEditing={false}
-            mapBackground={venue?.mapBackgroundImageUrl}
-            rooms={venue.rooms || []}
-            setSelectedRoom={() => undefined}
-          />
-        )}
-      </AdminShowcase>
-    </AdminPanel>
-  );
-};
+export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => (
+  <AdminPanel variant="bound" className="Spaces">
+    <AdminSidebar>
+      <SpaceEditForm space={space} />
+    </AdminSidebar>
+    <AdminShowcase className="Spaces__map">
+      {BACKGROUND_IMG_TEMPLATES.includes(space.template as VenueTemplate) && (
+        <MapPreview
+          isEditing={false}
+          mapBackground={space?.mapBackgroundImageUrl}
+          rooms={space.rooms || []}
+          setSelectedRoom={() => undefined}
+        />
+      )}
+      <PortalsTable space={space} />
+    </AdminShowcase>
+  </AdminPanel>
+);

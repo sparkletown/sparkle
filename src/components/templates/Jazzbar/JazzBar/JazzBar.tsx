@@ -221,6 +221,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             joinMessage={!venue.hideVideo ?? true}
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
+            venue={venue}
           />
         </div>
       </VenueWithOverlay>

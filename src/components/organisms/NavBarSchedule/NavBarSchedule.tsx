@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classNames from "classnames";
 import {
   addDays,
@@ -54,6 +60,17 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
 }) => {
+  // @debt This refetchIndex is used to force a refetch of the data when events
+  // have been edited. It's horrible and needs a rethink. It also doesn't
+  // help the attendee side at all.
+  const [refetchIndex, setRefetchIndex] = useState(0);
+  const prevIsVisibleRef = useRef<boolean>();
+  useEffect(() => {
+    if (prevIsVisibleRef.current !== isVisible) {
+      setRefetchIndex(refetchIndex + 1);
+      prevIsVisibleRef.current = isVisible;
+    }
+  }, [isVisible, prevIsVisibleRef, refetchIndex]);
   const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
@@ -78,7 +95,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ userEventIds });
+  } = useVenueScheduleEvents({ userEventIds, refetchIndex });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
