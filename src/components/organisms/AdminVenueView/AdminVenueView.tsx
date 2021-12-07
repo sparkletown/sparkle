@@ -76,7 +76,7 @@ export const AdminVenueView: React.FC = () => {
     hide: closeDeleteModal,
   } = useShowHide();
 
-  const { space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+  const { space, spaceId, isLoaded, world } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );
@@ -109,9 +109,11 @@ export const AdminVenueView: React.FC = () => {
     return <LoadingPage />;
   }
 
+  const navBarTitle = `Sparkle Admin ${world?.name ?? ""}`;
+
   if (!space) {
     return (
-      <WithNavigationBar withSchedule withHiddenLoginButton>
+      <WithNavigationBar withSchedule withHiddenLoginButton title={navBarTitle}>
         <AdminRestricted>
           <NotFound />
         </AdminRestricted>
@@ -120,7 +122,11 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar withSchedule variant="internal-scroll">
+    <WithNavigationBar
+      withSchedule
+      variant="internal-scroll"
+      title={navBarTitle}
+    >
       <AdminRestricted>
         <div className="AdminVenueView">
           <AdminTitleBar variant="grid-with-tools">
