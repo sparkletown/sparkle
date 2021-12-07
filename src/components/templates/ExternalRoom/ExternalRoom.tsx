@@ -17,6 +17,8 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogoIcon } from "components/atoms/SparkleLogoIcon";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
+import IconExternalLink from "assets/icons/icon-room-externallink.svg";
+
 import "./ExternalRoom.scss";
 
 export interface ExternalRoomProps {
@@ -27,7 +29,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const redirectUrl = venue.zoomUrl ?? "";
 
   const venueLogoVars = useCss({
-    "background-image": `url(${venue.host?.icon})`,
+    "background-image": `url(${venue.host?.icon || IconExternalLink})`,
   });
 
   const venueLogoClasses = classNames(

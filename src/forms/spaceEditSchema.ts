@@ -4,6 +4,7 @@ import {
   IFRAME_TEMPLATES,
   MAX_SECTIONS_AMOUNT,
   MIN_SECTIONS_AMOUNT,
+  ROOM_TAXON,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -38,6 +39,7 @@ const iframeUrlSchema = Yup.string().when(
 );
 
 export const spaceEditSchema = Yup.object().shape({
+  logoImageUrl: Yup.string().required(`${ROOM_TAXON.capital} icon is required`),
   bannerImageUrl: Yup.string().notRequired(),
   autoplay: Yup.boolean().notRequired(),
   numberOfSections: numberOfSectionsSchema,

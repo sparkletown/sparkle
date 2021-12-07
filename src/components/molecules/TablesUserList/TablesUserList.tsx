@@ -13,6 +13,7 @@ import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { TableSeatedUser } from "types/User";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
@@ -55,6 +56,7 @@ export interface TablesUserListProps {
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
+  venue: WithId<AnyVenue>;
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
@@ -65,6 +67,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   showOnlyAvailableTables = false,
   TableComponent,
   joinMessage,
+  venue,
 }) => {
   const {
     isShown: isLockedMessageVisible,
@@ -199,6 +202,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
+        venue={venue}
       />
     ));
   }, [
@@ -210,6 +214,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     TableComponent,
     usersSeatedAtTables,
     onJoinClicked,
+    venue,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;
@@ -218,7 +223,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     <>
       {renderedTables}
       {canStartTable && (
-        <StartTable tables={tables} newTable={createTable(tables.length)} />
+        <StartTable
+          tables={tables}
+          newTable={createTable(tables.length)}
+          venue={venue}
+        />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
         <Modal.Body>

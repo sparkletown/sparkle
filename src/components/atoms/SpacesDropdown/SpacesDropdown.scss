@@ -1,11 +1,17 @@
 @import "scss/constants";
 
 $dropdown-item-icon-size: 20px;
+$dropddown-list-max-height: 250px;
 
 .SpacesDropdown {
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  .dropdown-menu {
+    max-height: $dropddown-list-max-height;
+    overflow-y: auto;
+  }
 
   &__value {
     display: flex;
