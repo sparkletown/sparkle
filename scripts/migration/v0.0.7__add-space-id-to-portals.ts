@@ -27,7 +27,7 @@ const findSpaceId = (spaces, worldId, url: string) => {
     }
   } else {
     // old stlye URL, match on name
-    const spaceNameToFind = url.split("/").slice(-1);
+    const spaceNameToFind = url.split("/").slice(-1)[0];
     const space = findSpaceByName(spaces, worldId, spaceNameToFind);
     if (space) {
       return space.id;
