@@ -10,7 +10,7 @@ $dropddown-list-max-height: 250px;
 
   .dropdown-menu {
     max-height: $dropddown-list-max-height;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   &__value {
