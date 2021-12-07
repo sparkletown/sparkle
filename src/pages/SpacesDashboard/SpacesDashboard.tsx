@@ -85,7 +85,7 @@ export const SpacesDashboard: React.FC = () => {
     <div className="SpacesDashboard">
       <WithNavigationBar
         variant="internal-scroll"
-        title={`Sparkle Admin ${world?.name ?? ""}`}
+        title={`${world?.name ?? ""}`}
       >
         <AdminRestricted>
           <AdminTitleBar variant="grid-with-tools">

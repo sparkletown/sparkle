@@ -109,7 +109,7 @@ export const AdminVenueView: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const navBarTitle = `Sparkle Admin ${world?.name ?? ""}`;
+  const navBarTitle = `${world?.name ?? ""}`;
 
   if (!space) {
     return (

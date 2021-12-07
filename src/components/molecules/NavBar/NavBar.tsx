@@ -171,7 +171,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const showSoundCloudRadio = withRadio
     ? (world?.showRadio && isSoundCloud) ?? false
     : false;
-
+  console.log(isAdminContext);
   return (
     <>
       <header>
@@ -200,7 +200,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                <div>{navbarTitle}</div>
+                <>
+                  <div className="nav-location-title">Sparkle Admin</div>
+                  <div>{navbarTitle}</div>
+                </>
               )}
 
               {spaceId && !isAdminContext && (
