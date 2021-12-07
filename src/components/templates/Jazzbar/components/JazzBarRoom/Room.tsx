@@ -75,9 +75,9 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     return () => {
       if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach((trackPublication) => {
-          stopLocalTrack(trackPublication.track);
-        });
+        room.localParticipant.tracks.forEach(
+          (trackPublication) => void stopLocalTrack(trackPublication.track)
+        );
         room.disconnect();
       }
     };
@@ -106,15 +106,20 @@ const Room: React.FC<RoomProps> = ({
     setSeatedAtTable && setSeatedAtTable("");
   }, [firebase, profile, setSeatedAtTable, user, venueName]);
 
-  const participantConnected = useCallback((participant: Video.Participant) => {
-    setParticipants((prevParticipants) => [
-      // Hopefully prevents duplicate users in the participant list
-      ...prevParticipants.filter((p) => p.identity !== participant.identity),
-      participant,
-    ]);
-  }, []);
+  const onParticipantConnected = useCallback(
+    (participant: Video.Participant) => {
+      setParticipants((prevParticipants) => [
+        // Hopefully prevents duplicate users in the participant list
+        ...prevParticipants.filter(
+          ({ identity }) => identity !== participant.identity
+        ),
+        participant,
+      ]);
+    },
+    []
+  );
 
-  const participantDisconnected = useCallback(
+  const onParticipantDisconnected = useCallback(
     (participant: Video.Participant) => {
       setParticipants((prevParticipants) => {
         if (!prevParticipants.find((p) => p === participant)) {
@@ -123,6 +128,7 @@ const Room: React.FC<RoomProps> = ({
             "Could not find disconnnected participant:",
             participant
           );
+
           Bugsnag.notify(
             new Error("Could not find disconnnected participant"),
             (event) => {
@@ -148,14 +154,14 @@ const Room: React.FC<RoomProps> = ({
     })
       .then((room) => {
         setRoom(room);
-        room.on("participantConnected", participantConnected);
-        room.on("participantDisconnected", participantDisconnected);
-        room.participants.forEach(participantConnected);
+        room.on("participantConnected", onParticipantConnected);
+        room.on("participantDisconnected", onParticipantDisconnected);
+        room.participants.forEach(onParticipantConnected);
 
         return room;
       })
       .catch((error) => setVideoError(error.message));
-  }, [roomName, token, participantConnected, participantDisconnected]);
+  }, [roomName, token, onParticipantConnected, onParticipantDisconnected]);
 
   const reconnectToVideoRoom = useCallback(() => {
     if (!token) return;
@@ -168,18 +174,16 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     const roomConnection = connectToRoom();
 
-    if (roomConnection) {
-      roomConnection.then((room) => {
-        return () => {
-          if (room && room.localParticipant.state === "connected") {
-            room.localParticipant.tracks.forEach((trackPublication) => {
-              stopLocalTrack(trackPublication.track);
-            });
-            room.disconnect();
-          }
-        };
-      });
-    }
+    if (!roomConnection) return;
+
+    roomConnection.then((room) => () => {
+      if (room?.localParticipant.state === "connected") {
+        room.localParticipant.tracks.forEach(
+          (trackPublication) => void stopLocalTrack(trackPublication.track)
+        );
+        room.disconnect();
+      }
+    });
   }, [connectToRoom]);
 
   useEffect(() => {
