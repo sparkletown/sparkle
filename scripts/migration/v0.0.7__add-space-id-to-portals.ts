@@ -84,6 +84,10 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           spaceId,
         };
       });
+      if (JSON.stringify(rooms) === JSON.stringify(spaceData.rooms)) {
+        console.log(`No updates for ${spaceDoc.id}`);
+        continue;
+      }
 
       await firestore.collection("venues").doc(spaceDoc.id).update({ rooms });
     }
