@@ -460,10 +460,13 @@ export const sendBotVenueMessage: (
   await chatsRef.doc(chatId).set({
     bot: true,
     botUserScriptTag: conf.user?.scriptTag ?? "",
-
-    from: userId,
+    fromUser: {
+      id: userId,
+      partyName: user?.partyName,
+      pictureUrl: user?.pictureUrl,
+    },
     text,
-    ts_utc: admin.firestore.Timestamp.now(),
+    timestamp: admin.firestore.Timestamp.now(),
   });
 
   stats.writes = increment(stats.writes);
