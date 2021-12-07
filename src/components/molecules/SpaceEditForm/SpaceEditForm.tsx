@@ -52,6 +52,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./SpaceEditForm.scss";
 
@@ -323,12 +324,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 space.template as VenueTemplate
               ) && (
                 <AdminSection>
-                  <AdminCheckbox
-                    name="showShoutouts"
-                    label="Show shoutouts"
-                    variant="toggler"
-                    register={register}
-                  />
+                  <TesterRestricted>
+                    <AdminCheckbox
+                      name="showShoutouts"
+                      label="Show shoutouts"
+                      variant="toggler"
+                      register={register}
+                    />
+                  </TesterRestricted>
                   <AdminCheckbox
                     name="showReactions"
                     label="Show reactions"
