@@ -171,7 +171,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const showSoundCloudRadio = withRadio
     ? (world?.showRadio && isSoundCloud) ?? false
     : false;
-  console.log(isAdminContext);
+
   return (
     <>
       <header>
