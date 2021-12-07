@@ -18,7 +18,7 @@ interface RoomProps {
   venueId: string;
   setSeatedAtTable?: (val: string) => void;
   defaultMute?: boolean;
-  isAudioEffectEnabled: boolean;
+  isReactionsMuted: boolean;
 }
 
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/Room
@@ -30,7 +30,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   venueId,
   setSeatedAtTable,
   defaultMute,
-  isAudioEffectEnabled,
+  isReactionsMuted,
 }) => {
   const { userId, profile, userWithId } = useUser();
 
@@ -76,7 +76,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
             participant={localParticipant}
             participantUser={userWithId}
             defaultMute={defaultMute}
-            isAudioEffectEnabled={isAudioEffectEnabled}
+            isAudioEffectDisabled={isReactionsMuted}
           />
         </div>
       )}
@@ -88,7 +88,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
           <VideoParticipant
             participant={participant.participant}
             participantUser={participant.user}
-            isAudioEffectEnabled={isAudioEffectEnabled}
+            isAudioEffectDisabled={isReactionsMuted}
           />
         </div>
       ))}
@@ -101,7 +101,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
             <VideoParticipant
               participant={participant.participant}
               participantUser={participant.user}
-              isAudioEffectEnabled={isAudioEffectEnabled}
+              isAudioEffectDisabled={isReactionsMuted}
             />
           </div>
         ))}

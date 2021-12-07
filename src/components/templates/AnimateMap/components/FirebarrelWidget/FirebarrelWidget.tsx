@@ -23,7 +23,7 @@ export interface FirebarrelWidgetProps {
   onBack?: () => void;
   hasChairs?: boolean;
   defaultMute?: boolean;
-  isAudioEffectEnabled: boolean;
+  isAudioEffectDisabled: boolean;
 }
 
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
@@ -33,7 +33,7 @@ export interface FirebarrelWidgetProps {
 export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   roomName,
   defaultMute,
-  isAudioEffectEnabled,
+  isAudioEffectDisabled,
   onExit,
 }) => {
   const { userId, userWithId } = useUser();
@@ -146,11 +146,11 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           participant={localParticipant}
           participantUser={userWithId}
           defaultMute={defaultMute}
-          isAudioEffectEnabled={isAudioEffectEnabled}
+          isAudioEffectDisabled={isAudioEffectDisabled}
         />
       </div>
     ) : null;
-  }, [defaultMute, isAudioEffectEnabled, localParticipant, userWithId]);
+  }, [defaultMute, isAudioEffectDisabled, localParticipant, userWithId]);
 
   const onExitClick = useCallback(() => {
     // const users = getUserList(
