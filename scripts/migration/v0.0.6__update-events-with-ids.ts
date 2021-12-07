@@ -54,6 +54,10 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           continue;
         }
 
+        if (eventDoc.spaceId) {
+          continue;
+        }
+
         const targetSpace = findSpaceByName(
           spaceData,
           spaces,
