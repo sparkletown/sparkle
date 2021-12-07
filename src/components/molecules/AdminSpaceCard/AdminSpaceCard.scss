@@ -1,7 +1,12 @@
 @import "scss/constants.scss";
 
 $admin-space-card-button-margin: $spacing--xs 0;
-$admin-space-card-logo-size: 80px;
+$admin-space-card-logo-size--lg: 64px;
+$admin-space-card-logo-size--sm: 48px;
+$admin-space-card-body-height: 80px;
+$admin-space-card-count-top-margin: 120px;
+$admin-space-card-bg-height: 150px;
+$admin-space-card-description-height: 100px;
 
 .AdminSpaceCard {
   position: relative;
@@ -9,67 +14,112 @@ $admin-space-card-logo-size: 80px;
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
-  border: none;
   border-radius: $border-radius--xl;
-  padding: font-size--root(1);
   gap: font-size--root(0.5);
-
-  .AdminShowcaseSubTitle {
-    font-weight: $font-weight--700;
-    font-size: font-size--parent(1.6);
-    color: $content--over;
-  }
+  max-height: 3 * $admin-space-card-bg-height;
+  border: none;
+  box-shadow: box-shadow--card(var(--content--over-20a));
 
   &__bg {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
+    height: $admin-space-card-bg-height;
     background-size: cover;
+  }
 
-    &:after {
-      transition: all 400ms $transition-function;
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: linear-gradient(
-        180deg,
-        rgba(25, 24, 26, 0.6) 0%,
-        $secondary--dark 100%
-      );
+  &__bg-container {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing--md $spacing--xl;
+  }
+
+  &__text {
+    padding: 0 $spacing--md;
+    font-size: $font-size--md;
+    text-align: left;
+  }
+
+  &__link {
+    margin-left: auto;
+    text-decoration: none;
+    z-index: z(space-card-link);
+
+    &:hover {
+      text-decoration: none;
     }
   }
 
-  &:hover &__bg:after {
-    background-image: linear-gradient(
-      180deg,
-      rgba(38, 36, 39, 0.6) 0%,
-      $saturated-black-alt 100%
-    );
+  &__link-icon {
+    margin-left: $spacing--sm;
   }
 
-  &__info {
-    width: 100%;
-    flex: 1;
+  &__icon {
+    margin: 0 $spacing--sm;
+  }
+
+  &__user-count {
+    margin-left: auto;
+    right: $spacing--xl;
+    top: $admin-space-card-count-top-margin;
+    position: absolute;
+  }
+
+  &__body {
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    min-height: $admin-space-card-body-height;
+    margin-top: -($spacing--md);
+  }
+
+  &__body-info {
+    display: flex;
     flex-direction: column;
+  }
+
+  &__footer {
+    width: 100%;
+    display: flex;
     z-index: z(admin-space-card-info);
   }
 
+  &__footer-content {
+    padding: font-size--root(1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  &__description {
+    min-height: $admin-space-card-description-height;
+    width: 100%;
+    margin-bottom: $spacing--lg;
+    font-size: $font-size--md;
+    padding: $spacing--md;
+  }
+
+  &__description-text {
+    font-size: $font-size--md;
+    text-align: left;
+  }
+
   &__logo {
-    @include square-size($admin-space-card-logo-size);
+    @include square-size($admin-space-card-logo-size--lg);
+    margin-top: $spacing--lg;
     border-radius: $border-radius--max;
     background-size: cover;
     background-color: $content--under;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 $spacing--xs $spacing--md var(--content--under-40a);
+    flex-shrink: 0;
   }
 
   .ButtonNG {
     margin: $admin-space-card-button-margin;
+  }
+}
+
+@media (max-width: $media-breakpoint--xxl) and (min-width: $media-breakpoint--lg) {
+  .AdminSpaceCard__logo {
+    @include square-size($admin-space-card-logo-size--sm);
   }
 }

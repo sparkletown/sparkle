@@ -3,7 +3,7 @@
 .SpacesDashboard {
   width: 100%;
   height: 100vh;
-  padding: $spacing--lg;
+  padding: 0;
 
   position: relative;
   overflow-y: scroll;
@@ -11,6 +11,13 @@
   &__main {
     display: grid;
     grid-template: 1fr / $admin-ia-dash-template-columns;
+  }
+
+  &__aside {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: $button-width--max-margin;
   }
 
   &__welcome-message {
@@ -26,15 +33,15 @@
   &__cards {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: max-content;
     grid-gap: font-size--root(1);
 
-    @media (max-width: $media-breakpoint--lg) {
-      grid-template-columns: repeat(4, 1fr);
+    @media (max-width: $media-breakpoint--xxl) {
+      grid-template-columns: repeat(2, 1fr);
     }
 
-    @media (max-width: $media-breakpoint--md) {
+    @media (max-width: $media-breakpoint--xl) {
       grid-template-columns: repeat(1, 1fr);
     }
   }

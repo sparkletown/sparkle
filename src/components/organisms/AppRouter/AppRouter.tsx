@@ -8,31 +8,33 @@ import {
 
 import {
   ACCOUNT_ROOT_URL,
-  ADMIN_V1_ROOT_URL,
-  ADMIN_V3_ROOT_URL,
+  ADMIN_ROOT_URL,
+  ATTENDEE_SPACE_EMERGENCY_PARAM_URL,
+  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_SPACE_LANDING_URL,
   ENTER_ROOT_URL,
   ENTRANCE_STEP_VENUE_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
+  googleCloudWestName,
+  googleCloudWestRootUrl,
+  iterableName,
+  iterableRootUrl,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
-  VENUE_EMERGENCY_PARAM_URL,
-  VENUE_INSIDE_ADMIN_PARAM_URL,
-  VENUE_INSIDE_PARAM_URL,
-  VENUE_LANDING_PARAM_URL,
-  VENUE_REDIRECT_PARAM_URL,
   VERSION_URL,
 } from "settings";
 
-import { tracePromise } from "utils/performance";
-import { venueLandingUrl } from "utils/url";
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
-import { useSettings } from "hooks/useSettings";
+import { tracePromise } from "utils/performance";
+import { generateAttendeeInsideUrl } from "utils/url";
+
 import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
-import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
@@ -51,19 +53,13 @@ const AccountSubrouter = lazy(() =>
   )
 );
 
-const AdminV1Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
-    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
-      default: AdminV1Subrouter,
-    }))
-  )
-);
-
-const AdminV3Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV3Subrouter", () =>
-    import("./AdminV3Subrouter").then(({ AdminV3Subrouter }) => ({
-      default: AdminV3Subrouter,
-    }))
+const AdminSubRouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
+    import("components/organisms/AppRouter/AdminSubRouter").then(
+      ({ AdminSubRouter }) => ({
+        default: AdminSubRouter,
+      })
+    )
   )
 );
 
@@ -108,17 +104,29 @@ const EmergencyViewPage = lazy(() =>
 );
 
 export const AppRouter: React.FC = () => {
-  const { isLoaded, settings } = useSettings();
   const { user } = useUser();
 
-  if (!isLoaded) return <LoadingPage />;
-
-  const { enableAdmin1 } = settings;
+  // @debt custom redirects that are to be removed in the future
+  // done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+  const googleCloudWestWorldUrl = generateAttendeeInsideUrl({
+    worldSlug: googleCloudWestName as WorldSlug,
+    spaceSlug: googleCloudWestName as SpaceSlug,
+  });
+  const iterableWorldUrl = generateAttendeeInsideUrl({
+    worldSlug: iterableName as WorldSlug,
+    spaceSlug: iterableName as SpaceSlug,
+  });
 
   return (
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
+          <Route path={iterableRootUrl}>
+            <Redirect to={iterableWorldUrl} />
+          </Route>
+          <Route path={googleCloudWestRootUrl}>
+            <Redirect to={googleCloudWestWorldUrl} />
+          </Route>
           <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
 
           <Route path={ACCOUNT_ROOT_URL}>
@@ -127,28 +135,16 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          {enableAdmin1 && (
-            <Route path={ADMIN_V1_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV1Subrouter />
-              </Provided>
-            </Route>
-          )}
-
-          <Route path={ADMIN_V3_ROOT_URL}>
-            <Provided withRelatedVenues>
-              <AdminV3Subrouter />
-            </Provided>
+          <Route path={ADMIN_ROOT_URL}>
+            <AdminSubRouter />
           </Route>
 
           <Route
             path={LOGIN_CUSTOM_TOKEN_PARAM_URL}
             component={LoginWithCustomToken}
           />
-          {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
-          {/*<Route path={LOGIN_URL} component={Login} />*/}
 
-          <Route path={VENUE_LANDING_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_LANDING_URL}>
             <Provided withRelatedVenues>
               <VenueLandingPage />
             </Provided>
@@ -160,32 +156,19 @@ export const AppRouter: React.FC = () => {
             </Provided>
           </Route>
 
-          <Route path={VENUE_INSIDE_ADMIN_PARAM_URL}>
-            <Provided withRelatedVenues>
-              <VenueAdminPage />
-            </Provided>
-          </Route>
-
-          <Route path={VENUE_INSIDE_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_INSIDE_URL}>
             <Provided withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
 
-          <Route path={VENUE_EMERGENCY_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>
           </Route>
 
           <Route path={VERSION_URL} component={VersionPage} />
-
-          <Route
-            path={VENUE_REDIRECT_PARAM_URL}
-            render={(props) => (
-              <Redirect to={venueLandingUrl(props.match.params[0])} />
-            )}
-          />
 
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}

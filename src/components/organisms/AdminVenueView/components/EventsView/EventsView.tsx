@@ -3,16 +3,17 @@ import React, { useCallback, useMemo, useState } from "react";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import { venueEventsNGSelector } from "utils/selectors";
 
-import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
-import { useSelector } from "hooks/useSelector";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingSpace } from "components/organisms/TimingSpace";
+
+import { Loading } from "components/molecules/Loading";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
@@ -25,9 +26,22 @@ export type EventsViewProps = {
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
-  useConnectVenueEvents(venueId);
+  // @debt This refetchIndex is used to force a refetch of the data when events
+  // have been edited. It's horrible and needs a rethink. It also doesn't
+  // help the attendee side at all.
+  const [refetchIndex, setRefetchIndex] = useState(0);
 
-  const events = useSelector(venueEventsNGSelector);
+  const {
+    findVenueInRelatedVenues,
+    relatedVenueIds,
+    isLoading: isVenuesLoading,
+  } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const { events, isEventsLoading } = useVenueEvents({
+    venueIds: relatedVenueIds,
+    refetchIndex,
+  });
 
   const {
     isShown: showCreateEventModal,
@@ -51,7 +65,12 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   const adminEventModalOnHide = useCallback(() => {
     setHideCreateEventModal();
     setEditedEvent(undefined);
-  }, [setHideCreateEventModal]);
+    setRefetchIndex(refetchIndex + 1);
+  }, [setHideCreateEventModal, refetchIndex]);
+
+  const triggerRefetch = useCallback(() => {
+    setRefetchIndex(refetchIndex + 1);
+  }, [refetchIndex]);
 
   const hasVenueEvents = events?.length !== 0;
 
@@ -70,23 +89,38 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   );
 
   const renderedSpaces = useMemo(() => {
-    const spaces = [...new Set(events?.map((event) => event.room))];
-    const getSpaceEvents = (space: string) =>
-      events?.filter((event) => event.room === space) ?? [];
+    const spaces = [...new Set(events?.map((event) => event.spaceId))];
+    const getSpaceEvents = (spaceId: string) =>
+      events?.filter((event) => event.spaceId === spaceId) ?? [];
 
-    return spaces?.map(
-      (space) =>
-        space && (
-          <TimingSpace
-            key={space}
-            spaceName={space}
-            spaceEvents={getSpaceEvents(space)}
-            setShowCreateEventModal={setShowCreateEventModal}
-            setEditedEvent={setEditedEvent}
-          />
-        )
-    );
-  }, [events, setShowCreateEventModal, setEditedEvent]);
+    return spaces?.map((spaceId) => {
+      if (!spaceId) {
+        return undefined;
+      }
+      const space = findVenueInRelatedVenues({ spaceId });
+      if (!space) {
+        return undefined;
+      }
+      return (
+        <TimingSpace
+          key={spaceId}
+          space={space}
+          spaceEvents={getSpaceEvents(spaceId)}
+          setShowCreateEventModal={setShowCreateEventModal}
+          setEditedEvent={setEditedEvent}
+        />
+      );
+    });
+  }, [
+    events,
+    setShowCreateEventModal,
+    setEditedEvent,
+    findVenueInRelatedVenues,
+  ]);
+
+  if (isVenuesLoading || isEventsLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="EventsView">
@@ -146,6 +180,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           onHide={() => {
             setHideDeleteEventModal();
             setEditedEvent && setEditedEvent(undefined);
+            triggerRefetch();
           }}
           venueId={venue.id}
           event={editedEvent}

@@ -5,7 +5,7 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { addAdmin, removeAdmin } = require("./src/api/roles");
 
 const { checkAuth } = require("./src/utils/assert");
-const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const { checkIfValidVenueId } = require("./src/utils/venue");
 const { ROOM_TAXON } = require("./taxonomy.js");
 
 const PLAYA_VENUE_ID = "jamonline";
@@ -48,27 +48,6 @@ const VenueTemplate = {
    */
   playa: "playa",
 };
-
-const DEFAULT_PRIMARY_COLOR = "#bc271a";
-
-// These templates are allowed to be used with createVenueData (they should remain alphabetically sorted)
-const VALID_CREATE_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.artpiece,
-  VenueTemplate.audience,
-  VenueTemplate.conversationspace,
-  VenueTemplate.embeddable,
-  VenueTemplate.firebarrel,
-  VenueTemplate.friendship,
-  VenueTemplate.jazzbar,
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.performancevenue,
-  VenueTemplate.themecamp,
-  VenueTemplate.viewingwindow,
-  VenueTemplate.zoomroom,
-  VenueTemplate.screeningroom,
-];
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt unify this with IFRAME_TEMPLATES in src/settings.ts + share the same code between frontend/backend
@@ -180,117 +159,6 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
-/**
- * @deprecated Use createVenueData_v2 instead.
- */
-// @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
-const createVenueData = (data, context) => {
-  if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
-    throw new HttpsError(
-      "invalid-argument",
-      `Template ${data.template} unknown`
-    );
-  }
-
-  let owners = [context.auth.token.user_id];
-  if (data.owners) {
-    owners = [...owners, ...data.owners];
-  }
-
-  const venueData = {
-    template: data.template,
-    name: data.name,
-    config: {
-      landingPageConfig: {
-        checkList: [],
-        coverImageUrl: data.bannerImageUrl,
-        subtitle: data.subtitle,
-        description: data.description,
-      },
-    },
-    presentation: [],
-    quotations: [],
-    theme: {
-      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-    },
-    host: {
-      icon: data.logoImageUrl,
-    },
-    owners,
-    entrance: data.entrance || [],
-    placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    showChat: true,
-    parentId: data.parentId,
-    userStatuses: data.userStatuses || [],
-    showRadio: data.showRadio || false,
-    showUserStatus:
-      typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
-    radioStations: data.radioStations ? [data.radioStations] : [],
-    createdAt: Date.now(),
-    updatedAt: Date.now(),
-    hasSocialLoginEnabled: data.hasSocialLoginEnabled || false,
-  };
-
-  if (data.mapBackgroundImageUrl) {
-    venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-  }
-
-  if (data.template === VenueTemplate.jazzbar) {
-    venueData.enableJukebox =
-      typeof data.enableJukebox === "boolean"
-        ? data.enableJukebox
-        : DEFAULT_ENABLE_JUKEBOX;
-  }
-  // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
-  if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
-    venueData.showReactions =
-      typeof data.showReactions === "boolean"
-        ? data.showReactions
-        : DEFAULT_SHOW_REACTIONS;
-
-    venueData.showShoutouts =
-      typeof data.showShoutouts === "boolean"
-        ? data.showShoutouts
-        : DEFAULT_SHOW_SHOUTOUTS;
-
-    if (data.auditoriumColumns) {
-      venueData.auditoriumColumns = data.auditoriumColumns;
-    }
-
-    if (data.auditoriumRows) {
-      venueData.auditoriumRows = data.auditoriumRows;
-    }
-  }
-
-  if (IFRAME_TEMPLATES.includes(data.template)) {
-    venueData.iframeUrl = data.iframeUrl;
-    venueData.autoPlay = data.autoPlay;
-  }
-
-  if (ZOOM_URL_TEMPLATES.includes(data.template)) {
-    venueData.zoomUrl = data.zoomUrl;
-  }
-
-  switch (data.template) {
-    case VenueTemplate.animatemap:
-    case VenueTemplate.partymap:
-    case VenueTemplate.themecamp:
-      venueData.rooms = data.rooms;
-      venueData.roomVisibility = data.roomVisibility;
-      venueData.showGrid = data.showGrid ? data.showGrid : false;
-      break;
-
-    case VenueTemplate.playa:
-      venueData.roomVisibility = data.roomVisibility;
-      break;
-
-    default:
-      break;
-  }
-
-  return venueData;
-};
-
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
 const createVenueData_v2 = (data, context) => {
   const venueData_v2 = {
@@ -315,7 +183,6 @@ const createVenueData_v2 = (data, context) => {
     parentId: data.parentId || "",
     worldId: data.worldId,
     slug: data.slug,
-    ...(data.parentId && { parentId: data.parentId }),
   };
 
   if (data.template === VenueTemplate.jazzbar) {
@@ -517,27 +384,6 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   if (snap.empty) removeAdmin(ownerId);
 });
 
-/**
- * @deprecated This is legacy function used in the legacy version of the admin. Use createVenue_v2 instead.
- */
-// @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
-exports.createVenue = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
-
-  const batch = admin.firestore().batch();
-  // @debt this should be typed
-  const venueData = createVenueData(data, context);
-  const venueId = getVenueId(data.name);
-  const venueRef = admin.firestore().collection("venues").doc(venueId);
-
-  batch.set(venueRef, venueData);
-  initializeVenueChatMessagesCounter(venueRef, batch);
-
-  await batch.commit();
-
-  return venueData;
-});
-
 // @debt this should be de-duplicated + aligned with createVenue to ensure they both cover all needed cases
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -556,7 +402,7 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The slug ${data.slug} is already taken by another space within the world. Please try another.`
+      `The slug ${data.slug} is already taken by a space within the world. Please try another.`
     );
   }
 
@@ -613,57 +459,9 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
-// @debt this is legacy functionality related to the Playa template, and should be cleaned up along with it
-exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
-  checkAuth(context);
-
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-
-  const doc = await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
-  }
-  const updated = doc.data();
-  updated.dustStorm = !updated.dustStorm;
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .update(updated);
-
-  // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
-  // Fetch the doc again, in case anything changed meanwhile.
-  // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
-  // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
-  if (updated.dustStorm) {
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    await wait(50 * 1000);
-    const doc = await admin
-      .firestore()
-      .collection("venues")
-      .doc(PLAYA_VENUE_ID)
-      .get();
-
-    if (doc && doc.exists) {
-      const updated = doc.data();
-      updated.dustStorm = false;
-      admin
-        .firestore()
-        .collection("venues")
-        .doc(PLAYA_VENUE_ID)
-        .update(updated);
-    }
-  }
-});
-
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
 exports.updateVenue = functions.https.onCall(async (data, context) => {
-  const venueId = data.id || getVenueId(data.name);
+  const venueId = data.id;
   checkAuth(context);
 
   // @debt updateVenue_v2 uses checkUserIsAdminOrOwner rather than checkUserIsOwner. Should these be the same? Which is correct?
@@ -768,7 +566,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
 exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
-  const venueId = getVenueId(data.name);
+  const venueId = data.id;
   checkAuth(context);
 
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
@@ -840,7 +638,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 });
 
 exports.updateMapBackground = functions.https.onCall(async (data, context) => {
-  const venueId = getVenueId(data.name);
+  const venueId = data.id;
   checkAuth(context);
 
   await checkUserIsOwner(venueId, context.auth.token.user_id);
@@ -921,7 +719,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.iframeUrl = data.iframeUrl;
   }
 
-  if (data.parentId) {
+  if (typeof data.parentId === "string") {
     updated.parentId = data.parentId;
   }
 
@@ -991,6 +789,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
   // @debt perhaps await is more appropriate in front of admin so the function will return the error
   admin
     .firestore()
@@ -1038,7 +840,7 @@ exports.updateTables = functions.https.onCall((data, context) => {
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
-  const venueId = getVenueId(data.id);
+  const venueId = data.id;
   checkAuth(context);
 
   await checkUserIsOwner(venueId, context.auth.token.user_id);

@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   DAYJS_INPUT_DATE_FORMAT,
   DAYJS_INPUT_TIME_FORMAT,
   HAS_ROOMS_TEMPLATES,
@@ -18,10 +17,9 @@ import { WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
-import { AdminSection } from "components/molecules/AdminSection";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 import "./TimingEventModal.scss";
 
@@ -40,7 +38,6 @@ export type TimingEventModalProps = {
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
-  venueId,
   template,
   venue,
   setEditedEvent,
@@ -53,15 +50,20 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     errors,
     formState,
     reset,
-    setValue,
   } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: eventEditSchema,
   });
 
+  // When we're creating a new event it will default to
+  // being on the space that triggered this modal.
+  const eventSpaceId = event?.spaceId || venue.id;
+  const { findVenueInRelatedVenues } = useRelatedVenues();
+  const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
+
   useEffect(() => {
-    if (event) {
+    if (event?.id) {
       reset({
         name: event.name,
         description: event.description,
@@ -74,10 +76,9 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_hours: Math.floor(event.duration_minutes / 60),
         duration_minutes: event.duration_minutes % 60,
         host: event.host,
-        room: event.room,
       });
     }
-  }, [event, reset]);
+  }, [event, reset, eventSpaceId]);
 
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
@@ -90,48 +91,29 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         duration_minutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
+        spaceId: eventSpaceId,
+        // @debt this needs figuring out. We shouldn't get to here without
+        // an eventSpace
+        worldId: eventSpace?.worldId ?? "",
       };
-      if (template && HAS_ROOMS_TEMPLATES.includes(template))
-        formEvent.room = data.room;
-      if (venueId) {
-        if (event) {
-          await updateEvent(venueId, event.id, formEvent);
+      if (eventSpaceId) {
+        if (event?.id) {
+          await updateEvent(eventSpaceId, event.id, formEvent);
         } else {
-          await createEvent(venueId, formEvent);
+          await createEvent(eventSpaceId, formEvent);
         }
       }
       onHide();
     },
-    [onHide, venueId, template, event]
+    [onHide, eventSpaceId, eventSpace, event]
   );
 
   const showDeleteButton =
-    template && HAS_ROOMS_TEMPLATES.includes(template) && event;
+    template && HAS_ROOMS_TEMPLATES.includes(template) && event?.id;
   const handleDelete = () => {
     onHide();
     setEditedEvent && setEditedEvent(event);
     setShowDeleteEventModal();
-  };
-
-  const dropdownVenueList = useMemo(
-    () =>
-      Object.fromEntries(
-        venue?.rooms?.map((room) => [
-          room.title,
-          { ...room, name: room.title },
-        ]) ?? ALWAYS_EMPTY_ARRAY
-      ),
-    [venue?.rooms]
-  );
-
-  const parentRoom = useMemo(
-    () => venue?.rooms?.find(({ title }) => title === event?.room),
-    [event?.room, venue?.rooms]
-  );
-
-  const parentSpace = {
-    name: parentRoom?.title ?? venue.name,
-    template: parentRoom?.template ?? venue.template,
   };
 
   return (
@@ -146,23 +128,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           <div className="form-container">
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
-              <div className="input-group dropdown-container">
-                <SpacesDropdown
-                  portals={dropdownVenueList}
-                  setValue={setValue}
-                  register={register}
-                  fieldName="room"
-                  parentSpace={parentSpace}
-                  error={errors.room}
-                />
-              </div>
+              <p>Your experience is in {eventSpace?.name}</p>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="name">Name your experience</label>
                 <input
                   id="name"
                   name="name"
-                  className="input-group__modal-input"
+                  className="TimingEventModal__input-group__modal-input"
                   placeholder="Name"
                   ref={register}
                 />
@@ -171,11 +144,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 )}
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="description">Describe your experience</label>
                 <textarea
                   name="description"
-                  className="input-group__modal-input"
+                  className="TimingEventModal__input-group__modal-input"
                   placeholder="Description"
                   ref={register}
                 />
@@ -186,12 +159,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 )}
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="host">Host (people hosting the event)</label>
                 <input
                   id="host"
                   name="host"
-                  className="input-group__modal-input"
+                  className="TimingEventModal__input-group__modal-input"
                   placeholder="Dottie Longstockings"
                   ref={register}
                 />
@@ -200,12 +173,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 )}
               </div>
 
-              <div className="input-group">
+              <div className="TimingEventModal__input-group">
                 <label htmlFor="date">
                   Start date and time (use your own time zone; it will be
                   automatically localized)
                 </label>
-                <label></label>
                 <div className="TimingEventModal__container">
                   {/*
                   These wrapper divs are here to unmuddle some precedance issues
@@ -218,7 +190,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                       type="date"
                       min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
                       name="start_date"
-                      className="input-group__modal-input"
+                      className="TimingEventModal__input-group__modal-input"
                       ref={register}
                     />
                   </div>
@@ -226,7 +198,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     <input
                       type="time"
                       name="start_time"
-                      className="input-group__modal-input"
+                      className="TimingEventModal__input-group__modal-input"
                       ref={register}
                     />
                   </div>
@@ -246,26 +218,25 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 </div>
               </div>
 
-              <AdminSection title="Duration">
-                <div className="TimingEventModal__container">
-                  <label>
-                    <input
-                      name="duration_hours"
-                      className="input-group__modal-input input-group__modal-input--indent"
-                      placeholder="hours"
-                      ref={register}
-                    />
-                    hour(s)
-                  </label>
-                  <label>
-                    <input
-                      name="duration_minutes"
-                      className="input-group__modal-input input-group__modal-input--indent"
-                      placeholder="minutes"
-                      ref={register}
-                    />
-                    minutes
-                  </label>
+              <div className="TimingEventModal__input-group">
+                <label>Duration</label>
+                <div className="TimingEventModal__duration_container">
+                  <input
+                    name="duration_hours"
+                    className="TimingEventModal__input-group__modal-input--indent"
+                    placeholder="hours"
+                    ref={register}
+                    size={8}
+                  />
+                  <label htmlFor="duration_hours">hour(s)</label>
+                  <input
+                    name="duration_minutes"
+                    className="TimingEventModal__input-group__modal-input--indent"
+                    placeholder="minutes"
+                    ref={register}
+                    size={8}
+                  />
+                  <label htmlFor="duration_minutes">minutes</label>
                 </div>
                 <div className="TimingEventModal__container">
                   {errors.duration_hours && (
@@ -279,17 +250,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     </span>
                   )}
                 </div>
-              </AdminSection>
+              </div>
 
               <div className="TimingEventModal__container">
-                <ButtonNG
-                  disabled={formState.isSubmitting}
-                  variant="primary"
-                  type="submit"
-                >
-                  {event ? "Update" : "Create"}
-                </ButtonNG>
-
+                {
+                  // @debt: move this delete button to the experience list component
+                }
                 {showDeleteButton && (
                   <ButtonNG
                     disabled={formState.isSubmitting}
@@ -299,11 +265,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     Delete
                   </ButtonNG>
                 )}
-              </div>
 
-              <div className="TimingEventModal__container">
                 <ButtonNG variant="secondary" onClick={onHide}>
                   Cancel
+                </ButtonNG>
+
+                <ButtonNG
+                  disabled={formState.isSubmitting}
+                  variant="primary"
+                  type="submit"
+                >
+                  {event?.id ? "Update" : "Create"}
                 </ButtonNG>
               </div>
             </form>

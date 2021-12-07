@@ -6,9 +6,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
+import { enterSpace } from "utils/url";
 
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import "./BackButton.scss";
 
@@ -23,6 +24,7 @@ export const BackButton: React.FC<BackButtonProps> = ({
   space,
   variant,
 }) => {
+  const { worldSlug } = useWorldParams();
   const spaceSlug = space?.slug;
   const displayName = locationName ?? space?.name;
   const backButtonText = displayName ? `Back to ${displayName}` : "Back";
@@ -36,15 +38,25 @@ export const BackButton: React.FC<BackButtonProps> = ({
     if (!spaceSlug) return;
 
     if (variant === "relative") {
-      return enterVenue(spaceSlug, { customOpenRelativeUrl });
+      return enterSpace(worldSlug, spaceSlug, {
+        customOpenRelativeUrl,
+      });
     }
 
     if (variant === "external") {
-      return enterVenue(spaceSlug, { customOpenExternalUrl });
+      return enterSpace(worldSlug, spaceSlug, {
+        customOpenExternalUrl,
+      });
     }
 
-    return enterVenue(spaceSlug);
-  }, [spaceSlug, variant, customOpenExternalUrl, customOpenRelativeUrl]);
+    return enterSpace(worldSlug, spaceSlug);
+  }, [
+    worldSlug,
+    spaceSlug,
+    variant,
+    customOpenExternalUrl,
+    customOpenRelativeUrl,
+  ]);
 
   const isAdminContext = useAdminContextCheck();
   if (isAdminContext) {

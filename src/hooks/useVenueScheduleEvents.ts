@@ -19,6 +19,7 @@ import { isDateRangeStartWithinToday } from "utils/time";
 
 import { prepareForSchedule } from "components/organisms/NavBarSchedule/utils";
 
+import { useWorldParams } from "./worlds/useWorldParams";
 import { useVenueEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
@@ -28,8 +29,10 @@ const todaysDate = new Date();
 
 const useVenueScheduleEvents = ({
   userEventIds,
+  refetchIndex = 0,
 }: {
   userEventIds: Partial<Record<string, string[]>>;
+  refetchIndex?: number;
 }) => {
   const {
     descendantVenues,
@@ -39,21 +42,25 @@ const useVenueScheduleEvents = ({
     relatedVenues,
   } = useRelatedVenues();
 
+  const { worldSlug } = useWorldParams();
+
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
     isEventsLoading,
   } = useVenueEvents({
     venueIds: relatedVenueIds,
+    refetchIndex,
   });
   const liveAndFutureEvents = useMemo(
     () =>
       relatedVenueEvents.filter(isEventLiveOrFuture).map(
         prepareForSchedule({
+          worldSlug,
           relatedVenues: descendantVenues,
           usersEvents: userEventIds,
         })
       ),
-    [relatedVenueEvents, descendantVenues, userEventIds]
+    [relatedVenueEvents, descendantVenues, worldSlug, userEventIds]
   );
 
   const liveEventsMinimalStartValue = Math.min(

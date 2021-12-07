@@ -27,7 +27,7 @@ import {
 import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import Legend from "components/atoms/Legend";
+import { Legend } from "components/atoms/Legend";
 
 import "./MapPreview.scss";
 
@@ -41,7 +41,7 @@ export interface MapPreviewProps {
   onRoomChange?: (rooms: Room[]) => void;
 }
 
-const MapPreview: React.FC<MapPreviewProps> = ({
+export const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
   worldId,
   mapBackground,
@@ -197,5 +197,3 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     </DndProvider>
   );
 };
-
-export default MapPreview;

@@ -42,3 +42,6 @@ export const LABEL_VISIBILITY_OPTIONS: Record<
     ],
   },
 };
+
+export const DEFAULT_PORTAL_IS_CLICKABLE = true;
+export const DEFAULT_PORTAL_IS_ENABLED = true;

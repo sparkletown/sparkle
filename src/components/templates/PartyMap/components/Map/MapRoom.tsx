@@ -13,7 +13,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
-import { RoomAttendance } from "../RoomAttendance";
+import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
 import "./MapRoom.scss";
 
@@ -28,12 +28,12 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { portalVenueId } = useRoom({ room });
+  const { portalSpaceId } = useRoom({ room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
-  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const hasRecentRoomUsers =
     portalVenue?.recentUserCount && portalVenue?.recentUserCount > 0;

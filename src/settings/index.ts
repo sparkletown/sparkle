@@ -35,7 +35,9 @@ export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
+export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
+export * from "./placeholderSettings";
 export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
@@ -505,8 +507,6 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_SPACE_SLUG = "bootstrap";
-
 export const RANDOM_AVATARS = [
   "avatar-01.png",
   "avatar-02.png",
@@ -629,14 +629,6 @@ export const FIREBASE_STORAGE_IMAGES_ORIGIN =
   "https://firebasestorage.googleapis.com/v0/b/sparkle-burn.appspot.com/o/";
 export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
   "https://sparkle-burn-users.imgix.net/";
-
-// Helper values that can be safely used in places that might re-render but don't have useMemo/useCallback
-export const ALWAYS_EMPTY_OBJECT = {};
-Object.freeze(ALWAYS_EMPTY_OBJECT);
-export const ALWAYS_EMPTY_ARRAY = [];
-Object.freeze(ALWAYS_EMPTY_ARRAY);
-export const ALWAYS_NOOP_FUNCTION = () => {};
-Object.freeze(ALWAYS_NOOP_FUNCTION);
 
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,

@@ -2,8 +2,9 @@ import * as Yup from "yup";
 
 import { SpaceSchema } from "types/validation";
 
-import { venueNameSchema } from "forms/venueNameSchema";
+import { spaceNameSchema } from "forms/spaceNameSchema";
 
 export const createSpaceSchema = Yup.object().shape<SpaceSchema>({
-  venueName: venueNameSchema,
+  venueName: spaceNameSchema,
+  template: Yup.string().required(),
 });

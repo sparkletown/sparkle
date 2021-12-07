@@ -1,0 +1,1 @@
+export { PortalsTable } from "./PortalsTable";

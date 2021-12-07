@@ -14,9 +14,8 @@ import {
 import { findSpaceBySlug } from "api/space";
 
 import { PortalInput, Room, RoomInput } from "types/rooms";
-import { UserStatus } from "types/User";
 import {
-  RoomVisibility,
+  SpaceSlug,
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
@@ -24,7 +23,10 @@ import {
 } from "types/venues";
 
 import { WithId, WithWorldId } from "utils/id";
-import { venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl } from "utils/url";
+
+import { fetchVenue } from "./venue";
+import { fetchWorld } from "./world";
 
 export interface EventInput {
   name: string;
@@ -34,18 +36,7 @@ export interface EventInput {
   duration_hours: number;
   duration_minutes?: number;
   host: string;
-  room?: string;
 }
-
-type VenueImageFileKeys =
-  | "bannerImageFile"
-  | "logoImageFile"
-  | "mapBackgroundImageFile";
-
-type VenueImageUrlKeys =
-  | "bannerImageUrl"
-  | "logoImageUrl"
-  | "mapBackgroundImageUrl";
 
 type ImageFileKeys =
   | "bannerImageFile"
@@ -57,44 +48,9 @@ type ImageUrlKeys = "bannerImageUrl" | "logoImageUrl" | "mapBackgroundImageUrl";
 type RoomImageFileKeys = "image_file";
 type RoomImageUrlKeys = "image_url";
 
-type VenueImageUrls = Partial<Record<VenueImageUrlKeys, string>>;
 type RoomImageUrls = Partial<Record<RoomImageUrlKeys, string>>;
 
-export type VenueInput = VenueImageUrls & {
-  name: string;
-  slug?: string;
-  bannerImageFile?: FileList;
-  logoImageFile?: FileList;
-  mapBackgroundImageFile?: FileList;
-  subtitle?: string;
-  description?: string;
-  zoomUrl?: string;
-  iframeUrl?: string;
-  autoPlay?: boolean;
-  template: VenueTemplate;
-  rooms?: Array<Room>;
-  placement?: Omit<VenuePlacement, "state">;
-  placementRequests?: string;
-  showGrid?: boolean;
-  columns?: number;
-  width?: number;
-  height?: number;
-  parentId?: string;
-  owners?: string[];
-  auditoriumRows?: number;
-  auditoriumColumns?: number;
-  userStatuses?: UserStatus[];
-  showReactions?: boolean;
-  enableJukebox?: boolean;
-  showShoutouts?: boolean;
-  showRadio?: boolean;
-  radioStations?: string;
-  showUserStatus?: boolean;
-  hasSocialLoginEnabled?: boolean;
-  roomVisibility?: RoomVisibility;
-};
-
-export interface VenueInput_v2 extends VenueAdvancedConfig {
+export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   name: string;
   slug: string;
   description?: string;
@@ -115,9 +71,6 @@ export interface VenueInput_v2 extends VenueAdvancedConfig {
   showShoutouts?: boolean;
   showReactions?: boolean;
 }
-
-type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
-  VenueImageUrls;
 
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &
   Partial<Record<ImageUrlKeys, string>> & {
@@ -151,79 +104,14 @@ export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   return owners;
 };
 
-const createFirestoreVenueInput = async (
-  input: VenueInput,
-  user: firebase.UserInfo
-) => {
-  const storageRef = firebase.storage().ref();
-
-  const slug = createSlug(input.name);
-  type ImageNaming = {
-    fileKey: VenueImageFileKeys;
-    urlKey: VenueImageUrlKeys;
-  };
-  const imageKeys: Array<ImageNaming> = [
-    {
-      fileKey: "logoImageFile",
-      urlKey: "logoImageUrl",
-    },
-    {
-      fileKey: "bannerImageFile",
-      urlKey: "bannerImageUrl",
-    },
-    {
-      fileKey: "mapBackgroundImageFile",
-      urlKey: "mapBackgroundImageUrl",
-    },
-  ];
-
-  let imageInputData = {};
-
-  // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
-    const file = fileArr[0];
-
-    // add a random prefix to the file name to avoid overwriting a file, which invalidates the previous downloadURLs
-    const randomPrefix = Math.random().toString();
-
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${slug}/${randomPrefix}-${file.name}`
-    );
-
-    await uploadFileRef.put(file);
-    const downloadUrl: string = await uploadFileRef.getDownloadURL();
-
-    imageInputData = {
-      ...imageInputData,
-      [entry.urlKey]: downloadUrl,
-    };
-  }
-
-  let owners: string[] = [];
-  if (input.parentId) {
-    owners = await getVenueOwners(input.parentId);
-  }
-
-  const firestoreVenueInput: FirestoreVenueInput = {
-    ...omit(
-      input,
-      imageKeys.map((entry) => entry.fileKey)
-    ),
-    owners,
-    ...imageInputData,
-    rooms: [], // eventually we will be getting the rooms from the form
-    // While name is used as URL slug and there is possibility cloud functions might miss this step, canonicalize before saving
-    name: slug,
-    slug,
-  };
-
-  return firestoreVenueInput;
-};
-
-const createFirestoreVenueInput_v2 = async (
-  input: VenueInput_v2,
+/**
+ * This method creates the payload for an API call for creating/updating venues.
+ * It is only intended to be used in two places:
+ *  * Creating a new venue (and so no ID is needed)
+ *  * By createFirestoreVenueInputWithoutId_v2 which adds the venue ID
+ */
+const createFirestoreVenueInputWithoutId_v2 = async (
+  input: Omit<VenueInput_v2, "id">,
   user: firebase.UserInfo
 ) => {
   const storageRef = firebase.storage().ref();
@@ -274,7 +162,7 @@ const createFirestoreVenueInput_v2 = async (
     };
   }
 
-  const firestoreVenueInput: FirestoreVenueInput_v2 = {
+  const firestoreVenueInput: Omit<FirestoreVenueInput_v2, "id"> = {
     ...omit(
       input,
       imageKeys.map((entry) => entry.fileKey)
@@ -289,21 +177,29 @@ const createFirestoreVenueInput_v2 = async (
   return firestoreVenueInput;
 };
 
-export const createVenue = async (
-  input: VenueInput,
+const createFirestoreVenueInput_v2 = async (
+  input: VenueInput_v2,
   user: firebase.UserInfo
 ) => {
-  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
-  return await firebase.functions().httpsCallable("venue-createVenue")(
-    firestoreVenueInput
-  );
+  // We temporarily cast the result to unknown so that we can cast to the
+  // same type with the ID added, then we add the missing property.
+  const result = ((await createFirestoreVenueInputWithoutId_v2(
+    input,
+    user
+  )) as unknown) as FirestoreVenueInput_v2;
+  result.id = input.id;
+  return result;
 };
 
 export const createVenue_v2 = async (
-  input: WithWorldId<VenueInput_v2>,
+  // The default is for "doing something with a venue" to require a venue ID.
+  // Creating a venue is a special case and doesn't want a venue ID.
+  // This is preferred over having to remember to add "needs a venue ID" in
+  // many places.
+  input: WithWorldId<Omit<VenueInput_v2, "id">>,
   user: firebase.UserInfo
 ) => {
-  const firestoreVenueInput = await createFirestoreVenueInput_v2(
+  const firestoreVenueInput = await createFirestoreVenueInputWithoutId_v2(
     {
       ...input,
       showShoutouts: input.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS,
@@ -336,18 +232,6 @@ export const createVenue_v2 = async (
   }
 
   return venueResponse;
-};
-
-// @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
-export const updateVenue = async (
-  input: WithId<VenueInput>,
-  user: firebase.UserInfo
-) => {
-  const firestoreVenueInput = await createFirestoreVenueInput(input, user);
-
-  return await firebase.functions().httpsCallable("venue-updateVenue")(
-    firestoreVenueInput
-  );
 };
 
 export const updateVenue_v2 = async (
@@ -467,6 +351,9 @@ const createFirestoreRoomInput_v2 = async (
 
   let imageInputData = {};
 
+  const venue = await fetchVenue(venueId);
+  const world = await fetchWorld(venue.worldId);
+
   // upload the files
   for (const entry of imageKeys) {
     const fileArr = input[entry.fileKey];
@@ -489,7 +376,11 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + venueInsideUrl(input.venueName),
+        : window.origin +
+          generateAttendeeInsideUrl({
+            worldSlug: world.slug,
+            spaceSlug: input.venueName as SpaceSlug,
+          }),
     ...imageInputData,
   };
 
@@ -561,23 +452,6 @@ export const updateRoom = async (
     roomIndex,
     room: firestoreVenueInput,
   });
-};
-
-// @debt check if not used anywhere and remove
-export const bulkUpdateRooms = async (
-  venueId: string,
-  user: firebase.UserInfo,
-  rooms: PortalInput[]
-) => {
-  const test = rooms.map((firestoreVenueInput, index) => {
-    return firebase.functions().httpsCallable("venue-upsertRoom")({
-      venueId,
-      index,
-      room: firestoreVenueInput,
-    });
-  });
-
-  return Promise.all(test);
 };
 
 export const createRoom = async (

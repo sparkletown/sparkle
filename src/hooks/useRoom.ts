@@ -3,32 +3,35 @@ import { useHistory } from "react-router-dom";
 
 import { Room } from "types/rooms";
 
-import {
-  enterVenue,
-  getLastUrlParam,
-  getUrlWithoutTrailingSlash,
-} from "utils/url";
+import { enterSpace } from "utils/url";
+
+import { useSpaceParams } from "./spaces/useSpaceParams";
+import { useRelatedVenues } from "./useRelatedVenues";
 
 export interface UseRoomProps {
   room?: Room;
 }
 export const useRoom = ({ room }: UseRoomProps) => {
-  const roomUrl = room?.url ?? "";
+  const targetSpaceId = room?.spaceId;
 
   const { push: openUrlUsingRouter } = useHistory();
+  const { worldSlug } = useSpaceParams();
 
-  const noTrailSlashPortalUrl = roomUrl && getUrlWithoutTrailingSlash(roomUrl);
-
-  const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
+  const { findVenueInRelatedVenues } = useRelatedVenues();
 
   const enterRoom = useCallback(() => {
-    if (!portalVenueId) return;
-
-    enterVenue(portalVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [portalVenueId, openUrlUsingRouter]);
+    if (targetSpaceId) {
+      const targetSpace = findVenueInRelatedVenues({ spaceId: targetSpaceId });
+      if (targetSpace) {
+        enterSpace(worldSlug, targetSpace?.slug, {
+          customOpenRelativeUrl: openUrlUsingRouter,
+        });
+      }
+    }
+  }, [findVenueInRelatedVenues, targetSpaceId, worldSlug, openUrlUsingRouter]);
 
   return {
     enterRoom,
-    portalVenueId,
+    portalSpaceId: room?.spaceId,
   };
 };

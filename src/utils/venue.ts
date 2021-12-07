@@ -1,23 +1,8 @@
-import React, { ReactNode } from "react";
-
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
-import {
-  AnyVenue,
-  JazzbarVenue,
-  PortalTemplate,
-  urlFromImage,
-  VenueTemplate,
-} from "types/venues";
-
-import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
-
-import { SpaceEditForm } from "components/molecules/SpaceEditForm";
-import { SpaceEditFormProps } from "components/molecules/SpaceEditForm/SpaceEditForm";
-import { SpaceEditFormNG } from "components/molecules/SpaceEditFormNG";
-import { SpaceEditFormNGProps } from "components/molecules/SpaceEditFormNG/SpaceEditFormNG";
+import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
@@ -37,62 +22,26 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
   return /[a-z0-9_]{1,250}/.test(venueId);
 };
 
-export const buildEmptyVenue = (
-  venueName: string,
+export const buildEmptySpace = (
+  name: string,
   template: VenueTemplate
-): VenueInput_v2 => {
+): Omit<VenueInput_v2, "id"> => {
   const list = new DataTransfer();
 
   const fileList = list.files;
 
   return {
-    name: venueName,
-    slug: createSlug(venueName),
+    name,
+    slug: createSlug(name) as SpaceSlug,
     subtitle: "",
     description: "",
-    template: template,
+    template,
     bannerImageFile: fileList,
     bannerImageUrl: "",
     logoImageUrl: "",
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
-  };
-};
-
-export const createJazzbar = (values: FormValues): JazzbarVenue => {
-  return {
-    template: VenueTemplate.jazzbar,
-    name: values.name || "Your Jazz Bar",
-    slug: values.name ? createSlug(values.name) : createSlug("Your Jazz Bar"),
-    config: {
-      theme: {
-        primaryColor: "yellow",
-        backgroundColor: "red",
-      },
-      landingPageConfig: {
-        coverImageUrl: urlFromImage(
-          "/default-profile-pic.png",
-          values.bannerImageFile
-        ),
-        subtitle: values.subtitle || "Subtitle for your space",
-        description: values.description || "Description of your space",
-        presentation: [],
-        checkList: [],
-        quotations: [],
-      },
-    },
-    host: {
-      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
-    },
-    owners: [],
-    termsAndConditions: [],
-    width: values.width ?? 40,
-    height: values.width ?? 40,
-    // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
-    iframeUrl: "",
-    logoImageUrl: "",
-    worldId: "",
   };
 };
 
@@ -178,25 +127,3 @@ export const findSovereignVenue = (
     maxDepth: maxDepth ? maxDepth - 1 : undefined,
   });
 };
-
-export const SPACE_EDIT_FORM_TEMPLATES = (() => {
-  // these are the original templates, they all share one old form
-  const ogTemplates: [VenueTemplate, ReactNode][] = Object.values(
-    VenueTemplate
-  ).map((template) => [template, SpaceEditForm]);
-
-  // these are the new templates, some will override the old ones
-  const ngTemplates: [PortalTemplate | "undefined" | "", ReactNode][] = [
-    [VenueTemplate.auditorium, SpaceEditFormNG],
-    ["external", SpaceEditForm],
-    // this is a deliberate attempt in providing default form for missing portal template
-    ["", SpaceEditForm],
-    ["undefined", SpaceEditForm],
-  ];
-
-  // mapping is created with NG overriding OG and type set as the record generated from the arrays
-  return Object.fromEntries([...ogTemplates, ...ngTemplates]) as Record<
-    string,
-    React.FC<SpaceEditFormNGProps | SpaceEditFormProps>
-  >;
-})();

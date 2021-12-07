@@ -16,8 +16,6 @@ import {
 
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
-
 import { AdminDateTime } from "components/molecules/AdminDateTime";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
@@ -96,7 +94,7 @@ const validationSchema = Yup.object().shape({
     .test("endTime", "End time must be after the start time", testEndTime),
 });
 
-export interface SpaceTimingFormProps extends AdminSidebarFooterProps {
+export interface SpaceTimingFormProps {
   venue: WithId<AnyVenue>;
 }
 
@@ -141,6 +139,7 @@ export const SpaceTimingForm: React.FC<SpaceTimingFormProps> = ({ venue }) => {
 
       await updateVenue_v2(
         {
+          id: venue.id,
           name: venue.name,
           slug: venue.slug,
           worldId: venue.worldId,

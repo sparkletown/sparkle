@@ -8,7 +8,7 @@
     height: 60vh;
     background-color: $content--under;
     border-radius: $border-radius--xl;
-    box-shadow: box-shadow--large();
+    box-shadow: box-shadow--large(var(--content--under-50a));
     overflow-y: scroll;
   }
 
@@ -37,7 +37,7 @@
   .TimingEvent {
     display: flex;
     width: 100%;
-    color: $concrete;
+    color: var(--content--over-60a);
     padding: $spacing--lg;
 
     &__time {

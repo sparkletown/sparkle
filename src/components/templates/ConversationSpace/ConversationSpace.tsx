@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_VENUE_LOGO,
+  PORTAL_INFO_ICON_MAPPING,
+} from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
 
@@ -18,7 +22,7 @@ import { Room } from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
-import TableHeader from "components/molecules/TableHeader";
+import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
@@ -63,9 +67,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   const tables = venue?.config?.tables ?? TABLES;
 
+  const infoIcon =
+    venue?.host?.icon ||
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+
   return (
     <>
-      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
+      <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>
@@ -130,6 +138,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               joinMessage={venue.hideVideo === false}
               customTables={tables}
               showOnlyAvailableTables={showOnlyAvailableTables}
+              venue={venue}
             />
           </div>
           <UserList

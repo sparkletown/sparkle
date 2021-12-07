@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 
-import { VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -13,7 +13,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./TimingSpace.scss";
 
 export type TimingSpaceProps = {
-  spaceName: string;
+  space: WithId<AnyVenue>;
   spaceEvents: WithId<VenueEvent>[];
   setEditedEvent: React.Dispatch<
     React.SetStateAction<WithId<VenueEvent> | undefined>
@@ -22,7 +22,7 @@ export type TimingSpaceProps = {
 };
 
 export const TimingSpace: React.FC<TimingSpaceProps> = ({
-  spaceName,
+  space,
   spaceEvents,
   setShowCreateEventModal,
   setEditedEvent,
@@ -30,10 +30,9 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
   const { isShown: selectedSpace, toggle: toggleSelectedSpace } = useShowHide();
 
   const onClickCreateButton = useCallback(() => {
-    const event = { room: spaceName } as WithId<VenueEvent>;
     setShowCreateEventModal();
-    setEditedEvent(event);
-  }, [setShowCreateEventModal, setEditedEvent, spaceName]);
+    setEditedEvent({ spaceId: space.id } as WithId<VenueEvent>);
+  }, [setShowCreateEventModal, setEditedEvent, space.id]);
 
   const renderedSpaceEvents = useMemo(
     () =>
@@ -65,7 +64,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
     <div className="TimingSpace">
       <div className="TimingSpace__header" onClick={toggleSelectedSpace}>
         <span>
-          <span className="TimingSpace__name">{spaceName}</span>
+          <span className="TimingSpace__name">{space.name}</span>
           <span className="TimingSpace__title">{spaceNameTitle}</span>
         </span>
         <ButtonNG

@@ -7,7 +7,6 @@ import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import IconConversation from "assets/icons/icon-room-conversation.svg";
 import IconEmbeddable from "assets/icons/icon-room-embeddable.svg";
 import IconExperience from "assets/icons/icon-room-experience.svg";
-import IconExternalLink from "assets/icons/icon-room-externallink.svg";
 import IconMap from "assets/icons/icon-room-map.svg";
 import IconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import IconScreening from "assets/icons/icon-room-screening.svg";
@@ -15,20 +14,30 @@ import IconViewingWindow from "assets/icons/icon-room-viewingwindow.svg";
 import PosterArtPiece from "assets/spaces/add-portal-artpiece.png";
 import PosterAuditorium from "assets/spaces/add-portal-auditorium.png";
 import PosterConversation from "assets/spaces/add-portal-conversation.png";
+import PosterEmbeddable from "assets/spaces/add-portal-embeddable.png";
 import PosterExperience from "assets/spaces/add-portal-experience.png";
 import PosterMusicBar from "assets/spaces/add-portal-jazzbar.png";
 import PosterMap from "assets/spaces/add-portal-map.png";
 
-export interface SpacePortalsListItem {
+// NOTE: local, use one of SpaceInfoListItem or PortalInfoListItem
+type ListItem = {
   text: string;
   poster: string;
   description: string;
-  template?: PortalTemplate;
   icon: string;
   hidden?: boolean;
-}
+};
 
-export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
+export type SpaceInfoListItem = ListItem & {
+  template?: VenueTemplate;
+};
+
+export type PortalInfoListItem = ListItem & {
+  template?: PortalTemplate;
+};
+
+// NOTE: Generally the PORTAL_INFO_LIST should be used, this one is for cases where narrow definition of Space is needed
+export const SPACE_INFO_LIST: SpaceInfoListItem[] = [
   {
     text: "Conversation Space",
     icon: IconConversation,
@@ -96,10 +105,10 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
   {
     text: "Embeddable",
     icon: IconEmbeddable,
-    poster: "",
+    poster: PosterEmbeddable,
     description: "",
     template: VenueTemplate.embeddable,
-    hidden: false,
+    hidden: true,
   },
   {
     text: "Screening Room",
@@ -109,23 +118,27 @@ export const SPACE_PORTALS_LIST: SpacePortalsListItem[] = [
     template: VenueTemplate.screeningroom,
     hidden: true,
   },
+];
+
+export const PORTAL_INFO_LIST: PortalInfoListItem[] = [
+  ...SPACE_INFO_LIST,
+  /*
+  // @debt external templates need to be implemented properly again
   {
     text: "External link",
     icon: IconExternalLink,
-    poster: "",
+    poster: PosterExternal,
     description:
       "New Space will not be created and the Space name will be used as the title for the newly added External Link portal",
     template: "external",
     hidden: true,
   },
+  */
 ];
 
-export const SPACE_PORTALS_ICONS_MAPPING: Record<
-  string,
-  string
-> = Object.freeze(
+export const PORTAL_INFO_ICON_MAPPING: Record<string, string> = Object.freeze(
   Object.fromEntries(
-    SPACE_PORTALS_LIST.map(({ template, icon }) => [template, icon])
+    PORTAL_INFO_LIST.map(({ template, icon }) => [template, icon])
   )
 );
 

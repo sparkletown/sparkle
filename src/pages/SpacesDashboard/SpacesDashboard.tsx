@@ -1,11 +1,17 @@
 import React, { useMemo, useState } from "react";
 import classNames from "classnames";
 
-import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
+import {
+  ADMIN_IA_SPACE_CREATE_PARAM_URL,
+  ADMIN_IA_WORLD_BASE_URL,
+  ADMIN_IA_WORLD_EDIT_PARAM_URL,
+  SPACE_TAXON,
+  SPACES_TAXON,
+} from "settings";
 
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
-import { adminCreateWorldSpace, adminWorldUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
@@ -52,33 +58,20 @@ export const SpacesDashboard: React.FC = () => {
     () =>
       sortedVenues
         ?.filter(isPartyMapVenue)
-        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
-    [sortedVenues]
+        .map((venue) => (
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+        )),
+    [sortedVenues, worldSlug]
   );
-
-  // const sortingOptions = useMemo(
-  //   () => (
-  //     // @debt align the style of the SpacesDropdown with the Dropdown component
-  //     <DropdownButton variant="secondary" title="Sort spaces">
-  //       {Object.values(VenueSortingOptions).map((sortingOption) => (
-  //         <ReactBootstrapDropdown.Item
-  //           key={sortingOption}
-  //           onClick={() => setCurrentSortingOption(sortingOption)}
-  //         >
-  //           {sortingOption}
-  //         </ReactBootstrapDropdown.Item>
-  //       ))}
-  //     </DropdownButton>
-  //   ),
-  //   []
-  // );
 
   const renderedOtherVenues = useMemo(
     () =>
       sortedVenues
         ?.filter(isNotPartyMapVenue)
-        .map((venue) => <AdminSpaceCard key={venue.id} venue={venue} />),
-    [sortedVenues]
+        .map((venue) => (
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+        )),
+    [sortedVenues, worldSlug]
   );
 
   const hasPartyVenues = renderedPartyVenues.length > 0;
@@ -90,24 +83,30 @@ export const SpacesDashboard: React.FC = () => {
 
   return (
     <div className="SpacesDashboard">
-      <WithNavigationBar hasBackButton withSchedule>
+      <WithNavigationBar variant="internal-scroll">
         <AdminRestricted>
-          <AdminTitleBar>
+          <AdminTitleBar variant="grid-with-tools">
             <ButtonNG
               variant="secondary"
               isLink
-              linkTo={ADMIN_V3_WORLDS_BASE_URL}
+              linkTo={ADMIN_IA_WORLD_BASE_URL}
             >
               Change world
             </ButtonNG>
             <AdminTitle>{world?.name} dashboard</AdminTitle>
-            <ButtonNG
-              variant="secondary"
-              isLink
-              linkTo={adminWorldUrl(worldSlug)}
-            >
-              Settings
-            </ButtonNG>
+            <div>
+              <ButtonNG
+                variant="secondary"
+                isLink
+                linkTo={generateUrl({
+                  route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug },
+                })}
+              >
+                Settings
+              </ButtonNG>
+            </div>
           </AdminTitleBar>
 
           {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}
@@ -118,15 +117,10 @@ export const SpacesDashboard: React.FC = () => {
           >
             <div className="SpacesDashboard__cards">
               {!hasPartyVenues && (
-                <>
-                  <div className="SpacesDashboard__welcome-message">
-                    Welcome!
-                  </div>
-                  <div className="SpacesDashboard__welcome-message">
-                    <p>Welcome!</p>
-                    <p>Create your first Sparkle space</p>
-                  </div>
-                </>
+                <div className="SpacesDashboard__welcome-message">
+                  <p>Welcome!</p>
+                  <p>Create your first Sparkle {SPACE_TAXON.lower}</p>
+                </div>
               )}
               {hasPartyVenues && renderedPartyVenues}
             </div>
@@ -134,14 +128,19 @@ export const SpacesDashboard: React.FC = () => {
             <aside className="SpacesDashboard__aside">
               <SortDropDown
                 onClick={setCurrentSortingOption}
-                title="Sort spaces"
+                title={`Sort ${SPACES_TAXON.lower}`}
               />
               <ButtonNG
                 variant="primary"
                 isLink
-                linkTo={adminCreateWorldSpace(world?.slug)}
+                linkTo={generateUrl({
+                  route: ADMIN_IA_SPACE_CREATE_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug: world?.slug },
+                })}
+                disabled={!world?.slug}
               >
-                Create a new space
+                Create a new {SPACE_TAXON.lower}
               </ButtonNG>
             </aside>
           </main>

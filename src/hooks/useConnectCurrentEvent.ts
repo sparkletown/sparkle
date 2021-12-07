@@ -2,13 +2,13 @@ import { useState } from "react";
 
 import { oneHourAfterTimestamp } from "utils/time";
 
-import { useSpaceBySlug } from "./spaces/useSpaceBySlug";
 import { useSpaceParams } from "./spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "./spaces/useWorldAndSpaceBySlug";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 
 export const useConnectCurrentEvent = () => {
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const [currentTimestamp] = useState(Date.now() / 1000);
 

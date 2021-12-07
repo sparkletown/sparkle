@@ -25,7 +25,7 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { PortalSchedule } from "../PortalSchedule/PortalSchedule";
+import { PortalSchedule } from "../PortalSchedule";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
@@ -112,13 +112,13 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
 
   const { world } = useWorldById(venue?.worldId);
 
-  const { enterRoom, portalVenueId } = useRoom({
+  const { enterRoom, portalSpaceId } = useRoom({
     room: portal,
   });
 
   const analytics = useAnalytics({ venue });
 
-  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =

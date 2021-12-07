@@ -2,13 +2,17 @@ import { EntranceStepConfig } from "types/EntranceStep";
 import { Question } from "types/Question";
 import { UserStatus } from "types/User";
 
+import { Branded } from "utils/types";
+
+export type WorldSlug = Branded<string, "WorldSlug">;
+
 export enum WorldNavTab {
-  start = "start",
+  general = "general",
   entrance = "entrance",
   advanced = "advanced",
 }
 
-export interface WorldStartFormInput {
+export interface WorldGeneralFormInput {
   name: string;
   description?: string;
   subtitle?: string;

@@ -1,41 +1,29 @@
 import React from "react";
-import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import { SPACE_TAXON } from "settings";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGSettingsUrl } from "utils/url";
 
-import MapPreview from "pages/Admin/MapPreview";
+import { MapPreview } from "pages/Admin/MapPreview";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import {
-  AdminSidebarFooter,
-  AdminSidebarFooterProps,
-} from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import "./RunTabView.scss";
 
-export interface RunTabViewProps extends AdminSidebarFooterProps {
+export interface RunTabViewProps {
   venue?: WithId<AnyVenue>;
 }
 
-export const RunTabView: React.FC<RunTabViewProps> = ({
-  venue,
-  ...sidebarFooterProps
-}) => {
+export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   if (!venue) {
     return <LoadingPage />;
   }
@@ -43,23 +31,14 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
   const venueId = venue.id;
 
   return (
-    <AdminPanel className="RunTabView">
+    <AdminPanel variant="unbound" className="RunTabView">
       <AdminSidebar>
         <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
-        <AdminSidebarFooter {...sidebarFooterProps} />
         <div className="RunTabView__content">
-          <ButtonNG
-            isLink
-            className="RunTabView__advanced"
-            linkTo={adminNGSettingsUrl(venueId)}
-            iconName={faCog}
-          >
-            {SPACE_TAXON.capital} Settings
-          </ButtonNG>
           <RunTabUsers venueId={venueId} />
         </div>
       </AdminSidebar>
-      <AdminShowcase className="RunTabView__main">
+      <AdminShowcase className="RunTabView__main" variant="no-scroll">
         <div className="RunTabView__toolbar RunTabView--spacing">
           <RunTabToolbar
             venueId={venueId}
@@ -76,9 +55,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({
             mapBackground={venue.mapBackgroundImageUrl}
             rooms={venue.rooms ?? []}
           />
-        </div>
-        <div className="RunTabView__cards RunTabView--spacing">
-          <RunTabRooms venue={venue} />
         </div>
       </AdminShowcase>
     </AdminPanel>

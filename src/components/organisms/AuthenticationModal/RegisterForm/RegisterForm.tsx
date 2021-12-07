@@ -4,19 +4,22 @@ import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
 
-import { DEFAULT_REQUIRES_DOB } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  DEFAULT_REQUIRES_DOB,
+} from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
+import { generateUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
@@ -61,10 +64,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const history = useHistory();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const analytics = useAnalytics({ venue: space });
@@ -93,7 +97,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     clearError("backend");
   };
 
-  if (!isSpaceLoaded) {
+  if (!isLoaded) {
     return <>Loading...</>;
   }
 
@@ -163,11 +167,13 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const accountProfileUrl = `/account/profile${
-        spaceId ? `?venueId=${spaceId}` : ""
-      }`;
+      const profileUrl = generateUrl({
+        route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      });
 
-      history.push(accountProfileUrl);
+      history.push(profileUrl);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setShowLoginModal(true);
@@ -233,7 +239,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   const isDobRequired =
-    isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
+    isLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   return (
     <div className="form-container">

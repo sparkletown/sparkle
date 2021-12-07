@@ -1,8 +1,14 @@
 @import "scss/constants";
 
 .AdminPanel {
-  height: $admin-ng-panel-height;
-  overflow: hidden;
+  &--bound {
+    height: $admin-ng-panel-height;
+    overflow: hidden;
+  }
+
+  &--unbound {
+    display: flex;
+  }
 
   @media (max-width: $media-breakpoint--lg) {
     align-items: center;

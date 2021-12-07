@@ -16,6 +16,13 @@ export const SPACE_TAXON: TAXON = {
   upper: "SPACE",
 };
 
+export const SPACES_TAXON: TAXON = {
+  capital: "Spaces",
+  title: "Spaces",
+  lower: "spaces",
+  upper: "SPACES",
+};
+
 export const ROOM_TAXON: TAXON = {
   capital: "Portal",
   title: "Portal",
