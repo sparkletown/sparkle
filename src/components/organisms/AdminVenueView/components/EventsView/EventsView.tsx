@@ -31,7 +31,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   // help the attendee side at all.
   const [refetchIndex, setRefetchIndex] = useState(0);
 
-  const { relatedVenueIds, isLoading: isVenuesLoading } = useRelatedVenues({
+  const {
+    findVenueInRelatedVenues,
+    relatedVenueIds,
+    isLoading: isVenuesLoading,
+  } = useRelatedVenues({
     currentVenueId: venueId,
   });
   const { events, isEventsLoading } = useVenueEvents({
@@ -85,23 +89,34 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   );
 
   const renderedSpaces = useMemo(() => {
-    const spaces = [...new Set(events?.map((event) => event.room))];
-    const getSpaceEvents = (space: string) =>
-      events?.filter((event) => event.room === space) ?? [];
+    const spaces = [...new Set(events?.map((event) => event.spaceId))];
+    const getSpaceEvents = (spaceId: string) =>
+      events?.filter((event) => event.spaceId === spaceId) ?? [];
 
-    return spaces?.map(
-      (space) =>
-        space && (
-          <TimingSpace
-            key={space}
-            spaceName={space}
-            spaceEvents={getSpaceEvents(space)}
-            setShowCreateEventModal={setShowCreateEventModal}
-            setEditedEvent={setEditedEvent}
-          />
-        )
-    );
-  }, [events, setShowCreateEventModal, setEditedEvent]);
+    return spaces?.map((spaceId) => {
+      if (!spaceId) {
+        return undefined;
+      }
+      const space = findVenueInRelatedVenues({ spaceId });
+      if (!space) {
+        return undefined;
+      }
+      return (
+        <TimingSpace
+          key={spaceId}
+          space={space}
+          spaceEvents={getSpaceEvents(spaceId)}
+          setShowCreateEventModal={setShowCreateEventModal}
+          setEditedEvent={setEditedEvent}
+        />
+      );
+    });
+  }, [
+    events,
+    setShowCreateEventModal,
+    setEditedEvent,
+    findVenueInRelatedVenues,
+  ]);
 
   if (isVenuesLoading || isEventsLoading) {
     return <Loading />;
