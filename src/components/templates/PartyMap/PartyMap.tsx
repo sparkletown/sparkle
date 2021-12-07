@@ -11,7 +11,6 @@ import {
 } from "utils/event";
 
 import { useVenueEvents } from "hooks/events";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { Map } from "components/templates/PartyMap/components/Map";
@@ -26,21 +25,15 @@ export interface PartyMapProps {
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
 
-  const { relatedVenues } = useRelatedVenues();
-
-  const selfAndChildVenueIds = useMemo(
-    () =>
-      relatedVenues
-        .filter(
-          (relatedVenue) =>
-            relatedVenue.parentId === venue.id || relatedVenue.id === venue.id
-        )
-        .map((childVenue) => childVenue.id),
-    [relatedVenues, venue]
-  );
+  const selfAndPortalSpaceIds = useMemo(() => {
+    const spaceIds = (venue?.rooms ?? [])
+      .map((portal) => portal.spaceId)
+      .filter((spaceId) => !!spaceId) as string[];
+    return [venue?.id].concat(spaceIds);
+  }, [venue]);
 
   const { events: selfAndChildVenueEvents } = useVenueEvents({
-    venueIds: selfAndChildVenueIds,
+    venueIds: selfAndPortalSpaceIds,
   });
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
@@ -53,7 +46,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
     return selfAndChildVenueEvents
       .filter(
         (event) =>
-          event.room === selectedRoom.title && isEventLiveOrFuture(event)
+          event.spaceId === selectedRoom.spaceId && isEventLiveOrFuture(event)
       )
       .sort(eventsByStartUtcSecondsSorter);
   }, [selfAndChildVenueEvents, selectedRoom]);
