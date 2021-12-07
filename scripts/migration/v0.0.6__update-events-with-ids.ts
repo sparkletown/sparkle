@@ -54,7 +54,7 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           continue;
         }
 
-        if (eventDoc.spaceId) {
+        if (event.spaceId) {
           continue;
         }
 
