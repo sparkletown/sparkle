@@ -13,6 +13,8 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
+import { World } from "api/world";
+
 import { VenueAccessMode } from "types/VenueAcccess";
 import { AnyVenue } from "types/venues";
 
@@ -25,7 +27,6 @@ import { generateAttendeeInsideUrl, venueEntranceUrl } from "utils/url";
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -35,25 +36,25 @@ import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 dayjs.extend(advancedFormat);
 
 type VenueLandingPageContentProps = {
-  venue: WithId<AnyVenue>;
+  space: WithId<AnyVenue>;
+  world: WithId<World>;
   withJoinEvent?: boolean;
 };
 const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
-  venue,
+  space,
+  world,
   withJoinEvent = true,
 }) => {
   const venueEvents = useSelector(venueEventsSelector);
 
-  const spaceSlug = venue.slug;
-
-  const { world } = useWorldById(venue?.worldId);
+  const spaceSlug = space.slug;
 
   const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.bannerImageUrl,
+    space?.config?.landingPageConfig.coverImageUrl,
     DEFAULT_LANDING_BANNER
   );
 
-  const [validLogoUrl] = useValidImage(venue?.host?.icon, DEFAULT_VENUE_LOGO);
+  const [validLogoUrl] = useValidImage(space?.host?.icon, DEFAULT_VENUE_LOGO);
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event) => !hasEventFinished(event)
   );
@@ -70,7 +71,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
         : venueEntranceUrl(world?.slug, spaceSlug);
   };
 
-  const isPasswordRequired = venue.access === VenueAccessMode.Password;
+  const isPasswordRequired = space.access === VenueAccessMode.Password;
 
   const { user } = useUser();
 
@@ -93,17 +94,17 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
             <img className="host-icon" src={validLogoUrl} alt="host" />
           </div>
 
-          <div className="title">{venue.name}</div>
+          <div className="title">{space.name}</div>
 
           <div className="subtitle">
-            {venue.config?.landingPageConfig.subtitle}
+            {space.config?.landingPageConfig.subtitle}
           </div>
         </div>
 
         {isPasswordRequired && (
           <div className="secret-password-form-wrapper">
             <SecretPasswordForm
-              buttonText={venue.config?.landingPageConfig.joinButtonText}
+              buttonText={space.config?.landingPageConfig.joinButtonText}
             />
           </div>
         )}
@@ -117,9 +118,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
             onClick={onJoinClick}
           >
             Join the event
-            {(venue?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
+            {(space?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
               <span className="countdown">
-                Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
+                Begins in {getTimeBeforeParty(space.start_utc_seconds)}
               </span>
             )}
           </button>
@@ -130,60 +131,57 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
         <div className="col-lg-6 col-12 venue-presentation">
           <div>
             <div style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-              {venue.config?.landingPageConfig.description}
+              {space.config?.landingPageConfig.description}
             </div>
 
             <div>
-              {venue.config?.landingPageConfig.checkList &&
-                venue.config?.landingPageConfig.checkList.map(
-                  (checkListItem: string, index: number) => (
-                    <div
-                      key={`checklist-item-${index}`}
-                      className="checklist-item"
-                    >
-                      <div className="check-icon-container">
-                        <FontAwesomeIcon icon={faCheckCircle} />
-                      </div>
-                      <div>{checkListItem}</div>
+              {space.config?.landingPageConfig?.checkList?.map(
+                (checkListItem: string, index: number) => (
+                  <div
+                    key={`checklist-item-${index}`}
+                    className="checklist-item"
+                  >
+                    <div className="check-icon-container">
+                      <FontAwesomeIcon icon={faCheckCircle} />
                     </div>
-                  )
-                )}
+                    <div>{checkListItem}</div>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
-          {venue.config?.landingPageConfig.iframeUrl && (
+          {space.config?.landingPageConfig?.iframeUrl && (
             <iframe
               title="entrance video"
               width="100%"
               height="300"
               className="youtube-video"
-              src={venue.config?.landingPageConfig.iframeUrl}
+              src={space.config?.landingPageConfig.iframeUrl}
               frameBorder="0"
               allow={IFRAME_ALLOW}
             />
           )}
 
-          {venue.config?.landingPageConfig.quotations &&
-            venue.config?.landingPageConfig.quotations.map(
-              (quotation, index) => (
-                <div className="quotation-container" key={index}>
-                  <div className="quotation">{quotation.text}</div>
-                  <div className="quotation-author">- {quotation.author}</div>
-                </div>
-              )
-            )}
+          {space.config?.landingPageConfig?.quotations?.map(
+            (quotation, index) => (
+              <div className="quotation-container" key={index}>
+                <div className="quotation">{quotation.text}</div>
+                <div className="quotation-author">- {quotation.author}</div>
+              </div>
+            )
+          )}
 
-          {venue.config?.landingPageConfig.presentation &&
-            venue.config?.landingPageConfig.presentation.map(
-              (paragraph: string, index: number) => (
-                <p
-                  key={`venue-presentation-paragraph-${index}`}
-                  className="presentation-paragraph"
-                >
-                  {paragraph}
-                </p>
-              )
-            )}
+          {space.config?.landingPageConfig?.presentation?.map(
+            (paragraph: string, index: number) => (
+              <p
+                key={`venue-presentation-paragraph-${index}`}
+                className="presentation-paragraph"
+              >
+                {paragraph}
+              </p>
+            )
+          )}
         </div>
 
         <div className="col-lg-6 col-12 oncoming-events">
