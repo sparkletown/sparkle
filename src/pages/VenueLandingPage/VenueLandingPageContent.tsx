@@ -13,6 +13,8 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
+import { World } from "api/world";
+
 import { VenueAccessMode } from "types/VenueAcccess";
 import { AnyVenue } from "types/venues";
 
@@ -25,7 +27,6 @@ import { generateAttendeeInsideUrl, venueEntranceUrl } from "utils/url";
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -36,20 +37,20 @@ dayjs.extend(advancedFormat);
 
 type VenueLandingPageContentProps = {
   venue: WithId<AnyVenue>;
+  world: WithId<World>;
   withJoinEvent?: boolean;
 };
 const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   venue,
+  world,
   withJoinEvent = true,
 }) => {
   const venueEvents = useSelector(venueEventsSelector);
 
   const spaceSlug = venue.slug;
 
-  const { world } = useWorldById(venue?.worldId);
-
   const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.bannerImageUrl,
+    world?.config?.landingPageConfig.coverImageUrl,
     DEFAULT_LANDING_BANNER
   );
 

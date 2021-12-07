@@ -18,7 +18,10 @@ import "./VenueLandingPage.scss";
 export const VenueLandingPage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
 
-  const { space, isLoaded } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { space, world, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
@@ -40,7 +43,7 @@ export const VenueLandingPage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (!space) {
+  if (!space || !world) {
     return (
       <WithNavigationBar hasBackButton withHiddenLoginButton>
         <NotFound />
@@ -50,7 +53,7 @@ export const VenueLandingPage: React.FC = () => {
 
   return (
     <WithNavigationBar hasBackButton withSchedule>
-      <VenueLandingPageContent venue={space} />
+      <VenueLandingPageContent venue={space} world={world} />
     </WithNavigationBar>
   );
 };
