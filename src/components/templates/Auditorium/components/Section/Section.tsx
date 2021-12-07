@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_REACTIONS_AUDIBLE, DEFAULT_SECTIONS_AMOUNT } from "settings";
+import { DEFAULT_REACTIONS_MUTED, DEFAULT_SECTIONS_AMOUNT } from "settings";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -29,14 +29,14 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const isReactionsAudioDisabled = !venue.isReactionsMuted;
+  const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
 
   const {
-    isShown: isUserAudioOn,
+    isShown: isUserAudioMuted,
     toggle: toggleUserAudio,
     hide: disableUserAudio,
     show: enableUserAudio,
-  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
+  } = useShowHide(isReactionsMuted);
 
   useEffect(() => {
     if (venue.isReactionsMuted) {
@@ -50,7 +50,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     currentVenueId: venue.id,
   });
 
-  const isUserAudioMuted = !isUserAudioOn;
   const { iframeUrl, id: venueId } = venue;
   const { sectionId } = useParams<{ sectionId: string }>();
 
@@ -124,7 +123,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
             venueId={venueId}
             leaveSeat={leaveSeat}
             isReactionsMuted={isUserAudioMuted}
-            isAudioDisabled={isReactionsAudioDisabled}
+            isAudioDisabled={isReactionsMuted}
             toggleMute={toggleUserAudio}
           />
         </div>

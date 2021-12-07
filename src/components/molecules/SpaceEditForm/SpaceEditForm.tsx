@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
-  DEFAULT_REACTIONS_AUDIBLE,
+  DEFAULT_REACTIONS_MUTED,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -49,6 +49,7 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
@@ -88,11 +89,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       auditoriumRows: space.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
       columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
-      isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
+      isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
       parentId: space.parentId ?? "",
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
       zoomUrl: space?.zoomUrl ?? "",
+      bannerImage: undefined,
+      bannerImageUrl: space?.config?.landingPageConfig?.coverImageUrl ?? "",
+      logoImage: undefined,
+      logoImageUrl: space?.host?.icon ?? "",
     }),
     [
       space.name,
@@ -112,6 +117,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       space.sectionsCount,
       space.roomVisibility,
       space.zoomUrl,
+      space?.host?.icon,
+      space?.config?.landingPageConfig?.coverImageUrl,
     ]
   );
 
@@ -192,6 +199,20 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     [ownedVenues, space.parentId]
   );
 
+  const changePortalImageUrl = useCallback(
+    (val: string) => {
+      setValue("logoImageUrl", val, false);
+    },
+    [setValue]
+  );
+
+  const changeBackgroundImageUrl = useCallback(
+    (val: string) => {
+      setValue("bannerImageUrl", val, false);
+    },
+    [setValue]
+  );
+
   return (
     <Form onSubmit={handleSubmit(updateVenue)}>
       <div className="SpaceEditForm">
@@ -245,6 +266,32 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 />
               </AdminSection>
             )}
+          </AdminSpacesListItem>
+
+          <AdminSpacesListItem title="Appearance" isOpened>
+            <AdminSection title="Upload a highlight image" withLabel>
+              <ImageInput
+                onChange={changeBackgroundImageUrl}
+                name="bannerImage"
+                imgUrl={values.bannerImageUrl}
+                error={errors.bannerImageUrl}
+                isInputHidden={!values.bannerImageUrl}
+                register={register}
+                setValue={setValue}
+              />
+            </AdminSection>
+            <AdminSection title="Upload a logo" withLabel>
+              <ImageInput
+                onChange={changePortalImageUrl}
+                name="logoImage"
+                imgUrl={values.logoImageUrl}
+                error={errors.logoImageUrl}
+                setValue={setValue}
+                register={register}
+                small
+                subtext="(A transparent 300 px square image works best)"
+              />
+            </AdminSection>
           </AdminSpacesListItem>
 
           {BACKGROUND_IMG_TEMPLATES.includes(
@@ -340,8 +387,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                     name="isReactionsMuted"
                     register={register}
                     disabled={isReactionsMutedDisabled}
-                    displayOn="Audible"
-                    displayOff="Muted"
+                    displayOn="Muted"
+                    displayOff="Audible"
                   />
                 </AdminSection>
               )
