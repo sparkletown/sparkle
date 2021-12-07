@@ -83,3 +83,8 @@ $upload-button-height: 150px;
     }
   }
 }
+
+.SpaceEditForm .AdminSection__label .ImageInput__container.mod--hidden {
+  height: 0;
+  padding: $spacing--lg;
+}
