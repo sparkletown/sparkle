@@ -2,9 +2,32 @@
 
 import { MigrateOptions } from "fireway";
 
-const findSpaceByName = (spaces, worldId, name) =>
-  spaces.find((space) => space.worldId === worldId && space.name === name) ||
-  spaces.find((space) => space.worldId === worldId && space.id === name);
+const findSpaceByName = (owningSpace, spaces, worldId, roomName: string) => {
+  // Attempt to find the room on the owning venue
+  const targetRoom = owningSpace.rooms.find((room) => room.title === roomName);
+  if (targetRoom) {
+    if (targetRoom.url.startsWith("/in/")) {
+      const spaceNameOrId = targetRoom.url.split("/").slice(-1)[0];
+      const foundSpace =
+        spaces.find(
+          (space) => space.worldId === worldId && space.name === spaceNameOrId
+        ) ||
+        spaces.find(
+          (space) => space.worldId === worldId && space.id === spaceNameOrId
+        );
+      if (foundSpace) {
+        return foundSpace;
+      }
+    }
+  }
+
+  return (
+    spaces.find(
+      (space) => space.worldId === worldId && space.name === roomName
+    ) ||
+    spaces.find((space) => space.worldId === worldId && space.id === roomName)
+  );
+};
 
 export const migrate = async ({ firestore }: MigrateOptions) => {
   console.log(`Fetching spaces...`);
@@ -32,6 +55,7 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
         }
 
         const targetSpace = findSpaceByName(
+          spaceData,
           spaces,
           spaceData.worldId,
           event.room
