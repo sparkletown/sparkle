@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 import {
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
-  DEFAULT_REACTIONS_AUDIBLE,
+  DEFAULT_REACTIONS_MUTED,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -89,7 +89,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       auditoriumRows: space.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT,
       columns: space.columns ?? 0,
       autoPlay: space.autoPlay ?? DEFAULT_VENUE_AUTOPLAY,
-      isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE,
+      isReactionsMuted: space.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED,
       parentId: space.parentId ?? "",
       numberOfSections: space.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT,
       roomVisibility: space.roomVisibility,
@@ -387,8 +387,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                     name="isReactionsMuted"
                     register={register}
                     disabled={isReactionsMutedDisabled}
-                    displayOn="Audible"
-                    displayOff="Muted"
+                    displayOn="Muted"
+                    displayOff="Audible"
                   />
                 </AdminSection>
               )
