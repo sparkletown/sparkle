@@ -24,7 +24,7 @@ import { isTruthy } from "utils/types";
 import { roomSchema } from "forms/roomSchema";
 
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
@@ -174,19 +174,16 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     await onDone();
   });
 
-  const { ownedVenues } = useOwnedVenues({});
+  const { relatedVenues } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        ownedVenues
-          .filter(
-            ({ worldId: venueWorldId, id }) =>
-              !(venueWorldId !== world?.id || id === currentSpaceId)
-          )
+        relatedVenues
+          .filter(({ id }) => id !== currentSpaceId)
           .map((venue) => [venue.id, venue])
       ),
-    [currentSpaceId, ownedVenues, world?.id]
+    [currentSpaceId, relatedVenues]
   );
 
   const isAppearanceOverridenInPortal =
@@ -204,9 +201,9 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   const parentSpace = useMemo(
     () =>
       portal?.spaceId
-        ? ownedVenues.find(({ id }) => id === portal?.spaceId)
+        ? relatedVenues.find(({ id }) => id === portal?.spaceId)
         : { name: "" },
-    [ownedVenues, portal?.spaceId]
+    [relatedVenues, portal?.spaceId]
   );
 
   return (

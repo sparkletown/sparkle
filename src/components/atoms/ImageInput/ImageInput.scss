@@ -26,6 +26,11 @@ $upload-button-height: 150px;
     &--small {
       display: inline-block;
       padding: $image-input-padding--small;
+
+      &.mod--hidden {
+        height: 0;
+        padding: 0;
+      }
     }
   }
 
@@ -82,4 +87,9 @@ $upload-button-height: 150px;
       padding: $image-input-upload-button-padding--small;
     }
   }
+}
+
+.SpaceEditForm .AdminSection__label .ImageInput__container.mod--hidden {
+  height: 0;
+  padding: $spacing--lg;
 }

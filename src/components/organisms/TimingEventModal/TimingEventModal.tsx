@@ -13,7 +13,7 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 
 import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -27,7 +27,7 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
-  event?: WithId<VenueEvent>;
+  event?: WithVenueId<WithId<VenueEvent>>;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
@@ -63,7 +63,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
 
   useEffect(() => {
-    if (event) {
+    if (event?.id) {
       reset({
         name: event.name,
         description: event.description,
@@ -97,8 +97,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         worldId: eventSpace?.worldId ?? "",
       };
       if (eventSpaceId) {
-        if (event) {
-          await updateEvent(eventSpaceId, event.id, formEvent);
+        if (event?.id) {
+          // @debt this is a hack. event.venueId is the venue that contains
+          // the event inside its events subcollection. It is NOT the space
+          // that the event is being experienced in.
+          await updateEvent(event.venueId, event.id, formEvent);
         } else {
           await createEvent(eventSpaceId, formEvent);
         }
@@ -109,7 +112,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   );
 
   const showDeleteButton =
-    template && HAS_ROOMS_TEMPLATES.includes(template) && event;
+    template && HAS_ROOMS_TEMPLATES.includes(template) && event?.id;
   const handleDelete = () => {
     onHide();
     setEditedEvent && setEditedEvent(event);
@@ -275,7 +278,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   variant="primary"
                   type="submit"
                 >
-                  {event ? "Update" : "Create"}
+                  {event?.id ? "Update" : "Create"}
                 </ButtonNG>
               </div>
             </form>

@@ -138,6 +138,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               joinMessage={venue.hideVideo === false}
               customTables={tables}
               showOnlyAvailableTables={showOnlyAvailableTables}
+              venue={venue}
             />
           </div>
           <UserList

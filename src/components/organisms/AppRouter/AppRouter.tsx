@@ -30,7 +30,7 @@ import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { tracePromise } from "utils/performance";
-import { generateAttendeeInsideUrl } from "utils/url";
+import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
@@ -108,14 +108,14 @@ export const AppRouter: React.FC = () => {
 
   // @debt custom redirects that are to be removed in the future
   // done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
-  const googleCloudWestWorldUrl = generateAttendeeInsideUrl({
-    worldSlug: googleCloudWestName as WorldSlug,
-    spaceSlug: googleCloudWestName as SpaceSlug,
-  });
-  const iterableWorldUrl = generateAttendeeInsideUrl({
-    worldSlug: iterableName as WorldSlug,
-    spaceSlug: iterableName as SpaceSlug,
-  });
+  const googleCloudWestWorldUrl = generateAttendeeSpaceLandingUrl(
+    googleCloudWestName as WorldSlug,
+    googleCloudWestName as SpaceSlug
+  );
+  const iterableWorldUrl = generateAttendeeSpaceLandingUrl(
+    iterableName as WorldSlug,
+    iterableName as SpaceSlug
+  );
 
   return (
     <Router basename="/">
