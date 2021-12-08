@@ -294,7 +294,6 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       )}
 
       <SubmitError error={submitError || deleteError} />
-
       <div className="PortalAddEditForm__buttons">
         {isEditMode && (
           <ButtonNG
