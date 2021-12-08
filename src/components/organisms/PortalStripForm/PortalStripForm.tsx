@@ -21,6 +21,7 @@ import {
 import { generateAttendeeInsideUrl, isExternalPortal } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
@@ -77,7 +78,11 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const { user } = useUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const {
+    isShown: isModalShown,
+    hide: hideModal,
+    show: showModal,
+  } = useShowHide(false);
 
   const portalIcon = isExternalPortal(portal)
     ? PORTAL_INFO_ICON_MAPPING["external"]
@@ -170,14 +175,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     [loading, updatingEnabled, values.isEnabled]
   );
 
-  const openModal = useCallback(() => {
-    setShowModal(true);
-  }, [setShowModal]);
-
-  const hideModal = useCallback(() => {
-    setShowModal(false);
-  }, [setShowModal]);
-
   const targetUrl = !isSpaceLoading
     ? generateTargetUrl({ worldSlug, portal, targetSpace })
     : "";
@@ -219,18 +216,19 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             tabIndex={0}
           />
         </div>
-        <div className="PortalStripForm__cell PortalStripForm__edit">
+        <div
+          className="PortalStripForm__cell PortalStripForm__edit"
+          onClick={showModal}
+        >
           <PrettyLink>
             <FontAwesomeIcon icon={faPen} />
-            <span className="PortalStripForm__edit-text" onClick={openModal}>
-              Edit
-            </span>
+            <span className="PortalStripForm__edit-text">Edit</span>
           </PrettyLink>
         </div>
         <FormErrors errors={errors} />
         <SubmitError error={submitError} />
       </Form>
-      {showModal && (
+      {isModalShown && (
         <PortalAddEditModal
           portal={portal}
           show={true}
