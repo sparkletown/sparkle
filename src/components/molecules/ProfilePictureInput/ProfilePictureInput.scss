@@ -51,7 +51,10 @@ $upload-button-max-width: 300px;
     width: $profile-picture-size--lg;
     height: $profile-picture-size--lg;
     margin-bottom: -($spacing--xl);
-    border: 3px solid $content--over;
+
+    &--border {
+      border: 3px solid $content--over;
+    }
 
     &--small {
       width: $profile-picture-size--sm;

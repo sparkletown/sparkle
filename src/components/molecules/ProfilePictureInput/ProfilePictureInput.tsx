@@ -1,5 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import classNames from "classnames";
 import firebase from "firebase/app";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -63,6 +64,13 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const hasError = !!error;
 
+  const profileImageClassNames = classNames(
+    "profile-icon ProfilePicturePreviewContainer__image",
+    {
+      "profile-icon ProfilePicturePreviewContainer__image--border": !pictureUrl,
+    }
+  );
+
   return (
     <div className="ProfilePictureUploadForm">
       <div
@@ -71,7 +79,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       >
         <img
           src={pictureUrl || "/default-profile-pic.png"}
-          className="profile-icon ProfilePicturePreviewContainer__image"
+          className={profileImageClassNames}
           alt="your profile"
         />
       </div>
