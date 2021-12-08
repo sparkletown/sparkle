@@ -192,10 +192,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             {!isSpaceLoading && <PrettyLink to={targetUrl} title={targetUrl} />}
           </div>
         </div>
-        <div
-          className="PortalStripForm__cell PortalStripForm__visibility"
-          tabIndex={0}
-        >
+        <div className="PortalStripForm__cell PortalStripForm__visibility">
           <AdminCheckbox
             variant="toggler"
             name="isClickable"
@@ -213,7 +210,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             label={renderedEnabledLabel}
             labelPosition="after"
             onClick={handleEnabled}
-            tabIndex={0}
           />
         </div>
         <div
