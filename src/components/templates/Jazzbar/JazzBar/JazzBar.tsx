@@ -143,6 +143,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             venueName={venue.name}
             tables={jazzbarTables}
             venueId={venue.id}
+            defaultTables={JAZZBAR_TABLES}
           />
         )}
         {venue.description?.text && (
@@ -221,6 +222,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
             venue={venue}
+            defaultTables={JAZZBAR_TABLES}
           />
         </div>
       </VenueWithOverlay>
