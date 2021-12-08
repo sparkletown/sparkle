@@ -26,6 +26,11 @@ $upload-button-height: 150px;
     &--small {
       display: inline-block;
       padding: $image-input-padding--small;
+
+      &.mod--hidden {
+        height: 0;
+        padding: 0;
+      }
     }
   }
 
