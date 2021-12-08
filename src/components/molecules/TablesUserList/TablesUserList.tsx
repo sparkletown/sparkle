@@ -251,7 +251,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>
-              To avoid feedback from the music, we recommend wearing headphones.
+              You are now entering a video chat space. Please ALLOW camera &
+              microphone access. You will be able to turn them back off again
+              once inside, should you choose to do so. To avoid feedback from
+              the music, we recommend wearing headphones.
             </p>
 
             <p>You can also adjust the volume on the live stream.</p>
