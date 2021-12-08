@@ -6,6 +6,7 @@ import {
   DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_REACTIONS_MUTED,
   DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -70,6 +71,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   );
 
   const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
+  const isShoutoutsEnabled = venue.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const {
     isShown: isUserAudioMuted,
@@ -143,6 +145,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             venueName={venue.name}
             tables={jazzbarTables}
             venueId={venue.id}
+            defaultTables={JAZZBAR_TABLES}
           />
         )}
         {venue.description?.text && (
@@ -183,6 +186,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       isReactionsMuted={isUserAudioMuted}
                       toggleMute={toggleUserAudio}
                       isAudioDisabled={isReactionsMuted}
+                      isShoutoutsEnabled={isShoutoutsEnabled}
                     />
                   </div>
                 )}
@@ -221,6 +225,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
             venue={venue}
+            defaultTables={JAZZBAR_TABLES}
           />
         </div>
       </VenueWithOverlay>

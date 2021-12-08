@@ -5,7 +5,7 @@ import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DEFAULT_PORTAL_IS_ENABLED } from "settings";
+import { DEFAULT_PORTAL_IS_ENABLED, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { upsertRoom } from "api/admin";
 import { fetchVenue } from "api/venue";
@@ -18,9 +18,10 @@ import {
   convertClickabilityToPortalType,
   convertPortalTypeToClickability,
 } from "utils/portal";
-import { generateAttendeeInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl, isExternalPortal } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
@@ -77,7 +78,15 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const { user } = useUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const {
+    isShown: isModalShown,
+    hide: hideModal,
+    show: showModal,
+  } = useShowHide(false);
+
+  const portalIcon = isExternalPortal(portal)
+    ? PORTAL_INFO_ICON_MAPPING["external"]
+    : iconUrl;
 
   const { value: targetSpace, loading: isSpaceLoading } = useAsync(async () => {
     if (targetSpaceId) {
@@ -166,14 +175,6 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     [loading, updatingEnabled, values.isEnabled]
   );
 
-  const openModal = useCallback(() => {
-    setShowModal(true);
-  }, [setShowModal]);
-
-  const hideModal = useCallback(() => {
-    setShowModal(false);
-  }, [setShowModal]);
-
   const targetUrl = !isSpaceLoading
     ? generateTargetUrl({ worldSlug, portal, targetSpace })
     : "";
@@ -182,7 +183,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     <>
       <Form className="PortalStripForm">
         <div className="PortalStripForm__cell PortalStripForm__icon">
-          <PortalIcon src={iconUrl} />
+          <PortalIcon src={portalIcon} />
         </div>
         <div className="PortalStripForm__cell PortalStripForm__info">
           <div className="PortalStripForm__title">{title}</div>
@@ -191,10 +192,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             {!isSpaceLoading && <PrettyLink to={targetUrl} title={targetUrl} />}
           </div>
         </div>
-        <div
-          className="PortalStripForm__cell PortalStripForm__visibility"
-          tabIndex={0}
-        >
+        <div className="PortalStripForm__cell PortalStripForm__visibility">
           <AdminCheckbox
             variant="toggler"
             name="isClickable"
@@ -212,21 +210,21 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
             label={renderedEnabledLabel}
             labelPosition="after"
             onClick={handleEnabled}
-            tabIndex={0}
           />
         </div>
-        <div className="PortalStripForm__cell PortalStripForm__edit">
+        <div
+          className="PortalStripForm__cell PortalStripForm__edit"
+          onClick={showModal}
+        >
           <PrettyLink>
             <FontAwesomeIcon icon={faPen} />
-            <span className="PortalStripForm__edit-text" onClick={openModal}>
-              Edit
-            </span>
+            <span className="PortalStripForm__edit-text">Edit</span>
           </PrettyLink>
         </div>
         <FormErrors errors={errors} />
         <SubmitError error={submitError} />
       </Form>
-      {showModal && (
+      {isModalShown && (
         <PortalAddEditModal
           portal={portal}
           show={true}

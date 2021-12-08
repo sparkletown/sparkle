@@ -2,8 +2,6 @@ import React from "react";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_TABLE_CAPACITY } from "settings";
-
 import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
@@ -16,27 +14,27 @@ import { Loading } from "components/molecules/Loading";
 import "./StartTable.scss";
 
 export interface StartTablePropsType {
-  tables: Table[];
+  defaultTables: Table[];
   newTable: Table;
   venue: WithId<AnyVenue>;
 }
 
 export const StartTable: React.FC<StartTablePropsType> = ({
-  tables,
+  defaultTables,
   newTable,
   venue,
 }) => {
+  const venueId = venue.id;
+
   const [{ loading: isUpdatingTables }, updateTables] = useAsyncFn(async () => {
-    if (!venue?.id) return;
+    if (!venueId) return;
 
     await updateVenueTable({
-      venueId: venue.id,
-      tableOfUser: newTable,
-      tables: [...tables, newTable],
-      title: newTable.title,
-      capacity: newTable.capacity ?? DEFAULT_TABLE_CAPACITY,
+      venueId,
+      newTable,
+      defaultTables,
     });
-  }, [newTable, tables, venue?.id]);
+  }, [newTable, venueId, defaultTables]);
 
   const containerClasses = classNames("StartTable", {
     "StartTable--jazzbar": venue?.template === VenueTemplate.jazzbar,
