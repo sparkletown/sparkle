@@ -67,8 +67,11 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   // We can't set the whole object because it's will update with the old position
   useEffect(() => {
     const newMapRooms = mapRooms?.map((mapRoom, index) => ({
-      ...mapRoom,
-      isEnabled: rooms?.[index].isEnabled,
+      ...rooms?.[index],
+      x_percent: mapRoom.x_percent,
+      y_percent: mapRoom.y_percent,
+      width_percent: mapRoom.width_percent,
+      height_percent: mapRoom.height_percent,
     }));
 
     if (
