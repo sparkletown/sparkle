@@ -149,8 +149,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     return <MapBackgroundPlaceholder />;
   }
 
-  console.log(iconsMap, "1");
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
