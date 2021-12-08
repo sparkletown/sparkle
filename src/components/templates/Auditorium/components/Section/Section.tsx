@@ -3,7 +3,11 @@ import { useParams } from "react-router";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_REACTIONS_MUTED, DEFAULT_SECTIONS_AMOUNT } from "settings";
+import {
+  DEFAULT_REACTIONS_MUTED,
+  DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_SHOUTOUTS,
+} from "settings";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -30,6 +34,7 @@ export interface SectionProps {
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
+  const isShoutoutsEnabled = venue.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const {
     isShown: isUserAudioMuted,
@@ -125,6 +130,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
             isReactionsMuted={isUserAudioMuted}
             isAudioDisabled={isReactionsMuted}
             toggleMute={toggleUserAudio}
+            isShoutoutsEnabled={isShoutoutsEnabled}
           />
         </div>
       )
