@@ -53,8 +53,6 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     reValidateMode: "onChange",
   });
 
-  if (!space) return null;
-
   const clearBackendErrors = () => {
     clearError("backend");
   };
@@ -70,7 +68,6 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    if (!space) return;
     try {
       await signIn(data);
 
@@ -80,7 +77,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${space?.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -125,13 +122,15 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   return (
     <div className="form-container">
-      <div className="secondary-action">
-        {`Don't have an account yet?`}
-        <br />
-        <span className="link" onClick={displayRegisterForm}>
-          Register instead!
-        </span>
-      </div>
+      {space && (
+        <div className="secondary-action">
+          {`Don't have an account yet?`}
+          <br />
+          <span className="link" onClick={displayRegisterForm}>
+            Register instead!
+          </span>
+        </div>
+      )}
 
       <h3>Log in to your account</h3>
       {errors.backend && (
@@ -178,7 +177,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           )}
         </div>
 
-        {space.access === VenueAccessMode.Codes && (
+        {space?.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
@@ -192,7 +191,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         </ButtonNG>
       </form>
 
-      {space.hasSocialLoginEnabled && (
+      {space?.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

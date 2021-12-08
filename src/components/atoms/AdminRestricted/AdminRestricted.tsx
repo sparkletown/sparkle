@@ -1,22 +1,13 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
-import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import {
-  DEFAULT_SPACE_SLUG,
-  DEFAULT_WORLD_SLUG,
-  DISABLED_DUE_TO_1324,
-} from "settings";
-
-import {
-  generateAttendeeInsideUrl,
-  generateAttendeeSpaceLandingUrl,
-} from "utils/url";
+import { DISABLED_DUE_TO_1324 } from "settings";
 
 import { useIsAdminUser } from "hooks/roles";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
+
+import Login from "pages/Account/Login";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -27,35 +18,31 @@ import "./AdminRestricted.scss";
 
 export const AdminRestricted: React.FC = ({ children }) => {
   const firebase = useFirebase();
-  const history = useHistory();
-  const { worldSlug, spaceSlug } = useSpaceParams();
   const { userId } = useUser();
+  const [showLogin, setShowLogin] = useState(false);
 
   const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
-    history.push(
-      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
-    );
-  }, [firebase, history, worldSlug, spaceSlug]);
+    setShowLogin(true);
+  }, [setShowLogin, firebase]);
 
-  const redirectToDefaultRoute = () =>
-    history.push(
-      generateAttendeeInsideUrl({
-        worldSlug: DEFAULT_WORLD_SLUG,
-        spaceSlug: DEFAULT_SPACE_SLUG,
-      })
-    );
-
-  const authHandler = userId ? logout : redirectToDefaultRoute;
+  const authHandler = useCallback(() => {
+    userId ? logout() : setShowLogin(true);
+  }, [userId, logout, setShowLogin]);
 
   if (isAdminUser) return <>{children}</>;
 
-  if (isCheckingRole)
+  if (isCheckingRole) {
     return (
       <div className="AdminRestricted AdminRestricted--loading">Loading...</div>
     );
+  }
+
+  if (showLogin) {
+    return <Login venueId={"POOP"} />;
+  }
 
   return (
     <div className="AdminRestricted AdminRestricted--forbidden">

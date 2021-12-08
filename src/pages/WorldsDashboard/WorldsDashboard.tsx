@@ -51,8 +51,8 @@ export const WorldsDashboard: React.FC = () => {
 
   return (
     <div className="WorldsDashboard">
-      <WithNavigationBar>
-        <AdminRestricted>
+      <AdminRestricted>
+        <WithNavigationBar>
           <AdminPanel variant="unbound">
             {hasWorlds ? (
               <AdminShowcase className="WorldsDashboard__worlds">
@@ -91,8 +91,8 @@ export const WorldsDashboard: React.FC = () => {
               </AdminShowcase>
             )}
           </AdminPanel>
-        </AdminRestricted>
-      </WithNavigationBar>
+        </WithNavigationBar>
+      </AdminRestricted>
     </div>
   );
 };
