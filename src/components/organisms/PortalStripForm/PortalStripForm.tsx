@@ -5,7 +5,7 @@ import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { DEFAULT_PORTAL_IS_ENABLED } from "settings";
+import { DEFAULT_PORTAL_IS_ENABLED, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { upsertRoom } from "api/admin";
 import { fetchVenue } from "api/venue";
@@ -18,7 +18,7 @@ import {
   convertClickabilityToPortalType,
   convertPortalTypeToClickability,
 } from "utils/portal";
-import { generateAttendeeInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl, isExternalPortal } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
@@ -78,6 +78,10 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
   const [updatingClickable, setUpdatingClickable] = useState(false);
   const [updatingEnabled, setUpdatingEnabled] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const portalIcon = isExternalPortal(portal)
+    ? PORTAL_INFO_ICON_MAPPING["external"]
+    : iconUrl;
 
   const { value: targetSpace, loading: isSpaceLoading } = useAsync(async () => {
     if (targetSpaceId) {
@@ -182,7 +186,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     <>
       <Form className="PortalStripForm">
         <div className="PortalStripForm__cell PortalStripForm__icon">
-          <PortalIcon src={iconUrl} />
+          <PortalIcon src={portalIcon} />
         </div>
         <div className="PortalStripForm__cell PortalStripForm__info">
           <div className="PortalStripForm__title">{title}</div>
