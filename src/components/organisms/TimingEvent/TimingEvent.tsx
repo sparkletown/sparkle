@@ -44,11 +44,11 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
       onMouseLeave={hideButton}
     >
       <div className="TimingEvent__time">
-        <p>{format(eventStartTime(event), "do MMM")}</p>
+        <p>{format(eventStartTime({ event }), "do MMM")}</p>
         <p className="TimingEvent__time-start">
-          {formatTimeLocalised(eventStartTime(event))}
+          {formatTimeLocalised(eventStartTime({ event }))}
         </p>
-        <p>{formatTimeLocalised(eventEndTime(event))}</p>
+        <p>{formatTimeLocalised(eventEndTime({ event }))}</p>
       </div>
       <div className="TimingEvent__details">
         <p>

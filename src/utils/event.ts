@@ -18,6 +18,16 @@ import {
   getDayInterval,
 } from "./time";
 
+type EventStartTimeOptions = {
+  event: VenueEvent;
+  defaultStartTime?: Date;
+};
+
+type EventEndTimeOptions = {
+  event: VenueEvent;
+  defaultDuration?: number;
+};
+
 export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
   roomEvents.find(isEventLive);
 
@@ -58,26 +68,29 @@ export const eventHappeningNow = (
 };
 
 export const hasEventFinished = (event: VenueEvent) =>
-  isAfter(Date.now(), eventEndTime(event));
+  isAfter(Date.now(), eventEndTime({ event }));
 
-// @debt: if event or event.start_utc_seconds are falsy this func crashes the page
-// probably need to add an additional `defaultValue` to return or some sort of a guard
-export const eventStartTime = (event: VenueEvent) =>
-  fromUnixTime(event.start_utc_seconds);
+export const eventStartTime = ({
+  event,
+  defaultStartTime,
+}: EventStartTimeOptions) =>
+  fromUnixTime(event?.start_utc_seconds ?? defaultStartTime);
 
-// @debt: if event or event.start_utc_seconds are falsy this func crashes the page
-// probably need to add an additional `defaultValue` to return or some sort of a guard
-export const eventEndTime = (event: VenueEvent) =>
-  addMinutes(eventStartTime(event), event.duration_minutes);
+export const eventEndTime = ({ event, defaultDuration }: EventEndTimeOptions) =>
+  addMinutes(
+    eventStartTime({ event }),
+    event?.duration_minutes ?? defaultDuration
+  );
 
 export const isEventStartingSoon = (
   event: VenueEvent,
   rangeInMinutes: number | undefined = 60
-) => differenceInMinutes(eventStartTime(event), Date.now()) <= rangeInMinutes;
+) =>
+  differenceInMinutes(eventStartTime({ event }), Date.now()) <= rangeInMinutes;
 
 export const getEventInterval = (event: VenueEvent) => ({
-  start: eventStartTime(event),
-  end: eventEndTime(event),
+  start: eventStartTime({ event, defaultStartTime: new Date() }),
+  end: eventEndTime({ event, defaultDuration: 1 }),
 });
 
 export const isEventWithinDate = (checkDate: Date | number) => (
