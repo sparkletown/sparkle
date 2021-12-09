@@ -55,7 +55,6 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     { loading: isDeletingEvent },
     deleteVenueEvent,
   ] = useAsyncFn(async () => {
-    console.log(event, eventSpaceId);
     if (event && eventSpaceId) {
       await deleteEvent(eventSpaceId, event.id);
     }
