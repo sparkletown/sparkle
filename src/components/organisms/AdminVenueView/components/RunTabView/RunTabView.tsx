@@ -6,8 +6,6 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { MapPreview } from "pages/Admin/MapPreview";
-
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
@@ -16,6 +14,8 @@ import { RunTabToolbar } from "components/organisms/AdminVenueView/components/Ru
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { MapPreview } from "../MapPreview";
 
 import "./RunTabView.scss";
 
@@ -48,12 +48,10 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
         </div>
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
-            isEditing
-            worldId={venue.worldId}
-            venueId={venue.id}
-            venueName={venue.name}
-            mapBackground={venue.mapBackgroundImageUrl}
-            rooms={venue.rooms ?? []}
+            isEditing={false}
+            mapBackground={venue?.mapBackgroundImageUrl}
+            rooms={venue.rooms || []}
+            setSelectedRoom={() => undefined}
           />
         </div>
       </AdminShowcase>

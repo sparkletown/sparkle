@@ -540,7 +540,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 export const DEFAULT_SHOW_REACTIONS = true;
-export const DEFAULT_REACTIONS_AUDIBLE = true;
+export const DEFAULT_REACTIONS_MUTED = false;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
@@ -610,8 +610,6 @@ export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 
 export const DEFAULT_TABLE_ROWS = 2;
 export const DEFAULT_TABLE_COLUMNS = 3;
-export const DEFAULT_TABLE_CAPACITY =
-  DEFAULT_TABLE_ROWS * DEFAULT_TABLE_COLUMNS;
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;

@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -14,9 +14,9 @@ import "./TimingSpace.scss";
 
 export type TimingSpaceProps = {
   space: WithId<AnyVenue>;
-  spaceEvents: WithId<VenueEvent>[];
+  spaceEvents: WithVenueId<WithId<VenueEvent>>[];
   setEditedEvent: React.Dispatch<
-    React.SetStateAction<WithId<VenueEvent> | undefined>
+    React.SetStateAction<WithVenueId<WithId<VenueEvent>> | undefined>
   >;
   setShowCreateEventModal: () => void;
 };
@@ -31,7 +31,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 
   const onClickCreateButton = useCallback(() => {
     setShowCreateEventModal();
-    setEditedEvent({ spaceId: space.id } as WithId<VenueEvent>);
+    setEditedEvent({ spaceId: space.id } as WithVenueId<WithId<VenueEvent>>);
   }, [setShowCreateEventModal, setEditedEvent, space.id]);
 
   const renderedSpaceEvents = useMemo(

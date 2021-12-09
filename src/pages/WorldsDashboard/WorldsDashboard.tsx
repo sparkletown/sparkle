@@ -51,7 +51,7 @@ export const WorldsDashboard: React.FC = () => {
 
   return (
     <div className="WorldsDashboard">
-      <WithNavigationBar title="Sparkle Admin">
+      <WithNavigationBar>
         <AdminRestricted>
           <AdminPanel variant="unbound">
             {hasWorlds ? (

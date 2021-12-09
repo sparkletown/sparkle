@@ -15,7 +15,7 @@ export interface JazzbarProps {
 //   you can see it yourself, when you start understanding the way it works
 export const JazzBarPage: React.FC<JazzbarProps> = ({ venue }) => {
   return (
-    <JazzBarSkeletonPage>
+    <JazzBarSkeletonPage venue={venue}>
       <JazzBar venue={venue} />
     </JazzBarSkeletonPage>
   );

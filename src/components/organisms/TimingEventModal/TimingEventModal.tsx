@@ -13,7 +13,7 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 
 import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -27,7 +27,7 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
-  event?: WithId<VenueEvent>;
+  event?: WithVenueId<WithId<VenueEvent>>;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
@@ -98,7 +98,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       };
       if (eventSpaceId) {
         if (event?.id) {
-          await updateEvent(eventSpaceId, event.id, formEvent);
+          // @debt this is a hack. event.venueId is the venue that contains
+          // the event inside its events subcollection. It is NOT the space
+          // that the event is being experienced in.
+          await updateEvent(event.venueId, event.id, formEvent);
         } else {
           await createEvent(eventSpaceId, formEvent);
         }

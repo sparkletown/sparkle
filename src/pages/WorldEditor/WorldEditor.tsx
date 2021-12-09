@@ -40,11 +40,13 @@ export const WorldEditor: React.FC = () => {
 
   const adminTitle = world ? `${world.name} settings` : "Create a new world";
 
+  const navBarTitle = `${world?.name ?? ""}`;
+
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
   return (
     <div className="WorldEditor">
-      <WithNavigationBar>
+      <WithNavigationBar title={navBarTitle}>
         <AdminRestricted>
           <AdminTitleBar variant="two-rows">
             {world && (
