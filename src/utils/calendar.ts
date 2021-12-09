@@ -23,8 +23,8 @@ export const createCalendar = ({
   events.forEach((event) => {
     const space = relatedVenues.find(({ id }) => id === event.venueId);
     calendar.createEvent({
-      start: eventStartTime(event),
-      end: eventEndTime(event),
+      start: eventStartTime({ event }),
+      end: eventEndTime({ event }),
       organizer: `${event.host || "Unknown"} <undefined>`, // string format: "name <email>". email cannot be blank
       description: event.description,
       summary: event.name,
