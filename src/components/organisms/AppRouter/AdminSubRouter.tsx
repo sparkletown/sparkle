@@ -6,6 +6,7 @@ import {
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_BASE_URL,
+  ADMIN_IA_WORLD_CREATE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
   ADMIN_ROOT_URL,
@@ -34,7 +35,7 @@ export const AdminSubRouter: React.FC = () => (
       </Provided>
     </Route>
 
-    <Route path={ADMIN_IA_WORLD_EDIT_PARAM_URL}>
+    <Route path={[ADMIN_IA_WORLD_CREATE_URL, ADMIN_IA_WORLD_EDIT_PARAM_URL]}>
       <Provided withRelatedVenues>
         <WorldEditor />
       </Provided>
