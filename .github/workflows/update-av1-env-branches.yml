@@ -16,34 +16,34 @@ jobs:
         run: |
           # Temporarily disable the envs deployment
 
-          # git fetch origin master
+          git fetch origin master-av1
 
-          # git push origin master:sparkle1
-          # git push origin master:sparkle2
-          # git push origin master:sparkle3
-          git push origin master:sparkle4
-          # git push origin master:sparkle5
+          # git push origin master-av1:sparkle1
+          # git push origin master-av1:sparkle2
+          # git push origin master-av1:sparkle3
+          git push origin master-av1:sparkle4
+          # git push origin master-av1:sparkle5
 
-          # git push origin master:sparkle6
-          git push origin master:sparkle7
-          # git push origin master:sparkle8
-          # git push origin master:sparkle9
-          # git push origin master:sparkle10
+          # git push origin master-av1:sparkle6
+          # git push origin master-av1:sparkle7
+          # git push origin master-av1:sparkle8
+          # git push origin master-av1:sparkle9
+          # git push origin master-av1:sparkle10
 
-          # git push origin master:bigtop
-          # git push origin master:deloitte
+          # git push origin master-av1:bigtop
+          # git push origin master-av1:deloitte
 
-          git push origin master:env/demo
-          # git push origin master:env/northwell
+          # git push origin master-av1:env/demo
+          # git push origin master-av1:env/northwell
 
           # Unused envs
-          # git push origin master:env/memrise
-          # git push origin master:env/unesco
-          # git push origin master:env/pa
-          # git push origin master:env/clever
-          # git push origin master:env/unity
+          # git push origin master-av1:env/memrise
+          # git push origin master-av1:env/unesco
+          # git push origin master-av1:env/pa
+          # git push origin master-av1:env/clever
+          # git push origin master-av1:env/unity
 
           # Unused envs with custom code
-          # git push origin master:env/kotr # Note: This runs custom code
-          # git push origin master:env/github # Note: This runs custom code.
-          # git push origin master:env/ohbm # Note: This runs custom code.
+          # git push origin master-av1:env/kotr # Note: This runs custom code
+          # git push origin master-av1:env/github # Note: This runs custom code.
+          # git push origin master-av1:env/ohbm # Note: This runs custom code.
