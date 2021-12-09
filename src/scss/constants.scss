@@ -217,6 +217,7 @@ $z-layer-embed-iframe: $z-layer-on-top-bg;
 $z-layer-external-message: $z-layer-on-top-bg;
 $z-layer-auditorium-iframe: $z-layer-on-top-bg;
 $z-layer-jukebox: $z-layer-on-top-bg;
+$z-layer-start-table: 0;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -303,7 +304,8 @@ $z-layers: (
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
   venuepage-preview-indication: 1,
-  map-preview-header: 5
+  map-preview-header: 5,
+  start-table: $z-layer-start-table
 );
 
 @function z($layer) {

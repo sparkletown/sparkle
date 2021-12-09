@@ -9,6 +9,7 @@ import {
   DEFAULT_PORTAL_IS_CLICKABLE,
   DEFAULT_PORTAL_IS_ENABLED,
   DEFAULT_VENUE_LOGO,
+  PORTAL_INFO_ICON_MAPPING,
   PortalInfoListItem,
   ROOM_TAXON,
   SPACE_TAXON,
@@ -59,20 +60,21 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 }) => {
   const { user } = useUser();
   const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-  const { spaceId: currentSpaceId, world } = useWorldAndSpaceBySlug(
+  const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );
 
   const { icon } = item ?? {};
-
+  const spaceLogoImage =
+    PORTAL_INFO_ICON_MAPPING[space?.template ?? ""] ?? DEFAULT_VENUE_LOGO;
   const isEditMode = isTruthy(portal);
   const title = isEditMode ? "Edit the portal" : "Create a portal";
 
   const defaultValues = useMemo(
     () => ({
       title: portal?.title ?? "",
-      image_url: portal?.image_url ?? icon ?? DEFAULT_VENUE_LOGO,
+      image_url: portal?.image_url ?? icon ?? spaceLogoImage,
       visibility: portal?.visibility ?? venueVisibility,
       spaceId: portal?.spaceId ?? undefined,
       isClickable: portal?.type !== RoomType.unclickable,
@@ -87,6 +89,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       portal?.isEnabled,
       icon,
       venueVisibility,
+      spaceLogoImage,
     ]
   );
 
