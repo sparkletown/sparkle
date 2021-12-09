@@ -77,13 +77,13 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="form">
+      <div className="TimingDeleteModal">
         <h2>Delete event</h2>
         <form
           onSubmit={handleSubmit(deleteVenueEvent)}
-          className="form__container"
+          className="TimingDeleteModal__container"
         >
-          <div className="input-group">
+          <div>
             <p>Name: {event?.name}</p>
             <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
             <p>
@@ -93,7 +93,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
             <p>Are you sure you wish to delete this event?</p>
           </div>
           <ButtonNG
-            className="form__button"
+            className="TimingDeleteModal__button"
             type="submit"
             variant="danger"
             disabled={formState.isSubmitting || isDeletingEvent}

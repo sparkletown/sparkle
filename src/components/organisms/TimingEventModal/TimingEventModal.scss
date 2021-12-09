@@ -79,9 +79,9 @@
       &:-webkit-autofill:focus,
       &:-webkit-autofill:active {
         -webkit-text-fill-color: var(--content--over);
-        -webkit-box-shadow: 0 0 0 30px $input-auto-fill-box-shadow-timeline
+        -webkit-box-shadow: box-shadow--input-shadow(var(--content--under-70a))
           inset;
-        box-shadow: 0 0 0 30px $input-auto-fill-box-shadow-timeline inset;
+        box-shadow: box-shadow--input-shadow(var(--content--under-70a)) inset;
       }
     }
   }

@@ -21,13 +21,10 @@ import {
 export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
   roomEvents.find(isEventLive);
 
-export const isEventLive = (event: VenueEvent) => {
-  if (!event?.start_utc_seconds) {
-    return false;
-  }
-
-  return isWithinInterval(Date.now(), getEventInterval(event));
-};
+// @debt: if event or event.start_utc_seconds are falsy this func crashes the page
+// probably need to add an additional `defaultValue` to return or some sort of a guard
+export const isEventLive = (event: VenueEvent) =>
+  isWithinInterval(Date.now(), getEventInterval(event));
 
 export const isEventFuture = (event: VenueEvent) =>
   isFuture(fromUnixTime(event.start_utc_seconds));
@@ -60,21 +57,15 @@ export const eventHappeningNow = (
 export const hasEventFinished = (event: VenueEvent) =>
   isAfter(Date.now(), eventEndTime(event));
 
-export const eventStartTime = (event: VenueEvent) => {
-  if (!event?.start_utc_seconds) {
-    return new Date();
-  }
+// @debt: if event or event.start_utc_seconds are falsy this func crashes the page
+// probably need to add an additional `defaultValue` to return or some sort of a guard
+export const eventStartTime = (event: VenueEvent) =>
+  fromUnixTime(event.start_utc_seconds);
 
-  return fromUnixTime(event.start_utc_seconds);
-};
-
-export const eventEndTime = (event: VenueEvent) => {
-  if (!event?.start_utc_seconds) {
-    return new Date();
-  }
-
-  return addMinutes(eventStartTime(event), event.duration_minutes);
-};
+// @debt: if event or event.start_utc_seconds are falsy this func crashes the page
+// probably need to add an additional `defaultValue` to return or some sort of a guard
+export const eventEndTime = (event: VenueEvent) =>
+  addMinutes(eventStartTime(event), event.duration_minutes);
 
 export const isEventStartingSoon = (
   event: VenueEvent,
