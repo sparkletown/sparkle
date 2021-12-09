@@ -92,8 +92,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     [worldSlug, eventVenue]
   );
 
-  const storedIcon =
-    eventRoom?.image_url ?? event.venueIcon ?? eventVenue?.host?.icon;
+  const storedIcon = event.venueIcon ?? eventVenue?.host?.icon;
 
   const defaultIcon =
     PORTAL_INFO_ICON_MAPPING[eventVenue?.template ?? ""] ?? DEFAULT_VENUE_LOGO;
