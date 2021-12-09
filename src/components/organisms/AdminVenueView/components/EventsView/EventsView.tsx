@@ -184,7 +184,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
             setEditedEvent && setEditedEvent(undefined);
             triggerRefetch();
           }}
-          venueId={venue.id}
           event={editedEvent}
         />
       )}

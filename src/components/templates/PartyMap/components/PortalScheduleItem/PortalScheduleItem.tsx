@@ -34,18 +34,18 @@ export const PortalScheduleItem: React.FunctionComponent<PortalScheduleItemProps
     <div className="PortalScheduleItem">
       <div className="PortalScheduleItem__event-dates">
         <span className="PortalScheduleItem__event-date">
-          {formatDateRelativeToNow(eventStartTime(event), {
+          {formatDateRelativeToNow(eventStartTime({ event }), {
             formatToday: () => "",
             formatTomorrow: formatDate,
           })}
         </span>
 
         <span className="PortalScheduleItem__event-time">
-          {formatTimeLocalised(eventStartTime(event))}
+          {formatTimeLocalised(eventStartTime({ event }))}
         </span>
 
         <span className="PortalScheduleItem__event-end-time">
-          {formatTimeLocalised(eventEndTime(event))}
+          {formatTimeLocalised(eventEndTime({ event }))}
         </span>
 
         {isCurrentEventLive && (

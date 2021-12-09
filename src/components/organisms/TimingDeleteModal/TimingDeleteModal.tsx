@@ -14,17 +14,19 @@ import { WithId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import "./TimingDeleteModal.scss";
+
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  venueId: string;
   event?: WithId<VenueEvent>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   show,
   onHide,
-  venueId,
   event,
 }) => {
   const { handleSubmit, formState, reset } = useForm<EventInput>({
@@ -75,25 +77,29 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="form-container">
+      <div className="TimingDeleteModal">
         <h2>Delete event</h2>
-        <form onSubmit={handleSubmit(deleteVenueEvent)} className="form">
-          <div className="input-group">
+        <form
+          onSubmit={handleSubmit(deleteVenueEvent)}
+          className="TimingDeleteModal__container"
+        >
+          <div>
             <p>Name: {event?.name}</p>
-            <RenderMarkdown text={`Description: ${event?.description}`} />
+            <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
             <p>
               Time: {eventStartTime}-{eventEndTime}
             </p>
             <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
-          <button
-            className="btn btn-block btn-centered btn-danger"
+          <ButtonNG
+            className="TimingDeleteModal__button"
             type="submit"
+            variant="danger"
             disabled={formState.isSubmitting || isDeletingEvent}
           >
             Delete
-          </button>
+          </ButtonNG>
         </form>
       </div>
     </Modal>

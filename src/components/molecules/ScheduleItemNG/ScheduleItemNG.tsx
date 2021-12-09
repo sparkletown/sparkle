@@ -50,7 +50,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
 
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
   const showDate = Boolean(
-    differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
+    differenceInCalendarDays(eventEndTime({ event }), eventStartTime({ event }))
   );
   const isCurrentEventLive = isEventLive(event);
 
@@ -128,24 +128,24 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
           {!isCurrentEventLive &&
             showDate &&
             isShowFullInfo &&
-            formatDateRelativeToNow(eventStartTime(event))}
+            formatDateRelativeToNow(eventStartTime({ event }))}
         </span>
 
         <span className={timeContainer}>
           {isCurrentEventLive
             ? "Live"
-            : formatTimeLocalised(eventStartTime(event)) + "-"}
+            : formatTimeLocalised(eventStartTime({ event })) + "-"}
         </span>
         <span className="ScheduleItemNG__until ScheduleItemNG__time--end">
           {isCurrentEventLive && "until "}
         </span>
 
         <span className="ScheduleItemNG__date ScheduleItemNG__time--end">
-          {showDate && formatDateRelativeToNow(eventEndTime(event))}
+          {showDate && formatDateRelativeToNow(eventEndTime({ event }))}
         </span>
 
         <span className="ScheduleItemNG__time ScheduleItemNG__time--end">
-          {formatTimeLocalised(eventEndTime(event))}
+          {formatTimeLocalised(eventEndTime({ event }))}
         </span>
       </div>
 

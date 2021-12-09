@@ -316,6 +316,10 @@ $z-layers: (
   @return 0 0 0 2px $color;
 }
 
+@function box-shadow--input-autofill($color) {
+  @return 0 0 0 30px #{$color};
+}
+
 @function box-shadow--card($color) {
   @return 0 2px 4px $color;
 }

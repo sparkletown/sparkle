@@ -192,7 +192,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
                 const startTime = formatTimeLocalised(
                   eventStartTime(venueEvent)
                 );
-                const endTime = formatTimeLocalised(eventEndTime(venueEvent));
+                const endTime = formatTimeLocalised(
+                  eventEndTime({ event: venueEvent })
+                );
                 const startDay = format(
                   eventStartTime(venueEvent),
                   "EEEE LLLL do"
