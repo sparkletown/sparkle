@@ -10,7 +10,6 @@ import { AdminPanel } from "components/organisms/AdminVenueView/components/Admin
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
 import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
-import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -39,13 +38,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
         </div>
       </AdminSidebar>
       <AdminShowcase className="RunTabView__main" variant="no-scroll">
-        <div className="RunTabView__toolbar RunTabView--spacing mod--hidden">
-          <RunTabToolbar
-            venueId={venueId}
-            venueName={venue.name}
-            announcement={venue.banner}
-          />
-        </div>
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
             isEditing={false}
