@@ -32,6 +32,7 @@ export interface SubVenueIconMap {
     width: number;
     height: number;
     roomIndex?: number;
+    isEnabled?: boolean;
   };
 }
 
@@ -135,6 +136,7 @@ export const Container: React.FC<PropsType> = (props) => {
     resizable,
     coordinatesBoundary.width,
     coordinatesBoundary.height,
+    iconsMap,
   ]);
 
   useMemo(() => {

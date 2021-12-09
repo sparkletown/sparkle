@@ -9,6 +9,7 @@ import {
   DEFAULT_PORTAL_IS_CLICKABLE,
   DEFAULT_PORTAL_IS_ENABLED,
   DEFAULT_VENUE_LOGO,
+  PORTAL_INFO_ICON_MAPPING,
   PortalInfoListItem,
   ROOM_TAXON,
   SPACE_TAXON,
@@ -24,7 +25,7 @@ import { isTruthy } from "utils/types";
 import { roomSchema } from "forms/roomSchema";
 
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
@@ -59,20 +60,21 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 }) => {
   const { user } = useUser();
   const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-  const { spaceId: currentSpaceId, world } = useWorldAndSpaceBySlug(
+  const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );
 
   const { icon } = item ?? {};
-
+  const spaceLogoImage =
+    PORTAL_INFO_ICON_MAPPING[space?.template ?? ""] ?? DEFAULT_VENUE_LOGO;
   const isEditMode = isTruthy(portal);
   const title = isEditMode ? "Edit the portal" : "Create a portal";
 
   const defaultValues = useMemo(
     () => ({
       title: portal?.title ?? "",
-      image_url: portal?.image_url ?? icon ?? DEFAULT_VENUE_LOGO,
+      image_url: portal?.image_url ?? icon ?? spaceLogoImage,
       visibility: portal?.visibility ?? venueVisibility,
       spaceId: portal?.spaceId ?? undefined,
       isClickable: portal?.type !== RoomType.unclickable,
@@ -87,6 +89,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
       portal?.isEnabled,
       icon,
       venueVisibility,
+      spaceLogoImage,
     ]
   );
 
@@ -174,19 +177,16 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     await onDone();
   });
 
-  const { ownedVenues } = useOwnedVenues({});
+  const { relatedVenues } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
       Object.fromEntries(
-        ownedVenues
-          .filter(
-            ({ worldId: venueWorldId, id }) =>
-              !(venueWorldId !== world?.id || id === currentSpaceId)
-          )
+        relatedVenues
+          .filter(({ id }) => id !== currentSpaceId)
           .map((venue) => [venue.id, venue])
       ),
-    [currentSpaceId, ownedVenues, world?.id]
+    [currentSpaceId, relatedVenues]
   );
 
   const isAppearanceOverridenInPortal =
@@ -204,9 +204,9 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   const parentSpace = useMemo(
     () =>
       portal?.spaceId
-        ? ownedVenues.find(({ id }) => id === portal?.spaceId)
+        ? relatedVenues.find(({ id }) => id === portal?.spaceId)
         : { name: "" },
-    [ownedVenues, portal?.spaceId]
+    [relatedVenues, portal?.spaceId]
   );
 
   return (

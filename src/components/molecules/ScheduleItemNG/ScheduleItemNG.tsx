@@ -1,9 +1,4 @@
-import React, {
-  MouseEventHandler,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { MouseEventHandler, useCallback, useState } from "react";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 import {
   faBookmark as solidBookmark,
@@ -13,24 +8,21 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
+import { DEFAULT_VENUE_LOGO, SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
 
-import { Room } from "types/rooms";
 import { ScheduledVenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
-import { isDefined } from "utils/types";
 import { enterSpace, generateAttendeeInsideUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoom } from "hooks/useRoom";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
@@ -50,28 +42,13 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   event,
   isShowFullInfo,
 }) => {
-  const { currentVenue: eventVenue, relatedVenues } = useRelatedVenues({
-    currentVenueId: event.venueId,
+  const { currentVenue: eventVenue } = useRelatedVenues({
+    currentVenueId: event.spaceId,
   });
 
   const { worldSlug } = useWorldParams();
 
-  const relatedVenuesRooms = relatedVenues
-    ?.flatMap((venue) => venue.rooms ?? [])
-    .filter(isDefined);
-
-  const eventRoom = useMemo<Room | undefined>(() => {
-    const { room: eventRoomTitle = "" } = event;
-
-    return relatedVenuesRooms?.find(({ title }) => {
-      return title === eventRoomTitle;
-    });
-  }, [relatedVenuesRooms, event]);
-
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
-  const { enterRoom } = useRoom({
-    room: eventRoom,
-  });
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
@@ -87,13 +64,11 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       // something higher up in the stack that guarantees we'll have at least a
       // world slug by the time we get to this point. Ideally, guarantees a
       // space slug too.
-      const eventLink =
-        eventRoom?.url ??
-        generateAttendeeInsideUrl({
-          worldSlug,
-          spaceSlug: eventVenue?.slug,
-          absoluteUrl: true,
-        });
+      const eventLink = generateAttendeeInsideUrl({
+        worldSlug,
+        spaceSlug: eventVenue?.slug,
+        absoluteUrl: true,
+      });
       navigator.clipboard.writeText(eventLink);
       setIsEventLinkCopied(true);
       setTimeout(
@@ -101,16 +76,12 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         SCHEDULE_SHOW_COPIED_TEXT_MS
       );
     },
-    [worldSlug, eventRoom, eventVenue]
+    [worldSlug, eventVenue]
   );
 
   const goToEventLocation = useCallback(() => {
-    if (eventRoom) {
-      enterRoom();
-    } else {
-      enterSpace(worldSlug, eventVenue?.slug);
-    }
-  }, [enterRoom, worldSlug, eventVenue, eventRoom]);
+    enterSpace(worldSlug, eventVenue?.slug);
+  }, [worldSlug, eventVenue]);
 
   const enterEventVenue = useCallback(
     () => enterSpace(worldSlug, eventVenue?.slug),
@@ -118,7 +89,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   );
 
   const eventImage = getFirebaseStorageResizedImage(
-    eventRoom?.image_url ?? event.venueIcon,
+    eventVenue?.host?.icon ?? DEFAULT_VENUE_LOGO,
     {
       fit: "crop",
       width: 40,
@@ -189,14 +160,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       <div className="ScheduleItemNG__details">
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">
-          {eventRoom && (
-            <>
-              <span className="button--a" onClick={enterRoom}>
-                {event.room}
-              </span>
-              <span className="ScheduleItemNG__place--location"> in </span>
-            </>
-          )}
           <span className="button--a" onClick={enterEventVenue}>
             {eventVenue?.name}
           </span>

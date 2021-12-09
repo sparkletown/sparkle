@@ -4,8 +4,9 @@ import classNames from "classnames";
 import {
   ALWAYS_EMPTY_ARRAY,
   DEFAULT_ENABLE_JUKEBOX,
-  DEFAULT_REACTIONS_AUDIBLE,
+  DEFAULT_REACTIONS_MUTED,
   DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
   IFRAME_ALLOW,
 } from "settings";
 
@@ -69,24 +70,23 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     seatedAtTable && venue?.id
   );
 
-  const isReactionsAudioDisabled = !venue.isReactionsMuted;
+  const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
+  const isShoutoutsEnabled = venue.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const {
-    isShown: isUserAudioOn,
+    isShown: isUserAudioMuted,
     toggle: toggleUserAudio,
-    hide: disableUserAudio,
-    show: enableUserAudio,
-  } = useShowHide(venue.isReactionsMuted ?? DEFAULT_REACTIONS_AUDIBLE);
+    hide: enableUserAudio,
+    show: disableUserAudio,
+  } = useShowHide(isReactionsMuted);
 
   useEffect(() => {
-    if (venue.isReactionsMuted) {
-      enableUserAudio();
-    } else {
+    if (isReactionsMuted) {
       disableUserAudio();
+    } else {
+      enableUserAudio();
     }
-  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
-
-  const isUserAudioMuted = !isUserAudioOn;
+  }, [isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   useEffect(() => {
     analytics.trackEnterJazzBarEvent();
@@ -145,6 +145,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             venueName={venue.name}
             tables={jazzbarTables}
             venueId={venue.id}
+            defaultTables={JAZZBAR_TABLES}
           />
         )}
         {venue.description?.text && (
@@ -184,7 +185,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       venueId={venue.id}
                       isReactionsMuted={isUserAudioMuted}
                       toggleMute={toggleUserAudio}
-                      isAudioDisabled={isReactionsAudioDisabled}
+                      isAudioDisabled={isReactionsMuted}
+                      isShoutoutsEnabled={isShoutoutsEnabled}
                     />
                   </div>
                 )}
@@ -211,7 +213,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
               roomName={`${venue.id}-${seatedAtTable}`}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
-              isAudioEffectDisabled={isUserAudioMuted}
+              isReactionsMuted={isUserAudioMuted}
             />
           )}
           <TablesUserList
@@ -222,6 +224,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             joinMessage={!venue.hideVideo ?? true}
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
+            venue={venue}
+            defaultTables={JAZZBAR_TABLES}
           />
         </div>
       </VenueWithOverlay>

@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { ALWAYS_NOOP_FUNCTION } from "settings";
+import { ALWAYS_NOOP_FUNCTION, REACTION_TIMEOUT } from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -13,7 +14,7 @@ import {
   ReactionData,
 } from "types/reactions";
 
-import { createEmojiReaction } from "utils/reactions";
+import { createEmojiReaction, createTextReaction } from "utils/reactions";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useUser } from "hooks/useUser";
@@ -22,6 +23,10 @@ import { Reaction } from "components/atoms/Reaction";
 
 import "./ReactionsBar.scss";
 
+interface ChatOutDataType {
+  text: string;
+}
+
 export interface ReactionsBarProps {
   venueId: string;
   reactions?: ReactionData<EmojiReactionType>[];
@@ -29,6 +34,7 @@ export interface ReactionsBarProps {
   isAudioDisabled: boolean;
   toggleMute: () => void;
   leaveSeat?: () => void;
+  isShoutoutsEnabled: boolean;
 }
 
 export const ReactionsBar: React.FC<ReactionsBarProps> = ({
@@ -38,6 +44,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   reactions = EMOJI_REACTIONS,
   toggleMute,
   leaveSeat,
+  isShoutoutsEnabled,
 }) => {
   const dispatch = useDispatch();
   const { userWithId } = useUser();
@@ -47,6 +54,7 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   });
 
   const handleToggleMute = isAudioDisabled ? ALWAYS_NOOP_FUNCTION : toggleMute;
+  const [isShoutSent, setIsShoutSent] = useState(false);
 
   const sendReaction = useCallback(
     (emojiReaction: EmojiReactionType) => {
@@ -74,18 +82,78 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     [reactions, sendReaction]
   );
 
+  const { register, handleSubmit, reset } = useForm<ChatOutDataType>({
+    mode: "onSubmit",
+  });
+
+  // @debt This should probably be all rolled up into a single canonical component.
+  // Possibly ShoutoutBar or similar.
+  const onSubmit = async (data: ChatOutDataType) => {
+    setIsShoutSent(true);
+
+    if (!userWithId) {
+      return;
+    }
+    dispatch(
+      addReaction({
+        venueId,
+        reaction: createTextReaction(data.text, userWithId),
+      })
+    );
+
+    reset();
+  };
+
+  useEffect(() => {
+    if (isShoutSent) {
+      setTimeout(() => {
+        setIsShoutSent(false);
+      }, REACTION_TIMEOUT);
+    }
+  }, [isShoutSent]);
+
   return (
     <div className="ReactionsBar">
-      {renderedReactions}
+      <div className="ReactionsBar__reactions-container">
+        {renderedReactions}
 
-      <div className={muteClasses} onClick={handleToggleMute}>
-        <FontAwesomeIcon icon={isReactionsMuted ? faVolumeMute : faVolumeUp} />
+        <div className={muteClasses} onClick={handleToggleMute}>
+          <FontAwesomeIcon
+            icon={isReactionsMuted ? faVolumeMute : faVolumeUp}
+          />
+        </div>
+
+        {leaveSeat && (
+          <button
+            className="ReactionsBar__leave-seat-button"
+            onClick={leaveSeat}
+          >
+            Leave Seat
+          </button>
+        )}
       </div>
-
-      {leaveSeat && (
-        <button className="ReactionsBar__leave-seat-button" onClick={leaveSeat}>
-          Leave Seat
-        </button>
+      {isShoutoutsEnabled && (
+        // @debt This should probably be all rolled up into a single canonical component.
+        // Possibly ShoutoutBar or similar.
+        <div className="ReactionsBar__shout-container">
+          <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
+            <input
+              name="text"
+              className="text"
+              placeholder="Shout out to the crowd"
+              ref={register({ required: true })}
+              disabled={isShoutSent}
+              autoComplete="off"
+            />
+            <input
+              className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
+              type="submit"
+              id={`send-shout-out`}
+              value={isShoutSent ? "Sent!" : "Send"}
+              disabled={isShoutSent}
+            />
+          </form>
+        </div>
       )}
     </div>
   );
