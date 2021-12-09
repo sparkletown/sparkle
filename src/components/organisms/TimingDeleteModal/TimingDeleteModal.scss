@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+
+.form {
+  padding: $spacing--xl;
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__button {
+    align-self: center;
+  }
+}

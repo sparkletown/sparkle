@@ -33,6 +33,12 @@ $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $light-grey--lightest: #acadb0;
 
+// @debt probably needs to be replaced with var(...), but it's used in a place
+// where var wasn't working
+$input-auto-fill-box-shadow: $secondary--dark;
+$input-auto-fill-box-shadow-timeline: #434343;
+$input-auto-fill-box-shadow-height: 30px;
+
 $green: #4bcc4b;
 $yellow: #ffe600;
 $light-green: #3ce348;

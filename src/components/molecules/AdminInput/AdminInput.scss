@@ -21,9 +21,13 @@
 
     &:-webkit-autofill,
     &:-webkit-autofill:hover,
-    &:-webkit-autofill:active,
-    &:-webkit-autofill:focus {
-      background-color: transparent;
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      -webkit-box-shadow: 0 0 0 $input-auto-fill-box-shadow-height
+        $input-auto-fill-box-shadow inset;
+      box-shadow: 0 0 0 $input-auto-fill-box-shadow-height
+        $input-auto-fill-box-shadow inset;
     }
 
     &:hover {

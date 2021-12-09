@@ -3,6 +3,19 @@
 .venue-owner-modal {
   .text-input {
     margin-top: 20px;
+    background: $input-auto-fill-box-shadow;
+    color: var(--content--over);
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      -webkit-box-shadow: 0 0 0 $input-auto-fill-box-shadow-height
+        $input-auto-fill-box-shadow inset;
+      box-shadow: 0 0 0 $input-auto-fill-box-shadow-height
+        $input-auto-fill-box-shadow inset;
+    }
   }
 
   .row-container {

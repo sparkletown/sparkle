@@ -60,11 +60,21 @@ export const eventHappeningNow = (
 export const hasEventFinished = (event: VenueEvent) =>
   isAfter(Date.now(), eventEndTime(event));
 
-export const eventStartTime = (event: VenueEvent) =>
-  fromUnixTime(event.start_utc_seconds);
+export const eventStartTime = (event: VenueEvent) => {
+  if (!event?.start_utc_seconds) {
+    return new Date();
+  }
 
-export const eventEndTime = (event: VenueEvent) =>
-  addMinutes(eventStartTime(event), event.duration_minutes);
+  return fromUnixTime(event.start_utc_seconds);
+};
+
+export const eventEndTime = (event: VenueEvent) => {
+  if (!event?.start_utc_seconds) {
+    return new Date();
+  }
+
+  return addMinutes(eventStartTime(event), event.duration_minutes);
+};
 
 export const isEventStartingSoon = (
   event: VenueEvent,

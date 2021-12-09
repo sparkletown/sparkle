@@ -33,6 +33,17 @@ $icon-width: 2.5rem;
     border: 1px solid var(--accent--over-10a);
     border-radius: 22px;
     height: 100%;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      -webkit-box-shadow: 0 0 0 $input-auto-fill-box-shadow-height
+        $input-auto-fill-box-shadow inset;
+      box-shadow: 0 0 0 $input-auto-fill-box-shadow-height
+        $input-auto-fill-box-shadow inset;
+    }
   }
 
   &__icon {

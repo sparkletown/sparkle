@@ -14,17 +14,19 @@ import { WithId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import "./TimingDeleteModal.scss";
+
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  venueId: string;
   event?: WithId<VenueEvent>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   show,
   onHide,
-  venueId,
   event,
 }) => {
   const { handleSubmit, formState, reset } = useForm<EventInput>({
@@ -53,6 +55,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     { loading: isDeletingEvent },
     deleteVenueEvent,
   ] = useAsyncFn(async () => {
+    console.log(event, eventSpaceId);
     if (event && eventSpaceId) {
       await deleteEvent(eventSpaceId, event.id);
     }
@@ -75,25 +78,29 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="form-container">
+      <div className="form">
         <h2>Delete event</h2>
-        <form onSubmit={handleSubmit(deleteVenueEvent)} className="form">
+        <form
+          onSubmit={handleSubmit(deleteVenueEvent)}
+          className="form__container"
+        >
           <div className="input-group">
             <p>Name: {event?.name}</p>
-            <RenderMarkdown text={`Description: ${event?.description}`} />
+            <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
             <p>
               Time: {eventStartTime}-{eventEndTime}
             </p>
             <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
-          <button
-            className="btn btn-block btn-centered btn-danger"
+          <ButtonNG
+            className="form__button"
             type="submit"
+            variant="danger"
             disabled={formState.isSubmitting || isDeletingEvent}
           >
             Delete
-          </button>
+          </ButtonNG>
         </form>
       </div>
     </Modal>
