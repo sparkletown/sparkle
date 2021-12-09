@@ -33,7 +33,10 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const eventSpaceId = event?.spaceId;
+  // @debt This makes the deletion happen against the space that owns the event
+  // NOT the space that the event is in. There's some bad hierarchy in the
+  // database.
+  const eventSpaceId = event?.venueId;
 
   useEffect(() => {
     if (event) {
