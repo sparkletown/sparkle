@@ -30,7 +30,7 @@ import { UserList } from "components/molecules/UserList";
 import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
-import { TABLES } from "./constants";
+import { TABLES as DEFAULT_TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
@@ -65,12 +65,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   useExperiences(venue?.name);
 
-  const tables = venue?.config?.tables ?? TABLES;
+  const generatedTables = venue?.config?.tables;
 
   const infoIcon =
     venue?.host?.icon ||
     (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
 
+  const tables = generatedTables ?? DEFAULT_TABLES;
   return (
     <>
       <InformationLeftColumn iconNameOrPath={infoIcon}>
@@ -109,6 +110,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
+                  defaultTables={DEFAULT_TABLES}
                 />
               )}
               {seatedAtTable && (
@@ -137,7 +139,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              defaultTables={DEFAULT_TABLES}
               showOnlyAvailableTables={showOnlyAvailableTables}
+              venue={venue}
             />
           </div>
           <UserList

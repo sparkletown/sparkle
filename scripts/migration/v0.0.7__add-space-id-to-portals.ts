@@ -27,7 +27,7 @@ const findSpaceId = (spaces, worldId, url: string) => {
     }
   } else {
     // old stlye URL, match on name
-    const spaceNameToFind = url.split("/").slice(-1);
+    const spaceNameToFind = url.split("/").slice(-1)[0];
     const space = findSpaceByName(spaces, worldId, spaceNameToFind);
     if (space) {
       return space.id;
@@ -43,6 +43,7 @@ type SpaceFields = {
 
 type PortalFields = {
   url: string;
+  spaceId?: string;
 };
 
 export const migrate = async ({ firestore }: MigrateOptions) => {
@@ -70,6 +71,9 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
       console.log(`${spaceDoc.id} has ${spaceData.rooms.length} rooms`);
 
       const rooms = spaceData.rooms.map((room: PortalFields) => {
+        if (room.spaceId) {
+          return room;
+        }
         const spaceId = findSpaceId(spaces, spaceData.worldId, room.url);
         if (!spaceId) {
           console.log(`Could not find space for room with url ${room.url}`);
@@ -80,6 +84,10 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           spaceId,
         };
       });
+      if (JSON.stringify(rooms) === JSON.stringify(spaceData.rooms)) {
+        console.log(`No updates for ${spaceDoc.id}`);
+        continue;
+      }
 
       await firestore.collection("venues").doc(spaceDoc.id).update({ rooms });
     }

@@ -33,6 +33,14 @@ $icon-width: 2.5rem;
     border: 1px solid var(--accent--over-10a);
     border-radius: 22px;
     height: 100%;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      box-shadow: box-shadow--input-autofill(var(--content--under-80a)) inset;
+    }
   }
 
   &__icon {

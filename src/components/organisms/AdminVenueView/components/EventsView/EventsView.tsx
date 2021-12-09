@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -60,7 +60,9 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     toggle: toggleSplittedEvents,
   } = useShowHide();
 
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
+  const [editedEvent, setEditedEvent] = useState<
+    WithVenueId<WithId<VenueEvent>>
+  >();
 
   const adminEventModalOnHide = useCallback(() => {
     setHideCreateEventModal();
@@ -182,7 +184,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
             setEditedEvent && setEditedEvent(undefined);
             triggerRefetch();
           }}
-          venueId={venue.id}
           event={editedEvent}
         />
       )}
