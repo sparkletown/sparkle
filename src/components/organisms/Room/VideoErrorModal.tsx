@@ -29,11 +29,12 @@ export const VideoErrorModal: FC<PropsType> = ({
   onRetry,
 }) => {
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} backdrop="static">
       <div className="modal-container">
         <div className="modal-title">
           {errorMessage &&
-            (errorMessages[errorMessage] ?? "Please, retry video")}
+            (errorMessages[errorMessage] ??
+              "Please ALLOW camera & microphone access in your browser settings in order to join the table. Click Allow when prompted.")}
         </div>
 
         <div>
