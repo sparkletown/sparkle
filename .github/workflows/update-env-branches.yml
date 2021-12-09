@@ -16,7 +16,7 @@ jobs:
         run: |
           # Temporarily disable the envs deployment
 
-          # git fetch origin master
+          git fetch origin master
 
           # git push origin master:sparkle1
           git push origin master:sparkle2
