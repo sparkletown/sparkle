@@ -3,7 +3,6 @@ import classNames from "classnames";
 
 import {
   ALWAYS_EMPTY_ARRAY,
-  DEFAULT_ENABLE_JUKEBOX,
   DEFAULT_REACTIONS_MUTED,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -24,7 +23,6 @@ import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUser
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { Jukebox } from "components/molecules/Jukebox/Jukebox";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
@@ -56,7 +54,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     url: venue.iframeUrl,
     autoPlay: venue.autoPlay,
   });
-  const [iframeUrl, setIframeUrl] = useState(embedIframeUrl);
   const analytics = useAnalytics({ venue });
 
   useExperiences(venue.name);
@@ -101,14 +98,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     areSettingsLoaded &&
     (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
     (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
-
-  const firstTableReference = jazzbarTables[0].reference;
-
-  const shouldShowJukebox =
-    (!!seatedAtTable &&
-      venue.enableJukebox &&
-      seatedAtTable === firstTableReference) ??
-    DEFAULT_ENABLE_JUKEBOX;
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
@@ -163,12 +152,12 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             {!venue.hideVideo && (
               <>
                 <div className="iframe-container">
-                  {iframeUrl ? (
+                  {embedIframeUrl ? (
                     <iframe
                       key="main-event"
                       title="main event"
                       className="iframe-video"
-                      src={iframeUrl}
+                      src={embedIframeUrl}
                       frameBorder="0"
                       allow={IFRAME_ALLOW}
                     />
@@ -189,13 +178,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       isShoutoutsEnabled={isShoutoutsEnabled}
                     />
                   </div>
-                )}
-                {shouldShowJukebox && (
-                  <Jukebox
-                    updateIframeUrl={setIframeUrl}
-                    venue={venue}
-                    tableRef={seatedAtTable}
-                  />
                 )}
 
                 {!seatedAtTable && (
