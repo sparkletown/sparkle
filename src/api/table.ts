@@ -4,31 +4,18 @@ import { Table } from "types/Table";
 
 export interface UpdateVenueTableProps {
   venueId: string;
-  tableOfUser: Table;
-  tables: Table[];
-  title: string;
-  subtitle?: string;
-  capacity: number;
+  newTable: Table;
+  defaultTables: Table[];
 }
 
 export const updateVenueTable = async ({
   venueId,
-  tableOfUser,
-  tables,
-  title,
-  subtitle,
-  capacity,
+  newTable,
+  defaultTables,
 }: UpdateVenueTableProps) => {
-  const updatedTable = {
-    ...tableOfUser,
-    title,
-    subtitle,
-    capacity,
-  };
-
   return await firebase.functions().httpsCallable("venue-updateTables")({
     venueId,
-    tables,
-    updatedTable,
+    newTable,
+    defaultTables,
   });
 };

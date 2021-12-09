@@ -125,7 +125,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle9" ]; then
               ENV=sparkle-9
             fi
-            if [ $CIRCLE_BRANCH = "sparkle10" ]; then
+            if [ $CIRCLE_BRANCH = "staging-av1" ]; then
               ENV=sparkle-10
             fi
             if [ $CIRCLE_BRANCH = "bigtop" ]; then
@@ -198,6 +198,7 @@ jobs:
       - *notify-on-fail
   deploy-hosting:
     executor: node/default
+    resource_class: "large"
     steps:
       - checkout
       - node/install-packages
@@ -275,7 +276,7 @@ jobs:
               TARGET=sparkle-9
               RELEASE_STAGE=sparkle9
             fi
-            if [ $CIRCLE_BRANCH = "sparkle10" ]; then
+            if [ $CIRCLE_BRANCH = "staging-av1" ]; then
               PREFIX=SPARKLE10_
               ENV=sparkle-10
               TARGET=sparkle-10
@@ -415,7 +416,7 @@ workflows:
                 - sparkle7
                 - sparkle8
                 - sparkle9
-                - sparkle10
+                - staging-av1
                 - bigtop
                 - deloitte
                 - env/kotr
@@ -448,7 +449,7 @@ workflows:
                 - sparkle7
                 - sparkle8
                 - sparkle9
-                - sparkle10
+                - staging-av1
                 - bigtop
                 - deloitte
                 - env/kotr

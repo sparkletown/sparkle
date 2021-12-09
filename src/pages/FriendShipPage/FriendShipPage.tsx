@@ -53,11 +53,12 @@ export const FriendShipPage: React.FunctionComponent = () => {
             }`}
           >
             <TablesUserList
-              venueName={venue.name}
+              venue={venue}
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
               TableComponent={TableComponent}
               customTables={FRIENDSHIP_CUSTOM_TABLES}
+              defaultTables={FRIENDSHIP_CUSTOM_TABLES}
               leaveText="Return to Isle of Friends"
               joinMessage={true}
             />
@@ -68,6 +69,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
                   tables={FRIENDSHIP_CUSTOM_TABLES}
+                  defaultTables={FRIENDSHIP_CUSTOM_TABLES}
                 />
                 <Room
                   venueName={venue.name}

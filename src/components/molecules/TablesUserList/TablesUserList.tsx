@@ -2,18 +2,15 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
-import {
-  ALLOWED_EMPTY_TABLES_NUMBER,
-  DEFAULT_TABLE_CAPACITY,
-  DEFAULT_TABLE_COLUMNS,
-  DEFAULT_TABLE_ROWS,
-} from "settings";
+import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
+import { generateTable } from "utils/table";
 import { isTruthy } from "utils/types";
 import { getUserExperience } from "utils/user";
 
@@ -27,20 +24,6 @@ import { StartTable } from "components/molecules/StartTable";
 
 import "./TablesUserList.scss";
 
-// @debt refactor this into src/settings or similar
-const DEFAULT_TABLE_COUNT = 4;
-
-// @debt replace this with generateTables from src/utils/table.ts
-const createTable = (i: number): Table => {
-  return {
-    title: `Table ${i + 1}`,
-    reference: `Table ${i + 1}`,
-    capacity: DEFAULT_TABLE_CAPACITY,
-    rows: DEFAULT_TABLE_ROWS,
-    columns: DEFAULT_TABLE_COLUMNS,
-  };
-};
-
 // @debt Remove this eslint-disable + fix the any type properly + move to api/* or remove outright
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const firestoreUpdate = (doc: string, update: any) => {
@@ -53,15 +36,12 @@ const firestoreUpdate = (doc: string, update: any) => {
     });
 };
 
-const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
-  createTable(i)
-);
-
 export interface TablesUserListProps {
-  venueName: string;
+  venue: AnyVenue;
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
   customTables: Table[];
+  defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
@@ -69,14 +49,20 @@ export interface TablesUserListProps {
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
-  venueName,
+  venue,
   setSeatedAtTable,
   seatedAtTable,
   customTables,
+  defaultTables,
   showOnlyAvailableTables = false,
   TableComponent,
   joinMessage,
 }) => {
+  const venueName = venue.name;
+
+  // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
+  const tables = customTables || defaultTables;
+
   const {
     isShown: isLockedMessageVisible,
     show: showLockedMessage,
@@ -97,8 +83,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     venueName,
   });
   const experience = useSelector(experienceSelector);
-
-  const tables: Table[] = customTables || defaultTables;
 
   const { table: userTable } = getUserExperience(venueName)(profile) ?? {};
 
@@ -204,7 +188,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [tables, usersSeatedAtTables]
   );
 
-  const canStartTable =
+  const allowCreateEditTable =
     emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
 
   const renderedTables = useMemo(() => {
@@ -246,8 +230,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   return (
     <>
       {renderedTables}
-      {canStartTable && (
-        <StartTable tables={tables} newTable={createTable(tables.length)} />
+      {allowCreateEditTable && (
+        <StartTable
+          defaultTables={defaultTables}
+          newTable={generateTable({ tableNumber: tables.length })}
+        />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
         <Modal.Body>
