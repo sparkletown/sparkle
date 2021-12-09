@@ -119,6 +119,7 @@ const createFirestoreVenueInputWithoutId_v2 = async (
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
   };
+
   const imageKeys: Array<ImageNaming> = [
     {
       fileKey: "logoImageFile",

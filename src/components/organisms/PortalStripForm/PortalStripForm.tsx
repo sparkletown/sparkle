@@ -74,6 +74,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
     title,
     spaceId: targetSpaceId,
   } = portal;
+
   const { worldSlug } = useSpaceParams();
   const { user } = useUser();
   const [updatingClickable, setUpdatingClickable] = useState(false);
