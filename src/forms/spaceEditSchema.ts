@@ -4,7 +4,6 @@ import {
   IFRAME_TEMPLATES,
   MAX_SECTIONS_AMOUNT,
   MIN_SECTIONS_AMOUNT,
-  ROOM_TAXON,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -20,7 +19,7 @@ export interface RoomSchemaShape {
 }
 
 export const spaceEditSchema = Yup.object().shape({
-  logoImageUrl: Yup.string().required(`${ROOM_TAXON.capital} icon is required`),
+  logoImageUrl: Yup.string().notRequired(),
   bannerImageUrl: Yup.string().notRequired(),
   autoplay: Yup.boolean().notRequired(),
   numberOfSections: Yup.number().when(

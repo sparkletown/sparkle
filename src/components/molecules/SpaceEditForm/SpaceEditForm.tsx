@@ -11,12 +11,14 @@ import {
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   DEFAULT_VENUE_AUTOPLAY,
+  DEFAULT_VENUE_LOGO,
   DISABLED_DUE_TO_1253,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   IFRAME_TEMPLATES,
   MAX_SECTIONS_AMOUNT,
   MIN_SECTIONS_AMOUNT,
+  PORTAL_INFO_ICON_MAPPING,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
   SUBVENUE_TEMPLATES,
@@ -74,6 +76,9 @@ export interface SpaceEditFormProps {
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
   const { user } = useUser();
 
+  const spaceLogoImage =
+    PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
+
   const defaultValues = useMemo(
     () => ({
       name: space.name ?? "",
@@ -97,7 +102,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       bannerImage: undefined,
       bannerImageUrl: space?.config?.landingPageConfig?.coverImageUrl ?? "",
       logoImage: undefined,
-      logoImageUrl: space?.host?.icon ?? "",
+      logoImageUrl: space?.host?.icon ?? spaceLogoImage,
     }),
     [
       space.name,
@@ -119,6 +124,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
       space.zoomUrl,
       space?.host?.icon,
       space?.config?.landingPageConfig?.coverImageUrl,
+      spaceLogoImage,
     ]
   );
 
@@ -269,7 +275,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           </AdminSpacesListItem>
 
           <AdminSpacesListItem title="Appearance" isOpened>
-            <AdminSection title="Upload a highlight image" withLabel>
+            <AdminSection
+              title="Upload a highlight image"
+              subtitle="A plain 1920 x 1080px image works best."
+              withLabel
+            >
               <ImageInput
                 onChange={changeBackgroundImageUrl}
                 name="bannerImage"
@@ -280,7 +290,11 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 setValue={setValue}
               />
             </AdminSection>
-            <AdminSection title="Upload a logo" withLabel>
+            <AdminSection
+              title="Upload a logo"
+              withLabel
+              subtitle="(A transparent 300 px square image works best)"
+            >
               <ImageInput
                 onChange={changePortalImageUrl}
                 name="logoImage"
@@ -289,7 +303,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 setValue={setValue}
                 register={register}
                 small
-                subtext="(A transparent 300 px square image works best)"
               />
             </AdminSection>
           </AdminSpacesListItem>
