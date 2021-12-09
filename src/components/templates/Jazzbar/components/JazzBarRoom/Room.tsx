@@ -177,7 +177,7 @@ const Room: React.FC<RoomProps> = ({
     if (!roomConnection) return;
 
     roomConnection.then((room) => () => {
-      if (room?.localParticipant.state === "connected") {
+      if (room && room.localParticipant.state === "connected") {
         room.localParticipant.tracks.forEach(
           (trackPublication) => void stopLocalTrack(trackPublication.track)
         );
