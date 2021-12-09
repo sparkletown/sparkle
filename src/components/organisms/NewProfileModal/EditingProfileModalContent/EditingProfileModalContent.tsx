@@ -116,8 +116,12 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   const [{ loading: isSubmitting }, onSubmit] = useAsyncFn(
-    async (data: UserProfileModalFormData) => {
+    async (data: Omit<UserProfileModalFormData, "profileLinks">) => {
       if (!firebaseUser) return;
+      const dataWithProfileLinks = {
+        profileLinks: [],
+        ...data,
+      };
 
       const passwordsNotEmpty = Object.values(
         pick(data, profileModalPasswordsFields)
@@ -148,7 +152,10 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       ) as (keyof UserProfileModalFormData)[];
 
       if (changedFields.length > 0) {
-        await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
+        await updateUserProfile(
+          firebaseUser.uid,
+          pick(dataWithProfileLinks, changedFields)
+        );
       }
 
       onCancelEditing();
