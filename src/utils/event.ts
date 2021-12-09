@@ -21,10 +21,13 @@ import {
 export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
   roomEvents.find(isEventLive);
 
-// @debt: if event or event.start_utc_seconds are falsy this func crashes the page
-// probably need to add an additional `defaultValue` to return or some sort of a guard
-export const isEventLive = (event: VenueEvent) =>
-  isWithinInterval(Date.now(), getEventInterval(event));
+export const isEventLive = (event: VenueEvent) => {
+  if (!event?.start_utc_seconds) {
+    return false;
+  }
+
+  return isWithinInterval(Date.now(), getEventInterval(event));
+};
 
 export const isEventFuture = (event: VenueEvent) =>
   isFuture(fromUnixTime(event.start_utc_seconds));

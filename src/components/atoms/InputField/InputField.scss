@@ -39,9 +39,7 @@ $icon-width: 2.5rem;
     &:-webkit-autofill:focus,
     &:-webkit-autofill:active {
       -webkit-text-fill-color: var(--content--over);
-      -webkit-box-shadow: box-shadow--input-shadow(var(--content--under-80a))
-        inset;
-      box-shadow: box-shadow--input-shadow(var(--content--under-80a)) inset;
+      box-shadow: box-shadow--input-autofill(var(--content--under-80a)) inset;
     }
   }
 
