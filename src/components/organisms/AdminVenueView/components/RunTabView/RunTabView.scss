@@ -35,4 +35,8 @@
   &--spacing + &--spacing {
     margin-top: $spacing--lg;
   }
+
+  .AdminSidebarSectionTitle {
+    padding: $spacing--lg;
+  }
 }

@@ -17,6 +17,10 @@ $image-container-height: 200px;
     .AdminSection {
       padding: 0px $spacing--xl;
     }
+
+    .AdminSidebarSectionTitle {
+      padding: $spacing--lg;
+    }
   }
 
   &__loading-indicator {
@@ -52,6 +56,10 @@ $image-container-height: 200px;
         align-self: center;
         height: $image-container-height;
       }
+    }
+
+    .AdminSidebarSectionTitle {
+      padding: $spacing--sm $spacing--sm $spacing--xs;
     }
   }
 }
