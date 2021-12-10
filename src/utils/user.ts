@@ -30,10 +30,22 @@ export const getUserLocationData = ({
 };
 
 export const omitLocationFromUser = <T extends UserWithLocation>(user: T) =>
-  omit(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");
+  omit(
+    user,
+    "lastVenueIdSeenIn",
+    "lastSeenAt",
+    "enteredVenueIds",
+    "enteredWorldIds"
+  );
 
 export const extractLocationFromUser = <T extends UserWithLocation>(user: T) =>
-  pick(user, "lastVenueIdSeenIn", "lastSeenAt", "enteredVenueIds");
+  pick(
+    user,
+    "lastVenueIdSeenIn",
+    "lastSeenAt",
+    "enteredVenueIds",
+    "enteredWorldIds"
+  );
 
 export const isCompleteUserInfo = (user: FirebaseReducer.AuthState) =>
   isTruthy(user.displayName) && isTruthy(user.photoURL);

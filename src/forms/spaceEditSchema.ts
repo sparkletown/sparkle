@@ -19,7 +19,7 @@ export interface RoomSchemaShape {
 }
 
 export const spaceEditSchema = Yup.object().shape({
-  // image_url: Yup.string().required(`${ROOM_TAXON.capital} icon is required`),
+  logoImageUrl: Yup.string().notRequired(),
   bannerImageUrl: Yup.string().notRequired(),
   autoplay: Yup.boolean().notRequired(),
   numberOfSections: Yup.number().when(

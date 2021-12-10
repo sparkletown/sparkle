@@ -18,5 +18,17 @@ export const updateProfileEnteredVenueIds = async (
   }
 };
 
+export const updateProfileEnteredWorldIds = async (
+  prevEnteredWorldIds: readonly string[] | undefined,
+  userId: string | undefined,
+  worldId: string
+) => {
+  const enteredWorldIds = prevEnteredWorldIds ? [...prevEnteredWorldIds] : [];
+  if (!enteredWorldIds.includes(worldId) && userId) {
+    enteredWorldIds.push(worldId);
+    await getUserRef(userId).update({ enteredWorldIds });
+  }
+};
+
 export const isCompleteProfile = (profile: FirebaseReducer.Profile<User>) =>
   isTruthy(profile.partyName) && isTruthy(profile.pictureUrl);

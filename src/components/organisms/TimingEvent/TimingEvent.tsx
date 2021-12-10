@@ -6,15 +6,15 @@ import { format } from "date-fns";
 import { VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 export type TimingEventProps = {
-  event: WithId<VenueEvent>;
+  event: WithVenueId<WithId<VenueEvent>>;
   setShowCreateEventModal: () => void;
-  setEditedEvent: (event: WithId<VenueEvent>) => void;
+  setEditedEvent: (event: WithVenueId<WithId<VenueEvent>>) => void;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({
@@ -44,11 +44,11 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
       onMouseLeave={hideButton}
     >
       <div className="TimingEvent__time">
-        <p>{format(eventStartTime(event), "do MMM")}</p>
+        <p>{format(eventStartTime({ event }), "do MMM")}</p>
         <p className="TimingEvent__time-start">
-          {formatTimeLocalised(eventStartTime(event))}
+          {formatTimeLocalised(eventStartTime({ event }))}
         </p>
-        <p>{formatTimeLocalised(eventEndTime(event))}</p>
+        <p>{formatTimeLocalised(eventEndTime({ event }))}</p>
       </div>
       <div className="TimingEvent__details">
         <p>

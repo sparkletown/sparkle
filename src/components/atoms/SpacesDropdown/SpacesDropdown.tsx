@@ -15,7 +15,9 @@ import "./SpacesDropdown.scss";
 
 const noneOptionName = "None";
 const spaceNoneOption = Object.freeze({
-  none: Object.freeze({ id: "", name: "", template: undefined }),
+  id: "",
+  name: "",
+  template: undefined,
 });
 
 export type SpacesDropdownPortal = {
@@ -48,11 +50,17 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
   const filteredSpaces = omit(spaces, VenueTemplate.playa);
-
-  const spaceOptions = useMemo(
-    () => ({ ...spaceNoneOption, ...filteredSpaces }),
+  const sortedSpaces = useMemo(
+    () =>
+      Object.values(filteredSpaces).sort((a, b) =>
+        a.name.localeCompare(b.name)
+      ),
     [filteredSpaces]
   );
+
+  const spaceOptions = useMemo(() => [spaceNoneOption, ...sortedSpaces], [
+    sortedSpaces,
+  ]);
 
   useEffect(() => {
     if (parentSpace) {
@@ -62,7 +70,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   const renderedOptions = useMemo(
     () =>
-      Object.values(spaceOptions).map(({ id, name, template }) => {
+      spaceOptions.map(({ id, name, template }) => {
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
@@ -74,7 +82,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
             }}
             className="SpacesDropdown__item"
           >
-            {name !== spaceNoneOption.none.name ? (
+            {name !== spaceNoneOption.name ? (
               <img
                 alt={`space-icon-${spaceIcon}`}
                 src={spaceIcon}
@@ -99,7 +107,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
     return (
       <span className="SpacesDropdown__value">
-        {selected.name !== spaceNoneOption.none.name ? (
+        {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
             src={spaceIcon}

@@ -2,20 +2,17 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { groupBy } from "lodash";
 
-import {
-  ALLOWED_EMPTY_TABLES_NUMBER,
-  DEFAULT_TABLE_CAPACITY,
-  DEFAULT_TABLE_COLUMNS,
-  DEFAULT_TABLE_ROWS,
-} from "settings";
+import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
 import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { TableSeatedUser } from "types/User";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
+import { generateTable } from "utils/table";
 import { isTruthy } from "utils/types";
 
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
@@ -28,33 +25,17 @@ import { StartTable } from "components/molecules/StartTable";
 
 import "./TablesUserList.scss";
 
-// @debt refactor this into src/settings or similar
-const DEFAULT_TABLE_COUNT = 4;
-
-// @debt replace this with generateTables from src/utils/table.ts
-const createTable = (i: number): Table => {
-  return {
-    title: `Table ${i + 1}`,
-    reference: `Table ${i + 1}`,
-    capacity: DEFAULT_TABLE_CAPACITY,
-    rows: DEFAULT_TABLE_ROWS,
-    columns: DEFAULT_TABLE_COLUMNS,
-  };
-};
-
-const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
-  createTable(i)
-);
-
 export interface TablesUserListProps {
-  venueId: string;
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string | undefined;
   customTables: Table[];
+  defaultTables: Table[];
   showOnlyAvailableTables?: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
+  venue: WithId<AnyVenue>;
+  venueId: string;
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
@@ -62,10 +43,15 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   setSeatedAtTable,
   seatedAtTable,
   customTables,
+  defaultTables,
   showOnlyAvailableTables = false,
   TableComponent,
   joinMessage,
+  venue,
 }) => {
+  // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
+  const tables: Table[] = customTables || defaultTables;
+
   const {
     isShown: isLockedMessageVisible,
     show: showLockedMessage,
@@ -82,8 +68,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const { userWithId } = useUser();
   const experience = useSelector(experienceSelector);
-
-  const tables: Table[] = customTables || defaultTables;
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
     venueId
@@ -179,7 +163,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [tables, usersSeatedAtTables]
   );
 
-  const canStartTable =
+  const allowCreateEditTable =
     emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
 
   const renderedTables = useMemo(() => {
@@ -199,6 +183,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         table={table}
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
+        venue={venue}
       />
     ));
   }, [
@@ -210,6 +195,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     TableComponent,
     usersSeatedAtTables,
     onJoinClicked,
+    venue,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;
@@ -217,8 +203,12 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   return (
     <>
       {renderedTables}
-      {canStartTable && (
-        <StartTable tables={tables} newTable={createTable(tables.length)} />
+      {allowCreateEditTable && (
+        <StartTable
+          defaultTables={defaultTables}
+          newTable={generateTable({ tableNumber: tables.length + 1 })}
+          venue={venue}
+        />
       )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
         <Modal.Body>
@@ -242,7 +232,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>
-              To avoid feedback from the music, we recommend wearing headphones.
+              You are now entering a video chat space. Please ALLOW camera &
+              microphone access. You will be able to turn them back off again
+              once inside, should you choose to do so. To avoid feedback from
+              the music, we recommend wearing headphones.
             </p>
 
             <p>You can also adjust the volume on the live stream.</p>

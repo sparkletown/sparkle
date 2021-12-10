@@ -26,7 +26,10 @@ import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { tracePromise } from "utils/performance";
-import { generateAttendeeInsideUrl } from "utils/url";
+import {
+  generateAttendeeInsideUrl,
+  generateAttendeeSpaceLandingUrl,
+} from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
@@ -123,18 +126,18 @@ export const AppRouter: React.FC = () => {
           }
           <Route path={TEMP_ITER_ROUTE}>
             <Redirect
-              to={generateAttendeeInsideUrl({
-                worldSlug: TEMP_ITER_SLUG as WorldSlug,
-                spaceSlug: TEMP_ITER_SLUG as SpaceSlug,
-              })}
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_ITER_SLUG as WorldSlug,
+                TEMP_ITER_SLUG as SpaceSlug
+              )}
             />
           </Route>
           <Route path={TEMP_GOOG_WEST_LANDING}>
             <Redirect
-              to={generateAttendeeInsideUrl({
-                worldSlug: TEMP_GOOG_WEST_SLUG as WorldSlug,
-                spaceSlug: TEMP_GOOG_WEST_SLUG as SpaceSlug,
-              })}
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_GOOG_WEST_SLUG as WorldSlug,
+                TEMP_GOOG_WEST_SLUG as SpaceSlug
+              )}
             />
           </Route>
           <Route path={TEMP_GOOG_WEST_INSIDE}>
