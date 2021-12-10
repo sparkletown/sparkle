@@ -3,7 +3,7 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import * as faker from "faker";
 import admin from "firebase-admin";
-import { chunk, keyBy } from "lodash";
+import { chunk, keyBy, random } from "lodash";
 
 import { getUsersRef } from "./collections";
 import {
@@ -457,7 +457,9 @@ export const sendBotVenueMessage: (
   const chatId = `${userId}-chat-${new Date().getTime()}`;
   const text = generateRandomText();
 
-  await chatsRef.doc(chatId).set({
+  const batch = admin.firestore().batch();
+
+  batch.set(chatsRef.doc(chatId), {
     bot: true,
     botUserScriptTag: conf.user?.scriptTag ?? "",
     fromUser: {
@@ -468,6 +470,14 @@ export const sendBotVenueMessage: (
     text,
     timestamp: admin.firestore.Timestamp.now(),
   });
+
+  const randomShard = venueRef
+    .collection("chatMessagesCounter")
+    .doc(random(10 - 1).toString());
+
+  batch.update(randomShard, "count", admin.firestore.FieldValue.increment(1));
+
+  await batch.commit();
 
   stats.writes = increment(stats.writes);
   (stats.chatlines ??= {}).created = increment(stats.chatlines.created);
