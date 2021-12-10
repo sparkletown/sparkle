@@ -73,6 +73,18 @@
       &--indented {
         margin-right: $spacing--sm;
       }
+
+      &:-webkit-autofill,
+      &:-webkit-autofill:hover,
+      &:-webkit-autofill:focus,
+      &:-webkit-autofill:active {
+        -webkit-text-fill-color: var(--content--over);
+        -webkit-box-shadow: box-shadow--input-autofill(
+            var(--content--under-70a)
+          )
+          inset;
+        box-shadow: box-shadow--input-autofill(var(--content--under-70a)) inset;
+      }
     }
   }
 

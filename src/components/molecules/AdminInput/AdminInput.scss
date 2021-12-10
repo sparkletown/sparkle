@@ -21,9 +21,10 @@
 
     &:-webkit-autofill,
     &:-webkit-autofill:hover,
-    &:-webkit-autofill:active,
-    &:-webkit-autofill:focus {
-      background-color: transparent;
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      box-shadow: box-shadow--input-autofill(var(--content--under-80a)) inset;
     }
 
     &:hover {

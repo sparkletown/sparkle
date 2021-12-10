@@ -190,11 +190,13 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
               <div className="upcoming-gigs-title">Upcoming events</div>
               {futureOrOngoingVenueEvents.map((venueEvent) => {
                 const startTime = formatTimeLocalised(
-                  eventStartTime(venueEvent)
+                  eventStartTime({ event: venueEvent })
                 );
-                const endTime = formatTimeLocalised(eventEndTime(venueEvent));
+                const endTime = formatTimeLocalised(
+                  eventEndTime({ event: venueEvent })
+                );
                 const startDay = format(
-                  eventStartTime(venueEvent),
+                  eventStartTime({ event: venueEvent }),
                   "EEEE LLLL do"
                 );
 

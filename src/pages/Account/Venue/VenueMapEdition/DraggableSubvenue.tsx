@@ -1,6 +1,7 @@
 import React, { CSSProperties, useEffect } from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
+import { useCss } from "react-use";
 import { Resizable } from "re-resizable";
 
 import { Dimensions } from "types/utility";
@@ -34,22 +35,22 @@ export type PropsType = SubVenueIconMap[string] & {
   onDragStart?: (id: number) => void;
 };
 
-export const DraggableSubvenue: React.FC<PropsType> = (props) => {
-  const {
-    id,
-    url,
-    left,
-    top,
-    width,
-    height,
-    title,
-    onChangeSize,
-    isResizable,
-    rounded,
-    lockAspectRatio = false,
-    isSaving,
-    onDragStart,
-  } = props;
+export const DraggableSubvenue: React.FC<PropsType> = ({
+  id,
+  url,
+  left,
+  top,
+  width,
+  height,
+  title,
+  isEnabled,
+  onChangeSize,
+  isResizable,
+  rounded,
+  lockAspectRatio = false,
+  isSaving,
+  onDragStart,
+}) => {
   const [{ isDragging }, drag, preview] = useDrag({
     item: { type: ItemTypes.SUBVENUE_ICON, id, left, top, url },
     collect: (monitor: DragSourceMonitor) => ({
@@ -66,6 +67,13 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
       onDragStart && onDragStart(parseInt(id));
     }
   }, [id, isDragging, onDragStart]);
+
+  const iconStyles = useCss({
+    ...styles.resizeableImageContainer,
+    borderRadius: rounded ? "50%" : "none",
+    opacity: isEnabled ? 1 : 0.5,
+    backgroundImage: `url(${url})`,
+  });
 
   if (isResizable) {
     return (
@@ -112,13 +120,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
               />
             </>
           )}
-          <div
-            style={{
-              ...styles.resizeableImageContainer,
-              borderRadius: rounded ? "50%" : "none",
-              backgroundImage: `url(${url})`,
-            }}
-          ></div>
+          <div className={iconStyles} />
         </div>
         <div className="DraggableSubvenue__title">{title}</div>
       </Resizable>

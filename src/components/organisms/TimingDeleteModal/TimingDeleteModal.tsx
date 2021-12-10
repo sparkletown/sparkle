@@ -10,28 +10,33 @@ import { deleteEvent, EventInput } from "api/admin";
 
 import { VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import "./TimingDeleteModal.scss";
 
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  venueId: string;
-  event?: WithId<VenueEvent>;
+  event?: WithVenueId<WithId<VenueEvent>>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   show,
   onHide,
-  venueId,
   event,
 }) => {
   const { handleSubmit, formState, reset } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const eventSpaceId = event?.spaceId;
+  // @debt This makes the deletion happen against the space that owns the event
+  // NOT the space that the event is in. There's some bad hierarchy in the
+  // database.
+  const eventSpaceId = event?.venueId;
 
   useEffect(() => {
     if (event) {
@@ -75,25 +80,29 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="form-container">
+      <div className="TimingDeleteModal">
         <h2>Delete event</h2>
-        <form onSubmit={handleSubmit(deleteVenueEvent)} className="form">
-          <div className="input-group">
+        <form
+          onSubmit={handleSubmit(deleteVenueEvent)}
+          className="TimingDeleteModal__container"
+        >
+          <div>
             <p>Name: {event?.name}</p>
-            <RenderMarkdown text={`Description: ${event?.description}`} />
+            <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
             <p>
               Time: {eventStartTime}-{eventEndTime}
             </p>
             <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
-          <button
-            className="btn btn-block btn-centered btn-danger"
+          <ButtonNG
+            className="TimingDeleteModal__button"
             type="submit"
+            variant="danger"
             disabled={formState.isSubmitting || isDeletingEvent}
           >
             Delete
-          </button>
+          </ButtonNG>
         </form>
       </div>
     </Modal>
