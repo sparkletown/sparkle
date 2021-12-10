@@ -10,7 +10,7 @@ import { deleteEvent, EventInput } from "api/admin";
 
 import { VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -21,7 +21,7 @@ import "./TimingDeleteModal.scss";
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  event?: WithId<VenueEvent>;
+  event?: WithVenueId<WithId<VenueEvent>>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
@@ -33,7 +33,10 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
-  const eventSpaceId = event?.spaceId;
+  // @debt This makes the deletion happen against the space that owns the event
+  // NOT the space that the event is in. There's some bad hierarchy in the
+  // database.
+  const eventSpaceId = event?.venueId;
 
   useEffect(() => {
     if (event) {

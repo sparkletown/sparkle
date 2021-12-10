@@ -3,11 +3,7 @@ import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
-import {
-  DAYJS_INPUT_DATE_FORMAT,
-  DAYJS_INPUT_TIME_FORMAT,
-  HAS_ROOMS_TEMPLATES,
-} from "settings";
+import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -111,8 +107,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     [onHide, eventSpaceId, eventSpace, event]
   );
 
-  const showDeleteButton =
-    template && HAS_ROOMS_TEMPLATES.includes(template) && event?.id;
+  const showDeleteButton = event?.id;
   const handleDelete = () => {
     onHide();
     setEditedEvent && setEditedEvent(event);
