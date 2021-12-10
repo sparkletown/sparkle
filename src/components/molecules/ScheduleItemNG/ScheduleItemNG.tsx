@@ -8,11 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import {
-  DEFAULT_VENUE_LOGO,
-  PORTAL_INFO_ICON_MAPPING,
-  SCHEDULE_SHOW_COPIED_TEXT_MS,
-} from "settings";
+import { DEFAULT_VENUE_LOGO, SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -92,18 +88,14 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     [worldSlug, eventVenue]
   );
 
-  const storedIcon = event.venueIcon ?? eventVenue?.host?.icon;
-
-  const defaultIcon =
-    PORTAL_INFO_ICON_MAPPING[eventVenue?.template ?? ""] ?? DEFAULT_VENUE_LOGO;
-
-  const eventImage = storedIcon
-    ? getFirebaseStorageResizedImage(storedIcon, {
-        fit: "crop",
-        width: 40,
-        height: 40,
-      })
-    : defaultIcon;
+  const eventImage = getFirebaseStorageResizedImage(
+    eventVenue?.host?.icon ?? DEFAULT_VENUE_LOGO,
+    {
+      fit: "crop",
+      width: 40,
+      height: 40,
+    }
+  );
 
   const infoContaier = classNames("ScheduleItemNG__info", {
     "ScheduleItemNG__info--active": isCurrentEventLive,
