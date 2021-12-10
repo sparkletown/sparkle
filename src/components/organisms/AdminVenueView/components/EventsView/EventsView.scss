@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$no-events-margin-top: 100px;
+
 .EventsView {
   padding: 5vh;
   width: 85%;
@@ -105,7 +107,7 @@
 
   &__no-events {
     text-align: center;
-    margin: auto;
+    margin: $no-events-margin-top auto 0;
   }
 
   &__create {
