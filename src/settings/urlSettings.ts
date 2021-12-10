@@ -65,13 +65,6 @@ export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/crea
 // @debt this is in the wrong place completely
 export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`;
 
-// @debt custom urls with AppRouter redirects that are to be removed in the future
-// done as per: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
-export const googleCloudWestName = "googlecloudwest";
-export const iterableName = "iterable";
-export const googleCloudWestRootUrl = `/v/${googleCloudWestName}`;
-export const iterableRootUrl = `/v/${iterableName}`;
-
 // Enter URLs
 export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;
 export const ENTER_STEP_2_URL = `${ENTER_ROOT_URL}/step2`;

@@ -12,7 +12,11 @@ import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 import { tracePromise } from "utils/performance";
-import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
+import {
+  isCompleteProfile,
+  updateProfileEnteredVenueIds,
+  updateProfileEnteredWorldIds,
+} from "utils/profile";
 import {
   currentEventSelector,
   isCurrentEventRequestedSelector,
@@ -81,8 +85,11 @@ export const VenuePage: React.FC = () => {
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile, userLocation } = useUser();
-  const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
-    userLocation ?? {};
+  const {
+    lastVenueIdSeenIn: userLastSeenIn,
+    enteredVenueIds,
+    enteredWorldIds,
+  } = userLocation ?? {};
 
   const assetsToPreload = useMemo(
     () =>
@@ -185,6 +192,21 @@ export const VenuePage: React.FC = () => {
 
     void updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId);
   }, [enteredVenueIds, userLocation, userId, spaceId, profile]);
+
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
+  useEffect(() => {
+    if (
+      !world?.id ||
+      !userId ||
+      !profile ||
+      enteredWorldIds?.includes(world?.id)
+    ) {
+      return;
+    }
+
+    updateProfileEnteredWorldIds(enteredWorldIds, userId, world.id);
+  }, [enteredWorldIds, userLocation, userId, world?.id, profile]);
+
   // NOTE: User's timespent updates
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -228,7 +250,7 @@ export const VenuePage: React.FC = () => {
   const { template, hasPaidEvents } = space;
 
   const hasEntrance = !!world?.entrance?.length;
-  const hasEntered = enteredVenueIds?.includes(spaceId);
+  const hasEntered = world?.id && enteredWorldIds?.includes(world.id);
 
   if (hasEntrance && !hasEntered) {
     return <Redirect to={venueEntranceUrl(worldSlug, spaceSlug)} />;
