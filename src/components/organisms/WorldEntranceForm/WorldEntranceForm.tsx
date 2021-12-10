@@ -154,6 +154,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
 
   useEffect(() => {
     const values: Partial<WorldEntranceFormInput> = getValues();
+
     reset({
       code: codeQuestions,
       profile: profileQuestions,

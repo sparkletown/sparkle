@@ -18,7 +18,7 @@ export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> =
   worldSlug,
 }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
-
+  console.log("world", world);
   return (
     <AdminPanel variant="bound">
       <AdminSidebar>
