@@ -37,7 +37,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           <RunTabUsers venueId={venueId} />
         </div>
       </AdminSidebar>
-      <AdminShowcase className="RunTabView__main">
+      <AdminShowcase>
         <div className="RunTabView__map RunTabView--spacing">
           <MapPreview
             isEditing={false}

@@ -27,7 +27,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => (
     <AdminSidebar>
       <SpaceEditForm space={space} />
     </AdminSidebar>
-    <AdminShowcase className="Spaces__map">
+    <AdminShowcase>
       {BACKGROUND_IMG_TEMPLATES.includes(space.template as VenueTemplate) && (
         <MapPreview
           isEditing
