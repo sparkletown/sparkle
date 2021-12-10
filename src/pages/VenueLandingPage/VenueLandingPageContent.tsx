@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
+  ATTENDEE_SPACE_ENTRANCE_URL,
+  ATTENDEE_SPACE_INSIDE_URL,
   DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
@@ -22,7 +24,7 @@ import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { WithId } from "utils/id";
 import { venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
-import { generateAttendeeInsideUrl, venueEntranceUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
@@ -64,11 +66,18 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     if (!spaceSlug) return;
 
     const hasEntrance = world?.entrance?.length;
+    const worldSlug = world.slug;
 
-    window.location.href =
-      user && !hasEntrance
-        ? generateAttendeeInsideUrl({ worldSlug: world?.slug, spaceSlug })
-        : venueEntranceUrl(world?.slug, spaceSlug);
+    const redirectUrl = generateUrl({
+      route:
+        user && !hasEntrance
+          ? ATTENDEE_SPACE_INSIDE_URL
+          : ATTENDEE_SPACE_ENTRANCE_URL,
+      required: ["worldSlug", "spaceSlug"],
+      params: { worldSlug, spaceSlug, step: "1" },
+    });
+
+    window.location.href = redirectUrl;
   };
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;

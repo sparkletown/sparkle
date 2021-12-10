@@ -4,9 +4,9 @@ import Bugsnag from "@bugsnag/js";
 import {
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
+  ATTENDEE_SPACE_ENTRANCE_URL,
   ATTENDEE_SPACE_INSIDE_URL,
   ATTENDEE_SPACE_LANDING_URL,
-  ENTRANCE_STEP_VENUE_PARAM_URL,
   VALID_URL_PROTOCOLS,
 } from "settings";
 
@@ -109,7 +109,7 @@ export const venueEntranceUrl = (
   spaceSlug?: SpaceSlug,
   step?: number
 ) => {
-  return generatePath(ENTRANCE_STEP_VENUE_PARAM_URL, {
+  return generatePath(ATTENDEE_SPACE_ENTRANCE_URL, {
     worldSlug,
     spaceSlug,
     step: step ?? 1,

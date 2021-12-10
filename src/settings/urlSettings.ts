@@ -44,7 +44,7 @@ export const ATTENDEE_SPACE_EMERGENCY_PARAM_URL = `${SPACE_EMERGENCY_BASE_URL}/w
 export const ATTENDEE_SPACE_INSIDE_URL = `${SPACE_INSIDE_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 export const ATTENDEE_SPACE_LANDING_URL = `${SPACE_LANDING_BASE_URL}/w/:worldSlug/s/:spaceSlug`;
 
-export const ENTRANCE_STEP_VENUE_PARAM_URL = `${ENTRANCE_BASE_URL}/:worldSlug/:step/:spaceSlug`;
+export const ATTENDEE_SPACE_ENTRANCE_URL = `${ENTRANCE_BASE_URL}/:worldSlug/:step/:spaceSlug`;
 // @debt I don't think we support custom tokens right now. Probably remove this.
 export const LOGIN_CUSTOM_TOKEN_PARAM_URL = `${LOGIN_BASE_URL}/:spaceSlug/:customToken`;
 

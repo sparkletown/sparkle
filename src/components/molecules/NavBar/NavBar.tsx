@@ -171,6 +171,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const showSoundCloudRadio = withRadio
     ? (world?.showRadio && isSoundCloud) ?? false
     : false;
+  const hasEntrance = !!world?.entrance?.length;
 
   return (
     <>
@@ -220,7 +221,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               </div>
             )}
 
-            {!withHiddenLoginButton && !user && <NavBarLogin />}
+            {!withHiddenLoginButton && !user && (
+              <NavBarLogin hasEntrance={hasEntrance} />
+            )}
 
             {user && (
               <div className="navbar-links">

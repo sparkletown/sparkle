@@ -10,10 +10,10 @@ import {
   ACCOUNT_ROOT_URL,
   ADMIN_ROOT_URL,
   ATTENDEE_SPACE_EMERGENCY_PARAM_URL,
+  ATTENDEE_SPACE_ENTRANCE_URL,
   ATTENDEE_SPACE_INSIDE_URL,
   ATTENDEE_SPACE_LANDING_URL,
   ENTER_ROOT_URL,
-  ENTRANCE_STEP_VENUE_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
@@ -170,7 +170,7 @@ export const AppRouter: React.FC = () => {
               <VenueLandingPage />
             </Provided>
           </Route>
-          <Route path={ENTRANCE_STEP_VENUE_PARAM_URL}>
+          <Route path={ATTENDEE_SPACE_ENTRANCE_URL}>
             <Provided withRelatedVenues>
               <VenueEntrancePage />
             </Provided>
