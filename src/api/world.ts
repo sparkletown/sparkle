@@ -118,7 +118,7 @@ export const createFirestoreWorldEntranceInput: (
       code: input?.code ?? [],
       profile: input?.profile ?? [],
     },
-    entrance: isEmpty(input.entrance) ? undefined : input.entrance,
+    entrance: isEmpty(input.entrance) ? [] : input.entrance,
   };
 
   return worldUpdateData;
