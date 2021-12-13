@@ -21,6 +21,8 @@ import { WorldsDashboard } from "pages/WorldsDashboard";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
+import { CurrentSpaceProvider } from "components/atoms/CurrentSpaceProvider";
+
 import { Provided } from "./Provided";
 
 export const AdminSubRouter: React.FC = () => (
@@ -33,7 +35,9 @@ export const AdminSubRouter: React.FC = () => (
 
     <Route path={ADMIN_IA_SPACE_EDIT_PARAM_URL}>
       <Provided withRelatedVenues>
-        <AdminVenueView />
+        <CurrentSpaceProvider>
+          <AdminVenueView />
+        </CurrentSpaceProvider>
       </Provided>
     </Route>
 
