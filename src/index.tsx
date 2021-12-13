@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
+import ReactModal from "react-modal";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { FirebaseAppProvider } from "reactfire";
@@ -114,7 +115,10 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   return <>{children}</>;
 };
 
-traceReactScheduler("initial render", performance.now(), () => {
+const ROOT = "root";
+ReactModal.setAppElement(`#${ROOT}`);
+
+traceReactScheduler("initial render", performance.now(), () =>
   render(
     <BugsnagErrorBoundary>
       <DndProvider backend={HTML5Backend}>
@@ -136,9 +140,9 @@ traceReactScheduler("initial render", performance.now(), () => {
         </ReduxStoreProvider>
       </DndProvider>
     </BugsnagErrorBoundary>,
-    document.getElementById("root")
-  );
-});
+    document.getElementById(ROOT)
+  )
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
