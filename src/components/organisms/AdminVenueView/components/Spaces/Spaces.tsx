@@ -29,16 +29,18 @@ export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => (
     </AdminSidebar>
     <AdminShowcase>
       {BACKGROUND_IMG_TEMPLATES.includes(space.template as VenueTemplate) && (
-        <MapPreview
-          isEditing
-          worldId={space.worldId}
-          venueId={space.id}
-          venueName={space.name}
-          mapBackground={space.mapBackgroundImageUrl}
-          rooms={space.rooms ?? []}
-        />
+        <>
+          <MapPreview
+            isEditing
+            worldId={space.worldId}
+            venueId={space.id}
+            venueName={space.name}
+            mapBackground={space.mapBackgroundImageUrl}
+            rooms={space.rooms ?? []}
+          />
+          <PortalsTable space={space} />
+        </>
       )}
-      <PortalsTable space={space} />
     </AdminShowcase>
   </AdminPanel>
 );
