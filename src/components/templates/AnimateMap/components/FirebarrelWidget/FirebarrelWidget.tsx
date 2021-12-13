@@ -8,7 +8,7 @@ import { useUser } from "hooks/useUser";
 
 import { VideoParticipant } from "components/organisms/Video";
 
-import { ButtonOG } from "components/atoms/ButtonOG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./FirebarrelWidget.scss";
 
@@ -187,12 +187,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     <>
       <div className="firebarrel-room__exit-btn-wrapper">
         <div className="firebarrel-room__exit-btn-inner">
-          <ButtonOG
-            customClass="firebarrel-room__exit-btn"
-            onClick={onExitClick}
-          >
+          <ButtonNG className="firebarrel-room__exit-btn" onClick={onExitClick}>
             Leave
-          </ButtonOG>
+          </ButtonNG>
         </div>
       </div>
       <div className="firebarrel-room__participants">

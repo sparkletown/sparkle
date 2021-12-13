@@ -16,7 +16,6 @@ import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExternalRoom } from "components/templates/ExternalRoom";
-import { FireBarrel } from "components/templates/FireBarrel";
 import { JazzBarPage } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
@@ -94,9 +93,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.firebarrel:
-      template = <FireBarrel venue={venue} />;
-      break;
-
     case VenueTemplate.posterhall:
       template = <PosterHall venue={venue} />;
       break;

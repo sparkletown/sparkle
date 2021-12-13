@@ -11,7 +11,6 @@ import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import { activatePolyFills } from "polyfills";
 import { createFirestoreInstance } from "redux-firestore";
-import { ThemeProvider } from "styled-components";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
@@ -40,8 +39,6 @@ import "firebase/functions";
 import "firebase/performance";
 
 import * as serviceWorker from "./serviceWorker";
-
-import { theme } from "theme/theme";
 
 import "scss/global.scss";
 
@@ -120,26 +117,24 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
 traceReactScheduler("initial render", performance.now(), () => {
   render(
     <BugsnagErrorBoundary>
-      <ThemeProvider theme={theme}>
-        <DndProvider backend={HTML5Backend}>
-          <ReduxStoreProvider store={store}>
-            <FirebaseAppProvider firebaseApp={firebaseApp}>
-              <ReactReduxFirebaseProvider {...rrfProps}>
-                <AuthIsLoaded>
-                  <AlgoliaSearchProvider>
-                    <CustomSoundsProvider
-                      loadingComponent={<LoadingPage />}
-                      waitTillConfigLoaded
-                    >
-                      <AppRouter />
-                    </CustomSoundsProvider>
-                  </AlgoliaSearchProvider>
-                </AuthIsLoaded>
-              </ReactReduxFirebaseProvider>
-            </FirebaseAppProvider>
-          </ReduxStoreProvider>
-        </DndProvider>
-      </ThemeProvider>
+      <DndProvider backend={HTML5Backend}>
+        <ReduxStoreProvider store={store}>
+          <FirebaseAppProvider firebaseApp={firebaseApp}>
+            <ReactReduxFirebaseProvider {...rrfProps}>
+              <AuthIsLoaded>
+                <AlgoliaSearchProvider>
+                  <CustomSoundsProvider
+                    loadingComponent={<LoadingPage />}
+                    waitTillConfigLoaded
+                  >
+                    <AppRouter />
+                  </CustomSoundsProvider>
+                </AlgoliaSearchProvider>
+              </AuthIsLoaded>
+            </ReactReduxFirebaseProvider>
+          </FirebaseAppProvider>
+        </ReduxStoreProvider>
+      </DndProvider>
     </BugsnagErrorBoundary>,
     document.getElementById("root")
   );

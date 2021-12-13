@@ -192,9 +192,6 @@ $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
 $admin-ia-manage-space-template-columns: 5fr
   minmax(#{2 * $button-width--max-wrap}, 1fr);
 
-// @debt the following locations are using styled-components, so can't use our helper function yet
-//   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
-//   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;

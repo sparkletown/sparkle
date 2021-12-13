@@ -9,7 +9,7 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { ButtonOG } from "components/atoms/ButtonOG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
@@ -155,9 +155,9 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
 
       <div className="ScreeningRoom__more-button">
         {shouldShowMoreVideos && (
-          <ButtonOG onClick={increaseDisplayedVideosAmount}>
+          <ButtonNG onClick={increaseDisplayedVideosAmount}>
             Show more videos
-          </ButtonOG>
+          </ButtonNG>
         )}
       </div>
     </div>

@@ -27,7 +27,6 @@ import {
 import { MapBackgroundPlaceholder } from "components/molecules/MapBackgroundPlaceholder";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { Legend } from "components/atoms/Legend";
 
 import "./MapPreview.scss";
 
@@ -155,8 +154,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
-        <Legend text={`${venueName}'s Map`} />
-
         {mapBackground &&
           !isEditing &&
           mapRooms.map((room) => (
