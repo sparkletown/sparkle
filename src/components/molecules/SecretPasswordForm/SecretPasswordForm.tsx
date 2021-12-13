@@ -1,11 +1,13 @@
 import React, { ChangeEventHandler, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import { ATTENDEE_STEPPING_PARAM_URL, DEFAULT_ENTER_STEP } from "settings";
+
 import { checkAccess } from "api/auth";
 
 import { setLocalStorageToken } from "utils/localStorage";
 import { isDefined, isTruthy } from "utils/types";
-import { venueEntranceUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -59,7 +61,13 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         .then((result) => {
           if (isTruthy(result?.data?.token)) {
             setLocalStorageToken(spaceId, result.data.token);
-            history.push(venueEntranceUrl(worldSlug, spaceSlug));
+            history.push(
+              generateUrl({
+                route: ATTENDEE_STEPPING_PARAM_URL,
+                required: ["worldSlug", "spaceSlug", "step"],
+                params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+              })
+            );
           } else {
             setMessage(`Wrong password!`);
             setError(true);

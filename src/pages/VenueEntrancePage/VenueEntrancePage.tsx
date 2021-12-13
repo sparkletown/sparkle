@@ -1,7 +1,10 @@
 import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
-import { ACCOUNT_PROFILE_VENUE_PARAM_URL } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
+} from "settings";
 
 import {
   EntranceStepTemplate,
@@ -9,11 +12,7 @@ import {
 } from "types/EntranceStep";
 
 import { isCompleteProfile } from "utils/profile";
-import {
-  generateAttendeeInsideUrl,
-  generateUrl,
-  venueEntranceUrl,
-} from "utils/url";
+import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -48,8 +47,13 @@ export const VenueEntrancePage: React.FC = () => {
 
   const proceed = useCallback(
     () =>
-      spaceSlug &&
-      history.push(venueEntranceUrl(worldSlug, spaceSlug, step + 1)),
+      history.push(
+        generateUrl({
+          route: ATTENDEE_STEPPING_PARAM_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: { worldSlug, spaceSlug, step: `${step + 1}` },
+        })
+      ),
     [worldSlug, spaceSlug, step, history]
   );
 
@@ -62,14 +66,9 @@ export const VenueEntrancePage: React.FC = () => {
   }
 
   const stepConfig = world.entrance?.[step - 1];
-  if (!stepConfig) {
+  if (Number.isNaN(step) || !stepConfig) {
     return (
-      <Redirect
-        to={generateAttendeeInsideUrl({
-          worldSlug: world.slug,
-          spaceSlug: spaceSlug,
-        })}
-      />
+      <Redirect to={generateAttendeeInsideUrl({ worldSlug, spaceSlug })} />
     );
   }
 
