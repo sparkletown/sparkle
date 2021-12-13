@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FormControl, Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 import { useFirestore } from "react-redux-firebase";
 import { debounce } from "lodash";
 
@@ -18,6 +18,7 @@ interface PartitionedOwnersOthers {
   owners: WithId<User>[];
   others: WithId<User>[];
 }
+
 const makePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
   { owners, others }: PartitionedOwnersOthers,
   user: WithId<User>
@@ -101,8 +102,8 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   if (isLoading) return <>Loading...</>;
 
   return (
-    <Modal show={visible} onHide={onHide}>
-      <Modal.Body>
+    <ReactModal isOpen={visible} onAfterClose={onHide}>
+      <div>
         <div className="modal-container venue-owner-modal">
           <h3>Manage Owners</h3>
           <div className="row-container">
@@ -111,7 +112,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
               <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
             ))}
           </div>
-          <FormControl
+          <input
             className="text-input"
             autoFocus
             placeholder="Search users..."
@@ -130,8 +131,8 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
             )}
           </div>
         </div>
-      </Modal.Body>
-    </Modal>
+      </div>
+    </ReactModal>
   );
 };
 

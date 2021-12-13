@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -41,13 +40,7 @@ import "./playa.scss";
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
   { futureUpcoming }
-) => (
-  <Popover id="popover-basic" {...props}>
-    <Popover.Content>
-      <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
+) => <UpcomingTickets events={futureUpcoming} />;
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
@@ -229,16 +222,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 )}
 
                 {hasUpcomingEvents && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
-                    overlay={<TicketsPopover futureUpcoming={futureUpcoming} />}
-                    rootClose={true}
-                  >
+                  <div>
+                    <TicketsPopover futureUpcoming={futureUpcoming} />
                     <span className="tickets-icon">
                       <FontAwesomeIcon icon={faTicketAlt} />
                     </span>
-                  </OverlayTrigger>
+                  </div>
                 )}
 
                 {showNormalRadio && (

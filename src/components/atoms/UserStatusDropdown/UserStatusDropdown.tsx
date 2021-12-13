@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import classNames from "classnames";
 
 import { UserStatus } from "types/User";
@@ -37,13 +36,13 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   const userStatusDropdownOptions = useMemo(
     () =>
       userStatuses.map((userStatus) => (
-        <ReactBootstrapDropdown.Item
+        <div
           className="UserStatusDropdown__item"
           key={userStatus.status}
           onClick={() => changeUserStatus(userStatus.status)}
         >
           {userStatus.status}
-        </ReactBootstrapDropdown.Item>
+        </div>
       )),
     [userStatuses, changeUserStatus]
   );

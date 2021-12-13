@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import classNames from "classnames";
 
 import { generateId } from "utils/string";
@@ -48,17 +47,15 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
 
   const renderedOverlay = useMemo(
     () => (
-      <Popover id={id} className={popoverClasses} style={popoverStyle}>
-        <Popover.Content>
-          <RadioModal
-            volume={volume}
-            setVolume={setVolume}
-            title={title}
-            onEnableHandler={onEnableHandler}
-            isRadioPlaying={radioPlaying}
-          />
-        </Popover.Content>
-      </Popover>
+      <div id={id} className={popoverClasses} style={popoverStyle}>
+        <RadioModal
+          volume={volume}
+          setVolume={setVolume}
+          title={title}
+          onEnableHandler={onEnableHandler}
+          isRadioPlaying={radioPlaying}
+        />
+      </div>
     ),
     [
       id,
@@ -73,14 +70,9 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
   );
 
   return (
-    <OverlayTrigger
-      trigger="click"
-      placement="bottom-end"
-      overlay={renderedOverlay}
-      rootClose
-      defaultShow={defaultShow}
-    >
+    <div>
+      {renderedOverlay}
       <ButtonNG className={buttonClasses} />
-    </OverlayTrigger>
+    </div>
   );
 };

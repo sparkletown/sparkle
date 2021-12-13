@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
 
@@ -33,7 +33,7 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   }, [onDelete, venueId]);
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <ReactModal isOpen={show} onAfterClose={onHide}>
       <div className="VenueDeleteModal">
         <h2 className="centered">Delete space</h2>
         <div className="secondary-action">
@@ -57,7 +57,7 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
         </div>
         {error && <span className="input-error">{error}</span>}
       </div>
-    </Modal>
+    </ReactModal>
   );
 };
 

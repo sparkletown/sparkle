@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import Modal from "react-bootstrap/Modal";
+import ReactModal from "react-modal";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
@@ -93,8 +93,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   );
 
   return (
-    <Modal show={show} onHide={onHide} className="EventModal">
-      <Modal.Header className="EventModal__close" closeButton />
+    <ReactModal isOpen={show} onAfterClose={onHide} className="EventModal">
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
@@ -116,6 +115,6 @@ export const EventModal: React.FC<EventModalProps> = ({
           {eventStatus} in the {eventLocationToDisplay}
         </ButtonNG>
       </div>
-    </Modal>
+    </ReactModal>
   );
 };

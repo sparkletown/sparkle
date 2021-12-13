@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 import { useCopyToClipboard } from "react-use";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -78,8 +78,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   }, [url, venue]);
 
   return (
-    <Modal show={show} onHide={onHide}>
-      <Modal.Body className="ShareModal">
+    <ReactModal isOpen={show} onAfterClose={onHide}>
+      <div className="ShareModal">
         <div className="ShareModal__header">
           <h3 className="ShareModal__title">
             {venue.poster?.title ?? "Poster"}
@@ -96,7 +96,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             {linkText}
           </div>
         </div>
-      </Modal.Body>
-    </Modal>
+      </div>
+    </ReactModal>
   );
 };

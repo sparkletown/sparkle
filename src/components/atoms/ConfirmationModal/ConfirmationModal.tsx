@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 
 import { isTruthy } from "utils/types";
 
@@ -52,24 +52,21 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   const isShown = show !== undefined ? show : isVisible;
 
   return (
-    <Modal
+    <ReactModal
       className="ConfirmationModal"
-      show={isShown}
-      onHide={hide}
-      centered={isCentered}
+      isOpen={isShown}
+      onAfterClose={hide}
     >
-      <Modal.Body>
-        <div>
-          {hasHeader && <h4>{header}</h4>}
-          <div className="ConfirmationModal__message">{message}</div>
-          <div className="ConfirmationModal__buttons">
-            <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
-            <ButtonNG variant={confirmVariant} onClick={confirm}>
-              {saveBtnLabel}
-            </ButtonNG>
-          </div>
+      <div>
+        {hasHeader && <h4>{header}</h4>}
+        <div className="ConfirmationModal__message">{message}</div>
+        <div className="ConfirmationModal__buttons">
+          <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
+          <ButtonNG variant={confirmVariant} onClick={confirm}>
+            {saveBtnLabel}
+          </ButtonNG>
         </div>
-      </Modal.Body>
-    </Modal>
+      </div>
+    </ReactModal>
   );
 };

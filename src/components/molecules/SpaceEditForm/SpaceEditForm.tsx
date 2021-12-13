@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
@@ -220,7 +219,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
   );
 
   return (
-    <Form onSubmit={handleSubmit(updateVenue)}>
+    <form onSubmit={handleSubmit(updateVenue)}>
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
           <AdminSpacesListItem title="The basics" isOpened>
@@ -355,7 +354,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
               ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
                 <div>
-                  <Form.Label>URL</Form.Label>
+                  <label>URL</label>
                   <InputField
                     name="zoomUrl"
                     type="text"
@@ -517,6 +516,6 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           </ButtonNG>
         </AdminSidebarButtons>
       </div>
-    </Form>
+    </form>
   );
 };

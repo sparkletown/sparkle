@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { omit } from "lodash";
 
@@ -74,7 +73,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
-          <ReactBootstrapDropdown.Item
+          <div
             key={id}
             onClick={() => {
               setSelected({ name, template, id });
@@ -90,7 +89,7 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
               />
             ) : null}
             {name || noneOptionName}
-          </ReactBootstrapDropdown.Item>
+          </div>
         );
       }) ?? [],
     [spaceOptions, setValue, fieldName]

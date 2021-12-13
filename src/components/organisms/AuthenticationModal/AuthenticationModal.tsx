@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 
 import { InitialForm } from "./InitialForm";
 import LoginForm from "./LoginForm";
@@ -48,7 +48,7 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal show={show} onHide={closeAuthenticationModal}>
+    <ReactModal isOpen={show} onAfterClose={closeAuthenticationModal}>
       <div className="authentication-modal-container">
         {formToDisplay === "initial" && (
           <InitialForm
@@ -79,6 +79,6 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
           />
         )}
       </div>
-    </Modal>
+    </ReactModal>
   );
 };

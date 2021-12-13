@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 
 import { setVenueLiveStatus } from "api/venue";
@@ -28,28 +27,22 @@ export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps>
   }, [venueId]);
 
   return (
-    <OverlayTrigger
-      trigger="click"
-      placement="bottom-end"
-      overlay={
-        <Popover
-          id="poster-page-settings-popover"
-          className="PosterPageSettingsControl__popover"
-        >
-          <Popover.Content className="PosterPageSettingsControl__popover-content">
-            <Checkbox
-              type="checkbox"
-              checked={isPosterLive}
-              onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
-              label={isPosterLive ? "Poster is live" : "Make poster live"}
-              toggler
-            />
-          </Popover.Content>
-        </Popover>
-      }
-      rootClose
-    >
+    <div>
+      <div
+        id="poster-page-settings-popover"
+        className="PosterPageSettingsControl__popover"
+      >
+        <div className="PosterPageSettingsControl__popover-content">
+          <Checkbox
+            type="checkbox"
+            checked={isPosterLive}
+            onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
+            label={isPosterLive ? "Poster is live" : "Make poster live"}
+            toggler
+          />
+        </div>
+      </div>
       <PosterPageControl label="Settings" icon={faCog} />
-    </OverlayTrigger>
+    </div>
   );
 };

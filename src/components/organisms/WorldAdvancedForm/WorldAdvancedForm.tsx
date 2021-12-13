@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -147,7 +146,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
   return (
     <div className="WorldAdvancedForm">
-      <Form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(submit)}>
         <AdminSection
           title="Title of your venues attendees"
           subtitle="(For example: guests, attendees, partygoers)"
@@ -238,7 +237,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
             Save
           </ButtonNG>
         </AdminSidebarButtons>
-      </Form>
+      </form>
     </div>
   );
 };

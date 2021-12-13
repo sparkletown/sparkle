@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 
 import "./VideoErrorModal.scss";
 
@@ -29,7 +29,7 @@ export const VideoErrorModal: FC<PropsType> = ({
   onRetry,
 }) => {
   return (
-    <Modal show={show} onHide={onHide} backdrop="static">
+    <ReactModal isOpen={show} onAfterClose={onHide}>
       <div className="modal-container">
         <div className="modal-title">
           {errorMessage &&
@@ -46,6 +46,6 @@ export const VideoErrorModal: FC<PropsType> = ({
           </button>
         </div>
       </div>
-    </Modal>
+    </ReactModal>
   );
 };

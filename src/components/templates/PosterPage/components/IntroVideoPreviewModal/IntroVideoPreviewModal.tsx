@@ -1,5 +1,5 @@
 import React from "react";
-import Modal from "react-bootstrap/Modal";
+import ReactModal from "react-modal";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -17,13 +17,10 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
   introVideoUrl,
 }) => {
   return (
-    <Modal
-      show={isVisible}
-      onHide={onHide}
-      dialogClassName="IntroVideoPreviewModal"
-      centered
-      size="lg"
-      modal
+    <ReactModal
+      isOpen={isVisible}
+      onAfterClose={onHide}
+      className="IntroVideoPreviewModal"
     >
       <iframe
         className="IntroVideoPreviewModal__iframe"
@@ -32,6 +29,6 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
         allow={IFRAME_ALLOW}
         allowFullScreen
       />
-    </Modal>
+    </ReactModal>
   );
 };

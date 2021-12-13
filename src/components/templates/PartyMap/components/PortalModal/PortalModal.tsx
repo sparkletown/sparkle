@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 import ShowMoreText from "react-show-more-text";
 
 import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
@@ -64,8 +64,8 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} className="PortalModal" centered>
-      <Modal.Body className="PortalModal__modal-body">
+    <ReactModal isOpen={show} onAfterClose={onHide} className="PortalModal">
+      <div className="PortalModal__modal-body">
         <PortalModalContent
           portal={portal}
           venueEvents={venueEvents}
@@ -78,8 +78,8 @@ export const PortalModal: React.FC<PortalModalProps> = ({
           alt="close portal"
           onClick={onHide}
         />
-      </Modal.Body>
-    </Modal>
+      </div>
+    </ReactModal>
   );
 };
 

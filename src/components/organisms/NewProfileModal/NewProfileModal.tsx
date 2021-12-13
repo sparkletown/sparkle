@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 
 import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
 
@@ -51,12 +51,12 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   const [user, isLoaded] = useCurrentModalUser(selectedUserId);
 
   return (
-    <Modal
+    <ReactModal
       className="ProfileModal"
-      show={hasSelectedProfile && isModalShown}
-      onHide={hideHandler}
+      isOpen={hasSelectedProfile && isModalShown}
+      onAfterClose={hideHandler}
     >
-      <Modal.Body className="ProfileModal__body">
+      <div className="ProfileModal__body">
         {isLoaded && user && (
           <NewProfileModalBody
             user={user}
@@ -76,7 +76,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
             )}
           </div>
         )}
-      </Modal.Body>
-    </Modal>
+      </div>
+    </ReactModal>
   );
 };

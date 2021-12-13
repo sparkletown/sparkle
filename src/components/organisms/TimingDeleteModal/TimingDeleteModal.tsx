@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import ReactModal from "react-modal";
 import { useAsyncFn } from "react-use";
 import dayjs from "dayjs";
 
@@ -79,7 +79,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     : "Unknown";
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <ReactModal isOpen={show} onAfterClose={onHide}>
       <div className="TimingDeleteModal">
         <h2>Delete event</h2>
         <form
@@ -105,6 +105,6 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
           </ButtonNG>
         </form>
       </div>
-    </Modal>
+    </ReactModal>
   );
 };

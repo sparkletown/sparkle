@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -29,16 +29,8 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={closeVideoModal}
-      centered={true}
-      size={"xl"}
-      backdrop={backdrop}
-    >
-      <Modal.Header closeButton>
-        {caption && <Modal.Title>{caption}</Modal.Title>}
-      </Modal.Header>
+    <ReactModal isOpen={show} onAfterClose={closeVideoModal}>
+      <h2>{caption && <span>{caption}</span>}</h2>
       <div className="video-modal-container">
         <div className="content">
           <iframe
@@ -51,7 +43,7 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
           ></iframe>
         </div>
       </div>
-    </Modal>
+    </ReactModal>
   );
 };
 

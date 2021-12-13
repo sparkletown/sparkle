@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Modal } from "react-bootstrap";
+import ReactModal from "react-modal";
 import { groupBy } from "lodash";
 
 import { ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
@@ -210,46 +210,45 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
           venue={venue}
         />
       )}
-      <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
-        <Modal.Body>
-          <div className="modal-container modal-container_message">
-            <p>{`Can't join this table because it's been locked.`}</p>
+      <ReactModal
+        isOpen={isLockedMessageVisible}
+        onAfterClose={hideLockedMessage}
+      >
+        <div className="modal-container modal-container_message">
+          <p>{`Can't join this table because it's been locked.`}</p>
 
-            <p>Perhaps ask in the chat?</p>
+          <p>Perhaps ask in the chat?</p>
 
-            <button
-              type="button"
-              className="btn btn-block btn-centered"
-              onClick={hideLockedMessage}
-            >
-              Back
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
+          <button
+            type="button"
+            className="btn btn-block btn-centered"
+            onClick={hideLockedMessage}
+          >
+            Back
+          </button>
+        </div>
+      </ReactModal>
 
-      <Modal show={isJoinMessageVisible} onHide={hideJoinMessage}>
-        <Modal.Body>
-          <div className="modal-container modal-container_message">
-            <p>
-              You are now entering a video chat space. Please ALLOW camera &
-              microphone access. You will be able to turn them back off again
-              once inside, should you choose to do so. To avoid feedback from
-              the music, we recommend wearing headphones.
-            </p>
+      <ReactModal isOpen={isJoinMessageVisible} onAfterClose={hideJoinMessage}>
+        <div className="modal-container modal-container_message">
+          <p>
+            You are now entering a video chat space. Please ALLOW camera &
+            microphone access. You will be able to turn them back off again once
+            inside, should you choose to do so. To avoid feedback from the
+            music, we recommend wearing headphones.
+          </p>
 
-            <p>You can also adjust the volume on the live stream.</p>
+          <p>You can also adjust the volume on the live stream.</p>
 
-            <button
-              type="button"
-              className="btn btn-block btn-centered"
-              onClick={acceptJoiningTable}
-            >
-              OK
-            </button>
-          </div>
-        </Modal.Body>
-      </Modal>
+          <button
+            type="button"
+            className="btn btn-block btn-centered"
+            onClick={acceptJoiningTable}
+          >
+            OK
+          </button>
+        </div>
+      </ReactModal>
     </>
   );
 };
