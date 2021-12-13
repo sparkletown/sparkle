@@ -117,8 +117,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   return (
     <>
       <ReactModal
+        shouldCloseOnOverlayClick
+        shouldCloseOnEsc
         isOpen={show}
         onAfterClose={onHide}
+        onRequestClose={onHide}
         className="TimingEventModal"
       >
         <div className="form-container">

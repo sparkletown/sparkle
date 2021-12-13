@@ -64,7 +64,14 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   }
 
   return (
-    <ReactModal isOpen={show} onAfterClose={onHide} className="PortalModal">
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+      className="PortalModal"
+    >
       <div className="PortalModal__modal-body">
         <PortalModalContent
           portal={portal}

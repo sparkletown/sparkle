@@ -48,7 +48,13 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <ReactModal isOpen={show} onAfterClose={closeAuthenticationModal}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={closeAuthenticationModal}
+      onRequestClose={closeAuthenticationModal}
+    >
       <div className="authentication-modal-container">
         {formToDisplay === "initial" && (
           <InitialForm

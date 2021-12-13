@@ -52,9 +52,12 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
 
   return (
     <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
       className="ProfileModal"
       isOpen={hasSelectedProfile && isModalShown}
       onAfterClose={hideHandler}
+      onRequestClose={hideHandler}
     >
       <div className="ProfileModal__body">
         {isLoaded && user && (

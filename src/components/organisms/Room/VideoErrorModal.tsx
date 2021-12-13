@@ -29,7 +29,13 @@ export const VideoErrorModal: FC<PropsType> = ({
   onRetry,
 }) => {
   return (
-    <ReactModal isOpen={show} onAfterClose={onHide}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+    >
       <div className="modal-container">
         <div className="modal-title">
           {errorMessage &&

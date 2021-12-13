@@ -78,7 +78,13 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   }, [url, venue]);
 
   return (
-    <ReactModal isOpen={show} onAfterClose={onHide}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+    >
       <div className="ShareModal">
         <div className="ShareModal__header">
           <h3 className="ShareModal__title">

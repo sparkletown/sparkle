@@ -211,8 +211,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         />
       )}
       <ReactModal
+        shouldCloseOnOverlayClick
+        shouldCloseOnEsc
         isOpen={isLockedMessageVisible}
         onAfterClose={hideLockedMessage}
+        onRequestClose={hideLockedMessage}
       >
         <div className="modal-container modal-container_message">
           <p>{`Can't join this table because it's been locked.`}</p>
@@ -229,7 +232,13 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         </div>
       </ReactModal>
 
-      <ReactModal isOpen={isJoinMessageVisible} onAfterClose={hideJoinMessage}>
+      <ReactModal
+        shouldCloseOnOverlayClick
+        shouldCloseOnEsc
+        isOpen={isJoinMessageVisible}
+        onAfterClose={hideJoinMessage}
+        onRequestClose={hideJoinMessage}
+      >
         <div className="modal-container modal-container_message">
           <p>
             You are now entering a video chat space. Please ALLOW camera &

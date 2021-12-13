@@ -29,7 +29,13 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <ReactModal isOpen={show} onAfterClose={closeVideoModal}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={closeVideoModal}
+      onRequestClose={closeVideoModal}
+    >
       <h2>{caption && <span>{caption}</span>}</h2>
       <div className="video-modal-container">
         <div className="content">

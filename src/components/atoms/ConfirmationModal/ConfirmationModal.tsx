@@ -53,9 +53,12 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
   return (
     <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
       className="ConfirmationModal"
       isOpen={isShown}
       onAfterClose={hide}
+      onRequestClose={hide}
     >
       <div>
         {hasHeader && <h4>{header}</h4>}

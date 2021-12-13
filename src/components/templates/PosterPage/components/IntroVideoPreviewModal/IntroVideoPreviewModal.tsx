@@ -18,8 +18,11 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
 }) => {
   return (
     <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
       isOpen={isVisible}
       onAfterClose={onHide}
+      onRequestClose={onHide}
       className="IntroVideoPreviewModal"
     >
       <iframe

@@ -102,7 +102,13 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   if (isLoading) return <>Loading...</>;
 
   return (
-    <ReactModal isOpen={visible} onAfterClose={onHide}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={visible}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+    >
       <div>
         <div className="modal-container venue-owner-modal">
           <h3>Manage Owners</h3>

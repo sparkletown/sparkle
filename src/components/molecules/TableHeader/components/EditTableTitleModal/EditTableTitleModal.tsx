@@ -79,7 +79,13 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   });
 
   return (
-    <ReactModal isOpen={isShown} onAfterClose={onHide}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={isShown}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+    >
       <form
         onSubmit={handleSubmit(updateTables)}
         className="EditTableTitleModal"

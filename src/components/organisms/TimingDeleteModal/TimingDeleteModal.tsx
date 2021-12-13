@@ -79,7 +79,13 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     : "Unknown";
 
   return (
-    <ReactModal isOpen={show} onAfterClose={onHide}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+    >
       <div className="TimingDeleteModal">
         <h2>Delete event</h2>
         <form

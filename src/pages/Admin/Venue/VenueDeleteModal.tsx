@@ -33,7 +33,13 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   }, [onDelete, venueId]);
 
   return (
-    <ReactModal isOpen={show} onAfterClose={onHide}>
+    <ReactModal
+      shouldCloseOnOverlayClick
+      shouldCloseOnEsc
+      isOpen={show}
+      onAfterClose={onHide}
+      onRequestClose={onHide}
+    >
       <div className="VenueDeleteModal">
         <h2 className="centered">Delete space</h2>
         <div className="secondary-action">
