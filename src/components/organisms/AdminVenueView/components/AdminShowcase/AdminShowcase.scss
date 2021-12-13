@@ -2,9 +2,4 @@
 
 .AdminShowcase {
   width: $admin-ng-showcase-width--normal;
-
-  &--internal-scroll {
-    height: $admin-ng-panel-height;
-    overflow: auto;
-  }
 }

@@ -1,11 +1,6 @@
 @import "scss/constants";
 
 .AdminPanel {
-  &--bound {
-    height: $admin-ng-panel-height;
-    overflow: hidden;
-  }
-
   &--unbound {
     display: flex;
   }
