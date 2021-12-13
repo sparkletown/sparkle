@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import {
-  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_INSIDE_URL,
   DEFAULT_VENUE_BANNER_COLOR,
   DEFAULT_VENUE_LOGO,
   PORTAL_INFO_ICON_MAPPING,
@@ -68,7 +68,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
           <Link
             className="AdminSpaceCard__link"
             to={generateUrl({
-              route: ATTENDEE_SPACE_INSIDE_URL,
+              route: ATTENDEE_INSIDE_URL,
               required: ["worldSlug", "spaceSlug"],
               params: { worldSlug, spaceSlug: venue.slug },
             })}

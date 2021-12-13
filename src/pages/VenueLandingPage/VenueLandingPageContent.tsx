@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
+  ATTENDEE_STEPPING_PARAM_URL,
+  DEFAULT_ENTER_STEP,
   DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
@@ -22,7 +24,7 @@ import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { WithId } from "utils/id";
 import { venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
-import { generateAttendeeInsideUrl, venueEntranceUrl } from "utils/url";
+import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
@@ -60,15 +62,21 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   );
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
 
+  // @debt use callback hook and history push
   const onJoinClick = () => {
     if (!spaceSlug) return;
 
     const hasEntrance = world?.entrance?.length;
+    const worldSlug = world?.slug;
 
     window.location.href =
       user && !hasEntrance
-        ? generateAttendeeInsideUrl({ worldSlug: world?.slug, spaceSlug })
-        : venueEntranceUrl(world?.slug, spaceSlug);
+        ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
+        : generateUrl({
+            route: ATTENDEE_STEPPING_PARAM_URL,
+            required: ["worldSlug", "spaceSlug", "step"],
+            params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+          });
   };
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;
@@ -87,7 +95,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const containerClasses = classNames("header", containerVars);
 
   return (
-    <div className="container venue-entrance-experience-container">
+    <div className="VenueLandingPageContent container venue-entrance-experience-container">
       <div className={containerClasses}>
         <div className="venue-host">
           <div className="host-icon-container">

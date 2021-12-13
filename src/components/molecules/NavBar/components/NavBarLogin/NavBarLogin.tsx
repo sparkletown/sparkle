@@ -1,9 +1,14 @@
 import React, { FC, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
-import { DEFAULT_SPACE_SLUG, DEFAULT_WORLD_SLUG } from "settings";
+import {
+  ATTENDEE_STEPPING_PARAM_URL,
+  DEFAULT_ENTER_STEP,
+  DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
+} from "settings";
 
-import { venueEntranceUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
@@ -16,10 +21,15 @@ export const NavBarLogin: FC = () => {
   const navigateToDefault = useCallback(
     () =>
       history.push(
-        venueEntranceUrl(
-          worldSlug ?? DEFAULT_WORLD_SLUG,
-          spaceSlug ?? DEFAULT_SPACE_SLUG
-        )
+        generateUrl({
+          route: ATTENDEE_STEPPING_PARAM_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: {
+            worldSlug: worldSlug ?? DEFAULT_WORLD_SLUG,
+            spaceSlug: spaceSlug ?? DEFAULT_SPACE_SLUG,
+            step: DEFAULT_ENTER_STEP,
+          },
+        })
       ),
     [history, worldSlug, spaceSlug]
   );
