@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FieldError, useForm } from "react-hook-form";
+import { FieldError } from "react-hook-form";
 import { omit } from "lodash";
 
 import { PORTAL_INFO_ICON_MAPPING } from "settings";
@@ -28,7 +28,7 @@ export type SpacesDropdownPortal = {
 export interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
-  register: ReturnType<typeof useForm>["register"];
+  register: (Ref: unknown, RegisterOptions?: unknown) => void;
   fieldName: string;
   error?: FieldError;
   spaces: Record<string, WithId<AnyVenue>>;

@@ -17,6 +17,7 @@ import {
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
+  RND_STYLE_POC,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
   VERSION_URL,
@@ -34,6 +35,7 @@ import {
 import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
+import { StylePoC } from "pages/StylePoC";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
@@ -120,6 +122,7 @@ export const AppRouter: React.FC = () => {
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
+          <Route path={RND_STYLE_POC} component={StylePoC} />
           {
             /////////////////////////////////////////////////////////////////////////
             // @debt the following temp re-routes should be removed after events' end

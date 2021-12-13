@@ -37,6 +37,9 @@ const SPACE_INSIDE_BASE_URL = "/in";
 const SPACE_LANDING_BASE_URL = "/v";
 export const WORLD_ROOT_URL = "/w";
 
+//
+export const RND_STYLE_POC = `/stylepoc/:version?`;
+
 export const DEFAULT_SPACE_SLUG = "bootstrap" as SpaceSlug;
 export const DEFAULT_WORLD_SLUG = "bootstrap" as WorldSlug;
 

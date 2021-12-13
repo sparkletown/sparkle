@@ -1,0 +1,1 @@
+export { StylePoC } from "./StylePoC";

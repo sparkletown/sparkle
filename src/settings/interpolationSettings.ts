@@ -5,3 +5,4 @@
 export const STRING_SPACE = " ";
 export const STRING_DOUBLE_SLASH = "//";
 export const STRING_AMPERSAND = "&";
+export const STRING_APOSTROPHE = "'";
