@@ -19,10 +19,8 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { PortalIcon } from "components/atoms/PortalIcon";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
-import "./CurrentStyles.scss";
-
-export const CurrentStyles: React.FC = () => (
-  <div className="CurrentStyles">
+export const StyleShowCurrent: React.FC = () => (
+  <div className="StyleShowCurrent">
     <AdminSection>
       <ButtonNG>ButtonNG</ButtonNG>
       <ButtonNG variant="primary">ButtonNG</ButtonNG>

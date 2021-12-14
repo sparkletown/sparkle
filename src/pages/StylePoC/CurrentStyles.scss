@@ -1,9 +1,0 @@
-@import "scss/constants";
-
-.CurrentStyles {
-  padding: $spacing--xl;
-  display: grid;
-  grid: auto-flow / repeat(3, 1fr);
-  gap: font-size--root(2);
-  place-items: center;
-}

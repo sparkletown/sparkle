@@ -4,6 +4,11 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   reactScriptsVersion: "react-scripts",
+  style: {
+    modules: {
+      localIdentName: "[local]--[hash:base64:5]",
+    },
+  },
   babel: {
     plugins: [
       // https://github.com/lodash/babel-plugin-lodash

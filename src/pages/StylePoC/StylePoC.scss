@@ -1,0 +1,19 @@
+@import "scss/constants";
+
+.StylePoC {
+  &__main > * {
+    padding: $spacing--xl;
+    display: grid;
+    grid: auto-flow / repeat(3, 1fr);
+    gap: font-size--root(2);
+    place-items: center;
+  }
+
+  &__nav {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    align-content: center;
+    font-size: font-size--parent(2);
+  }
+}
