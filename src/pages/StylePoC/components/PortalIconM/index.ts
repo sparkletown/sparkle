@@ -1,0 +1,1 @@
+export { PortalIconM } from "./PortalIconM";

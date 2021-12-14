@@ -6,7 +6,10 @@ module.exports = {
   reactScriptsVersion: "react-scripts",
   style: {
     modules: {
+      // @see https://github.com/webpack-contrib/css-loader#localidentname
       localIdentName: "[local]--[hash:base64:5]",
+      // localIdentName: "[folder]--[hash:base64:5]",
+      // localIdentName: "[hash:base64:10]",
     },
   },
   babel: {

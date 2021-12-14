@@ -1,0 +1,1 @@
+export { AdminInputM } from "./AdminInputM";

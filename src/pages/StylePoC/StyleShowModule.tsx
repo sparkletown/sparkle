@@ -8,17 +8,17 @@ import {
 } from "settings";
 
 import { AdminDateTime } from "components/molecules/AdminDateTime";
-import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
-import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput";
 import { Loading } from "components/molecules/Loading";
 
-import { PortalIcon } from "components/atoms/PortalIcon";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
 import { AdminCheckboxM } from "./components/AdminCheckboxM";
+import { AdminInputM } from "./components/AdminInputM";
+import { AdminTextareaM } from "./components/AdminTextareaM";
 import { ButtonM } from "./components/ButtonM";
+import { PortalIconM } from "./components/PortalIconM";
 
 export const StyleShowModule: React.FC = () => (
   <div className="StyleShowModule">
@@ -51,16 +51,16 @@ export const StyleShowModule: React.FC = () => (
     </AdminSection>
     <AdminSection>
       <Loading label="Hey, look at me, I'm looooadiiin'" />
-      <PortalIcon src={PORTAL_INFO_LIST[1].icon} />
+      <PortalIconM src={PORTAL_INFO_LIST[1].icon} />
     </AdminSection>
     <AdminSection>
-      <AdminInput
-        label="Just a simple AdminInput"
+      <AdminInputM
+        label="Just a simple AdminInputM"
         name=""
         register={ALWAYS_NOOP_FUNCTION}
       />
-      <AdminTextarea
-        placeholder="and an AdminTextarea"
+      <AdminTextareaM
+        placeholder="and an AdminTextareaM"
         name=""
         register={ALWAYS_NOOP_FUNCTION}
       />

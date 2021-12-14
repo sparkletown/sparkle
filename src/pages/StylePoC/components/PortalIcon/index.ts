@@ -1,1 +1,0 @@
-export { PortalIcon } from "./PortalIcon";
