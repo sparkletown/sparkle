@@ -13,7 +13,7 @@ import {
 
 import { VenueEvent } from "types/venues";
 
-import { getEventDayRange, isEventLiveOrFuture } from "utils/event";
+import { isEventLiveOrFuture } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { isDateRangeStartWithinToday } from "utils/time";
 
@@ -25,7 +25,7 @@ import { useRelatedVenues } from "./useRelatedVenues";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 const minRangeValue = 0;
-const todaysDate = new Date();
+const todaysDate = startOfToday();
 
 const useVenueScheduleEvents = ({
   userEventIds,
@@ -86,10 +86,6 @@ const useVenueScheduleEvents = ({
     max([new Date(secondsToMilliseconds(minDateUtcSeconds)), todaysDate])
   );
 
-  const isOneEventAndLive =
-    secondsToMilliseconds(firstRangeDateInSeconds) <= todaysDate.getTime() &&
-    liveAndFutureEvents.length === 1;
-
   const maxDate = useMemo(
     () =>
       Math.max(
@@ -114,7 +110,8 @@ const useVenueScheduleEvents = ({
     fromUnixTime(firstRangeDateInSeconds)
   );
 
-  const dayDifference = getEventDayRange(daysInBetween, isOneEventAndLive);
+  // +1 to include the latest day in the schedule (for example, there are events tomorrow and today -> tomorrow - today + 1 = 2 days)
+  const dayDifference = daysInBetween + 1;
 
   const firstScheduleDate = useMemo(
     () =>
