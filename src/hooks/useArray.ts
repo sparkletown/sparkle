@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const createPlainObject = <T>() => ({} as T);
 
@@ -19,6 +19,7 @@ export type UseArrayUpdate<T> = (options: {
 }) => T[];
 export type UseArrayRemove<T> = (options: { index: number }) => T[];
 export type UseArrayClear<T> = () => T[];
+export type UseArrayReplace<T> = (newArray: T[]) => T[];
 
 export type UseArrayResult<T> = {
   items: T[];
@@ -30,6 +31,7 @@ export type UseArrayResult<T> = {
   isDirty: boolean;
   setDirty: () => void;
   clearDirty: () => void;
+  replace: UseArrayReplace<T>;
 };
 
 export const useArray = <T>(
@@ -37,11 +39,17 @@ export const useArray = <T>(
   options?: UseArrayOptions<T>
 ): UseArrayResult<T> => {
   const create = options?.create ?? createPlainObject;
-  const prepared = options?.prepare ? array?.map(options.prepare) : array;
+  const [prepared, setPrepared] = useState(
+    options?.prepare ? array?.map(options.prepare) : array
+  );
 
   const [items, setItems] = useState(prepared ?? []);
-  const [isDirty, setIsDirty] = useState(false);
 
+  useEffect(() => {
+    setItems(prepared ?? []);
+  }, [prepared]);
+
+  const [isDirty, setIsDirty] = useState(false);
   const setDirty = useCallback(() => setIsDirty(true), [setIsDirty]);
   const clearDirty = useCallback(() => setIsDirty(false), [setIsDirty]);
 
@@ -82,13 +90,26 @@ export const useArray = <T>(
     },
     [items]
   );
-
+  console.log(isDirty);
   const clear: UseArrayClear<T> = useCallback(() => {
     const result: T[] = [];
     setItems(result);
     setIsDirty(true);
     return result;
   }, [setItems]);
+
+  const replace: UseArrayReplace<T> = useCallback(
+    (newArray: T[]) => {
+      const result = options?.prepare
+        ? newArray?.map(options.prepare)
+        : newArray;
+      clearDirty();
+      setPrepared(result);
+
+      return result;
+    },
+    [clearDirty, options?.prepare]
+  );
 
   return {
     items,
@@ -100,5 +121,6 @@ export const useArray = <T>(
     isDirty,
     setDirty,
     clearDirty,
+    replace,
   };
 };

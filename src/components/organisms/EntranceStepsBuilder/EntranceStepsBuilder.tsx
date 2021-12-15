@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
 
 import { EntranceStepConfig } from "types/EntranceStep";
@@ -29,6 +29,7 @@ export interface EntranceStepsBuilderProps {
   onUpdate: UseArrayUpdate<EntranceStepConfig>;
   onClear: UseArrayClear<EntranceStepConfig>;
   onRemove: UseArrayRemove<EntranceStepConfig>;
+  setDirtyButtons: Dispatch<SetStateAction<boolean>>;
 }
 
 export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
@@ -41,6 +42,7 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
   onUpdate,
   onClear,
   onRemove,
+  setDirtyButtons,
 }) => {
   const count = items?.length ?? 0;
   const handledErrors: string[] = [];
@@ -62,6 +64,7 @@ export const EntranceStepsBuilder: React.FC<EntranceStepsBuilderProps> = ({
             onUpdate={onUpdate}
             onRemove={onRemove}
             register={register}
+            setDirtyButtons={setDirtyButtons}
           />
         );
       })}

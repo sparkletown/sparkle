@@ -1,5 +1,12 @@
-import React, { ChangeEventHandler, useCallback } from "react";
+import React, {
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+} from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
+import { isEqual } from "lodash";
 
 import {
   EntranceStepButtonConfig,
@@ -22,6 +29,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./EntranceStepsInputFieldSet.scss";
 
+let buttonsCopy: EntranceStepButtonConfig[] | undefined = [];
 export interface EntranceStepsInputFieldSetProps {
   item?: EntranceStepConfig;
   errors?: FieldErrors<FieldValues>;
@@ -30,6 +38,7 @@ export interface EntranceStepsInputFieldSetProps {
   onUpdate: UseArrayUpdate<EntranceStepConfig>;
   onRemove: UseArrayRemove<EntranceStepConfig>;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
+  setDirtyButtons: Dispatch<SetStateAction<boolean>>;
 }
 
 export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProps> = ({
@@ -40,6 +49,7 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
   onUpdate,
   onRemove,
   register,
+  setDirtyButtons,
 }) => {
   const fieldButtons = `buttons`;
   const fieldUrl = `videoUrl`;
@@ -86,7 +96,20 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
     update: updateButton,
     clear: clearButtons,
     remove: removeButton,
+    replace: replaceButtons,
+    isDirty: isDirtyButtons,
   } = useArray<EntranceStepButtonConfig>(item?.buttons);
+
+  useEffect(() => {
+    setDirtyButtons(isDirtyButtons);
+  }, [isDirtyButtons, setDirtyButtons]);
+
+  useEffect(() => {
+    if (!isEqual(item?.buttons, buttonsCopy)) {
+      buttonsCopy = item?.buttons;
+      replaceButtons(item?.buttons ?? []);
+    }
+  }, [item?.buttons, replaceButtons]);
 
   const handleAddButton: UseArrayAdd<EntranceStepButtonConfig> = useCallback(
     (...args) => {

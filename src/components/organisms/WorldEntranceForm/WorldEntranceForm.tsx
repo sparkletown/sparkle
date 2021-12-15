@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { isEqual } from "lodash";
 
 import { updateWorldEntranceSettings, World } from "api/world";
 
@@ -37,6 +38,10 @@ export interface WorldEntranceFormProps {
   world: WithId<World>;
 }
 
+let codeQuestionsCopy: Question[] | undefined = [];
+let profileQuestionsCopy: Question[] | undefined = [];
+let entranceCopy: EntranceStepConfig[] | undefined = [];
+
 export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
 }) => {
@@ -44,6 +49,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const { user } = useUser();
 
   // @debt sync useArray with the form changes or try useFieldArray
+  const [isDirtyButtons, setDirtyButtons] = useState(false);
   const {
     items: codeQuestions,
     add: addCodeQuestion,
@@ -52,6 +58,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     remove: removeCodeQuestion,
     isDirty: isDirtyCode,
     clearDirty: clearDirtyCode,
+    replace: replaceCodeQuestions,
   } = useArray<Question>(world.questions?.code);
 
   const {
@@ -62,6 +69,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     remove: removeProfileQuestion,
     isDirty: isDirtyProfile,
     clearDirty: clearDirtyProfile,
+    replace: replaceProfileQuestions,
   } = useArray<Question>(world.questions?.profile);
 
   const {
@@ -72,6 +80,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     remove: removeEntranceStep,
     isDirty: isDirtyEntrance,
     clearDirty: clearDirtyEntrance,
+    replace: replaceEntraceSteps,
   } = useArray<EntranceStepConfig>(world.entrance, {
     create: () => ({ template: EntranceStepTemplate.WelcomeVideo }),
     prepare: (item) => ({
@@ -79,6 +88,27 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
       template: item.template || EntranceStepTemplate.WelcomeVideo,
     }),
   });
+
+  useEffect(() => {
+    if (!isEqual(world.questions?.profile, profileQuestionsCopy)) {
+      profileQuestionsCopy = world.questions?.profile;
+      replaceProfileQuestions(world.questions?.profile ?? []);
+    }
+  }, [world.questions?.profile, replaceProfileQuestions]);
+
+  useEffect(() => {
+    if (!isEqual(world.questions?.code, codeQuestionsCopy)) {
+      codeQuestionsCopy = world.questions?.code;
+      replaceCodeQuestions(world.questions?.code ?? []);
+    }
+  }, [world.questions?.code, replaceCodeQuestions]);
+
+  useEffect(() => {
+    if (!isEqual(world.entrance, entranceCopy)) {
+      entranceCopy = world.entrance;
+      replaceEntraceSteps(world.entrance ?? []);
+    }
+  }, [world.entrance, replaceEntraceSteps]);
 
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({
@@ -114,7 +144,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: WorldEntranceFormInput) => {
       if (!user || !worldId) return;
-
       const data = {
         ...input,
         id: worldId,
@@ -149,7 +178,8 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     isSubmitting ||
     isDirtyCode ||
     isDirtyProfile ||
-    isDirtyEntrance
+    isDirtyEntrance ||
+    isDirtyButtons
   );
 
   useEffect(() => {
@@ -222,6 +252,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             onRemove={removeEntranceStep}
             onClear={clearEntranceSteps}
             register={register}
+            setDirtyButtons={setDirtyButtons}
           />
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
