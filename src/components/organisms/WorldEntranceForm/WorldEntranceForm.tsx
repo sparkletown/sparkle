@@ -38,18 +38,23 @@ export interface WorldEntranceFormProps {
   world: WithId<World>;
 }
 
-let codeQuestionsCopy: Question[] | undefined = [];
-let profileQuestionsCopy: Question[] | undefined = [];
-let entranceCopy: EntranceStepConfig[] | undefined = [];
-
 export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
 }) => {
   const worldId = world.id;
   const { user } = useUser();
 
-  // @debt sync useArray with the form changes or try useFieldArray
   const [isDirtyButtons, setDirtyButtons] = useState(false);
+  const [codeQuestionsList, setCodeQuestionsList] = useState<
+    Question[] | undefined
+  >(world.questions?.code);
+  const [profileQuestionsList, setProfileQuestionsList] = useState<
+    Question[] | undefined
+  >(world.questions?.profile);
+  const [entranceList, setEntranceList] = useState<
+    EntranceStepConfig[] | undefined
+  >(world.entrance);
+
   const {
     items: codeQuestions,
     add: addCodeQuestion,
@@ -90,25 +95,25 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   });
 
   useEffect(() => {
-    if (!isEqual(world.questions?.profile, profileQuestionsCopy)) {
-      profileQuestionsCopy = world.questions?.profile;
+    if (!isEqual(world.questions?.profile, profileQuestionsList)) {
+      setProfileQuestionsList(world.questions?.profile);
       replaceProfileQuestions(world.questions?.profile ?? []);
     }
-  }, [world.questions?.profile, replaceProfileQuestions]);
+  }, [world.questions?.profile, replaceProfileQuestions, profileQuestionsList]);
 
   useEffect(() => {
-    if (!isEqual(world.questions?.code, codeQuestionsCopy)) {
-      codeQuestionsCopy = world.questions?.code;
+    if (!isEqual(world.questions?.code, codeQuestionsList)) {
+      setCodeQuestionsList(world.questions?.code);
       replaceCodeQuestions(world.questions?.code ?? []);
     }
-  }, [world.questions?.code, replaceCodeQuestions]);
+  }, [world.questions?.code, replaceCodeQuestions, codeQuestionsList]);
 
   useEffect(() => {
-    if (!isEqual(world.entrance, entranceCopy)) {
-      entranceCopy = world.entrance;
+    if (!isEqual(world.entrance, entranceList)) {
+      setEntranceList(world.entrance);
       replaceEntraceSteps(world.entrance ?? []);
     }
-  }, [world.entrance, replaceEntraceSteps]);
+  }, [world.entrance, replaceEntraceSteps, entranceList]);
 
   const defaultValues = useMemo<WorldEntranceFormInput>(
     () => ({

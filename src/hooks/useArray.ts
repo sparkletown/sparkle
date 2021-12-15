@@ -90,7 +90,7 @@ export const useArray = <T>(
     },
     [items]
   );
-  console.log(isDirty);
+
   const clear: UseArrayClear<T> = useCallback(() => {
     const result: T[] = [];
     setItems(result);

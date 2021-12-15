@@ -6,7 +6,6 @@ import React, {
   useEffect,
 } from "react";
 import { FieldErrors, FieldValues } from "react-hook-form";
-import { isEqual } from "lodash";
 
 import {
   EntranceStepButtonConfig,
@@ -29,7 +28,6 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./EntranceStepsInputFieldSet.scss";
 
-let buttonsCopy: EntranceStepButtonConfig[] | undefined = [];
 export interface EntranceStepsInputFieldSetProps {
   item?: EntranceStepConfig;
   errors?: FieldErrors<FieldValues>;
@@ -96,20 +94,12 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
     update: updateButton,
     clear: clearButtons,
     remove: removeButton,
-    replace: replaceButtons,
     isDirty: isDirtyButtons,
   } = useArray<EntranceStepButtonConfig>(item?.buttons);
 
   useEffect(() => {
     setDirtyButtons(isDirtyButtons);
   }, [isDirtyButtons, setDirtyButtons]);
-
-  useEffect(() => {
-    if (!isEqual(item?.buttons, buttonsCopy)) {
-      buttonsCopy = item?.buttons;
-      replaceButtons(item?.buttons ?? []);
-    }
-  }, [item?.buttons, replaceButtons]);
 
   const handleAddButton: UseArrayAdd<EntranceStepButtonConfig> = useCallback(
     (...args) => {
