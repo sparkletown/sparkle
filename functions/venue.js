@@ -257,10 +257,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
-  }
-
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -749,10 +745,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
 
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
-  }
-
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
