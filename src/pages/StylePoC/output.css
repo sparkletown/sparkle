@@ -1,0 +1,15 @@
+/* See: https://tailwindcss.com/docs/extracting-components */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Keep all extracted, composed styles in the "components" layer,
+   so that Tailwind gets load order correct. */
+@layer components {
+  .btn-save {
+    @apply inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500;
+  }
+}
+
+/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInRhaWx3aW5kLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSIsImZpbGUiOiJvdXRwdXQuY3NzIiwic291cmNlc0NvbnRlbnQiOlsiLyogU2VlOiBodHRwczovL3RhaWx3aW5kY3NzLmNvbS9kb2NzL2V4dHJhY3RpbmctY29tcG9uZW50cyAqL1xuXG5AdGFpbHdpbmQgYmFzZTtcbkB0YWlsd2luZCBjb21wb25lbnRzO1xuQHRhaWx3aW5kIHV0aWxpdGllcztcblxuLyogS2VlcCBhbGwgZXh0cmFjdGVkLCBjb21wb3NlZCBzdHlsZXMgaW4gdGhlIFwiY29tcG9uZW50c1wiIGxheWVyLFxuICAgc28gdGhhdCBUYWlsd2luZCBnZXRzIGxvYWQgb3JkZXIgY29ycmVjdC4gKi9cbkBsYXllciBjb21wb25lbnRzIHtcbiAgLmJ0bi1zYXZlIHtcbiAgICBAYXBwbHkgaW5saW5lLWZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHB4LTQgcHktMiBib3JkZXIgYm9yZGVyLXRyYW5zcGFyZW50IHRleHQtc20gZm9udC1tZWRpdW0gcm91bmRlZC1tZCBzaGFkb3ctc20gdGV4dC13aGl0ZSBiZy1yZWQtNjAwIGhvdmVyOmJnLXJlZC03MDAgZm9jdXM6b3V0bGluZS1ub25lIGZvY3VzOnJpbmctMiBmb2N1czpyaW5nLW9mZnNldC0yIGZvY3VzOnJpbmctcmVkLTUwMDtcbiAgfVxufVxuIl19 */

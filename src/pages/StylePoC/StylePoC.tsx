@@ -8,12 +8,14 @@ import { generateUrl } from "utils/url";
 
 import { StyleShowCurrent } from "./StyleShowCurrent";
 import { StyleShowModule } from "./StyleShowModule";
+import { StyleShowTailwind } from "./StyleShowTailwind";
 
 import "./StylePoC.scss";
 
 const SUB: Readonly<Record<string, React.FC>> = Object.freeze({
   current: StyleShowCurrent,
   modules: StyleShowModule,
+  tailwind: StyleShowTailwind,
 });
 
 export const StylePoC: React.FC = () => {

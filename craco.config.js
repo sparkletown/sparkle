@@ -11,6 +11,9 @@ module.exports = {
       // localIdentName: "[folder]--[hash:base64:5]",
       // localIdentName: "[hash:base64:10]",
     },
+    postcss: {
+      plugins: [require("tailwindcss"), require("autoprefixer")],
+    },
   },
   babel: {
     plugins: [
