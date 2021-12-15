@@ -27,6 +27,7 @@ export const StyleShowModule: React.FC = () => (
       <ButtonM variant="primary">ButtonM</ButtonM>
       <ButtonM variant="normal-gradient">ButtonM</ButtonM>
       <ButtonM variant="login-outline">ButtonM</ButtonM>
+      <ButtonM variant="danger">ButtonM</ButtonM>
     </AdminSection>
     <AdminSection>
       <AdminCheckboxM

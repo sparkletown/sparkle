@@ -7,43 +7,44 @@ import {
   STRING_APOSTROPHE,
 } from "settings";
 
-import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminDateTime } from "components/molecules/AdminDateTime";
-import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { AdminUserStatusInput } from "components/molecules/AdminUserStatusInput";
 import { Loading } from "components/molecules/Loading";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
+import { AdminCheckboxT } from "./components/AdminCheckboxT";
+import { AdminInputT } from "./components/AdminInputT";
 import { AdminTextareaT } from "./components/AdminTextareaT";
+import { ButtonT } from "./components/ButtonT";
 import { PortalIconT } from "./components/PortalIconT";
 
-import "./output.css";
+import "./StyleShowTailwind.scss";
 
 export const StyleShowTailwind: React.FC = () => (
-  <div className="StyleShowTailwind max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+  <div className="StyleShowTailwind bg-gray-100">
     <AdminSection>
-      <ButtonNG>ButtonNG</ButtonNG>
-      <ButtonNG variant="primary">ButtonNG</ButtonNG>
-      <ButtonNG variant="normal-gradient">ButtonNG</ButtonNG>
-      <ButtonNG variant="login-outline">ButtonNG</ButtonNG>
+      <ButtonT>ButtonT</ButtonT>
+      <ButtonT variant="primary">ButtonT</ButtonT>
+      <ButtonT variant="normal-gradient">ButtonT</ButtonT>
+      <ButtonT variant="login-outline">ButtonT</ButtonT>
+      <ButtonT variant="danger">ButtonT</ButtonT>
     </AdminSection>
     <AdminSection>
-      <AdminCheckbox
+      <AdminCheckboxT
         variant="checkbox"
         name=""
         register={ALWAYS_NOOP_FUNCTION}
         label="Check, check check... One, two, three"
       />
-      <AdminCheckbox
+      <AdminCheckboxT
         variant="toggler"
         name=""
         register={ALWAYS_NOOP_FUNCTION}
         label="just togglin'"
       />
-      <AdminCheckbox
+      <AdminCheckboxT
         variant="flip-switch"
         name=""
         register={ALWAYS_NOOP_FUNCTION}
@@ -56,8 +57,8 @@ export const StyleShowTailwind: React.FC = () => (
       <PortalIconT src={PORTAL_INFO_LIST[1].icon} />
     </AdminSection>
     <AdminSection>
-      <AdminInput
-        label="Just a simple AdminInput"
+      <AdminInputT
+        label="Just a simple AdminInputT"
         name=""
         register={ALWAYS_NOOP_FUNCTION}
       />

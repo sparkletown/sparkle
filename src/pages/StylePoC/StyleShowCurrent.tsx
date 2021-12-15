@@ -26,6 +26,7 @@ export const StyleShowCurrent: React.FC = () => (
       <ButtonNG variant="primary">ButtonNG</ButtonNG>
       <ButtonNG variant="normal-gradient">ButtonNG</ButtonNG>
       <ButtonNG variant="login-outline">ButtonNG</ButtonNG>
+      <ButtonNG variant="danger">ButtonNG</ButtonNG>
     </AdminSection>
     <AdminSection>
       <AdminCheckbox

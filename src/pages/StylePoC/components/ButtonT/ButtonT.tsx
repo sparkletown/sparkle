@@ -11,11 +11,9 @@ import {
   resolveUrlPath,
 } from "utils/url";
 
-import { generateClassNameGetter } from "../../util";
-
-import CN from "./ButtonM.module.scss";
-
-const cn = generateClassNameGetter(CN);
+const TW_MARGINS = "m-3";
+const TW_PRIMARY = `inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`;
+const TW_SECONDARY = `inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`;
 
 export type ButtonType = "button" | "reset" | "submit";
 export type ButtonVariant =
@@ -33,7 +31,7 @@ export type ButtonVariant =
 
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
-export interface ButtonMProps {
+export interface ButtonTProps {
   className?: string;
   style?: CSSProperties;
   disabled?: boolean;
@@ -50,7 +48,7 @@ export interface ButtonMProps {
   title?: string;
 }
 
-export const ButtonM: React.FC<ButtonMProps> = ({
+export const ButtonT: React.FC<ButtonTProps> = ({
   children,
   className = "",
   style,
@@ -90,22 +88,26 @@ export const ButtonM: React.FC<ButtonMProps> = ({
 
   const parentClasses = classNames({
     [className]: className,
-    [cn("ButtonM")]: true,
-    [cn("ButtonM__link")]: isLink,
-    [cn("ButtonM__button")]: !isLink,
-    [cn("ButtonM--disabled")]: disabled,
-    [cn("ButtonM--enabled")]: !disabled,
-    [cn("ButtonM--loading")]: loading,
-    [cn("ButtonM--icon-only")]: iconOnly,
-    [cn(`ButtonM--${iconSize}`)]: iconOnly,
-    [cn("ButtonM--icon-text")]: !iconOnly,
-    [cn(`ButtonM--${variant}`)]: variant && !disabled,
+    ButtonT: true,
+    ButtonT__link: isLink,
+    ButtonT__button: !isLink,
+    "ButtonT--disabled": disabled,
+    "ButtonT--enabled": !disabled,
+    "ButtonT--loading": loading,
+    "ButtonT--icon-only": iconOnly,
+    [`ButtonT--${iconSize}`]: iconOnly,
+    "ButtonT--icon-text": !iconOnly,
+    [`ButtonT--${variant}`]: variant && !disabled,
+    [TW_MARGINS]: true,
+    [TW_SECONDARY]: variant !== "primary" && variant !== "danger" && !disabled,
+    [TW_PRIMARY]: variant === "primary" && !disabled,
+    "btn-save": variant === "danger" && !disabled,
   });
 
   const iconClasses = classNames({
-    [cn("ButtonM__icon")]: true,
-    [cn("ButtonM__icon--icon-only")]: iconOnly,
-    [cn("ButtonM__icon--icon-text")]: !iconOnly,
+    ButtonT__icon: true,
+    "ButtonT__icon--icon-only": iconOnly,
+    "ButtonT__icon--icon-text": !iconOnly,
   });
 
   if (loading) {
@@ -115,10 +117,7 @@ export const ButtonM: React.FC<ButtonMProps> = ({
           icon={faCircleNotch}
           spin
           size={iconSize}
-          className={classNames(
-            cn("ButtonM__icon"),
-            cn("ButtonM__icon--loading")
-          )}
+          className={classNames("ButtonT__icon", "ButtonT__icon--loading")}
         />
       </button>
     );

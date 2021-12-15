@@ -1,13 +1,7 @@
 @import "scss/constants";
 
 .StylePoC {
-  &__main > * {
-    padding: $spacing--xl;
-    display: grid;
-    grid: auto-flow / repeat(3, 1fr);
-    gap: font-size--root(2);
-    place-items: center;
-  }
+  height: 100vh;
 
   &__nav {
     display: flex;
@@ -15,5 +9,15 @@
     align-items: center;
     align-content: center;
     font-size: font-size--parent(2);
+    height: 10vh;
+  }
+
+  &__main > * {
+    padding: $spacing--xl;
+    display: grid;
+    grid: auto-flow / repeat(3, 1fr);
+    gap: font-size--root(2);
+    place-items: center;
+    height: 90vh;
   }
 }
