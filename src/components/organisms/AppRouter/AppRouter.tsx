@@ -106,11 +106,17 @@ const EmergencyViewPage = lazy(() =>
 // NOTE: do keep this monkeypatch localized in this file, not spread in others
 // @debt custom urls with AppRouter redirects that are to be removed in the future
 // @see: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+// GOOGLE
 const TEMP_GOOG_WEST_SLUG = "googlecloudwest";
 const TEMP_GOOG_WEST_LANDING = `/v/${TEMP_GOOG_WEST_SLUG}`;
 const TEMP_GOOG_WEST_INSIDE = `/in/${TEMP_GOOG_WEST_SLUG}`;
+// ITERABLE
 const TEMP_ITER_SLUG = "iterable";
 const TEMP_ITER_ROUTE = `/v/${TEMP_ITER_SLUG}`;
+// HONEYCOMB
+const TEMP_HONEYCOMB_SLUG = "googlecloudwest";
+const TEMP_HONEYCOMB_LANDING = `/v/${TEMP_HONEYCOMB_SLUG}`;
+const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 /////////////////////////////////////////////////////////////////////////////////////
 
 export const AppRouter: React.FC = () => {
@@ -145,6 +151,22 @@ export const AppRouter: React.FC = () => {
               to={generateAttendeeInsideUrl({
                 worldSlug: TEMP_GOOG_WEST_SLUG as WorldSlug,
                 spaceSlug: TEMP_GOOG_WEST_SLUG as SpaceSlug,
+              })}
+            />
+          </Route>
+          <Route path={TEMP_HONEYCOMB_LANDING}>
+            <Redirect
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_HONEYCOMB_SLUG as WorldSlug,
+                TEMP_HONEYCOMB_SLUG as SpaceSlug
+              )}
+            />
+          </Route>
+          <Route path={TEMP_HONEYCOMB_INSIDE}>
+            <Redirect
+              to={generateAttendeeInsideUrl({
+                worldSlug: TEMP_HONEYCOMB_SLUG as WorldSlug,
+                spaceSlug: TEMP_HONEYCOMB_SLUG as SpaceSlug,
               })}
             />
           </Route>
