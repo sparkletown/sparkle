@@ -826,6 +826,7 @@ exports.updateTables = functions.https.onCall((data, context) => {
     const venueTables =
       (venue.config && venue.config.tables) || data.defaultTables;
 
+    // Needed to update existing venues that didn't have tables added to DB upon creation
     if (!data.newTable) {
       transaction.update(venueRef, { "config.tables": venueTables });
 
@@ -858,11 +859,10 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
   const docData = doc.data();
   const tables = docData.config.tables;
 
-  //if the room exists under the same name, find it
   const index = tables.findIndex((val) => val.reference === tableName);
 
   if (index === -1) {
-    throw new HttpsError("not-found", `${ROOM_TAXON.capital} does not exist`);
+    throw new HttpsError("not-found", `Table does not exist`);
   } else {
     docData.config.tables.splice(index, 1);
   }
