@@ -4,6 +4,9 @@ import { createSlug, VenueInput_v2 } from "api/admin";
 
 import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
 
+import { TABLES as CONVERSATION_TABLES } from "components/templates/ConversationSpace/constants";
+import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzBar/constants";
+
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
 
@@ -42,6 +45,8 @@ export const buildEmptySpace = (
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
+    tables:
+      template === VenueTemplate.jazzbar ? JAZZBAR_TABLES : CONVERSATION_TABLES,
   };
 };
 

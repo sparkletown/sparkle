@@ -164,6 +164,7 @@ const createVenueData_v2 = (data, context) => {
   const venueData_v2 = {
     name: data.name,
     config: {
+      ...(data.tables && { tables: data.tables }),
       landingPageConfig: {
         coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
@@ -825,6 +826,12 @@ exports.updateTables = functions.https.onCall((data, context) => {
     const venueTables =
       (venue.config && venue.config.tables) || data.defaultTables;
 
+    if (!data.newTable) {
+      transaction.update(venueRef, { "config.tables": venueTables });
+
+      return;
+    }
+
     const currentTableIndex = venueTables.findIndex(
       (table) => table.reference === data.newTable.reference
     );
@@ -837,6 +844,30 @@ exports.updateTables = functions.https.onCall((data, context) => {
 
     transaction.update(venueRef, { "config.tables": venueTables });
   });
+});
+
+exports.deleteTable = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+  const { venueId, tableName } = data;
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const docData = doc.data();
+  const tables = docData.config.tables;
+
+  //if the room exists under the same name, find it
+  const index = tables.findIndex((val) => val.reference === tableName);
+
+  if (index === -1) {
+    throw new HttpsError("not-found", `${ROOM_TAXON.capital} does not exist`);
+  } else {
+    docData.config.tables.splice(index, 1);
+  }
+
+  admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {

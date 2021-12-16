@@ -6,32 +6,32 @@
   flex-direction: column;
   align-items: center;
 
-  &.jazzbar-table-1 {
+  &.-table-1 {
     grid-column: 1;
     grid-row: 1;
   }
 
-  &.jazzbar-table-2 {
+  &.-table-2 {
     grid-column: 7;
     grid-row: 1;
   }
 
-  &.jazzbar-table-3 {
+  &.-table-3 {
     grid-column: 1;
     grid-row: 2;
   }
 
-  &.jazzbar-table-4 {
+  &.-table-4 {
     grid-column: 7;
     grid-row: 2;
   }
 
-  &.jazzbar-table-5 {
+  &.-table-5 {
     grid-column: 1;
     grid-row: 3;
   }
 
-  &.jazzbar-table-6 {
+  &.-table-6 {
     grid-column: 7;
     grid-row: 3;
   }
@@ -62,7 +62,7 @@
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding: 40px 25px 10px 25px;
+    padding: $spacing--lg $spacing--xl;
     position: relative;
     margin: 5px 5px;
     &:hover {
@@ -73,7 +73,7 @@
 
   .table-occupancy-information {
     top: 5px;
-    right: 7px;
+    left: 7px;
     position: absolute;
     font-size: 10px;
   }
@@ -93,11 +93,13 @@
   }
 
   .table-number {
-    top: 12px;
-    position: absolute;
+    display: flex;
     text-align: center;
+    width: 65%;
+    margin-left: auto;
     font-style: italic;
     font-weight: 600;
+    margin-bottom: $spacing--md;
   }
 
   .add-participant-button {
@@ -109,7 +111,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-bottom: 3px;
+    margin-bottom: $spacing--sm;
     margin-right: 5px;
     background-color: rgba(black, 0.4);
     color: rgba(black, 0);
@@ -125,5 +127,45 @@
       transform: scale(0.95) rotate(90deg);
       box-shadow: 2px 0px 10px opaque-white(0.2);
     }
+  }
+}
+
+.TableComponent {
+  &__users {
+    display: flex;
+    margin-left: $spacing--xs;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__delete-icon {
+    margin-left: auto;
+    margin-top: -($spacing--md);
+    opacity: 0.6;
+    cursor: pointer;
+    position: absolute;
+    right: $spacing--sm;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+.TableModal {
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    text-align: center;
+    width: 90%;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
   }
 }
