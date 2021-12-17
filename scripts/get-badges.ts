@@ -36,7 +36,7 @@ initFirebaseAdminApp(projectId, {
     : undefined,
 });
 
-const getUsersWithWisits = async () => {
+const getUsersWithVisits = async () => {
   const dto = await chunk(venueIdsArray, 10)
     .map(async (idsArray) => {
       return await admin
@@ -74,7 +74,7 @@ interface UsersWithVisitsResult {
 (async () => {
   // TODO: extract this as a generic helper function?
   const usersWithVisits: UsersWithVisitsResult[] = await Promise.all(
-    await getUsersWithWisits().then((res) => res.flat())
+    await getUsersWithVisits().then((res) => res.flat())
   );
 
   // TODO: extract this as a generic helper function?
@@ -101,13 +101,22 @@ interface UsersWithVisitsResult {
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
-    .reduce((arr: UsersWithVisitsResult[], el) => {
+    .reduce((arr: UsersWithVisitsResult[], userWithVisits) => {
+      const { user, visits } = userWithVisits;
+      const { id } = user;
+      const { email } = authUsersById[id] ?? {};
+
+      // filter out @sparkle users
+      if (email?.includes("@sparkle.space")) {
+        return arr;
+      }
+
       const matchingUserIndex = arr.findIndex(
-        (item) => item.user.partyName === el.user.partyName
+        (item) => item.user.partyName === user.partyName
       );
 
       if (matchingUserIndex > 0) {
-        const newArr = [...arr[matchingUserIndex].visits, ...el.visits].reduce(
+        const newArr = [...arr[matchingUserIndex].visits, ...visits].reduce(
           (visitsArr: WithId<UserVisit>[], visit) => {
             if (visitsArr.map((arrVisit) => arrVisit.id).includes(visit.id)) {
               return visitsArr;
@@ -120,12 +129,12 @@ interface UsersWithVisitsResult {
           []
         );
 
-        arr[matchingUserIndex] = { ...el, visits: newArr };
+        arr[matchingUserIndex] = { ...userWithVisits, visits: newArr };
 
         return arr;
       }
 
-      arr.push(el);
+      arr.push(userWithVisits);
 
       return arr;
     }, [])
@@ -135,9 +144,8 @@ interface UsersWithVisitsResult {
       const { email } = authUsersById[id] ?? {};
       const visitIds = visits.map((el) => el.id);
 
-      // write all visit IDs for badge counts
       visitIds.map((visit) =>
-        fs.writeFileSync("./allVisits.csv", `${visit} \n`, { flag: "a" })
+        fs.writeFileSync("./allSpaceVisits.csv", `${visit} \n`, { flag: "a" })
       );
 
       return {
@@ -161,7 +169,7 @@ interface UsersWithVisitsResult {
 
   // write all unique venues
   globalUniqueVisits.map((el) =>
-    fs.writeFileSync("./uniqueVenues.csv", `${el} \n`, { flag: "a" })
+    fs.writeFileSync("./uniqueVenuesVisited.csv", `${el} \n`, { flag: "a" })
   );
 
   // Write user venue headings
@@ -175,7 +183,7 @@ interface UsersWithVisitsResult {
       .map((heading) => `"${heading}"`)
       .join(",");
 
-    fs.writeFileSync("./allData.csv", `${headingLine} \n`, { flag: "a" });
+    fs.writeFileSync("./dataReport.csv", `${headingLine} \n`, { flag: "a" });
   })();
 
   let globalVisitsValue = 0;
@@ -217,7 +225,9 @@ interface UsersWithVisitsResult {
 
     const csvFormattedLine = dto.map((s) => `"${s}"`).join(",");
 
-    fs.writeFileSync("./allData.csv", `${csvFormattedLine} \n`, { flag: "a" });
+    fs.writeFileSync("./dataReport.csv", `${csvFormattedLine} \n`, {
+      flag: "a",
+    });
 
     const result = formattedVisitColumns.map((visit) => visit.timeValue ?? 0);
 
@@ -225,7 +235,9 @@ interface UsersWithVisitsResult {
   });
 
   // space between visit data & total data
-  [0, 1, 2].map(() => fs.writeFileSync("./allData.csv", `\n`, { flag: "a" }));
+  [0, 1, 2].map(() =>
+    fs.writeFileSync("./dataReport.csv", `\n`, { flag: "a" })
+  );
 
   const arrayOfResults: {
     totalAmount: number;
@@ -264,8 +276,10 @@ interface UsersWithVisitsResult {
     ),
   ];
 
-  fs.writeFileSync("./allData.csv", `${uniqueVisitDataLine} \n`, { flag: "a" });
-  fs.writeFileSync("./allData.csv", `${averageVisitDataLine} \n`, {
+  fs.writeFileSync("./dataReport.csv", `${uniqueVisitDataLine} \n`, {
+    flag: "a",
+  });
+  fs.writeFileSync("./dataReport.csv", `${averageVisitDataLine} \n`, {
     flag: "a",
   });
 })()

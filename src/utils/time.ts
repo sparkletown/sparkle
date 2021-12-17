@@ -21,7 +21,8 @@ import {
   subHours,
 } from "date-fns";
 
-import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
+const DATEFNS_INPUT_TIME_FORMAT = "HH:mm";
+const DATEFNS_INPUT_DATE_FORMAT = "yyyy-MM-dd";
 
 /**
  * @deprecated in favor of using date-fns functions
