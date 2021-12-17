@@ -1,8 +1,10 @@
 import React from "react";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { TableComponentPropsType } from "types/Table";
+
+import { determineAvatar } from "utils/image";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -39,7 +41,7 @@ export const JazzBarTableComponent: React.FunctionComponent<TableComponentPropsT
             onClick={() => openUserProfileModal(user.id)}
             key={user.id}
             className="profile-icon table-participant-picture"
-            src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}
+            src={determineAvatar({ user })}
             title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
             alt={`${
               (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME

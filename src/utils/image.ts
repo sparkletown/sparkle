@@ -1,9 +1,16 @@
 import Resizer from "react-image-file-resizer";
+import firebase from "firebase/app";
 
 import {
+  DEFAULT_AVATARS_LIST,
+  DEFAULT_PARTY_NAME,
   FIREBASE_STORAGE_IMAGES_IMGIX_URL,
   FIREBASE_STORAGE_IMAGES_ORIGIN,
 } from "settings";
+
+import { User } from "types/User";
+
+import { isDefined } from "utils/types";
 
 // See https://docs.imgix.com/apis/rendering/size
 export interface ImageResizeOptions {
@@ -67,3 +74,50 @@ export const getFirebaseStorageResizedImage = (
     url,
     options
   );
+
+// @see https://crypto.stackexchange.com/questions/8533/why-are-bitwise-rotations-used-in-cryptography/8534#8534
+const DIFFUSION_PRIME = 31;
+
+type DetermineAvatar = (options?: {
+  avatars?: string[];
+  email?: string;
+  index?: number;
+  partyName?: string;
+  pictureUrl?: string;
+  userInfo?: firebase.UserInfo;
+  user?: User;
+}) => string;
+
+export const determineAvatar: DetermineAvatar = (options) => {
+  const { avatars, email, index, partyName, pictureUrl, user, userInfo } =
+    options ?? {};
+  const list = avatars ?? DEFAULT_AVATARS_LIST;
+  const url = pictureUrl || user?.pictureUrl || "";
+
+  // checking user.anonMode ruled against by https://github.com/sparkletown/internal-sparkle-issues/issues/1615#issuecomment-991054012
+
+  if (url.startsWith("/static") || url.startsWith("http")) {
+    return url;
+  }
+
+  if (isDefined(index) && Number.isSafeInteger(index) && index >= 0) {
+    return list[index % list.length];
+  }
+
+  // few fallbacks from most stable value to least
+  // just in case callers have different access to user data
+  const seed =
+    email ??
+    userInfo?.email ??
+    partyName ??
+    user?.partyName ??
+    DEFAULT_PARTY_NAME ??
+    "";
+
+  // generate a single number as a hash from the given seed
+  const hash = Array.from(seed)
+    .map((c) => c.codePointAt(0) ?? 0)
+    .reduce((hash, code) => code * DIFFUSION_PRIME, 0);
+
+  return list[hash % list.length];
+};

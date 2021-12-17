@@ -4,7 +4,7 @@ import { User } from "@bugsnag/js";
 import { chunk } from "lodash";
 
 import {
-  DEFAULT_AVATAR_IMAGE,
+  DEFAULT_BADGE_IMAGE,
   FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
 } from "settings";
 
@@ -149,7 +149,7 @@ export const Badges: React.FC<{
 
         return {
           venue,
-          image: venue?.host?.icon ?? DEFAULT_AVATAR_IMAGE,
+          image: venue?.host?.icon ?? DEFAULT_BADGE_IMAGE,
           label: venue.name,
         };
       })
