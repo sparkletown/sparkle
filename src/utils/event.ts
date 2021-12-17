@@ -101,20 +101,6 @@ export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
   return a.duration_minutes - b.duration_minutes;
 };
 
-export const getEventDayRange = (
-  daysInBetween: number,
-  isOneEventAndLive: boolean
-) => {
-  if (isOneEventAndLive) {
-    // add 2 days to daysInBetween to form a full timeline,
-    // if there's just 1 event and it's within today's date
-    return daysInBetween + 2;
-  }
-
-  // add 1 day to daysInBetween to form a full timeline
-  return daysInBetween + 1;
-};
-
 export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
   const aOrderPriority = a.orderPriority ?? 0;
   const bOrderPriority = b.orderPriority ?? 0;

@@ -22,7 +22,6 @@ import { ScheduledVenueEvent, VenueEvent } from "types/venues";
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeAndOrderComparator,
-  getEventDayRange,
   isEventLiveOrFuture,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
@@ -63,7 +62,7 @@ export interface NavBarScheduleProps {
 }
 
 const minRangeValue = 0;
-const todaysDate = new Date();
+const todaysDate = startOfToday();
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
@@ -145,10 +144,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     max([new Date(secondsToMilliseconds(minDateUtcSeconds)), todaysDate])
   );
 
-  const isOneEventAndLive =
-    secondsToMilliseconds(firstRangeDateInSeconds) <= todaysDate.getTime() &&
-    liveAndFutureEvents.length === 1;
-
   const maxDate = useMemo(
     () =>
       Math.max(
@@ -167,7 +162,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     fromUnixTime(firstRangeDateInSeconds)
   );
 
-  const dayDifference = getEventDayRange(daysInBetween, isOneEventAndLive);
+  // +1 to include the latest day in the schedule (for example, there are events tomorrow and today -> tomorrow - today + 1 = 2 days)
+  const dayDifference = daysInBetween + 1;
 
   const firstScheduleDate = useMemo(
     () =>
