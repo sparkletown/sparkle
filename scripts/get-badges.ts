@@ -11,17 +11,23 @@ import { User } from "../src/types/User";
 import { WithId, withId } from "../src/utils/id";
 import { formatSecondsAsHHMMSS } from "../src/utils/time";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import {
+  initFirebaseAdminApp,
+  makeScriptUsage,
+  parseCredentialFile,
+} from "./lib/helpers";
 
 const usage = makeScriptUsage({
   description:
     "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each.",
-  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]",
+  usageParams: "VENUE_IDS [CREDENTIAL_PATH]",
   exampleParams:
-    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
+    "venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
 });
 
-const [projectId, venueIds, credentialPath] = process.argv.slice(2);
+const [venueIds, credentialPath] = process.argv.slice(2);
+
+const { project_id: projectId } = parseCredentialFile(credentialPath);
 
 // Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId || !venueIds) {
