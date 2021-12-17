@@ -1,12 +1,12 @@
 @import "scss/constants.scss";
 
-$no-events-margin-top: 100px;
-
 .EventsView {
   padding: 5vh;
   width: 85%;
 
   &__container {
+    display: flex;
+    flex-direction: column;
     height: 60vh;
     background-color: $content--under;
     border-radius: $border-radius--xl;
@@ -30,6 +30,12 @@ $no-events-margin-top: 100px;
     margin: 0;
     font-weight: $font-weight--700;
     font-size: $font-size--xl;
+  }
+
+  &__content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   &__content > .TimingEvent:nth-of-type(odd) {
@@ -107,7 +113,7 @@ $no-events-margin-top: 100px;
 
   &__no-events {
     text-align: center;
-    margin: $no-events-margin-top auto 0;
+    margin: auto;
   }
 
   &__create {
