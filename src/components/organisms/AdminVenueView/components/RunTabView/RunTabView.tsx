@@ -9,11 +9,11 @@ import { WithId } from "utils/id";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AdminSidebarSectionTitle } from "../AdminSidebarSectionTitle";
 import { MapPreview } from "../MapPreview";
 
 import "./RunTabView.scss";
@@ -32,7 +32,9 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   return (
     <AdminPanel variant="unbound" className="RunTabView">
       <AdminSidebar>
-        <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
+        <AdminSidebarSectionTitle>
+          Run your {SPACE_TAXON.lower}
+        </AdminSidebarSectionTitle>
         <div className="RunTabView__content">
           <RunTabUsers venueId={venueId} />
         </div>
