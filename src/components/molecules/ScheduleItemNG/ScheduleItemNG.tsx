@@ -15,12 +15,7 @@ import { ScheduledVenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
-import {
-  enterVenue,
-  getFullVenueInsideUrl,
-  getUrlParamFromString,
-  openUrl,
-} from "utils/url";
+import { enterVenue, getUrlParamFromString, openUrl } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -56,16 +51,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   );
   const isCurrentEventLive = isEventLive(event);
   const roomUrlParam = getUrlParamFromString(event.room ?? "");
-
-  const handleCopyEventLink = useCallback(
-    (e?: React.MouseEvent<HTMLButtonElement>) => {
-      e && e.stopPropagation();
-
-      const eventLink = getFullVenueInsideUrl(roomUrlParam);
-      navigator.clipboard.writeText(eventLink);
-    },
-    [roomUrlParam]
-  );
 
   const goToEventLocation = useCallback(() => {
     if (!eventRoom) {
@@ -146,13 +131,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
               <RenderMarkdown text={event.description} />
             </div>
             <div className="ScheduleItemNG__buttons">
-              <ButtonNG
-                className="ScheduleItemNG__button ScheduleItemNG__button--copy"
-                onClick={handleCopyEventLink}
-                variant="secondary"
-              >
-                Copy event link
-              </ButtonNG>
               <ButtonNG
                 className="ScheduleItemNG__button"
                 onClick={goToEventLocation}
