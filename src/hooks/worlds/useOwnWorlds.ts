@@ -12,6 +12,7 @@ export const useOwnWorlds = (userId?: string): WithId<World>[] => {
   const worldsRef = firestore
     .collection("worlds")
     .where("owners", "array-contains", userId ?? "")
+    .where("isHidden", "==", false)
     .withConverter(worldConverter);
 
   const { data: worlds } = useFirestoreCollectionData<WithId<World>>(
