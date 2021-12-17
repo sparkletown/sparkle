@@ -4,6 +4,8 @@ import { useTitle } from "react-use";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
+  DEFAULT_ENTER_STEP,
   LOC_UPDATE_FREQ_MS,
   PLATFORM_BRAND_NAME,
 } from "settings";
@@ -23,7 +25,7 @@ import {
 } from "utils/selectors";
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
-import { generateUrl, venueEntranceUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
@@ -253,7 +255,15 @@ export const VenuePage: React.FC = () => {
   const hasEntered = world?.id && enteredWorldIds?.includes(world.id);
 
   if (hasEntrance && !hasEntered) {
-    return <Redirect to={venueEntranceUrl(worldSlug, spaceSlug)} />;
+    return (
+      <Redirect
+        to={generateUrl({
+          route: ATTENDEE_STEPPING_PARAM_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+        })}
+      />
+    );
   }
 
   if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
