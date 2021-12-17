@@ -83,6 +83,7 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     owners: [context.auth.token.user_id],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    isHidden: false,
   };
 
   const worldDoc = admin.firestore().collection("worlds").doc();

@@ -246,6 +246,7 @@ export const findWorldBySlug = async ({
   const worldsRef = await firebase
     .firestore()
     .collection(COLLECTION_WORLDS)
+    .where("isHidden", "==", false)
     .where(FIELD_SLUG, "==", worldSlug)
     .get();
 
