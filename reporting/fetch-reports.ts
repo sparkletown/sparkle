@@ -22,7 +22,7 @@ const to = "10/08/2020";
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
 // Set to false if cookies are already available.
-const newLogin = false;
+const newLogin = true;
 
 // The correct URL for accessing the reports is different for admin users who can
 // access reports for all accounts under the zoom account. If you are trying to get
@@ -38,8 +38,8 @@ const resumeFromPage = 1;
 const desiredEventTrackingFieldValue: string | undefined = undefined;
 
 // Login credentials (only needed if newLogin is true)
-const username: string = "";
-const password: string = "";
+const username: string = "admin@sparkle.space";
+const password: string = "qavsof-Qamxys-3cywqi";
 
 // ---------------------------------------------------------
 // HERE THERE BE DRAGONS (edit below here at your own risk)
@@ -60,7 +60,9 @@ const addTrackingFieldToColumnsButtonSelector =
 const addEventTrackingFieldColumnCheckboxSelector =
   "#meetingList #trackfieldDropdownMenu label[alt=Event] > input[type=checkbox]";
 const nextPageLinkSelector =
-  "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2) > a";
+  "#meetingList > #paginationDivMeeting > div > ul > li:nth-child(2) > a";
+const nextPageLinkDisabledSelector =
+  "#meetingList > #paginationDivMeeting > div > ul > li:nth-child(2).disabled > a";
 
 const meetingListTableRowsSelector = "#meeting_list > tbody > tr";
 
@@ -272,14 +274,13 @@ const makeGetNumberOfReportsTotal = (
     console.log("Moving on to next page...");
 
     await page.waitForSelector(nextPageLinkSelector);
+
     await page.click(nextPageLinkSelector);
 
     await navigationPromise;
 
     const nextButtonDisabled =
-      (await page.$(
-        "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2).disabled > a"
-      )) !== null;
+      (await page.$(nextPageLinkDisabledSelector)) !== null;
 
     onLastPageAndExportedAll = nextButtonDisabled;
 

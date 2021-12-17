@@ -61,7 +61,7 @@ class Config():
     # REVISIT: move to command-line args
     # Party start/duration/end
     # (YYYY, MM, DD, HH)
-    START = datetime(2020, 10, 7, 12, 0, 0, 0)
+    START = datetime(2021, 12, 9, 9, 0, 0, 0)
     END = START + timedelta(hours=12)
     SEGMENTS = {
         'Whole time': TimeRange(START, START + timedelta(hours=12)),
