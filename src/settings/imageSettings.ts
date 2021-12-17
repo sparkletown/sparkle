@@ -8,7 +8,7 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const DEFAULT_AVATARS_LIST: string[] = [
+export const DEFAULT_AVATAR_LIST: string[] = [
   defaultProfilePic1,
   defaultProfilePic2,
   defaultProfilePic3,
@@ -16,7 +16,7 @@ export const DEFAULT_AVATARS_LIST: string[] = [
   defaultProfilePic5,
   defaultProfilePic6,
 ];
-Object.freeze(DEFAULT_AVATARS_LIST);
+Object.freeze(DEFAULT_AVATAR_LIST);
 
 export const DEFAULT_BADGE_IMAGE = sparkleNavLogo;
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;

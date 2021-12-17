@@ -2,7 +2,7 @@ import Resizer from "react-image-file-resizer";
 import firebase from "firebase/app";
 
 import {
-  DEFAULT_AVATARS_LIST,
+  DEFAULT_AVATAR_LIST,
   DEFAULT_PARTY_NAME,
   FIREBASE_STORAGE_IMAGES_IMGIX_URL,
   FIREBASE_STORAGE_IMAGES_ORIGIN,
@@ -91,7 +91,7 @@ type DetermineAvatar = (options?: {
 export const determineAvatar: DetermineAvatar = (options) => {
   const { avatars, email, index, partyName, pictureUrl, user, userInfo } =
     options ?? {};
-  const list = avatars ?? DEFAULT_AVATARS_LIST;
+  const list = avatars ?? DEFAULT_AVATAR_LIST;
   const url = pictureUrl || user?.pictureUrl || "";
 
   // checking user.anonMode ruled against by https://github.com/sparkletown/internal-sparkle-issues/issues/1615#issuecomment-991054012

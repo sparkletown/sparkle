@@ -1,6 +1,6 @@
 import { uuid } from "uuidv4";
 
-import { DEFAULT_AVATARS_LIST } from "settings";
+import { DEFAULT_AVATAR_LIST } from "settings";
 
 import { ReplicatedArtcar, ReplicatedUser } from "store/reducers/AnimateMap";
 
@@ -185,8 +185,8 @@ export const stubUsersData = () => {
         partyName: id,
         messengerId: getIntByHash(id),
         pictureUrl: determineAvatar({
-          avatars: DEFAULT_AVATARS_LIST,
-          index: getRandomInt(DEFAULT_AVATARS_LIST.length - 1),
+          avatars: DEFAULT_AVATAR_LIST,
+          index: getRandomInt(DEFAULT_AVATAR_LIST.length - 1),
         }),
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
