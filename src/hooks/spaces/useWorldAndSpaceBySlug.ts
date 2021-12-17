@@ -41,7 +41,11 @@ export const useWorldAndSpaceBySlug = (
 
   const worldsRef = firestore
     .collection("worlds")
-    .where("slug", "==", worldSlug ?? "")
+    .where("isHidden", "==", false)
+    // @debt we don't properly deal with the slug being undefined. This query
+    // shouldn't happen if we don't have a world slug. This whole hook needs
+    // a bit of a rethink. It's used incorrectly by the NavBar.
+    .where("slug", "==", worldSlug || "")
     .withConverter(withIdConverter<World>());
   const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
     WithId<World>
