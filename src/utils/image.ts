@@ -117,7 +117,7 @@ export const determineAvatar: DetermineAvatar = (options) => {
   // generate a single number as a hash from the given seed
   const hash = Array.from(seed)
     .map((c) => c.codePointAt(0) ?? 0)
-    .reduce((hash, code) => code * DIFFUSION_PRIME, 0);
+    .reduce((hash, code) => hash * DIFFUSION_PRIME + code, 0);
 
   return list[hash % list.length];
 };
