@@ -17,21 +17,29 @@ $icon-width: 2.5rem;
     }
   }
 
-  &--invalid .InputField__input {
-    border: 1px solid $input--invalid;
-    &:focus {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: $input--invalid-box-shadow-focus;
+  &--invalid {
+    margin-bottom: 1.5rem;
+
+    .InputField__input {
+      border: 1px solid var(--danger--under);
+      &:focus {
+        border: 1px solid var(--accent--over-10a);
+        box-shadow: 0 0 0 2px var(--danger--under-rgb);
+      }
     }
   }
 
   &__input {
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent--over-10a);
     border-radius: 22px;
     height: 100%;
 
-    &:focus + .InputField__icon > * {
-      opacity: 0.6;
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      box-shadow: box-shadow--input-autofill(var(--content--under-80a)) inset;
     }
   }
 
@@ -57,10 +65,18 @@ $icon-width: 2.5rem;
       opacity: 0.2;
       max-width: 100%;
     }
+
+    &--clickable {
+      cursor: pointer;
+
+      &:hover > * {
+        opacity: 1;
+      }
+    }
   }
 
   &__error {
-    color: $input--invalid;
+    color: var(--danger--under);
     font-size: 0.8rem;
     position: absolute;
     bottom: -1.3rem;

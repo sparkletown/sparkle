@@ -4,39 +4,51 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import dayjs from "dayjs";
 
+import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
+
 import { deleteEvent, EventInput } from "api/admin";
 
 import { VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
+
+import "./TimingDeleteModal.scss";
 
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  venueId: string;
-  event?: WithId<VenueEvent>;
+  event?: WithVenueId<WithId<VenueEvent>>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   show,
   onHide,
-  venueId,
   event,
 }) => {
   const { handleSubmit, formState, reset } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
   });
+  // @debt This makes the deletion happen against the space that owns the event
+  // NOT the space that the event is in. There's some bad hierarchy in the
+  // database.
+  const eventSpaceId = event?.venueId;
 
   useEffect(() => {
     if (event) {
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
-        start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
+        start_date: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_DATE_FORMAT),
+        start_time: dayjs
+          .unix(event.start_utc_seconds)
+          .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: event.duration_minutes / 60,
       });
     }
@@ -46,11 +58,11 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     { loading: isDeletingEvent },
     deleteVenueEvent,
   ] = useAsyncFn(async () => {
-    if (event) {
-      await deleteEvent(venueId, event.id);
+    if (event && eventSpaceId) {
+      await deleteEvent(eventSpaceId, event.id);
     }
     onHide();
-  }, [event, onHide, venueId]);
+  }, [event, onHide, eventSpaceId]);
 
   const eventStartTime = event
     ? dayjs(event.start_utc_seconds * 1000).format("ha")
@@ -68,25 +80,29 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide}>
-      <div className="form-container">
+      <div className="TimingDeleteModal">
         <h2>Delete event</h2>
-        <form onSubmit={handleSubmit(deleteVenueEvent)} className="form">
-          <div className="input-group">
+        <form
+          onSubmit={handleSubmit(deleteVenueEvent)}
+          className="TimingDeleteModal__container"
+        >
+          <div>
             <p>Name: {event?.name}</p>
-            <RenderMarkdown text={`Description: ${event?.description}`} />
+            <RenderMarkdown text={`Description: ${event?.description ?? ""}`} />
             <p>
               Time: {eventStartTime}-{eventEndTime}
             </p>
             <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
-          <button
-            className="btn btn-block btn-centered btn-danger"
+          <ButtonNG
+            className="TimingDeleteModal__button"
             type="submit"
+            variant="danger"
             disabled={formState.isSubmitting || isDeletingEvent}
           >
             Delete
-          </button>
+          </ButtonNG>
         </form>
       </div>
     </Modal>

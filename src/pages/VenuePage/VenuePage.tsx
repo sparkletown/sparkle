@@ -2,22 +2,30 @@ import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
-import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
+  DEFAULT_ENTER_STEP,
+  LOC_UPDATE_FREQ_MS,
+  PLATFORM_BRAND_NAME,
+} from "settings";
 
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 import { tracePromise } from "utils/performance";
-import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
+import {
+  isCompleteProfile,
+  updateProfileEnteredVenueIds,
+  updateProfileEnteredWorldIds,
+} from "utils/profile";
 import {
   currentEventSelector,
-  currentVenueSelector,
   isCurrentEventRequestedSelector,
-  isCurrentVenueRequestedSelector,
 } from "utils/selectors";
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
-import { venueEntranceUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 import { isCompleteUserInfo } from "utils/user";
 import {
   clearLocationData,
@@ -25,21 +33,24 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-// import { useVenueAccess } from "hooks/useVenueAccess";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useInterval } from "hooks/useInterval";
-import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateTheme } from "./helpers";
 
@@ -66,55 +77,57 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
   template === VenueTemplate.jazzbar;
 
 export const VenuePage: React.FC = () => {
-  const venueId = useVenueId();
-  const mixpanel = useMixpanel();
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
+  const analytics = useAnalytics({ venue: space });
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile, userLocation } = useUser();
-  const { lastVenueIdSeenIn: userLastSeenIn, enteredVenueIds } =
-    userLocation ?? {};
-
-  // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
-  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
+  const {
+    lastVenueIdSeenIn: userLastSeenIn,
+    enteredVenueIds,
+    enteredWorldIds,
+  } = userLocation ?? {};
 
   const assetsToPreload = useMemo(
     () =>
       [
-        venue?.mapBackgroundImageUrl,
-        ...(venue?.rooms ?? []).map((room) => room?.image_url),
+        space?.mapBackgroundImageUrl,
+        ...(space?.rooms ?? []).map((room) => room?.image_url),
       ]
         .filter(isDefined)
         .map((url) => ({ url })),
-    [venue]
+    [space]
   );
 
   usePreloadAssets(assetsToPreload);
 
+  // @debt Refactor and use reactfire hook instead of this legacy syntax.
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
 
   const userId = user?.uid;
 
-  const venueName = venue?.name ?? "";
-  const venueTemplate = venue?.template;
+  const venueName = space?.name ?? "";
 
   const event = currentEvent?.[0];
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
   const isEventFinished = event && hasEventFinished(event);
 
-  const isUserVenueOwner = userId && venue?.owners?.includes(userId);
-  const isMember = user && venue;
+  const isUserVenueOwner = userId && space?.owners?.includes(userId);
+  const isMember = user && space;
 
   // NOTE: User location updates
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -175,12 +188,27 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!venueId || !userId || !profile || enteredVenueIds?.includes(venueId)) {
+    if (!spaceId || !userId || !profile || enteredVenueIds?.includes(spaceId)) {
       return;
     }
 
-    void updateProfileEnteredVenueIds(enteredVenueIds, userId, venueId);
-  }, [enteredVenueIds, userLocation, userId, venueId, profile]);
+    void updateProfileEnteredVenueIds(enteredVenueIds, userId, spaceId);
+  }, [enteredVenueIds, userLocation, userId, spaceId, profile]);
+
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
+  useEffect(() => {
+    if (
+      !world?.id ||
+      !userId ||
+      !profile ||
+      enteredWorldIds?.includes(world?.id)
+    ) {
+      return;
+    }
+
+    updateProfileEnteredWorldIds(enteredWorldIds, userId, world.id);
+  }, [enteredWorldIds, userLocation, userId, world?.id, profile]);
+
   // NOTE: User's timespent updates
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
@@ -188,31 +216,31 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (user && profile && venueId && venueTemplate) {
-      mixpanel.track("VenuePage loaded", {
-        venueId,
-        template: venueTemplate,
-      });
-    }
-  }, [user, profile, venueId, venueTemplate, mixpanel]);
+    if (!isLoaded || !world || !user) return;
+
+    analytics.trackVenuePageLoadedEvent();
+  }, [analytics, isLoaded, user, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+  if (!isLoaded) {
+    return <LoadingPage />;
   }
 
-  if (!venue || !venueId) {
-    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
-    return <LoadingPage />;
+  if (!spaceId || !spaceSlug || !space) {
+    return (
+      <WithNavigationBar hasBackButton withHiddenLoginButton withRadio>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venue={venue} />
+        <Login venueId={spaceId} />
       </Suspense>
     );
   }
@@ -221,13 +249,21 @@ export const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const { entrance, template, hasPaidEvents } = venue;
+  const { template, hasPaidEvents } = space;
 
-  const hasEntrance = Array.isArray(entrance) && entrance.length > 0;
-  const hasEntered = enteredVenueIds?.includes(venueId);
+  const hasEntrance = !!world?.entrance?.length;
+  const hasEntered = world?.id && enteredWorldIds?.includes(world.id);
 
   if (hasEntrance && !hasEntered) {
-    return <Redirect to={venueEntranceUrl(venueId)} />;
+    return (
+      <Redirect
+        to={generateUrl({
+          route: ATTENDEE_STEPPING_PARAM_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+        })}
+      />
+    );
   }
 
   if (checkSupportsPaidEvents(template) && hasPaidEvents && !isUserVenueOwner) {
@@ -235,7 +271,7 @@ export const VenuePage: React.FC = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue) {
+    if (!event || !space) {
       return <LoadingPage />;
     }
 
@@ -258,12 +294,20 @@ export const VenuePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
+    return (
+      <Redirect
+        to={generateUrl({
+          route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug, spaceSlug },
+        })}
+      />
+    );
   }
 
   return (
     <Suspense fallback={<LoadingPage />}>
-      <TemplateWrapper venue={venue} />
+      <TemplateWrapper venue={space} />
     </Suspense>
   );
 };

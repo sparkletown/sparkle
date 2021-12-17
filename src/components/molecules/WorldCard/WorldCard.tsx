@@ -1,14 +1,14 @@
 import React from "react";
 import { useCss } from "react-use";
-import { faCog, faSignInAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { WithId } from "utils/id";
-import { adminWorldSpacesUrl, adminWorldUrl } from "utils/url";
+import { adminWorldSpacesUrl } from "utils/url";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -20,10 +20,12 @@ export interface WorldCardProps {
 
 export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
   const cardVars = useCss({
-    backgroundImage: `url(${world.config.landingPageConfig.coverImageUrl})`,
+    backgroundImage: `url(${world.config?.landingPageConfig?.coverImageUrl})`,
   });
 
-  const cardClasses = classNames("WorldCard", cardVars);
+  const cardClasses = classNames("WorldCard", cardVars, {
+    "WorldCard--disabled": !world.slug,
+  });
 
   const logoVars = useCss({
     backgroundImage: `url(${world.host?.icon ?? DEFAULT_VENUE_LOGO})`,
@@ -38,27 +40,19 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
         <div className="WorldCard__titles">
           <div className="WorldCard__world-name">{world.name}</div>
           <div className="WorldCard__world-description">
-            {world.config.landingPageConfig.description}
+            {world.config?.landingPageConfig?.description}
           </div>
         </div>
       </div>
       <ButtonNG
         variant="dark"
         isLink
-        linkTo={adminWorldSpacesUrl(world.id)}
+        disabled={!world.slug}
+        linkTo={adminWorldSpacesUrl(world.slug)}
         iconName={faSignInAlt}
         className="WorldCard__button"
       >
         Enter dashboard
-      </ButtonNG>
-      <ButtonNG
-        isLink
-        linkTo={adminWorldUrl(world.id)}
-        variant="dark"
-        iconName={faCog}
-        className="WorldCard__button"
-      >
-        Configure world
       </ButtonNG>
     </div>
   );

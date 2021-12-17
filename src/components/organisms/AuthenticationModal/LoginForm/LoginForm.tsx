@@ -4,9 +4,8 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { venueSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
@@ -18,11 +17,11 @@ import gIcon from "assets/icons/google-social-icon.svg";
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
-  closeAuthenticationModal: () => void;
-  afterUserIsLoggedIn?: () => void;
+  closeAuthenticationModal?: () => void;
+  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
 }
 
-interface LoginFormData {
+export interface LoginFormData {
   email: string;
   password: string;
   code: string;
@@ -39,7 +38,9 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const venue = useSelector(venueSelector);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+
   const {
     register,
     handleSubmit,
@@ -52,7 +53,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     reValidateMode: "onChange",
   });
 
-  if (!venue) return null;
+  if (!space) return null;
 
   const clearBackendErrors = () => {
     clearError("backend");
@@ -62,24 +63,24 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     return firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
-  const postSignInCheck = () => {
-    afterUserIsLoggedIn && afterUserIsLoggedIn();
+  const postSignInCheck = (data?: LoginFormData) => {
+    afterUserIsLoggedIn?.(data);
 
-    closeAuthenticationModal();
+    closeAuthenticationModal?.();
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    if (!venue) return;
+    if (!space) return;
     try {
       await signIn(data);
 
-      postSignInCheck();
+      postSignInCheck(data);
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -177,7 +178,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
           )}
         </div>
 
-        {venue.access === VenueAccessMode.Codes && (
+        {space.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
@@ -191,7 +192,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
         </ButtonNG>
       </form>
 
-      {venue.hasSocialLoginEnabled && (
+      {space.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

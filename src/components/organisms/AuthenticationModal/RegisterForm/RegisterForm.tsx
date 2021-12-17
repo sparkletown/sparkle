@@ -1,37 +1,44 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
+
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  DEFAULT_REQUIRES_DOB,
+} from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+import { generateUrl } from "utils/url";
 
-import { useSelector } from "hooks/useSelector";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
-import { DateOfBirthField } from "components/organisms/DateOfBirthField";
+import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { NotFound } from "components/atoms/NotFound";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
 
-interface PropsType {
-  displayLoginForm: () => void;
-  displayPasswordResetForm: () => void;
-  afterUserIsLoggedIn?: () => void;
-  closeAuthenticationModal: () => void;
-}
+const validateDateOfBirth = (stringDate: string) => {
+  const yearsDifference = differenceInYears(new Date(), parseISO(stringDate));
+  return yearsDifference >= 18 && yearsDifference <= 100;
+};
 
-interface RegisterFormData {
+export interface RegisterFormInput {
   email: string;
   password: string;
   code: string;
@@ -43,20 +50,32 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
-const RegisterForm: React.FunctionComponent<PropsType> = ({
+export interface RegisterFormProps {
+  displayLoginForm: () => void;
+  displayPasswordResetForm: () => void;
+  afterUserIsLoggedIn?: (data?: LoginFormData) => void;
+  closeAuthenticationModal?: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({
   displayLoginForm,
-  displayPasswordResetForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
 }) => {
   const history = useHistory();
-  const venue = useSelector(venueSelector);
+
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const analytics = useAnalytics({ venue: space });
 
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
-  const signUp = ({ email, password }: RegisterFormData) => {
+  const signUp = ({ email, password }: RegisterFormInput) => {
     return firebase.auth().createUserWithEmailAndPassword(email, password);
   };
 
@@ -69,7 +88,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError,
     watch,
     getValues,
-  } = useForm<RegisterFormData & Record<string, string>>({
+  } = useForm<RegisterFormInput & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
@@ -78,14 +97,18 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError("backend");
   };
 
-  if (!venue) {
+  if (!isLoaded) {
     return <>Loading...</>;
   }
 
-  const checkVenueAccessLevels = async (data: RegisterFormData) => {
-    if (venue.access === VenueAccessMode.Emails) {
+  if (!space || !spaceId) {
+    return <NotFound />;
+  }
+
+  const checkVenueAccessLevels = async (data: RegisterFormInput) => {
+    if (space.access === VenueAccessMode.Emails) {
       const isEmailWhitelisted = await checkIsEmailWhitelisted({
-        venueId: venue.id,
+        venueId: spaceId,
         email: data.email,
       });
 
@@ -99,9 +122,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       }
     }
 
-    if (venue.access === VenueAccessMode.Codes) {
+    if (space.access === VenueAccessMode.Codes) {
       const isCodeValid = await checkIsCodeValid({
-        venueId: venue.id,
+        venueId: spaceId,
         code: data.code,
       });
 
@@ -118,34 +141,39 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
 
   const postRegisterCheck = (
     authResult: firebase.auth.UserCredential,
-    data: RegisterFormData
+    data: RegisterFormInput
   ) => {
-    if (authResult.user && venue.requiresDateOfBirth) {
+    if (authResult.user && isDobRequired) {
       updateUserPrivate(authResult.user.uid, {
         date_of_birth: data.date_of_birth,
-      });
+      }).catch((e) => console.error(RegisterForm.name, e));
     }
 
-    afterUserIsLoggedIn && afterUserIsLoggedIn();
+    analytics.trackSignUpEvent(data.email);
+    afterUserIsLoggedIn?.(data);
 
-    closeAuthenticationModal();
+    closeAuthenticationModal?.();
   };
 
-  const onSubmit = async (data: RegisterFormData) => {
+  const onSubmit = async (data: RegisterFormInput) => {
     try {
       setShowLoginModal(false);
 
-      checkVenueAccessLevels(data);
+      checkVenueAccessLevels(data).catch((e) =>
+        console.error(RegisterForm.name, e)
+      );
 
       const auth = await signUp(data);
 
       postRegisterCheck(auth, data);
 
-      const accountProfileUrl = `/account/profile${
-        venue.id ? `?venueId=${venue.id}` : ""
-      }`;
+      const profileUrl = generateUrl({
+        route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      });
 
-      history.push(accountProfileUrl);
+      history.push(profileUrl);
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
         setShowLoginModal(true);
@@ -154,7 +182,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         setError(
           "email",
           "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
+          `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
       } else if (error.response?.status >= 500) {
         setError(
@@ -171,7 +199,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const handleGoogleSignIn = async () => {
     const { email, password, code, date_of_birth } = getValues();
     const formValues = { email, password, code, date_of_birth };
-    checkVenueAccessLevels(formValues);
+    checkVenueAccessLevels(formValues).catch((e) =>
+      console.error(RegisterForm.name, e)
+    );
     try {
       const auth = await signInWithGoogle();
       postRegisterCheck(auth, formValues);
@@ -182,7 +212,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const handleFacebookSignIn = async () => {
     const { email, password, code, date_of_birth } = getValues();
     const formValues = { email, password, code, date_of_birth };
-    checkVenueAccessLevels(formValues);
+    checkVenueAccessLevels(formValues).catch((e) =>
+      console.error(RegisterForm.name, e)
+    );
     try {
       const auth = await signInWithFacebook();
 
@@ -198,13 +230,16 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     }
   };
 
-  const hasTermsAndConditions = isTruthy(venue.termsAndConditions);
-  const termsAndConditions = venue.termsAndConditions;
+  const hasTermsAndConditions = isTruthy(space.termsAndConditions);
+  const termsAndConditions = space.termsAndConditions;
 
   const signIn = async () => {
     const { email, password } = getValues();
     await firebase.auth().signInWithEmailAndPassword(email, password);
   };
+
+  const isDobRequired =
+    isLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   return (
     <div className="form-container">
@@ -274,13 +309,35 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.access === VenueAccessMode.Codes && (
+        {space.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 
-        {venue.requiresDateOfBirth && (
-          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+        {isDobRequired && (
+          <div className="input-group">
+            <input
+              name="date_of_birth"
+              className="input-block input-centered"
+              type="date"
+              ref={register({ required: true, validate: validateDateOfBirth })}
+            />
+            <small className="input-info">
+              You need to be 18 years old to attend this event. Please confirm
+              your age.
+            </small>
+            {errors?.date_of_birth && (
+              <span className="input-error">
+                {errors?.date_of_birth?.type === "required" && (
+                  <>Date of birth is required</>
+                )}
+                {errors?.date_of_birth?.type === "validate" && (
+                  <div>You need to be at least 18 years of age.</div>
+                )}
+              </span>
+            )}
+          </div>
         )}
+
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
             const required = errors?.[term.name]?.type === "required";
@@ -325,7 +382,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
         </ButtonNG>
       </form>
 
-      {venue.hasSocialLoginEnabled && (
+      {space.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

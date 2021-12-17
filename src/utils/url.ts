@@ -2,53 +2,111 @@ import { generatePath } from "react-router";
 import Bugsnag from "@bugsnag/js";
 
 import {
-  ADMIN_ROOT_URL,
-  ADMIN_V1_ROOT_URL,
-  ADMIN_V3_ADVANCED_PARAM_URL,
-  ADMIN_V3_CREATE_PARAM_URL,
-  ADMIN_V3_OLD_WORLD_PARAM_URL,
-  ADMIN_V3_ROOT_URL,
-  ADMIN_V3_VENUE_PARAM_URL,
-  ADMIN_V3_WORLD_SPACES_PARAM_URL,
-  ENTRANCE_ROOT_URL,
+  ADMIN_IA_SPACE_EDIT_PARAM_URL,
+  ADMIN_IA_WORLD_PARAM_URL,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_LANDING_URL,
+  DEFAULT_MISSING_PARAM_URL,
   VALID_URL_PROTOCOLS,
-  WORLD_ROOT_URL,
 } from "settings";
 
-import { Settings } from "types/settings";
+import { Room } from "types/rooms";
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
-export const venueLandingUrl = (venueId: string) => {
-  return `/v/${venueId}`;
+// @debt most of these (a,b,c)=>generatePath(PATH,{}) functions should be replaced with inlined  generateUrl
+
+type GenerateUrlParams = Record<string, string | undefined> | undefined;
+type GenerateUrlOptions<T = GenerateUrlParams> = {
+  route: string;
+  fallback?: string;
+  required?: string[];
+  absolute?: boolean;
+  params: T;
 };
 
-export const venueInsideUrl = (venueId: string) => {
-  return `/in/${venueId}`;
+export const generateUrl: <T = GenerateUrlParams>(
+  options: GenerateUrlOptions<T>
+) => string = ({
+  route,
+  fallback = DEFAULT_MISSING_PARAM_URL,
+  required = [],
+  absolute = false,
+  params,
+}) => {
+  // out of all the provided params
+  const haystack = Object.entries(params);
+
+  // check the required is there and has non-empty string as a value
+  const invalidParam = (needle: string) =>
+    !haystack.find(([name, value]) => name === needle && value);
+
+  // and prevent generatePath blowing up with an error on missing or invalid param
+  if (required.some(invalidParam)) {
+    return fallback;
+  }
+
+  // NOTE: ?? {} stops TS from crying and the check makes the shorter generatePath is used
+  const relativePath = params
+    ? generatePath(route, params ?? {})
+    : generatePath(route);
+
+  // also be helpful with generating external links
+  return absolute
+    ? new URL(relativePath, window.location.origin).href
+    : relativePath;
 };
 
-export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_VENUE_PARAM_URL, { venueId, selectedTab });
+/** @deprecated use generateUrl instead */
+export const adminNGVenueUrl = (
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
+  selectedTab?: string
+) =>
+  !worldSlug || !spaceSlug
+    ? DEFAULT_MISSING_PARAM_URL
+    : generatePath(ADMIN_IA_SPACE_EDIT_PARAM_URL, {
+        worldSlug,
+        spaceSlug,
+        selectedTab,
+      });
 
-export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_ADVANCED_PARAM_URL, { venueId, selectedTab });
+/** @deprecated use generateUrl instead */
+export const adminWorldSpacesUrl = (worldSlug?: string) =>
+  generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
-export const adminWorldUrl = (worldId?: string, selectedTab?: string) =>
-  generatePath(ADMIN_V3_OLD_WORLD_PARAM_URL, { worldId, selectedTab });
-
-export const adminCreateWorldSpace = (worldId?: string) =>
-  generatePath(ADMIN_V3_CREATE_PARAM_URL, { worldId });
-
-export const adminWorldSpacesUrl = (worldId?: string) =>
-  generatePath(ADMIN_V3_WORLD_SPACES_PARAM_URL, { worldId });
-
-export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
-  return `${venueInsideUrl(venueId)}/${roomTitle}`;
+type generateAttendeeInsideUrlOptions = {
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
+  absoluteUrl?: boolean;
 };
 
-export const venueEntranceUrl = (venueId: string, step?: number) => {
-  return `${ENTRANCE_ROOT_URL}/${step ?? 1}/${venueId}`;
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
+/** @deprecated use generateUrl instead */
+export const generateAttendeeInsideUrl = ({
+  worldSlug,
+  spaceSlug,
+  absoluteUrl = false,
+}: generateAttendeeInsideUrlOptions) => {
+  const relativePath = generatePath(ATTENDEE_INSIDE_URL, {
+    worldSlug,
+    spaceSlug,
+  });
+  if (absoluteUrl) {
+    return new URL(relativePath, window.location.origin).href;
+  } else {
+    return relativePath;
+  }
 };
 
-export const worldUrl = (id: string) => `${WORLD_ROOT_URL}/${id}`;
+// @debt These being optional is a problem waiting to happen. We need a better
+// way of making world / space slug mandatory
+/** @deprecated use generateUrl instead */
+export const generateAttendeeSpaceLandingUrl = (
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug
+) => generatePath(ATTENDEE_LANDING_URL, { worldSlug, spaceSlug });
 
 export const isExternalUrl = (url: string) => {
   try {
@@ -62,16 +120,19 @@ export const isExternalUrl = (url: string) => {
   }
 };
 
-// @debt I feel like we could construct this url in a better way
-export const getRoomUrl = (roomUrl: string) =>
-  roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
+export const isExternalPortal: (portal: Room) => boolean = (portal) =>
+  portal?.template === "external" || !portal?.spaceId;
 
 export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
-  openUrl(getRoomUrl(url), options);
+  // @debt I feel like we could construct this url in a better way
+  openUrl(url.includes("http") ? url : "//" + url, options);
 };
 
-export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
-  openUrl(venueInsideUrl(venueId), options);
+export const enterSpace = (
+  worldSlug?: WorldSlug,
+  spaceSlug?: SpaceSlug,
+  options?: OpenUrlOptions
+) => openUrl(generateAttendeeInsideUrl({ worldSlug, spaceSlug }), options);
 
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;
@@ -148,9 +209,6 @@ export const externalUrlAdditionalProps = {
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
 
-export const getFullVenueInsideUrl = (venueId: string) =>
-  new URL(venueInsideUrl(venueId), window.location.origin).href;
-
 export const getUrlWithoutTrailingSlash = (url: string) => {
   return url.endsWith("/") ? url.slice(0, -1) : url;
 };
@@ -161,25 +219,6 @@ export const getLastUrlParam = (url: string) => {
 
 export const getUrlParamFromString = (data: string) => {
   return data.replaceAll(" ", "").toLowerCase();
-};
-
-export const resolveAdminRootUrl: (settings: Partial<Settings>) => string = ({
-  enableAdmin1,
-  enableAdmin3,
-  adminVersion,
-}) => {
-  // Tie breaker for when both admins are enabled.
-  // Currently only two exist, so anything other than explicit 3 defaults to 1
-  if (enableAdmin1 && enableAdmin3) {
-    // easier to compare to just a string
-    return `${adminVersion}` === "3" ? ADMIN_V3_ROOT_URL : ADMIN_V1_ROOT_URL;
-  }
-
-  if (enableAdmin3) return ADMIN_V3_ROOT_URL;
-  if (enableAdmin1) return ADMIN_V1_ROOT_URL;
-
-  // No versions are enabled, just return the default even if it fails with 401, 403, 404
-  return ADMIN_ROOT_URL;
 };
 
 export const resolveUrlPath: (path: string) => string = (path) => {

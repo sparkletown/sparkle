@@ -1,65 +1,59 @@
 import React from "react";
 
-import { IFRAME_ALLOW } from "settings";
+import { ALWAYS_EMPTY_ARRAY, IFRAME_ALLOW } from "settings";
 
-import { EntranceStepConfig } from "types/EntranceStep";
+import { EntranceStepTemplateProps } from "types/EntranceStep";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
-import "./WelcomeVideo.scss";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
-interface PropsType {
-  venueName: string;
-  config: EntranceStepConfig;
-  proceed: () => void;
-}
+import "./WelcomeVideo.scss";
 
 const DEFAULT_BUTTON_TEXT = "Proceed";
 
-export const WelcomeVideo: React.FunctionComponent<PropsType> = ({
+export const WelcomeVideo: React.FunctionComponent<EntranceStepTemplateProps> = ({
   venueName,
   config,
   proceed,
 }) => {
-  const hasProceedButton =
-    config.buttons && config.buttons.find((button) => button.isProceed);
+  const { autoplay: autoPlay, buttons, videoUrl: url, welcomeText } = config;
+  const hasProceedButton = !!buttons?.find(({ isProceed }) => isProceed);
 
   const defaultWelcomeText = `Welcome to ${venueName}! Please watch this video to get started.`;
 
   return (
-    <div className="splash-page-container">
-      <div className="step-container">
-        <h2>{config.welcomeText ?? defaultWelcomeText}</h2>
+    <div className="WelcomeVideo splash-page-container">
+      <div className="WelcomeVideo__step-container step-container">
+        <h2 className="WelcomeVideo__header">
+          {welcomeText ?? defaultWelcomeText}
+        </h2>
         <iframe
-          className="video"
+          className="WelcomeVideo__video video"
           title="art-piece-video"
-          src={convertToEmbeddableUrl({
-            url: config.videoUrl,
-            autoPlay: config.autoplay,
-          })}
+          src={convertToEmbeddableUrl({ url, autoPlay })}
           frameBorder="0"
           allow={IFRAME_ALLOW}
           allowFullScreen
-        ></iframe>
-        {config.buttons &&
-          config.buttons.map((button) => (
-            <button
-              key={button.href}
-              className={`btn btn-block btn-centered btn-primary ${button.className}`}
+        />
+        {(buttons ?? ALWAYS_EMPTY_ARRAY).map(
+          ({ className, href, text }, index) => (
+            <ButtonNG
+              key={href || `${index}`}
+              variant="primary"
+              className={className}
               onClick={() =>
-                button.href ? window.open(button.href) && proceed() : proceed()
+                href ? window.open(href) && proceed() : proceed()
               }
             >
-              {button.text ?? DEFAULT_BUTTON_TEXT}
-            </button>
-          ))}
+              {text ?? DEFAULT_BUTTON_TEXT}
+            </ButtonNG>
+          )
+        )}
         {!hasProceedButton && (
-          <button
-            className="btn btn-block btn-centered btn-primary"
-            onClick={proceed}
-          >
+          <ButtonNG variant="primary" onClick={proceed}>
             {DEFAULT_BUTTON_TEXT}
-          </button>
+          </ButtonNG>
         )}
       </div>
     </div>

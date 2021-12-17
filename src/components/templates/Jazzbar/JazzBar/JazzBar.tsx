@@ -1,17 +1,20 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import classNames from "classnames";
 
 import {
   ALWAYS_EMPTY_ARRAY,
-  DEFAULT_ENABLE_JUKEBOX,
+  DEFAULT_REACTIONS_MUTED,
+  DEFAULT_SHOW_REACTIONS,
+  DEFAULT_SHOW_SHOUTOUTS,
   IFRAME_ALLOW,
 } from "settings";
 
 import { JazzbarVenue, VenueTemplate } from "types/venues";
 
+import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
-import { openUrl, venueInsideUrl } from "utils/url";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
@@ -20,9 +23,8 @@ import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUser
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { Jukebox } from "components/molecules/Jukebox/Jukebox";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
-import TableHeader from "components/molecules/TableHeader";
+import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
@@ -35,7 +37,7 @@ import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
-import "components/templates/Jazzbar/JazzBar/JazzBar.scss";
+import "./JazzBar.scss";
 
 interface JazzProps {
   venue: WithId<JazzbarVenue>;
@@ -48,15 +50,11 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   } = useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
-  const parentVenueId = parentVenue?.id;
-  const [iframeUrl, changeIframeUrl] = useState(venue.iframeUrl);
-
-  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    openUrl(venueInsideUrl(parentVenueId));
-  }, [parentVenueId]);
+  const embedIframeUrl = convertToEmbeddableUrl({
+    url: venue.iframeUrl,
+    autoPlay: venue.autoPlay,
+  });
+  const analytics = useAnalytics({ venue });
 
   useExperiences(venue.name);
 
@@ -69,19 +67,37 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     seatedAtTable && venue?.id
   );
 
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
+  const isShoutoutsEnabled = venue.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
-  const isUserAudioMuted = !isUserAudioOn;
+  const {
+    isShown: isUserAudioMuted,
+    toggle: toggleUserAudio,
+    hide: enableUserAudio,
+    show: disableUserAudio,
+  } = useShowHide(isReactionsMuted);
+
+  useEffect(() => {
+    if (isReactionsMuted) {
+      disableUserAudio();
+    } else {
+      enableUserAudio();
+    }
+  }, [isReactionsMuted, disableUserAudio, enableUserAudio]);
+
+  useEffect(() => {
+    analytics.trackEnterJazzBarEvent();
+  }, [analytics]);
+
+  useEffect(() => {
+    seatedAtTable && analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
 
   const shouldShowReactions =
-    seatedAtTable && areSettingsLoaded && settings.showReactions;
-  const firstTableReference = jazzbarTables[0].reference;
-
-  const shouldShowJukebox =
-    (!!seatedAtTable &&
-      venue.enableJukebox &&
-      seatedAtTable === firstTableReference) ??
-    DEFAULT_ENABLE_JUKEBOX;
+    seatedAtTable &&
+    areSettingsLoaded &&
+    (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
+    (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
@@ -100,10 +116,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         containerClassNames={`music-bar ${containerClasses}`}
       >
         {!seatedAtTable && parentVenue && (
-          <BackButton
-            onClick={backToParentVenue}
-            locationName={parentVenue.name}
-          />
+          <BackButton variant="simple" space={parentVenue} />
         )}
 
         {!seatedAtTable && (
@@ -121,6 +134,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             venueName={venue.name}
             tables={jazzbarTables}
             venueId={venue.id}
+            defaultTables={JAZZBAR_TABLES}
           />
         )}
         {venue.description?.text && (
@@ -138,12 +152,12 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             {!venue.hideVideo && (
               <>
                 <div className="iframe-container">
-                  {iframeUrl ? (
+                  {embedIframeUrl ? (
                     <iframe
                       key="main-event"
                       title="main event"
                       className="iframe-video"
-                      src={iframeUrl}
+                      src={embedIframeUrl}
                       frameBorder="0"
                       allow={IFRAME_ALLOW}
                     />
@@ -160,15 +174,10 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
                       venueId={venue.id}
                       isReactionsMuted={isUserAudioMuted}
                       toggleMute={toggleUserAudio}
+                      isAudioDisabled={isReactionsMuted}
+                      isShoutoutsEnabled={isShoutoutsEnabled}
                     />
                   </div>
-                )}
-                {shouldShowJukebox && (
-                  <Jukebox
-                    updateIframeUrl={changeIframeUrl}
-                    venue={venue}
-                    tableRef={seatedAtTable}
-                  />
                 )}
 
                 {!seatedAtTable && (
@@ -186,7 +195,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
               roomName={`${venue.id}-${seatedAtTable}`}
               venueId={venue.id}
               setSeatedAtTable={setSeatedAtTable}
-              isAudioEffectDisabled={isUserAudioMuted}
+              isReactionsMuted={isUserAudioMuted}
             />
           )}
           <TablesUserList
@@ -197,6 +206,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             joinMessage={!venue.hideVideo ?? true}
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
+            venue={venue}
+            defaultTables={JAZZBAR_TABLES}
           />
         </div>
       </VenueWithOverlay>

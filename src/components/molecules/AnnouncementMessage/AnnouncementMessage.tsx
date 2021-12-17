@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { isDefined } from "utils/types";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
-import { useVenueId } from "hooks/useVenueId";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -26,10 +28,10 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     hide: hideAnnouncementMessage,
   } = useShowHide();
 
-  const venueId = useVenueId();
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const { banner } = venue ?? {};
+  const { banner } = space ?? {};
 
   useEffect(() => {
     if (isDefined(banner?.content)) {
@@ -93,8 +95,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
           )}
 
           {isAnnouncementCloseable && (
-            <span
+            <FontAwesomeIcon
               className="AnnouncementMessage__close-button"
+              icon={faTimes}
               onClick={handleBannerModalClose}
             />
           )}

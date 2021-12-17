@@ -1,15 +1,8 @@
 import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
 
-import { VenueInput_v2 } from "api/admin";
+import { createSlug, VenueInput_v2 } from "api/admin";
 
-import {
-  AnyVenue,
-  JazzbarVenue,
-  urlFromImage,
-  VenueTemplate,
-} from "types/venues";
-
-import { FormValues } from "pages/Admin/Venue/VenueDetailsForm";
+import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
@@ -29,63 +22,26 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
   return /[a-z0-9_]{1,250}/.test(venueId);
 };
 
-export const buildEmptyVenue = (
-  venueName: string,
+export const buildEmptySpace = (
+  name: string,
   template: VenueTemplate
-): VenueInput_v2 => {
+): Omit<VenueInput_v2, "id"> => {
   const list = new DataTransfer();
 
   const fileList = list.files;
 
   return {
-    name: venueName,
+    name,
+    slug: createSlug(name) as SpaceSlug,
     subtitle: "",
     description: "",
-    template: template,
+    template,
     bannerImageFile: fileList,
     bannerImageUrl: "",
     logoImageUrl: "",
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
-  };
-};
-
-export const createJazzbar = (values: FormValues): JazzbarVenue => {
-  return {
-    template: VenueTemplate.jazzbar,
-    name: values.name || "Your Jazz Bar",
-    config: {
-      theme: {
-        primaryColor: "yellow",
-        backgroundColor: "red",
-      },
-      landingPageConfig: {
-        coverImageUrl: urlFromImage(
-          "/default-profile-pic.png",
-          values.bannerImageFile
-        ),
-        subtitle: values.subtitle || "Subtitle for your space",
-        description: values.description || "Description of your space",
-        presentation: [],
-        checkList: [],
-        quotations: [],
-      },
-    },
-    host: {
-      icon: urlFromImage("/default-profile-pic.png", values.logoImageFile),
-    },
-    owners: [],
-    profile_questions: values.profile_questions ?? [],
-    code_of_conduct_questions: [],
-    termsAndConditions: [],
-    adultContent: values.adultContent || false,
-    width: values.width ?? 40,
-    height: values.width ?? 40,
-    // @debt Should these fields be defaulted like this? Or potentially undefined? Or?
-    iframeUrl: "",
-    logoImageUrl: "",
-    worldId: "",
   };
 };
 
@@ -99,7 +55,7 @@ export const withVenue = <T extends object>(
   venue,
 });
 
-export enum VenueSortingOptions {
+export enum SortingOptions {
   az = "A - Z",
   za = "Z - A",
   newestFirst = "Newest First",
@@ -108,19 +64,19 @@ export enum VenueSortingOptions {
 
 export const sortVenues = (
   venueList: WithId<AnyVenue>[],
-  sortingOption: VenueSortingOptions
+  sortingOption: SortingOptions
 ) => {
   switch (sortingOption) {
-    case VenueSortingOptions.az:
+    case SortingOptions.az:
       return [...venueList].sort((a, b) => a.id.localeCompare(b.id));
-    case VenueSortingOptions.za:
+    case SortingOptions.za:
       return [...venueList].sort((a, b) => -1 * a.id.localeCompare(b.id));
-    case VenueSortingOptions.oldestFirst:
+    case SortingOptions.oldestFirst:
       return [...venueList].sort(
         (a, b) =>
           (a.createdAt ?? 0) - (b.createdAt ?? 0) || a.id.localeCompare(b.id)
       );
-    case VenueSortingOptions.newestFirst:
+    case SortingOptions.newestFirst:
       return [...venueList].sort(
         (a, b) =>
           (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)

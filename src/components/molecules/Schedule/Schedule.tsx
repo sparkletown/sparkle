@@ -53,7 +53,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
       Math.min(
         ...locatedEvents.map(({ events }) =>
           events.reduce(
-            (acc, event) => Math.min(acc, getHours(eventStartTime(event))),
+            (acc, event) => Math.min(acc, getHours(eventStartTime({ event }))),
             SCHEDULE_MAX_START_HOUR
           )
         ),

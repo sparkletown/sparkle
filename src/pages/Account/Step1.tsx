@@ -11,11 +11,6 @@ import "firebase/storage";
 
 import "./Account.scss";
 
-export interface ProfileFormData {
-  partyName: string;
-  pictureUrl: string;
-}
-
 const Step1 = () => {
   return (
     <div className="splash-page-container">

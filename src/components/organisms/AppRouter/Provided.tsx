@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 export interface ProvidedProps {
   withRelatedVenues?: boolean;
@@ -12,14 +12,13 @@ export const Provided: React.FC<ProvidedProps> = ({
   children,
   withRelatedVenues = false,
 }) => {
-  const venueId = useVenueId();
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   if (!withRelatedVenues) return <>{children}</>;
 
   return (
-    <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
+    <RelatedVenuesProvider venueId={spaceId} worldId={space?.worldId}>
       {children}
     </RelatedVenuesProvider>
   );

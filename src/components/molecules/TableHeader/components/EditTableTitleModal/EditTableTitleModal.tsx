@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -10,7 +10,8 @@ import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -27,7 +28,7 @@ export interface EditTableTitleModalProps {
   title: string;
   subtitle?: string;
   capacity: number;
-  tables: Table[];
+  defaultTables: Table[];
   tableOfUser?: Table;
   onHide: () => void;
 }
@@ -35,47 +36,42 @@ export interface EditTableTitleModalProps {
 export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   isShown,
   title,
-  tables,
+  defaultTables,
   tableOfUser,
   subtitle,
   capacity,
   onHide,
 }) => {
-  const venueId = useVenueId();
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const formDefaultValues = useMemo(
-    () => ({
+  const { register, handleSubmit, errors } = useForm<EditTableForm>({
+    mode: "onBlur",
+    reValidateMode: "onBlur",
+    defaultValues: {
       title,
       subtitle,
       capacity,
-    }),
-    [capacity, subtitle, title]
-  );
-
-  const { register, handleSubmit, errors, reset } = useForm<EditTableForm>({
-    mode: "onBlur",
-    reValidateMode: "onBlur",
-    defaultValues: formDefaultValues,
+    },
   });
-
-  // Updates the default values whenever they change. This is required because they are cached after the first render.
-  useEffect(() => {
-    reset(formDefaultValues);
-  }, [formDefaultValues, reset, title]);
 
   // use useAsyncFn for easier error handling, instead of state hook
   const [{ error: httpError, loading: isUpdating }, updateTables] = useAsyncFn(
     async (values: EditTableForm) => {
-      if (!venueId || !tableOfUser) return;
+      if (!spaceId || !tableOfUser) return;
+
+      const newTable = {
+        ...tableOfUser,
+        ...values,
+      };
 
       await updateVenueTable({
-        ...values,
-        venueId,
-        tableOfUser,
-        tables,
+        venueId: spaceId,
+        newTable,
+        defaultTables,
       }).then(onHide);
     },
-    [onHide, tableOfUser, tables, venueId]
+    [onHide, tableOfUser, spaceId, defaultTables]
   );
 
   const saveButtonClassNames = classNames("btn btn-centered btn-primary", {

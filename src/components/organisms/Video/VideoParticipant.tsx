@@ -67,12 +67,9 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           className={classNames("VideoParticipant__video-element", {
             "VideoParticipant__video-element--disabled": shouldDisableVideoExternally,
           })}
-          ref={videoRef}
+          ref={shouldDisableVideoExternally ? null : videoRef}
           autoPlay={true}
         />
-        {shouldDisableVideoExternally && (
-          <div className="VideoParticipant__video--placeholder" />
-        )}
       </div>
       <audio
         ref={audioRef}
@@ -103,6 +100,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           icon={audioIcon}
           color={audioIconColor}
           onClick={toggleAudio}
+          className="VideoParticipant__controls-mute"
         />
       </div>
     </div>

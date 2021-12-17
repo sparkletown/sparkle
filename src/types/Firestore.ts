@@ -1,6 +1,6 @@
 import { Settings } from "./settings";
 
-import { World } from "api/admin";
+import { World } from "api/world";
 
 import { AuditoriumSeatedUser } from "types/auditorium";
 import {
@@ -25,6 +25,7 @@ export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
 }
+
 export interface UserVisit {
   timeSpent: number;
 }
@@ -81,6 +82,7 @@ export interface FirestoreData {
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
   venueEvents?: Record<string, VenueEvent>;
   worldEdit?: World;
+  currentWorld?: World;
 }
 
 // note: these entries should be sorted alphabetically
@@ -108,4 +110,12 @@ export interface FirestoreOrdered {
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
   venueEvents?: WithId<VenueEvent>[];
   worldEdit?: WithId<World>[];
+}
+
+export interface DistributedCounterValue {
+  value: number;
+}
+
+export interface DistributedCounterShard {
+  count: number;
 }

@@ -28,6 +28,10 @@ export interface BaseUser {
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   profileLinks?: ProfileLink[];
 
+  // forward compatible type: true/false now, can have other constants for finer grained access in the future
+  // e.g. beta tester, demo or POC, maybe able to test A or B functionality not both etc.
+  tester?: null | boolean | string | string[];
+
   // @debt typing - user also has a dynamic set of attributes for the question answers
   //   currently not possible to type them properly
   // [question: string]: string;
@@ -36,16 +40,13 @@ export interface BaseUser {
   room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, ProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
-  // @debt these don't appear to be used by anything anymore
-  // drinkOfChoice?: string;
-  // favouriteRecord?: string;
-  // doYouDance?: string;
 }
 
 export interface User extends BaseUser {
   lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
   enteredVenueIds?: never;
+  enteredWorldIds?: never;
 }
 
 export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
@@ -67,15 +68,10 @@ export interface UserLocation {
   lastVenueIdSeenIn: string | null;
   lastSeenAt: number;
   enteredVenueIds?: string[];
+  enteredWorldIds?: string[];
 }
 
 export type UserWithLocation = BaseUser & UserLocation;
-
-export enum UsernameVisibility {
-  none = "none",
-  hover = "hover",
-  inline = "inline",
-}
 
 export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
   .shape({

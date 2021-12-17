@@ -4,7 +4,7 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 
-import { auditoriumSeatedUserConverter } from "utils/converters";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
 export const useAuditoriumSeatedUsers = ({
@@ -18,7 +18,7 @@ export const useAuditoriumSeatedUsers = ({
     .collection("sections")
     .doc(sectionId)
     .collection("seatedSectionUsers")
-    .withConverter(auditoriumSeatedUserConverter);
+    .withConverter(withIdConverter<AuditoriumSeatedUser>());
 
   const { data: users } = useFirestoreCollectionData<
     WithId<AuditoriumSeatedUser>

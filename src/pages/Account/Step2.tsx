@@ -8,11 +8,6 @@ import { Profile } from "./Profile";
 
 import "./Account.scss";
 
-export interface ProfileFormData {
-  partyName: string;
-  pictureUrl: string;
-}
-
 const Step2 = () => {
   return (
     <div className="splash-page-container">

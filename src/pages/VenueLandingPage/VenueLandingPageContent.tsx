@@ -8,10 +8,14 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
+  ATTENDEE_STEPPING_PARAM_URL,
+  DEFAULT_ENTER_STEP,
   DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
 } from "settings";
+
+import { World } from "api/world";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 import { AnyVenue } from "types/venues";
@@ -20,12 +24,11 @@ import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { WithId } from "utils/id";
 import { venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -35,39 +38,48 @@ import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 dayjs.extend(advancedFormat);
 
 type VenueLandingPageContentProps = {
-  venue: WithId<AnyVenue>;
+  space: WithId<AnyVenue>;
+  world: WithId<World>;
   withJoinEvent?: boolean;
 };
 const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
-  venue,
+  space,
+  world,
   withJoinEvent = true,
 }) => {
   const venueEvents = useSelector(venueEventsSelector);
 
-  const venueId = useVenueId();
+  const spaceSlug = space.slug;
 
   const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.bannerImageUrl,
+    space?.config?.landingPageConfig.coverImageUrl,
     DEFAULT_LANDING_BANNER
   );
 
-  const [validLogoUrl] = useValidImage(venue?.host?.icon, DEFAULT_VENUE_LOGO);
+  const [validLogoUrl] = useValidImage(space?.host?.icon, DEFAULT_VENUE_LOGO);
   const futureOrOngoingVenueEvents = venueEvents?.filter(
     (event) => !hasEventFinished(event)
   );
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
 
+  // @debt use callback hook and history push
   const onJoinClick = () => {
-    if (!venueId) return;
+    if (!spaceSlug) return;
 
-    const venueEntrance = venue.entrance && venue.entrance.length;
+    const hasEntrance = world?.entrance?.length;
+    const worldSlug = world?.slug;
+
     window.location.href =
-      user && !venueEntrance
-        ? venueInsideUrl(venueId)
-        : venueEntranceUrl(venueId);
+      user && !hasEntrance
+        ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
+        : generateUrl({
+            route: ATTENDEE_STEPPING_PARAM_URL,
+            required: ["worldSlug", "spaceSlug", "step"],
+            params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+          });
   };
 
-  const isPasswordRequired = venue.access === VenueAccessMode.Password;
+  const isPasswordRequired = space.access === VenueAccessMode.Password;
 
   const { user } = useUser();
 
@@ -83,24 +95,24 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const containerClasses = classNames("header", containerVars);
 
   return (
-    <div className="container venue-entrance-experience-container">
+    <div className="VenueLandingPageContent container venue-entrance-experience-container">
       <div className={containerClasses}>
         <div className="venue-host">
           <div className="host-icon-container">
             <img className="host-icon" src={validLogoUrl} alt="host" />
           </div>
 
-          <div className="title">{venue.name}</div>
+          <div className="title">{space.name}</div>
 
           <div className="subtitle">
-            {venue.config?.landingPageConfig.subtitle}
+            {space.config?.landingPageConfig.subtitle}
           </div>
         </div>
 
         {isPasswordRequired && (
           <div className="secret-password-form-wrapper">
             <SecretPasswordForm
-              buttonText={venue.config?.landingPageConfig.joinButtonText}
+              buttonText={space.config?.landingPageConfig.joinButtonText}
             />
           </div>
         )}
@@ -114,9 +126,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
             onClick={onJoinClick}
           >
             Join the event
-            {(venue?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
+            {(space?.start_utc_seconds ?? 0) > new Date().getTime() / 1000 && (
               <span className="countdown">
-                Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
+                Begins in {getTimeBeforeParty(space.start_utc_seconds)}
               </span>
             )}
           </button>
@@ -127,104 +139,101 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
         <div className="col-lg-6 col-12 venue-presentation">
           <div>
             <div style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-              {venue.config?.landingPageConfig.description}
+              {space.config?.landingPageConfig.description}
             </div>
 
             <div>
-              {venue.config?.landingPageConfig.checkList &&
-                venue.config?.landingPageConfig.checkList.map(
-                  (checkListItem: string, index: number) => (
-                    <div
-                      key={`checklist-item-${index}`}
-                      className="checklist-item"
-                    >
-                      <div className="check-icon-container">
-                        <FontAwesomeIcon icon={faCheckCircle} />
-                      </div>
-                      <div>{checkListItem}</div>
+              {space.config?.landingPageConfig?.checkList?.map(
+                (checkListItem: string, index: number) => (
+                  <div
+                    key={`checklist-item-${index}`}
+                    className="checklist-item"
+                  >
+                    <div className="check-icon-container">
+                      <FontAwesomeIcon icon={faCheckCircle} />
                     </div>
-                  )
-                )}
+                    <div>{checkListItem}</div>
+                  </div>
+                )
+              )}
             </div>
           </div>
 
-          {venue.config?.landingPageConfig.iframeUrl && (
+          {space.config?.landingPageConfig?.iframeUrl && (
             <iframe
               title="entrance video"
               width="100%"
               height="300"
               className="youtube-video"
-              src={venue.config?.landingPageConfig.iframeUrl}
+              src={space.config?.landingPageConfig.iframeUrl}
               frameBorder="0"
               allow={IFRAME_ALLOW}
             />
           )}
 
-          {venue.config?.landingPageConfig.quotations &&
-            venue.config?.landingPageConfig.quotations.map(
-              (quotation, index) => (
-                <div className="quotation-container" key={index}>
-                  <div className="quotation">{quotation.text}</div>
-                  <div className="quotation-author">- {quotation.author}</div>
-                </div>
-              )
-            )}
+          {space.config?.landingPageConfig?.quotations?.map(
+            (quotation, index) => (
+              <div className="quotation-container" key={index}>
+                <div className="quotation">{quotation.text}</div>
+                <div className="quotation-author">- {quotation.author}</div>
+              </div>
+            )
+          )}
 
-          {venue.config?.landingPageConfig.presentation &&
-            venue.config?.landingPageConfig.presentation.map(
-              (paragraph: string, index: number) => (
-                <p
-                  key={`venue-presentation-paragraph-${index}`}
-                  className="presentation-paragraph"
-                >
-                  {paragraph}
-                </p>
-              )
-            )}
+          {space.config?.landingPageConfig?.presentation?.map(
+            (paragraph: string, index: number) => (
+              <p
+                key={`venue-presentation-paragraph-${index}`}
+                className="presentation-paragraph"
+              >
+                {paragraph}
+              </p>
+            )
+          )}
         </div>
 
         <div className="col-lg-6 col-12 oncoming-events">
-          {venueId &&
-            futureOrOngoingVenueEvents &&
-            futureOrOngoingVenueEvents.length > 0 && (
-              <>
-                <div className="upcoming-gigs-title">Upcoming events</div>
-                {futureOrOngoingVenueEvents.map((venueEvent) => {
-                  const startTime = formatTimeLocalised(
-                    eventStartTime(venueEvent)
-                  );
-                  const endTime = formatTimeLocalised(eventEndTime(venueEvent));
-                  const startDay = format(
-                    eventStartTime(venueEvent),
-                    "EEEE LLLL do"
-                  );
+          {futureOrOngoingVenueEvents && futureOrOngoingVenueEvents.length > 0 && (
+            <>
+              <div className="upcoming-gigs-title">Upcoming events</div>
+              {futureOrOngoingVenueEvents.map((venueEvent) => {
+                const startTime = formatTimeLocalised(
+                  eventStartTime({ event: venueEvent })
+                );
+                const endTime = formatTimeLocalised(
+                  eventEndTime({ event: venueEvent })
+                );
+                const startDay = format(
+                  eventStartTime({ event: venueEvent }),
+                  "EEEE LLLL do"
+                );
 
-                  const isNextVenueEvent = venueEvent.id === nextVenueEventId;
-                  return (
-                    <InformationCard
-                      title={venueEvent.name}
-                      key={venueEvent.id}
-                      containerClassName={`${
-                        !isNextVenueEvent ? "disabled" : ""
-                      }`}
-                    >
-                      <div className="date">
-                        {`${startTime}-${endTime} ${startDay}`}
-                      </div>
-                      <div className="event-description">
-                        <RenderMarkdown text={venueEvent.description} />
-                        {venueEvent.descriptions?.map((description, index) => (
-                          <RenderMarkdown
-                            text={description}
-                            key={`${description}#${index}`}
-                          />
-                        ))}
-                      </div>
-                    </InformationCard>
-                  );
-                })}
-              </>
-            )}
+                const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+                return (
+                  <InformationCard
+                    title={venueEvent.name}
+                    key={venueEvent.id}
+                    containerClassName={`${
+                      !isNextVenueEvent ? "disabled" : ""
+                    }`}
+                  >
+                    <div className="date">
+                      {`${startTime}-${endTime} ${startDay}`}
+                    </div>
+                    <div className="event-description">
+                      <RenderMarkdown text={venueEvent.description} />
+                      {venueEvent.descriptions?.map((description, index) => (
+                        <RenderMarkdown
+                          text={description}
+                          key={`${description}#${index}`}
+                        />
+                      ))}
+                    </div>
+                  </InformationCard>
+                );
+              })}
+            </>
+          )}
         </div>
       </div>
     </div>

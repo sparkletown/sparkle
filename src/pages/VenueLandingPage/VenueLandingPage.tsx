@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -11,19 +9,21 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { NotFound } from "components/atoms/NotFound";
+
 import VenueLandingPageContent from "./VenueLandingPageContent";
 
 import "./VenueLandingPage.scss";
 
 export const VenueLandingPage: React.FC = () => {
-  useConnectCurrentVenue();
-  const venueId = useVenueId() || "";
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const venueRequestStatus = useSelector(
-    (state) => state.firestore.status.requested.currentVenue
+  const { space, world, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
   );
-  const redirectUrl = venue?.config?.redirectUrl ?? "";
+
+  const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
   useEffect(() => {
@@ -33,23 +33,27 @@ export const VenueLandingPage: React.FC = () => {
   }, [hostname, redirectUrl]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+  if (!isLoaded) {
+    return <LoadingPage />;
   }
 
-  if (!venue) {
-    return <LoadingPage />;
+  if (!space || !world) {
+    return (
+      <WithNavigationBar hasBackButton withHiddenLoginButton>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
   return (
     <WithNavigationBar hasBackButton withSchedule>
-      <VenueLandingPageContent venue={venue} />
+      <VenueLandingPageContent space={space} world={world} />
     </WithNavigationBar>
   );
 };

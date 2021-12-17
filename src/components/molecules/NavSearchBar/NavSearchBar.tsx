@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
@@ -8,6 +9,7 @@ import {
   DEFAULT_PARTY_NAME,
   ROOM_TAXON,
   ROOMS_TAXON,
+  STRING_SPACE,
 } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
@@ -23,7 +25,7 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { RoomModal } from "components/templates/PartyMap/components";
+import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { EventModal } from "components/organisms/EventModal";
 
@@ -34,15 +36,15 @@ import { InputField } from "components/atoms/InputField";
 
 import { NavSearchResult } from "./NavSearchResult";
 
-import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
-
 import "./NavSearchBar.scss";
 
 export interface NavSearchBarProps {
-  venueId: string;
+  sovereignVenueId: string;
 }
 
-export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
+export const NavSearchBar: React.FC<NavSearchBarProps> = ({
+  sovereignVenueId,
+}) => {
   const {
     searchInputValue,
     searchQuery,
@@ -58,7 +60,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   );
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
-  const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
+  const hidePortalModal = useCallback(() => setSelectedRoom(undefined), []);
 
   const [selectedRoomVenue, setSelectedRoomVenue] = useState<
     WithId<AnyVenue>
@@ -115,7 +117,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);
-              // @debt we need to find room venue (selectedRoomVenue) because of RoomModal -> useRoom -> externalRoomSlug (which accepts venueName as a parameter)
+              // @debt we need to find room venue (selectedRoomVenue) because of PortalModal -> useRoom -> externalRoomSlug (which accepts venueName as a parameter)
               //  probably would be better to extend Room type with the venueId it's related to, and use it in the `externalRoomSlug` instead of venueName
               setSelectedRoomVenue(
                 relatedVenues.find((venue) =>
@@ -132,7 +134,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const algoliaSearchState = useAlgoliaSearch(venueId, searchQuery);
+  const algoliaSearchState = useAlgoliaSearch(searchQuery, {
+    sovereignVenueId,
+  });
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
     const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
@@ -196,10 +200,10 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     foundRooms.length + foundEvents.length + foundUsers.length;
 
   const clearSearchIcon = (
-    <img
+    <FontAwesomeIcon
+      size="lg"
       className="NavSearchBar__clear-search"
-      src={navDropdownCloseIcon}
-      alt="close button"
+      icon={faTimesCircle}
       onClick={clearSearch}
     />
   );
@@ -218,7 +222,8 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         <div className="NavSearchBar__nav-dropdown__title font-size--small">
           <strong className="NavSearchBar__search-results-number">
             {numberOfSearchResults}
-          </strong>{" "}
+          </strong>
+          {STRING_SPACE}
           search results
         </div>
 
@@ -243,12 +248,12 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
       />
 
-      {/* @debt use only one RoomModal instance with state controlled with redux */}
-      <RoomModal
+      {/* @debt use only one PortalModal instance with state controlled with redux */}
+      <PortalModal
         show={isDefined(selectedRoom)}
-        room={selectedRoom}
+        portal={selectedRoom}
         venue={selectedRoomVenue}
-        onHide={hideRoomModal}
+        onHide={hidePortalModal}
       />
 
       {/* @debt use only one EventModal instance with state controlled with redux */}

@@ -9,7 +9,7 @@ $image--margin: 3px;
   }
 
   &__title {
-    color: $concrete;
+    color: var(--content--over-60a);
     font-size: $font-size--md;
     margin-bottom: $spacing--md;
   }
@@ -46,7 +46,7 @@ $image--margin: 3px;
     }
 
     &-label {
-      color: $concrete;
+      color: var(--content--over-60a);
       font-size: $font-size--md;
     }
   }

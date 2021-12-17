@@ -18,12 +18,11 @@ $logo-background-width: 195px;
 
   &__title {
     font-size: $font-size--xl;
-    text-transform: capitalize;
     padding: 0 $spacing--xxl;
   }
 
   &__url-text {
-    color: $secondary--lightest;
+    color: var(--greyscale-lighter-20pp);
     padding: 0 $spacing--xxl;
   }
 

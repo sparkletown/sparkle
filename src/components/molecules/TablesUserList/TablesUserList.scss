@@ -109,8 +109,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: $dark;
-  border: thin $concrete solid;
+  background-color: $secondary--live;
+  border: thin var(--content--over-60a) solid;
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 22px;
@@ -123,7 +123,7 @@
   width: 19px;
   left: 1px;
   bottom: 1px;
-  background-color: $concrete;
+  background-color: var(--content--over-60a);
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 50%;

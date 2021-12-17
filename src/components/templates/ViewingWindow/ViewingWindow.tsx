@@ -2,7 +2,11 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { IFRAME_ALLOW } from "settings";
+import {
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+  PORTAL_INFO_ICON_MAPPING,
+} from "settings";
 
 import { ViewingWindowVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
@@ -36,11 +40,18 @@ export interface ViewingWindowProps {
 
 export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
   // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
-  const { name, host, config, iframeUrl, videoAspect, isWithParticipants } =
-    venue ?? {};
+  const {
+    name,
+    host,
+    config,
+    iframeUrl,
+    videoAspect,
+    isWithParticipants,
+    autoPlay,
+  } = venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
-  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
+  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl, autoPlay });
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({
@@ -59,10 +70,14 @@ export const ViewingWindow: React.FC<ViewingWindowProps> = ({ venue }) => {
 
   if (!venue) return <Loading label="Loading..." />;
 
+  const infoIcon =
+    host?.icon ||
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+
   return (
     <>
       <VenueWithOverlay venue={venue} containerClassNames="ViewingWindow">
-        <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationLeftColumn iconNameOrPath={infoIcon}>
           <InformationCard title="About the venue">
             <p className="ViewingWindow__title-sidebar">{name}</p>
             <p className="ViewingWindow__short-description-sidebar">

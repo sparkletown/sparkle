@@ -32,7 +32,7 @@ import "./EditingProfileModalContent.scss";
 
 export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
   onCancelEditing: () => void;
 }
 
@@ -41,7 +41,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   venue,
   onCancelEditing,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
   const firebaseUser = useFirebase().auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(
@@ -85,6 +85,15 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     name: formProp("profileLinks"),
   });
 
+  const onDeleteLink = useCallback(
+    (i: number) => {
+      // @debt a hacky solution to mark profileLinks field dirty. For some reason, `remove` from useFieldArray is not enough
+      formState.dirtyFields.add("profileLinks");
+      removeLink(i);
+    },
+    [formState.dirtyFields, removeLink]
+  );
+
   const cancelEditing = useCallback(() => {
     onCancelEditing();
     reset();
@@ -107,8 +116,12 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
   );
 
   const [{ loading: isSubmitting }, onSubmit] = useAsyncFn(
-    async (data: UserProfileModalFormData) => {
+    async (data: Omit<UserProfileModalFormData, "profileLinks">) => {
       if (!firebaseUser) return;
+      const dataWithProfileLinks = {
+        profileLinks: [],
+        ...data,
+      };
 
       const passwordsNotEmpty = Object.values(
         pick(data, profileModalPasswordsFields)
@@ -139,7 +152,10 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       ) as (keyof UserProfileModalFormData)[];
 
       if (changedFields.length > 0) {
-        await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
+        await updateUserProfile(
+          firebaseUser.uid,
+          pick(dataWithProfileLinks, changedFields)
+        );
       }
 
       onCancelEditing();
@@ -178,7 +194,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         links={links}
         setLinkTitle={setLinkTitle}
         errors={errors?.profileLinks}
-        onDeleteLink={removeLink}
+        onDeleteLink={onDeleteLink}
         onAddLink={addLinkHandler}
       />
       {isChangePasswordShown && (

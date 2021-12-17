@@ -3,6 +3,16 @@
 .venue-owner-modal {
   .text-input {
     margin-top: 20px;
+    background: var(--content--under-80a);
+    color: var(--content--over);
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--content--over);
+      box-shadow: box-shadow--input-autofill(var(--content--under-80a)) inset;
+    }
   }
 
   .row-container {
@@ -10,7 +20,7 @@
     overflow: scroll;
     padding: 10px;
     border-radius: 10px;
-    border: 2px solid grey;
+    border: 2px solid var(--accent--over-10a);
     margin-top: 20px;
 
     .user-row {
@@ -18,7 +28,7 @@
       align-items: center;
       margin-top: 10px;
       padding: 5px;
-      background-color: rgba($color: white, $alpha: 0.1);
+      background-color: opaque-white(0.1);
 
       .info-container {
         flex: 1;

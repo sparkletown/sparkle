@@ -1,1 +1,1 @@
-export { default } from "./MapPreview";
+export { MapPreview } from "./MapPreview";

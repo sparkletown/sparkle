@@ -5,7 +5,7 @@
 //
 //.room-container {
 //  padding: 20px;
-//  background-color: #19181a;
+//  background-color: $secondary--dark;
 //  background-repeat: no-repeat;
 //  background-size: cover;
 //}
@@ -74,7 +74,7 @@
 //
 //    &:hover {
 //      color: $content--over;
-//      background-color: darken($accent--under, 5%);
+//      background-color: var(--accent--under-darker-5pp);
 //    }
 //  }
 //

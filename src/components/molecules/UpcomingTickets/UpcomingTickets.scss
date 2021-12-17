@@ -14,11 +14,11 @@
     margin: 10px -16px 0px -16px;
 
     &:hover {
-      background: $dark;
+      background: $secondary--live;
     }
 
     .time-section {
-      border-right: 1px solid $concrete;
+      border-right: 1px solid var(--content--over-60a);
       min-width: 110px;
       margin-right: 10px;
 
@@ -28,7 +28,7 @@
     }
 
     .event-description {
-      color: $concrete;
+      color: var(--content--over-60a);
     }
 
     .event-section {

@@ -1,4 +1,5 @@
 @import "../../../profileModalStyles";
+@import "scss/constants";
 
 .ProfileModalAvatar {
   display: flex;
@@ -10,8 +11,7 @@
   }
 
   &__image {
-    object-fit: cover;
-    object-position: top;
+    @include circle-avatar;
   }
 
   &__input {
@@ -20,6 +20,6 @@
 
   &__error {
     margin-top: 0.5rem;
-    color: $input--invalid;
+    color: var(--danger--under);
   }
 }

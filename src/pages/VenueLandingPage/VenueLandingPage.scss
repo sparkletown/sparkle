@@ -142,7 +142,7 @@
     padding: 20px;
 
     .presentation-paragraph {
-      color: $concrete;
+      color: var(--content--over-60a);
     }
 
     .check-icon-container {
@@ -192,7 +192,7 @@
     align-items: center;
   }
   .disabled {
-    background: rgba($dark, 0.6);
+    background: rgba($secondary--live, 0.6);
   }
   .information-card-container {
     margin-bottom: 20px;

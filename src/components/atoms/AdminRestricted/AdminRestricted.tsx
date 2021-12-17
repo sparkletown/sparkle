@@ -3,11 +3,20 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
 
-import { venueLandingUrl } from "utils/url";
+import {
+  DEFAULT_SPACE_SLUG,
+  DEFAULT_WORLD_SLUG,
+  DISABLED_DUE_TO_1324,
+} from "settings";
+
+import {
+  generateAttendeeInsideUrl,
+  generateAttendeeSpaceLandingUrl,
+} from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -19,15 +28,27 @@ import "./AdminRestricted.scss";
 export const AdminRestricted: React.FC = ({ children }) => {
   const firebase = useFirebase();
   const history = useHistory();
-  const venueId = useVenueId();
+  const { worldSlug, spaceSlug } = useSpaceParams();
   const { userId } = useUser();
 
   const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
-    history.push(venueId ? venueLandingUrl(venueId) : "/");
-  }, [firebase, history, venueId]);
+    history.push(
+      spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
+    );
+  }, [firebase, history, worldSlug, spaceSlug]);
+
+  const redirectToDefaultRoute = () =>
+    history.push(
+      generateAttendeeInsideUrl({
+        worldSlug: DEFAULT_WORLD_SLUG,
+        spaceSlug: DEFAULT_SPACE_SLUG,
+      })
+    );
+
+  const authHandler = userId ? logout : redirectToDefaultRoute;
 
   if (isAdminUser) return <>{children}</>;
 
@@ -54,15 +75,17 @@ export const AdminRestricted: React.FC = ({ children }) => {
           If you don’t have an Admin Account, please contact your event
           organiser.
         </p>
-        <ButtonNG
-          className="AdminRestricted__switch-button"
-          variant="primary"
-          loading={isLoggingOut}
-          disabled={isLoggingOut}
-          onClick={logout}
-        >
-          Switch Account
-        </ButtonNG>
+        {DISABLED_DUE_TO_1324 && (
+          <ButtonNG
+            className="AdminRestricted__switch-button"
+            variant="primary"
+            loading={isLoggingOut}
+            disabled={isLoggingOut}
+            onClick={authHandler}
+          >
+            {userId ? "Log Out" : "Log In"}
+          </ButtonNG>
+        )}
       </div>
     </div>
   );

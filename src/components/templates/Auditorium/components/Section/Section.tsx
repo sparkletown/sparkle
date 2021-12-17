@@ -1,17 +1,21 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router";
-import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import classNames from "classnames";
+
+import {
+  DEFAULT_REACTIONS_MUTED,
+  DEFAULT_SECTIONS_AMOUNT,
+  DEFAULT_SHOW_SHOUTOUTS,
+} from "settings";
 
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
 
 import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateAuditoriumRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
 
@@ -29,22 +33,30 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const isReactionsMuted = venue.isReactionsMuted ?? DEFAULT_REACTIONS_MUTED;
+  const isShoutoutsEnabled = venue.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
+
+  const {
+    isShown: isUserAudioMuted,
+    toggle: toggleUserAudio,
+    hide: disableUserAudio,
+    show: enableUserAudio,
+  } = useShowHide(isReactionsMuted);
+
+  useEffect(() => {
+    if (venue.isReactionsMuted) {
+      enableUserAudio();
+    } else {
+      disableUserAudio();
+    }
+  }, [venue.isReactionsMuted, disableUserAudio, enableUserAudio]);
 
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue.id,
   });
-  const parentVenueId = parentVenue?.id;
-
-  const isUserAudioMuted = !isUserAudioOn;
 
   const { iframeUrl, id: venueId } = venue;
-
   const { sectionId } = useParams<{ sectionId: string }>();
-  const {
-    push: openUrlUsingRouter,
-    replace: replaceUrlUsingRouter,
-  } = useHistory();
 
   const {
     auditoriumSection,
@@ -69,7 +81,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   useUpdateAuditoriumRecentSeatedUsers(venueId, isUserSeated && sectionId);
 
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
+  const analytics = useAnalytics({ venue });
 
   // Ensure the user leaves their seat when they leave the section
   useEffect(() => {
@@ -77,6 +89,14 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       leaveSeat();
     };
   }, [leaveSeat]);
+
+  useEffect(() => {
+    analytics.trackEnterAuditoriumSectionEvent();
+  }, [analytics]);
+
+  useEffect(() => {
+    isUserSeated && analytics.trackTakeSeatEvent();
+  }, [analytics, isUserSeated]);
 
   const centralScreenVars = useCss({
     "--central-screen-width-in-seats": screenWidthInSeats,
@@ -97,44 +117,27 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
-  const sectionsCount = venue.sectionsCount ?? 0;
+  const sectionsCount = venue.sectionsCount ?? DEFAULT_SECTIONS_AMOUNT;
   const hasOnlyOneSection = sectionsCount === 1;
-
-  const shouldShowReactions = areSettingsLoaded && settings.showReactions;
 
   const renderReactions = () => {
     return (
-      shouldShowReactions && (
+      venue.showReactions && (
         <div className="Section__reactions">
           <ReactionsBar
             venueId={venueId}
             leaveSeat={leaveSeat}
             isReactionsMuted={isUserAudioMuted}
+            isAudioDisabled={isReactionsMuted}
             toggleMute={toggleUserAudio}
+            isShoutoutsEnabled={isShoutoutsEnabled}
           />
         </div>
       )
     );
   };
 
-  const backToMain = useCallback(() => {
-    if (!venueId) return;
-
-    if (hasOnlyOneSection && parentVenueId) {
-      return enterVenue(parentVenueId, {
-        // NOTE: Replace URL here to get rid of /section/sectionId in the URL
-        customOpenExternalUrl: replaceUrlUsingRouter,
-      });
-    }
-
-    enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [
-    venueId,
-    openUrlUsingRouter,
-    replaceUrlUsingRouter,
-    hasOnlyOneSection,
-    parentVenueId,
-  ]);
+  const isSimpleBackButton = hasOnlyOneSection && parentVenue;
 
   if (!isAuditoriumSectionLoaded) {
     return <Loading label="Loading section data" />;
@@ -144,12 +147,16 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   return (
     <VenueWithOverlay venue={venue} containerClassNames="Section">
-      <BackButton
-        onClick={backToMain}
-        locationName={
-          hasOnlyOneSection && parentVenue ? parentVenue.name : "overview"
-        }
-      />
+      {isSimpleBackButton ? (
+        <BackButton
+          variant="external"
+          space={parentVenue}
+          locationName={parentVenue?.name}
+        />
+      ) : (
+        <BackButton variant="relative" space={venue} locationName="overview" />
+      )}
+
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>

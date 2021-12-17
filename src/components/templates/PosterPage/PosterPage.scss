@@ -1,8 +1,5 @@
 @import "scss/constants";
 
-$poster-cell-optimal-width: 260px;
-$poster-cell-optimal-height: 195px;
-
 .PosterPage {
   padding: $announcement-banner-height $spacing--xl 0;
 
@@ -80,8 +77,8 @@ $poster-cell-optimal-height: 195px;
 
   &__content {
     display: grid;
-    grid-template-columns: $poster-cell-optimal-width 1fr 1fr $poster-cell-optimal-width;
-    grid-template-rows: repeat(auto-fill, $poster-cell-optimal-height);
+    grid-template-columns: $video-participant-optimal-width 1fr 1fr $video-participant-optimal-width;
+    grid-template-rows: repeat(auto-fill, $video-participant-optimal-height);
     gap: $spacing--xs;
 
     grid-template-areas:
@@ -93,7 +90,7 @@ $poster-cell-optimal-height: 195px;
   }
 
   &__control--stop {
-    background-color: $red;
+    background-color: var(--danger--under);
     color: $accent--over;
     opacity: 0.8;
   }
@@ -102,18 +99,20 @@ $poster-cell-optimal-height: 195px;
     grid-area: iframe;
     width: 100%;
     // Take exactly the same amount of space as 3 participants would take
-    height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$spacing--xs});
+    height: calc(
+      3 * #{$video-participant-optimal-height} + 2 * #{$spacing--xs}
+    );
     border: none;
   }
 
   &__video-participant {
-    width: $poster-cell-optimal-width;
-    height: $poster-cell-optimal-height;
+    width: $video-participant-optimal-width;
+    height: $video-participant-optimal-height;
   }
 
   &__join-video-participants-btn {
-    width: $poster-cell-optimal-width;
-    height: $poster-cell-optimal-height;
+    width: $video-participant-optimal-width;
+    height: $video-participant-optimal-height;
 
     display: flex;
     justify-content: center;
@@ -124,11 +123,11 @@ $poster-cell-optimal-height: 195px;
 
     cursor: pointer;
 
-    border: dashed $dark-grey thin;
+    border: dashed $secondary--live thin;
     border-radius: $border-radius--md;
 
     &:hover {
-      background-color: $dark;
+      background-color: $secondary--live;
     }
   }
 

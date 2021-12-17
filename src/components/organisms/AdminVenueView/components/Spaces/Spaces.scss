@@ -8,19 +8,12 @@ $icon-size: 20px;
   display: flex;
   flex: 1;
 
-  .MapPreview {
-    width: calc(100% - 1px);
-    height: calc(100% - 1px);
-    margin: 0;
-  }
-
-  &__map {
+  .AdminShowcase {
     background-color: $secondary--dark;
     justify-content: center;
     align-items: center;
     padding: $spacing--lg;
     margin: 0;
-    max-height: $admin-ng-panel-height;
   }
 
   &__upload-background-wrapper {
@@ -47,19 +40,6 @@ $icon-size: 20px;
     font-weight: bolder;
   }
 
-  &__venue-rooms {
-    padding: $spacing--md;
-    background-color: $saturated-black;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid opaque-white(0.1);
-
-    &:hover {
-      background-color: lighten($saturated-black, 5%);
-    }
-  }
-
   &__venue-room {
     padding: $spacing--md;
     display: flex;
@@ -67,7 +47,7 @@ $icon-size: 20px;
     align-items: center;
 
     &:hover {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 

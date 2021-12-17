@@ -2,7 +2,11 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { IFRAME_ALLOW } from "settings";
+import {
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+  PORTAL_INFO_ICON_MAPPING,
+} from "settings";
 
 import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
@@ -36,10 +40,10 @@ export interface ArtPieceProps {
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   // NOTE: venue should always be there, but per the if(!venue) check bellow, better make safe than sorry
-  const { name, host, config, iframeUrl, videoAspect } = venue ?? {};
+  const { name, host, config, iframeUrl, videoAspect, autoPlay } = venue ?? {};
 
   const landingPageConfig = config?.landingPageConfig;
-  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl });
+  const embeddableUrl = convertToEmbeddableUrl({ url: iframeUrl, autoPlay });
 
   const filteredAspect = filterAspectRatioProperty(videoAspect);
   const customAspect = useCss({
@@ -58,10 +62,14 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
 
   if (!venue) return <Loading label="Loading..." />;
 
+  const infoIcon =
+    host?.icon ||
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+
   return (
     <>
       <VenueWithOverlay venue={venue} containerClassNames="ArtPiece">
-        <InformationLeftColumn iconNameOrPath={host?.icon}>
+        <InformationLeftColumn iconNameOrPath={infoIcon}>
           <InformationCard title="About the venue">
             <p className="ArtPiece__title-sidebar">{name}</p>
             <p className="ArtPiece__short-description-sidebar">

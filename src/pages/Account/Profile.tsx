@@ -1,12 +1,18 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn, useSearchParam } from "react-use";
+import { useAsyncFn } from "react-use";
 
-import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+import {
+  ACCOUNT_PROFILE_QUESTIONS_URL,
+  DEFAULT_SPACE_SLUG,
+  DISPLAY_NAME_MAX_CHAR_COUNT,
+} from "settings";
 
+import { generateUrl } from "utils/url";
+
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
@@ -19,6 +25,7 @@ import { updateUserProfile } from "./helpers";
 
 // @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
+import "./Profile.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -29,10 +36,7 @@ export const Profile: React.FC = () => {
   const history = useHistory();
   const { user, userWithId } = useUser();
 
-  const venueId = useVenueId() ?? DEFAULT_VENUE;
-
-  const returnUrl: string | undefined =
-    useSearchParam("returnUrl") ?? undefined;
+  const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
   const {
     register,
@@ -55,25 +59,23 @@ export const Profile: React.FC = () => {
 
       await updateUserProfile(user.uid, data);
 
-      const accountQuestionsUrlParams = new URLSearchParams();
-      accountQuestionsUrlParams.set("venueId", venueId);
-      returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
-
       // @debt Should we throw an error here rather than defaulting to empty string?
-      const nextUrl = venueId
-        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
-        : returnUrl ?? "";
+      const nextUrl = generateUrl({
+        route: ACCOUNT_PROFILE_QUESTIONS_URL,
+        required: ["worldSlug"],
+        params: { worldSlug, spaceSlug },
+      });
 
       history.push(nextUrl);
     },
-    [history, returnUrl, user, venueId]
+    [history, user, worldSlug, spaceSlug]
   );
 
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
-      <div className="login-container">
+    <div className="Profile page-container-onboarding">
+      <div className="Profile__container login-container">
         <h2 className="login-welcome-title">
           Well done! Now create your profile
         </h2>
@@ -111,7 +113,11 @@ export const Profile: React.FC = () => {
 
             {user && (
               <ProfilePictureInput
-                {...{ venueId, setValue, user, errors, pictureUrl, register }}
+                setValue={setValue}
+                user={user}
+                errors={errors}
+                pictureUrl={pictureUrl}
+                register={register}
               />
             )}
           </div>
@@ -120,7 +126,7 @@ export const Profile: React.FC = () => {
             <ButtonNG
               type="submit"
               className="create-account__button"
-              variant="primary"
+              variant="login-gradient"
               disabled={!formState.isValid || isUpdating}
             >
               Create my profile

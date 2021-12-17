@@ -1,11 +1,11 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { DropdownButton } from "react-bootstrap";
 
 import "./Dropdown.scss";
 
 export interface DropdownProps {
-  title: string;
-  options: JSX.Element[];
+  title: string | ReactNode;
+  options: ReactNode[];
 }
 
 // @debt look into the possibility of creating more robust (and isolated) component without Bootstrap

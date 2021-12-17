@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Suspense, useEffect, useMemo, useState } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 import { addDays } from "date-fns";
@@ -14,19 +14,21 @@ import {
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useValidImage } from "hooks/useCheckImage";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
+import Login from "pages/Account/Login";
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubListNG } from "components/molecules/ScheduleEventListNG/ScheduleEventSubListNG";
+
+import { NotFound } from "components/atoms/NotFound";
 
 import EmergencyViewPageRooms from "./EmergencyViewPageRooms";
 import EmergencyViewTabs from "./EmergencyViewTabs";
@@ -39,11 +41,15 @@ export const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
-  const venueId = useVenueId() || "";
+  const { worldSlug, spaceSlug } = useSpaceParams();
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const {
+    space,
+    spaceId,
+    isLoaded: isCurrentVenueLoaded,
+  } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const { userWithId } = useUser();
+  const { user, userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
@@ -56,10 +62,7 @@ export const EmergencyViewPage: React.FC = () => {
     userEventIds,
   });
 
-  const venueRequestStatus = useSelector(
-    (state) => state.firestore.status.requested.currentVenue
-  );
-  const redirectUrl = venue?.config?.redirectUrl ?? "";
+  const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
   useEffect(() => {
@@ -69,11 +72,11 @@ export const EmergencyViewPage: React.FC = () => {
   }, [hostname, redirectUrl]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
   const weekdays = useMemo(() => {
     return range(dayDifference)
@@ -105,7 +108,7 @@ export const EmergencyViewPage: React.FC = () => {
   }, [dayDifference, liveAndFutureEvents, firstScheduleDate]);
 
   const [validBannerImageUrl] = useValidImage(
-    venue?.config?.landingPageConfig.bannerImageUrl,
+    space?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
@@ -115,12 +118,24 @@ export const EmergencyViewPage: React.FC = () => {
 
   const containerClasses = classNames("EmergencyView", containerVars);
 
-  if (venueRequestStatus && !venue && !venueId) {
-    return <>This venue does not exist</>;
+  if (!spaceId || (isCurrentVenueLoaded && !space)) {
+    return (
+      <WithNavigationBar withHiddenLoginButton>
+        <NotFound />
+      </WithNavigationBar>
+    );
   }
 
-  if (!venue) {
+  if (!space) {
     return <LoadingPage />;
+  }
+
+  if (!user) {
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <Login venueId={spaceId} />
+      </Suspense>
+    );
   }
 
   return (

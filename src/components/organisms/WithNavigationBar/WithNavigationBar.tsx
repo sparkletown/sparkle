@@ -2,9 +2,9 @@ import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 
@@ -24,19 +24,25 @@ const NavBar = lazy(() =>
 export interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
+  withRadio?: boolean;
   withPhotobooth?: boolean;
+  withHiddenLoginButton?: boolean;
+  title?: string;
+  variant?: "internal-scroll";
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
+  withHiddenLoginButton,
+  withRadio,
+  title,
+  variant,
   children,
 }) => {
-  // @debt remove useVenueId from here and just pass it through as a prop/similar
-  const venueId = useVenueId();
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt remove backButton from Navbar
   return (
@@ -46,20 +52,31 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId} worldId={venue?.worldId}>
+      <RelatedVenuesProvider venueId={spaceId} worldId={space?.worldId}>
         <Suspense fallback={<Loading />}>
           <NavBar
             hasBackButton={hasBackButton}
             withSchedule={withSchedule}
             withPhotobooth={withPhotobooth}
+            withHiddenLoginButton={withHiddenLoginButton}
+            withRadio={withRadio}
+            title={title}
           />
         </Suspense>
       </RelatedVenuesProvider>
 
-      <div className="navbar-margin">{children}</div>
+      {variant === "internal-scroll" ? (
+        <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
+          <div className="WithNavigationBar__slider WithNavigationBar__slider--internal-scroll">
+            {children}
+          </div>
+        </div>
+      ) : (
+        <div className="WithNavigationBar__wrapper">{children}</div>
+      )}
 
       <Footer />
-      {venue && <NewProfileModal venue={venue} />}
+      <NewProfileModal venue={space} />
     </>
   );
 };

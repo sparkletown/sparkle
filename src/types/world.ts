@@ -1,13 +1,18 @@
-import { UsernameVisibility } from "types/User";
-import { Question } from "types/venues";
+import { EntranceStepConfig } from "types/EntranceStep";
+import { Question } from "types/Question";
+import { UserStatus } from "types/User";
+
+import { Branded } from "utils/types";
+
+export type WorldSlug = Branded<string, "WorldSlug">;
 
 export enum WorldNavTab {
-  start = "start",
+  general = "general",
   entrance = "entrance",
   advanced = "advanced",
 }
 
-export interface WorldStartFormInput {
+export interface WorldGeneralFormInput {
   name: string;
   description?: string;
   subtitle?: string;
@@ -18,12 +23,19 @@ export interface WorldStartFormInput {
 }
 
 export interface WorldEntranceFormInput {
-  code_of_conduct_questions: Question[];
-  profile_questions: Question[];
+  code: Question[];
+  profile: Question[];
+  entrance?: EntranceStepConfig[];
+  adultContent?: boolean;
+  requiresDateOfBirth?: boolean;
 }
 
 export interface WorldAdvancedFormInput {
   attendeesTitle?: string;
-  chatTitle?: string;
-  showNametags?: UsernameVisibility;
+  showBadges?: boolean;
+  showRadio?: boolean;
+  radioStation?: string;
+  showSchedule?: boolean;
+  showUserStatus?: boolean;
+  userStatuses?: UserStatus[];
 }

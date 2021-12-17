@@ -1,19 +1,43 @@
 @import "scss/constants.scss";
 
-$max-allowed-button-width: 275px;
-$normal-button-width: 100%;
-
 // order of elements:
 // $modifier  - will be used as ButtonNG--modifier
 // $color     - the same foreground color with :hover and without
 // $normal-bg - the normal background color
 // $hover-bg  - the background color when button is :hover-ed
 $variants-enum: (
-  ("primary", $content--over, $accent--under, $primary--live-hover),
-  ("secondary", $content--over, opaque-white(0.2), opaque-white(0.25)),
-  ("white", $accent--under, $content--over, $content--over),
-  ("dark", $content--over, opaque-black(0.4), opaque-black(0.6)),
-  ("danger", $accent--over, $input--invalid, lighten($input--invalid, 10%))
+  ("primary", var(--content--over), var(--accent--under), $primary--live-hover),
+  (
+    "secondary",
+    var(--content--over),
+    var(--content--over-20a),
+    var(--content--over-30a)
+  ),
+  ("white", var(--accent--under), var(--content--over), var(--content--over)),
+  (
+    "dark",
+    var(--content--over),
+    var(--content--under-40a),
+    var(--content--under-60a)
+  ),
+  (
+    "login-primary",
+    var(--content--over),
+    var(--accent--under),
+    var(--primary--under-darker-10pp)
+  ),
+  (
+    "login-outline",
+    var(--content--over),
+    transparent,
+    var(--primary--under-darker-10pp)
+  ),
+  (
+    "danger",
+    var(--danger--over),
+    var(--danger--under),
+    var(--danger--under-lighter-10pp)
+  )
 );
 
 @function calc-size-by-factor($factor) {
@@ -25,8 +49,8 @@ $variants-enum: (
 
   padding: $spacing--md;
   margin: $spacing--xs;
-  width: $normal-button-width;
-  max-width: $max-allowed-button-width;
+  width: $button-width--normal;
+  max-width: $button-width--max;
 
   border-radius: $border-radius--xl;
   border: none;
@@ -42,21 +66,22 @@ $variants-enum: (
   transform: translateY(0);
   transition: transform 0.4s $transition-function;
 
-  color: $content--over;
-  text-shadow: 0 1px 2px opaque-black(0.25);
-  background-color: opaque-white(0.2);
+  color: var(--content--over);
+  text-shadow: $text-shadow--thin;
+  background-color: var(--content--over-20a);
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 10px opaque-black(0.25);
+  box-shadow: box-shadow--medium(var(--content--under-25a));
 
   &:hover {
     color: currentColor;
-    background-color: opaque-white(0.25);
+    background-color: var(--content--over-25a);
     text-decoration: none;
   }
 
-  &:focus {
+  &:focus,
+  &:focus:hover {
     outline: none;
-    box-shadow: 0 0 0 2px opaque-white(0.25);
+    box-shadow: box-shadow--input(var(--content--over-80a));
   }
 
   &:enabled:hover,
@@ -68,10 +93,10 @@ $variants-enum: (
   &--disabled:hover,
   &:disabled,
   &:disabled:hover {
-    color: opaque-white(0.4);
-    background: opaque-white(0.1);
+    color: var(--content--over-40a);
+    background: var(--content--over-10a);
     backdrop-filter: blur(10px);
-    box-shadow: 0 2px 4px opaque-black(0.25);
+    box-shadow: box-shadow--small(var(--content--under-25a));
     cursor: default;
   }
 
@@ -81,6 +106,10 @@ $variants-enum: (
 
   &__icon--icon-text {
     margin-right: 1em;
+  }
+
+  &__icon--loading {
+    filter: $drop-shadow--outline;
   }
 
   &--1x {
@@ -117,5 +146,20 @@ $variants-enum: (
 
   &--normal-gradient:enabled {
     background-image: $gradient;
+  }
+
+  &--login-gradient:enabled {
+    background-image: $login-rainbox-gradient;
+  }
+
+  &--login-outline {
+    box-shadow: inset box-shadow--input(var(--accent--under)),
+      box-shadow--medium(var(--content--over-25a));
+
+    &:focus,
+    &:hover {
+      opacity: 0.8;
+      background-color: var(--primary--under-darker-10pp);
+    }
   }
 }

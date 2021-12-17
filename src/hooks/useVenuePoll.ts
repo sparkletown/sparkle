@@ -9,39 +9,40 @@ import {
   PollVoteBase,
 } from "types/chat";
 
-import { buildMessage } from "utils/chat";
+import { buildBaseMessage } from "utils/chat";
 
+import { useSpaceParams } from "./spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "./spaces/useWorldAndSpaceBySlug";
 import { useUser } from "./useUser";
-import { useVenueId } from "./useVenueId";
 
 export const useVenuePoll = () => {
-  const venueId = useVenueId();
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+
   const { userWithId } = useUser();
 
   const voteInPoll = useCallback(
     async (pollVote: PollVoteBase) => {
-      if (!venueId) return;
+      if (!spaceId) return;
 
-      return voteInVenuePoll({ pollVote, venueId });
+      return voteInVenuePoll({ pollVote, venueId: spaceId });
     },
-    [venueId]
+    [spaceId]
   );
 
   const createPoll = useCallback(
     async (pollValues: PollValues) => {
-      if (!venueId || !userWithId) return;
+      if (!spaceId || !userWithId) return;
 
-      const message = buildMessage<PollMessage>(userWithId, {
+      const message = buildBaseMessage<PollMessage>("poll", userWithId, {
         poll: pollValues,
         type: ChatMessageType.poll,
         votes: [],
-        // @debt remove this useless text from here
-        text: "poll",
       });
 
-      return sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId: spaceId, message });
     },
-    [venueId, userWithId]
+    [spaceId, userWithId]
   );
 
   return useMemo(

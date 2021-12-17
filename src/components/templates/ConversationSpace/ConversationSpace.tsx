@@ -1,12 +1,16 @@
-import React, { useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  DEFAULT_VENUE_LOGO,
+  PORTAL_INFO_ICON_MAPPING,
+} from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
-import { openUrl, venueInsideUrl } from "utils/url";
 
+import { useAnalytics } from "hooks/useAnalytics";
 import { useExperiences } from "hooks/useExperiences";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
@@ -18,7 +22,7 @@ import { Room } from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
-import TableHeader from "components/molecules/TableHeader";
+import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
@@ -26,7 +30,7 @@ import { UserList } from "components/molecules/UserList";
 import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
-import { TABLES } from "./constants";
+import { TABLES as DEFAULT_TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
@@ -37,6 +41,8 @@ export interface ConversationSpaceProps {
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   venue,
 }) => {
+  const analytics = useAnalytics({ venue });
+
   const { parentVenue, parentVenueId } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
@@ -53,20 +59,22 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     seatedAtTable && venue?.id
   );
 
+  useEffect(() => {
+    if (seatedAtTable) analytics.trackSelectTableEvent();
+  }, [analytics, seatedAtTable]);
+
   useExperiences(venue?.name);
 
-  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
+  const generatedTables = venue?.config?.tables;
 
-    openUrl(venueInsideUrl(parentVenueId));
-  }, [parentVenueId]);
+  const infoIcon =
+    venue?.host?.icon ||
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
 
-  const tables = venue?.config?.tables ?? TABLES;
-
+  const tables = generatedTables ?? DEFAULT_TABLES;
   return (
     <>
-      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
+      <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>
@@ -81,10 +89,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
       </InformationLeftColumn>
       <VenueWithOverlay venue={venue} containerClassNames="conversation-space">
         {!seatedAtTable && parentVenueId && parentVenue && (
-          <BackButton
-            onClick={backToParentVenue}
-            locationName={parentVenue.name}
-          />
+          <BackButton variant="simple" space={parentVenue} />
         )}
         <div className={`scrollable-area ${seatedAtTable && "at-table"}`}>
           {venue.description?.text && (
@@ -105,6 +110,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
+                  defaultTables={DEFAULT_TABLES}
                 />
               )}
               {seatedAtTable && (
@@ -133,7 +139,9 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              defaultTables={DEFAULT_TABLES}
               showOnlyAvailableTables={showOnlyAvailableTables}
+              venue={venue}
             />
           </div>
           <UserList

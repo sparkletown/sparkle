@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import classNames from "classnames";
 import {
   addDays,
@@ -25,11 +31,12 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 
-// Disabled as per designs. Up for deletion if confirmied not necessary
+// Disabled as per designs. Up for deletion if confirmed not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
@@ -53,9 +60,22 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
 }) => {
+  // @debt This refetchIndex is used to force a refetch of the data when events
+  // have been edited. It's horrible and needs a rethink. It also doesn't
+  // help the attendee side at all.
+  const [refetchIndex, setRefetchIndex] = useState(0);
+  const prevIsVisibleRef = useRef<boolean>();
+  useEffect(() => {
+    if (prevIsVisibleRef.current !== isVisible) {
+      setRefetchIndex(refetchIndex + 1);
+      prevIsVisibleRef.current = isVisible;
+    }
+  }, [isVisible, prevIsVisibleRef, refetchIndex]);
   const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const { worldSlug } = useWorldParams();
 
   const { userWithId } = useUser();
   const userEventIds =
@@ -75,7 +95,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ userEventIds });
+  } = useVenueScheduleEvents({ userEventIds, refetchIndex });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -193,9 +213,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const scheduleNGWithAttendees = {
     ...scheduleNG,
     daysEvents: scheduleNG.daysEvents.map((event) => {
-      const portalVenue = findVenueInRelatedVenues(event.venueId);
+      const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
 
       return prepareForSchedule({
+        worldSlug,
         relatedVenues,
         usersEvents: userEventIds,
         recentRoomUsersCount: portalVenue?.recentUserCount,
@@ -206,6 +227,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
+          worldSlug,
           relatedVenues,
           usersEvents: userEventIds,
         })
@@ -213,17 +235,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       .filter((event) => event.isSaved);
 
     downloadCalendar({
-      calendar: createCalendar({ events: allPersonalEvents }),
+      calendar: createCalendar({
+        worldSlug,
+        relatedVenues,
+        events: allPersonalEvents,
+      }),
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
     });
-  }, [liveAndFutureEvents, relatedVenues, userEventIds]);
+  }, [liveAndFutureEvents, relatedVenues, userEventIds, worldSlug]);
 
   const downloadAllEventsCalendar = useCallback(() => {
     downloadCalendar({
-      calendar: createCalendar({ events: liveAndFutureEvents }),
+      calendar: createCalendar({
+        worldSlug,
+        relatedVenues,
+        events: liveAndFutureEvents,
+      }),
       calendarName: `${PLATFORM_BRAND_NAME}_Full`,
     });
-  }, [liveAndFutureEvents]);
+  }, [worldSlug, relatedVenues, liveAndFutureEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
@@ -257,7 +287,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         {venue && sovereignVenue && (
           <Breadcrumbs
             containerClassName="NavBarSchedule__breadcrumbs"
-            label="Events on"
+            label="Schedule for"
             onSelect={onBreacrumbsSelect}
             locations={breadcrumbedLocations}
           />

@@ -1,56 +1,43 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
-import { faSmile } from "@fortawesome/free-regular-svg-icons";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { useAsyncFn } from "react-use";
+import { faSmile } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
-import { CHAT_MESSAGE_TIMEOUT } from "settings";
+import { DEFAULT_GLOBAL_CHAT_NAME } from "settings";
 
-import { MessageToDisplay, SendChatReplyProps, SendMessage } from "types/chat";
+import { ChatTypes, SendChatMessage, SendThreadMessageProps } from "types/chat";
 
-import { WithId } from "utils/id";
-
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useShowHide } from "hooks/useShowHide";
 
+import {
+  useChatboxSendChatMessage,
+  useSelectedReplyThread,
+} from "components/molecules/Chatbox/components/context/ChatboxContext";
 import { EmojiPicker } from "components/molecules/EmojiPicker";
 
 import { InputField } from "components/atoms/InputField";
 
+import SendIcon from "assets/icons/send.svg";
+
 import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
-  selectedThread?: WithId<MessageToDisplay>;
-  sendMessage: SendMessage;
+  sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps>;
   unselectOption: () => void;
   isQuestion?: boolean;
-  onReplyToThread: (data: SendChatReplyProps) => Promise<void>;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
-  selectedThread,
-  sendMessage,
+  sendThreadMessageWrapper,
   unselectOption,
-  onReplyToThread,
   isQuestion = false,
 }) => {
-  const hasChosenThread = selectedThread !== undefined;
-  const [isSendingMessage, setMessageSending] = useState(false);
-
-  // @debt replace with useDebounce
-  // This logic disallows users to spam into the chat. There should be a delay, between each message
-  useEffect(() => {
-    if (!isSendingMessage) return;
-
-    const timeoutId = setTimeout(() => {
-      setMessageSending(false);
-    }, CHAT_MESSAGE_TIMEOUT);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isSendingMessage]);
+  const selectedThreadId = useSelectedReplyThread()?.id;
+  const hasChosenThread = Boolean(selectedThreadId);
 
   const {
     register,
@@ -65,20 +52,32 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     mode: "onSubmit",
   });
 
-  const sendMessageToChat = handleSubmit(async ({ message }) => {
-    setMessageSending(true);
-    await sendMessage({ message, isQuestion });
-    reset();
-    unselectOption();
-  });
+  const sendMessage = useChatboxSendChatMessage();
 
-  const sendReplyToThread = handleSubmit(async ({ message }) => {
-    if (!selectedThread) return;
+  const { chatSettings } = useChatSidebarControls();
 
-    setMessageSending(true);
-    await onReplyToThread({ replyText: message, threadId: selectedThread.id });
-    reset();
-  });
+  const [{ loading: isSendingMessage }, sendMessageToChat] = useAsyncFn(
+    async ({ message }) => {
+      reset();
+      unselectOption();
+
+      await sendMessage({ text: message, isQuestion });
+    },
+    [isQuestion, reset, sendMessage, unselectOption]
+  );
+
+  const [{ loading: isReplying }, sendReplyToThread] = useAsyncFn(
+    async ({ message }) => {
+      if (!selectedThreadId) return;
+      reset();
+
+      await sendThreadMessageWrapper({
+        text: message,
+        threadId: selectedThreadId,
+      });
+    },
+    [sendThreadMessageWrapper, reset, selectedThreadId]
+  );
 
   const {
     isShown: isEmojiPickerVisible,
@@ -100,7 +99,11 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const chatValue = watch("message");
 
-  const placeholderValue = isQuestion ? "question" : "message";
+  const placeholderValue = isQuestion ? "Question" : "Message";
+  const recipient =
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
+      ? chatSettings.recipient?.partyName
+      : DEFAULT_GLOBAL_CHAT_NAME;
 
   const buttonClasses = classNames("Chatbox__submit-button", {
     "Chatbox__submit-button--question": isQuestion,
@@ -110,38 +113,32 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     <>
       <form
         className="Chatbox__form"
-        onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
+        onSubmit={handleSubmit(
+          hasChosenThread ? sendReplyToThread : sendMessageToChat
+        )}
       >
         <InputField
           inputClassName="Chatbox__input"
           ref={register({ required: true })}
           name="message"
-          placeholder={`Write your ${placeholderValue}...`}
+          placeholder={`${placeholderValue} ${recipient}`}
           autoComplete="off"
+          iconEnd={
+            <FontAwesomeIcon
+              icon={faSmile}
+              className="Chatbox__submit-button-icon"
+              size="lg"
+            />
+          }
+          onIconEndClick={toggleEmojiPicker}
         />
-        <button
-          aria-label="Send message"
-          className="Chatbox__submit-button"
-          type="button"
-          onClick={toggleEmojiPicker}
-        >
-          <FontAwesomeIcon
-            icon={faSmile}
-            className="Chatbox__submit-button-icon"
-            size="lg"
-          />
-        </button>
         <button
           aria-label="Send message"
           className={buttonClasses}
           type="submit"
-          disabled={!chatValue || isSendingMessage}
+          disabled={!chatValue || isSendingMessage || isReplying}
         >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="Chatbox__submit-button-icon"
-            size="lg"
-          />
+          <img src={SendIcon} alt="sideward airplane" />
         </button>
       </form>
 

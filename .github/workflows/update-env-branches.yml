@@ -16,24 +16,24 @@ jobs:
         run: |
           # Temporarily disable the envs deployment
 
-          # git fetch origin master
+          git fetch origin master
 
           # git push origin master:sparkle1
-          # git push origin master:sparkle2
+          git push origin master:sparkle2
           # git push origin master:sparkle3
           # git push origin master:sparkle4
           # git push origin master:sparkle5
 
           # git push origin master:sparkle6
-          # git push origin master:sparkle7
-          # git push origin master:sparkle8
+          git push origin master:sparkle7
+          git push origin master:sparkle8
           # git push origin master:sparkle9
           # git push origin master:sparkle10
 
           # git push origin master:bigtop
           # git push origin master:deloitte
 
-          # git push origin master:env/demo
+          git push origin master:env/demo
           # git push origin master:env/northwell
 
           # Unused envs

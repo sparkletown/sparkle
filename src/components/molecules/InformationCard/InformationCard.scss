@@ -2,14 +2,14 @@
 
 .information-card-container {
   border-radius: 30px;
-  background: $dark-grey;
+  background: $secondary--live;
   padding: 20px;
   max-height: 370px;
   overflow: auto;
 }
 
 .information-card-text {
-  color: $concrete;
+  color: var(--content--over-60a);
   font-size: 12px;
   margin-bottom: 0px;
 

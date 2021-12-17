@@ -4,11 +4,10 @@ import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
-import { useVenueChat } from "hooks/chats/venueChat";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -22,16 +21,15 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
 
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
-  const venueId = useVenueId();
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
-  const { messagesToDisplay: venueChatMessages } = useVenueChat(venueId);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(
-    currentVenue
+    spaceId
       ? {
           collection: "experiences",
-          doc: currentVenue.id,
+          doc: spaceId,
           subcollections: [{ collection: "reactions" }],
           orderBy: ["created_at", "desc"],
           storeAs: "reactions",
@@ -46,16 +44,13 @@ export const ReactionPage: React.FC = () => {
 
       <div className="row">
         <div className="col-8">
-          <ReactionList
-            reactions={reactions}
-            chatMessages={venueChatMessages}
-          />
+          <ReactionList reactions={reactions} chatMessages={[]} />
         </div>
 
         <div className="col-4">
           <UserList
-            usersSample={currentVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-            userCount={currentVenue?.recentUserCount ?? 0}
+            usersSample={space?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={space?.recentUserCount ?? 0}
             showEvenWhenNoUsers
           />
         </div>

@@ -125,7 +125,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle9" ]; then
               ENV=sparkle-9
             fi
-            if [ $CIRCLE_BRANCH = "sparkle10" ]; then
+            if [ $CIRCLE_BRANCH = "staging-av1" ]; then
               ENV=sparkle-10
             fi
             if [ $CIRCLE_BRANCH = "bigtop" ]; then
@@ -201,6 +201,7 @@ jobs:
       - *notify-on-fail
   deploy-hosting:
     executor: node/default
+    resource_class: "large"
     steps:
       - checkout
       - node/install-packages

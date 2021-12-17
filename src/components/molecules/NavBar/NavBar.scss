@@ -3,6 +3,7 @@
 $photobooth-button-margin: 140px 0px 0px;
 $photobooth-button-text-margin: 38px 0px 0px;
 $photobooth-button-background-size: 35px;
+$nav-bar-title-width: 120px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -13,11 +14,6 @@ $photobooth-button-background-size: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  .log-in-button {
-    cursor: pointer;
-    font-size: 18px;
-  }
 
   .logout-span {
     cursor: pointer;
@@ -30,7 +26,7 @@ $photobooth-button-background-size: 35px;
   }
 
   .notification-card {
-    background: $red;
+    background: var(--danger--under);
     color: $content--over;
     position: absolute;
     bottom: 0;
@@ -66,7 +62,7 @@ $photobooth-button-background-size: 35px;
 
       &:hover {
         background: #ebebeb;
-        color: $dark;
+        color: $secondary--live;
       }
     }
   }
@@ -80,7 +76,7 @@ $photobooth-button-background-size: 35px;
   display: flex;
   height: $navbar-height;
   padding: 0 15px;
-  background-color: $dark;
+  background-color: $secondary--live;
 
   #sound-cloud-player {
     border: none;
@@ -96,6 +92,18 @@ $photobooth-button-background-size: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 100%;
+}
+
+.nav-location-title {
+  display: flex;
+  width: $nav-bar-title-width;
+  border-left: $border-width--slim solid $lighter-intermediate-grey;
+  border-right: $border-width--slim solid $lighter-intermediate-grey;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  margin-right: $spacing--sm;
 }
 
 .nav-sparkle-logo,
@@ -260,6 +268,7 @@ $photobooth-button-background-size: 35px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
+    color: $content--over;
 
     margin-right: $spacing--md;
 

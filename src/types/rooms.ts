@@ -5,7 +5,7 @@ import { DisplayUser } from "types/User";
 import { WithId } from "utils/id";
 
 import { SoundConfigReference } from "./sounds";
-import { RoomVisibility, VenueTemplate } from "./venues";
+import { PortalTemplate, RoomVisibility } from "./venues";
 
 export enum RoomType {
   unclickable = "UNCLICKABLE",
@@ -13,22 +13,26 @@ export enum RoomType {
   modalFrame = "MODALFRAME",
 }
 
-export interface Room {
+export interface PortalBox {
+  width_percent: number;
+  height_percent: number;
+  x_percent: number;
+  y_percent: number;
+}
+
+export interface Room extends PortalBox {
   type?: RoomType;
   zIndex?: number;
   title: string;
   subtitle?: string;
   url: string;
   about?: string;
-  x_percent: number;
-  y_percent: number;
-  width_percent: number;
-  height_percent: number;
   isEnabled: boolean;
   visibility?: RoomVisibility;
   image_url: string;
   enterSound?: SoundConfigReference;
-  template?: VenueTemplate;
+  template?: PortalTemplate;
+  spaceId?: string;
 }
 
 export type ParticipantWithUser<
@@ -36,4 +40,17 @@ export type ParticipantWithUser<
 > = {
   participant: T;
   user: WithId<DisplayUser>;
+};
+
+export type RoomInput = Omit<Room, "image_url"> & {
+  image_url?: string;
+  image_file?: FileList;
+};
+
+// @debt Since the additional 2 fields are optional, they can probably be moved to RoomInput
+export type PortalInput = Room & {
+  venueName?: string;
+  useUrl?: boolean;
+  image_url?: string;
+  image_file?: FileList;
 };

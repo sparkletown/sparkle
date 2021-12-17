@@ -22,21 +22,10 @@
   @include square-size($default-avatar-size);
   position: relative;
 
-  &:hover {
-    .UserAvatar__nametag--hover {
-      opacity: 1;
-
-      background-color: $accent--under;
-      padding: $spacing--xs;
-
-      transform: scale(1.5) translate(-35%, 50%);
-      box-shadow: 0 0 0 3px lighten($primary--darker, 10%),
-        0 2px 4px opaque-black(0.2);
-    }
-  }
-
   &__image {
     @include square-size($default-image-size);
+    @include circle-avatar;
+
     border-radius: 50%;
     vertical-align: unset;
   }
@@ -70,34 +59,5 @@
     &--#{$modifier} img {
       @include square-size($size);
     }
-  }
-
-  &__nametag {
-    position: absolute;
-    color: $content--over;
-
-    opacity: 0;
-
-    min-width: 70%;
-
-    text-align: center;
-
-    margin: 0 -50% 0 auto;
-    padding: 0 $spacing--xs;
-
-    bottom: 10%;
-    left: 50%;
-
-    border-radius: $border-radius--md;
-
-    font-size: $font-size--xs;
-    line-height: 1;
-
-    background-color: opaque-black(0.4);
-    box-shadow: 0 2px 4px opaque-black(0.2);
-
-    transform: translate(-50%, 0);
-    transition: transform 400ms, padding 400ms, opacity 600ms,
-      background-color 600ms;
   }
 }

@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import { GridPosition } from "types/grid";
 import { DisplayUser, TableSeatedUser } from "types/User";
-import { AnyVenue, VenueTablePath } from "types/venues";
+import { AnyVenue, VenueTablePath, VenueTemplate } from "types/venues";
 
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
@@ -88,27 +88,54 @@ export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
-  mapBackgroundImage_url?: string;
-  mapBackgroundImage_file?: FileList;
+  bannerImageUrl?: string;
+  bannerImageFile?: FileList;
+  logoImageUrl?: string;
+  logoImageFile?: FileList;
+  numberOfSections?: number;
 };
 
 export const updateVenueNG = async (
   venue: VenueInputForm,
   user: firebase.UserInfo
 ) => {
-  const file = venue.mapBackgroundImage_file?.[0];
-  if (file) {
+  const bannerFile = venue.bannerImageFile?.[0];
+  const logoFile = venue.logoImageFile?.[0];
+
+  if (bannerFile) {
     const storageRef = firebase.storage().ref();
-    const fileExtension = file.name.split(".").pop();
+    const fileExtension = bannerFile.name.split(".").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venue.id}/mapBackground.${fileExtension}`
+      `users/${user.uid}/venues/${venue.id}/bannerImage.${fileExtension}`
     );
-    await uploadFileRef.put(file);
+    await uploadFileRef.put(bannerFile);
     const downloadUrl = await uploadFileRef.getDownloadURL();
-    venue.mapBackgroundImageUrl = downloadUrl;
+    venue.bannerImageUrl = downloadUrl;
   }
 
-  return await firebase.functions().httpsCallable("venue-updateVenueNG")(venue);
+  if (logoFile) {
+    const storageRef = firebase.storage().ref();
+    const fileExtension = logoFile.name.split(".").pop();
+    const uploadFileRef = storageRef.child(
+      `users/${user.uid}/venues/${venue.id}/logoImage.${fileExtension}`
+    );
+    await uploadFileRef.put(logoFile);
+    const downloadUrl = await uploadFileRef.getDownloadURL();
+    venue.logoImageUrl = downloadUrl;
+  }
+
+  const updateResponse = await firebase
+    .functions()
+    .httpsCallable("venue-updateVenueNG")(venue);
+
+  if (venue.template === VenueTemplate.auditorium) {
+    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+      venueId: venue.id,
+      numberOfSections: venue.numberOfSections,
+    });
+  }
+
+  return updateResponse;
 };
 
 const getUserInSectionRef = (userId: string, path: AuditoriumSectionPath) =>

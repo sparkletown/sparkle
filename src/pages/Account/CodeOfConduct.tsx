@@ -1,21 +1,24 @@
 import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { useAsyncFn, useSearchParam } from "react-use";
+import { useAsyncFn } from "react-use";
 
-import { currentVenueSelector } from "utils/selectors";
-import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
+import {
+  externalUrlAdditionalProps,
+  generateAttendeeInsideUrl,
+} from "utils/url";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { NotFound } from "components/atoms/NotFound";
 
 import { updateUserProfile } from "./helpers";
 
@@ -34,24 +37,16 @@ export interface CodeOfConductFormData {
   regionalBurn: string;
 }
 
-export interface CodeOfConductQuestion {
-  name: keyof CodeOfConductFormData;
-  text: string;
-  link?: string;
-}
-
 export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
-  const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
   const { user } = useUser();
 
-  const venueId = useVenueId();
-
-  // @debt this should probably be retrieving the sovereign venue
-  // @debt replace this with useConnectCurrentVenueNG or similar?
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const { register, handleSubmit, errors, formState, watch } = useForm<
     CodeOfConductFormData & Record<string, boolean>
@@ -61,19 +56,19 @@ export const CodeOfConduct: React.FC = () => {
 
   const proceed = useCallback(() => {
     // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = venueId ? venueInsideUrl(venueId) : returnUrl ?? "";
+    const nextUrl = generateAttendeeInsideUrl({ worldSlug, spaceSlug });
 
     history.push(nextUrl);
-  }, [history, returnUrl, venueId]);
+  }, [history, worldSlug, spaceSlug]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!isLoaded) return;
 
-    // Skip this screen if there are no code of conduct questions for the venue
-    if (!venue?.code_of_conduct_questions?.length) {
+    // Skip this screen if there are no code of conduct questions
+    if (!world?.questions?.code?.length) {
       proceed();
     }
-  }, [proceed, venue]);
+  }, [isLoaded, proceed, world?.questions?.code?.length]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: CodeOfConductFormData) => {
@@ -86,25 +81,26 @@ export const CodeOfConduct: React.FC = () => {
   );
 
   useEffect(() => {
-    if (!venue) return;
+    if (!space) return;
 
     // @debt replace this with useCss?
-    updateTheme(venue);
-  }, [venue]);
+    updateTheme(space);
+  }, [space]);
 
-  if (!venueId) {
-    return <>Error: Missing required venueId param</>;
+  // @debt Maybe add something more pretty for UX here, in the vein of NotFound (with custom message)
+  if (!spaceSlug) {
+    return <>Error: Missing required spaceSlug param</>;
   }
 
-  if (isLoaded(venue) && !venue) {
-    return <>Error: venue not found for venueId={venueId}</>;
+  if (isLoaded && !space) {
+    return <NotFound />;
   }
 
-  if (!venue) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 
-  const codeOfConductQuestions = venue?.code_of_conduct_questions ?? [];
+  const codeOfConductQuestions = world?.questions?.code ?? [];
 
   return (
     <div className="CodeOfConduct page-container">
@@ -123,6 +119,7 @@ export const CodeOfConduct: React.FC = () => {
                     watch(question.name) && "checkbox-checked"
                   }`}
                 >
+                  {question.name}:{" "}
                   {question.link && (
                     <a href={question.link} {...externalUrlAdditionalProps}>
                       {question.text}
@@ -146,13 +143,13 @@ export const CodeOfConduct: React.FC = () => {
             ))}
 
             <div className="input-group">
-              <button
+              <ButtonNG
+                variant="primary"
                 type="submit"
-                className="btn btn-primary btn-block btn-centered"
                 disabled={!formState.isValid || isUpdating}
               >
                 Enter the event
-              </button>
+              </ButtonNG>
               {isUpdating && <Loading />}
               {httpError && (
                 <span className="input-error">{httpError.message}</span>

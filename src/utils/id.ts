@@ -5,7 +5,10 @@ import omit from "lodash/omit";
 
 export type WithId<T extends object> = T & { id: string };
 
+export type WithSlug<T extends object> = T & { slug: string };
+
 export type WithWorldId<T extends object> = T & { worldId: string };
+export type WithOptionalWorldId<T extends object> = T & { worldId?: string };
 
 export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
   ...obj,

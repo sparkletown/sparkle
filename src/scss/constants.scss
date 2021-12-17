@@ -7,18 +7,15 @@ $content--over: var(--content--over);
 $content--under: var(--content--under);
 
 // @debt these should probably be replaced with var(--primary-...) referencing theme colors
-$primary--lightest: #a179ff;
-$primary--light: #9669ff;
-$primary--live-hover: #8755fb;
-$primary--darker: #3f247d;
+$primary--lightest: #a179ff; // replace with var(--primary--under-lighter-15pp) // just an approximation from the available
+$primary--light: #9669ff; // replace with var(--primary--under-lighter-10pp) // just an approximation from the available
+$primary--live-hover: #8755fb; // replace with var(--primary--under-lighter-5pp) // just an approximation from the available
+$primary--darker: #3f247d; // replace with var(--primary--under-darker-20pp) // just an approximation from the available
 $primary--over: #f6e652;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
-$secondary--lightest: #868686;
-$secondary--light: #6a6a6a;
 $secondary: #333035;
-$secondary--dark: #19181a;
-$secondary--darkest: #090909;
+$secondary--dark: #19181a; // replace with var(--content--under-lighter-10pp);
 $secondary--live: #1a1d24;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
@@ -26,44 +23,30 @@ $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
-// @debt these should probably be replaced with var(...) referencing theme colors, need to include danger palette
-$input--invalid: #dc3545;
-$input--invalid-focus: #ff7384;
-$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
-
 // @debt these should probably be replaced with var(...) referencing theme colors
-$subheading--over: #a5a5a5;
-$modal-background--confirm: #232225;
 $announcement-background: rgba(39, 35, 34, 0.9);
 $send-msg-online-color: #78b553;
 
 // @debt these should probably be removed or replaced with var(...) references
-$dark-grey: #1a1d23;
-$almost-black: $secondary--darkest;
-$saturated-black: $secondary--dark;
 $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $light-grey--lightest: #acadb0;
-$concrete: #a3a6ab;
-$concrete--dark: #9f9fa0;
-$dark: #1a1d24;
-$red: #bc271a;
-$pink: #df9e9b;
-$bright-pink: #ba3ff4;
+
 $green: #4bcc4b;
 $yellow: #ffe600;
-$bright-yellow: #f0df73;
 $light-green: #3ce348;
 $dark-green: #208a28;
-$clickable-area-color: #ffffff11;
-$ripple-color: chocolate;
-$profile-image-bg-color: #999999;
-$chat-open: rgba(80, 227, 194, 0.35);
-$chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: var(--primary--under-35a);
-$chat-busy-me: rgba(#ffffff, 0.35);
-$room-card-background: #323232;
+
+// @deprecated please use var(--content--over-Xa) where X is the opacity e.g. var(--content--over-20a)
+@function opaque-white($opacity) {
+  @return rgba(#{var(--content--over-rgb)}, $opacity);
+}
+
+// @deprecated please use var(--content--under-Xa) where X is the opacity e.g. var(--content--over-20a)
+@function opaque-black($opacity) {
+  @return rgba(#{var(--content--under-rgb)}, $opacity);
+}
 
 // @debt the colors in these gradients should probably be replaced with var(...) references
 $gradient: linear-gradient(
@@ -97,6 +80,8 @@ $announcement-container-width-admin: 600px;
 $announcement-container-width: 470px;
 $announcement-container-height: 140px;
 $announcement-banner-admin-height: 55px;
+$video-participant-optimal-width: 260px;
+$video-participant-optimal-height: 146px;
 $auth-container-max-width: 450px;
 
 $avatarSize: max(4vh, 3vw);
@@ -106,7 +91,6 @@ $reactionSize: max(2.5vh, 2vw);
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
-$playa-venue-live: rgb(125, 223, 194);
 
 $margin-right--navbar-links: 8px;
 
@@ -117,6 +101,10 @@ $border-radius--md: 12px;
 $border-radius--lg: 16px;
 $border-radius--xl: 24px;
 $border-radius--max: 50%;
+
+$border-width--none: 0px;
+$border-width--slim: 1px;
+$border-width--bold: 2px;
 
 $spacing--xs: 4px;
 $spacing--sm: 8px;
@@ -146,12 +134,34 @@ $font-weight--500: 500;
 $font-weight--600: 600;
 $font-weight--700: 700;
 
-$media-breakpoint--sm: 576px;
-$media-breakpoint--md: 768px;
-$media-breakpoint--lg: 992px;
-$media-breakpoint--xl: 1200px;
+$media-breakpoint--sm: 576px; // mobile
+$media-breakpoint--md: 768px; // tablet--small
+$media-breakpoint--lg: 992px; // tablet--medium
+$media-breakpoint--xl: 1200px; // tablet--large
+$media-breakpoint--xxl: 1350px; // laptop
+
+$text-shadow--thin: 0 1px 2px rgba(#{var(--content--under-rgb)}, 0.25);
+$text-shadow--medium: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.25);
+$text-shadow--thick: 0 2px 4px rgba(#{var(--content--under-rgb)}, 0.5);
+$text-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
+  -1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  -1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2),
+  1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2);
+
+// NOTE: line comments prevent tools to do automatic folding of the code into a single line
+$drop-shadow--outline: // 4 thin shadows in order: NW, NE, SW, SE
+  drop-shadow(-1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(1px -1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(-1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2)) //
+  drop-shadow(1px 1px 2px rgba(#{var(--content--under-rgb)}, 0.2)); //
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
+
+$button-width--max-margin: $spacing--md;
+$button-width--max-wrap: 300px;
+$button-width--max: $button-width--max-wrap - 2 * $button-width--max-margin;
+$button-width--normal: 100%;
 
 $image-overlay-padding: 0.3rem;
 $image-overlay-backdrop-filter: blur(10px);
@@ -164,12 +174,9 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
   background-color 0.2s ease-in-out;
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
-$image-input-border--error: 2px solid red;
 
-// NOTE: Magic number determined empirically to fill the footer space in default case
-$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
 $admin-ng-sidebar-width--normal: 30vw;
-$admin-ng-sidebar-width--min: $admin-ng-sidebar-footer-buttons-width--magic-number;
+$admin-ng-sidebar-width--min: max(#{$button-width--max-wrap}, 15vw);
 $admin-ng-sidebar-width--max: 30vw;
 $admin-ng-sidebar-footer-height--max: 4rem;
 $admin-ng-showcase-width--normal: calc(
@@ -180,17 +187,25 @@ $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
 
+$admin-ia-simple-panel-height: calc(100vh - #{$reserved-page-height});
+$admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
+$admin-ia-manage-space-template-columns: 5fr
+  minmax(#{2 * $button-width--max-wrap}, 1fr);
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
-//   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
+//   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
+$z-layer-admin-sidebar: $z-layer-sidebar;
+$z-layer-footer: $z-layer-admin-sidebar + 100;
 $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
 $z-layer-viewing-window: 5;
+$z-layer-space-card-link: 1;
 $z-layer-on-top-bg: 1;
 $z-layer-jazz-header: $z-layer-on-top-bg;
 $z-layer-user-list-label: $z-layer-on-top-bg;
@@ -198,6 +213,7 @@ $z-layer-embed-iframe: $z-layer-on-top-bg;
 $z-layer-external-message: $z-layer-on-top-bg;
 $z-layer-auditorium-iframe: $z-layer-on-top-bg;
 $z-layer-jukebox: $z-layer-on-top-bg;
+$z-layer-start-table: 0;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -209,6 +225,10 @@ $z-layers: (
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
+  admin-sidebar: $z-layer-admin-sidebar,
+  admin-sidebar-content: $z-layer-admin-sidebar + 10,
+  admin-sidebar-title: $z-layer-admin-sidebar + 20,
+  admin-sidebar-footer: $z-layer-admin-sidebar + 30,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   jazzbar-header: $z-layer-jazz-header,
@@ -255,6 +275,8 @@ $z-layers: (
   map-grid: 3,
   map-room--unclickable: 2,
   map-background: 1,
+  // Admin Space Card
+  space-card-link: $z-layer-space-card-link,
   // Legacy
   account-profile-picture-preview: 1,
   duststorm-container: 100,
@@ -272,13 +294,14 @@ $z-layers: (
   // External Link
   external-message: $z-layer-external-message,
   // Unsorted
-  footer: $z-layer-sidebar,
+  footer: $z-layer-footer,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
   venuepage-preview-indication: 1,
-  map-preview-header: 5
+  map-preview-header: 5,
+  start-table: $z-layer-start-table
 );
 
 @function z($layer) {
@@ -289,16 +312,28 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
-@function opaque-white($opacity: 0.1) {
-  @return rgba(#{var(--content--over-rgb)}, $opacity);
+@function box-shadow--input($color) {
+  @return 0 0 0 2px $color;
 }
 
-@function opaque-black($opacity: 0.1) {
-  @return rgba(#{var(--content--under-rgb)}, $opacity);
+@function box-shadow--input-autofill($color) {
+  @return 0 0 0 30px #{$color};
 }
 
-@function box-shadow--large($transparency: 0.5) {
-  @return 0 10px 30px 0 opaque-black($transparency);
+@function box-shadow--card($color) {
+  @return 0 2px 4px $color;
+}
+
+@function box-shadow--small($color) {
+  @return 0 2px 4px 0 $color;
+}
+
+@function box-shadow--medium($color) {
+  @return 0 4px 10px 0 $color;
+}
+
+@function box-shadow--large($color) {
+  @return 0 10px 30px 0 $color;
 }
 
 @function font-size--parent($scale: 1) {
@@ -332,14 +367,9 @@ $z-layers: (
   max-width: $max;
 }
 
-@mixin link-style($color, $hover-color: $color) {
-  color: $color;
-  text-decoration: underline $color;
-
-  &:hover {
-    color: $hover-color;
-    text-decoration: underline $hover-color;
-  }
+@mixin circle-avatar {
+  object-fit: cover;
+  object-position: top;
 }
 
 @mixin scrollbar {

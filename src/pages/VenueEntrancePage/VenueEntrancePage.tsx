@@ -1,67 +1,105 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
-import { EntranceStepTemplate } from "types/EntranceStep";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
+} from "settings";
 
-import { withId } from "utils/id";
+import {
+  EntranceStepTemplate,
+  EntranceStepTemplateProps,
+} from "types/EntranceStep";
+
 import { isCompleteProfile } from "utils/profile";
-import { currentVenueSelector } from "utils/selectors";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
-  const { user, profile } = useUser();
+import { NotFound } from "components/atoms/NotFound";
+
+const ENTRANCE_STEP_TEMPLATE: Record<
+  EntranceStepTemplate,
+  React.FC<EntranceStepTemplateProps>
+> = {
+  [EntranceStepTemplate.WelcomeVideo]: WelcomeVideo,
+};
+
+export const VenueEntrancePage: React.FC = () => {
   const history = useHistory();
-  const { step } = useParams<{ step?: string }>();
-  const venueId = useVenueId();
+  const { user, profile } = useUser();
+  const { step: unparsedStep } = useParams<{ step?: string }>();
 
-  useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
-  if (!venue || !venueId) {
+  const step = Number.parseInt(unparsedStep ?? "", 10);
+
+  const proceed = useCallback(
+    () =>
+      history.push(
+        generateUrl({
+          route: ATTENDEE_STEPPING_PARAM_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: { worldSlug, spaceSlug, step: `${step + 1}` },
+        })
+      ),
+    [worldSlug, spaceSlug, step, history]
+  );
+
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 
-  if (
-    step === undefined ||
-    !(parseInt(step) > 0) ||
-    !venue.entrance ||
-    !venue.entrance.length ||
-    venue.entrance.length < parseInt(step)
-  ) {
-    return <Redirect to={venueInsideUrl(venueId)} />;
+  if (!spaceId || !space || !spaceSlug || !world) {
+    return <NotFound />;
+  }
+
+  const stepConfig = world.entrance?.[step - 1];
+  if (Number.isNaN(step) || !stepConfig) {
+    return (
+      <Redirect to={generateAttendeeInsideUrl({ worldSlug, spaceSlug })} />
+    );
   }
 
   if (!user || !profile) {
-    return <Login venue={withId(venue, venueId)} />;
+    return <Login venueId={spaceId} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
+    return (
+      <Redirect
+        to={generateUrl({
+          route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug, spaceSlug },
+        })}
+      />
+    );
   }
 
-  const proceed = () => {
-    history.push(venueEntranceUrl(venueId, parseInt(step) + 1));
-  };
+  const EntranceStepTemplate: React.FC<EntranceStepTemplateProps> =
+    ENTRANCE_STEP_TEMPLATE[stepConfig.template];
 
-  const stepConfig = venue.entrance[parseInt(step) - 1];
-  switch (stepConfig.template) {
-    case EntranceStepTemplate.WelcomeVideo:
-      return (
-        <WelcomeVideo
-          venueName={venue.name}
-          config={stepConfig}
-          proceed={proceed}
-        />
-      );
+  if (!EntranceStepTemplate) {
+    return null;
   }
+
+  return (
+    <EntranceStepTemplate
+      venueName={space.name}
+      config={stepConfig}
+      proceed={proceed}
+    />
+  );
 };

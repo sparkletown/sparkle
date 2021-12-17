@@ -9,9 +9,6 @@ interface AddReactionFields {
   venueId: string | undefined;
   reaction: Reaction;
 }
-interface AddReactionAction extends AddReactionFields {
-  type: typeof ADD_REACTION;
-}
 
 export const addReaction = createAsyncThunk<void, AddReactionFields>(
   ADD_REACTION,
@@ -24,5 +21,3 @@ export const addReaction = createAsyncThunk<void, AddReactionFields>(
       .add(reaction);
   }
 );
-
-export type ReactionActions = AddReactionAction;

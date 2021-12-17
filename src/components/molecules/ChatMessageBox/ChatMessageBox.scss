@@ -16,6 +16,7 @@
   }
 
   &__input {
+    font-size: 14px;
     text-align: left;
     padding-left: $spacing--lg;
   }
@@ -34,12 +35,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: $spacing--md;
+    margin-left: $spacing--xs;
 
     background-color: $accent--under;
 
     &:disabled {
-      background-color: $saturated-black;
+      background-color: $secondary--dark;
     }
   }
 

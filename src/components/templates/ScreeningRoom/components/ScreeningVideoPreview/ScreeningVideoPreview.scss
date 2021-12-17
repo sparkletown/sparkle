@@ -2,7 +2,7 @@
 
 $video-preview-height: 320px;
 $video-preview-width: 280px;
-$active-video-shadows: 0 10px 20px 0 var(--primary--under-56a);
+$active-video-shadows: 0 10px 20px 0 var(--primary--under-50a);
 
 .ScreeningVideoPreview {
   display: flex;
@@ -30,7 +30,7 @@ $active-video-shadows: 0 10px 20px 0 var(--primary--under-56a);
 
   &:hover {
     background-color: $lighter-intermediate-grey;
-    border-color: $concrete;
+    border-color: var(--content--over-60a);
   }
 
   &--selected {

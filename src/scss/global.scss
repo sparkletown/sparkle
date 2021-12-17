@@ -95,14 +95,14 @@ input.btn {
   text-align: center;
   font-size: 1em;
 
-  background-color: var(--primary--under-24a);
+  background-color: var(--primary--under-25a);
   transition: all 400ms $transition-function;
   color: $content--over;
   transform: translateY(0);
 
   &:hover {
     transform: translateY(-1px);
-    background-color: var(--primary--under-18a);
+    background-color: var(--primary--under-20a);
   }
 
   &.btn-primary {
@@ -111,7 +111,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: var(--primary--under-darker-14pp);
+      background-color: var(--primary--under-darker-15pp);
     }
   }
 
@@ -132,7 +132,7 @@ input.btn {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
 
     &:hover {
-      background-color: darken($red, 14%);
+      background-color: var(--danger--under-darker-15pp);
     }
   }
 
@@ -166,7 +166,7 @@ input.btn {
 }
 
 .input-error {
-  color: red;
+  color: var(--danger--under);
 }
 
 button.btn {
@@ -218,7 +218,7 @@ button.btn {
 
   &.btn-secondary {
     // Background image has to be set to 'none' because by default the Button has gradient image
-    background-color: $secondary--light;
+    background-color: var(--greyscale-lighter-10pp);
 
     &:hover {
       background-image: none;
@@ -236,29 +236,20 @@ button.btn {
   }
 }
 
-// Inputs
+// @debt replace plain input and textarea elements with AdminInput and/or AdminTextarea and/or similar, then remove these global styles
 input,
 textarea {
-  // @debt remove style auto-setting for inputs
   -webkit-appearance: none;
   border: none;
   outline: none;
   background-color: opaque-white(0.12);
   width: 100%;
   position: relative;
-  cursor: pointer;
-  font-size: 1em;
-  padding: 12px;
-  border-radius: 22px;
+  font-size: font-size--parent(1);
+  padding: $spacing--md;
+  border-radius: $border-radius--xl;
   text-align: center;
   color: $content--over;
-
-  &:-webkit-autofill,
-  &:-webkit-autofill:hover,
-  &:-webkit-autofill:active,
-  &:-webkit-autofill:focus {
-    background-color: rgba(white, 0) !important;
-  }
 
   &:hover {
     background-color: opaque-white(0.16);
@@ -297,7 +288,7 @@ textarea {
   }
 
   &.disabled {
-    background-color: rgba($concrete, 1);
+    background-color: var(--content--over-60a);
     cursor: default;
   }
 }
@@ -330,7 +321,7 @@ textarea {
 
   .input-error {
     text-align: center;
-    color: #e30b0b;
+    color: var(--danger--under);
     font-size: 0.9em;
     font-weight: bold;
   }
@@ -340,13 +331,6 @@ textarea {
 .chat-list {
   height: 200px;
   overflow: auto;
-}
-
-.profile-icon {
-  border-radius: 50%;
-  margin: 1px;
-  cursor: pointer;
-  object-fit: contain;
 }
 
 .room-attendance {
@@ -413,7 +397,7 @@ h4 {
 }
 
 .modal-backdrop {
-  background: $dark;
+  background: $secondary--live;
 
   &.show {
     opacity: 0.8;
@@ -432,7 +416,7 @@ h4 {
   border: none;
   border-radius: 22px;
   background: $content--under;
-  box-shadow: box-shadow--large(0.34);
+  box-shadow: box-shadow--large(var(--content--under-30a));
 }
 
 .centered-flex {
@@ -463,7 +447,7 @@ h4 {
   }
 
   .table-container {
-    background: $dark;
+    background: $secondary--live;
     border-radius: 0 0 22px 22px;
     transition: all 0.1s linear;
     padding: 0;
@@ -508,16 +492,9 @@ h4 {
 
   .youtube-video {
     transition: all 0.1s linear;
-    background-color: $dark;
+    background-color: $secondary--live;
     color: $content--over;
   }
-}
-
-.participant--video-disabled {
-  position: absolute;
-  background-color: $light-grey;
-  width: 100%;
-  height: 100%;
 }
 
 .full-page-container,
@@ -535,43 +512,6 @@ h4 {
     }
   }
 
-  .participant {
-    position: relative;
-    display: flex;
-    height: 100%;
-    padding: 0;
-    border-radius: 22px;
-
-    .mirrored {
-      transform: scale(-1, 1);
-    }
-
-    .profile-icon {
-      position: absolute;
-      bottom: $spacing--sm;
-      left: $spacing--sm;
-      border-radius: 188%;
-      z-index: z(global-profile-icon);
-    }
-
-    .mute-container {
-      position: absolute;
-      bottom: 10px;
-      left: 0;
-      right: 0;
-    }
-
-    .mute-other-container {
-      cursor: pointer;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-    }
-  }
-
   video {
     width: 100%;
     max-width: 600px;
@@ -581,21 +521,10 @@ h4 {
 }
 
 .table-container {
-  // min-height: 300px;
   .wrapper {
     display: flex;
     flex-wrap: wrap;
     margin-bottom: 10px;
-
-    .participant {
-      display: flex;
-      flex-grow: 1;
-      background: $content--under;
-
-      .mirrored {
-        transform: scale(-1, 1);
-      }
-    }
   }
 }
 
@@ -607,17 +536,6 @@ h4 {
   }
 }
 
-.participant-container {
-  .participant {
-    display: flex;
-    flex-grow: 1;
-
-    .mirrored {
-      transform: scale(-1, 1);
-    }
-  }
-}
-
 .chat-modal {
   width: 400px;
   position: absolute;
@@ -626,7 +544,7 @@ h4 {
   height: calc(100vh - 220px);
 
   .modal-body {
-    background: $dark;
+    background: $secondary--live;
     border-radius: 22px;
   }
 
@@ -645,7 +563,7 @@ input.btn.btn-primary.btn-success {
 }
 
 .popover {
-  background: $dark;
+  background: $secondary--live;
   border-radius: 22px;
   overflow-y: auto;
   height: calc(100vh - 120px);
@@ -676,25 +594,25 @@ input.btn.btn-primary.btn-success {
       color: $content--over;
 
       &.global {
-        background: $dark;
+        background: $secondary--live;
       }
 
       &.private {
-        background: $dark;
+        background: $secondary--live;
       }
 
       &.room {
-        background: $dark;
+        background: $secondary--live;
       }
     }
   }
 
   .chat-input {
-    background: $dark;
+    background: $secondary--live;
     margin-bottom: 10px;
 
     &:hover {
-      background: rgba($dark, 0.7);
+      background: rgba($secondary--live, 0.7);
     }
   }
 }
@@ -737,7 +655,7 @@ span.link {
     }
 
     .timestamp {
-      color: $concrete;
+      color: var(--content--over-60a);
     }
 
     &.chat-message {

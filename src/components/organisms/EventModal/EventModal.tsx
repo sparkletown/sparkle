@@ -9,20 +9,21 @@ import { VenueEvent } from "types/venues";
 import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
 import {
-  enterVenue,
+  enterSpace,
   getLastUrlParam,
   getUrlParamFromString,
   getUrlWithoutTrailingSlash,
   openUrl,
 } from "utils/url";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useInterval } from "hooks/useInterval";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { Button } from "components/atoms/Button";
+import { ButtonOG } from "components/atoms/ButtonOG";
 
 import "./EventModal.scss";
 
@@ -40,6 +41,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   const { currentVenue: eventVenue } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
+  const { worldSlug } = useSpaceParams();
 
   const eventRoom = useMemo<Room | undefined>(
     () =>
@@ -78,7 +80,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     if (event.room) {
       enterRoom();
     } else {
-      enterVenue(event.venueId);
+      enterSpace(worldSlug, eventVenue?.slug);
     }
   };
 
@@ -106,13 +108,13 @@ export const EventModal: React.FC<EventModalProps> = ({
           <RenderMarkdown text={event.description} />
         </div>
 
-        <Button
+        <ButtonOG
           customClass="EventModal__button"
           onClick={goToEventLocation}
           disabled={!isLive}
         >
           {eventStatus} in the {eventLocationToDisplay}
-        </Button>
+        </ButtonOG>
       </div>
     </Modal>
   );

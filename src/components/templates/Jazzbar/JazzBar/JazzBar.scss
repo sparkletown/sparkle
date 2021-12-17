@@ -1,5 +1,4 @@
 @import "scss/constants";
-@import "../jazzbar-constants.scss";
 
 .music-bar {
   margin-top: $spacing--xxl;
@@ -7,6 +6,7 @@
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
+  height: 100%;
 
   .VenueWithOverlay {
     margin: 0;
@@ -74,6 +74,9 @@
         .iframe-video {
           height: 100%;
           width: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       }
 

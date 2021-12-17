@@ -6,18 +6,19 @@ import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { venueLandingUrl } from "utils/url";
+import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
-import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useShowHide } from "hooks/useShowHide";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { EditingProfileModalContent } from "../EditingProfileModalContent";
 import { ProfileModalContent } from "../ProfileModalContent";
 
 export interface NewProfileModalBodyProps {
   user: WithId<User>;
-  venue: WithId<AnyVenue>;
+  venue?: WithId<AnyVenue>;
   closeUserProfileModal: () => void;
 }
 
@@ -28,6 +29,7 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
 }: NewProfileModalBodyProps) => {
   const firebase = useFirebase();
   const history = useHistory();
+  const { worldSlug } = useWorldParams();
 
   const isCurrentUser = useIsCurrentUser(user.id);
 
@@ -41,8 +43,8 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     await firebase.auth().signOut();
     closeUserProfileModal();
 
-    history.push(venue.id ? venueLandingUrl(venue.id) : "/");
-  }, [closeUserProfileModal, firebase, history, venue.id]);
+    history.push(generateAttendeeSpaceLandingUrl(worldSlug, venue?.slug));
+  }, [closeUserProfileModal, firebase, history, worldSlug, venue?.slug]);
 
   const { selectRecipientChat } = useChatSidebarControls();
 

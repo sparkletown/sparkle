@@ -18,13 +18,13 @@ $media-width--mobile-max: 1024px;
   right: 0;
   width: $chat-sidebar-width;
   height: calc(100vh - #{$reserved-page-height});
-  background-color: $saturated-black;
+  background-color: $secondary--dark;
   z-index: z(sidebar);
 
   &--expanded {
     transform: translateX(0);
     transition: transform 0.3s;
-    background-color: rgba($saturated-black, 0.9);
+    background-color: rgba($secondary--dark, 0.9);
     box-shadow: -10px 0 40px opaque-black(0.5);
 
     & .chat-sidebar__controller {
@@ -53,7 +53,6 @@ $media-width--mobile-max: 1024px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-bottom: 1px solid opaque-black(0);
     color: opaque-white(0.6);
 
     &:focus,
@@ -74,7 +73,7 @@ $media-width--mobile-max: 1024px;
   }
 
   &__controller {
-    color: $accent--over;
+    color: $content--over;
     background-color: $secondary;
     cursor: pointer;
 

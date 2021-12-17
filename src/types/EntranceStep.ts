@@ -2,7 +2,7 @@ export enum EntranceStepTemplate {
   WelcomeVideo = "welcomevideo",
 }
 
-type EntranceStepButtonConfig = {
+export type EntranceStepButtonConfig = {
   isProceed: boolean;
   text?: string;
   className?: string;
@@ -16,3 +16,9 @@ export type EntranceStepConfig = {
   welcomeText?: string;
   buttons?: EntranceStepButtonConfig[];
 };
+
+export interface EntranceStepTemplateProps {
+  venueName: string;
+  config: EntranceStepConfig;
+  proceed: () => void;
+}

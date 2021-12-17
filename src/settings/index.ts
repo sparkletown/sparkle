@@ -1,5 +1,3 @@
-import { CSSProperties } from "react";
-
 import {
   API_KEY,
   APP_ID,
@@ -32,35 +30,32 @@ import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export * from "./taxonomy";
+// NOTE: please keep these exports sorted alphabetically for faster visual scan
+export * from "./apiSettings";
+export * from "./dateSettings";
+export * from "./disableSettings";
+export * from "./embedUrlSettings";
+export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
+export * from "./placeholderSettings";
+export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
+export * from "./spacePortalsSettings";
+export * from "./taxonomy";
 export * from "./urlSettings";
 export * from "./useSettingsDefaults";
-export * from "./spacesSettings";
-export * from "./embedUrlSettings";
+export * from "./validationSettings";
+export * from "./worldDefaultSettings";
 
 export const ENABLE_POPUPS_URL =
   "https://support.google.com/chrome/answer/95472?hl=en&co=GENIE.Platform%3DDesktop";
 
-export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
-export const SPARKLE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklespaces.com/terms-of-use/";
-export const SPARKLE_PRIVACY_POLICY =
-  "https://sparklespaces.com/privacy-policy/";
-
 // Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
 export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
-export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const PLATFORM_BRAND_NAME = "Sparkle";
 
-export const HOMEPAGE_URL = SPARKLE_HOMEPAGE_URL;
-
-export const TERMS_AND_CONDITIONS_URL = SPARKLE_TERMS_AND_CONDITIONS_URL;
-
-export const PRIVACY_POLICY = SPARKLE_PRIVACY_POLICY;
 export const SPARKLE_PHOTOBOOTH_URL = "outsnappedphotoboothcamp";
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
@@ -69,18 +64,18 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
-// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
-export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
+// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. One should probably be used for anonymous profiles
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
-export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
+// NOTE: temporary replaceing  "/default-profile-pic.png"; @see https://github.com/sparkletown/internal-sparkle-issues/issues/1615
+export const DEFAULT_PROFILE_PIC = defaultAvatar1;
+// NOTE: temporary replacing "/anonymous-profile-icon.jpeg"; @see https://github.com/sparkletown/internal-sparkle-issues/issues/1615
+export const DEFAULT_PROFILE_IMAGE = defaultAvatar1;
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
-export const VENUE_NAME_MIN_CHAR_COUNT = 3;
-export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
 export const GIFT_TICKET_MODAL_URL =
@@ -92,9 +87,8 @@ export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
-export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
-export const SPARKLEVERSE_COMMUNITY_URL =
-  "https://www.facebook.com/groups/sparkleverse/";
+
+export const DEFAULT_GLOBAL_CHAT_NAME = "global chat";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
@@ -145,33 +139,6 @@ export const MAXIMUM_AUDITORIUM_COLUMNS_COUNT = 5;
 export const MINIMUM_AUDITORIUM_ROWS_COUNT = 5;
 export const MAXIMUM_AUDITORIUM_ROWS_COUNT = 5;
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
-export const PLAYA_HEIGHT = 2000;
-export const PLAYA_WIDTH = 3000;
-export const PLAYA_AVATAR_SIZE = 48;
-export const PLAYA_VENUE_SIZE = 40;
-export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
-// Burning Seed: playa is named paddock
-export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
-export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
-  iconImage: {
-    width: PLAYA_VENUE_SIZE,
-    height: PLAYA_VENUE_SIZE,
-    overflow: "hidden",
-    borderRadius: "25%",
-    background: "rgba(147, 124, 99, 0.2)",
-    border: "2px solid rgba(147, 124, 99, 0.2)",
-    animation: "ripple 4s linear infinite",
-  },
-  draggableIconImage: {
-    width: PLAYA_VENUE_SIZE * 1.5,
-    height: PLAYA_VENUE_SIZE * 1.5,
-    overflow: "hidden",
-    borderRadius: "25%",
-    background: "rgba(147, 124, 99, 0.2)",
-    border: "2px solid rgba(147, 124, 99, 0.2)",
-    animation: "ripple 4s linear infinite",
-  },
-};
 
 export const ACCEPTED_IMAGE_TYPES =
   "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
@@ -542,9 +509,6 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = HOMEPAGE_URL;
-
 export const RANDOM_AVATARS = [
   "avatar-01.png",
   "avatar-02.png",
@@ -560,7 +524,7 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+export const CHAT_MESSAGE_TIMEOUT = 500;
 
 export const DEFAULT_AVATARS = [
   defaultAvatar1,
@@ -575,6 +539,8 @@ export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
+export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_REACTIONS_MUTED = false;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
@@ -599,8 +565,20 @@ export const DEFAULT_USER_STATUS = {
   color: "#53E52A",
 };
 
+// Analytics
+export const DEFAULT_ANALYTICS_GROUP_KEY = "world";
+export const DEFAULT_ANALYTICS_WORLD_NAME = "Undefined World";
+export const LOG_IN_EVENT_NAME = "Login successful";
+export const SIGN_UP_EVENT_NAME = "Sign up";
+export const VENUE_PAGE_LOADED_EVENT_NAME = "VenuePage loaded";
+export const OPEN_ROOM_MODAL_EVENT_NAME = "Open room modal";
+export const ENTER_ROOM_EVENT_NAME = "Enter room";
+export const ENTER_AUDITORIUM_SECTION_EVENT_NAME = "Enter auditorium section";
+export const SELECT_TABLE_EVENT_NAME = "Select table";
+export const TAKE_SEAT_EVENT_NAME = "Take a seat";
+export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
+
 // SCHEDULE
-export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
@@ -632,13 +610,12 @@ export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 
 export const DEFAULT_TABLE_ROWS = 2;
 export const DEFAULT_TABLE_COLUMNS = 3;
-export const DEFAULT_TABLE_CAPACITY =
-  DEFAULT_TABLE_ROWS * DEFAULT_TABLE_COLUMNS;
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
-export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const CHATBOX_NEXT_FETCH_SIZE = 50;
+export const SECTIONS_NEXT_FETCH_SIZE = 50;
 
 export const REACT_BOOTSTRAP_MODAL_HIDE_DURATION = 150;
 
@@ -646,22 +623,12 @@ export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
 export const EVENTS_PREVIEW_LIST_LENGTH = 50;
 
-export const ALGOLIA_APP_ID = "RMJ2K10PCV";
-
 // Set these to have images uploaded to Firebase Storage served off of Imgix
 // @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf
 export const FIREBASE_STORAGE_IMAGES_ORIGIN =
   "https://firebasestorage.googleapis.com/v0/b/sparkle-burn.appspot.com/o/";
 export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
   "https://sparkle-burn-users.imgix.net/";
-
-// Helper values that can be safely used in places that might re-render but don't have useMemo/useCallback
-export const ALWAYS_EMPTY_OBJECT = {};
-Object.freeze(ALWAYS_EMPTY_OBJECT);
-export const ALWAYS_EMPTY_ARRAY = [];
-Object.freeze(ALWAYS_EMPTY_ARRAY);
-export const ALWAYS_NOOP_FUNCTION = () => {};
-Object.freeze(ALWAYS_NOOP_FUNCTION);
 
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,
@@ -672,3 +639,9 @@ export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.audience,
   VenueTemplate.viewingwindow,
 ];
+
+export const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
+
+export const NON_EXISTENT_FIRESTORE_ID = "NON_EXISTENT_FIRESTORE_ID";
+
+export const INVALID_SLUG_CHARS_REGEX = /[^a-zA-Z0-9]/g;

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
-import { User, UsernameVisibility } from "types/User";
+import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -51,13 +51,13 @@ export interface UserProfilePictureProp extends ContainerClassName {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
   reactionPosition?: "left" | "right";
-  showNametags?: UsernameVisibility;
   showStatus?: boolean;
   /**
    * @deprecated Note: This feature is currently disabled.
    */
   miniAvatars?: boolean;
   size?: UserAvatarSize;
+  isVideoEnabled?: boolean;
 }
 
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
@@ -65,8 +65,8 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled = true,
   containerClassName,
   reactionPosition = "right",
-  showNametags,
   showStatus = false,
+  isVideoEnabled = true,
   size,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
@@ -99,6 +99,9 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const containerClasses = classNames(
     "UserProfilePicture",
+    {
+      "UserProfilePicture--only-icon": !isVideoEnabled,
+    },
     containerClassName
     // containerVars
   );
@@ -119,7 +122,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       <UserAvatar
         user={user}
         containerClassName="UserProfilePicture__avatar"
-        showNametag={showNametags}
         showStatus={showStatus}
         size={size}
       />
