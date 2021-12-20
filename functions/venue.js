@@ -708,7 +708,7 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
   }
 
   const docData = doc.data();
-  const tables = docData.config.tables ?? defaultTables;
+  const tables = docData.config.tables || defaultTables;
 
   const index = tables.findIndex((val) => val.reference === tableName);
   // there are venues that don't have tables inserted in the database and use default ones instead
