@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $add-user-dimensions: 50px;
+$title-min-width: 70px;
 
 .TableComponent {
   display: flex;
@@ -20,6 +21,7 @@ $add-user-dimensions: 50px;
     padding: $spacing--lg;
     position: relative;
     margin: $spacing--xs;
+
     &:hover {
       background-color: lighten($secondary--live, 10%);
       transform: scale(1.05);
@@ -29,10 +31,15 @@ $add-user-dimensions: 50px;
   &__item-wrapper {
     display: flex;
     text-align: center;
-    margin-left: auto;
     font-style: italic;
     font-weight: 600;
     margin-bottom: $spacing--md;
+  }
+
+  &__title {
+    width: 80%;
+    min-width: $title-min-width;
+    margin: 0 auto;
   }
 
   &__occupancy-warning {
@@ -58,7 +65,7 @@ $add-user-dimensions: 50px;
     align-items: center;
     text-align: center;
     margin-bottom: $spacing--sm;
-    margin-right: $spacing--xs;
+    margin-right: $spacing--sm;
     background-color: rgba(black, 0.4);
     color: rgba(black, 0);
     transition: all 400ms $transition-function;

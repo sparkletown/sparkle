@@ -36,7 +36,7 @@ export interface TablesUserListProps {
   leaveText?: string;
   venue: WithId<AnyVenue>;
   venueId: string;
-  type: VenueTemplate;
+  template: VenueTemplate;
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
@@ -49,7 +49,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   TableComponent,
   joinMessage,
   venue,
-  type,
+  template,
 }) => {
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
@@ -186,7 +186,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
-        type={type}
+        template={template}
       />
     ));
   }, [
@@ -199,7 +199,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     venue,
-    type,
+    template,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;

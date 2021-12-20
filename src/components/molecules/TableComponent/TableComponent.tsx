@@ -8,6 +8,8 @@ import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   JAZZBAR_TABLES,
+  STRING_PLUS,
+  STRING_SPACE,
 } from "settings";
 
 import { deleteTable } from "api/table";
@@ -33,7 +35,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   table,
   tableLocked,
   venue,
-  type,
+  template,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
   const locked = tableLocked(table.reference);
@@ -66,9 +68,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     toggleModal();
   }, [table.reference, venue.id, venue.template, toggleModal]);
 
-  const isDeleteButtonDisabled = isDeletingTable;
-
-  const isJazzBar = type === VenueTemplate.jazzbar;
+  const isJazzBar = template === VenueTemplate.jazzbar;
 
   const itemStyles = useCss(
     isJazzBar
@@ -81,23 +81,15 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
 
   const itemClasses = classNames("TableComponent__item", itemStyles);
 
-  const itemWrapperStyles = useCss({
-    width: isJazzBar ? "60%" : "65%",
-  });
-
-  const itemWrapperClasses = classNames(
-    "TableComponent__item-wrapper",
-    itemWrapperStyles
-  );
-
   return (
-    <div className={`TableComponent ${table.reference}`}>
+    <div className="TableComponent">
       <div className={itemClasses}>
         <div className="TableComponent__occupancy-warning">
-          {locked ? "locked" : full ? "full" : ""}
+          {locked && "locked"}
+          {full && "full"}
         </div>
-        <div className={itemWrapperClasses}>
-          {table.title}
+        <div className="TableComponent__item-wrapper">
+          <span className="TableComponent__title">{table.title}</span>
 
           {isRemoveButtonShown && (
             <img
@@ -137,7 +129,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
                 id={`join-table-${venue?.name}-${table.reference}`}
                 className="TableComponent__add-user"
               >
-                +
+                {STRING_PLUS}
               </span>
             ))}
         </div>
@@ -153,20 +145,21 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           <div className="TableComponent__modal-container">
             <h2>Delete table</h2>
             <p>
-              WARNING: This action cannot be undone and will permantently remove{" "}
+              WARNING: This action cannot be undone and will permanently remove
+              {STRING_SPACE}
               {table.title}
             </p>
             <div className="TableComponent__modal-buttons">
               <ButtonNG
                 variant="secondary"
                 onClick={hideModal}
-                disabled={isDeleteButtonDisabled}
+                disabled={isDeletingTable}
               >
                 Cancel
               </ButtonNG>
 
               <ButtonNG
-                disabled={isDeleteButtonDisabled}
+                disabled={isDeletingTable}
                 variant="danger"
                 onClick={removeTable}
               >

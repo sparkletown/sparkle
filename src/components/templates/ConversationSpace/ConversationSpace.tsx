@@ -141,7 +141,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               defaultTables={CONVERSATION_TABLES}
               showOnlyAvailableTables={showOnlyAvailableTables}
               venue={venue}
-              type={VenueTemplate.conversationspace}
+              template={VenueTemplate.conversationspace}
             />
           </div>
           <UserList

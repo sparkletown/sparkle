@@ -22,5 +22,5 @@ export interface TableComponentPropsType {
   onJoinClicked: (table: string, locked: boolean) => void;
   imageSize?: number;
   venue: WithId<AnyVenue>;
-  type?: VenueTemplate;
+  template?: VenueTemplate;
 }

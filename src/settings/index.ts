@@ -624,6 +624,10 @@ export const CONVERSATION_TABLES: Table[] = generateTables({
   num: DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER,
 });
 
+// These are really supposed to be constants and to avoid possible mutable shared state in the code elsewhere
+Object.freeze(JAZZBAR_TABLES);
+Object.freeze(CONVERSATION_TABLES);
+
 export const CHATBOX_NEXT_FETCH_SIZE = 50;
 export const SECTIONS_NEXT_FETCH_SIZE = 50;
 

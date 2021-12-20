@@ -207,7 +207,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             showOnlyAvailableTables={showOnlyAvailableTables}
             venue={venue}
             defaultTables={JAZZBAR_TABLES}
-            type={VenueTemplate.jazzbar}
+            template={VenueTemplate.jazzbar}
           />
         </div>
       </VenueWithOverlay>
