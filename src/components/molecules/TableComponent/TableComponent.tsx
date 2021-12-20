@@ -3,7 +3,12 @@ import { Modal } from "react-bootstrap";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  CONVERSATION_TABLES,
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  JAZZBAR_TABLES,
+} from "settings";
 
 import { deleteTable } from "api/table";
 
@@ -14,9 +19,6 @@ import { useIsAdminUser } from "hooks/roles";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-
-import { TABLES as CONVERSATION_TABLES } from "components/templates/ConversationSpace/constants";
-import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzBar/constants";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

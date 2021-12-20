@@ -1,11 +1,13 @@
-import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
+import {
+  CONVERSATION_TABLES,
+  JAZZBAR_TABLES,
+  PLAYA_TEMPLATES,
+  SUBVENUE_TEMPLATES,
+} from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
 import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
-
-import { TABLES as CONVERSATION_TABLES } from "components/templates/ConversationSpace/constants";
-import { JAZZBAR_TABLES } from "components/templates/Jazzbar/JazzBar/constants";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";

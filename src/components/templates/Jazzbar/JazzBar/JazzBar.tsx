@@ -7,6 +7,7 @@ import {
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
   IFRAME_ALLOW,
+  JAZZBAR_TABLES,
 } from "settings";
 
 import { JazzbarVenue, VenueTemplate } from "types/venues";
@@ -34,8 +35,6 @@ import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { JazzBarRoom } from "../components/JazzBarRoom";
-
-import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzBar.scss";
 
