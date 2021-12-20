@@ -141,7 +141,6 @@ export interface VenueAdvancedConfig {
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
-  hasSocialLoginEnabled?: boolean;
   enableJukebox?: boolean;
 }
 
@@ -213,7 +212,6 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
-  hasSocialLoginEnabled?: boolean;
   enableJukebox?: boolean;
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
