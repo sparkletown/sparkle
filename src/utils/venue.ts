@@ -32,6 +32,9 @@ export const buildEmptySpace = (
   const list = new DataTransfer();
 
   const fileList = list.files;
+  const isSpaceWithTables =
+    template === VenueTemplate.jazzbar ||
+    template === VenueTemplate.conversationspace;
 
   return {
     name,
@@ -45,8 +48,12 @@ export const buildEmptySpace = (
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
-    tables:
-      template === VenueTemplate.jazzbar ? JAZZBAR_TABLES : CONVERSATION_TABLES,
+    ...(isSpaceWithTables && {
+      tables:
+        template === VenueTemplate.jazzbar
+          ? JAZZBAR_TABLES
+          : CONVERSATION_TABLES,
+    }),
   };
 };
 

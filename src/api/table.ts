@@ -3,9 +3,9 @@ import firebase from "firebase/app";
 
 import { Table } from "types/Table";
 
-export interface UpdateVenueTableProps {
+interface UpdateVenueTableOptions {
   venueId: string;
-  newTable?: Table;
+  newTable: Table;
   defaultTables: Table[];
 }
 
@@ -13,30 +13,33 @@ export const updateVenueTable = async ({
   venueId,
   newTable,
   defaultTables,
-}: UpdateVenueTableProps) => {
-  return await firebase.functions().httpsCallable("venue-updateTables")({
+}: UpdateVenueTableOptions) =>
+  await firebase.functions().httpsCallable("venue-updateTables")({
     venueId,
     newTable,
     defaultTables,
   });
-};
 
-export interface DeleteVenueTableProps {
+interface DeleteVenueTableOptions {
   venueId: string;
   tableName: string;
+  defaultTables: Table[];
 }
 
 export const deleteTable = async ({
   venueId,
   tableName,
-}: DeleteVenueTableProps) => {
-  return await firebase
+  defaultTables,
+}: DeleteVenueTableOptions) =>
+  await firebase
     .functions()
     .httpsCallable("venue-deleteTable")({
       venueId,
       tableName,
+      defaultTables,
     })
     .catch((e) => {
+      console.log("catch", e);
       Bugsnag.notify(e, (event) => {
         event.addMetadata("api/admin::deleteTable", {
           venueId,
@@ -45,4 +48,3 @@ export const deleteTable = async ({
       });
       throw e;
     });
-};

@@ -2,7 +2,7 @@ import { DisplayUser } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { AnyVenue } from "./venues";
+import { AnyVenue, VenueTemplate } from "./venues";
 
 export interface Table {
   title: string;
@@ -22,4 +22,5 @@ export interface TableComponentPropsType {
   onJoinClicked: (table: string, locked: boolean) => void;
   imageSize?: number;
   venue: WithId<AnyVenue>;
+  type?: VenueTemplate;
 }

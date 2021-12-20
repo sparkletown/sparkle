@@ -24,6 +24,7 @@ import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUser
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
+import TableComponent from "components/molecules/TableComponent";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
@@ -33,7 +34,6 @@ import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
 
 import { JazzBarRoom } from "../components/JazzBarRoom";
-import { JazzBarTableComponent } from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -202,12 +202,13 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
             setSeatedAtTable={setSeatedAtTable}
             seatedAtTable={seatedAtTable}
             venueId={venue.id}
-            TableComponent={JazzBarTableComponent}
+            TableComponent={TableComponent}
             joinMessage={!venue.hideVideo ?? true}
             customTables={jazzbarTables}
             showOnlyAvailableTables={showOnlyAvailableTables}
             venue={venue}
             defaultTables={JAZZBAR_TABLES}
+            type={VenueTemplate.jazzbar}
           />
         </div>
       </VenueWithOverlay>

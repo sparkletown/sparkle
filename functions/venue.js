@@ -164,7 +164,7 @@ const createVenueData_v2 = (data, context) => {
   const venueData_v2 = {
     name: data.name,
     config: {
-      ...(data.tables && { tables: data.tables }),
+      ...(Array.isArray(data.tables) && { tables: data.tables }),
       landingPageConfig: {
         coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
@@ -206,78 +206,6 @@ const createVenueData_v2 = (data, context) => {
   }
 
   return venueData_v2;
-};
-
-// @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-const createBaseUpdateVenueData = (data, doc) => {
-  const updated = doc.data();
-
-  if (data.subtitle || data.subtitle === "") {
-    updated.config.landingPageConfig.subtitle = data.subtitle;
-  }
-
-  if (data.description || data.description === "") {
-    updated.config.landingPageConfig.description = data.description;
-  }
-
-  if (data.primaryColor) {
-    if (!updated.theme) {
-      updated.theme = {};
-    }
-    updated.theme.primaryColor = data.primaryColor;
-  }
-
-  if (data.logoImageUrl) {
-    if (!updated.host) {
-      updated.host = {};
-    }
-    updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.entrance) {
-    updated.entrance = data.entrance;
-  }
-
-  if (data.mapBackgroundImageUrl) {
-    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-  }
-
-  if (data.roomVisibility) {
-    updated.roomVisibility = data.roomVisibility;
-  }
-
-  if (typeof data.parentId === "string") {
-    updated.parentId = data.parentId;
-  }
-
-  if (typeof data.showReactions === "boolean") {
-    updated.showReactions = data.showReactions;
-  }
-
-  if (typeof data.enableJukebox === "boolean") {
-    updated.enableJukebox = data.enableJukebox;
-  }
-
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
-  }
-
-  if (typeof data.showUserStatus === "boolean") {
-    updated.showUserStatus = data.showUserStatus;
-  }
-
-  if (typeof data.showShoutouts === "boolean") {
-    updated.showShoutouts = data.showShoutouts;
-  }
-
-  if (data.userStatuses) {
-    updated.userStatuses = data.userStatuses;
-  }
-
-  updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
-  updated.updatedAt = Date.now();
-
-  return updated;
 };
 
 const dataOrUpdateKey = (data, updated, key) =>
@@ -812,54 +740,65 @@ exports.updateTables = functions.https.onCall((data, context) => {
     throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
   }
 
-  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+  const spaceRef = admin.firestore().collection("venues").doc(data.venueId);
 
   return admin.firestore().runTransaction(async (transaction) => {
-    const venueDoc = await transaction.get(venueRef);
+    const spaceDoc = await transaction.get(spaceRef);
 
-    if (!venueDoc.exists) {
+    if (!spaceDoc.exists) {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
 
-    const venue = venueDoc.data();
+    const space = spaceDoc.data();
 
-    const venueTables =
-      (venue.config && venue.config.tables) || data.defaultTables;
-
-    // Needed to update existing venues that didn't have tables added to DB upon creation
-    if (!data.newTable) {
-      transaction.update(venueRef, { "config.tables": venueTables });
-
-      return;
-    }
+    const spaceTables =
+      (space.config && space.config.tables) || data.defaultTables;
 
     const currentTableIndex = venueTables.findIndex(
       (table) => table.reference === data.newTable.reference
     );
 
     if (currentTableIndex < 0) {
-      venueTables.push(data.newTable);
+      spaceTables.push(data.newTable);
     } else {
-      venueTables[currentTableIndex] = data.newTable;
+      spaceTables[currentTableIndex] = data.newTable;
     }
 
-    transaction.update(venueRef, { "config.tables": venueTables });
+    transaction.update(spaceRef, { "config.tables": spaceTables });
   });
 });
 
 exports.deleteTable = functions.https.onCall(async (data, context) => {
   checkAuth(context);
-  const { venueId, tableName } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+  const { venueId: spaceId, tableName, defaultTables } = data;
+  await checkUserIsOwner(spaceId, context.auth.token.user_id);
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
   if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+    throw new HttpsError("not-found", `Venue ${spaceId} not found`);
   }
+
   const docData = doc.data();
-  const tables = docData.config.tables;
+  const tables = docData.config.tables ?? defaultTables;
 
   const index = tables.findIndex((val) => val.reference === tableName);
+  // there are venues that don't have tables inserted in the database and use default ones instead
+  // if that's the case, then we won't be able to delete any of the tables
+  // thus we have to create tables (excluding the one being deleted) before modifying them
+  if (!docData.config?.tables) {
+    defaultTables.splice(index, 1);
+
+    admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .update({
+        ...docData,
+        config: { ...docData.config, tables: defaultTables },
+      });
+
+    return;
+  }
 
   if (index === -1) {
     throw new HttpsError("not-found", `Table does not exist`);
@@ -867,7 +806,7 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
     docData.config.tables.splice(index, 1);
   }
 
-  admin.firestore().collection("venues").doc(venueId).update(docData);
+  admin.firestore().collection("venues").doc(spaceId).update(docData);
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
