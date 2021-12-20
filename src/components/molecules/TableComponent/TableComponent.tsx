@@ -86,7 +86,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
       <div className={itemClasses}>
         <div className="TableComponent__occupancy-warning">
           {locked && "locked"}
-          {full && "full"}
+          {!locked && full && "full"}
         </div>
         <div className="TableComponent__item-wrapper">
           <span className="TableComponent__title">{table.title}</span>
