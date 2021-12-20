@@ -312,6 +312,10 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
+@function box-shadow--table($color) {
+  @return 2px 0px 10px $color;
+}
+
 @function box-shadow--input($color) {
   @return 0 0 0 2px $color;
 }

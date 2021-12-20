@@ -1,1 +1,0 @@
-export { JazzBarTableComponent } from "./JazzBarTableComponent";
