@@ -39,7 +39,6 @@ export const deleteTable = async ({
       defaultTables,
     })
     .catch((e) => {
-      console.log("catch", e);
       Bugsnag.notify(e, (event) => {
         event.addMetadata("api/admin::deleteTable", {
           venueId,
