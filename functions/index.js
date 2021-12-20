@@ -30,7 +30,6 @@ admin.initializeApp({
 
 const access = require("./access");
 const auth = require("./auth");
-const stats = require("./stats");
 const venue = require("./venue");
 const video = require("./video");
 const scheduled = require("./scheduled");
