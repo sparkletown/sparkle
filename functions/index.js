@@ -38,7 +38,6 @@ const triggered = require("./triggered");
 
 exports.access = access;
 exports.auth = auth;
-exports.stats = stats;
 exports.venue = venue;
 exports.video = video;
 exports.scheduled = scheduled;
