@@ -3,12 +3,12 @@ import { useCss } from "react-use";
 import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { ADMIN_IA_WORLD_PARAM_URL, DEFAULT_VENUE_LOGO } from "settings";
 
 import { World } from "api/world";
 
 import { WithId } from "utils/id";
-import { adminWorldSpacesUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -48,7 +48,11 @@ export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
         variant="dark"
         isLink
         disabled={!world.slug}
-        linkTo={adminWorldSpacesUrl(world.slug)}
+        linkTo={generateUrl({
+          route: ADMIN_IA_WORLD_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug: world.slug },
+        })}
         iconName={faSignInAlt}
         className="WorldCard__button"
       >
