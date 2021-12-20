@@ -114,7 +114,7 @@ const TEMP_GOOG_WEST_INSIDE = `/in/${TEMP_GOOG_WEST_SLUG}`;
 const TEMP_ITER_SLUG = "iterable";
 const TEMP_ITER_ROUTE = `/v/${TEMP_ITER_SLUG}`;
 // HONEYCOMB
-const TEMP_HONEYCOMB_SLUG = "googlecloudwest";
+const TEMP_HONEYCOMB_SLUG = "honeycomb";
 const TEMP_HONEYCOMB_LANDING = `/v/${TEMP_HONEYCOMB_SLUG}`;
 const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 /////////////////////////////////////////////////////////////////////////////////////
