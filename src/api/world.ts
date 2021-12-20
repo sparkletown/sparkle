@@ -50,6 +50,7 @@ export interface World {
   slug: WorldSlug;
   updatedAt: Date;
   userStatuses?: UserStatus[];
+  hasSocialLoginEnabled?: boolean;
 }
 
 export const createFirestoreWorldCreateInput: (
@@ -137,6 +138,7 @@ export const createFirestoreWorldAdvancedInput: (
     "showSchedule",
     "showUserStatus",
     "userStatuses",
+    "hasSocialLoginEnabled",
   ]);
 
   // Form input is just a single string, but DB structure is string[]
@@ -246,6 +248,7 @@ export const findWorldBySlug = async ({
   const worldsRef = await firebase
     .firestore()
     .collection(COLLECTION_WORLDS)
+    .where("isHidden", "==", false)
     .where(FIELD_SLUG, "==", worldSlug)
     .get();
 

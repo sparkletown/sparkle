@@ -101,7 +101,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     return <>Loading...</>;
   }
 
-  if (!space || !spaceId) {
+  if (!space || !spaceId || !world) {
     return <NotFound />;
   }
 
@@ -382,7 +382,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </ButtonNG>
       </form>
 
-      {space.hasSocialLoginEnabled && (
+      {world.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG
