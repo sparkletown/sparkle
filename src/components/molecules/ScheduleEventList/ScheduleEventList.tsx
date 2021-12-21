@@ -11,16 +11,16 @@ import { formatDateRelativeToNow } from "utils/time";
 
 import { useInterval } from "hooks/useInterval";
 
-import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
+import { ScheduleEventSubList } from "./ScheduleEventSubList";
 
-import "./ScheduleEventListNG.scss";
+import "./ScheduleEventList.scss";
 
-export interface ScheduleEventListNGProps {
+export interface ScheduleEventListProps {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
 
-export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
+export const ScheduleEventList: React.FC<ScheduleEventListProps> = ({
   daysEvents,
   scheduleDate,
 }) => {
@@ -49,8 +49,8 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
 
   if (!isTodayDate) {
     return (
-      <div className="ScheduleEventListNG">
-        <ScheduleEventSubListNG
+      <div className="ScheduleEventList">
+        <ScheduleEventSubList
           events={daysEvents}
           title={`Coming up ${formatDateRelativeToNow(scheduleDate, {
             formatTomorrow: () => "tomorrow",
@@ -62,10 +62,10 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   }
 
   return (
-    <div className="ScheduleEventListNG">
-      <ScheduleEventSubListNG events={liveEvents} title="Happening now" />
-      <ScheduleEventSubListNG events={comingSoonEvents} title="Starting soon" />
-      <ScheduleEventSubListNG events={laterEvents} title="Coming up" />
+    <div className="ScheduleEventList">
+      <ScheduleEventSubList events={liveEvents} title="Happening now" />
+      <ScheduleEventSubList events={comingSoonEvents} title="Starting soon" />
+      <ScheduleEventSubList events={laterEvents} title="Coming up" />
     </div>
   );
 };

@@ -6,17 +6,17 @@ import { ScheduledVenueEvent } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { ScheduleItemNG } from "components/molecules/ScheduleItemNG";
+import { ScheduleItem } from "components/molecules/ScheduleItem";
 
-import "./ScheduleEventListNG.scss";
+import "./ScheduleEventList.scss";
 
-export interface ScheduleEventSubListNGProps {
+export interface ScheduleEventSubListProps {
   events: ScheduledVenueEvent[];
   title: string;
   isShowFullInfo?: boolean;
 }
 
-export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
+export const ScheduleEventSubList: React.FC<ScheduleEventSubListProps> = ({
   events,
   title,
   isShowFullInfo = true,
@@ -34,7 +34,7 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
     }
 
     return eventsToRender.map((event) => (
-      <ScheduleItemNG
+      <ScheduleItem
         key={event.id}
         event={event}
         isShowFullInfo={isShowFullInfo}
@@ -47,13 +47,11 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
 
   return (
     <>
-      {hasEvents && (
-        <div className="ScheduleEventSubListNG__title">{title}</div>
-      )}
+      {hasEvents && <div className="ScheduleEventSubList__title">{title}</div>}
       {renderEvents}
       {shouldShowMoreEvents && (
         <div
-          className="ScheduleEventSubListNG__button"
+          className="ScheduleEventSubList__button"
           onClick={toggleShowMoreEvents}
         >
           {showMoreEvents

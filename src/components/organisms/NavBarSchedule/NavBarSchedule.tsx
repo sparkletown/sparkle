@@ -34,7 +34,7 @@ import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
-import { ScheduleNG } from "components/molecules/ScheduleNG";
+import { Schedule } from "components/molecules/Schedule";
 
 // Disabled as per designs. Up for deletion if confirmed not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
@@ -45,7 +45,7 @@ import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
 
-export interface ScheduleNGDay {
+export interface ScheduleDay {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
@@ -169,7 +169,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
-  const scheduleNG: ScheduleNGDay = useMemo(() => {
+  const schedule: ScheduleDay = useMemo(() => {
     const day = addDays(firstScheduleDate, selectedDayIndex);
 
     const daysEvents = liveAndFutureEvents.filter(
@@ -210,9 +210,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     venueId,
   ]);
 
-  const scheduleNGWithAttendees = {
-    ...scheduleNG,
-    daysEvents: scheduleNG.daysEvents.map((event) => {
+  const scheduleWithAttendees = {
+    ...schedule,
+    daysEvents: schedule.daysEvents.map((event) => {
       const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
 
       return prepareForSchedule({
@@ -299,10 +299,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           onChange={togglePersonalisedSchedule}
           label="Bookmarked events"
         />
-        <ScheduleNG
+        <Schedule
           showPersonalisedSchedule={showPersonalisedSchedule}
           isLoading={isEventsLoading}
-          {...scheduleNGWithAttendees}
+          {...scheduleWithAttendees}
         />
         {!isEventsLoading && (
           <div className="NavBarSchedule__download-buttons">
