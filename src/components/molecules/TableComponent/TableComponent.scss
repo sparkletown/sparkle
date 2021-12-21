@@ -1,129 +1,122 @@
 @import "scss/constants.scss";
 
-.table-component-container {
+$add-user-dimensions: 50px;
+$title-min-width: 70px;
+
+.TableComponent {
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
 
-  &.jazzbar-table-1 {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  &.jazzbar-table-2 {
-    grid-column: 7;
-    grid-row: 1;
-  }
-
-  &.jazzbar-table-3 {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  &.jazzbar-table-4 {
-    grid-column: 7;
-    grid-row: 2;
-  }
-
-  &.jazzbar-table-5 {
-    grid-column: 1;
-    grid-row: 3;
-  }
-
-  &.jazzbar-table-6 {
-    grid-column: 7;
-    grid-row: 3;
-  }
-
-  .table-title-container {
-    margin: 20px 0;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    padding-top: 8px;
-  }
-
-  .table-title {
-    font-size: 20px;
-    font-weight: 700;
-    text-align: center;
-  }
-
-  .table-subtitle {
-    color: $secondary--live;
-  }
-
-  .table-item {
+  &__item {
+    height: 100%;
     background: $secondary--live;
-    border-radius: 22px;
-    min-height: 30px;
+    border-radius: $border-radius--xl;
+    min-height: $spacing--xxl;
     color: $content--over;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    padding: 40px 25px 10px 25px;
+    padding: $spacing--lg;
     position: relative;
-    margin: 5px 5px;
+    margin: $spacing--xs;
+
     &:hover {
       background-color: lighten($secondary--live, 10%);
       transform: scale(1.05);
     }
   }
 
-  .table-occupancy-information {
-    top: 5px;
-    right: 7px;
-    position: absolute;
-    font-size: 10px;
+  &__item-wrapper {
+    display: flex;
+    text-align: center;
+    font-style: italic;
+    font-weight: 600;
+    margin-bottom: $spacing--md;
   }
 
-  .red-text {
+  &__title {
+    width: 75%;
+    min-width: $title-min-width;
+    margin: 0 auto;
+  }
+
+  &__occupancy-warning {
+    top: $spacing--xs;
+    left: $spacing--sm;
+    position: absolute;
+    font-size: 10px;
     color: $primary--over;
   }
 
-  .table-participant-picture {
+  &__profile-icon {
     background: $content--under;
     border-radius: $border-radius--xl;
   }
 
-  .join-text,
-  .add-participant-button {
-    cursor: pointer;
-  }
+  &__add-user {
+    @include square-size($add-user-dimensions);
 
-  .table-number {
-    top: 12px;
-    position: absolute;
-    text-align: center;
-    font-style: italic;
-    font-weight: 600;
-  }
-
-  .add-participant-button {
-    width: 50px;
-    height: 50px;
     display: flex;
-    font-size: 25px;
+    font-size: $font-size--xl;
     border-radius: 50%;
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-bottom: 3px;
-    margin-right: 5px;
+    margin-bottom: $spacing--sm;
+    margin-right: $spacing--sm;
     background-color: rgba(black, 0.4);
     color: rgba(black, 0);
     transition: all 400ms $transition-function;
     font-size: 2rem;
+    cursor: pointer;
+
     &:hover {
       background-color: $content--over;
       transform: scale(1.05) rotate(90deg);
       color: rgba(black, 0.7);
-      box-shadow: 2px 0px 10px opaque-white(0.6);
+      box-shadow: box-shadow--table(var(--content--over-60a));
     }
     &:active {
       transform: scale(0.95) rotate(90deg);
-      box-shadow: 2px 0px 10px opaque-white(0.2);
+      box-shadow: box-shadow--table(var(--content--over-20a));
     }
+  }
+
+  &__users {
+    display: flex;
+    margin-left: $spacing--xs;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__delete-icon {
+    margin-left: auto;
+    margin-top: -($spacing--md);
+    opacity: 0.6;
+    cursor: pointer;
+    position: absolute;
+    right: $spacing--sm;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__modal-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 auto;
+    text-align: center;
+    width: 90%;
+  }
+
+  &__modal-buttons {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
   }
 }

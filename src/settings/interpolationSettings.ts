@@ -6,3 +6,4 @@ export const STRING_EMPTY = "";
 export const STRING_SPACE = " ";
 export const STRING_DOUBLE_SLASH = "//";
 export const STRING_AMPERSAND = "&";
+export const STRING_PLUS = "+";
