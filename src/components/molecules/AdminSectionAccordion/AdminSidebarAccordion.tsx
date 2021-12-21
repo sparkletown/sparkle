@@ -4,36 +4,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import "./AdminSpacesListItem.scss";
+import "./AdminSidebarAccordion.scss";
 
-export interface AdminSpacesListItemProps {
+interface AdminSidebarAccordionProps {
   title: string;
-  isOpened?: boolean;
+  open?: boolean;
 }
 
-// @debt rename to AdminSidebarAccordion, wrap the children in a div, replace label with span etc.
-export const AdminSpacesListItem: React.FC<AdminSpacesListItemProps> = ({
+export const AdminSidebarAccordion: React.FC<AdminSidebarAccordionProps> = ({
   title,
-  isOpened,
+  open = false,
   children,
 }) => {
   const { isShown: showListItem, toggle: toggleShowListItem } = useShowHide(
-    isOpened ?? false
+    open
   );
 
   return (
-    <section className="AdminSpacesListItem">
-      <label
-        className="AdminSpacesListItem__label"
+    <section className="AdminSidebarAccordion">
+      <span
+        className="AdminSidebarAccordion__title"
         onClick={toggleShowListItem}
       >
         {title}
         <FontAwesomeIcon
-          className="AdminSpacesListItem__icon"
+          className="AdminSidebarAccordion__icon"
           icon={showListItem ? faCaretDown : faCaretRight}
         />
-      </label>
-      {showListItem && children}
+      </span>
+      <div className="AdminSidebarAccordion__contents">
+        {showListItem && children}
+      </div>
     </section>
   );
 };

@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
+import { useAsyncFn, useCss } from "react-use";
+import classNames from "classnames";
 
 import {
+  ALWAYS_NOOP_FUNCTION,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
   DEFAULT_REACTIONS_MUTED,
@@ -21,6 +23,8 @@ import {
   PORTAL_INFO_ICON_MAPPING,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
+  SPACE_INFO_MAP,
+  STRING_EMPTY,
   SUBVENUE_TEMPLATES,
   ZOOM_URL_TEMPLATES,
 } from "settings";
@@ -42,11 +46,11 @@ import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
-import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
+import { AdminSidebarAccordion } from "components/molecules/AdminSectionAccordion";
 import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
@@ -220,14 +224,30 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     [setValue]
   );
 
+  const logoStyle = useCss({
+    "background-image": `url(${space.host?.icon || DEFAULT_VENUE_LOGO})`,
+  });
+  const logoClasses = classNames("SpaceEditForm__logo", logoStyle);
+
   return (
-    <Form onSubmit={handleSubmit(updateVenue)}>
-      <div className="SpaceEditForm">
+    <div className="SpaceEditForm">
+      <form onSubmit={handleSubmit(updateVenue)}>
         <div className="SpaceEditForm__portal">
           <AdminSidebarSectionTitle>
             Edit general settings
           </AdminSidebarSectionTitle>
-          <AdminSpacesListItem title="The basics" isOpened>
+          <AdminSidebarAccordion title="The basics" open>
+            <AdminSection title="Space template" withLabel>
+              <div className="SpaceEditForm__template">
+                <div className={logoClasses} />
+                <AdminInput
+                  value={SPACE_INFO_MAP[space.template].text}
+                  disabled
+                  name={STRING_EMPTY}
+                  register={ALWAYS_NOOP_FUNCTION}
+                />
+              </div>
+            </AdminSection>
             <AdminSection title="Rename your space" withLabel>
               <AdminInput
                 name="name"
@@ -276,9 +296,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 />
               </AdminSection>
             )}
-          </AdminSpacesListItem>
+          </AdminSidebarAccordion>
 
-          <AdminSpacesListItem title="Appearance" isOpened>
+          <AdminSidebarAccordion title="Appearance" open>
             <AdminSection
               title="Upload a highlight image"
               subtitle="A plain 1920 x 1080px image works best."
@@ -309,12 +329,12 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 small
               />
             </AdminSection>
-          </AdminSpacesListItem>
+          </AdminSidebarAccordion>
 
           {BACKGROUND_IMG_TEMPLATES.includes(
             space.template as VenueTemplate
           ) && (
-            <AdminSpacesListItem title="Map background">
+            <AdminSidebarAccordion title="Map background">
               <BackgroundSelect
                 isLoadingBackgrounds={isLoadingBackgrounds}
                 mapBackgrounds={mapBackgrounds}
@@ -332,10 +352,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                   <div>Error: {errorFetchBackgrounds.message}</div>
                 </>
               )}
-            </AdminSpacesListItem>
+            </AdminSidebarAccordion>
           )}
 
-          <AdminSpacesListItem title="Embedable content" isOpened>
+          <AdminSidebarAccordion title="Embedable content" open>
             {space.template &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
               IFRAME_TEMPLATES.includes(space.template as VenueTemplate) && (
@@ -441,10 +461,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                   </div>
                 </>
               )}
-          </AdminSpacesListItem>
+          </AdminSidebarAccordion>
 
           {space.template === VenueTemplate.auditorium && (
-            <AdminSpacesListItem title="Extras" isOpened>
+            <AdminSidebarAccordion title="Extras" open>
               <AdminSection>
                 <div className="input-container">
                   <h4 className="italic input-header">
@@ -503,7 +523,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                   <div>= {200 * values.numberOfSections}</div>
                 </div>
               </AdminSection>
-            </AdminSpacesListItem>
+            </AdminSidebarAccordion>
           )}
           <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
           <SubmitError error={updateError} />
@@ -520,7 +540,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
             Save changes
           </ButtonNG>
         </AdminSidebarButtons>
-      </div>
-    </Form>
+      </form>
+    </div>
   );
 };

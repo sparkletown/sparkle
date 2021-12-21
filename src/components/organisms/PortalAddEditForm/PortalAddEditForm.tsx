@@ -10,7 +10,7 @@ import {
   DEFAULT_PORTAL_IS_ENABLED,
   DEFAULT_VENUE_LOGO,
   PORTAL_INFO_ICON_MAPPING,
-  PortalInfoListItem,
+  PortalInfoItem,
   ROOM_TAXON,
   SPACE_TAXON,
 } from "settings";
@@ -44,7 +44,7 @@ import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 import "./PortalAddEditForm.scss";
 
 export interface PortalAddEditFormProps {
-  item?: PortalInfoListItem;
+  item?: PortalInfoItem;
   onDone: () => void;
   portal?: Room;
   venueVisibility?: RoomVisibility;
