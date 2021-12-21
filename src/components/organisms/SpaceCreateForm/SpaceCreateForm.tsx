@@ -82,6 +82,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     };
 
     await createVenue_v2(data, user);
+
     history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
   }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
 

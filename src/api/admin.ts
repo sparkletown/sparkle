@@ -14,6 +14,7 @@ import {
 import { findSpaceBySlug } from "api/space";
 
 import { PortalInput, Room, RoomInput } from "types/rooms";
+import { Table } from "types/Table";
 import {
   SpaceSlug,
   VenueAdvancedConfig,
@@ -70,6 +71,7 @@ export interface VenueInput_v2 extends WithId<VenueAdvancedConfig> {
   end_utc_seconds?: number;
   showShoutouts?: boolean;
   showReactions?: boolean;
+  tables?: Table[];
 }
 
 type FirestoreVenueInput_v2 = Omit<VenueInput_v2, ImageFileKeys> &

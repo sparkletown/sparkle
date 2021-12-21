@@ -83,6 +83,7 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     owners: [context.auth.token.user_id],
     createdAt: Date.now(),
     updatedAt: Date.now(),
+    isHidden: false,
   };
 
   const worldDoc = admin.firestore().collection("worlds").doc();
@@ -114,6 +115,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     subtitle,
     showSchedule,
     userStatuses,
+    hasSocialLoginEnabled,
   } = data;
 
   if (!worldId) {
@@ -165,6 +167,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
+    ...(!isNil(hasSocialLoginEnabled) && { hasSocialLoginEnabled }),
   };
 
   await admin

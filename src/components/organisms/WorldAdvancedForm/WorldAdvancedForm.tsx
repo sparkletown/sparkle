@@ -61,6 +61,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showSchedule: shouldScheduleBeShown(world),
       showUserStatus: world.showUserStatus,
       userStatuses: userStatuses,
+      hasSocialLoginEnabled: world.hasSocialLoginEnabled,
     }),
     [world, userStatuses]
   );
@@ -92,6 +93,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
+      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
       userStatuses,
     };
 
@@ -118,6 +120,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
+      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
       userStatuses,
     });
   }, [userStatuses, getValues, reset]);

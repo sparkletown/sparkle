@@ -8,7 +8,7 @@ import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { TableSeatedUser } from "types/User";
-import { AnyVenue } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
@@ -36,6 +36,7 @@ export interface TablesUserListProps {
   leaveText?: string;
   venue: WithId<AnyVenue>;
   venueId: string;
+  template: VenueTemplate;
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
@@ -48,6 +49,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   TableComponent,
   joinMessage,
   venue,
+  template,
 }) => {
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
@@ -184,6 +186,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
+        template={template}
       />
     ));
   }, [
@@ -196,6 +199,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     venue,
+    template,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;

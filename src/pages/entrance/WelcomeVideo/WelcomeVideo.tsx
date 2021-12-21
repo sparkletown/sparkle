@@ -23,11 +23,13 @@ export const WelcomeVideo: React.FunctionComponent<EntranceStepTemplateProps> = 
   const defaultWelcomeText = `Welcome to ${venueName}! Please watch this video to get started.`;
 
   return (
-    <div className="splash-page-container">
-      <div className="step-container">
-        <h2>{welcomeText ?? defaultWelcomeText}</h2>
+    <div className="WelcomeVideo splash-page-container">
+      <div className="WelcomeVideo__step-container step-container">
+        <h2 className="WelcomeVideo__header">
+          {welcomeText ?? defaultWelcomeText}
+        </h2>
         <iframe
-          className="video"
+          className="WelcomeVideo__video video"
           title="art-piece-video"
           src={convertToEmbeddableUrl({ url, autoPlay })}
           frameBorder="0"
