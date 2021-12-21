@@ -8,8 +8,10 @@ import {
 } from "secrets";
 
 import { RoomType } from "types/rooms";
+import { Table } from "types/Table";
 import { VenueTemplate } from "types/venues";
 
+import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
 import {
@@ -587,6 +589,18 @@ export const DEFAULT_TABLE_COLUMNS = 3;
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+
+export const JAZZBAR_TABLES: Table[] = generateTables({
+  num: DEFAULT_JAZZBAR_TABLES_NUMBER,
+});
+
+export const CONVERSATION_TABLES: Table[] = generateTables({
+  num: DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER,
+});
+
+// These are really supposed to be constants and to avoid possible mutable shared state in the code elsewhere
+Object.freeze(JAZZBAR_TABLES);
+Object.freeze(CONVERSATION_TABLES);
 
 export const CHATBOX_NEXT_FETCH_SIZE = 50;
 export const SECTIONS_NEXT_FETCH_SIZE = 50;
