@@ -64,7 +64,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     isDirty: isDirtyCode,
     clearDirty: clearDirtyCode,
     replace: replaceCodeQuestions,
-  } = useArray<Question>(world.questions?.code);
+  } = useArray<Question>(codeQuestionsList);
 
   const {
     items: profileQuestions,
@@ -75,7 +75,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     isDirty: isDirtyProfile,
     clearDirty: clearDirtyProfile,
     replace: replaceProfileQuestions,
-  } = useArray<Question>(world.questions?.profile);
+  } = useArray<Question>(profileQuestionsList);
 
   const {
     items: entranceSteps,
@@ -86,7 +86,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     isDirty: isDirtyEntrance,
     clearDirty: clearDirtyEntrance,
     replace: replaceEntraceSteps,
-  } = useArray<EntranceStepConfig>(world.entrance, {
+  } = useArray<EntranceStepConfig>(entranceList, {
     create: () => ({ template: EntranceStepTemplate.WelcomeVideo }),
     prepare: (item) => ({
       ...item,
@@ -95,10 +95,12 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   });
 
   useEffect(() => {
-    if (!isEqual(world.questions?.profile, profileQuestionsList)) {
-      setProfileQuestionsList(world.questions?.profile);
-      replaceProfileQuestions(world.questions?.profile ?? []);
+    if (isEqual(world.questions?.profile, profileQuestionsList)) {
+      return;
     }
+
+    setProfileQuestionsList(world.questions?.profile);
+    replaceProfileQuestions(world.questions?.profile ?? []);
   }, [world.questions?.profile, replaceProfileQuestions, profileQuestionsList]);
 
   useEffect(() => {
