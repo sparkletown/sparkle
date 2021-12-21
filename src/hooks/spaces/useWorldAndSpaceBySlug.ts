@@ -1,5 +1,6 @@
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
-import Bugsnag from "@bugsnag/js";
+import { useCallback, useEffect, useState } from "react";
+import { useFirestore } from "reactfire";
+import firebase from 'firebase/app';
 
 import { World } from "api/world";
 
@@ -17,6 +18,11 @@ export type UseSpaceBySlugResult = {
   error?: string;
 };
 
+type UnifiedHandlerParams = {
+  worldSnap?: firebase.firestore.QuerySnapshot<WithId<World>>;
+  spaceSnap?: firebase.firestore.QuerySnapshot<WithId<AnyVenue>>;
+}
+
 /**
  * Hook which will return the space when the slug is provided.
  * The intention is to be used on the client side, when the space slug is provided in the url.
@@ -28,6 +34,98 @@ export const useWorldAndSpaceBySlug = (
   spaceSlug?: SpaceSlug
 ): UseSpaceBySlugResult => {
   const firestore = useFirestore();
+  const [worldAndSpace, setWorldAndSpace] = useState<UseSpaceBySlugResult>({
+    isLoaded: false,
+  });
+
+  const unifiedHandler = useCallback(({ worldSnap, spaceSnap }: UnifiedHandlerParams ) => {
+    // TODO Error handling.
+    setWorldAndSpace((prevState) => {
+      const newState = {...prevState};
+      if (spaceSnap) {
+        newState.space = spaceSnap.docs[0].data();
+      }
+      if (worldSnap) {
+        newState.world = worldSnap.docs[0].data();
+      }
+      if (newState.space && newState.world) {
+        newState.isLoaded = true;
+      }
+      return newState;
+  });
+  }, [setWorldAndSpace]);
+
+  useEffect(() => {
+    const unsubscribeMethods: any[] = [];
+    (async () => {
+      if (!worldSlug || !spaceSlug) {
+        setWorldAndSpace({
+          world: undefined,
+          space: undefined,
+          spaceId: undefined,
+          isLoaded: true,
+          error: undefined,
+        })
+        return;
+      }
+      const worldsRef = firestore
+        .collection("worlds")
+        .where("isHidden", "==", false)
+        // @debt we don't properly deal with the slug being undefined. This query
+        // shouldn't happen if we don't have a world slug. This whole hook needs
+        // a bit of a rethink. It's used incorrectly by (at least) the NavBar.
+        .where("slug", "==", worldSlug || "")
+        .withConverter(withIdConverter<World>());
+      const worldsSnapshot = await worldsRef.get();
+      // TODO error handling
+      const world = worldsSnapshot.docs[0].data();
+
+      const spacesRef = firestore
+        .collection("venues")
+        .where("slug", "==", spaceSlug ?? "")
+        .where("worldId", "==", world.id)
+        .withConverter(withIdConverter<AnyVenue>());
+      const spacesSnapshot = await spacesRef.get();
+      // TODO error handling
+      console.log("reading space");
+      const space = spacesSnapshot.docs[0]?.data();
+
+      const unsubscribeWorlds = worldsRef.onSnapshot((snap) => {
+        unifiedHandler({ worldSnap: snap, spaceSnap: undefined });
+      })
+      const unsubscribeSpaces = spacesRef.onSnapshot((snap) => {
+        unifiedHandler({ worldSnap: undefined, spaceSnap: snap });
+      })
+      unsubscribeMethods.unshift(unsubscribeSpaces);
+      unsubscribeMethods.unshift(unsubscribeWorlds);
+    })();
+
+    return () => {
+      while (unsubscribeMethods.length) {
+        const method = unsubscribeMethods.pop();
+        method();
+      }
+    }
+  }, [spaceSlug, worldSlug, setWorldAndSpace, firestore, unifiedHandler]);
+
+  return worldAndSpace;
+
+  /*
+    const worldsRef = firestore
+      .collection("worlds")
+      .where("isHidden", "==", false)
+      // @debt we don't properly deal with the slug being undefined. This query
+      // shouldn't happen if we don't have a world slug. This whole hook needs
+      // a bit of a rethink. It's used incorrectly by the NavBar.
+      .where("slug", "==", worldSlug || "")
+      .withConverter(withIdConverter<World>());
+    const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
+      WithId<World>
+    >(worldsRef);
+
+
+  });
+  console.log("result", result);
 
   const spacesRef = firestore
     .collection("venues")
@@ -122,5 +220,5 @@ export const useWorldAndSpaceBySlug = (
     space,
     spaceId: space?.id,
     isLoaded: true,
-  };
+  };*/
 };
