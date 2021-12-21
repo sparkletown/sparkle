@@ -41,6 +41,11 @@ $logo-size: 48px;
     justify-content: space-evenly;
     padding: 0;
     margin: 0;
+
+    .AdminInput {
+      flex-grow: 10;
+      margin-left: $spacing--xs;
+    }
   }
 
   &__logo {
