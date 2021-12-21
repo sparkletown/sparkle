@@ -27,6 +27,7 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
   const worldsRef = firestore
     .collection("worlds")
     .where("slug", "==", worldSlug ?? "")
+    .where("isHidden", "==", false)
     .withConverter(worldConverter);
 
   const { data: worlds, status } = useFirestoreCollectionData<WithId<World>>(

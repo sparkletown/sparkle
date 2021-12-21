@@ -38,4 +38,5 @@ export interface WorldAdvancedFormInput {
   showSchedule?: boolean;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
+  hasSocialLoginEnabled?: boolean;
 }

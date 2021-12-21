@@ -41,6 +41,7 @@ import { useUser } from "hooks/useUser";
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
+import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
 import { AdminSpacesListItem } from "components/organisms/AdminVenueView/components/AdminSpacesListItem";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
@@ -223,6 +224,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     <Form onSubmit={handleSubmit(updateVenue)}>
       <div className="SpaceEditForm">
         <div className="SpaceEditForm__portal">
+          <AdminSidebarSectionTitle>
+            Edit general settings
+          </AdminSidebarSectionTitle>
           <AdminSpacesListItem title="The basics" isOpened>
             <AdminSection title="Rename your space" withLabel>
               <AdminInput

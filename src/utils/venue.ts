@@ -1,4 +1,9 @@
-import { PLAYA_TEMPLATES, SUBVENUE_TEMPLATES } from "settings";
+import {
+  CONVERSATION_TABLES,
+  JAZZBAR_TABLES,
+  PLAYA_TEMPLATES,
+  SUBVENUE_TEMPLATES,
+} from "settings";
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
@@ -29,6 +34,9 @@ export const buildEmptySpace = (
   const list = new DataTransfer();
 
   const fileList = list.files;
+  const isSpaceWithTables =
+    template === VenueTemplate.jazzbar ||
+    template === VenueTemplate.conversationspace;
 
   return {
     name,
@@ -42,6 +50,12 @@ export const buildEmptySpace = (
     mapBackgroundImageUrl: "",
     logoImageFile: fileList,
     rooms: [],
+    ...(isSpaceWithTables && {
+      tables:
+        template === VenueTemplate.jazzbar
+          ? JAZZBAR_TABLES
+          : CONVERSATION_TABLES,
+    }),
   };
 };
 
