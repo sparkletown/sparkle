@@ -59,6 +59,8 @@ $logo-size: 48px;
   }
 
   .AdminSection {
+    padding: 0 $spacing--xs;
+
     &__label {
       display: flex;
       flex-direction: column;
