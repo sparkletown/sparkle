@@ -5,6 +5,7 @@ import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
 
 import {
+  ADMIN_IA_SPACE_BASE_PARAM_URL,
   ALWAYS_NOOP_FUNCTION,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_EMBED_URL,
@@ -29,15 +30,18 @@ import {
   ZOOM_URL_TEMPLATES,
 } from "settings";
 
+import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
+import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
+import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFetchAssets } from "hooks/useFetchAssets";
 import { useUser } from "hooks/useUser";
@@ -54,6 +58,7 @@ import { AdminSidebarAccordion } from "components/molecules/AdminSectionAccordio
 import { AdminTextarea } from "components/molecules/AdminTextarea";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
+import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
@@ -80,6 +85,7 @@ export interface SpaceEditFormProps {
 
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
   const { user } = useUser();
+  const { worldSlug } = useSpaceParams();
 
   const spaceLogoImage =
     PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
@@ -210,6 +216,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     [ownedVenues, space.parentId]
   );
 
+  const { name: watchedName } = watch();
+  const slug = useMemo(() => createSlug(watchedName), [watchedName]);
+
   const changePortalImageUrl = useCallback(
     (val: string) => {
       setValue("logoImageUrl", val, false);
@@ -255,6 +264,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
                 register={register}
                 errors={errors}
                 required
+              />
+            </AdminSection>
+            <AdminSection title="Your URL will be">
+              <YourUrlDisplay
+                path={generateUrl({
+                  route: ADMIN_IA_SPACE_BASE_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug },
+                })}
+                slug={slug}
               />
             </AdminSection>
             <AdminSection title="Subtitle" withLabel>

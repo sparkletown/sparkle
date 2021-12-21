@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$transition: 0.5s cubic-bezier(0, 1.25, 1, 1);
+
 .AdminSidebarAccordion {
   &__title {
     display: flex;
@@ -15,8 +17,22 @@
     }
   }
 
+  &__contents-wrapper {
+    overflow: hidden;
+  }
+
   &__contents {
     margin: 0;
     padding: 0;
+    transition: opacity #{$transition}, height #{$transition},
+      transform #{$transition};
+    opacity: 1;
+  }
+
+  &--closed &__contents {
+    visibility: hidden;
+    opacity: 0;
+    height: 0;
+    transform: translateY(-100%);
   }
 }

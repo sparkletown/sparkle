@@ -1,6 +1,7 @@
 import React from "react";
 import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -16,24 +17,25 @@ export const AdminSidebarAccordion: React.FC<AdminSidebarAccordionProps> = ({
   open = false,
   children,
 }) => {
-  const { isShown: showListItem, toggle: toggleShowListItem } = useShowHide(
-    open
-  );
+  const { isShown, toggle } = useShowHide(open);
+
+  const parentClasses = classNames({
+    AdminSidebarAccordion: true,
+    "AdminSidebarAccordion--open": isShown,
+    "AdminSidebarAccordion--closed": !isShown,
+  });
 
   return (
-    <section className="AdminSidebarAccordion">
-      <span
-        className="AdminSidebarAccordion__title"
-        onClick={toggleShowListItem}
-      >
+    <section className={parentClasses}>
+      <span className="AdminSidebarAccordion__title" onClick={toggle}>
         {title}
         <FontAwesomeIcon
           className="AdminSidebarAccordion__icon"
-          icon={showListItem ? faCaretDown : faCaretRight}
+          icon={isShown ? faCaretDown : faCaretRight}
         />
       </span>
-      <div className="AdminSidebarAccordion__contents">
-        {showListItem && children}
+      <div className="AdminSidebarAccordion__contents-wrapper">
+        <div className="AdminSidebarAccordion__contents">{children}</div>
       </div>
     </section>
   );
