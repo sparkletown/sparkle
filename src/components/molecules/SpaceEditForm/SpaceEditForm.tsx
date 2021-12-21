@@ -234,7 +234,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
   );
 
   const logoStyle = useCss({
-    "background-image": `url(${space.host?.icon || DEFAULT_VENUE_LOGO})`,
+    "background-image": `url(${SPACE_INFO_MAP[space.template].icon})`,
   });
   const logoClasses = classNames("SpaceEditForm__logo", logoStyle);
 
