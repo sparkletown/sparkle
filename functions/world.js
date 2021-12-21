@@ -115,6 +115,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     subtitle,
     showSchedule,
     userStatuses,
+    hasSocialLoginEnabled,
   } = data;
 
   if (!worldId) {
@@ -166,6 +167,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(showUserStatus) && { showUserStatus }),
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
+    ...(!isNil(hasSocialLoginEnabled) && { hasSocialLoginEnabled }),
   };
 
   await admin

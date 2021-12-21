@@ -141,6 +141,7 @@ const createVenueData_v2 = (data, context) => {
   const venueData_v2 = {
     name: data.name,
     config: {
+      ...(Array.isArray(data.tables) && { tables: data.tables }),
       landingPageConfig: {
         coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
@@ -232,10 +233,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   if (typeof data.enableJukebox === "boolean") {
     updated.enableJukebox = data.enableJukebox;
-  }
-
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
   }
 
   if (typeof data.showUserStatus === "boolean") {
@@ -616,10 +613,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
-  }
-
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -676,32 +669,73 @@ exports.updateTables = functions.https.onCall((data, context) => {
     throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
   }
 
-  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+  const spaceRef = admin.firestore().collection("venues").doc(data.venueId);
 
   return admin.firestore().runTransaction(async (transaction) => {
-    const venueDoc = await transaction.get(venueRef);
+    const spaceDoc = await transaction.get(spaceRef);
 
-    if (!venueDoc.exists) {
+    if (!spaceDoc.exists) {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
 
-    const venue = venueDoc.data();
+    const space = spaceDoc.data();
 
-    const venueTables =
-      (venue.config && venue.config.tables) || data.defaultTables;
+    const spaceTables =
+      (space.config && space.config.tables) || data.defaultTables;
 
     const currentTableIndex = venueTables.findIndex(
       (table) => table.reference === data.newTable.reference
     );
 
     if (currentTableIndex < 0) {
-      venueTables.push(data.newTable);
+      spaceTables.push(data.newTable);
     } else {
-      venueTables[currentTableIndex] = data.newTable;
+      spaceTables[currentTableIndex] = data.newTable;
     }
 
-    transaction.update(venueRef, { "config.tables": venueTables });
+    transaction.update(spaceRef, { "config.tables": spaceTables });
   });
+});
+
+exports.deleteTable = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+  const { venueId: spaceId, tableName, defaultTables } = data;
+  await checkUserIsOwner(spaceId, context.auth.token.user_id);
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${spaceId} not found`);
+  }
+
+  const docData = doc.data();
+  const tables = docData.config.tables || defaultTables;
+
+  const index = tables.findIndex((val) => val.reference === tableName);
+  // there are venues that don't have tables inserted in the database and use default ones instead
+  // if that's the case, then we won't be able to delete any of the tables
+  // thus we have to create tables (excluding the one being deleted) before modifying them
+  if (!docData.config?.tables) {
+    defaultTables.splice(index, 1);
+
+    admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .update({
+        ...docData,
+        config: { ...docData.config, tables: defaultTables },
+      });
+
+    return;
+  }
+
+  if (index === -1) {
+    throw new HttpsError("not-found", `Table does not exist`);
+  } else {
+    docData.config.tables.splice(index, 1);
+  }
+
+  admin.firestore().collection("venues").doc(spaceId).update(docData);
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
