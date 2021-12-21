@@ -38,8 +38,8 @@ const resumeFromPage = 1;
 const desiredEventTrackingFieldValue: string | undefined = undefined;
 
 // Login credentials (only needed if newLogin is true)
-const username: string = "admin@sparkle.space";
-const password: string = "qavsof-Qamxys-3cywqi";
+const username: string = "";
+const password: string = "";
 
 // ---------------------------------------------------------
 // HERE THERE BE DRAGONS (edit below here at your own risk)
