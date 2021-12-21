@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { Modal } from "react-bootstrap";
 import ShowMoreText from "react-show-more-text";
 
-import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -179,7 +179,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
             containerClassName="PortalModal__userlist"
             usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={portalVenue?.recentUserCount ?? 0}
-            activity={`in this ${ROOM_TAXON.lower}`}
+            activity="in this space"
             attendeesTitle={world?.attendeesTitle}
           />
         </div>
