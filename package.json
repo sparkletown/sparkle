@@ -120,7 +120,7 @@
     "bootstrap": "^4.4.1",
     "bootswatch": "^4.5.0",
     "browser-image-compression": "^1.0.15",
-    "chalk": "^4.1.1",
+    "chalk": "^5.0.0",
     "classnames": "^2.2.6",
     "date-fns": "^2.22.1",
     "dayjs": "^1.8.35",
