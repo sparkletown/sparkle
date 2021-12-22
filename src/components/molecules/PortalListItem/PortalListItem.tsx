@@ -1,7 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ALWAYS_NOOP_FUNCTION, PortalInfoListItem, ROOM_TAXON } from "settings";
+import { ALWAYS_NOOP_FUNCTION, PortalInfoItem, ROOM_TAXON } from "settings";
 
 import { useKeyPress } from "hooks/useKeyPress";
 
@@ -10,7 +10,7 @@ import "./PortalListItem.scss";
 const HANDLED_KEY_PRESSES = ["Space", "Enter"];
 
 export interface PortalListItemProps {
-  item: PortalInfoListItem;
+  item: PortalInfoItem;
   selected?: boolean;
   tabIndex: number;
   onClick?: () => void;

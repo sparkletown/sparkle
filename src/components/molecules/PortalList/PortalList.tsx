@@ -8,7 +8,7 @@ import React, {
 import { FieldErrors, FieldValues } from "react-hook-form";
 import { get } from "lodash";
 
-import { PortalInfoListItem } from "settings";
+import { PortalInfoItem } from "settings";
 
 import { PortalAddEditModal } from "components/molecules/PortalAddEditModal";
 import { PortalListItem } from "components/molecules/PortalListItem";
@@ -19,12 +19,12 @@ export type PortalListVariant = "input" | "modal";
 
 export interface PortalListProps {
   errors?: FieldErrors<FieldValues>;
-  items: PortalInfoListItem[];
+  items: PortalInfoItem[];
   label?: ReactNode | string;
   name?: string;
-  onClick?: (context: { item: PortalInfoListItem; index: number }) => void;
+  onClick?: (context: { item: PortalInfoItem; index: number }) => void;
   register?: (Ref: unknown, RegisterOptions?: unknown) => void;
-  selectedItem?: PortalInfoListItem;
+  selectedItem?: PortalInfoItem;
   variant: PortalListVariant;
 }
 
