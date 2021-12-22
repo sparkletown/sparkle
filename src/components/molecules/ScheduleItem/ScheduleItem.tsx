@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import { DEFAULT_VENUE_LOGO, SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
+import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -88,14 +88,11 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
     [worldSlug, eventVenue]
   );
 
-  const eventImage = getFirebaseStorageResizedImage(
-    eventVenue?.host?.icon ?? DEFAULT_VENUE_LOGO,
-    {
-      fit: "crop",
-      width: 40,
-      height: 40,
-    }
-  );
+  const eventImage = getFirebaseStorageResizedImage(event.venueIcon, {
+    fit: "crop",
+    width: 40,
+    height: 40,
+  });
 
   const infoContaier = classNames("ScheduleItem__info", {
     "ScheduleItem__info--active": isCurrentEventLive,
