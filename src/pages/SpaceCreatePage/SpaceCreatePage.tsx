@@ -1,9 +1,13 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { SPACE_TAXON, STRING_AMPERSAND } from "settings";
+import {
+  ADMIN_IA_WORLD_PARAM_URL,
+  SPACE_TAXON,
+  STRING_AMPERSAND,
+} from "settings";
 
-import { adminWorldSpacesUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
@@ -29,7 +33,11 @@ export const SpaceCreatePage: React.FC = () => {
   const { worldSlug } = useSpaceParams();
   const { isLoaded: isWorldLoaded, worldId } = useWorldBySlug(worldSlug);
 
-  const homeUrl = adminWorldSpacesUrl(worldSlug);
+  const homeUrl = generateUrl({
+    route: ADMIN_IA_WORLD_PARAM_URL,
+    required: ["worldSlug"],
+    params: { worldSlug },
+  });
 
   return (
     <div className="SpaceCreatePage">
