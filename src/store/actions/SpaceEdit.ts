@@ -1,13 +1,13 @@
-import { SpaceInfoListItem } from "settings";
+import { SpaceInfoItem } from "settings";
 
 export const SPACE_CREATE_PORTAL_ITEM: string = "SPACE_CREATE_PORTAL_ITEM";
 
 interface SpaceEditAction {
   type: typeof SPACE_CREATE_PORTAL_ITEM;
-  payload?: SpaceInfoListItem | null;
+  payload?: SpaceInfoItem | null;
 }
 
-export const spaceCreatePortalItem = (payload?: SpaceInfoListItem | null) => ({
+export const spaceCreatePortalItem = (payload?: SpaceInfoItem | null) => ({
   type: SPACE_CREATE_PORTAL_ITEM,
   payload: payload ?? null,
 });
