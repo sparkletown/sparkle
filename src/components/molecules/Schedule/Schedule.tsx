@@ -33,15 +33,15 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   return (
     <div className="Schedule">
-      {!hasEvents ? (
-        <div className="Schedule__no-events">
-          {showPersonalisedSchedule ? "No saved events" : "No events scheduled"}
-        </div>
-      ) : (
+      {hasEvents ? (
         <ScheduleEventList
           daysEvents={daysEvents}
           scheduleDate={scheduleDate}
         />
+      ) : (
+        <div className="Schedule__no-events">
+          {showPersonalisedSchedule ? "No saved events" : "No events scheduled"}
+        </div>
       )}
     </div>
   );
