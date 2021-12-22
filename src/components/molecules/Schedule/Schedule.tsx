@@ -7,7 +7,7 @@ import { ScheduleEventList } from "components/molecules/ScheduleEventList";
 
 import "./Schedule.scss";
 
-export interface ScheduleProps {
+interface ScheduleProps {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
   isLoading: boolean;

@@ -37,7 +37,7 @@ import "./EmergencyViewPage.scss";
 
 dayjs.extend(advancedFormat);
 
-export const emptyPersonalizedSchedule = {};
+const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);

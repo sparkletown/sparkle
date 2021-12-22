@@ -10,7 +10,7 @@ import { ScheduleItem } from "components/molecules/ScheduleItem";
 
 import "./ScheduleEventList.scss";
 
-export interface ScheduleEventSubListProps {
+interface ScheduleEventSubListProps {
   events: ScheduledVenueEvent[];
   title: string;
   isShowFullInfo?: boolean;

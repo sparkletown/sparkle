@@ -33,7 +33,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./ScheduleItem.scss";
 
-export interface ScheduleItemProps {
+interface ScheduleItemProps {
   event: ScheduledVenueEvent;
   isShowFullInfo: boolean;
 }

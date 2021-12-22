@@ -43,13 +43,13 @@ import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
 
-export interface ScheduleDay {
+interface ScheduleDay {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
 
-export const emptyPersonalizedSchedule = {};
-export interface NavBarScheduleProps {
+const emptyPersonalizedSchedule = {};
+interface NavBarScheduleProps {
   isVisible?: boolean;
   venueId: string;
 }

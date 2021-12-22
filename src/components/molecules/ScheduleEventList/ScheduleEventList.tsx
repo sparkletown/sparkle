@@ -15,7 +15,7 @@ import { ScheduleEventSubList } from "./ScheduleEventSubList";
 
 import "./ScheduleEventList.scss";
 
-export interface ScheduleEventListProps {
+interface ScheduleEventListProps {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
