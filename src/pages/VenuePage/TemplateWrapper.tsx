@@ -63,7 +63,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.animatemap:
-      template = <AnimateMap venue={venue} />;
+      template = <AnimateMap space={venue} />;
       break;
 
     case VenueTemplate.artpiece:
