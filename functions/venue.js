@@ -714,7 +714,7 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
   // there are venues that don't have tables inserted in the database and use default ones instead
   // if that's the case, then we won't be able to delete any of the tables
   // thus we have to create tables (excluding the one being deleted) before modifying them
-  if (!docData.config?.tables) {
+  if (!docData.config || !docData.config.tables) {
     defaultTables.splice(index, 1);
 
     admin
