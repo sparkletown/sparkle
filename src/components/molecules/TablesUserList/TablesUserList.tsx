@@ -13,7 +13,7 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
 import { generateTable } from "utils/table";
-import { isTruthy } from "utils/types";
+import { arrayIncludes, isTruthy } from "utils/types";
 
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useSelector } from "hooks/useSelector";
@@ -70,6 +70,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const { userWithId } = useUser();
   const experience = useSelector(experienceSelector);
+
+  const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
     venueId
@@ -166,7 +168,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const allowCreateEditTable =
-    emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
+    !isSeatedAtTable &&
+    (isCurrentUserAdmin || emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER);
 
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
