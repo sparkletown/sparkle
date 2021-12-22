@@ -7,7 +7,7 @@ import { WorldSlug } from "types/world";
 import { WithId, WithVenueId } from "utils/id";
 import { arrayIncludes } from "utils/types";
 
-export interface PrepareForScheduleProps {
+interface PrepareForScheduleProps {
   usersEvents: MyPersonalizedSchedule;
   relatedVenues: WithId<AnyVenue>[];
   recentRoomUsersCount?: number;
