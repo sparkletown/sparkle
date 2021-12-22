@@ -7,6 +7,7 @@ import { omit } from "lodash";
 
 import { ADMIN_IA_WORLD_BASE_URL, COMMON_NAME_MAX_CHAR_COUNT } from "settings";
 
+import { createSlug } from "api/admin";
 import { createWorld, updateWorldStartSettings, World } from "api/world";
 
 import { worldEdit, WorldEditActions } from "store/actions/WorldEdit";
@@ -26,6 +27,7 @@ import { AdminInput } from "components/molecules/AdminInput";
 import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
+import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
@@ -70,6 +72,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
   );
 
   const {
+    getValues,
     setValue,
     reset,
     watch,
@@ -143,6 +146,9 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
     [values, worldId, dispatch]
   );
 
+  const { name: worldName } = getValues();
+  const worldSlug = useMemo(() => createSlug(worldName), [worldName]);
+
   // NOTE: palette cleanser when starting new world, run only once on init
   useEffect(() => void dispatch<WorldEditActions>(worldEdit()), [dispatch]);
 
@@ -158,6 +164,9 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             errors={errors}
             max={COMMON_NAME_MAX_CHAR_COUNT}
           />
+        </AdminSection>
+        <AdminSection title="Your URL will be">
+          <YourUrlDisplay path={ADMIN_IA_WORLD_BASE_URL} slug={worldSlug} />
         </AdminSection>
         <AdminSection
           title={
@@ -208,7 +217,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             variant="primary"
             {...saveButtonProps}
           >
-            Save
+            {worldId ? "Update" : "Create"}
           </ButtonNG>
         </AdminSidebarButtons>
       </Form>

@@ -79,16 +79,3 @@ export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
     removedParticipantUids: Yup.array().of(Yup.string().required()),
   })
   .required();
-
-export const MyPersonalizedScheduleSchema = Yup.lazy<
-  MyPersonalizedSchedule | undefined
->((data) => {
-  const lazyObjectShape = Object.fromEntries(
-    Object.keys(data ?? {}).map((key) => [
-      key,
-      Yup.array().of(Yup.string().required()),
-    ])
-  );
-
-  return Yup.object().shape(lazyObjectShape).noUnknown();
-});

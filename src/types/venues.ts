@@ -383,17 +383,6 @@ export interface VenueEvent {
   worldId: string;
 }
 
-export interface VenueLocation {
-  venueId: string;
-  roomTitle?: string;
-  venueName?: string;
-}
-
-export interface LocationEvents {
-  location: VenueLocation;
-  events: ScheduledVenueEvent[];
-}
-
 export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;

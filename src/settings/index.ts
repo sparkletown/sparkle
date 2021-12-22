@@ -97,10 +97,6 @@ export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
 // How often to refresh events schedule
-export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
-export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
-export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
-export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
 export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
@@ -113,9 +109,6 @@ export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 20 * 1000;
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
-
-// How often to refresh current time line in the schedule
-export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
@@ -579,12 +572,6 @@ export const ENTER_AUDITORIUM_SECTION_EVENT_NAME = "Enter auditorium section";
 export const SELECT_TABLE_EVENT_NAME = "Select table";
 export const TAKE_SEAT_EVENT_NAME = "Take a seat";
 export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
-
-// SCHEDULE
-// @debt probably would be better to adjust max hour based on user's display size
-export const SCHEDULE_MAX_START_HOUR = 16;
-export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
-export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
 
 /**
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any

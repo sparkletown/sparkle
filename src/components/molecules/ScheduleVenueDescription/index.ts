@@ -1,1 +1,0 @@
-export { ScheduleVenueDescription } from "./ScheduleVenueDescription";
