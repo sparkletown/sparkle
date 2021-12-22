@@ -1,9 +1,9 @@
 import React from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { WorldNavTab } from "types/world";
+import { ADMIN_IA_WORLD_BASE_URL } from "settings";
 
-import { adminWorldSpacesUrl } from "utils/url";
+import { WorldNavTab } from "types/world";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
@@ -38,28 +38,27 @@ export const WorldEditor: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const adminTitle = world ? `${world.name} settings` : "Create a new world";
-
-  const navBarTitle = `${world?.name ?? ""}`;
+  const editMode = !!world?.id;
+  const worldName = world?.name ?? "";
+  const adminTitle = editMode
+    ? worldName
+      ? `${worldName} settings`
+      : "Settings"
+    : "Create a new world";
 
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
   return (
     <div className="WorldEditor">
-      <WithNavigationBar title={navBarTitle}>
+      <WithNavigationBar title={worldName}>
         <AdminRestricted>
           <AdminTitleBar variant="two-rows">
-            {world && (
-              <ButtonNG
-                linkTo={adminWorldSpacesUrl(world.slug)}
-                iconName={faArrowLeft}
-              >
-                Back to Dashboard
-              </ButtonNG>
-            )}
+            <ButtonNG linkTo={ADMIN_IA_WORLD_BASE_URL} iconName={faArrowLeft}>
+              Back to Dashboard
+            </ButtonNG>
             <AdminTitle>{adminTitle}</AdminTitle>
           </AdminTitleBar>
-          <WorldNav />
+          {editMode && <WorldNav />}
           <WorldEditorPanel worldSlug={worldSlug} />
         </AdminRestricted>
       </WithNavigationBar>
