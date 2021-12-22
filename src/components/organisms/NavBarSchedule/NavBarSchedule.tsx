@@ -36,8 +36,6 @@ import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
 import { Schedule } from "components/molecules/Schedule";
 
-// Disabled as per designs. Up for deletion if confirmed not necessary
-// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -280,9 +278,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       <div className="NavBarSchedule__wrapper">
-        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {<ScheduleVenueDescription />} */}
-
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         {venue && sovereignVenue && (
           <Breadcrumbs
