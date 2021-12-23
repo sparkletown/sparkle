@@ -764,7 +764,7 @@ class PlayerIOWrapper {
         this.disconnect = function () {
           console.log("... this shouldn't happen");
         };
-        this.sendChatMessage = function (message) {
+        this.sendMessage = function (message) {
           console.log("... send msg. this shouldn't happen");
         };
 
@@ -5066,7 +5066,7 @@ class PlayerIOWrapper {
             }
           }
         };
-        this.sendChatMessage = function (message) {
+        this.sendMessage = function (message) {
           var serialized = serializer.serializeMessage(message);
 
           if (talkBinary) {
@@ -5389,7 +5389,7 @@ class PlayerIOWrapper {
          * Send a message
          * @param {message} message The message to send.
          */
-        this.sendChatMessage = function (message) {
+        this.sendMessage = function (message) {
           if (self.connected) {
             socket.sendMessage(message);
           } else {
