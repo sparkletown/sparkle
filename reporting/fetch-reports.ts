@@ -22,7 +22,7 @@ const to = "10/08/2020";
 // Zoom has a captcha, so save cookies to avoid logging in too many times.
 // Set this to true to log in and save cookies.
 // Set to false if cookies are already available.
-const newLogin = false;
+const newLogin = true;
 
 // The correct URL for accessing the reports is different for admin users who can
 // access reports for all accounts under the zoom account. If you are trying to get
@@ -60,7 +60,9 @@ const addTrackingFieldToColumnsButtonSelector =
 const addEventTrackingFieldColumnCheckboxSelector =
   "#meetingList #trackfieldDropdownMenu label[alt=Event] > input[type=checkbox]";
 const nextPageLinkSelector =
-  "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2) > a";
+  "#meetingList > #paginationDivMeeting > div > ul > li:nth-child(2) > a";
+const nextPageLinkDisabledSelector =
+  "#meetingList > #paginationDivMeeting > div > ul > li:nth-child(2).disabled > a";
 
 const meetingListTableRowsSelector = "#meeting_list > tbody > tr";
 
@@ -94,9 +96,9 @@ if (newLogin && username === "" && password === "") {
 const keypress = async () => {
   process.stdin.setRawMode(true);
   return new Promise((resolve) =>
-    process.stdin.once("data", () => {
+    process.stdin.once("data", (data) => {
       process.stdin.setRawMode(false);
-      resolve();
+      resolve(data);
     })
   );
 };
@@ -272,14 +274,13 @@ const makeGetNumberOfReportsTotal = (
     console.log("Moving on to next page...");
 
     await page.waitForSelector(nextPageLinkSelector);
+
     await page.click(nextPageLinkSelector);
 
     await navigationPromise;
 
     const nextButtonDisabled =
-      (await page.$(
-        "#meetingList > .list-col > .dynamo_pagination > li:nth-child(2).disabled > a"
-      )) !== null;
+      (await page.$(nextPageLinkDisabledSelector)) !== null;
 
     onLastPageAndExportedAll = nextButtonDisabled;
 
