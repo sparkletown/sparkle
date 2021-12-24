@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import { DEFAULT_VENUE_LOGO, SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
+import { SCHEDULE_SHOW_COPIED_TEXT_MS } from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -31,14 +31,14 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./ScheduleItemNG.scss";
+import "./ScheduleItem.scss";
 
-export interface ScheduleItemNGProps {
+interface ScheduleItemProps {
   event: ScheduledVenueEvent;
   isShowFullInfo: boolean;
 }
 
-export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
+export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   event,
   isShowFullInfo,
 }) => {
@@ -88,21 +88,18 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     [worldSlug, eventVenue]
   );
 
-  const eventImage = getFirebaseStorageResizedImage(
-    eventVenue?.host?.icon ?? DEFAULT_VENUE_LOGO,
-    {
-      fit: "crop",
-      width: 40,
-      height: 40,
-    }
-  );
-
-  const infoContaier = classNames("ScheduleItemNG__info", {
-    "ScheduleItemNG__info--active": isCurrentEventLive,
+  const eventImage = getFirebaseStorageResizedImage(event.venueIcon, {
+    fit: "crop",
+    width: 40,
+    height: 40,
   });
 
-  const timeContainer = classNames("ScheduleItemNG__time", {
-    "ScheduleItemNG__time--live": isCurrentEventLive,
+  const infoContaier = classNames("ScheduleItem__info", {
+    "ScheduleItem__info--active": isCurrentEventLive,
+  });
+
+  const timeContainer = classNames("ScheduleItem__time", {
+    "ScheduleItem__time--live": isCurrentEventLive,
   });
 
   const { userId } = useUser();
@@ -122,9 +119,9 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   );
 
   return (
-    <div className="ScheduleItemNG" onClick={toggleEventExpand}>
+    <div className="ScheduleItem" onClick={toggleEventExpand}>
       <div className={infoContaier}>
-        <span className="ScheduleItemNG__date">
+        <span className="ScheduleItem__date">
           {!isCurrentEventLive &&
             showDate &&
             isShowFullInfo &&
@@ -136,49 +133,49 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
             ? "Live"
             : formatTimeLocalised(eventStartTime({ event })) + "-"}
         </span>
-        <span className="ScheduleItemNG__until ScheduleItemNG__time--end">
+        <span className="ScheduleItem__until ScheduleItem__time--end">
           {isCurrentEventLive && "until "}
         </span>
 
-        <span className="ScheduleItemNG__date ScheduleItemNG__time--end">
+        <span className="ScheduleItem__date ScheduleItem__time--end">
           {showDate && formatDateRelativeToNow(eventEndTime({ event }))}
         </span>
 
-        <span className="ScheduleItemNG__time ScheduleItemNG__time--end">
+        <span className="ScheduleItem__time ScheduleItem__time--end">
           {formatTimeLocalised(eventEndTime({ event }))}
         </span>
       </div>
 
       {isShowFullInfo && (
         <img
-          className="ScheduleItemNG__icon"
+          className="ScheduleItem__icon"
           src={eventImage}
           alt="event location"
         />
       )}
 
-      <div className="ScheduleItemNG__details">
-        <div className="ScheduleItemNG__name">{event.name}</div>
-        <div className="ScheduleItemNG__place">
+      <div className="ScheduleItem__details">
+        <div className="ScheduleItem__name">{event.name}</div>
+        <div className="ScheduleItem__place">
           <span className="button--a" onClick={enterEventVenue}>
             {eventVenue?.name}
           </span>
         </div>
         {isEventExpanded && (
           <>
-            <div className="ScheduleItemNG__description">
+            <div className="ScheduleItem__description">
               <RenderMarkdown text={event.description} />
             </div>
-            <div className="ScheduleItemNG__buttons">
+            <div className="ScheduleItem__buttons">
               <ButtonNG
-                className="ScheduleItemNG__button ScheduleItemNG__button--copy"
+                className="ScheduleItem__button ScheduleItem__button--copy"
                 onClick={handleCopyEventLink}
                 variant="secondary"
               >
                 {isEventLinkCopied ? "Copied!" : "Copy event link"}
               </ButtonNG>
               <ButtonNG
-                className="ScheduleItemNG__button"
+                className="ScheduleItem__button"
                 onClick={goToEventLocation}
                 variant="primary"
               >
@@ -190,16 +187,16 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         )}
       </div>
       {isCurrentEventLive && (
-        <div className="ScheduleItemNG__online">
+        <div className="ScheduleItem__online">
           <FontAwesomeIcon
-            className="ScheduleItemNG__online-icon"
+            className="ScheduleItem__online-icon"
             icon={solidUsers}
           />
           <span>{event.liveAudience}</span>
         </div>
       )}
       {isShowFullInfo && (
-        <div className="ScheduleItemNG__bookmark" onClick={bookmarkEvent}>
+        <div className="ScheduleItem__bookmark" onClick={bookmarkEvent}>
           <FontAwesomeIcon
             icon={event.isSaved ? solidBookmark : regularBookmark}
           />

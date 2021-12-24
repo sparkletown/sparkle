@@ -1,1 +1,0 @@
-export { ScheduleNG } from "./ScheduleNG";
