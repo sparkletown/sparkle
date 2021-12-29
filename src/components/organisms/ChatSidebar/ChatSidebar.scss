@@ -79,7 +79,7 @@ $media-width--mobile-max: 1024px;
 
     border: none;
     padding: 0 $spacing--sm;
-    width: 100px;
+    width: $chat-sidebar-controller-width;
     height: 55px;
     margin-top: $spacing--md;
     border-radius: $border-radius--lg 0 0 $border-radius--lg;
