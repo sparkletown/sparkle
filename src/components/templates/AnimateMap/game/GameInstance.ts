@@ -38,6 +38,9 @@ import { stubUsersData } from "./constants/StubData";
 import { MapContainer } from "./map/MapContainer";
 import { StartPoint } from "./utils/Point";
 
+// @debt do not create objects on load time, but only in the constructor.
+// Globals (or module level) constants like mapLightningShader and mapStaticLightningShader
+// will cause an error on devices/browsers that don't support WebGL 2
 export class GameInstance {
   public static DEBOUNCE_TIME: number = 25;
 

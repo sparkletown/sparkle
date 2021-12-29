@@ -29,22 +29,4 @@
     max-width: 100vw;
     max-height: 100vh;
   }
-
-  &--error {
-    display: grid;
-    place-content: center;
-  }
-
-  &--error &__init-message {
-    text-align: center;
-    font-size: font-size--root(1.5);
-
-    &--normal {
-      color: var(--content--over);
-    }
-
-    &--error {
-      color: var(--danger--under);
-    }
-  }
 }

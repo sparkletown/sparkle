@@ -1,0 +1,26 @@
+@import "scss/constants.scss";
+
+$message-box-height--min: 30vw;
+$margin--normal: font-size--root(1);
+$margin--for-chat-button: 100px;
+
+.AnimateMapErrorPrompt {
+  display: grid;
+  place-content: center;
+  min-height: $message-box-height--min;
+
+  &__contents {
+    margin: $margin--normal $margin--for-chat-button $margin--normal
+      $margin--normal;
+    text-align: center;
+    font-size: font-size--root(1.5);
+  }
+
+  &__normal-text {
+    color: var(--content--over);
+  }
+
+  &__error-message {
+    color: var(--danger--under);
+  }
+}

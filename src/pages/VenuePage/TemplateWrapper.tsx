@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { VENUES_WITH_CHAT_REQUIRED } from "settings";
@@ -6,11 +6,13 @@ import { VENUES_WITH_CHAT_REQUIRED } from "settings";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
+import { tracePromise } from "utils/performance";
+import { isWebGl2Enabled } from "utils/webgl";
 
 import { ReactionsProvider } from "hooks/reactions";
 import { useSettings } from "hooks/useSettings";
 
-import { AnimateMap } from "components/templates/AnimateMap";
+import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
@@ -31,7 +33,15 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-export interface TemplateWrapperProps {
+const AnimateMap = lazy(() =>
+  tracePromise("TemplateWrapper::lazy-import::AnimateMap", () =>
+    import("components/templates/AnimateMap").then(({ AnimateMap }) => ({
+      default: AnimateMap,
+    }))
+  )
+);
+
+interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
 
@@ -63,7 +73,14 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.animatemap:
-      template = <AnimateMap space={venue} />;
+      // NOTE: this is a must check for not spilling over global errors from animatemap onto other templates when it is unused
+      template = isWebGl2Enabled() ? (
+        <Suspense fallback={LoadingPage}>
+          <AnimateMap space={venue} />
+        </Suspense>
+      ) : (
+        <AnimateMapErrorPrompt variant="unsupported" />
+      );
       break;
 
     case VenueTemplate.artpiece:
@@ -129,13 +146,12 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
-  // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
       <WithNavigationBar hasBackButton={hasBackButton} withSchedule withRadio>
         <AnnouncementMessage isAnnouncementUserView />
 
-        <Suspense fallback={<LoadingPage />}>{template}</Suspense>
+        {template}
 
         {shouldShowChat && <ChatSidebar venue={venue} />}
       </WithNavigationBar>

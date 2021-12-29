@@ -15,6 +15,8 @@ import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
+
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
@@ -26,13 +28,6 @@ import { FirebarrelProvider, UIOverlay, UIOverlayGrid } from "./components";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
-
-const ERROR_TITLE = `We got bugs! \u{1F997}\u{1F41B}\u{1F577}\u{0FE0F}\u{1F41E}\u{1F351}`;
-const ERROR_MESSAGE = `
-Try reloading the page.
-If that fails, get a glass and a sheet of paper, catch the bug, and take it outside.
-If the problem persists after refresh, take a screenshot and get in touch
-`;
 
 export interface AnimateMapProps {
   space: WithId<AnimateMapVenue>;
@@ -83,10 +78,9 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
     return <LoadingSpinner />;
   }
 
-  // @debt There is a better (recommended by React devs) way of dealing with this by means of <Suspense />, might want to look at that
+  // NOTE: this is a good to have check for error inside animatemap (and infinite retries due to it)
   if (errorInitializing) {
     console.error("AnimateMap error initializing:", errorInitializing);
-
     Bugsnag.notify(errorInitializing, (event) => {
       event.addMetadata("context", {
         location: "src/components/templates/AnimateMap::AnimateMap",
@@ -96,24 +90,9 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
     });
 
     return (
-      <div className="AnimateMap AnimateMap--error">
-        <div className="AnimateMap__init-message">
-          <p className="AnimateMap__init-message--normal">
-            {ERROR_TITLE}
-            <br />
-            {ERROR_MESSAGE.split("\n").map((line) => (
-              <>
-                {line}
-                <br />
-              </>
-            ))}
-            The bug:
-          </p>
-          <p className="AnimateMap__init-message--error">
-            {errorInitializing.message}
-          </p>
-        </div>
-      </div>
+      <AnimateMapErrorPrompt variant="unknown">
+        {errorInitializing.message}
+      </AnimateMapErrorPrompt>
     );
   }
 
