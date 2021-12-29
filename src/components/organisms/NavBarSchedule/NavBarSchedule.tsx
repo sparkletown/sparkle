@@ -34,10 +34,8 @@ import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
-import { ScheduleNG } from "components/molecules/ScheduleNG";
+import { Schedule } from "components/molecules/Schedule";
 
-// Disabled as per designs. Up for deletion if confirmed not necessary
-// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -45,13 +43,13 @@ import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
 
-export interface ScheduleNGDay {
+interface ScheduleDay {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
 
-export const emptyPersonalizedSchedule = {};
-export interface NavBarScheduleProps {
+const emptyPersonalizedSchedule = {};
+interface NavBarScheduleProps {
   isVisible?: boolean;
   venueId: string;
 }
@@ -169,7 +167,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
-  const scheduleNG: ScheduleNGDay = useMemo(() => {
+  const schedule: ScheduleDay = useMemo(() => {
     const day = addDays(firstScheduleDate, selectedDayIndex);
 
     const daysEvents = liveAndFutureEvents.filter(
@@ -210,9 +208,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     venueId,
   ]);
 
-  const scheduleNGWithAttendees = {
-    ...scheduleNG,
-    daysEvents: scheduleNG.daysEvents.map((event) => {
+  const scheduleWithAttendees = {
+    ...schedule,
+    daysEvents: schedule.daysEvents.map((event) => {
       const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
 
       return prepareForSchedule({
@@ -280,9 +278,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       <div className="NavBarSchedule__wrapper">
-        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {<ScheduleVenueDescription />} */}
-
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         {venue && sovereignVenue && (
           <Breadcrumbs
@@ -299,10 +294,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           onChange={togglePersonalisedSchedule}
           label="Bookmarked events"
         />
-        <ScheduleNG
+        <Schedule
           showPersonalisedSchedule={showPersonalisedSchedule}
           isLoading={isEventsLoading}
-          {...scheduleNGWithAttendees}
+          {...scheduleWithAttendees}
         />
         {!isEventsLoading && (
           <div className="NavBarSchedule__download-buttons">

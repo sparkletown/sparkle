@@ -26,7 +26,7 @@ import { updateTheme } from "pages/VenuePage/helpers";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { ScheduleEventSubListNG } from "components/molecules/ScheduleEventListNG/ScheduleEventSubListNG";
+import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";
 
 import { NotFound } from "components/atoms/NotFound";
 
@@ -37,7 +37,7 @@ import "./EmergencyViewPage.scss";
 
 dayjs.extend(advancedFormat);
 
-export const emptyPersonalizedSchedule = {};
+const emptyPersonalizedSchedule = {};
 
 export const EmergencyViewPage: React.FC = () => {
   const [selectedTab, updateTab] = useState(0);
@@ -96,7 +96,7 @@ export const EmergencyViewPage: React.FC = () => {
         }
         return (
           <div className="EmergencyView__weekdays-column" key={day.getTime()}>
-            <ScheduleEventSubListNG
+            <ScheduleEventSubList
               events={eventsFilledWithPriority}
               title={`Events on ${formatDateRelativeToNow(day)}`}
               isShowFullInfo={false}

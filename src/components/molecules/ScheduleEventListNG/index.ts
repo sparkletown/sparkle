@@ -1,1 +1,0 @@
-export { ScheduleEventListNG } from "./ScheduleEventListNG";
