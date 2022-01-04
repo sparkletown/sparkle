@@ -683,7 +683,7 @@ exports.updateTables = functions.https.onCall((data, context) => {
     const spaceTables =
       (space.config && space.config.tables) || data.defaultTables;
 
-    const currentTableIndex = venueTables.findIndex(
+    const currentTableIndex = spaceTables.findIndex(
       (table) => table.reference === data.newTable.reference
     );
 

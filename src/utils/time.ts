@@ -21,7 +21,8 @@ import {
   subHours,
 } from "date-fns";
 
-import { DATEFNS_INPUT_DATE_FORMAT, DATEFNS_INPUT_TIME_FORMAT } from "settings";
+const DATEFNS_INPUT_TIME_FORMAT = "HH:mm";
+const DATEFNS_INPUT_DATE_FORMAT = "yyyy-MM-dd";
 
 /**
  * @deprecated in favor of using date-fns functions
@@ -103,6 +104,26 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
  */
 export const formatSecondsAsDuration = (seconds: number): string =>
   formatDuration(secondsToDuration(seconds));
+
+/**
+ * Format seconds as a string representing the HH:MM:SS duration.
+ *
+ * @example
+ *   formatSecondsAsHHMMSS(6030)
+ *   // 1:40:30
+ *
+ * @param secondsValue total seconds to be formatted as a duration
+ */
+export const formatSecondsAsHHMMSS = (secondsValue: number): string => {
+  const { hours = 0, minutes = 0, seconds = 0 } = secondsToDuration(
+    secondsValue
+  );
+  const hourFormatted = hours < 10 ? `0${hours}` : hours;
+  const minuteFormatted = minutes < 10 ? `0${minutes}` : minutes;
+  const secondsFormatted = seconds < 10 ? `0${seconds}` : seconds;
+
+  return `${hourFormatted}:${minuteFormatted}:${secondsFormatted}`;
+};
 
 /**
  * Format time left from now as a string representing the Duration ignoring seconds.

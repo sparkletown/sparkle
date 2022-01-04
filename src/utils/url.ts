@@ -3,7 +3,6 @@ import Bugsnag from "@bugsnag/js";
 
 import {
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
-  ADMIN_IA_WORLD_PARAM_URL,
   ATTENDEE_INSIDE_URL,
   ATTENDEE_LANDING_URL,
   DEFAULT_MISSING_PARAM_URL,
@@ -70,10 +69,6 @@ export const adminNGVenueUrl = (
         spaceSlug,
         selectedTab,
       });
-
-/** @deprecated use generateUrl instead */
-export const adminWorldSpacesUrl = (worldSlug?: string) =>
-  generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
 
 type generateAttendeeInsideUrlOptions = {
   worldSlug?: WorldSlug;

@@ -40,9 +40,9 @@ $user-list-cell-size: 30px;
     border-radius: $border-radius--max;
   }
 
-  &__dots-icon {
-    color: var(--greyscale-lighter-10pp);
-    width: 100%;
-    height: 100%;
+  &__excessive-number {
+    font-size: $font-size--md;
+    margin-left: $spacing--xs;
+    align-self: center;
   }
 }

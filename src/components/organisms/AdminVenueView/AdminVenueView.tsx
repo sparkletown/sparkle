@@ -6,15 +6,15 @@ import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { SPACE_TAXON } from "settings";
+import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
 
 import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import {
   adminNGVenueUrl,
-  adminWorldSpacesUrl,
   generateAttendeeInsideUrl,
+  generateUrl,
 } from "utils/url";
 
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
@@ -101,7 +101,14 @@ export const AdminVenueView: React.FC = () => {
   }, [selectedTab, spaceSlug, worldSlug]);
 
   const navigateToHome = useCallback(
-    () => history.push(adminWorldSpacesUrl(worldSlug)),
+    () =>
+      history.push(
+        generateUrl({
+          route: ADMIN_IA_WORLD_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug },
+        })
+      ),
     [history, worldSlug]
   );
 
