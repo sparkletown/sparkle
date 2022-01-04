@@ -43,6 +43,7 @@ module.exports = {
         const bugsnagPlugin = new BugsnagSourceMapUploaderPlugin({
           apiKey: process.env.REACT_APP_BUGSNAG_API_KEY,
           appVersion: process.env.REACT_APP_BUILD_SHA1,
+          overwrite: true,
         });
         webpackConfig.plugins.unshift(bugsnagPlugin);
       }
