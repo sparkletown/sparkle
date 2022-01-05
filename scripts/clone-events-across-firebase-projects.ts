@@ -2,7 +2,7 @@
 
 import { resolve } from "path";
 
-import { VenueEvent } from "../src/types/venues";
+import { Experience } from "../src/types/venues";
 import { WithId } from "../src/utils/id";
 
 import {
@@ -90,7 +90,7 @@ const saveToDestBackupFile = makeSaveToBackupFile(DEST_PROJECT_ID);
           ({
             ...(await eventRef.get()).data(),
             id: eventRef.id,
-          } as WithId<VenueEvent>)
+          } as WithId<Experience>)
       )
     );
     saveToDestBackupFile(destVenueEvents, `${destVenueRef.id}-events`);
@@ -118,7 +118,7 @@ const saveToDestBackupFile = makeSaveToBackupFile(DEST_PROJECT_ID);
       const destVenueEvent = await sourceVenueEvent
         .get()
         .then((snapshot) =>
-          snapshot.exists ? (snapshot.data() as VenueEvent) : undefined
+          snapshot.exists ? (snapshot.data() as Experience) : undefined
         );
 
       if (!destVenueEvent) {

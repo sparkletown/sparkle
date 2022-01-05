@@ -4,7 +4,7 @@ import isToday from "date-fns/isToday";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
-import { ScheduledVenueEvent } from "types/venues";
+import { ScheduledExperience } from "types/venues";
 
 import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
@@ -16,7 +16,7 @@ import { ScheduleEventSubList } from "./ScheduleEventSubList";
 import "./ScheduleEventList.scss";
 
 interface ScheduleEventListProps {
-  daysEvents: ScheduledVenueEvent[];
+  daysEvents: ScheduledExperience[];
   scheduleDate: Date;
 }
 

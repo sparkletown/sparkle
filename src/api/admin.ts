@@ -18,9 +18,9 @@ import { Table } from "types/Table";
 import {
   SpaceSlug,
   VenueAdvancedConfig,
-  VenueEvent,
   VenuePlacement,
   VenueTemplate,
+  WorldExperience,
 } from "types/venues";
 
 import { WithId, WithWorldId } from "utils/id";
@@ -479,14 +479,14 @@ export const createRoom = async (
   });
 };
 
-export const createEvent = async (venueId: string, event: VenueEvent) => {
+export const createEvent = async (venueId: string, event: WorldExperience) => {
   await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
 };
 
 export const updateEvent = async (
   venueId: string,
   eventId: string,
-  event: VenueEvent
+  event: WorldExperience
 ) => {
   await firebase
     .firestore()

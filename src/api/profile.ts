@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 
 import { AnyGridData } from "types/grid";
 import { User } from "types/User";
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { WithId, withId, WithVenueId } from "utils/id";
 
@@ -96,7 +96,7 @@ export const removeEventFromPersonalizedSchedule = ({
   updatePersonalizedSchedule({ event, userId, removeMode: true });
 
 interface UpdatePersonalizedScheduleProps {
-  event: WithVenueId<VenueEvent>;
+  event: WithVenueId<WorldExperience>;
   userId: string;
   removeMode?: boolean;
 }

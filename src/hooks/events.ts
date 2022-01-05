@@ -3,7 +3,7 @@ import { useAsync } from "react-use";
 import { fetchAllVenueEvents } from "api/events";
 
 import { ReactHook } from "types/utility";
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 import { tracePromise } from "utils/performance";
@@ -20,7 +20,7 @@ export interface VenueEventsData {
   isEventsLoading: boolean;
   isError: boolean;
 
-  events: WithVenueId<WithId<VenueEvent>>[];
+  events: WithVenueId<WithId<WorldExperience>>[];
   eventsError?: Error;
 }
 

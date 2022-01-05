@@ -1,6 +1,6 @@
 import calendarGenerator, { ICalCalendar } from "ical-generator";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldExperience } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { eventEndTime, eventStartTime } from "utils/event";
@@ -8,7 +8,7 @@ import { WithId, WithVenueId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 export interface CreateCalendarProps {
-  events: WithVenueId<VenueEvent>[];
+  events: WithVenueId<WorldExperience>[];
   worldSlug?: WorldSlug;
   relatedVenues: WithId<AnyVenue>[];
 }

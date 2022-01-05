@@ -10,7 +10,7 @@ import {
 
 import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
 
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import {
   formatUtcSecondsRelativeToNow,
@@ -19,19 +19,19 @@ import {
 } from "./time";
 
 type EventStartTimeOptions = {
-  event: VenueEvent;
+  event: WorldExperience;
   defaultStartTime?: Date;
 };
 
 type EventEndTimeOptions = {
-  event: VenueEvent;
+  event: WorldExperience;
   defaultDuration?: number;
 };
 
-export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
+export const getCurrentEvent = (roomEvents: WorldExperience[]) =>
   roomEvents.find(isEventLive);
 
-export const isEventLive = (event: VenueEvent) => {
+export const isEventLive = (event: WorldExperience) => {
   if (!event?.start_utc_seconds) {
     return false;
   }
@@ -39,23 +39,23 @@ export const isEventLive = (event: VenueEvent) => {
   return isWithinInterval(Date.now(), getEventInterval(event));
 };
 
-export const isEventFuture = (event: VenueEvent) =>
+export const isEventFuture = (event: WorldExperience) =>
   isFuture(fromUnixTime(event.start_utc_seconds));
 
-export const isEventLater = (event: VenueEvent) =>
+export const isEventLater = (event: WorldExperience) =>
   isEventFuture(event) &&
   !isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);
 
-export const isEventSoon = (event: VenueEvent) =>
+export const isEventSoon = (event: WorldExperience) =>
   isEventFuture(event) &&
   isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);
 
-export const isEventLiveOrFuture = (event: VenueEvent) =>
+export const isEventLiveOrFuture = (event: WorldExperience) =>
   isEventLive(event) || isEventFuture(event);
 
 export const eventHappeningNow = (
   roomName: string,
-  venueEvents: VenueEvent[]
+  venueEvents: WorldExperience[]
 ) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
 
@@ -67,7 +67,7 @@ export const eventHappeningNow = (
   );
 };
 
-export const hasEventFinished = (event: VenueEvent) =>
+export const hasEventFinished = (event: WorldExperience) =>
   isAfter(Date.now(), eventEndTime({ event }));
 
 export const eventStartTime = ({
@@ -83,26 +83,26 @@ export const eventEndTime = ({ event, defaultDuration }: EventEndTimeOptions) =>
   );
 
 export const isEventStartingSoon = (
-  event: VenueEvent,
+  event: WorldExperience,
   rangeInMinutes: number | undefined = 60
 ) =>
   differenceInMinutes(eventStartTime({ event }), Date.now()) <= rangeInMinutes;
 
-export const getEventInterval = (event: VenueEvent) => ({
+export const getEventInterval = (event: WorldExperience) => ({
   start: eventStartTime({ event, defaultStartTime: new Date() }),
   end: eventEndTime({ event, defaultDuration: 1 }),
 });
 
 export const isEventWithinDate = (checkDate: Date | number) => (
-  event: VenueEvent
+  event: WorldExperience
 ) =>
   areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
 
 export const isEventWithinDateAndNotFinished = (checkDate: Date | number) => (
-  event: VenueEvent
+  event: WorldExperience
 ) => isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
 
-export const getEventStatus = (event: VenueEvent) => {
+export const getEventStatus = (event: WorldExperience) => {
   if (isEventLive(event)) return `Happening now`;
 
   if (hasEventFinished(event)) {
@@ -112,10 +112,12 @@ export const getEventStatus = (event: VenueEvent) => {
   }
 };
 
-export const eventsByStartUtcSecondsSorter = (a: VenueEvent, b: VenueEvent) =>
-  a.start_utc_seconds - b.start_utc_seconds;
+export const eventsByStartUtcSecondsSorter = (
+  a: WorldExperience,
+  b: WorldExperience
+) => a.start_utc_seconds - b.start_utc_seconds;
 
-export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
+export const eventTimeComparator = (a: WorldExperience, b: WorldExperience) => {
   if (a.start_utc_seconds !== b.start_utc_seconds) {
     return eventsByStartUtcSecondsSorter(a, b);
   }
@@ -123,7 +125,10 @@ export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
   return a.duration_minutes - b.duration_minutes;
 };
 
-export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
+export const eventTimeAndOrderComparator = (
+  a: WorldExperience,
+  b: WorldExperience
+) => {
   const aOrderPriority = a.orderPriority ?? 0;
   const bOrderPriority = b.orderPriority ?? 0;
 

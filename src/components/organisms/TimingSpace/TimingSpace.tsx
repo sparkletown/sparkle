@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -14,9 +14,9 @@ import "./TimingSpace.scss";
 
 export type TimingSpaceProps = {
   space: WithId<AnyVenue>;
-  spaceEvents: WithVenueId<WithId<VenueEvent>>[];
+  spaceEvents: WithVenueId<WithId<WorldExperience>>[];
   setEditedEvent: React.Dispatch<
-    React.SetStateAction<WithVenueId<WithId<VenueEvent>> | undefined>
+    React.SetStateAction<WithVenueId<WithId<WorldExperience>> | undefined>
   >;
   setShowCreateEventModal: () => void;
 };
@@ -31,7 +31,9 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 
   const onClickCreateButton = useCallback(() => {
     setShowCreateEventModal();
-    setEditedEvent({ spaceId: space.id } as WithVenueId<WithId<VenueEvent>>);
+    setEditedEvent({ spaceId: space.id } as WithVenueId<
+      WithId<WorldExperience>
+    >);
   }, [setShowCreateEventModal, setEditedEvent, space.id]);
 
   const renderedSpaceEvents = useMemo(

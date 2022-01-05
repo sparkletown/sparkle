@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { ALWAYS_EMPTY_OBJECT } from "settings";
 
 import { MyPersonalizedSchedule } from "types/User";
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { WithVenueId } from "utils/id";
@@ -16,7 +16,7 @@ import { PortalScheduleItem } from "components/templates/PartyMap/components/Por
 import "./PortalSchedule.scss";
 
 interface PortalScheduleProps {
-  portalEvents: WithVenueId<VenueEvent>[];
+  portalEvents: WithVenueId<WorldExperience>[];
 }
 
 export const PortalSchedule: React.FC<PortalScheduleProps> = ({
@@ -31,13 +31,13 @@ export const PortalSchedule: React.FC<PortalScheduleProps> = ({
     userWithId?.myPersonalizedSchedule ?? ALWAYS_EMPTY_OBJECT;
 
   const isSavedEvent = useCallback(
-    (event: WithVenueId<VenueEvent>) =>
+    (event: WithVenueId<WorldExperience>) =>
       arrayIncludes(userEvents[event.venueId], event.id),
     [userEvents]
   );
 
   const renderPortalEvents = useCallback(
-    (title: string, events: WithVenueId<VenueEvent>[]) => (
+    (title: string, events: WithVenueId<WorldExperience>[]) => (
       <>
         <p className="PortalSchedule__group-title">{title}</p>
         {events.map((event, index: number) => (

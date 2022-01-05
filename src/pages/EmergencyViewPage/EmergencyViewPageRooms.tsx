@@ -1,6 +1,6 @@
 import React from "react";
 
-import { AnyVenue, ScheduledVenueEvent } from "types/venues";
+import { AnyVenue, ScheduledExperience } from "types/venues";
 
 import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
@@ -9,7 +9,7 @@ import EmergencyViewRoom from "./EmergencyViewRoom";
 
 type EmergencyViewTabsProps = {
   descendantVenues: WithId<AnyVenue>[];
-  liveAndFutureEvents: ScheduledVenueEvent[];
+  liveAndFutureEvents: ScheduledExperience[];
 };
 
 const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({

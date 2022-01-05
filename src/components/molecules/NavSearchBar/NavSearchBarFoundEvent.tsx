@@ -3,7 +3,7 @@ import React from "react";
 import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { Room } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 import { uppercaseFirstChar } from "utils/string";
@@ -14,7 +14,7 @@ import { useValidImage } from "hooks/useCheckImage";
 import { NavSearchResult } from "components/molecules/NavSearchBar/NavSearchResult";
 
 interface NavSearchBarFoundEventProps {
-  event: WithVenueId<WithId<VenueEvent>>;
+  event: WithVenueId<WithId<WorldExperience>>;
   enabledRelatedRooms: Room[];
   relatedVenues: WithId<AnyVenue>[];
   onClick: () => void;

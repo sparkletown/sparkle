@@ -7,7 +7,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate, WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -23,14 +23,14 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
-  event?: WithVenueId<WithId<VenueEvent>>;
+  event?: WithVenueId<WithId<WorldExperience>>;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: () => void;
 };
 
-// Dispatch<SetStateAction<WithId<VenueEvent> | undefined>>
+// Dispatch<SetStateAction<WithId<Experience> | undefined>>
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
@@ -79,7 +79,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const formEvent: VenueEvent = {
+      const formEvent: WorldExperience = {
         name: data.name,
         description: data.description,
         start_utc_seconds:

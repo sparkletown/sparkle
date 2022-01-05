@@ -17,7 +17,7 @@ import {
 
 import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
-import { ScheduledVenueEvent } from "types/venues";
+import { ScheduledExperience } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
@@ -44,7 +44,7 @@ import { prepareForSchedule } from "./utils";
 import "./NavBarSchedule.scss";
 
 interface ScheduleDay {
-  daysEvents: ScheduledVenueEvent[];
+  daysEvents: ScheduledExperience[];
   scheduleDate: Date;
 }
 
@@ -222,7 +222,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     }),
   };
   const downloadPersonalEventsCalendar = useCallback(() => {
-    const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
+    const allPersonalEvents: ScheduledExperience[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
           worldSlug,

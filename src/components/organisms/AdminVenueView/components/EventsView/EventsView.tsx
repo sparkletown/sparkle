@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -61,7 +61,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   } = useShowHide();
 
   const [editedEvent, setEditedEvent] = useState<
-    WithVenueId<WithId<VenueEvent>>
+    WithVenueId<WithId<WorldExperience>>
   >();
 
   const adminEventModalOnHide = useCallback(() => {

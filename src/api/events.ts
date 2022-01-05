@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { WithId, withId, WithVenueId, withVenueId } from "utils/id";
 import { asArray } from "utils/types";
@@ -12,7 +12,7 @@ export const getVenueEventCollectionRef = (venueId: string) =>
 
 export const fetchVenueEvents = async (
   venueId: string
-): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
+): Promise<WithVenueId<WithId<WorldExperience>>[]> =>
   getVenueEventCollectionRef(venueId)
     .withConverter(venueEventWithIdConverter)
     .get()
@@ -24,7 +24,7 @@ export const fetchVenueEvents = async (
 
 export const fetchAllVenueEvents = async (
   venueIdOrIds: string | string[]
-): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
+): Promise<WithVenueId<WithId<WorldExperience>>[]> =>
   Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) => {
     const flattened = result.flat();
     flattened.sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
@@ -32,13 +32,13 @@ export const fetchAllVenueEvents = async (
   });
 
 /**
- * Convert VenueEvent objects between the app/firestore formats (@debt:, including validation).
+ * Convert Experience objects between the app/firestore formats (@debt:, including validation).
  */
 export const venueEventWithIdConverter: firebase.firestore.FirestoreDataConverter<
-  WithId<VenueEvent>
+  WithId<WorldExperience>
 > = {
   toFirestore: (
-    venueEvent: WithId<VenueEvent>
+    venueEvent: WithId<WorldExperience>
   ): firebase.firestore.DocumentData => {
     // @debt Properly check/validate this data
     //   return VenueEventSchema.validateSync(venueEvent);
@@ -48,10 +48,10 @@ export const venueEventWithIdConverter: firebase.firestore.FirestoreDataConverte
 
   fromFirestore: (
     snapshot: firebase.firestore.QueryDocumentSnapshot
-  ): WithId<VenueEvent> => {
+  ): WithId<WorldExperience> => {
     // @debt Properly check/validate this data rather than using 'as'
     //   return withId(VenueEventSchema.validateSync(snapshot.data(), snapshot.id);
 
-    return withId(snapshot.data() as VenueEvent, snapshot.id);
+    return withId(snapshot.data() as WorldExperience, snapshot.id);
   },
 };

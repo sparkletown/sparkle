@@ -11,7 +11,7 @@ import {
   startOfToday,
 } from "date-fns";
 
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { isEventLiveOrFuture } from "utils/event";
 import { WithVenueId } from "utils/id";
@@ -23,7 +23,7 @@ import { useWorldParams } from "./worlds/useWorldParams";
 import { useVenueEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
-const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
+const emptyRelatedEvents: WithVenueId<WorldExperience>[] = [];
 const minRangeValue = 0;
 const todaysDate = startOfToday();
 

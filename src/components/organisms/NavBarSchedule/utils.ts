@@ -1,7 +1,7 @@
 import { DEFAULT_VENUE_LOGO, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { MyPersonalizedSchedule } from "types/User";
-import { AnyVenue, ScheduledVenueEvent, VenueEvent } from "types/venues";
+import { AnyVenue, ScheduledExperience, WorldExperience } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { WithId, WithVenueId } from "utils/id";
@@ -19,8 +19,8 @@ export const prepareForSchedule = ({
   relatedVenues = [],
   recentRoomUsersCount = 0,
 }: PrepareForScheduleProps) => (
-  event: WithVenueId<VenueEvent>
-): ScheduledVenueEvent => {
+  event: WithVenueId<WorldExperience>
+): ScheduledExperience => {
   const space = relatedVenues.find(({ id }) => id === event.venueId);
   return {
     ...event,

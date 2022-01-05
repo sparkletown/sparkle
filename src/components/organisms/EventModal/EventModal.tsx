@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
 import { Room } from "types/rooms";
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
@@ -30,7 +30,7 @@ import "./EventModal.scss";
 export interface EventModalProps {
   show: boolean;
   onHide: () => void;
-  event: WithVenueId<VenueEvent>;
+  event: WithVenueId<WorldExperience>;
 }
 
 export const EventModal: React.FC<EventModalProps> = ({

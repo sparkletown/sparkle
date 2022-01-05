@@ -8,7 +8,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { deleteEvent, EventInput } from "api/admin";
 
-import { VenueEvent } from "types/venues";
+import { WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -21,7 +21,7 @@ import "./TimingDeleteModal.scss";
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  event?: WithVenueId<WithId<VenueEvent>>;
+  event?: WithVenueId<WithId<WorldExperience>>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({

@@ -368,7 +368,7 @@ export interface PlayaIcon {
   venueId: string;
 }
 
-export interface VenueEvent {
+export interface WorldExperience {
   name: string;
   start_utc_seconds: number;
   description: string;
@@ -383,7 +383,7 @@ export interface VenueEvent {
   worldId: string;
 }
 
-export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
+export interface ScheduledExperience extends WithVenueId<WorldExperience> {
   isSaved: boolean;
   venueIcon: string;
   liveAudience: number;

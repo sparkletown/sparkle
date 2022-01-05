@@ -14,7 +14,7 @@ import {
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
@@ -66,7 +66,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
     WithId<AnyVenue>
   >();
 
-  const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
+  const [selectedEvent, setSelectedEvent] = useState<
+    WithVenueId<WorldExperience>
+  >();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
   const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues();
