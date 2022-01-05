@@ -8,11 +8,10 @@ import { withId } from "utils/id";
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
-export const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.currentVenueNG;
+const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (state) =>
+  state.firestore.data.currentVenueNG;
 
-export const currentVenueEventsNGSelector: SparkleSelector<
+const currentVenueEventsNGSelector: SparkleSelector<
   Record<string, WorldExperience> | undefined
 > = (state) => state.firestore.data.currentVenueEventsNG;
 
