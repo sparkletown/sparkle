@@ -49,7 +49,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
         start_time: dayjs
           .unix(event.start_utc_seconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: event.duration_minutes / 60,
+        duration_hours: event.durationMinutes / 60,
       });
     }
   }, [event, reset]);
@@ -69,12 +69,12 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     : "Unknown";
   const eventEndTime = event
     ? dayjs(
-        (event.start_utc_seconds + 60 * event.duration_minutes) * 1000
+        (event.start_utc_seconds + 60 * event.durationMinutes) * 1000
       ).format("ha")
     : "Unknown";
   const eventDuration = event
-    ? `${event.duration_minutes / 60} hours ${
-        event.duration_minutes % 60
+    ? `${event.durationMinutes / 60} hours ${
+        event.durationMinutes % 60
       } minutes`
     : "Unknown";
 

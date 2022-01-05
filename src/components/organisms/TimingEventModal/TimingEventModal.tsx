@@ -69,8 +69,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         start_time: dayjs
           .unix(event.start_utc_seconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: Math.floor(event.duration_minutes / 60),
-        duration_minutes: event.duration_minutes % 60,
+        duration_hours: Math.floor(event.durationMinutes / 60),
+        duration_minutes: event.durationMinutes % 60,
         host: event.host,
       });
     }
@@ -84,7 +84,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         description: data.description,
         start_utc_seconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        duration_minutes:
+        durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
         spaceId: eventSpaceId,

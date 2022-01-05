@@ -61,7 +61,7 @@ export const eventStartTime = ({
 export const eventEndTime = ({ event, defaultDuration }: EventEndTimeOptions) =>
   addMinutes(
     eventStartTime({ event }),
-    event?.duration_minutes ?? defaultDuration
+    event?.durationMinutes ?? defaultDuration
   );
 
 export const isEventStartingSoon = (
@@ -104,7 +104,7 @@ export const eventTimeComparator = (a: WorldExperience, b: WorldExperience) => {
     return eventsByStartUtcSecondsSorter(a, b);
   }
 
-  return a.duration_minutes - b.duration_minutes;
+  return a.durationMinutes - b.durationMinutes;
 };
 
 export const eventTimeAndOrderComparator = (

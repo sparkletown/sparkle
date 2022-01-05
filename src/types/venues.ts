@@ -372,7 +372,7 @@ export interface WorldExperience {
   name: string;
   start_utc_seconds: number;
   description: string;
-  duration_minutes: number;
+  durationMinutes: number;
   host: string;
   id?: string;
   orderPriority?: number;

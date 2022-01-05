@@ -91,7 +91,7 @@ const useVenueScheduleEvents = ({
       Math.max(
         ...liveAndFutureEvents.map(
           (event) =>
-            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+            event.start_utc_seconds + minutesToSeconds(event.durationMinutes)
         ),
         // + 1 is needed to form a `daysInBetween` timeline and mitigate possible range error
         firstRangeDateInSeconds + 1
