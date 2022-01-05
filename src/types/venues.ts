@@ -375,7 +375,6 @@ export interface WorldExperience {
   descriptions?: string[];
   duration_minutes: number;
   host: string;
-  room?: string;
   id?: string;
   orderPriority?: number;
   liveAudience?: number;

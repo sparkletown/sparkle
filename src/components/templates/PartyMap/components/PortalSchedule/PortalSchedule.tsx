@@ -42,11 +42,7 @@ export const PortalSchedule: React.FC<PortalScheduleProps> = ({
         <p className="PortalSchedule__group-title">{title}</p>
         {events.map((event, index: number) => (
           <PortalScheduleItem
-            // @debt Ideally event.id would always be a unique identifier, but our types suggest it
-            //   can be undefined. Because we can't use index as a key by itself (as that is unstable
-            //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
-            //   is far less likely to clash
-            key={event.id ?? `${event.room}-${event.name}-${index}`}
+            key={event.id}
             event={event}
             expandableDescription
             isSaved={isSavedEvent(event)}

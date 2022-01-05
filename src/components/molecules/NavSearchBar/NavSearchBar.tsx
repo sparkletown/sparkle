@@ -2,7 +2,7 @@ import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { isEqual, reduce } from "lodash";
+import { isEqual } from "lodash";
 
 import {
   COVERT_ROOM_TYPES,
@@ -20,7 +20,6 @@ import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
-import { useVenueEvents } from "hooks/events";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -30,7 +29,6 @@ import { PortalModal } from "components/templates/PartyMap/components/PortalModa
 import { EventModal } from "components/organisms/EventModal";
 
 import { Loading } from "components/molecules/Loading";
-import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSearchBarFoundEvent";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -71,7 +69,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
   >();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues();
+  const { isLoading, relatedVenues } = useRelatedVenues();
 
   const enabledRelatedRooms = useMemo<Room[]>(
     () =>
@@ -86,23 +84,6 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         }),
     [relatedVenues]
   );
-
-  const enabledRelatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
-    () =>
-      reduce(
-        enabledRelatedRooms,
-        (enabledRelatedRoomsByTitle, room) => ({
-          ...enabledRelatedRoomsByTitle,
-          [room.title]: room,
-        }),
-        {}
-      ),
-    [enabledRelatedRooms]
-  );
-
-  const { isEventsLoading, events: relatedEvents } = useVenueEvents({
-    venueIds: relatedVenueIds,
-  });
 
   const foundRooms = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -163,43 +144,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
     });
   }, [algoliaSearchState.value, openUserProfileModal, clearSearch]);
 
-  const foundEvents = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
-
-    return relatedEvents
-      .filter((event) => {
-        const isEventRoomEnabled =
-          isDefined(event.room) && event.room !== ""
-            ? isDefined(enabledRelatedRoomsByTitle[event.room])
-            : true;
-
-        return (
-          isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
-        );
-      })
-      .map((event) => (
-        <NavSearchBarFoundEvent
-          key={`event-${event.id ?? event.name}`}
-          event={event}
-          enabledRelatedRooms={enabledRelatedRooms}
-          relatedVenues={relatedVenues}
-          onClick={() => {
-            setSelectedEvent(event);
-            clearSearch();
-          }}
-        />
-      ));
-  }, [
-    searchQuery,
-    relatedEvents,
-    enabledRelatedRoomsByTitle,
-    enabledRelatedRooms,
-    relatedVenues,
-    clearSearch,
-  ]);
-
-  const numberOfSearchResults =
-    foundRooms.length + foundEvents.length + foundUsers.length;
+  const numberOfSearchResults = foundRooms.length + foundUsers.length;
 
   const clearSearchIcon = (
     <FontAwesomeIcon
@@ -229,12 +174,11 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
           search results
         </div>
 
-        {isLoading || isEventsLoading ? (
+        {isLoading ? (
           <Loading />
         ) : (
           <div className="NavSearchBar__search-results">
             {foundRooms}
-            {foundEvents}
             {foundUsers}
           </div>
         )}

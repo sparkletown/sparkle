@@ -12,11 +12,7 @@ import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
 
 import { WorldExperience } from "types/venues";
 
-import {
-  formatUtcSecondsRelativeToNow,
-  getCurrentTimeInUTCSeconds,
-  getDayInterval,
-} from "./time";
+import { formatUtcSecondsRelativeToNow, getDayInterval } from "./time";
 
 type EventStartTimeOptions = {
   event: WorldExperience;
@@ -52,20 +48,6 @@ export const isEventSoon = (event: WorldExperience) =>
 
 export const isEventLiveOrFuture = (event: WorldExperience) =>
   isEventLive(event) || isEventFuture(event);
-
-export const eventHappeningNow = (
-  roomName: string,
-  venueEvents: WorldExperience[]
-) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-
-  return venueEvents.find(
-    (event) =>
-      event.room === roomName &&
-      event.start_utc_seconds < currentTimeInUTCSeconds &&
-      event.start_utc_seconds + event.duration_minutes > currentTimeInUTCSeconds
-  );
-};
 
 export const hasEventFinished = (event: WorldExperience) =>
   isAfter(Date.now(), eventEndTime({ event }));

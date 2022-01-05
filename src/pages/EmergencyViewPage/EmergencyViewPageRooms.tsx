@@ -1,26 +1,18 @@
 import React from "react";
 
-import { AnyVenue, ScheduledExperience } from "types/venues";
+import { AnyVenue } from "types/venues";
 
-import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
 
 import EmergencyViewRoom from "./EmergencyViewRoom";
 
 type EmergencyViewTabsProps = {
   descendantVenues: WithId<AnyVenue>[];
-  liveAndFutureEvents: ScheduledExperience[];
 };
 
 const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
   descendantVenues,
-  liveAndFutureEvents,
 }) => {
-  const liveEvents = liveAndFutureEvents.filter(isEventLive);
-
-  const isRoomHasLiveEvent = (room: string) =>
-    liveEvents.map((event) => event.room).includes(room);
-
   const renderVenuesRooms = descendantVenues
     .map(
       (venue) =>
@@ -29,13 +21,11 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
             <span className="EmergencyView__venue">{venue.name}</span>
             <div key={venue.id} className="EmergencyView__content">
               {venue?.rooms?.map((room) => {
-                const isRoomLive = isRoomHasLiveEvent(room.title);
-
                 return (
                   <EmergencyViewRoom
                     key={room.title}
                     room={room}
-                    isLive={isRoomLive}
+                    isLive={false}
                   />
                 );
               })}
