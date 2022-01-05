@@ -64,11 +64,11 @@ const useVenueScheduleEvents = ({
   );
 
   const liveEventsMinimalStartValue = Math.min(
-    ...liveAndFutureEvents.map((event) => event.start_utc_seconds)
+    ...liveAndFutureEvents.map((event) => event.startUtcSeconds)
   );
 
   const firstLiveEvent = liveAndFutureEvents.find(
-    (event) => event.start_utc_seconds === liveEventsMinimalStartValue
+    (event) => event.startUtcSeconds === liveEventsMinimalStartValue
   );
 
   const minDateUtcSeconds = useMemo(
@@ -91,7 +91,7 @@ const useVenueScheduleEvents = ({
       Math.max(
         ...liveAndFutureEvents.map(
           (event) =>
-            event.start_utc_seconds + minutesToSeconds(event.durationMinutes)
+            event.startUtcSeconds + minutesToSeconds(event.durationMinutes)
         ),
         // + 1 is needed to form a `daysInBetween` timeline and mitigate possible range error
         firstRangeDateInSeconds + 1

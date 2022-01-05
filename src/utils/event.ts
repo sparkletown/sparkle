@@ -28,7 +28,7 @@ export const getCurrentEvent = (roomEvents: WorldExperience[]) =>
   roomEvents.find(isEventLive);
 
 export const isEventLive = (event: WorldExperience) => {
-  if (!event?.start_utc_seconds) {
+  if (!event?.startUtcSeconds) {
     return false;
   }
 
@@ -36,7 +36,7 @@ export const isEventLive = (event: WorldExperience) => {
 };
 
 export const isEventFuture = (event: WorldExperience) =>
-  isFuture(fromUnixTime(event.start_utc_seconds));
+  isFuture(fromUnixTime(event.startUtcSeconds));
 
 export const isEventLater = (event: WorldExperience) =>
   isEventFuture(event) &&
@@ -56,7 +56,7 @@ export const eventStartTime = ({
   event,
   defaultStartTime,
 }: EventStartTimeOptions) =>
-  fromUnixTime(event?.start_utc_seconds ?? defaultStartTime);
+  fromUnixTime(event?.startUtcSeconds ?? defaultStartTime);
 
 export const eventEndTime = ({ event, defaultDuration }: EventEndTimeOptions) =>
   addMinutes(
@@ -90,17 +90,17 @@ export const getEventStatus = (event: WorldExperience) => {
   if (hasEventFinished(event)) {
     return `Ended`;
   } else {
-    return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
+    return `Starts ${formatUtcSecondsRelativeToNow(event.startUtcSeconds)}`;
   }
 };
 
 export const eventsByStartUtcSecondsSorter = (
   a: WorldExperience,
   b: WorldExperience
-) => a.start_utc_seconds - b.start_utc_seconds;
+) => a.startUtcSeconds - b.startUtcSeconds;
 
 export const eventTimeComparator = (a: WorldExperience, b: WorldExperience) => {
-  if (a.start_utc_seconds !== b.start_utc_seconds) {
+  if (a.startUtcSeconds !== b.startUtcSeconds) {
     return eventsByStartUtcSecondsSorter(a, b);
   }
 

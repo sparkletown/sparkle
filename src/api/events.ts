@@ -27,7 +27,7 @@ export const fetchAllVenueEvents = async (
 ): Promise<WithVenueId<WithId<WorldExperience>>[]> =>
   Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) => {
     const flattened = result.flat();
-    flattened.sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+    flattened.sort((a, b) => a.startUtcSeconds - b.startUtcSeconds);
     return flattened;
   });
 

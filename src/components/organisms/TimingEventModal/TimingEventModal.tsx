@@ -64,10 +64,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         name: event.name,
         description: event.description,
         start_date: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
         start_time: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: Math.floor(event.durationMinutes / 60),
         duration_minutes: event.durationMinutes % 60,
@@ -82,7 +82,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       const formEvent: WorldExperience = {
         name: data.name,
         description: data.description,
-        start_utc_seconds:
+        startUtcSeconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
         durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),

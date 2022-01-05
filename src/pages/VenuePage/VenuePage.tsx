@@ -282,7 +282,7 @@ export const VenuePage: React.FC = () => {
     if (isEventStartingSoon(event)) {
       return (
         <CountDown
-          startUtcSeconds={event.start_utc_seconds}
+          startUtcSeconds={event.startUtcSeconds}
           textBeforeCountdown="Bar opens in"
         />
       );

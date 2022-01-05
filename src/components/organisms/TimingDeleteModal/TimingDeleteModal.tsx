@@ -44,10 +44,10 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
         name: event.name,
         description: event.description,
         start_date: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
         start_time: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
         duration_hours: event.durationMinutes / 60,
       });
@@ -65,12 +65,12 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   }, [event, onHide, eventSpaceId]);
 
   const eventStartTime = event
-    ? dayjs(event.start_utc_seconds * 1000).format("ha")
+    ? dayjs(event.startUtcSeconds * 1000).format("ha")
     : "Unknown";
   const eventEndTime = event
-    ? dayjs(
-        (event.start_utc_seconds + 60 * event.durationMinutes) * 1000
-      ).format("ha")
+    ? dayjs((event.startUtcSeconds + 60 * event.durationMinutes) * 1000).format(
+        "ha"
+      )
     : "Unknown";
   const eventDuration = event
     ? `${event.durationMinutes / 60} hours ${

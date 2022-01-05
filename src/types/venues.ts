@@ -370,7 +370,7 @@ export interface PlayaIcon {
 
 export interface WorldExperience {
   name: string;
-  start_utc_seconds: number;
+  startUtcSeconds: number;
   description: string;
   durationMinutes: number;
   host: string;
