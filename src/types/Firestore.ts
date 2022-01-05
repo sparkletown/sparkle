@@ -100,8 +100,6 @@ export interface FirestoreOrdered {
   parentExperiences?: WithId<WorldExperience>[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
-  siblingVenues?: WithId<AnyVenue>[];
-  siblingVenueEvents?: WithId<WorldExperience>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
