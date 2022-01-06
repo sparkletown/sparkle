@@ -28,7 +28,7 @@ export const useSpaceEvents = ({
     .where("worldId", "==", worldId || "")
     .withConverter(withIdConverter<WorldEvent>());
 
-  const { data: events, status, error } = useFirestoreCollectionData<
+  const { data: events, status } = useFirestoreCollectionData<
     WithId<WorldEvent>
   >(eventsRef);
 
@@ -37,10 +37,6 @@ export const useSpaceEvents = ({
       isLoaded: true,
       events: [],
     };
-  }
-
-  if (error) {
-    console.error(error);
   }
 
   // Filter in code as firebase only supports a maximum of 10 items in an array
