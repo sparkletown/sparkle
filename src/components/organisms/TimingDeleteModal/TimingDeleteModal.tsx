@@ -8,9 +8,9 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { deleteEvent, EventInput } from "api/admin";
 
-import { WorldExperience } from "types/venues";
+import { WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -21,7 +21,7 @@ import "./TimingDeleteModal.scss";
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  event?: WithVenueId<WithId<WorldExperience>>;
+  event?: WithId<WorldEvent>;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
@@ -36,7 +36,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   // @debt This makes the deletion happen against the space that owns the event
   // NOT the space that the event is in. There's some bad hierarchy in the
   // database.
-  const eventSpaceId = event?.venueId;
+  const eventSpaceId = event?.spaceId;
 
   useEffect(() => {
     if (event) {
@@ -59,7 +59,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     deleteVenueEvent,
   ] = useAsyncFn(async () => {
     if (event && eventSpaceId) {
-      await deleteEvent(eventSpaceId, event.id);
+      await deleteEvent(event);
     }
     onHide();
   }, [event, onHide, eventSpaceId]);

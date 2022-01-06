@@ -3,18 +3,18 @@ import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
 
-import { WorldExperience } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 export type TimingEventProps = {
-  event: WithVenueId<WithId<WorldExperience>>;
+  event: WithId<WorldEvent>;
   setShowCreateEventModal: () => void;
-  setEditedEvent: (event: WithVenueId<WithId<WorldExperience>>) => void;
+  setEditedEvent: (event: WithId<WorldEvent>) => void;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({

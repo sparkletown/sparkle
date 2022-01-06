@@ -73,7 +73,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
         .filter((event) => isEventLive(event))
         .map((event) => {
           return {
-            venueId: event.venueId,
+            spaceId: event.spaceId,
             name: event.name,
           };
         }),
@@ -95,7 +95,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
             id: index,
             countUsers: location ? location.users.length : 0,
             isLive: !!liveEvents.find(
-              (event) => event.venueId === location?.id
+              (event) => event.spaceId === location?.id
             ),
           };
         }

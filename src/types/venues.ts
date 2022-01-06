@@ -4,7 +4,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { Branded } from "utils/types";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
@@ -368,7 +368,7 @@ export interface PlayaIcon {
   venueId: string;
 }
 
-export interface WorldExperience {
+export interface WorldEvent {
   name: string;
   startUtcSeconds: number;
   description: string;
@@ -381,7 +381,7 @@ export interface WorldExperience {
   worldId: string;
 }
 
-export interface ScheduledExperience extends WithVenueId<WorldExperience> {
+export interface ScheduledEvent extends WorldEvent {
   isSaved: boolean;
   venueIcon: string;
   liveAudience: number;

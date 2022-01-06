@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
 
-import { AnyVenue, WorldExperience } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 
 import { useSpaceEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -26,11 +26,6 @@ export type EventsViewProps = {
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
-  // @debt This refetchIndex is used to force a refetch of the data when events
-  // have been edited. It's horrible and needs a rethink. It also doesn't
-  // help the attendee side at all.
-  const [refetchIndex, setRefetchIndex] = useState(0);
-
   const {
     findVenueInRelatedVenues,
     relatedVenueIds,
@@ -38,10 +33,9 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const { events, isEventsLoading } = useSpaceEvents({
+  const { events, isLoaded: isEventsLoaded } = useSpaceEvents({
     worldId: venue.worldId,
     spaceIds: relatedVenueIds,
-    refetchIndex,
   });
 
   const {
@@ -61,19 +55,12 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     toggle: toggleSplittedEvents,
   } = useShowHide();
 
-  const [editedEvent, setEditedEvent] = useState<
-    WithVenueId<WithId<WorldExperience>>
-  >();
+  const [editedEvent, setEditedEvent] = useState<WithId<WorldEvent>>();
 
   const adminEventModalOnHide = useCallback(() => {
     setHideCreateEventModal();
     setEditedEvent(undefined);
-    setRefetchIndex(refetchIndex + 1);
-  }, [setHideCreateEventModal, refetchIndex]);
-
-  const triggerRefetch = useCallback(() => {
-    setRefetchIndex(refetchIndex + 1);
-  }, [refetchIndex]);
+  }, [setHideCreateEventModal]);
 
   const hasVenueEvents = events?.length !== 0;
 
@@ -121,7 +108,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     findVenueInRelatedVenues,
   ]);
 
-  if (isVenuesLoading || isEventsLoading) {
+  if (isVenuesLoading || !isEventsLoaded) {
     return <Loading />;
   }
 
@@ -183,7 +170,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           onHide={() => {
             setHideDeleteEventModal();
             setEditedEvent && setEditedEvent(undefined);
-            triggerRefetch();
           }}
           event={editedEvent}
         />

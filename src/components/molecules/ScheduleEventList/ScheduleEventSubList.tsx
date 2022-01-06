@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { EVENTS_PREVIEW_LIST_LENGTH } from "settings";
 
-import { ScheduledExperience } from "types/venues";
+import { ScheduledEvent } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -11,7 +11,7 @@ import { ScheduleItem } from "components/molecules/ScheduleItem";
 import "./ScheduleEventList.scss";
 
 interface ScheduleEventSubListProps {
-  events: ScheduledExperience[];
+  events: ScheduledEvent[];
   title: string;
   isShowFullInfo?: boolean;
 }

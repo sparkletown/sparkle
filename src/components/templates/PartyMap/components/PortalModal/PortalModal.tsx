@@ -7,9 +7,9 @@ import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { AnyVenue, WorldExperience } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { shouldScheduleBeShown } from "utils/schedule";
 import { isExternalPortal, openUrl } from "utils/url";
 
@@ -31,14 +31,14 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./PortalModal.scss";
 
-const emptyEvents: WithVenueId<WithId<WorldExperience>>[] = [];
+const emptyEvents: WithId<WorldEvent>[] = [];
 
 export interface PortalModalProps {
   onHide: () => void;
   show: boolean;
   venue?: WithId<AnyVenue>;
   portal?: Room;
-  venueEvents?: WithVenueId<WithId<WorldExperience>>[];
+  venueEvents?: WithId<WorldEvent>[];
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
@@ -86,7 +86,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 export interface PortalModalContentProps {
   portal: Room;
   venue: WithId<AnyVenue>;
-  venueEvents: WithVenueId<WithId<WorldExperience>>[];
+  venueEvents: WithId<WorldEvent>[];
 }
 
 export const PortalModalContent: React.FC<PortalModalContentProps> = ({

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { ScheduledExperience } from "types/venues";
+import { ScheduledEvent } from "types/venues";
 
 import { Loading } from "components/molecules/Loading";
 import { ScheduleEventList } from "components/molecules/ScheduleEventList";
@@ -8,7 +8,7 @@ import { ScheduleEventList } from "components/molecules/ScheduleEventList";
 import "./Schedule.scss";
 
 interface ScheduleProps {
-  daysEvents: ScheduledExperience[];
+  daysEvents: ScheduledEvent[];
   scheduleDate: Date;
   isLoading: boolean;
   showPersonalisedSchedule: boolean;

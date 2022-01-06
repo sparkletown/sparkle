@@ -14,9 +14,9 @@ import {
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
-import { AnyVenue, WorldExperience } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
@@ -64,9 +64,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
     WithId<AnyVenue>
   >();
 
-  const [selectedEvent, setSelectedEvent] = useState<
-    WithVenueId<WorldExperience>
-  >();
+  const [selectedEvent, setSelectedEvent] = useState<WorldEvent>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
   const { isLoading, relatedVenues } = useRelatedVenues();
@@ -188,7 +186,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
-        placeholder={`Search for people, ${ROOMS_TAXON.lower}, events...`}
+        placeholder={`Search for people, ${ROOMS_TAXON.lower}...`}
         autoComplete="off"
         iconStart={faSearch}
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}

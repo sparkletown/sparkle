@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { COLLECTION_WORLD_EVENTS } from "settings";
 
 import { SparkleSelector } from "types/SparkleSelector";
-import { AnyVenue, WorldExperience } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
 import { withId } from "utils/id";
 
@@ -14,7 +14,7 @@ const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (state) =>
   state.firestore.data.currentVenueNG;
 
 const currentVenueEventsNGSelector: SparkleSelector<
-  Record<string, WorldExperience> | undefined
+  Record<string, WorldEvent> | undefined
 > = (state) => state.firestore.data.currentVenueEventsNG;
 
 export const useConnectCurrentVenueNG = (

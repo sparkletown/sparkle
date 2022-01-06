@@ -13,7 +13,7 @@ import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import { TableSeatedUser, User } from "types/User";
-import { AnyVenue, PosterPageVenue, WorldExperience } from "types/venues";
+import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -62,14 +62,14 @@ export interface FirestoreData {
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
   currentVenue?: AnyVenue;
-  currentVenueEventsNG?: Record<string, WorldExperience>;
+  currentVenueEventsNG?: Record<string, WorldEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSeatedSectionUsers?: Partial<
     Record<string, AuditoriumSeatedUser>
   >;
   currentSeatedTableUsers?: Record<string, TableSeatedUser>;
   currentModalUser?: User;
-  currentEvent?: Record<string, WorldExperience>;
+  currentEvent?: Record<string, WorldEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
@@ -80,7 +80,7 @@ export interface FirestoreData {
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
-  venueEvents?: Record<string, WorldExperience>;
+  venueEvents?: Record<string, WorldEvent>;
   worldEdit?: World;
   currentWorld?: World;
 }
@@ -88,16 +88,16 @@ export interface FirestoreData {
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
-  currentVenueEventsNG?: WithId<WorldExperience>[];
+  currentVenueEventsNG?: WithId<WorldEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
-  currentEvent?: WithId<WorldExperience>[];
-  events?: WithId<WorldExperience>[];
+  currentEvent?: WithId<WorldEvent>[];
+  events?: WithId<WorldEvent>[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
-  parentExperiences?: WithId<WorldExperience>[];
+  parentExperiences?: WithId<WorldEvent>[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
@@ -106,7 +106,7 @@ export interface FirestoreOrdered {
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
-  venueEvents?: WithId<WorldExperience>[];
+  venueEvents?: WithId<WorldEvent>[];
   worldEdit?: WithId<World>[];
 }
 

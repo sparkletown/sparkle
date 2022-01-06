@@ -7,9 +7,9 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { AnyVenue, VenueTemplate, WorldExperience } from "types/venues";
+import { AnyVenue, VenueTemplate, WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -23,7 +23,7 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
-  event?: WithVenueId<WithId<WorldExperience>>;
+  event?: WithId<WorldEvent>;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
@@ -79,7 +79,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const formEvent: WorldExperience = {
+      const formEvent: WorldEvent = {
         name: data.name,
         description: data.description,
         startUtcSeconds:
@@ -92,14 +92,16 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         // an eventSpace
         worldId: eventSpace?.worldId ?? "",
       };
+      // Add the ID conditionally - otherwise the field is set to undefined
+      // which firebase does not like.
+      if (event) {
+        formEvent.id = event.id;
+      }
       if (eventSpaceId) {
         if (event?.id) {
-          // @debt this is a hack. event.venueId is the venue that contains
-          // the event inside its events subcollection. It is NOT the space
-          // that the event is being experienced in.
-          await updateEvent(event.venueId, event.id, formEvent);
+          await updateEvent(formEvent);
         } else {
-          await createEvent(eventSpaceId, formEvent);
+          await createEvent(formEvent);
         }
       }
       onHide();

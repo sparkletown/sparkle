@@ -3,7 +3,7 @@ import ShowMoreText from "react-show-more-text";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { WorldExperience } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import {
@@ -17,7 +17,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import "./PortalScheduleItem.scss";
 
 interface PortalScheduleItemProps {
-  event: WorldExperience;
+  event: WorldEvent;
   expandableDescription?: boolean;
   defaultDescriptionLineNumber?: number;
   isSaved?: boolean;

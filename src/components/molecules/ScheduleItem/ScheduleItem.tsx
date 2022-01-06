@@ -15,7 +15,7 @@ import {
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
 
-import { ScheduledExperience } from "types/venues";
+import { ScheduledEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { getFirebaseStorageResizedImage } from "utils/image";
@@ -34,7 +34,7 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./ScheduleItem.scss";
 
 interface ScheduleItemProps {
-  event: ScheduledExperience;
+  event: ScheduledEvent;
   isShowFullInfo: boolean;
 }
 

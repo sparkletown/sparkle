@@ -11,28 +11,26 @@ import {
   startOfToday,
 } from "date-fns";
 
-import { WorldExperience } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { isEventLiveOrFuture } from "utils/event";
-import { WithVenueId } from "utils/id";
 import { isDateRangeStartWithinToday } from "utils/time";
 
 import { prepareForSchedule } from "components/organisms/NavBarSchedule/utils";
 
+import { useWorldBySlug } from "./worlds/useWorldBySlug";
 import { useWorldParams } from "./worlds/useWorldParams";
 import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
-const emptyRelatedEvents: WithVenueId<WorldExperience>[] = [];
+const emptyRelatedEvents: WorldEvent[] = [];
 const minRangeValue = 0;
 const todaysDate = startOfToday();
 
 const useVenueScheduleEvents = ({
   userEventIds,
-  refetchIndex = 0,
 }: {
   userEventIds: Partial<Record<string, string[]>>;
-  refetchIndex?: number;
 }) => {
   const {
     descendantVenues,
@@ -42,15 +40,15 @@ const useVenueScheduleEvents = ({
     relatedVenues,
   } = useRelatedVenues();
 
-  const { worldId, worldSlug } = useWorldParams();
+  const { worldSlug } = useWorldParams();
+  const { world } = useWorldBySlug(worldSlug);
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
-    isEventsLoading,
+    isLoaded: isEventsLoaded,
   } = useSpaceEvents({
-    worldId: worldId,
+    worldId: world?.id,
     spaceIds: relatedVenueIds,
-    refetchIndex,
   });
   const liveAndFutureEvents = useMemo(
     () =>
@@ -127,7 +125,7 @@ const useVenueScheduleEvents = ({
     dayDifference,
     liveAndFutureEvents,
     descendantVenues,
-    isEventsLoading: isLoading || isEventsLoading,
+    isEventsLoading: isLoading || !isEventsLoaded,
     sovereignVenue,
     relatedVenues,
   };

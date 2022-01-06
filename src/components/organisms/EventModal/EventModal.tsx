@@ -3,10 +3,9 @@ import Modal from "react-bootstrap/Modal";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
-import { WorldExperience } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
-import { WithVenueId } from "utils/id";
 import { enterSpace } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -22,7 +21,7 @@ import "./EventModal.scss";
 export interface EventModalProps {
   show: boolean;
   onHide: () => void;
-  event: WithVenueId<WorldExperience>;
+  event: WorldEvent;
 }
 
 export const EventModal: React.FC<EventModalProps> = ({
@@ -31,11 +30,11 @@ export const EventModal: React.FC<EventModalProps> = ({
   show,
 }) => {
   const { currentVenue: eventVenue } = useRelatedVenues({
-    currentVenueId: event.venueId,
+    currentVenueId: event.spaceId,
   });
   const { worldSlug } = useSpaceParams();
 
-  const eventLocationToDisplay = eventVenue?.name ?? event.venueId;
+  const eventLocationToDisplay = eventVenue?.name ?? event.spaceId;
 
   const goToEventLocation = () => {
     onHide();
