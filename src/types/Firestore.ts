@@ -97,7 +97,6 @@ export interface FirestoreOrdered {
   events?: WorldEvent[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
-  parentExperiences?: WorldEvent[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
