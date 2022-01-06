@@ -31,7 +31,19 @@
     margin-top: $spacing--lg;
   }
 
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__user-list {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    margin: $spacing--xl;
+  }
+
   .AdminSidebarSectionTitle {
-    padding: $spacing--lg;
+    padding: 0 $spacing--lg;
   }
 }
