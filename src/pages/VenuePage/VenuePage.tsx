@@ -107,7 +107,7 @@ export const VenuePage: React.FC = () => {
   usePreloadAssets(assetsToPreload);
 
   // @debt Refactor and use reactfire hook instead of this legacy syntax.
-  useConnectCurrentEvent();
+  useConnectCurrentEvent(world?.id, spaceId);
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
 

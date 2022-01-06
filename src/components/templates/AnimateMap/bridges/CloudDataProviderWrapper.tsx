@@ -11,7 +11,7 @@ import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
-import { useVenueEvents } from "hooks/events";
+import { useSpaceEvents } from "hooks/events";
 import { useUser } from "hooks/useUser";
 
 import { useFirebarrels } from "../hooks/useFirebarrels";
@@ -61,9 +61,9 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     [relatedRooms, venue]
   );
 
-  const venueIds = useMemo(() => venues.map((venue) => venue.id), [venues]);
+  const spaceIds = useMemo(() => venues.map((venue) => venue.id), [venues]);
 
-  const { events } = useVenueEvents({ venueIds });
+  const { events } = useSpaceEvents({ worldId: venue.worldId, spaceIds });
 
   const locationUsers = useRecentLocationsUsers(venues);
 

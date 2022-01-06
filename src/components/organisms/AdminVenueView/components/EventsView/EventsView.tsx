@@ -4,7 +4,7 @@ import { AnyVenue, WorldExperience } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
-import { useVenueEvents } from "hooks/events";
+import { useSpaceEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
@@ -38,8 +38,9 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const { events, isEventsLoading } = useVenueEvents({
-    venueIds: relatedVenueIds,
+  const { events, isEventsLoading } = useSpaceEvents({
+    worldId: venue.worldId,
+    spaceIds: relatedVenueIds,
     refetchIndex,
   });
 

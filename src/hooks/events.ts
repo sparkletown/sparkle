@@ -1,6 +1,6 @@
 import { useAsync } from "react-use";
 
-import { fetchAllVenueEvents } from "api/events";
+import { fetchAllSpaceEvents } from "api/events";
 
 import { ReactHook } from "types/utility";
 import { WorldExperience } from "types/venues";
@@ -11,7 +11,8 @@ import { tracePromise } from "utils/performance";
 const emptyArray: never[] = [];
 
 export interface VenueEventsProps {
-  venueIds: string[];
+  worldId?: string;
+  spaceIds: string[];
   // A dummy number that is used to trigger a refetch
   refetchIndex?: number;
 }
@@ -24,8 +25,9 @@ export interface VenueEventsData {
   eventsError?: Error;
 }
 
-export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
-  venueIds,
+export const useSpaceEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
+  worldId,
+  spaceIds,
   refetchIndex = 0,
 }) => {
   const {
@@ -33,14 +35,14 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
     error: eventsError,
     value: events = emptyArray,
   } = useAsync(async () => {
-    if (!venueIds) return emptyArray;
+    if (!spaceIds || !worldId) return emptyArray;
 
     return tracePromise(
       "useVenueEvents::fetchAllVenueEvents",
-      () => fetchAllVenueEvents(venueIds),
+      () => fetchAllSpaceEvents(worldId, spaceIds),
       {
         metrics: {
-          venueIdsLength: venueIds.length,
+          venueIdsLength: spaceIds.length,
           refetchIndex,
         },
       }
@@ -48,7 +50,7 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
     // @debt This refetchIndex is a hack to force a refetch when we think the
     // underlying data might have changed. This is because the data structure
     // makes it hard to subscribe to all events on all venues.
-  }, [refetchIndex, venueIds]); // TODO: figure out this deps in an efficient way so it doesn't keep re-rendering
+  }, [refetchIndex, worldId, spaceIds]); // TODO: figure out this deps in an efficient way so it doesn't keep re-rendering
 
   return {
     // @debt related to the above

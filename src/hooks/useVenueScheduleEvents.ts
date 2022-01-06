@@ -20,7 +20,7 @@ import { isDateRangeStartWithinToday } from "utils/time";
 import { prepareForSchedule } from "components/organisms/NavBarSchedule/utils";
 
 import { useWorldParams } from "./worlds/useWorldParams";
-import { useVenueEvents } from "./events";
+import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
 const emptyRelatedEvents: WithVenueId<WorldExperience>[] = [];
@@ -42,13 +42,14 @@ const useVenueScheduleEvents = ({
     relatedVenues,
   } = useRelatedVenues();
 
-  const { worldSlug } = useWorldParams();
+  const { worldId, worldSlug } = useWorldParams();
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
     isEventsLoading,
-  } = useVenueEvents({
-    venueIds: relatedVenueIds,
+  } = useSpaceEvents({
+    worldId: worldId,
+    spaceIds: relatedVenueIds,
     refetchIndex,
   });
   const liveAndFutureEvents = useMemo(
