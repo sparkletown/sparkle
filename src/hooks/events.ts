@@ -5,7 +5,6 @@ import { COLLECTION_WORLD_EVENTS } from "settings";
 import { WorldEvent } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
-import { WithId } from "utils/id";
 
 export interface VenueEventsProps {
   worldId?: string;
@@ -14,7 +13,7 @@ export interface VenueEventsProps {
 
 export interface VenueEventsData {
   isLoaded: boolean;
-  events: WithId<WorldEvent>[];
+  events: WorldEvent[];
 }
 
 export const useSpaceEvents = ({
@@ -28,9 +27,9 @@ export const useSpaceEvents = ({
     .where("worldId", "==", worldId || "")
     .withConverter(withIdConverter<WorldEvent>());
 
-  const { data: events, status } = useFirestoreCollectionData<
-    WithId<WorldEvent>
-  >(eventsRef);
+  const { data: events, status } = useFirestoreCollectionData<WorldEvent>(
+    eventsRef
+  );
 
   if (!spaceIds || !worldId) {
     return {

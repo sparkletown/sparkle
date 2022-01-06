@@ -55,7 +55,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     toggle: toggleSplittedEvents,
   } = useShowHide();
 
-  const [editedEvent, setEditedEvent] = useState<WithId<WorldEvent>>();
+  const [editedEvent, setEditedEvent] = useState<WorldEvent>();
 
   const adminEventModalOnHide = useCallback(() => {
     setHideCreateEventModal();

@@ -17,6 +17,8 @@ export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
 
 export type WithoutId<T extends object> = Pick<T, Exclude<keyof T, "id">>;
 
+export type MaybeWithId<T extends object> = WithoutId<T> & { id?: string };
+
 export const withoutId = <T extends object>(obj: T): WithoutId<T> =>
   omit(obj, "id");
 

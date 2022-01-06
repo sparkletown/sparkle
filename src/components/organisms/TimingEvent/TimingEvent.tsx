@@ -6,15 +6,14 @@ import { format } from "date-fns";
 import { WorldEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 export type TimingEventProps = {
-  event: WithId<WorldEvent>;
+  event: WorldEvent;
   setShowCreateEventModal: () => void;
-  setEditedEvent: (event: WithId<WorldEvent>) => void;
+  setEditedEvent: (event: WorldEvent) => void;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({

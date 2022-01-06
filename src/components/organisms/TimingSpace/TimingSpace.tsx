@@ -14,10 +14,8 @@ import "./TimingSpace.scss";
 
 export type TimingSpaceProps = {
   space: WithId<AnyVenue>;
-  spaceEvents: WithId<WorldEvent>[];
-  setEditedEvent: React.Dispatch<
-    React.SetStateAction<WithId<WorldEvent> | undefined>
-  >;
+  spaceEvents: WorldEvent[];
+  setEditedEvent: React.Dispatch<React.SetStateAction<WorldEvent | undefined>>;
   setShowCreateEventModal: () => void;
 };
 
@@ -31,7 +29,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
 
   const onClickCreateButton = useCallback(() => {
     setShowCreateEventModal();
-    setEditedEvent({ spaceId: space.id } as WithId<WorldEvent>);
+    setEditedEvent({ spaceId: space.id } as WorldEvent);
   }, [setShowCreateEventModal, setEditedEvent, space.id]);
 
   const renderedSpaceEvents = useMemo(

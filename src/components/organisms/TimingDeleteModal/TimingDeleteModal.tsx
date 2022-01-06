@@ -10,8 +10,6 @@ import { deleteEvent, EventInput } from "api/admin";
 
 import { WorldEvent } from "types/venues";
 
-import { WithId } from "utils/id";
-
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -21,7 +19,7 @@ import "./TimingDeleteModal.scss";
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  event?: WithId<WorldEvent>;
+  event?: WorldEvent;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({

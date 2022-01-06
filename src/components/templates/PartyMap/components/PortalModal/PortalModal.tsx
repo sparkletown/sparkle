@@ -31,14 +31,14 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./PortalModal.scss";
 
-const emptyEvents: WithId<WorldEvent>[] = [];
+const emptyEvents: WorldEvent[] = [];
 
 export interface PortalModalProps {
   onHide: () => void;
   show: boolean;
   venue?: WithId<AnyVenue>;
   portal?: Room;
-  venueEvents?: WithId<WorldEvent>[];
+  venueEvents?: WorldEvent[];
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
@@ -86,7 +86,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 export interface PortalModalContentProps {
   portal: Room;
   venue: WithId<AnyVenue>;
-  venueEvents: WithId<WorldEvent>[];
+  venueEvents: WorldEvent[];
 }
 
 export const PortalModalContent: React.FC<PortalModalContentProps> = ({

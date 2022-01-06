@@ -9,7 +9,7 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 
 import { AnyVenue, VenueTemplate, WorldEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { MaybeWithId, WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -23,7 +23,7 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
-  event?: WithId<WorldEvent>;
+  event?: WorldEvent;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
@@ -79,7 +79,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const formEvent: WorldEvent = {
+      const formEvent: MaybeWithId<WorldEvent> = {
         name: data.name,
         description: data.description,
         startUtcSeconds:
@@ -94,12 +94,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       };
       // Add the ID conditionally - otherwise the field is set to undefined
       // which firebase does not like.
-      if (event) {
-        formEvent.id = event.id;
-      }
       if (eventSpaceId) {
         if (event?.id) {
-          await updateEvent(formEvent);
+          formEvent.id = event.id;
+          await updateEvent(formEvent as WorldEvent);
         } else {
           await createEvent(formEvent);
         }

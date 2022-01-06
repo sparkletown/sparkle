@@ -88,16 +88,16 @@ export interface FirestoreData {
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
-  currentVenueEventsNG?: WithId<WorldEvent>[];
+  currentVenueEventsNG?: WorldEvent[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
-  currentEvent?: WithId<WorldEvent>[];
-  events?: WithId<WorldEvent>[];
+  currentEvent?: WorldEvent[];
+  events?: WorldEvent[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
-  parentExperiences?: WithId<WorldEvent>[];
+  parentExperiences?: WorldEvent[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
@@ -106,7 +106,7 @@ export interface FirestoreOrdered {
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
-  venueEvents?: WithId<WorldEvent>[];
+  venueEvents?: WorldEvent[];
   worldEdit?: WithId<World>[];
 }
 

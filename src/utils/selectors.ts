@@ -63,7 +63,7 @@ export const currentVenueSelector: SparkleSelector<
 > = (state) => state.firestore.ordered.currentVenue?.[0];
 
 export const currentEventSelector: SparkleSelector<
-  WithId<WorldEvent>[] | undefined
+  WorldEvent[] | undefined
 > = makeOrderedSelector("currentEvent");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
@@ -126,9 +126,9 @@ export const messagesToTheBandSelector: SparkleSelector<
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
 
-export const venueEventsSelector: SparkleSelector<
-  WithId<WorldEvent>[] | undefined
-> = (state) => state.firestore.ordered.venueEvents;
+export const venueEventsSelector: SparkleSelector<WorldEvent[] | undefined> = (
+  state
+) => state.firestore.ordered.venueEvents;
 
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;

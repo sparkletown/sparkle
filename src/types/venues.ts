@@ -374,7 +374,7 @@ export interface WorldEvent {
   description: string;
   durationMinutes: number;
   host: string;
-  id?: string;
+  id: string;
   orderPriority?: number;
   liveAudience?: number;
   spaceId: string;

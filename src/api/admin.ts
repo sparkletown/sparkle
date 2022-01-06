@@ -24,7 +24,7 @@ import {
   WorldEvent,
 } from "types/venues";
 
-import { WithId, WithWorldId } from "utils/id";
+import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 import { fetchVenue } from "./venue";
@@ -480,7 +480,7 @@ export const createRoom = async (
   });
 };
 
-export const createEvent = async (event: WorldEvent) => {
+export const createEvent = async (event: WithoutId<WorldEvent>) => {
   await firebase.firestore().collection(COLLECTION_WORLD_EVENTS).add(event);
 };
 
