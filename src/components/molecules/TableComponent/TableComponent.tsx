@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import React, { useMemo } from "react";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
+=======
+import React from "react";
+import { Modal } from "react-bootstrap";
+import { useAsyncFn } from "react-use";
+>>>>>>> Remove all the styling from the app
 
 import {
   CONVERSATION_TABLES,
@@ -76,8 +82,8 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
     isJazzBar
       ? {}
       : {
-          width: `${table.columns && (table.columns + 1) * 55}px`,
-        }
+        width: `${table.columns && (table.columns + 1) * 55}px`,
+      }
   );
 
   const itemClasses = classNames("TableComponent__item", itemStyles);
@@ -110,7 +116,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
 
   return (
     <div className="TableComponent">
-      <div className={itemClasses}>
+      <div>
         <div className="TableComponent__occupancy-warning">
           {locked && "locked"}
           {!locked && full && "full"}

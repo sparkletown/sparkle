@@ -6,7 +6,6 @@ import React, {
   useState,
 } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -94,11 +93,7 @@ export const ImageInput: React.FC<ImageInputProps> = ({
 
   const onButtonClick = useCallback(() => inputFileRef?.current?.click(), []);
 
-  const labelStyle = useCss({
-    "background-image": imageUrl ? `url(${imageUrl})` : undefined,
-  });
-
-  const labelClasses = classNames("ImageInput__container", labelStyle, {
+  const labelClasses = classNames("ImageInput__container", {
     "ImageInput__container--error": !!error?.message,
     "ImageInput__container--small": small,
     "ImageInput__container--disabled": loading,

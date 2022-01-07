@@ -18,8 +18,6 @@ import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/R
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./RunTabUsers.scss";
-
 interface RunTabSidebarProps {
   space: SpaceWithId;
 }

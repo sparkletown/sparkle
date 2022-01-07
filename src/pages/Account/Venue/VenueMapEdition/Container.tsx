@@ -1,11 +1,4 @@
-import React, {
-  CSSProperties,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
 import ReactResizeDetector, { useResizeDetector } from "react-resize-detector";
 import update from "immutability-helper";
@@ -20,10 +13,6 @@ import { DragItem } from "./interfaces";
 import { ItemTypes } from "./ItemTypes";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 
-const styles: React.CSSProperties = {
-  width: "100%",
-  position: "relative",
-};
 export interface SubVenueIconMap {
   [key: string]: {
     title?: string;
@@ -46,8 +35,6 @@ interface PropsType {
   snapToGrid?: boolean;
   iconsMap: SubVenueIconMap;
   backgroundImage: string;
-  iconImageStyle?: CSSProperties; // This is not being used ATM
-  draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   onOtherIconClick?: (key: string) => void;
@@ -55,10 +42,7 @@ interface PropsType {
   interactive: boolean;
   resizable: boolean;
   onResize?: (rawVal: Dimensions, percentageVal: Dimensions) => void;
-  otherIconsStyle?: CSSProperties;
   rounded?: boolean;
-  backgroundImageStyle?: CSSProperties;
-  containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   isSaving?: boolean;
 }
@@ -68,7 +52,6 @@ export const Container: React.FC<PropsType> = (props) => {
     snapToGrid,
     iconsMap,
     backgroundImage,
-    iconImageStyle,
     onChange,
     otherIcons,
     onOtherIconClick,
@@ -76,9 +59,6 @@ export const Container: React.FC<PropsType> = (props) => {
     interactive,
     resizable,
     rounded,
-    otherIconsStyle,
-    backgroundImageStyle,
-    containerStyle,
     lockAspectRatio,
     isSaving,
   } = props;
@@ -122,7 +102,7 @@ export const Container: React.FC<PropsType> = (props) => {
             : boxes[val].width,
           height: resizable
             ? (coordinatesBoundary.height * boxes[val].height) /
-              imageDims.height
+            imageDims.height
             : boxes[val].height,
           top: convertDisplayedCoordToIntrinsic(
             boxes[val].top,
@@ -160,11 +140,11 @@ export const Container: React.FC<PropsType> = (props) => {
           ...iconsMap[val],
           width: resizable
             ? (imageDims.width * iconsMap[val].width) /
-              coordinatesBoundary.width
+            coordinatesBoundary.width
             : iconsMap[val].width,
           height: resizable
             ? (imageDims.height * iconsMap[val].height) /
-              coordinatesBoundary.height
+            coordinatesBoundary.height
             : iconsMap[val].height,
           top:
             (imageDims.height * iconsMap[val].top) / coordinatesBoundary.height,
@@ -231,7 +211,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   return (
     <>
-      <div ref={drop} style={{ ...styles, ...containerStyle }}>
+      <div ref={drop}>
         <div ref={ref}>
           <ReactResizeDetector handleWidth handleHeight>
             {({ targetRef }) => <span ref={targetRef} />}
@@ -240,7 +220,6 @@ export const Container: React.FC<PropsType> = (props) => {
             alt="draggable background"
             style={{
               width: "100%",
-              ...backgroundImageStyle,
             }}
             src={backgroundImage}
           />
@@ -261,12 +240,10 @@ export const Container: React.FC<PropsType> = (props) => {
                     src={otherIcons[key].url || DEFAULT_MAP_ICON_URL}
                     style={{
                       position: "absolute",
-                      top: `${
-                        (100 * otherIcons[key].top) / coordinatesBoundary.height
-                      }%`,
-                      left: `${
-                        (100 * otherIcons[key].left) / coordinatesBoundary.width
-                      }%`,
+                      top: `${(100 * otherIcons[key].top) / coordinatesBoundary.height
+                        }%`,
+                      left: `${(100 * otherIcons[key].left) / coordinatesBoundary.width
+                        }%`,
                       width: resizable
                         ? `${otherIcons[key].width}%`
                         : otherIcons[key].width, //resizable dimensions are in percentages
@@ -274,7 +251,6 @@ export const Container: React.FC<PropsType> = (props) => {
                         ? `${otherIcons[key].height}%`
                         : otherIcons[key].width,
                       borderRadius: rounded ? "50%" : "none",
-                      ...otherIconsStyle,
                     }}
                     alt={`${otherIcons[key].url} map icon`}
                     onClick={() => onOtherIconClick && onOtherIconClick(key)}
@@ -286,7 +262,6 @@ export const Container: React.FC<PropsType> = (props) => {
                 coordinatesBoundary.width,
                 resizable,
                 rounded,
-                otherIconsStyle,
                 onOtherIconClick,
               ]
             )}
@@ -296,7 +271,6 @@ export const Container: React.FC<PropsType> = (props) => {
               isResizable={resizable}
               key={key}
               id={key}
-              imageStyle={iconImageStyle}
               rounded={!!rounded}
               {...boxes[key]}
               onChangeSize={resizeBox(key)}

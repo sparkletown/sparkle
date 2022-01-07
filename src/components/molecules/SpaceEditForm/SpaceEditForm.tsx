@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-import { useAsyncFn, useCss } from "react-use";
-import classNames from "classnames";
+import { useAsyncFn } from "react-use";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -235,10 +234,8 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
     [setValue]
   );
 
-  const logoStyle = useCss({
-    "background-image": `url(${SPACE_INFO_MAP[space.template].icon})`,
-  });
-  const logoClasses = classNames("SpaceEditForm__logo", logoStyle);
+  // TODO-redesign
+  // Probably want to use ${SPACE_INFO_MAP[space.template].icon} for the logo
 
   return (
     <div className="SpaceEditForm">
@@ -250,7 +247,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
           <AdminSidebarAccordion title="The basics" open>
             <AdminSection title="Space template" withLabel>
               <div className="SpaceEditForm__template">
-                <div className={logoClasses} />
+                <div />
                 <AdminInput
                   value={SPACE_INFO_MAP[space.template].text}
                   disabled

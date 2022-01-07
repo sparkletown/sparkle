@@ -1,7 +1,6 @@
 import React, { CSSProperties, useEffect } from "react";
 import { DragSourceMonitor, useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
-import { useCss } from "react-use";
 import { Resizable } from "re-resizable";
 
 import { Dimensions } from "types/utility";
@@ -68,13 +67,6 @@ export const DraggableSubvenue: React.FC<PropsType> = ({
     }
   }, [id, isDragging, onDragStart]);
 
-  const iconStyles = useCss({
-    ...styles.resizeableImageContainer,
-    borderRadius: rounded ? "50%" : "none",
-    opacity: isEnabled ? 1 : 0.5,
-    backgroundImage: `url(${url})`,
-  });
-
   if (isResizable) {
     return (
       <Resizable
@@ -120,7 +112,7 @@ export const DraggableSubvenue: React.FC<PropsType> = ({
               />
             </>
           )}
-          <div className={iconStyles} />
+          <div />
         </div>
         <div className="DraggableSubvenue__title">{title}</div>
       </Resizable>
