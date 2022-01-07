@@ -1,5 +1,4 @@
 import React from "react";
-import { useCss } from "react-use";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -57,6 +56,8 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
 }) => {
   const { currentVenueEvents: events } = useConnectCurrentVenueNG({ spaceId });
 
+  // TODO-redesign use it or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validBannerImageUrl] = useValidImage(
     space?.config?.landingPageConfig.coverImageUrl,
     DEFAULT_LANDING_BANNER
@@ -78,24 +79,15 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
       userId && !hasEntrance
         ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
         : generateUrl({
-            route: ATTENDEE_STEPPING_PARAM_URL,
-            required: ["worldSlug", "spaceSlug", "step"],
-            params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
-          });
+          route: ATTENDEE_STEPPING_PARAM_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+        });
   };
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;
 
-  const containerVars = useCss({
-    background: `linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.8) 2%,
-            rgba(0, 0, 0, 0) 98%
-          ), url("${validBannerImageUrl}")`,
-    backgroundSize: "cover",
-  });
-
-  const containerClasses = classNames("header", containerVars);
+  const containerClasses = classNames("header");
 
   return (
     <div className="VenueLandingPageContent container venue-entrance-experience-container">
@@ -141,9 +133,7 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
       <div className="row">
         <div className="col-lg-6 col-12 venue-presentation">
           <div>
-            <div style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-              {space.config?.landingPageConfig.description}
-            </div>
+            <div>{space.config?.landingPageConfig.description}</div>
 
             <div>
               {space.config?.landingPageConfig?.checkList?.map(
@@ -216,9 +206,8 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
                   <InformationCard
                     title={venueEvent.name}
                     key={venueEvent.id}
-                    containerClassName={`${
-                      !isNextVenueEvent ? "disabled" : ""
-                    }`}
+                    containerClassName={`${!isNextVenueEvent ? "disabled" : ""
+                      }`}
                   >
                     <div className="date">
                       {`${startTime}-${endTime} ${startDay}`}

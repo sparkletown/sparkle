@@ -15,8 +15,6 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { PosterAttendance } from "../PosterAttendance";
 
-import "./PosterPreview.scss";
-
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
 }

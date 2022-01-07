@@ -27,8 +27,6 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import { SortDropDown } from "components/atoms/SortDropDown";
 import { TesterRestricted } from "components/atoms/TesterRestricted";
 
-import "./SpacesDashboard.scss";
-
 interface SpacesDashboardProps {
   ownSpaces: Spaces;
   userId: UserId;

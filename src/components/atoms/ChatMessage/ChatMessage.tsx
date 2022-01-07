@@ -18,8 +18,6 @@ import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { ChatMessageReplies } from "components/atoms/ChatMessageReplies";
 import { TextButton } from "components/atoms/TextButton";
 
-import "./ChatMessage.scss";
-
 export interface ChatMessageProps {
   message: WithId<MessageToDisplay>;
 }

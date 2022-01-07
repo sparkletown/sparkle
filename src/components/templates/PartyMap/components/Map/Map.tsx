@@ -1,10 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-import {
-  DEFAULT_MAP_BACKGROUND,
-  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
-  MINIMUM_PARTYMAP_COLUMNS_COUNT,
-} from "settings";
+import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { RefiAuthUser } from "types/fire";
 import { Room } from "types/rooms";
@@ -26,10 +22,6 @@ interface MapProps {
 }
 
 export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
-  const totalColumns = Math.max(
-    MINIMUM_PARTYMAP_COLUMNS_COUNT,
-    Math.min(MAXIMUM_PARTYMAP_COLUMNS_COUNT, venue.columns ?? DEFAULT_COLUMNS)
-  );
   const [totalRows, setTotalRows] = useState<number>(0);
   const hasRows = totalRows > 0;
 
@@ -70,14 +62,6 @@ export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
     [selectRoom, venue]
   );
 
-  const gridContainerStyles = useMemo(
-    () => ({
-      gridTemplateColumns: `repeat(${totalColumns}, calc(100% / ${totalColumns}))`,
-      gridTemplateRows: `repeat(${totalRows}, 1fr)`,
-    }),
-    [totalColumns, totalRows]
-  );
-
   if (!user || !venue) {
     return <>Loading map...</>;
   }
@@ -92,9 +76,7 @@ export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
           alt=""
         />
         {hasRows && (
-          <div className="party-map-grid-container" style={gridContainerStyles}>
-            {roomOverlay}
-          </div>
+          <div className="party-map-grid-container">{roomOverlay}</div>
         )}
       </div>
     </div>

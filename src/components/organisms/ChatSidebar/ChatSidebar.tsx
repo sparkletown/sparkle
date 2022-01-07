@@ -19,8 +19,6 @@ import { useChatSidebarInfo } from "hooks/chats/util/useChatSidebarInfo";
 
 import { PrivateChats, VenueChat } from "./components";
 
-import "./ChatSidebar.scss";
-
 export interface ChatSidebarProps {
   venue: WithId<AnyVenue>;
 }

@@ -78,10 +78,10 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
       <InformationLeftColumn iconNameOrPath={infoIcon}>
         <InformationCard title="About the venue">
           <p className="title-sidebar">{venue.name}</p>
-          <p className="short-description-sidebar" style={{ fontSize: 18 }}>
+          <p className="short-description-sidebar">
             {venue.config?.landingPageConfig.subtitle}
           </p>
-          <div style={{ fontSize: 13 }}>
+          <div>
             <RenderMarkdown
               text={venue.config?.landingPageConfig.description}
             />

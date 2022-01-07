@@ -1,31 +1,5 @@
-import React, { CSSProperties } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
-
-const StyledButton = styled.button<{
-  hasGradient?: boolean;
-}>`
-  display: inline-block;
-  padding: 0.75em 1em;
-
-  border-radius: 1.375em;
-  border: none;
-  background-color: #6f43ff;
-  background-image: ${({ hasGradient, disabled }) =>
-    hasGradient && !disabled
-      ? "linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%)"
-      : "none"};
-
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 700;
-  text-align: center;
-  text-decoration: none;
-
-  transform: translateY(0);
-
-  transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-`;
 
 interface LinkProps {
   isLink?: boolean;
@@ -34,7 +8,6 @@ interface LinkProps {
 
 export interface ButtonProps extends LinkProps {
   customClass?: string;
-  customStyle?: CSSProperties;
   gradient?: boolean;
   loading?: boolean;
   onClick?: () => void;
@@ -48,7 +21,6 @@ export const ButtonOG: React.FC<ButtonProps> = ({
   loading,
   onClick,
   type = "button",
-  customStyle,
   children,
   gradient,
   isLink = false,
@@ -64,27 +36,20 @@ export const ButtonOG: React.FC<ButtonProps> = ({
 
   if (isLink && linkTo) {
     return (
-      <StyledButton
-        as={Link}
-        className={customClass}
-        style={customStyle}
-        to={linkTo}
-      >
+      <Link className={customClass} to={linkTo}>
         {children}
-      </StyledButton>
+      </Link>
     );
   }
 
   return (
-    <StyledButton
+    <button
       className={customClass}
-      style={customStyle}
       type={type}
       onClick={onClick}
-      hasGradient={gradient}
       disabled={disabled}
     >
       {children}
-    </StyledButton>
+    </button>
   );
 };

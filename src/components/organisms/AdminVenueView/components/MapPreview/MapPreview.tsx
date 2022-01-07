@@ -63,7 +63,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
             width: 100,
             height: 100,
           }}
-          otherIconsStyle={{ opacity: 0.4 }}
           onMove={onMoveRoom}
           onResize={onResizeRoom}
         />

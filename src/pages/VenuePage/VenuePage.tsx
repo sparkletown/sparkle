@@ -49,8 +49,6 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import { updateTheme } from "./helpers";
-
 import "./VenuePage.scss";
 
 const TemplateWrapper = lazy(() =>
@@ -115,13 +113,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   const userId = user?.uid;
   const venueName = space?.name ?? "";
   const event = currentEvent?.[0];
-
-  useEffect(() => {
-    if (!space) return;
-
-    // @debt replace this with useCss?
-    updateTheme(space);
-  }, [space]);
 
   const isEventFinished = event && hasEventFinished(event);
 

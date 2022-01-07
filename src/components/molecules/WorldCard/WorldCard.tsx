@@ -1,9 +1,7 @@
-import React, { CSSProperties } from "react";
-import { useCss } from "react-use";
+import React from "react";
 import { faSignInAlt } from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
 
-import { ADMIN_IA_WORLD_PARAM_URL, DEFAULT_VENUE_LOGO } from "settings";
+import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
 import { World } from "api/world";
 
@@ -19,28 +17,15 @@ export interface WorldCardProps {
 }
 
 export const WorldCard: React.FC<WorldCardProps> = ({ world }) => {
-  const cardBackgroundUrl = world.config?.landingPageConfig?.coverImageUrl;
-  const cardBackgroundStyles: CSSProperties = {};
-  if (cardBackgroundUrl) {
-    cardBackgroundStyles.backgroundImage = `url(${cardBackgroundUrl})`;
-  }
-
-  const cardVars = useCss(cardBackgroundStyles);
-
-  const cardClasses = classNames("WorldCard", cardVars, {
-    "WorldCard--disabled": !world.slug,
-  });
-
-  const logoVars = useCss({
-    backgroundImage: `url(${world.host?.icon || DEFAULT_VENUE_LOGO})`,
-  });
-
-  const logoClasses = classNames("WorldCard__logo", logoVars);
+  // TODO-redesign
+  // Probably want to include these variables in this component:
+  // - world.config?.landingPageConfig?.coverImageUrl
+  // - world.host?.icon ?? DEFAULT_VENUE_LOGO
 
   return (
-    <div className={cardClasses}>
+    <div>
       <div className="WorldCard__info">
-        <div className={logoClasses} />
+        <div />
         <div className="WorldCard__titles">
           <div className="WorldCard__world-name">{world.name}</div>
           <div className="WorldCard__world-description">

@@ -1,4 +1,3 @@
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { DEFAULT_VENUE_BANNER_COLOR } from "settings";
@@ -23,17 +22,15 @@ export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
   venue,
   style,
 }) => {
+  // TODO use it or delete it
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig?.coverImageUrl ||
       venue?.config?.landingPageConfig?.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
-  const containerVars = useCss({
-    background: `url("${validBannerImageUrl}")`,
-  });
-
-  const containerClasses = classNames(containerClassNames, containerVars);
+  const containerClasses = classNames(containerClassNames);
 
   return (
     <div className={containerClasses} style={style}>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import { useAsyncFn, useCss } from "react-use";
-import classNames from "classnames";
+import { useAsyncFn } from "react-use";
 
 import {
   CONVERSATION_TABLES,
@@ -69,22 +68,9 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
     toggleModal();
   }, [table.reference, venue.id, venue.template, toggleModal]);
 
-  const isJazzBar = template === VenueTemplate.jazzbar;
-
-  const itemStyles = useCss(
-    isJazzBar
-      ? {}
-      : {
-          height: `${table.rows && table.rows * 50 + 65}px`,
-          width: `${table.columns && (table.columns + 1) * 55}px`,
-        }
-  );
-
-  const itemClasses = classNames("TableComponent__item", itemStyles);
-
   return (
     <div className="TableComponent">
-      <div className={itemClasses}>
+      <div>
         <div className="TableComponent__occupancy-warning">
           {locked && "locked"}
           {!locked && full && "full"}

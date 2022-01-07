@@ -22,7 +22,7 @@ const Step4 = () => {
       <div className="step-container step5-container">
         <div className="login-container">
           <h2>Test your camera and mic before entering the venue</h2>
-          <div style={{ marginTop: 10 }}>
+          <div>
             <Webcam width={400} />
           </div>
           <ReactMic

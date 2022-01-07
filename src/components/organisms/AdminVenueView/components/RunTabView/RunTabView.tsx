@@ -18,8 +18,6 @@ import { UserList } from "components/molecules/UserList";
 import { AdminSidebarSectionTitle } from "../AdminSidebarSectionTitle";
 import { MapPreview } from "../MapPreview";
 
-import "./RunTabView.scss";
-
 export interface RunTabViewProps {
   venue?: WithId<AnyVenue>;
 }

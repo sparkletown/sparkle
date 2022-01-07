@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useParams } from "react-router";
-import { useCss } from "react-use";
 import classNames from "classnames";
 
 import {
@@ -65,7 +64,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     baseRowsCount,
     baseColumnsCount,
 
+    // TODO-redesign - use these or delete them
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     screenHeightInSeats,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     screenWidthInSeats,
 
     isUserSeated,
@@ -98,15 +100,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     isUserSeated && analytics.trackTakeSeatEvent();
   }, [analytics, isUserSeated]);
 
-  const centralScreenVars = useCss({
-    "--central-screen-width-in-seats": screenWidthInSeats,
-    "--central-screen-height-in-seats": screenHeightInSeats,
-  });
-
-  const centralScreenClasses = classNames(
-    "Section__central-screen",
-    centralScreenVars
-  );
+  const centralScreenClasses = classNames("Section__central-screen");
 
   const seatsGrid = useAuditoriumGrid({
     isUserAudioMuted,

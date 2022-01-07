@@ -38,17 +38,9 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
     "NormalRadio__button NormalRadio__button--off": !(radioPlaying && volume),
   });
 
-  const popoverStyle = useMemo(
-    () => ({
-      // @debt remove the popover style from global.scss, then remove this workaround
-      height: "fit-content",
-    }),
-    []
-  );
-
   const renderedOverlay = useMemo(
     () => (
-      <Popover id={id} className={popoverClasses} style={popoverStyle}>
+      <Popover id={id} className={popoverClasses}>
         <Popover.Content>
           <RadioModal
             volume={volume}
@@ -63,7 +55,6 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
     [
       id,
       popoverClasses,
-      popoverStyle,
       volume,
       setVolume,
       title,

@@ -13,8 +13,6 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { LinkButton } from "components/atoms/LinkButton";
 
-import "./AnnouncementMessage.scss";
-
 export interface AnnouncementMessageProps {
   isAnnouncementUserView?: boolean;
 }
