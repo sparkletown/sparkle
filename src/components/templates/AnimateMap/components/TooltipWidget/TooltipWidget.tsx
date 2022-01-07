@@ -30,7 +30,7 @@ export interface TooltipWidgetItemData {
 
 interface TooltipWidgetState {
   current: number;
-  timeoutFunc: null | number;
+  timeoutFunc: null | NodeJS.Timeout;
   lastVenue: ReplicatedVenue;
   itemsData: TooltipWidgetItemData[];
 }
