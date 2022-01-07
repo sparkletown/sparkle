@@ -1,3 +1,3 @@
-import { SelfServeScript } from "../types";
+// import { SelfServeScript } from "../types";
 
-export const AnalyticsScript: SelfServeScript = {};
+export const AnalyticsScript = {};

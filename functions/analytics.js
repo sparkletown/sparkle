@@ -68,13 +68,11 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
     {}
   );
 
-  const allSpaceVisitsFile = new File(
-    ["allSpaceVisits"],
-    "allSpaceVisits.csv",
-    {
-      type: "text/csv",
-    }
-  );
+  const allSpaceVisitsFile = fs.writeFile("allSpaceVisits.csv", [
+    "allSpaceVisits",
+    { flag: "a" },
+    () => {},
+  ]);
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
     .reduce((arr, userWithVisits) => {
@@ -143,22 +141,23 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
 
   const globalUniqueVisits = [...new Set(allResultVisits)];
 
-  const uniqueVenuesVisitedFile = new File(
-    ["uniqueVenuesVisited"],
-    "uniqueVenuesVisited.csv",
-    {
-      type: "text/csv",
-    }
-  );
+  const uniqueVenuesVisitedFile = fs.writeFile("uniqueVenuesVisited.csv", [
+    "uniqueVenuesVisited",
+    { flag: "a" },
+    () => {},
+  ]);
 
   // write all unique venues
   globalUniqueVisits.map((el) =>
     fs.writeFileSync(uniqueVenuesVisitedFile, `${el} \n`, { flag: "a" })
   );
 
-  const dataReportFile = new File(["dataReport"], "dataReport.csv", {
-    type: "text/csv",
-  });
+  const dataReportFile = fs.writeFile(
+    "dataReport.csv",
+    ["dataReport"],
+    { flag: "a" },
+    () => {}
+  );
 
   // Write user venue headings
   (() => {

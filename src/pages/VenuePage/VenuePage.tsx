@@ -10,6 +10,8 @@ import {
   PLATFORM_BRAND_NAME,
 } from "settings";
 
+import { triggerCSV } from "api/admin";
+
 import { VenueTemplate } from "types/venues";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -128,6 +130,10 @@ export const VenuePage: React.FC = () => {
 
   const isUserVenueOwner = userId && space?.owners?.includes(userId);
   const isMember = user && space;
+
+  useEffect(() => {
+    triggerCSV();
+  }, []);
 
   // NOTE: User location updates
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?

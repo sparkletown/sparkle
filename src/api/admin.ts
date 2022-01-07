@@ -513,3 +513,11 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
     venueId,
     ownerId,
   });
+
+export const triggerCSV = async () => {
+  const firestoreVenueInput = {};
+
+  return firebase.functions().httpsCallable("analytics-formCSV")(
+    firestoreVenueInput
+  );
+};
