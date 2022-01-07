@@ -21,7 +21,7 @@ export class FirebarrelSystem extends System {
   private _unsubscribeFirebarrelExit!: () => void;
 
   private creator: EntityFactory;
-  private waitingEnterFirebarrelId?: number;
+  private waitingEnterFirebarrelId?: NodeJS.Timeout;
   private WAITING_ENTER_FIREBARREL_TIMEOUT = 15000;
   private SHOUTER_ON = false;
 
@@ -40,7 +40,9 @@ export class FirebarrelSystem extends System {
     this._unsubscribeFirebarrelEnter = subscribeActionAfter(
       AnimateMapActionTypes.ENTER_FIREBARREL,
       () => {
-        clearTimeout(this.waitingEnterFirebarrelId);
+        if (this.waitingEnterFirebarrelId) {
+          clearTimeout(this.waitingEnterFirebarrelId);
+        }
         // this.creator.enterFirebarrel(barrelId);
       }
     );
