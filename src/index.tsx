@@ -27,6 +27,7 @@ import "./wdyr";
 
 import * as serviceWorker from "./serviceWorker";
 
+import "normalize.css";
 import "scss/global.scss";
 
 activatePolyFills();
