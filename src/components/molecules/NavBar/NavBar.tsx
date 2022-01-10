@@ -5,15 +5,15 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
-import { PLAYA_VENUE_ID, SPARKLE_PHOTOBOOTH_URL } from "settings";
+import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import { enterSpace } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -24,7 +24,7 @@ import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio/NormalRadio";
+import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
@@ -56,18 +56,22 @@ export interface NavBarPropsType {
   withSchedule?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
+  withRadio?: boolean;
+  title?: string;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton,
   withSchedule,
   withPhotobooth,
+  withRadio,
+  title,
   withHiddenLoginButton,
 }) => {
   const { user, userWithId } = useUser();
   const isAdminContext = useAdminContextCheck();
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     currentVenue: relatedVenue,
@@ -87,10 +91,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   // when Admin is displayed, owned venues are used
   const currentVenue = relatedVenue ?? ownedVenue;
 
-  const {
-    location: { pathname },
-    push: openUrlUsingRouter,
-  } = useHistory();
+  const { push: openUrlUsingRouter } = useHistory();
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -100,8 +101,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const shouldShowSchedule =
     !isAdminContext && withSchedule && shouldScheduleBeShown(world);
-
-  const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -151,10 +150,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   }, []);
 
   const navigateToHomepage = useCallback(() => {
-    if (!sovereignVenueId) return;
+    if (!relatedVenue) return;
 
-    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [sovereignVenueId, openUrlUsingRouter]);
+    enterSpace(worldSlug, relatedVenue.slug, {
+      customOpenRelativeUrl: openUrlUsingRouter,
+    });
+  }, [worldSlug, relatedVenue, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -163,14 +164,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   };
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue?.name;
-  const showNormalRadio = (world?.showRadio && !isSoundCloud) ?? false;
-  const showSoundCloudRadio = (world?.showRadio && isSoundCloud) ?? false;
+  const navbarTitle = title || (parentVenue?.name ?? currentVenue?.name);
+  const showNormalRadio = withRadio
+    ? (world?.showRadio && !isSoundCloud) ?? false
+    : false;
+  const showSoundCloudRadio = withRadio
+    ? (world?.showRadio && isSoundCloud) ?? false
+    : false;
 
   return (
     <>
       <header>
-        <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
+        <div className="navbar navbar_playa nonplaya">
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo">
@@ -195,7 +200,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
-                spaceId && !isAdminContext && <div>{navbarTitle}</div>
+                <>
+                  <div className="nav-location-title">Sparkle Admin</div>
+                  <div>{navbarTitle}</div>
+                </>
               )}
 
               {spaceId && !isAdminContext && (
@@ -203,7 +211,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               )}
             </div>
 
-            {withPhotobooth && (
+            {!DISABLED_DUE_TO_1142 && withPhotobooth && (
               <div
                 className="NavBar__photobooth-button nav-schedule"
                 onClick={handlePhotoboothRedirect}

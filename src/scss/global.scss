@@ -251,13 +251,6 @@ textarea {
   text-align: center;
   color: $content--over;
 
-  &:-webkit-autofill,
-  &:-webkit-autofill:hover,
-  &:-webkit-autofill:active,
-  &:-webkit-autofill:focus {
-    background-color: rgba(white, 0) !important;
-  }
-
   &:hover {
     background-color: opaque-white(0.16);
   }

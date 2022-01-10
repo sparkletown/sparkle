@@ -34,6 +34,7 @@ export interface TableHeaderProps {
   venueId: string;
   venueName: string;
   tables: Table[];
+  defaultTables: Table[];
 }
 
 export const TableHeader: React.FC<TableHeaderProps> = ({
@@ -42,6 +43,7 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
   venueId,
   venueName,
   tables,
+  defaultTables,
 }) => {
   const { userId, profile } = useUser();
 
@@ -178,14 +180,10 @@ export const TableHeader: React.FC<TableHeaderProps> = ({
         title={tableTitle}
         subtitle={tableSubtitle}
         capacity={tableCapacity}
+        defaultTables={defaultTables}
         onHide={hide}
         {...{ isShown, tables, tableOfUser }}
       />
     </div>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default TableHeader;

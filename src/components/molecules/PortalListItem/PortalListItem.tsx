@@ -1,18 +1,24 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ROOM_TAXON, SpacePortalsListItem } from "settings";
+import { ALWAYS_NOOP_FUNCTION, PortalInfoItem, ROOM_TAXON } from "settings";
+
+import { useKeyPress } from "hooks/useKeyPress";
 
 import "./PortalListItem.scss";
 
+const HANDLED_KEY_PRESSES = ["Space", "Enter"];
+
 export interface PortalListItemProps {
-  item: SpacePortalsListItem;
+  item: PortalInfoItem;
+  selected?: boolean;
   tabIndex: number;
   onClick?: () => void;
 }
 
 export const PortalListItem: React.FC<PortalListItemProps> = ({
   item,
+  selected,
   tabIndex,
   onClick,
 }) => {
@@ -20,7 +26,13 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
 
   const parentClasses = classNames({
     [`PortalListItem PortalListItem--${template}`]: true,
+    "PortalListItem--selected": selected,
     "mod--hidden": hidden,
+  });
+
+  const handleKeyPress = useKeyPress({
+    keys: HANDLED_KEY_PRESSES,
+    onPress: onClick ?? ALWAYS_NOOP_FUNCTION,
   });
 
   // NOTE: tabIndex allows tab behavior, @see https://allyjs.io/data-tables/focusable.html
@@ -29,6 +41,7 @@ export const PortalListItem: React.FC<PortalListItemProps> = ({
       <div
         className="PortalListItem__list-item"
         onClick={onClick}
+        onKeyPress={handleKeyPress}
         tabIndex={tabIndex}
       >
         <img

@@ -5,10 +5,26 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: opaque-white(0.5);
+  color: var(--content--over-50a);
   cursor: pointer;
+  max-width: 100%;
+
+  margin: $spacing--xs;
+  padding: $spacing--xs;
 
   * {
-    @include link-style(opaque-white(0.5));
+    outline: none;
+    color: var(--content--over-50a);
+    text-decoration: none;
+  }
+
+  :hover * {
+    color: var(--content--over);
+    text-decoration: underline var(--content--over);
+  }
+
+  &:focus,
+  &:focus-within &__wrapper {
+    outline: $border-width--slim dotted $content--over;
   }
 }

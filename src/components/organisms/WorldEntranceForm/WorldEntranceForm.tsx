@@ -16,8 +16,7 @@ import { worldEntranceSchema } from "forms/worldEntranceSchema";
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { EntranceStepsBuilder } from "components/organisms/EntranceStepsBuilder";
 import { QuestionsBuilder } from "components/organisms/QuestionsBuilder";
 
@@ -26,7 +25,7 @@ import { AdminSection } from "components/molecules/AdminSection";
 import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
-import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./WorldEntranceForm.scss";
@@ -34,13 +33,12 @@ import "./WorldEntranceForm.scss";
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = ["entrance"];
 
-export interface WorldEntranceFormProps extends AdminSidebarFooterProps {
+export interface WorldEntranceFormProps {
   world: WithId<World>;
 }
 
 export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   world,
-  ...sidebarFooterProps
 }) => {
   const worldId = world.id;
   const { user } = useUser();
@@ -154,15 +152,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
     isDirtyEntrance
   );
 
-  const saveButtonProps: ButtonProps = useMemo(
-    () => ({
-      type: "submit",
-      disabled: isSaveDisabled,
-      loading: isSaveLoading,
-    }),
-    [isSaveDisabled, isSaveLoading]
-  );
-
   useEffect(() => {
     const values: Partial<WorldEntranceFormInput> = getValues();
     reset({
@@ -177,10 +166,6 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
   return (
     <div className="WorldEntranceForm">
       <Form onSubmit={handleSubmit(submit)}>
-        <AdminSidebarFooter
-          {...sidebarFooterProps}
-          saveButtonProps={saveButtonProps}
-        />
         <AdminSection title="Limit access to world">
           <TesterRestricted>
             <AdminCheckbox
@@ -241,6 +226,17 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
         </AdminSection>
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
+        <AdminSidebarButtons>
+          <ButtonNG
+            className="AdminSidebar__button--larger"
+            variant="primary"
+            type="submit"
+            disabled={isSaveDisabled}
+            loading={isSaveLoading}
+          >
+            Save
+          </ButtonNG>
+        </AdminSidebarButtons>
       </Form>
     </div>
   );

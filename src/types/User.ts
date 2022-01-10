@@ -46,6 +46,7 @@ export interface User extends BaseUser {
   lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
   enteredVenueIds?: never;
+  enteredWorldIds?: never;
 }
 
 export type DisplayUser = Pick<User, "partyName" | "pictureUrl" | "anonMode">;
@@ -67,6 +68,7 @@ export interface UserLocation {
   lastVenueIdSeenIn: string | null;
   lastSeenAt: number;
   enteredVenueIds?: string[];
+  enteredWorldIds?: string[];
 }
 
 export type UserWithLocation = BaseUser & UserLocation;
@@ -77,16 +79,3 @@ export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
     removedParticipantUids: Yup.array().of(Yup.string().required()),
   })
   .required();
-
-export const MyPersonalizedScheduleSchema = Yup.lazy<
-  MyPersonalizedSchedule | undefined
->((data) => {
-  const lazyObjectShape = Object.fromEntries(
-    Object.keys(data ?? {}).map((key) => [
-      key,
-      Yup.array().of(Yup.string().required()),
-    ])
-  );
-
-  return Yup.object().shape(lazyObjectShape).noUnknown();
-});

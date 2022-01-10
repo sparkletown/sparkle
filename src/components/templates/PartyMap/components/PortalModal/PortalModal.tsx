@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { Modal } from "react-bootstrap";
 import ShowMoreText from "react-show-more-text";
 
-import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -25,7 +25,7 @@ import VideoModal from "components/organisms/VideoModal";
 
 import { UserList } from "components/molecules/UserList";
 
-import { PortalSchedule } from "../PortalSchedule/PortalSchedule";
+import { PortalSchedule } from "../PortalSchedule";
 
 import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
@@ -112,13 +112,13 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
 
   const { world } = useWorldById(venue?.worldId);
 
-  const { enterRoom, portalVenueId } = useRoom({
+  const { enterRoom, portalSpaceId } = useRoom({
     room: portal,
   });
 
   const analytics = useAnalytics({ venue });
 
-  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+  const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
   const portalVenueDescription =
@@ -179,7 +179,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
             containerClassName="PortalModal__userlist"
             usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={portalVenue?.recentUserCount ?? 0}
-            activity={`in this ${ROOM_TAXON.lower}`}
+            activity={`in this ${SPACE_TAXON.lower}`}
             attendeesTitle={world?.attendeesTitle}
           />
         </div>

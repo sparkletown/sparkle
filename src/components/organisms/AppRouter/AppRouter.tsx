@@ -8,31 +8,32 @@ import {
 
 import {
   ACCOUNT_ROOT_URL,
-  ADMIN_V1_ROOT_URL,
-  ADMIN_V3_ROOT_URL,
+  ADMIN_ROOT_URL,
+  ATTENDEE_EMERGENCY_PARAM_URL,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_LANDING_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
   ENTER_ROOT_URL,
-  ENTRANCE_STEP_VENUE_PARAM_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
   ROOT_URL,
   SPARKLEVERSE_REDIRECT_URL,
-  VENUE_EMERGENCY_PARAM_URL,
-  VENUE_INSIDE_ADMIN_PARAM_URL,
-  VENUE_INSIDE_PARAM_URL,
-  VENUE_LANDING_PARAM_URL,
-  VENUE_REDIRECT_PARAM_URL,
   VERSION_URL,
 } from "settings";
 
-import { tracePromise } from "utils/performance";
-import { venueLandingUrl } from "utils/url";
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
-import { useSettings } from "hooks/useSettings";
+import { tracePromise } from "utils/performance";
+import {
+  generateAttendeeInsideUrl,
+  generateAttendeeSpaceLandingUrl,
+} from "utils/url";
+
 import { useUser } from "hooks/useUser";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
-import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { Provided } from "components/organisms/AppRouter/Provided";
@@ -51,19 +52,13 @@ const AccountSubrouter = lazy(() =>
   )
 );
 
-const AdminV1Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV1Subrouter", () =>
-    import("./AdminV1Subrouter").then(({ AdminV1Subrouter }) => ({
-      default: AdminV1Subrouter,
-    }))
-  )
-);
-
-const AdminV3Subrouter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::AdminV3Subrouter", () =>
-    import("./AdminV3Subrouter").then(({ AdminV3Subrouter }) => ({
-      default: AdminV3Subrouter,
-    }))
+const AdminSubRouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
+    import("components/organisms/AppRouter/AdminSubRouter").then(
+      ({ AdminSubRouter }) => ({
+        default: AdminSubRouter,
+      })
+    )
   )
 );
 
@@ -107,86 +102,112 @@ const EmergencyViewPage = lazy(() =>
   )
 );
 
+/////////////////////////////////////////////////////////////////////////////////////
+// NOTE: do keep this monkeypatch localized in this file, not spread in others
+// @debt custom urls with AppRouter redirects that are to be removed in the future
+// @see: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+// GOOGLE
+const TEMP_GOOG_WEST_SLUG = "googlecloudwest";
+const TEMP_GOOG_WEST_LANDING = `/v/${TEMP_GOOG_WEST_SLUG}`;
+const TEMP_GOOG_WEST_INSIDE = `/in/${TEMP_GOOG_WEST_SLUG}`;
+// ITERABLE
+const TEMP_ITER_SLUG = "iterable";
+const TEMP_ITER_ROUTE = `/v/${TEMP_ITER_SLUG}`;
+// HONEYCOMB
+const TEMP_HONEYCOMB_SLUG = "honeycomb";
+const TEMP_HONEYCOMB_LANDING = `/v/${TEMP_HONEYCOMB_SLUG}`;
+const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
+/////////////////////////////////////////////////////////////////////////////////////
+
 export const AppRouter: React.FC = () => {
-  const { isLoaded, settings } = useSettings();
   const { user } = useUser();
-
-  if (!isLoaded) return <LoadingPage />;
-
-  const { enableAdmin1 } = settings;
 
   return (
     <Router basename="/">
       <Suspense fallback={<LoadingPage />}>
         <Switch>
-          <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
+          {
+            /////////////////////////////////////////////////////////////////////////
+            // @debt the following temp re-routes should be removed after events' end
+          }
+          <Route path={TEMP_ITER_ROUTE}>
+            <Redirect
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_ITER_SLUG as WorldSlug,
+                TEMP_ITER_SLUG as SpaceSlug
+              )}
+            />
+          </Route>
+          <Route path={TEMP_GOOG_WEST_LANDING}>
+            <Redirect
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_GOOG_WEST_SLUG as WorldSlug,
+                TEMP_GOOG_WEST_SLUG as SpaceSlug
+              )}
+            />
+          </Route>
+          <Route path={TEMP_GOOG_WEST_INSIDE}>
+            <Redirect
+              to={generateAttendeeInsideUrl({
+                worldSlug: TEMP_GOOG_WEST_SLUG as WorldSlug,
+                spaceSlug: TEMP_GOOG_WEST_SLUG as SpaceSlug,
+              })}
+            />
+          </Route>
+          <Route path={TEMP_HONEYCOMB_LANDING}>
+            <Redirect
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_HONEYCOMB_SLUG as WorldSlug,
+                TEMP_HONEYCOMB_SLUG as SpaceSlug
+              )}
+            />
+          </Route>
+          <Route path={TEMP_HONEYCOMB_INSIDE}>
+            <Redirect
+              to={generateAttendeeInsideUrl({
+                worldSlug: TEMP_HONEYCOMB_SLUG as WorldSlug,
+                spaceSlug: TEMP_HONEYCOMB_SLUG as SpaceSlug,
+              })}
+            />
+          </Route>
+          {
+            /////////////////////////////////////////////////////////////////////////
+          }
 
+          <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
           <Route path={ACCOUNT_ROOT_URL}>
             <Provided withRelatedVenues>
               <AccountSubrouter />
             </Provided>
           </Route>
-
-          {enableAdmin1 && (
-            <Route path={ADMIN_V1_ROOT_URL}>
-              <Provided withRelatedVenues>
-                <AdminV1Subrouter />
-              </Provided>
-            </Route>
-          )}
-
-          <Route path={ADMIN_V3_ROOT_URL}>
-            <Provided withRelatedVenues>
-              <AdminV3Subrouter />
-            </Provided>
+          <Route path={ADMIN_ROOT_URL}>
+            <AdminSubRouter />
           </Route>
-
           <Route
             path={LOGIN_CUSTOM_TOKEN_PARAM_URL}
             component={LoginWithCustomToken}
           />
-          {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
-          {/*<Route path={LOGIN_URL} component={Login} />*/}
-
-          <Route path={VENUE_LANDING_PARAM_URL}>
+          <Route path={ATTENDEE_LANDING_URL}>
             <Provided withRelatedVenues>
               <VenueLandingPage />
             </Provided>
           </Route>
-
-          <Route path={ENTRANCE_STEP_VENUE_PARAM_URL}>
+          <Route path={ATTENDEE_STEPPING_PARAM_URL}>
             <Provided withRelatedVenues>
               <VenueEntrancePage />
             </Provided>
           </Route>
-
-          <Route path={VENUE_INSIDE_ADMIN_PARAM_URL}>
-            <Provided withRelatedVenues>
-              <VenueAdminPage />
-            </Provided>
-          </Route>
-
-          <Route path={VENUE_INSIDE_PARAM_URL}>
+          <Route path={ATTENDEE_INSIDE_URL}>
             <Provided withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
-
-          <Route path={VENUE_EMERGENCY_PARAM_URL}>
+          <Route path={ATTENDEE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>
           </Route>
-
           <Route path={VERSION_URL} component={VersionPage} />
-
-          <Route
-            path={VENUE_REDIRECT_PARAM_URL}
-            render={(props) => (
-              <Redirect to={venueLandingUrl(props.match.params[0])} />
-            )}
-          />
-
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}
             render={() => {
@@ -194,7 +215,6 @@ export const AppRouter: React.FC = () => {
               return <LoadingPage />;
             }}
           />
-
           <Route
             // NOTE: must have exact here so it doesn't override the default that folloes
             exact
@@ -204,7 +224,6 @@ export const AppRouter: React.FC = () => {
               return <LoadingPage />;
             }}
           />
-
           <Route
             path={ROOT_URL}
             render={() =>

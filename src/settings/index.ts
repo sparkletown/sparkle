@@ -8,8 +8,10 @@ import {
 } from "secrets";
 
 import { RoomType } from "types/rooms";
+import { Table } from "types/Table";
 import { VenueTemplate } from "types/venues";
 
+import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
 
 import {
@@ -35,7 +37,9 @@ export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
+export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
+export * from "./placeholderSettings";
 export * from "./playaSettings";
 export * from "./portalSettings";
 export * from "./sectionSettings";
@@ -62,10 +66,12 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
-// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
-export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
+// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. One should probably be used for anonymous profiles
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
-export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
+// NOTE: temporary replaceing  "/default-profile-pic.png"; @see https://github.com/sparkletown/internal-sparkle-issues/issues/1615
+export const DEFAULT_PROFILE_PIC = defaultAvatar1;
+// NOTE: temporary replacing "/anonymous-profile-icon.jpeg"; @see https://github.com/sparkletown/internal-sparkle-issues/issues/1615
+export const DEFAULT_PROFILE_IMAGE = defaultAvatar1;
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
@@ -91,10 +97,6 @@ export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
 // How often to refresh events schedule
-export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
-export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
-export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
-export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
 export const SCHEDULE_SHOW_COPIED_TEXT_MS = 1000; // 1s
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
@@ -107,9 +109,6 @@ export const VENUE_RECENT_SEATED_USERS_UPDATE_INTERVAL = 20 * 1000;
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
-
-// How often to refresh current time line in the schedule
-export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
@@ -505,8 +504,6 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-export const DEFAULT_SPACE_SLUG = "bootstrap";
-
 export const RANDOM_AVATARS = [
   "avatar-01.png",
   "avatar-02.png",
@@ -538,7 +535,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_ENABLE_JUKEBOX = false;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 export const DEFAULT_SHOW_REACTIONS = true;
-export const DEFAULT_REACTIONS_AUDIBLE = true;
+export const DEFAULT_REACTIONS_MUTED = false;
 
 export const DEFAULT_CAMERA_ENABLED = true;
 
@@ -576,12 +573,6 @@ export const SELECT_TABLE_EVENT_NAME = "Select table";
 export const TAKE_SEAT_EVENT_NAME = "Take a seat";
 export const ENTER_JAZZ_BAR_EVENT_NAME = "Enter jazz bar";
 
-// SCHEDULE
-// @debt probably would be better to adjust max hour based on user's display size
-export const SCHEDULE_MAX_START_HOUR = 16;
-export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
-export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
-
 /**
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */
@@ -608,11 +599,21 @@ export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 
 export const DEFAULT_TABLE_ROWS = 2;
 export const DEFAULT_TABLE_COLUMNS = 3;
-export const DEFAULT_TABLE_CAPACITY =
-  DEFAULT_TABLE_ROWS * DEFAULT_TABLE_COLUMNS;
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+
+export const JAZZBAR_TABLES: Table[] = generateTables({
+  num: DEFAULT_JAZZBAR_TABLES_NUMBER,
+});
+
+export const CONVERSATION_TABLES: Table[] = generateTables({
+  num: DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER,
+});
+
+// These are really supposed to be constants and to avoid possible mutable shared state in the code elsewhere
+Object.freeze(JAZZBAR_TABLES);
+Object.freeze(CONVERSATION_TABLES);
 
 export const CHATBOX_NEXT_FETCH_SIZE = 50;
 export const SECTIONS_NEXT_FETCH_SIZE = 50;
@@ -629,14 +630,6 @@ export const FIREBASE_STORAGE_IMAGES_ORIGIN =
   "https://firebasestorage.googleapis.com/v0/b/sparkle-burn.appspot.com/o/";
 export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
   "https://sparkle-burn-users.imgix.net/";
-
-// Helper values that can be safely used in places that might re-render but don't have useMemo/useCallback
-export const ALWAYS_EMPTY_OBJECT = {};
-Object.freeze(ALWAYS_EMPTY_OBJECT);
-export const ALWAYS_EMPTY_ARRAY = [];
-Object.freeze(ALWAYS_EMPTY_ARRAY);
-export const ALWAYS_NOOP_FUNCTION = () => {};
-Object.freeze(ALWAYS_NOOP_FUNCTION);
 
 export const VENUES_WITH_CHAT_REQUIRED = [
   VenueTemplate.conversationspace,

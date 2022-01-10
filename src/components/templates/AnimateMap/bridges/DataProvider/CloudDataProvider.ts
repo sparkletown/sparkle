@@ -42,6 +42,7 @@ interface CloudDataProviderSetting {
   playerioMaxPlayerPerRoom: number;
   playerioFrequencyUpdate: number;
   playerioAdvancedMode?: boolean;
+  reInitOnError?: boolean;
 }
 
 /**
@@ -91,7 +92,8 @@ export class CloudDataProvider
       new PlayerIODataProvider(
         this,
         this.settings.playerioGameId,
-        this.settings.playerId
+        this.settings.playerId,
+        this.settings.reInitOnError
       ),
       new FirebaseDataProvider(this.settings.firebase)
     );

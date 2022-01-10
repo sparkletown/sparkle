@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import {
   ALWAYS_EMPTY_ARRAY,
+  CONVERSATION_TABLES,
   DEFAULT_VENUE_LOGO,
-  SPACE_PORTALS_ICONS_MAPPING,
+  PORTAL_INFO_ICON_MAPPING,
 } from "settings";
 
 import { GenericVenue, VenueTemplate } from "types/venues";
@@ -22,15 +23,13 @@ import { Room } from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
-import TableHeader from "components/molecules/TableHeader";
+import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
 import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
-
-import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
@@ -65,12 +64,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   useExperiences(venue?.name);
 
-  const tables = venue?.config?.tables ?? TABLES;
+  const generatedTables = venue?.config?.tables;
 
   const infoIcon =
     venue?.host?.icon ||
-    (SPACE_PORTALS_ICONS_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
+    (PORTAL_INFO_ICON_MAPPING[venue.template] ?? DEFAULT_VENUE_LOGO);
 
+  const tables = generatedTables ?? CONVERSATION_TABLES;
   return (
     <>
       <InformationLeftColumn iconNameOrPath={infoIcon}>
@@ -109,6 +109,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   venueId={venue.id}
                   venueName={venue.name}
                   tables={tables}
+                  defaultTables={CONVERSATION_TABLES}
                 />
               )}
               {seatedAtTable && (
@@ -137,7 +138,10 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              defaultTables={CONVERSATION_TABLES}
               showOnlyAvailableTables={showOnlyAvailableTables}
+              venue={venue}
+              template={VenueTemplate.conversationspace}
             />
           </div>
           <UserList

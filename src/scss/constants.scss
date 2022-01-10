@@ -15,7 +15,7 @@ $primary--over: #f6e652;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
 $secondary: #333035;
-$secondary--dark: #19181a;
+$secondary--dark: #19181a; // replace with var(--content--under-lighter-10pp);
 $secondary--live: #1a1d24;
 
 // @debt these should probably be replaced with var(...) referencing theme colors
@@ -71,6 +71,7 @@ $login-rainbox-gradient: linear-gradient(
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
+$chat-sidebar-controller-width: 100px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;
@@ -175,10 +176,8 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 
-// NOTE: Magic number determined empirically to fill the footer space in default case
-$admin-ng-sidebar-footer-buttons-width--magic-number: 11.5vw;
 $admin-ng-sidebar-width--normal: 30vw;
-$admin-ng-sidebar-width--min: $admin-ng-sidebar-footer-buttons-width--magic-number;
+$admin-ng-sidebar-width--min: max(#{$button-width--max-wrap}, 15vw);
 $admin-ng-sidebar-width--max: 30vw;
 $admin-ng-sidebar-footer-height--max: 4rem;
 $admin-ng-showcase-width--normal: calc(
@@ -188,8 +187,8 @@ $admin-ng-tab-bar-height: calc(2rem + #{$spacing--sm});
 $admin-ng-panel-height: calc(
   100vh - #{$admin-ng-tab-bar-height} - #{$reserved-page-height}
 );
-$admin-ng-space-card-box-shadow: 0px 2px 4px rgba(58, 92, 144, 0.14);
 
+$admin-ia-simple-panel-height: calc(100vh - #{$reserved-page-height});
 $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
 $admin-ia-manage-space-template-columns: 5fr
   minmax(#{2 * $button-width--max-wrap}, 1fr);
@@ -201,6 +200,8 @@ $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
+$z-layer-admin-sidebar: $z-layer-sidebar;
+$z-layer-footer: $z-layer-admin-sidebar + 100;
 $z-layer-announcement-banner: 15;
 $z-layer-emergency-content: 15;
 $z-layer-art-content: 5;
@@ -213,6 +214,7 @@ $z-layer-embed-iframe: $z-layer-on-top-bg;
 $z-layer-external-message: $z-layer-on-top-bg;
 $z-layer-auditorium-iframe: $z-layer-on-top-bg;
 $z-layer-jukebox: $z-layer-on-top-bg;
+$z-layer-start-table: 0;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -224,10 +226,10 @@ $z-layers: (
   admin-placement: 10,
   admin-venue-header-after: 2,
   admin-venue-header: -1,
-  admin-sidebar: $z-layer-sidebar,
-  admin-sidebar-content: $z-layer-sidebar + 10,
-  admin-sidebar-title: $z-layer-sidebar + 20,
-  admin-sidebar-footer: $z-layer-sidebar + 30,
+  admin-sidebar: $z-layer-admin-sidebar,
+  admin-sidebar-content: $z-layer-admin-sidebar + 10,
+  admin-sidebar-title: $z-layer-admin-sidebar + 20,
+  admin-sidebar-footer: $z-layer-admin-sidebar + 30,
   // JazzBar
   jazzbar-participant-profile-icon: 1,
   jazzbar-header: $z-layer-jazz-header,
@@ -293,13 +295,14 @@ $z-layers: (
   // External Link
   external-message: $z-layer-external-message,
   // Unsorted
-  footer: $z-layer-sidebar,
+  footer: $z-layer-footer,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
   venuepage-preview-indication: 1,
-  map-preview-header: 5
+  map-preview-header: 5,
+  start-table: $z-layer-start-table
 );
 
 @function z($layer) {
@@ -310,8 +313,20 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
+@function box-shadow--table($color) {
+  @return 2px 0px 10px $color;
+}
+
 @function box-shadow--input($color) {
   @return 0 0 0 2px $color;
+}
+
+@function box-shadow--input-autofill($color) {
+  @return 0 0 0 30px #{$color};
+}
+
+@function box-shadow--card($color) {
+  @return 0 2px 4px $color;
 }
 
 @function box-shadow--small($color) {
@@ -355,16 +370,6 @@ $z-layers: (
   min-width: $min;
   max-height: $max;
   max-width: $max;
-}
-
-@mixin link-style($color, $hover-color: $color) {
-  color: $color;
-  text-decoration: underline $color;
-
-  &:hover {
-    color: $hover-color;
-    text-decoration: underline $hover-color;
-  }
 }
 
 @mixin circle-avatar {

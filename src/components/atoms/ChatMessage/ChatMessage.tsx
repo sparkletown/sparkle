@@ -4,7 +4,7 @@ import { faReply } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { MessageToDisplay } from "types/chat";
+import { MessageToDisplay, PrivateChatMessage } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -15,7 +15,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { useSelectThisReplyThread } from "components/molecules/Chatbox/components/context/ChatboxContext";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
-import { ChatMessageReplies } from "components/atoms/ChatMessageReplies/ChatMessageReplies";
+import { ChatMessageReplies } from "components/atoms/ChatMessageReplies";
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatMessage.scss";
@@ -23,6 +23,10 @@ import "./ChatMessage.scss";
 export interface ChatMessageProps {
   message: WithId<MessageToDisplay>;
 }
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const isPrivateChatMessage = (obj): obj is PrivateChatMessage => !!obj.toUser;
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isMine = useIsCurrentUser(message.fromUser.id);
@@ -36,6 +40,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     "ChatMessage--me": isMine,
     "ChatMessage--question": isQuestion,
   });
+
+  const isDm = isPrivateChatMessage(message);
 
   const repliesCount = message.repliesCount ?? 0;
 
@@ -57,13 +63,15 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             <RenderMarkdown text={text} allowHeadings={false} />
           </div>
 
-          <button
-            aria-label={replyButtonText}
-            className="ChatMessage__reply-icon"
-            onClick={selectThisThread}
-          >
-            <FontAwesomeIcon icon={faReply} size="sm" />
-          </button>
+          {!isDm && (
+            <button
+              aria-label={replyButtonText}
+              className="ChatMessage__reply-icon"
+              onClick={selectThisThread}
+            >
+              <FontAwesomeIcon icon={faReply} size="sm" />
+            </button>
+          )}
           {hasReplies && (
             <TextButton
               containerClassName="ChatMessage__show-replies-button"

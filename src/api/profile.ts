@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { AnyGridData } from "types/grid";
-import { ProfileLink, User } from "types/User";
+import { User } from "types/User";
 import { VenueEvent } from "types/venues";
 
 import { WithId, withId, WithVenueId } from "utils/id";
@@ -19,29 +19,6 @@ export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userId: string;
 }
-
-/** @deprecated use setGridData instead **/
-export const makeUpdateUserGridLocation = ({
-  venueId,
-  userId,
-}: MakeUpdateUserGridLocationProps) => (
-  row: number | null,
-  column: number | null
-) => {
-  if (row === null || column === null) {
-    return setGridData({
-      venueId,
-      userId,
-      gridData: undefined,
-    });
-  }
-
-  return setGridData({
-    venueId,
-    userId,
-    gridData: { row, column },
-  });
-};
 
 export interface SetGridDataProps {
   venueId: string;
@@ -118,13 +95,13 @@ export const removeEventFromPersonalizedSchedule = ({
 }: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
   updatePersonalizedSchedule({ event, userId, removeMode: true });
 
-export interface UpdatePersonalizedScheduleProps {
+interface UpdatePersonalizedScheduleProps {
   event: WithVenueId<VenueEvent>;
   userId: string;
   removeMode?: boolean;
 }
 
-export const updatePersonalizedSchedule = async ({
+const updatePersonalizedSchedule = async ({
   event,
   userId,
   removeMode = false,
@@ -135,32 +112,6 @@ export const updatePersonalizedSchedule = async ({
     collectionKey: `myPersonalizedSchedule.${event.venueId}`,
     collectionValue: [event.id],
   });
-
-// ================================================= Profile Links
-export interface UpdateProfileLinksProps {
-  profileLinks: ProfileLink[];
-  userId: string;
-}
-
-export const updateProfileLinks = async ({
-  profileLinks,
-  userId,
-}: UpdateProfileLinksProps): Promise<void> => {
-  const userProfileRef = getUserRef(userId);
-
-  return userProfileRef.update({ profileLinks }).catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", {
-        location: "api/profile::updateProfileLinks",
-        profileLinks,
-        userId,
-        event,
-      });
-
-      throw err;
-    });
-  });
-};
 
 // ================================================= User Collection
 export interface UpdateUserCollectionProps {

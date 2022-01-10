@@ -17,8 +17,7 @@ import { emptyObjectSchema } from "forms/emptyObjectSchema";
 import { useArray } from "hooks/useArray";
 import { useUser } from "hooks/useUser";
 
-import { AdminSidebarFooter } from "components/organisms/AdminVenueView/components/AdminSidebarFooter";
-import { AdminSidebarFooterProps } from "components/organisms/AdminVenueView/components/AdminSidebarFooter/AdminSidebarFooter";
+import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
@@ -28,20 +27,18 @@ import { FormErrors } from "components/molecules/FormErrors";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import { ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./WorldAdvancedForm.scss";
 
 // NOTE: add the keys of those errors that their respective fields have handled
 const HANDLED_ERRORS: string[] = [];
 
-export interface WorldAdvancedFormProps extends AdminSidebarFooterProps {
+export interface WorldAdvancedFormProps {
   world: WithId<World>;
 }
 
 export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   world,
-  ...sidebarFooterProps
 }) => {
   const worldId = world.id;
   const { user } = useUser();
@@ -64,6 +61,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showSchedule: shouldScheduleBeShown(world),
       showUserStatus: world.showUserStatus,
       userStatuses: userStatuses,
+      hasSocialLoginEnabled: world.hasSocialLoginEnabled,
     }),
     [world, userStatuses]
   );
@@ -95,6 +93,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
+      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
       userStatuses,
     };
 
@@ -112,15 +111,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
     isDirtyStatuses
   );
 
-  const saveButtonProps: ButtonProps = useMemo(
-    () => ({
-      type: "submit",
-      disabled: isSaveDisabled,
-      loading: isSaveLoading,
-    }),
-    [isSaveDisabled, isSaveLoading]
-  );
-
   useEffect(() => {
     const values: Partial<WorldAdvancedFormInput> = getValues();
     reset({
@@ -130,6 +120,7 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
       showRadio: values.showRadio,
       showSchedule: values.showSchedule,
       showUserStatus: values.showUserStatus,
+      hasSocialLoginEnabled: values.hasSocialLoginEnabled,
       userStatuses,
     });
   }, [userStatuses, getValues, reset]);
@@ -160,10 +151,6 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
   return (
     <div className="WorldAdvancedForm">
       <Form onSubmit={handleSubmit(submit)}>
-        <AdminSidebarFooter
-          {...sidebarFooterProps}
-          saveButtonProps={saveButtonProps}
-        />
         <AdminSection
           title="Title of your venues attendees"
           subtitle="(For example: guests, attendees, partygoers)"
@@ -243,6 +230,17 @@ export const WorldAdvancedForm: React.FC<WorldAdvancedFormProps> = ({
 
         <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
         <SubmitError error={error} />
+        <AdminSidebarButtons>
+          <ButtonNG
+            className="AdminSidebar__button--larger"
+            variant="primary"
+            type="submit"
+            disabled={isSaveDisabled}
+            loading={isSaveLoading}
+          >
+            Save
+          </ButtonNG>
+        </AdminSidebarButtons>
       </Form>
     </div>
   );

@@ -25,9 +25,11 @@ export const fetchVenueEvents = async (
 export const fetchAllVenueEvents = async (
   venueIdOrIds: string | string[]
 ): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
-  Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) =>
-    result.flat()
-  );
+  Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) => {
+    const flattened = result.flat();
+    flattened.sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+    return flattened;
+  });
 
 /**
  * Convert VenueEvent objects between the app/firestore formats (@debt:, including validation).

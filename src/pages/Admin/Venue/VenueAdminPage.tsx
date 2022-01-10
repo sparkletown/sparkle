@@ -4,16 +4,10 @@ import classNames from "classnames";
 
 import { DEFAULT_MAP_BACKGROUND, IFRAME_TEMPLATES } from "settings";
 
-import {
-  isCurrentVenueNGRequestedSelector,
-  isCurrentVenueNGRequestingSelector,
-} from "utils/selectors";
-
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useValidImage } from "hooks/useCheckImage";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
-import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -31,19 +25,20 @@ import "./VenueAdminPage.scss";
 export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
-  const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
-  const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
   const {
     isShown: isBannerAdminVisibile,
     show: showBannerAdmin,
     hide: hideBannerAdmin,
   } = useShowHide();
   const isVenueOwner = useIsUserVenueOwner();
-  const isVenueLoading = venueRequestingStatus || !venueRequestStatus;
   const isLoggedIn = profile && user;
+  const isVenueLoading = !isLoaded;
 
   const [mapBackground] = useValidImage(
     space?.mapBackgroundImageUrl,

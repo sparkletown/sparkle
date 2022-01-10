@@ -9,6 +9,7 @@ import {
   DEFAULT_PARTY_NAME,
   ROOM_TAXON,
   ROOMS_TAXON,
+  STRING_SPACE,
 } from "settings";
 
 import { AlgoliaSearchIndex } from "types/algolia";
@@ -24,7 +25,7 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { PortalModal } from "components/templates/PartyMap/components";
+import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
 import { EventModal } from "components/organisms/EventModal";
 
@@ -221,7 +222,8 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         <div className="NavSearchBar__nav-dropdown__title font-size--small">
           <strong className="NavSearchBar__search-results-number">
             {numberOfSearchResults}
-          </strong>{" "}
+          </strong>
+          {STRING_SPACE}
           search results
         </div>
 

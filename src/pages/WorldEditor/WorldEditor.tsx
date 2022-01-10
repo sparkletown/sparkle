@@ -1,50 +1,65 @@
-import React, { useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React from "react";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
-import { ADMIN_V3_WORLDS_BASE_URL } from "settings";
+import { ADMIN_IA_WORLD_BASE_URL } from "settings";
 
 import { WorldNavTab } from "types/world";
 
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedPanel";
 import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
-import { WorldEditorStartPanel } from "pages/WorldEditor/WorldEditorStartPanel";
+import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPanel";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { AdminTitle } from "components/molecules/AdminTitle";
+import { AdminTitleBar } from "components/molecules/AdminTitleBar";
+import { LoadingPage } from "components/molecules/LoadingPage";
 import { WorldNav } from "components/molecules/WorldNav";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./WorldEditor.scss";
 
 const PANEL_MAP = Object.freeze({
-  [WorldNavTab.start]: WorldEditorStartPanel,
+  [WorldNavTab.general]: WorldEditorGeneralPanel,
   [WorldNavTab.entrance]: WorldEditorEntrancePanel,
   [WorldNavTab.advanced]: WorldEditorAdvancedPanel,
 });
 
 export const WorldEditor: React.FC = () => {
-  const history = useHistory();
   const { worldSlug, selectedTab } = useWorldParams();
+  const { world, isLoaded } = useWorldBySlug(worldSlug);
 
-  const navigateToHome = useCallback(
-    () => history.push(ADMIN_V3_WORLDS_BASE_URL),
-    [history]
-  );
+  if (!isLoaded) {
+    return <LoadingPage />;
+  }
+
+  const editMode = !!world?.id;
+  const worldName = world?.name ?? "";
+  const adminTitle = editMode
+    ? worldName
+      ? `${worldName} settings`
+      : "Settings"
+    : "Create a new world";
 
   const WorldEditorPanel = PANEL_MAP[selectedTab] ?? <></>;
 
   return (
     <div className="WorldEditor">
-      <WithNavigationBar hasBackButton withSchedule>
+      <WithNavigationBar title={worldName}>
         <AdminRestricted>
-          <WorldNav />
-          <WorldEditorPanel
-            worldSlug={worldSlug}
-            onClickHome={navigateToHome}
-          />
+          <AdminTitleBar variant="two-rows">
+            <ButtonNG linkTo={ADMIN_IA_WORLD_BASE_URL} iconName={faArrowLeft}>
+              Back to Dashboard
+            </ButtonNG>
+            <AdminTitle>{adminTitle}</AdminTitle>
+          </AdminTitleBar>
+          {editMode && <WorldNav />}
+          <WorldEditorPanel worldSlug={worldSlug} />
         </AdminRestricted>
       </WithNavigationBar>
     </div>

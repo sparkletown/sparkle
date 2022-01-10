@@ -1,9 +1,12 @@
 import * as Yup from "yup";
 
-import { ROOM_TAXON } from "settings";
+import {
+  IFRAME_TEMPLATES,
+  MAX_SECTIONS_AMOUNT,
+  MIN_SECTIONS_AMOUNT,
+} from "settings";
 
-import { createNameSchema } from "forms/factory/createNameSchema";
-import { roomUrlSchema } from "forms/roomUrlSchema";
+import { VenueTemplate } from "types/venues";
 
 import { validUrlSchema } from "./validUrlSchema";
 
@@ -15,17 +18,40 @@ export interface RoomSchemaShape {
   image_url: string;
 }
 
-const roomImageUrlSchema = Yup.string().required(
-  `${ROOM_TAXON.capital} icon is required`
-);
-
 export const spaceEditSchema = Yup.object().shape({
-  room: Yup.object().shape<RoomSchemaShape>({
-    title: createNameSchema({ name: "Title", withMin: true }),
-    url: roomUrlSchema,
-    image_url: roomImageUrlSchema,
-  }),
-  venue: Yup.object().shape({
-    iframeUrl: validUrlSchema,
-  }),
+  logoImageUrl: Yup.string().notRequired(),
+  bannerImageUrl: Yup.string().notRequired(),
+  autoplay: Yup.boolean().notRequired(),
+  numberOfSections: Yup.number().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      template === VenueTemplate.auditorium
+        ? schema
+            .required(
+              `The number of sections needs to be between ${MIN_SECTIONS_AMOUNT} and ${MAX_SECTIONS_AMOUNT}`
+            )
+            .min(MIN_SECTIONS_AMOUNT)
+            .max(MAX_SECTIONS_AMOUNT)
+        : schema.notRequired()
+  ),
+  iframeUrl: Yup.string().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      IFRAME_TEMPLATES.includes(template) ? validUrlSchema : schema
+  ),
+  // @debt de-dupe this
+  auditoriumColumns: Yup.number().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      template === VenueTemplate.auditorium
+        ? schema.required()
+        : schema.notRequired()
+  ),
+  auditoriumRows: Yup.number().when(
+    "$template",
+    (template: VenueTemplate, schema: Yup.StringSchema) =>
+      template === VenueTemplate.auditorium
+        ? schema.required()
+        : schema.notRequired()
+  ),
 });

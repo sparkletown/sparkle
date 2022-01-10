@@ -37,6 +37,7 @@ export const testWorldBySlugExists = async (value: string) =>
         .firestore()
         .collection("worlds")
         .where("slug", "==", createSlug(value))
+        .where("isHidden", "==", false)
         .get()
     ).docs.length
   );

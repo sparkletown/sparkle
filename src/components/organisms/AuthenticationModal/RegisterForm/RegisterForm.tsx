@@ -4,20 +4,22 @@ import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
 import firebase from "firebase/app";
 
-import { ACCOUNT_PROFILE_BASE_URL, DEFAULT_REQUIRES_DOB } from "settings";
+import {
+  ACCOUNT_PROFILE_VENUE_PARAM_URL,
+  DEFAULT_REQUIRES_DOB,
+} from "settings";
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
-import { accountProfileUrlWithSlug } from "utils/url";
+import { generateUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
@@ -62,10 +64,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 }) => {
   const history = useHistory();
 
-  const { spaceSlug } = useSpaceParams();
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const analytics = useAnalytics({ venue: space });
@@ -94,11 +97,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     clearError("backend");
   };
 
-  if (!isSpaceLoaded) {
+  if (!isLoaded) {
     return <>Loading...</>;
   }
 
-  if (!space || !spaceId) {
+  if (!space || !spaceId || !world) {
     return <NotFound />;
   }
 
@@ -164,9 +167,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       postRegisterCheck(auth, data);
 
-      const profileUrl = spaceSlug
-        ? accountProfileUrlWithSlug(spaceSlug)
-        : ACCOUNT_PROFILE_BASE_URL;
+      const profileUrl = generateUrl({
+        route: ACCOUNT_PROFILE_VENUE_PARAM_URL,
+        required: ["worldSlug", "spaceSlug"],
+        params: { worldSlug, spaceSlug },
+      });
 
       history.push(profileUrl);
     } catch (error) {
@@ -234,7 +239,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   const isDobRequired =
-    isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
+    isLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   return (
     <div className="form-container">
@@ -377,7 +382,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
         </ButtonNG>
       </form>
 
-      {space.hasSocialLoginEnabled && (
+      {world.hasSocialLoginEnabled && (
         <div className="social-auth-container">
           <span>or</span>
           <ButtonNG

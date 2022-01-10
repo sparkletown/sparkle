@@ -5,6 +5,7 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 import { AuditoriumSectionPath } from "types/auditorium";
 
 import { WithId, WithVenueId } from "utils/id";
+import { Branded } from "utils/types";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -17,6 +18,8 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
+
+export type SpaceSlug = Branded<string, "SpaceSlug">;
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
@@ -138,7 +141,6 @@ export interface VenueAdvancedConfig {
   parentId?: string;
   showUserStatus?: boolean;
   userStatuses?: UserStatus[];
-  hasSocialLoginEnabled?: boolean;
   enableJukebox?: boolean;
 }
 
@@ -149,7 +151,7 @@ export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
   name: string;
-  slug: string;
+  slug: SpaceSlug;
   access?: VenueAccessMode;
   config?: VenueConfig;
   host?: {
@@ -210,7 +212,6 @@ export interface BaseVenue {
   recentUsersSampleSize?: number;
   updatedAt?: number;
   worldId: string;
-  hasSocialLoginEnabled?: boolean;
   enableJukebox?: boolean;
   requiresDateOfBirth?: boolean;
   showBadges?: boolean;
@@ -378,17 +379,8 @@ export interface VenueEvent {
   id?: string;
   orderPriority?: number;
   liveAudience?: number;
-}
-
-export interface VenueLocation {
-  venueId: string;
-  roomTitle?: string;
-  venueName?: string;
-}
-
-export interface LocationEvents {
-  location: VenueLocation;
-  events: ScheduledVenueEvent[];
+  spaceId: string;
+  worldId: string;
 }
 
 export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {

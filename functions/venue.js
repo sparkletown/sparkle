@@ -8,7 +8,6 @@ const { checkAuth } = require("./src/utils/assert");
 const { checkIfValidVenueId } = require("./src/utils/venue");
 const { ROOM_TAXON } = require("./taxonomy.js");
 
-const PLAYA_VENUE_ID = "jamonline";
 const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
@@ -49,22 +48,6 @@ const VenueTemplate = {
   playa: "playa",
 };
 
-// These templates use iframeUrl (they should remain alphabetically sorted)
-// @debt unify this with IFRAME_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-const IFRAME_TEMPLATES = [
-  VenueTemplate.artpiece,
-  VenueTemplate.audience,
-  VenueTemplate.embeddable,
-  VenueTemplate.firebarrel,
-  VenueTemplate.jazzbar,
-  VenueTemplate.performancevenue,
-  VenueTemplate.viewingwindow,
-];
-
-// These templates use zoomUrl (they should remain alphabetically sorted)
-// @debt unify this with ZOOM_URL_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
-
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const HAS_REACTIONS_TEMPLATES = [
   VenueTemplate.audience,
@@ -76,12 +59,6 @@ const HAS_REACTIONS_TEMPLATES = [
 const DEFAULT_SHOW_REACTIONS = true;
 const DEFAULT_SHOW_SHOUTOUTS = true;
 const DEFAULT_ENABLE_JUKEBOX = false;
-
-const PlacementState = {
-  SelfPlaced: "SELF_PLACED",
-  AdminPlaced: "ADMIN_PLACED",
-  Hidden: "HIDDEN",
-};
 
 const checkUserIsOwner = async (venueId, uid) => {
   await admin
@@ -164,6 +141,7 @@ const createVenueData_v2 = (data, context) => {
   const venueData_v2 = {
     name: data.name,
     config: {
+      ...(Array.isArray(data.tables) && { tables: data.tables }),
       landingPageConfig: {
         coverImageUrl: data.bannerImageUrl || "",
         subtitle: data.subtitle,
@@ -257,10 +235,6 @@ const createBaseUpdateVenueData = (data, doc) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
-  }
-
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -278,13 +252,6 @@ const createBaseUpdateVenueData = (data, doc) => {
 
   return updated;
 };
-
-const dataOrUpdateKey = (data, updated, key) =>
-  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
-  (updated &&
-    updated[key] &&
-    typeof updated[key] !== "undefined" &&
-    updated[key]);
 
 const initializeVenueChatMessagesCounter = (venueRef, batch) => {
   const counterCollection = venueRef.collection("chatMessagesCounter");
@@ -402,7 +369,7 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   if (venueExists) {
     throw new HttpsError(
       "already-exists",
-      `The slug ${data.slug} is already taken by another space within the world. Please try another.`
+      `The slug ${data.slug} is already taken by a space within the world. Please try another.`
     );
   }
 
@@ -457,159 +424,6 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   }
 
   admin.firestore().collection("venues").doc(venueId).update(docData);
-});
-
-// @debt this is legacy functionality related to the Playa template, and should be cleaned up along with it
-exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
-  checkAuth(context);
-
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-
-  const doc = await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${PLAYA_VENUE_ID} not found`);
-  }
-  const updated = doc.data();
-  updated.dustStorm = !updated.dustStorm;
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(PLAYA_VENUE_ID)
-    .update(updated);
-
-  // Prevent dust storms lasting longer than one minute, even if the playa admin closes their tab.
-  // Fetch the doc again, in case anything changed meanwhile.
-  // This ties up firebase function execution time, but it would suck to leave the playa in dustStorm mode for hours.
-  // Firebase functions time out after 60 seconds by default, so make this last 50 seconds to be safe
-  if (updated.dustStorm) {
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-    await wait(50 * 1000);
-    const doc = await admin
-      .firestore()
-      .collection("venues")
-      .doc(PLAYA_VENUE_ID)
-      .get();
-
-    if (doc && doc.exists) {
-      const updated = doc.data();
-      updated.dustStorm = false;
-      admin
-        .firestore()
-        .collection("venues")
-        .doc(PLAYA_VENUE_ID)
-        .update(updated);
-    }
-  }
-});
-
-// @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
-exports.updateVenue = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-
-  // @debt updateVenue_v2 uses checkUserIsAdminOrOwner rather than checkUserIsOwner. Should these be the same? Which is correct?
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
-
-  // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  // @debt this is exactly the same as in updateVenue_v2
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-
-  const updated = createBaseUpdateVenueData(data, doc);
-
-  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  if (data.bannerImageUrl || data.subtitle || data.description) {
-    if (!updated.config) {
-      updated.config = {};
-    }
-    if (!updated.config.landingPageConfig) {
-      updated.config.landingPageConfig = {};
-    }
-  }
-
-  // @debt in updateVenue_v2 this is configured as:
-  //   updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl
-  //     Should they be the same? If so, which is correct?
-  if (data.bannerImageUrl) {
-    updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
-  }
-
-  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  //   I expect this may be legacy functionality related to the Playa template?
-  // if (
-  //   !data.placement.state ||
-  //   data.placement.state === PlacementState.SelfPlaced
-  // ) {
-  //   updated.placement = {
-  //     ...data.placement,
-  //     state: PlacementState.SelfPlaced,
-  //   };
-  // } else if (data.placementRequests) {
-  //   updated.placementRequests = data.placementRequests;
-  // }
-
-  // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showGrid is a boolean
-  if (data.columns) {
-    updated.columns = data.columns;
-  }
-
-  // @debt this is almost the same as in updateVenue_v2, though v2 includes data.columns within this if as well
-  if (typeof data.showGrid === "boolean") {
-    updated.showGrid = data.showGrid;
-  }
-
-  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  if (data.auditoriumColumns) {
-    updated.auditoriumColumns = data.auditoriumColumns;
-  }
-
-  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  if (data.auditoriumRows) {
-    updated.auditoriumRows = data.auditoriumRows;
-  }
-
-  // @debt this is almost the same as in updateVenue_v2, though v2 includes data.radioStations within this if as well
-  if (typeof data.showRadio === "boolean") {
-    updated.showRadio = data.showRadio;
-  }
-
-  // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showRadio is a boolean
-  if (data.radioStations) {
-    updated.radioStations = [data.radioStations];
-  }
-
-  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
-    updated.iframeUrl = data.iframeUrl;
-  }
-
-  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  if (ZOOM_URL_TEMPLATES.includes(updated.template) && data.zoomUrl) {
-    updated.zoomUrl = data.zoomUrl;
-  }
-
-  // @debt this is exactly the same as in updateVenue_v2
-
-  const venuesRef = await admin
-    .firestore()
-    .collection("venues")
-    .where("slug", "==", data.slug)
-    .where("worldId", "==", data.worldId)
-    .get();
-
-  const venueRef = venuesRef.docs && venuesRef.docs[0];
-
-  if (venueRef) {
-    await venueRef.ref.update(updated);
-  }
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
@@ -799,10 +613,6 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.enableJukebox = data.enableJukebox;
   }
 
-  if (typeof data.hasSocialLoginEnabled === "boolean") {
-    updated.hasSocialLoginEnabled = data.hasSocialLoginEnabled;
-  }
-
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -837,6 +647,10 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
   // @debt perhaps await is more appropriate in front of admin so the function will return the error
   admin
     .firestore()
@@ -855,32 +669,73 @@ exports.updateTables = functions.https.onCall((data, context) => {
     throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
   }
 
-  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+  const spaceRef = admin.firestore().collection("venues").doc(data.venueId);
 
   return admin.firestore().runTransaction(async (transaction) => {
-    const venueDoc = await transaction.get(venueRef);
+    const spaceDoc = await transaction.get(spaceRef);
 
-    if (!venueDoc.exists) {
+    if (!spaceDoc.exists) {
       throw new HttpsError("not-found", `venue ${venueId} does not exist`);
     }
 
-    const venueTables = [...data.tables];
+    const space = spaceDoc.data();
 
-    const currentTableIndex = venueTables.findIndex(
-      (table) => table.reference === data.updatedTable.reference
+    const spaceTables =
+      (space.config && space.config.tables) || data.defaultTables;
+
+    const currentTableIndex = spaceTables.findIndex(
+      (table) => table.reference === data.newTable.reference
     );
 
     if (currentTableIndex < 0) {
-      throw new HttpsError(
-        "not-found",
-        `current table does not exist in the venue`
-      );
+      spaceTables.push(data.newTable);
+    } else {
+      spaceTables[currentTableIndex] = data.newTable;
     }
 
-    venueTables[currentTableIndex] = data.updatedTable;
-
-    transaction.update(venueRef, { "config.tables": venueTables });
+    transaction.update(spaceRef, { "config.tables": spaceTables });
   });
+});
+
+exports.deleteTable = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+  const { venueId: spaceId, tableName, defaultTables } = data;
+  await checkUserIsOwner(spaceId, context.auth.token.user_id);
+  const doc = await admin.firestore().collection("venues").doc(spaceId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${spaceId} not found`);
+  }
+
+  const docData = doc.data();
+  const tables = docData.config.tables || defaultTables;
+
+  const index = tables.findIndex((val) => val.reference === tableName);
+  // there are venues that don't have tables inserted in the database and use default ones instead
+  // if that's the case, then we won't be able to delete any of the tables
+  // thus we have to create tables (excluding the one being deleted) before modifying them
+  if (!docData.config || !docData.config.tables) {
+    defaultTables.splice(index, 1);
+
+    admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .update({
+        ...docData,
+        config: { ...docData.config, tables: defaultTables },
+      });
+
+    return;
+  }
+
+  if (index === -1) {
+    throw new HttpsError("not-found", `Table does not exist`);
+  } else {
+    docData.config.tables.splice(index, 1);
+  }
+
+  admin.firestore().collection("venues").doc(spaceId).update(docData);
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
@@ -926,56 +781,6 @@ exports.voteInPoll = functions.https.onCall(
   }
 );
 
-exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.placement = {
-    x: dataOrUpdateKey(data.placement, updated.placement, "x"),
-    y: dataOrUpdateKey(data.placement, updated.placement, "y"),
-    state: PlacementState.AdminPlaced,
-  };
-
-  updated.width = data.width;
-  updated.height = data.height;
-
-  const addressText = dataOrUpdateKey(
-    data.placement,
-    updated.placement,
-    "addressText"
-  );
-  const notes = dataOrUpdateKey(data.placement, updated.placement, "notes");
-
-  if (addressText) {
-    updated.placement.addressText = addressText;
-  }
-  if (notes) {
-    updated.placement.notes = notes;
-  }
-
-  admin.firestore().collection("venues").doc(venueId).update(updated);
-});
-
-exports.adminHideVenue = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
-  await checkUserIsOwner(PLAYA_VENUE_ID, context.auth.token.user_id);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
-
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.placement.state = PlacementState.Hidden;
-  admin.firestore().collection("venues").doc(venueId).update(updated);
-});
-
 exports.adminUpdateBannerMessage = functions.https.onCall(
   async (data, context) => {
     await checkUserIsOwner(data.venueId, context.auth.token.user_id);
@@ -995,14 +800,6 @@ exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
     .collection("venues")
     .doc(venueId)
     .update({ iframeUrl: iframeUrl || null });
-});
-
-exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
-  const user = (
-    await admin.firestore().collection("users").doc(userId).get()
-  ).data();
-
-  return user;
 });
 
 exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {

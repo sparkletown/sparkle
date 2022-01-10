@@ -1,21 +1,23 @@
 import React, { ChangeEventHandler, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
+import { ATTENDEE_STEPPING_PARAM_URL, DEFAULT_ENTER_STEP } from "settings";
+
 import { checkAccess } from "api/auth";
 
 import { setLocalStorageToken } from "utils/localStorage";
 import { isDefined, isTruthy } from "utils/types";
-import { venueEntranceUrl } from "utils/url";
+import { generateUrl } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import "./SecretPasswordForm.scss";
 
 const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
-  const { spaceSlug } = useSpaceParams();
-  const { spaceId } = useSpaceBySlug(spaceSlug);
+  const { worldSlug, spaceSlug } = useSpaceParams();
+  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const [error, setError] = useState(false);
   const [password, setPassword] = useState<string>();
@@ -59,7 +61,13 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         .then((result) => {
           if (isTruthy(result?.data?.token)) {
             setLocalStorageToken(spaceId, result.data.token);
-            history.push(venueEntranceUrl(spaceSlug));
+            history.push(
+              generateUrl({
+                route: ATTENDEE_STEPPING_PARAM_URL,
+                required: ["worldSlug", "spaceSlug", "step"],
+                params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+              })
+            );
           } else {
             setMessage(`Wrong password!`);
             setError(true);
@@ -70,7 +78,7 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
           setError(true);
         });
     },
-    [history, password, spaceSlug, spaceId]
+    [history, password, worldSlug, spaceSlug, spaceId]
   );
 
   return (

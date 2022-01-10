@@ -19,8 +19,8 @@ import {
 // ---------------------------------------------------------
 
 const newTables: Table[] = [
-  ...generateTables({ num: 5, capacity: 6 }),
-  ...generateTables({ num: 5, capacity: 2, startFrom: 5, columns: 2 }),
+  ...generateTables({ num: 5 }),
+  ...generateTables({ num: 5, startFrom: 5, columns: 2 }),
 ];
 
 // ---------------------------------------------------------

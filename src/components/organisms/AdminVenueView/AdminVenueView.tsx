@@ -6,17 +6,19 @@ import { faArrowLeft, faBorderNone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { SPACE_TAXON } from "settings";
+import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
+
+import { SpaceSlug } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import {
   adminNGVenueUrl,
-  adminWorldSpacesUrl,
-  venueInsideUrl,
+  generateAttendeeInsideUrl,
+  generateUrl,
 } from "utils/url";
 
-import { useSpaceBySlug } from "hooks/spaces/useSpaceBySlug";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
 
@@ -44,7 +46,8 @@ export enum AdminVenueTab {
 }
 
 export interface AdminVenueViewRouteParams {
-  spaceSlug?: string;
+  worldSlug?: WorldSlug;
+  spaceSlug?: SpaceSlug;
   selectedTab?: AdminVenueTab;
 }
 
@@ -63,6 +66,7 @@ const tabIcons = {
 export const AdminVenueView: React.FC = () => {
   const history = useHistory();
   const {
+    worldSlug,
     spaceSlug,
     selectedTab = AdminVenueTab.spaces,
   } = useParams<AdminVenueViewRouteParams>();
@@ -72,11 +76,10 @@ export const AdminVenueView: React.FC = () => {
     hide: closeDeleteModal,
   } = useShowHide();
 
-  const { space, spaceId, isLoaded: isSpaceLoaded } = useSpaceBySlug(spaceSlug);
-
-  const { world } = useWorldById(space?.worldId);
-
-  const worldSlug = world?.slug;
+  const { space, spaceId, isLoaded, world } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
@@ -98,17 +101,26 @@ export const AdminVenueView: React.FC = () => {
   }, [selectedTab, spaceSlug, worldSlug]);
 
   const navigateToHome = useCallback(
-    () => history.push(adminWorldSpacesUrl(worldSlug)),
+    () =>
+      history.push(
+        generateUrl({
+          route: ADMIN_IA_WORLD_PARAM_URL,
+          required: ["worldSlug"],
+          params: { worldSlug },
+        })
+      ),
     [history, worldSlug]
   );
 
-  if (!isSpaceLoaded) {
+  if (!isLoaded) {
     return <LoadingPage />;
   }
 
+  const navBarTitle = `${world?.name ?? ""}`;
+
   if (!space) {
     return (
-      <WithNavigationBar withSchedule withHiddenLoginButton>
+      <WithNavigationBar withSchedule withHiddenLoginButton title={navBarTitle}>
         <AdminRestricted>
           <NotFound />
         </AdminRestricted>
@@ -117,10 +129,14 @@ export const AdminVenueView: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar withSchedule>
+    <WithNavigationBar
+      withSchedule
+      variant="internal-scroll"
+      title={navBarTitle}
+    >
       <AdminRestricted>
         <div className="AdminVenueView">
-          <AdminTitleBar>
+          <AdminTitleBar variant="grid-with-tools">
             <ButtonNG onClick={navigateToHome} iconName={faArrowLeft}>
               Back to Dashboard
             </ButtonNG>
@@ -132,7 +148,11 @@ export const AdminVenueView: React.FC = () => {
               <ButtonNG
                 isLink
                 newTab
-                linkTo={spaceSlug ? venueInsideUrl(spaceSlug) : undefined}
+                linkTo={
+                  spaceSlug
+                    ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
+                    : undefined
+                }
                 variant="primary"
               >
                 Visit {SPACE_TAXON.capital}

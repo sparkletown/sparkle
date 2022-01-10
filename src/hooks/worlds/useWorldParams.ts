@@ -1,10 +1,10 @@
 import { useParams } from "react-router";
 
-import { WorldNavTab } from "types/world";
+import { WorldNavTab, WorldSlug } from "types/world";
 
 export interface WorldEditParams {
   worldId?: string;
-  worldSlug?: string;
+  worldSlug?: WorldSlug;
   selectedTab?: WorldNavTab;
 }
 
@@ -12,7 +12,7 @@ export const useWorldParams = () => {
   const {
     worldId,
     worldSlug,
-    selectedTab = WorldNavTab.start,
+    selectedTab = WorldNavTab.general,
   } = useParams<WorldEditParams>();
 
   return { worldId, worldSlug, selectedTab };

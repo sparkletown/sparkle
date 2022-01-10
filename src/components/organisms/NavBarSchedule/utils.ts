@@ -1,15 +1,17 @@
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { MyPersonalizedSchedule } from "types/User";
 import { AnyVenue, ScheduledVenueEvent, VenueEvent } from "types/venues";
+import { WorldSlug } from "types/world";
 
 import { WithId, WithVenueId } from "utils/id";
 import { arrayIncludes } from "utils/types";
 
-export interface PrepareForScheduleProps {
+interface PrepareForScheduleProps {
   usersEvents: MyPersonalizedSchedule;
   relatedVenues: WithId<AnyVenue>[];
   recentRoomUsersCount?: number;
+  worldSlug?: WorldSlug;
 }
 
 export const prepareForSchedule = ({
@@ -19,11 +21,13 @@ export const prepareForSchedule = ({
 }: PrepareForScheduleProps) => (
   event: WithVenueId<VenueEvent>
 ): ScheduledVenueEvent => {
+  const space = relatedVenues.find(({ id }) => id === event.venueId);
   return {
     ...event,
     isSaved: arrayIncludes(usersEvents[event.venueId], event.id),
     venueIcon:
-      relatedVenues.find((venue) => venue.id === event.venueId)?.host?.icon ??
+      space?.host?.icon ||
+      PORTAL_INFO_ICON_MAPPING[space?.template ?? ""] ||
       DEFAULT_VENUE_LOGO,
     liveAudience: recentRoomUsersCount,
     orderPriority: event.orderPriority ?? 0,
