@@ -37,7 +37,8 @@ export class PlayerIODataProvider extends utils.EventEmitter {
   constructor(
     readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
-    readonly playerId: string
+    readonly playerId: string,
+    readonly reInitOnError: boolean = true
   ) {
     super();
     this._init();
@@ -48,7 +49,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       .then((client) => (this.client = client))
       .then(() => Promise.all([this._findRooms(), this._loadMyPlayerObject()]))
       .then(this._joinToRooms)
-      .catch(this._reInit);
+      .catch(() => this.reInitOnError && this._reInit);
   }
 
   private async _initConnection() {
