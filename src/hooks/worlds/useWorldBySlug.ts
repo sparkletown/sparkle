@@ -1,9 +1,12 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
+import { collection, query, where } from "firebase/firestore";
+
+import { COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
-import { worldConverter } from "utils/converters";
+import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
 type UseWorldBySlugResult = {
@@ -24,11 +27,11 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
 ) => {
   const firestore = useFirestore();
 
-  const worldsRef = firestore
-    .collection("worlds")
-    .where("slug", "==", worldSlug ?? "")
-    .where("isHidden", "==", false)
-    .withConverter(worldConverter);
+  const worldsRef = query(
+    collection(firestore, COLLECTION_WORLDS),
+    where("slug", "==", worldSlug ?? ""),
+    where("isHidden", "==", false)
+  ).withConverter<WithId<World>>(withIdConverter());
 
   const { data: worlds, status } = useFirestoreCollectionData<WithId<World>>(
     worldsRef,

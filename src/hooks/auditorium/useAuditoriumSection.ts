@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
+import { doc } from "firebase/firestore";
 
 import {
+  COLLECTION_SECTIONS,
+  COLLECTION_SPACES,
   REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
@@ -48,16 +51,16 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const sectionRef = firestore
-    .collection("venues")
-    .doc(venueId)
-    .collection("sections")
-    .doc(sectionId)
-    .withConverter(withIdConverter<AuditoriumSection>());
+  const sectionRef = doc(
+    firestore,
+    COLLECTION_SPACES,
+    venueId,
+    COLLECTION_SECTIONS,
+    sectionId
+  ).withConverter(withIdConverter<AuditoriumSection>());
 
-  const { data: section, status } = useFirestoreDocData<
-    WithId<AuditoriumSection>
-  >(sectionRef);
+  const { data: section, status } =
+    useFirestoreDocData<WithId<AuditoriumSection>>(sectionRef);
 
   const isSectionLoaded = status !== "loading";
 
@@ -66,9 +69,8 @@ export const useAuditoriumSection = ({
   const baseColumnsCount =
     section?.columnsCount ?? venueColumnsCount ?? SECTION_DEFAULT_COLUMNS_COUNT;
 
-  const { videoHeightInSeats, videoWidthInSeats } = getVideoSizeInSeats(
-    baseColumnsCount
-  );
+  const { videoHeightInSeats, videoWidthInSeats } =
+    getVideoSizeInSeats(baseColumnsCount);
 
   const screenHeightInSeats =
     videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
@@ -83,26 +85,25 @@ export const useAuditoriumSection = ({
 
   const getUserBySeat = useGetUserByPosition(seatedUsers);
 
-  const takeSeat: (
-    gridPosition: GridPosition
-  ) => Promise<void> | undefined = useCallback(
-    ({ row, column }: GridPosition) => {
-      if (!sectionId || !venueId || !userWithId) return;
+  const takeSeat: (gridPosition: GridPosition) => Promise<void> | undefined =
+    useCallback(
+      ({ row, column }: GridPosition) => {
+        if (!sectionId || !venueId || !userWithId) return;
 
-      return setAuditoriumSectionSeat(
-        userWithId,
-        {
-          row,
-          column,
-        },
-        {
-          venueId,
-          sectionId,
-        }
-      );
-    },
-    [sectionId, venueId, userWithId]
-  );
+        return setAuditoriumSectionSeat(
+          userWithId,
+          {
+            row,
+            column,
+          },
+          {
+            venueId,
+            sectionId,
+          }
+        );
+      },
+      [sectionId, venueId, userWithId]
+    );
 
   const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
     if (!venueId || !userId || !sectionId) return;

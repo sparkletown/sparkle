@@ -1,8 +1,9 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { SoundConfig, SoundConfigMap, SoundConfigSchema } from "types/sounds";
 
+import { errorForBugsnag } from "utils/error";
 import { withId } from "utils/id";
 import { itemsToObjectByIdReducer } from "utils/reducers";
 
@@ -17,27 +18,30 @@ export const fetchSoundConfigs = async (): Promise<SoundConfigMap> => {
     return soundConfigsSnapshot.docs
       .map((docSnapshot) => withId(docSnapshot.data(), docSnapshot.id))
       .reduce(itemsToObjectByIdReducer, {});
-  } catch (err) {
-    Bugsnag.notify(err, (event) => {
+  } catch (e) {
+    Bugsnag.notify(errorForBugsnag(e), (event) => {
       event.addMetadata("context", {
         location: "api::sounds::fetchSoundConfigs",
       });
     });
 
-    throw err;
+    throw e;
   }
 };
 
 /**
  * Convert SoundConfig objects between the app/firestore formats, including validation.
  */
-export const soundConfigConverter: firebase.firestore.FirestoreDataConverter<SoundConfig> = {
-  toFirestore: (soundConfig: SoundConfig): firebase.firestore.DocumentData => {
-    return SoundConfigSchema.validateSync(soundConfig);
-  },
-  fromFirestore: (
-    snapshot: firebase.firestore.QueryDocumentSnapshot
-  ): SoundConfig => {
-    return SoundConfigSchema.validateSync(snapshot.data());
-  },
-};
+export const soundConfigConverter: firebase.firestore.FirestoreDataConverter<SoundConfig> =
+  {
+    toFirestore: (
+      soundConfig: SoundConfig
+    ): firebase.firestore.DocumentData => {
+      return SoundConfigSchema.validateSync(soundConfig);
+    },
+    fromFirestore: (
+      snapshot: firebase.firestore.QueryDocumentSnapshot
+    ): SoundConfig => {
+      return SoundConfigSchema.validateSync(snapshot.data());
+    },
+  };

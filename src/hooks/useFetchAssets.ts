@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 export interface UseFetchAssetsReturn {
   assets: string[];

@@ -13,6 +13,8 @@ import { Room } from "types/rooms";
 import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
+import { errorForEmbed, errorType } from "utils/error";
+
 // @debt most of these (a,b,c)=>generatePath(PATH,{}) functions should be replaced with inlined  generateUrl
 
 type GenerateUrlParams = Record<string, string | undefined> | undefined;
@@ -106,8 +108,8 @@ export const generateAttendeeSpaceLandingUrl = (
 export const isExternalUrl = (url: string) => {
   try {
     return new URL(url, window.location.origin).host !== window.location.host;
-  } catch (error) {
-    Bugsnag.notify(new Error(error), (event) => {
+  } catch (e) {
+    Bugsnag.notify(errorForEmbed(e), (event) => {
       event.severity = "info";
       event.addMetadata("utils::url::isExternalUrl", { url });
     });
@@ -168,28 +170,32 @@ export const openUrl = (url: string, options?: OpenUrlOptions) => {
  * @deprecated This function doesn't perform a url check and returns true each time;
  * Use isValidUrl instead if you want to validate that URL is correct
  */
-export const isCurrentLocationValidUrl = (url: string): boolean => {
+export const isCurrentLocationValidUrl = (url: unknown): boolean => {
+  // quickfix due to upgrade, entire function should be removed as it is deprecated
+  const u = String(url ?? "");
   try {
     return VALID_URL_PROTOCOLS.includes(
-      new URL(url, window.location.origin).protocol
+      new URL(u, window.location.origin).protocol
     );
   } catch (e) {
-    if (e.name === "TypeError") {
+    if (errorType(e) === "TypeError") {
       return false;
     }
     throw e;
   }
 };
 
-export const isValidUrl = (urlString: string) => {
+export const isValidUrl = (url: unknown) => {
+  const urlString = String(url ?? "").trim();
   if (!urlString) return false;
 
   try {
-    const url = new URL(urlString);
+    const urlObject = new URL(urlString);
 
-    return VALID_URL_PROTOCOLS.includes(url.protocol);
+    // @debt .begins() is better check than .includes() and should be used unless a RegExp is required
+    return VALID_URL_PROTOCOLS.includes(urlObject.protocol);
   } catch (e) {
-    if (e.name === "TypeError") {
+    if (errorType(e) === "TypeError") {
       return false;
     }
     throw e;
@@ -220,8 +226,8 @@ export const resolveUrlPath: (path: string) => string = (path) => {
   const base = window.location.href;
   try {
     return new URL(path, base).href;
-  } catch (error) {
-    Bugsnag.notify(new Error(error), (event) => {
+  } catch (e) {
+    Bugsnag.notify(errorForEmbed(e), (event) => {
       event.severity = "info";
       event.addMetadata("utils/url::resolveUrlPath", { path, base });
     });

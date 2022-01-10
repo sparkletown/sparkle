@@ -1,5 +1,5 @@
 global.XMLHttpRequest = require("xhr2");
-var firebase = require("firebase");
+var firebase = require("firebase/compat/app");
 var read = require("read");
 var fs = require("fs");
 var path = require("path");

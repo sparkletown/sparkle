@@ -10,6 +10,8 @@ import {
   YOUTUBE_SHORT_URL_STRING,
 } from "settings";
 
+import { errorForBugsnag } from "utils/error";
+
 const AUTOPLAY_ENABLED_URL_VALUE = "1";
 
 const withParameters = (urlObject: URL, urlParams?: URLSearchParams) => {
@@ -135,9 +137,9 @@ export const convertToEmbeddableUrl: (
     }
 
     return urlObject.href;
-  } catch (error) {
-    console.error(convertToEmbeddableUrl.name, { urlString, autoPlay }, error);
-    Bugsnag.notify(error, (event) => {
+  } catch (e) {
+    console.error(convertToEmbeddableUrl.name, { urlString, autoPlay }, e);
+    Bugsnag.notify(errorForBugsnag(e), (event) => {
       event.addMetadata("context", {
         location: "src/utils::convertToEmbeddableUrl",
         urlString,

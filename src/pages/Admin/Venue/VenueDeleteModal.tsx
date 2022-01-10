@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";

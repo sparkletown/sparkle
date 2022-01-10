@@ -1,9 +1,12 @@
 import { useMemo } from "react";
 import { useFirestore } from "reactfire";
+import { collection, query } from "firebase/firestore";
 
 import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
 import { getPreviewChatMessage } from "utils/chat";
+import { withIdConverter } from "utils/converters";
+import { convertToFirestoreKey } from "utils/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
 import { useUser } from "hooks/useUser";
@@ -12,12 +15,17 @@ export const usePrivateChatPreviews = () => {
   const { userId } = useUser();
   const firestore = useFirestore();
 
-  const [
-    privateChatMessages,
-    isUserPrivateChatsLoaded,
-  ] = useChatMessagesRaw<PrivateChatMessage>(
-    firestore.collection("privatechats").doc(userId).collection("chats")
-  );
+  const [privateChatMessages, isUserPrivateChatsLoaded] =
+    useChatMessagesRaw<PrivateChatMessage>(
+      query<PrivateChatMessage>(
+        collection(
+          firestore,
+          "privatechats",
+          convertToFirestoreKey(userId),
+          "chats"
+        ).withConverter<PrivateChatMessage>(withIdConverter())
+      )
+    );
 
   const privateChatPreviewsMap: PreviewChatMessageMap = useMemo(
     () =>

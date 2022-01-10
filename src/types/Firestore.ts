@@ -1,3 +1,14 @@
+import firebase from "firebase/compat";
+import {
+  DocumentData,
+  FirestoreDataConverter,
+  Query,
+  QueryDocumentSnapshot,
+  SnapshotOptions,
+  Timestamp,
+  WriteBatch,
+} from "firebase/firestore";
+
 import { Settings } from "./settings";
 
 import { World } from "api/world";
@@ -20,6 +31,45 @@ import { WithId } from "utils/id";
 import { AdminRole } from "hooks/roles";
 
 import { ArtCar, Firebarrel } from "./animateMap";
+
+// RE-EXPORT BEGIN
+
+// type definitions to decrease declaration verbosity in other files
+// also, during transition, to smooth out the compatability and the newer modular types
+
+export type CompatCollectionReference<T> =
+  firebase.firestore.CollectionReference<T>;
+
+export type CompatDocumentData = firebase.firestore.DocumentData;
+export type InterimDocumentData = CompatDocumentData | DocumentData;
+
+export type CompatFirestoreDataConverter<T> =
+  firebase.firestore.FirestoreDataConverter<T>;
+export type InterimFirestoreDataConverter<T> =
+  | CompatFirestoreDataConverter<T>
+  | FirestoreDataConverter<T>;
+
+export type CompatQueryDocumentSnapshot<T> =
+  firebase.firestore.QueryDocumentSnapshot<T>;
+export type InterimQueryDocumentSnapshot<T> =
+  | CompatQueryDocumentSnapshot<T>
+  | QueryDocumentSnapshot<T>;
+
+export type CompatQuery<T> = firebase.firestore.Query<T>;
+export type InterimQuery<T> = CompatQuery<T> | Query<T>;
+
+export type CompatCreated = firebase.firestore.SnapshotOptions;
+export type InterimSnapshotOptions = CompatCreated | SnapshotOptions;
+
+export type CompatWriteBatch = firebase.firestore.WriteBatch;
+export type InterimWriteBatch = CompatWriteBatch | WriteBatch;
+
+export type CompatDocumentReference<T> =
+  firebase.firestore.DocumentReference<T>;
+export type CompatDocumentSnapshot<T> = firebase.firestore.DocumentSnapshot<T>;
+export type CompatTimestamp = firebase.firestore.Timestamp;
+
+// RE-EXPORT END
 
 export interface Experience {
   reactions: Record<string, Reaction>;

@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import {
   BUGSNAG_API_KEY,
@@ -103,8 +103,9 @@ if (BUGSNAG_API_KEY) {
 // NOTE: the assumption is that BugSnag is started for any non-falsy API key, see previous if block
 export const isBugsnagStarted = !!BUGSNAG_API_KEY;
 
-export const addToBugsnagEventOnError: typeof Bugsnag.addOnError = BUGSNAG_API_KEY
-  ? (fn) => Bugsnag.addOnError(fn)
-  : () => {
-      // Bugsnag isn't started, this stub will prevent console warnings saying .addOnError() has been called before .start()
-    };
+export const addToBugsnagEventOnError: typeof Bugsnag.addOnError =
+  BUGSNAG_API_KEY
+    ? (fn) => Bugsnag.addOnError(fn)
+    : () => {
+        // Bugsnag isn't started, this stub will prevent console warnings saying .addOnError() has been called before .start()
+      };

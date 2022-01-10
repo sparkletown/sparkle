@@ -1,5 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { omit } from "lodash";
 
 import {
@@ -95,8 +95,10 @@ export type PlacementInput = {
   height: number;
 };
 
-export const createSlug = (name: string) =>
-  name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
+export const createSlug = (name: string | unknown) =>
+  String(name ?? "")
+    .replace(INVALID_SLUG_CHARS_REGEX, "")
+    .toLowerCase();
 
 export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
@@ -186,10 +188,10 @@ const createFirestoreVenueInput_v2 = async (
 ) => {
   // We temporarily cast the result to unknown so that we can cast to the
   // same type with the ID added, then we add the missing property.
-  const result = ((await createFirestoreVenueInputWithoutId_v2(
+  const result = (await createFirestoreVenueInputWithoutId_v2(
     input,
     user
-  )) as unknown) as FirestoreVenueInput_v2;
+  )) as unknown as FirestoreVenueInput_v2;
   result.id = input.id;
   return result;
 };

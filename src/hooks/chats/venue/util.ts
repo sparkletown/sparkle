@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { random } from "lodash";
 
 import {
@@ -45,9 +45,10 @@ type ChatActionsProps<T extends Variant> = T extends "sendChat"
   : never;
 
 export const useGetVenueChatCollectionRef = (venueId: string | undefined) =>
-  useCallback(() => (venueId ? [getChatsRef(venueId)] : ALWAYS_EMPTY_ARRAY), [
-    venueId,
-  ]);
+  useCallback(
+    () => (venueId ? [getChatsRef(venueId)] : ALWAYS_EMPTY_ARRAY),
+    [venueId]
+  );
 
 export const useGetVenueThreadCollectionRef = (venueId: string | undefined) =>
   useCallback(

@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import Bugsnag from "@bugsnag/js";
 import { HowlOptions } from "howler";
-import useSound from "use-sound";
+import { useSound } from "use-sound";
 import {
   ExposedData,
   HookOptions,
@@ -43,9 +43,8 @@ export const initialValue: CustomSoundsState = {
   isLoading: false,
 };
 
-export const CustomSoundsContext = createContext<CustomSoundsState>(
-  initialValue
-);
+export const CustomSoundsContext =
+  createContext<CustomSoundsState>(initialValue);
 
 export interface CustomSoundsProviderProps {
   waitTillConfigLoaded?: boolean;

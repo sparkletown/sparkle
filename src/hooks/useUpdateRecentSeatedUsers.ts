@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { useInterval } from "react-use";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import {
   ALWAYS_EMPTY_OBJECT,

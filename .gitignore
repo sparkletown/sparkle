@@ -54,5 +54,5 @@ reporting/cookies.json
 #IDEs
 .idea/
 
-# Prune results
-/ts-prune-result.txt
+# Tool results
+*.result.txt

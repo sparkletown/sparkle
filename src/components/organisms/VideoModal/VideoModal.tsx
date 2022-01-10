@@ -13,7 +13,7 @@ interface PropsType {
   url: string;
   caption?: string;
   autoplay?: boolean;
-  backdrop?: string | boolean;
+  backdrop?: "static" | boolean | undefined;
 }
 
 const VideoModal: React.FunctionComponent<PropsType> = ({

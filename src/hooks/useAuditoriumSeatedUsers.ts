@@ -1,6 +1,11 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { collection, query } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  COLLECTION_SECTIONS,
+  COLLECTION_SPACES,
+} from "settings";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 
@@ -12,13 +17,16 @@ export const useAuditoriumSeatedUsers = ({
   sectionId,
 }: AuditoriumSectionPath): WithId<AuditoriumSeatedUser>[] => {
   const firestore = useFirestore();
-  const relatedVenuesRef = firestore
-    .collection("venues")
-    .doc(venueId)
-    .collection("sections")
-    .doc(sectionId)
-    .collection("seatedSectionUsers")
-    .withConverter(withIdConverter<AuditoriumSeatedUser>());
+  const relatedVenuesRef = query(
+    collection(
+      firestore,
+      COLLECTION_SPACES,
+      venueId,
+      COLLECTION_SECTIONS,
+      sectionId,
+      "seatedSectionUsers"
+    )
+  ).withConverter(withIdConverter<AuditoriumSeatedUser>());
 
   const { data: users } = useFirestoreCollectionData<
     WithId<AuditoriumSeatedUser>

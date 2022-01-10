@@ -1,5 +1,5 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";

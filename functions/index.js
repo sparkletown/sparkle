@@ -1,16 +1,20 @@
-const firebase = require("firebase");
+const firebase = require("firebase/compat/app");
 const admin = require("firebase-admin");
 
-require("firebase/firestore");
+require("firebase/compat/firestore");
 const functions = require("firebase-functions");
 
 const functionsConfig = functions.config();
 
-if (!functionsConfig) throw new Error("failed: functionsConfig missing");
-if (!functionsConfig.project)
+if (!functionsConfig) {
+  throw new Error("failed: functionsConfig missing");
+}
+if (!functionsConfig.project) {
   throw new Error("failed: functionsConfig.project missing");
-if (!functionsConfig.project.id)
+}
+if (!functionsConfig.project.id) {
   throw new Error("failed: functionsConfig.project.id missing");
+}
 
 const firebaseConfig = {
   projectId: functionsConfig.project.id,

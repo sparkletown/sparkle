@@ -1,7 +1,8 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { collection, query, where } from "firebase/firestore";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
 import { AnyVenue, SpaceSlug } from "types/venues";
 
@@ -47,10 +48,10 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   children,
 }) => {
   const firestore = useFirestore();
-  const relatedVenuesRef = firestore
-    .collection("venues")
-    .where("worldId", "==", worldId ?? "")
-    .withConverter(withIdConverter<AnyVenue>());
+  const relatedVenuesRef = query(
+    collection(firestore, COLLECTION_SPACES),
+    where("worldId", "==", worldId ?? "")
+  ).withConverter(withIdConverter<AnyVenue>());
 
   const { data: relatedVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
     relatedVenuesRef,

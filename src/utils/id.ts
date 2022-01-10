@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import omit from "lodash/omit";
 
 // @debt Move this file into types/ or possibly even merge it with types/utility.ts
@@ -46,3 +46,7 @@ export const generateFirestoreId: (options?: {
   }
   return id;
 };
+
+type ConvertToFirestoreKey = (key: unknown) => string;
+export const convertToFirestoreKey: ConvertToFirestoreKey = (key) =>
+  String(key ?? "").trim() || "INVALID-FIRESTORE-KEY-" + key;

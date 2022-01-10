@@ -4,9 +4,21 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
-import { FirebaseAppProvider } from "reactfire";
+import {
+  AuthProvider,
+  DatabaseProvider,
+  FirebaseAppProvider,
+  FirestoreProvider,
+} from "reactfire";
 import { addToBugsnagEventOnError, BugsnagErrorBoundary } from "bugsnag";
-import firebase from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import firebase from "firebase/compat/app";
+import { getDatabase } from "firebase/database";
+import { getFirestore } from "firebase/firestore";
+import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
+import { getPerformance } from "firebase/performance";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import { activatePolyFills } from "polyfills";
@@ -33,11 +45,6 @@ import { AppRouter } from "components/organisms/AppRouter";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 import "./wdyr";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/performance";
 
 import * as serviceWorker from "./serviceWorker";
 
@@ -57,16 +64,17 @@ if (LOGROCKET_APP_ID) {
   });
 }
 
-const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
-firebaseApp.analytics();
-firebaseApp.auth();
-firebaseApp.firestore();
-const firebaseFunctions = firebase.functions();
-firebase.performance();
+const firebaseApp = initializeApp(FIREBASE_CONFIG);
+getAnalytics(firebaseApp);
+const firebaseAuth = getAuth(firebaseApp);
+const firebaseFunctions = getFunctions(firebaseApp);
+getPerformance(firebaseApp);
+const firebaseDb = getDatabase(firebaseApp);
+const firebaseFirestore = getFirestore(firebaseApp);
 
 // Enable the functions emulator when running in development
 if (process.env.NODE_ENV === "development") {
-  firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
+  connectFunctionsEmulator(firebaseFunctions, "localhost", 5001);
 }
 
 const rrfConfig = {
@@ -124,18 +132,24 @@ traceReactScheduler("initial render", performance.now(), () => {
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
             <FirebaseAppProvider firebaseApp={firebaseApp}>
-              <ReactReduxFirebaseProvider {...rrfProps}>
-                <AuthIsLoaded>
-                  <AlgoliaSearchProvider>
-                    <CustomSoundsProvider
-                      loadingComponent={<LoadingPage />}
-                      waitTillConfigLoaded
-                    >
-                      <AppRouter />
-                    </CustomSoundsProvider>
-                  </AlgoliaSearchProvider>
-                </AuthIsLoaded>
-              </ReactReduxFirebaseProvider>
+              <FirestoreProvider sdk={firebaseFirestore}>
+                <AuthProvider sdk={firebaseAuth}>
+                  <DatabaseProvider sdk={firebaseDb}>
+                    <ReactReduxFirebaseProvider {...rrfProps}>
+                      <AuthIsLoaded>
+                        <AlgoliaSearchProvider>
+                          <CustomSoundsProvider
+                            loadingComponent={<LoadingPage />}
+                            waitTillConfigLoaded
+                          >
+                            <AppRouter />
+                          </CustomSoundsProvider>
+                        </AlgoliaSearchProvider>
+                      </AuthIsLoaded>
+                    </ReactReduxFirebaseProvider>
+                  </DatabaseProvider>
+                </AuthProvider>
+              </FirestoreProvider>
             </FirebaseAppProvider>
           </ReduxStoreProvider>
         </DndProvider>

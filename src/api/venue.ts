@@ -1,7 +1,13 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
+import {
+  CompatCollectionReference,
+  CompatDocumentData,
+  CompatFirestoreDataConverter,
+  CompatQueryDocumentSnapshot,
+} from "types/Firestore";
 import { GridPosition } from "types/grid";
 import { DisplayUser, TableSeatedUser } from "types/User";
 import { AnyVenue, VenueTablePath, VenueTemplate } from "types/venues";
@@ -9,8 +15,8 @@ import { AnyVenue, VenueTablePath, VenueTemplate } from "types/venues";
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-export const getVenueCollectionRef = () =>
-  firebase.firestore().collection("venues");
+export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> =
+  () => firebase.firestore().collection("venues");
 
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
@@ -57,12 +63,10 @@ export const setVenueLiveStatus = async ({
 /**
  * Convert Venue objects between the app/firestore formats (@debt:, including validation).
  */
-export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
+export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
   WithId<AnyVenue>
 > = {
-  toFirestore: (
-    anyVenue: WithId<AnyVenue>
-  ): firebase.firestore.DocumentData => {
+  toFirestore: (anyVenue: WithId<AnyVenue>): CompatDocumentData => {
     // @debt Properly check/validate this data
     //   return AnyVenueSchema.validateSync(anyVenue);
 
@@ -70,7 +74,7 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
   },
 
   fromFirestore: (
-    snapshot: firebase.firestore.QueryDocumentSnapshot
+    snapshot: CompatQueryDocumentSnapshot<AnyVenue>
   ): WithId<AnyVenue> => {
     // @debt Properly check/validate this data rather than using 'as'
     //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
@@ -82,9 +86,9 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
-  return await firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+  return await firebase.functions().httpsCallable("venue-adminUpdateIframeUrl")(
+    { venueId, iframeUrl }
+  );
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {

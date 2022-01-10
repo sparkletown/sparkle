@@ -1,5 +1,8 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
+import { collection, query, where } from "firebase/firestore";
+
+import { COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
@@ -20,6 +23,7 @@ export type UseSpaceBySlugResult = {
 /**
  * Hook which will return the space when the slug is provided.
  * The intention is to be used on the client side, when the space slug is provided in the url.
+ * @param worldSlug
  * @param spaceSlug
  * @returns
  */
@@ -29,27 +33,25 @@ export const useWorldAndSpaceBySlug = (
 ): UseSpaceBySlugResult => {
   const firestore = useFirestore();
 
-  const spacesRef = firestore
-    .collection("venues")
-    .where("slug", "==", spaceSlug ?? "")
-    .withConverter(withIdConverter<AnyVenue>());
+  const spacesRef = query(
+    collection(firestore, "venues"),
+    where("slug", "==", spaceSlug ?? "")
+  ).withConverter(withIdConverter<AnyVenue>());
 
   // Note: Avoid using the option 'initialData' because it will make status always return 'success'
-  const { data: spaces, status: spaceStatus } = useFirestoreCollectionData<
-    WithId<AnyVenue>
-  >(spacesRef);
+  const { data: spaces, status: spaceStatus } =
+    useFirestoreCollectionData<WithId<AnyVenue>>(spacesRef);
 
-  const worldsRef = firestore
-    .collection("worlds")
-    .where("isHidden", "==", false)
+  const worldsRef = query(
+    collection(firestore, COLLECTION_WORLDS),
+    where("isHidden", "==", false),
     // @debt we don't properly deal with the slug being undefined. This query
     // shouldn't happen if we don't have a world slug. This whole hook needs
     // a bit of a rethink. It's used incorrectly by the NavBar.
-    .where("slug", "==", worldSlug || "")
-    .withConverter(withIdConverter<World>());
-  const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
-    WithId<World>
-  >(worldsRef);
+    where("slug", "==", worldSlug || "")
+  ).withConverter(withIdConverter<World>());
+  const { data: worlds, status: worldStatus } =
+    useFirestoreCollectionData<WithId<World>>(worldsRef);
 
   const isSpaceLoaded = spaceStatus !== "loading";
   const isWorldLoaded = worldStatus !== "loading";

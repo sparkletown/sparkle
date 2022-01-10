@@ -1,6 +1,13 @@
 import { useCallback } from "react";
 import { useFirestore } from "reactfire";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
+import {
+  CollectionReference,
+  doc,
+  DocumentData,
+  WriteBatch,
+  writeBatch,
+} from "firebase/firestore";
 import { noop } from "lodash";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
@@ -12,6 +19,7 @@ import {
   SendMessagePropsBase,
   SendThreadMessageProps,
 } from "types/chat";
+import { CompatCollectionReference, CompatDocumentData } from "types/Firestore";
 
 import { buildBaseMessage, ExcludeBuiltMessage } from "utils/chat";
 import { waitAtLeast } from "utils/promise";
@@ -23,9 +31,10 @@ export const useSendChatMessage = <T extends BaseChatMessage>(
   additionalMessageFields: ExcludeBuiltMessage<T>
 ): SendChatMessage<SendChatMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
-  const getAdditionalFields = useCallback(() => additionalMessageFields, [
-    additionalMessageFields,
-  ]);
+  const getAdditionalFields = useCallback(
+    () => additionalMessageFields,
+    [additionalMessageFields]
+  );
 
   return useSendMessage<T, SendChatMessageProps>({
     getCollections,
@@ -59,10 +68,7 @@ export interface UseSendMessageProps<
     props: K
   ) => firebase.firestore.CollectionReference<firebase.firestore.DocumentData>[];
   getAdditionalFields: (props: K) => ExcludeBuiltMessage<T>;
-  processResultingBatch?: (
-    props: K,
-    batch: firebase.firestore.WriteBatch
-  ) => void;
+  processResultingBatch?: (props: K, batch: WriteBatch) => void;
 }
 
 export const useSendMessage = <
@@ -85,10 +91,16 @@ export const useSendMessage = <
           ...getAdditionalFields(props),
         });
 
-        const batch = firestore.batch();
+        const batch = writeBatch(firestore);
 
-        const collections = getCollections(props);
-        collections.forEach((ref) => batch.set(ref.doc(), processedMessage));
+        const collections: CompatCollectionReference<CompatDocumentData>[] =
+          getCollections(props);
+        for (const ref of collections) {
+          batch.set<DocumentData>(
+            doc(ref as unknown as CollectionReference),
+            processedMessage
+          );
+        }
 
         processResultingBatch(props, batch);
 

@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { v4 as uuid } from "uuid";
 
 import {
