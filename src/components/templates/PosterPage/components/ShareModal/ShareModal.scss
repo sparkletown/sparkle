@@ -22,8 +22,10 @@ $logo-background-width: 195px;
   }
 
   &__url-text {
+    @include line-clamp-with-overflow(1);
+    overflow-wrap: anywhere;
     color: var(--greyscale-lighter-20pp);
-    padding: 0 $spacing--xxl;
+    margin: 0 $spacing--xxl;
   }
 
   &__content {
