@@ -39,6 +39,17 @@ export interface EventInput {
   host: string;
 }
 
+export interface WorldScheduleEvent {
+  name: string;
+  description: string;
+  start_date: string;
+  start_time: string;
+  duration_hours: number;
+  duration_minutes?: number;
+  host: string;
+  spaceId?: string;
+}
+
 type ImageFileKeys =
   | "bannerImageFile"
   | "logoImageFile"

@@ -5,6 +5,7 @@ import {
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_WORLD_BASE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
+  ADMIN_IA_WORLD_SCHEDULE_URL,
   SPACE_TAXON,
   SPACES_TAXON,
 } from "settings";
@@ -110,6 +111,17 @@ export const SpacesDashboard: React.FC = () => {
                 Settings
               </ButtonNG>
             </div>
+            <ButtonNG
+              variant="secondary"
+              isLink
+              linkTo={generateUrl({
+                route: ADMIN_IA_WORLD_SCHEDULE_URL,
+                required: ["worldSlug"],
+                params: { worldSlug },
+              })}
+            >
+              World schedule
+            </ButtonNG>
           </AdminTitleBar>
 
           {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}

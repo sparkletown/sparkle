@@ -13,6 +13,7 @@ import {
   WorldAdvancedFormInput,
   WorldEntranceFormInput,
   WorldGeneralFormInput,
+  WorldScheduleSettings,
   WorldSlug,
 } from "types/world";
 
@@ -31,6 +32,7 @@ export interface World {
     };
   };
   createdAt: Date;
+  endTimeUTC?: number;
   entrance?: EntranceStepConfig[];
   host: {
     icon: string;
@@ -48,6 +50,7 @@ export interface World {
   showSchedule?: boolean;
   showUserStatus?: boolean;
   slug: WorldSlug;
+  startTimeUTC?: number;
   updatedAt: Date;
   userStatuses?: UserStatus[];
   hasSocialLoginEnabled?: boolean;
@@ -149,6 +152,18 @@ export const createFirestoreWorldAdvancedInput: (
   return { ...picked, radioStations };
 };
 
+export const createFirestoreWorldScheduleInput: (
+  input: WithId<WorldScheduleSettings>
+) => Promise<Partial<World>> = async (input) => {
+  const worldUpdateData: Partial<WithId<World>> = {
+    id: input.id,
+    startTimeUTC: input?.startTimeUTC,
+    endTimeUTC: input?.endTimeUTC,
+  };
+
+  return worldUpdateData;
+};
+
 export const createWorld: (
   world: WorldGeneralFormInput,
   user: firebase.UserInfo
@@ -222,6 +237,14 @@ export const updateWorldAdvancedSettings = async (
 ) => {
   return await firebase.functions().httpsCallable("world-updateWorld")(
     await createFirestoreWorldAdvancedInput(world, user)
+  );
+};
+
+export const updateWorldScheduleSettings = async (
+  world: WithId<WorldScheduleSettings>
+) => {
+  return await firebase.functions().httpsCallable("world-updateWorld")(
+    await createFirestoreWorldScheduleInput(world)
   );
 };
 

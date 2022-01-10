@@ -1,37 +1,39 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
 import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-
-import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
-import { TimingEvent } from "components/organisms/TimingEvent";
-import { TimingEventModal } from "components/organisms/TimingEventModal";
 
 import { Loading } from "components/molecules/Loading";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Checkbox } from "components/atoms/Checkbox";
 
-import "./EventsView.scss";
+import { TimingDeleteModal } from "../TimingDeleteModal";
+import { TimingEvent } from "../TimingEvent";
+import { TimingSpace } from "../TimingSpace";
+import { WorldScheduleEventModal } from "../WorldScheduleEventModal";
 
-export type EventsViewProps = {
-  venueId: string;
-  venue: WithId<AnyVenue>;
-};
+import "./WorldScheduleEvents.scss";
 
-export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
+// @debt This is almost identical to EventsView, think of a better approach before merge.
+export const WorldScheduleEvents: React.FC = () => {
   // @debt This refetchIndex is used to force a refetch of the data when events
   // have been edited. It's horrible and needs a rethink. It also doesn't
   // help the attendee side at all.
   const [refetchIndex, setRefetchIndex] = useState(0);
 
-  const eventVenueIds = useMemo(() => [venueId], [venueId]);
-
+  const {
+    findVenueInRelatedVenues,
+    relatedVenueIds,
+    isLoading: isVenuesLoading,
+  } = useRelatedVenues();
   const { events, isEventsLoading } = useVenueEvents({
-    venueIds: eventVenueIds,
+    venueIds: relatedVenueIds,
     refetchIndex,
   });
 
@@ -45,6 +47,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     isShown: showDeleteEventModal,
     show: setShowDeleteEventModal,
     hide: setHideDeleteEventModal,
+  } = useShowHide();
+
+  const {
+    isShown: showSplittedEvents,
+    toggle: toggleSplittedEvents,
   } = useShowHide();
 
   const [editedEvent, setEditedEvent] = useState<
@@ -77,20 +84,56 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     [events, setShowCreateEventModal, setEditedEvent]
   );
 
-  if (isEventsLoading) {
+  const renderedSpaces = useMemo(() => {
+    const spaces = [...new Set(events?.map((event) => event.spaceId))];
+    const getSpaceEvents = (spaceId: string) =>
+      events?.filter((event) => event.spaceId === spaceId) ?? [];
+
+    return spaces?.map((spaceId) => {
+      if (!spaceId) {
+        return undefined;
+      }
+      const space = findVenueInRelatedVenues({ spaceId });
+      if (!space) {
+        return undefined;
+      }
+      return (
+        <TimingSpace
+          key={spaceId}
+          space={space}
+          spaceEvents={getSpaceEvents(spaceId)}
+          setShowCreateEventModal={setShowCreateEventModal}
+          setEditedEvent={setEditedEvent}
+        />
+      );
+    });
+  }, [
+    events,
+    setShowCreateEventModal,
+    setEditedEvent,
+    findVenueInRelatedVenues,
+  ]);
+
+  if (isVenuesLoading || isEventsLoading) {
     return <Loading />;
   }
 
   return (
-    <div className="EventsView">
-      <div className="EventsView__container">
-        <div className="EventsView__header">
-          <h4 className="EventsView__title">Experiences Schedule</h4>
+    <div className="WorldScheduleEvents">
+      <div className="WorldScheduleEvents__container">
+        <div className="WorldScheduleEvents__header">
+          <h4 className="WorldScheduleEvents__title">Experiences Schedule</h4>
+          <Checkbox
+            checked={showSplittedEvents}
+            onChange={toggleSplittedEvents}
+            label="Split by space"
+            labelClassName="WorldScheduleEvents__checkbox"
+          />
         </div>
-        <div className="EventsView__content">
-          {renderedEvents}
+        <div className="WorldScheduleEvents__content">
+          {showSplittedEvents ? renderedSpaces : renderedEvents}
           {!hasVenueEvents && (
-            <div className="EventsView__no-events">
+            <div className="WorldScheduleEvents__no-events">
               <p>No events yet, lets start planning!</p>
               <button
                 className="btn btn-primary"
@@ -104,7 +147,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
       </div>
 
       {hasVenueEvents && (
-        <div className="EventsView__create">
+        <div className="WorldScheduleEvents__create">
           <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
             Create an Experience
           </ButtonNG>
@@ -112,13 +155,13 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
       )}
 
       {showCreateEventModal && (
-        <TimingEventModal
+        <WorldScheduleEventModal
           show={showCreateEventModal}
           onHide={() => {
             setHideCreateEventModal();
             adminEventModalOnHide();
           }}
-          venue={venue}
+          venueId={editedEvent?.spaceId}
           event={editedEvent}
           setEditedEvent={setEditedEvent}
           setShowDeleteEventModal={setShowDeleteEventModal}

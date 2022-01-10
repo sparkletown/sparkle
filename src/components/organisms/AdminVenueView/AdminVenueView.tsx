@@ -41,7 +41,7 @@ import "./AdminVenueView.scss";
 
 export enum AdminVenueTab {
   spaces = "spaces",
-  timing = "timing",
+  schedule = "schedule",
   run = "run",
 }
 
@@ -53,13 +53,13 @@ export interface AdminVenueViewRouteParams {
 
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
-  [AdminVenueTab.timing]: "Timing",
+  [AdminVenueTab.schedule]: "Schedule",
   [AdminVenueTab.run]: "Run",
 };
 
 const tabIcons = {
   [AdminVenueTab.spaces]: faBorderNone,
-  [AdminVenueTab.timing]: faClock,
+  [AdminVenueTab.schedule]: faClock,
   [AdminVenueTab.run]: faPlayCircle,
 };
 
@@ -166,7 +166,7 @@ export const AdminVenueView: React.FC = () => {
           </div>
 
           {selectedTab === AdminVenueTab.spaces && <Spaces venue={space} />}
-          {selectedTab === AdminVenueTab.timing && (
+          {selectedTab === AdminVenueTab.schedule && (
             <SpaceTimingPanel venue={space} />
           )}
           {selectedTab === AdminVenueTab.run && <RunTabView venue={space} />}
