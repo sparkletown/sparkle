@@ -30,6 +30,7 @@ export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
   relatedRooms: UseRelatedPartymapRoomsData;
+  reInitOnError?: boolean;
 }
 
 export type RoomWithFullData = (WithVenue<Room> | Room) & {
@@ -44,6 +45,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   venue,
   newDataProviderCreate,
   relatedRooms,
+  reInitOnError,
 }) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
@@ -143,6 +145,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           playerioMaxPlayerPerRoom: venue.playerioMaxPlayerPerRoom ?? 80,
           playerioFrequencyUpdate: venue.playerioFrequencyUpdate ?? 0.5,
           // playerioAdvancedMode: venue.playerioAdvancedMode,
+          reInitOnError,
         });
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
@@ -154,7 +157,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     },
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, dataProvider, firebase]
+    [user, dataProvider, firebase, reInitOnError]
   );
 
   return null;
