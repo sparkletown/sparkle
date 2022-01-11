@@ -13,11 +13,11 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
 
   for (const venueDoc of venueDocs) {
     const { docs: eventDocs } = await venueDoc.ref.collection("events").get();
-    
+
     if (!eventDocs.length) continue;
-    
+
     console.log(`Space ${venueDoc.id} has ${eventDocs.length} events`);
-    
+
     for (const eventDoc of eventDocs) {
       const oldEventData = eventDoc.data();
       const newEventData = {
