@@ -10,7 +10,7 @@ import {
   PLATFORM_BRAND_NAME,
 } from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 import { tracePromise } from "utils/performance";

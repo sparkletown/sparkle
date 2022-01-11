@@ -7,7 +7,8 @@ import {
   PORTAL_INFO_ICON_MAPPING,
 } from "settings";
 
-import { GenericVenue, VenueTemplate } from "types/venues";
+import { GenericVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
@@ -46,10 +47,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     currentVenueId: venue?.id,
   });
 
-  const {
-    isShown: showOnlyAvailableTables,
-    toggle: toggleTablesVisibility,
-  } = useShowHide();
+  const { isShown: showOnlyAvailableTables, toggle: toggleTablesVisibility } =
+    useShowHide();
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
 

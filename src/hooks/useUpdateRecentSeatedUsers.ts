@@ -11,8 +11,8 @@ import {
   RecentSeatedUserData,
   RecentSeatedUserTimestamp,
   TableSeatedUsersVenuesTemplates,
-  VenueTemplate,
 } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { getCurrentTimeInMilliseconds } from "utils/time";
 

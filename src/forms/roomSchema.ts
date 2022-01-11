@@ -2,7 +2,7 @@ import * as Yup from "yup";
 
 import { ROOM_TAXON } from "settings";
 
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 import { createNameSchema } from "forms/factory/createNameSchema";
 export interface RoomSchemaShape {

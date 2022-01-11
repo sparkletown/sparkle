@@ -5,7 +5,8 @@ import { omit } from "lodash";
 
 import { PORTAL_INFO_ICON_MAPPING } from "settings";
 
-import { AnyVenue, PortalTemplate, VenueTemplate } from "types/venues";
+import { AnyVenue, PortalTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
@@ -58,9 +59,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     [filteredSpaces]
   );
 
-  const spaceOptions = useMemo(() => [spaceNoneOption, ...sortedSpaces], [
-    sortedSpaces,
-  ]);
+  const spaceOptions = useMemo(
+    () => [spaceNoneOption, ...sortedSpaces],
+    [sortedSpaces]
+  );
 
   useEffect(() => {
     if (parentSpace) {

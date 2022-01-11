@@ -7,7 +7,8 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, WithVenueId } from "utils/id";
 
@@ -40,17 +41,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   event,
   setShowDeleteEventModal,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    reset,
-  } = useForm<EventInput>({
-    mode: "onSubmit",
-    reValidateMode: "onChange",
-    validationSchema: eventEditSchema,
-  });
+  const { register, handleSubmit, errors, formState, reset } =
+    useForm<EventInput>({
+      mode: "onSubmit",
+      reValidateMode: "onChange",
+      validationSchema: eventEditSchema,
+    });
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.

@@ -10,7 +10,8 @@ import {
   JAZZBAR_TABLES,
 } from "settings";
 
-import { JazzbarVenue, VenueTemplate } from "types/venues";
+import { JazzbarVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
@@ -43,10 +44,8 @@ interface JazzProps {
 }
 
 export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
-  const {
-    isShown: showOnlyAvailableTables,
-    toggle: toggleTablesVisibility,
-  } = useShowHide();
+  const { isShown: showOnlyAvailableTables, toggle: toggleTablesVisibility } =
+    useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const embedIframeUrl = convertToEmbeddableUrl({

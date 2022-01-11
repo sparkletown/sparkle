@@ -10,7 +10,8 @@ import {
 } from "types/Firestore";
 import { GridPosition } from "types/grid";
 import { DisplayUser, TableSeatedUser } from "types/User";
-import { AnyVenue, VenueTablePath, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTablePath } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";

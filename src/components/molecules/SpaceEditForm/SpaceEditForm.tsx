@@ -33,7 +33,8 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
@@ -139,22 +140,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     ]
   );
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    setValue,
-    watch,
-    reset,
-    errors,
-  } = useForm({
-    reValidateMode: "onChange",
-    validationSchema: spaceEditSchema,
-    defaultValues,
-    validationContext: {
-      template: space.template,
-    },
-  });
+  const { register, handleSubmit, getValues, setValue, watch, reset, errors } =
+    useForm({
+      reValidateMode: "onChange",
+      validationSchema: spaceEditSchema,
+      defaultValues,
+      validationContext: {
+        template: space.template,
+      },
+    });
 
   const {
     assets: mapBackgrounds,

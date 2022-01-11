@@ -6,7 +6,7 @@ import {
 
 import { SPACE_TAXON } from "settings/taxonomy";
 
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 export type VisibilityLabelOption = {
   label: string;

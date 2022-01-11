@@ -3,7 +3,8 @@ import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { VENUES_WITH_CHAT_REQUIRED } from "settings";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 

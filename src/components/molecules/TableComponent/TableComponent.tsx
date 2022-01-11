@@ -15,7 +15,7 @@ import {
 import { deleteTable } from "api/table";
 
 import { TableComponentPropsType } from "types/Table";
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useProfileModalControls } from "hooks/useProfileModalControls";

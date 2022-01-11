@@ -6,7 +6,7 @@ import { get } from "lodash";
 
 import { LABEL_VISIBILITY_OPTIONS } from "settings";
 
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 import { isDefined } from "utils/types";
 
@@ -38,8 +38,10 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
         ({ subtitle, label, value }) => {
           const isSelected = isDefined(selected) && selected === value;
           const itemClasses = classNames({
-            "PortalVisibility__item PortalVisibility__item--selected": isSelected,
-            "PortalVisibility__item PortalVisibility__item--unselected": !isSelected,
+            "PortalVisibility__item PortalVisibility__item--selected":
+              isSelected,
+            "PortalVisibility__item PortalVisibility__item--unselected":
+              !isSelected,
           });
 
           return (

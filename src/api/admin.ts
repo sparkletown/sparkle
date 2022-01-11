@@ -20,8 +20,8 @@ import {
   VenueAdvancedConfig,
   VenueEvent,
   VenuePlacement,
-  VenueTemplate,
 } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";

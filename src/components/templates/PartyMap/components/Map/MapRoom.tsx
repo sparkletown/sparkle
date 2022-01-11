@@ -6,7 +6,8 @@ import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { PartyMapVenue, RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
+import { PartyMapVenue } from "types/venues";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";

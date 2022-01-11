@@ -7,7 +7,8 @@ import {
 
 import { createSlug, VenueInput_v2 } from "api/admin";
 
-import { AnyVenue, SpaceSlug, VenueTemplate } from "types/venues";
+import { AnyVenue, SpaceSlug } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { assertUnreachable } from "./error";
 import { WithId } from "./id";
