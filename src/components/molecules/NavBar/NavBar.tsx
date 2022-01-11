@@ -14,8 +14,6 @@ import { enterSpace } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
-import { useAdminContextCheck } from "hooks/useAdminContextCheck";
-import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -69,7 +67,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   withHiddenLoginButton,
 }) => {
   const { user, userWithId } = useUser();
-  const isAdminContext = useAdminContextCheck();
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
@@ -84,12 +81,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { world } = useWorldById(relatedVenue?.worldId);
   const firstStation = world?.radioStations?.[0];
 
-  const { currentVenue: ownedVenue } = useOwnedVenues({
-    currentVenueId: spaceId,
-  });
-
-  // when Admin is displayed, owned venues are used
-  const currentVenue = relatedVenue ?? ownedVenue;
+  const currentVenue = relatedVenue;
 
   const { push: openUrlUsingRouter } = useHistory();
 
@@ -99,8 +91,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     openUserProfileModal(userWithId?.id);
   }, [openUserProfileModal, userWithId]);
 
-  const shouldShowSchedule =
-    !isAdminContext && withSchedule && shouldScheduleBeShown(world);
+  const shouldShowSchedule = withSchedule && shouldScheduleBeShown(world);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -196,19 +187,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   }`}
                   onClick={toggleEventSchedule}
                 >
-                  {spaceId && !isAdminContext && navbarTitle} &nbsp;
+                  {spaceId && navbarTitle} &nbsp;
                   <span className="schedule-text">Schedule</span>
                 </button>
               ) : (
                 <>
-                  <div className="nav-location-title">Sparkle Admin</div>
                   <div>{navbarTitle}</div>
                 </>
               )}
 
-              {spaceId && !isAdminContext && (
-                <VenuePartygoers worldId={currentVenue?.worldId} />
-              )}
+              {spaceId && <VenuePartygoers worldId={currentVenue?.worldId} />}
             </div>
 
             {!DISABLED_DUE_TO_1142 && withPhotobooth && (
@@ -224,7 +212,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                {sovereignVenueId && !isAdminContext && (
+                {sovereignVenueId && (
                   <NavSearchBar sovereignVenueId={sovereignVenueId} />
                 )}
 
