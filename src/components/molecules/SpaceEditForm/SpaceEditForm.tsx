@@ -43,8 +43,8 @@ import { generateUrl } from "utils/url";
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFetchAssets } from "hooks/useFetchAssets";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useUser } from "hooks/useUser";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";

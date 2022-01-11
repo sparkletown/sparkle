@@ -14,7 +14,7 @@ import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -32,11 +32,11 @@ import { SortDropDown } from "components/atoms/SortDropDown";
 import "./SpacesDashboard.scss";
 
 export const SpacesDashboard: React.FC = () => {
-  const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({});
-
   const { worldSlug } = useWorldParams();
-
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
+  const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({
+    worldId: world?.id,
+  });
 
   const venues = useMemo(
     () =>
@@ -44,10 +44,8 @@ export const SpacesDashboard: React.FC = () => {
     [ownedVenues, world]
   );
 
-  const [
-    currentSortingOption,
-    setCurrentSortingOption,
-  ] = useState<SortingOptions>(SortingOptions.az);
+  const [currentSortingOption, setCurrentSortingOption] =
+    useState<SortingOptions>(SortingOptions.az);
 
   const sortedVenues = useMemo(
     () => sortVenues(venues, currentSortingOption) ?? [],

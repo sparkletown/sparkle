@@ -15,7 +15,7 @@ import { enterSpace } from "utils/url";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAdminContextCheck } from "hooks/useAdminContextCheck";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
