@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { WithAuthProps } from "components/hocs/db/withAuth";
+import { AdminLayout } from "components/layouts/AdminLayout";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
@@ -8,7 +9,6 @@ import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-import { WithAdminNavBar } from "components/organisms/WithAdminNavBar";
 
 import { WorldCard } from "components/molecules/WorldCard";
 
@@ -51,7 +51,7 @@ export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
 
   return (
     <div className="WorldsDashboard">
-      <WithAdminNavBar>
+      <AdminLayout>
         <AdminRestricted>
           <AdminPanel variant="unbound">
             {hasWorlds ? (
@@ -92,7 +92,7 @@ export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
             )}
           </AdminPanel>
         </AdminRestricted>
-      </WithAdminNavBar>
+      </AdminLayout>
     </div>
   );
 };
