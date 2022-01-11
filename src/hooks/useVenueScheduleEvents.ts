@@ -11,28 +11,26 @@ import {
   startOfToday,
 } from "date-fns";
 
-import { VenueEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { isEventLiveOrFuture } from "utils/event";
-import { WithVenueId } from "utils/id";
 import { isDateRangeStartWithinToday } from "utils/time";
 
 import { prepareForSchedule } from "components/organisms/NavBarSchedule/utils";
 
+import { useWorldBySlug } from "./worlds/useWorldBySlug";
 import { useWorldParams } from "./worlds/useWorldParams";
-import { useVenueEvents } from "./events";
+import { useSpaceEvents } from "./events";
 import { useRelatedVenues } from "./useRelatedVenues";
 
-const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
+const emptyRelatedEvents: WorldEvent[] = [];
 const minRangeValue = 0;
 const todaysDate = startOfToday();
 
 const useVenueScheduleEvents = ({
   userEventIds,
-  refetchIndex = 0,
 }: {
   userEventIds: Partial<Record<string, string[]>>;
-  refetchIndex?: number;
 }) => {
   const {
     descendantVenues,
@@ -43,13 +41,14 @@ const useVenueScheduleEvents = ({
   } = useRelatedVenues();
 
   const { worldSlug } = useWorldParams();
+  const { world } = useWorldBySlug(worldSlug);
 
   const {
     events: relatedVenueEvents = emptyRelatedEvents,
-    isEventsLoading,
-  } = useVenueEvents({
-    venueIds: relatedVenueIds,
-    refetchIndex,
+    isLoaded: isEventsLoaded,
+  } = useSpaceEvents({
+    worldId: world?.id,
+    spaceIds: relatedVenueIds,
   });
   const liveAndFutureEvents = useMemo(
     () =>
@@ -64,11 +63,11 @@ const useVenueScheduleEvents = ({
   );
 
   const liveEventsMinimalStartValue = Math.min(
-    ...liveAndFutureEvents.map((event) => event.start_utc_seconds)
+    ...liveAndFutureEvents.map((event) => event.startUtcSeconds)
   );
 
   const firstLiveEvent = liveAndFutureEvents.find(
-    (event) => event.start_utc_seconds === liveEventsMinimalStartValue
+    (event) => event.startUtcSeconds === liveEventsMinimalStartValue
   );
 
   const minDateUtcSeconds = useMemo(
@@ -91,7 +90,7 @@ const useVenueScheduleEvents = ({
       Math.max(
         ...liveAndFutureEvents.map(
           (event) =>
-            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+            event.startUtcSeconds + minutesToSeconds(event.durationMinutes)
         ),
         // + 1 is needed to form a `daysInBetween` timeline and mitigate possible range error
         firstRangeDateInSeconds + 1
@@ -126,7 +125,7 @@ const useVenueScheduleEvents = ({
     dayDifference,
     liveAndFutureEvents,
     descendantVenues,
-    isEventsLoading: isLoading || isEventsLoading,
+    isEventsLoading: isLoading || !isEventsLoaded,
     sovereignVenue,
     relatedVenues,
   };

@@ -222,12 +222,6 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
                     </div>
                     <div className="event-description">
                       <RenderMarkdown text={venueEvent.description} />
-                      {venueEvent.descriptions?.map((description, index) => (
-                        <RenderMarkdown
-                          text={description}
-                          key={`${description}#${index}`}
-                        />
-                      ))}
                     </div>
                   </InformationCard>
                 );

@@ -13,7 +13,7 @@ import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import { TableSeatedUser, User } from "types/User";
-import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -62,14 +62,14 @@ export interface FirestoreData {
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
   currentVenue?: AnyVenue;
-  currentVenueEventsNG?: Record<string, VenueEvent>;
+  currentVenueEventsNG?: Record<string, WorldEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSeatedSectionUsers?: Partial<
     Record<string, AuditoriumSeatedUser>
   >;
   currentSeatedTableUsers?: Record<string, TableSeatedUser>;
   currentModalUser?: User;
-  currentEvent?: Record<string, VenueEvent>;
+  currentEvent?: Record<string, WorldEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
   reactions?: Record<string, Reaction>;
@@ -80,7 +80,7 @@ export interface FirestoreData {
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueJukeboxMessages?: Record<string, JukeboxMessage>;
-  venueEvents?: Record<string, VenueEvent>;
+  venueEvents?: Record<string, WorldEvent>;
   worldEdit?: World;
   currentWorld?: World;
 }
@@ -88,27 +88,24 @@ export interface FirestoreData {
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
   currentVenue?: WithId<AnyVenue>[];
-  currentVenueEventsNG?: WithId<VenueEvent>[];
+  currentVenueEventsNG?: WorldEvent[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSeatedSectionUsers?: WithId<AuditoriumSeatedUser>[];
   currentSeatedTableUsers?: WithId<TableSeatedUser>[];
   currentModalUser?: WithId<User>[];
-  currentEvent?: WithId<VenueEvent>[];
-  events?: WithId<VenueEvent>[];
+  currentEvent?: WorldEvent[];
+  events?: WorldEvent[];
   experience: WithId<Experience>;
   ownedVenues?: WithId<AnyVenue>[];
-  parentVenueEvents?: WithId<VenueEvent>[];
   reactions?: WithId<Reaction>[];
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
-  siblingVenues?: WithId<AnyVenue>[];
-  siblingVenueEvents?: WithId<VenueEvent>[];
   animatemapFirebarrels: WithId<Firebarrel>[];
   animatemapArtcars: WithId<ArtCar>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueJukeboxMessages?: WithId<JukeboxMessage>[];
-  venueEvents?: WithId<VenueEvent>[];
+  venueEvents?: WorldEvent[];
   worldEdit?: WithId<World>[];
 }
 
