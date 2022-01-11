@@ -292,7 +292,7 @@ const createFirestoreRoomInput = async (
   venueId: string,
   user: firebase.UserInfo
 ) => {
-  const urlRoomName = createSlug(
+  const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -312,7 +312,7 @@ const createFirestoreRoomInput = async (
   for (const entry of imageKeys) {
     const fileArr = input[entry.fileKey];
     const downloadUrl = await uploadFile(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}`,
+      `users/${user.uid}/venues/${venueId}/${urlPortalName}`,
       fileArr
     );
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
@@ -335,7 +335,7 @@ const createFirestoreRoomInput_v2 = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlRoomName = createSlug(
+  const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -360,7 +360,7 @@ const createFirestoreRoomInput_v2 = async (
     if (!fileArr || fileArr.length === 0) continue;
     const file = fileArr[0];
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+      `users/${user.uid}/venues/${venueId}/${urlPortalName}/${file.name}`
     );
 
     await uploadFileRef.put(file);

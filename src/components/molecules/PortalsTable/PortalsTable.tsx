@@ -16,7 +16,7 @@ import { PortalAddEditModal } from "../PortalAddEditModal";
 
 import "./PortalsTable.scss";
 
-export interface PortalsTableProps {
+interface PortalsTableProps {
   space: WithId<AnyVenue>;
 }
 

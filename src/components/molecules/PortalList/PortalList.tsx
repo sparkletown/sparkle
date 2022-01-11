@@ -15,9 +15,9 @@ import { PortalListItem } from "components/molecules/PortalListItem";
 
 import "./PortalList.scss";
 
-export type PortalListVariant = "input" | "modal";
+type PortalListVariant = "input" | "modal";
 
-export interface PortalListProps {
+interface PortalListProps {
   errors?: FieldErrors<FieldValues>;
   items: PortalInfoItem[];
   label?: ReactNode | string;

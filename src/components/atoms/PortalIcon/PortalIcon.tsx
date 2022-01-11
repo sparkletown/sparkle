@@ -4,7 +4,7 @@ import { ROOM_TAXON } from "settings";
 
 import "./PortalIcon.scss";
 
-export interface PortalIconProps {
+interface PortalIconProps {
   src: string;
 }
 

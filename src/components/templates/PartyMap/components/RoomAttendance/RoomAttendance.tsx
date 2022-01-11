@@ -4,8 +4,8 @@ import { ALWAYS_EMPTY_ARRAY, DEFAULT_ROOM_ATTENDANCE_LIMIT } from "settings";
 
 import { Room } from "types/rooms";
 
+import { usePortal } from "hooks/usePortal";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoom } from "hooks/useRoom";
 
 import "./RoomAttendance.scss";
 
@@ -19,7 +19,7 @@ export const RoomAttendance: React.FC<RoomAttendanceProps> = ({
   room,
   maxVisible = DEFAULT_ROOM_ATTENDANCE_LIMIT,
 }) => {
-  const { portalSpaceId } = useRoom({ room });
+  const { portalSpaceId } = usePortal({ portal: room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues();
 

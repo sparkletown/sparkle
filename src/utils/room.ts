@@ -1,8 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
-import { ParticipantWithUser, Room } from "types/rooms";
-import { SpaceSlug } from "types/venues";
+import { ParticipantWithUser } from "types/rooms";
 
 export interface GetExternalRoomSlugProps {
   venueName: string;
@@ -36,8 +35,4 @@ export const logIfCannotFindExistingParticipant = (
       }
     );
   }
-};
-
-export const parsePortalSlug = (portal: Room) => {
-  return portal?.url?.split("/").pop() as SpaceSlug;
 };
