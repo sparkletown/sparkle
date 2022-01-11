@@ -29,8 +29,12 @@ export const migrate = async ({ firestore }: MigrateOptions) => {
           "duration_minutes"
         ),
       };
-      newEventData.startUtcSeconds = oldEventData.start_utc_seconds;
-      newEventData.durationMinutes = oldEventData.duration_minutes;
+      if (oldEventData.start_utc_seconds) {
+        newEventData.startUtcSeconds = oldEventData.start_utc_seconds;
+      }
+      if (oldEventData.duration_minutes) {
+        newEventData.durationMinutes = oldEventData.duration_minutes;
+      }
       await firestore.collection("worldEvents").add(newEventData);
     }
   }
