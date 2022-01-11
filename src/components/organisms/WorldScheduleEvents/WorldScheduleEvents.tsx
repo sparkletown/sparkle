@@ -1,10 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 
-import { VenueEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
-
-import { useVenueEvents } from "hooks/events";
+import { useSpaceEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
@@ -32,9 +30,8 @@ export const WorldScheduleEvents: React.FC = () => {
     relatedVenueIds,
     isLoading: isVenuesLoading,
   } = useRelatedVenues();
-  const { events, isEventsLoading } = useVenueEvents({
-    venueIds: relatedVenueIds,
-    refetchIndex,
+  const { events, isLoaded: isEventsLoaded } = useSpaceEvents({
+    spaceIds: relatedVenueIds,
   });
 
   const {
@@ -54,9 +51,7 @@ export const WorldScheduleEvents: React.FC = () => {
     toggle: toggleSplittedEvents,
   } = useShowHide();
 
-  const [editedEvent, setEditedEvent] = useState<
-    WithVenueId<WithId<VenueEvent>>
-  >();
+  const [editedEvent, setEditedEvent] = useState<WorldEvent>();
 
   const adminEventModalOnHide = useCallback(() => {
     setHideCreateEventModal();
@@ -114,7 +109,7 @@ export const WorldScheduleEvents: React.FC = () => {
     findVenueInRelatedVenues,
   ]);
 
-  if (isVenuesLoading || isEventsLoading) {
+  if (isVenuesLoading || !isEventsLoaded) {
     return <Loading />;
   }
 

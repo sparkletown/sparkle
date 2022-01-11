@@ -240,7 +240,7 @@ export const WorldSchedule = () => {
           </form>
         </AdminSidebar>
         <AdminShowcase>
-          <WorldScheduleEvents worldId={world.id} />
+          <WorldScheduleEvents />
         </AdminShowcase>
       </AdminPanel>
     </>

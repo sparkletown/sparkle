@@ -7,9 +7,9 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, updateEvent, WorldScheduleEvent } from "api/admin";
 
-import { VenueEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithoutId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -24,7 +24,7 @@ export type WorldScheduleEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId?: string;
-  event?: WithVenueId<WithId<VenueEvent>>;
+  event?: WorldEvent;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: () => void;
 };
@@ -66,13 +66,13 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
         name: event.name,
         description: event.description,
         start_date: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
         start_time: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: Math.floor(event.duration_minutes / 60),
-        duration_minutes: event.duration_minutes % 60,
+        duration_hours: Math.floor(event.durationMinutes / 60),
+        duration_minutes: event.durationMinutes % 60,
         host: event.host,
       });
     }
@@ -82,12 +82,12 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
     async (data: WorldScheduleEvent) => {
       const spaceId = eventSpaceId ?? data.spaceId;
       const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const formEvent: VenueEvent = {
+      const formEvent: WithoutId<WorldEvent> = {
         name: data.name,
         description: data.description,
-        start_utc_seconds:
+        startUtcSeconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        duration_minutes:
+        durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
         spaceId: spaceId,
@@ -97,12 +97,13 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
       };
       if (spaceId) {
         if (event?.id) {
+          const eventWithId: WorldEvent = { ...formEvent, id: event.id };
           // @debt this is a hack. event.venueId is the venue that contains
           // the event inside its events subcollection. It is NOT the space
           // that the event is being experienced in.
-          await updateEvent(event.venueId, event.id, formEvent);
+          await updateEvent(eventWithId);
         } else {
-          await createEvent(spaceId, formEvent);
+          await createEvent(formEvent);
         }
       }
       onHide();
