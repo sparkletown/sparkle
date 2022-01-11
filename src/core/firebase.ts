@@ -1,14 +1,17 @@
 // having this singleton relieves modules from needing to import index.tsx
+// noinspection PointlessBooleanExpressionJS
 
-import { getAnalytics } from "firebase/analytics";
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import firebase from "firebase/compat/app";
-import { getDatabase } from "firebase/database";
-import { getFirestore } from "firebase/firestore";
-import { getFunctions } from "firebase/functions";
-import { getPerformance } from "firebase/performance";
-import { createFirestoreInstance } from "redux-firestore";
+import { Analytics, getAnalytics } from "firebase/analytics";
+import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
+import { Auth, getAuth } from "firebase/auth";
+import { Database, getDatabase } from "firebase/database";
+import { Firestore, getFirestore } from "firebase/firestore";
+import {
+  connectFunctionsEmulator,
+  Functions,
+  getFunctions,
+} from "firebase/functions";
+import { FirebasePerformance, getPerformance } from "firebase/performance";
 
 import {
   API_KEY,
@@ -19,9 +22,7 @@ import {
   PROJECT_ID,
 } from "secrets";
 
-import { store } from "store";
-
-export const FIREBASE_CONFIG = {
+const OPTIONS: FirebaseOptions = {
   apiKey: API_KEY,
   appId: APP_ID,
   authDomain: AUTH_DOMAIN,
@@ -30,27 +31,37 @@ export const FIREBASE_CONFIG = {
   storageBucket: BUCKET_URL,
 };
 
-const app = initializeApp(FIREBASE_CONFIG);
+// const SETTINGS: FirebaseAppSettings = {
+//   name: undefined,
+//   automaticDataCollectionEnabled: undefined,
+// };
 
-const auth = getAuth(app);
-const functions = getFunctions(app);
-const db = getDatabase(app);
-const firestore = getFirestore(app);
+const app = initializeApp(OPTIONS);
 
 const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const firestore = getFirestore(app);
+const functions = getFunctions(app);
 const performance = getPerformance(app);
 
-export const REACT_REDUX_FIREBASE_CONFIG = {
-  firebase,
-  config: {
-    userProfile: "users",
-    useFirestoreForProfile: true,
-  },
-  dispatch: store.dispatch,
-  createFirestoreInstance,
-};
+// Enable the functions emulator when running in development
+if (process.env.NODE_ENV === "development") {
+  const host = "localhost";
+  connectFunctionsEmulator(functions, host, 5001);
+  // connectFirestoreEmulator(firestore, host, 9000);
+}
 
-export const FIREBASE = Object.freeze({
+type FirebaseSuite = {
+  app: FirebaseApp;
+  analytics: Analytics;
+  auth: Auth;
+  db: Database;
+  firestore: Firestore;
+  functions: Functions;
+  performance: FirebasePerformance;
+};
+export const FIREBASE: FirebaseSuite = Object.freeze({
   analytics,
   app,
   auth,

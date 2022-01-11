@@ -2,6 +2,7 @@
 export const COLLECTION_SPACES = "venues";
 export const COLLECTION_WORLDS = "worlds";
 export const COLLECTION_SECTIONS = "sections";
+export const COLLECTION_USERS = "users";
 
 // common search fields, please keep the list short and simple
 export const FIELD_SLUG = "slug";

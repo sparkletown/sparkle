@@ -3,18 +3,16 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
 import { Provider as ReduxStoreProvider } from "react-redux";
-import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import {
   AuthProvider,
   DatabaseProvider,
   FirebaseAppProvider,
   FirestoreProvider,
 } from "reactfire";
-import { AuthIsLoaded } from "core/AuthIsLoaded";
+import { AnalyticsCheck } from "core/AnalyticsCheck";
 import { BugsnagErrorBoundary } from "core/bugsnag";
-import { FIREBASE, REACT_REDUX_FIREBASE_CONFIG } from "core/firebase";
+import { FIREBASE } from "core/firebase";
 import { activatePolyFills } from "core/polyfills";
-import { connectFunctionsEmulator } from "firebase/functions";
 import { ThemeProvider } from "styled-components";
 
 import { store } from "store";
@@ -38,11 +36,6 @@ import "scss/global.scss";
 
 activatePolyFills();
 
-// Enable the functions emulator when running in development
-if (process.env.NODE_ENV === "development") {
-  connectFunctionsEmulator(FIREBASE.functions, "localhost", 5001);
-}
-
 traceReactScheduler("initial render", window.performance.now(), () => {
   render(
     <BugsnagErrorBoundary>
@@ -50,24 +43,22 @@ traceReactScheduler("initial render", window.performance.now(), () => {
         <DndProvider backend={HTML5Backend}>
           <ReduxStoreProvider store={store}>
             <FirebaseAppProvider firebaseApp={FIREBASE.app}>
-              <ReactReduxFirebaseProvider {...REACT_REDUX_FIREBASE_CONFIG}>
-                <FirestoreProvider sdk={FIREBASE.firestore}>
-                  <AuthProvider sdk={FIREBASE.auth}>
-                    <DatabaseProvider sdk={FIREBASE.db}>
-                      <AuthIsLoaded>
-                        <AlgoliaSearchProvider>
-                          <CustomSoundsProvider
-                            loadingComponent={<LoadingPage />}
-                            waitTillConfigLoaded
-                          >
-                            <AppRouter />
-                          </CustomSoundsProvider>
-                        </AlgoliaSearchProvider>
-                      </AuthIsLoaded>
-                    </DatabaseProvider>
-                  </AuthProvider>
-                </FirestoreProvider>
-              </ReactReduxFirebaseProvider>
+              <FirestoreProvider sdk={FIREBASE.firestore}>
+                <AuthProvider sdk={FIREBASE.auth}>
+                  <DatabaseProvider sdk={FIREBASE.db}>
+                    <AlgoliaSearchProvider>
+                      <CustomSoundsProvider
+                        loadingComponent={<LoadingPage />}
+                        waitTillConfigLoaded
+                      >
+                        <AnalyticsCheck>
+                          <AppRouter />
+                        </AnalyticsCheck>
+                      </CustomSoundsProvider>
+                    </AlgoliaSearchProvider>
+                  </DatabaseProvider>
+                </AuthProvider>
+              </FirestoreProvider>
             </FirebaseAppProvider>
           </ReduxStoreProvider>
         </DndProvider>
