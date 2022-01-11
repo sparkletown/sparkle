@@ -43,10 +43,10 @@ export interface EventInput {
 export interface WorldScheduleEvent {
   name: string;
   description: string;
-  start_date: string;
-  start_time: string;
-  duration_hours: number;
-  duration_minutes?: number;
+  startDate: string;
+  startTime: string;
+  durationHours: number;
+  durationMinutes?: number;
   host: string;
   spaceId?: string;
 }

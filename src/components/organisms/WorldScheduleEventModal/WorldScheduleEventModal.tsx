@@ -65,14 +65,14 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs
+        startDate: dayjs
           .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
-        start_time: dayjs
+        startTime: dayjs
           .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: Math.floor(event.durationMinutes / 60),
-        duration_minutes: event.durationMinutes % 60,
+        durationHours: Math.floor(event.durationMinutes / 60),
+        durationMinutes: event.durationMinutes % 60,
         host: event.host,
       });
     }
@@ -81,14 +81,13 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
   const onUpdateEvent = useCallback(
     async (data: WorldScheduleEvent) => {
       const spaceId = eventSpaceId ?? data.spaceId;
-      const start = dayjs(`${data.start_date} ${data.start_time}`);
+      const start = dayjs(`${data.startDate} ${data.startTime}`);
       const formEvent: WithoutId<WorldEvent> = {
         name: data.name,
         description: data.description,
         startUtcSeconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        durationMinutes:
-          data.duration_hours * 60 + (data.duration_minutes ?? 0),
+        durationMinutes: data.durationHours * 60 + (data.durationMinutes ?? 0),
         host: data.host,
         spaceId: spaceId,
         // @debt this needs figuring out. We shouldn't get to here without
@@ -232,14 +231,14 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
                 </div>
 
                 <div className="WorldScheduleEventModal__container">
-                  {errors.start_date && (
+                  {errors.startDate && (
                     <span className="input-error">
-                      {errors.start_date.message}
+                      {errors.startDate.message}
                     </span>
                   )}
-                  {errors.start_time && (
+                  {errors.startTime && (
                     <span className="input-error">
-                      {errors.start_time.message}
+                      {errors.startTime.message}
                     </span>
                   )}
                 </div>
@@ -266,14 +265,14 @@ export const WorldScheduleEventModal: React.FC<WorldScheduleEventModalProps> = (
                   <label htmlFor="duration_minutes">minutes</label>
                 </div>
                 <div className="WorldScheduleEventModal__container">
-                  {errors.duration_hours && (
+                  {errors.durationHours && (
                     <span className="input-error">
-                      {errors.duration_hours.message}
+                      {errors.durationHours.message}
                     </span>
                   )}
-                  {errors.duration_minutes && (
+                  {errors.durationMinutes && (
                     <span className="input-error">
-                      {errors.duration_minutes.message}
+                      {errors.durationMinutes.message}
                     </span>
                   )}
                 </div>
