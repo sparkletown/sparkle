@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { useAsyncFn, useToggle } from "react-use";
@@ -210,7 +209,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   );
 
   return (
-    <Form
+    <form
       className="PortalAddEditForm__form"
       onSubmit={handleSubmit(addPortal)}
     >
@@ -316,6 +315,6 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           Save
         </ButtonNG>
       </div>
-    </Form>
+    </form>
   );
 };

@@ -1,12 +1,14 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 
 import { IFRAME_ALLOW } from "settings";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 
-import "./VideoModal.scss";
+import { Modal } from "components/molecules/Modal";
 
+import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
+
+import "./VideoModal.scss";
 interface PropsType {
   show: boolean;
   onHide: () => void;
@@ -22,27 +24,18 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
   url,
   caption,
   autoplay = false,
-  backdrop = "static",
 }) => {
   const closeVideoModal = () => {
     onHide();
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={closeVideoModal}
-      centered={true}
-      size={"xl"}
-      backdrop={backdrop}
-    >
-      <Modal.Header closeButton>
-        {caption && <Modal.Title>{caption}</Modal.Title>}
-      </Modal.Header>
-      <div className="video-modal-container">
-        <div className="content">
+    <Modal isOpen={show} onClose={closeVideoModal} fullWidth>
+      <div className="VideoModal">
+        {caption && <h3>{caption}</h3>}
+        <div className="VideoModal__content">
           <iframe
-            className="youtube-video"
+            className="VideoModal__youtube"
             title="art-piece-video"
             src={convertToEmbeddableUrl({ url, autoPlay: autoplay })}
             frameBorder="0"
@@ -50,6 +43,13 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
             allowFullScreen
           ></iframe>
         </div>
+
+        <img
+          className="VideoModal__close-icon"
+          src={PortalCloseIcon}
+          alt="close portal"
+          onClick={onHide}
+        />
       </div>
     </Modal>
   );

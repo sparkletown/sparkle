@@ -8,16 +8,25 @@ $EventModal--padding-top: 40px;
   text-align: left;
 
   &__content {
+    width: 100%;
+    border-radius: 50px;
     padding: $EventModal--padding-top $spacing--xl $spacing--xl;
     display: flex;
     flex-direction: column;
     background-color: var(--greyscale-darker-50pp);
   }
 
-  &__close {
-    background: transparent;
-    border: none;
-    margin-bottom: -2.1rem;
+  &__close-icon {
+    @include square-size($spacing--xxl);
+    position: absolute;
+    right: $spacing--xxl;
+    top: $spacing--xxl;
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
   }
 
   &__title {

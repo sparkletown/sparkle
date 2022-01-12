@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { Modal } from "react-bootstrap";
 
 import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
 
@@ -13,6 +12,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useCurrentModalUser } from "components/organisms/NewProfileModal/useCurrentModalUser";
 
 import { Loading } from "components/molecules/Loading";
+import { Modal } from "components/molecules/Modal";
 
 import { NewProfileModalBody } from "./NewProfileModalBody";
 
@@ -53,30 +53,29 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   return (
     <Modal
       className="ProfileModal"
-      show={hasSelectedProfile && isModalShown}
-      onHide={hideHandler}
+      isOpen={hasSelectedProfile && isModalShown}
+      onClose={hideHandler}
+      isCentered
     >
-      <Modal.Body className="ProfileModal__body">
-        {isLoaded && user && (
-          <NewProfileModalBody
-            user={user}
-            venue={venue}
-            closeUserProfileModal={closeUserProfileModal}
-          />
-        )}
-        {!user && (
-          <div className="ProfileModalFetchUser">
-            {!isLoaded ? (
-              <Loading />
-            ) : (
-              <div>
-                Oops, an error occurred while trying to load user data.{"\n"}
-                Please contact our support team.
-              </div>
-            )}
-          </div>
-        )}
-      </Modal.Body>
+      {isLoaded && user && (
+        <NewProfileModalBody
+          user={user}
+          venue={venue}
+          closeUserProfileModal={closeUserProfileModal}
+        />
+      )}
+      {!user && (
+        <div className="ProfileModalFetchUser">
+          {!isLoaded ? (
+            <Loading />
+          ) : (
+            <div>
+              Oops, an error occurred while trying to load user data.{"\n"}
+              Please contact our support team.
+            </div>
+          )}
+        </div>
+      )}
     </Modal>
   );
 };

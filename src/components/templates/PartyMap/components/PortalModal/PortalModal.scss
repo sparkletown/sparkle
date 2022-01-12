@@ -4,6 +4,10 @@ $border-radius: 22px;
 $spacing: 20px;
 
 .PortalModal {
+  background-color: $secondary--live;
+  display: flex;
+  flex-direction: column;
+
   &__modal-body {
     display: flex;
     flex-direction: column;

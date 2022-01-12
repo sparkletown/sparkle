@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { omit } from "lodash";
 
@@ -73,50 +72,56 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       spaceOptions.map(({ id, name, template }) => {
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
-        return (
-          <ReactBootstrapDropdown.Item
-            key={id}
-            onClick={() => {
-              setSelected({ name, template, id });
-              setValue(fieldName, id, true);
-            }}
-            className="SpacesDropdown__item"
-          >
-            {name !== spaceNoneOption.name ? (
-              <img
-                alt={`space-icon-${spaceIcon}`}
-                src={spaceIcon}
-                className="SpacesDropdown__item-icon"
-              />
-            ) : null}
-            {name || noneOptionName}
-          </ReactBootstrapDropdown.Item>
-        );
+        return {
+          value: name,
+          label: (
+            <div
+              key={id}
+              onClick={() => {
+                setSelected({ name, template, id });
+                setValue(fieldName, id, true);
+              }}
+              className="SpacesDropdown__item"
+            >
+              {name !== spaceNoneOption.name ? (
+                <img
+                  alt={`space-icon-${spaceIcon}`}
+                  src={spaceIcon}
+                  className="SpacesDropdown__item-icon"
+                />
+              ) : null}
+              {name || noneOptionName}
+            </div>
+          ),
+        };
       }) ?? [],
     [spaceOptions, setValue, fieldName]
   );
 
   const renderedTitle = useMemo(() => {
     if (!selected) {
-      return "Select a space";
+      return { value: "", label: "Select a space" };
     }
 
     const space = spaces?.[selected.id ?? ""] ?? parentSpace;
 
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
-    return (
-      <span className="SpacesDropdown__value">
-        {selected.name !== spaceNoneOption.name ? (
-          <img
-            alt={`space-icon-${spaceIcon}`}
-            src={spaceIcon}
-            className="SpacesDropdown__item-icon"
-          />
-        ) : null}
-        {selected.name || noneOptionName}
-      </span>
-    );
+    return {
+      value: selected.name,
+      label: (
+        <span className="SpacesDropdown__value">
+          {selected.name !== spaceNoneOption.name ? (
+            <img
+              alt={`space-icon-${spaceIcon}`}
+              src={spaceIcon}
+              className="SpacesDropdown__item-icon"
+            />
+          ) : null}
+          {selected.name || noneOptionName}
+        </span>
+      ),
+    };
   }, [spaces, selected, parentSpace]);
 
   return (

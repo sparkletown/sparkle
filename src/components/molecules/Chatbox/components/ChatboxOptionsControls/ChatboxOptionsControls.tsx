@@ -1,12 +1,9 @@
 import React, { useCallback, useMemo } from "react";
-import {
-  Dropdown as ReactBootstrapDropdown,
-  DropdownButton,
-} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ChatMessageOptions, ChatOptionType } from "types/chat";
 
+import { Dropdown } from "components/atoms/Dropdown";
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatboxOptionsControls.scss";
@@ -26,15 +23,19 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
 
   const dropdownOptions = useMemo(
     () =>
-      ChatMessageOptions.map((option) => (
-        <ReactBootstrapDropdown.Item
-          key={option.name}
-          onClick={() => setActiveOption(option.type)}
-        >
-          {option.name}
-          <FontAwesomeIcon icon={option.icon} />
-        </ReactBootstrapDropdown.Item>
-      )),
+      ChatMessageOptions.map((option) => ({
+        value: option.name,
+        label: (
+          <div
+            key={option.name}
+            onClick={() => setActiveOption(option.type)}
+            className="ChatboxOptionsControls__option"
+          >
+            <span>{option.name}</span>
+            <FontAwesomeIcon icon={option.icon} />
+          </div>
+        ),
+      })),
     [setActiveOption]
   );
 
@@ -48,15 +49,13 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
         <TextButton label="Cancel Poll" onClick={unselectOption} />
       ) : (
         // @debt align the style of the SpacesDropdown with the Dropdown component
-        <DropdownButton
-          id="options-dropdown"
-          title="Options"
+        <Dropdown
+          title={{ value: "Options", label: "Options" }}
           className="ChatboxOptionsControls__dropdown"
-          variant="link"
-          drop="up"
-        >
-          {dropdownOptions}
-        </DropdownButton>
+          options={dropdownOptions}
+          placement="top"
+          noArrow
+        />
       )}
     </div>
   );

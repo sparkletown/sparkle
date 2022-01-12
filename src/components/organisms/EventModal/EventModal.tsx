@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import Modal from "react-bootstrap/Modal";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
@@ -23,7 +22,11 @@ import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { Modal } from "components/molecules/Modal";
+
 import { ButtonOG } from "components/atoms/ButtonOG";
+
+import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./EventModal.scss";
 
@@ -93,8 +96,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   );
 
   return (
-    <Modal show={show} onHide={onHide} className="EventModal">
-      <Modal.Header className="EventModal__close" closeButton />
+    <Modal isOpen={show} onClose={onHide} className="EventModal">
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
@@ -116,6 +118,12 @@ export const EventModal: React.FC<EventModalProps> = ({
           {eventStatus} in the {eventLocationToDisplay}
         </ButtonOG>
       </div>
+      <img
+        className="EventModal__close-icon"
+        src={PortalCloseIcon}
+        alt="close event"
+        onClick={onHide}
+      />
     </Modal>
   );
 };

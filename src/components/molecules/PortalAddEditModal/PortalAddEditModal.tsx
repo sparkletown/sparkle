@@ -1,11 +1,12 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 
 import { PortalInfoItem } from "settings";
 
 import { Room } from "types/rooms";
 
 import { PortalAddEditForm } from "components/organisms/PortalAddEditForm";
+
+import { Modal } from "components/molecules/Modal";
 
 import "./PortalAddEditModal.scss";
 
@@ -24,14 +25,12 @@ export const PortalAddEditModal: React.FC<PortalAddEditModalProps> = ({
   portal,
   portalIndex,
 }) => (
-  <Modal className="PortalAddEditModal" show={show} onHide={onHide} centered>
-    <Modal.Body>
-      <PortalAddEditForm
-        item={item}
-        onDone={onHide}
-        portal={portal}
-        portalIndex={portalIndex}
-      />
-    </Modal.Body>
+  <Modal isOpen={show} onClose={onHide}>
+    <PortalAddEditForm
+      item={item}
+      onDone={onHide}
+      portal={portal}
+      portalIndex={portalIndex}
+    />
   </Modal>
 );

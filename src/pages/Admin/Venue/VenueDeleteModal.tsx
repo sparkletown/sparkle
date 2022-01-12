@@ -1,7 +1,8 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
@@ -33,7 +34,7 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   }, [onDelete, venueId]);
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal isOpen={show} onClose={onHide}>
       <div className="VenueDeleteModal">
         <h2 className="centered">Delete space</h2>
         <div className="secondary-action">

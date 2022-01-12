@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import classNames from "classnames";
 
 import { UserStatus } from "types/User";
@@ -36,15 +35,18 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      userStatuses.map((userStatus) => (
-        <ReactBootstrapDropdown.Item
-          className="UserStatusDropdown__item"
-          key={userStatus.status}
-          onClick={() => changeUserStatus(userStatus.status)}
-        >
-          {userStatus.status}
-        </ReactBootstrapDropdown.Item>
-      )),
+      userStatuses.map((userStatus) => ({
+        value: userStatus.status,
+        label: (
+          <div
+            className="UserStatusDropdown__item"
+            key={userStatus.status}
+            onClick={() => changeUserStatus(userStatus.status)}
+          >
+            {userStatus.status}
+          </div>
+        ),
+      })),
     [userStatuses, changeUserStatus]
   );
 
@@ -55,7 +57,10 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
         {userStatus.status}&nbsp;
       </div>
       {showDropdown && (
-        <Dropdown title="change status" options={userStatusDropdownOptions} />
+        <Dropdown
+          title={{ label: "change status", value: "change status" }}
+          options={userStatusDropdownOptions}
+        />
       )}
     </div>
   );

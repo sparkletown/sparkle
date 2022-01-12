@@ -26,6 +26,8 @@ $image-container-height: 200px;
   }
 
   &__form {
+    width: 100%;
+
     .AdminSection {
       &__label {
         display: flex;

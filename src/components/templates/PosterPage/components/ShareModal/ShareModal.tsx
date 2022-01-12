@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import { Modal } from "react-bootstrap";
 import { useCopyToClipboard } from "react-use";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,6 +10,8 @@ import { WithId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
+
+import { Modal } from "components/molecules/Modal";
 
 import { LinkButton } from "components/atoms/LinkButton";
 
@@ -78,25 +79,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   }, [url, venue]);
 
   return (
-    <Modal show={show} onHide={onHide}>
-      <Modal.Body className="ShareModal">
-        <div className="ShareModal__header">
-          <h3 className="ShareModal__title">
-            {venue.poster?.title ?? "Poster"}
-          </h3>
-          <span className="ShareModal__url-text">{url}</span>
+    <Modal isOpen={show} onClose={onHide}>
+      <div className="ShareModal__header">
+        <h3 className="ShareModal__title">{venue.poster?.title ?? "Poster"}</h3>
+        <span className="ShareModal__url-text">{url}</span>
+      </div>
+
+      <div className="ShareModal__content">
+        <h3 className="ShareModal__content-title">Share this page</h3>
+
+        {renderedLinkButtons}
+
+        <div className={linkClasses} onClick={copyThisUrl}>
+          {linkText}
         </div>
-
-        <div className="ShareModal__content">
-          <h3 className="ShareModal__content-title">Share this page</h3>
-
-          {renderedLinkButtons}
-
-          <div className={linkClasses} onClick={copyThisUrl}>
-            {linkText}
-          </div>
-        </div>
-      </Modal.Body>
+      </div>
     </Modal>
   );
 };

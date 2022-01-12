@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import dayjs from "dayjs";
@@ -13,6 +12,8 @@ import { VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -79,7 +80,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     : "Unknown";
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal isOpen={show} onClose={onHide}>
       <div className="TimingDeleteModal">
         <h2>Delete event</h2>
         <form

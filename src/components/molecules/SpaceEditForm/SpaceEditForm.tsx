@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
@@ -397,16 +396,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
             {space.template &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
               ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
-                <div>
-                  <Form.Label>URL</Form.Label>
-                  <InputField
+                <AdminSection title="URL" withLabel>
+                  <AdminInput
                     name="zoomUrl"
                     type="text"
-                    autoComplete="off"
                     placeholder="URL"
-                    ref={register}
+                    register={register}
+                    errors={errors}
+                    autoComplete="off"
                   />
-                </div>
+                </AdminSection>
               )}
 
             {!DISABLED_DUE_TO_1253 &&

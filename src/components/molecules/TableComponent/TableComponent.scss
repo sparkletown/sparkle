@@ -105,6 +105,10 @@ $title-min-width: 70px;
     }
   }
 
+  &__modal {
+    background-color: var(--content--under);
+  }
+
   &__modal-container {
     display: flex;
     flex-direction: column;

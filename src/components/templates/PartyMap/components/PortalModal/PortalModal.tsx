@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useRef } from "react";
-import { Modal } from "react-bootstrap";
 import ShowMoreText from "react-show-more-text";
 
 import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
@@ -23,6 +22,7 @@ import { useWorldById } from "hooks/worlds/useWorldById";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
 
+import { Modal } from "components/molecules/Modal";
 import { UserList } from "components/molecules/UserList";
 
 import { PortalSchedule } from "../PortalSchedule";
@@ -50,7 +50,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 }) => {
   if (!venue || !portal) return null;
 
-  if (portal.type === RoomType.modalFrame) {
+  if (portal.type !== RoomType.modalFrame) {
     return (
       <VideoModal
         show={show}
@@ -64,21 +64,19 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} className="PortalModal" centered>
-      <Modal.Body className="PortalModal__modal-body">
-        <PortalModalContent
-          portal={portal}
-          venueEvents={venueEvents}
-          venue={venue}
-        />
+    <Modal isOpen={show} onClose={onHide} className="PortalModal" isCentered>
+      <PortalModalContent
+        portal={portal}
+        venueEvents={venueEvents}
+        venue={venue}
+      />
 
-        <img
-          className="PortalModal__close-icon"
-          src={PortalCloseIcon}
-          alt="close portal"
-          onClick={onHide}
-        />
-      </Modal.Body>
+      <img
+        className="PortalModal__close-icon"
+        src={PortalCloseIcon}
+        alt="close portal"
+        onClick={onHide}
+      />
     </Modal>
   );
 };
@@ -155,7 +153,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
   useEffect(() => enterButtonref.current?.focus());
 
   return (
-    <>
+    <div className="PortalModal">
       <div className="PortalModal__main">
         <div className="PortalModal__icon" style={iconStyles} />
 
@@ -214,6 +212,6 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
       </div>
 
       {showPortalEvents && <PortalSchedule portalEvents={venueEvents} />}
-    </>
+    </div>
   );
 };

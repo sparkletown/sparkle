@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { FormControl, Modal } from "react-bootstrap";
 import { useFirestore } from "react-redux-firebase";
 import { debounce } from "lodash";
 
@@ -11,6 +10,12 @@ import { User } from "types/User";
 import { AnyVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
+
+import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
+
+import { Modal } from "components/molecules/Modal";
+
+import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./VenueOwnerModal.scss";
 
@@ -101,36 +106,42 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   if (isLoading) return <>Loading...</>;
 
   return (
-    <Modal show={visible} onHide={onHide}>
-      <Modal.Body>
-        <div className="modal-container venue-owner-modal">
-          <h3>Manage Owners</h3>
-          <div className="row-container">
-            <h4>Current Venue Owners</h4>
-            {venueOwnerUsers.map((owner) => (
-              <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
-            ))}
-          </div>
-          <FormControl
-            className="text-input"
+    <Modal isOpen={visible} onClose={onHide}>
+      <div className="VenueOwnersModal">
+        <h3>Manage Owners</h3>
+        <div className="row-container">
+          <h4>Current Venue Owners</h4>
+          {venueOwnerUsers.map((owner) => (
+            <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
+          ))}
+        </div>
+        <div className="VenueOwnersModal__search">
+          <SearchField
             autoFocus
             placeholder="Search users..."
-            onChange={(e) => debouncedSearch(e.target.value)}
+            onChange={debouncedSearch}
           />
-          <div className="row-container">
-            {hasResults &&
-              (filteredUsers ?? []).map((user) => (
-                <UserRow key={user.id} user={user} venueId={venue.id} />
-              ))}
-            {isEnterSearchText && (
-              <div>Enter the users name in the text input above</div>
-            )}
-            {!isEnterSearchText && !hasResults && (
-              <div>No results for your search</div>
-            )}
-          </div>
         </div>
-      </Modal.Body>
+
+        <div className="row-container">
+          {hasResults &&
+            (filteredUsers ?? []).map((user) => (
+              <UserRow key={user.id} user={user} venueId={venue.id} />
+            ))}
+          {isEnterSearchText && (
+            <div>Enter the users name in the text input above</div>
+          )}
+          {!isEnterSearchText && !hasResults && (
+            <div>No results for your search</div>
+          )}
+        </div>
+      </div>
+      <img
+        className="VenueOwnersModal__close-icon"
+        src={PortalCloseIcon}
+        alt="close event"
+        onClick={onHide}
+      />
     </Modal>
   );
 };

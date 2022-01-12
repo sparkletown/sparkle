@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { useAsyncFn } from "react-use";
@@ -154,7 +153,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
 
   return (
     <div className="WorldGeneralForm">
-      <Form onSubmit={handleSubmit(submit)} onChange={handleChange}>
+      <form onSubmit={handleSubmit(submit)} onChange={handleChange}>
         <AdminSection title="Name your world" withLabel>
           <AdminInput
             name="name"
@@ -220,7 +219,7 @@ export const WorldGeneralForm: React.FC<WorldGeneralFormProps> = ({
             {worldId ? "Update" : "Create"}
           </ButtonNG>
         </AdminSidebarButtons>
-      </Form>
+      </form>
     </div>
   );
 };

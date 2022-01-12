@@ -74,7 +74,7 @@ export const UserList: React.FC<UserListProps> = ({
 
       <div className="UserList__avatars">
         {renderedUserAvatars}
-        {excessiveUserCount && (
+        {!!excessiveUserCount && (
           <div className="UserList__excessive-number">
             and {excessiveUserCount} more
           </div>

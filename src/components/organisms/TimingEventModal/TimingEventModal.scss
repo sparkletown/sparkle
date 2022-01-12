@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 .TimingEventModal {
+  background-color: $light-grey;
+
   &__container {
     display: flex;
     justify-content: space-between;
