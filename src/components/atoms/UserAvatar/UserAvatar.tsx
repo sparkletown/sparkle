@@ -4,7 +4,7 @@ import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { BaseUser } from "types/User";
+import { Profile } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
@@ -20,7 +20,7 @@ import "./UserAvatar.scss";
 export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export type UserAvatarUserFields = WithId<
-  Pick<BaseUser, "partyName" | "pictureUrl" | "anonMode" | "status">
+  Pick<Profile, "partyName" | "pictureUrl" | "anonMode" | "status">
 >;
 
 export interface UserAvatarProps extends ContainerClassName {
@@ -52,11 +52,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   // @debt until temporarily disable is online functionality
   const isOnline = false;
 
-  const {
-    userStatus,
-    venueUserStatuses,
-    isStatusEnabledForVenue,
-  } = useVenueUserStatuses(user);
+  const { userStatus, venueUserStatuses, isStatusEnabledForVenue } =
+    useVenueUserStatuses(user);
 
   const avatarSrc = useMemo((): string => {
     // @debt extract utility functions for proper checks of http and static using RegExp's

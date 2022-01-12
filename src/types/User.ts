@@ -19,7 +19,7 @@ export interface ProfileLink {
   url: string;
 }
 
-export interface BaseUser {
+export interface Profile {
   partyName?: string;
   pictureUrl?: string;
   anonMode?: boolean;
@@ -42,7 +42,7 @@ export interface BaseUser {
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
 }
 
-export interface User extends BaseUser {
+export interface User extends Profile {
   lastVenueIdSeenIn?: never;
   lastSeenAt?: never;
   enteredVenueIds?: never;
@@ -71,7 +71,7 @@ export interface UserLocation {
   enteredWorldIds?: string[];
 }
 
-export type UserWithLocation = BaseUser & UserLocation;
+export type UserWithLocation = Profile & UserLocation;
 
 export const VideoStateSchema: Yup.ObjectSchema<VideoState> = Yup.object()
   .shape({

@@ -1,16 +1,23 @@
 import firebase from "firebase/compat/app";
 import omit from "lodash/omit";
 
-// @debt Move this file into types/ or possibly even merge it with types/utility.ts
+import { WorldId } from "types/id";
 
-export type WithId<T extends object> = T & { id: string };
+// @debt Move these types in types/id.ts
 
-export type WithSlug<T extends object> = T & { slug: string };
+export type WithId<T extends object, ID extends string = string> = T & {
+  id: ID;
+};
+export type WithSlug<T extends object, S extends string = string> = T & {
+  slug: S;
+};
+export type WithWorldId<T extends object> = T & { worldId: WorldId };
+export type WithOptionalWorldId<T extends object> = T & { worldId?: WorldId };
 
-export type WithWorldId<T extends object> = T & { worldId: string };
-export type WithOptionalWorldId<T extends object> = T & { worldId?: string };
-
-export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
+export const withId = <T extends object, ID extends string = string>(
+  obj: T,
+  id: ID
+): WithId<T, ID> => ({
   ...obj,
   id,
 });

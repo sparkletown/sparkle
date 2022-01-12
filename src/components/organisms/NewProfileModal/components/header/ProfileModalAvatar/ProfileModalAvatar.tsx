@@ -40,10 +40,10 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
-  const { user: currentUser } = useUser();
+  const { userId } = useUser();
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
-    currentUser
+    userId
   );
 
   const [uploadingState, handleFileChange] = useAsyncFn(

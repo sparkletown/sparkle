@@ -5,7 +5,6 @@ import {
   Query,
   QueryDocumentSnapshot,
   SnapshotOptions,
-  Timestamp,
   WriteBatch,
 } from "firebase/firestore";
 

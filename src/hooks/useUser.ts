@@ -1,55 +1,68 @@
 import { useMemo } from "react";
-import { FirebaseReducer } from "react-redux-firebase";
-import { isEqual } from "lodash";
+import { useFirestore, useFirestoreDocData, useSigninCheck } from "reactfire";
+import { doc } from "firebase/firestore";
 
-import { RootState } from "store";
+import { COLLECTION_USERS } from "settings";
 
-import { User, UserLocation } from "types/User";
+import { UserId } from "types/id";
+import { RefiAuthUser, RefiError, RefiStatus } from "types/reactfire";
+import { Profile, User, UserLocation, UserWithLocation } from "types/User";
 
-import { WithId, withId } from "utils/id";
-import { authSelector, profileSelector } from "utils/selectors";
+import { identityConverter } from "utils/converters";
+import { convertToFirestoreKey, WithId, withId } from "utils/id";
 import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
-import { useSelector } from "hooks/useSelector";
-
 export interface UseUserResult {
-  user?: FirebaseReducer.AuthState;
-  profile?: FirebaseReducer.Profile<User>;
+  user?: RefiAuthUser;
+  profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
-  userId?: string;
+  userId?: UserId;
   isTester: boolean;
+  isLoading: boolean;
+  authStatus: RefiStatus;
+  authError: RefiError;
+  profileStatus: RefiStatus;
+  profileError: RefiError;
 }
 
 export const useUser = (): UseUserResult => {
-  const user = useSelector((state: RootState) => {
-    const auth = authSelector(state);
+  const {
+    status: authStatus,
+    data: authData,
+    error: authError,
+  } = useSigninCheck();
 
-    return !auth.isEmpty ? auth : undefined;
-  }, isEqual);
+  const user: RefiAuthUser | undefined = authData?.user ?? undefined;
+  const userId = user?.uid as UserId;
 
-  const profileWithLocation = useSelector((state: RootState) => {
-    const profile = profileSelector(state);
+  const firestore = useFirestore();
+  const {
+    status: profileStatus,
+    data: profileDataWithLocation,
+    error: profileError,
+  } = useFirestoreDocData(
+    doc(
+      firestore,
+      COLLECTION_USERS,
+      convertToFirestoreKey(userId)
+    ).withConverter<UserWithLocation>(identityConverter())
+  );
 
-    return !profile.isEmpty ? profile : undefined;
-  }, isEqual);
-
-  const userId = user?.uid;
-
-  const profile = useMemo(
+  const profile: Profile | undefined = useMemo(
     () =>
-      profileWithLocation
-        ? omitLocationFromUser(profileWithLocation)
+      profileDataWithLocation
+        ? omitLocationFromUser(profileDataWithLocation)
         : undefined,
-    [profileWithLocation]
+    [profileDataWithLocation]
   );
 
   const userLocation = useMemo(
     () =>
-      profileWithLocation
-        ? extractLocationFromUser(profileWithLocation)
+      profileDataWithLocation
+        ? extractLocationFromUser(profileDataWithLocation)
         : undefined,
-    [profileWithLocation]
+    [profileDataWithLocation]
   );
 
   const userWithId = useMemo(() => {
@@ -65,6 +78,7 @@ export const useUser = (): UseUserResult => {
   }, [user, userId, profile]);
 
   const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
+  const isLoading = "loading" === authStatus || "loading" === profileStatus;
 
   return useMemo(
     () => ({
@@ -74,7 +88,24 @@ export const useUser = (): UseUserResult => {
       userWithId,
       userId,
       isTester,
+      isLoading,
+      authStatus,
+      authError,
+      profileStatus,
+      profileError,
     }),
-    [user, profile, userLocation, userWithId, userId, isTester]
+    [
+      user,
+      profile,
+      userLocation,
+      userWithId,
+      userId,
+      isTester,
+      isLoading,
+      authStatus,
+      authError,
+      profileStatus,
+      profileError,
+    ]
   );
 };

@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FirebaseReducer } from "react-redux-firebase";
 
 import {
   DEFAULT_MAP_BACKGROUND,
@@ -7,6 +6,7 @@ import {
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
+import { RefiAuthUser } from "types/reactfire";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
@@ -20,7 +20,7 @@ export const DEFAULT_COLUMNS = 40;
 export const DEFAULT_ROWS = 25;
 
 interface MapProps {
-  user: FirebaseReducer.AuthState;
+  user: RefiAuthUser;
   venue: PartyMapVenue;
   selectRoom: (room: Room) => void;
 }

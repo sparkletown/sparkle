@@ -42,5 +42,17 @@ const CONVERTER_WITH_ID = {
 };
 Object.freeze(CONVERTER_WITH_ID);
 
+const CONVERTER_IDENTITY = {
+  toFirestore: <T = unknown>(value: T) => value as InterimDocumentData,
+  fromFirestore: (
+    snapshot: InterimQueryDocumentSnapshot<InterimDocumentData>,
+    options?: InterimSnapshotOptions
+  ) => withId(snapshot.data(), snapshot.id),
+};
+Object.freeze(CONVERTER_IDENTITY);
+
 export const withIdConverter = <T extends object>() =>
   CONVERTER_WITH_ID as ModularFirestoreDataConverter<WithId<T>>;
+
+export const identityConverter = <T extends object>() =>
+  CONVERTER_IDENTITY as ModularFirestoreDataConverter<T>;
