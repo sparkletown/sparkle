@@ -1,1 +1,0 @@
-export { WorldScheduleEventModal } from "./WorldScheduleEventModal";

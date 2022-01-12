@@ -9,6 +9,8 @@ import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
 import { updateWorldScheduleSettings } from "api/world";
 
+import { EventsVariant } from "types/events";
+
 import {
   convertDateFromUtcSeconds,
   convertUtcSecondsFromInputDateAndTime,
@@ -21,7 +23,7 @@ import { useWorldParams } from "hooks/worlds/useWorldParams";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { WorldScheduleEvents } from "components/organisms/WorldScheduleEvents";
+import { EventsView } from "components/organisms/AdminVenueView/components/EventsView";
 
 import { AdminDateTime } from "components/molecules/AdminDateTime";
 import { AdminSection } from "components/molecules/AdminSection";
@@ -240,7 +242,7 @@ export const WorldSchedule = () => {
           </form>
         </AdminSidebar>
         <AdminShowcase>
-          <WorldScheduleEvents />
+          <EventsView variant={EventsVariant.world} worldId={world.id} />
         </AdminShowcase>
       </AdminPanel>
     </>

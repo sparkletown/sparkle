@@ -1,5 +1,6 @@
 import React from "react";
 
+import { EventsVariant } from "types/events";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -22,7 +23,11 @@ export const SpaceTimingPanel: React.FC<SpaceTimingPanelProps> = ({
   <AdminPanel variant="bound" className="SpaceTimingPanel">
     <AdminSidebar />
     <AdminShowcase>
-      <EventsView venueId={venue.id} venue={venue} />
+      <EventsView
+        variant={EventsVariant.space}
+        venueId={venue.id}
+        venue={venue}
+      />
     </AdminShowcase>
   </AdminPanel>
 );

@@ -1,21 +1,22 @@
-import React, { useCallback, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Dropdown as ReactBootstrapDropdown, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
 import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
-import { createEvent, EventInput, updateEvent } from "api/admin";
+import { createEvent, updateEvent, WorldScheduleEvent } from "api/admin";
 
-import { AnyVenue, WorldEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
-import { MaybeWithId, WithId } from "utils/id";
+import { MaybeWithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
+import { Dropdown } from "components/atoms/Dropdown";
 
 import "./TimingEventModal.scss";
 
@@ -23,7 +24,7 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   event?: WorldEvent;
-  venue: WithId<AnyVenue>;
+  venueId?: string;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: () => void;
 };
@@ -32,27 +33,35 @@ export type TimingEventModalProps = {
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
-  venue,
+  venueId,
   setEditedEvent,
   event,
   setShowDeleteEventModal,
 }) => {
+  const eventSpaceId = event?.spaceId || venueId;
+
   const {
     register,
     handleSubmit,
     errors,
     formState,
     reset,
-  } = useForm<EventInput>({
+    watch,
+    setValue,
+  } = useForm<WorldScheduleEvent>({
     mode: "onSubmit",
     reValidateMode: "onChange",
     validationSchema: eventEditSchema,
+    validationContext: {
+      eventSpaceId,
+    },
   });
+
+  const values = watch();
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.
-  const eventSpaceId = event?.spaceId || venue.id;
-  const { findVenueInRelatedVenues } = useRelatedVenues();
+  const { findVenueInRelatedVenues, relatedVenueIds } = useRelatedVenues();
   const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
 
   useEffect(() => {
@@ -60,38 +69,43 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       reset({
         name: event.name,
         description: event.description,
-        start_date: dayjs
+        startDate: dayjs
           .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
-        start_time: dayjs
+        startTime: dayjs
           .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: Math.floor(event.durationMinutes / 60),
-        duration_minutes: event.durationMinutes % 60,
+        durationHours: Math.floor(event.durationMinutes / 60),
+        durationMinutes: event.durationMinutes % 60,
         host: event.host,
       });
     }
   }, [event, reset, eventSpaceId]);
 
   const onUpdateEvent = useCallback(
-    async (data: EventInput) => {
-      const start = dayjs(`${data.start_date} ${data.start_time}`);
+    async (data: WorldScheduleEvent) => {
+      const spaceId = eventSpaceId ?? data.spaceId;
+
+      if (!spaceId) {
+        return;
+      }
+
+      const start = dayjs(`${data.startDate} ${data.startTime}`);
       const formEvent: MaybeWithId<WorldEvent> = {
         name: data.name,
         description: data.description,
         startUtcSeconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        durationMinutes:
-          data.duration_hours * 60 + (data.duration_minutes ?? 0),
+        durationMinutes: data.durationHours * 60 + (data.durationMinutes ?? 0),
         host: data.host,
-        spaceId: eventSpaceId,
+        spaceId: spaceId,
         // @debt this needs figuring out. We shouldn't get to here without
         // an eventSpace
         worldId: eventSpace?.worldId ?? "",
       };
       // Add the ID conditionally - otherwise the field is set to undefined
       // which firebase does not like.
-      if (eventSpaceId) {
+      if (spaceId) {
         if (event?.id) {
           formEvent.id = event.id;
           await updateEvent(formEvent as WorldEvent);
@@ -111,6 +125,26 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
+  console.log(values);
+
+  const renderedSpaceIds = useMemo(
+    () =>
+      relatedVenueIds.map((spaceId) => {
+        return (
+          <ReactBootstrapDropdown.Item
+            key={spaceId}
+            ref={register}
+            name="spaceId"
+            onClick={() => setValue("spaceId", spaceId)}
+            className="SpacesDropdown__item"
+          >
+            {spaceId}
+          </ReactBootstrapDropdown.Item>
+        );
+      }) ?? [],
+    [register, relatedVenueIds, setValue]
+  );
+
   return (
     <>
       <Modal
@@ -124,6 +158,20 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <h2>Add experience</h2>
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <p>Your experience is in {eventSpace?.name}</p>
+
+              {eventSpace?.name ?? (
+                <div className="TimingEventModal__input-group">
+                  <Dropdown
+                    title={values.spaceId ?? "None"}
+                    options={renderedSpaceIds}
+                  />
+                  {errors.spaceId && (
+                    <span className="input-error">
+                      {errors.spaceId.message}
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="TimingEventModal__input-group">
                 <label htmlFor="name">Name your experience</label>
@@ -200,14 +248,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 </div>
 
                 <div className="TimingEventModal__container">
-                  {errors.start_date && (
+                  {errors.startDate && (
                     <span className="input-error">
-                      {errors.start_date.message}
+                      {errors.startDate.message}
                     </span>
                   )}
-                  {errors.start_time && (
+                  {errors.startTime && (
                     <span className="input-error">
-                      {errors.start_time.message}
+                      {errors.startTime.message}
                     </span>
                   )}
                 </div>
@@ -234,14 +282,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   <label htmlFor="duration_minutes">minutes</label>
                 </div>
                 <div className="TimingEventModal__container">
-                  {errors.duration_hours && (
+                  {errors.durationHours && (
                     <span className="input-error">
-                      {errors.duration_hours.message}
+                      {errors.durationHours.message}
                     </span>
                   )}
-                  {errors.duration_minutes && (
+                  {errors.durationMinutes && (
                     <span className="input-error">
-                      {errors.duration_minutes.message}
+                      {errors.durationMinutes.message}
                     </span>
                   )}
                 </div>

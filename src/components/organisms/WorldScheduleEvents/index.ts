@@ -1,1 +1,0 @@
-export { WorldScheduleEvents } from "./WorldScheduleEvents";
