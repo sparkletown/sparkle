@@ -17,18 +17,10 @@ export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
 
 export type WithoutId<T extends object> = Pick<T, Exclude<keyof T, "id">>;
 
+export type MaybeWithId<T extends object> = WithoutId<T> & { id?: string };
+
 export const withoutId = <T extends object>(obj: T): WithoutId<T> =>
   omit(obj, "id");
-
-export type WithVenueId<T extends object> = T & { venueId: string };
-
-export const withVenueId = <T extends object>(
-  obj: T,
-  venueId: string
-): WithVenueId<T> => ({
-  ...obj,
-  venueId,
-});
 
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 // @see https://stackoverflow.com/questions/49595193/generating-random-key-firestore

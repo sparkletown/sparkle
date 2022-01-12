@@ -144,10 +144,7 @@ export const EmergencyViewPage: React.FC = () => {
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
         <div className="EmergencyView__main">
           {!selectedTab ? (
-            <EmergencyViewPageRooms
-              descendantVenues={descendantVenues}
-              liveAndFutureEvents={liveAndFutureEvents}
-            />
+            <EmergencyViewPageRooms descendantVenues={descendantVenues} />
           ) : (
             <ul className="EmergencyView__weekdays">{weekdays}</ul>
           )}

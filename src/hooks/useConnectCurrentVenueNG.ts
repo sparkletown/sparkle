@@ -1,36 +1,42 @@
 import { useMemo } from "react";
 
+import { COLLECTION_WORLD_EVENTS } from "settings";
+
 import { SparkleSelector } from "types/SparkleSelector";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
 import { withId } from "utils/id";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
-export const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.currentVenueNG;
+const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (state) =>
+  state.firestore.data.currentVenueNG;
 
-export const currentVenueEventsNGSelector: SparkleSelector<
-  Record<string, VenueEvent> | undefined
+const currentVenueEventsNGSelector: SparkleSelector<
+  Record<string, WorldEvent> | undefined
 > = (state) => state.firestore.data.currentVenueEventsNG;
 
-export const useConnectCurrentVenueNG = (venueId?: string) => {
+export const useConnectCurrentVenueNG = (
+  worldId?: string,
+  spaceId?: string
+) => {
   useFirestoreConnect(() => {
-    if (!venueId) return [];
+    if (!worldId || !spaceId) return [];
 
     return [
       {
         collection: "venues",
-        doc: venueId,
+        doc: spaceId,
         storeAs: "currentVenueNG",
       },
       {
-        collection: "venues",
-        doc: venueId,
-        subcollections: [{ collection: "events" }],
-        orderBy: ["start_utc_seconds", "asc"],
+        collection: COLLECTION_WORLD_EVENTS,
+        where: [
+          ["worldId", "==", worldId],
+          ["spaceId", "==", spaceId],
+        ],
+        orderBy: ["startUtcSeconds", "asc"],
         storeAs: "currentVenueEventsNG",
       },
     ];
@@ -41,11 +47,11 @@ export const useConnectCurrentVenueNG = (venueId?: string) => {
   return useMemo(
     () => ({
       currentVenue:
-        venueId && currentVenueNG ? withId(currentVenueNG, venueId) : undefined,
+        spaceId && currentVenueNG ? withId(currentVenueNG, spaceId) : undefined,
       currentVenueEvents: currentVenueEventsNG,
       isCurrentVenueLoaded: isLoaded(currentVenueNG),
       isCurrentVenueEventsLoaded: isLoaded(currentVenueEventsNG),
     }),
-    [venueId, currentVenueNG, currentVenueEventsNG]
+    [spaceId, currentVenueNG, currentVenueEventsNG]
   );
 };

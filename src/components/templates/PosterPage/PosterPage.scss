@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$control-buttons-padding-right: 80px;
+
 .PosterPage {
   padding: $announcement-banner-height $spacing--xl 0;
 
@@ -22,7 +24,7 @@
     &--right-cell {
       display: flex;
       justify-content: flex-end;
-      padding: 0 $spacing--xxl;
+      padding-right: $control-buttons-padding-right;
     }
   }
 
