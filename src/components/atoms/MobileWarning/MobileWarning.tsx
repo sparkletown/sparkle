@@ -19,8 +19,8 @@ export const MobileWarning: React.FC = () => {
         icon={faExclamationCircle}
       />
       <div className="MobileWarning__message">
-        Please enter this experience on desktop. We are best experienced using
-        your Chrome browser. See you there!
+        Please enter this experience on a larger screen. We are best experienced
+        using your Chrome browser on a desktop device. See you there!
       </div>
 
       <FontAwesomeIcon icon={faTimesCircle} onClick={hideWarning} />
