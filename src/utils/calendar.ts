@@ -1,14 +1,14 @@
 import calendarGenerator, { ICalCalendar } from "ical-generator";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 import { WorldSlug } from "types/world";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 export interface CreateCalendarProps {
-  events: WithVenueId<VenueEvent>[];
+  events: WorldEvent[];
   worldSlug?: WorldSlug;
   relatedVenues: WithId<AnyVenue>[];
 }
@@ -21,7 +21,7 @@ export const createCalendar = ({
   const calendar = calendarGenerator();
 
   events.forEach((event) => {
-    const space = relatedVenues.find(({ id }) => id === event.venueId);
+    const space = relatedVenues.find(({ id }) => id === event.spaceId);
     calendar.createEvent({
       start: eventStartTime({ event }),
       end: eventEndTime({ event }),

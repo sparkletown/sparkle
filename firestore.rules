@@ -10,6 +10,14 @@ function role(name) {
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function worldFromResource() {
+      return get(/databases/$(database)/documents/worlds/$(resource.data.worldId)).data;
+    }
+
+    function worldFromRequest() {
+      return get(/databases/$(database)/documents/worlds/$(request.resource.data.worldId)).data;
+    }
+
     match /authConfigs/{authConfigId} {
       allow read, write: if false;
     }
@@ -130,6 +138,11 @@ service cloud.firestore {
       allow get: if !resource.data.isHidden;
       allow list: if !resource.data.isHidden;
       allow update, delete: if request.auth.uid in role('admin').users && request.auth.uid in world().owners;
+    }
+    match /worldEvents/{eventId} {
+      allow update, delete: if request.auth.uid in worldFromResource().owners;
+      allow create: if request.auth.uid in worldFromRequest().owners;
+      allow read: if true
     }
   }
 }
