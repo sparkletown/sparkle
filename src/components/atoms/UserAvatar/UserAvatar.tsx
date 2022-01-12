@@ -41,6 +41,13 @@ const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
   full: null,
 };
 
+const onProfileImageLoadError: React.ReactEventHandler<HTMLImageElement> = ({
+  currentTarget,
+}) => {
+  currentTarget.onerror = null; // prevents looping
+  currentTarget.src = DEFAULT_PROFILE_IMAGE;
+};
+
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
@@ -110,6 +117,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
         className={imageClasses}
         src={avatarSrc}
         alt={`${userDisplayName}'s avatar`}
+        onError={onProfileImageLoadError}
         onClick={onClick}
       />
 
