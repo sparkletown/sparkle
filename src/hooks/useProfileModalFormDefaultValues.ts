@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import {
   UserProfileModalFormData,
@@ -10,6 +10,7 @@ import { Question } from "types/Question";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
+import { determineAvatar } from "utils/image";
 
 export const useProfileModalFormDefaultValues: (
   user: WithId<User>,
@@ -23,7 +24,7 @@ export const useProfileModalFormDefaultValues: (
   useMemo(
     () => ({
       profileLinks: user.profileLinks ?? [],
-      pictureUrl: user.pictureUrl ?? DEFAULT_PROFILE_PIC,
+      pictureUrl: determineAvatar({ user }),
       partyName: user.partyName ?? DEFAULT_PARTY_NAME,
       ...(questions
         ? Object.assign(
@@ -34,5 +35,5 @@ export const useProfileModalFormDefaultValues: (
           )
         : {}),
     }),
-    [answers, questions, user.partyName, user.pictureUrl, user.profileLinks]
+    [answers, questions, user]
   );
