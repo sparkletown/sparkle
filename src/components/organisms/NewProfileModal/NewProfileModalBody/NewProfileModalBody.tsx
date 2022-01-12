@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import firebase from "firebase/compat/app";
 
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
@@ -27,7 +27,6 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
   venue,
   closeUserProfileModal,
 }: NewProfileModalBodyProps) => {
-  const firebase = useFirebase();
   const history = useHistory();
   const { worldSlug } = useWorldParams();
 

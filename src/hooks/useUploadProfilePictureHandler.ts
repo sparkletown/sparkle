@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 import { v4 as uuid } from "uuid";
 
 import {
@@ -17,8 +17,6 @@ export const useUploadProfilePictureHandler = (
   setError: (error: string) => void,
   userId?: UserId
 ) => {
-  const firebase = useFirebase();
-
   return useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) return;

@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -37,8 +37,6 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   closeAuthenticationModal,
   afterUserIsLoggedIn,
 }) => {
-  const firebase = useFirebase();
-
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
 
   const { worldSlug, spaceSlug } = useSpaceParams();

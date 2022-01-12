@@ -1,10 +1,9 @@
 import { useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 
 import { useUser } from "hooks/useUser";
 
 export const useCheckOldPassword = () => {
-  const firebase = useFirebase();
   const { user } = useUser();
   const email = user?.email;
 

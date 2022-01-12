@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
 
 import {
@@ -36,13 +36,11 @@ export interface CurrentUserProfileModalContentProps {
   onCancelEditing: () => void;
 }
 
-export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
-  user,
-  venue,
-  onCancelEditing,
-}) => {
+export const EditingProfileModalContent: React.FC<
+  CurrentUserProfileModalContentProps
+> = ({ user, venue, onCancelEditing }) => {
   const { questions, answers } = useProfileQuestions(user, venue?.worldId);
-  const firebaseUser = useFirebase().auth()?.currentUser;
+  const firebaseUser = firebase.auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(
     user,
@@ -52,10 +50,8 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
 
   const checkOldPassword = useCheckOldPassword();
 
-  const {
-    isShown: isChangePasswordShown,
-    show: showChangePassword,
-  } = useShowHide();
+  const { isShown: isChangePasswordShown, show: showChangePassword } =
+    useShowHide();
 
   const {
     register,

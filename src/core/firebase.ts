@@ -4,6 +4,7 @@
 import { Analytics, getAnalytics } from "firebase/analytics";
 import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
 import { Auth, getAuth } from "firebase/auth";
+import firebase from "firebase/compat/app";
 import { Database, getDatabase } from "firebase/database";
 import { Firestore, getFirestore } from "firebase/firestore";
 import {
@@ -22,6 +23,9 @@ import {
   PROJECT_ID,
 } from "secrets";
 
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+
 const OPTIONS: FirebaseOptions = {
   apiKey: API_KEY,
   appId: APP_ID,
@@ -36,6 +40,15 @@ const OPTIONS: FirebaseOptions = {
 //   automaticDataCollectionEnabled: undefined,
 // };
 
+// needed for the compat mode, separate instance from the one following
+const firebaseApp = firebase.initializeApp(OPTIONS);
+firebaseApp.firestore();
+firebaseApp.auth();
+// firebaseApp.analytics();
+// firebase.functions();
+// firebase.performance();
+
+// the new and improved v9 API, separate instance from the one above
 const app = initializeApp(OPTIONS);
 
 const analytics = getAnalytics(app);

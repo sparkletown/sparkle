@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo } from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useMap } from "react-use";
+import firebase from "firebase/compat/app";
 
 import { REACTION_TIMEOUT } from "settings";
 
@@ -31,12 +31,8 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
   withPastReactions = false,
   children,
 }) => {
-  const [
-    reactionsMap,
-    { set: setReaction, remove: removeReaction },
-  ] = useMap<ReactionsById>({});
-
-  const firebase = useFirebase();
+  const [reactionsMap, { set: setReaction, remove: removeReaction }] =
+    useMap<ReactionsById>({});
 
   useEffect(() => {
     if (!venueId) return;

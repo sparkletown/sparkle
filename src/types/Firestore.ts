@@ -1,4 +1,4 @@
-import firebase from "firebase/compat";
+import firebase from "firebase/compat/app";
 import {
   DocumentData,
   FirestoreDataConverter,

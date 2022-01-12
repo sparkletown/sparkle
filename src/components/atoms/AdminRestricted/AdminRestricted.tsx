@@ -1,7 +1,7 @@
 import React from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/compat/app";
 
 import {
   DEFAULT_SPACE_SLUG,
@@ -26,7 +26,6 @@ import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 import "./AdminRestricted.scss";
 
 export const AdminRestricted: React.FC = ({ children }) => {
-  const firebase = useFirebase();
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { userId } = useUser();

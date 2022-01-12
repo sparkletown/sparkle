@@ -11,8 +11,10 @@ export type WithId<T extends object, ID extends string = string> = T & {
 export type WithSlug<T extends object, S extends string = string> = T & {
   slug: S;
 };
-export type WithWorldId<T extends object> = T & { worldId: WorldId };
-export type WithOptionalWorldId<T extends object> = T & { worldId?: WorldId };
+export type WithWorldId<T extends object> = T & { worldId: WorldId | string };
+export type WithOptionalWorldId<T extends object> = T & {
+  worldId?: WorldId | string;
+};
 
 export const withId = <T extends object, ID extends string = string>(
   obj: T,
