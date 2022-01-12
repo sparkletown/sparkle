@@ -23,8 +23,8 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useUser } from "hooks/useUser";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 const defaultWorld = {
   id: "undefined",
@@ -98,9 +98,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
   venue,
 }) => {
   const { user } = useUser();
-  const { world, isLoaded: isWorldLoaded } = useCurrentWorld({
-    worldId: venue?.worldId,
-  });
+  const { world, isLoaded: isWorldLoaded } = useWorldById(venue?.worldId);
 
   const worldIdAndName = useMemo(() => {
     if (!isWorldLoaded || !world) return;

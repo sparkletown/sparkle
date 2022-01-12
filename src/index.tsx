@@ -9,7 +9,7 @@ import {
   FirebaseAppProvider,
   FirestoreProvider,
 } from "reactfire";
-import { AnalyticsCheck } from "core/AnalyticsCheck";
+import { AppRouter } from "core/AppRouter";
 import { BugsnagErrorBoundary } from "core/bugsnag";
 import { FIREBASE } from "core/firebase";
 import { activatePolyFills } from "core/polyfills";
@@ -21,8 +21,6 @@ import { traceReactScheduler } from "utils/performance";
 
 import { AlgoliaSearchProvider } from "hooks/algolia/context";
 import { CustomSoundsProvider } from "hooks/sounds";
-
-import { AppRouter } from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
@@ -51,9 +49,7 @@ traceReactScheduler("initial render", window.performance.now(), () => {
                         loadingComponent={<LoadingPage />}
                         waitTillConfigLoaded
                       >
-                        <AnalyticsCheck>
-                          <AppRouter />
-                        </AnalyticsCheck>
+                        <AppRouter />
                       </CustomSoundsProvider>
                     </AlgoliaSearchProvider>
                   </DatabaseProvider>

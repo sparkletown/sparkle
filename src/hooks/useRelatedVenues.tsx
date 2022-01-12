@@ -7,7 +7,7 @@ import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 import { AnyVenue, SpaceSlug } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
-import { WithId } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 import { findSovereignVenue } from "utils/venue";
 
 import { isEmpty } from "./useFirestoreConnect";
@@ -48,13 +48,12 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   children,
 }) => {
   const firestore = useFirestore();
-  const relatedVenuesRef = query(
-    collection(firestore, COLLECTION_SPACES),
-    where("worldId", "==", worldId ?? "")
-  ).withConverter(withIdConverter<AnyVenue>());
 
   const { data: relatedVenues } = useFirestoreCollectionData<WithId<AnyVenue>>(
-    relatedVenuesRef,
+    query(
+      collection(firestore, COLLECTION_SPACES),
+      where("worldId", "==", convertToFirestoreKey(worldId))
+    ).withConverter(withIdConverter<AnyVenue>()),
     {
       initialData: ALWAYS_EMPTY_ARRAY,
     }

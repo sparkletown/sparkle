@@ -5,6 +5,7 @@ import {
   Route,
   Switch,
 } from "react-router-dom";
+import { AnalyticsCheck } from "core/AnalyticsCheck";
 
 import {
   ACCOUNT_ROOT_URL,
@@ -36,7 +37,6 @@ import { useUser } from "hooks/useUser";
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
-import { Provided } from "components/organisms/AppRouter/Provided";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -44,28 +44,28 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 import { Forbidden } from "components/atoms/Forbidden";
 import { NotFound } from "components/atoms/NotFound";
 
-const AccountSubrouter = lazy(() =>
+import { Provided } from "./Provided";
+
+const SubAccount = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
-    import("./AccountSubrouter").then(({ AccountSubrouter }) => ({
-      default: AccountSubrouter,
+    import("./AccountSubRouter").then(({ AccountSubRouter }) => ({
+      default: AccountSubRouter,
     }))
   )
 );
 
-const AdminSubRouter = lazy(() =>
+const SubAdmin = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
-    import("components/organisms/AppRouter/AdminSubRouter").then(
-      ({ AdminSubRouter }) => ({
-        default: AdminSubRouter,
-      })
-    )
+    import("./AdminSubRouter").then(({ AdminSubRouter }) => ({
+      default: AdminSubRouter,
+    }))
   )
 );
 
-const EnterSubrouter = lazy(() =>
+const SubEnter = lazy(() =>
   tracePromise("AppRouter::lazy-import::EnterSubrouter", () =>
-    import("./EnterSubrouter").then(({ EnterSubrouter }) => ({
-      default: EnterSubrouter,
+    import("./EnterSubRouter").then(({ EnterSubRouter }) => ({
+      default: EnterSubRouter,
     }))
   )
 );
@@ -106,6 +106,7 @@ const EmergencyViewPage = lazy(() =>
 // NOTE: do keep this monkeypatch localized in this file, not spread in others
 // @debt custom urls with AppRouter redirects that are to be removed in the future
 // @see: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+
 // GOOGLE
 const TEMP_GOOG_WEST_SLUG = "googlecloudwest";
 const TEMP_GOOG_WEST_LANDING = `/v/${TEMP_GOOG_WEST_SLUG}`;
@@ -174,40 +175,63 @@ export const AppRouter: React.FC = () => {
             /////////////////////////////////////////////////////////////////////////
           }
 
-          <Route path={ENTER_ROOT_URL} component={EnterSubrouter} />
+          {
+            // Subs BEGIN
+            // Subs get their analytics treatment inside them
+          }
+          <Route path={ENTER_ROOT_URL}>
+            <SubEnter />
+          </Route>
           <Route path={ACCOUNT_ROOT_URL}>
             <Provided withRelatedVenues>
-              <AccountSubrouter />
+              <SubAccount />
             </Provided>
           </Route>
           <Route path={ADMIN_ROOT_URL}>
-            <AdminSubRouter />
+            <SubAdmin />
           </Route>
-          <Route
-            path={LOGIN_CUSTOM_TOKEN_PARAM_URL}
-            component={LoginWithCustomToken}
-          />
+          {
+            // Subs END
+          }
+
+          <Route path={LOGIN_CUSTOM_TOKEN_PARAM_URL}>
+            <AnalyticsCheck>
+              <LoginWithCustomToken />
+            </AnalyticsCheck>
+          </Route>
           <Route path={ATTENDEE_LANDING_URL}>
             <Provided withRelatedVenues>
-              <VenueLandingPage />
+              <AnalyticsCheck>
+                <VenueLandingPage />
+              </AnalyticsCheck>
             </Provided>
           </Route>
           <Route path={ATTENDEE_STEPPING_PARAM_URL}>
             <Provided withRelatedVenues>
-              <VenueEntrancePage />
+              <AnalyticsCheck>
+                <VenueEntrancePage />
+              </AnalyticsCheck>
             </Provided>
           </Route>
           <Route path={ATTENDEE_INSIDE_URL}>
             <Provided withRelatedVenues>
-              <VenuePage />
+              <AnalyticsCheck>
+                <VenuePage />
+              </AnalyticsCheck>
             </Provided>
           </Route>
           <Route path={ATTENDEE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
-              <EmergencyViewPage />
+              <AnalyticsCheck>
+                <EmergencyViewPage />
+              </AnalyticsCheck>
             </Provided>
           </Route>
-          <Route path={VERSION_URL} component={VersionPage} />
+          <Route path={VERSION_URL}>
+            <AnalyticsCheck>
+              <VersionPage />
+            </AnalyticsCheck>
+          </Route>
           <Route
             path={SPARKLEVERSE_REDIRECT_URL}
             render={() => {
@@ -228,12 +252,16 @@ export const AppRouter: React.FC = () => {
             path={ROOT_URL}
             render={() =>
               user ? (
-                <NotFound />
+                <AnalyticsCheck>
+                  <NotFound />
+                </AnalyticsCheck>
               ) : (
                 // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
-                <WithNavigationBar>
-                  <Forbidden />
-                </WithNavigationBar>
+                <AnalyticsCheck>
+                  <WithNavigationBar>
+                    <Forbidden />
+                  </WithNavigationBar>
+                </AnalyticsCheck>
               )
             }
           />
