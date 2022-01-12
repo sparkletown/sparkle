@@ -1,24 +1,10 @@
-import { isEmpty, isLoaded } from "react-redux-firebase";
-
-import { SparkleSelector } from "types/SparkleSelector";
-
-import { AnySparkleRFQuery, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { useFirestore, useFirestoreDocData } from "reactfire";
+import { doc } from "firebase/firestore";
 
 export type AdminRole = {
   allowAll: boolean;
   users: string[];
 };
-
-export const adminRoleQuery: AnySparkleRFQuery = {
-  collection: "roles",
-  doc: "admin",
-  storeAs: "adminRole",
-};
-
-export const adminRoleSelector: SparkleSelector<AdminRole | undefined> = (
-  state
-) => state.firestore.data.adminRole;
 
 /**
  * React Hook to load and return adminRole data from Firestore/Redux.
@@ -27,12 +13,14 @@ export const adminRoleSelector: SparkleSelector<AdminRole | undefined> = (
  * @see useSelector
  */
 export const useAdminRole = () => {
-  useFirestoreConnect(adminRoleQuery);
-  const adminRole = useSelector(adminRoleSelector);
+  const firestore = useFirestore();
+  const query = doc(firestore, "roles", "admin");
+
+  const { data, status } = useFirestoreDocData(query);
+
   return {
-    adminRole,
-    isLoading: !isLoaded(adminRole),
-    isEmpty: isEmpty(adminRole),
+    adminRole: data as AdminRole,
+    isLoading: status === "loading",
   };
 };
 
@@ -42,13 +30,11 @@ export const useAdminRole = () => {
  * @see useAdminRole
  */
 export const useAdminUserIds = () => {
-  const { adminRole, isLoading, isEmpty } = useAdminRole();
-  const adminUserIds =
-    !isLoading && !isEmpty && adminRole?.users ? adminRole.users : [];
+  const { adminRole, isLoading } = useAdminRole();
+  const adminUserIds = !isLoading && adminRole?.users ? adminRole.users : [];
   return {
     adminUserIds,
     isLoading,
-    isEmpty,
   };
 };
 
@@ -60,12 +46,12 @@ export const useAdminUserIds = () => {
  * @see useAdminUserIds
  */
 export const useIsAdminUser = (userId?: string) => {
-  const { adminUserIds, isLoading, isEmpty } = useAdminUserIds();
+  const { adminUserIds, isLoading } = useAdminUserIds();
+  console.log("admin user", adminUserIds, isLoading);
   const isAdminUser =
     userId === undefined ? false : adminUserIds.includes(userId);
   return {
     isAdminUser,
     isLoading,
-    isEmpty,
   };
 };
