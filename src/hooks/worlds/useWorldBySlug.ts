@@ -33,12 +33,8 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
     where("isHidden", "==", false)
   ).withConverter<WithId<World>>(withIdConverter());
 
-  const { data: worlds, status } = useFirestoreCollectionData<WithId<World>>(
-    worldsRef,
-    {
-      initialData: undefined,
-    }
-  );
+  const { data: worlds, status } =
+    useFirestoreCollectionData<WithId<World>>(worldsRef);
 
   if (worlds?.length > 1) {
     Bugsnag.notify(

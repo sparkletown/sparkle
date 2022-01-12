@@ -9,8 +9,11 @@ import {
   SPACES_TAXON,
 } from "settings";
 
+import { World } from "api/world";
+
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
+import { WithId } from "utils/id";
 import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
@@ -31,9 +34,37 @@ import { SortDropDown } from "components/atoms/SortDropDown";
 
 import "./SpacesDashboard.scss";
 
-export const SpacesDashboard: React.FC = () => {
-  const { worldSlug } = useWorldParams();
-  const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
+const getDisplayName = <T,>(WrappedComponent: React.ComponentType<T>) => {
+  return WrappedComponent.displayName || WrappedComponent.name || "Component";
+};
+
+interface WithWorldProps {
+  world: WithId<World>;
+}
+
+export const withWorld = <T extends WithWorldProps = WithWorldProps>(
+  WrappedComponent: React.ComponentType<T>
+) => {
+  const WithWorld = (props: Omit<T, keyof WithWorldProps>) => {
+    const { worldSlug } = useWorldParams();
+    const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
+
+    if (!isWorldLoaded) {
+      return <LoadingPage />;
+    }
+    const worldProps = { world };
+
+    return <WrappedComponent {...worldProps} {...(props as T)} />;
+  };
+  WithWorld.displayName = `WithWorldId(${getDisplayName(WrappedComponent)})`;
+  return WithWorld;
+};
+
+interface InnerSpacesDashboardProps extends WithWorldProps {}
+
+const InnerSpacesDashboard: React.FC<InnerSpacesDashboardProps> = ({
+  world,
+}) => {
   const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({
     worldId: world?.id,
   });
@@ -57,9 +88,9 @@ export const SpacesDashboard: React.FC = () => {
       sortedVenues
         ?.filter(isPartyMapVenue)
         .map((venue) => (
-          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={world.slug} />
         )),
-    [sortedVenues, worldSlug]
+    [sortedVenues, world.slug]
   );
 
   const renderedOtherVenues = useMemo(
@@ -67,15 +98,15 @@ export const SpacesDashboard: React.FC = () => {
       sortedVenues
         ?.filter(isNotPartyMapVenue)
         .map((venue) => (
-          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
+          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={world.slug} />
         )),
-    [sortedVenues, worldSlug]
+    [sortedVenues, world.slug]
   );
 
   const hasPartyVenues = renderedPartyVenues.length > 0;
   const hasOtherVenues = renderedOtherVenues.length > 0;
 
-  if (isLoadingSpaces || !isWorldLoaded) {
+  if (isLoadingSpaces) {
     return <LoadingPage />;
   }
 
@@ -102,7 +133,7 @@ export const SpacesDashboard: React.FC = () => {
                 linkTo={generateUrl({
                   route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
                   required: ["worldSlug"],
-                  params: { worldSlug },
+                  params: { worldSlug: world.slug },
                 })}
               >
                 Settings
@@ -159,3 +190,5 @@ export const SpacesDashboard: React.FC = () => {
     </div>
   );
 };
+
+export const SpacesDashboard = withWorld(InnerSpacesDashboard);

@@ -82,7 +82,7 @@ export const useUser = (): UseUserResult => {
 
   return useMemo(
     () => ({
-      user,
+      user: user || undefined,
       profile,
       userLocation,
       userWithId,
