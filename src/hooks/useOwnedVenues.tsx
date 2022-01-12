@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { useFirestore } from "reactfire";
 import { collection, query, where } from "firebase/firestore";
 
-import { COLLECTION_WORLDS } from "settings";
+import { COLLECTION_SPACES } from "settings";
 
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
@@ -11,6 +11,8 @@ import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
+
+import { useMaybeFirestoreCollectionData } from "./useMaybe";
 
 export interface UseOwnedVenuesProps {
   worldId?: string;
@@ -29,19 +31,17 @@ export const useOwnedVenues: ReactHook<
 > = ({ worldId, currentVenueId }): UseOwnedVenuesData => {
   const { userId } = useUser();
   const firestore = useFirestore();
-  const relatedVenuesRef = query(
-    collection(firestore, COLLECTION_WORLDS),
-    where("worldId", "==", worldId ?? ""),
-    where("owners", "array-contains", userId ?? "")
-  ).withConverter(withIdConverter<AnyVenue>());
+  const relatedVenuesRef =
+    worldId && userId
+      ? query(
+          collection(firestore, COLLECTION_SPACES),
+          where("worldId", "==", worldId ?? ""),
+          where("owners", "array-contains", userId ?? "")
+        ).withConverter(withIdConverter<AnyVenue>())
+      : undefined;
 
-  const { data: venues, status } = useFirestoreCollectionData<WithId<AnyVenue>>(
-    relatedVenuesRef,
-    {
-      initialData: [],
-    }
-  );
-
+  const { data: venues, status } =
+    useMaybeFirestoreCollectionData<WithId<AnyVenue>>(relatedVenuesRef);
   return useMemo(
     () => ({
       isLoading: status === "loading",

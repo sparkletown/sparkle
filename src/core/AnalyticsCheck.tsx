@@ -8,6 +8,7 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useUser } from "hooks/useUser";
+import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -25,8 +26,9 @@ export const AnalyticsCheck: React.FunctionComponent<
   React.PropsWithChildren<{}>
 > = ({ children }) => {
   const slugs = useSpaceParams();
+  const { world } = useWorldBySlug(slugs.worldSlug);
   const { space } = useWorldAndSpaceBySlug(slugs.worldSlug, slugs.spaceSlug);
-  const analytics = useAnalytics({ venue: space });
+  const analytics = useAnalytics({ worldId: world?.id, venue: space });
   const { authError, profileError, userId, user, profile, isLoading } =
     useUser();
 

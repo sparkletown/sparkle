@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useFirestore, useFirestoreDocData } from "reactfire";
+import { useFirestore } from "reactfire";
 import { doc } from "firebase/firestore";
 
 import { COLLECTION_WORLDS } from "settings";
@@ -10,6 +10,8 @@ import { ReactHook } from "types/utility";
 
 import { withIdConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId } from "utils/id";
+
+import { useMaybeFirestoreDocData } from "hooks/useMaybe";
 
 type UseWorldById = ReactHook<
   string | undefined,
@@ -22,19 +24,19 @@ type UseWorldById = ReactHook<
 
 export const useWorldById: UseWorldById = (worldId) => {
   const firestore = useFirestore();
+  const query = worldId
+    ? doc(
+        firestore,
+        COLLECTION_WORLDS,
+        convertToFirestoreKey(worldId)
+      ).withConverter<WithId<World>>(withIdConverter())
+    : undefined;
 
   const {
     data: world,
     status,
     error,
-  } = useFirestoreDocData<WithId<World>>(
-    doc(
-      firestore,
-      COLLECTION_WORLDS,
-      convertToFirestoreKey(worldId)
-    ).withConverter<WithId<World>>(withIdConverter()),
-    { initialData: undefined }
-  );
+  } = useMaybeFirestoreDocData<WithId<World>>(query);
 
   const isLoaded = status !== "loading";
 

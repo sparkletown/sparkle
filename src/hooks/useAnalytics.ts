@@ -72,6 +72,7 @@ export const identifyUser = ({ email, name = "N/A" }: IdentifyUserProps) => {
 };
 
 export interface UseAnalyticsProps {
+  worldId?: string;
   venue?: WithId<AnyVenue>;
 }
 
@@ -95,10 +96,13 @@ export interface UseAnalyticsResult {
 }
 
 export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
+  worldId,
   venue,
 }) => {
   const { user } = useUser();
-  const { world, isLoaded: isWorldLoaded } = useWorldById(venue?.worldId);
+  const { world, isLoaded: isWorldLoaded } = useWorldById(
+    worldId || venue?.worldId
+  );
 
   const worldIdAndName = useMemo(() => {
     if (!isWorldLoaded || !world) return;
