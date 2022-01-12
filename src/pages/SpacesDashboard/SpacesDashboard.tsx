@@ -18,10 +18,9 @@ import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
-import { useWorldParams } from "hooks/worlds/useWorldParams";
+import { withWorldFromSlug } from "hooks/worlds/useWorldBySlug";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithAdminNavBar } from "components/organisms/WithAdminNavBar";
 
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { AdminTitle } from "components/molecules/AdminTitle";
@@ -34,33 +33,9 @@ import { SortDropDown } from "components/atoms/SortDropDown";
 
 import "./SpacesDashboard.scss";
 
-const getDisplayName = <T,>(WrappedComponent: React.ComponentType<T>) => {
-  return WrappedComponent.displayName || WrappedComponent.name || "Component";
-};
-
-interface WithWorldProps {
+interface InnerSpacesDashboardProps {
   world: WithId<World>;
 }
-
-export const withWorld = <T extends WithWorldProps = WithWorldProps>(
-  WrappedComponent: React.ComponentType<T>
-) => {
-  const WithWorld = (props: Omit<T, keyof WithWorldProps>) => {
-    const { worldSlug } = useWorldParams();
-    const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
-
-    if (!isWorldLoaded) {
-      return <LoadingPage />;
-    }
-    const worldProps = { world };
-
-    return <WrappedComponent {...worldProps} {...(props as T)} />;
-  };
-  WithWorld.displayName = `WithWorldId(${getDisplayName(WrappedComponent)})`;
-  return WithWorld;
-};
-
-interface InnerSpacesDashboardProps extends WithWorldProps {}
 
 const InnerSpacesDashboard: React.FC<InnerSpacesDashboardProps> = ({
   world,
@@ -112,10 +87,7 @@ const InnerSpacesDashboard: React.FC<InnerSpacesDashboardProps> = ({
 
   return (
     <div className="SpacesDashboard">
-      <WithNavigationBar
-        variant="internal-scroll"
-        title={`${world?.name ?? ""}`}
-      >
+      <WithAdminNavBar variant="internal-scroll" title={`${world?.name ?? ""}`}>
         <AdminRestricted>
           <AdminTitleBar variant="grid-with-tools">
             <ButtonNG
@@ -186,9 +158,12 @@ const InnerSpacesDashboard: React.FC<InnerSpacesDashboardProps> = ({
             {hasOtherVenues && renderedOtherVenues}
           </div>
         </AdminRestricted>
-      </WithNavigationBar>
+      </WithAdminNavBar>
     </div>
   );
 };
 
-export const SpacesDashboard = withWorld(InnerSpacesDashboard);
+export const SpacesDashboard = withWorldFromSlug(InnerSpacesDashboard, {
+  loading: () => <p>Loading</p>,
+  error: () => <p>Error :(</p>,
+});
