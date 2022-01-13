@@ -9,7 +9,22 @@
 
   &__button__control {
     cursor: pointer;
+    padding: 8px;
   }
+
+  &__button__input-container {
+    height: 0px;
+    border: none;
+    outline: none;
+    padding: 0px;
+    margin: 0px;
+    opacity: 0px;
+
+    & .Dropdown__button__input {
+      opacity: 0 !important;
+    }
+  }
+
   &__button {
     display: flex;
     align-items: center;
@@ -40,5 +55,10 @@
     &:hover {
       background: opaque-white(0.2);
     }
+  }
+
+  .Dropdown__button__input-container {
+    margin: 0px;
+    padding: 0px;
   }
 }

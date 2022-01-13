@@ -50,7 +50,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 }) => {
   if (!venue || !portal) return null;
 
-  if (portal.type !== RoomType.modalFrame) {
+  if (portal.type === RoomType.modalFrame) {
     return (
       <VideoModal
         show={show}

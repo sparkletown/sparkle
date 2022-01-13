@@ -19,7 +19,11 @@ export const SortDropDown: React.FC<SortDropDownProps> = ({
   const options = Object.values(SortingOptions).map((sortingOption) => ({
     value: sortingOption,
     label: (
-      <div key={sortingOption} onClick={() => onClick(sortingOption)}>
+      <div
+        key={sortingOption}
+        onClick={() => onClick(sortingOption)}
+        className="SortDropDown__option"
+      >
         {sortingOption}
       </div>
     ),

@@ -51,7 +51,6 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   );
 
   return (
-    // @debt align the style of the SpacesDropdown with the Dropdown component
     <div className={classNames("UserStatusDropdown", containerClassName)}>
       <div className="UserStatusDropdown__status">
         {userStatus.status}&nbsp;
@@ -60,6 +59,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
         <Dropdown
           title={{ label: "change status", value: "change status" }}
           options={userStatusDropdownOptions}
+          noArrow
         />
       )}
     </div>

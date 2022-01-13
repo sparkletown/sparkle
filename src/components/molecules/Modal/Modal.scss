@@ -7,18 +7,14 @@
     right: 0;
     left: 0;
     height: 100%;
-    z-index: 1050;
+    z-index: z(modal);
     background-color: rgba(26, 29, 36, 0.8);
     overflow-y: auto;
 
     & .ReactModal__Content {
       width: 35%;
-      inset: "";
-      border-radius: 50px;
-      border: none;
       position: relative !important;
       padding: $spacing--lg;
-      margin: 1.75rem auto;
       display: flex;
       align-items: center;
 

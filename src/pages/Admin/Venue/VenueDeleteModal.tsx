@@ -2,6 +2,8 @@ import React from "react";
 import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
 
+import { SPACE_TAXON } from "settings";
+
 import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -34,9 +36,9 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   }, [onDelete, venueId]);
 
   return (
-    <Modal isOpen={show} onClose={onHide}>
+    <Modal isOpen={show} onClose={onHide} isCentered>
       <div className="VenueDeleteModal">
-        <h2 className="centered">Delete space</h2>
+        <h2 className="centered">Delete {SPACE_TAXON.lower}</h2>
         <div className="secondary-action">
           WARNING: This action cannot be undone and will permanently remove the
           space <b>{venueName}</b>!

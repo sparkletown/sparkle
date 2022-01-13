@@ -213,7 +213,9 @@ $z-layer-embed-iframe: $z-layer-on-top-bg;
 $z-layer-external-message: $z-layer-on-top-bg;
 $z-layer-auditorium-iframe: $z-layer-on-top-bg;
 $z-layer-jukebox: $z-layer-on-top-bg;
+$z-layer-popover: $z-layer-on-top-bg;
 $z-layer-start-table: 0;
+$z-layer-modal: 400;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -293,6 +295,10 @@ $z-layers: (
   auditorium-iframe: $z-layer-auditorium-iframe,
   // External Link
   external-message: $z-layer-external-message,
+  // Popover
+  popover: $z-layer-popover,
+  // Modal
+  modal: $z-layer-modal,
   // Unsorted
   footer: $z-layer-footer,
   input-icon: 1,

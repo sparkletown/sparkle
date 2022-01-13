@@ -22,6 +22,10 @@
     background-color: var(--content--over-30a);
   }
 
+  &__option {
+    width: 100%;
+  }
+
   .Dropdown__button__menu {
     position: absolute;
     left: -65px;

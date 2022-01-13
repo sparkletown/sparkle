@@ -29,7 +29,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
       outline: "none",
       display: "flex",
     }),
-    input: () => ({ display: "none" }),
     singleValue: () => ({ color: "white" }),
     option: () => ({
       display: "flex",

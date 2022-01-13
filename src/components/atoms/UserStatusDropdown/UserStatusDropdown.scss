@@ -8,6 +8,13 @@
     font-weight: $font-weight--500;
   }
 
+  .Dropdown {
+    &__button__menu {
+      top: 30px;
+      width: 150px;
+    }
+  }
+
   .Dropdown__button {
     text-decoration: underline;
     font-weight: $font-weight--400;
@@ -22,6 +29,24 @@
     display: flex;
     justify-content: space-between;
     padding: 0 $spacing--md;
+    margin: auto;
     opacity: 0.8;
+    width: 100%;
+  }
+
+  .Dropdown__button__value-container {
+    padding: 0px;
+  }
+
+  .Dropdown__button__single-value {
+    text-decoration: underline;
+  }
+
+  .Dropdown__button__control {
+    padding: 0px;
+  }
+
+  &__item {
+    padding: 8px;
   }
 }

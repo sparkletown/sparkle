@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,6 +25,7 @@ import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedu
 
 import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
+import { Popover } from "components/molecules/Popover";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
@@ -38,15 +38,12 @@ import { SoundCloudRadio } from "./components/SoundCloudRadio";
 import "./NavBar.scss";
 import "./playa.scss";
 
-const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
-  props: unknown,
-  { futureUpcoming }
-) => (
-  <Popover id="popover-basic" {...props}>
-    <Popover.Content>
-      <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
+const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = ({
+  futureUpcoming,
+}) => (
+  <div className="TicketsPopover">
+    <UpcomingTickets events={futureUpcoming} />
+  </div>
 );
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
@@ -82,6 +79,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   });
 
   const { world } = useWorldById(relatedVenue?.worldId);
+
   const firstStation = world?.radioStations?.[0];
 
   const { currentVenue: ownedVenue } = useOwnedVenues({
@@ -108,7 +106,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
-
   const isSoundCloud = firstStation?.includes("soundcloud");
 
   const sound = useMemo(
@@ -229,16 +226,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 )}
 
                 {hasUpcomingEvents && (
-                  <OverlayTrigger
-                    trigger="click"
-                    placement="bottom-end"
+                  <Popover
                     overlay={<TicketsPopover futureUpcoming={futureUpcoming} />}
-                    rootClose={true}
+                    closeRoot
                   >
                     <span className="tickets-icon">
                       <FontAwesomeIcon icon={faTicketAlt} />
                     </span>
-                  </OverlayTrigger>
+                  </Popover>
                 )}
 
                 {showNormalRadio && (

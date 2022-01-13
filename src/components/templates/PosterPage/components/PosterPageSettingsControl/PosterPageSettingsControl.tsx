@@ -1,8 +1,9 @@
 import React, { useCallback } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 
 import { setVenueLiveStatus } from "api/venue";
+
+import { Popover } from "components/molecules/Popover";
 
 import { Checkbox } from "components/atoms/Checkbox";
 
@@ -28,15 +29,11 @@ export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps>
   }, [venueId]);
 
   return (
-    <OverlayTrigger
-      trigger="click"
-      placement="bottom-end"
+    <Popover
+      className="PosterPageSettingsControl"
       overlay={
-        <Popover
-          id="poster-page-settings-popover"
-          className="PosterPageSettingsControl__popover"
-        >
-          <Popover.Content className="PosterPageSettingsControl__popover-content">
+        <div className="PosterPageSettingsControl__popover">
+          <div className="PosterPageSettingsControl__popover-content">
             <Checkbox
               type="checkbox"
               checked={isPosterLive}
@@ -44,12 +41,12 @@ export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps>
               label={isPosterLive ? "Poster is live" : "Make poster live"}
               toggler
             />
-          </Popover.Content>
-        </Popover>
+          </div>
+        </div>
       }
-      rootClose
+      closeRoot
     >
       <PosterPageControl label="Settings" icon={faCog} />
-    </OverlayTrigger>
+    </Popover>
   );
 };

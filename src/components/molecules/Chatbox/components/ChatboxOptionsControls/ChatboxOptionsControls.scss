@@ -14,13 +14,18 @@
       width: 80%;
     }
   }
+
   .Dropdown {
     &__button__menu {
       background-color: var(--accent--under);
       border-radius: 24px;
       top: -65px;
-      left: -35px;
+      left: -65px;
       width: 150px;
+    }
+
+    &__button__control {
+      padding: 0px;
     }
 
     &__button__option {
