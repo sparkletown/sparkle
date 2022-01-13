@@ -27,7 +27,6 @@ export const Check: React.FC<AnalyticsCheckRequiredProps> = ({
   isLoading,
   children,
 }) => {
-  console.log(Check.name, "rendering...");
   const analytics = useAnalytics({ venue: space });
 
   useEffect(() => void analytics.initAnalytics(), [analytics]);

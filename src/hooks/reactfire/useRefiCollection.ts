@@ -1,0 +1,61 @@
+import { useMemo } from "react";
+import {
+  ObservableStatus,
+  useFirestore,
+  useFirestoreCollectionData,
+} from "reactfire";
+import Bugsnag from "@bugsnag/js";
+import { QueryConstraint } from "@firebase/firestore";
+import { collection, query } from "firebase/firestore";
+
+import { withIdConverter } from "utils/converters";
+
+type UseRefiCollectionOptions =
+  | string[]
+  | {
+      path: string[];
+      constraints?: QueryConstraint[];
+    };
+
+type UseRefiCollectionResult<T extends object> = ObservableStatus<
+  (T & { id: string })[]
+> & {
+  isLoading: boolean;
+};
+
+export const useRefiCollection = <T extends object>(
+  options: UseRefiCollectionOptions
+): UseRefiCollectionResult<T> => {
+  const firestore = useFirestore();
+
+  const path = (Array.isArray(options) ? options : options?.path) ?? [];
+  const constraints =
+    (Array.isArray(options) ? [] : options?.constraints) ?? [];
+  const [first, ...rest] = path;
+
+  if (!first) {
+    const e = new Error(`Invalid path for collection query: ` + path.join("/"));
+    Bugsnag.notify(e, (event) => {
+      event.severity = "error";
+      event.addMetadata("hooks/reactfire::useRefiCollection", {
+        path,
+        constraints,
+      });
+    });
+    throw e;
+  }
+
+  const result = useFirestoreCollectionData(
+    query(collection(firestore, first, ...rest), ...constraints).withConverter(
+      withIdConverter<T>()
+    )
+  );
+
+  return useMemo(
+    () => ({
+      ...result,
+      isLoading: result.status === "loading",
+    }),
+    [result, result.status]
+  );
+};

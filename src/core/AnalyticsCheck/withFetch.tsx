@@ -9,8 +9,6 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 export const withFetch =
   () =>
   (Component: React.FC<AnalyticsCheckProps>): React.FC<AnalyticsCheckProps> => {
-    console.log(withFetch.name, "wrapping..");
-
     const WithFetch: React.FC = (props) => {
       const slugs = useSpaceParams();
       const { space } = useWorldAndSpaceBySlug(
@@ -18,7 +16,6 @@ export const withFetch =
         slugs.spaceSlug
       );
 
-      console.log(WithFetch.name, "rendering...", space);
       return <Component {...props} space={space} />;
     };
 

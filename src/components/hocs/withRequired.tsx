@@ -12,7 +12,6 @@ type WithRequiredOptions =
 
 export const withRequired =
   (options: WithRequiredOptions) => (WrappedComponent: React.FC) => {
-    console.log(withRequired.name, "wrapping...");
     const WithRequired: React.FC = (props) => {
       const haystack = Object.entries(props);
 
@@ -25,7 +24,6 @@ export const withRequired =
       const isArray = Array.isArray(options);
 
       if (isArray && options.some(invalidProp)) {
-        console.log(WithRequired.name, "rendering empty fragment...");
         return <></>;
       }
 
@@ -36,7 +34,6 @@ export const withRequired =
           return Fallback ? <Fallback {...props} /> : <></>;
         }
       }
-      console.log(WithRequired.name, "rendering component...");
       return <WrappedComponent {...props} />;
     };
 

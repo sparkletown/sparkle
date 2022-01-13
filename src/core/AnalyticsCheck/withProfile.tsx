@@ -11,8 +11,6 @@ export const withProfile =
   (
     Component: React.FC<AnalyticsCheckLoginProps>
   ): React.FC<AnalyticsCheckProfileProps> => {
-    console.log(withProfile.name, "wrapping..");
-
     const WithProfile: React.FC<AnalyticsCheckLoginProps> = (props) => {
       const result = useProfile({ user: props.user });
 
@@ -25,7 +23,6 @@ export const withProfile =
         return null;
       }
 
-      console.log(WithProfile.name, "rendering...", result);
       return <Component {...props} {...result} />;
     };
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { withRequired } from "components/hocs/withRequired";
 import { withFetch } from "core/AnalyticsCheck/withFetch";
 import { withLogin } from "core/AnalyticsCheck/withLogin";
@@ -8,7 +9,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { Check } from "./Check";
 
-export const AnalyticsCheck = compose(
+export const AnalyticsCheck: React.FC = compose(
   withLogin(),
   withProfile(),
   withFetch(),
