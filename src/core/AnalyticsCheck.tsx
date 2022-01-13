@@ -58,8 +58,8 @@ const Check: React.FC<CheckProps> = ({ space, children }) => {
 
   // NOTE: can use the else statement for displaying error or redirecting to login?
   // return authData.signedIn ? <>{children}</> : <>{children}</>;
-  return <>{children}</>;
-  // return <>Check component</>;
+
+  return isLoading ? <LoadingPage /> : <>{children}</>;
 };
 
 const withFetch =
