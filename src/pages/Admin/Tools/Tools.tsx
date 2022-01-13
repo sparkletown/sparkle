@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
+import firebase from "firebase/app";
 
 import * as scripts from "./scripts";
 import { SelfServeScript } from "./types";
@@ -27,8 +29,16 @@ export const Tools: React.FC = () => {
 
 export const Script: React.FC<{ script: SelfServeScript }> = ({ script }) => {
   const { register, handleSubmit } = useForm();
+
+  const [{ loading: isRunning, value }, runScript] = useAsyncFn(
+    async (data) => {
+      return firebase.functions().httpsCallable(script.functionLocation)(data);
+    },
+    [firebase]
+  );
+
   const onSubmit = async (data: any) => {
-    console.log(data);
+    runScript(data);
   };
 
   return (
@@ -45,5 +55,4 @@ export const Script: React.FC<{ script: SelfServeScript }> = ({ script }) => {
       <input type="submit" />
     </form>
   );
-  return <div></div>;
 };
