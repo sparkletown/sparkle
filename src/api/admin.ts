@@ -4,6 +4,7 @@ import { omit } from "lodash";
 
 import {
   ACCEPTED_IMAGE_TYPES,
+  COLLECTION_WORLD_EVENTS,
   DEFAULT_PORTAL_BOX,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
@@ -18,12 +19,12 @@ import { Table } from "types/Table";
 import {
   SpaceSlug,
   VenueAdvancedConfig,
-  VenueEvent,
   VenuePlacement,
   VenueTemplate,
+  WorldEvent,
 } from "types/venues";
 
-import { WithId, WithWorldId } from "utils/id";
+import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 import { fetchVenue } from "./venue";
@@ -479,26 +480,21 @@ export const createRoom = async (
   });
 };
 
-export const createEvent = async (venueId: string, event: VenueEvent) => {
-  await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
+export const createEvent = async (event: WithoutId<WorldEvent>) => {
+  await firebase.firestore().collection(COLLECTION_WORLD_EVENTS).add(event);
 };
 
-export const updateEvent = async (
-  venueId: string,
-  eventId: string,
-  event: VenueEvent
-) => {
+export const updateEvent = async (event: WorldEvent) => {
   await firebase
     .firestore()
-    .doc(`venues/${venueId}/events/${eventId}`)
+    .doc(`${COLLECTION_WORLD_EVENTS}/${event.id}`)
     .update(event);
 };
 
-export const deleteEvent = async (venueId: string, eventId: string) => {
+export const deleteEvent = async (event: WorldEvent) => {
   await firebase
     .firestore()
-    .collection(`venues/${venueId}/events`)
-    .doc(eventId)
+    .doc(`${COLLECTION_WORLD_EVENTS}/${event.id}`)
     .delete();
 };
 

@@ -4,6 +4,8 @@ import firebase from "firebase/app";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
+import { determineAvatar } from "utils/image";
+
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
@@ -70,7 +72,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || "/default-profile-pic.png"}
+          src={determineAvatar({ pictureUrl, userInfo: user })}
           className="profile-icon ProfilePicturePreviewContainer__image"
           alt="your profile"
         />
