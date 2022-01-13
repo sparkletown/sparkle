@@ -32,7 +32,8 @@ export const withRequired =
       if (!isArray) {
         const required = options?.required ?? [];
         if (required.some(invalidProp)) {
-          return <>{options?.fallback ?? null}</>;
+          const Fallback = options?.fallback;
+          return Fallback ? <Fallback {...props} /> : <></>;
         }
       }
       console.log(WithRequired.name, "rendering component...");
