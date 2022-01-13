@@ -32,33 +32,29 @@ type AnalyticsCheckProps = Partial<CheckProps>;
 
 const Check: React.FC<CheckProps> = ({ space, children }) => {
   console.log(Check.name, "rendering...");
-  // const analytics = useAnalytics({ venue: space });
-  // const { authError, profileError, userId, user, profile, isLoading } =
-  //   useUser();
-  //
-  // if (authError || profileError) {
-  //   // @debt use more sophisticated tracking here, like Bugsnag
-  //   console.error(AnalyticsCheck.name, authError, profileError);
-  // }
-  //
-  // useEffect(() => void analytics.initAnalytics(), [analytics]);
-  //
-  // useEffect(() => {
-  //   if (!user || !profile || !userId) return;
-  //
-  //   const displayName = user.displayName || "N/A";
-  //   const email = user.email || "N/A";
-  //
-  //   if (LOGROCKET_APP_ID) {
-  //     LogRocket.identify(userId, { displayName, email });
-  //   }
-  //
-  //   analytics.identifyUser({ email, name: profile?.partyName });
-  // }, [analytics, user, userId, profile]);
-  //
-  // if (isLoading) {
-  //   return <LoadingPage />;
-  // }
+  const analytics = useAnalytics({ venue: space });
+  const { authError, profileError, userId, user, profile, isLoading } =
+    useUser();
+
+  if (authError || profileError) {
+    // @debt use more sophisticated tracking here, like Bugsnag
+    console.error(AnalyticsCheck.name, authError, profileError);
+  }
+
+  useEffect(() => void analytics.initAnalytics(), [analytics]);
+
+  useEffect(() => {
+    if (!user || !profile || !userId) return;
+
+    const displayName = user.displayName || "N/A";
+    const email = user.email || "N/A";
+
+    if (LOGROCKET_APP_ID) {
+      LogRocket.identify(userId, { displayName, email });
+    }
+
+    analytics.identifyUser({ email, name: profile?.partyName });
+  }, [analytics, user, userId, profile]);
 
   // NOTE: can use the else statement for displaying error or redirecting to login?
   // return authData.signedIn ? <>{children}</> : <>{children}</>;
@@ -87,5 +83,5 @@ const withFetch =
 
 export const AnalyticsCheck = compose(
   withFetch(),
-  withRequired(["space"])
+  withRequired({ required: ["space"], fallback: LoadingPage })
 )(Check);
