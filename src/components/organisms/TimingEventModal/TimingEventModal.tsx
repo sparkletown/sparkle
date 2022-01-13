@@ -125,8 +125,6 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     setShowDeleteEventModal();
   };
 
-  console.log(values);
-
   const renderedSpaceIds = useMemo(
     () =>
       relatedVenueIds.map((spaceId) => {
@@ -232,7 +230,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     <input
                       type="date"
                       min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
-                      name="start_date"
+                      name="startDate"
                       className="TimingEventModal__input-group__modal-input"
                       ref={register}
                     />
@@ -240,7 +238,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   <div>
                     <input
                       type="time"
-                      name="start_time"
+                      name="startTime"
                       className="TimingEventModal__input-group__modal-input"
                       ref={register}
                     />
@@ -265,21 +263,21 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <label>Duration</label>
                 <div className="TimingEventModal__duration_container">
                   <input
-                    name="duration_hours"
+                    name="durationHours"
                     className="TimingEventModal__input-group__modal-input--indent"
                     placeholder="hours"
                     ref={register}
                     size={8}
                   />
-                  <label htmlFor="duration_hours">hour(s)</label>
+                  <label htmlFor="durationHours">hour(s)</label>
                   <input
-                    name="duration_minutes"
+                    name="durationMinutes"
                     className="TimingEventModal__input-group__modal-input--indent"
                     placeholder="minutes"
                     ref={register}
                     size={8}
                   />
-                  <label htmlFor="duration_minutes">minutes</label>
+                  <label htmlFor="durationMinutes">minutes</label>
                 </div>
                 <div className="TimingEventModal__container">
                   {errors.durationHours && (

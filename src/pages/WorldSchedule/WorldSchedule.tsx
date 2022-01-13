@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
@@ -112,6 +112,8 @@ export const WorldSchedule = () => {
   const { worldSlug } = useWorldParams();
   const { isLoaded, world } = useWorldBySlug(worldSlug);
 
+  console.log(world);
+
   const defaultValues = useMemo<WorldScheduleFormInput>(() => {
     const {
       inputFormattedDateSegment: startDate,
@@ -143,6 +145,8 @@ export const WorldSchedule = () => {
     validationSchema,
     defaultValues,
   });
+
+  useEffect(() => {}, []);
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: WorldScheduleFormInput) => {
@@ -198,7 +202,6 @@ export const WorldSchedule = () => {
           Back to dashboard
         </ButtonNG>
         <AdminTitle>World schedule</AdminTitle>
-        <ButtonNG variant="admin-gradient">Create new experience</ButtonNG>
       </AdminTitleBar>
       <AdminPanel variant="bound" className="WorldSchedule">
         <AdminSidebar>

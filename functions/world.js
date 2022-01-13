@@ -100,6 +100,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     attendeesTitle,
     bannerImageUrl,
     description,
+    endTimeUTC,
     entrance,
     id: worldId,
     logoImageUrl,
@@ -114,6 +115,7 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     slug,
     subtitle,
     showSchedule,
+    startTimeUTC,
     userStatuses,
     hasSocialLoginEnabled,
   } = data;
@@ -168,6 +170,8 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     ...(!isNil(slug) && { slug }),
     ...(!isNil(showBadges) && { showBadges }),
     ...(!isNil(hasSocialLoginEnabled) && { hasSocialLoginEnabled }),
+    ...(!isNil(startTimeUTC) && { startTimeUTC }),
+    ...(!isNil(endTimeUTC) && { endTimeUTC }),
   };
 
   await admin

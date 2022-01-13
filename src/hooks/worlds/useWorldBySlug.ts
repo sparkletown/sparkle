@@ -31,10 +31,7 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
     .withConverter(worldConverter);
 
   const { data: worlds, status } = useFirestoreCollectionData<WithId<World>>(
-    worldsRef,
-    {
-      initialData: undefined,
-    }
+    worldsRef
   );
 
   if (worlds?.length > 1) {
