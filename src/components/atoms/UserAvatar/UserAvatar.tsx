@@ -52,8 +52,11 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   // @debt until temporarily disable is online functionality
   const isOnline = false;
 
-  const { userStatus, venueUserStatuses, isStatusEnabledForVenue } =
-    useVenueUserStatuses(user);
+  const {
+    userStatus,
+    venueUserStatuses,
+    isStatusEnabledForVenue,
+  } = useVenueUserStatuses(user);
 
   const avatarSrc = useMemo((): string => {
     // @debt extract utility functions for proper checks of http and static using RegExp's

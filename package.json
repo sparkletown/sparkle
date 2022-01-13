@@ -159,7 +159,7 @@
     "pixi-virtual-joystick": "^0.4.1",
     "pixi.js": "^5.3.10",
     "popper.js": "^1.16.1",
-    "prettier": "^2.5.1",
+    "prettier": "^2.2.1",
     "qs": "^6.10.2",
     "re-resizable": "^6.9.1",
     "react": "^17.0.2",

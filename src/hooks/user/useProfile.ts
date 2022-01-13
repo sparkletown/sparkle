@@ -11,7 +11,9 @@ import { identityConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId, withId } from "utils/id";
 import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
-type UseProfile = (options: { user?: RefiAuthUser }) => {
+type UseProfile = (options: {
+  user?: RefiAuthUser;
+}) => {
   profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
@@ -25,11 +27,7 @@ export const useProfile: UseProfile = ({ user }) => {
   const userId = user?.uid;
   const firestore = useFirestore();
 
-  const {
-    status,
-    data: profileDataWithLocation,
-    error,
-  } = useFirestoreDocData(
+  const { status, data: profileDataWithLocation, error } = useFirestoreDocData(
     doc(
       firestore,
       COLLECTION_USERS,

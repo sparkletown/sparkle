@@ -23,11 +23,7 @@ type UseWorldById = ReactHook<
 export const useWorldById: UseWorldById = (worldId) => {
   const firestore = useFirestore();
 
-  const {
-    data: world,
-    status,
-    error,
-  } = useFirestoreDocData<WithId<World>>(
+  const { data: world, status, error } = useFirestoreDocData<WithId<World>>(
     doc(
       firestore,
       COLLECTION_WORLDS,

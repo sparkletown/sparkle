@@ -40,5 +40,8 @@ module.exports = {
     "pixi-viewport",
     "pixi-virtual-joystick",
     "pixi.js",
+
+    // Don't upgrade prettier until after the node 16 upgrade
+    "prettier",
   ],
 };

@@ -14,7 +14,7 @@ export const useVenueChatMessages = (
 ): WithId<MessageToDisplay<VenueChatMessage>>[] =>
   useChatMessagesRaw(
     query(
-      getChatsRef(venueId) as unknown as Query<unknown>,
+      (getChatsRef(venueId) as unknown) as Query<unknown>,
       ...(limitNumber ? [limit(limitNumber)] : [])
     ).withConverter<VenueChatMessage>(withIdConverter())
   )[0];

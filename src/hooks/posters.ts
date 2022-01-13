@@ -44,8 +44,11 @@ export const usePosterVenues = (posterHallId: string) => {
 export const usePosters = (posterHallId: string) => {
   const { posterVenues, isPostersLoaded } = usePosterVenues(posterHallId);
 
-  const { searchInputValue, searchQuery, setSearchInputValue } =
-    useDebounceSearch();
+  const {
+    searchInputValue,
+    searchQuery,
+    setSearchInputValue,
+  } = useDebounceSearch();
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(

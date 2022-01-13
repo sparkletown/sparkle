@@ -31,8 +31,10 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
   withPastReactions = false,
   children,
 }) => {
-  const [reactionsMap, { set: setReaction, remove: removeReaction }] =
-    useMap<ReactionsById>({});
+  const [
+    reactionsMap,
+    { set: setReaction, remove: removeReaction },
+  ] = useMap<ReactionsById>({});
 
   useEffect(() => {
     if (!venueId) return;
@@ -66,7 +68,7 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
     return () => {
       unsubscribeListener();
     };
-  }, [firebase, venueId, withPastReactions, setReaction, removeReaction]);
+  }, [venueId, withPastReactions, setReaction, removeReaction]);
 
   const reactionsState: ReactionsContextState = useMemo(
     () => ({

@@ -8,7 +8,7 @@ import { DistributedCounterValue } from "types/Firestore";
 import { CONVERTER_DISTRIBUTED_COUNTER_VALUE } from "utils/converters";
 
 export const useVenueChatMessagesCount = (venueId: string) => {
-  const venueRef = getVenueRef(venueId) as unknown as DocumentReference;
+  const venueRef = (getVenueRef(venueId) as unknown) as DocumentReference;
   return (
     useFirestoreDocData<DistributedCounterValue>(
       doc(venueRef, "chatMessagesCounter", "sum").withConverter(

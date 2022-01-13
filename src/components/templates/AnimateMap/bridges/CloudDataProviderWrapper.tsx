@@ -40,9 +40,11 @@ export type RoomWithFullData = (WithVenue<Room> | Room) & {
 
 const emptyRelatedVenues: WithId<AnyVenue>[] = [];
 
-export const CloudDataProviderWrapper: React.FC<
-  CloudDataProviderWrapperProps
-> = ({ venue, newDataProviderCreate, relatedRooms }) => {
+export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
+  venue,
+  newDataProviderCreate,
+  relatedRooms,
+}) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );

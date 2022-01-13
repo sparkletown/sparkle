@@ -140,15 +140,22 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     ]
   );
 
-  const { register, handleSubmit, getValues, setValue, watch, reset, errors } =
-    useForm({
-      reValidateMode: "onChange",
-      validationSchema: spaceEditSchema,
-      defaultValues,
-      validationContext: {
-        template: space.template,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    errors,
+  } = useForm({
+    reValidateMode: "onChange",
+    validationSchema: spaceEditSchema,
+    defaultValues,
+    validationContext: {
+      template: space.template,
+    },
+  });
 
   const {
     assets: mapBackgrounds,

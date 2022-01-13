@@ -15,17 +15,19 @@ export const usePrivateChatPreviews = () => {
   const { userId } = useUser();
   const firestore = useFirestore();
 
-  const [privateChatMessages, isUserPrivateChatsLoaded] =
-    useChatMessagesRaw<PrivateChatMessage>(
-      query<PrivateChatMessage>(
-        collection(
-          firestore,
-          "privatechats",
-          convertToFirestoreKey(userId),
-          "chats"
-        ).withConverter<PrivateChatMessage>(withIdConverter())
-      )
-    );
+  const [
+    privateChatMessages,
+    isUserPrivateChatsLoaded,
+  ] = useChatMessagesRaw<PrivateChatMessage>(
+    query<PrivateChatMessage>(
+      collection(
+        firestore,
+        "privatechats",
+        convertToFirestoreKey(userId),
+        "chats"
+      ).withConverter<PrivateChatMessage>(withIdConverter())
+    )
+  );
 
   const privateChatPreviewsMap: PreviewChatMessageMap = useMemo(
     () =>

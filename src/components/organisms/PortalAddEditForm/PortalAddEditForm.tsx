@@ -60,11 +60,10 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
 }) => {
   const { user } = useUser();
   const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
-  const {
-    spaceId: currentSpaceId,
-    world,
-    space,
-  } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
+  const { spaceId: currentSpaceId, world, space } = useWorldAndSpaceBySlug(
+    worldSlug,
+    spaceSlug
+  );
 
   const { icon } = item ?? {};
   const spaceLogoImage =
@@ -94,13 +93,19 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     ]
   );
 
-  const { register, getValues, handleSubmit, errors, setValue, reset } =
-    useForm({
-      reValidateMode: "onChange",
+  const {
+    register,
+    getValues,
+    handleSubmit,
+    errors,
+    setValue,
+    reset,
+  } = useForm({
+    reValidateMode: "onChange",
 
-      validationSchema: roomSchema,
-      defaultValues,
-    });
+    validationSchema: roomSchema,
+    defaultValues,
+  });
 
   useEffect(() => reset(defaultValues), [defaultValues, reset]);
 
@@ -111,62 +116,66 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
     [setValue]
   );
 
-  const [{ loading: isLoading, error: submitError }, addPortal] =
-    useAsyncFn(async () => {
-      if (!user || !world || !currentSpaceId) return;
+  const [
+    { loading: isLoading, error: submitError },
+    addPortal,
+  ] = useAsyncFn(async () => {
+    if (!user || !world || !currentSpaceId) return;
 
-      const {
-        title,
-        image_url,
-        visibility,
-        spaceId,
-        isClickable = DEFAULT_PORTAL_IS_CLICKABLE,
-        isEnabled = DEFAULT_PORTAL_IS_ENABLED,
-        // @debt this needs resolving properly
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        image_file,
-      } = getValues();
+    const {
+      title,
+      image_url,
+      visibility,
+      spaceId,
+      isClickable = DEFAULT_PORTAL_IS_CLICKABLE,
+      isEnabled = DEFAULT_PORTAL_IS_ENABLED,
+      // @debt this needs resolving properly
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      image_file,
+    } = getValues();
 
-      const portalSource = portal ?? {};
+    const portalSource = portal ?? {};
 
-      const portalData: PortalInput = {
-        ...DEFAULT_PORTAL_INPUT,
-        ...portalSource,
-        title,
-        image_url,
-        image_file,
-        visibility,
-        spaceId,
-        type: !isClickable ? RoomType.unclickable : undefined,
-        isEnabled,
-      };
+    const portalData: PortalInput = {
+      ...DEFAULT_PORTAL_INPUT,
+      ...portalSource,
+      title,
+      image_url,
+      image_file,
+      visibility,
+      spaceId,
+      type: !isClickable ? RoomType.unclickable : undefined,
+      isEnabled,
+    };
 
-      if (isEditMode) {
-        await upsertRoom(portalData, currentSpaceId, user, portalIndex);
-      } else {
-        await createRoom(portalData, currentSpaceId, user);
-      }
+    if (isEditMode) {
+      await upsertRoom(portalData, currentSpaceId, user, portalIndex);
+    } else {
+      await createRoom(portalData, currentSpaceId, user);
+    }
 
-      await onDone();
-    }, [
-      currentSpaceId,
-      getValues,
-      isEditMode,
-      onDone,
-      portal,
-      portalIndex,
-      user,
-      world,
-    ]);
+    await onDone();
+  }, [
+    currentSpaceId,
+    getValues,
+    isEditMode,
+    onDone,
+    portal,
+    portalIndex,
+    user,
+    world,
+  ]);
 
-  const [{ loading: isDeleting, error: deleteError }, deletePortal] =
-    useAsyncFn(async () => {
-      if (!currentSpaceId || !portal) return;
+  const [
+    { loading: isDeleting, error: deleteError },
+    deletePortal,
+  ] = useAsyncFn(async () => {
+    if (!currentSpaceId || !portal) return;
 
-      await deleteRoom(currentSpaceId, portal);
-      await onDone();
-    });
+    await deleteRoom(currentSpaceId, portal);
+    await onDone();
+  });
 
   const { relatedVenues } = useRelatedVenues();
 

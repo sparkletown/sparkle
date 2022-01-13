@@ -43,8 +43,9 @@ export const initialValue: CustomSoundsState = {
   isLoading: false,
 };
 
-export const CustomSoundsContext =
-  createContext<CustomSoundsState>(initialValue);
+export const CustomSoundsContext = createContext<CustomSoundsState>(
+  initialValue
+);
 
 export interface CustomSoundsProviderProps {
   waitTillConfigLoaded?: boolean;

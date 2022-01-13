@@ -1,5 +1,5 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
-import { collection,query, where } from "firebase/firestore";
+import { collection, query, where } from "firebase/firestore";
 
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLDS } from "settings";
 

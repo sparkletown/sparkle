@@ -42,11 +42,17 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { world, space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const { register, handleSubmit, errors, formState, setError, clearError } =
-    useForm<LoginFormData>({
-      mode: "onChange",
-      reValidateMode: "onChange",
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    formState,
+    setError,
+    clearError,
+  } = useForm<LoginFormData>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+  });
 
   // @debt is `null` the best choice here? we might better show here a loading or error screen instead
   if (!space || !world) return null;
