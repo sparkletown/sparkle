@@ -15,14 +15,15 @@ module.exports = {
   },
 
   webpack: {
-    alias: {
-      // De-duplicate lodash in our bundle by ensuring all versions resolve to the same dependency
-      lodash:      path.resolve(__dirname, "node_modules/lodash"),
-      "lodash-es": path.resolve(__dirname, "node_modules/lodash"),
-    },
+    // @debt Temporarily disabled to allow complication on linux. Needs investigating
+    // as to whether it is needed at all.
+    // alias: {
+    //   // De-duplicate lodash in our bundle by ensuring all versions resolve to the same dependency
+    //   lodash:      path.resolve(__dirname, "node_modules/lodash"),
+    //   "lodash-es": path.resolve(__dirname, "node_modules/lodash"),
+    // },
 
     configure: (webpackConfig) => {
-
       // some dependencies don't export source maps in their dist directories
       webpackConfig.ignoreWarnings = [/Failed to parse source map/];
 
