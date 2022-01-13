@@ -1,5 +1,3 @@
-export type ScriptCategory = "analytics" | "utility";
-
 export type ScriptArgument = {
   name: string;
   isRequired: boolean;
@@ -9,7 +7,6 @@ export type ScriptArgument = {
 export type SelfServeScript = {
   name: string;
   description: string;
-  categories: ScriptCategory[];
   functionLocation: string;
   arguments: ScriptArgument[];
   isBeta?: boolean;

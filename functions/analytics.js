@@ -9,6 +9,8 @@ const { chunk } = lodash;
 
 const venueIds = "mypartymap";
 
+const functionsConfig = functions.config();
+
 const venueIdsArray = venueIds.split(",");
 
 const getUsersWithVisits = async () => {
@@ -68,11 +70,8 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
     {}
   );
 
-  const allSpaceVisitsFile = fs.writeFile("allSpaceVisits.csv", [
-    "allSpaceVisits",
-    { flag: "a" },
-    () => {},
-  ]);
+  const allSpaceVisitsFileName = "allSpaceVisits.csv";
+
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
     .reduce((arr, userWithVisits) => {
@@ -119,7 +118,7 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
       const visitIds = visits.map((el) => el.id);
 
       visitIds.map((visit) =>
-        fs.writeFileSync(allSpaceVisitsFile, `${visit} \n`, { flag: "a" })
+        fs.writeFileSync(allSpaceVisitsFileName, `${visit} \n`, { flag: "a" })
       );
 
       return {
@@ -141,23 +140,14 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
 
   const globalUniqueVisits = [...new Set(allResultVisits)];
 
-  const uniqueVenuesVisitedFile = fs.writeFile("uniqueVenuesVisited.csv", [
-    "uniqueVenuesVisited",
-    { flag: "a" },
-    () => {},
-  ]);
+  const uniqueVenuesVisitedFileName = "uniqueVenuesVisited.csv";
 
   // write all unique venues
   globalUniqueVisits.map((el) =>
-    fs.writeFileSync(uniqueVenuesVisitedFile, `${el} \n`, { flag: "a" })
+    fs.writeFileSync(uniqueVenuesVisitedFileName, `${el} \n`, { flag: "a" })
   );
 
-  const dataReportFile = fs.writeFile(
-    "dataReport.csv",
-    ["dataReport"],
-    { flag: "a" },
-    () => {}
-  );
+  const dataReportFileName = "dataReport.csv";
 
   // Write user venue headings
   (() => {
@@ -170,7 +160,7 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
       .map((heading) => `"${heading}"`)
       .join(",");
 
-    fs.writeFileSync(dataReportFile, `${headingLine} \n`, { flag: "a" });
+    fs.writeFileSync(dataReportFileName, `${headingLine} \n`, { flag: "a" });
   })();
 
   let globalVisitsValue = 0;
@@ -212,7 +202,7 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
 
     const csvFormattedLine = dto.map((s) => `"${s}"`).join(",");
 
-    fs.writeFileSync(dataReportFile, `${csvFormattedLine} \n`, {
+    fs.writeFileSync(dataReportFileName, `${csvFormattedLine} \n`, {
       flag: "a",
     });
 
@@ -222,7 +212,9 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
   });
 
   // space between visit data & total data
-  [0, 1, 2].map(() => fs.writeFileSync(dataReportFile, `\n`, { flag: "a" }));
+  [0, 1, 2].map(() =>
+    fs.writeFileSync(dataReportFileName, `\n`, { flag: "a" })
+  );
 
   const arrayOfResults = [];
 
@@ -257,19 +249,54 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
     ),
   ];
 
-  fs.writeFileSync(dataReportFile, `${uniqueVisitDataLine} \n`, {
+  fs.writeFileSync(dataReportFileName, `${uniqueVisitDataLine} \n`, {
     flag: "a",
   });
-  fs.writeFileSync(dataReportFile, `${averageVisitDataLine} \n`, {
+  fs.writeFileSync(dataReportFileName, `${averageVisitDataLine} \n`, {
     flag: "a",
   });
 
-  const storage = await admin.storage().bucket();
+  const storage = await admin.storage();
 
-  storage.upload(dataReportFile, {
-    destination: "analytics/dataReportFile.csv",
+  const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
+
+  // NOTE: Expire 10 minutes from now
+  const expiryDate = new Date().getTime() + TEN_MINUTES_IN_MS;
+
+  const bucket = storage.bucket(`${functionsConfig.project.id}.appspot.com`);
+
+  const [dataReportFile] = await bucket.upload(dataReportFileName, {
+    destination: `analytics/dataReportFile-${expiryDate}.csv`,
   });
 
-  // TODO: SAVE FILE INTO STORAGE
-  // TODO: SEND LINK VIA EMAIL
+  const [allSpaceVisitsFile] = await bucket.upload(allSpaceVisitsFileName, {
+    destination: `analytics/allSpaceVisits-${expiryDate}.csv`,
+  });
+
+  const [uniqueVenuesVisitedFile] = await bucket.upload(
+    uniqueVenuesVisitedFileName,
+    {
+      destination: `analytics/uniqueVenuesVisited-${expiryDate}.csv`,
+    }
+  );
+
+  const dataReportFileUrl = await dataReportFile.getSignedUrl({
+    action: "read",
+    expires: expiryDate,
+  });
+
+  const allSpaceVisitsFileUrl = await allSpaceVisitsFile.getSignedUrl({
+    action: "read",
+    expires: expiryDate,
+  });
+
+  const uniqueVenuesVisitedFileUrl = await uniqueVenuesVisitedFile.getSignedUrl(
+    { action: "read", expires: expiryDate }
+  );
+
+  return {
+    dataReportFileUrl,
+    allSpaceVisitsFileUrl,
+    uniqueVenuesVisitedFileUrl,
+  };
 });
