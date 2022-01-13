@@ -70,6 +70,7 @@ module.exports = {
         });
         webpackConfig.plugins.unshift(bugsnagPlugin);
       }
+      webpackConfig.output.assetModuleFilename = 'static/media/[name].[hash:8][ext]';
 
       return webpackConfig;
     },
