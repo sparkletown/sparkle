@@ -1,8 +1,11 @@
 import { uuid } from "uuidv4";
 
+import { DEFAULT_AVATAR_LIST } from "settings";
+
 import { ReplicatedArtcar, ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { getRandomInt } from "utils/getRandomInt";
+import { determineAvatar } from "utils/image";
 
 import { Point } from "../../../../../types/utility";
 import { getIntByHash } from "../../bridges/DataProvider/Contructor/PlayerIO/utils/getIntByHash";
@@ -181,7 +184,10 @@ export const stubUsersData = () => {
         id: id,
         partyName: id,
         messengerId: getIntByHash(id),
-        pictureUrl: `/avatars/default-profile-pic-${getRandomInt(3) + 1}.png`,
+        pictureUrl: determineAvatar({
+          avatars: DEFAULT_AVATAR_LIST,
+          index: getRandomInt(DEFAULT_AVATAR_LIST.length - 1),
+        }),
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
         accessories: avatarAccessories[y % avatarAccessories.length],

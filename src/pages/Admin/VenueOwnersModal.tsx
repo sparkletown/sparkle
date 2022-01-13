@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { debounce } from "lodash";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
@@ -10,6 +10,7 @@ import { User } from "types/User";
 import { AnyVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
+import { determineAvatar } from "utils/image";
 
 import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
 
@@ -174,7 +175,7 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
-  const userPicture = user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl;
+  const userPicture = determineAvatar({ user });
   const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
 
   return (

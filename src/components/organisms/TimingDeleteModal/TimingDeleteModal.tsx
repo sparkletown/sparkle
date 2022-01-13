@@ -7,9 +7,7 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { deleteEvent, EventInput } from "api/admin";
 
-import { VenueEvent } from "types/venues";
-
-import { WithId, WithVenueId } from "utils/id";
+import { WorldEvent } from "types/venues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -22,7 +20,7 @@ import "./TimingDeleteModal.scss";
 export type TimingDeleteModalProps = {
   show: boolean;
   onHide: () => void;
-  event?: WithVenueId<WithId<VenueEvent>>;
+  event?: WorldEvent;
 };
 
 export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
@@ -37,7 +35,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   // @debt This makes the deletion happen against the space that owns the event
   // NOT the space that the event is in. There's some bad hierarchy in the
   // database.
-  const eventSpaceId = event?.venueId;
+  const eventSpaceId = event?.spaceId;
 
   useEffect(() => {
     if (event) {
@@ -45,12 +43,12 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
         name: event.name,
         description: event.description,
         start_date: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
         start_time: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: event.duration_minutes / 60,
+        duration_hours: event.durationMinutes / 60,
       });
     }
   }, [event, reset]);
@@ -60,22 +58,22 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     deleteVenueEvent,
   ] = useAsyncFn(async () => {
     if (event && eventSpaceId) {
-      await deleteEvent(eventSpaceId, event.id);
+      await deleteEvent(event);
     }
     onHide();
   }, [event, onHide, eventSpaceId]);
 
   const eventStartTime = event
-    ? dayjs(event.start_utc_seconds * 1000).format("ha")
+    ? dayjs(event.startUtcSeconds * 1000).format("ha")
     : "Unknown";
   const eventEndTime = event
-    ? dayjs(
-        (event.start_utc_seconds + 60 * event.duration_minutes) * 1000
-      ).format("ha")
+    ? dayjs((event.startUtcSeconds + 60 * event.durationMinutes) * 1000).format(
+        "ha"
+      )
     : "Unknown";
   const eventDuration = event
-    ? `${event.duration_minutes / 60} hours ${
-        event.duration_minutes % 60
+    ? `${event.durationMinutes / 60} hours ${
+        event.durationMinutes % 60
       } minutes`
     : "Unknown";
 

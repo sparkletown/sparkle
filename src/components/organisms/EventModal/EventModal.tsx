@@ -1,24 +1,15 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
-import { Room } from "types/rooms";
-import { VenueEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
-import { WithVenueId } from "utils/id";
-import {
-  enterSpace,
-  getLastUrlParam,
-  getUrlParamFromString,
-  getUrlWithoutTrailingSlash,
-  openUrl,
-} from "utils/url";
+import { enterSpace } from "utils/url";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useInterval } from "hooks/useInterval";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -33,7 +24,7 @@ import "./EventModal.scss";
 export interface EventModalProps {
   show: boolean;
   onHide: () => void;
-  event: WithVenueId<VenueEvent>;
+  event: WorldEvent;
 }
 
 export const EventModal: React.FC<EventModalProps> = ({
@@ -42,49 +33,15 @@ export const EventModal: React.FC<EventModalProps> = ({
   show,
 }) => {
   const { currentVenue: eventVenue } = useRelatedVenues({
-    currentVenueId: event.venueId,
+    currentVenueId: event.spaceId,
   });
   const { worldSlug } = useSpaceParams();
 
-  const eventRoom = useMemo<Room | undefined>(
-    () =>
-      eventVenue?.rooms?.find((room) => {
-        const { room: eventRoom = "" } = event;
-        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
-
-        const [roomName] = getLastUrlParam(noTrailSlashUrl);
-        const roomUrlParam = getUrlParamFromString(eventRoom);
-        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
-
-        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
-      }),
-    [eventVenue, event]
-  );
-
-  const { enterRoom } = useRoom({
-    room: eventRoom,
-  });
-
-  const eventLocationToDisplay =
-    (event.room || eventVenue?.name) ?? event.venueId;
+  const eventLocationToDisplay = eventVenue?.name ?? event.spaceId;
 
   const goToEventLocation = () => {
     onHide();
-
-    const { room = "" } = event;
-    const roomUrlParam = getUrlParamFromString(room);
-
-    if (!eventRoom) {
-      openUrl(roomUrlParam);
-
-      return;
-    }
-
-    if (event.room) {
-      enterRoom();
-    } else {
-      enterSpace(worldSlug, eventVenue?.slug);
-    }
+    enterSpace(worldSlug, eventVenue?.slug);
   };
 
   const isLive = isEventLive(event);
