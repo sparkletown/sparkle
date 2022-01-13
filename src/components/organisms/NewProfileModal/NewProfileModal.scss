@@ -18,12 +18,4 @@
     white-space: pre;
     text-align: center;
   }
-
-  & > .modal-dialog {
-    max-width: $modal-content-max-width;
-    margin: $modal-dialog-viewport-margin;
-    & > .modal-content {
-      padding: 0;
-    }
-  }
 }

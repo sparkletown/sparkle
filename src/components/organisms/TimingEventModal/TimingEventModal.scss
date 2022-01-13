@@ -29,16 +29,6 @@
     }
   }
 
-  .modal-content {
-    background-color: $light-grey;
-  }
-
-  .model-content,
-  .modal-dialog {
-    width: 700px;
-    max-width: 700px;
-  }
-
   // @debt this should be shorter, not having to compensate for `global.scss` interference. remove when no longer necessary
   &__input-group {
     position: relative;
