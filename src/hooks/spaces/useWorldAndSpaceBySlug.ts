@@ -6,6 +6,7 @@ import { COLLECTION_SPACES, COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
+import { SpaceId, WorldId } from "types/id";
 import { AnyVenue, SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
@@ -14,8 +15,9 @@ import { convertToFirestoreKey, WithId } from "utils/id";
 
 export type UseSpaceBySlugResult = {
   world?: WithId<World>;
+  worldId?: WorldId;
   space?: WithId<AnyVenue>;
-  spaceId?: string;
+  spaceId?: SpaceId;
   isLoaded: boolean;
   error?: string;
 };
@@ -77,6 +79,7 @@ export const useWorldAndSpaceBySlug = (
   if (!isWorldLoaded || !isSpaceLoaded) {
     return {
       world: undefined,
+      worldId: undefined,
       space: undefined,
       spaceId: undefined,
       isLoaded: false,
@@ -86,6 +89,7 @@ export const useWorldAndSpaceBySlug = (
   if (!world) {
     return {
       world: undefined,
+      worldId: undefined,
       space: undefined,
       spaceId: undefined,
       isLoaded: true,
@@ -116,6 +120,7 @@ export const useWorldAndSpaceBySlug = (
   if (!space) {
     return {
       world: undefined,
+      worldId: undefined,
       space: undefined,
       spaceId: undefined,
       isLoaded: true,
@@ -126,7 +131,8 @@ export const useWorldAndSpaceBySlug = (
   return {
     world,
     space,
-    spaceId: space?.id,
+    worldId: world?.id as WorldId | undefined,
+    spaceId: space?.id as SpaceId | undefined,
     isLoaded: true,
   };
 };
