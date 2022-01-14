@@ -19,10 +19,6 @@ import {
   updateProfileEnteredVenueIds,
   updateProfileEnteredWorldIds,
 } from "utils/profile";
-import {
-  currentEventSelector,
-  isCurrentEventRequestedSelector,
-} from "utils/selectors";
 import { wrapIntoSlashes } from "utils/string";
 import { isDefined } from "utils/types";
 import { generateUrl } from "utils/url";
@@ -40,7 +36,6 @@ import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "pages/Account/helpers";
@@ -106,10 +101,8 @@ export const VenuePage: React.FC = () => {
 
   usePreloadAssets(assetsToPreload);
 
-  // @debt Refactor and use reactfire hook instead of this legacy syntax.
-  useConnectCurrentEvent();
-  const currentEvent = useSelector(currentEventSelector);
-  const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
+  const { currentEvent, isLoaded: eventRequestStatus } =
+    useConnectCurrentEvent();
 
   const userId = user?.uid;
 

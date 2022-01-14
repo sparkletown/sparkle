@@ -1,31 +1,19 @@
+import { COLLECTION_USERS } from "settings";
+
 import { User } from "types/User";
 
-import { WithId, withId } from "utils/id";
-import { currentModalUserDataSelector } from "utils/selectors";
+import { convertToFirestoreKey } from "utils/id";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
 
-const useConnectCurrentModalUser = (userId?: string) => {
-  useFirestoreConnect(() => {
-    if (!userId) return [];
+export const useCurrentModalUser = (userId?: string) => {
+  const { data, isLoaded } = useRefiDocument<User>([
+    COLLECTION_USERS,
+    convertToFirestoreKey(userId),
+  ]);
 
-    return [
-      {
-        collection: "users",
-        doc: userId,
-        storeAs: "currentModalUser",
-      },
-    ];
-  });
-};
-
-export const useCurrentModalUser = (
-  userId?: string
-): [WithId<User> | undefined, boolean] => {
-  useConnectCurrentModalUser(userId);
-
-  const user = useSelector(currentModalUserDataSelector);
-
-  return [user && userId ? withId(user, userId) : undefined, isLoaded(user)];
+  return {
+    user: userId ? data ?? undefined : undefined,
+    isLoaded,
+  };
 };

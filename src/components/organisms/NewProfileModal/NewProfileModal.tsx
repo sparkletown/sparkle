@@ -23,11 +23,8 @@ interface NewProfileModalProps {
 }
 
 export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
-  const {
-    selectedUserId,
-    hasSelectedProfile,
-    closeUserProfileModal,
-  } = useProfileModalControls();
+  const { selectedUserId, hasSelectedProfile, closeUserProfileModal } =
+    useProfileModalControls();
 
   const {
     isShown: isModalShown,
@@ -42,13 +39,13 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     // an error message from ProfileModalFetchUser is shown
 
     // This is to fix that.
-    setTimeout(() => {
+    window.setTimeout(() => {
       closeUserProfileModal();
       showModal();
     }, REACT_BOOTSTRAP_MODAL_HIDE_DURATION);
   }, [closeUserProfileModal, hideModal, showModal]);
 
-  const [user, isLoaded] = useCurrentModalUser(selectedUserId);
+  const { user, isLoaded } = useCurrentModalUser(selectedUserId);
 
   return (
     <Modal

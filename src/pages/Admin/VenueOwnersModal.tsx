@@ -1,9 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FormControl, Modal } from "react-bootstrap";
-import { useFirestore } from "react-redux-firebase";
 import { debounce } from "lodash";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import {
+  COLLECTION_USERS,
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+} from "settings";
 
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
@@ -12,23 +15,35 @@ import { AnyVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+
 import "./VenueOwnerModal.scss";
 
 interface PartitionedOwnersOthers {
   owners: WithId<User>[];
   others: WithId<User>[];
 }
-const makePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
+
+type MakePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
   { owners, others }: PartitionedOwnersOthers,
   user: WithId<User>
 ) => {
-  if (ownerIds.includes(user.id)) {
-    return { owners: [...owners, user], others };
-  } else {
-    return { owners, others: [...others, user] };
-  }
+  owners: (WithId<User> | (User & { id: string }))[];
+  others: WithId<User>[];
 };
 
+const makePartitionOwnersFromOthersReducer: MakePartitionOwnersFromOthersReducer =
+
+    (ownerIds) =>
+    ({ owners, others }, user) => {
+      if (ownerIds.includes(user.id)) {
+        return { owners: [...owners, user], others };
+      } else {
+        return { owners, others: [...others, user] };
+      }
+    };
+
+// @debt this object is a shared memory between two different executions of allUsers.reduce()
 const emptyPartition: PartitionedOwnersOthers = {
   owners: [],
   others: [],
@@ -48,29 +63,25 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   onHide,
   venue,
 }) => {
-  // Fetch all users the first time this component loads
-  // @debt reading every user is obviously bad.
-  const firestore = useFirestore();
-  useEffect(() => {
-    firestore
-      .collection("users")
-      .get()
-      .then((result) =>
-        result.docs.map<WithId<User>>(
-          (doc) => ({ ...doc.data(), id: doc.id } as WithId<User>) // TODO: be less hacky with types here?
-        )
-      )
-      .then(setAllUsers);
-  }, [firestore]);
-
+  const [allUsers, setAllUsers] = useState<WithId<User>[]>([]);
   const [searchText, setSearchText] = useState("");
+
+  // Fetch all users the first time this component loads
+  // @deby maybe it's a good fit for a read-once DB function to be used
+  // @debt reading every user is obviously bad.
+  const { data, isLoading: isLoadingUsers } = useRefiCollection<User>([
+    COLLECTION_USERS,
+  ]);
+
+  useEffect(
+    () => void !isLoadingUsers && setAllUsers(data ?? []),
+    [isLoadingUsers, setAllUsers, data]
+  );
 
   const debouncedSearch: typeof setSearchText = useMemo(
     () => debounce((v) => setSearchText(v), 100),
     []
   );
-
-  const [allUsers, setAllUsers] = useState<WithId<User>[]>([]);
 
   const isLoading = allUsers.length === 0;
 

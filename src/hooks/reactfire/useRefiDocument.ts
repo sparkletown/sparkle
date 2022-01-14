@@ -8,13 +8,14 @@ import { WithId } from "utils/id";
 
 type UseRefiDocumentResult<T extends object> = ObservableStatus<WithId<T>> & {
   isLoading: boolean;
+  isLoaded: boolean;
 };
 
 export const useRefiDocument = <T extends object>(
-  ...path: string[]
+  path: string[]
 ): UseRefiDocumentResult<T> => {
   const firestore = useFirestore();
-  const [first, ...rest] = path ?? [];
+  const [first, ...rest] = (path ?? []).flat();
 
   if (!first) {
     const e = new Error(
@@ -33,11 +34,12 @@ export const useRefiDocument = <T extends object>(
     doc(firestore, first, ...rest).withConverter(withIdConverter<T>())
   );
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    const isLoading = result.status === "loading";
+    return {
       ...result,
-      isLoading: result.status === "loading",
-    }),
-    [result, result.status]
-  );
+      isLoading,
+      isLoaded: !isLoading,
+    };
+  }, [result, result.status]);
 };

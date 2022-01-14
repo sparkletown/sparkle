@@ -1,9 +1,3 @@
-import {
-  actionTypes as reactReduxFirebaseActionTypes,
-  FirebaseReducer,
-  firebaseReducer,
-  getFirebase,
-} from "react-redux-firebase";
 import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
 import LogRocket from "logrocket";
 import {
@@ -13,15 +7,11 @@ import {
 import subscribeActionMiddleware from "redux-subscribe-action";
 
 import { Firestore } from "types/Firestore";
-import { UserWithLocation } from "types/User";
 
 import { AnimateMapActionTypes } from "./actions/AnimateMap";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
-  firebase: firebaseReducer as Reducer<
-    FirebaseReducer.Reducer<UserWithLocation>
-  >,
   firestore: firestoreReducer as Reducer<Firestore>,
   ...VenueTemplateReducers,
   ...MiscReducers,
@@ -60,15 +50,9 @@ export const store = configureStore({
       /**
        * @see https://redux-toolkit.js.org/api/serializabilityMiddleware
        * @see https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
-       * @see https://redux-toolkit.js.org/usage/usage-guide#use-with-react-redux-firebase
        */
       serializableCheck: {
         ignoredActions: [
-          // Ignore all react-redux-firebase action types
-          ...Object.keys(reactReduxFirebaseActionTypes).map(
-            (type) => `@@reactReduxFirebase/${type}`
-          ),
-
           // Ignore all redux-firestore action types
           ...Object.keys(reduxFirestoreConstants.actionTypes).map(
             (type) => `${reduxFirestoreConstants.actionsPrefix}/${type}`
@@ -81,14 +65,11 @@ export const store = configureStore({
         // Ignore all react-redux-firebase and redux-firestore data stored in Redux
         ignoredPaths: ["firebase", "firestore", "animatemap"],
       },
-
       thunk: {
         /**
          * @see https://github.com/reduxjs/redux-thunk#injecting-a-custom-argument
          */
-        extraArgument: {
-          getFirebase,
-        },
+        extraArgument: {},
       },
     })
       .concat(

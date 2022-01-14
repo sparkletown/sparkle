@@ -10,8 +10,6 @@ import { withIdConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId } from "utils/id";
 import { findSovereignVenue } from "utils/venue";
 
-import { isEmpty } from "./useFirestoreConnect";
-
 export type FindVenueInRelatedVenuesOptions = {
   spaceId?: string;
   spaceSlug?: SpaceSlug;
@@ -60,7 +58,9 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   );
 
   const sovereignVenueSearchResult = useMemo(() => {
-    if (!venueId || isEmpty(relatedVenues)) return;
+    if (!venueId || !Array.isArray(relatedVenues) || !relatedVenues.length) {
+      return;
+    }
 
     return findSovereignVenue(venueId, relatedVenues);
   }, [venueId, relatedVenues]);

@@ -1,3 +1,5 @@
+import { COLLECTION_ROLES } from "settings";
+
 import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
 
 export type AdminRole = {
@@ -6,7 +8,10 @@ export type AdminRole = {
 };
 
 export const useAdminRole = () => {
-  const { data, isLoading } = useRefiDocument<AdminRole>("roles", "admin");
+  const { data, isLoading } = useRefiDocument<AdminRole>([
+    COLLECTION_ROLES,
+    "admin",
+  ]);
 
   return {
     adminRole: data,

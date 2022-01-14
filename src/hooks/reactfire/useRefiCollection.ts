@@ -17,10 +17,11 @@ type UseRefiCollectionOptions =
       constraints?: QueryConstraint[];
     };
 
-type UseRefiCollectionResult<T extends object> = ObservableStatus<
+export type UseRefiCollectionResult<T extends object> = ObservableStatus<
   (T & { id: string })[]
 > & {
   isLoading: boolean;
+  isLoaded: boolean;
 };
 
 export const useRefiCollection = <T extends object>(
@@ -51,11 +52,12 @@ export const useRefiCollection = <T extends object>(
     )
   );
 
-  return useMemo(
-    () => ({
+  return useMemo(() => {
+    const isLoading = result.status === "loading";
+    return {
       ...result,
-      isLoading: result.status === "loading",
-    }),
-    [result, result.status]
-  );
+      isLoading,
+      isLoaded: !isLoading,
+    };
+  }, [result, result.status]);
 };

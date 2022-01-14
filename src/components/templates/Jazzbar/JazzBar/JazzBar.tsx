@@ -17,7 +17,7 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useExperiences } from "hooks/useExperiences";
+import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
@@ -56,7 +56,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   });
   const analytics = useAnalytics({ venue });
 
-  useExperiences(venue.name);
+  // @debt what does it do anyway? cache? no useSelector here so probably connected to useUpdateTableRecentSeatedUsers
+  useExperience(venue.name);
 
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 

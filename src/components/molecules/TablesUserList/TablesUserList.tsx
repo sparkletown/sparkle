@@ -12,12 +12,11 @@ import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
-import { experienceSelector } from "utils/selectors";
 import { generateTable } from "utils/table";
 import { arrayIncludes, isTruthy } from "utils/types";
 
+import { useExperience } from "hooks/useExperience";
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
-import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -70,7 +69,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const [joiningTable, setJoiningTable] = useState("");
 
   const { userWithId } = useUser();
-  const experience = useSelector(experienceSelector);
+  const { data: experience } = useExperience();
 
   const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
 

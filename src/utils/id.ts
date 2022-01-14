@@ -1,6 +1,8 @@
 import firebase from "firebase/compat/app";
 import omit from "lodash/omit";
 
+import { KEY_INVALID_PREFIX } from "settings";
+
 import { WorldId } from "types/id";
 
 // @debt Move these types in types/id.ts
@@ -58,4 +60,4 @@ export const generateFirestoreId: (options?: {
 
 type ConvertToFirestoreKey = (key: unknown) => string;
 export const convertToFirestoreKey: ConvertToFirestoreKey = (key) =>
-  String(key ?? "").trim() || "INVALID-FIRESTORE-KEY-" + key;
+  String(key ?? "").trim() || KEY_INVALID_PREFIX + String(key);

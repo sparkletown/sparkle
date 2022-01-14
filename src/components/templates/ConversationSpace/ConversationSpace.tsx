@@ -13,7 +13,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useExperiences } from "hooks/useExperiences";
+import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
@@ -63,7 +63,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     if (seatedAtTable) analytics.trackSelectTableEvent();
   }, [analytics, seatedAtTable]);
 
-  useExperiences(venue?.name);
+  // @debt what does it do anyway? probably copy from the same in JazzBar.tsx
+  useExperience(venue?.name);
 
   const generatedTables = venue?.config?.tables;
 

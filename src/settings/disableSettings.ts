@@ -20,9 +20,3 @@ export const DISABLED_DUE_TO_1324 = true;
  * @see https://github.com/sparkletown/internal-sparkle-issues/issues/1142
  */
 export const DISABLED_DUE_TO_1142 = true;
-
-/**
- * During the removal of react-redux-firebase,
- * and until replaced with proper reactfire or similar use
- */
-export const DISABLED_DUE_TO_REDUX_FIREBASE_REMOVAL = true;
