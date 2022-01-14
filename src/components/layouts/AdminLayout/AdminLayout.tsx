@@ -11,10 +11,10 @@ export interface AdminLayoutPropsType {
 export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
   useEffect(() => {
     document.documentElement.classList.add(styles.html);
-    document.body.classList.add(styles.body);
+    document.body.classList.add("h-full");
     return () => {
       document.documentElement.classList.remove(styles.html);
-      document.body.classList.remove(styles.body);
+      document.body.classList.remove("h-full");
     };
   }, []);
 
