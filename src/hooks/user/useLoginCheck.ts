@@ -16,7 +16,7 @@ export const useLoginCheck: UseLoginCheck = () => {
   const { status, data, error } = useSigninCheck();
 
   const user: RefiAuthUser | undefined = data?.user ?? undefined;
-  const userId = user?.uid as UserId;
+  const userId = user?.uid as UserId | undefined;
 
   const isLoading = "loading" === status;
 

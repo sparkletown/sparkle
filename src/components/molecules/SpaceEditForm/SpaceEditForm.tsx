@@ -33,6 +33,7 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
+import { UserId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -45,7 +46,6 @@ import { spaceEditSchema } from "forms/spaceEditSchema";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useFetchAssets } from "hooks/useFetchAssets";
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useLoginCheck } from "hooks/user/useLoginCheck";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -82,10 +82,13 @@ const HANDLED_ERRORS = [
 
 export interface SpaceEditFormProps {
   space: WithId<AnyVenue>;
+  userId: UserId;
 }
 
-export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
-  const { userId } = useLoginCheck();
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
+  space,
+  userId,
+}) => {
   const { worldSlug } = useSpaceParams();
 
   const spaceLogoImage =
@@ -188,7 +191,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { ownedVenues } = useOwnedVenues({});
+  const { ownedVenues } = useOwnedVenues({ userId });
 
   const backButtonOptionList = useMemo(
     () =>

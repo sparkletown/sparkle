@@ -9,6 +9,7 @@ import {
   SPACES_TAXON,
 } from "settings";
 
+import { UserId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
@@ -31,11 +32,16 @@ import { SortDropDown } from "components/atoms/SortDropDown";
 
 import "./SpacesDashboard.scss";
 
-export const SpacesDashboard: React.FC = () => {
+interface SpacesDashboardProps {
+  userId: UserId;
+}
+
+export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({ userId }) => {
   const { worldSlug } = useWorldParams();
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
   const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({
     worldId: world?.id,
+    userId,
   });
 
   const venues = useMemo(
@@ -44,10 +50,8 @@ export const SpacesDashboard: React.FC = () => {
     [ownedVenues, world]
   );
 
-  const [
-    currentSortingOption,
-    setCurrentSortingOption,
-  ] = useState<SortingOptions>(SortingOptions.az);
+  const [currentSortingOption, setCurrentSortingOption] =
+    useState<SortingOptions>(SortingOptions.az);
 
   const sortedVenues = useMemo(
     () => sortVenues(venues, currentSortingOption) ?? [],
