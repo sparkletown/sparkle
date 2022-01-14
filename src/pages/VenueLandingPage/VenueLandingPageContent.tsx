@@ -1,4 +1,5 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -47,6 +48,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   world,
   withJoinEvent = true,
 }) => {
+  const history = useHistory();
   const venueEvents = useSelector(venueEventsSelector);
 
   const spaceSlug = space.slug;
@@ -77,7 +79,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
       params: { worldSlug, spaceSlug, step: "1" },
     });
 
-    window.location.href = redirectUrl;
+    history.push(redirectUrl);
   };
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;

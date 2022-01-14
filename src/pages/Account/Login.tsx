@@ -28,11 +28,13 @@ import "./Login.scss";
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   venueId: string;
+  onLogin?: Function;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   venueId,
+  onLogin,
 }) => {
   const { currentVenue, sovereignVenue } = useRelatedVenues({
     currentVenueId: venueId,
@@ -48,9 +50,9 @@ export const Login: React.FC<LoginProps> = ({
     loading: isCustomAuthConfigLoading,
     value: customAuthConfig,
   } = useAsync(async () => {
-    return tracePromise(
+    return await tracePromise(
       "Login::fetchCustomAuthConfig",
-      () => fetchCustomAuthConfig(venueId),
+      async () => await fetchCustomAuthConfig(venueId),
       {
         attributes: {
           venueId,
@@ -87,6 +89,7 @@ export const Login: React.FC<LoginProps> = ({
     if (!data) return;
 
     analytics.trackLogInEvent(data.email);
+    onLogin?.();
   };
 
   if (isCustomAuthConfigLoading) return <LoadingPage />;

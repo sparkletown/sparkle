@@ -235,10 +235,14 @@ export const VenuePage: React.FC = () => {
     );
   }
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venueId={spaceId} />
+        <Login onLogin={refreshPage} venueId={spaceId} />
       </Suspense>
     );
   }

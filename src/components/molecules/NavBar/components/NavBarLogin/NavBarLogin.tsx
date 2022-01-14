@@ -1,4 +1,5 @@
 import { FC, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 
 import {
   ATTENDEE_SPACE_ENTRANCE_URL,
@@ -17,22 +18,25 @@ export interface NavBarLoginProps {
 
 export const NavBarLogin: FC<NavBarLoginProps> = ({ hasEntrance }) => {
   const { worldSlug, spaceSlug } = useSpaceParams();
+  const history = useHistory();
 
-  const navigateToDefault = useCallback(() => {
-    const redirectUrl = generateUrl({
-      route: !hasEntrance
-        ? ATTENDEE_SPACE_INSIDE_URL
-        : ATTENDEE_SPACE_ENTRANCE_URL,
-      required: ["worldSlug", "spaceSlug"],
-      params: { worldSlug, spaceSlug, step: "1" },
-    });
-
-    /**
-     * Using history.push() doesn't work correctly for some strange reason and firebase returns 403 (Missing or insufficient premissions).
-     * It's almost like it doesn't detect when the user logs in and the rules consider the `uid` to be `null`
-     */
-    window.location.href = redirectUrl;
-  }, [hasEntrance, worldSlug, spaceSlug]);
+  const navigateToDefault = useCallback(
+    () =>
+      history.push(
+        generateUrl({
+          route: !hasEntrance
+            ? ATTENDEE_SPACE_INSIDE_URL
+            : ATTENDEE_SPACE_ENTRANCE_URL,
+          required: ["worldSlug", "spaceSlug", "step"],
+          params: {
+            worldSlug: worldSlug,
+            spaceSlug: spaceSlug,
+            step: "1",
+          },
+        })
+      ),
+    [history, hasEntrance, worldSlug, spaceSlug]
+  );
 
   return (
     <div className="NavBarLogin" onClick={navigateToDefault}>

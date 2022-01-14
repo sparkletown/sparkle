@@ -59,14 +59,14 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     clearError("backend");
   };
 
-  const signIn = ({ email, password }: LoginFormData) => {
-    return firebase.auth().signInWithEmailAndPassword(email, password);
+  const signIn = async ({ email, password }: LoginFormData) => {
+    return await firebase.auth().signInWithEmailAndPassword(email, password);
   };
 
-  const postSignInCheck = (data?: LoginFormData) => {
-    afterUserIsLoggedIn?.(data);
+  const postSignInCheck = async (data?: LoginFormData) => {
+    await afterUserIsLoggedIn?.(data);
 
-    closeAuthenticationModal?.();
+    await closeAuthenticationModal?.();
   };
 
   const onSubmit = async (data: LoginFormData) => {
@@ -74,7 +74,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     try {
       await signIn(data);
 
-      postSignInCheck(data);
+      await postSignInCheck(data);
     } catch (error) {
       if (error.response?.status === 404) {
         setError(
