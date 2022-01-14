@@ -237,6 +237,8 @@ export const VenuePage: React.FC = () => {
     );
   }
 
+  // This forces a page refresh after login to re-fetch the firestore permissions and rules.
+  // @debt Remove this when introducing a separate login route.
   const refreshPage = () => {
     window.location.reload();
   };

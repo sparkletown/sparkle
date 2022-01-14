@@ -10,7 +10,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
   ATTENDEE_INSIDE_URL,
-  ATTENDEE_LANDING_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
   DEFAULT_ENTER_STEP,
   DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
@@ -73,7 +73,10 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     const worldSlug = world?.slug;
 
     const redirectUrl = generateUrl({
-      route: user && !hasEntrance ? ATTENDEE_INSIDE_URL : ATTENDEE_LANDING_URL,
+      route:
+        user && !hasEntrance
+          ? ATTENDEE_INSIDE_URL
+          : ATTENDEE_STEPPING_PARAM_URL,
       required: ["worldSlug", "spaceSlug"],
       params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
     });
