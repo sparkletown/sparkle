@@ -1,6 +1,11 @@
 import React, { useMemo } from "react";
+import { HeaderButton } from "components/admin/HeaderButton";
+import { Section } from "components/admin/Section";
+import { SectionHeading } from "components/admin/SectionHeading";
+import { SectionTitle } from "components/admin/SectionTitle";
 import { WithAuthProps } from "components/hocs/db/withAuth";
 import { AdminLayout } from "components/layouts/AdminLayout";
+import { FullWidthLayout } from "components/layouts/FullWidthLayout";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
@@ -55,18 +60,20 @@ export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
         {hasWorlds ? (
           <>
             <AdminHeader title="Switch World" />
-            <AdminShowcaseTitle>Switch World</AdminShowcaseTitle>
-            <div className="WorldsDashboard__header">
-              <span className="WorldsDashboard__header-text">My worlds</span>
-              <ButtonNG
-                variant="normal-gradient"
-                linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                className="WorldsDashboard__header-button"
-              >
-                Create new world
-              </ButtonNG>
-            </div>
-            {renderedWorldsList}
+            <FullWidthLayout>
+              <Section>
+                <SectionHeading>
+                  <SectionTitle>My worlds</SectionTitle>
+                  <HeaderButton
+                    to={ADMIN_IA_WORLD_CREATE_URL}
+                    extraClasses="text-white bg-sparkle rounded-full"
+                    name="Create new world"
+                    iconExtraClasses=""
+                  />
+                </SectionHeading>
+                {renderedWorldsList}
+              </Section>
+            </FullWidthLayout>
           </>
         ) : (
           <AdminShowcase>
