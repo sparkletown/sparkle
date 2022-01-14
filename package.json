@@ -41,7 +41,8 @@
     "npm:install": "npm install --legacy-peer-deps",
     "npm:invalidate-cache": "npm cache clear --force",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "chromatic": "chromatic --exit-zero-on-changes"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
