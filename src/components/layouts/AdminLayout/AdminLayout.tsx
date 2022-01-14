@@ -45,7 +45,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        {children}
+        <main className="flex-1">{children}</main>
       </div>
     </div>
   );

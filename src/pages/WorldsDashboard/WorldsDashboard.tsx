@@ -6,12 +6,12 @@ import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 
-import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 
 import { WorldCard } from "components/molecules/WorldCard";
 
+import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -50,49 +50,43 @@ export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
   );
 
   return (
-    <div className="WorldsDashboard">
-      <AdminLayout>
-        <AdminRestricted>
-          <AdminPanel variant="unbound">
-            {hasWorlds ? (
-              <AdminShowcase>
-                {/* @debt: possibly add <AdminTitleBar to wrap header content */}
-                <AdminShowcaseTitle>Switch World</AdminShowcaseTitle>
-                <div className="WorldsDashboard__header">
-                  <span className="WorldsDashboard__header-text">
-                    My worlds
-                  </span>
-                  <ButtonNG
-                    variant="normal-gradient"
-                    linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                    className="WorldsDashboard__header-button"
-                  >
-                    Create new world
-                  </ButtonNG>
-                </div>
-                {renderedWorldsList}
-              </AdminShowcase>
-            ) : (
-              <AdminShowcase>
-                <div className="WorldsDashboard__arrow-header">
-                  <ButtonNG
-                    variant="normal-gradient"
-                    linkTo={ADMIN_IA_WORLD_CREATE_URL}
-                  >
-                    Create new world
-                  </ButtonNG>
-                  <img
-                    alt="arrow pointing towards the Create a world button"
-                    className="WorldsDashboard__arrow"
-                    src={ARROW}
-                  />
-                </div>
-                {renderedWelcomePage}
-              </AdminShowcase>
-            )}
-          </AdminPanel>
-        </AdminRestricted>
-      </AdminLayout>
-    </div>
+    <AdminLayout>
+      <AdminRestricted>
+        {hasWorlds ? (
+          <>
+            <AdminHeader title="Switch World" />
+            <AdminShowcaseTitle>Switch World</AdminShowcaseTitle>
+            <div className="WorldsDashboard__header">
+              <span className="WorldsDashboard__header-text">My worlds</span>
+              <ButtonNG
+                variant="normal-gradient"
+                linkTo={ADMIN_IA_WORLD_CREATE_URL}
+                className="WorldsDashboard__header-button"
+              >
+                Create new world
+              </ButtonNG>
+            </div>
+            {renderedWorldsList}
+          </>
+        ) : (
+          <AdminShowcase>
+            <div className="WorldsDashboard__arrow-header">
+              <ButtonNG
+                variant="normal-gradient"
+                linkTo={ADMIN_IA_WORLD_CREATE_URL}
+              >
+                Create new world
+              </ButtonNG>
+              <img
+                alt="arrow pointing towards the Create a world button"
+                className="WorldsDashboard__arrow"
+                src={ARROW}
+              />
+            </div>
+            {renderedWelcomePage}
+          </AdminShowcase>
+        )}
+      </AdminRestricted>
+    </AdminLayout>
   );
 };
