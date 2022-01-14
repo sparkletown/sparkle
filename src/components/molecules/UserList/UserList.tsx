@@ -1,6 +1,4 @@
 import React, { useMemo } from "react";
-import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { User } from "types/User";
@@ -38,7 +36,8 @@ export const UserList: React.FC<UserListProps> = ({
   showTitle = true,
   attendeesTitle,
 }) => {
-  const hasExcessiveUserCount = userCount > usersSample.length;
+  const excessiveUserCount =
+    userCount - usersSample.length > 0 ? userCount - usersSample.length : 0;
 
   const label = `${userCount} ${
     attendeesTitle ?? (userCount === 1 ? "person" : "people")
@@ -75,13 +74,9 @@ export const UserList: React.FC<UserListProps> = ({
 
       <div className="UserList__avatars">
         {renderedUserAvatars}
-        {hasExcessiveUserCount && (
-          <div className={cellClasses}>
-            <FontAwesomeIcon
-              icon={faEllipsisH}
-              size="xs"
-              className="UserList__dots-icon"
-            />
+        {excessiveUserCount > 0 && (
+          <div className="UserList__excessive-number">
+            and {excessiveUserCount} more
           </div>
         )}
       </div>

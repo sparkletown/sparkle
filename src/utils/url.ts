@@ -3,10 +3,9 @@ import Bugsnag from "@bugsnag/js";
 
 import {
   ADMIN_IA_SPACE_EDIT_PARAM_URL,
-  ADMIN_IA_WORLD_PARAM_URL,
-  ATTENDEE_SPACE_ENTRANCE_URL,
-  ATTENDEE_SPACE_INSIDE_URL,
-  ATTENDEE_SPACE_LANDING_URL,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_LANDING_URL,
+  DEFAULT_MISSING_PARAM_URL,
   VALID_URL_PROTOCOLS,
 } from "settings";
 
@@ -14,18 +13,20 @@ import { Room } from "types/rooms";
 import { SpaceSlug } from "types/venues";
 import { WorldSlug } from "types/world";
 
-// @debt most of these (a,b,c)=>generatePath(PATH,{}) function should be just inlined where called
-// like to={generatePath(params)} or actually have logic inside them that deals with missing params
+// @debt most of these (a,b,c)=>generatePath(PATH,{}) functions should be replaced with inlined  generateUrl
 
-const DEFAULT_MISSING_PARAM_URL = "#";
-
-export const generateUrl: (options: {
+type GenerateUrlParams = Record<string, string | undefined> | undefined;
+type GenerateUrlOptions<T = GenerateUrlParams> = {
   route: string;
   fallback?: string;
   required?: string[];
   absolute?: boolean;
-  params: Record<string, string | undefined>;
-}) => string = ({
+  params: T;
+};
+
+export const generateUrl: <T = GenerateUrlParams>(
+  options: GenerateUrlOptions<T>
+) => string = ({
   route,
   fallback = DEFAULT_MISSING_PARAM_URL,
   required = [],
@@ -44,7 +45,10 @@ export const generateUrl: (options: {
     return fallback;
   }
 
-  const relativePath = generatePath(route, params);
+  // NOTE: ?? {} stops TS from crying and the check makes the shorter generatePath is used
+  const relativePath = params
+    ? generatePath(route, params ?? {})
+    : generatePath(route);
 
   // also be helpful with generating external links
   return absolute
@@ -66,10 +70,6 @@ export const adminNGVenueUrl = (
         selectedTab,
       });
 
-/** @deprecated use generateUrl instead */
-export const adminWorldSpacesUrl = (worldSlug?: string) =>
-  generatePath(ADMIN_IA_WORLD_PARAM_URL, { worldSlug });
-
 type generateAttendeeInsideUrlOptions = {
   worldSlug?: WorldSlug;
   spaceSlug?: SpaceSlug;
@@ -84,7 +84,7 @@ export const generateAttendeeInsideUrl = ({
   spaceSlug,
   absoluteUrl = false,
 }: generateAttendeeInsideUrlOptions) => {
-  const relativePath = generatePath(ATTENDEE_SPACE_INSIDE_URL, {
+  const relativePath = generatePath(ATTENDEE_INSIDE_URL, {
     worldSlug,
     spaceSlug,
   });
@@ -101,20 +101,7 @@ export const generateAttendeeInsideUrl = ({
 export const generateAttendeeSpaceLandingUrl = (
   worldSlug?: WorldSlug,
   spaceSlug?: SpaceSlug
-) => generatePath(ATTENDEE_SPACE_LANDING_URL, { worldSlug, spaceSlug });
-
-/** @deprecated use generateUrl instead */
-export const venueEntranceUrl = (
-  worldSlug?: WorldSlug,
-  spaceSlug?: SpaceSlug,
-  step?: number
-) => {
-  return generatePath(ATTENDEE_SPACE_ENTRANCE_URL, {
-    worldSlug,
-    spaceSlug,
-    step: step ?? 1,
-  });
-};
+) => generatePath(ATTENDEE_LANDING_URL, { worldSlug, spaceSlug });
 
 export const isExternalUrl = (url: string) => {
   try {

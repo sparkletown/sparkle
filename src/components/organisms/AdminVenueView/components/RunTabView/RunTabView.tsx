@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SPACE_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -9,11 +9,12 @@ import { WithId } from "utils/id";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { AdminSidebarTitle } from "components/organisms/AdminVenueView/components/AdminSidebarTitle";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { UserList } from "components/molecules/UserList";
 
+import { AdminSidebarSectionTitle } from "../AdminSidebarSectionTitle";
 import { MapPreview } from "../MapPreview";
 
 import "./RunTabView.scss";
@@ -32,21 +33,33 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   return (
     <AdminPanel variant="unbound" className="RunTabView">
       <AdminSidebar>
-        <AdminSidebarTitle>Run your {SPACE_TAXON.lower}</AdminSidebarTitle>
+        <AdminSidebarSectionTitle>
+          Run your {SPACE_TAXON.lower}
+        </AdminSidebarSectionTitle>
         <div className="RunTabView__content">
           <RunTabUsers venueId={venueId} />
         </div>
       </AdminSidebar>
-      <AdminShowcase className="RunTabView__main" variant="no-scroll">
-        <div className="RunTabView__map RunTabView--spacing">
-          <MapPreview
-            isEditing={false}
-            mapBackground={venue?.mapBackgroundImageUrl}
-            rooms={venue.rooms || []}
-            setSelectedRoom={() => undefined}
+      <div className="RunTabView__body">
+        <div className="RunTabView__user-list">
+          <UserList
+            usersSample={venue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
+            userCount={venue?.recentUserCount ?? 0}
+            showTitle={false}
+            activity={`in ${SPACE_TAXON.lower}`}
           />
         </div>
-      </AdminShowcase>
+        <AdminShowcase>
+          <div className="RunTabView__map RunTabView--spacing">
+            <MapPreview
+              isEditing={false}
+              mapBackground={venue?.mapBackgroundImageUrl}
+              rooms={venue.rooms || []}
+              setSelectedRoom={() => undefined}
+            />
+          </div>
+        </AdminShowcase>
+      </div>
     </AdminPanel>
   );
 };

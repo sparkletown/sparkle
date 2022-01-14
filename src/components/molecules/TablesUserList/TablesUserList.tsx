@@ -8,12 +8,12 @@ import { setTableSeat } from "api/venue";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { TableSeatedUser } from "types/User";
-import { AnyVenue } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
 import { generateTable } from "utils/table";
-import { isTruthy } from "utils/types";
+import { arrayIncludes, isTruthy } from "utils/types";
 
 import { useSeatedTableUsers } from "hooks/useSeatedTableUsers";
 import { useSelector } from "hooks/useSelector";
@@ -36,6 +36,7 @@ export interface TablesUserListProps {
   leaveText?: string;
   venue: WithId<AnyVenue>;
   venueId: string;
+  template: VenueTemplate;
 }
 
 export const TablesUserList: React.FC<TablesUserListProps> = ({
@@ -48,6 +49,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   TableComponent,
   joinMessage,
   venue,
+  template,
 }) => {
   // NOTE: custom tables can already contain default tables and this check here is to only doubleconfrim the data coming from the above
   const tables: Table[] = customTables || defaultTables;
@@ -68,6 +70,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const { userWithId } = useUser();
   const experience = useSelector(experienceSelector);
+
+  const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
 
   const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
     venueId
@@ -164,7 +168,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const allowCreateEditTable =
-    emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
+    !isSeatedAtTable &&
+    (isCurrentUserAdmin || emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER);
 
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
@@ -184,6 +189,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
         tableLocked={tableLocked}
         onJoinClicked={onJoinClicked}
         venue={venue}
+        template={template}
       />
     ));
   }, [
@@ -196,6 +202,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     usersSeatedAtTables,
     onJoinClicked,
     venue,
+    template,
   ]);
 
   if (!isSeatedTableUsersLoaded) return <Loading />;

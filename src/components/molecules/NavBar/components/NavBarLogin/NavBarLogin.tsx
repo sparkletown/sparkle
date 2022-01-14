@@ -2,8 +2,9 @@ import { FC, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 
 import {
-  ATTENDEE_SPACE_ENTRANCE_URL,
-  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
+  DEFAULT_ENTER_STEP,
 } from "settings";
 
 import { generateUrl } from "utils/url";
@@ -25,13 +26,13 @@ export const NavBarLogin: FC<NavBarLoginProps> = ({ hasEntrance }) => {
       history.push(
         generateUrl({
           route: !hasEntrance
-            ? ATTENDEE_SPACE_INSIDE_URL
-            : ATTENDEE_SPACE_ENTRANCE_URL,
+            ? ATTENDEE_INSIDE_URL
+            : ATTENDEE_STEPPING_PARAM_URL,
           required: ["worldSlug", "spaceSlug", "step"],
           params: {
             worldSlug: worldSlug,
             spaceSlug: spaceSlug,
-            step: "1",
+            step: DEFAULT_ENTER_STEP,
           },
         })
       ),

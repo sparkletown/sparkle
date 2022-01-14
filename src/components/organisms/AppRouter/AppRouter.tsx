@@ -9,10 +9,10 @@ import {
 import {
   ACCOUNT_ROOT_URL,
   ADMIN_ROOT_URL,
-  ATTENDEE_SPACE_EMERGENCY_PARAM_URL,
-  ATTENDEE_SPACE_ENTRANCE_URL,
-  ATTENDEE_SPACE_INSIDE_URL,
-  ATTENDEE_SPACE_LANDING_URL,
+  ATTENDEE_EMERGENCY_PARAM_URL,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_LANDING_URL,
+  ATTENDEE_STEPPING_PARAM_URL,
   ENTER_ROOT_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
@@ -106,11 +106,17 @@ const EmergencyViewPage = lazy(() =>
 // NOTE: do keep this monkeypatch localized in this file, not spread in others
 // @debt custom urls with AppRouter redirects that are to be removed in the future
 // @see: https://github.com/sparkletown/internal-sparkle-issues/issues/1547
+// GOOGLE
 const TEMP_GOOG_WEST_SLUG = "googlecloudwest";
 const TEMP_GOOG_WEST_LANDING = `/v/${TEMP_GOOG_WEST_SLUG}`;
 const TEMP_GOOG_WEST_INSIDE = `/in/${TEMP_GOOG_WEST_SLUG}`;
+// ITERABLE
 const TEMP_ITER_SLUG = "iterable";
 const TEMP_ITER_ROUTE = `/v/${TEMP_ITER_SLUG}`;
+// HONEYCOMB
+const TEMP_HONEYCOMB_SLUG = "honeycomb";
+const TEMP_HONEYCOMB_LANDING = `/v/${TEMP_HONEYCOMB_SLUG}`;
+const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 /////////////////////////////////////////////////////////////////////////////////////
 
 export const AppRouter: React.FC = () => {
@@ -148,6 +154,22 @@ export const AppRouter: React.FC = () => {
               })}
             />
           </Route>
+          <Route path={TEMP_HONEYCOMB_LANDING}>
+            <Redirect
+              to={generateAttendeeSpaceLandingUrl(
+                TEMP_HONEYCOMB_SLUG as WorldSlug,
+                TEMP_HONEYCOMB_SLUG as SpaceSlug
+              )}
+            />
+          </Route>
+          <Route path={TEMP_HONEYCOMB_INSIDE}>
+            <Redirect
+              to={generateAttendeeInsideUrl({
+                worldSlug: TEMP_HONEYCOMB_SLUG as WorldSlug,
+                spaceSlug: TEMP_HONEYCOMB_SLUG as SpaceSlug,
+              })}
+            />
+          </Route>
           {
             /////////////////////////////////////////////////////////////////////////
           }
@@ -165,22 +187,22 @@ export const AppRouter: React.FC = () => {
             path={LOGIN_CUSTOM_TOKEN_PARAM_URL}
             component={LoginWithCustomToken}
           />
-          <Route path={ATTENDEE_SPACE_LANDING_URL}>
+          <Route path={ATTENDEE_LANDING_URL}>
             <Provided withRelatedVenues>
               <VenueLandingPage />
             </Provided>
           </Route>
-          <Route path={ATTENDEE_SPACE_ENTRANCE_URL}>
+          <Route path={ATTENDEE_STEPPING_PARAM_URL}>
             <Provided withRelatedVenues>
               <VenueEntrancePage />
             </Provided>
           </Route>
-          <Route path={ATTENDEE_SPACE_INSIDE_URL}>
+          <Route path={ATTENDEE_INSIDE_URL}>
             <Provided withRelatedVenues>
               <VenuePage />
             </Provided>
           </Route>
-          <Route path={ATTENDEE_SPACE_EMERGENCY_PARAM_URL}>
+          <Route path={ATTENDEE_EMERGENCY_PARAM_URL}>
             <Provided withRelatedVenues>
               <EmergencyViewPage />
             </Provided>

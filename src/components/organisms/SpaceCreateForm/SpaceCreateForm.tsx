@@ -6,7 +6,7 @@ import { useAsyncFn } from "react-use";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
-  PortalInfoListItem,
+  PortalInfoItem,
   SPACE_INFO_LIST,
   SPACE_TAXON,
 } from "settings";
@@ -53,7 +53,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const dispatch = useDispatch();
   const { user } = useUser();
   const [selectedItem, setSelectedItem] = useState<
-    PortalInfoListItem | undefined
+    PortalInfoItem | undefined
   >();
   const { icon: logoImageUrl, template } = selectedItem ?? {};
 
@@ -82,6 +82,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
     };
 
     await createVenue_v2(data, user);
+
     history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
   }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
 

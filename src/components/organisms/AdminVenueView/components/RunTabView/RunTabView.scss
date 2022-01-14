@@ -17,6 +17,9 @@
   }
 
   &__map {
+    background-color: $secondary--live;
+    margin-bottom: $footer-height;
+    padding: $spacing--lg;
     border-radius: $border-radius--xl;
 
     > * {
@@ -24,15 +27,23 @@
     }
   }
 
-  &__main {
-    background-color: $secondary--live;
-    display: flex;
-    flex-direction: column;
-    padding: $spacing--lg;
-    margin-bottom: $footer-height;
-  }
-
   &--spacing + &--spacing {
     margin-top: $spacing--lg;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__user-list {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    margin: $spacing--xl;
+  }
+
+  .AdminSidebarSectionTitle {
+    padding: 0 $spacing--lg;
   }
 }

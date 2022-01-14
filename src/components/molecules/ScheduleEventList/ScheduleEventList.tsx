@@ -4,23 +4,23 @@ import isToday from "date-fns/isToday";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
-import { ScheduledVenueEvent } from "types/venues";
+import { ScheduledEvent } from "types/venues";
 
 import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { useInterval } from "hooks/useInterval";
 
-import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
+import { ScheduleEventSubList } from "./ScheduleEventSubList";
 
-import "./ScheduleEventListNG.scss";
+import "./ScheduleEventList.scss";
 
-export interface ScheduleEventListNGProps {
-  daysEvents: ScheduledVenueEvent[];
+interface ScheduleEventListProps {
+  daysEvents: ScheduledEvent[];
   scheduleDate: Date;
 }
 
-export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
+export const ScheduleEventList: React.FC<ScheduleEventListProps> = ({
   daysEvents,
   scheduleDate,
 }) => {
@@ -49,8 +49,8 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
 
   if (!isTodayDate) {
     return (
-      <div className="ScheduleEventListNG">
-        <ScheduleEventSubListNG
+      <div className="ScheduleEventList">
+        <ScheduleEventSubList
           events={daysEvents}
           title={`Coming up ${formatDateRelativeToNow(scheduleDate, {
             formatTomorrow: () => "tomorrow",
@@ -62,10 +62,10 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   }
 
   return (
-    <div className="ScheduleEventListNG">
-      <ScheduleEventSubListNG events={liveEvents} title="Happening now" />
-      <ScheduleEventSubListNG events={comingSoonEvents} title="Starting soon" />
-      <ScheduleEventSubListNG events={laterEvents} title="Coming up" />
+    <div className="ScheduleEventList">
+      <ScheduleEventSubList events={liveEvents} title="Happening now" />
+      <ScheduleEventSubList events={comingSoonEvents} title="Starting soon" />
+      <ScheduleEventSubList events={laterEvents} title="Coming up" />
     </div>
   );
 };

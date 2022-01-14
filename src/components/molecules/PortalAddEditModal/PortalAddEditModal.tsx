@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 
-import { PortalInfoListItem } from "settings";
+import { PortalInfoItem } from "settings";
 
 import { Room } from "types/rooms";
 
@@ -10,7 +10,7 @@ import { PortalAddEditForm } from "components/organisms/PortalAddEditForm";
 import "./PortalAddEditModal.scss";
 
 export type PortalAddEditModalProps = {
-  item?: PortalInfoListItem;
+  item?: PortalInfoItem;
   show: boolean;
   onHide: () => void;
   portal?: Room;

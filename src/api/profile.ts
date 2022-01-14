@@ -3,9 +3,9 @@ import firebase from "firebase/app";
 
 import { AnyGridData } from "types/grid";
 import { User } from "types/User";
-import { VenueEvent } from "types/venues";
+import { WorldEvent } from "types/venues";
 
-import { WithId, withId, WithVenueId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 export const getUserRef = (userId: string) =>
   firebase.firestore().collection("users").doc(userId);
@@ -95,13 +95,13 @@ export const removeEventFromPersonalizedSchedule = ({
 }: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
   updatePersonalizedSchedule({ event, userId, removeMode: true });
 
-export interface UpdatePersonalizedScheduleProps {
-  event: WithVenueId<VenueEvent>;
+interface UpdatePersonalizedScheduleProps {
+  event: WorldEvent;
   userId: string;
   removeMode?: boolean;
 }
 
-export const updatePersonalizedSchedule = async ({
+const updatePersonalizedSchedule = async ({
   event,
   userId,
   removeMode = false,
@@ -109,7 +109,7 @@ export const updatePersonalizedSchedule = async ({
   updateUserCollection({
     userId,
     removeMode,
-    collectionKey: `myPersonalizedSchedule.${event.venueId}`,
+    collectionKey: `myPersonalizedSchedule.${event.spaceId}`,
     collectionValue: [event.id],
   });
 

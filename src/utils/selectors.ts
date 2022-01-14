@@ -1,6 +1,6 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
-import { SpaceInfoListItem } from "settings";
+import { SpaceInfoItem } from "settings";
 
 import { World } from "api/world";
 
@@ -20,7 +20,7 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Settings } from "types/settings";
 import { SparkleSelector } from "types/SparkleSelector";
 import { TableSeatedUser, User, UserWithLocation } from "types/User";
-import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
 import { WorldGeneralFormInput } from "types/world";
 
 import { WithId, WithOptionalWorldId } from "utils/id";
@@ -63,7 +63,7 @@ export const currentVenueSelector: SparkleSelector<
 > = (state) => state.firestore.ordered.currentVenue?.[0];
 
 export const currentEventSelector: SparkleSelector<
-  WithId<VenueEvent>[] | undefined
+  WorldEvent[] | undefined
 > = makeOrderedSelector("currentEvent");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
@@ -126,9 +126,9 @@ export const messagesToTheBandSelector: SparkleSelector<
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
 
-export const venueEventsSelector: SparkleSelector<
-  WithId<VenueEvent>[] | undefined
-> = (state) => state.firestore.ordered.venueEvents;
+export const venueEventsSelector: SparkleSelector<WorldEvent[] | undefined> = (
+  state
+) => state.firestore.ordered.venueEvents;
 
 export const venueEventsNGSelector = (state: RootState) =>
   state.firestore.ordered.events;
@@ -223,6 +223,6 @@ export const worldEditStartValuesSelector: SparkleSelector<
   Partial<WithOptionalWorldId<WorldGeneralFormInput>>
 > = (state) => state.worldEditStartValues;
 
-export const spaceCreateItemSelector: SparkleSelector<SpaceInfoListItem> = (
+export const spaceCreateItemSelector: SparkleSelector<SpaceInfoItem> = (
   state
 ) => state.spaceCreateItem;

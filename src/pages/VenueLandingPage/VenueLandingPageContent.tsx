@@ -9,8 +9,9 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import {
-  ATTENDEE_SPACE_ENTRANCE_URL,
-  ATTENDEE_SPACE_INSIDE_URL,
+  ATTENDEE_INSIDE_URL,
+  ATTENDEE_LANDING_URL,
+  DEFAULT_ENTER_STEP,
   DEFAULT_LANDING_BANNER,
   DEFAULT_VENUE_LOGO,
   IFRAME_ALLOW,
@@ -64,19 +65,17 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   );
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
 
+  // @debt use callback hook and history push
   const onJoinClick = () => {
     if (!spaceSlug) return;
 
     const hasEntrance = world?.entrance?.length;
-    const worldSlug = world.slug;
+    const worldSlug = world?.slug;
 
     const redirectUrl = generateUrl({
-      route:
-        user && !hasEntrance
-          ? ATTENDEE_SPACE_INSIDE_URL
-          : ATTENDEE_SPACE_ENTRANCE_URL,
+      route: user && !hasEntrance ? ATTENDEE_INSIDE_URL : ATTENDEE_LANDING_URL,
       required: ["worldSlug", "spaceSlug"],
-      params: { worldSlug, spaceSlug, step: "1" },
+      params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
     });
 
     history.push(redirectUrl);
@@ -98,7 +97,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const containerClasses = classNames("header", containerVars);
 
   return (
-    <div className="container venue-entrance-experience-container">
+    <div className="VenueLandingPageContent container venue-entrance-experience-container">
       <div className={containerClasses}>
         <div className="venue-host">
           <div className="host-icon-container">
@@ -225,12 +224,6 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
                     </div>
                     <div className="event-description">
                       <RenderMarkdown text={venueEvent.description} />
-                      {venueEvent.descriptions?.map((description, index) => (
-                        <RenderMarkdown
-                          text={description}
-                          key={`${description}#${index}`}
-                        />
-                      ))}
                     </div>
                   </InformationCard>
                 );

@@ -71,6 +71,7 @@ $login-rainbox-gradient: linear-gradient(
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 300px;
+$chat-sidebar-controller-width: 100px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;
@@ -310,6 +311,10 @@ $z-layers: (
   }
 
   @return map-get($z-layers, $layer);
+}
+
+@function box-shadow--table($color) {
+  @return 2px 0px 10px $color;
 }
 
 @function box-shadow--input($color) {

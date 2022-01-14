@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
   addDays,
@@ -17,7 +11,7 @@ import {
 
 import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
-import { ScheduledVenueEvent } from "types/venues";
+import { ScheduledEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
@@ -34,10 +28,8 @@ import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { Breadcrumbs } from "components/molecules/Breadcrumbs";
-import { ScheduleNG } from "components/molecules/ScheduleNG";
+import { Schedule } from "components/molecules/Schedule";
 
-// Disabled as per designs. Up for deletion if confirmed not necessary
-// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -45,13 +37,13 @@ import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
 
-export interface ScheduleNGDay {
-  daysEvents: ScheduledVenueEvent[];
+interface ScheduleDay {
+  daysEvents: ScheduledEvent[];
   scheduleDate: Date;
 }
 
-export const emptyPersonalizedSchedule = {};
-export interface NavBarScheduleProps {
+const emptyPersonalizedSchedule = {};
+interface NavBarScheduleProps {
   isVisible?: boolean;
   venueId: string;
 }
@@ -60,17 +52,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
 }) => {
-  // @debt This refetchIndex is used to force a refetch of the data when events
-  // have been edited. It's horrible and needs a rethink. It also doesn't
-  // help the attendee side at all.
-  const [refetchIndex, setRefetchIndex] = useState(0);
-  const prevIsVisibleRef = useRef<boolean>();
-  useEffect(() => {
-    if (prevIsVisibleRef.current !== isVisible) {
-      setRefetchIndex(refetchIndex + 1);
-      prevIsVisibleRef.current = isVisible;
-    }
-  }, [isVisible, prevIsVisibleRef, refetchIndex]);
   const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
@@ -95,7 +76,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ userEventIds, refetchIndex });
+  } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -169,7 +150,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstScheduleDate,
   ]);
 
-  const scheduleNG: ScheduleNGDay = useMemo(() => {
+  const schedule: ScheduleDay = useMemo(() => {
     const day = addDays(firstScheduleDate, selectedDayIndex);
 
     const daysEvents = liveAndFutureEvents.filter(
@@ -181,12 +162,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     );
 
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
-      ({ isSaved, venueId: eventVenueId }) =>
-        isSaved && eventVenueId?.toLowerCase() === venueId
+      ({ isSaved, spaceId: eventSpaceId }) =>
+        isSaved && eventSpaceId?.toLowerCase() === venueId
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
-      ({ venueId: eventVenueId }) => eventVenueId?.toLowerCase() === venueId
+      ({ spaceId: eventSpaceId }) => eventSpaceId?.toLowerCase() === venueId
     );
 
     const personalisedSchedule = filterRelatedEvents
@@ -210,10 +191,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     venueId,
   ]);
 
-  const scheduleNGWithAttendees = {
-    ...scheduleNG,
-    daysEvents: scheduleNG.daysEvents.map((event) => {
-      const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
+  const scheduleWithAttendees = {
+    ...schedule,
+    daysEvents: schedule.daysEvents.map((event) => {
+      const portalVenue = findVenueInRelatedVenues({ spaceId: event.spaceId });
 
       return prepareForSchedule({
         worldSlug,
@@ -224,7 +205,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     }),
   };
   const downloadPersonalEventsCalendar = useCallback(() => {
-    const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
+    const allPersonalEvents: ScheduledEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
           worldSlug,
@@ -280,9 +261,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       <div className="NavBarSchedule__wrapper">
-        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {<ScheduleVenueDescription />} */}
-
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         {venue && sovereignVenue && (
           <Breadcrumbs
@@ -299,10 +277,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           onChange={togglePersonalisedSchedule}
           label="Bookmarked events"
         />
-        <ScheduleNG
+        <Schedule
           showPersonalisedSchedule={showPersonalisedSchedule}
           isLoading={isEventsLoading}
-          {...scheduleNGWithAttendees}
+          {...scheduleWithAttendees}
         />
         {!isEventsLoading && (
           <div className="NavBarSchedule__download-buttons">

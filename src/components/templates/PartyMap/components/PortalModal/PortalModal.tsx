@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { Modal } from "react-bootstrap";
 import ShowMoreText from "react-show-more-text";
 
-import { ALWAYS_EMPTY_ARRAY, ROOM_TAXON } from "settings";
+import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { shouldScheduleBeShown } from "utils/schedule";
 import { isExternalPortal, openUrl } from "utils/url";
 
@@ -31,14 +31,14 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./PortalModal.scss";
 
-const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
+const emptyEvents: WorldEvent[] = [];
 
 export interface PortalModalProps {
   onHide: () => void;
   show: boolean;
   venue?: WithId<AnyVenue>;
   portal?: Room;
-  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents?: WorldEvent[];
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
@@ -86,7 +86,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 export interface PortalModalContentProps {
   portal: Room;
   venue: WithId<AnyVenue>;
-  venueEvents: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents: WorldEvent[];
 }
 
 export const PortalModalContent: React.FC<PortalModalContentProps> = ({
@@ -179,7 +179,7 @@ export const PortalModalContent: React.FC<PortalModalContentProps> = ({
             containerClassName="PortalModal__userlist"
             usersSample={portalVenue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
             userCount={portalVenue?.recentUserCount ?? 0}
-            activity={`in this ${ROOM_TAXON.lower}`}
+            activity={`in this ${SPACE_TAXON.lower}`}
             attendeesTitle={world?.attendeesTitle}
           />
         </div>

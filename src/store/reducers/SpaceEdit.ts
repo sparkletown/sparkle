@@ -1,4 +1,4 @@
-import { SpaceInfoListItem } from "settings";
+import { SpaceInfoItem } from "settings";
 
 import {
   SPACE_CREATE_PORTAL_ITEM,
@@ -6,9 +6,9 @@ import {
 } from "store/actions/SpaceEdit";
 
 export const spaceCreateItemReducer: (
-  state: SpaceInfoListItem | null,
+  state: SpaceInfoItem | null,
   action: SpaceEditActions
-) => SpaceInfoListItem | null = (state = null, action) =>
+) => SpaceInfoItem | null = (state = null, action) =>
   action.type === SPACE_CREATE_PORTAL_ITEM
     ? action.payload
       ? { ...action.payload }
