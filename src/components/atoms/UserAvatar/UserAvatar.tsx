@@ -2,13 +2,14 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { Profile } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 import {
+  determineAvatar,
   getFirebaseStorageResizedImage,
   ImageResizeOptions,
 } from "utils/image";
@@ -59,15 +60,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   } = useVenueUserStatuses(user);
 
   const avatarSrc = useMemo((): string => {
-    // @debt extract utility functions for proper checks of http and static using RegExp's
-    const validAvatar =
-      (user?.pictureUrl?.includes("static") ||
-        user?.pictureUrl?.startsWith("http")) &&
-      user?.pictureUrl;
-
-    const url = user?.anonMode
-      ? DEFAULT_PROFILE_IMAGE
-      : validAvatar || DEFAULT_PROFILE_IMAGE;
+    const url = determineAvatar({ user });
 
     const facadeSize = size ? AVATAR_SIZE_MAP[size] : undefined;
     const resizeOptions: ImageResizeOptions = { fit: "crop" };

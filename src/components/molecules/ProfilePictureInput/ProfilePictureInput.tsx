@@ -5,6 +5,9 @@ import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { UserId } from "types/id";
 
+import { determineAvatar } from "utils/image";
+
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
@@ -19,16 +22,13 @@ export interface ProfilePictureInputProps {
   register: ReturnType<typeof useForm>["register"];
 }
 
-export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
-  setValue,
-  userId,
-  errors,
-  pictureUrl,
-  register,
-}) => {
+export const ProfilePictureInput: React.FunctionComponent<
+  ProfilePictureInputProps
+> = ({ setValue, userId, errors, pictureUrl, register }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
   const uploadRef = useRef<HTMLInputElement>(null);
+  const { user } = useLoginCheck();
 
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
@@ -71,7 +71,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || "/default-profile-pic.png"}
+          src={determineAvatar({ pictureUrl, email: user?.email ?? undefined })}
           className="profile-icon ProfilePicturePreviewContainer__image"
           alt="your profile"
         />

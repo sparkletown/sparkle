@@ -1,7 +1,7 @@
 import firebase from "firebase/compat/app";
 import { utils } from "pixi.js";
 
-import { DEFAULT_AVATAR_IMAGE } from "settings";
+import { DEFAULT_BADGE_IMAGE } from "settings";
 
 import {
   ReplicatedFirebarrel,
@@ -42,6 +42,7 @@ interface CloudDataProviderSetting {
   playerioMaxPlayerPerRoom: number;
   playerioFrequencyUpdate: number;
   playerioAdvancedMode?: boolean;
+  reInitOnError?: boolean;
 }
 
 /**
@@ -73,14 +74,15 @@ export class CloudDataProvider
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
     playerModel.data.pictureUrl =
-      this.settings.userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
+      this.settings.userAvatarUrl ?? DEFAULT_BADGE_IMAGE;
     playerModel.data.id = this.settings.playerId;
 
     this.commonInterface = new CommonLinker(
       new PlayerIODataProvider(
         this,
         this.settings.playerioGameId,
-        this.settings.playerId
+        this.settings.playerId,
+        this.settings.reInitOnError
       ),
       new FirebaseDataProvider(this.settings.firebase)
     );

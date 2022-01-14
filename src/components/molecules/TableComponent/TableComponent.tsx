@@ -6,7 +6,6 @@ import classNames from "classnames";
 import {
   CONVERSATION_TABLES,
   DEFAULT_PARTY_NAME,
-  DEFAULT_PROFILE_IMAGE,
   JAZZBAR_TABLES,
   STRING_PLUS,
   STRING_SPACE,
@@ -16,6 +15,8 @@ import { deleteTable } from "api/table";
 
 import { TableComponentPropsType } from "types/Table";
 import { VenueTemplate } from "types/VenueTemplate";
+
+import { determineAvatar } from "utils/image";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -108,9 +109,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
                 onClick={() => openUserProfileModal(user.id)}
                 key={user.id}
                 className="TableComponent__profile-icon"
-                src={
-                  (!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE
-                }
+                src={determineAvatar({ user })}
                 title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
                 alt={`${
                   (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME

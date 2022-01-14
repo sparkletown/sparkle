@@ -11,7 +11,7 @@ import { WithId } from "utils/id";
 import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
-import { useVenueEvents } from "hooks/events";
+import { useSpaceEvents } from "hooks/events";
 import { useUser } from "hooks/useUser";
 
 import { useFirebarrels } from "../hooks/useFirebarrels";
@@ -30,6 +30,7 @@ export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
   relatedRooms: UseRelatedPartymapRoomsData;
+  reInitOnError?: boolean;
 }
 
 export type RoomWithFullData = (WithVenue<Room> | Room) & {
@@ -40,11 +41,9 @@ export type RoomWithFullData = (WithVenue<Room> | Room) & {
 
 const emptyRelatedVenues: WithId<AnyVenue>[] = [];
 
-export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
-  venue,
-  newDataProviderCreate,
-  relatedRooms,
-}) => {
+export const CloudDataProviderWrapper: React.FC<
+  CloudDataProviderWrapperProps
+> = ({ venue, newDataProviderCreate, relatedRooms, reInitOnError }) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );
@@ -60,9 +59,9 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     [relatedRooms, venue]
   );
 
-  const venueIds = useMemo(() => venues.map((venue) => venue.id), [venues]);
+  const spaceIds = useMemo(() => venues.map((venue) => venue.id), [venues]);
 
-  const { events } = useVenueEvents({ venueIds });
+  const { events } = useSpaceEvents({ worldId: venue.worldId, spaceIds });
 
   const locationUsers = useRecentLocationsUsers(venues);
 
@@ -72,7 +71,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
         .filter((event) => isEventLive(event))
         .map((event) => {
           return {
-            venueId: event.venueId,
+            spaceId: event.spaceId,
             name: event.name,
           };
         }),
@@ -94,7 +93,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
             id: index,
             countUsers: location ? location.users.length : 0,
             isLive: !!liveEvents.find(
-              (event) => event.venueId === location?.id
+              (event) => event.spaceId === location?.id
             ),
           };
         }
@@ -142,6 +141,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           playerioMaxPlayerPerRoom: venue.playerioMaxPlayerPerRoom ?? 80,
           playerioFrequencyUpdate: venue.playerioFrequencyUpdate ?? 0.5,
           // playerioAdvancedMode: venue.playerioAdvancedMode,
+          reInitOnError,
         });
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
@@ -153,7 +153,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     },
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, dataProvider]
+    [user, dataProvider, reInitOnError]
   );
 
   return null;

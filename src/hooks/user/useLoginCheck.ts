@@ -7,6 +7,7 @@ type UseLoginCheck = () => {
   user?: RefiAuthUser;
   userId?: UserId;
   isLoading: boolean;
+  isLoaded: boolean;
   status: RefiStatus;
   error: RefiError;
 };
@@ -19,5 +20,5 @@ export const useLoginCheck: UseLoginCheck = () => {
 
   const isLoading = "loading" === status;
 
-  return { status, error, user, userId, isLoading };
+  return { status, error, user, userId, isLoading, isLoaded: !isLoading };
 };

@@ -3,7 +3,7 @@ import { useAsync } from "react-use";
 import classNames from "classnames";
 import firebase from "firebase/compat/app";
 
-import { DEFAULT_AVATARS } from "settings";
+import { DEFAULT_AVATAR_LIST } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
@@ -48,7 +48,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
 
   const defaultAvatars = customAvatars?.length
     ? customAvatars
-    : DEFAULT_AVATARS;
+    : DEFAULT_AVATAR_LIST;
 
   const uploadDefaultAvatar = useCallback(
     async (event, avatar: string) => {

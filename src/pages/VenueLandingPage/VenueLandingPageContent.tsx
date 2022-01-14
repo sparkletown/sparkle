@@ -17,6 +17,7 @@ import {
 
 import { World } from "api/world";
 
+import { SpaceId } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 import { AnyVenue } from "types/venues";
 
@@ -46,9 +47,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   world,
   withJoinEvent = true,
 }) => {
-  const { currentVenueEvents: venueEvents } = useConnectCurrentVenueNG(
-    space?.id
-  );
+  const { currentVenueEvents: venueEvents } = useConnectCurrentVenueNG({
+    spaceId: space?.id as SpaceId,
+  });
 
   const spaceSlug = space.slug;
 
@@ -223,12 +224,6 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
                     </div>
                     <div className="event-description">
                       <RenderMarkdown text={venueEvent.description} />
-                      {venueEvent.descriptions?.map((description, index) => (
-                        <RenderMarkdown
-                          text={description}
-                          key={`${description}#${index}`}
-                        />
-                      ))}
                     </div>
                   </InformationCard>
                 );

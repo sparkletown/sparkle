@@ -73,7 +73,7 @@ const checkSupportsPaidEvents = (template: VenueTemplate) =>
 
 export const VenuePage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
+  const { world, worldId, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
     worldSlug,
     spaceSlug
   );
@@ -101,10 +101,9 @@ export const VenuePage: React.FC = () => {
 
   usePreloadAssets(assetsToPreload);
 
-  const {
-    currentEvent,
-    isLoaded: eventRequestStatus,
-  } = useConnectCurrentEvent();
+  const { currentEvent, isLoaded: eventRequestStatus } = useConnectCurrentEvent(
+    { worldId, spaceId }
+  );
 
   const userId = user?.uid;
 
@@ -192,17 +191,12 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (
-      !world?.id ||
-      !userId ||
-      !profile ||
-      enteredWorldIds?.includes(world?.id)
-    ) {
+    if (!worldId || !userId || !profile || enteredWorldIds?.includes(worldId)) {
       return;
     }
 
-    updateProfileEnteredWorldIds(enteredWorldIds, userId, world.id);
-  }, [enteredWorldIds, userLocation, userId, world?.id, profile]);
+    updateProfileEnteredWorldIds(enteredWorldIds, userId, worldId);
+  }, [enteredWorldIds, userLocation, userId, worldId, profile]);
 
   // NOTE: User's timespent updates
 
@@ -247,7 +241,7 @@ export const VenuePage: React.FC = () => {
   const { template, hasPaidEvents } = space;
 
   const hasEntrance = !!world?.entrance?.length;
-  const hasEntered = world?.id && enteredWorldIds?.includes(world.id);
+  const hasEntered = worldId && enteredWorldIds?.includes(worldId);
 
   if (hasEntrance && !hasEntered) {
     return (
@@ -277,7 +271,7 @@ export const VenuePage: React.FC = () => {
     if (isEventStartingSoon(event)) {
       return (
         <CountDown
-          startUtcSeconds={event.start_utc_seconds}
+          startUtcSeconds={event.startUtcSeconds}
           textBeforeCountdown="Bar opens in"
         />
       );

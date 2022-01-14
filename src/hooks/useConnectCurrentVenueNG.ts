@@ -1,39 +1,47 @@
 import { useMemo } from "react";
-import { orderBy } from "firebase/firestore";
+import { orderBy, where } from "firebase/firestore";
 
-import { COLLECTION_SPACE_EVENTS, COLLECTION_SPACES } from "settings";
+import {
+  COLLECTION_SPACES,
+  COLLECTION_WORLD_EVENTS,
+  FIELD_WORLD_ID,
+} from "settings";
 
-import { SparkleSelector } from "types/SparkleSelector";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { SpaceIdLocation } from "types/id";
+import { AnyVenue, WorldEvent } from "types/venues";
 
-import { convertToFirestoreKey } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
 import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
 import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
 
-export const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.currentVenueNG;
-
-export const currentVenueEventsNGSelector: SparkleSelector<
-  Record<string, VenueEvent> | undefined
-> = (state) => state.firestore.data.currentVenueEventsNG;
-
-export const useConnectCurrentVenueNG = (spaceId?: string) => {
+type UseConnectCurrentVenueNG = ({
+  worldId,
+  spaceId,
+}: Partial<SpaceIdLocation>) => {
+  isCurrentVenueEventsLoaded: boolean;
+  isCurrentVenueLoaded: boolean;
+  currentVenueEvents: WithId<WorldEvent>[];
+  currentVenue?: WithId<AnyVenue>;
+};
+export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
+  worldId,
+  spaceId,
+}) => {
   const spaceKey = convertToFirestoreKey(spaceId);
 
-  const {
-    data: space,
-    isLoaded: isCurrentVenueLoaded,
-  } = useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
+  const { data: space, isLoaded: isCurrentVenueLoaded } =
+    useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
 
-  const {
-    data: currentVenueEvents,
-    isLoaded: isCurrentVenueEventsLoaded,
-  } = useRefiCollection<VenueEvent>({
-    path: [COLLECTION_SPACES, spaceKey, COLLECTION_SPACE_EVENTS],
-    constraints: [orderBy("start_utc_seconds", "asc")],
-  });
+  const { data: currentVenueEvents, isLoaded: isCurrentVenueEventsLoaded } =
+    useRefiCollection<WorldEvent>({
+      path: [COLLECTION_WORLD_EVENTS],
+      constraints: [
+        where(FIELD_WORLD_ID, "==", worldId),
+        where(FIELD_WORLD_ID, "==", spaceId),
+        orderBy("startUtcSeconds", "asc"),
+      ],
+    });
 
   const currentVenue = spaceId ? space ?? undefined : undefined;
 

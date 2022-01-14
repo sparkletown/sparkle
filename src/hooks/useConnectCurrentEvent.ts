@@ -1,36 +1,37 @@
 import { useMemo, useState } from "react";
 import { limit, orderBy, where } from "firebase/firestore";
 
-import {
-  ALWAYS_EMPTY_ARRAY,
-  COLLECTION_SPACE_EVENTS,
-  COLLECTION_SPACES,
-} from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
 
-import { VenueEvent } from "types/venues";
+import { SpaceIdLocation } from "types/id";
+import { WorldEvent } from "types/venues";
 
-import { convertToFirestoreKey } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 import { oneHourAfterTimestamp } from "utils/time";
 
 import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
 
-import { useSpaceParams } from "./spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "./spaces/useWorldAndSpaceBySlug";
+type UseConnectCurrentEvent = ({
+  worldId,
+  spaceId,
+}: Partial<SpaceIdLocation>) => {
+  currentEvent: WithId<WorldEvent>[];
+  isLoaded: boolean;
+};
 
-export const useConnectCurrentEvent = () => {
+export const useConnectCurrentEvent: UseConnectCurrentEvent = ({
+  worldId,
+  spaceId,
+}) => {
   const [currentTimestamp] = useState(Date.now() / 1000);
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
-  const { data, isLoaded } = useRefiCollection<VenueEvent>({
-    path: [
-      COLLECTION_SPACES,
-      convertToFirestoreKey(spaceId),
-      COLLECTION_SPACE_EVENTS,
-    ],
+  const { data, isLoaded } = useRefiCollection<WorldEvent>({
+    path: [COLLECTION_WORLD_EVENTS],
     constraints: [
-      where("start_utc_seconds", "<=", oneHourAfterTimestamp(currentTimestamp)),
-      orderBy("start_utc_seconds", "desc"),
+      where("startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)),
+      where("worldId", "==", convertToFirestoreKey(worldId)),
+      where("spaceId", "==", convertToFirestoreKey(spaceId)),
+      orderBy("startUtcSeconds", "desc"),
       limit(1),
     ],
   });
@@ -43,8 +44,3 @@ export const useConnectCurrentEvent = () => {
     [data, isLoaded]
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default useConnectCurrentEvent;

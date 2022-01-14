@@ -1,24 +1,21 @@
-import React, { useMemo, useState } from "react";
+import React from "react";
 import { useAsync } from "react-use";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { getUserRef } from "api/profile";
 
-import { AlgoliaSearchIndex } from "types/algolia";
+import { SpaceId } from "types/id";
 import { User } from "types/User";
 
 import { withId } from "utils/id";
 
-import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
-import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -29,9 +26,9 @@ interface RunTabSidebarProps {
 }
 
 export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const { sovereignVenue } = useRelatedVenues();
-  const [searchText, setSearchText] = useState("");
+  const { currentVenue: venue } = useConnectCurrentVenueNG({
+    spaceId: venueId as SpaceId,
+  });
   const {
     isShown: isShownInviteAdminModal,
     show: showInviteAdminModal,
@@ -48,42 +45,12 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
     [owners]
   );
 
-  const algoliaSearchState = useAlgoliaSearch(searchText.toLowerCase());
-
-  const foundUsers = useMemo(() => {
-    const usersResults = algoliaSearchState?.value?.[AlgoliaSearchIndex.USERS];
-    if (!usersResults) return [];
-
-    return usersResults.hits.map((hit) => ({
-      ...hit,
-      id: hit.objectID,
-    }));
-  }, [algoliaSearchState.value]);
-
   if (!venue) {
     return null;
   }
 
   return (
     <div className="RunTabUsers">
-      <div className="RunTabUsers__row RunTabUsers__manage">
-        <span className="RunTabUsers__info">
-          {sovereignVenue?.recentUserCount ?? 0} people online
-        </span>
-        <ButtonNG className="mod--hidden">Manage users</ButtonNG>
-      </div>
-      <div>
-        {foundUsers.map((user) => (
-          <RunTabUserInfo key={user.id} user={user} />
-        ))}
-      </div>
-      <div className="RunTabUsers__row RunTabUsers__search">
-        <SearchField
-          autoFocus
-          placeholder="Search for people"
-          onChange={setSearchText}
-        />
-      </div>
       <div className="RunTabUsers__row RunTabUsers__manage">
         <span className="RunTabUsers__info">
           {admins.length} admin{admins.length !== 1 && "s"} online

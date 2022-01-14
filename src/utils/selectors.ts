@@ -6,6 +6,10 @@ import { WorldGeneralFormInput } from "types/world";
 
 import { WithOptionalWorldId } from "utils/id";
 
+export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
+  state
+) => state.attendance.retainAttendance;
+
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 

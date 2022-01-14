@@ -2,11 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FormControl, Modal } from "react-bootstrap";
 import { debounce } from "lodash";
 
-import {
-  COLLECTION_USERS,
-  DEFAULT_PARTY_NAME,
-  DEFAULT_PROFILE_IMAGE,
-} from "settings";
+import { COLLECTION_USERS, DEFAULT_PARTY_NAME } from "settings";
 
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
@@ -14,6 +10,7 @@ import { User } from "types/User";
 import { AnyVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
+import { determineAvatar } from "utils/image";
 
 import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
 
@@ -24,9 +21,7 @@ interface PartitionedOwnersOthers {
   others: WithId<User>[];
 }
 
-type MakePartitionOwnersFromOthersReducer = (
-  ownerIds: string[]
-) => (
+type MakePartitionOwnersFromOthersReducer = (ownerIds: string[]) => (
   { owners, others }: PartitionedOwnersOthers,
   user: WithId<User>
 ) => {
@@ -34,15 +29,16 @@ type MakePartitionOwnersFromOthersReducer = (
   others: WithId<User>[];
 };
 
-const makePartitionOwnersFromOthersReducer: MakePartitionOwnersFromOthersReducer = (
-  ownerIds
-) => ({ owners, others }, user) => {
-  if (ownerIds.includes(user.id)) {
-    return { owners: [...owners, user], others };
-  } else {
-    return { owners, others: [...others, user] };
-  }
-};
+const makePartitionOwnersFromOthersReducer: MakePartitionOwnersFromOthersReducer =
+
+    (ownerIds) =>
+    ({ owners, others }, user) => {
+      if (ownerIds.includes(user.id)) {
+        return { owners: [...owners, user], others };
+      } else {
+        return { owners, others: [...others, user] };
+      }
+    };
 
 // @debt this object is a shared memory between two different executions of allUsers.reduce()
 const emptyPartition: PartitionedOwnersOthers = {
@@ -74,11 +70,10 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
     COLLECTION_USERS,
   ]);
 
-  useEffect(() => void !isLoadingUsers && setAllUsers(data ?? []), [
-    isLoadingUsers,
-    setAllUsers,
-    data,
-  ]);
+  useEffect(
+    () => void !isLoadingUsers && setAllUsers(data ?? []),
+    [isLoadingUsers, setAllUsers, data]
+  );
 
   const debouncedSearch: typeof setSearchText = useMemo(
     () => debounce((v) => setSearchText(v), 100),
@@ -176,7 +171,7 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
-  const userPicture = user.anonMode ? DEFAULT_PROFILE_IMAGE : user.pictureUrl;
+  const userPicture = determineAvatar({ user });
   const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
 
   return (
