@@ -59,5 +59,5 @@ export const useRefiCollection = <T extends object>(
       isLoading,
       isLoaded: !isLoading,
     };
-  }, [result, result.status]);
+  }, [result]);
 };

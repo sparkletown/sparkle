@@ -22,14 +22,18 @@ export const currentVenueEventsNGSelector: SparkleSelector<
 export const useConnectCurrentVenueNG = (spaceId?: string) => {
   const spaceKey = convertToFirestoreKey(spaceId);
 
-  const { data: space, isLoaded: isCurrentVenueLoaded } =
-    useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
+  const {
+    data: space,
+    isLoaded: isCurrentVenueLoaded,
+  } = useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
 
-  const { data: currentVenueEvents, isLoaded: isCurrentVenueEventsLoaded } =
-    useRefiCollection<VenueEvent>({
-      path: [COLLECTION_SPACES, spaceKey, COLLECTION_SPACE_EVENTS],
-      constraints: [orderBy("start_utc_seconds", "asc")],
-    });
+  const {
+    data: currentVenueEvents,
+    isLoaded: isCurrentVenueEventsLoaded,
+  } = useRefiCollection<VenueEvent>({
+    path: [COLLECTION_SPACES, spaceKey, COLLECTION_SPACE_EVENTS],
+    constraints: [orderBy("start_utc_seconds", "asc")],
+  });
 
   const currentVenue = spaceId ? space ?? undefined : undefined;
 

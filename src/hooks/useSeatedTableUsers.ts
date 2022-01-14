@@ -9,12 +9,14 @@ import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
 export const useSeatedTableUsers = (
   spaceId: string | undefined
 ): [WithId<TableSeatedUser>[], boolean] => {
-  const { data: seatedTableUsers, isLoaded } =
-    useRefiCollection<TableSeatedUser>([
-      COLLECTION_SPACES,
-      convertToFirestoreKey(spaceId),
-      "seatedTableUsers",
-    ]);
+  const {
+    data: seatedTableUsers,
+    isLoaded,
+  } = useRefiCollection<TableSeatedUser>([
+    COLLECTION_SPACES,
+    convertToFirestoreKey(spaceId),
+    "seatedTableUsers",
+  ]);
 
   return [seatedTableUsers ?? ALWAYS_EMPTY_ARRAY, isLoaded];
 };

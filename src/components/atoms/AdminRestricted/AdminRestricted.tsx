@@ -37,7 +37,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
     history.push(
       spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
-  }, [firebase, history, worldSlug, spaceSlug]);
+  }, [history, worldSlug, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
     history.push(

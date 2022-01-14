@@ -47,6 +47,6 @@ export const useUploadProfilePictureHandler = (
         return undefined;
       }
     },
-    [firebase, setError, userId]
+    [setError, userId]
   );
 };

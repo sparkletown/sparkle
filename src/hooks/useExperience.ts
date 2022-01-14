@@ -8,7 +8,9 @@ import { convertToFirestoreKey } from "utils/id";
 
 import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
 
-type UseExperience = (spaceName?: string) => ObservableStatus<Experience> & {
+type UseExperience = (
+  spaceName?: string
+) => ObservableStatus<Experience> & {
   tables: Record<string, Record<string, Table>>;
 };
 

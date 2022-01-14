@@ -43,7 +43,7 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     closeUserProfileModal();
 
     history.push(generateAttendeeSpaceLandingUrl(worldSlug, venue?.slug));
-  }, [closeUserProfileModal, firebase, history, worldSlug, venue?.slug]);
+  }, [closeUserProfileModal, history, worldSlug, venue?.slug]);
 
   const { selectRecipientChat } = useChatSidebarControls();
 

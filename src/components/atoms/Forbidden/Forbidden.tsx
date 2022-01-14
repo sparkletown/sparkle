@@ -25,7 +25,7 @@ export const Forbidden: React.FC = ({ children }) => {
     history.push(
       spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
-  }, [firebase, history, worldSlug, spaceSlug]);
+  }, [history, worldSlug, spaceSlug]);
 
   return (
     <div className="Forbidden">

@@ -30,7 +30,6 @@ export const useOwnedVenues: ReactHook<
 
   const {
     data: venues,
-    status,
     isLoading: isLoadingSpaces,
   } = useRefiCollection<AnyVenue>({
     path: [COLLECTION_WORLDS],
@@ -46,6 +45,6 @@ export const useOwnedVenues: ReactHook<
       ownedVenues: venues ?? [],
       currentVenue: (venues || []).find((venue) => venue.id === currentVenueId),
     }),
-    [venues, isLoadingCheck, isLoadingSpaces, currentVenueId, status]
+    [venues, isLoadingCheck, isLoadingSpaces, currentVenueId]
   );
 };

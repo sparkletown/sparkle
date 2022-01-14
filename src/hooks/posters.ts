@@ -29,7 +29,7 @@ export const usePosterVenues = (posterHallId: string) => {
       posterVenues: data ?? [],
       isPostersLoaded: isLoaded,
     }),
-    [data]
+    [data, isLoaded]
   );
 };
 

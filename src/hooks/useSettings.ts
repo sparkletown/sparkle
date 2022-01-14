@@ -26,8 +26,9 @@ export const useSettings: UseSettings = () => {
     showReactions = DEFAULT_SETTING_SHOW_REACTIONS,
   } = data ?? {};
 
-  return useMemo(
-    () => ({ isLoaded, settings: { showChat, showReactions } }),
-    [isLoaded, showChat, showReactions]
-  );
+  return useMemo(() => ({ isLoaded, settings: { showChat, showReactions } }), [
+    isLoaded,
+    showChat,
+    showReactions,
+  ]);
 };

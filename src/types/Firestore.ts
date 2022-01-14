@@ -36,20 +36,23 @@ import { ArtCar, Firebarrel } from "./animateMap";
 // type definitions to decrease declaration verbosity in other files
 // also, during transition, to smooth out the compatability and the newer modular types
 
-export type CompatCollectionReference<T> =
-  firebase.firestore.CollectionReference<T>;
+export type CompatCollectionReference<
+  T
+> = firebase.firestore.CollectionReference<T>;
 
 export type CompatDocumentData = firebase.firestore.DocumentData;
 export type InterimDocumentData = CompatDocumentData | DocumentData;
 
-export type CompatFirestoreDataConverter<T> =
-  firebase.firestore.FirestoreDataConverter<T>;
+export type CompatFirestoreDataConverter<
+  T
+> = firebase.firestore.FirestoreDataConverter<T>;
 export type InterimFirestoreDataConverter<T> =
   | CompatFirestoreDataConverter<T>
   | FirestoreDataConverter<T>;
 
-export type CompatQueryDocumentSnapshot<T> =
-  firebase.firestore.QueryDocumentSnapshot<T>;
+export type CompatQueryDocumentSnapshot<
+  T
+> = firebase.firestore.QueryDocumentSnapshot<T>;
 export type InterimQueryDocumentSnapshot<T> =
   | CompatQueryDocumentSnapshot<T>
   | QueryDocumentSnapshot<T>;
@@ -63,8 +66,9 @@ export type InterimSnapshotOptions = CompatCreated | SnapshotOptions;
 export type CompatWriteBatch = firebase.firestore.WriteBatch;
 export type InterimWriteBatch = CompatWriteBatch | WriteBatch;
 
-export type CompatDocumentReference<T> =
-  firebase.firestore.DocumentReference<T>;
+export type CompatDocumentReference<
+  T
+> = firebase.firestore.DocumentReference<T>;
 export type CompatDocumentSnapshot<T> = firebase.firestore.DocumentSnapshot<T>;
 export type CompatTimestamp = firebase.firestore.Timestamp;
 

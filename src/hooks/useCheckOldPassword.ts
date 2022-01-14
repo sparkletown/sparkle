@@ -18,6 +18,6 @@ export const useCheckOldPassword = () => {
         return false;
       }
     },
-    [email, firebase]
+    [email]
   );
 };

@@ -41,5 +41,5 @@ export const useRefiDocument = <T extends object>(
       isLoading,
       isLoaded: !isLoading,
     };
-  }, [result, result.status]);
+  }, [result]);
 };

@@ -23,8 +23,11 @@ interface NewProfileModalProps {
 }
 
 export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
-  const { selectedUserId, hasSelectedProfile, closeUserProfileModal } =
-    useProfileModalControls();
+  const {
+    selectedUserId,
+    hasSelectedProfile,
+    closeUserProfileModal,
+  } = useProfileModalControls();
 
   const {
     isShown: isModalShown,
