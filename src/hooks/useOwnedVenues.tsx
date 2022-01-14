@@ -6,7 +6,7 @@ import { COLLECTION_WORLDS } from "settings";
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
-import { WithId } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
 import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
 import { useLoginCheck } from "hooks/user/useLoginCheck";
@@ -28,16 +28,14 @@ export const useOwnedVenues: ReactHook<
 > = ({ worldId, currentVenueId }): UseOwnedVenuesData => {
   const { userId, isLoading: isLoadingCheck } = useLoginCheck();
 
-  const {
-    data: venues,
-    isLoading: isLoadingSpaces,
-  } = useRefiCollection<AnyVenue>({
-    path: [COLLECTION_WORLDS],
-    constraints: [
-      where("worldId", "==", worldId ?? ""),
-      where("owners", "array-contains", userId ?? ""),
-    ],
-  });
+  const { data: venues, isLoading: isLoadingSpaces } =
+    useRefiCollection<AnyVenue>({
+      path: [COLLECTION_WORLDS],
+      constraints: [
+        where("worldId", "==", convertToFirestoreKey(worldId)),
+        where("owners", "array-contains", convertToFirestoreKey(userId)),
+      ],
+    });
 
   return useMemo(
     () => ({

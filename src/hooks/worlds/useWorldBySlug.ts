@@ -7,7 +7,7 @@ import { COLLECTION_WORLDS } from "settings";
 import { World } from "api/world";
 
 import { withIdConverter } from "utils/converters";
-import { WithId } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
 type UseWorldBySlugResult = {
   isLoaded: boolean;
@@ -29,7 +29,7 @@ export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
 
   const worldsRef = query(
     collection(firestore, COLLECTION_WORLDS),
-    where("slug", "==", worldSlug ?? ""),
+    where("slug", "==", convertToFirestoreKey(worldSlug)),
     where("isHidden", "==", false)
   ).withConverter<WithId<World>>(withIdConverter());
 
