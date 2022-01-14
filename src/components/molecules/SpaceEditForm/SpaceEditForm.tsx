@@ -45,7 +45,7 @@ import { spaceEditSchema } from "forms/spaceEditSchema";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useFetchAssets } from "hooks/useFetchAssets";
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useUser } from "hooks/useUser";
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -85,7 +85,7 @@ export interface SpaceEditFormProps {
 }
 
 export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
-  const { user } = useUser();
+  const { userId } = useLoginCheck();
   const { worldSlug } = useSpaceParams();
 
   const spaceLogoImage =
@@ -140,22 +140,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     ]
   );
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    setValue,
-    watch,
-    reset,
-    errors,
-  } = useForm({
-    reValidateMode: "onChange",
-    validationSchema: spaceEditSchema,
-    defaultValues,
-    validationContext: {
-      template: space.template,
-    },
-  });
+  const { register, handleSubmit, getValues, setValue, watch, reset, errors } =
+    useForm({
+      reValidateMode: "onChange",
+      validationSchema: spaceEditSchema,
+      defaultValues,
+      validationContext: {
+        template: space.template,
+      },
+    });
 
   const {
     assets: mapBackgrounds,
@@ -169,7 +162,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const [{ loading: isUpdating, error: updateError }, updateVenue] = useAsyncFn(
     async (data) => {
-      if (!user || !space.id) return;
+      if (!userId || !space.id) return;
 
       const embedUrl = convertToEmbeddableUrl({
         url: data.iframeUrl,
@@ -187,10 +180,10 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           },
           iframeUrl: embedUrl || DEFAULT_EMBED_URL,
         },
-        user
+        userId
       );
     },
-    [user, space.id, space.autoPlay, space.worldId, space.template]
+    [userId, space.id, space.autoPlay, space.worldId, space.template]
   );
 
   const isReactionsMutedDisabled = !values?.showReactions;

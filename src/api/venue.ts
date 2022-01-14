@@ -9,6 +9,7 @@ import {
   CompatQueryDocumentSnapshot,
 } from "types/Firestore";
 import { GridPosition } from "types/grid";
+import { UserId } from "types/id";
 import { DisplayUser, TableSeatedUser } from "types/User";
 import { AnyVenue, VenueTablePath } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -16,8 +17,8 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> = () =>
-  firebase.firestore().collection("venues");
+export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> =
+  () => firebase.firestore().collection("venues");
 
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
@@ -87,9 +88,9 @@ export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
-  return await firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+  return await firebase.functions().httpsCallable("venue-adminUpdateIframeUrl")(
+    { venueId, iframeUrl }
+  );
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
@@ -100,10 +101,7 @@ type VenueInputForm = Partial<WithId<AnyVenue>> & {
   numberOfSections?: number;
 };
 
-export const updateVenueNG = async (
-  venue: VenueInputForm,
-  user: firebase.UserInfo
-) => {
+export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
   const bannerFile = venue.bannerImageFile?.[0];
   const logoFile = venue.logoImageFile?.[0];
 
@@ -111,7 +109,7 @@ export const updateVenueNG = async (
     const storageRef = firebase.storage().ref();
     const fileExtension = bannerFile.name.split(".").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venue.id}/bannerImage.${fileExtension}`
+      `users/${userId}/venues/${venue.id}/bannerImage.${fileExtension}`
     );
     await uploadFileRef.put(bannerFile);
     const downloadUrl = await uploadFileRef.getDownloadURL();
@@ -122,7 +120,7 @@ export const updateVenueNG = async (
     const storageRef = firebase.storage().ref();
     const fileExtension = logoFile.name.split(".").pop();
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venue.id}/logoImage.${fileExtension}`
+      `users/${userId}/venues/${venue.id}/logoImage.${fileExtension}`
     );
     await uploadFileRef.put(logoFile);
     const downloadUrl = await uploadFileRef.getDownloadURL();
