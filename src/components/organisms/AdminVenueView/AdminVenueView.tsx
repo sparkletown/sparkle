@@ -118,7 +118,7 @@ export const AdminVenueView: React.FC = () => {
 
   const navBarTitle = `${world?.name ?? ""}`;
 
-  if (!space) {
+  if (!space || !world) {
     return (
       <WithNavigationBar withSchedule withHiddenLoginButton title={navBarTitle}>
         <AdminRestricted>
@@ -165,7 +165,9 @@ export const AdminVenueView: React.FC = () => {
             </div>
           </div>
 
-          {selectedTab === AdminVenueTab.spaces && <Spaces venue={space} />}
+          {selectedTab === AdminVenueTab.spaces && (
+            <Spaces worldId={world.id} venue={space} />
+          )}
           {selectedTab === AdminVenueTab.timing && (
             <SpaceTimingPanel venue={space} />
           )}

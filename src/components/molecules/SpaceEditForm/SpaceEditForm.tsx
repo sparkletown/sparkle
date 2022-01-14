@@ -3,6 +3,9 @@ import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
+import { withRequired } from "components/hocs/withRequired";
+import { withLogin } from "core/AnalyticsCheck/withLogin";
+import { compose } from "redux";
 
 import {
   ADMIN_IA_SPACE_BASE_PARAM_URL,
@@ -33,6 +36,7 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
+import { UserId } from "types/id";
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
@@ -45,7 +49,6 @@ import { spaceEditSchema } from "forms/spaceEditSchema";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useFetchAssets } from "hooks/useFetchAssets";
 import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useLoginCheck } from "hooks/user/useLoginCheck";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -67,6 +70,8 @@ import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
+import { LoadingPage } from "../LoadingPage";
+
 import "./SpaceEditForm.scss";
 
 const HANDLED_ERRORS = [
@@ -80,12 +85,17 @@ const HANDLED_ERRORS = [
   "columns",
 ];
 
-export interface SpaceEditFormProps {
+interface InnerSpaceEditFormProps {
   space: WithId<AnyVenue>;
+  userId: UserId;
+  worldId: string;
 }
 
-export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
-  const { userId } = useLoginCheck();
+export const InnerSpaceEditForm: React.FC<InnerSpaceEditFormProps> = ({
+  space,
+  userId,
+  worldId,
+}) => {
   const { worldSlug } = useSpaceParams();
 
   const spaceLogoImage =
@@ -140,15 +150,22 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     ]
   );
 
-  const { register, handleSubmit, getValues, setValue, watch, reset, errors } =
-    useForm({
-      reValidateMode: "onChange",
-      validationSchema: spaceEditSchema,
-      defaultValues,
-      validationContext: {
-        template: space.template,
-      },
-    });
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setValue,
+    watch,
+    reset,
+    errors,
+  } = useForm({
+    reValidateMode: "onChange",
+    validationSchema: spaceEditSchema,
+    defaultValues,
+    validationContext: {
+      template: space.template,
+    },
+  });
 
   const {
     assets: mapBackgrounds,
@@ -188,7 +205,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { ownedVenues } = useOwnedVenues({});
+  const { ownedVenues } = useOwnedVenues({ userId, worldId });
 
   const backButtonOptionList = useMemo(
     () =>
@@ -557,3 +574,14 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
     </div>
   );
 };
+
+type SpaceEditFormProps = Omit<InnerSpaceEditFormProps, "userId">;
+
+// eslint-disable-next-line
+// @ts-ignore
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = compose(
+  withLogin(),
+  withRequired({ required: ["userId"], fallback: LoadingPage })
+  // eslint-disable-next-line
+  // @ts-ignore
+)(InnerSpaceEditForm);

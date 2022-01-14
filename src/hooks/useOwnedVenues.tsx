@@ -1,19 +1,20 @@
 import { useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import { COLLECTION_WORLDS } from "settings";
+import { COLLECTION_SPACES } from "settings";
 
+import { UserId } from "types/id";
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
 
 import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
-import { useLoginCheck } from "hooks/user/useLoginCheck";
 
 export interface UseOwnedVenuesProps {
-  worldId?: string;
+  worldId: string;
   currentVenueId?: string;
+  userId: UserId;
 }
 
 export interface UseOwnedVenuesData {
@@ -25,24 +26,25 @@ export interface UseOwnedVenuesData {
 export const useOwnedVenues: ReactHook<
   UseOwnedVenuesProps,
   UseOwnedVenuesData
-> = ({ worldId, currentVenueId }): UseOwnedVenuesData => {
-  const { userId, isLoading: isLoadingCheck } = useLoginCheck();
-
-  const { data: venues, isLoading: isLoadingSpaces } =
-    useRefiCollection<AnyVenue>({
-      path: [COLLECTION_WORLDS],
-      constraints: [
-        where("worldId", "==", convertToFirestoreKey(worldId)),
-        where("owners", "array-contains", convertToFirestoreKey(userId)),
-      ],
-    });
+> = ({ userId, worldId, currentVenueId }): UseOwnedVenuesData => {
+  console.log("querying", worldId, userId);
+  const {
+    data: venues,
+    isLoading: isLoadingSpaces,
+  } = useRefiCollection<AnyVenue>({
+    path: [COLLECTION_SPACES],
+    constraints: [
+      where("worldId", "==", convertToFirestoreKey(worldId)),
+      where("owners", "array-contains", convertToFirestoreKey(userId)),
+    ],
+  });
 
   return useMemo(
     () => ({
-      isLoading: isLoadingCheck && isLoadingSpaces,
+      isLoading: isLoadingSpaces,
       ownedVenues: venues ?? [],
       currentVenue: (venues || []).find((venue) => venue.id === currentVenueId),
     }),
-    [venues, isLoadingCheck, isLoadingSpaces, currentVenueId]
+    [venues, isLoadingSpaces, currentVenueId]
   );
 };

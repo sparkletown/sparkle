@@ -21,12 +21,13 @@ import "./Spaces.scss";
 
 interface SpacesProps {
   venue: WithId<AnyVenue>;
+  worldId: string;
 }
 
-export const Spaces: React.FC<SpacesProps> = ({ venue: space }) => (
+export const Spaces: React.FC<SpacesProps> = ({ worldId, venue: space }) => (
   <AdminPanel variant="bound" className="Spaces">
     <AdminSidebar>
-      <SpaceEditForm space={space} />
+      <SpaceEditForm worldId={worldId} space={space} />
     </AdminSidebar>
     <AdminShowcase>
       {BACKGROUND_IMG_TEMPLATES.includes(space.template as VenueTemplate) && (
