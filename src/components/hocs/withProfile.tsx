@@ -26,8 +26,14 @@ type WithProfile = <T extends object = object>(
 
 export const withProfile: WithProfile = (Component) => {
   const WithProfile = (props: WithProfileInProps) => {
-    const { error, isLoading, profile, userLocation, userWithId, isTester } =
-      useProfile({ user: props.user });
+    const {
+      error,
+      isLoading,
+      profile,
+      userLocation,
+      userWithId,
+      isTester,
+    } = useProfile({ user: props.user });
 
     if (error) {
       // @debt add Bugsnag here

@@ -1,4 +1,3 @@
-import React from "react";
 import { withAuth } from "components/hocs/withAuth";
 import { withRequired } from "components/hocs/withRequired";
 import { compose } from "lodash/fp";

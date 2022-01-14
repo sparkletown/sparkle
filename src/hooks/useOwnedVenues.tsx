@@ -27,14 +27,16 @@ export const useOwnedVenues: ReactHook<
   UseOwnedVenuesOptions,
   UseOwnedVenuesResult
 > = ({ worldId, currentVenueId, userId }): UseOwnedVenuesResult => {
-  const { data: venues, isLoading: isLoadingSpaces } =
-    useRefiCollection<AnyVenue>({
-      path: [COLLECTION_WORLDS],
-      constraints: [
-        where("worldId", "==", convertToFirestoreKey(worldId)),
-        where("owners", "array-contains", convertToFirestoreKey(userId)),
-      ],
-    });
+  const {
+    data: venues,
+    isLoading: isLoadingSpaces,
+  } = useRefiCollection<AnyVenue>({
+    path: [COLLECTION_WORLDS],
+    constraints: [
+      where("worldId", "==", convertToFirestoreKey(worldId)),
+      where("owners", "array-contains", convertToFirestoreKey(userId)),
+    ],
+  });
 
   return useMemo(
     () => ({

@@ -101,9 +101,10 @@ export const VenuePage: React.FC = () => {
 
   usePreloadAssets(assetsToPreload);
 
-  const { currentEvent, isLoaded: eventRequestStatus } = useConnectCurrentEvent(
-    { worldId, spaceId }
-  );
+  const {
+    currentEvent,
+    isLoaded: eventRequestStatus,
+  } = useConnectCurrentEvent({ worldId, spaceId });
 
   const userId = user?.uid;
 

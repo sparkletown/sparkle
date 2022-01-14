@@ -30,18 +30,22 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
 }) => {
   const spaceKey = convertToFirestoreKey(spaceId);
 
-  const { data: space, isLoaded: isCurrentVenueLoaded } =
-    useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
+  const {
+    data: space,
+    isLoaded: isCurrentVenueLoaded,
+  } = useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
 
-  const { data: currentVenueEvents, isLoaded: isCurrentVenueEventsLoaded } =
-    useRefiCollection<WorldEvent>({
-      path: [COLLECTION_WORLD_EVENTS],
-      constraints: [
-        where(FIELD_WORLD_ID, "==", worldId),
-        where(FIELD_WORLD_ID, "==", spaceId),
-        orderBy("startUtcSeconds", "asc"),
-      ],
-    });
+  const {
+    data: currentVenueEvents,
+    isLoaded: isCurrentVenueEventsLoaded,
+  } = useRefiCollection<WorldEvent>({
+    path: [COLLECTION_WORLD_EVENTS],
+    constraints: [
+      where(FIELD_WORLD_ID, "==", worldId),
+      where(FIELD_WORLD_ID, "==", spaceId),
+      orderBy("startUtcSeconds", "asc"),
+    ],
+  });
 
   const currentVenue = spaceId ? space ?? undefined : undefined;
 

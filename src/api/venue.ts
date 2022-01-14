@@ -17,8 +17,8 @@ import { VenueTemplate } from "types/VenueTemplate";
 import { pickDisplayUserFromUser } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> =
-  () => firebase.firestore().collection("venues");
+export const getVenueCollectionRef: () => CompatCollectionReference<CompatDocumentData> = () =>
+  firebase.firestore().collection("venues");
 
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
@@ -88,9 +88,9 @@ export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
-  return await firebase.functions().httpsCallable("venue-adminUpdateIframeUrl")(
-    { venueId, iframeUrl }
-  );
+  return await firebase
+    .functions()
+    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
