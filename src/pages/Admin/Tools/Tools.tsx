@@ -58,11 +58,10 @@ export const Script: React.FC<{ script: SelfServeScript }> = ({ script }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {script.arguments.map((argument) => (
-        <input
-          key={argument.name}
-          ref={register({ required: true })}
-          name={argument.name}
-        />
+        <div key={argument.name}>
+          <span>{argument.title}</span>
+          <input ref={register({ required: true })} name={argument.name} />
+        </div>
       ))}
 
       <button type="submit"> SUBMIT </button>

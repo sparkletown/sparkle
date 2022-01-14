@@ -113,7 +113,6 @@ export const SpacesDashboard: React.FC = () => {
             </div>
           </AdminTitleBar>
 
-          <AdminTitle>Tools</AdminTitle>
           <div>
             <ButtonNG
               variant="secondary"
@@ -124,7 +123,7 @@ export const SpacesDashboard: React.FC = () => {
                 params: { worldSlug },
               })}
             >
-              Analytics
+              Tools
             </ButtonNG>
           </div>
 
