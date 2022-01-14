@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
 
 import * as scripts from "./scripts";
@@ -12,15 +11,15 @@ export const Tools: React.FC = () => {
   return (
     <div>
       {chosenScript ? (
-        <div>Script element</div>
+        <Script script={chosenScript} />
       ) : (
         Object.values(scripts).map((script) => (
-          <div
+          <button
             onClick={() => setChosenScript(script)}
             key={`${script.name}-${script.functionLocation}`}
           >
             {script.name}
-          </div>
+          </button>
         ))
       )}
     </div>
@@ -30,29 +29,43 @@ export const Tools: React.FC = () => {
 export const Script: React.FC<{ script: SelfServeScript }> = ({ script }) => {
   const { register, handleSubmit } = useForm();
 
-  const [{ loading: isRunning, value }, runScript] = useAsyncFn(
-    async (data) => {
-      return firebase.functions().httpsCallable(script.functionLocation)(data);
-    },
-    [firebase]
-  );
+  const [links, setLinks] = useState<{ [key: string]: string }>();
 
-  const onSubmit = async (data: any) => {
-    runScript(data);
+  const onSubmit = async (data: Object) => {
+    console.log({ data });
+    const response = await firebase
+      .functions()
+      .httpsCallable(script.functionLocation)(data);
+
+    console.log(response.data);
+
+    setLinks(response.data);
   };
+
+  if (links) {
+    return (
+      <div>
+        {Object.entries(links).map(([name, link]) => (
+          <p key={`${name}:${link}`}>
+            {name} &nbsp;
+            <a href={link}>Download</a>
+          </p>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {script.arguments.map((argument) => (
         <input
           key={argument.name}
-          {...register(argument.name, {
-            required: argument.isRequired,
-          })} // custom message
+          ref={register({ required: true })}
+          name={argument.name}
         />
       ))}
 
-      <input type="submit" />
+      <button type="submit"> SUBMIT </button>
     </form>
   );
 };

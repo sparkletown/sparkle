@@ -7,13 +7,9 @@ const { formatSecondsAsHHMMSS } = require("./src/utils/time");
 
 const { chunk } = lodash;
 
-const venueIds = "mypartymap";
-
 const functionsConfig = functions.config();
 
-const venueIdsArray = venueIds.split(",");
-
-const getUsersWithVisits = async () => {
+const getUsersWithVisits = async (venueIdsArray) => {
   const dto = await chunk(venueIdsArray, 10)
     .map(async (idsArray) => {
       return await admin
@@ -45,10 +41,16 @@ const getUsersWithVisits = async () => {
 };
 
 exports.formCSV = functions.https.onCall(async (data, context) => {
+  const { venueIds = [] } = data;
+
+  console.log(venueIds);
+
+  const venueIdsArray = venueIds.split(",");
+
   // TODO: CHECK IF ADMIN
   // TODO: extract this as a generic helper function?
   const usersWithVisits = await Promise.all(
-    await getUsersWithVisits().then((res) => res.flat())
+    await getUsersWithVisits(venueIdsArray).then((res) => res.flat())
   );
 
   // TODO: extract this as a generic helper function?
@@ -280,19 +282,22 @@ exports.formCSV = functions.https.onCall(async (data, context) => {
     }
   );
 
-  const dataReportFileUrl = await dataReportFile.getSignedUrl({
+  const [dataReportFileUrl] = await dataReportFile.getSignedUrl({
     action: "read",
     expires: expiryDate,
   });
 
-  const allSpaceVisitsFileUrl = await allSpaceVisitsFile.getSignedUrl({
+  const [allSpaceVisitsFileUrl] = await allSpaceVisitsFile.getSignedUrl({
     action: "read",
     expires: expiryDate,
   });
 
-  const uniqueVenuesVisitedFileUrl = await uniqueVenuesVisitedFile.getSignedUrl(
-    { action: "read", expires: expiryDate }
-  );
+  const [
+    uniqueVenuesVisitedFileUrl,
+  ] = await uniqueVenuesVisitedFile.getSignedUrl({
+    action: "read",
+    expires: expiryDate,
+  });
 
   return {
     dataReportFileUrl,

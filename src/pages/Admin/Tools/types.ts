@@ -1,4 +1,5 @@
 export type ScriptArgument = {
+  title: string;
   name: string;
   isRequired: boolean;
   // NOTE: For now I would expect to only have string arguments. It can be imrpoved later on
