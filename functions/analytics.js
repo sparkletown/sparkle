@@ -4,6 +4,8 @@ const functions = require("firebase-functions");
 const lodash = require("lodash");
 
 const { formatSecondsAsHHMMSS } = require("./src/utils/time");
+const { checkIsAdmin } = require("./src/utils/permissions");
+const { checkAuth } = require("./src/utils/assert");
 
 const { chunk } = lodash;
 
@@ -21,6 +23,7 @@ const getUsersWithVisits = async (venueIdsArray) => {
           usersSnapshot.docs.map(async (userDoc) => {
             const user = { ...userDoc.data(), id: userDoc.id };
 
+            // eslint-disable-next-line promise/no-nesting
             const visits = await userDoc.ref
               .collection("visits")
               .get()
@@ -40,10 +43,12 @@ const getUsersWithVisits = async (venueIdsArray) => {
   return Promise.all(await dto);
 };
 
-exports.formCSV = functions.https.onCall(async (data, context) => {
-  const { venueIds = [] } = data;
+exports.generateAnalytics = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
 
-  console.log(venueIds);
+  await checkIsAdmin(context.auth.token.user_id);
+
+  const { venueIds = [] } = data;
 
   const venueIdsArray = venueIds.split(",");
 

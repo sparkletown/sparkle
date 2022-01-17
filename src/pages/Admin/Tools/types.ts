@@ -11,4 +11,7 @@ export type SelfServeScript = {
   functionLocation: string;
   arguments: ScriptArgument[];
   isBeta?: boolean;
+  // NOTE: We want this component to be trully generic
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  outputComponent: React.FC<any>;
 };

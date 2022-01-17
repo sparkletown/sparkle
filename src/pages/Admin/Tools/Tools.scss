@@ -1,0 +1,22 @@
+@import "scss/constants.scss";
+
+.Tools {
+  height: 100%;
+  padding: $spacing--sm;
+
+  &__back {
+    margin-bottom: $spacing--md;
+  }
+}
+
+.Tool {
+  &__input {
+    margin: $spacing--md 0;
+  }
+
+  &__input-label {
+    display: block;
+    opacity: 0.7;
+    margin-bottom: $spacing--sm;
+  }
+}

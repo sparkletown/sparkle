@@ -1,70 +1,119 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
-import * as scripts from "./scripts";
+import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
+
+import { generateUrl } from "utils/url";
+
+import { useShowHide } from "hooks/useShowHide";
+import { useWorldParams } from "hooks/worlds/useWorldParams";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { Loading } from "components/molecules/Loading";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
+import { InputField } from "components/atoms/InputField";
+
+import * as tools from "./scripts";
 import { SelfServeScript } from "./types";
 
+import "./Tools.scss";
+
 export const Tools: React.FC = () => {
-  const [chosenScript, setChosenScript] = useState<SelfServeScript>();
+  const [chosenTool, setChosenTool] = useState<SelfServeScript>();
+
+  const clearChosenTool = useCallback(() => setChosenTool(undefined), []);
+
+  const { worldSlug } = useWorldParams();
 
   return (
-    <div>
-      {chosenScript ? (
-        <Script script={chosenScript} />
-      ) : (
-        Object.values(scripts).map((script) => (
-          <button
-            onClick={() => setChosenScript(script)}
-            key={`${script.name}-${script.functionLocation}`}
-          >
-            {script.name}
-          </button>
-        ))
-      )}
-    </div>
+    <WithNavigationBar>
+      <div className="Tools">
+        {chosenTool ? (
+          <>
+            <div className="Tools__back">
+              <ButtonNG onClick={clearChosenTool} iconName={faArrowLeft}>
+                Back to Tools
+              </ButtonNG>
+            </div>
+            <Tool tool={chosenTool} />
+          </>
+        ) : (
+          <>
+            <div className="Tools__back">
+              <ButtonNG
+                isLink
+                linkTo={generateUrl({
+                  route: ADMIN_IA_WORLD_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug },
+                })}
+                iconName={faArrowLeft}
+              >
+                Back to Dashboard
+              </ButtonNG>
+            </div>
+            {Object.values(tools).map((tool) => (
+              <ButtonNG
+                key={`${tool.name}-${tool.functionLocation}`}
+                onClick={() => setChosenTool(tool)}
+                variant="secondary"
+              >
+                {tool.name}
+              </ButtonNG>
+            ))}
+          </>
+        )}
+      </div>
+    </WithNavigationBar>
   );
 };
 
-export const Script: React.FC<{ script: SelfServeScript }> = ({ script }) => {
-  const { register, handleSubmit } = useForm();
+export const Tool: React.FC<{ tool: SelfServeScript }> = ({ tool }) => {
+  const { register, handleSubmit, errors } = useForm();
 
-  const [links, setLinks] = useState<{ [key: string]: string }>();
+  const [returnedData, setReturnedData] = useState<{ [key: string]: string }>();
+
+  const {
+    show: showLoading,
+    hide: hideLoading,
+    isShown: isLoadingShown,
+  } = useShowHide();
 
   const onSubmit = async (data: Object) => {
-    console.log({ data });
+    showLoading();
+
     const response = await firebase
       .functions()
-      .httpsCallable(script.functionLocation)(data);
+      .httpsCallable(tool.functionLocation)(data);
 
-    console.log(response.data);
-
-    setLinks(response.data);
+    setReturnedData(response.data);
+    hideLoading();
   };
 
-  if (links) {
-    return (
-      <div>
-        {Object.entries(links).map(([name, link]) => (
-          <p key={`${name}:${link}`}>
-            {name} &nbsp;
-            <a href={link}>Download</a>
-          </p>
-        ))}
-      </div>
-    );
+  if (returnedData) {
+    return <tool.outputComponent {...returnedData} />;
   }
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {script.arguments.map((argument) => (
-        <div key={argument.name}>
-          <span>{argument.title}</span>
-          <input ref={register({ required: true })} name={argument.name} />
+  return isLoadingShown ? (
+    <Loading />
+  ) : (
+    <form className="Tool" onSubmit={handleSubmit(onSubmit)}>
+      {tool.arguments.map((argument) => (
+        <div key={argument.name} className="Tool__input">
+          <span className="Tool__input-label">{argument.title}</span>
+          <InputField
+            ref={register({ required: argument.isRequired })}
+            name={argument.name}
+            error={errors[argument.name]}
+          />
         </div>
       ))}
 
-      <button type="submit"> SUBMIT </button>
+      <ButtonNG type="submit">Run the tool</ButtonNG>
     </form>
   );
 };
