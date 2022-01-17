@@ -1,14 +1,11 @@
 import { useEffect } from "react";
 
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-
 import { VenuePage } from "pages/VenuePage";
 
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
 
 import styles from "./AttendeeLayout.module.scss";
-
 
 export const AttendeeLayout: React.FC = () => {
   useEffect(() => {
@@ -33,4 +30,4 @@ export const AttendeeLayout: React.FC = () => {
       <AttendeeFooter />
     </>
   );
-}
+};
