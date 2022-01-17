@@ -20,7 +20,7 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
-import { JazzBarPage } from "components/templates/Jazzbar";
+import { JazzBar } from "components/templates/Jazzbar/JazzBar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
@@ -59,14 +59,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let hasBackButton = true;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = (
-        <Switch>
-          <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route render={() => <JazzBarPage venue={venue} />} />
-        </Switch>
-      );
-      // NOTE: Remove the back button, because we don't need it in Table view
-      hasBackButton = false;
+      template = <JazzBar venue={venue} />;
       break;
 
     case VenueTemplate.partymap:
