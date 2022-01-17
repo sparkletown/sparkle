@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
-import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
+import { COVERT_ROOM_TYPES } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
@@ -9,14 +9,17 @@ import { Room, RoomType } from "types/rooms";
 import { RoomVisibility } from "types/RoomVisibility";
 import { PartyMapVenue } from "types/venues";
 
+import { isExternalPortal, openUrl } from "utils/url";
+
 import { useCustomSound } from "hooks/sounds";
+import { useAnalytics } from "hooks/useAnalytics";
 import { useDispatch } from "hooks/useDispatch";
 import { usePortal } from "hooks/usePortal";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
-import "./MapRoom.scss";
+import styles from "./MapRoom.module.scss";
 
 export interface MapRoomProps {
   venue: PartyMapVenue;
@@ -29,7 +32,8 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { portalSpaceId } = usePortal({ portal: room });
+  const { portalSpaceId, enterPortal } = usePortal({ portal: room });
+  const analytics = useAnalytics({ venue });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
@@ -102,42 +106,46 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     ]
   );
 
-  const [play] = useCustomSound(room.enterSound, { interrupt: true });
+  const [enterWithSound] = useCustomSound(room.enterSound, {
+    interrupt: true,
+    onend: enterPortal,
+  });
+
   const selectRoomWithSound = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      play();
-      selectRoom();
-      e.currentTarget.blur();
+    (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+      if (!shouldBeClickable) return;
+      analytics.trackEnterRoomEvent(room.title, room.template);
+      isExternalPortal(room) ? openUrl(room.url) : enterWithSound();
     },
-    [play, selectRoom]
+    [analytics, enterWithSound, room, shouldBeClickable]
   );
 
   return (
-    <button
-      className={containerClasses}
+    <div
+      className={styles.MapRoom}
       style={roomInlineStyles}
-      onClick={shouldBeClickable ? selectRoomWithSound : undefined}
-      onMouseEnter={shouldBeClickable ? handleRoomHovered : undefined}
-      onMouseLeave={shouldBeClickable ? handleRoomUnhovered : undefined}
+    /*onClick={shouldBeClickable ? selectRoomWithSound : undefined}
+    onMouseEnter={shouldBeClickable ? handleRoomHovered : undefined}
+    onMouseLeave={shouldBeClickable ? handleRoomUnhovered : undefined}*/
     >
-      {isMapFrame ? (
-        <iframe
-          className="maproom__iframe"
-          src={room.url}
-          title={room.title}
-          allow={IFRAME_ALLOW}
-          frameBorder="0"
-        />
-      ) : (
-        <img className="maproom__image" src={room.image_url} alt={room.title} />
-      )}
-
-      {shouldShowLabel && (
-        <div className="maproom__label">
-          <span className={titleClasses}>{room.title}</span>
-          <RoomAttendance room={room} />
+      <div className={styles.PortalOnMap}>
+        <div className={styles.PortalImage} onClick={selectRoomWithSound}>
+          <img src={room.image_url} alt={room.title} />
         </div>
-      )}
-    </button>
+        <div className={styles.PortalTitle}>
+          {room.title} <span><span></span><RoomAttendance room={room} /></span>
+          { /* TODO Make the info icon display info */}
+          <button className={styles.InfoButton}><span /></button>
+        </div>
+      </div>
+      { /* TODO Allow these to be hidden */}
+      <div className={styles.PortalPopupInfo} >
+        <h3>TODO Lazer Show</h3>
+        <p>TODO Put things here</p>
+        <button className={styles.PortalInfoButton} onClick={selectRoomWithSound}>
+          Enter
+        </button>
+      </div>
+    </div>
   );
 };

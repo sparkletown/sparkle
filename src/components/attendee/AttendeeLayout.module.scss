@@ -1,0 +1,62 @@
+@import "./scss/AttendeeMixins.scss";
+
+.html {
+  overflow-y: scroll;
+}
+
+.Space {
+  min-height: 100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content: center;
+  transition: padding-right 0.2s ease;
+  padding-right: 0;
+  /*
+  TODO
+  & > *:first-child {
+    margin-top: $button-height*2 + $whitespace;
+  }
+  &.component-chat-open {
+    @media (max-width: 767px) {
+      justify-content: flex-start;
+    }
+    @media (min-width: 768px) {
+      padding-right: 50%;
+    }
+    @media (min-width: 960px) {
+      padding-right: $sidebar-width + $whitespace;
+    }
+  }
+  */
+}
+
+.LayerUi {
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  z-index: 40;
+  @include sparkle-panel;
+
+  @media (max-width: 767px) {
+    display: flex;
+    flex-direction: column;
+    &[open] {
+      height: 45vh;
+      &.has-component-shoutout {
+        height: calc(45vh - #{$button-height + $whitespace});
+      }
+    }
+  }
+
+  @media (min-width: 768px) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 $whitespace;
+    grid-gap: $whitespace;
+    background: transparent;
+  }
+  @media (min-width: 960px) {
+    grid-template-columns: 1fr $sidebar-width;
+    justify-items: center;
+  }
+}

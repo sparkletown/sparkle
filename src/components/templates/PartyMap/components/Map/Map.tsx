@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
@@ -10,10 +10,44 @@ import { useValidImage } from "hooks/useCheckImage";
 
 import { MapRoom } from "./MapRoom";
 
-import "./Map.scss";
+import styles from "./Map.module.scss";
 
-export const DEFAULT_COLUMNS = 40;
-export const DEFAULT_ROWS = 25;
+interface MapTitleProps {
+  title: string;
+}
+
+const MapTitle: React.FC<MapTitleProps> = ({ title }) => {
+  const titleParts = useMemo(
+    () => title.split(" ").map((part, idx) => (<span key={idx}>{part}</span>)),
+    [title],
+  );
+  return <h1 className={styles.MapTitle}>{titleParts}</h1>;
+};
+
+interface PortalsProps {
+  portals: Room[];
+  space: PartyMapVenue;
+  selectPortal: (room: Room) => void;
+}
+
+const Portals: React.FC<PortalsProps> = ({ space, selectPortal, portals }) => {
+
+  const portalsFragment = useMemo(() =>
+    portals
+      .filter(portal => portal.isEnabled)
+      .map(portal =>
+        <MapRoom
+          key={portal.title}
+          venue={space}
+          room={portal}
+          selectRoom={() => {
+            selectPortal(portal);
+          }}
+        />),
+    [portals, selectPortal, space],
+  );
+  return <div className={styles.Portals}>{portalsFragment}</div>;
+};
 
 interface MapProps {
   user: RefiAuthUser;
@@ -22,63 +56,24 @@ interface MapProps {
 }
 
 export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
-  const [totalRows, setTotalRows] = useState<number>(0);
-  const hasRows = totalRows > 0;
-
   const [mapBackground] = useValidImage(
     venue?.mapBackgroundImageUrl,
     DEFAULT_MAP_BACKGROUND
-  );
-
-  useEffect(() => {
-    //@debt the image is already loaded and checked inside useValidImage
-    const img = new Image();
-    img.src = mapBackground ?? DEFAULT_MAP_BACKGROUND;
-    img.onload = () => {
-      const imgRatio = img.width ? img.width / img.height : 1;
-
-      const calcRows = venue.columns
-        ? Math.round(parseInt(venue.columns.toString()) / imgRatio)
-        : DEFAULT_ROWS;
-
-      setTotalRows(calcRows);
-    };
-  }, [mapBackground, venue.columns]);
-
-  const roomOverlay = useMemo(
-    () =>
-      venue?.rooms
-        ?.filter((room) => room.isEnabled)
-        .map((room) => (
-          <MapRoom
-            key={room.title}
-            venue={venue}
-            room={room}
-            selectRoom={() => {
-              selectRoom(room);
-            }}
-          />
-        )),
-    [selectRoom, venue]
   );
 
   if (!user || !venue) {
     return <>Loading map...</>;
   }
 
+  const mapStyles = {
+    backgroundImage: `url(${mapBackground})`,
+  };
+
   return (
-    <div className="party-map-map-component">
-      <div className="party-map-map-content">
-        <img
-          width="100%"
-          className="party-map-background"
-          src={mapBackground}
-          alt=""
-        />
-        {hasRows && (
-          <div className="party-map-grid-container">{roomOverlay}</div>
-        )}
-      </div>
-    </div>
+    <>
+      <div className={styles.MapBackground} style={mapStyles} />
+      <MapTitle title={venue.name} />
+      <Portals portals={venue.rooms ?? []} space={venue} selectPortal={selectRoom} />
+    </>
   );
 };
