@@ -1,5 +1,6 @@
 import { World } from "api/world";
 
+import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -20,8 +21,11 @@ export type WorldSlugLocation = { worldSlug: WorldSlug };
 
 // Simplified versions to ease future move of WithId<> type from utils
 export type SpaceWithoutId = AnyVenue;
-export type SpaceWithId = WithId<AnyVenue>;
+export type SpaceWithId = WithId<AnyVenue, SpaceId>;
 export type Spaces = WithId<AnyVenue>[];
+
 export type WorldWithoutId = World;
-export type WorldWithId = WithId<World>;
+export type WorldWithId = WithId<World, WorldId>;
 export type Worlds = WithId<WorldWithId>[];
+
+export type UserWithId = WithId<User, UserId>;

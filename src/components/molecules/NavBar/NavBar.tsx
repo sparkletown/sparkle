@@ -7,18 +7,22 @@ import firebase from "firebase/compat/app";
 
 import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
+import {
+  SpaceIdLocation,
+  SpaceSlugLocation,
+  UserId,
+  UserWithId,
+  WorldWithId,
+} from "types/id";
 import { UpcomingEvent } from "types/UpcomingEvent";
+import { Profile } from "types/User";
 
 import { shouldScheduleBeShown } from "utils/schedule";
 import { enterSpace } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
-import { useWorldById } from "hooks/worlds/useWorldById";
 
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
@@ -49,16 +53,32 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
-export interface NavBarPropsType {
+type Attributes = {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withPhotobooth?: boolean;
   withHiddenLoginButton?: boolean;
   withRadio?: boolean;
   title?: string;
-}
+};
+
+type HocProps = SpaceSlugLocation &
+  SpaceIdLocation & {
+    profile: Profile;
+    userId: UserId;
+    userWithId: UserWithId;
+    world: WorldWithId;
+  };
+
+type NavBarPropsType = Attributes & HocProps;
 
 export const NavBar: React.FC<NavBarPropsType> = ({
+  profile,
+  userId,
+  userWithId,
+  spaceId,
+  worldSlug,
+  world,
   hasBackButton,
   withSchedule,
   withPhotobooth,
@@ -66,10 +86,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   title,
   withHiddenLoginButton,
 }) => {
-  const { user, userWithId } = useUser();
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
   const {
     currentVenue: relatedVenue,
     parentVenue,
@@ -78,7 +94,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     currentVenueId: spaceId,
   });
 
-  const { world } = useWorldById(relatedVenue?.worldId);
   const firstStation = world?.radioStations?.[0];
 
   const currentVenue = relatedVenue;
@@ -87,9 +102,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const handleAvatarClick = useCallback(() => {
-    openUserProfileModal(userWithId?.id);
-  }, [openUserProfileModal, userWithId]);
+  const handleAvatarClick = useCallback(
+    () => void openUserProfileModal(userId),
+    [openUserProfileModal, userId]
+  );
 
   const shouldShowSchedule = withSchedule && shouldScheduleBeShown(world);
 
@@ -208,9 +224,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               </div>
             )}
 
-            {!withHiddenLoginButton && !user && <NavBarLogin />}
+            {!withHiddenLoginButton && !profile && <NavBarLogin />}
 
-            {user && (
+            {profile && (
               <div className="navbar-links">
                 {sovereignVenueId && (
                   <NavSearchBar sovereignVenueId={sovereignVenueId} />
