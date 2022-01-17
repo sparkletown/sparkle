@@ -7,9 +7,9 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate, WorldEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { MaybeWithId, WithId } from "utils/id";
 
 import { eventEditSchema } from "forms/eventEditSchema";
 
@@ -23,14 +23,14 @@ export type TimingEventModalProps = {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
-  event?: WithVenueId<WithId<VenueEvent>>;
+  event?: WorldEvent;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: () => void;
 };
 
-// Dispatch<SetStateAction<WithId<VenueEvent> | undefined>>
+// Dispatch<SetStateAction<WithId<Experience> | undefined>>
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
@@ -64,13 +64,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         name: event.name,
         description: event.description,
         start_date: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_DATE_FORMAT),
         start_time: dayjs
-          .unix(event.start_utc_seconds)
+          .unix(event.startUtcSeconds)
           .format(DAYJS_INPUT_TIME_FORMAT),
-        duration_hours: Math.floor(event.duration_minutes / 60),
-        duration_minutes: event.duration_minutes % 60,
+        duration_hours: Math.floor(event.durationMinutes / 60),
+        duration_minutes: event.durationMinutes % 60,
         host: event.host,
       });
     }
@@ -79,12 +79,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   const onUpdateEvent = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
-      const formEvent: VenueEvent = {
+      const formEvent: MaybeWithId<WorldEvent> = {
         name: data.name,
         description: data.description,
-        start_utc_seconds:
+        startUtcSeconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        duration_minutes:
+        durationMinutes:
           data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
         spaceId: eventSpaceId,
@@ -92,14 +92,14 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         // an eventSpace
         worldId: eventSpace?.worldId ?? "",
       };
+      // Add the ID conditionally - otherwise the field is set to undefined
+      // which firebase does not like.
       if (eventSpaceId) {
         if (event?.id) {
-          // @debt this is a hack. event.venueId is the venue that contains
-          // the event inside its events subcollection. It is NOT the space
-          // that the event is being experienced in.
-          await updateEvent(event.venueId, event.id, formEvent);
+          formEvent.id = event.id;
+          await updateEvent(formEvent as WorldEvent);
         } else {
-          await createEvent(eventSpaceId, formEvent);
+          await createEvent(formEvent);
         }
       }
       onHide();
