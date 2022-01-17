@@ -1,6 +1,8 @@
 @import "scss/constants.scss";
 
 .RunTabUsers {
+  padding: $spacing--md;
+
   &__row {
     display: flex;
     align-items: center;
@@ -38,5 +40,9 @@
 
   &__place {
     color: opaque-white(0.8);
+  }
+
+  &__invite {
+    cursor: pointer;
   }
 }

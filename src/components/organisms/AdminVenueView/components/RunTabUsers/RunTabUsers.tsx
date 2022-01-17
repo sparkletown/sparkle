@@ -1,7 +1,8 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 
-import { ALWAYS_EMPTY_ARRAY } from "settings";
+import { ALWAYS_EMPTY_ARRAY, STRING_PLUS } from "settings";
 
 import { getUserRef } from "api/profile";
 
@@ -9,57 +10,65 @@ import { User } from "types/User";
 
 import { withId } from "utils/id";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
+import { AdminVenueViewRouteParams } from "../../AdminVenueView";
 
 import "./RunTabUsers.scss";
 
-interface RunTabSidebarProps {
-  venueId?: string;
-}
+export const RunTabUsers: React.FC = () => {
+  const { worldSlug, spaceSlug } = useParams<AdminVenueViewRouteParams>();
 
-export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const { space, world } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
   const {
     isShown: isShownInviteAdminModal,
     show: showInviteAdminModal,
     hide: hideInviteAdminModal,
   } = useShowHide();
 
-  const owners = venue?.owners ?? ALWAYS_EMPTY_ARRAY;
+  const spaceEditors = space?.owners ?? ALWAYS_EMPTY_ARRAY;
+  const worldOwners = world?.owners ?? ALWAYS_EMPTY_ARRAY;
 
-  const { value: admins = ALWAYS_EMPTY_ARRAY } = useAsync(
+  const { value: editors = ALWAYS_EMPTY_ARRAY } = useAsync(
     async () =>
-      Promise.all(owners.map((owner) => getUserRef(owner).get())).then((docs) =>
-        docs.map((doc) => withId(doc.data() as User, doc.id))
-      ),
-    [owners]
+      Promise.all(
+        [...worldOwners, ...spaceEditors].map((admin) =>
+          getUserRef(admin).get()
+        )
+      ).then((docs) => docs.map((doc) => withId(doc.data() as User, doc.id))),
+    [spaceEditors, worldOwners]
   );
 
-  if (!venue) {
+  const editorArray = editors.slice(worldOwners.length);
+  const ownerArray = editors.slice(0, worldOwners.length);
+
+  if (!space) {
     return null;
   }
 
   return (
     <div className="RunTabUsers">
+      <span>Owners</span>
+      {ownerArray.map((user) => (
+        <RunTabUserInfo key={user.id} user={user} />
+      ))}
       <div className="RunTabUsers__row RunTabUsers__manage">
-        <span className="RunTabUsers__info">
-          {admins.length} admin{admins.length !== 1 && "s"} online
+        <span>Editors</span>
+        <span className="RunTabUsers__invite" onClick={showInviteAdminModal}>
+          {STRING_PLUS} Add editor
         </span>
-        <ButtonNG onClick={showInviteAdminModal}>Invite admin</ButtonNG>
       </div>
       <VenueOwnersModal
         visible={isShownInviteAdminModal}
         onHide={hideInviteAdminModal}
-        venue={venue}
+        venue={space}
       />
-      {admins.map((user) => (
+      {editorArray.map((user) => (
         <RunTabUserInfo key={user.id} user={user} />
       ))}
     </div>

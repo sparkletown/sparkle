@@ -50,6 +50,7 @@ import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
 import { AdminSidebarButtons } from "components/organisms/AdminVenueView/components/AdminSidebarButtons";
 import { AdminSidebarSectionTitle } from "components/organisms/AdminVenueView/components/AdminSidebarSectionTitle";
+import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { AdminCheckbox } from "components/molecules/AdminCheckbox";
 import { AdminInput } from "components/molecules/AdminInput";
@@ -544,6 +545,9 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
               </AdminSection>
             </AdminSidebarAccordion>
           )}
+          <AdminSidebarAccordion title="Space admins" open>
+            <RunTabUsers />
+          </AdminSidebarAccordion>
           <FormErrors errors={errors} omitted={HANDLED_ERRORS} />
           <SubmitError error={updateError} />
         </div>

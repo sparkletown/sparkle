@@ -9,7 +9,6 @@ import { WithId } from "utils/id";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { UserList } from "components/molecules/UserList";
@@ -28,17 +27,12 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
     return <LoadingPage />;
   }
 
-  const venueId = venue.id;
-
   return (
     <AdminPanel variant="unbound" className="RunTabView">
       <AdminSidebar>
         <AdminSidebarSectionTitle>
           Run your {SPACE_TAXON.lower}
         </AdminSidebarSectionTitle>
-        <div className="RunTabView__content">
-          <RunTabUsers venueId={venueId} />
-        </div>
       </AdminSidebar>
       <div className="RunTabView__body">
         <div className="RunTabView__user-list">
