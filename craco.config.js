@@ -3,6 +3,22 @@ const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { BugsnagSourceMapUploaderPlugin } = require("webpack-bugsnag-plugins");
 
+const findSvgRule = (rules) => {
+  for(const rule of rules) {
+    const foundSubrule = (rule.oneOf || []).find(subrule => {
+      // Testing true equality of regex is difficult. For what we need
+      // testing the toString is sufficient.
+      if (subrule.test.toString() === "/\\.svg$/") {
+        return true;
+      }
+      return false;
+    });
+    if (foundSubrule) {
+      return foundSubrule;
+    }
+  }
+}
+
 // @see https://github.com/gsoft-inc/craco/blob/master/packages/craco/README.md#configuration
 module.exports = {
   reactScriptsVersion: "react-scripts",
@@ -71,7 +87,23 @@ module.exports = {
         });
         webpackConfig.plugins.unshift(bugsnagPlugin);
       }
-      webpackConfig.output.assetModuleFilename = 'static/media/[name].[hash:8][ext]';
+
+      // Use old style hashes as we have stored references to images from our
+      // build in the database. The broader asset generation requires that
+      // the name does NOT include a "." between the hash and the extension
+      // tag. The SVG rule requires the "." to be there.
+      const generatedAssetsNameWithoutExt = 'static/media/[name].[hash:8]'
+      webpackConfig.output.assetModuleFilename = `${generatedAssetsNameWithoutExt}[ext]`;
+
+      // The SVG rule also needs to be updated separately.
+      const svgRule = findSvgRule(webpackConfig.module.rules);
+      if (svgRule) {
+        for (const loaderDesc of svgRule.use) {
+          if (loaderDesc.options?.name) {
+            loaderDesc.options.name = `${generatedAssetsNameWithoutExt}.[ext]`;
+          }
+        }
+      }
 
       return webpackConfig;
     },
