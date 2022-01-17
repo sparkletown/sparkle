@@ -118,7 +118,6 @@
     "@types/ws": "^7.2.6",
     "@welldone-software/why-did-you-render": "^4.3.2",
     "algoliasearch": "^4.10.5",
-    "bootswatch": "^4.5.0",
     "browser-image-compression": "^1.0.15",
     "chalk": "^4.1.1",
     "classnames": "^2.2.6",

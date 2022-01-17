@@ -1,5 +1,3 @@
-@import "node_modules/bootswatch/dist/darkly/variables";
-@import "node_modules/bootswatch/dist/darkly/bootswatch";
 @import "./colors.scss";
 @import "./constants.scss";
 @import "./modifiers.scss";
@@ -233,6 +231,19 @@ button.btn {
       rgba(0, 0, 0, 0.2) 100%
     );
   }
+}
+
+// ensure that fonts aren't restored to default
+input,
+button,
+select,
+optgroup,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+button {
+  cursor: pointer;
 }
 
 // @debt replace plain input and textarea elements with AdminInput and/or AdminTextarea and/or similar, then remove these global styles

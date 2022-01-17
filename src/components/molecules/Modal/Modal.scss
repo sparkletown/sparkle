@@ -17,6 +17,7 @@
       padding: $spacing--lg;
       display: flex;
       align-items: center;
+      box-shadow: 0 $spacing--md $spacing--xxl 0 var(--content--under-30a);
 
       form {
         width: 100%;
