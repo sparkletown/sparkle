@@ -43,7 +43,7 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 }) => {
   const spaces = useMemo(
     () => (world ? ownSpaces.filter((venue) => venue.worldId === worldId) : []),
-    [ownSpaces, world]
+    [ownSpaces, world, worldId]
   );
 
   const [

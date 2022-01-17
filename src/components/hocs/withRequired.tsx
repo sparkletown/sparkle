@@ -38,6 +38,6 @@ export const withRequired = (options: WithRequiredOptions) => (
     return <Component {...props} />;
   };
 
-  hoistHocStatics("withRequired(" + required + ")", WithRequired, Component);
+  hoistHocStatics("withRequired:" + required, WithRequired, Component);
   return WithRequired;
 };
