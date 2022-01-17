@@ -9,6 +9,9 @@ export const DEFAULT_MISSING_PARAM_URL = "#";
 
 export const VALID_URL_PROTOCOLS = Object.freeze(["https:"]);
 
+// External URLs
+export const EXTERNAL_WEBGL_CHECK_URL = "https://webglreport.com/?v=2";
+
 // External Sparkle URLs
 export const EXTERNAL_SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const EXTERNAL_SPARKLE_TOC_URL =
@@ -67,7 +70,7 @@ export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; //
 export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456/timing
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
 // @debt this is in the wrong place completely
-export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`;
+export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`; // e.g. /admin/w/world123/s/space456/admin
 
 // Enter URLs
 export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;
