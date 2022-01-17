@@ -1,0 +1,36 @@
+@import "./scss/AttendeeMixins.scss";
+
+.AttendeeFooter {
+  @include sparkle-panel;
+  position: relative;
+  padding: $whitespace;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  p {
+    padding: $whitespace;
+    opacity: $opacity;
+  }
+  nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: $whitespace*2 15%;
+    @media (min-width: 768px) {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: $whitespace*2 0;
+    }
+    a {
+      @include atom-button;
+      opacity: $opacity;
+      &:hover,
+      &:focus {
+        opacity: 1;
+      }
+    }
+  }
+}

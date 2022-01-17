@@ -1,0 +1,103 @@
+@import "~components/attendee/scss/AttendeeMixins.scss";
+
+.MapRoom {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: $sidebar-width;
+
+  @media (min-width: 768px) {
+    align-self: center;
+    position: absolute;
+    overflow: visible;
+    z-index: 21;
+    width: min-content;
+  }
+}
+
+.PortalImage {
+  position: relative;
+  display: block;
+  cursor: pointer;
+  width: 100%;
+
+  img {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.PortalTitle {
+  @include atom-button;
+  @include rounded;
+  @include sparkle-color-glass;
+  &:hover {
+    @include sparkle-color;
+  }
+
+  white-space: nowrap;
+  & > span {
+    display: flex;
+    padding-left: $whitespace*0.5;
+    opacity: $opacity;
+    span {
+      @include atom-icon;
+      background-image: url(~assets/icons/icon-users.svg);
+      position: relative;
+      filter: invert(1);
+      margin-right: $whitespace*0.5;
+      top: -2px;
+    }
+  }
+}
+
+.PortalOnMap {
+  display: flex;
+}
+
+.InfoButton {
+  @include atom-button;
+  height: $button-height - $button-gap*8;
+  margin: $button-gap*4 0;
+  border-left: 1px solid $sparkle-border;
+  border-radius: 0;
+  padding-right: 0;
+  span {
+    @include atom-icon;
+    background-image: url(~assets/icons/icon-info.svg);
+    position: relative;
+    filter: invert(1);
+  }
+}
+
+.PortalPopupInfo {
+  position: absolute;
+  @include sparkle-panel-glass;
+  @include rounded;
+  border: 1px solid $sparkle-border;
+  box-sizing: border-box;
+  left: 50%;
+  top: $button-height + $whitespace;
+  $portal-info-panel-width: 200px;
+  width: $portal-info-panel-width;
+  margin-left: $portal-info-panel-width * -0.5;
+  z-index: 100;
+  h3 {
+    @include font-body;
+    text-align: center;
+    margin: $whitespace;
+  }
+  p {
+    text-align: center;
+    margin: $whitespace;
+  }
+}
+
+.PortalInfoButton {
+  @include atom-button;
+  @include rounded-bottom;
+  @include sparkle-color;
+  justify-content: center;
+}

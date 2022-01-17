@@ -149,13 +149,11 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar hasBackButton={hasBackButton} withSchedule withRadio>
-        <AnnouncementMessage isAnnouncementUserView />
+      { /* TODO <AnnouncementMessage isAnnouncementUserView /> */}
 
-        {template}
+      {template}
 
-        {shouldShowChat && <ChatSidebar venue={venue} />}
-      </WithNavigationBar>
+      { /* TODO {shouldShowChat && <ChatSidebar venue={venue} />} */}
     </ReactionsProvider>
   );
 };

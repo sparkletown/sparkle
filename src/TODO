@@ -6,3 +6,14 @@ Abstract out the headers etc as that's going to get repetitive.
 
 Attendee
 ========
+
+Fonts
+RelatedVenueProvider needs putting in AttendeeLayout somewhere
+Chat in the design assumes per-world chat. We have per-space chat.
+Remove id declarations in AttendeeLayout
+Lots of browser specific stuff in ChatContainer.module.scss that probably isn't needed
+Loading page, 404 page, etc
+Login page
+Announcements
+Figure out proper placement of portals inside the map. It has been a temporary hack.
+Figure out what information should be displayed inside the information bubble on a portal
