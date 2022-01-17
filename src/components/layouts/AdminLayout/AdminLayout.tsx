@@ -3,18 +3,22 @@ import { MenuIcon } from "@heroicons/react/outline";
 
 import { AdminNavBar } from "components/molecules/AdminNavBar";
 
-import styles from "./AdminLayout.module.scss";
-
 export interface AdminLayoutPropsType {
   children: ReactNode;
 }
 
+const htmlClasses = "h-full bg-gray-100 js-focus-visible".split(" ");
+
 export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
   useEffect(() => {
-    document.documentElement.classList.add(styles.html);
+    htmlClasses.map((htmlClass) =>
+      document.documentElement.classList.add(htmlClass)
+    );
     document.body.classList.add("h-full");
     return () => {
-      document.documentElement.classList.remove(styles.html);
+      htmlClasses.map((htmlClass) =>
+        document.documentElement.classList.remove(htmlClass)
+      );
       document.body.classList.remove("h-full");
     };
   }, []);
