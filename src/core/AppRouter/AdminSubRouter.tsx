@@ -44,19 +44,19 @@ export const AdminSubRouter: React.FC = () => (
     </Route>
 
     <Route path={ADMIN_IA_SPACE_CREATE_PARAM_URL}>
-      <AnalyticsCheck>
+      <AnalyticsFree>
         <Provided withRelatedVenues>
           <SpaceCreatePage />
         </Provided>
-      </AnalyticsCheck>
+      </AnalyticsFree>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_CREATE_URL, ADMIN_IA_WORLD_EDIT_PARAM_URL]}>
-      <AnalyticsCheck>
+      <AnalyticsFree>
         <Provided withRelatedVenues>
           <WorldEditor />
         </Provided>
-      </AnalyticsCheck>
+      </AnalyticsFree>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}>

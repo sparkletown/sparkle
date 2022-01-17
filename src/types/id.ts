@@ -29,3 +29,4 @@ export type WorldWithId = WithId<World, WorldId>;
 export type Worlds = WithId<WorldWithId>[];
 
 export type UserWithId = WithId<User, UserId>;
+export type Users = WithId<User, UserId>[];

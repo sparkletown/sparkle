@@ -41,8 +41,8 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
   } = useRefiCollection<WorldEvent>({
     path: [COLLECTION_WORLD_EVENTS],
     constraints: [
-      where(FIELD_WORLD_ID, "==", worldId),
-      where(FIELD_WORLD_ID, "==", spaceId),
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(spaceId)),
       orderBy("startUtcSeconds", "asc"),
     ],
   });

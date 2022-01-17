@@ -50,8 +50,10 @@ const CONVERTER_IDENTITY = {
 };
 Object.freeze(CONVERTER_IDENTITY);
 
-export const withIdConverter = <T extends object>() =>
-  CONVERTER_WITH_ID as ModularFirestoreDataConverter<WithId<T>>;
+export const withIdConverter = <
+  T extends object,
+  ID extends string = string
+>() => CONVERTER_WITH_ID as ModularFirestoreDataConverter<WithId<T, ID>>;
 
 export const identityConverter = <T extends object>() =>
   CONVERTER_IDENTITY as ModularFirestoreDataConverter<T>;

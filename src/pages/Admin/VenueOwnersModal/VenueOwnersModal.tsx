@@ -1,18 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FormControl, Modal } from "react-bootstrap";
 import { debounce } from "lodash";
 
-import { COLLECTION_USERS, DEFAULT_PARTY_NAME } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
+import { Users } from "types/id";
 import { User } from "types/User";
 import { AnyVenue, Venue_v2 } from "types/venues";
 
 import { WithId } from "utils/id";
 import { determineAvatar } from "utils/image";
-
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
 
 import "./VenueOwnerModal.scss";
 
@@ -41,11 +40,10 @@ const makePartitionOwnersFromOthersReducer: MakePartitionOwnersFromOthersReducer
   }
 };
 
-// @debt this object is a shared memory between two different executions of allUsers.reduce()
-const emptyPartition: PartitionedOwnersOthers = {
+const emptyPartition: () => PartitionedOwnersOthers = () => ({
   owners: [],
   others: [],
-};
+});
 
 const makePartyNameFilter = (searchText: string) => (user: WithId<User>) =>
   user.partyName?.toLowerCase()?.includes(searchText.toLowerCase());
@@ -54,46 +52,31 @@ interface VenueOwnersModalProps {
   visible: boolean;
   venue: WithId<AnyVenue> | Venue_v2;
   onHide?: () => void;
+  users: Users;
 }
 
 export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   visible,
   onHide,
   venue,
+  users,
 }) => {
-  const [allUsers, setAllUsers] = useState<WithId<User>[]>([]);
   const [searchText, setSearchText] = useState("");
-
-  // Fetch all users the first time this component loads
-  // @deby maybe it's a good fit for a read-once DB function to be used
-  // @debt reading every user is obviously bad.
-  const { data, isLoading: isLoadingUsers } = useRefiCollection<User>([
-    COLLECTION_USERS,
-  ]);
-
-  useEffect(() => void !isLoadingUsers && setAllUsers(data ?? []), [
-    isLoadingUsers,
-    setAllUsers,
-    data,
-  ]);
 
   const debouncedSearch: typeof setSearchText = useMemo(
     () => debounce((v) => setSearchText(v), 100),
     []
   );
 
-  const isLoading = allUsers.length === 0;
-
-  // Make partition reducer using venue.owners
   const partitionOwnersFromOthersReducer = useMemo(
     () => makePartitionOwnersFromOthersReducer(venue.owners ?? []),
     [venue.owners]
   );
 
-  // Partition owners from others
-  const { owners: venueOwnerUsers, others: otherUsers } = useMemo(
-    () => allUsers.reduce(partitionOwnersFromOthersReducer, emptyPartition),
-    [allUsers, partitionOwnersFromOthersReducer]
+  const { owners: ownerUsers, others: otherUsers } = useMemo(
+    () =>
+      (users ?? []).reduce(partitionOwnersFromOthersReducer, emptyPartition()),
+    [users, partitionOwnersFromOthersReducer]
   );
 
   // Filter others by partyName using searchText
@@ -106,9 +89,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   );
 
   const isEnterSearchText = filteredUsers === undefined;
-  const hasResults = filteredUsers && filteredUsers.length > 0;
-
-  if (isLoading) return <>Loading...</>;
+  const hasResults = filteredUsers && filteredUsers?.length > 0;
 
   return (
     <Modal show={visible} onHide={onHide}>
@@ -117,7 +98,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
           <h3>Manage Owners</h3>
           <div className="row-container">
             <h4>Current Venue Owners</h4>
-            {venueOwnerUsers.map((owner) => (
+            {ownerUsers.map((owner) => (
               <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
             ))}
           </div>
