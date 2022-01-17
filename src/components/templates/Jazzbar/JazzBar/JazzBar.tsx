@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import classNames from "classnames";
+import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -55,6 +56,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     autoPlay: venue.autoPlay,
   });
   const analytics = useAnalytics({ venue });
+
+  useBackgroundGradient();
 
   // @debt what does it do anyway? cache? no useSelector here so probably connected to useUpdateTableRecentSeatedUsers
   useExperience(venue.name);
