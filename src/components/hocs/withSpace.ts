@@ -1,4 +1,5 @@
 import React from "react";
+import { get } from "lodash/fp";
 
 import { SpaceSlugLocation } from "types/id";
 
@@ -16,6 +17,8 @@ export const withSpace = <T extends SpaceSlugLocation>(
     return React.createElement(Component, {
       ...props,
       space,
+      spaceId: space?.id ?? get("spaceId", props),
+      worldId: space?.worldId ?? get("worldId", props),
     });
   };
 

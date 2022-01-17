@@ -60,11 +60,11 @@ export const AdminSubRouter: React.FC = () => (
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}>
-      <AnalyticsCheck>
+      <AnalyticsFree>
         <Provided withRelatedVenues>
           <SpacesDashboard />
         </Provided>
-      </AnalyticsCheck>
+      </AnalyticsFree>
     </Route>
 
     <Route path={[ADMIN_ROOT_URL, ADMIN_IA_WORLD_BASE_URL]}>

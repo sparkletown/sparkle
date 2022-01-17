@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import { COLLECTION_WORLDS } from "settings";
+import { COLLECTION_SPACES } from "settings";
 
 import { UserId } from "types/id";
 import { ReactHook } from "types/utility";
@@ -31,7 +31,7 @@ export const useOwnedVenues: ReactHook<
     data: venues,
     isLoading: isLoadingSpaces,
   } = useRefiCollection<AnyVenue>({
-    path: [COLLECTION_WORLDS],
+    path: [COLLECTION_SPACES],
     constraints: [
       where("worldId", "==", convertToFirestoreKey(worldId)),
       where("owners", "array-contains", convertToFirestoreKey(userId)),

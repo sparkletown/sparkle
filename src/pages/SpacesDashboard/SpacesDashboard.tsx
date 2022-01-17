@@ -9,22 +9,17 @@ import {
   SPACES_TAXON,
 } from "settings";
 
-import { UserId } from "types/id";
+import { Spaces, UserId, WorldId, WorldSlug, WorldWithId } from "types/id";
 import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 
 import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
-
-import { useOwnedVenues } from "hooks/useOwnedVenues";
-import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
-import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -33,21 +28,22 @@ import { SortDropDown } from "components/atoms/SortDropDown";
 import "./SpacesDashboard.scss";
 
 interface SpacesDashboardProps {
+  ownSpaces: Spaces;
   userId: UserId;
+  world: WorldWithId;
+  worldId: WorldId;
+  worldSlug: WorldSlug;
 }
 
-export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({ userId }) => {
-  const { worldSlug } = useWorldParams();
-  const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
-  const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({
-    worldId: world?.id,
-    userId,
-  });
-
-  const venues = useMemo(
-    () =>
-      world ? ownedVenues.filter((venue) => venue.worldId === world.id) : [],
-    [ownedVenues, world]
+export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
+  ownSpaces,
+  world,
+  worldId,
+  worldSlug,
+}) => {
+  const spaces = useMemo(
+    () => (world ? ownSpaces.filter((venue) => venue.worldId === worldId) : []),
+    [ownSpaces, world]
   );
 
   const [
@@ -56,8 +52,8 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({ userId }) => {
   ] = useState<SortingOptions>(SortingOptions.az);
 
   const sortedVenues = useMemo(
-    () => sortVenues(venues, currentSortingOption) ?? [],
-    [currentSortingOption, venues]
+    () => sortVenues(spaces, currentSortingOption) ?? [],
+    [currentSortingOption, spaces]
   );
 
   const renderedPartyVenues = useMemo(
@@ -82,10 +78,6 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({ userId }) => {
 
   const hasPartyVenues = renderedPartyVenues.length > 0;
   const hasOtherVenues = renderedOtherVenues.length > 0;
-
-  if (isLoadingSpaces || !isWorldLoaded) {
-    return <LoadingPage />;
-  }
 
   return (
     <div className="SpacesDashboard">
