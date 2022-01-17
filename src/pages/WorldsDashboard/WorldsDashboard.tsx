@@ -16,11 +16,11 @@ import { useWorlds } from "hooks/worlds/useWorlds";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
 
-import { WorldCard } from "components/molecules/WorldCard";
-
 import { AdminHeader } from "components/atoms/AdminHeader";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
+
+import { WorldsTable } from "./WorldsTable";
 
 import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
@@ -58,17 +58,6 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
     []
   );
 
-  const renderedWorldsList = useMemo(
-    () => (
-      <div className="WorldsDashboard__worlds-list">
-        {uniqueWorlds.map((world) => (
-          <WorldCard key={world.id} world={world} />
-        ))}
-      </div>
-    ),
-    [uniqueWorlds]
-  );
-
   return (
     <AdminLayout>
       <AdminRestricted>
@@ -86,7 +75,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
                     iconExtraClasses=""
                   />
                 </SectionHeading>
-                {renderedWorldsList}
+                <WorldsTable worlds={uniqueWorlds} />
               </Section>
             </FullWidthLayout>
           </>
