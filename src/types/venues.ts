@@ -3,11 +3,11 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
+import { SpaceSlug } from "types/id";
 import { RoomVisibility } from "types/RoomVisibility";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
-import { Branded } from "utils/types";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -20,8 +20,6 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
-
-export type SpaceSlug = Branded<string, "SpaceSlug">;
 
 export type PortalTemplate = VenueTemplate | "external";
 

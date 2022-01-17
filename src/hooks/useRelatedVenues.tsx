@@ -4,7 +4,8 @@ import { collection, query, where } from "firebase/firestore";
 
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
-import { AnyVenue, SpaceSlug } from "types/venues";
+import { SpaceSlug } from "types/id";
+import { AnyVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId } from "utils/id";

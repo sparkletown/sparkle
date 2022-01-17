@@ -1,7 +1,6 @@
 import React from "react";
-import hoistNonReactStatics from "hoist-non-react-statics";
 
-import { determineDisplayName } from "utils/hoc";
+import { hoistHocStatics } from "utils/hoc";
 
 type WithRequiredOptions =
   | string[]
@@ -38,9 +37,6 @@ export const withRequired = (options: WithRequiredOptions) => (
     return <Component {...props} />;
   };
 
-  hoistNonReactStatics(WithRequired, Component);
-
-  WithRequired.displayName = `withRequired(${determineDisplayName(Component)}`;
-
+  hoistHocStatics("withRequired", WithRequired, Component);
   return WithRequired;
 };

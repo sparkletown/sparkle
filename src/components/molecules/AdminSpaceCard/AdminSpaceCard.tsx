@@ -13,8 +13,8 @@ import {
   SPACE_TAXON,
 } from "settings";
 
+import { WorldSlug } from "types/id";
 import { AnyVenue } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
 import { adminNGVenueUrl, generateUrl } from "utils/url";

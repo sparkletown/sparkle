@@ -6,9 +6,8 @@ import { COLLECTION_SPACES, COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
-import { SpaceId, WorldId } from "types/id";
-import { AnyVenue, SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceId, SpaceSlug, WorldId, WorldSlug } from "types/id";
+import { AnyVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId } from "utils/id";

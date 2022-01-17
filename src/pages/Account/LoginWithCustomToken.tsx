@@ -3,8 +3,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 import firebase from "firebase/compat/app";
 
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceSlug, WorldSlug } from "types/id";
 
 import { isDefined } from "utils/types";
 import { enterSpace } from "utils/url";

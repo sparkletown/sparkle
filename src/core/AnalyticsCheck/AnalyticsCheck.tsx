@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
-import { AnalyticsCheckRequiredProps } from "core/AnalyticsCheck/props";
+import { WithAuthOutProps } from "components/hocs/withAuth";
+import { WithProfileOutProps } from "components/hocs/withProfile";
 import { addToBugsnagEventOnError } from "core/bugsnag";
 import LogRocket from "logrocket";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
-import { useAnalytics } from "hooks/useAnalytics";
+import { AnyVenue } from "types/venues";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
+import { WithId } from "utils/id";
+
+import { useAnalytics } from "hooks/useAnalytics";
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
@@ -19,12 +22,16 @@ if (LOGROCKET_APP_ID) {
   });
 }
 
-export const Check: React.FC<AnalyticsCheckRequiredProps> = ({
+type AnalyticsCheckProps = {
+  space: WithId<AnyVenue>;
+} & WithProfileOutProps &
+  WithAuthOutProps;
+
+export const AnalyticsCheck: React.FC<AnalyticsCheckProps> = ({
   space,
   userId,
-  user,
+  auth,
   profile,
-  isLoading,
   children,
 }) => {
   const analytics = useAnalytics({ venue: space });
@@ -32,17 +39,17 @@ export const Check: React.FC<AnalyticsCheckRequiredProps> = ({
   useEffect(() => void analytics.initAnalytics(), [analytics]);
 
   useEffect(() => {
-    if (!user || !profile || !userId) return;
+    if (!auth || !profile || !userId) return;
 
-    const displayName = user.displayName || "N/A";
-    const email = user.email || "N/A";
+    const displayName = auth.displayName || "N/A";
+    const email = auth.email || "N/A";
 
     if (LOGROCKET_APP_ID) {
       LogRocket.identify(userId, { displayName, email });
     }
 
     analytics.identifyUser({ email, name: profile?.partyName });
-  }, [analytics, user, userId, profile]);
+  }, [analytics, auth, userId, profile]);
 
-  return isLoading ? <LoadingPage /> : <>{children}</>;
+  return <>{children}</>;
 };

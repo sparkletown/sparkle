@@ -1,17 +1,22 @@
-import React from "react";
-import { withRequired } from "components/hocs/withRequired";
+import { withAuth } from "components/hocs/withAuth";
+import { withFallback } from "components/hocs/withFallback";
+import { withProfile } from "components/hocs/withProfile";
+import { withSlugs } from "components/hocs/withSlugs";
+import { withSpace } from "components/hocs/withSpace";
+import { AnalyticsCheck as _AnalyticsCheck } from "core/AnalyticsCheck/AnalyticsCheck";
 import { withFetch } from "core/AnalyticsCheck/withFetch";
-import { withLogin } from "core/AnalyticsCheck/withLogin";
-import { withProfile } from "core/AnalyticsCheck/withProfile";
 import { compose } from "lodash/fp";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { Check } from "./Check";
-
-export const AnalyticsCheck: React.FC = compose(
-  withLogin(),
-  withProfile(),
-  withFetch(),
-  withRequired({ required: ["space"], fallback: LoadingPage })
-)(Check);
+export const AnalyticsCheck = compose(
+  withAuth,
+  withProfile,
+  withSlugs,
+  withFallback(
+    ({ spaceSlug, worldSlug }) => worldSlug && spaceSlug,
+    LoadingPage
+  ),
+  withSpace,
+  withFetch
+)(_AnalyticsCheck);

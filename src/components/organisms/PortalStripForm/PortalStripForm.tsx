@@ -10,9 +10,9 @@ import { DEFAULT_PORTAL_IS_ENABLED, PORTAL_INFO_ICON_MAPPING } from "settings";
 import { upsertRoom } from "api/admin";
 import { fetchVenue } from "api/venue";
 
+import { WorldSlug } from "types/id";
 import { Room } from "types/rooms";
 import { AnyVenue } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import {
   convertClickabilityToPortalType,

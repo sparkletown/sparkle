@@ -23,8 +23,7 @@ import {
   VERSION_URL,
 } from "settings";
 
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceSlug, WorldSlug } from "types/id";
 
 import { tracePromise } from "utils/performance";
 import {

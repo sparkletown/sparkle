@@ -1,8 +1,8 @@
 import { DEFAULT_VENUE_LOGO, PORTAL_INFO_ICON_MAPPING } from "settings";
 
+import { WorldSlug } from "types/id";
 import { MyPersonalizedSchedule } from "types/User";
 import { AnyVenue, ScheduledEvent, WorldEvent } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import { WithId } from "utils/id";
 import { arrayIncludes } from "utils/types";

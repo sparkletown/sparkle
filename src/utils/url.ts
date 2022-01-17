@@ -9,9 +9,8 @@ import {
   VALID_URL_PROTOCOLS,
 } from "settings";
 
+import { SpaceSlug, WorldSlug } from "types/id";
 import { Room } from "types/rooms";
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import { errorForEmbed, errorType } from "utils/error";
 

@@ -1,5 +1,4 @@
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceSlug, WorldSlug } from "types/id";
 
 export const DEFAULT_SPACE_SLUG = "bootstrap" as SpaceSlug;
 export const DEFAULT_WORLD_SLUG = "bootstrap" as WorldSlug;

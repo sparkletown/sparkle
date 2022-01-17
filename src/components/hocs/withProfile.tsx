@@ -3,17 +3,17 @@ import React from "react";
 import { RefiAuthUser } from "types/reactfire";
 import { Profile, User, UserLocation } from "types/User";
 
-import { determineDisplayName } from "utils/hoc";
+import { hoistHocStatics } from "utils/hoc";
 import { WithId } from "utils/id";
 
 import { useProfile } from "hooks/user/useProfile";
 
 interface WithProfileInProps {
-  user: RefiAuthUser;
+  auth: RefiAuthUser;
   isLoading: boolean;
 }
 
-interface WithProfileOutProps {
+export interface WithProfileOutProps {
   profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
@@ -21,7 +21,7 @@ interface WithProfileOutProps {
 }
 
 type WithProfile = <T extends object = object>(
-  Component: React.FC<WithProfileOutProps>
+  Component: React.FC<T & WithProfileOutProps>
 ) => React.FC<Omit<T & WithProfileInProps, keyof WithProfileOutProps>>;
 
 export const withProfile: WithProfile = (Component) => {
@@ -33,7 +33,7 @@ export const withProfile: WithProfile = (Component) => {
       userLocation,
       userWithId,
       isTester,
-    } = useProfile({ user: props.user });
+    } = useProfile({ user: props.auth });
 
     if (error) {
       // @debt add Bugsnag here
@@ -49,8 +49,11 @@ export const withProfile: WithProfile = (Component) => {
       return null;
     }
 
+    const C = (Component as unknown) as React.FC<
+      typeof props & WithProfileOutProps
+    >;
     return (
-      <Component
+      <C
         {...props}
         profile={profile}
         userLocation={userLocation}
@@ -60,6 +63,6 @@ export const withProfile: WithProfile = (Component) => {
     );
   };
 
-  WithProfile.displayName = `withProfile(${determineDisplayName(Component)})`;
+  hoistHocStatics("withProfile", WithProfile, Component);
   return WithProfile;
 };

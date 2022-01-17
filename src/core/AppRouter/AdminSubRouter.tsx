@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
+import { AnalyticsFree } from "core/AnalyticsFree";
 
 import {
   ADMIN_IA_SPACE_ADMIN_PARAM_URL,
@@ -67,11 +68,11 @@ export const AdminSubRouter: React.FC = () => (
     </Route>
 
     <Route path={[ADMIN_ROOT_URL, ADMIN_IA_WORLD_BASE_URL]}>
-      <AnalyticsCheck>
+      <AnalyticsFree>
         <Provided withRelatedVenues>
           <WorldsDashboard />
         </Provided>
-      </AnalyticsCheck>
+      </AnalyticsFree>
     </Route>
   </Switch>
 );

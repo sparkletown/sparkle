@@ -14,10 +14,10 @@ import {
 
 import { findSpaceBySlug } from "api/space";
 
+import { SpaceSlug } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
 import { Table } from "types/Table";
 import {
-  SpaceSlug,
   VenueAdvancedConfig,
   VenuePlacement,
   WorldEvent,
