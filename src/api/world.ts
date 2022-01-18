@@ -7,7 +7,7 @@ import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
 import { createSlug } from "api/admin";
 
 import { EntranceStepConfig } from "types/EntranceStep";
-import { WorldSlug } from 'types/id';
+import { WorldSlug } from "types/id";
 import { Question } from "types/Question";
 import { UserStatus } from "types/User";
 import {

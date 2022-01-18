@@ -17,11 +17,7 @@ import { findSpaceBySlug } from "api/space";
 import { SpaceSlug } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
 import { Table } from "types/Table";
-import {
-  VenueAdvancedConfig,
-  VenuePlacement,
-  WorldEvent,
-} from "types/venues";
+import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, WithoutId, WithWorldId } from "utils/id";
