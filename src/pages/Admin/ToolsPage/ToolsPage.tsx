@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
@@ -7,7 +8,6 @@ import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
 import { generateUrl } from "utils/url";
 
-import { useShowHide } from "hooks/useShowHide";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -20,9 +20,9 @@ import { InputField } from "components/atoms/InputField";
 import * as tools from "./scripts";
 import { SelfServeScript } from "./types";
 
-import "./Tools.scss";
+import "./ToolsPage.scss";
 
-export const Tools: React.FC = () => {
+export const ToolsPage: React.FC = () => {
   const [chosenTool, setChosenTool] = useState<SelfServeScript>();
 
   const clearChosenTool = useCallback(() => setChosenTool(undefined), []);
@@ -31,7 +31,7 @@ export const Tools: React.FC = () => {
 
   return (
     <WithNavigationBar>
-      <div className="Tools">
+      <div className="ToolsPage">
         {chosenTool ? (
           <>
             <div className="Tools__back">
@@ -77,28 +77,22 @@ export const Tool: React.FC<{ tool: SelfServeScript }> = ({ tool }) => {
 
   const [returnedData, setReturnedData] = useState<{ [key: string]: string }>();
 
-  const {
-    show: showLoading,
-    hide: hideLoading,
-    isShown: isLoadingShown,
-  } = useShowHide();
+  const [{ loading: isLoading }, onSubmit] = useAsyncFn(
+    async (data: Object) => {
+      const response = await firebase
+        .functions()
+        .httpsCallable(tool.functionLocation)(data);
 
-  const onSubmit = async (data: Object) => {
-    showLoading();
-
-    const response = await firebase
-      .functions()
-      .httpsCallable(tool.functionLocation)(data);
-
-    setReturnedData(response.data);
-    hideLoading();
-  };
+      setReturnedData(response.data);
+    },
+    [tool.functionLocation]
+  );
 
   if (returnedData) {
     return <tool.outputComponent {...returnedData} />;
   }
 
-  return isLoadingShown ? (
+  return isLoading ? (
     <Loading />
   ) : (
     <form className="Tool" onSubmit={handleSubmit(onSubmit)}>

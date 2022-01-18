@@ -5,7 +5,7 @@ import {
   ADMIN_IA_SPACE_CREATE_PARAM_URL,
   ADMIN_IA_WORLD_BASE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
-  ADMIN_IA_WORLD_TOOLS,
+  ADMIN_IA_WORLD_TOOLS_PARAM_URL,
   SPACE_TAXON,
   SPACES_TAXON,
 } from "settings";
@@ -120,7 +120,7 @@ export const SpacesDashboard: React.FC = () => {
                 variant="secondary"
                 isLink
                 linkTo={generateUrl({
-                  route: ADMIN_IA_WORLD_TOOLS,
+                  route: ADMIN_IA_WORLD_TOOLS_PARAM_URL,
                   required: ["worldSlug"],
                   params: { worldSlug },
                 })}
