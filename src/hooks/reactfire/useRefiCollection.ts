@@ -8,7 +8,10 @@ import Bugsnag from "@bugsnag/js";
 import { QueryConstraint } from "@firebase/firestore";
 import { collection, query } from "firebase/firestore";
 
+import { LoadStatus } from "types/reactfire";
+
 import { withIdConverter } from "utils/converters";
+import { WithId } from "utils/id";
 
 type UseRefiCollectionOptions =
   | string[]
@@ -17,12 +20,8 @@ type UseRefiCollectionOptions =
       constraints?: QueryConstraint[];
     };
 
-export type UseRefiCollectionResult<T extends object> = ObservableStatus<
-  (T & { id: string })[]
-> & {
-  isLoading: boolean;
-  isLoaded: boolean;
-};
+export type UseRefiCollectionResult<T extends object> = LoadStatus &
+  ObservableStatus<WithId<T>[]>;
 
 export const useRefiCollection = <T extends object>(
   options: UseRefiCollectionOptions

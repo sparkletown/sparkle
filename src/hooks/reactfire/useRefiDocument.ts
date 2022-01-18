@@ -3,13 +3,13 @@ import { ObservableStatus, useFirestore, useFirestoreDocData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 import { doc } from "firebase/firestore";
 
+import { LoadStatus } from "types/reactfire";
+
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-type UseRefiDocumentResult<T extends object> = ObservableStatus<WithId<T>> & {
-  isLoading: boolean;
-  isLoaded: boolean;
-};
+type UseRefiDocumentResult<T extends object> = LoadStatus &
+  ObservableStatus<WithId<T>>;
 
 export const useRefiDocument = <T extends object>(
   path: string[]

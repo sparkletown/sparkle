@@ -61,7 +61,7 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
       />
     ) : (
       <ProfileModalContent
-        venue={venue}
+        space={venue}
         user={user}
         onPrimaryButtonClick={logout}
         onEditMode={turnOnEditMode}
@@ -69,7 +69,7 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     )
   ) : (
     <ProfileModalContent
-      venue={venue}
+      space={venue}
       user={user}
       onPrimaryButtonClick={openChosenUserChat}
     />
