@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { WithAuthOutProps } from "components/hocs/withAuth";
-import { WithProfileOutProps } from "components/hocs/withProfile";
+import { WithAuthOutProps } from "components/hocs/db/withAuth";
+import { WithProfileOutProps } from "components/hocs/db/withProfile";
 import { addToBugsnagEventOnError } from "core/bugsnag";
 import LogRocket from "logrocket";
 

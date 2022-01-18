@@ -1,8 +1,8 @@
-import { withAuth } from "components/hocs/withAuth";
-import { withOwnSpaces } from "components/hocs/withOwnSpaces";
-import { withRequired } from "components/hocs/withRequired";
-import { withSlugs } from "components/hocs/withSlugs";
-import { withWorld } from "components/hocs/withWorld";
+import { withSlugs } from "components/hocs/context/withSlugs";
+import { withAuth } from "components/hocs/db/withAuth";
+import { withOwnSpaces } from "components/hocs/db/withOwnSpaces";
+import { withWorld } from "components/hocs/db/withWorld";
+import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
 import { LoadingPage } from "components/molecules/LoadingPage";

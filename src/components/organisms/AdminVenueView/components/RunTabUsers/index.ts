@@ -1,5 +1,5 @@
-import { withRequired } from "components/hocs/withRequired";
-import { withSpaceById } from "components/hocs/withSpaceById";
+import { withSpaceById } from "components/hocs/db/withSpaceById";
+import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
 import { RunTabUsers as _RunTabUsers } from "./RunTabUsers";

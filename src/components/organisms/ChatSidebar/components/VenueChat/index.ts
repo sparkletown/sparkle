@@ -1,5 +1,5 @@
-import { withMemo } from "components/hocs/withMemo";
-import { withRequired } from "components/hocs/withRequired";
+import { withRequired } from "components/hocs/gate/withRequired";
+import { withMemo } from "components/hocs/utility/withMemo";
 import { compose } from "lodash/fp";
 
 import { VenueChat as _VenueChat } from "./VenueChat";

@@ -38,6 +38,6 @@ export const useWorldById: UseWorldById = (worldId) => {
       isLoading,
       error,
     }),
-    [world, error, isLoaded]
+    [world, error, isLoaded, isLoading]
   );
 };

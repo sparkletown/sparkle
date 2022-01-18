@@ -1,5 +1,5 @@
-import { withAllUsers } from "components/hocs/withAllUsers";
-import { withFallback } from "components/hocs/withFallback";
+import { withAllUsers } from "components/hocs/db/withAllUsers";
+import { withFallback } from "components/hocs/gate/withFallback";
 import { compose, get } from "lodash/fp";
 
 import { Loading } from "components/molecules/Loading";

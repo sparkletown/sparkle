@@ -1,4 +1,4 @@
-import { withFragment } from "components/hocs/withFragment";
+import { withFragment } from "components/hocs/gate/withFragment";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
 
 import { AnyVenue } from "types/venues";

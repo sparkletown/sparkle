@@ -1,4 +1,4 @@
-import { withPropsTransform } from "components/hocs/withPropsTransform";
+import { withPropsTransform } from "components/hocs/utility/withPropsTransform";
 import { compose } from "lodash/fp";
 
 import { convertToFirestoreKey } from "utils/id";
