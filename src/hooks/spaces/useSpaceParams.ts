@@ -3,7 +3,6 @@ import { useSearchParam } from "react-use";
 
 import { SpaceSlug, SpaceSlugLocation, WorldSlug } from "types/id";
 
-
 /**
  * Retrieve the slugs from the URL path ( /:worldSlug/ , /:spaceSlug/ )
  * or the search query string ( ?spaceSlug= , &worldSlug= )
