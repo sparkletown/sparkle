@@ -7,7 +7,6 @@ import {
   SendThreadMessageProps,
   VenueChatMessage,
 } from "types/chat";
-import { SpaceId } from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -33,7 +32,6 @@ type HocProps = {
   increaseLimit: () => void;
   messages: WithId<MessageToDisplay<VenueChatMessage>>[];
   allChatMessagesCount: number;
-  spaceId: SpaceId;
 };
 type VenueChatProps = Attributes & HocProps;
 
@@ -47,23 +45,21 @@ export const VenueChat: React.FC<VenueChatProps> = ({
   increaseLimit,
   messages,
   allChatMessagesCount,
-  spaceId,
-}) => {
-  return (
-    <ChatboxContextProvider
-      venueId={spaceId}
-      sendChatMessage={sendChatMessage}
-      sendThreadMessage={sendThreadMessage}
-      deleteChatMessage={canDeleteMessages ? deleteChatMessage : undefined}
-      deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
-    >
-      <Chatbox
-        displayPollOption
-        messages={messages}
-        containerClassName="venue-chat"
-        hasMore={limit < allChatMessagesCount}
-        loadMore={increaseLimit}
-      />
-    </ChatboxContextProvider>
-  );
-};
+  space,
+}) => (
+  <ChatboxContextProvider
+    venueId={space?.id}
+    sendChatMessage={sendChatMessage}
+    sendThreadMessage={sendThreadMessage}
+    deleteChatMessage={canDeleteMessages ? deleteChatMessage : undefined}
+    deleteThreadMessage={canDeleteMessages ? deleteThreadMessage : undefined}
+  >
+    <Chatbox
+      displayPollOption
+      messages={messages}
+      containerClassName="venue-chat"
+      hasMore={limit < allChatMessagesCount}
+      loadMore={increaseLimit}
+    />
+  </ChatboxContextProvider>
+);

@@ -21,7 +21,8 @@ export const withMessages = <T>(
   Component: React.FC<WithMessagesInProps<T>>
 ) => {
   const WithMessages = (props: WithMessagesInProps<T>) => {
-    const { space, spaceId } = props;
+    const space = props.space;
+    const spaceId = space.id;
     const sendChatMessage = useSendVenueChatMessage(spaceId);
     const sendThreadMessage = useSendVenueThreadMessage(spaceId);
     const deleteChatMessage = useDeleteVenueChatMessage(spaceId);
