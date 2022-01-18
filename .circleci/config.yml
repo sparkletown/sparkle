@@ -54,14 +54,23 @@ notify-on-fail: &notify-on-fail
 
 version: 2.1
 orbs:
-  node: circleci/node@4.1.0
+  node: circleci/node@5.0.0
   slack: circleci/slack@4.1.1
 jobs:
+install-node-example:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install:
+          node-version: '16.13'
+      - run: node --version
+      - run: npm install -g npm
+      - run: npm -v
   lint-and-test:
     executor: node/default
     steps:
       - checkout
-      - run: npm install -g npm
+      - node/install-packages
       - run: npm run prettier:check
       - run: npm run eslint:check
       - run: npm run test
