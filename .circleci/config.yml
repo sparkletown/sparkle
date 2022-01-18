@@ -57,7 +57,7 @@ orbs:
   node: circleci/node@5.0.0
   slack: circleci/slack@4.1.1
 jobs:
-  install-node-example:
+  install-node:
     executor: node/default
     steps:
       - checkout
@@ -70,7 +70,7 @@ jobs:
     executor: node/default
     steps:
       - checkout
-      - node/install-packages
+      - run: npm ci
       - run: npm run prettier:check
       - run: npm run eslint:check
       - run: npm run test
