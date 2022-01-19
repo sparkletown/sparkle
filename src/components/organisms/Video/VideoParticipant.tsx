@@ -12,7 +12,7 @@ import { useParticipantState } from "hooks/twilio/useParticipantState";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
-import "./VideoParticipant.scss";
+import styles from "./VideoParticipant.module.scss";
 
 export interface VideoParticipantProps extends ContainerClassName {
   participant: LocalParticipant | RemoteParticipant;
@@ -23,6 +23,7 @@ export interface VideoParticipantProps extends ContainerClassName {
   defaultVideoHidden?: boolean;
 
   isAudioEffectDisabled?: boolean;
+  shouldMirrorVideo?: boolean;
 }
 
 export const VideoParticipant: React.FC<VideoParticipantProps> = ({
@@ -33,8 +34,8 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   defaultVideoHidden = false,
   containerClassName,
   isAudioEffectDisabled,
+  shouldMirrorVideo = false,
 }) => {
-  const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
   const {
     shouldDisableExternally: shouldDisableVideoExternally,
@@ -52,57 +53,49 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
     iconColor: audioIconColor,
   } = useParticipantState("audio", participant, defaultMute);
 
-  return (
-    <div
-      className={classNames(
-        "VideoParticipant",
-        {
-          "VideoParticipant--mirrored": shouldMirrorVideo,
-        },
-        containerClassName
-      )}
-    >
-      <div className="VideoParticipant__video">
-        <video
-          className={classNames("VideoParticipant__video-element", {
-            "VideoParticipant__video-element--disabled": shouldDisableVideoExternally,
-          })}
-          ref={shouldDisableVideoExternally ? null : videoRef}
-          autoPlay={true}
-        />
-      </div>
+  const videoClassNames = classNames({
+    [styles.Mirrored]: shouldMirrorVideo,
+  });
+
+  return (<>
+    <video
+      className={videoClassNames}
+      ref={shouldDisableVideoExternally ? null : videoRef}
+      autoPlay={true}
+    />
+    { /*
+      TODO
+      Audio is disabled
       <audio
         ref={audioRef}
         autoPlay={true}
         muted={shouldDisableAudioExternally}
       />
+      */ }
 
-      {showIcon && participantUser && (
-        <div className="VideoParticipant__profile">
-          <UserProfilePicture
-            user={participantUser}
-            reactionPosition="right"
-            isAudioEffectDisabled={isAudioEffectDisabled}
-          />
-        </div>
-      )}
 
-      <div className="VideoParticipant__controls">
-        <FontAwesomeIcon
-          size="lg"
-          icon={videoIcon}
-          color={videoIconColor}
-          onClick={toggleVideo}
-        />
+    {
+      /*
+      TODO
+    <div className="VideoParticipant__controls">
+      <FontAwesomeIcon
+        size="lg"
+        icon={videoIcon}
+        color={videoIconColor}
+        onClick={toggleVideo}
+      />
 
-        <FontAwesomeIcon
-          size="lg"
-          icon={audioIcon}
-          color={audioIconColor}
-          onClick={toggleAudio}
-          className="VideoParticipant__controls-mute"
-        />
-      </div>
+      <FontAwesomeIcon
+        size="lg"
+        icon={audioIcon}
+        color={audioIconColor}
+        onClick={toggleAudio}
+        className="VideoParticipant__controls-mute"
+      />
     </div>
+    */
+    }
+
+  </>
   );
 };

@@ -82,9 +82,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   )?.path?.tableReference;
 
   useEffect(() => {
-    userTableReference
-      ? setSeatedAtTable(userTableReference)
-      : setSeatedAtTable("");
+    if (userTableReference) {
+      setSeatedAtTable(userTableReference);
+    }
   }, [setSeatedAtTable, userTableReference]);
 
   const isSeatedAtTable = !!seatedAtTable;
@@ -172,12 +172,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     (isCurrentUserAdmin || emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER);
 
   const renderedTables = useMemo(() => {
-    if (isSeatedAtTable) return;
-
     const tablesToShow = showOnlyAvailableTables
       ? tables.filter(
-          (table) => !(isFullTable(table) || tableLocked(table.reference))
-        )
+        (table) => !(isFullTable(table) || tableLocked(table.reference))
+      )
       : tables;
 
     return tablesToShow.map((table: Table) => (

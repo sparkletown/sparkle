@@ -1,0 +1,50 @@
+@import "../scss/AttendeeMixins.scss";
+
+.VideoHuddle {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row-reverse;
+  @media (min-width: 768px) {
+    @include sparkle-panel;
+    grid-column: 1 / 3;
+    margin: 0 $whitespace*-1;
+    width: calc(100% + #{$whitespace*2});
+  }
+  height: $video-chat-height;
+  padding: $button-gap;
+  border-top: 1px solid $sparkle-border;
+  border-bottom: 1px solid $sparkle-border;
+  @media (min-width: 768px) {
+    border-top: none;
+  }
+}
+
+.VideoHuddleControls {
+  @include sparkle-panel;
+  position: relative;
+  margin-top: $button-gap*-1;
+  width: $button-height;
+  display: flex;
+  flex-direction: column;
+  justify-self: start;
+  border-left: 1px solid $sparkle-border;
+}
+
+.VideoHuddleVideos {
+  flex-grow: 1;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  min-width: ($video-chat-height * 1.7 + 2)*3;
+  display: flex;
+  justify-content: center;
+  gap: $button-gap;
+}
+
+.VideoContainer {
+  display: flex;
+  justify-content: center;
+
+  @include rounded;
+  overflow: hidden;
+}
