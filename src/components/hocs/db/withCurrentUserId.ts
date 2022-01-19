@@ -1,12 +1,12 @@
 import React, { PropsWithChildren } from "react";
-import { useAuth } from "reactfire";
 
 import { hoistHocStatics } from "utils/hoc";
 
+import { useUserId } from "hooks/user/useUserId";
+
 export const withCurrentUserId = <T = {}>(Component: React.FC<T>) => {
   const WithCurrentUserId = (props: PropsWithChildren<T>) => {
-    const auth = useAuth();
-    const userId = auth.currentUser?.uid;
+    const { userId } = useUserId();
     return React.createElement(Component, { ...props, userId });
   };
 
