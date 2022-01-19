@@ -25,6 +25,7 @@ import {
   WorldEvent,
 } from "types/venues";
 
+import { uploadFile } from "utils/file";
 import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
@@ -291,7 +292,7 @@ const createFirestoreRoomInput = async (
   venueId: string,
   user: firebase.UserInfo
 ) => {
-  const storageRef = firebase.storage().ref();
+  // const storageRef = firebase.storage().ref();
 
   const urlRoomName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
@@ -312,14 +313,10 @@ const createFirestoreRoomInput = async (
   // upload the files
   for (const entry of imageKeys) {
     const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
-    const file = fileArr[0];
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+    const downloadUrl = await uploadFile(
+      `users/${user.uid}/venues/${venueId}/${urlRoomName}`,
+      fileArr
     );
-
-    await uploadFileRef.put(file);
-    const downloadUrl: string = await uploadFileRef.getDownloadURL();
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
   }
 
