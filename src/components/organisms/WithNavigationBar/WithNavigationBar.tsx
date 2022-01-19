@@ -11,6 +11,8 @@ import { NewProfileModal } from "components/organisms/NewProfileModal";
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";
 
+import { MobileWarning } from "components/atoms/MobileWarning";
+
 import "./WithNavigationBar.scss";
 
 const NavBar = lazy(() =>
@@ -64,6 +66,8 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
           />
         </Suspense>
       </RelatedVenuesProvider>
+
+      <MobileWarning />
 
       {variant === "internal-scroll" ? (
         <div className="WithNavigationBar__wrapper WithNavigationBar__wrapper--internal-scroll">
