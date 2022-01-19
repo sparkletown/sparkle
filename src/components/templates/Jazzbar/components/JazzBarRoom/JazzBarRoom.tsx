@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 
 import { unsetTableSeat } from "api/venue";
 

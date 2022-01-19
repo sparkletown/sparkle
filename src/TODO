@@ -19,3 +19,10 @@ Figure out proper placement of portals inside the map. It has been a temporary h
 Figure out what information should be displayed inside the information bubble on a portal
 Figure out gradients
 Q: How does it work if you join a table and then move to another space?
+Q: What happens to reactions
+
+Bug: video not appearing when a refresh is done with two local videos (one in incognito browser, one not)
+ - Possibly related to all the twilio hooks we have
+Reinstate audio tracks
+Dialog box etc for joining a huddle
+Figure out how to remove from table when someone leaves a huddle. Some kind of callback?

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 
 import {
   ALWAYS_EMPTY_ARRAY,
@@ -10,6 +11,8 @@ import {
   IFRAME_ALLOW,
   JAZZBAR_TABLES,
 } from "settings";
+
+import { unsetTableSeat } from "api/venue";
 
 import { JazzbarVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -23,6 +26,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
+import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -65,6 +69,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
+  const { userId, profile, userWithId } = useUser();
 
   useUpdateTableRecentSeatedUsers(
     VenueTemplate.jazzbar,
@@ -102,6 +107,25 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     areSettingsLoaded &&
     (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
     (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
+
+
+  const { joinHuddle, inHuddle } = useVideoHuddle();
+
+  const joinTable = useCallback((table) => {
+    joinHuddle(`${venue.id}-${table}`);
+    setSeatedAtTable(table);
+  }, [joinHuddle, venue]);
+
+  const leaveTable = useCallback(async () => {
+    if (!userId) return;
+
+    await unsetTableSeat(userId, { venueId: venue.id });
+    setSeatedAtTable(undefined);
+  }, [userId, venue.id]);
+
+  if (!inHuddle && seatedAtTable) {
+    leaveTable();
+  }
 
   if (!venue) return <>Loading...</>;
 
@@ -167,16 +191,16 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
         </div>
       )}
 
-      {seatedAtTable && (
+      {/*seatedAtTable && (
         <JazzBarRoom
           roomName={`${venue.id}-${seatedAtTable}`}
           venueId={venue.id}
           setSeatedAtTable={setSeatedAtTable}
           isReactionsMuted={isUserAudioMuted}
         />
-      )}
+      )*/}
       <TablesUserList
-        setSeatedAtTable={setSeatedAtTable}
+        setSeatedAtTable={joinTable}
         seatedAtTable={seatedAtTable}
         venueId={venue.id}
         TableComponent={TableComponent}
