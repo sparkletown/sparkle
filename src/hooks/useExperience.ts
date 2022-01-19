@@ -6,7 +6,7 @@ import { Table } from "types/Table";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseExperience = (
   spaceName?: string

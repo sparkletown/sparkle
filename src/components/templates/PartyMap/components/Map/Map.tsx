@@ -6,7 +6,7 @@ import {
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
-import { RefiAuthUser } from "types/reactfire";
+import { RefiAuthUser } from "types/fire";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 

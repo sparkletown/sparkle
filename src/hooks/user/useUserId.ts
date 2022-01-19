@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "reactfire";
 
+import { FireAuthUser } from "types/fire";
 import { UserId } from "types/id";
-import { FireAuthUser } from "types/reactfire";
 
 export const useUserId = () => {
   const auth = useAuth();

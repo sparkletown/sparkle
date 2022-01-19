@@ -2,13 +2,13 @@ import { useMemo } from "react";
 
 import { COLLECTION_WORLDS } from "settings";
 
+import { LoadStatus } from "types/fire";
 import { WorldId, WorldWithId } from "types/id";
-import { LoadStatus } from "types/reactfire";
 import { ReactHook } from "types/utility";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseWorldById = ReactHook<
   string | undefined,

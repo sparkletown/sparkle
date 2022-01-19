@@ -12,7 +12,7 @@ import { VenueTemplate } from "types/VenueTemplate";
 
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 import { useDebounceSearch } from "./useDebounceSearch";
 

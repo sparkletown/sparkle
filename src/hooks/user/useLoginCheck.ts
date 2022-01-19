@@ -1,7 +1,7 @@
 import { useSigninCheck } from "reactfire";
 
+import { RefiAuthUser, RefiError, RefiStatus } from "types/fire";
 import { UserId } from "types/id";
-import { RefiAuthUser, RefiError, RefiStatus } from "types/reactfire";
 
 type UseLoginCheck = () => {
   user?: RefiAuthUser;

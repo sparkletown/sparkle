@@ -8,7 +8,7 @@ import {
 
 import { Settings } from "types/settings";
 
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseSettings = () => {
   isLoaded: boolean;

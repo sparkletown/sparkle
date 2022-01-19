@@ -1,6 +1,6 @@
 import { COLLECTION_ROLES } from "settings";
 
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 export type AdminRole = {
   allowAll: boolean;

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { RefiAuthUser } from "types/reactfire";
+import { RefiAuthUser } from "types/fire";
 import { Profile, User, UserLocation } from "types/User";
 
 import { hoistHocStatics } from "utils/hoc";

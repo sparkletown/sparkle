@@ -9,7 +9,7 @@ import { WorldEvent } from "types/venues";
 import { convertToFirestoreKey, WithId } from "utils/id";
 import { oneHourAfterTimestamp } from "utils/time";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 type UseConnectCurrentEvent = ({
   worldId,

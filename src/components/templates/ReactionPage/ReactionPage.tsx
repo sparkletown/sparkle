@@ -7,7 +7,7 @@ import { EmojiReaction, TextReaction, TextReactionType } from "types/reactions";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 

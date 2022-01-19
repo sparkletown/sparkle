@@ -1,6 +1,6 @@
 import { omit, pick } from "lodash";
 
-import { RefiAuthUser } from "types/reactfire";
+import { RefiAuthUser } from "types/fire";
 import { User, UserLocation, UserWithLocation } from "types/User";
 
 import { WithId } from "./id";

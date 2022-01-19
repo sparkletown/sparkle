@@ -3,7 +3,7 @@ import { ObservableStatus, useFirestore, useFirestoreDocData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
 import { doc } from "firebase/firestore";
 
-import { LoadStatus } from "types/reactfire";
+import { LoadStatus } from "types/fire";
 
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
@@ -23,7 +23,7 @@ export const useRefiDocument = <T extends object>(
     );
     Bugsnag.notify(e, (event) => {
       event.severity = "error";
-      event.addMetadata("hooks/reactfire::useRefiDocument", {
+      event.addMetadata("hooks/fire::useRefiDocument", {
         path,
       });
     });

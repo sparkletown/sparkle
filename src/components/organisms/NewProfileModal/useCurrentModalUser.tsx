@@ -4,7 +4,7 @@ import { User } from "types/User";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 export const useCurrentModalUser = (userId?: string) => {
   const { data, isLoaded } = useRefiDocument<User>([

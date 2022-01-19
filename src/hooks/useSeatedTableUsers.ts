@@ -4,7 +4,7 @@ import { TableSeatedUser } from "types/User";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export const useSeatedTableUsers = (
   spaceId: string | undefined

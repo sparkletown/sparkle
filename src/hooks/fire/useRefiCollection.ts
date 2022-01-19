@@ -8,7 +8,7 @@ import Bugsnag from "@bugsnag/js";
 import { QueryConstraint } from "@firebase/firestore";
 import { collection, query } from "firebase/firestore";
 
-import { LoadStatus } from "types/reactfire";
+import { LoadStatus } from "types/fire";
 
 import { withIdConverter } from "utils/converters";
 import { WithId } from "utils/id";
@@ -37,7 +37,7 @@ export const useRefiCollection = <T extends object>(
     const e = new Error(`Invalid path for collection query: ` + path.join("/"));
     Bugsnag.notify(e, (event) => {
       event.severity = "error";
-      event.addMetadata("hooks/reactfire::useRefiCollection", {
+      event.addMetadata("hooks/fire::useRefiCollection", {
         path,
         constraints,
       });

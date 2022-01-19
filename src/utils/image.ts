@@ -7,7 +7,7 @@ import {
   FIREBASE_STORAGE_IMAGES_ORIGIN,
 } from "settings";
 
-import { RefiAuthUser } from "types/reactfire";
+import { RefiAuthUser } from "types/fire";
 import { User } from "types/User";
 
 import { isDefined } from "utils/types";

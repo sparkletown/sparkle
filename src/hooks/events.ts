@@ -6,7 +6,7 @@ import { WorldEvent } from "types/venues";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export interface VenueEventsProps {
   worldId?: string;

@@ -7,7 +7,7 @@ import { ReactHook } from "types/utility";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export const useArtcars: ReactHook<
   { animateMapId: string },

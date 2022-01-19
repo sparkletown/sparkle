@@ -12,8 +12,8 @@ import { AnyVenue, WorldEvent } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseConnectCurrentVenueNG = ({
   worldId,

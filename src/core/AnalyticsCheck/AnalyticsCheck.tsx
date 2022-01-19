@@ -5,8 +5,8 @@ import LogRocket from "logrocket";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
+import { RefiAuthUser } from "types/fire";
 import { UserId } from "types/id";
-import { RefiAuthUser } from "types/reactfire";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";

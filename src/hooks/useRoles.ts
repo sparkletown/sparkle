@@ -4,7 +4,7 @@ import { COLLECTION_ROLES } from "settings";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useLoginCheck } from "hooks/user/useLoginCheck";
 
 export const useRoles = () => {

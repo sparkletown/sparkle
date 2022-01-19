@@ -6,7 +6,7 @@ import { Users, UserWithId } from "types/id";
 
 import { hoistHocStatics } from "utils/hoc";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export const withAllUsers = <T extends object = {}>(Component: React.FC<T>) => {
   const WithAllUsers = (props: T) => {

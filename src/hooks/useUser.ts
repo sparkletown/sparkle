@@ -4,8 +4,8 @@ import { doc } from "firebase/firestore";
 
 import { COLLECTION_USERS } from "settings";
 
+import { RefiAuthUser, RefiError, RefiStatus } from "types/fire";
 import { UserId } from "types/id";
-import { RefiAuthUser, RefiError, RefiStatus } from "types/reactfire";
 import { Profile, User, UserLocation, UserWithLocation } from "types/User";
 
 import { identityConverter } from "utils/converters";

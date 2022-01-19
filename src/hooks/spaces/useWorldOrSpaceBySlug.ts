@@ -17,7 +17,7 @@ import {
   WorldWithId,
 } from "types/id";
 
-import { useFireCollection } from "hooks/reactfire/useFireCollection";
+import { useFireCollection } from "hooks/fire/useFireCollection";
 
 export const useWorldOrSpaceBySlug = ({
   spaceSlug,

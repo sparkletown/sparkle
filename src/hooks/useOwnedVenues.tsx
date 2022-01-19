@@ -9,7 +9,7 @@ import { AnyVenue } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
 
-import { useRefiCollection } from "hooks/reactfire/useRefiCollection";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export interface UseOwnedVenuesOptions {
   worldId?: string;

@@ -1,11 +1,11 @@
 import { COLLECTION_SPACES } from "settings";
 
+import { LoadStatus } from "types/fire";
 import { SpaceId, SpaceWithId, WorldId } from "types/id";
-import { LoadStatus } from "types/reactfire";
 
 import { convertToFirestoreKey } from "utils/id";
 
-import { useRefiDocument } from "hooks/reactfire/useRefiDocument";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseSpaceById = (options: {
   spaceId?: SpaceId;

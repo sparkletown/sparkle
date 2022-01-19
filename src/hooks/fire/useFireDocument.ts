@@ -3,7 +3,7 @@ import { useAsync } from "react-use";
 import { useFirestore } from "reactfire";
 import { doc, getDoc } from "firebase/firestore";
 
-import { FirePath } from "types/reactfire";
+import { FirePath } from "types/fire";
 
 import { withIdConverter } from "utils/converters";
 
