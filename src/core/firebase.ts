@@ -2,7 +2,7 @@
 // noinspection PointlessBooleanExpressionJS
 
 import { Analytics, getAnalytics } from "firebase/analytics";
-import { FirebaseApp, FirebaseOptions, initializeApp } from "firebase/app";
+import { FirebaseApp, FirebaseOptions } from "firebase/app";
 import { Auth, getAuth } from "firebase/auth";
 import firebase from "firebase/compat/app";
 import { Database, getDatabase } from "firebase/database";
@@ -40,16 +40,19 @@ const OPTIONS: FirebaseOptions = {
 //   automaticDataCollectionEnabled: undefined,
 // };
 
-// needed for the compat mode, separate instance from the one following
+// use of SDKv8 init is needed for the compat mode
 const firebaseApp = firebase.initializeApp(OPTIONS);
+// old style inits of DB and auth, useful for the transition period
 firebaseApp.firestore();
 firebaseApp.auth();
 // firebaseApp.analytics();
 // firebase.functions();
 // firebase.performance();
 
-// the new and improved v9 API, separate instance from the one above
-const app = initializeApp(OPTIONS);
+// the new and improved v9 API creates separate instance from the one above
+// const app = initializeApp(OPTIONS);
+// so, just rely on the old one for the time being
+const app = firebaseApp;
 
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
