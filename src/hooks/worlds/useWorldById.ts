@@ -6,9 +6,7 @@ import { LoadStatus } from "types/fire";
 import { WorldId, WorldWithId } from "types/id";
 import { ReactHook } from "types/utility";
 
-import { convertToFirestoreKey } from "utils/id";
-
-import { useRefiDocument } from "hooks/fire/useRefiDocument";
+import { useFireDocument } from "hooks/fire/useFireDocument";
 
 type UseWorldById = ReactHook<
   string | undefined,
@@ -25,10 +23,9 @@ export const useWorldById: UseWorldById = (worldId) => {
     isLoaded,
     isLoading,
     error,
-  } = useRefiDocument<WorldWithId>([
-    COLLECTION_WORLDS,
-    convertToFirestoreKey(worldId),
-  ]);
+  } = useFireDocument<WorldWithId>(
+    useMemo(() => [COLLECTION_WORLDS, worldId], [worldId])
+  );
 
   return useMemo(
     () => ({
