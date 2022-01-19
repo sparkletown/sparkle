@@ -83,9 +83,9 @@ const _CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
   );
 };
 
-export const CustomSoundsProvider = compose(
-  withCurrentUserId,
-)(_CustomSoundsProvider);
+export const CustomSoundsProvider = compose(withCurrentUserId)(
+  _CustomSoundsProvider
+);
 
 export const useCustomSoundsContext = () => useContext(CustomSoundsContext);
 
