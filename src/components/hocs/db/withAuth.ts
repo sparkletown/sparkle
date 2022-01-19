@@ -1,20 +1,11 @@
-import React from "react";
-
-import { UserId } from "types/id";
-import { RefiAuthUser } from "types/reactfire";
+import React, { PropsWithChildren } from "react";
 
 import { hoistHocStatics } from "utils/hoc";
 
 import { useLoginCheck } from "hooks/user/useLoginCheck";
 
-export type WithAuthOutProps = { auth: RefiAuthUser; userId: UserId };
-
-type WithAuth = <T>(
-  Component: React.FC<WithAuthOutProps>
-) => React.FC<Omit<T, keyof WithAuthOutProps>>;
-
-export const withAuth: WithAuth = (Component) => {
-  const WithAuth: React.FC = (props) => {
+export const withAuth = <T = {}>(Component: React.FC<T>) => {
+  const WithAuth = (props: PropsWithChildren<T>) => {
     const { error, user, userId, isLoading } = useLoginCheck();
 
     if (error) {
@@ -26,12 +17,11 @@ export const withAuth: WithAuth = (Component) => {
     if (isLoading) {
       return null;
     }
-
     if (!userId || !user) {
       return null;
     }
 
-    return <Component {...props} auth={user} userId={userId} />;
+    return React.createElement(Component, { ...props, auth: user, userId });
   };
 
   hoistHocStatics("withAuth", WithAuth, Component);
