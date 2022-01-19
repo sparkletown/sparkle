@@ -15,6 +15,7 @@ import {
 import { findSpaceBySlug } from "api/space";
 
 import { PortalInput, Room, RoomInput } from "types/rooms";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import {
   SpaceSlug,
@@ -509,3 +510,48 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
     venueId,
     ownerId,
   });
+
+export const upsertScreeningRoomVideo = async (
+  video: ScreeningRoomVideo,
+  spaceId: string,
+  videoId?: string
+) => {
+  return await firebase
+    .functions()
+    .httpsCallable("venue-upsertScreeningRoomVideo")({
+      video,
+      videoId,
+      spaceId,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::upsertScreeningRoomVideo", {
+          spaceId,
+          video,
+          videoId,
+        });
+      });
+      throw e;
+    });
+};
+
+export const deleteScreeningRoomVideo = async (
+  videoId: string,
+  spaceId: string
+) => {
+  return await firebase
+    .functions()
+    .httpsCallable("venue-deleteScreeningRoomVideo")({
+      spaceId,
+      videoId,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::deleteScreeningRoomVideo", {
+          videoId,
+          spaceId,
+        });
+      });
+      throw e;
+    });
+};
