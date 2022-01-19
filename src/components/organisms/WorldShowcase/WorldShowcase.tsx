@@ -2,15 +2,12 @@ import React from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import {
-  DEFAULT_LANDING_BANNER,
-  DEFAULT_PROFILE_IMAGE,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { DEFAULT_LANDING_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 import { World } from "api/world";
 
 import { WithId } from "utils/id";
+import { determineAvatar } from "utils/image";
 import { worldEditStartValuesSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
@@ -25,8 +22,8 @@ export interface WorldShowcaseProps {
 export const WorldShowcase: React.FC<WorldShowcaseProps> = ({ world }) => {
   // NOTE: values can also be empty strings, not just missing
   const dirty = useSelector(worldEditStartValuesSelector);
-  const { profile } = useUser();
-  const avatar = profile?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+  const { profile: user } = useUser();
+  const avatar = determineAvatar({ user });
   const banner =
     dirty?.bannerImageUrl ||
     (world?.config?.landingPageConfig?.coverImageUrl ?? DEFAULT_LANDING_BANNER);

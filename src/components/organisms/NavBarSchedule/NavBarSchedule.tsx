@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
   addDays,
@@ -17,7 +11,7 @@ import {
 
 import { ALWAYS_EMPTY_ARRAY, PLATFORM_BRAND_NAME } from "settings";
 
-import { ScheduledVenueEvent } from "types/venues";
+import { ScheduledEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
@@ -44,7 +38,7 @@ import { prepareForSchedule } from "./utils";
 import "./NavBarSchedule.scss";
 
 interface ScheduleDay {
-  daysEvents: ScheduledVenueEvent[];
+  daysEvents: ScheduledEvent[];
   scheduleDate: Date;
 }
 
@@ -58,17 +52,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
 }) => {
-  // @debt This refetchIndex is used to force a refetch of the data when events
-  // have been edited. It's horrible and needs a rethink. It also doesn't
-  // help the attendee side at all.
-  const [refetchIndex, setRefetchIndex] = useState(0);
-  const prevIsVisibleRef = useRef<boolean>();
-  useEffect(() => {
-    if (prevIsVisibleRef.current !== isVisible) {
-      setRefetchIndex(refetchIndex + 1);
-      prevIsVisibleRef.current = isVisible;
-    }
-  }, [isVisible, prevIsVisibleRef, refetchIndex]);
   const { currentVenue: venue, findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venueId,
   });
@@ -93,7 +76,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isEventsLoading,
     sovereignVenue,
     relatedVenues,
-  } = useVenueScheduleEvents({ userEventIds, refetchIndex });
+  } = useVenueScheduleEvents({ userEventIds });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -179,12 +162,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     );
 
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
-      ({ isSaved, venueId: eventVenueId }) =>
-        isSaved && eventVenueId?.toLowerCase() === venueId
+      ({ isSaved, spaceId: eventSpaceId }) =>
+        isSaved && eventSpaceId?.toLowerCase() === venueId
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
-      ({ venueId: eventVenueId }) => eventVenueId?.toLowerCase() === venueId
+      ({ spaceId: eventSpaceId }) => eventSpaceId?.toLowerCase() === venueId
     );
 
     const personalisedSchedule = filterRelatedEvents
@@ -211,7 +194,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const scheduleWithAttendees = {
     ...schedule,
     daysEvents: schedule.daysEvents.map((event) => {
-      const portalVenue = findVenueInRelatedVenues({ spaceId: event.venueId });
+      const portalVenue = findVenueInRelatedVenues({ spaceId: event.spaceId });
 
       return prepareForSchedule({
         worldSlug,
@@ -222,7 +205,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     }),
   };
   const downloadPersonalEventsCalendar = useCallback(() => {
-    const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
+    const allPersonalEvents: ScheduledEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
           worldSlug,

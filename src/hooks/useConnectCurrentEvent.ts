@@ -1,31 +1,24 @@
 import { useState } from "react";
 
+import { COLLECTION_WORLD_EVENTS } from "settings";
+
 import { oneHourAfterTimestamp } from "utils/time";
 
-import { useSpaceParams } from "./spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "./spaces/useWorldAndSpaceBySlug";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 
-export const useConnectCurrentEvent = () => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
+export const useConnectCurrentEvent = (worldId?: string, spaceId?: string) => {
   const [currentTimestamp] = useState(Date.now() / 1000);
 
   useFirestoreConnect(
-    spaceId
+    worldId && spaceId
       ? {
-          collection: "venues",
-          doc: spaceId,
-          subcollections: [{ collection: "events" }],
+          collection: COLLECTION_WORLD_EVENTS,
           where: [
-            [
-              "start_utc_seconds",
-              "<=",
-              oneHourAfterTimestamp(currentTimestamp),
-            ],
+            ["startUtcSeconds", "<=", oneHourAfterTimestamp(currentTimestamp)],
+            ["worldId", "==", worldId],
+            ["spaceId", "==", spaceId],
           ],
-          orderBy: ["start_utc_seconds", "desc"],
+          orderBy: ["startUtcSeconds", "desc"],
           limit: 1,
           storeAs: "currentEvent",
         }
