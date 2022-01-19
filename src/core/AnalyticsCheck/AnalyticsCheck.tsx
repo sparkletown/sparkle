@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
-import { WithAuthOutProps } from "components/hocs/db/withAuth";
 import { WithProfileOutProps } from "components/hocs/db/withProfile";
 import { addToBugsnagEventOnError } from "core/bugsnag";
 import LogRocket from "logrocket";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
+import { UserId } from "types/id";
+import { RefiAuthUser } from "types/reactfire";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -24,8 +25,9 @@ if (LOGROCKET_APP_ID) {
 
 type AnalyticsCheckProps = {
   space: WithId<AnyVenue>;
-} & WithProfileOutProps &
-  WithAuthOutProps;
+  userId: UserId;
+  auth: RefiAuthUser;
+} & WithProfileOutProps;
 
 export const AnalyticsCheck: React.FC<AnalyticsCheckProps> = ({
   space,
