@@ -1,65 +1,61 @@
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { useMemo } from "react";
 import Bugsnag from "@bugsnag/js";
-import { collection, query, where } from "firebase/firestore";
+import { where } from "firebase/firestore";
 
-import { COLLECTION_WORLDS } from "settings";
+import { COLLECTION_WORLDS, FIELD_HIDDEN, FIELD_SLUG } from "settings";
 
-import { World } from "api/world";
+import { WorldId, WorldSlug, WorldSlugLocation, WorldWithId } from "types/id";
 
-import { withIdConverter } from "utils/converters";
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { convertToFirestoreKey } from "utils/id";
 
-type UseWorldBySlugResult = {
-  isLoaded: boolean;
-  world?: WithId<World>;
-  worldId: string | undefined;
-  worldSlug: string | undefined;
-};
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-/**
- * Hook which will return the world when the slug is provided.
- * The intention is to be used on the client side, when the world slug is provided in the url.
- * @param worldSlug
- * @returns
- */
-export const useWorldBySlug: (worldSlug?: string) => UseWorldBySlugResult = (
-  worldSlug
+export const useWorldBySlug = (
+  slugOrOptions?: WorldSlug | string | WorldSlugLocation
 ) => {
-  const firestore = useFirestore();
-
-  const worldsRef = query(
-    collection(firestore, COLLECTION_WORLDS),
-    where("slug", "==", convertToFirestoreKey(worldSlug)),
-    where("isHidden", "==", false)
-  ).withConverter<WithId<World>>(withIdConverter());
-
-  const { data: worlds, status } = useFirestoreCollectionData<WithId<World>>(
-    worldsRef,
-    {
-      initialData: undefined,
-    }
+  const slug: string = convertToFirestoreKey(
+    typeof slugOrOptions === "string" ? slugOrOptions : slugOrOptions?.worldSlug
   );
+
+  const {
+    data: worlds,
+    isLoaded,
+    isLoading,
+    error,
+  } = useRefiCollection<WorldWithId>({
+    path: [COLLECTION_WORLDS],
+    constraints: [
+      where(FIELD_SLUG, "==", slug),
+      where(FIELD_HIDDEN, "==", false),
+    ],
+  });
 
   if (worlds?.length > 1) {
     Bugsnag.notify(
-      `Multiple worlds have been found with the following slug: ${worldSlug}.`,
+      `Multiple worlds have been found with the following slug: ${slug}.`,
       (event) => {
         event.severity = "warning";
         event.addMetadata("hooks/worlds::useWorldBySlug", {
-          worldSlug,
+          slug,
           worlds,
         });
       }
     );
   }
 
-  const world = worlds?.[0];
-  const isLoaded = status !== "loading";
+  const world = worlds?.[0] as WorldWithId | undefined;
+  const worldSlug = world?.slug as WorldSlug | undefined;
+  const worldId = world?.id as WorldId | undefined;
 
-  return {
-    isLoaded,
-    world,
-    worldId: world?.id,
-    worldSlug: world?.slug,
-  };
+  return useMemo(
+    () => ({
+      world,
+      worldId,
+      worldSlug,
+      isLoading,
+      isLoaded,
+      error,
+    }),
+    [world, worldSlug, worldId, isLoaded, isLoading, error]
+  );
 };
