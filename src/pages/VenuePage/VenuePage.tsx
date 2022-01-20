@@ -10,6 +10,13 @@ import {
   PLATFORM_BRAND_NAME,
 } from "settings";
 
+import {
+  SpaceId,
+  SpaceSlugLocation,
+  SpaceWithId,
+  WorldId,
+  WorldWithId,
+} from "types/id";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -29,8 +36,6 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
@@ -40,7 +45,7 @@ import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import {WithNavigationBar} from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -71,15 +76,22 @@ const TemplateWrapper = lazy(() =>
 const checkSupportsPaidEvents = (template: VenueTemplate) =>
   template === VenueTemplate.jazzbar;
 
-export const VenuePage: React.FC = () => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, worldId, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
-  const analytics = useAnalytics({ venue: space });
+type VenuePageProps = SpaceSlugLocation & {
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  world: WorldWithId;
+  worldId: WorldId;
+};
 
-  // const [isAccessDenied, setIsAccessDenied] = useState(false);
+export const VenuePage: React.FC<VenuePageProps> = ({
+  worldSlug,
+  spaceSlug,
+  world,
+  worldId,
+  space,
+  spaceId,
+}) => {
+  const analytics = useAnalytics({ venue: space });
 
   const { user, profile, userLocation } = useUser();
   const {
@@ -107,9 +119,7 @@ export const VenuePage: React.FC = () => {
   } = useConnectCurrentEvent({ worldId, spaceId });
 
   const userId = user?.uid;
-
   const venueName = space?.name ?? "";
-
   const event = currentEvent?.[0];
 
   useEffect(() => {
@@ -206,18 +216,14 @@ export const VenuePage: React.FC = () => {
 
   // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
-    if (!isLoaded || !world || !user) return;
+    if (!world || !user) return;
 
     analytics.trackVenuePageLoadedEvent();
-  }, [analytics, isLoaded, user, world]);
+  }, [analytics, user, world]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
   // useVenueAccess(venue, handleAccessDenied);
-
-  if (!isLoaded) {
-    return <LoadingPage />;
-  }
 
   if (!spaceId || !spaceSlug || !space) {
     return (

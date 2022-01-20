@@ -37,7 +37,7 @@ import { useUserNG } from "hooks/user/useUserNG";
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import {WithNavigationBar} from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 

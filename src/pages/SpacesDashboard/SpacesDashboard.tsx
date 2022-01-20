@@ -15,7 +15,7 @@ import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AdminSpaceCard } from "components/molecules/AdminSpaceCard";
 import { AdminTitle } from "components/molecules/AdminTitle";

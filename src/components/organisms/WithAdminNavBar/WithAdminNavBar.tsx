@@ -1,11 +1,9 @@
 import React, { lazy, Suspense } from "react";
 
-import { WorldId } from "types/id";
+import { SpaceId, SpaceWithId, WorldId } from "types/id";
 
 import { tracePromise } from "utils/performance";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
@@ -23,11 +21,14 @@ const AdminNavBar = lazy(() =>
   )
 );
 
-export interface WithAdminNavBarProps {
+interface WithAdminNavBarProps {
   hasBackButton?: boolean;
   withHiddenLoginButton?: boolean;
   title?: string;
   variant?: "internal-scroll";
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  worldId: WorldId;
 }
 
 export const WithAdminNavBar: React.FC<WithAdminNavBarProps> = ({
@@ -35,43 +36,37 @@ export const WithAdminNavBar: React.FC<WithAdminNavBarProps> = ({
   withHiddenLoginButton,
   title,
   variant,
+  space,
+  spaceId,
+  worldId,
   children,
-}) => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
-  const worldId = space?.worldId as WorldId | undefined;
-  
-  // @debt remove backButton from Navbar
-  return (
-    <>
-      {/* @debt ideally we would have a better 'higher level' location we could include this provider that covers
-       *    all of the admin components that currently directly render WithAdminNavBar. We should refactor them
-       *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
-       *    works on the user side of things.
-       */}
-      <RelatedVenuesProvider venueId={spaceId} worldId={worldId}>
-        <Suspense fallback={<Loading />}>
-          <AdminNavBar
-            hasBackButton={hasBackButton}
-            withHiddenLoginButton={withHiddenLoginButton}
-            title={title}
-          />
-        </Suspense>
-      </RelatedVenuesProvider>
-
-      {variant === "internal-scroll" ? (
-        <div className="WithAdminNavBar__wrapper WithAdminNavBar__wrapper--internal-scroll">
-          <div className="WithAdminNavBar__slider WithAdminNavBar__slider--internal-scroll">
-            {children}
-          </div>
+}) => (
+  <>
+    {/* @debt ideally we would have a better 'higher level' location we could include this provider that covers
+     *    all of the admin components that currently directly render WithAdminNavBar. We should refactor them
+     *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
+     *    works on the user side of things.
+     */}
+    <RelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
+      <Suspense fallback={<Loading />}>
+        {/* @debt remove backButton from Navbar */}
+        <AdminNavBar
+          hasBackButton={hasBackButton}
+          withHiddenLoginButton={withHiddenLoginButton}
+          title={title}
+        />
+      </Suspense>
+    </RelatedVenuesProvider>
+    {variant === "internal-scroll" ? (
+      <div className="WithAdminNavBar__wrapper WithAdminNavBar__wrapper--internal-scroll">
+        <div className="WithAdminNavBar__slider WithAdminNavBar__slider--internal-scroll">
+          {children}
         </div>
-      ) : (
-        <div className="WithAdminNavBar__wrapper">{children}</div>
-      )}
-
-      <Footer />
-      <NewProfileModal venue={space} />
-    </>
-  );
-};
+      </div>
+    ) : (
+      <div className="WithAdminNavBar__wrapper">{children}</div>
+    )}
+    <Footer />
+    <NewProfileModal venue={space} />
+  </>
+);

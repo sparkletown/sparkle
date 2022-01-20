@@ -17,7 +17,7 @@ export const Provided: React.FC<ProvidedProps> = ({
   spaceId,
 }) => {
   return withRelatedVenues ? (
-    <RelatedVenuesProvider venueId={spaceId} worldId={worldId}>
+    <RelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
       {children}
     </RelatedVenuesProvider>
   ) : (

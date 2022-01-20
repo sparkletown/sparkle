@@ -18,7 +18,7 @@ import { AdminSidebar } from "components/organisms/AdminVenueView/components/Adm
 import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
 import { PortalShowcase } from "components/organisms/PortalShowcase";
 import { SpaceCreateForm } from "components/organisms/SpaceCreateForm";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import {WithNavigationBar} from "components/organisms/WithNavigationBar";
 
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";

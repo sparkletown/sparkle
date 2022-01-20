@@ -231,9 +231,9 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
 };
 
 export const RelatedVenuesProvider: React.FC<{
-  venueId?: SpaceId;
+  spaceId?: SpaceId;
   worldId?: WorldId;
-}> = ({ worldId, venueId, children }) => {
+}> = ({ worldId, spaceId, children }) => {
   const defaultState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: false,
@@ -247,7 +247,6 @@ export const RelatedVenuesProvider: React.FC<{
 
   if (!worldId) {
     // @debt maybe even provide an error message to user and/or in console and/or to bugsnag
-    // console.warn("RelatedVenuesProvider used without worldId");
     return (
       <RelatedVenuesContext.Provider value={defaultState}>
         {children}
@@ -255,11 +254,11 @@ export const RelatedVenuesProvider: React.FC<{
     );
   }
 
-  if (!venueId) {
+  if (!spaceId) {
     return <WorldSpacesProvider worldId={worldId} />;
   }
 
-  return <LegacyRelatedVenuesProvider spaceId={venueId} worldId={worldId} />;
+  return <LegacyRelatedVenuesProvider spaceId={spaceId} worldId={worldId} />;
 };
 
 export const useRelatedVenuesContext = (): RelatedVenuesContextState => {

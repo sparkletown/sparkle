@@ -5,7 +5,7 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
