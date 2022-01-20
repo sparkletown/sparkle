@@ -1,5 +1,8 @@
 import Bugsnag from "@bugsnag/js";
+import { FIREBASE } from "core/firebase";
 import firebase from "firebase/compat/app";
+import { httpsCallable } from "firebase/functions";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
 import {
@@ -46,9 +49,10 @@ export const setVenueLiveStatus = async ({
     venueId,
   };
 
-  return firebase
-    .functions()
-    .httpsCallable("venue-setVenueLiveStatus")(params)
+  return httpsCallable(
+    FIREBASE.functions,
+    "venue-setVenueLiveStatus"
+  )(params)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
@@ -88,9 +92,10 @@ export const anyVenueWithIdConverter: CompatFirestoreDataConverter<
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
-  return await firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+  return httpsCallable(
+    FIREBASE.functions,
+    "venue-adminUpdateIframeUrl"
+  )({ venueId, iframeUrl });
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {
@@ -106,33 +111,37 @@ export const updateVenueNG = async (venue: VenueInputForm, userId: UserId) => {
   const logoFile = venue.logoImageFile?.[0];
 
   if (bannerFile) {
-    const storageRef = firebase.storage().ref();
     const fileExtension = bannerFile.name.split(".").pop();
-    const uploadFileRef = storageRef.child(
+    const uploadFileRef = ref(
+      FIREBASE.storage,
       `users/${userId}/venues/${venue.id}/bannerImage.${fileExtension}`
     );
-    await uploadFileRef.put(bannerFile);
-    const downloadUrl = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, bannerFile);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
     venue.bannerImageUrl = downloadUrl;
   }
 
   if (logoFile) {
-    const storageRef = firebase.storage().ref();
     const fileExtension = logoFile.name.split(".").pop();
-    const uploadFileRef = storageRef.child(
+    const uploadFileRef = ref(
+      FIREBASE.storage,
       `users/${userId}/venues/${venue.id}/logoImage.${fileExtension}`
     );
-    await uploadFileRef.put(logoFile);
-    const downloadUrl = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, logoFile);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
     venue.logoImageUrl = downloadUrl;
   }
 
-  const updateResponse = await firebase
-    .functions()
-    .httpsCallable("venue-updateVenueNG")(venue);
+  const updateResponse = await httpsCallable(
+    FIREBASE.functions,
+    "venue-updateVenueNG"
+  )(venue);
 
   if (venue.template === VenueTemplate.auditorium) {
-    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+    await httpsCallable(
+      FIREBASE.functions,
+      "venue-setAuditoriumSections"
+    )({
       venueId: venue.id,
       numberOfSections: venue.numberOfSections,
     });

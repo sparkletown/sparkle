@@ -13,6 +13,7 @@ import {
   getFunctions,
 } from "firebase/functions";
 import { FirebasePerformance, getPerformance } from "firebase/performance";
+import { FirebaseStorage, getStorage } from "firebase/storage";
 
 import {
   API_KEY,
@@ -60,6 +61,7 @@ const db = getDatabase(app);
 const firestore = getFirestore(app);
 const functions = getFunctions(app);
 const performance = getPerformance(app);
+const storage = getStorage(app);
 
 // Enable the functions emulator when running in development
 if (process.env.NODE_ENV === "development") {
@@ -76,6 +78,7 @@ type FirebaseSuite = {
   firestore: Firestore;
   functions: Functions;
   performance: FirebasePerformance;
+  storage: FirebaseStorage;
 };
 export const FIREBASE: FirebaseSuite = Object.freeze({
   analytics,
@@ -85,4 +88,5 @@ export const FIREBASE: FirebaseSuite = Object.freeze({
   firestore,
   functions,
   performance,
+  storage,
 });
