@@ -1,5 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/compat/app";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
@@ -70,7 +72,8 @@ export const createFirestoreWorldStartInput: (
   const id = input?.id ?? generateFirestoreId({ emulated: true });
 
   const slug = createSlug(input.name) as WorldSlug;
-  const storageRef = firebase.storage().ref();
+
+  const storage = getStorage();
 
   const imageInputData: Record<string, string> = {};
 
@@ -89,12 +92,13 @@ export const createFirestoreWorldStartInput: (
     if (!ACCEPTED_IMAGE_TYPES.includes(type)) continue;
 
     const extension = type.split("/").pop();
-    const uploadFileRef = storageRef.child(
+    const uploadFileRef = ref(
+      storage,
       `users/${user.uid}/worlds/${id}/${key}.${extension}`
     );
 
-    await uploadFileRef.put(file);
-    imageInputData[key] = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, file);
+    imageInputData[key] = await getDownloadURL(uploadFileRef);
   }
 
   const worldUpdateData: Partial<WithId<World>> = {
@@ -164,8 +168,13 @@ export const createWorld: (
     // 1. first a world stub is created
     const stubInput = await createFirestoreWorldCreateInput(world);
 
+    const functions = getFunctions();
+
     const newWorld = (
-      await firebase.functions().httpsCallable("world-createWorld")(stubInput)
+      await httpsCallable<Partial<World>, WithId<World>>(
+        functions,
+        "world-createWorld"
+      )(stubInput)
     )?.data;
 
     worldId = newWorld.id;
@@ -176,7 +185,7 @@ export const createWorld: (
       user
     );
 
-    await firebase.functions().httpsCallable("world-updateWorld")(fullInput);
+    await httpsCallable(functions, "world-updateWorld")(fullInput);
 
     // 3. initial venue is created
     // Temporary disabled due to possible complications and edge cases.
