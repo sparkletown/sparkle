@@ -292,8 +292,6 @@ const createFirestoreRoomInput = async (
   venueId: string,
   user: firebase.UserInfo
 ) => {
-  // const storageRef = firebase.storage().ref();
-
   const urlRoomName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
