@@ -1,15 +1,15 @@
 import React from "react";
 import { get } from "lodash/fp";
 
-import { SpaceIdLocation } from "types/id";
+import { WorldAndSpaceIdLocation } from "types/id";
 
 import { hoistHocStatics } from "utils/hoc";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-type Props<T extends SpaceIdLocation> = T;
+type Props<T extends WorldAndSpaceIdLocation> = T;
 
-export const withSpaceAndEventsById = <T extends SpaceIdLocation>(
+export const withSpaceAndEventsById = <T extends WorldAndSpaceIdLocation>(
   Component: React.FC<Props<T>>
 ) => {
   const WithSpaceAndEventsById = (props: Props<T>) => {

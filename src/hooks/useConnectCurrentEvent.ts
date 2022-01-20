@@ -3,7 +3,7 @@ import { limit, orderBy, where } from "firebase/firestore";
 
 import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
 
-import { SpaceIdLocation } from "types/id";
+import { WorldAndSpaceIdLocation } from "types/id";
 import { WorldEvent } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
@@ -14,7 +14,7 @@ import { useRefiCollection } from "hooks/fire/useRefiCollection";
 type UseConnectCurrentEvent = ({
   worldId,
   spaceId,
-}: Partial<SpaceIdLocation>) => {
+}: Partial<WorldAndSpaceIdLocation>) => {
   currentEvent: WithId<WorldEvent>[];
   isLoaded: boolean;
 };

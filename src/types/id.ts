@@ -14,10 +14,14 @@ export type WorldId = Branded<string, "WorldId">;
 export type WorldSlug = Branded<string, "WorldSlug">;
 
 // complex ID and Slug types for pinpointing spaces
-export type SpaceIdLocation = { worldId: WorldId; spaceId: SpaceId };
+export type SpaceIdLocation = { spaceId: SpaceId };
+export type MaybeSpaceIdLocation = { spaceId?: SpaceId };
 export type SpaceSlugLocation = { worldSlug: WorldSlug; spaceSlug: SpaceSlug };
+export type SpacesSlugLocation = { spaceSlug: SpaceSlug };
 export type WorldIdLocation = { worldId: WorldId };
+export type MaybeWorldIdLocation = { worldId?: WorldId };
 export type WorldSlugLocation = { worldSlug: WorldSlug };
+export type WorldAndSpaceIdLocation = { worldId: WorldId; spaceId: SpaceId };
 
 // Simplified versions to ease future move of WithId<> type from utils
 export type SpaceWithoutId = AnyVenue;

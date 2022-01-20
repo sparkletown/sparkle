@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SpaceIdLocation, SpaceWithId } from "types/id";
+import { SpaceWithId,WorldAndSpaceIdLocation } from "types/id";
 
 import { hoistHocStatics } from "utils/hoc";
 
@@ -15,7 +15,8 @@ import {
 import { useVenueChatMessages } from "hooks/chats/venue/useVenueChatMessages";
 import { useVenueChatMessagesCount } from "hooks/chats/venue/useVenueChatMessagesCount";
 
-type WithMessagesInProps<T> = T & SpaceIdLocation & { space: SpaceWithId };
+type WithMessagesInProps<T> = T &
+  WorldAndSpaceIdLocation & { space: SpaceWithId };
 
 export const withMessages = <T>(
   Component: React.FC<WithMessagesInProps<T>>

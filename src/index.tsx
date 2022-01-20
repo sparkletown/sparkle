@@ -35,7 +35,8 @@ import "scss/global.scss";
 activatePolyFills();
 
 traceReactScheduler("initial render", window.performance.now(), () => {
-  render(
+  const element: JSX.Element = (
+    // <React.StrictMode>
     <BugsnagErrorBoundary>
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
@@ -59,9 +60,11 @@ traceReactScheduler("initial render", window.performance.now(), () => {
           </ReduxStoreProvider>
         </DndProvider>
       </ThemeProvider>
-    </BugsnagErrorBoundary>,
-    document.getElementById("root")
+    </BugsnagErrorBoundary>
+    // </React.StrictMode>
   );
+
+  render(element, document.getElementById("root"));
 });
 
 // If you want your app to work offline and load faster, you can change

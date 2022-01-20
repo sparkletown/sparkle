@@ -7,7 +7,7 @@ import {
   FIELD_WORLD_ID,
 } from "settings";
 
-import { SpaceIdLocation } from "types/id";
+import { WorldAndSpaceIdLocation } from "types/id";
 import { AnyVenue, WorldEvent } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
@@ -18,7 +18,7 @@ import { useRefiDocument } from "hooks/fire/useRefiDocument";
 type UseConnectCurrentVenueNG = ({
   worldId,
   spaceId,
-}: Partial<SpaceIdLocation>) => {
+}: Partial<WorldAndSpaceIdLocation>) => {
   isCurrentVenueEventsLoaded: boolean;
   isCurrentVenueLoaded: boolean;
   currentVenueEvents: WithId<WorldEvent>[];
