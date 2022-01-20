@@ -120,7 +120,6 @@ const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 
 export const AppRouter: React.FC = () => {
   const { auth, isLoading } = useUserNG();
-  console.log(AppRouter.name, auth, isLoading);
 
   return (
     <Router basename="/">
@@ -249,20 +248,27 @@ export const AppRouter: React.FC = () => {
           />
           <Route
             path={ROOT_URL}
-            render={() =>
-              auth ? (
-                <AnalyticsCheck>
-                  <NotFound />
-                </AnalyticsCheck>
-              ) : (
-                // @debt Forbidden (copy of AdminRestricted) used because no prop-less Login is currently available
+            render={() => {
+              if (isLoading) {
+                return <LoadingPage />;
+              }
+
+              if (auth) {
+                return (
+                  <AnalyticsCheck>
+                    <NotFound />
+                  </AnalyticsCheck>
+                );
+              }
+
+              return (
                 <AnalyticsCheck>
                   <WithNavigationBar>
                     <Forbidden />
                   </WithNavigationBar>
                 </AnalyticsCheck>
-              )
-            }
+              );
+            }}
           />
         </Switch>
       </Suspense>

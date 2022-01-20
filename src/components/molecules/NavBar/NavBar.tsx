@@ -8,10 +8,10 @@ import firebase from "firebase/compat/app";
 import { DISABLED_DUE_TO_1142, SPARKLE_PHOTOBOOTH_URL } from "settings";
 
 import {
-  SpaceIdLocation,
   SpaceSlugLocation,
   UserId,
   UserWithId,
+  WorldAndSpaceIdLocation,
   WorldWithId,
 } from "types/id";
 import { UpcomingEvent } from "types/UpcomingEvent";
@@ -63,7 +63,7 @@ type Attributes = {
 };
 
 type HocProps = SpaceSlugLocation &
-  SpaceIdLocation & {
+  WorldAndSpaceIdLocation & {
     profile: Profile;
     userId: UserId;
     userWithId: UserWithId;

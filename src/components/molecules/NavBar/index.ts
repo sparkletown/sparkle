@@ -1,7 +1,7 @@
 import { withSlugs } from "components/hocs/context/withSlugs";
 import { withUser } from "components/hocs/db/withUser";
-import { withWorld } from "components/hocs/db/withWorld";
 import { withWorldAndSpace } from "components/hocs/db/withWorldAndSpace";
+import { withWorldBySlug } from "components/hocs/db/withWorldBySlug";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
 
@@ -11,6 +11,6 @@ export const NavBar = compose(
   withUser,
   withSlugs,
   withWorldAndSpace,
-  withWorld,
+  withWorldBySlug,
   withRequired(["profile", "userWithId"])
 )(_NavBar);

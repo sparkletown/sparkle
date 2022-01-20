@@ -7,12 +7,12 @@ import { hoistHocStatics } from "utils/hoc";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 
-type WithWorldInProps<T extends WorldSlugLocation> = T;
+type WithWorldBySlugInProps<T extends WorldSlugLocation> = T;
 
-export const withWorld = <T extends WorldSlugLocation>(
-  Component: React.FC<WithWorldInProps<T>>
+export const withWorldBySlug = <T extends WorldSlugLocation>(
+  Component: React.FC<WithWorldBySlugInProps<T>>
 ) => {
-  const WithWorld = (props: WithWorldInProps<T>) => {
+  const WithWorldBySlug = (props: WithWorldBySlugInProps<T>) => {
     const { world } = useWorldBySlug(props.worldSlug);
     return React.createElement(Component, {
       ...props,
@@ -21,6 +21,6 @@ export const withWorld = <T extends WorldSlugLocation>(
     });
   };
 
-  hoistHocStatics("withWorld", WithWorld, Component);
-  return WithWorld;
+  hoistHocStatics("withWorldBySlug", WithWorldBySlug, Component);
+  return WithWorldBySlug;
 };

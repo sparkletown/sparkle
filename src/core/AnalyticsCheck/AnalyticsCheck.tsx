@@ -1,14 +1,15 @@
-import React, { useEffect } from "react";
-import { WithProfileOutProps } from "components/hocs/db/withProfile";
+import React from "react";
+import { AnalyticsCount } from "core/AnalyticsCount";
 import { addToBugsnagEventOnError } from "core/bugsnag";
 import LogRocket from "logrocket";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
 import { FireAuthUser } from "types/fire";
-import { SpaceWithId, UserId } from "types/id";
+import { UserId } from "types/id";
+import { Profile } from "types/User";
 
-import { useAnalytics } from "hooks/useAnalytics";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
@@ -22,34 +23,25 @@ if (LOGROCKET_APP_ID) {
 
 type AnalyticsCheckProps = {
   auth: FireAuthUser;
-  space: SpaceWithId;
   userId: UserId;
-} & WithProfileOutProps;
+  profile?: Profile;
+  isAuthLoading: boolean;
+};
 
 export const AnalyticsCheck: React.FC<AnalyticsCheckProps> = ({
-  space,
-  userId,
   auth,
-  profile,
   children,
+  isAuthLoading,
+  profile,
+  userId,
 }) => {
-  const analytics = useAnalytics({ venue: space });
+  if (isAuthLoading) return <LoadingPage />;
+  // if (!userId) return <>NO LOGIN</>;
+  if (!userId) return <>{children}</>;
 
-  useEffect(() => void analytics.initAnalytics(), [analytics]);
-
-  useEffect(() => {
-    if (!auth || !profile || !userId) return;
-
-    const displayName = auth.displayName || "N/A";
-    const email = auth.email || "N/A";
-    const name = profile?.partyName;
-
-    if (LOGROCKET_APP_ID) {
-      LogRocket.identify(userId, { displayName, email });
-    }
-
-    analytics.identifyUser({ email, name });
-  }, [analytics, auth, userId, profile]);
-
-  return <>{children}</>;
+  return (
+    <AnalyticsCount auth={auth} userId={userId} profile={profile}>
+      {children}
+    </AnalyticsCount>
+  );
 };

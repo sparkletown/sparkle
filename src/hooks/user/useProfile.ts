@@ -1,40 +1,33 @@
 import { useMemo } from "react";
-import { useFirestore, useFirestoreDocData } from "reactfire";
-import { doc } from "firebase/firestore";
 
 import { COLLECTION_USERS } from "settings";
 
-import { RefiAuthUser, RefiError, RefiStatus } from "types/fire";
-import { Profile, User, UserLocation, UserWithLocation } from "types/User";
+import { LoadStatusWithError, RefiAuthUser, RefiStatus } from "types/fire";
+import { Profile, User, UserLocation } from "types/User";
 
-import { identityConverter } from "utils/converters";
 import { convertToFirestoreKey, WithId, withId } from "utils/id";
 import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
+
 type UseProfile = (options: {
-  user?: RefiAuthUser;
-}) => {
+  auth?: RefiAuthUser;
+}) => LoadStatusWithError & {
   profile?: Profile;
   userLocation?: UserLocation;
   userWithId?: WithId<User>;
   isTester: boolean;
-  isLoading: boolean;
   status: RefiStatus;
-  error: RefiError;
 };
 
-export const useProfile: UseProfile = ({ user }) => {
-  const userId = user?.uid;
-  const firestore = useFirestore();
+export const useProfile: UseProfile = (props) => {
+  const auth = props?.auth;
+  const userId = auth?.uid;
 
-  const { status, data: profileDataWithLocation, error } = useFirestoreDocData(
-    doc(
-      firestore,
-      COLLECTION_USERS,
-      convertToFirestoreKey(userId)
-      // userId! // eslint-disable-line @typescript-eslint/no-non-null-assertion
-    ).withConverter<UserWithLocation>(identityConverter())
-  );
+  const { status, data: profileDataWithLocation, error } = useRefiDocument([
+    COLLECTION_USERS,
+    convertToFirestoreKey(userId),
+  ]);
 
   const profile: Profile | undefined = useMemo(
     () =>
@@ -53,40 +46,43 @@ export const useProfile: UseProfile = ({ user }) => {
   );
 
   const userWithId = useMemo(() => {
-    if (!userId || !user || !profile) return;
+    if (!userId || !auth || !profile) return;
 
     const profileData = {
       ...profile,
-      partyName: profile.partyName ?? user.displayName ?? "",
-      pictureUrl: profile.pictureUrl ?? user.photoURL ?? "",
+      partyName: profile.partyName ?? auth.displayName ?? "",
+      pictureUrl: profile.pictureUrl ?? auth.photoURL ?? "",
     };
 
     return withId(profileData, userId);
-  }, [user, userId, profile]);
+  }, [auth, userId, profile]);
 
   const isTester = useMemo(() => !!profile?.tester, [profile?.tester]);
   const isLoading = "loading" === status;
+  const isLoaded = !isLoading;
 
   return useMemo(
     () => ({
-      user,
+      auth,
       profile,
       userLocation,
       userWithId,
       userId,
       isTester,
       isLoading,
+      isLoaded,
       status,
       error,
     }),
     [
-      user,
+      auth,
       profile,
       userLocation,
       userWithId,
       userId,
       isTester,
       isLoading,
+      isLoaded,
       status,
       error,
     ]

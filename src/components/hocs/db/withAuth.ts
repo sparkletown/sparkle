@@ -11,17 +11,15 @@ export const withAuth = <T = {}>(Component: React.FC<T>) => {
     if (error) {
       // @debt add Bugsnag here
       console.error(withAuth.name, error);
-      return null;
     }
 
-    if (isLoading) {
-      return null;
-    }
-    if (!userId || !user) {
-      return null;
-    }
-
-    return React.createElement(Component, { ...props, auth: user, userId });
+    return React.createElement(Component, {
+      ...props,
+      auth: user,
+      userId,
+      isAuthLoading: isLoading,
+      isAuthLoaded: !isLoading,
+    });
   };
 
   hoistHocStatics("withAuth", WithAuth, Component);

@@ -1,5 +1,7 @@
 import React, { lazy, Suspense } from "react";
 
+import { WorldId } from "types/id";
+
 import { tracePromise } from "utils/performance";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -44,6 +46,8 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
+  const worldId = space?.worldId as WorldId | undefined;
+
   // @debt remove backButton from Navbar
   return (
     <>
@@ -52,7 +56,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={spaceId} worldId={space?.worldId}>
+      <RelatedVenuesProvider venueId={spaceId} worldId={worldId}>
         <Suspense fallback={<Loading />}>
           <NavBar
             hasBackButton={hasBackButton}
