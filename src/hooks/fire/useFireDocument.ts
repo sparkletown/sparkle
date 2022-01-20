@@ -12,6 +12,7 @@ export const useFireDocument = <T extends object>(path: FirePath) => {
 
   const { error, loading, value } = useAsync(async () => {
     if (!path?.length || path.some((segment) => !segment)) return;
+    // the check above weeds out falsy values, but isn't a type guard, so TS complains
     const [first, ...rest] = path as string[];
     return (
       await getDoc(

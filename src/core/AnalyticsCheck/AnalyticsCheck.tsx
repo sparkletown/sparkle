@@ -5,11 +5,8 @@ import LogRocket from "logrocket";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
 
-import { RefiAuthUser } from "types/fire";
-import { UserId } from "types/id";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { FireAuthUser } from "types/fire";
+import { SpaceWithId, UserId } from "types/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
 
@@ -24,9 +21,9 @@ if (LOGROCKET_APP_ID) {
 }
 
 type AnalyticsCheckProps = {
-  space: WithId<AnyVenue>;
+  auth: FireAuthUser;
+  space: SpaceWithId;
   userId: UserId;
-  auth: RefiAuthUser;
 } & WithProfileOutProps;
 
 export const AnalyticsCheck: React.FC<AnalyticsCheckProps> = ({
@@ -45,12 +42,13 @@ export const AnalyticsCheck: React.FC<AnalyticsCheckProps> = ({
 
     const displayName = auth.displayName || "N/A";
     const email = auth.email || "N/A";
+    const name = profile?.partyName;
 
     if (LOGROCKET_APP_ID) {
       LogRocket.identify(userId, { displayName, email });
     }
 
-    analytics.identifyUser({ email, name: profile?.partyName });
+    analytics.identifyUser({ email, name });
   }, [analytics, auth, userId, profile]);
 
   return <>{children}</>;

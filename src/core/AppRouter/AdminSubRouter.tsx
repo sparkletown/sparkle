@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
 import { AnalyticsFree } from "core/AnalyticsFree";
+import { Provided } from "core/Provided";
 
 import {
   ADMIN_IA_SPACE_ADMIN_PARAM_URL,
@@ -22,8 +23,6 @@ import { WorldEditor } from "pages/WorldEditor";
 import { WorldsDashboard } from "pages/WorldsDashboard";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";
-
-import { Provided } from "./Provided";
 
 export const AdminSubRouter: React.FC = () => (
   <Switch>

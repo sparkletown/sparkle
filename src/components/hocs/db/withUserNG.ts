@@ -9,8 +9,9 @@ export const withUserNG = <T = {}>(Component: React.FC<T>) => {
     const {
       authError,
       profileError,
-      isLoading,
-      user,
+      isLoading: isUserNGLoading,
+      isLoaded: isUserNGLoaded,
+      user: auth,
       userId,
       profile,
       userWithId,
@@ -21,8 +22,9 @@ export const withUserNG = <T = {}>(Component: React.FC<T>) => {
     const memoizedProps = useMemo(
       () => ({
         ...props,
-        isUserNGLoading: isLoading,
-        auth: user,
+        isUserNGLoading,
+        isUserNGLoaded,
+        auth,
         userId,
         profile,
         userWithId,
@@ -31,8 +33,9 @@ export const withUserNG = <T = {}>(Component: React.FC<T>) => {
       }),
       [
         props,
-        isLoading,
-        user,
+        isUserNGLoading,
+        isUserNGLoaded,
+        auth,
         userId,
         profile,
         userWithId,

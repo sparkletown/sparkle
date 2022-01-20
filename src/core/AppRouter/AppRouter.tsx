@@ -6,6 +6,7 @@ import {
   Switch,
 } from "react-router-dom";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
+import { Provided } from "core/Provided";
 
 import {
   ACCOUNT_ROOT_URL,
@@ -31,7 +32,7 @@ import {
   generateAttendeeSpaceLandingUrl,
 } from "utils/url";
 
-import { useUser } from "hooks/useUser";
+import { useUserNG } from "hooks/user/useUserNG";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VersionPage } from "pages/VersionPage/VersionPage";
@@ -42,8 +43,6 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { Forbidden } from "components/atoms/Forbidden";
 import { NotFound } from "components/atoms/NotFound";
-
-import { Provided } from "./Provided";
 
 const SubAccount = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
@@ -120,7 +119,8 @@ const TEMP_HONEYCOMB_INSIDE = `/in/${TEMP_HONEYCOMB_SLUG}`;
 /////////////////////////////////////////////////////////////////////////////////////
 
 export const AppRouter: React.FC = () => {
-  const { user } = useUser();
+  const { auth, isLoading } = useUserNG();
+  console.log(AppRouter.name, auth, isLoading);
 
   return (
     <Router basename="/">
@@ -250,7 +250,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path={ROOT_URL}
             render={() =>
-              user ? (
+              auth ? (
                 <AnalyticsCheck>
                   <NotFound />
                 </AnalyticsCheck>

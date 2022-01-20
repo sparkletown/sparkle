@@ -10,7 +10,7 @@ type UseFireCollectionOptions =
   | string[]
   | {
       path: string[];
-      constraints?: QueryConstraint[];
+      constraints?: (QueryConstraint | null | undefined)[];
     };
 
 export const useFireCollection = <T extends object>(
@@ -41,7 +41,8 @@ export const useFireCollection = <T extends object>(
       await getDocs(
         query(
           collection(firestore, first, ...rest),
-          ...constraints
+          // the check above weeds out falsy values, but isn't a type guard, so TS complains
+          ...(constraints as QueryConstraint[])
         ).withConverter(withIdConverter<T>())
       )
     )?.docs?.map((d) => d.data());
