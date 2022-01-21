@@ -1,12 +1,12 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
-const { HttpsError } = require("firebase-functions/lib/providers/https");
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { HttpsError } from "firebase-functions/v1/https";
+import { isEmpty, isNil } from "lodash";
 
-const { checkAuth } = require("./src/utils/assert");
+import { LandingPageConfig } from "./types/venue";
+import { assertValidAuth } from "./utils/assert";
 
-const { isNil, isEmpty } = require("lodash");
-
-const checkIsAdmin = async (uid) => {
+const checkIsAdmin = async (uid: string) => {
   try {
     const adminDoc = await admin
       .firestore()
@@ -18,6 +18,9 @@ const checkIsAdmin = async (uid) => {
       throw new HttpsError("not-found", `'admin' doc doesn't exist.`);
     }
     const admins = adminDoc.data();
+    if (!admins) {
+      throw new HttpsError("not-found", "data not found");
+    }
 
     if (admins.users && admins.users.includes(uid)) {
       return;
@@ -27,12 +30,12 @@ const checkIsAdmin = async (uid) => {
   } catch (error) {
     throw new HttpsError(
       "internal",
-      `Error occurred obtaining world ${worldId}: ${error.toString()}`
+      `Error occurred checking admin ${uid}: ${error}`
     );
   }
 };
 
-const checkIsWorldOwner = async (worldId, uid) => {
+const checkIsWorldOwner = async (worldId: string, uid: string) => {
   try {
     const worldDoc = await admin
       .firestore()
@@ -45,6 +48,9 @@ const checkIsWorldOwner = async (worldId, uid) => {
     }
 
     const world = worldDoc.data();
+    if (!world) {
+      throw new HttpsError("internal", "Data not found");
+    }
 
     if (world.owners && world.owners.includes(uid)) {
       return;
@@ -57,15 +63,15 @@ const checkIsWorldOwner = async (worldId, uid) => {
   } catch (error) {
     throw new HttpsError(
       "internal",
-      `Error occurred obtaining world ${worldId}: ${error.toString()}`
+      `Error occurred obtaining world ${worldId}: ${error}`
     );
   }
 };
 
-exports.createWorld = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const createWorld = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
-  await checkIsAdmin(context.auth.token.user_id);
+  await checkIsAdmin(context.auth?.token.user_id);
 
   const worldData = {
     name: data.name,
@@ -80,7 +86,7 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     host: {
       icon: data.logoImageUrl || "",
     },
-    owners: [context.auth.token.user_id],
+    owners: [context.auth?.token.user_id],
     createdAt: Date.now(),
     updatedAt: Date.now(),
     isHidden: false,
@@ -92,8 +98,8 @@ exports.createWorld = functions.https.onCall(async (data, context) => {
     .then(() => ({ ...worldData, id: worldDoc.id }));
 });
 
-exports.updateWorld = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const updateWorld = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   const {
     adultContent,
@@ -125,10 +131,10 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
     );
   }
 
-  await checkIsWorldOwner(worldId, context.auth.token.user_id);
-  await checkIsAdmin(context.auth.token.user_id);
+  await checkIsWorldOwner(worldId, context.auth?.token.user_id);
+  await checkIsAdmin(context.auth?.token.user_id);
 
-  let landingPageConfig;
+  let landingPageConfig: LandingPageConfig | undefined = undefined;
   if (bannerImageUrl || subtitle || description) {
     landingPageConfig = {};
     if (typeof bannerImageUrl === "string") {
@@ -180,13 +186,13 @@ exports.updateWorld = functions.https.onCall(async (data, context) => {
 });
 
 // @debt TODO: Use this when the UI is adapted to support and show worlds instead of venues.
-exports.deleteWorld = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const deleteWorld = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   const worldId = data.id;
 
-  await checkIsWorldOwner(worldId, context.auth.token.user_id);
-  await checkIsAdmin(context.auth.token.user_id);
+  await checkIsWorldOwner(worldId, context.auth?.token.user_id);
+  await checkIsAdmin(context.auth?.token.user_id);
 
   admin.firestore().collection("worlds").doc(worldId).delete();
 });

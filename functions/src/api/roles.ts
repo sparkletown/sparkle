@@ -1,10 +1,10 @@
-const admin = require("firebase-admin");
+import * as admin from "firebase-admin";
 
 /** Remove a user from the list of admins
  *
  * @param {string} adminId
  */
-const removeAdmin = async (adminId) => {
+export const removeAdmin = async (adminId: string) => {
   await admin
     .firestore()
     .collection("roles")
@@ -18,7 +18,7 @@ const removeAdmin = async (adminId) => {
  *
  * @param {string} newAdminId
  */
-const addAdmin = async (newAdminId) => {
+export const addAdmin = async (newAdminId: string) => {
   await admin
     .firestore()
     .collection("roles")
@@ -27,6 +27,3 @@ const addAdmin = async (newAdminId) => {
       users: admin.firestore.FieldValue.arrayUnion(newAdminId),
     });
 };
-
-exports.addAdmin = addAdmin;
-exports.removeAdmin = removeAdmin;

@@ -1,6 +1,6 @@
-const VALID_URL_PROTOCOLS = ["https:"];
+export const VALID_URL_PROTOCOLS = ["https:"];
 
-const isValidUrl = (urlString) => {
+export const isValidUrl = (urlString: string) => {
   if (!urlString) return false;
 
   try {
@@ -8,12 +8,11 @@ const isValidUrl = (urlString) => {
 
     return VALID_URL_PROTOCOLS.includes(url.protocol);
   } catch (e) {
-    if (e.name === "TypeError") {
+    // eslint-disable-next-line
+    // @ts-ignore
+    if (e?.name === "TypeError") {
       return false;
     }
     throw e;
   }
 };
-
-exports.VALID_URL_PROTOCOLS = VALID_URL_PROTOCOLS;
-exports.isValidUrl = isValidUrl;

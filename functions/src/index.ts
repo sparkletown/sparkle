@@ -1,7 +1,5 @@
-const firebase = require("firebase/compat/app");
 const admin = require("firebase-admin");
 
-require("firebase/compat/firestore");
 const functions = require("firebase-functions");
 
 const functionsConfig = functions.config();
@@ -19,7 +17,6 @@ if (!functionsConfig.project.id) {
 const firebaseConfig = {
   projectId: functionsConfig.project.id,
 };
-firebase.initializeApp(firebaseConfig);
 
 admin.initializeApp({
   ...firebaseConfig,
@@ -32,18 +29,11 @@ admin.initializeApp({
   }),
 });
 
-const access = require("./access");
-const auth = require("./auth");
-const venue = require("./venue");
-const video = require("./video");
-const scheduled = require("./scheduled");
-const world = require("./world");
-const triggered = require("./triggered");
+export const access = require("./access");
 
-exports.access = access;
-exports.auth = auth;
-exports.venue = venue;
-exports.video = video;
-exports.scheduled = scheduled;
-exports.world = world;
-exports.triggered = triggered;
+export const auth = require("./auth");
+export const venue = require("./venue");
+export const video = require("./video");
+export const scheduled = require("./scheduled");
+export const world = require("./world");
+export const triggered = require("./triggered");

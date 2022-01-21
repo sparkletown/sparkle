@@ -1,14 +1,14 @@
-const functions = require("firebase-functions");
-const { HttpsError } = require("firebase-functions/lib/providers/https");
+import * as functions from "firebase-functions";
+import { HttpsError } from "firebase-functions/v1/https";
 
-const {
-  RtcRole,
+import {
   assertValidAgoraConfig,
   generateAgoraTokenForAccount,
-} = require("./src/utils/agora");
-const { assertValidAuth } = require("./src/utils/assert");
-const { twilioVideoToken } = require("./src/utils/twilio");
-const { ROOM_TAXON } = require("./taxonomy.js");
+  RtcRole,
+} from "./utils/agora";
+import { assertValidAuth } from "./utils/assert";
+import { twilioVideoToken } from "./utils/twilio";
+import { ROOM_TAXON } from "./taxonomy.js";
 
 // @debt either remove data.identity entirely, or validate that it matches the context.auth.uid
 //   (once checking that this won't break anything in the app)
@@ -47,6 +47,8 @@ exports.getAgoraToken = functions.https.onCall((data, context) => {
     functions.logger.error("assertValidAgoraConfig() failed", {
       error,
       channelName: data.channelName,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       account: context.auth.uid,
     });
 
@@ -68,6 +70,8 @@ exports.getAgoraToken = functions.https.onCall((data, context) => {
   //   We need to check against firebase to ensure that the user requesting the host permissions is actually allowed to have them.
   const token = generateAgoraTokenForAccount({
     channelName: data.channelName,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     account: context.auth.uid,
     role: RtcRole.PUBLISHER,
   });
