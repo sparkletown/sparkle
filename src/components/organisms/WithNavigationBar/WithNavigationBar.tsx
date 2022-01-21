@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy } from "react";
 
 import { SpaceId, SpaceWithId, WorldId } from "types/id";
 
@@ -9,7 +9,6 @@ import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 
 import { Footer } from "components/molecules/Footer";
-import { Loading } from "components/molecules/Loading";
 
 import "./WithNavigationBar.scss";
 
@@ -21,7 +20,7 @@ const NavBar = lazy(() =>
   )
 );
 
-export interface WithNavigationBarProps {
+interface WithNavigationBarProps {
   hasBackButton?: boolean;
   withSchedule?: boolean;
   withRadio?: boolean;
@@ -48,23 +47,16 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
   children,
 }) => (
   <>
-    {/* @debt ideally we would have a better 'higher level' location we could include this provider that covers
-     *    all of the admin components that currently directly render WithNavigationBar. We should refactor them
-     *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
-     *    works on the user side of things.
-     */}
     <RelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
-      <Suspense fallback={<Loading />}>
-        {/* @debt remove backButton from Navbar */}
-        <NavBar
-          hasBackButton={hasBackButton}
-          withSchedule={withSchedule}
-          withPhotobooth={withPhotobooth}
-          withHiddenLoginButton={withHiddenLoginButton}
-          withRadio={withRadio}
-          title={title}
-        />
-      </Suspense>
+      {/* @debt remove backButton from Navbar */}
+      <NavBar
+        hasBackButton={hasBackButton}
+        withSchedule={withSchedule}
+        withPhotobooth={withPhotobooth}
+        withHiddenLoginButton={withHiddenLoginButton}
+        withRadio={withRadio}
+        title={title}
+      />
     </RelatedVenuesProvider>
 
     {variant === "internal-scroll" ? (

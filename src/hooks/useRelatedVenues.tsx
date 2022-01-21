@@ -21,7 +21,6 @@ import { convertToFirestoreKey, WithId } from "utils/id";
 import { isDefined } from "utils/types";
 import { findSovereignVenue } from "utils/venue";
 
-import { useFireCollection } from "hooks/fire/useFireCollection";
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export type FindVenueInRelatedVenuesOptions = {
@@ -54,17 +53,10 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
   worldId,
   children,
 }) => {
-  const { data } = useFireCollection<SpaceWithId>(
-    useMemo(
-      () => ({
-        path: [COLLECTION_SPACES],
-        constraints: [
-          worldId ? where(FIELD_WORLD_ID, "==", worldId) : undefined,
-        ],
-      }),
-      [worldId]
-    )
-  );
+  const { data, isLoading } = useRefiCollection<SpaceWithId>({
+    path: [COLLECTION_SPACES],
+    constraints: [where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId))],
+  });
 
   const relatedVenues = data ?? ALWAYS_EMPTY_ARRAY;
 
@@ -122,7 +114,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
-      isLoading: false,
+      isLoading,
 
       sovereignVenue,
       sovereignVenueId,
@@ -136,6 +128,7 @@ const LegacyRelatedVenuesProvider: React.FC<WorldAndSpaceIdLocation> = ({
       findVenueInRelatedVenues,
     }),
     [
+      isLoading,
       relatedVenues,
       relatedVenueIds,
       descendantVenues,
@@ -255,10 +248,16 @@ export const RelatedVenuesProvider: React.FC<{
   }
 
   if (!spaceId) {
-    return <WorldSpacesProvider worldId={worldId} />;
+    return (
+      <WorldSpacesProvider worldId={worldId}>{children}</WorldSpacesProvider>
+    );
   }
 
-  return <LegacyRelatedVenuesProvider spaceId={spaceId} worldId={worldId} />;
+  return (
+    <LegacyRelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
+      {children}
+    </LegacyRelatedVenuesProvider>
+  );
 };
 
 export const useRelatedVenuesContext = (): RelatedVenuesContextState => {

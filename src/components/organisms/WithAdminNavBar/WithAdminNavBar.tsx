@@ -42,11 +42,6 @@ export const WithAdminNavBar: React.FC<WithAdminNavBarProps> = ({
   children,
 }) => (
   <>
-    {/* @debt ideally we would have a better 'higher level' location we could include this provider that covers
-     *    all of the admin components that currently directly render WithAdminNavBar. We should refactor them
-     *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
-     *    works on the user side of things.
-     */}
     <RelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
       <Suspense fallback={<Loading />}>
         {/* @debt remove backButton from Navbar */}
