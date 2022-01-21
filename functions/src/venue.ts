@@ -1,12 +1,12 @@
-const admin = require("firebase-admin");
-const functions = require("firebase-functions");
-const { HttpsError } = require("firebase-functions/lib/providers/https");
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import { HttpsError } from "firebase-functions/v1/https";
 
-const { addAdmin, removeAdmin } = require("./src/api/roles");
-
-const { checkAuth } = require("./src/utils/assert");
-const { checkIfValidVenueId } = require("./src/utils/venue");
-const { ROOM_TAXON } = require("./taxonomy.js");
+import { addAdmin, removeAdmin } from "./api/roles";
+import { LandingPageConfig } from "./types/venue";
+import { assertValidAuth } from "./utils/assert";
+import { checkIfValidVenueId } from "./utils/venue";
+import { ROOM_TAXON } from "./taxonomy";
 
 const VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT = 10;
 
@@ -57,10 +57,12 @@ const HAS_REACTIONS_TEMPLATES = [
 
 // @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS / DEFAULT_ENABLE_JUKEBOX in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
+
 const DEFAULT_SHOW_SHOUTOUTS = true;
+
 const DEFAULT_ENABLE_JUKEBOX = false;
 
-const checkUserIsOwner = async (venueId, uid) => {
+const checkUserIsOwner = async (venueId: string, uid: string) => {
   await admin
     .firestore()
     .collection("venues")
@@ -71,6 +73,10 @@ const checkUserIsOwner = async (venueId, uid) => {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
+
+      if (!venue) {
+        throw new HttpsError("internal", "No data returned");
+      }
       if (venue.owners && venue.owners.includes(uid)) return;
 
       if (venue.parentId) {
@@ -87,6 +93,10 @@ const checkUserIsOwner = async (venueId, uid) => {
           );
         }
         const parentVenue = doc.data();
+
+        if (!parentVenue) {
+          throw new HttpsError("internal", "No data returned");
+        }
         if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
           throw new HttpsError(
             "permission-denied",
@@ -109,7 +119,11 @@ const checkUserIsOwner = async (venueId, uid) => {
 };
 
 // @debt extract this into a new functions/chat backend script file
-const checkIfUserHasVoted = async (venueId, pollId, userId) => {
+const checkIfUserHasVoted = async (
+  venueId: string,
+  pollId: string,
+  userId: string
+) => {
   await admin
     .firestore()
     .collection("venues")
@@ -124,7 +138,13 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
 
       const poll = doc.data();
 
+      if (!poll) {
+        throw new HttpsError("internal", "No data returned");
+      }
+
       return poll.votes.some(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         ({ userId: existingUserId }) => userId === existingUserId
       );
     })
@@ -136,9 +156,77 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+// @debt this should be moved to a shared types file
+interface VenueData2Payload {
+  name: string;
+
+  tables: string[];
+
+  bannerImageUrl?: string;
+
+  subtitle: string;
+
+  description: string;
+
+  logoImageUrl?: string;
+
+  showGrid?: boolean;
+
+  columns: number;
+
+  template?: string;
+
+  parentId?: string;
+
+  worldId: string;
+
+  slug: string;
+
+  enableJukebox?: boolean;
+
+  showReactions?: boolean;
+
+  showShoutouts?: boolean;
+}
+
+interface CreateVenueData2 {
+  enableJukebox?: boolean;
+
+  showReactions?: boolean;
+
+  showShoutouts?: boolean;
+
+  template: string;
+
+  rooms: string[];
+
+  createdAt: number;
+
+  updatedAt: number;
+
+  parentId?: string;
+  worldId: string;
+
+  slug: string;
+
+  name: string;
+
+  config: {
+    landingPageConfig: LandingPageConfig;
+  };
+  host: {
+    icon?: string;
+  };
+  owners: string[];
+
+  showGrid: boolean;
+
+  columns?: number;
+}
+
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
-const createVenueData_v2 = (data, context) => {
-  const venueData_v2 = {
+const createVenueData_v2 = (data: VenueData2Payload, context: Object) => {
+  const venueData_v2: CreateVenueData2 = {
     name: data.name,
     config: {
       ...(Array.isArray(data.tables) && { tables: data.tables }),
@@ -151,6 +239,8 @@ const createVenueData_v2 = (data, context) => {
     host: {
       icon: data.logoImageUrl || "",
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     owners: [context.auth.token.user_id],
     showGrid: data.showGrid || false,
     ...(data.showGrid && { columns: data.columns }),
@@ -170,7 +260,7 @@ const createVenueData_v2 = (data, context) => {
         : DEFAULT_ENABLE_JUKEBOX;
   }
 
-  if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
+  if (data.template && HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData_v2.showReactions =
       typeof data.showReactions === "boolean"
         ? data.showReactions
@@ -185,9 +275,70 @@ const createVenueData_v2 = (data, context) => {
   return venueData_v2;
 };
 
+interface CreateBaseUpdateVenueDataPayload {
+  subtitle: string;
+  description: string;
+  primaryColor?: string;
+  logoImageUrl?: string;
+  entrance?: string;
+  mapBackgroundImageUrl?: string;
+  roomVisibility?: string;
+  parentId?: string;
+  showReactions?: boolean;
+  enableJukebox?: boolean;
+  showUserStatus?: boolean;
+  showShoutouts?: boolean;
+  userStatuses?: string[];
+  autoPlay?: boolean;
+}
+
+interface Venue {
+  name: string;
+  start_utc_seconds?: number;
+  end_utc_seconds?: number;
+  showGrid?: boolean;
+  columns?: number;
+  showRadio?: boolean;
+  radioStations: string[];
+  entrance?: string;
+  mapBackgroundImageUrl?: string;
+  roomVisibility?: string;
+  parentId?: string;
+  showReactions?: boolean;
+  enableJukebox?: boolean;
+  showUserStatus?: boolean;
+  showShoutouts?: boolean;
+  userStatuses?: string[];
+  autoPlay?: boolean;
+  updatedAt: number;
+  zoomUrl?: string;
+  iframeUrl?: string;
+  auditoriumColumns?: number;
+  auditoriumRows?: number;
+  showRangers?: boolean;
+  isReactionsMuted?: boolean;
+
+  config: {
+    landingPageConfig: LandingPageConfig;
+  };
+  theme: {
+    primaryColor?: string;
+  };
+  host: {
+    icon?: string;
+  };
+}
+
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-const createBaseUpdateVenueData = (data, doc) => {
-  const updated = doc.data();
+const createBaseUpdateVenueData = (
+  data: CreateBaseUpdateVenueDataPayload,
+  doc: admin.firestore.DocumentSnapshot<admin.firestore.DocumentData>
+) => {
+  const updated: Venue = doc.data() as Venue;
+
+  if (!updated) {
+    throw new HttpsError("internal", "No data returned");
+  }
 
   if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
@@ -248,13 +399,18 @@ const createBaseUpdateVenueData = (data, doc) => {
   }
 
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
+
   updated.updatedAt = Date.now();
 
   return updated;
 };
 
-const initializeVenueChatMessagesCounter = (venueRef, batch) => {
+const initializeVenueChatMessagesCounter = (
+  venueRef: admin.firestore.DocumentReference<admin.firestore.DocumentData>,
+  batch: admin.firestore.WriteBatch
+) => {
   const counterCollection = venueRef.collection("chatMessagesCounter");
+
   for (
     let shardId = 0;
     shardId < VENUE_CHAT_MESSAGES_COUNTER_SHARDS_COUNT;
@@ -265,12 +421,14 @@ const initializeVenueChatMessagesCounter = (venueRef, batch) => {
   batch.set(counterCollection.doc("sum"), { value: 0 });
 };
 
-exports.setAuditoriumSections = functions.https.onCall(
+export const setAuditoriumSections = functions.https.onCall(
   async (data, context) => {
-    checkAuth(context);
+    assertValidAuth(context);
 
     const { venueId, numberOfSections } = data;
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     await checkUserIsOwner(venueId, context.auth.token.user_id);
 
     const batch = admin.firestore().batch();
@@ -286,6 +444,7 @@ exports.setAuditoriumSections = functions.https.onCall(
 
     // Adding sections if needed
     const numberOfSectionsToAdd = numberOfSections - currentNumberOfSections;
+
     for (let i = 1; i <= numberOfSectionsToAdd; i++) {
       const sectionRef = admin
         .firestore()
@@ -299,6 +458,7 @@ exports.setAuditoriumSections = functions.https.onCall(
 
     // Removing sections if needed
     const numberOfSectionsToRemove = -1 * numberOfSectionsToAdd;
+
     for (let i = 1; i <= numberOfSectionsToRemove; i++) {
       batch.delete(sections[currentNumberOfSections - i].ref);
     }
@@ -307,11 +467,13 @@ exports.setAuditoriumSections = functions.https.onCall(
   }
 );
 
-exports.addVenueOwner = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const addVenueOwner = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   const { venueId, newOwnerId } = data;
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   await admin
@@ -327,43 +489,51 @@ exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   await addAdmin(newOwnerId);
 });
 
-exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const removeVenueOwner = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
 
-  const { venueId, ownerId } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+    const { venueId, ownerId } = data;
 
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .update({
-      owners: admin.firestore.FieldValue.arrayRemove(ownerId),
-    });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
 
-  // If a user is not an owner of any venue,
-  // remove the user from the list of admins
-  const snap = await admin
-    .firestore()
-    .collection("venues")
-    .where("owners", "array-contains", ownerId)
-    .get();
-  if (snap.empty) removeAdmin(ownerId);
-});
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .update({
+        owners: admin.firestore.FieldValue.arrayRemove(ownerId),
+      });
+
+    // If a user is not an owner of any venue,
+    // remove the user from the list of admins
+    const snap = await admin
+      .firestore()
+      .collection("venues")
+      .where("owners", "array-contains", ownerId)
+      .get();
+
+    if (snap.empty) removeAdmin(ownerId);
+  }
+);
 
 // @debt this should be de-duplicated + aligned with createVenue to ensure they both cover all needed cases
-exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const createVenue_v2 = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   const batch = admin.firestore().batch();
 
   const venueRef = admin.firestore().collection("venues").doc();
+
   const venuesRef = await admin
     .firestore()
     .collection("venues")
     .where("slug", "==", data.slug)
     .where("worldId", "==", data.worldId)
     .get();
+
   const venueExists = venuesRef.docs.length;
 
   if (venueExists) {
@@ -374,7 +544,9 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   const venueData = createVenueData_v2(data, context);
+
   batch.create(venueRef, venueData);
+
   initializeVenueChatMessagesCounter(venueRef, batch);
 
   await batch.commit();
@@ -382,16 +554,25 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   return venueData;
 });
 
-exports.upsertRoom = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const upsertRoom = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
   const { venueId, roomIndex, room } = data;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(venueId, context.auth.token.user_id);
+
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const docData = doc.data();
+  if (!docData) {
+    throw new HttpsError("internal", `Data not found`);
+  }
+
   let rooms = docData.rooms;
 
   if (typeof roomIndex !== "number") {
@@ -403,20 +584,32 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update({ rooms });
 });
 
-exports.deleteRoom = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const deleteRoom = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
   const { venueId, room } = data;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(venueId, context.auth.token.user_id);
+
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const docData = doc.data();
+  if (!docData) {
+    throw new HttpsError("internal", `Data not found`);
+  }
+
   const rooms = docData.rooms;
 
   //if the room exists under the same name, find it
-  const index = rooms.findIndex((val) => val.title === room.title);
+  const index = rooms.findIndex(
+    (val: { title: string }) => val.title === room.title
+  );
+
   if (index === -1) {
     throw new HttpsError("not-found", `${ROOM_TAXON.capital} does not exist`);
   } else {
@@ -427,11 +620,14 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
-exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
+export const updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
-  checkAuth(context);
+
+  assertValidAuth(context);
 
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   if (!data.worldId) {
@@ -473,6 +669,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt aside from the data.columns part, this is exactly the same as in updateVenue
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+
     // @debt the logic here differs from updateVenue, as data.columns is always set when present there
     updated.columns = data.columns;
   }
@@ -480,6 +677,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
+
     // @debt the logic here differs from updateVenue, as data.radioStations is always set when present there
     updated.radioStations = [data.radioStations];
   }
@@ -499,39 +697,46 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 });
 
-exports.updateMapBackground = functions.https.onCall(async (data, context) => {
-  const venueId = data.id;
-  checkAuth(context);
+export const updateMapBackground = functions.https.onCall(
+  async (data, context) => {
+    const venueId = data.id;
 
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
+    assertValidAuth(context);
 
-  if (!data.worldId) {
-    throw new HttpsError(
-      "not-found",
-      "World Id is missing and the update can not be executed."
-    );
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    if (!data.worldId) {
+      throw new HttpsError(
+        "not-found",
+        "World Id is missing and the update can not be executed."
+      );
+    }
+
+    const venuesRef = await admin
+      .firestore()
+      .collection("venues")
+      .where("slug", "==", data.slug)
+      .where("worldId", "==", data.worldId)
+      .get();
+
+    const venueRef = venuesRef.docs && venuesRef.docs[0];
+
+    if (venueRef) {
+      await venueRef.ref.update({
+        mapBackgroundImageUrl: data.mapBackgroundImageUrl,
+      });
+    }
   }
+);
 
-  const venuesRef = await admin
-    .firestore()
-    .collection("venues")
-    .where("slug", "==", data.slug)
-    .where("worldId", "==", data.worldId)
-    .get();
-
-  const venueRef = venuesRef.docs && venuesRef.docs[0];
-
-  if (venueRef) {
-    await venueRef.ref.update({
-      mapBackgroundImageUrl: data.mapBackgroundImageUrl,
-    });
-  }
-});
-
-exports.updateVenueNG = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const updateVenueNG = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
 
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(data.id, context.auth.token.user_id);
 
   if (!data.worldId) {
@@ -541,7 +746,7 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     );
   }
 
-  const updated = {
+  const updated: Partial<Venue> = {
     config: {
       landingPageConfig: {},
     },
@@ -550,6 +755,8 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   updated.updatedAt = Date.now();
 
   if (data.subtitle || data.subtitle === "") {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
@@ -558,6 +765,8 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   }
 
   if (data.description || data.description === "") {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     updated.config.landingPageConfig.description =
       data.description && data.description.text;
   }
@@ -628,6 +837,8 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
   updated.autoPlay = data.autoPlay !== undefined ? data.autoPlay : false;
 
   if (data.bannerImageUrl) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
 
@@ -660,8 +871,8 @@ exports.updateVenueNG = functions.https.onCall(async (data, context) => {
     .catch((e) => console.error(exports.updateVenueNG.name, e));
 });
 
-exports.updateTables = functions.https.onCall((data, context) => {
-  checkAuth(context);
+export const updateTables = functions.https.onCall((data, context) => {
+  assertValidAuth(context);
 
   const isValidVenueId = checkIfValidVenueId(data.venueId);
 
@@ -675,16 +886,20 @@ exports.updateTables = functions.https.onCall((data, context) => {
     const spaceDoc = await transaction.get(spaceRef);
 
     if (!spaceDoc.exists) {
-      throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+      throw new HttpsError("not-found", `venue ${data.venueId} does not exist`);
     }
 
     const space = spaceDoc.data();
+    if (!space) {
+      throw new HttpsError("internal", "data not found");
+    }
 
     const spaceTables =
       (space.config && space.config.tables) || data.defaultTables;
 
     const currentTableIndex = spaceTables.findIndex(
-      (table) => table.reference === data.newTable.reference
+      (table: { reference: string }) =>
+        table.reference === data.newTable.reference
     );
 
     if (currentTableIndex < 0) {
@@ -697,10 +912,15 @@ exports.updateTables = functions.https.onCall((data, context) => {
   });
 });
 
-exports.deleteTable = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+export const deleteTable = functions.https.onCall(async (data, context) => {
+  assertValidAuth(context);
+
   const { venueId: spaceId, tableName, defaultTables } = data;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(spaceId, context.auth.token.user_id);
+
   const doc = await admin.firestore().collection("venues").doc(spaceId).get();
 
   if (!doc || !doc.exists) {
@@ -708,9 +928,16 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
   }
 
   const docData = doc.data();
+
+  if (!docData) {
+    throw new HttpsError("internal", "data not found");
+  }
   const tables = docData.config.tables || defaultTables;
 
-  const index = tables.findIndex((val) => val.reference === tableName);
+  const index = tables.findIndex(
+    (val: { reference: string }) => val.reference === tableName
+  );
+
   // there are venues that don't have tables inserted in the database and use default ones instead
   // if that's the case, then we won't be able to delete any of the tables
   // thus we have to create tables (excluding the one being deleted) before modifying them
@@ -738,28 +965,34 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(spaceId).update(docData);
 });
 
-exports.deleteVenue = functions.https.onCall(async (data, context) => {
+export const deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
-  checkAuth(context);
 
+  assertValidAuth(context);
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
 
 // @debt extract this into a new functions/chat backend script file
-exports.voteInPoll = functions.https.onCall(
+export const voteInPoll = functions.https.onCall(
   async ({ venueId, pollVote }, context) => {
-    checkAuth(context);
+    assertValidAuth(context);
 
     const { pollId, questionId } = pollVote;
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const userId: string = context.auth.token.user_id;
 
     try {
-      await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);
+      await checkIfUserHasVoted(venueId, pollId, userId);
 
       const newVote = {
         questionId,
-        userId: context.auth.token.user_id,
+        userId,
       };
 
       admin
@@ -773,7 +1006,7 @@ exports.voteInPoll = functions.https.onCall(
         });
     } catch (error) {
       throw new HttpsError(
-        "has-voted",
+        "unavailable",
         `User ${userId} has voted in ${pollId} Poll`,
         error
       );
@@ -781,9 +1014,12 @@ exports.voteInPoll = functions.https.onCall(
   }
 );
 
-exports.adminUpdateBannerMessage = functions.https.onCall(
+export const adminUpdateBannerMessage = functions.https.onCall(
   async (data, context) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     await checkUserIsOwner(data.venueId, context.auth.token.user_id);
+
     await admin
       .firestore()
       .collection("venues")
@@ -792,32 +1028,47 @@ exports.adminUpdateBannerMessage = functions.https.onCall(
   }
 );
 
-exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
-  const { venueId, iframeUrl } = data;
-  await checkUserIsOwner(venueId, context.auth.token.user_id);
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .update({ iframeUrl: iframeUrl || null });
-});
+export const adminUpdateIframeUrl = functions.https.onCall(
+  async (data, context) => {
+    const { venueId, iframeUrl } = data;
 
-exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
-  checkAuth(context);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
 
-  const isValidVenueId = checkIfValidVenueId(data.venueId);
-
-  if (!isValidVenueId) {
-    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .update({ iframeUrl: iframeUrl || null });
   }
+);
 
-  if (typeof data.isLive !== "boolean") {
-    throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+export const setVenueLiveStatus = functions.https.onCall(
+  async (data, context) => {
+    assertValidAuth(context);
+
+    const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+    if (!isValidVenueId) {
+      throw new HttpsError(
+        "invalid-argument",
+        `venueId is not a valid venue id`
+      );
+    }
+
+    if (typeof data.isLive !== "boolean") {
+      throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+    }
+
+    const update = {
+      isLive: Boolean(data.isLive),
+    };
+
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(data.venueId)
+      .update(update);
   }
-
-  const update = {
-    isLive: Boolean(data.isLive),
-  };
-
-  await admin.firestore().collection("venues").doc(data.venueId).update(update);
-});
+);

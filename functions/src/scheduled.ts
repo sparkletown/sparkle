@@ -1,25 +1,21 @@
-const admin = require("firebase-admin");
-
-const functions = require("firebase-functions");
-
-const {
+import { hoursToMilliseconds } from "date-fns";
+import * as admin from "firebase-admin";
+import * as functions from "firebase-functions";
+import {
   chunk,
-  sampleSize,
-  groupBy,
-  uniq,
   differenceWith,
   flatten,
-  sum,
+  groupBy,
   has,
-} = require("lodash");
-const hoursToMilliseconds = require("date-fns/hoursToMilliseconds");
+  sampleSize,
+  sum,
+  uniq,
+} from "lodash";
 
 const DEFAULT_RECENT_USERS_IN_VENUE_CHUNK_SIZE = 6;
 const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 const USER_INACTIVE_THRESHOLD = hoursToMilliseconds(3);
-const BATCH_MAX_OPS = 500;
-
-exports.BATCH_MAX_OPS = BATCH_MAX_OPS;
+export const BATCH_MAX_OPS = 500;
 
 const removeDanglingSeatedUsers = async () => {
   const firestore = admin.firestore();
@@ -95,23 +91,38 @@ const removeDanglingSeatedUsers = async () => {
   ).then(() => console.log(`Removed ${removedUsersCount} dangling users`));
 };
 
+interface SeatedUser {
+  id: string;
+  path: {
+    venueId: string;
+    sectionId: string;
+  };
+}
+
 const updateSeatedUsersCountInAuditorium = async () => {
   await removeDanglingSeatedUsers();
 
   const firestore = admin.firestore();
-  let updateOccupiedPromises = [{ batch: firestore.batch(), updatesCount: 0 }];
+  const updateOccupiedPromises = [
+    { batch: firestore.batch(), updatesCount: 0 },
+  ];
 
   const { bySectionByAuditorium, allOccupiedSectionIds } = await firestore
     .collectionGroup("seatedSectionUsers")
     .get()
     .then(({ docs }) => {
-      const seatedUsers = docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const seatedUsers = docs.map(
+        (doc) => ({ ...doc.data(), id: doc.id } as SeatedUser)
+      );
 
       const byAuditorium = groupBy(
         seatedUsers,
         (seatedUser) => seatedUser.path.venueId
       );
-      const bySectionByAuditorium = {};
+      const bySectionByAuditorium: Record<
+        string,
+        Record<string, SeatedUser[]>
+      > = {};
       for (const auditoriumId in byAuditorium) {
         bySectionByAuditorium[auditoriumId] = groupBy(
           byAuditorium[auditoriumId],
@@ -185,7 +196,11 @@ const updateSeatedUsersCountInAuditorium = async () => {
         SECTION_PREVIEW_USER_DISPLAY_COUNT
       );
 
-      let { batch, updatesCount } = updateOccupiedPromises.pop();
+      const result = updateOccupiedPromises.pop();
+      if (!result) {
+        throw new Error("Invalid state");
+      }
+      let { batch, updatesCount } = result;
       if (updatesCount === BATCH_MAX_OPS) {
         updateOccupiedPromises.push({ batch, updatesCount });
 
@@ -220,7 +235,17 @@ const updateSeatedUsersCountInAuditorium = async () => {
   ]);
 };
 
-exports.updateUsersLocations = functions.pubsub
+interface User {
+  id: string;
+  lastVenueIdSeenIn: string;
+}
+
+interface Venue {
+  id: string;
+  recentUsersSampleSize: number;
+}
+
+export const updateUsersLocations = functions.pubsub
   .schedule("every 1 minutes")
   .onRun(async () => {
     await updateSeatedUsersCountInAuditorium();
@@ -230,7 +255,7 @@ exports.updateUsersLocations = functions.pubsub
       .collection("venues")
       .get()
       .then((snapshot) =>
-        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as Venue))
       );
 
     const date3HoursBefore = Date.now() - USER_INACTIVE_THRESHOLD;
@@ -241,7 +266,7 @@ exports.updateUsersLocations = functions.pubsub
       .where("lastSeenAt", ">", date3HoursBefore)
       .get()
       .then((snapshot) =>
-        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id } as User))
       );
 
     const [recentUsers, venues] = await Promise.all([
@@ -277,7 +302,7 @@ exports.updateUsersLocations = functions.pubsub
     });
   });
 
-exports.updateVenuesChatCounters = functions.pubsub
+export const updateVenuesChatCounters = functions.pubsub
   .schedule("every 5 minutes")
   .onRun(async () => {
     const venueRefs = await admin

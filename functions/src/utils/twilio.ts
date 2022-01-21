@@ -1,12 +1,12 @@
-const functions = require("firebase-functions");
-const twilio = require("twilio");
+import * as functions from "firebase-functions";
+import * as twilio from "twilio";
 
 const AccessToken = twilio.jwt.AccessToken;
 const { VideoGrant } = AccessToken;
 
 const TWILIO_CONFIG = functions.config().twilio;
 
-const generateTwilioToken = () => {
+export const generateTwilioToken = () => {
   return new AccessToken(
     TWILIO_CONFIG.account_sid,
     TWILIO_CONFIG.api_key,
@@ -14,7 +14,7 @@ const generateTwilioToken = () => {
   );
 };
 
-const twilioVideoToken = (identity, room) => {
+export const twilioVideoToken = (identity: string, room: string) => {
   const videoGrant = new VideoGrant({ room });
   const token = generateTwilioToken();
 
@@ -23,6 +23,3 @@ const twilioVideoToken = (identity, room) => {
 
   return token;
 };
-
-exports.generateTwilioToken = generateTwilioToken;
-exports.twilioVideoToken = twilioVideoToken;

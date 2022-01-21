@@ -1,11 +1,21 @@
-const oauth2 = require("simple-oauth2");
+import { default as oauth2 } from "simple-oauth2";
+
+interface createOAuth2ClientArgs {
+  clientId: string;
+  clientSecret: string;
+  tokenHost: string;
+  tokenPath: string;
+  revokePath: string;
+  authorizeHost: string;
+  authorizePath: string;
+}
 
 /**
  * Create a configured simple-oauth2 client.
  *
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#createoptions--module
  */
-const createOAuth2Client = ({
+export const createOAuth2Client = ({
   clientId,
   clientSecret,
   tokenHost,
@@ -13,7 +23,7 @@ const createOAuth2Client = ({
   revokePath,
   authorizeHost,
   authorizePath,
-}) => {
+}: createOAuth2ClientArgs) => {
   const credentials = {
     client: {
       id: clientId,
@@ -30,5 +40,3 @@ const createOAuth2Client = ({
 
   return oauth2.create(credentials);
 };
-
-exports.createOAuth2Client = createOAuth2Client;

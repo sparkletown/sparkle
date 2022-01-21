@@ -3,7 +3,7 @@ const { isValidUrl } = require("../utils/url");
 const yup = require("yup");
 
 // TODO: should we nest these different subsets of keys?
-const AuthConfigSchema = yup.object().shape({
+export const AuthConfigSchema = yup.object().shape({
   // OAuth
   clientId: yup.string().required(),
   clientSecret: yup.string().required(),
@@ -12,7 +12,8 @@ const AuthConfigSchema = yup.object().shape({
   revokePath: yup.string(),
   authorizeHost: yup.string(),
   authorizePath: yup.string(),
-  scope: yup.lazy((val) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  scope: yup.lazy((val: any) =>
     Array.isArray(val) ? yup.array().of(yup.string()) : yup.string().default("")
   ),
 
@@ -35,5 +36,3 @@ const AuthConfigSchema = yup.object().shape({
   i4aMeetingIdsToCheck: yup.array().of(yup.number()).default([]),
   i4aEventIdsToCheck: yup.array().of(yup.number()).default([]),
 });
-
-exports.AuthConfigSchema = AuthConfigSchema;
