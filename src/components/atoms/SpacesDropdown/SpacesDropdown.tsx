@@ -20,13 +20,13 @@ const spaceNoneOption = Object.freeze({
   template: undefined,
 });
 
-export type SpacesDropdownPortal = {
+type SpacesDropdownPortal = {
   template?: PortalTemplate;
   name: string;
   id?: string;
 };
 
-export interface SpacesDropdownProps {
+interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];

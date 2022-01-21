@@ -9,7 +9,7 @@ import "./PortalListItem.scss";
 
 const HANDLED_KEY_PRESSES = ["Space", "Enter"];
 
-export interface PortalListItemProps {
+interface PortalListItemProps {
   item: PortalInfoItem;
   selected?: boolean;
   tabIndex: number;
