@@ -12,7 +12,7 @@ import { WorldEditorAdvancedPanel } from "pages/WorldEditor/WorldEditorAdvancedP
 import { WorldEditorEntrancePanel } from "pages/WorldEditor/WorldEditorEntrancePanel";
 import { WorldEditorGeneralPanel } from "pages/WorldEditor/WorldEditorGeneralPanel";
 
-import {WithNavigationBar} from "components/organisms/WithNavigationBar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";

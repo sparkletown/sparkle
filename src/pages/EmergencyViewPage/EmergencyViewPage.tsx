@@ -23,7 +23,7 @@ import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 import Login from "pages/Account/Login";
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import {WithNavigationBar} from "components/organisms/WithNavigationBar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/ScheduleEventSubList";

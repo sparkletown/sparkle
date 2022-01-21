@@ -1,6 +1,6 @@
 import React from "react";
 
-import { SpaceWithId,WorldAndSpaceIdLocation } from "types/id";
+import { SpaceWithId, WorldAndSpaceIdLocation } from "types/id";
 
 import { hoistHocStatics } from "utils/hoc";
 

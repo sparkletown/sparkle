@@ -45,7 +45,7 @@ import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-import {WithNavigationBar} from "components/organisms/WithNavigationBar";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
