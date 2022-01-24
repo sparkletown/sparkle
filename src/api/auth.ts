@@ -1,6 +1,5 @@
 import Bugsnag from "@bugsnag/js";
 import { FIREBASE } from "core/firebase";
-import firebase from "firebase/compat/app";
 import { httpsCallable } from "firebase/functions";
 
 type CheckAccessTypes = {
@@ -38,9 +37,10 @@ export interface CustomAuthConfig {
 export const fetchCustomAuthConfig = async (
   venueId: string
 ): Promise<CustomAuthConfig> =>
-  await firebase
-    .functions()
-    .httpsCallable("auth-getCustomAuthConfig")({ venueId })
+  await httpsCallable<{ venueId: string }, CustomAuthConfig>(
+    FIREBASE.functions,
+    "auth-getCustomAuthConfig"
+  )({ venueId })
     .then<CustomAuthConfig>((result) => result.data)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {

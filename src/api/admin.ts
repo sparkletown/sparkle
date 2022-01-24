@@ -531,42 +531,42 @@ export const upsertScreeningRoomVideo = async (
   spaceId: string,
   videoId?: string
 ) => {
-  return await firebase
-    .functions()
-    .httpsCallable("venue-upsertScreeningRoomVideo")({
-      video,
-      videoId,
-      spaceId,
-    })
-    .catch((e) => {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("api/admin::upsertScreeningRoomVideo", {
-          spaceId,
-          video,
-          videoId,
-        });
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertScreeningRoomVideo"
+  )({
+    video,
+    videoId,
+    spaceId,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::upsertScreeningRoomVideo", {
+        spaceId,
+        video,
+        videoId,
       });
-      throw e;
     });
+    throw e;
+  });
 };
 
 export const deleteScreeningRoomVideo = async (
   videoId: string,
   spaceId: string
 ) => {
-  return await firebase
-    .functions()
-    .httpsCallable("venue-deleteScreeningRoomVideo")({
-      spaceId,
-      videoId,
-    })
-    .catch((e) => {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("api/admin::deleteScreeningRoomVideo", {
-          videoId,
-          spaceId,
-        });
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-deleteScreeningRoomVideo"
+  )({
+    spaceId,
+    videoId,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::deleteScreeningRoomVideo", {
+        videoId,
+        spaceId,
       });
-      throw e;
     });
+    throw e;
+  });
 };

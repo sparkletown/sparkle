@@ -1,7 +1,8 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/compat/app";
+import { FIREBASE } from "core/firebase";
+import { httpsCallable } from "firebase/functions";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
@@ -26,7 +27,10 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   onCancel,
 }) => {
   const [{ error, loading: isDeleting }, deleteVenue] = useAsyncFn(async () => {
-    await firebase.functions().httpsCallable("venue-deleteVenue")({
+    await httpsCallable(
+      FIREBASE.functions,
+      "venue-deleteVenue"
+    )({
       id: venueId,
     });
     onDelete?.();
