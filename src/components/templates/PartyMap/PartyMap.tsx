@@ -10,7 +10,7 @@ import {
   isEventLiveOrFuture,
 } from "utils/event";
 
-import { useVenueEvents } from "hooks/events";
+import { useSpaceEvents } from "hooks/events";
 import { useUser } from "hooks/useUser";
 
 import { Map } from "components/templates/PartyMap/components/Map";
@@ -32,8 +32,9 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
     return [venue?.id].concat(spaceIds);
   }, [venue]);
 
-  const { events: selfAndChildVenueEvents } = useVenueEvents({
-    venueIds: selfAndPortalSpaceIds,
+  const { events: selfAndChildVenueEvents } = useSpaceEvents({
+    worldId: venue.worldId,
+    spaceIds: selfAndPortalSpaceIds,
   });
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
@@ -69,7 +70,6 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
       <PortalModal
         portal={selectedRoom}
-        venue={venue}
         venueEvents={selectedRoomEvents}
         show={hasSelectedRoom}
         onHide={unselectRoom}

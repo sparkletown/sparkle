@@ -9,6 +9,9 @@ export const DEFAULT_MISSING_PARAM_URL = "#";
 
 export const VALID_URL_PROTOCOLS = Object.freeze(["https:"]);
 
+// External URLs
+export const EXTERNAL_WEBGL_CHECK_URL = "https://webglreport.com/?v=2";
+
 // External Sparkle URLs
 export const EXTERNAL_SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const EXTERNAL_SPARKLE_TOC_URL =
@@ -61,12 +64,13 @@ export const ACCOUNT_PROFILE_QUESTIONS_URL = `${ACCOUNT_ROOT_URL}/questions/:wor
 export const ADMIN_IA_WORLD_BASE_URL = `${ADMIN_ROOT_URL}/w`; // e.g. /admin/w
 export const ADMIN_IA_WORLD_CREATE_URL = `${ADMIN_ROOT_URL}/create-world`; // e.g. /admin/create-world
 export const ADMIN_IA_WORLD_PARAM_URL = `${ADMIN_IA_WORLD_BASE_URL}/:worldSlug`; // e.g. /admin/w/world123
+export const ADMIN_IA_WORLD_TOOLS_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/tools`; // e.g. /admin/w/world123/tools
 export const ADMIN_IA_WORLD_EDIT_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/settings/:selectedTab?`; // e.g. /admin/w/world123/entrance
 export const ADMIN_IA_SPACE_BASE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/s`; // e.g. /admin/w/world123/s
 export const ADMIN_IA_SPACE_EDIT_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug?/:selectedTab?`; // e.g. /admin/w/world123/s/space456/timing
 export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/create-space`; // e.g. /admin/w/world123/create-space
 // @debt this is in the wrong place completely
-export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`;
+export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`; // e.g. /admin/w/world123/s/space456/admin
 
 // Enter URLs
 export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;

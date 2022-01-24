@@ -1,0 +1,10 @@
+@import "scss/constants.scss";
+
+.ToolsPage {
+  height: 100%;
+  padding: $spacing--sm;
+
+  &__back {
+    margin-bottom: $spacing--md;
+  }
+}

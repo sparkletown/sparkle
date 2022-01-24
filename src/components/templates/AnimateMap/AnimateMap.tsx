@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
+import { useAsyncFn } from "react-use";
+import Bugsnag from "@bugsnag/js";
 
 import {
   enterAnimateMapFireBarrel,
@@ -13,6 +15,10 @@ import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
 
+import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
+
+import { LoadingSpinner } from "components/atoms/LoadingSpinner";
+
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { GameConfig } from "./configs/GameConfig";
@@ -24,10 +30,10 @@ import { configs } from "./configs";
 import "./AnimateMap.scss";
 
 export interface AnimateMapProps {
-  venue: WithId<AnimateMapVenue>;
+  space: WithId<AnimateMapVenue>;
 }
 
-export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
+export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );
@@ -36,43 +42,66 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   const store = useStore();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!app && dataProvider && containerRef && containerRef.current) {
-      const config = venue.gameOptions
-        ? new GameConfig(venue.gameOptions)
-        : configs.animateMap;
-      const game = new GameInstance(
-        config,
-        store,
-        dataProvider,
-        containerRef.current as HTMLDivElement
-      );
-
-      game
-        .init()
-        .then(() => game.start())
-        .catch(console.error);
-
-      setApp(game);
+  const [
+    { loading: isInitializing, error: errorInitializing },
+    initialize,
+  ] = useAsyncFn(async () => {
+    if (app || !dataProvider || !containerRef || !containerRef.current) {
+      return;
     }
-  }, [containerRef, app, dataProvider, store, venue]);
 
-  useEffect(() => {
-    return () => {
-      app?.release();
-    };
-  }, [app]);
+    const config = space.gameOptions
+      ? new GameConfig(space.gameOptions)
+      : configs.animateMap;
+
+    const game = new GameInstance(
+      config,
+      store,
+      dataProvider,
+      containerRef.current as HTMLDivElement
+    );
+
+    await game.init();
+    await game.start();
+
+    setApp(game);
+  }, [containerRef, app, dataProvider, store, space]);
+
+  useEffect(() => void initialize(), [initialize]);
+  useEffect(() => () => void app?.release(), [app]);
 
   const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
 
-  const relatedRooms = useRelatedPartymapRooms({ venue });
+  const relatedRooms = useRelatedPartymapRooms({ venue: space });
+
+  if (isInitializing) {
+    return <LoadingSpinner />;
+  }
+
+  // NOTE: this is a good to have check for error inside animatemap (and infinite retries due to it)
+  if (errorInitializing) {
+    console.error("AnimateMap error initializing:", errorInitializing);
+    Bugsnag.notify(errorInitializing, (event) => {
+      event.addMetadata("context", {
+        location: "src/components/templates/AnimateMap::AnimateMap",
+        errorInitializing,
+        space,
+      });
+    });
+
+    return (
+      <AnimateMapErrorPrompt variant="unknown">
+        {errorInitializing.message}
+      </AnimateMapErrorPrompt>
+    );
+  }
 
   return (
     <div className="AnimateMap">
       <div className="AnimateMap__ui-wrapper">
-        <UIOverlay venue={venue}>
+        <UIOverlay venue={space}>
           <div className="UIOverlay__main">
-            <UIOverlayGrid venue={venue} />
+            <UIOverlayGrid venue={space} />
           </div>
           <div
             className={
@@ -81,7 +110,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
             }
           >
             <FirebarrelProvider
-              venue={venue}
+              venue={space}
               setUserList={(roomId, userList) => {
                 dispatch(updateAnimateMapFireBarrel(roomId, userList));
               }}
@@ -100,9 +129,10 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
       </div>
       <div ref={containerRef} className="AnimateMap__app-wrapper" />
       <CloudDataProviderWrapper
-        venue={venue}
+        venue={space}
         newDataProviderCreate={setDataProvider}
         relatedRooms={relatedRooms}
+        reInitOnError={!errorInitializing}
       />
     </div>
   );

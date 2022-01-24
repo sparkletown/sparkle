@@ -4,6 +4,7 @@ import { omit } from "lodash";
 
 import {
   ACCEPTED_IMAGE_TYPES,
+  COLLECTION_WORLD_EVENTS,
   DEFAULT_PORTAL_BOX,
   DEFAULT_SECTIONS_AMOUNT,
   DEFAULT_SHOW_REACTIONS,
@@ -14,16 +15,18 @@ import {
 import { findSpaceBySlug } from "api/space";
 
 import { PortalInput, Room, RoomInput } from "types/rooms";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import {
   SpaceSlug,
   VenueAdvancedConfig,
-  VenueEvent,
   VenuePlacement,
   VenueTemplate,
+  WorldEvent,
 } from "types/venues";
 
-import { WithId, WithWorldId } from "utils/id";
+import { uploadFile } from "utils/file";
+import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
 
 import { fetchVenue } from "./venue";
@@ -289,9 +292,7 @@ const createFirestoreRoomInput = async (
   venueId: string,
   user: firebase.UserInfo
 ) => {
-  const storageRef = firebase.storage().ref();
-
-  const urlRoomName = createSlug(
+  const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -310,14 +311,10 @@ const createFirestoreRoomInput = async (
   // upload the files
   for (const entry of imageKeys) {
     const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
-    const file = fileArr[0];
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+    const downloadUrl = await uploadFile(
+      `users/${user.uid}/venues/${venueId}/${urlPortalName}`,
+      fileArr
     );
-
-    await uploadFileRef.put(file);
-    const downloadUrl: string = await uploadFileRef.getDownloadURL();
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
   }
 
@@ -338,7 +335,7 @@ const createFirestoreRoomInput_v2 = async (
 ) => {
   const storageRef = firebase.storage().ref();
 
-  const urlRoomName = createSlug(
+  const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -363,7 +360,7 @@ const createFirestoreRoomInput_v2 = async (
     if (!fileArr || fileArr.length === 0) continue;
     const file = fileArr[0];
     const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+      `users/${user.uid}/venues/${venueId}/${urlPortalName}/${file.name}`
     );
 
     await uploadFileRef.put(file);
@@ -479,26 +476,21 @@ export const createRoom = async (
   });
 };
 
-export const createEvent = async (venueId: string, event: VenueEvent) => {
-  await firebase.firestore().collection(`venues/${venueId}/events`).add(event);
+export const createEvent = async (event: WithoutId<WorldEvent>) => {
+  await firebase.firestore().collection(COLLECTION_WORLD_EVENTS).add(event);
 };
 
-export const updateEvent = async (
-  venueId: string,
-  eventId: string,
-  event: VenueEvent
-) => {
+export const updateEvent = async (event: WorldEvent) => {
   await firebase
     .firestore()
-    .doc(`venues/${venueId}/events/${eventId}`)
+    .doc(`${COLLECTION_WORLD_EVENTS}/${event.id}`)
     .update(event);
 };
 
-export const deleteEvent = async (venueId: string, eventId: string) => {
+export const deleteEvent = async (event: WorldEvent) => {
   await firebase
     .firestore()
-    .collection(`venues/${venueId}/events`)
-    .doc(eventId)
+    .doc(`${COLLECTION_WORLD_EVENTS}/${event.id}`)
     .delete();
 };
 
@@ -513,3 +505,48 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
     venueId,
     ownerId,
   });
+
+export const upsertScreeningRoomVideo = async (
+  video: ScreeningRoomVideo,
+  spaceId: string,
+  videoId?: string
+) => {
+  return await firebase
+    .functions()
+    .httpsCallable("venue-upsertScreeningRoomVideo")({
+      video,
+      videoId,
+      spaceId,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::upsertScreeningRoomVideo", {
+          spaceId,
+          video,
+          videoId,
+        });
+      });
+      throw e;
+    });
+};
+
+export const deleteScreeningRoomVideo = async (
+  videoId: string,
+  spaceId: string
+) => {
+  return await firebase
+    .functions()
+    .httpsCallable("venue-deleteScreeningRoomVideo")({
+      spaceId,
+      videoId,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::deleteScreeningRoomVideo", {
+          videoId,
+          spaceId,
+        });
+      });
+      throw e;
+    });
+};

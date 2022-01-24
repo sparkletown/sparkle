@@ -22,21 +22,12 @@ import {
   ZOOM_ROOM_TAXON,
 } from "./taxonomy";
 
-import defaultAvatar1 from "assets/avatars/default-profile-pic-1.png";
-import defaultAvatar2 from "assets/avatars/default-profile-pic-2.png";
-import defaultAvatar3 from "assets/avatars/default-profile-pic-3.png";
-import defaultAvatar4 from "assets/avatars/default-profile-pic-4.png";
-import defaultAvatar5 from "assets/avatars/default-profile-pic-5.png";
-import defaultAvatar6 from "assets/avatars/default-profile-pic-6.png";
-import defaultMapIcon from "assets/icons/default-map-icon.png";
-import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
-import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
-
 // NOTE: please keep these exports sorted alphabetically for faster visual scan
 export * from "./apiSettings";
 export * from "./dateSettings";
 export * from "./disableSettings";
 export * from "./embedUrlSettings";
+export * from "./imageSettings";
 export * from "./interpolationSettings";
 export * from "./mapBackgrounds";
 export * from "./placeholderSettings";
@@ -66,14 +57,6 @@ export const DEFAULT_LANDING_BANNER = "/assets/Default_Venue_Banner.png";
 export const DEFAULT_VENUE_BANNER_COLOR = "#000000";
 export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 export const DEFAULT_VENUE_AUTOPLAY = false;
-// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. One should probably be used for anonymous profiles
-export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
-// NOTE: temporary replaceing  "/default-profile-pic.png"; @see https://github.com/sparkletown/internal-sparkle-issues/issues/1615
-export const DEFAULT_PROFILE_PIC = defaultAvatar1;
-// NOTE: temporary replacing "/anonymous-profile-icon.jpeg"; @see https://github.com/sparkletown/internal-sparkle-issues/issues/1615
-export const DEFAULT_PROFILE_IMAGE = defaultAvatar1;
-export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
-export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -520,15 +503,6 @@ export const RANDOM_AVATARS = [
 ];
 
 export const CHAT_MESSAGE_TIMEOUT = 500;
-
-export const DEFAULT_AVATARS = [
-  defaultAvatar1,
-  defaultAvatar2,
-  defaultAvatar3,
-  defaultAvatar4,
-  defaultAvatar5,
-  defaultAvatar6,
-];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;

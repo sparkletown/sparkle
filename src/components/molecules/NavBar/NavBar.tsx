@@ -175,7 +175,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   return (
     <>
       <header>
-        <div className="navbar navbar_playa nonplaya">
+        <div className="NavBar navbar navbar_playa nonplaya">
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo">

@@ -9,7 +9,7 @@ import { PortalAddEditForm } from "components/organisms/PortalAddEditForm";
 
 import "./PortalAddEditModal.scss";
 
-export type PortalAddEditModalProps = {
+type PortalAddEditModalProps = {
   item?: PortalInfoItem;
   show: boolean;
   onHide: () => void;

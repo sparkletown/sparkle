@@ -43,7 +43,7 @@ import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 
 import "./PortalAddEditForm.scss";
 
-export interface PortalAddEditFormProps {
+interface PortalAddEditFormProps {
   item?: PortalInfoItem;
   onDone: () => void;
   portal?: Room;

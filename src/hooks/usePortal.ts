@@ -8,18 +8,18 @@ import { enterSpace } from "utils/url";
 import { useSpaceParams } from "./spaces/useSpaceParams";
 import { useRelatedVenues } from "./useRelatedVenues";
 
-export interface UseRoomProps {
-  room?: Room;
+interface UsePortalProps {
+  portal?: Room;
 }
-export const useRoom = ({ room }: UseRoomProps) => {
-  const targetSpaceId = room?.spaceId;
+export const usePortal = ({ portal }: UsePortalProps) => {
+  const targetSpaceId = portal?.spaceId;
 
   const { push: openUrlUsingRouter } = useHistory();
   const { worldSlug } = useSpaceParams();
 
   const { findVenueInRelatedVenues } = useRelatedVenues();
 
-  const enterRoom = useCallback(() => {
+  const enterPortal = useCallback(() => {
     if (targetSpaceId) {
       const targetSpace = findVenueInRelatedVenues({ spaceId: targetSpaceId });
       if (targetSpace) {
@@ -31,7 +31,7 @@ export const useRoom = ({ room }: UseRoomProps) => {
   }, [findVenueInRelatedVenues, targetSpaceId, worldSlug, openUrlUsingRouter]);
 
   return {
-    enterRoom,
-    portalSpaceId: room?.spaceId,
+    enterPortal,
+    portalSpaceId: portal?.spaceId,
   };
 };

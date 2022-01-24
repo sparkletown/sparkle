@@ -2,7 +2,6 @@ import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-import { isEqual, reduce } from "lodash";
 
 import {
   COVERT_ROOM_TYPES,
@@ -14,23 +13,17 @@ import {
 
 import { AlgoliaSearchIndex } from "types/algolia";
 import { Room } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
 import { useAlgoliaSearch } from "hooks/algolia/useAlgoliaSearch";
-import { useVenueEvents } from "hooks/events";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { PortalModal } from "components/templates/PartyMap/components/PortalModal";
 
-import { EventModal } from "components/organisms/EventModal";
-
 import { Loading } from "components/molecules/Loading";
-import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSearchBarFoundEvent";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -59,78 +52,49 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
     [setSearchInputValue]
   );
 
-  const [selectedRoom, setSelectedRoom] = useState<Room>();
-  const hidePortalModal = useCallback(() => setSelectedRoom(undefined), []);
+  const [selectedPortal, setSelectedPortal] = useState<Room>();
+  const hidePortalModal = useCallback(() => setSelectedPortal(undefined), []);
 
-  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
-    WithId<AnyVenue>
-  >();
+  const { isLoading, relatedVenues } = useRelatedVenues();
 
-  const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
-  const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
-
-  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues();
-
-  const enabledRelatedRooms = useMemo<Room[]>(
+  const enabledRelatedPortals = useMemo<Room[]>(
     () =>
       relatedVenues
         .flatMap((venue) => venue.rooms ?? [])
-        .filter((room) => {
-          if (isDefined(room.type) && COVERT_ROOM_TYPES.includes(room.type)) {
+        .filter((portal) => {
+          if (
+            isDefined(portal.type) &&
+            COVERT_ROOM_TYPES.includes(portal.type)
+          ) {
             return false;
           }
 
-          return room.isEnabled;
+          return portal.isEnabled;
         }),
     [relatedVenues]
   );
 
-  const enabledRelatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
-    () =>
-      reduce(
-        enabledRelatedRooms,
-        (enabledRelatedRoomsByTitle, room) => ({
-          ...enabledRelatedRoomsByTitle,
-          [room.title]: room,
-        }),
-        {}
-      ),
-    [enabledRelatedRooms]
-  );
-
-  const { isEventsLoading, events: relatedEvents } = useVenueEvents({
-    venueIds: relatedVenueIds,
-  });
-
-  const foundRooms = useMemo<JSX.Element[]>(() => {
+  const foundPortals = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
 
-    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */
+    /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but portals don't have a unique identifier */
     return (
-      enabledRelatedRooms
-        .filter((room) => room.title.toLowerCase().includes(searchQuery))
-        .map((room, index) => (
+      enabledRelatedPortals
+        .filter((portal) => portal.title.toLowerCase().includes(searchQuery))
+        .map((portal, index) => (
           <NavSearchResult
-            key={`room-${room.title}-${index}`}
-            title={room.title}
+            key={`portal-${portal.title}-${index}`}
+            title={portal.title}
             description={ROOM_TAXON.capital}
-            image={room.image_url}
+            image={portal.image_url}
             onClick={() => {
-              setSelectedRoom(room);
-              // @debt we need to find room venue (selectedRoomVenue) because of PortalModal -> useRoom -> externalRoomSlug (which accepts venueName as a parameter)
-              //  probably would be better to extend Room type with the venueId it's related to, and use it in the `externalRoomSlug` instead of venueName
-              setSelectedRoomVenue(
-                relatedVenues.find((venue) =>
-                  venue.rooms?.filter((venueRoom) => isEqual(venueRoom, room))
-                )
-              );
-
+              setSelectedPortal(portal);
               clearSearch();
             }}
           />
         )) ?? []
     );
-  }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
+  }, [searchQuery, enabledRelatedPortals, clearSearch]);
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -161,43 +125,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
     });
   }, [algoliaSearchState.value, openUserProfileModal, clearSearch]);
 
-  const foundEvents = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
-
-    return relatedEvents
-      .filter((event) => {
-        const isEventRoomEnabled =
-          isDefined(event.room) && event.room !== ""
-            ? isDefined(enabledRelatedRoomsByTitle[event.room])
-            : true;
-
-        return (
-          isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
-        );
-      })
-      .map((event) => (
-        <NavSearchBarFoundEvent
-          key={`event-${event.id ?? event.name}`}
-          event={event}
-          enabledRelatedRooms={enabledRelatedRooms}
-          relatedVenues={relatedVenues}
-          onClick={() => {
-            setSelectedEvent(event);
-            clearSearch();
-          }}
-        />
-      ));
-  }, [
-    searchQuery,
-    relatedEvents,
-    enabledRelatedRoomsByTitle,
-    enabledRelatedRooms,
-    relatedVenues,
-    clearSearch,
-  ]);
-
-  const numberOfSearchResults =
-    foundRooms.length + foundEvents.length + foundUsers.length;
+  const numberOfSearchResults = foundPortals.length + foundUsers.length;
 
   const clearSearchIcon = (
     <FontAwesomeIcon
@@ -227,12 +155,11 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
           search results
         </div>
 
-        {isLoading || isEventsLoading ? (
+        {isLoading ? (
           <Loading />
         ) : (
           <div className="NavSearchBar__search-results">
-            {foundRooms}
-            {foundEvents}
+            {foundPortals}
             {foundUsers}
           </div>
         )}
@@ -242,7 +169,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
-        placeholder={`Search for people, ${ROOMS_TAXON.lower}, events...`}
+        placeholder={`Search for people, ${ROOMS_TAXON.lower}...`}
         autoComplete="off"
         iconStart={faSearch}
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
@@ -250,20 +177,10 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
 
       {/* @debt use only one PortalModal instance with state controlled with redux */}
       <PortalModal
-        show={isDefined(selectedRoom)}
-        portal={selectedRoom}
-        venue={selectedRoomVenue}
+        show={isDefined(selectedPortal)}
+        portal={selectedPortal}
         onHide={hidePortalModal}
       />
-
-      {/* @debt use only one EventModal instance with state controlled with redux */}
-      {selectedEvent && (
-        <EventModal
-          event={selectedEvent}
-          show={isDefined(selectedEvent)}
-          onHide={hideEventModal}
-        />
-      )}
     </div>
   );
 };

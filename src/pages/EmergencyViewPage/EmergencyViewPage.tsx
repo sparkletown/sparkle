@@ -30,7 +30,7 @@ import { ScheduleEventSubList } from "components/molecules/ScheduleEventList/Sch
 
 import { NotFound } from "components/atoms/NotFound";
 
-import EmergencyViewPageRooms from "./EmergencyViewPageRooms";
+import { EmergencyViewPagePortals } from "./EmergencyViewPagePortals";
 import EmergencyViewTabs from "./EmergencyViewTabs";
 
 import "./EmergencyViewPage.scss";
@@ -144,10 +144,7 @@ export const EmergencyViewPage: React.FC = () => {
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
         <div className="EmergencyView__main">
           {!selectedTab ? (
-            <EmergencyViewPageRooms
-              descendantVenues={descendantVenues}
-              liveAndFutureEvents={liveAndFutureEvents}
-            />
+            <EmergencyViewPagePortals descendantVenues={descendantVenues} />
           ) : (
             <ul className="EmergencyView__weekdays">{weekdays}</ul>
           )}

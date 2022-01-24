@@ -16,37 +16,6 @@ import { UserAvatarSize } from "../../atoms/UserAvatar/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
-// @debt This miniAvatars/'random avatar url' feature is currently disabled, it might be legacy code to be deleted?
-// const generateRandomAvatarUrl = (id: string) =>
-//   "/avatars/" +
-//   RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
-
-// @debt This code may no longer be needed if we remove the miniAvatars feature + handle anonMode in a similar way to
-//   how it is currently being handled in UserAvatar
-// export interface AvatarUrlProps {
-//   user?: WithId<User>;
-//   miniAvatars?: boolean;
-// }
-//
-// const getAvatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
-//   const { id: userId, anonMode, pictureUrl } = user ?? {};
-//
-//   if (!userId || anonMode) {
-//     return DEFAULT_PROFILE_IMAGE;
-//   }
-//
-//   if (!miniAvatars && pictureUrl) {
-//     return pictureUrl;
-//   }
-//
-//   // @debt how is this intended to be used? Why doesn't it use the profile image? It seems to be something set on venue config..
-//   if (miniAvatars) {
-//     return generateRandomAvatarUrl(userId);
-//   }
-//
-//   return DEFAULT_PROFILE_IMAGE;
-// };
-
 export interface UserProfilePictureProp extends ContainerClassName {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
@@ -68,8 +37,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   showStatus = false,
   isVideoEnabled = true,
   size,
-  // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
-  // miniAvatars = false,
 }) => {
   const userId = user?.id;
 
@@ -80,45 +47,14 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     user?.id,
   ]);
 
-  // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
-  //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
-  // const { loadedImageUrl: pictureUrl } = useImage({
-  //   src: avatarUrl({ user, miniAvatars }),
-  //   fallbackSrc: () => randomAvatarUrl(user.id),
-  // });
-
-  // @debt For some reason when using this the image seems to be re-fetched every time the component is re-rendered
-  //   even though it seemed to be working fine earlier)
-  // const pictureUrl = getAvatarUrl({ user, miniAvatars });
-  //
-  // const containerVars = useCss({
-  //   "--user-profile-picture-avatar-url": pictureUrl
-  //     ? `url(${pictureUrl})`
-  //     : `url(${DEFAULT_PROFILE_IMAGE})`,
-  // });
-
   const containerClasses = classNames(
     "UserProfilePicture",
-    {
-      "UserProfilePicture--only-icon": !isVideoEnabled,
-    },
+    { "UserProfilePicture--only-icon": !isVideoEnabled },
     containerClassName
-    // containerVars
   );
 
-  // @debt This is currently being handled within UserAvatar, so we may not need to keep it here anymore
-  // const userDisplayName: string = user?.anonMode
-  //   ? DEFAULT_PARTY_NAME
-  //   : user?.partyName ?? DEFAULT_PARTY_NAME;
-
   return (
-    <div
-      className={containerClasses}
-      onClick={openProfileModal}
-      // @debt This is cuyrrently being handled within UserAvatar, so we may not need to keep it here anymore
-      // role="img"
-      // aria-label={`${userDisplayName}'s avatar`}
-    >
+    <div className={containerClasses} onClick={openProfileModal}>
       <UserAvatar
         user={user}
         containerClassName="UserProfilePicture__avatar"

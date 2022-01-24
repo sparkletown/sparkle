@@ -6,24 +6,24 @@ import { Room } from "types/rooms";
 
 import { getFirebaseStorageResizedImage } from "utils/image";
 
+import { usePortal } from "hooks/usePortal";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoom } from "hooks/useRoom";
 
-type EmergencyViewRoomProps = {
-  room: Room;
+type EmergencyViewPortalProps = {
+  portal: Room;
   isLive: boolean;
 };
 
-const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
-  room,
+export const EmergencyViewPortal: React.FC<EmergencyViewPortalProps> = ({
+  portal,
   isLive,
 }) => {
-  const { enterRoom, portalSpaceId } = useRoom({ room });
+  const { enterPortal, portalSpaceId } = usePortal({ portal });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({});
   const portalVenue = findVenueInRelatedVenues({ spaceId: portalSpaceId });
 
-  const roomImage = getFirebaseStorageResizedImage(room.image_url, {
+  const portalImage = getFirebaseStorageResizedImage(portal.image_url, {
     fit: "crop",
     width: 100,
     height: 100,
@@ -38,16 +38,14 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
           <span>{portalVenue?.recentUserCount}</span>
         </div>
       </div>
-      <div className="EmergencyView__body" onClick={enterRoom}>
+      <div className="EmergencyView__body" onClick={enterPortal}>
         <img
           className="EmergencyView__body-image"
-          src={roomImage}
-          alt={room.title}
+          src={portalImage}
+          alt={portal.title}
         />
-        <span>{room.title}</span>
+        <span>{portal.title}</span>
       </div>
     </div>
   );
 };
-
-export default EmergencyViewRoom;
