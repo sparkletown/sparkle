@@ -1,3 +1,4 @@
+import { withAuth } from "components/hocs/db/withAuth";
 import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { compose } from "lodash/fp";
@@ -13,5 +14,6 @@ export const AdminVenueView = compose(
   withWorldOrSpace,
   withFallback(["isSpacesLoaded", "isWorldLoaded"], LoadingPage),
   withFallback(["spaceId", "space", "world"], NotFoundFallback),
+  withAuth,
   withFallback(["isAuthLoaded", "userId"], NotLoggedInFallback)
 )(_AdminVenueView);

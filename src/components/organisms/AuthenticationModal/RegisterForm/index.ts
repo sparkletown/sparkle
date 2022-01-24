@@ -1,6 +1,5 @@
 import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withFallback } from "components/hocs/gate/withFallback";
-import { withLogProps } from "components/hocs/utility/withLogProps";
 import { compose } from "lodash/fp";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -18,6 +17,5 @@ export const RegisterForm = compose(
   withFallback<RegisterFormProps>(
     ["spaceId", "space", "world"],
     NotFoundFallback
-  ),
-  withLogProps()
+  )
 )(_RegisterForm);

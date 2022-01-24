@@ -9,7 +9,7 @@ import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
-import { useAnalytics } from "hooks/useAnalytics";
+import { UseAnalyticsResult } from "hooks/useAnalytics";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
@@ -24,13 +24,14 @@ import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
 // @debt move all styles into `Login.scss`;
 import "../Account.scss";
-import "../Login.scss";
+import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   spaceId: SpaceId;
   space: SpaceWithId;
   sovereignSpace?: SpaceWithId;
+  analytics?: UseAnalyticsResult;
 }
 
 export const Login: React.FC<LoginProps> = ({
@@ -38,9 +39,9 @@ export const Login: React.FC<LoginProps> = ({
   spaceId,
   space,
   sovereignSpace,
+  analytics,
 }) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
-  const analytics = useAnalytics({ venue: space });
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     sovereignSpace?.samlAuthProviderId
@@ -83,7 +84,7 @@ export const Login: React.FC<LoginProps> = ({
   const afterUserIsLoggedIn = (data?: LoginFormData) => {
     if (!data) return;
 
-    analytics.trackLogInEvent(data.email);
+    analytics?.trackLogInEvent(data.email);
   };
 
   if (isCustomAuthConfigLoading) return <LoadingPage />;
