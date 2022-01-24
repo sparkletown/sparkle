@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/compat/app";
-
+import { FIREBASE } from "core/firebase";
+import { getDownloadURL, listAll, ref } from "firebase/storage";
 export interface UseFetchAssetsReturn {
   assets: string[];
   isLoading: boolean;
@@ -18,10 +18,9 @@ export const useFetchAssets = (path: string): UseFetchAssetsReturn => {
   const [assets, setAssets] = useState<string[]>([]);
 
   const [{ loading: isLoading, error }, fetchAssets] = useAsyncFn(async () => {
-    const storageRef = firebase.storage().ref();
-
-    const list = await storageRef.child(`assets/${path}`).listAll();
-    const promises = list.items.map((item) => item.getDownloadURL());
+    const listRef = await ref(FIREBASE.storage, `assets/${path}`);
+    const list = await listAll(listRef);
+    const promises = list.items.map((item) => getDownloadURL(item));
 
     const urls: string[] = await Promise.all(promises);
 

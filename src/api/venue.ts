@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import { FIREBASE } from "core/firebase";
 import firebase from "firebase/compat/app";
-import { httpsCallable } from "firebase/functions";
+import { httpsCallable, HttpsCallableResult } from "firebase/functions";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 import { AuditoriumSeatedUser, AuditoriumSectionPath } from "types/auditorium";
@@ -43,7 +43,7 @@ export const setVenueLiveStatus = async ({
   isLive,
   onError,
   onFinish,
-}: SetVenueLiveStatusProps): Promise<void | firebase.functions.HttpsCallableResult> => {
+}: SetVenueLiveStatusProps): Promise<void | HttpsCallableResult> => {
   const params = {
     isLive,
     venueId,

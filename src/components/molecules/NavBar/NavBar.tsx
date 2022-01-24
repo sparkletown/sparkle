@@ -18,7 +18,7 @@ import { UpcomingEvent } from "types/UpcomingEvent";
 import { Profile } from "types/User";
 
 import { shouldScheduleBeShown } from "utils/schedule";
-import { enterSpace } from "utils/url";
+import { enterSpace, isValidUrl } from "utils/url";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
@@ -119,7 +119,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const isSoundCloud = firstStation?.includes("soundcloud");
 
   const sound = useMemo(
-    () => (firstStation && !isSoundCloud ? new Audio(firstStation) : undefined),
+    () =>
+      isValidUrl(firstStation) && !isSoundCloud
+        ? new Audio(firstStation)
+        : undefined,
     [isSoundCloud, firstStation]
   );
 

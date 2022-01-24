@@ -1,5 +1,6 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/compat/app";
+import { FIREBASE } from "core/firebase";
+import { httpsCallable } from "firebase/functions";
 
 import { Table } from "types/Table";
 
@@ -14,7 +15,10 @@ export const updateVenueTable = async ({
   newTable,
   defaultTables,
 }: UpdateVenueTableOptions) =>
-  await firebase.functions().httpsCallable("venue-updateTables")({
+  await httpsCallable(
+    FIREBASE.functions,
+    "venue-updateTables"
+  )({
     venueId,
     newTable,
     defaultTables,
@@ -31,19 +35,19 @@ export const deleteTable = async ({
   tableName,
   defaultTables,
 }: DeleteVenueTableOptions) =>
-  await firebase
-    .functions()
-    .httpsCallable("venue-deleteTable")({
-      venueId,
-      tableName,
-      defaultTables,
-    })
-    .catch((e) => {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("api/admin::deleteTable", {
-          venueId,
-          tableName,
-        });
+  await httpsCallable(
+    FIREBASE.functions,
+    "venue-deleteTable"
+  )({
+    venueId,
+    tableName,
+    defaultTables,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::deleteTable", {
+        venueId,
+        tableName,
       });
-      throw e;
     });
+    throw e;
+  });

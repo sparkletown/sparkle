@@ -1,5 +1,7 @@
 import Bugsnag from "@bugsnag/js";
+import { FIREBASE } from "core/firebase";
 import firebase from "firebase/compat/app";
+import { httpsCallable } from "firebase/functions";
 
 type CheckAccessTypes = {
   venueId: string;
@@ -15,7 +17,7 @@ export interface CheckIsEmailWhitelisted {
 }
 
 export const checkIsEmailWhitelisted = async (data: CheckIsEmailWhitelisted) =>
-  firebase.functions().httpsCallable("access-checkIsEmailWhitelisted")(data);
+  httpsCallable(FIREBASE.functions, "access-checkIsEmailWhitelisted")(data);
 
 export interface CheckIsCodeValid {
   venueId: string;
@@ -23,10 +25,10 @@ export interface CheckIsCodeValid {
 }
 
 export const checkIsCodeValid = async (data: CheckIsCodeValid) =>
-  firebase.functions().httpsCallable("access-checkIsCodeValid")(data);
+  httpsCallable(FIREBASE.functions, "access-checkIsCodeValid")(data);
 
 export const checkAccess = async (data: CheckAccessTypes) =>
-  firebase.functions().httpsCallable("access-checkAccess")(data);
+  httpsCallable(FIREBASE.functions, "access-checkAccess")(data);
 
 export interface CustomAuthConfig {
   customAuthName: string;

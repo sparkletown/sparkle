@@ -1,24 +1,33 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/compat/app";
+import { FIREBASE } from "core/firebase";
+import { httpsCallable } from "firebase/functions";
 
 export interface GetTwilioVideoTokenProps {
   userId: string;
   roomName: string;
 }
+export interface TwilioRequestVideoTokenProps {
+  identity: string;
+  room: string;
+}
 
 export type VideoToken = string;
+type TwilioResponseProps = {
+  token: string;
+};
 
 export const getTwilioVideoToken = async ({
   userId,
   roomName,
 }: GetTwilioVideoTokenProps) =>
-  firebase
-    .functions()
-    .httpsCallable("video-getTwilioToken")({
-      identity: userId,
-      room: roomName,
-    })
-    .then<VideoToken>((res) => res.data.token)
+  httpsCallable<TwilioRequestVideoTokenProps, TwilioResponseProps>(
+    FIREBASE.functions,
+    "video-getTwilioToken"
+  )({
+    identity: userId,
+    room: roomName,
+  })
+    .then((res) => res.data.token)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
@@ -36,16 +45,20 @@ export interface GetAgoraTokenProps {
 }
 
 export type AgoraToken = string;
+type AgoraResponseProps = {
+  token: string;
+};
 
 export const getAgoraToken = async ({
   channelName,
 }: GetAgoraTokenProps): Promise<AgoraToken> => {
-  return firebase
-    .functions()
-    .httpsCallable("video-getAgoraToken")({
-      channelName,
-    })
-    .then<AgoraToken>((result) => result.data.token)
+  return httpsCallable<GetAgoraTokenProps, AgoraResponseProps>(
+    FIREBASE.functions,
+    "video-getAgoraToken"
+  )({
+    channelName,
+  })
+    .then<AgoraToken>((res) => res.data.token)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {

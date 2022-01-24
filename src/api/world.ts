@@ -1,7 +1,8 @@
 import Bugsnag from "@bugsnag/js";
+import { FIREBASE } from "core/firebase";
 import firebase from "firebase/compat/app";
-import { getFunctions, httpsCallable } from "firebase/functions";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { httpsCallable } from "firebase/functions";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { isEmpty, omit, pick } from "lodash";
 
 import { ACCEPTED_IMAGE_TYPES, COLLECTION_WORLDS, FIELD_SLUG } from "settings";
@@ -73,8 +74,6 @@ export const createFirestoreWorldStartInput: (
 
   const slug = createSlug(input.name) as WorldSlug;
 
-  const storage = getStorage();
-
   const imageInputData: Record<string, string> = {};
 
   const imageInputs = {
@@ -93,7 +92,7 @@ export const createFirestoreWorldStartInput: (
 
     const extension = type.split("/").pop();
     const uploadFileRef = ref(
-      storage,
+      FIREBASE.storage,
       `users/${user.uid}/worlds/${id}/${key}.${extension}`
     );
 
@@ -168,11 +167,9 @@ export const createWorld: (
     // 1. first a world stub is created
     const stubInput = await createFirestoreWorldCreateInput(world);
 
-    const functions = getFunctions();
-
     const newWorld = (
       await httpsCallable<Partial<World>, WithId<World>>(
-        functions,
+        FIREBASE.functions,
         "world-createWorld"
       )(stubInput)
     )?.data;
@@ -185,14 +182,14 @@ export const createWorld: (
       user
     );
 
-    await httpsCallable(functions, "world-updateWorld")(fullInput);
+    await httpsCallable(FIREBASE.functions, "world-updateWorld")(fullInput);
 
     // 3. initial venue is created
     // Temporary disabled due to possible complications and edge cases.
     // What if the inital venue has to be a template of choice
     // What if the venue already exists and it collides with the world name
     // etc..
-    // await firebase.functions().httpsCallable("venue-createVenue_v2")({
+    // await httpsCallable(FIREBASE.functions, "venue-createVenue_v2")({
     //   ...fullInput,
     //   worldId,
     // });
@@ -211,27 +208,30 @@ export const updateWorldStartSettings = async (
   world: WithId<WorldGeneralFormInput>,
   user: firebase.UserInfo
 ) => {
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    await createFirestoreWorldStartInput(world, user)
-  );
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldStartInput(world, user));
 };
 
 export const updateWorldEntranceSettings = async (
   world: WithId<WorldEntranceFormInput>,
   user: firebase.UserInfo
 ) => {
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    await createFirestoreWorldEntranceInput(world, user)
-  );
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldEntranceInput(world, user));
 };
 
 export const updateWorldAdvancedSettings = async (
   world: WithId<WorldAdvancedFormInput>,
   user: firebase.UserInfo
 ) => {
-  return await firebase.functions().httpsCallable("world-updateWorld")(
-    await createFirestoreWorldAdvancedInput(world, user)
-  );
+  return await httpsCallable(
+    FIREBASE.functions,
+    "world-updateWorld"
+  )(await createFirestoreWorldAdvancedInput(world, user));
 };
 
 export type FindWorldBySlugOptions = {
