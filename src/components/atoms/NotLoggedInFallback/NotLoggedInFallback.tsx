@@ -1,8 +1,10 @@
-import React, { lazy } from "react";
+import React, { lazy, Suspense } from "react";
 
 import { SpaceId } from "types/id";
 
 import { tracePromise } from "utils/performance";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 const Login = lazy(() =>
   tracePromise("VenuePage::lazy-import::Login", () =>
@@ -14,6 +16,8 @@ const Login = lazy(() =>
 
 type Props = { spaceId: SpaceId };
 
-export const NotLoggedInFallback: React.FC<Props> = ({ spaceId }) => (
-  <Login spaceId={spaceId} />
+export const NotLoggedInFallback: React.FC<Props> = () => (
+  <Suspense fallback={<LoadingPage />}>
+    <Login />
+  </Suspense>
 );

@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 
 import { InitialForm } from "./InitialForm";
-import LoginForm from "./LoginForm";
-import PasswordResetForm from "./PasswordResetForm";
-import RegisterForm from "./RegisterForm";
+import { LoginForm } from "./LoginForm";
+import { PasswordResetForm } from "./PasswordResetForm";
+import { RegisterForm } from "./RegisterForm";
 
 import "./AuthenticationModal.scss";
 

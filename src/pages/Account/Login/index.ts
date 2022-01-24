@@ -1,23 +1,17 @@
+import { withRelatedSpacesById } from "components/hocs/db/withRelatedSpacesById";
 import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withFallback } from "components/hocs/gate/withFallback";
-import { withLogProps } from "components/hocs/utility/withLogProps";
 import { compose } from "lodash/fp";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotFoundFallback } from "components/atoms/NotFoundFallback";
 
-import {
-  RegisterForm as _RegisterForm,
-  RegisterFormProps,
-} from "./RegisterForm";
+import { Login as _Login } from "./Login";
 
-export const RegisterForm = compose(
+export const Login = compose(
   withWorldOrSpace,
   withFallback(["isSpacesLoaded", "isWorldLoaded"], LoadingPage),
-  withFallback<RegisterFormProps>(
-    ["spaceId", "space", "world"],
-    NotFoundFallback
-  ),
-  withLogProps()
-)(_RegisterForm);
+  withFallback(["spaceId", "space", "world"], NotFoundFallback),
+  withRelatedSpacesById
+)(_Login);

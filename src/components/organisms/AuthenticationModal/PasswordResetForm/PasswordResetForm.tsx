@@ -13,7 +13,7 @@ interface PasswordResetFormData {
   email: string;
 }
 
-const PasswordResetForm: React.FunctionComponent<PropsType> = ({
+export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
   closeAuthenticationModal,
 }) => {
@@ -100,4 +100,3 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
   );
 };
 
-export default PasswordResetForm;

@@ -2,12 +2,11 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import firebase from "firebase/compat/app";
 
+import { SpaceWithId, WorldWithId } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { errorMessage, errorStatus } from "utils/error";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
@@ -22,6 +21,8 @@ export interface LoginFormProps {
   displayPasswordResetForm: () => void;
   closeAuthenticationModal?: () => void;
   afterUserIsLoggedIn?: (data?: LoginFormData) => void;
+  world: WorldWithId;
+  space: SpaceWithId;
 }
 
 export interface LoginFormData {
@@ -31,16 +32,15 @@ export interface LoginFormData {
   backend?: string;
 }
 
-const LoginForm: React.FunctionComponent<LoginFormProps> = ({
+export const LoginForm: React.FC<LoginFormProps> = ({
   displayRegisterForm,
   displayPasswordResetForm,
   closeAuthenticationModal,
   afterUserIsLoggedIn,
+  world,
+  space,
 }) => {
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
-
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     register,
@@ -230,4 +230,3 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   );
 };
 
-export default LoginForm;

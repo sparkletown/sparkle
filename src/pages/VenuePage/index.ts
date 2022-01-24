@@ -4,10 +4,10 @@ import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
 import { withFallback } from "components/hocs/gate/withFallback";
 import { compose } from "lodash/fp";
 
-import { NotFoundFallback } from "pages/VenuePage/NotFoundFallback";
-import { NotLoggedInFallback } from "pages/VenuePage/NotLoggedInFallback";
-
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+import { NotFoundFallback } from "components/atoms/NotFoundFallback";
+import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
 import { VenuePage as _VenuePage } from "./VenuePage";
 

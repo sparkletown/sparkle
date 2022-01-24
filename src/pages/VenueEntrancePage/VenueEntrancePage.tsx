@@ -18,7 +18,7 @@ import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useUser } from "hooks/useUser";
 
-import Login from "pages/Account/Login";
+import { Login } from "pages/Account/Login";
 import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -73,7 +73,7 @@ export const VenueEntrancePage: React.FC = () => {
   }
 
   if (!user || !profile) {
-    return <Login spaceId={spaceId} />;
+    return <Login />;
   }
 
   if (profile && !isCompleteProfile(profile)) {

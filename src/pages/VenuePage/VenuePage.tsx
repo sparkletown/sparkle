@@ -88,7 +88,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({
 }) => {
   const analytics = useAnalytics({ venue: space });
 
-  // const { user, profile, userLocation } = useUser();
   const {
     lastVenueIdSeenIn: userLastSeenIn,
     enteredVenueIds,

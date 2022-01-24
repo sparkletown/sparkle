@@ -20,7 +20,7 @@ import { useValidImage } from "hooks/useCheckImage";
 import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import Login from "pages/Account/Login";
+import { Login } from "pages/Account/Login";
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -133,7 +133,7 @@ export const EmergencyViewPage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login spaceId={spaceId} />
+        <Login />
       </Suspense>
     );
   }

@@ -3,44 +3,47 @@ import { useAsync } from "react-use";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
-import { SpaceId } from "types/id";
+import { SpaceId, SpaceWithId } from "types/id";
 
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
-import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
+import { LoginForm } from "components/organisms/AuthenticationModal/LoginForm";
 import { LoginFormData } from "components/organisms/AuthenticationModal/LoginForm/LoginForm";
-import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
-import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
+import { PasswordResetForm } from "components/organisms/AuthenticationModal/PasswordResetForm";
+import { RegisterForm } from "components/organisms/AuthenticationModal/RegisterForm";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
 // @debt move all styles into `Login.scss`;
-import "./Account.scss";
-import "./Login.scss";
+import "../Account.scss";
+import "../Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   spaceId: SpaceId;
+  space: SpaceWithId;
+  sovereignSpace?: SpaceWithId;
 }
 
-export const Login: React.FC<LoginProps> = ({ formType = "initial", spaceId }) => {
-  const { currentVenue, sovereignVenue } = useRelatedVenues({
-    currentVenueId: spaceId,
-  });
+export const Login: React.FC<LoginProps> = ({
+  formType = "initial",
+  spaceId,
+  space,
+  sovereignSpace,
+}) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
-  const analytics = useAnalytics({ venue: currentVenue });
+  const analytics = useAnalytics({ venue: space });
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    sovereignVenue?.samlAuthProviderId
+    sovereignSpace?.samlAuthProviderId
   );
 
   const {
@@ -50,12 +53,7 @@ export const Login: React.FC<LoginProps> = ({ formType = "initial", spaceId }) =
     return tracePromise(
       "Login::fetchCustomAuthConfig",
       () => fetchCustomAuthConfig(spaceId),
-      {
-        attributes: {
-          spaceId: spaceId,
-        },
-        withDebugLog: true,
-      }
+      { attributes: { spaceId }, withDebugLog: true }
     );
   }, [spaceId]);
 
@@ -148,5 +146,3 @@ export const Login: React.FC<LoginProps> = ({ formType = "initial", spaceId }) =
     </div>
   );
 };
-
-export default Login;
