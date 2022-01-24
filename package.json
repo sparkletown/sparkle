@@ -75,7 +75,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/scheduler": "^0.16.1",
     "@types/styled-components": "^5.1.4",
-    "@types/yup": "^0.29.3",
+    "@types/yup": "^0.29.13",
     "babel-plugin-lodash": "^3.3.4",
     "csv-parse": "^5.0.4",
     "cypress": "^4.11.0",
