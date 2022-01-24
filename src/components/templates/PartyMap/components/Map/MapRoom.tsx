@@ -11,8 +11,8 @@ import { PartyMapVenue } from "types/venues";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
+import { usePortal } from "hooks/usePortal";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoom } from "hooks/useRoom";
 
 import { RoomAttendance } from "components/templates/PartyMap/components/RoomAttendance";
 
@@ -29,7 +29,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   room,
   selectRoom,
 }) => {
-  const { portalSpaceId } = useRoom({ room });
+  const { portalSpaceId } = usePortal({ portal: room });
 
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,

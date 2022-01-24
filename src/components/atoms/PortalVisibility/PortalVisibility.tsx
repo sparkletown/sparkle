@@ -12,7 +12,7 @@ import { isDefined } from "utils/types";
 
 import "./PortalVisibility.scss";
 
-export interface PortalVisibilityProps {
+interface PortalVisibilityProps {
   errors?: FieldErrors<FieldValues>;
   getValues: () => Record<string, unknown>;
   name: string;

@@ -154,7 +154,6 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     poster: "",
     description: "",
     template: VenueTemplate.screeningroom,
-    hidden: true,
   },
 };
 

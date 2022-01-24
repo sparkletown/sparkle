@@ -12,9 +12,11 @@ import {
   ADMIN_IA_WORLD_CREATE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_PARAM_URL,
+  ADMIN_IA_WORLD_TOOLS_PARAM_URL,
   ADMIN_ROOT_URL,
 } from "settings";
 
+import { ToolsPage } from "pages/Admin/ToolsPage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { SpaceCreatePage } from "pages/SpaceCreatePage";
 import { SpacesDashboard } from "pages/SpacesDashboard";
@@ -55,6 +57,12 @@ export const AdminSubRouter: React.FC = () => (
           <WorldEditor />
         </Provided>
       </AnalyticsCheck>
+    </Route>
+
+    <Route path={[ADMIN_IA_WORLD_TOOLS_PARAM_URL]}>
+      <Provided withRelatedVenues>
+        <ToolsPage />
+      </Provided>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}>

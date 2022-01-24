@@ -1064,11 +1064,50 @@ export const setVenueLiveStatus = functions.https.onCall(
     const update = {
       isLive: Boolean(data.isLive),
     };
-
     await admin
       .firestore()
       .collection("venues")
       .doc(data.venueId)
       .update(update);
+  }
+);
+
+export const upsertScreeningRoomVideo = functions.https.onCall(
+  async (data, context) => {
+    const { spaceId, video, videoId } = data;
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await checkUserIsOwner(spaceId, context.auth.token.user_id);
+
+    const videosCollection = await admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .collection("screeningRoomVideos");
+
+    if (videoId) {
+      await videosCollection.doc(videoId).set(video);
+    } else {
+      await videosCollection.doc().set(video);
+    }
+  }
+);
+
+export const deleteScreeningRoomVideo = functions.https.onCall(
+  async (data, context) => {
+    const { spaceId, videoId } = data;
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    await checkUserIsOwner(spaceId, context.auth.token.user_id);
+
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .collection("screeningRoomVideos")
+      .doc(videoId)
+      .delete();
   }
 );
