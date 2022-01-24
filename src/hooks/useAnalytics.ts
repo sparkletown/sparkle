@@ -23,13 +23,8 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 import { useWorldById } from "hooks/worlds/useWorldById";
-
-const defaultWorld = {
-  id: "undefined",
-  name: DEFAULT_ANALYTICS_WORLD_NAME,
-};
 
 export const setAnalyticsGroup = (groupKey: string, groupName: string) => {
   if (!MIXPANEL_PROJECT_TOKEN) return;
@@ -95,29 +90,29 @@ export interface UseAnalyticsResult {
 }
 
 export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
-  venue,
+  venue: space,
 }) => {
-  const { user } = useUser();
-  const { world, isLoaded: isWorldLoaded } = useWorldById(venue?.worldId);
-
-  const worldIdAndName = useMemo(() => {
-    if (!isWorldLoaded || !world) return;
-
-    return { id: world.id, name: world.name };
-  }, [isWorldLoaded, world]);
+  const { user } = useLoginCheck();
+  const { world, isLoaded: isWorldLoaded } = useWorldById(space?.worldId);
+  const email = user?.email;
+  const spaceId = space?.id;
+  const worldId = world?.id;
+  const worldName = world?.name;
 
   const trackWithWorld = useCallback(
     (eventName, properties = {}) => {
-      if (!venue) return;
+      if (!spaceId) return;
 
-      const { id: worldId, name: worldName } = worldIdAndName ?? defaultWorld;
-      const worldString = `${worldName} (${worldId})`;
+      const worldString = `${
+        isWorldLoaded ? worldName : DEFAULT_ANALYTICS_WORLD_NAME
+      } (${isWorldLoaded ? worldId : undefined})`;
+
       setAnalyticsGroup(DEFAULT_ANALYTICS_GROUP_KEY, worldString);
 
       try {
         return mixpanel.track_with_groups(
           eventName,
-          { email: user?.email, venueId: venue.id, ...properties },
+          { email, spaceId, venueId: spaceId, ...properties },
           {
             [DEFAULT_ANALYTICS_GROUP_KEY]: worldString,
           }
@@ -126,7 +121,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
         console.error(trackWithWorld.name, e);
       }
     },
-    [user, venue, worldIdAndName]
+    [email, spaceId, worldId, worldName]
   );
 
   const trackLogInEvent = useCallback(
@@ -148,9 +143,9 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
   const trackVenuePageLoadedEvent = useCallback(
     () =>
       trackWithWorld(VENUE_PAGE_LOADED_EVENT_NAME, {
-        template: venue?.template,
+        template: space?.template,
       }),
-    [trackWithWorld, venue?.template]
+    [trackWithWorld, space?.template]
   );
 
   const trackOpenPortalModalEvent = useCallback(
@@ -178,17 +173,17 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
   const trackSelectTableEvent = useCallback(
     () =>
       trackWithWorld(SELECT_TABLE_EVENT_NAME, {
-        venueTemplate: venue?.template,
+        venueTemplate: space?.template,
       }),
-    [trackWithWorld, venue?.template]
+    [trackWithWorld, space?.template]
   );
 
   const trackTakeSeatEvent = useCallback(
     () =>
       trackWithWorld(TAKE_SEAT_EVENT_NAME, {
-        venueTemplate: venue?.template,
+        venueTemplate: space?.template,
       }),
-    [trackWithWorld, venue]
+    [trackWithWorld, space]
   );
 
   const trackEnterJazzBarEvent = useCallback(
