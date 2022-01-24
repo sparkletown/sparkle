@@ -206,11 +206,7 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
       descendantVenues: ALWAYS_EMPTY_ARRAY,
       findVenueInRelatedVenues,
     }),
-    [
-      isLoading,
-      relatedVenueIds,
-      findVenueInRelatedVenues,
-    ]
+    [isLoading, relatedVenueIds, findVenueInRelatedVenues]
   );
 
   return (

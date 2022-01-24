@@ -99,4 +99,3 @@ export const PasswordResetForm: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
