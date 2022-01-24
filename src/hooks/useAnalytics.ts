@@ -121,7 +121,7 @@ export const useAnalytics: ReactHook<UseAnalyticsProps, UseAnalyticsResult> = ({
         console.error(trackWithWorld.name, e);
       }
     },
-    [email, spaceId, worldId, worldName]
+    [isWorldLoaded, email, spaceId, worldId, worldName]
   );
 
   const trackLogInEvent = useCallback(

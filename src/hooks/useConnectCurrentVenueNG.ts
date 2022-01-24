@@ -7,8 +7,8 @@ import {
   FIELD_WORLD_ID,
 } from "settings";
 
-import { WorldAndSpaceIdLocation } from "types/id";
-import { AnyVenue, WorldEvent } from "types/venues";
+import { WorldAndSpaceIdLocation, WorldEventWithId } from "types/id";
+import { AnyVenue } from "types/venues";
 
 import { convertToFirestoreKey, WithId } from "utils/id";
 
@@ -21,7 +21,7 @@ type UseConnectCurrentVenueNG = ({
 }: Partial<WorldAndSpaceIdLocation>) => {
   isCurrentVenueEventsLoaded: boolean;
   isCurrentVenueLoaded: boolean;
-  currentVenueEvents: WithId<WorldEvent>[];
+  currentVenueEvents: WorldEventWithId[];
   currentVenue?: WithId<AnyVenue>;
 };
 export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
@@ -38,7 +38,7 @@ export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
   const {
     data: currentVenueEvents,
     isLoaded: isCurrentVenueEventsLoaded,
-  } = useRefiCollection<WorldEvent>({
+  } = useRefiCollection<WorldEventWithId>({
     path: [COLLECTION_WORLD_EVENTS],
     constraints: [
       where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),

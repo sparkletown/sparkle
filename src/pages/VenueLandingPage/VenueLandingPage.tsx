@@ -1,28 +1,32 @@
 import React, { useEffect } from "react";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import {
+  SpaceWithId,
+  UserId,
+  WorldAndSpaceIdLocation,
+  WorldAndSpaceSlugLocation,
+  WorldWithId,
+} from "types/id";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 import { NotFound } from "components/atoms/NotFound";
 
-import VenueLandingPageContent from "./VenueLandingPageContent";
+import { VenueLandingPageContent } from "./VenueLandingPageContent";
 
 import "./VenueLandingPage.scss";
 
-export const VenueLandingPage: React.FC = () => {
-  const { worldSlug, spaceSlug } = useSpaceParams();
+export type VenueLandingPageProps = WorldAndSpaceIdLocation &
+  WorldAndSpaceSlugLocation & {
+    userId: UserId;
+    space: SpaceWithId;
+    world: WorldWithId;
+  };
 
-  const { space, world, isLoaded } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
-
+export const VenueLandingPage: React.FC<VenueLandingPageProps> = (props) => {
+  const { space, world } = props;
   const redirectUrl = space?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
@@ -39,21 +43,13 @@ export const VenueLandingPage: React.FC = () => {
     updateTheme(space);
   }, [space]);
 
-  if (!isLoaded) {
-    return <LoadingPage />;
-  }
-
-  if (!space || !world) {
-    return (
-      <WithNavigationBar hasBackButton withHiddenLoginButton>
-        <NotFound />
-      </WithNavigationBar>
-    );
-  }
-
-  return (
+  return space && world ? (
     <WithNavigationBar hasBackButton withSchedule>
-      <VenueLandingPageContent space={space} world={world} />
+      <VenueLandingPageContent {...props} />
+    </WithNavigationBar>
+  ) : (
+    <WithNavigationBar hasBackButton withHiddenLoginButton>
+      <NotFound />
     </WithNavigationBar>
   );
 };

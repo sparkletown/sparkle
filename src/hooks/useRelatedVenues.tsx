@@ -201,12 +201,18 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading,
-      relatedVenues: ALWAYS_EMPTY_ARRAY,
-      relatedVenueIds: ALWAYS_EMPTY_ARRAY,
-      descendantVenues: ALWAYS_EMPTY_ARRAY,
+      relatedVenues,
+      relatedVenueIds,
+      descendantVenues,
       findVenueInRelatedVenues,
     }),
-    [isLoading, relatedVenueIds, findVenueInRelatedVenues]
+    [
+      isLoading,
+      relatedVenues,
+      relatedVenueIds,
+      descendantVenues,
+      findVenueInRelatedVenues,
+    ]
   );
 
   return (
