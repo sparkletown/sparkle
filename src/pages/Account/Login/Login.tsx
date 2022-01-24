@@ -24,7 +24,7 @@ import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
 // @debt move all styles into `Login.scss`;
 import "../Account.scss";
-import "../Login.scss";
+import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
