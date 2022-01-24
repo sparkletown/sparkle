@@ -53,14 +53,6 @@ import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-const Login = lazy(() =>
-  tracePromise("VenuePage::lazy-import::Login", () =>
-    import("pages/Account/Login").then(({ Login }) => ({
-      default: Login,
-    }))
-  )
-);
-
 const TemplateWrapper = lazy(() =>
   tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
     import("./TemplateWrapper").then(({ TemplateWrapper }) => ({

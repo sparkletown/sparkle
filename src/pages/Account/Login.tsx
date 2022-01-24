@@ -3,6 +3,8 @@ import { useAsync } from "react-use";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
+import { SpaceId } from "types/id";
+
 import { tracePromise } from "utils/performance";
 import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
@@ -27,15 +29,12 @@ import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
-  venueId: string;
+  spaceId: SpaceId;
 }
 
-export const Login: React.FC<LoginProps> = ({
-  formType = "initial",
-  venueId,
-}) => {
+export const Login: React.FC<LoginProps> = ({ formType = "initial", spaceId }) => {
   const { currentVenue, sovereignVenue } = useRelatedVenues({
-    currentVenueId: venueId,
+    currentVenueId: spaceId,
   });
   const [formToDisplay, setFormToDisplay] = useState(formType);
   const analytics = useAnalytics({ venue: currentVenue });
@@ -50,24 +49,24 @@ export const Login: React.FC<LoginProps> = ({
   } = useAsync(async () => {
     return tracePromise(
       "Login::fetchCustomAuthConfig",
-      () => fetchCustomAuthConfig(venueId),
+      () => fetchCustomAuthConfig(spaceId),
       {
         attributes: {
-          venueId,
+          spaceId: spaceId,
         },
         withDebugLog: true,
       }
     );
-  }, [venueId]);
+  }, [spaceId]);
 
   const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
 
   const hasCustomAuthConnect = isDefined(customAuthConnectPath);
   const signInWithCustomAuth = useCallback(() => {
     openUrl(
-      `${customAuthConnectPath}?venueId=${venueId}&returnOrigin=${window.location.origin}`
+      `${customAuthConnectPath}?venueId=${spaceId}&returnOrigin=${window.location.origin}`
     );
-  }, [customAuthConnectPath, venueId]);
+  }, [customAuthConnectPath, spaceId]);
 
   const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
 

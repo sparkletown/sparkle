@@ -73,7 +73,7 @@ export const VenueEntrancePage: React.FC = () => {
   }
 
   if (!user || !profile) {
-    return <Login venueId={spaceId} />;
+    return <Login spaceId={spaceId} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {

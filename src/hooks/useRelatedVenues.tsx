@@ -208,11 +208,8 @@ const WorldSpacesProvider: React.FC<WorldIdLocation> = ({
     }),
     [
       isLoading,
-      relatedVenues,
       relatedVenueIds,
-      descendantVenues,
       findVenueInRelatedVenues,
-      sovereignVenueId,
     ]
   );
 

@@ -133,7 +133,7 @@ export const EmergencyViewPage: React.FC = () => {
   if (!user) {
     return (
       <Suspense fallback={<LoadingPage />}>
-        <Login venueId={spaceId} />
+        <Login spaceId={spaceId} />
       </Suspense>
     );
   }

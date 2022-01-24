@@ -7,5 +7,5 @@ import Login from "pages/Account/Login";
 type Props = { spaceId: SpaceId };
 
 export const NotLoggedInFallback: React.FC<Props> = ({ spaceId }) => (
-  <Login venueId={spaceId} />
+  <Login spaceId={spaceId} />
 );
