@@ -10,7 +10,7 @@ import {
   FirestoreProvider,
 } from "reactfire";
 import { AppRouter } from "core/AppRouter";
-import { BugsnagErrorBoundary } from "core/bugsnag";
+import { BugsnagErrorBoundary } from "core/BugsnagErrorBoundary";
 import { FIREBASE } from "core/firebase";
 import { activatePolyFills } from "core/polyfills";
 import { ThemeProvider } from "styled-components";
@@ -36,32 +36,32 @@ activatePolyFills();
 
 traceReactScheduler("initial render", window.performance.now(), () => {
   const element: JSX.Element = (
-    // <React.StrictMode>
-    <BugsnagErrorBoundary>
-      <ThemeProvider theme={theme}>
-        <DndProvider backend={HTML5Backend}>
-          <ReduxStoreProvider store={store}>
-            <FirebaseAppProvider firebaseApp={FIREBASE.app}>
-              <FirestoreProvider sdk={FIREBASE.firestore}>
-                <AuthProvider sdk={FIREBASE.auth}>
-                  <DatabaseProvider sdk={FIREBASE.db}>
-                    <AlgoliaSearchProvider>
-                      <CustomSoundsProvider
-                        loadingComponent={<LoadingPage />}
-                        waitTillConfigLoaded
-                      >
-                        <AppRouter />
-                      </CustomSoundsProvider>
-                    </AlgoliaSearchProvider>
-                  </DatabaseProvider>
-                </AuthProvider>
-              </FirestoreProvider>
-            </FirebaseAppProvider>
-          </ReduxStoreProvider>
-        </DndProvider>
-      </ThemeProvider>
-    </BugsnagErrorBoundary>
-    // </React.StrictMode>
+    <React.StrictMode>
+      <BugsnagErrorBoundary>
+        <ThemeProvider theme={theme}>
+          <DndProvider backend={HTML5Backend}>
+            <ReduxStoreProvider store={store}>
+              <FirebaseAppProvider firebaseApp={FIREBASE.app}>
+                <FirestoreProvider sdk={FIREBASE.firestore}>
+                  <AuthProvider sdk={FIREBASE.auth}>
+                    <DatabaseProvider sdk={FIREBASE.db}>
+                      <AlgoliaSearchProvider>
+                        <CustomSoundsProvider
+                          loadingComponent={<LoadingPage />}
+                          waitTillConfigLoaded
+                        >
+                          <AppRouter />
+                        </CustomSoundsProvider>
+                      </AlgoliaSearchProvider>
+                    </DatabaseProvider>
+                  </AuthProvider>
+                </FirestoreProvider>
+              </FirebaseAppProvider>
+            </ReduxStoreProvider>
+          </DndProvider>
+        </ThemeProvider>
+      </BugsnagErrorBoundary>
+    </React.StrictMode>
   );
 
   render(element, document.getElementById("root"));

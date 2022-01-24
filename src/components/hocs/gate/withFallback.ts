@@ -1,18 +1,34 @@
 import React, { PropsWithChildren } from "react";
+import { get } from "lodash/fp";
 
-import { hoistHocStatics } from "utils/hoc";
+import {
+  checkBlockerProp,
+  determineDisplayName,
+  hoistHocStatics,
+} from "utils/hoc";
 
 export const withFallback = <T = {}>(
-  test: (props: PropsWithChildren<T>) => unknown,
+  test: string[] | ((props: PropsWithChildren<T>) => unknown),
   fallback: React.FC<T>
-) => (Component: React.FC<T>): React.FC<T> => {
-  const WithFallback = (props: T) =>
-    test(props)
-      ? React.createElement(Component, props)
-      : fallback
-      ? React.createElement(fallback, props)
-      : React.createElement(React.Fragment);
+) => (component: React.FC<T>): React.FC<T> => {
+  const isArray = Array.isArray(test);
+  const testFn = isArray
+    ? (props: object) => !test.some((key) => checkBlockerProp(get(key, props)))
+    : test;
 
-  hoistHocStatics("withFallback", WithFallback, Component);
+  const WithFallback = (props: PropsWithChildren<T>) =>
+    testFn(props)
+      ? React.createElement(component, props)
+      : React.createElement(fallback, props);
+
+  const fallbackName = determineDisplayName(fallback, { defaultName: "" });
+  const testSuffix = isArray ? ":" + test : "";
+  const nameSuffix = fallbackName ? ":" + fallbackName : "";
+  hoistHocStatics(
+    "withFallback" + nameSuffix + testSuffix,
+    WithFallback,
+    component
+  );
+
   return WithFallback;
 };

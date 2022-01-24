@@ -3,7 +3,7 @@ import { get } from "lodash/fp";
 
 import { checkBlockerProp, hoistHocStatics } from "utils/hoc";
 
-export const withFragment = <T = {}>(
+export const withChildren = <T = {}>(
   test: string[] | ((props: PropsWithChildren<T>) => unknown)
 ) => (component: React.FC<T>): React.FC<T> => {
   const isArray = Array.isArray(test);
@@ -11,13 +11,13 @@ export const withFragment = <T = {}>(
     ? (props: object) => !test.some((key) => checkBlockerProp(get(key, props)))
     : test;
 
-  const WithFragment = (props: PropsWithChildren<T>) =>
+  const WithChildren = (props: PropsWithChildren<T>) =>
     testFn(props)
       ? React.createElement(component, props)
-      : React.createElement(React.Fragment);
+      : React.createElement(React.Fragment, {}, props.children);
 
   const testSuffix = isArray ? ":" + test : "";
-  hoistHocStatics("withFragment" + testSuffix, WithFragment, component);
+  hoistHocStatics("withChildren" + testSuffix, WithChildren, component);
 
-  return WithFragment;
+  return WithChildren;
 };

@@ -1,7 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import { AnalyticsCheck } from "core/AnalyticsCheck";
-import { AnalyticsFree } from "core/AnalyticsFree";
 import { Provided } from "core/Provided";
 
 import {
@@ -43,35 +42,35 @@ export const AdminSubRouter: React.FC = () => (
     </Route>
 
     <Route path={ADMIN_IA_SPACE_CREATE_PARAM_URL}>
-      <AnalyticsFree>
+      <AnalyticsCheck>
         <Provided withRelatedVenues>
           <SpaceCreatePage />
         </Provided>
-      </AnalyticsFree>
+      </AnalyticsCheck>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_CREATE_URL, ADMIN_IA_WORLD_EDIT_PARAM_URL]}>
-      <AnalyticsFree>
+      <AnalyticsCheck>
         <Provided withRelatedVenues>
           <WorldEditor />
         </Provided>
-      </AnalyticsFree>
+      </AnalyticsCheck>
     </Route>
 
     <Route path={[ADMIN_IA_WORLD_PARAM_URL, ADMIN_IA_SPACE_BASE_PARAM_URL]}>
-      <AnalyticsFree>
+      <AnalyticsCheck>
         <Provided withRelatedVenues>
           <SpacesDashboard />
         </Provided>
-      </AnalyticsFree>
+      </AnalyticsCheck>
     </Route>
 
     <Route path={[ADMIN_ROOT_URL, ADMIN_IA_WORLD_BASE_URL]}>
-      <AnalyticsFree>
+      <AnalyticsCheck>
         <Provided withRelatedVenues>
           <WorldsDashboard />
         </Provided>
-      </AnalyticsFree>
+      </AnalyticsCheck>
     </Route>
   </Switch>
 );

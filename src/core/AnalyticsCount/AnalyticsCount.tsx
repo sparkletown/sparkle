@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { addToBugsnagEventOnError } from "core/bugsnag";
+import { addToBugsnagEventOnError } from "core/BugsnagErrorBoundary";
 import LogRocket from "logrocket";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID } from "secrets";
@@ -20,7 +20,7 @@ if (LOGROCKET_APP_ID) {
   });
 }
 
-type AnalyticsCountProps = {
+export type AnalyticsCountProps = {
   auth?: FireAuthUser;
   profile?: Profile;
   space: SpaceWithId;

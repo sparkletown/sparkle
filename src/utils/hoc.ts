@@ -1,10 +1,23 @@
 import React from "react";
 import hoistNonReactStatics from "hoist-non-react-statics";
 
-type DetermineDisplayName = <T>(Component: React.FC<T>) => string;
+import { STRING_EMPTY } from "settings";
 
-export const determineDisplayName: DetermineDisplayName = (Component) =>
-  Component.displayName || Component.name || "Component";
+type DetermineDisplayName = <T>(
+  Component: React.FC<T>,
+  options?: { defaultName: string }
+) => string;
+
+export const determineDisplayName: DetermineDisplayName = (
+  Component,
+  options
+) => {
+  return (
+    Component.displayName ||
+    Component.name ||
+    (undefined !== options?.defaultName ? options?.defaultName : "Component")
+  );
+};
 
 type HoistHocStatics = <Twrapper, Twrapped>(
   name: string,
@@ -20,3 +33,9 @@ export const hoistHocStatics: HoistHocStatics = (name, Wrapper, Wrapped) => {
 
   Wrapper.displayName = `${name}(${determineDisplayName(Wrapped)})`;
 };
+
+export const checkBlockerProp = (value: unknown) =>
+  null === value ||
+  undefined === value ||
+  false === value ||
+  STRING_EMPTY === value;

@@ -13,11 +13,13 @@ export const withWorldBySlug = <T extends WorldSlugLocation>(
   Component: React.FC<WithWorldBySlugInProps<T>>
 ) => {
   const WithWorldBySlug = (props: WithWorldBySlugInProps<T>) => {
-    const { world } = useWorldBySlug(props.worldSlug);
+    const { world, isLoading, isLoaded } = useWorldBySlug(props.worldSlug);
     return React.createElement(Component, {
       ...props,
       world,
       worldId: world?.id ?? get("worldId", props),
+      isWorldLoading: isLoading,
+      isWorldLoaded: isLoaded,
     });
   };
 

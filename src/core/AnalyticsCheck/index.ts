@@ -1,6 +1,15 @@
 import { withSlugs } from "components/hocs/context/withSlugs";
 import { withAuth } from "components/hocs/db/withAuth";
+import { withChildren } from "components/hocs/gate/withChildren";
+import { withFallback } from "components/hocs/gate/withFallback";
 import { AnalyticsCheck as _AnalyticsCheck } from "core/AnalyticsCheck/AnalyticsCheck";
-import { compose } from "lodash/fp";
+import { compose, get } from "lodash/fp";
 
-export const AnalyticsCheck = compose(withAuth, withSlugs)(_AnalyticsCheck);
+import { LoadingPage } from "components/molecules/LoadingPage";
+
+export const AnalyticsCheck = compose(
+  withSlugs,
+  withAuth,
+  withFallback((props) => get("isAuthLoaded", props), LoadingPage),
+  withChildren(["userId"])
+)(_AnalyticsCheck);

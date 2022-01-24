@@ -17,14 +17,17 @@ export const withSpacesBySlug = <T extends SpaceSlugLocation>(
   Component: React.FC<Props<T>>
 ) => {
   const WithSpacesBySlug = (props: Props<T>) => {
-    const { space, spaceId, isLoaded, isLoading } = useSpacesBySlug(props);
+    const { space, spaces, spaceId, isLoaded, isLoading } = useSpacesBySlug(
+      props
+    );
 
     return React.createElement(Component, {
       ...props,
       space,
+      spaces,
       spaceId: spaceId ?? get("spaceId", props),
-      isWorldOrSpaceLoaded: isLoaded,
-      isWorldOrSpaceLoading: isLoading,
+      isSpacesLoaded: isLoaded,
+      isSpacesLoading: isLoading,
     });
   };
 

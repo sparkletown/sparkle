@@ -10,6 +10,7 @@ import {
   PLATFORM_BRAND_NAME,
 } from "settings";
 
+import { RefiAuthUser } from "types/fire";
 import {
   SpaceId,
   SpaceSlugLocation,
@@ -17,6 +18,7 @@ import {
   WorldId,
   WorldWithId,
 } from "types/id";
+import { Profile, UserLocation } from "types/User";
 import { VenueTemplate } from "types/VenueTemplate";
 
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -41,16 +43,11 @@ import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useInterval } from "hooks/useInterval";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-
-import { NotFound } from "components/atoms/NotFound";
 
 import { updateTheme } from "./helpers";
 
@@ -81,6 +78,9 @@ type VenuePageProps = SpaceSlugLocation & {
   spaceId: SpaceId;
   world: WorldWithId;
   worldId: WorldId;
+  user?: RefiAuthUser;
+  profile?: Profile;
+  userLocation?: UserLocation;
 };
 
 export const VenuePage: React.FC<VenuePageProps> = ({
@@ -90,10 +90,13 @@ export const VenuePage: React.FC<VenuePageProps> = ({
   worldId,
   space,
   spaceId,
+  user,
+  profile,
+  userLocation,
 }) => {
   const analytics = useAnalytics({ venue: space });
 
-  const { user, profile, userLocation } = useUser();
+  // const { user, profile, userLocation } = useUser();
   const {
     lastVenueIdSeenIn: userLastSeenIn,
     enteredVenueIds,
@@ -221,30 +224,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({
     analytics.trackVenuePageLoadedEvent();
   }, [analytics, user, world]);
 
-  // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
-
-  // useVenueAccess(venue, handleAccessDenied);
-
-  if (!spaceId || !spaceSlug || !space) {
-    return (
-      <WithNavigationBar hasBackButton withHiddenLoginButton withRadio>
-        <NotFound />
-      </WithNavigationBar>
-    );
-  }
-
-  if (!user) {
-    return (
-      <Suspense fallback={<LoadingPage />}>
-        <Login venueId={spaceId} />
-      </Suspense>
-    );
-  }
-
-  if (!profile) {
-    return <LoadingPage />;
-  }
-
   const { template, hasPaidEvents } = space;
 
   const hasEntrance = !!world?.entrance?.length;
@@ -283,10 +262,6 @@ export const VenuePage: React.FC<VenuePageProps> = ({
         />
       );
     }
-  }
-
-  if (!user) {
-    return <LoadingPage />;
   }
 
   if (profile && !isCompleteProfile(profile)) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 import { SpaceSlugLocation } from "types/id";
 
@@ -6,12 +6,10 @@ import { hoistHocStatics } from "utils/hoc";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 
-type WithSlugsInProps<T extends SpaceSlugLocation> = T;
-
-export const withSlugs = <T extends SpaceSlugLocation>(
-  Component: React.FC<WithSlugsInProps<T>>
+export const withSlugs = <T = {}>(
+  Component: React.FC<T & SpaceSlugLocation>
 ) => {
-  const WithSlugs = (props: WithSlugsInProps<T>) => {
+  const WithSlugs = (props: PropsWithChildren<T>) => {
     const { worldSlug, spaceSlug } = useSpaceParams();
     return React.createElement(Component, { ...props, worldSlug, spaceSlug });
   };
