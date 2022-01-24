@@ -1,17 +1,38 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import { useCss } from "react-use";
+import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterSpace, externalUrlAdditionalProps } from "utils/url";
+import { enterSpace } from "utils/url";
 
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
+
+interface PosterAttendanceProps {
+  userCount: number;
+}
+
+const PosterAttendance: React.FC<PosterAttendanceProps> = ({ userCount }) => {
+  if (userCount === 0) return <></>;
+
+  return (
+    <div className="PosterAttendance">
+      <FontAwesomeIcon
+        className="ScheduleItem__online-icon"
+        icon={faUserFriends}
+      />
+      <span>{userCount}</span>
+    </div>
+  );
+};
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
@@ -20,16 +41,8 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
-  const {
-    title,
-    authorName,
-    categories,
-    authors,
-    posterId,
-    moreInfoUrl,
-    moreInfoUrls,
-    contactEmail,
-  } = posterVenue.poster ?? {};
+  const { title, presenterName, categories, thumbnailUrl } =
+    posterVenue.poster ?? {};
 
   const { worldSlug } = useWorldParams();
 
@@ -55,74 +68,32 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
-  const authorList = authors?.join(", ");
-
   const userCount = posterVenue.recentUserCount ?? 0;
-  const hasUsers = userCount > 0;
-  const userCountText = `${userCount} ${
-    userCount === 1 ? "current visitor" : "current visitors"
-  }`;
 
-  const renderInfoLink = useCallback(
-    (url: string) => (
-      <a href={url} {...externalUrlAdditionalProps}>
-        {url.replace(/(^\w+:|^)\/\//, "")}
-      </a>
-    ),
-    []
-  );
-
-  const renderMoreInfoUrl = useMemo(() => {
-    if (!moreInfoUrl) return;
-
-    return renderInfoLink(moreInfoUrl);
-  }, [moreInfoUrl, renderInfoLink]);
-
-  const renderMoreInfoUrls = useMemo(() => {
-    if (!moreInfoUrls) return;
-
-    return moreInfoUrls.map((infoUrl) => (
-      <div key={infoUrl}>{renderInfoLink(infoUrl)}</div>
-    ));
-  }, [moreInfoUrls, renderInfoLink]);
-
-  const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
+  const thumbnailStyles = useCss({
+    backgroundImage: `url(${thumbnailUrl})`,
+  });
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
-        {posterId && (
-          <div className="PosterPreview__posterId">
-            {renderMoreInfoUrl || posterId}
-          </div>
-        )}
-        {hasUsers && (
-          <div className="PosterPreview__visiting">{userCountText}</div>
-        )}
+        <p className="PosterPreview__title">{title}</p>
+        <PosterAttendance userCount={userCount} />
       </div>
 
-      <p className="PosterPreview__title">{title}</p>
-
-      {!posterId && hasMoreInfo && (
-        <p className="PosterPreview__moreInfoUrl">
-          {renderMoreInfoUrl}
-          {renderMoreInfoUrls}
+      {presenterName && (
+        <p className="PosterPreview__authorBox">
+          Presented by: {presenterName}
         </p>
       )}
 
-      {contactEmail && (
-        <p className="PosterPreview__contactEmail">{contactEmail}</p>
+      {thumbnailUrl && (
+        <div
+          className={`PosterPreview__thumbnailContainer ${thumbnailStyles}`}
+        />
       )}
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
-
-      <div className="PosterPreview__authorBox">
-        {authorName}
-
-        <span className="PosterPreview__author">
-          {authorList ?? authorName}
-        </span>
-      </div>
     </div>
   );
 };

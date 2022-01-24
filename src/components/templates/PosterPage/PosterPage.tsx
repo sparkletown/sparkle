@@ -1,11 +1,7 @@
 import React, { useMemo } from "react";
-import { faShare, faStop, faTv } from "@fortawesome/free-solid-svg-icons";
+import { faStop, faTv } from "@fortawesome/free-solid-svg-icons";
 
-import {
-  IFRAME_ALLOW,
-  POSTERPAGE_MAX_VIDEO_PARTICIPANTS,
-  POSTERPAGE_MORE_INFO_URL_TITLE,
-} from "settings";
+import { IFRAME_ALLOW, POSTERPAGE_MAX_VIDEO_PARTICIPANTS } from "settings";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -21,8 +17,6 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
-import { PosterPageSettingsControl } from "./components/PosterPageSettingsControl";
-import { ShareModal } from "./components/ShareModal";
 import { usePosterVideo } from "./usePosterVideo";
 
 import "./PosterPage.scss";
@@ -32,18 +26,16 @@ export interface PosterPageProps {
 }
 
 export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
-  const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
+  const { id: venueId, poster, iframeUrl } = venue;
 
   const {
+    description,
+    descriptionSecondary,
     title,
     introVideoUrl,
     categories,
-    authorName,
-    authors,
-    posterId,
+    presenterName,
     moreInfoUrl,
-    contactEmail,
-    moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
   } = poster ?? {};
 
   const {
@@ -51,12 +43,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
     show: showIntroVideoModal,
     hide: hideIntroVideoModal,
-  } = useShowHide();
-
-  const {
-    isShown: isShareModalShown,
-    show: showShareModal,
-    hide: hideShareModal,
   } = useShowHide();
 
   const {
@@ -68,8 +54,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     becomePassiveParticipant,
     becomeActiveParticipant,
   } = usePosterVideo(venueId);
-
-  const authorList = authors?.join(", ");
 
   const videoParticipants = useMemo(
     () =>
@@ -102,31 +86,26 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
-          <div className="PosterPage__headerInfo">
-            {posterId && <div className="PosterPage__posterId">{posterId}</div>}
-            {moreInfoUrl && (
+          <p className="PosterPage__title">{title}</p>
+          <div className="PosterPage__authorBox">
+            Presented by: {presenterName}
+          </div>
+          <div className="PosterPage__description">{description}</div>
+          <div className="PosterPage__descriptionSecondary">
+            {descriptionSecondary}
+          </div>
+
+          {moreInfoUrl && (
+            <div className="PosterPage__headerInfo">
               <a
                 className="PosterPage__moreInfoUrl"
                 href={moreInfoUrl}
                 target="_blank"
                 rel="noreferrer"
               >
-                {moreInfoUrlTitle}
+                More info
               </a>
-            )}
-          </div>
-
-          <p className="PosterPage__title">{title}</p>
-
-          <div className="PosterPage__authorBox">
-            {authorName}
-            <span className="PosterPage__author">
-              {authorList ?? authorName}
-            </span>
-          </div>
-
-          {contactEmail && (
-            <p className="PosterPage__contactEmail">{contactEmail}</p>
+            </div>
           )}
 
           <div className="PosterPage__categories">{renderedCategories}</div>
@@ -141,17 +120,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
               onClick={becomePassiveParticipant}
             />
           )}
-
-          <PosterPageSettingsControl
-            isPosterLive={isPosterLive}
-            venueId={venueId}
-          />
-
-          <PosterPageControl
-            label="Share"
-            icon={faShare}
-            onClick={showShareModal}
-          />
 
           {introVideoUrl && (
             <PosterPageControl
@@ -200,11 +168,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           introVideoUrl={introVideoUrl}
         />
       )}
-      <ShareModal
-        show={isShareModalShown}
-        onHide={hideShareModal}
-        venue={venue}
-      />
     </div>
   );
 };

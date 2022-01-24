@@ -45,32 +45,32 @@ $control-buttons-padding-right: 80px;
     text-align: right;
     font-size: $font-size--sm;
     margin-bottom: $spacing--sm;
+    font-weight: normal;
   }
 
   &__title {
-    margin: 0 0 $spacing--xs;
+    margin: 0 0 $spacing--md;
     text-align: center;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--600;
   }
 
   &__authorBox {
-    display: flex;
-    align-items: center;
-    margin: $spacing--sm 0;
+    font-size: $font-size--md;
+    font-weight: normal;
+    margin: 0 0 $spacing--md;
   }
 
-  &__avatar {
-    margin-right: auto;
-  }
-
-  &__author {
-    margin-left: $spacing--sm;
+  &__description {
     font-size: $font-size--sm;
-    font-weight: $font-weight--500;
-    @include line-clamp-with-overflow(7);
+    font-weight: normal;
+    margin: 0 0 $spacing--md;
   }
 
-  &__contactEmail {
+  &__descriptionSecondary {
     font-size: $font-size--sm;
+    font-weight: normal;
+    margin: 0 0 $spacing--md;
   }
 
   &__categories {

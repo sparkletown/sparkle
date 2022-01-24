@@ -27,14 +27,15 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
     searchInputValue,
     setSearchInputValue,
-    liveFilter,
-    setLiveFilter,
   } = usePosters(venue.id);
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 
   const renderedPosterPreviews = useMemo(() => {
-    return posterVenues.map((posterVenue) => (
+    const sortedVenues = [...posterVenues].sort(
+      (a, b) => (b.recentUserCount ?? 0) - (a.recentUserCount ?? 0)
+    );
+    return sortedVenues.map((posterVenue) => (
       <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
     ));
   }, [posterVenues]);
@@ -44,8 +45,6 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}
         searchInputValue={searchInputValue}
-        liveFilterValue={liveFilter}
-        setLiveValue={setLiveFilter}
       />
 
       <div className="PosterHall__posters">
