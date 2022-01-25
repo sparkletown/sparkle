@@ -30,7 +30,7 @@ const secondsToDuration = (totalSeconds: number) => {
   return { days, hours, minutes, seconds: remainingSecondsWithoutMinutes };
 };
 
-const formatSecondsAsHHMMSS = (secondsValue: number) => {
+export const formatSecondsAsHHMMSS = (secondsValue: number) => {
   const { hours = 0, minutes = 0, seconds = 0 } = secondsToDuration(
     secondsValue
   );
@@ -40,5 +40,3 @@ const formatSecondsAsHHMMSS = (secondsValue: number) => {
 
   return `${hourFormatted}:${minuteFormatted}:${secondsFormatted}`;
 };
-
-exports.formatSecondsAsHHMMSS = formatSecondsAsHHMMSS;

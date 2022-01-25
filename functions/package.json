@@ -6,6 +6,7 @@
     "ncu:check": "npx npm-check-updates",
     "npm:save-audit": "npm audit > npm-audit.result.txt",
     "npm:generate-lockfile": "npm i --legacy-peer-deps --package-lock-only",
+    "npm:install": "npm install --legacy-peer-deps",
     "npm:invalidate-cache": "npm cache clear --force",
     "build": "tsc",
     "serve": "npm run build && firebase emulators:start --only functions",

@@ -5,23 +5,22 @@ import * as functions from "firebase-functions";
 import { UserRecord } from "firebase-functions/v1/auth";
 import { chunk } from "lodash";
 
+import { HttpsFunctionHandler } from "./types/utility";
 import { assertValidAuth } from "./utils/assert";
-import { checkIsAdmin } from "./utils/permissions";
 import { formatSecondsAsHHMMSS } from "./utils/time";
 
 const functionsConfig = functions.config();
 
-interface Visit {
-  id: string;
-  timeSpent?: number;
-}
+type TimedVisit = { id: string | number; timeSpent: number };
+type UntimedVisit = { id: string | number; timeSpent?: number };
+type Visit = TimedVisit | UntimedVisit;
 
 interface UserWithVisits {
   user: {
     id: string;
     partyName?: string;
   };
-  visits: Visit[];
+  visits: UntimedVisit[];
 }
 
 const getUsersWithVisits = async (venueIdsArray: string[]) => {
@@ -56,16 +55,18 @@ const getUsersWithVisits = async (venueIdsArray: string[]) => {
   return Promise.all(await dto);
 };
 
-exports.generateAnalytics = functions.https.onCall(async (data, context) => {
+const generateAnalytics: HttpsFunctionHandler<{
+  venueIds: string[] | string | undefined;
+}> = async (data, context) => {
   assertValidAuth(context);
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   await checkIsAdmin(context.auth.token.user_id);
 
-  const { venueIds = [] } = data;
-
-  const venueIdsArray = venueIds.split(",");
+  const venueIdsArray = Array.isArray(data?.venueIds)
+    ? data.venueIds
+    : (data?.venueIds ?? "").split(",");
 
   // TODO: CHECK IF ADMIN
   // TODO: extract this as a generic helper function?
@@ -112,7 +113,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
 
       if (matchingUserIndex > 0) {
         const newArr = [...arr[matchingUserIndex].visits, ...visits].reduce(
-          (visitsArr: Visit[], visit: Visit) => {
+          (visitsArr: UntimedVisit[], visit: UntimedVisit) => {
             if (visitsArr.map((arrVisit) => arrVisit.id).includes(visit.id)) {
               return visitsArr;
             }
@@ -193,19 +194,24 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
   const allDataResult = result.map((user) => {
     const onlyVisitIds = user.visits.map((el) => el.id);
 
-    const getVisitData = (visitName: string) =>
-      user.visits.find((visit) => (visit.id === visitName ? visit : 0)) || {
-        timeSpent: 0,
-        id: 0,
-      };
+    const getVisitData: (visitName: string) => Visit = (visitName) => {
+      const found: UntimedVisit | undefined = user.visits.find((visit) =>
+        visit.id === visitName ? visit : 0
+      );
+      return found
+        ? found
+        : {
+            timeSpent: 0,
+            id: 0,
+          };
+    };
 
     const formattedVisitColumns = globalUniqueVisits.map((visit: string) => {
       if (onlyVisitIds.includes(visit) && getVisitData(visit)) {
+        const timeSpent = getVisitData(visit).timeSpent;
         return {
-          timeValue: getVisitData(visit).timeSpent,
-          formattedTime: `${formatSecondsAsHHMMSS(
-            getVisitData(visit).timeSpent
-          )}`,
+          timeValue: timeSpent,
+          formattedTime: `${formatSecondsAsHHMMSS(timeSpent ?? 0)}`,
         };
       }
       return {};
@@ -230,9 +236,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
       flag: "a",
     });
 
-    const result = formattedVisitColumns.map((visit) => visit.timeValue || 0);
-
-    return result;
+    return formattedVisitColumns.map((visit) => visit.timeValue || 0);
   });
 
   // space between visit data & total data
@@ -291,6 +295,7 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
   // NOTE: Expire 10 minutes from now
   const expiryDate = new Date().getTime() + TEN_MINUTES_IN_MS;
 
+  // noinspection SpellCheckingInspection
   const bucket = storage.bucket(`${functionsConfig.project.id}.appspot.com`);
 
   const [dataReportFile] = await bucket.upload(dataReportFileName, {
@@ -330,4 +335,6 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
     allSpaceVisitsFileUrl,
     uniqueVenuesVisitedFileUrl,
   };
-});
+};
+
+exports.generateAnalytics = functions.https.onCall(generateAnalytics);
