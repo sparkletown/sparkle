@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
-import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { PosterPageVenue } from "types/venues";
@@ -15,25 +13,9 @@ import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 
+import { PosterAttendance } from "../PosterAttendance";
+
 import "./PosterPreview.scss";
-
-interface PosterAttendanceProps {
-  userCount: number;
-}
-
-const PosterAttendance: React.FC<PosterAttendanceProps> = ({ userCount }) => {
-  if (userCount === 0) return <></>;
-
-  return (
-    <div className="PosterAttendance">
-      <FontAwesomeIcon
-        className="PosterAttendance--icon"
-        icon={faUserFriends}
-      />
-      <span>{userCount}</span>
-    </div>
-  );
-};
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
