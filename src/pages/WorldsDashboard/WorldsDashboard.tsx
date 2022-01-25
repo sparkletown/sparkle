@@ -2,8 +2,8 @@ import React, { useMemo } from "react";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
-import { useUser } from "hooks/useUser";
-import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -20,9 +20,19 @@ import ARROW from "assets/images/admin/dashboard-arrow.svg";
 import "./WorldsDashboard.scss";
 
 export const WorldsDashboard: React.FC = () => {
-  const user = useUser();
+  const { ownedVenues } = useOwnedVenues({});
 
-  const worlds = useOwnWorlds(user.userId);
+  const ownedUniqueWorldIds = useMemo(
+    () => [...new Set(ownedVenues.map((venue) => venue.worldId))],
+    [ownedVenues]
+  );
+
+  const worlds = useWorlds();
+
+  const uniqueWorlds = useMemo(
+    () => worlds.filter((world) => ownedUniqueWorldIds.includes(world.id)),
+    [worlds, ownedUniqueWorldIds]
+  );
 
   const hasWorlds = !!worlds.length;
 
@@ -41,12 +51,12 @@ export const WorldsDashboard: React.FC = () => {
   const renderedWorldsList = useMemo(
     () => (
       <div className="WorldsDashboard__worlds-list">
-        {worlds.map((world) => (
+        {uniqueWorlds.map((world) => (
           <WorldCard key={world.id} world={world} />
         ))}
       </div>
     ),
-    [worlds]
+    [uniqueWorlds]
   );
 
   return (

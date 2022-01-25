@@ -16,5 +16,5 @@ export const useIsUserVenueOwner = (): boolean => {
 
   const venueOwners = parentVenue ? parentVenue.owners : currentVenue.owners;
 
-  return venueOwners.includes(user.uid);
+  return venueOwners ? venueOwners.includes(user.uid) : false;
 };
