@@ -22,6 +22,7 @@ const COL_DESCRIPTION_SECONDARY = "SECONDARY DESCRIPTION";
 const COL_CATEGORIES = "CATEGORIES";
 const COL_POSTER_ID = "POSTER ID";
 const COL_MORE_INFO_URL = "MORE INFO URL";
+const COL_PRESENTER_NAME = "PRESENTER NAME";
 
 // ---------------------------------------------------------
 // HERE THERE BE DRAGONS (edit below here at your own risk)
@@ -35,6 +36,7 @@ const usage = makeScriptUsage({
     "The CSV is expected to have a header column with the following headers\n" +
     " * Title - The title of the poster\n" +
     " * Thumbnail - A link to an image to use as a thumbnail for the poster\n" +
+    " * Presenter name - The name of the person presenting the poster\n" +
     " * Intro Video URL - A URL for the intro vide for the poster\n" +
     " * IFrame URL - The URL to embed inside the poster\n" +
     " * Description - Description of the poster\n" +
@@ -118,6 +120,7 @@ db.runTransaction(async (transaction) => {
         categories,
         thumbnailUrl: posterCsv[COL_THUMBNAIL],
         moreInfoUrl: posterCsv[COL_MORE_INFO_URL],
+        presenterName: posterCsv[COL_PRESENTER_NAME],
       },
       iframeUrl: posterCsv[COL_IFRAME_URL],
     };

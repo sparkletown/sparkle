@@ -1,0 +1,1 @@
+export { PosterAttendance } from "./PosterAttendance";
