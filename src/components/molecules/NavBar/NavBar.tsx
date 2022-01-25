@@ -66,7 +66,7 @@ type HocProps = SpaceSlugLocation &
   WorldAndSpaceIdLocation & {
     profile: Profile;
     userId: UserId;
-    userWithId: UserWithId;
+    userWithId?: UserWithId;
     world: WorldWithId;
   };
 
@@ -266,7 +266,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
                 >
-                  <UserAvatar user={userWithId} showStatus size="medium" />
+                  {userWithId && (
+                    <UserAvatar user={userWithId} showStatus size="medium" />
+                  )}
                 </div>
               </div>
             )}

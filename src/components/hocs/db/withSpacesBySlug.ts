@@ -3,17 +3,28 @@ import { get } from "lodash/fp";
 
 import {
   MaybeWorldIdLocation,
-  SpaceSlugLocation,
+  SpaceId,
+  Spaces,
   SpacesSlugLocation,
+  SpaceWithId,
 } from "types/id";
 
 import { hoistHocStatics } from "utils/hoc";
 
 import { useSpacesBySlug } from "hooks/spaces/useSpacesBySlug";
 
-type Props<T extends SpacesSlugLocation & MaybeWorldIdLocation> = T;
+type Attributes = SpacesSlugLocation & MaybeWorldIdLocation;
+type Props<T extends Attributes> = T;
 
-export const withSpacesBySlug = <T extends SpaceSlugLocation>(
+export type WithSpacesBySlugProps = {
+  isSpacesLoaded: boolean;
+  isSpacesLoading: boolean;
+  space: SpaceWithId;
+  spaces: Spaces;
+  spaceId: SpaceId;
+};
+
+export const withSpacesBySlug = <T extends Attributes>(
   Component: React.FC<Props<T>>
 ) => {
   const WithSpacesBySlug = (props: Props<T>) => {

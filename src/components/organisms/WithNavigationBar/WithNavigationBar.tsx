@@ -74,11 +74,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
     )}
 
     <Footer />
-    <NewProfileModal venue={space} />
+    <NewProfileModal space={space} />
   </>
 );
 
-/**
- * @deprecated use named export instead
- */
-export default WithNavigationBar;

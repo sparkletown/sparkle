@@ -1,6 +1,8 @@
 import React from "react";
 
-import { RefiAuthUser } from "types/fire";
+import { RefiAuthUser, RefiStatus } from "types/fire";
+import { UserWithId } from "types/id";
+import { Profile, UserLocation } from "types/User";
 
 import { hoistHocStatics } from "utils/hoc";
 
@@ -8,6 +10,17 @@ import { useProfile } from "hooks/user/useProfile";
 
 type Attributes = { auth: RefiAuthUser };
 type Props<T extends Attributes> = T;
+
+export type WithProfileProps = {
+  isProfileLoading: boolean;
+  isProfileLoaded: boolean;
+  profileError?: Error;
+  profile?: Profile;
+  userLocation?: UserLocation;
+  userWithId?: UserWithId;
+  isTester: boolean;
+  status: RefiStatus;
+};
 
 export const withProfile = <T extends Attributes>(
   Component: React.FC<Props<T>>

@@ -3,9 +3,10 @@ import { useMemo } from "react";
 import { COLLECTION_USERS } from "settings";
 
 import { LoadStatusWithError, RefiAuthUser, RefiStatus } from "types/fire";
-import { Profile, User, UserLocation } from "types/User";
+import { UserId, UserWithId } from "types/id";
+import { Profile, UserLocation } from "types/User";
 
-import { convertToFirestoreKey, WithId, withId } from "utils/id";
+import { convertToFirestoreKey, withId } from "utils/id";
 import { extractLocationFromUser, omitLocationFromUser } from "utils/user";
 
 import { useRefiDocument } from "hooks/fire/useRefiDocument";
@@ -13,16 +14,18 @@ import { useRefiDocument } from "hooks/fire/useRefiDocument";
 type UseProfile = (options: {
   auth?: RefiAuthUser;
 }) => LoadStatusWithError & {
+  auth?: RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;
-  userWithId?: WithId<User>;
+  userWithId?: UserWithId;
+  userId?: UserId;
   isTester: boolean;
   status: RefiStatus;
 };
 
 export const useProfile: UseProfile = (props) => {
   const auth = props?.auth;
-  const userId = auth?.uid;
+  const userId = auth?.uid as UserId | undefined;
 
   const { status, data: profileDataWithLocation, error } = useRefiDocument([
     COLLECTION_USERS,

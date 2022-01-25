@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { uuid } from "uuidv4";
 
 export const uploadFile = async (path: string, files?: FileList) => {

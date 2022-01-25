@@ -62,6 +62,6 @@ export const WithAdminNavBar: React.FC<WithAdminNavBarProps> = ({
       <div className="WithAdminNavBar__wrapper">{children}</div>
     )}
     <Footer />
-    <NewProfileModal venue={space} />
+    <NewProfileModal space={space} />
   </>
 );

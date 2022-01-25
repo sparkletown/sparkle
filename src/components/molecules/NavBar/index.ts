@@ -1,14 +1,16 @@
-import { withSlugs } from "components/hocs/context/withSlugs";
-import { withUser } from "components/hocs/db/withUser";
+import { withAuth } from "components/hocs/db/withAuth";
+import { withProfile } from "components/hocs/db/withProfile";
 import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
-import { withRequired } from "components/hocs/gate/withRequired";
+import { withChildren } from "components/hocs/gate/withChildren";
 import { compose } from "lodash/fp";
 
 import { NavBar as _NavBar } from "./NavBar";
 
 export const NavBar = compose(
-  withUser,
-  withSlugs,
+  withAuth,
+  withChildren(["auth"]),
+  withProfile,
+  withChildren(["profile"]),
   withWorldOrSpace,
-  withRequired(["profile", "userWithId"])
+  withChildren(["userWithId"])
 )(_NavBar);

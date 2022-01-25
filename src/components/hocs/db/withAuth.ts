@@ -1,11 +1,23 @@
 import React, { PropsWithChildren } from "react";
 
+import { RefiAuthUser } from "types/fire";
+import { UserId } from "types/id";
+
 import { hoistHocStatics } from "utils/hoc";
 
 import { useLoginCheck } from "hooks/user/useLoginCheck";
 
+type Props<T> = PropsWithChildren<T>;
+
+export type WithAuthProps = {
+  isAuthLoading: boolean;
+  isAuthLoaded: boolean;
+  auth?: RefiAuthUser;
+  userId?: UserId;
+};
+
 export const withAuth = <T = {}>(Component: React.FC<T>) => {
-  const WithAuth = (props: PropsWithChildren<T>) => {
+  const WithAuth = (props: Props<T>) => {
     const { error, user, userId, isLoading } = useLoginCheck();
 
     if (error) {
