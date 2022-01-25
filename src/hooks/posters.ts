@@ -50,7 +50,6 @@ export const usePosters = (posterHallId: string) => {
     setSearchInputValue,
   } = useDebounceSearch();
 
-  const [liveFilter, setLiveFilter] = useState<boolean>(false);
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(
     DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
   );
@@ -62,18 +61,10 @@ export const usePosters = (posterHallId: string) => {
     );
   }, []);
 
-  const filteredPosterVenues = useMemo(
-    () =>
-      liveFilter
-        ? posterVenues.filter((posterVenue) => posterVenue.isLive)
-        : posterVenues,
-    [posterVenues, liveFilter]
-  );
-
   // See https://fusejs.io/api/options.html
   const fuseVenues = useMemo(
     () =>
-      new Fuse(filteredPosterVenues, {
+      new Fuse(posterVenues, {
         keys: [
           "name",
           "poster.title",
@@ -87,19 +78,19 @@ export const usePosters = (posterHallId: string) => {
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
         findAllMatches: true,
       }),
-    [filteredPosterVenues]
+    [posterVenues]
   );
 
   const searchedPosterVenues = useMemo(() => {
     const normalizedSearchQuery = searchQuery.trim();
 
-    if (!normalizedSearchQuery) return filteredPosterVenues;
+    if (!normalizedSearchQuery) return posterVenues;
 
     const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
       normalizedSearchQuery
     );
 
-    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
+    if (tokenisedSearchQuery.length === 0) return posterVenues;
 
     return fuseVenues
       .search({
@@ -120,7 +111,7 @@ export const usePosters = (posterHallId: string) => {
         }),
       })
       .map((fuseResult) => fuseResult.item);
-  }, [searchQuery, fuseVenues, filteredPosterVenues]);
+  }, [searchQuery, fuseVenues, posterVenues]);
 
   const displayedPosterVenues = useMemo(
     () => searchedPosterVenues.slice(0, displayedPostersCount),
@@ -136,10 +127,8 @@ export const usePosters = (posterHallId: string) => {
     hasHiddenPosters,
 
     searchInputValue,
-    liveFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
-    setLiveFilter,
   };
 };
