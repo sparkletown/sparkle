@@ -1,27 +1,17 @@
-import React, { lazy, Suspense } from "react";
+import React from "react";
 
 import { SpaceId, SpaceWithId, WorldId } from "types/id";
-
-import { tracePromise } from "utils/performance";
 
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 
+import { AdminNavBar } from "components/molecules/AdminNavBar";
 import { Footer } from "components/molecules/Footer";
-import { Loading } from "components/molecules/Loading";
 
 import "./WithAdminNavBar.scss";
 
-const AdminNavBar = lazy(() =>
-  tracePromise("WithAdminNavBar::lazy-import::AdminNavBar", () =>
-    import("components/molecules/AdminNavBar").then(({ AdminNavBar }) => ({
-      default: AdminNavBar,
-    }))
-  )
-);
-
-interface WithAdminNavBarProps {
+export interface WithAdminNavBarProps {
   hasBackButton?: boolean;
   withHiddenLoginButton?: boolean;
   title?: string;
@@ -43,14 +33,12 @@ export const WithAdminNavBar: React.FC<WithAdminNavBarProps> = ({
 }) => (
   <>
     <RelatedVenuesProvider spaceId={spaceId} worldId={worldId}>
-      <Suspense fallback={<Loading />}>
-        {/* @debt remove backButton from Navbar */}
-        <AdminNavBar
-          hasBackButton={hasBackButton}
-          withHiddenLoginButton={withHiddenLoginButton}
-          title={title}
-        />
-      </Suspense>
+      {/* @debt remove backButton from Navbar */}
+      <AdminNavBar
+        hasBackButton={hasBackButton}
+        withHiddenLoginButton={withHiddenLoginButton}
+        title={title}
+      />
     </RelatedVenuesProvider>
     {variant === "internal-scroll" ? (
       <div className="WithAdminNavBar__wrapper WithAdminNavBar__wrapper--internal-scroll">
