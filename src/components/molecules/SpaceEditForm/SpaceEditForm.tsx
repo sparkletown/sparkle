@@ -197,7 +197,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { ownedVenues } = useOwnedVenues({ userId });
+  const { ownedVenues } = useOwnedVenues({ worldId: space.worldId, userId });
 
   const backButtonOptionList = useMemo(
     () =>

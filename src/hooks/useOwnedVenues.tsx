@@ -7,12 +7,12 @@ import { UserId } from "types/id";
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { WithId } from "utils/id";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export interface UseOwnedVenuesOptions {
-  worldId?: string;
+  worldId: string;
   currentVenueId?: string;
   userId: UserId;
 }
@@ -33,8 +33,8 @@ export const useOwnedVenues: ReactHook<
   } = useRefiCollection<AnyVenue>({
     path: [COLLECTION_SPACES],
     constraints: [
-      where("worldId", "==", convertToFirestoreKey(worldId)),
-      where("owners", "array-contains", convertToFirestoreKey(userId)),
+      where("worldId", "==", worldId),
+      where("owners", "array-contains", userId),
     ],
   });
 
