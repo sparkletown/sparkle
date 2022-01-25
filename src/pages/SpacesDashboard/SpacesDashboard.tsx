@@ -15,7 +15,8 @@ import { isNotPartyMapVenue, isPartyMapVenue } from "types/venues";
 import { generateUrl } from "utils/url";
 import { SortingOptions, sortVenues } from "utils/venue";
 
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useUser } from "hooks/useUser";
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
@@ -34,16 +35,20 @@ import { TesterRestricted } from "components/atoms/TesterRestricted";
 import "./SpacesDashboard.scss";
 
 export const SpacesDashboard: React.FC = () => {
-  const { ownedVenues, isLoading: isLoadingSpaces } = useOwnedVenues({});
+  const { relatedVenues, isLoading: isLoadingSpaces } = useRelatedVenues({});
+
+  const { userId } = useUser();
 
   const { worldSlug } = useWorldParams();
 
   const { world, isLoaded: isWorldLoaded } = useWorldBySlug(worldSlug);
 
+  const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
+
   const venues = useMemo(
     () =>
-      world ? ownedVenues.filter((venue) => venue.worldId === world.id) : [],
-    [ownedVenues, world]
+      world ? relatedVenues.filter((venue) => venue.worldId === world.id) : [],
+    [relatedVenues, world]
   );
 
   const [
@@ -58,22 +63,40 @@ export const SpacesDashboard: React.FC = () => {
 
   const renderedPartyVenues = useMemo(
     () =>
-      sortedVenues
-        ?.filter(isPartyMapVenue)
-        .map((venue) => (
-          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
-        )),
-    [sortedVenues, worldSlug]
+      sortedVenues?.filter(isPartyMapVenue).map((venue) => {
+        const isSpaceAdmin = userId
+          ? venue.owners?.includes(userId)
+          : undefined;
+
+        return (
+          <AdminSpaceCard
+            key={venue.id}
+            venue={venue}
+            worldSlug={worldSlug}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
+    [sortedVenues, worldSlug, isWorldAdmin, userId]
   );
 
   const renderedOtherVenues = useMemo(
     () =>
-      sortedVenues
-        ?.filter(isNotPartyMapVenue)
-        .map((venue) => (
-          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
-        )),
-    [sortedVenues, worldSlug]
+      sortedVenues?.filter(isNotPartyMapVenue).map((venue) => {
+        const isSpaceAdmin = userId
+          ? venue.owners?.includes(userId)
+          : undefined;
+
+        return (
+          <AdminSpaceCard
+            key={venue.id}
+            venue={venue}
+            worldSlug={worldSlug}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
+    [sortedVenues, worldSlug, isWorldAdmin, userId]
   );
 
   const hasPartyVenues = renderedPartyVenues.length > 0;

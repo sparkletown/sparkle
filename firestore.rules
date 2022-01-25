@@ -53,9 +53,13 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/worlds/$(venueData().worldId)).data;
       }
 
+      function checkIfSpaceOrWorldOwner(userId) {
+        return $(userId) in role('admin').users && ($(userId) in venueData().owners || $(userId) in world().owners)
+      }
+
       match /events/{event} {
         allow read: if true;
-        allow write: if request.auth.uid in venueData().owners;
+        allow write: if checkIfSpaceOrWorldOwner(request.auth.uid);
       }
 
       match /chatMessagesCounter/{shardId} {
@@ -64,19 +68,19 @@ service cloud.firestore {
       }
       match /chats/{messageId} {
         allow read,create: if request.auth.uid != null && !world().isHidden;
-        allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
+        allow delete: if checkIfSpaceOrWorldOwner(request.auth.uid);
         allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'repliesCount');
 
         match /thread/{messageId} {
           allow read,create: if request.auth.uid != null;
-          allow delete: if request.auth.uid in role('admin').users || request.auth.uid in venueData().owners;
+          allow delete: if checkIfSpaceOrWorldOwner(request.auth.uid);
           allow update: if false;
         }
       }
 
       match /jukeboxMessages/{restOfPath=**} {
         allow read,create: if request.auth.uid != null;
-        allow update: if (request.auth.uid in role('admin').users || request.auth.uid in venueData().owners) &&
+        allow update: if checkIfSpaceOrWorldOwner(request.auth.uid) &&
           isUpdateRestrictedToField(request, 'deleted');
       }
       match /access/{method} {
@@ -95,7 +99,7 @@ service cloud.firestore {
       }
       match /sections/{sectionId} {
         allow read: if request.auth.uid != null;
-        allow write: if request.auth.uid in venueData().owners;
+        allow write: if checkIfSpaceOrWorldOwner(request.auth.uid);
         match /seatedSectionUsers/{userId} {
           allow read: if request.auth.uid != null;
           allow write: if request.auth.uid == userId;
