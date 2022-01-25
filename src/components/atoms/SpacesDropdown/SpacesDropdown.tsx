@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
-import { omit } from "lodash";
+import { omit, omitBy } from "lodash";
 
 import { PORTAL_INFO_ICON_MAPPING } from "settings";
 
@@ -49,7 +49,11 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
-  const filteredSpaces = omit(spaces, VenueTemplate.playa);
+  const spacesWithoutPlaya = omit(spaces, VenueTemplate.playa);
+  const filteredSpaces = omitBy(
+    spacesWithoutPlaya,
+    (s) => s.template === VenueTemplate.posterpage
+  );
   const sortedSpaces = useMemo(
     () =>
       Object.values(filteredSpaces).sort((a, b) =>
