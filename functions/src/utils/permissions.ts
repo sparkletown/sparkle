@@ -12,11 +12,11 @@ const checkIsAdmin = async (uid: string) => {
     if (!adminDoc.exists) {
       throw new HttpsError("not-found", `'admin' doc doesn't exist.`);
     }
-    const admins = adminDoc.data();
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (admins.users && admins.users.includes(uid)) {
+    const admins = adminDoc.data();
+    const users = admins?.users;
+
+    if (Array.isArray(users) && users.includes(uid)) {
       return;
     }
 
