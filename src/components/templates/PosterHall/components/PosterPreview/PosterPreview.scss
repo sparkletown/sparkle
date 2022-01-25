@@ -58,13 +58,13 @@ $online-container-min-width: 50px;
     margin-top: $spacing--md;
   }
 
-  &__authorBox {
+  &__author-box {
     display: flex;
     align-items: center;
     font-size: $font-size--sm;
   }
 
-  &__thumbnailContainer {
+  &__thumbnail-container {
     flex-grow: 1;
     // Tiny initial height forces the container to grow to fill remaining space
     height: 1px;
@@ -89,7 +89,7 @@ $online-container-min-width: 50px;
   padding: $spacing--md;
   font-size: $font-size--sm;
 
-  &-icon {
+  &--icon {
     margin-right: $spacing--xs;
   }
 }

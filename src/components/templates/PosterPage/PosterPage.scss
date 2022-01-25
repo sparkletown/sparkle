@@ -28,19 +28,12 @@ $control-buttons-padding-right: 80px;
     }
   }
 
-  &__headerInfo {
+  &__header-info {
     display: flex;
     justify-content: space-between;
   }
 
-  &__posterId {
-    display: inline;
-    text-align: left;
-    font-size: $font-size--sm;
-    margin-right: $spacing--md;
-  }
-
-  &__moreInfoUrl {
+  &__more-info-url {
     display: inline;
     text-align: right;
     font-size: $font-size--sm;
@@ -55,7 +48,7 @@ $control-buttons-padding-right: 80px;
     font-weight: $font-weight--600;
   }
 
-  &__authorBox {
+  &__author-box {
     font-size: $font-size--md;
     font-weight: normal;
     margin: 0 0 $spacing--md;
@@ -67,7 +60,7 @@ $control-buttons-padding-right: 80px;
     margin: 0 0 $spacing--md;
   }
 
-  &__descriptionSecondary {
+  &__description-secondary {
     font-size: $font-size--sm;
     font-weight: normal;
     margin: 0 0 $spacing--md;

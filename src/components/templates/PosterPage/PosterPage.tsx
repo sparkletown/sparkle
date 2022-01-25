@@ -87,18 +87,18 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
         <div className="PosterPage__header--middle-cell">
           <p className="PosterPage__title">{title}</p>
-          <div className="PosterPage__authorBox">
+          <div className="PosterPage__author-box">
             Presented by: {presenterName}
           </div>
           <div className="PosterPage__description">{description}</div>
-          <div className="PosterPage__descriptionSecondary">
+          <div className="PosterPage__description-secondary">
             {descriptionSecondary}
           </div>
 
           {moreInfoUrl && (
-            <div className="PosterPage__headerInfo">
+            <div className="PosterPage__header-info">
               <a
-                className="PosterPage__moreInfoUrl"
+                className="PosterPage__more-info-url"
                 href={moreInfoUrl}
                 target="_blank"
                 rel="noreferrer"

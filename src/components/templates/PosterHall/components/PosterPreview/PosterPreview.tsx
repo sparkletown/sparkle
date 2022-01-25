@@ -10,6 +10,7 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterSpace } from "utils/url";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
@@ -26,7 +27,7 @@ const PosterAttendance: React.FC<PosterAttendanceProps> = ({ userCount }) => {
   return (
     <div className="PosterAttendance">
       <FontAwesomeIcon
-        className="ScheduleItem__online-icon"
+        className="PosterAttendance--icon"
         icon={faUserFriends}
       />
       <span>{userCount}</span>
@@ -70,8 +71,12 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const userCount = posterVenue.recentUserCount ?? 0;
 
+  const [validatedThumbnailUrl, { isValid: isThumbnailValid }] = useValidImage(
+    thumbnailUrl,
+    ""
+  );
   const thumbnailStyles = useCss({
-    backgroundImage: `url(${thumbnailUrl})`,
+    backgroundImage: `url(${validatedThumbnailUrl})`,
   });
 
   return (
@@ -82,14 +87,14 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       </div>
 
       {presenterName && (
-        <p className="PosterPreview__authorBox">
+        <p className="PosterPreview__author-box">
           Presented by: {presenterName}
         </p>
       )}
 
-      {thumbnailUrl && (
+      {thumbnailUrl && isThumbnailValid && (
         <div
-          className={`PosterPreview__thumbnailContainer ${thumbnailStyles}`}
+          className={`PosterPreview__thumbnail-container ${thumbnailStyles}`}
         />
       )}
 
