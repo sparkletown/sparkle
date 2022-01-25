@@ -221,6 +221,13 @@ export const Container: React.FC<PropsType> = (props) => {
   return (
     <>
       <div ref={drop} style={{ ...styles, ...containerStyle }}>
+        {
+          // @debt console displays this in strict mode
+          // Warning:
+          // findDOMNode is deprecated in StrictMode.
+          // findDOMNode was passed an instance of ResizeDetector which is inside StrictMode.
+          // Instead, add a ref directly to the element you want to reference.
+        }
         <ReactResizeDetector
           handleWidth
           handleHeight

@@ -19,6 +19,7 @@ module.exports = {
     "react-bootstrap",
 
     // most likely some minor adjustment due to prop types change
+    // should be updated since strict mode React displays a console deprecation warning
     "@types/react-resize-detector",
     "react-resize-detector",
 
