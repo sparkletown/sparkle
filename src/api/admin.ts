@@ -295,34 +295,23 @@ const createFirestoreRoomInput = async (
   const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
-  type ImageNaming = {
-    fileKey: RoomImageFileKeys;
-    urlKey: RoomImageUrlKeys;
-  };
-  const imageKeys: Array<ImageNaming> = [
-    {
-      fileKey: "image_file",
-      urlKey: "image_url",
-    },
-  ];
 
   let imageInputData = {};
 
   // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
+  if (input["image_file"]) {
+    const fileArr = input["image_file"];
     const downloadUrl = await uploadFile(
       `users/${user.uid}/venues/${venueId}/${urlPortalName}`,
       fileArr
     );
-    imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
+    imageInputData = { image_url: downloadUrl };
+  } else {
+    imageInputData = { image_url: input.image_url };
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ...omit(
-      input,
-      imageKeys.map((entry) => entry.fileKey)
-    ),
+    ...omit(input, "image_file"),
     ...imageInputData,
   };
   return firestoreRoomInput;

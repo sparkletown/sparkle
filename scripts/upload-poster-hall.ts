@@ -136,6 +136,7 @@ db.runTransaction(async (transaction) => {
         parentId: posterHallSpaceId,
         worldId: posterHall.worldId,
         template: "posterpage",
+        name: "",
         posterId,
         slug,
         ...payload,
