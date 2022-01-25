@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useDrop } from "react-dnd";
@@ -84,12 +85,16 @@ export const Container: React.FC<PropsType> = (props) => {
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
   const [dragBoxId, setDragBoxId] = useState<number>(0);
+  const wrapperRef = useRef(null);
 
   const onRoomResize = useCallback((width, height) => {
     setImageDims({ width, height });
   }, []);
 
-  const { ref } = useResizeDetector({ onResize: onRoomResize });
+  const { ref } = useResizeDetector({
+    onResize: onRoomResize,
+    targetRef: wrapperRef,
+  });
 
   const setDragItemId = useCallback((id: number) => {
     setDragBoxId(id);
@@ -228,14 +233,9 @@ export const Container: React.FC<PropsType> = (props) => {
     <>
       <div ref={drop} style={{ ...styles, ...containerStyle }}>
         <div ref={ref}>
-          {
-            // @debt console displays this in strict mode
-            // Warning:
-            // findDOMNode is deprecated in StrictMode.
-            // findDOMNode was passed an instance of ResizeDetector which is inside StrictMode.
-            // Instead, add a ref directly to the element you want to reference.
-          }
-          <ReactResizeDetector handleWidth handleHeight />
+          <ReactResizeDetector handleWidth handleHeight>
+            {({ targetRef }) => <span ref={targetRef} />}
+          </ReactResizeDetector>
           <img
             alt="draggable background"
             style={{

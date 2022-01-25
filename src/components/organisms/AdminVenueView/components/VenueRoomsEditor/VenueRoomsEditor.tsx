@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { useDrop } from "react-dnd";
@@ -94,12 +95,16 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   const [boxes, setBoxes] = useState<RoomIconsMap>({});
   const [imageDims, setImageDims] = useState<Dimensions>();
+  const wrapperRef = useRef(null);
 
   const onRoomResize = useCallback((width, height) => {
     setImageDims({ width, height });
   }, []);
 
-  const { ref } = useResizeDetector({ onResize: onRoomResize });
+  const { ref } = useResizeDetector({
+    onResize: onRoomResize,
+    targetRef: wrapperRef,
+  });
 
   const convertDisplayedCoordToIntrinsic = useCallback(
     (
@@ -302,7 +307,9 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   return (
     <div ref={drop} style={{ ...styles, ...containerStyle }}>
       <div ref={ref}>
-        <ReactResizeDetector handleWidth handleHeight />
+        <ReactResizeDetector handleWidth handleHeight>
+          {({ targetRef }) => <span ref={targetRef} />}
+        </ReactResizeDetector>
         {!backgroundImage ? (
           <MapBackgroundPlaceholder />
         ) : (
