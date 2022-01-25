@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import { useDrop } from "react-dnd";
-import ReactResizeDetector from "react-resize-detector";
+import ReactResizeDetector, { useResizeDetector } from "react-resize-detector";
 import classNames from "classnames";
 import update from "immutability-helper";
 
@@ -94,6 +94,12 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   const [boxes, setBoxes] = useState<RoomIconsMap>({});
   const [imageDims, setImageDims] = useState<Dimensions>();
+
+  const onRoomResize = useCallback((width, height) => {
+    setImageDims({ width, height });
+  }, []);
+
+  const { ref } = useResizeDetector({ onResize: onRoomResize });
 
   const convertDisplayedCoordToIntrinsic = useCallback(
     (
@@ -295,22 +301,20 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   return (
     <div ref={drop} style={{ ...styles, ...containerStyle }}>
-      <ReactResizeDetector
-        handleWidth
-        handleHeight
-        onResize={(width, height) => setImageDims({ width, height })}
-      />
-      {!backgroundImage ? (
-        <MapBackgroundPlaceholder />
-      ) : (
-        <img
-          alt="draggable background "
-          className={`Container__background-image ${backgroundImageClassName}`}
-          src={backgroundImage}
-        />
-      )}
+      <div ref={ref}>
+        <ReactResizeDetector handleWidth handleHeight />
+        {!backgroundImage ? (
+          <MapBackgroundPlaceholder />
+        ) : (
+          <img
+            alt="draggable background "
+            className={`Container__background-image ${backgroundImageClassName}`}
+            src={backgroundImage}
+          />
+        )}
 
-      {backgroundImage && renderRoomsPreview}
+        {backgroundImage && renderRoomsPreview}
+      </div>
     </div>
   );
 };

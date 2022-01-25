@@ -77,4 +77,3 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
     <NewProfileModal space={space} />
   </>
 );
-

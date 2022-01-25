@@ -18,11 +18,6 @@ module.exports = {
     "bootswatch",
     "react-bootstrap",
 
-    // most likely some minor adjustment due to prop types change
-    // should be updated since strict mode React displays a console deprecation warning
-    "@types/react-resize-detector",
-    "react-resize-detector",
-
     // requires rework of routes to be relative and replacing some basic components like Switch
     "react-router-dom",
 
