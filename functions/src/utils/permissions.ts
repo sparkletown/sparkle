@@ -1,5 +1,5 @@
-const admin = require("firebase-admin");
-const { HttpsError } = require("firebase-functions/lib/providers/https");
+import * as admin from "firebase-admin";
+import { HttpsError } from "firebase-functions/v1/https";
 
 const checkIsAdmin = async (uid: string) => {
   try {
@@ -14,6 +14,8 @@ const checkIsAdmin = async (uid: string) => {
     }
     const admins = adminDoc.data();
 
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     if (admins.users && admins.users.includes(uid)) {
       return;
     }
