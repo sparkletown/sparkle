@@ -2,6 +2,7 @@ module.exports = {
   reject: [
     // author of this library decided to corrupt it for political reasons (version 6.6.6 is the bad one)
     "faker",
+    "@types/faker",
 
     // easy to upgrade, might require rm -rf .git/hooks for cloned repos
     "husky",
