@@ -50,6 +50,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
   const spacesWithoutPlaya = omit(spaces, VenueTemplate.playa);
+  // @debt Filter out all the poster pages as poster hall currently uses (abuses?)
+  // spaces by creating a space for every single poster page. They aren't
+  // proper spaces though. We should make a better way of handling this.
   const filteredSpaces = omitBy(
     spacesWithoutPlaya,
     (s) => s.template === VenueTemplate.posterpage
