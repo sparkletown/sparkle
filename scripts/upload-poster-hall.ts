@@ -100,7 +100,6 @@ db.runTransaction(async (transaction) => {
 
   for (const posterCsv of records) {
     const posterId = posterCsv[COL_POSTER_ID];
-    console.log(`Working on: ${JSON.stringify(posterCsv)}`);
 
     // Get the existing space for this poster if it exists
     const existingRef = await db
@@ -110,7 +109,9 @@ db.runTransaction(async (transaction) => {
       .get();
     const [existing] = existingRef.docs;
 
-    const categories = posterCsv[COL_CATEGORIES].split(",");
+    const categories = posterCsv[COL_CATEGORIES].split(",").filter(
+      (c: string) => c.length > 0
+    );
     const payload = {
       poster: {
         description: posterCsv[COL_DESCRIPTION],
@@ -136,6 +137,7 @@ db.runTransaction(async (transaction) => {
         parentId: posterHallSpaceId,
         worldId: posterHall.worldId,
         template: "posterpage",
+        name: "",
         posterId,
         slug,
         ...payload,

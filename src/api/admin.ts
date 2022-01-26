@@ -299,23 +299,12 @@ const createFirestoreRoomInput = async (
   const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
-  type ImageNaming = {
-    fileKey: RoomImageFileKeys;
-    urlKey: RoomImageUrlKeys;
-  };
-  const imageKeys: Array<ImageNaming> = [
-    {
-      fileKey: "image_file",
-      urlKey: "image_url",
-    },
-  ];
 
   let imageInputData = {};
 
   // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
+  if (input["image_file"]) {
+    const fileArr = input["image_file"];
     const file = fileArr[0];
     const uploadFileRef = ref(
       FIREBASE.storage,
@@ -324,14 +313,13 @@ const createFirestoreRoomInput = async (
 
     await uploadBytes(uploadFileRef, file);
     const downloadUrl = await getDownloadURL(uploadFileRef);
-    imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
+    imageInputData = { image_url: downloadUrl };
+  } else {
+    imageInputData = { image_url: input.image_url };
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ...omit(
-      input,
-      imageKeys.map((entry) => entry.fileKey)
-    ),
+    ...omit(input, "image_file"),
     ...imageInputData,
   };
   return firestoreRoomInput;

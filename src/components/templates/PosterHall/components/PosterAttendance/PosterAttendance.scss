@@ -1,0 +1,16 @@
+.PosterAttendance {
+  margin: 0 0 0 auto;
+  background: var(--content--under-30a);
+  border-radius: $border-radius--xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: $online-container-min-width;
+  height: $spacing--xxl;
+  padding: $spacing--md;
+  font-size: $font-size--sm;
+
+  &--icon {
+    margin-right: $spacing--xs;
+  }
+}
