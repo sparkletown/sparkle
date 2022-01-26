@@ -1,5 +1,3 @@
 module.exports = {
-  reject: [
-    "node-fetch",
-  ],
+  reject: ["node-fetch"],
 };
