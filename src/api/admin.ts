@@ -189,10 +189,10 @@ const createFirestoreVenueInput_v2 = async (
 ) => {
   // We temporarily cast the result to unknown so that we can cast to the
   // same type with the ID added, then we add the missing property.
-  const result = ((await createFirestoreVenueInputWithoutId_v2(
+  const result = (await createFirestoreVenueInputWithoutId_v2(
     input,
     user
-  )) as unknown) as FirestoreVenueInput_v2;
+  )) as unknown as FirestoreVenueInput_v2;
   result.id = input.id;
   return result;
 };

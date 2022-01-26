@@ -45,24 +45,21 @@ export type RoomHitFilterProps = {
  * @param totalRows
  * @param totalColumns
  */
-export const makeRoomHitFilter = ({
-  row,
-  column,
-  totalRows,
-  totalColumns,
-}: RoomHitFilterProps) => (room: Room) => {
-  const checkPercentRow = (row / totalRows) * 100;
-  const checkPercentColumn = (column / totalColumns) * 100;
+export const makeRoomHitFilter =
+  ({ row, column, totalRows, totalColumns }: RoomHitFilterProps) =>
+  (room: Room) => {
+    const checkPercentRow = (row / totalRows) * 100;
+    const checkPercentColumn = (column / totalColumns) * 100;
 
-  // Rows are distributed along the Y axis, columns on the X axis
-  const checkPercent = { x: checkPercentColumn, y: checkPercentRow };
+    // Rows are distributed along the Y axis, columns on the X axis
+    const checkPercent = { x: checkPercentColumn, y: checkPercentRow };
 
-  const roomBounds = {
-    x: Math.round(room.x_percent),
-    y: Math.round(room.y_percent),
-    width: Math.round(room.width_percent),
-    height: Math.round(room.height_percent),
+    const roomBounds = {
+      x: Math.round(room.x_percent),
+      y: Math.round(room.y_percent),
+      width: Math.round(room.width_percent),
+      height: Math.round(room.height_percent),
+    };
+
+    return isWithinBounds(checkPercent, roomBounds);
   };
-
-  return isWithinBounds(checkPercent, roomBounds);
-};

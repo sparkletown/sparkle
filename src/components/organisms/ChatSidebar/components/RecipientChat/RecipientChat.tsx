@@ -23,10 +23,8 @@ export interface RecipientChatProps {
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
-  const {
-    messagesToDisplay: allMessagesToDisplay,
-    replies,
-  } = useRecipientChatMessages(recipient);
+  const { messagesToDisplay: allMessagesToDisplay, replies } =
+    useRecipientChatMessages(recipient);
 
   const actions = useRecipientChatActions(recipient);
 
@@ -44,9 +42,8 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({ recipient }) => {
 
   const { selectPrivateChat } = useChatSidebarControls();
 
-  const [messagesToDisplay, infiniteProps] = useRenderInfiniteScroll(
-    allMessagesToDisplay
-  );
+  const [messagesToDisplay, infiniteProps] =
+    useRenderInfiniteScroll(allMessagesToDisplay);
 
   return (
     <div className="recipient-chat">

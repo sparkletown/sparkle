@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import Bugsnag from "@bugsnag/js";
 import { HowlOptions } from "howler";
+// eslint-disable-next-line import/no-named-as-default
 import useSound from "use-sound";
 import {
   ExposedData,
@@ -43,9 +44,8 @@ export const initialValue: CustomSoundsState = {
   isLoading: false,
 };
 
-export const CustomSoundsContext = createContext<CustomSoundsState>(
-  initialValue
-);
+export const CustomSoundsContext =
+  createContext<CustomSoundsState>(initialValue);
 
 export interface CustomSoundsProviderProps {
   waitTillConfigLoaded?: boolean;

@@ -99,8 +99,8 @@ export class MotionJoystickSystem extends MotionBaseSystem {
       const power = this.joystick.head.joystick.power;
 
       for (
-        let node: MotionJoystickControlNode | null | undefined = this
-          .motionJoystickControl.head;
+        let node: MotionJoystickControlNode | null | undefined =
+          this.motionJoystickControl.head;
         node;
         node = node.next
       ) {
@@ -112,8 +112,8 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     } else if (this.motionKeyboardControl && this.motionKeyboardControl.head) {
       // hero is moved by WASD?
       for (
-        let node: MotionKeyboardControlNode | null | undefined = this
-          .motionKeyboardControl.head;
+        let node: MotionKeyboardControlNode | null | undefined =
+          this.motionKeyboardControl.head;
         node;
         node = node.next
       ) {
@@ -188,8 +188,8 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     }
 
     for (
-      let node: MotionJoystickControlNode | null | undefined = this
-        .motionJoystickControl?.head;
+      let node: MotionJoystickControlNode | null | undefined =
+        this.motionJoystickControl?.head;
       node;
       node = node.next
     ) {

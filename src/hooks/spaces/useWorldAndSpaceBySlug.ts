@@ -35,9 +35,8 @@ export const useWorldAndSpaceBySlug = (
     .withConverter(withIdConverter<AnyVenue>());
 
   // Note: Avoid using the option 'initialData' because it will make status always return 'success'
-  const { data: spaces, status: spaceStatus } = useFirestoreCollectionData<
-    WithId<AnyVenue>
-  >(spacesRef);
+  const { data: spaces, status: spaceStatus } =
+    useFirestoreCollectionData<WithId<AnyVenue>>(spacesRef);
 
   const worldsRef = firestore
     .collection("worlds")
@@ -47,9 +46,8 @@ export const useWorldAndSpaceBySlug = (
     // a bit of a rethink. It's used incorrectly by the NavBar.
     .where("slug", "==", worldSlug || "")
     .withConverter(withIdConverter<World>());
-  const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
-    WithId<World>
-  >(worldsRef);
+  const { data: worlds, status: worldStatus } =
+    useFirestoreCollectionData<WithId<World>>(worldsRef);
 
   const isSpaceLoaded = spaceStatus !== "loading";
   const isWorldLoaded = worldStatus !== "loading";

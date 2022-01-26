@@ -44,9 +44,8 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
     unsetCategoryFilter,
   } = useScreeningRoom(venue.id);
 
-  const [selectedVideo, setSelectedVideo] = useState<
-    WithId<ScreeningRoomVideo>
-  >();
+  const [selectedVideo, setSelectedVideo] =
+    useState<WithId<ScreeningRoomVideo>>();
 
   const selectedVideoId = selectedVideo?.id;
 

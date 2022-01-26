@@ -289,9 +289,8 @@ const getNextFreeSeat = (grid: string[][]): GridPosition | undefined => {
   const rows = grid.length;
   const columns = grid[0].length;
 
-  const { videoHeightInSeats, videoWidthInSeats } = getVideoSizeInSeats(
-    columns
-  );
+  const { videoHeightInSeats, videoWidthInSeats } =
+    getVideoSizeInSeats(columns);
 
   const videoRowThresholdLo = Math.floor((rows - videoHeightInSeats) / 2);
   const videoRowThresholdHi = videoRowThresholdLo + videoHeightInSeats;

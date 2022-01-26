@@ -131,17 +131,19 @@ export const ensureProjectIdMatchesCredentialProjectId = (
  *     exampleParams: "my-project-id venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
  *   });
  */
-export const makeScriptUsage = ({
-  description,
-  usageParams,
-  exampleParams,
-}: {
-  description: string;
-  usageParams: string;
-  exampleParams: string;
-}) => () => {
-  const scriptName = relative(process.cwd(), process.argv[1]);
-  const helpText = `
+export const makeScriptUsage =
+  ({
+    description,
+    usageParams,
+    exampleParams,
+  }: {
+    description: string;
+    usageParams: string;
+    exampleParams: string;
+  }) =>
+  () => {
+    const scriptName = relative(process.cwd(), process.argv[1]);
+    const helpText = `
 ---------------------------------------------------------
 ${description}
 
@@ -151,9 +153,9 @@ Example: ${scriptName} ${exampleParams}
 ---------------------------------------------------------
 `;
 
-  console.log(helpText);
-  process.exit(1);
-};
+    console.log(helpText);
+    process.exit(1);
+  };
 
 /**
  * Creates a saveToBackupFile function that uses the supplied filenamePrefix.
@@ -165,33 +167,35 @@ Example: ${scriptName} ${exampleParams}
  *   // ..snip..
  *   saveToDestBackupFile(destVenueEvents, `${destVenueRef.id}-events`);
  */
-export const makeSaveToBackupFile = (filenamePrefix: string) => (
-  data: string | {} | [],
-  type: string = "general",
-  ext: string = "backup.json"
-) => {
-  const backupDate = formatDate(new Date(), "yyyyMMdd-HHmmss");
-  const backupFilename = `${backupDate}-${filenamePrefix}-${type}.${ext}`;
+export const makeSaveToBackupFile =
+  (filenamePrefix: string) =>
+  (
+    data: string | {} | [],
+    type: string = "general",
+    ext: string = "backup.json"
+  ) => {
+    const backupDate = formatDate(new Date(), "yyyyMMdd-HHmmss");
+    const backupFilename = `${backupDate}-${filenamePrefix}-${type}.${ext}`;
 
-  const jsonData = JSON.stringify(data, null, 2);
+    const jsonData = JSON.stringify(data, null, 2);
 
-  writeFileSync(backupFilename, jsonData, "utf8");
+    writeFileSync(backupFilename, jsonData, "utf8");
 
-  console.log(`Saved backup (type='${type}') to ${backupFilename}`);
-};
+    console.log(`Saved backup (type='${type}') to ${backupFilename}`);
+  };
 
 /**
  * Look up a user in Firebase Auth by their email address.
  *
  * @param app Initialised Firebase Admin App instance
  */
-export const findUserByEmail = (app: admin.app.App) => (
-  email: string
-): Promise<admin.auth.UserRecord | undefined> =>
-  app
-    .auth()
-    .getUserByEmail(email)
-    .catch(() => undefined);
+export const findUserByEmail =
+  (app: admin.app.App) =>
+  (email: string): Promise<admin.auth.UserRecord | undefined> =>
+    app
+      .auth()
+      .getUserByEmail(email)
+      .catch(() => undefined);
 
 export const wrapIntoSlashes = (str: string): string => {
   return `/${str}/`;

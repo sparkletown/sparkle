@@ -38,10 +38,10 @@ export const QuestionFieldSet: React.FC<QuestionFieldSetProps> = ({
   const inputText = `${fieldset}${fieldText}`;
   const inputLink = `${fieldset}${fieldLink}`;
 
-  const handleRemove = useCallback(() => onRemove({ index }), [
-    onRemove,
-    index,
-  ]);
+  const handleRemove = useCallback(
+    () => onRemove({ index }),
+    [onRemove, index]
+  );
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     ({ target }) => {

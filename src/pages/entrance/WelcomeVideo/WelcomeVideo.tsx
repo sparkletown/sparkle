@@ -12,11 +12,9 @@ import "./WelcomeVideo.scss";
 
 const DEFAULT_BUTTON_TEXT = "Proceed";
 
-export const WelcomeVideo: React.FunctionComponent<EntranceStepTemplateProps> = ({
-  venueName,
-  config,
-  proceed,
-}) => {
+export const WelcomeVideo: React.FunctionComponent<
+  EntranceStepTemplateProps
+> = ({ venueName, config, proceed }) => {
   const { autoplay: autoPlay, buttons, videoUrl: url, welcomeText } = config;
   const hasProceedButton = !!buttons?.find(({ isProceed }) => isProceed);
 

@@ -20,13 +20,9 @@ export interface ProfilePictureInputProps {
   register: ReturnType<typeof useForm>["register"];
 }
 
-export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
-  setValue,
-  user,
-  errors,
-  pictureUrl,
-  register,
-}) => {
+export const ProfilePictureInput: React.FunctionComponent<
+  ProfilePictureInputProps
+> = ({ setValue, user, errors, pictureUrl, register }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
   const uploadRef = useRef<HTMLInputElement>(null);

@@ -16,17 +16,18 @@ const withIdConverterObj: firebase.firestore.FirestoreDataConverter<object> = {
 export const withIdConverter = <T extends object>() =>
   withIdConverterObj as firebase.firestore.FirestoreDataConverter<WithId<T>>;
 
-export const distributedCounterValueConverter: firebase.firestore.FirestoreDataConverter<DistributedCounterValue> = {
-  fromFirestore: (
-    snapshot: firebase.firestore.QueryDocumentSnapshot
-  ): DistributedCounterValue => ({ value: snapshot.data().value }),
+export const distributedCounterValueConverter: firebase.firestore.FirestoreDataConverter<DistributedCounterValue> =
+  {
+    fromFirestore: (
+      snapshot: firebase.firestore.QueryDocumentSnapshot
+    ): DistributedCounterValue => ({ value: snapshot.data().value }),
 
-  toFirestore: ({
-    value,
-  }: DistributedCounterValue): firebase.firestore.DocumentData => ({
-    value,
-  }),
-};
+    toFirestore: ({
+      value,
+    }: DistributedCounterValue): firebase.firestore.DocumentData => ({
+      value,
+    }),
+  };
 
 export const worldConverter: firebase.firestore.FirestoreDataConverter<
   WithId<World>

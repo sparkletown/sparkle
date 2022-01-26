@@ -75,7 +75,7 @@ export const withErrorReporter: <T extends Function>(
     },
   };
 
-  return (temporaryObject[wrapperName] as unknown) as typeof asyncFunction;
+  return temporaryObject[wrapperName] as unknown as typeof asyncFunction;
 };
 
 export const displayProps: (

@@ -13,12 +13,8 @@ const usage = makeScriptUsage({
     "co-reality-staging myspanishroom myenglishroom [theMatchingAccountServiceKey.json]",
 });
 
-const [
-  projectId,
-  sourceVenueId,
-  destVenueId,
-  credentialPath,
-] = process.argv.slice(2);
+const [projectId, sourceVenueId, destVenueId, credentialPath] =
+  process.argv.slice(2);
 
 // Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId || !sourceVenueId || !destVenueId) {

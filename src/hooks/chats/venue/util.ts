@@ -45,9 +45,10 @@ type ChatActionsProps<T extends Variant> = T extends "sendChat"
   : never;
 
 export const useGetVenueChatCollectionRef = (venueId: string | undefined) =>
-  useCallback(() => (venueId ? [getChatsRef(venueId)] : ALWAYS_EMPTY_ARRAY), [
-    venueId,
-  ]);
+  useCallback(
+    () => (venueId ? [getChatsRef(venueId)] : ALWAYS_EMPTY_ARRAY),
+    [venueId]
+  );
 
 export const useGetVenueThreadCollectionRef = (venueId: string | undefined) =>
   useCallback(

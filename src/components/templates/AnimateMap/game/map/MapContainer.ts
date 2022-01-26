@@ -312,8 +312,8 @@ export class MapContainer extends Container {
         })
         .then(() => {
           if (this.entityFactory) {
-            const map: PlaygroundMap = GameInstance.instance.getConfig()
-              .playgroundMap;
+            const map: PlaygroundMap =
+              GameInstance.instance.getConfig().playgroundMap;
             const bots = GameInstance.instance.getState().users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;

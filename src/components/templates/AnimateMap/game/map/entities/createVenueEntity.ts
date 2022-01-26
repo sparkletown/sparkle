@@ -131,32 +131,26 @@ export const createVenueEntity = (
   fsm
     .createState(venueComponent.WITHOUT_HALO)
     .add(VenueHaloEmpty)
-    .withMethod(
-      (): VenueHaloEmpty => {
-        return new VenueHaloEmpty(sprite);
-      }
-    );
+    .withMethod((): VenueHaloEmpty => {
+      return new VenueHaloEmpty(sprite);
+    });
 
   fsm
     .createState(venueComponent.HALO)
     .add(VenueHalo)
-    .withMethod(
-      (): VenueHalo => {
-        return new VenueHalo(sprite);
-      }
-    );
+    .withMethod((): VenueHalo => {
+      return new VenueHalo(sprite);
+    });
 
   fsm
     .createState(venueComponent.HALO_ANIMATED)
     .add(AnimationComponent)
-    .withMethod(
-      (): AnimationComponent => {
-        return new AnimationComponent(
-          new VenueHaloAnimated(sprite),
-          Number.MAX_VALUE
-        );
-      }
-    );
+    .withMethod((): AnimationComponent => {
+      return new AnimationComponent(
+        new VenueHaloAnimated(sprite),
+        Number.MAX_VALUE
+      );
+    });
 
   let hoverEffectEntity: Entity;
   const hoverEffectDuration = 100;

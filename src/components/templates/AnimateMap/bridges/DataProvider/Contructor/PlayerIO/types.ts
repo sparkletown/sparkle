@@ -43,31 +43,30 @@ export type ShoutMessageTupleReserve = [string];
 export type ProcessedShoutMessageTuple = [ULong, string];
 export type ProcessedShoutReserveMessageTuple = [string, string];
 
-export type FindMessageTuple<
-  MessagesType
-> = MessagesType extends MessagesTypes.move
-  ? MoveMessageTuple
-  : MessagesType extends MessagesTypes.moveReserve
-  ? MoveReserveMessageTuple
-  : MessagesType extends MessagesTypes.processedMove
-  ? ProcessedMoveMessageTuple
-  : MessagesType extends MessagesTypes.processedMoveReserve
-  ? ProcessedMoveReserveMessageTuple
-  : MessagesType extends MessagesTypes.roomInitResponse
-  ? RoomInitResponseMessageTuple
-  : MessagesType extends MessagesTypes.newUserJoined
-  ? NewUserJoinedMessageTuple
-  : MessagesType extends MessagesTypes.userLeft
-  ? UserLeftMessageTuple
-  : MessagesType extends MessagesTypes.shout
-  ? ShoutMessageTuple
-  : MessagesType extends MessagesTypes.shoutReserve
-  ? ShoutMessageTuple
-  : MessagesType extends MessagesTypes.processedShout
-  ? ProcessedShoutMessageTuple
-  : MessagesType extends MessagesTypes.processedShoutReserve
-  ? ProcessedShoutReserveMessageTuple
-  : never;
+export type FindMessageTuple<MessagesType> =
+  MessagesType extends MessagesTypes.move
+    ? MoveMessageTuple
+    : MessagesType extends MessagesTypes.moveReserve
+    ? MoveReserveMessageTuple
+    : MessagesType extends MessagesTypes.processedMove
+    ? ProcessedMoveMessageTuple
+    : MessagesType extends MessagesTypes.processedMoveReserve
+    ? ProcessedMoveReserveMessageTuple
+    : MessagesType extends MessagesTypes.roomInitResponse
+    ? RoomInitResponseMessageTuple
+    : MessagesType extends MessagesTypes.newUserJoined
+    ? NewUserJoinedMessageTuple
+    : MessagesType extends MessagesTypes.userLeft
+    ? UserLeftMessageTuple
+    : MessagesType extends MessagesTypes.shout
+    ? ShoutMessageTuple
+    : MessagesType extends MessagesTypes.shoutReserve
+    ? ShoutMessageTuple
+    : MessagesType extends MessagesTypes.processedShout
+    ? ProcessedShoutMessageTuple
+    : MessagesType extends MessagesTypes.processedShoutReserve
+    ? ProcessedShoutReserveMessageTuple
+    : never;
 
 export interface PlayerObject extends ProxyDatabaseObject {
   x?: number; // position by X

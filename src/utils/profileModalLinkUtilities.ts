@@ -62,24 +62,22 @@ enum ProfileModalLinkType {
 }
 
 export const profileModalGenericLinkIcon = faLink;
-const profileModalLinkTypesIcons: Record<
-  ProfileModalLinkType,
-  IconDefinition
-> = {
-  [ProfileModalLinkType.Instagram]: faInstagram,
-  [ProfileModalLinkType.Facebook]: faFacebook,
-  [ProfileModalLinkType.Medium]: faMedium,
-  [ProfileModalLinkType.Snapchat]: faSnapchat,
-  [ProfileModalLinkType.Stackexchange]: faStackExchange,
-  [ProfileModalLinkType.Stackoverflow]: faStackOverflow,
-  [ProfileModalLinkType.Telegram]: faTelegram,
-  [ProfileModalLinkType.Twitter]: faTwitter,
-  [ProfileModalLinkType.Github]: faGithub,
-  [ProfileModalLinkType.Youtube]: faYoutube,
-  [ProfileModalLinkType.Tiktok]: faTiktok,
-  [ProfileModalLinkType.Reddit]: faRedditAlien,
-  [ProfileModalLinkType.Mail]: faEnvelope,
-};
+const profileModalLinkTypesIcons: Record<ProfileModalLinkType, IconDefinition> =
+  {
+    [ProfileModalLinkType.Instagram]: faInstagram,
+    [ProfileModalLinkType.Facebook]: faFacebook,
+    [ProfileModalLinkType.Medium]: faMedium,
+    [ProfileModalLinkType.Snapchat]: faSnapchat,
+    [ProfileModalLinkType.Stackexchange]: faStackExchange,
+    [ProfileModalLinkType.Stackoverflow]: faStackOverflow,
+    [ProfileModalLinkType.Telegram]: faTelegram,
+    [ProfileModalLinkType.Twitter]: faTwitter,
+    [ProfileModalLinkType.Github]: faGithub,
+    [ProfileModalLinkType.Youtube]: faYoutube,
+    [ProfileModalLinkType.Tiktok]: faTiktok,
+    [ProfileModalLinkType.Reddit]: faRedditAlien,
+    [ProfileModalLinkType.Mail]: faEnvelope,
+  };
 
 const buildMatchingRegex = (...hosts: string[]) => {
   const escaped = hosts.map((h) => h.replace(".", "\\."));
@@ -88,7 +86,8 @@ const buildMatchingRegex = (...hosts: string[]) => {
 };
 
 const profileModalLinkTypesRegexes: Record<ProfileModalLinkType, RegExp> = {
-  [ProfileModalLinkType.Mail]: /^((([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,
+  [ProfileModalLinkType.Mail]:
+    /^((([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,
   [ProfileModalLinkType.Instagram]: buildMatchingRegex(
     "instagram.com",
     "instagr.am"
@@ -116,16 +115,28 @@ export const profileModalProfileNameRegex: Record<
 > = {
   [ProfileModalLinkType.Mail]:
     profileModalLinkTypesRegexes[ProfileModalLinkType.Mail],
-  [ProfileModalLinkType.Instagram]: /(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|\.(?!\.)){0,28}[A-Za-z0-9_])?)/,
-  [ProfileModalLinkType.Facebook]: /(?:https?:)?\/\/(?:www\.)?(?:facebook|fb)\.com\/((?![A-z]+\.php)(?!marketplace|gaming|watch|me|messages|help|search|groups)[A-z0-9_\-.]+)\/?/,
-  [ProfileModalLinkType.Medium]: /(?:https?:)?\/\/medium\.com\/@([A-z0-9]+)(?:\?.*)?/,
-  [ProfileModalLinkType.Snapchat]: / (?:https?:)?\/\/(?:www\.)?snapchat\.com\/add\/([A-z0-9._-]+)\/?/,
-  [ProfileModalLinkType.Stackexchange]: /(?:https?:)?\/\/(?:www\.)?stackexchange\.com\/users\/[0-9]+\/([A-z0-9-_.]+)\/?/,
-  [ProfileModalLinkType.Stackoverflow]: / (?:https?:)?\/\/(?:www\.)?stackoverflow\.com\/users\/[0-9]+\/([A-z0-9-_.]+)\/?/,
-  [ProfileModalLinkType.Telegram]: /(?:https?:)?\/\/(?:t(?:elegram)?\.me|telegram\.org)\/([a-z0-9_]{5,32})\/?/,
-  [ProfileModalLinkType.Twitter]: /(?:https?:)?\/\/(?:[A-z]+\.)?twitter\.com\/@?(?!home|share|privacy|tos)([A-z0-9_]+)\/?/,
-  [ProfileModalLinkType.Github]: /(?:https?:)?\/\/(?:www\.)?github\.com\/([A-z0-9_-]+)\/?/,
-  [ProfileModalLinkType.Youtube]: / (?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/([A-z0-9]+)\/?/,
-  [ProfileModalLinkType.Tiktok]: /(?:https?:)?\/\/(?:www\.)?tiktok\.com\/@([A-z0-9-_.]+)\/?/,
-  [ProfileModalLinkType.Reddit]: /(?:https?:)?\/\/(?:www\.)?reddit\.com\/user\/([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Instagram]:
+    /(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|\.(?!\.)){0,28}[A-Za-z0-9_])?)/,
+  [ProfileModalLinkType.Facebook]:
+    /(?:https?:)?\/\/(?:www\.)?(?:facebook|fb)\.com\/((?![A-z]+\.php)(?!marketplace|gaming|watch|me|messages|help|search|groups)[A-z0-9_\-.]+)\/?/,
+  [ProfileModalLinkType.Medium]:
+    /(?:https?:)?\/\/medium\.com\/@([A-z0-9]+)(?:\?.*)?/,
+  [ProfileModalLinkType.Snapchat]:
+    / (?:https?:)?\/\/(?:www\.)?snapchat\.com\/add\/([A-z0-9._-]+)\/?/,
+  [ProfileModalLinkType.Stackexchange]:
+    /(?:https?:)?\/\/(?:www\.)?stackexchange\.com\/users\/[0-9]+\/([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Stackoverflow]:
+    / (?:https?:)?\/\/(?:www\.)?stackoverflow\.com\/users\/[0-9]+\/([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Telegram]:
+    /(?:https?:)?\/\/(?:t(?:elegram)?\.me|telegram\.org)\/([a-z0-9_]{5,32})\/?/,
+  [ProfileModalLinkType.Twitter]:
+    /(?:https?:)?\/\/(?:[A-z]+\.)?twitter\.com\/@?(?!home|share|privacy|tos)([A-z0-9_]+)\/?/,
+  [ProfileModalLinkType.Github]:
+    /(?:https?:)?\/\/(?:www\.)?github\.com\/([A-z0-9_-]+)\/?/,
+  [ProfileModalLinkType.Youtube]:
+    / (?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/([A-z0-9]+)\/?/,
+  [ProfileModalLinkType.Tiktok]:
+    /(?:https?:)?\/\/(?:www\.)?tiktok\.com\/@([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Reddit]:
+    /(?:https?:)?\/\/(?:www\.)?reddit\.com\/user\/([A-z0-9-_.]+)\/?/,
 };

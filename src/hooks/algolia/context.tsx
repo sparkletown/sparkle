@@ -18,9 +18,9 @@ export interface AlgoliaSearchContextState {
 
 const initState = (appId: string, key: string): AlgoliaSearchContextState => {
   const client = algoliasearch(appId, key);
-  const list = Object.values(
-    AlgoliaSearchIndex
-  ).map((indexName: AlgoliaSearchIndex) => client.initIndex(indexName));
+  const list = Object.values(AlgoliaSearchIndex).map(
+    (indexName: AlgoliaSearchIndex) => client.initIndex(indexName)
+  );
 
   const indices = keyBy(list, "indexName") as Record<
     AlgoliaSearchIndex,

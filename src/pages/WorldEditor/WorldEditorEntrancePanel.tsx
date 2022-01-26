@@ -14,9 +14,9 @@ export interface WorldEditorEntrancePanelProps {
   worldSlug?: string;
 }
 
-export const WorldEditorEntrancePanel: React.FC<WorldEditorEntrancePanelProps> = ({
-  worldSlug,
-}) => {
+export const WorldEditorEntrancePanel: React.FC<
+  WorldEditorEntrancePanelProps
+> = ({ worldSlug }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
 
   return (

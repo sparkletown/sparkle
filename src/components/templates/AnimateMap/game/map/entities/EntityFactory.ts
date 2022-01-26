@@ -592,9 +592,8 @@ export default class EntityFactory {
   }
 
   public getFirebarrelNode(id: string): FirebarrelNode | undefined {
-    const nodes: NodeList<FirebarrelNode> = this.engine.getNodeList(
-      FirebarrelNode
-    );
+    const nodes: NodeList<FirebarrelNode> =
+      this.engine.getNodeList(FirebarrelNode);
     for (let node = nodes.head; node; node = node.next) {
       if (node.firebarrel.model.data.id === id) {
         return node;

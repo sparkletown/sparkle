@@ -40,12 +40,14 @@ export const ScheduleEventList: React.FC<ScheduleEventListProps> = ({
         .sort((a, b) => b.liveAudience - a.liveAudience),
     [allEvents]
   );
-  const comingSoonEvents = useMemo(() => allEvents.filter(isEventSoon), [
-    allEvents,
-  ]);
-  const laterEvents = useMemo(() => allEvents.filter(isEventLater), [
-    allEvents,
-  ]);
+  const comingSoonEvents = useMemo(
+    () => allEvents.filter(isEventSoon),
+    [allEvents]
+  );
+  const laterEvents = useMemo(
+    () => allEvents.filter(isEventLater),
+    [allEvents]
+  );
 
   if (!isTodayDate) {
     return (

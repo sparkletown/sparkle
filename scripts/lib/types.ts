@@ -142,9 +142,8 @@ type FullSimContext = RunContext<SimConfig> & {
   sovereignVenue: FetchSovereignVenueReturn;
 };
 
-export type SimContext<
-  T extends keyof FullSimContext = keyof FullSimContext
-> = Pick<FullSimContext, T>;
+export type SimContext<T extends keyof FullSimContext = keyof FullSimContext> =
+  Pick<FullSimContext, T>;
 
 export type GridSize = {
   auditoriumColumns: number;

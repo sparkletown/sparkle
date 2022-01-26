@@ -38,9 +38,10 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
     [setActiveOption]
   );
 
-  const unselectOption = useCallback(() => setActiveOption(undefined), [
-    setActiveOption,
-  ]);
+  const unselectOption = useCallback(
+    () => setActiveOption(undefined),
+    [setActiveOption]
+  );
 
   return (
     <div className="ChatboxOptionsControls">

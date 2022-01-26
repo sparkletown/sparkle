@@ -147,17 +147,13 @@ export class PlayerIODataProvider extends utils.EventEmitter {
           : "SEPARATED"
       } room operator`
     );
-    const initialParams: [
-      CloudDataProvider,
-      ProxyMultiplayer,
-      Point,
-      string
-    ] = [
-      this.cloudDataProvider,
-      client.multiplayer,
-      { x: playerPosition.x, y: playerPosition.y },
-      this.playerId,
-    ];
+    const initialParams: [CloudDataProvider, ProxyMultiplayer, Point, string] =
+      [
+        this.cloudDataProvider,
+        client.multiplayer,
+        { x: playerPosition.x, y: playerPosition.y },
+        this.playerId,
+      ];
 
     if (this.cloudDataProvider.settings.playerioAdvancedMode)
       return new PlayerIORoomOperator(...initialParams);

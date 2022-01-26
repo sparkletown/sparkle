@@ -10,8 +10,10 @@ import "./FormErrors.scss";
 
 const hasMessage = ([path]: ObjectEntry) => path.endsWith(".message");
 
-const isNotInOmitted = (omitted: string[] = []) => ([path]: ObjectEntry) =>
-  omitted.every((prefix) => !path.startsWith(prefix));
+const isNotInOmitted =
+  (omitted: string[] = []) =>
+  ([path]: ObjectEntry) =>
+    omitted.every((prefix) => !path.startsWith(prefix));
 
 export interface FormErrorsProps {
   errors?: FieldErrors<object>;

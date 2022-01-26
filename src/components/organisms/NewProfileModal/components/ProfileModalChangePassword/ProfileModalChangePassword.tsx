@@ -20,12 +20,9 @@ export interface ProfileModalChangePasswordProps
   >;
 }
 
-export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProps> = ({
-  containerClassName,
-  register,
-  getValues,
-  errors,
-}) => {
+export const ProfileModalChangePassword: React.FC<
+  ProfileModalChangePasswordProps
+> = ({ containerClassName, register, getValues, errors }) => {
   const newPasswordValidation = useCallback(
     (newPassword: string) => {
       const oldPassword = getValues(formProp("oldPassword"));

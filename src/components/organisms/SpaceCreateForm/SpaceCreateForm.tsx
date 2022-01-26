@@ -69,22 +69,20 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
 
   const { venueName } = getValues();
 
-  const [
-    { loading: isLoading, error: submitError },
-    createSpace,
-  ] = useAsyncFn(async () => {
-    if (!worldId || !user || !template || template === "external") return;
+  const [{ loading: isLoading, error: submitError }, createSpace] =
+    useAsyncFn(async () => {
+      if (!worldId || !user || !template || template === "external") return;
 
-    const data = {
-      ...buildEmptySpace(venueName, template),
-      worldId,
-      logoImageUrl,
-    };
+      const data = {
+        ...buildEmptySpace(venueName, template),
+        worldId,
+        logoImageUrl,
+      };
 
-    await createVenue_v2(data, user);
+      await createVenue_v2(data, user);
 
-    history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
-  }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
+      history.push(adminNGVenueUrl(worldSlug, data.slug as SpaceSlug));
+    }, [worldId, logoImageUrl, user, template, venueName, worldSlug, history]);
 
   const { venueName: watchedName } = watch();
   const slug = useMemo(() => createSlug(watchedName), [watchedName]);

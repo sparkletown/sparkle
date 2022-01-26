@@ -27,30 +27,28 @@ export const useImageInputCompression = (
   const [isTooLargeFileError, setIsTooLargeFileError] = useState(false);
   const tryCompress = useTryCompressImage();
 
-  const [
-    { loading, error: isCompressionError },
-    handleFileInputChange,
-  ] = useAsyncFn(
-    async (
-      event: ChangeEvent<HTMLInputElement>
-    ): Promise<[string | undefined, File | undefined]> => {
-      const files = event.target.files;
-      const file = files?.[0];
+  const [{ loading, error: isCompressionError }, handleFileInputChange] =
+    useAsyncFn(
+      async (
+        event: ChangeEvent<HTMLInputElement>
+      ): Promise<[string | undefined, File | undefined]> => {
+        const files = event.target.files;
+        const file = files?.[0];
 
-      if (!files || !file) return [undefined, undefined];
+        if (!files || !file) return [undefined, undefined];
 
-      if (file.size >= MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES) {
-        setIsTooLargeFileError(true);
-        return [undefined, undefined];
-      } else setIsTooLargeFileError(false);
+        if (file.size >= MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES) {
+          setIsTooLargeFileError(true);
+          return [undefined, undefined];
+        } else setIsTooLargeFileError(false);
 
-      const compressedFile = await tryCompress(file);
-      const url = URL.createObjectURL(compressedFile);
+        const compressedFile = await tryCompress(file);
+        const url = URL.createObjectURL(compressedFile);
 
-      return [url, compressedFile];
-    },
-    [tryCompress]
-  );
+        return [url, compressedFile];
+      },
+      [tryCompress]
+    );
 
   const compressionError = isCompressionError
     ? imageCompressionErrorMessage

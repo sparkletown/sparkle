@@ -105,25 +105,26 @@ export const takeSeatInAudience: (
 
   const locationPromise = updateUserLocation(userRef, sovereignVenue, stats);
 
-  const seatPromise = (sectionId
-    ? getSeatedSectionUserRef({
-        venueId,
-        sectionId,
-        userId: userRef.id,
-      }).then((ref) =>
-        ref.set({
-          ...user,
-          position: {
-            row: row,
-            column: col,
-          },
-          path: {
-            venueId,
-            sectionId,
-          },
-        })
-      )
-    : Promise.resolve()
+  const seatPromise = (
+    sectionId
+      ? getSeatedSectionUserRef({
+          venueId,
+          sectionId,
+          userId: userRef.id,
+        }).then((ref) =>
+          ref.set({
+            ...user,
+            position: {
+              row: row,
+              column: col,
+            },
+            path: {
+              venueId,
+              sectionId,
+            },
+          })
+        )
+      : Promise.resolve()
   ).then(() => (stats.writes = increment(stats.writes)));
 
   const recentSeatPromise = updateRecentSeat(venueId, userRef, "auditorium", {

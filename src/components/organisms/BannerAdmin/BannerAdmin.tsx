@@ -28,17 +28,11 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   venue,
   onClose,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    errors,
-    reset,
-    watch,
-    setValue,
-  } = useForm<Banner>({
-    mode: "onChange",
-    reValidateMode: "onChange",
-  });
+  const { register, handleSubmit, errors, reset, watch, setValue } =
+    useForm<Banner>({
+      mode: "onChange",
+      reValidateMode: "onChange",
+    });
   const isUrlButtonActive = watch(
     "isActionButton",
     venue?.banner?.isActionButton

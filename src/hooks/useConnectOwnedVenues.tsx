@@ -50,9 +50,10 @@ export const useOwnedVenues: ReactHook<
   const ownedVenuesData = useSelector(ownedVenuesDataSelector);
   const ownedVenues = useSelector(ownedVenuesSelector);
 
-  const ownedVenuesIds = useMemo(() => Object.keys(ownedVenuesData ?? {}), [
-    ownedVenuesData,
-  ]);
+  const ownedVenuesIds = useMemo(
+    () => Object.keys(ownedVenuesData ?? {}),
+    [ownedVenuesData]
+  );
 
   const findVenueInOwnedVenues = useCallback(
     (searchedForVenueId: string) => {

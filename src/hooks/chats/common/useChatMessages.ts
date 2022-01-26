@@ -54,15 +54,16 @@ export const useChatMessages = <T extends ChatMessage>(
 ): [PartitionMessagesFromRepliesReturn<T>, boolean] => {
   const [chatMessages, isLoaded] = useChatMessagesRaw<T>(messagesRef);
 
-  const filteredMessages = useMemo(() => chatMessages.filter(filter), [
-    chatMessages,
-    filter,
-  ]);
+  const filteredMessages = useMemo(
+    () => chatMessages.filter(filter),
+    [chatMessages, filter]
+  );
 
   return [
-    useMemo(() => partitionMessagesFromReplies<T>(filteredMessages), [
-      filteredMessages,
-    ]),
+    useMemo(
+      () => partitionMessagesFromReplies<T>(filteredMessages),
+      [filteredMessages]
+    ),
     isLoaded,
   ];
 };
@@ -70,15 +71,13 @@ export const useChatMessages = <T extends ChatMessage>(
 export const useChatMessagesRaw = <T extends BaseChatMessage>(
   messagesRef: firebase.firestore.Query
 ): [WithId<T>[], boolean] => {
-  const {
-    data: rawMessages = ALWAYS_EMPTY_ARRAY,
-    status,
-  } = useFirestoreCollectionData<WithId<T>>(
-    messagesRef.orderBy("timestamp", "desc"),
-    {
-      idField: "id",
-    }
-  );
+  const { data: rawMessages = ALWAYS_EMPTY_ARRAY, status } =
+    useFirestoreCollectionData<WithId<T>>(
+      messagesRef.orderBy("timestamp", "desc"),
+      {
+        idField: "id",
+      }
+    );
 
   const chatMessages = useMemo(
     () =>

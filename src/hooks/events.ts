@@ -27,9 +27,8 @@ export const useSpaceEvents = ({
     .where("worldId", "==", worldId || "")
     .withConverter(withIdConverter<WorldEvent>());
 
-  const { data: events, status } = useFirestoreCollectionData<WorldEvent>(
-    eventsRef
-  );
+  const { data: events, status } =
+    useFirestoreCollectionData<WorldEvent>(eventsRef);
 
   if (!spaceIds || !worldId) {
     return {

@@ -20,10 +20,9 @@ export interface ProfileModalBasicTextInfoProps extends ContainerClassName {
   user: WithId<User>;
 }
 
-export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps> = ({
-  user,
-  containerClassName,
-}) => {
+export const ProfileModalBasicTextInfo: React.FC<
+  ProfileModalBasicTextInfoProps
+> = ({ user, containerClassName }) => {
   const { sovereignVenue } = useRelatedVenues();
 
   const isCurrentUser = useIsCurrentUser(user.id);

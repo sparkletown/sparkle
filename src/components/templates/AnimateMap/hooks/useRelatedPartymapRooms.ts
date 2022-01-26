@@ -23,12 +23,10 @@ export const useRelatedPartymapRooms: ReactHook<
   UseRelatedPartymapRoomsProps,
   UseRelatedPartymapRoomsData
 > = ({ venue }) => {
-  const {
-    currentVenue: relatedPartymap,
-    findVenueInRelatedVenues,
-  } = useRelatedVenues({
-    currentVenueId: venue.relatedPartymapId,
-  });
+  const { currentVenue: relatedPartymap, findVenueInRelatedVenues } =
+    useRelatedVenues({
+      currentVenueId: venue.relatedPartymapId,
+    });
 
   return useMemo(
     () =>

@@ -17,9 +17,9 @@ export interface WorldEditorGeneralPanelProps {
   worldSlug?: string;
 }
 
-export const WorldEditorGeneralPanel: React.FC<WorldEditorGeneralPanelProps> = ({
-  worldSlug,
-}) => {
+export const WorldEditorGeneralPanel: React.FC<
+  WorldEditorGeneralPanelProps
+> = ({ worldSlug }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
 
   const isUpdatingWorld = isLoaded && worldSlug && world;

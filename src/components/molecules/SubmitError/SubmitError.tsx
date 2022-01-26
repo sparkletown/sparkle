@@ -10,9 +10,11 @@ export interface SubmitErrorProps {
   error: Error | unknown;
 }
 
-const extractErrorDetails: (
-  error?: Error | unknown
-) => { message: string; code?: string; serverResponse?: string } = (error) => {
+const extractErrorDetails: (error?: Error | unknown) => {
+  message: string;
+  code?: string;
+  serverResponse?: string;
+} = (error) => {
   if (!(error instanceof Error)) {
     return { message: String(error) };
   }

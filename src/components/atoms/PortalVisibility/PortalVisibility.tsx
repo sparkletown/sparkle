@@ -38,8 +38,10 @@ export const PortalVisibility: React.FC<PortalVisibilityProps> = ({
         ({ subtitle, label, value }) => {
           const isSelected = isDefined(selected) && selected === value;
           const itemClasses = classNames({
-            "PortalVisibility__item PortalVisibility__item--selected": isSelected,
-            "PortalVisibility__item PortalVisibility__item--unselected": !isSelected,
+            "PortalVisibility__item PortalVisibility__item--selected":
+              isSelected,
+            "PortalVisibility__item PortalVisibility__item--unselected":
+              !isSelected,
           });
 
           return (

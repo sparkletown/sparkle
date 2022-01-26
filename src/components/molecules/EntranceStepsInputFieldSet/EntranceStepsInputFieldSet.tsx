@@ -32,15 +32,9 @@ export interface EntranceStepsInputFieldSetProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
 }
 
-export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProps> = ({
-  item,
-  errors,
-  index,
-  name,
-  onUpdate,
-  onRemove,
-  register,
-}) => {
+export const EntranceStepsInputFieldSet: React.FC<
+  EntranceStepsInputFieldSetProps
+> = ({ item, errors, index, name, onUpdate, onRemove, register }) => {
   const fieldButtons = `buttons`;
   const fieldUrl = `videoUrl`;
   const fieldTemplate = `template`;
@@ -49,10 +43,10 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
   const inputUrl = `${fieldset}${fieldUrl}`;
   const inputTemplate = `${fieldset}${fieldTemplate}`;
 
-  const handleRemove = useCallback(() => onRemove({ index }), [
-    onRemove,
-    index,
-  ]);
+  const handleRemove = useCallback(
+    () => onRemove({ index }),
+    [onRemove, index]
+  );
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     ({ target }) => {
@@ -97,23 +91,25 @@ export const EntranceStepsInputFieldSet: React.FC<EntranceStepsInputFieldSetProp
     [addButton, onUpdate, index]
   );
 
-  const handleRemoveButton: UseArrayRemove<EntranceStepButtonConfig> = useCallback(
-    (...args) => {
-      const buttons = removeButton(...args);
-      onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
-      return buttons;
-    },
-    [removeButton, onUpdate, index]
-  );
+  const handleRemoveButton: UseArrayRemove<EntranceStepButtonConfig> =
+    useCallback(
+      (...args) => {
+        const buttons = removeButton(...args);
+        onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
+        return buttons;
+      },
+      [removeButton, onUpdate, index]
+    );
 
-  const handleUpdateButton: UseArrayUpdate<EntranceStepButtonConfig> = useCallback(
-    (...args) => {
-      const buttons = updateButton(...args);
-      onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
-      return buttons;
-    },
-    [updateButton, onUpdate, index]
-  );
+  const handleUpdateButton: UseArrayUpdate<EntranceStepButtonConfig> =
+    useCallback(
+      (...args) => {
+        const buttons = updateButton(...args);
+        onUpdate({ index, callback: ({ item }) => ({ ...item, buttons }) });
+        return buttons;
+      },
+      [updateButton, onUpdate, index]
+    );
 
   return (
     <fieldset className="EntranceStepsInputFieldSet" name={fieldset}>

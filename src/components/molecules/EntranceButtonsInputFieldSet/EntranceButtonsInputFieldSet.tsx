@@ -21,14 +21,9 @@ export interface EntranceButtonsInputFieldSetProps {
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
 }
 
-export const EntranceButtonsInputFieldSet: React.FC<EntranceButtonsInputFieldSetProps> = ({
-  errors,
-  index,
-  name,
-  onUpdate,
-  onRemove,
-  register,
-}) => {
+export const EntranceButtonsInputFieldSet: React.FC<
+  EntranceButtonsInputFieldSetProps
+> = ({ errors, index, name, onUpdate, onRemove, register }) => {
   const fieldText = `text`;
   const fieldLink = `href`;
   const fieldProceed = `isProceed`;
@@ -37,10 +32,10 @@ export const EntranceButtonsInputFieldSet: React.FC<EntranceButtonsInputFieldSet
   const inputLink = `${fieldset}${fieldLink}`;
   const inputProceed = `${fieldset}${fieldProceed}`;
 
-  const handleRemove = useCallback(() => onRemove({ index }), [
-    onRemove,
-    index,
-  ]);
+  const handleRemove = useCallback(
+    () => onRemove({ index }),
+    [onRemove, index]
+  );
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = useCallback(
     ({ target }) => {

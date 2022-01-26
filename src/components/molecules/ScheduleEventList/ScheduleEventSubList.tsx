@@ -21,10 +21,8 @@ export const ScheduleEventSubList: React.FC<ScheduleEventSubListProps> = ({
   title,
   isShowFullInfo = true,
 }) => {
-  const {
-    isShown: showMoreEvents,
-    toggle: toggleShowMoreEvents,
-  } = useShowHide();
+  const { isShown: showMoreEvents, toggle: toggleShowMoreEvents } =
+    useShowHide();
 
   const renderEvents = useMemo(() => {
     let eventsToRender = events;

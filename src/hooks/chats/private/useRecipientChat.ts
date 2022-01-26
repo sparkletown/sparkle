@@ -12,14 +12,13 @@ export const useRecipientChatMessages = (recipient: WithId<DisplayUser>) => {
   const { userId } = useUser();
   const firestore = useFirestore();
 
-  const [
-    messagesToDisplay,
-    replies,
-  ] = useChatMessagesForDisplay<PrivateChatMessage>(
-    firestore.collection("privatechats").doc(userId).collection("chats"),
-    (message) =>
-      message.toUser.id === recipient.id || message.fromUser.id === recipient.id
-  );
+  const [messagesToDisplay, replies] =
+    useChatMessagesForDisplay<PrivateChatMessage>(
+      firestore.collection("privatechats").doc(userId).collection("chats"),
+      (message) =>
+        message.toUser.id === recipient.id ||
+        message.fromUser.id === recipient.id
+    );
 
   return {
     messagesToDisplay,

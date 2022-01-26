@@ -55,9 +55,8 @@ type ChatboxContextProviderProps = Omit<
 export const ChatboxContextProvider: React.FC<
   PropsWithChildren<ChatboxContextProviderProps>
 > = ({ children, ...rest }) => {
-  const [selectedReplyThread, setSelectedReplyThread] = useState<
-    WithId<MessageToDisplay>
-  >();
+  const [selectedReplyThread, setSelectedReplyThread] =
+    useState<WithId<MessageToDisplay>>();
 
   const state: ChatboxContextState = useMemo(
     () => ({
@@ -90,11 +89,13 @@ export const useChatboxThread = (
   );
 };
 
-export const useChatboxSendChatMessage = (): SendChatMessage<SendChatMessageProps> =>
-  useContext(ChatboxContext).sendChatMessage;
+export const useChatboxSendChatMessage =
+  (): SendChatMessage<SendChatMessageProps> =>
+    useContext(ChatboxContext).sendChatMessage;
 
-export const useChatboxSendThreadMessage = (): SendChatMessage<SendThreadMessageProps> =>
-  useContext(ChatboxContext).sendThreadMessage;
+export const useChatboxSendThreadMessage =
+  (): SendChatMessage<SendThreadMessageProps> =>
+    useContext(ChatboxContext).sendThreadMessage;
 
 export const useChatboxDeleteChatMessage = ():
   | DeleteChatMessage<DeleteChatMessageProps>
@@ -106,17 +107,18 @@ export const useChatboxDeleteThreadMessage = ():
 
 export const useSelectThisReplyThread = (thread: WithId<MessageToDisplay>) => {
   const { setSelectedReplyThread } = useContext(ChatboxContext);
-  return useCallback(() => setSelectedReplyThread(thread), [
-    setSelectedReplyThread,
-    thread,
-  ]);
+  return useCallback(
+    () => setSelectedReplyThread(thread),
+    [setSelectedReplyThread, thread]
+  );
 };
 
 export const useClearSelectedReplyThread = () => {
   const { setSelectedReplyThread } = useContext(ChatboxContext);
-  return useCallback(() => setSelectedReplyThread(undefined), [
-    setSelectedReplyThread,
-  ]);
+  return useCallback(
+    () => setSelectedReplyThread(undefined),
+    [setSelectedReplyThread]
+  );
 };
 
 export const useSelectedReplyThread = () =>

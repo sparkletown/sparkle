@@ -72,14 +72,13 @@ export const getEventInterval = (event: WorldEvent) => ({
   end: eventEndTime({ event, defaultDuration: 1 }),
 });
 
-export const isEventWithinDate = (checkDate: Date | number) => (
-  event: WorldEvent
-) =>
-  areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
+export const isEventWithinDate =
+  (checkDate: Date | number) => (event: WorldEvent) =>
+    areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
 
-export const isEventWithinDateAndNotFinished = (checkDate: Date | number) => (
-  event: WorldEvent
-) => isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
+export const isEventWithinDateAndNotFinished =
+  (checkDate: Date | number) => (event: WorldEvent) =>
+    isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
 
 export const getEventStatus = (event: WorldEvent) => {
   if (isEventLive(event)) return `Happening now`;

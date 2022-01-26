@@ -271,10 +271,8 @@ export class DebugSystem extends System {
   };
 
   private venueRemoved = (node: VenueNode) => {
-    const displayObject:
-      | DisplayObject
-      | null
-      | undefined = this.container?.getChildByName(node.venue.model.data.url);
+    const displayObject: DisplayObject | null | undefined =
+      this.container?.getChildByName(node.venue.model.data.url);
     if (displayObject) {
       this.container?.removeChild();
     }

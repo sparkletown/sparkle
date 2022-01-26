@@ -39,48 +39,47 @@ export const firestoreStatusSelector: SparkleSelector<FirestoreStatus> = (
  *
  * @param key the key to extract
  */
-export const makeDataSelector = <T extends keyof FirestoreData>(key: T) => (
-  state: RootState
-) => firestoreDataSelector(state)[key];
+export const makeDataSelector =
+  <T extends keyof FirestoreData>(key: T) =>
+  (state: RootState) =>
+    firestoreDataSelector(state)[key];
 
 /**
  * Make a selector function for state.firestore.ordered[key]
  *
  * @param key the key to extract
  */
-export const makeOrderedSelector = <T extends keyof FirestoreOrdered>(
-  key: T
-) => (state: RootState) => firestoreOrderedSelector(state)[key];
+export const makeOrderedSelector =
+  <T extends keyof FirestoreOrdered>(key: T) =>
+  (state: RootState) =>
+    firestoreOrderedSelector(state)[key];
 
 /**
  * Make a selector function for state.firestore.status.requesting[key]
  *
  * @param key the key to extract
  */
-export const makeIsRequestingSelector = <
-  T extends keyof FirestoreStatus["requesting"]
->(
-  key: T
-) => (state: RootState) => firestoreStatusSelector(state).requesting[key];
+export const makeIsRequestingSelector =
+  <T extends keyof FirestoreStatus["requesting"]>(key: T) =>
+  (state: RootState) =>
+    firestoreStatusSelector(state).requesting[key];
 
 /**
  * Make a selector function for state.firestore.status.requested[key]
  *
  * @param key the key to extract
  */
-export const makeIsRequestedSelector = <
-  T extends keyof FirestoreStatus["requested"]
->(
-  key: T
-) => (state: RootState) => firestoreStatusSelector(state).requested[key];
+export const makeIsRequestedSelector =
+  <T extends keyof FirestoreStatus["requested"]>(key: T) =>
+  (state: RootState) =>
+    firestoreStatusSelector(state).requested[key];
 
 /**
  * Make a selector function for state.firestore.status.timestamps[key]
  *
  * @param key the key to extract
  */
-export const makeTimestampSelector = <
-  T extends keyof FirestoreStatus["timestamps"]
->(
-  key: T
-) => (state: RootState) => firestoreStatusSelector(state).timestamps[key];
+export const makeTimestampSelector =
+  <T extends keyof FirestoreStatus["timestamps"]>(key: T) =>
+  (state: RootState) =>
+    firestoreStatusSelector(state).timestamps[key];

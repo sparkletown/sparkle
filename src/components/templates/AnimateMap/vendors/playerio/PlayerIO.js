@@ -388,15 +388,18 @@ class PlayerIOWrapper {
             : null;
         };
 
-        String.prototype.toJSON = Number.prototype.toJSON = Boolean.prototype.toJSON = function (
-          key
-        ) {
-          return this.valueOf();
-        };
+        String.prototype.toJSON =
+          Number.prototype.toJSON =
+          Boolean.prototype.toJSON =
+            function (key) {
+              return this.valueOf();
+            };
       }
 
-      var cx = /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
-        escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+      var cx =
+          /[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
+        escapable =
+          /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,
         gap,
         indent,
         meta = {
@@ -5903,9 +5906,8 @@ class PlayerIOWrapper {
             var value = message._internal_("get-objects")[i];
             switch (message._internal_("get-types")[i]) {
               case entryType_String:
-                var bytes = wrapper._pio.binaryserializer.bytesFromString(
-                  value
-                );
+                var bytes =
+                  wrapper._pio.binaryserializer.bytesFromString(value);
                 writer.writeTagWithLength(
                   bytes.length,
                   stringTopPattern,
@@ -7788,9 +7790,8 @@ class PlayerIOWrapper {
             errorCallback,
             function (result) {
               self.userToken = result.myprofile.usertoken;
-              self.profiles.myProfile = new wrapper._pio.publishingNetworkProfile(
-                result.myprofile
-              );
+              self.profiles.myProfile =
+                new wrapper._pio.publishingNetworkProfile(result.myprofile);
 
               if (typeof wrapper._pio.friendLookup == "undefined") {
                 wrapper._pio.friendLookup = {};
@@ -7802,9 +7803,8 @@ class PlayerIOWrapper {
               var bl =
                 wrapper._pio.blockedLookup[self.profiles.myProfile.userId];
               if (!fl && !bl) {
-                fl = wrapper._pio.friendLookup[
-                  self.profiles.myProfile.userId
-                ] = {};
+                fl = wrapper._pio.friendLookup[self.profiles.myProfile.userId] =
+                  {};
                 bl = wrapper._pio.blockedLookup[
                   self.profiles.myProfile.userId
                 ] = {};

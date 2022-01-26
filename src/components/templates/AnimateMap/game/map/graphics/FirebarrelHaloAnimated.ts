@@ -5,7 +5,8 @@ import { FirebarrelHalo } from "./FirebarrelHalo";
 
 export class FirebarrelHaloAnimated
   extends FirebarrelHalo
-  implements Animatable {
+  implements Animatable
+{
   private direction = 1;
   private time = 0;
   private duration = FirebarrelHaloAnimated.getRandomInt(50, 60);

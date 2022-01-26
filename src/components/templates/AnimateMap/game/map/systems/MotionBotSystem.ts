@@ -49,8 +49,8 @@ export class MotionBotSystem extends MotionBaseSystem {
     }
 
     for (
-      let motionBotNode: MotionBotControlNode | null | undefined = this
-        .botsMotion?.head;
+      let motionBotNode: MotionBotControlNode | null | undefined =
+        this.botsMotion?.head;
       motionBotNode;
       motionBotNode = motionBotNode.next
     ) {

@@ -23,11 +23,8 @@ export interface UserProfileModalFormDataPasswords {
   confirmNewPassword: string;
 }
 
-export const profileModalPasswordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
-  "oldPassword",
-  "newPassword",
-  "confirmNewPassword",
-];
+export const profileModalPasswordsFields: (keyof UserProfileModalFormDataPasswords)[] =
+  ["oldPassword", "newPassword", "confirmNewPassword"];
 
 export interface UserProfileModalFormData
   extends UserProfileModalFormDataPasswords {

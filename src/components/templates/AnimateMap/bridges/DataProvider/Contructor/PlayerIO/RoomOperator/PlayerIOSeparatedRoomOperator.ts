@@ -88,9 +88,8 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           const innerUserId = m.getULong(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
-            innerUserId
-          );
+          const user =
+            this.cloudDataProvider.users.getUserByMessengerId(innerUserId);
           if (!user || Array.isArray(user)) return console.error("Bad user");
           user.x = x;
           user.y = y;
@@ -120,9 +119,8 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
         >(MessagesTypes.processedShout, (m) => {
           const innerUserId = m.getULong(0);
           const shout: string = m.getString(1);
-          const user = this.cloudDataProvider.users.getUserByMessengerId(
-            innerUserId
-          );
+          const user =
+            this.cloudDataProvider.users.getUserByMessengerId(innerUserId);
           if (!user || Array.isArray(user)) return console.error("Bad user");
           EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
         });

@@ -297,12 +297,11 @@ exports.generateAnalytics = functions.https.onCall(async (data, context) => {
     expires: expiryDate,
   });
 
-  const [
-    uniqueVenuesVisitedFileUrl,
-  ] = await uniqueVenuesVisitedFile.getSignedUrl({
-    action: "read",
-    expires: expiryDate,
-  });
+  const [uniqueVenuesVisitedFileUrl] =
+    await uniqueVenuesVisitedFile.getSignedUrl({
+      action: "read",
+      expires: expiryDate,
+    });
 
   return {
     dataReportFileUrl,

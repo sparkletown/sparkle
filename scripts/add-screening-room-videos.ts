@@ -22,12 +22,8 @@ const usage = makeScriptUsage({
   exampleParams: `co-reality-sparkle bootstrap data.csv fooAccountKey.json`,
 });
 
-const [
-  projectId,
-  venueId,
-  screeningVideosDataPath,
-  credentialPath,
-] = process.argv.slice(2);
+const [projectId, venueId, screeningVideosDataPath, credentialPath] =
+  process.argv.slice(2);
 
 if (!projectId || !credentialPath || !venueId || !screeningVideosDataPath) {
   usage();

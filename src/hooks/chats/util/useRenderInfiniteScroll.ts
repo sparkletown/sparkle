@@ -27,10 +27,8 @@ export const useRenderMessagesCount = (): [number, () => void] => {
 export const useRenderInfiniteScroll = <T extends ChatMessage>(
   messages: WithId<MessageToDisplay<T>>[]
 ): [WithId<MessageToDisplay<T>>[], InfiniteScrollProps] => {
-  const [
-    renderedMessagesCount,
-    increaseRenderedMessagesCount,
-  ] = useRenderMessagesCount();
+  const [renderedMessagesCount, increaseRenderedMessagesCount] =
+    useRenderMessagesCount();
 
   const messagesToRender = useMemo(
     () => messages.slice(0, renderedMessagesCount),

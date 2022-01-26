@@ -65,7 +65,8 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
       <div className="VideoParticipant__video">
         <video
           className={classNames("VideoParticipant__video-element", {
-            "VideoParticipant__video-element--disabled": shouldDisableVideoExternally,
+            "VideoParticipant__video-element--disabled":
+              shouldDisableVideoExternally,
           })}
           ref={shouldDisableVideoExternally ? null : videoRef}
           autoPlay={true}

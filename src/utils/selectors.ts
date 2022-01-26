@@ -62,33 +62,27 @@ export const currentVenueSelector: SparkleSelector<
   WithId<AnyVenue> | undefined
 > = (state) => state.firestore.ordered.currentVenue?.[0];
 
-export const currentEventSelector: SparkleSelector<
-  WorldEvent[] | undefined
-> = makeOrderedSelector("currentEvent");
+export const currentEventSelector: SparkleSelector<WorldEvent[] | undefined> =
+  makeOrderedSelector("currentEvent");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
   state
 ) => state.attendance.retainAttendance;
 
-export const isCurrentVenueNGRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
-  "currentVenueNG"
-);
+export const isCurrentVenueNGRequestedSelector: SparkleSelector<boolean> =
+  makeIsRequestedSelector("currentVenueNG");
 
-export const isCurrentVenueNGRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
-  "currentVenueNG"
-);
+export const isCurrentVenueNGRequestingSelector: SparkleSelector<boolean> =
+  makeIsRequestingSelector("currentVenueNG");
 
-export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
-  "currentVenue"
-);
+export const isCurrentVenueRequestedSelector: SparkleSelector<boolean> =
+  makeIsRequestedSelector("currentVenue");
 
-export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> = makeIsRequestingSelector(
-  "currentVenue"
-);
+export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> =
+  makeIsRequestingSelector("currentVenue");
 
-export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
-  "currentEvent"
-);
+export const isCurrentEventRequestedSelector: SparkleSelector<boolean> =
+  makeIsRequestedSelector("currentEvent");
 
 export const venueChatMessagesSelector: SparkleSelector<
   WithId<VenueChatMessage>[] | undefined
@@ -168,9 +162,8 @@ export const currentSeatedTableUsersByIdSelector: SparkleSelector<
   Record<string, TableSeatedUser> | undefined
 > = makeDataSelector("currentSeatedTableUsers");
 
-export const currentModalUserDataSelector: SparkleSelector<
-  User | undefined
-> = makeDataSelector("currentModalUser");
+export const currentModalUserDataSelector: SparkleSelector<User | undefined> =
+  makeDataSelector("currentModalUser");
 
 export const userProfileSelector: SparkleSelector<string | undefined> = (
   state

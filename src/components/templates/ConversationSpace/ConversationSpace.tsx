@@ -46,10 +46,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     currentVenueId: venue?.id,
   });
 
-  const {
-    isShown: showOnlyAvailableTables,
-    toggle: toggleTablesVisibility,
-  } = useShowHide();
+  const { isShown: showOnlyAvailableTables, toggle: toggleTablesVisibility } =
+    useShowHide();
 
   const [seatedAtTable, setSeatedAtTable] = useState<string>();
 

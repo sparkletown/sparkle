@@ -5,18 +5,7 @@ import { GameInstance } from "../GameInstance";
 
 export class PlaygroundMap {
   private static playgroundBounds: Array<number> = [
-    5055,
-    233,
-    9736,
-    4038,
-    7812,
-    9423,
-    1925,
-    8958,
-    246,
-    3271,
-    5055,
-    233,
+    5055, 233, 9736, 4038, 7812, 9423, 1925, 8958, 246, 3271, 5055, 233,
   ];
 
   public pointIsInTheOuterCircle(x: number, y: number): boolean {

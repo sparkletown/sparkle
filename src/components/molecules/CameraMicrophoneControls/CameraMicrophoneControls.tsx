@@ -19,11 +19,9 @@ export interface CameraMicrophoneControlsProps extends ContainerClassName {
   defaultMute: boolean;
 }
 
-export const CameraMicrophoneControls: React.FC<CameraMicrophoneControlsProps> = ({
-  participant,
-  defaultMute,
-  containerClassName,
-}) => {
+export const CameraMicrophoneControls: React.FC<
+  CameraMicrophoneControlsProps
+> = ({ participant, defaultMute, containerClassName }) => {
   const changeStateHandler = useCallback(
     (
       variant: Extract<VideoOverlayButtonVariant, "microphone" | "camera">,

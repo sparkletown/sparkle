@@ -14,9 +14,9 @@ export interface WorldEditorAdvancedPanelProps {
   worldSlug?: string;
 }
 
-export const WorldEditorAdvancedPanel: React.FC<WorldEditorAdvancedPanelProps> = ({
-  worldSlug,
-}) => {
+export const WorldEditorAdvancedPanel: React.FC<
+  WorldEditorAdvancedPanelProps
+> = ({ worldSlug }) => {
   const { isLoaded, world } = useWorldBySlug(worldSlug);
   return (
     <AdminPanel variant="bound">

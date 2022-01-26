@@ -82,9 +82,9 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
 export const updateIframeUrl = async (iframeUrl: string, venueId?: string) => {
   if (!venueId) return;
 
-  return await firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateIframeUrl")({ venueId, iframeUrl });
+  return await firebase.functions().httpsCallable("venue-adminUpdateIframeUrl")(
+    { venueId, iframeUrl }
+  );
 };
 
 type VenueInputForm = Partial<WithId<AnyVenue>> & {

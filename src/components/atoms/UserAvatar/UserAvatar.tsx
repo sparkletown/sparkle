@@ -53,11 +53,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   // @debt until temporarily disable is online functionality
   const isOnline = false;
 
-  const {
-    userStatus,
-    venueUserStatuses,
-    isStatusEnabledForVenue,
-  } = useVenueUserStatuses(user);
+  const { userStatus, venueUserStatuses, isStatusEnabledForVenue } =
+    useVenueUserStatuses(user);
 
   const avatarSrc = useMemo((): string => {
     const url = determineAvatar({ user });

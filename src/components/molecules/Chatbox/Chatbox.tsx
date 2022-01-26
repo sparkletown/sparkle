@@ -69,13 +69,14 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const sendThreadMessage = useChatboxSendThreadMessage();
 
-  const sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps> = useCallback(
-    async ({ text, threadId }) => {
-      await sendThreadMessage({ text, threadId });
-      unselectOption();
-    },
-    [unselectOption, sendThreadMessage]
-  );
+  const sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps> =
+    useCallback(
+      async ({ text, threadId }) => {
+        await sendThreadMessage({ text, threadId });
+        unselectOption();
+      },
+      [unselectOption, sendThreadMessage]
+    );
 
   const hasSelectedThread = useHasSelectedReplyThread();
 

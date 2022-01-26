@@ -37,7 +37,9 @@ initFirebaseAdminApp(projectId, {
   await Promise.all(
     topLevelDocs.map(async (topLevelDoc) => {
       await Promise.all(
-        (await topLevelDoc.listCollections()).map(async (collection) => {
+        (
+          await topLevelDoc.listCollections()
+        ).map(async (collection) => {
           const secondLevelDocs = await collection.listDocuments();
           const count = secondLevelDocs.length;
           console.log("collection:", topLevelDoc.id, "has N docs:", count);

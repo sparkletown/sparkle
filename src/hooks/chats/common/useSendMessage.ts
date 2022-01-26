@@ -23,9 +23,10 @@ export const useSendChatMessage = <T extends BaseChatMessage>(
   additionalMessageFields: ExcludeBuiltMessage<T>
 ): SendChatMessage<SendChatMessageProps> => {
   const getCollections = useCallback(() => chats, [chats]);
-  const getAdditionalFields = useCallback(() => additionalMessageFields, [
-    additionalMessageFields,
-  ]);
+  const getAdditionalFields = useCallback(
+    () => additionalMessageFields,
+    [additionalMessageFields]
+  );
 
   return useSendMessage<T, SendChatMessageProps>({
     getCollections,

@@ -14,10 +14,8 @@ export interface SpaceParams {
  * or the search query string ( ?spaceSlug= , &worldSlug= )
  */
 export const useSpaceParams = () => {
-  const {
-    spaceSlug: spaceSlugFromParams,
-    worldSlug: worldSlugFromParams,
-  } = useParams<SpaceParams>();
+  const { spaceSlug: spaceSlugFromParams, worldSlug: worldSlugFromParams } =
+    useParams<SpaceParams>();
 
   // fallback for ?foo=bar pattern in case it is used as a redirect back
   const spaceSlugFromQuery = useSearchParam("spaceSlug") as SpaceSlug;

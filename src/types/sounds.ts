@@ -64,5 +64,6 @@ export const SoundConfigReferenceSchema = Yup.object()
 export const isSoundConfig = (data: {}): data is SoundConfig =>
   SoundConfigSchema.isValidSync(data);
 
-export const isSoundConfigReference = (data: {}): data is SoundConfigReference =>
-  SoundConfigReferenceSchema.isValidSync(data);
+export const isSoundConfigReference =
+  (data: {}): data is SoundConfigReference =>
+    SoundConfigReferenceSchema.isValidSync(data);

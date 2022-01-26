@@ -44,21 +44,19 @@ export const Login: React.FC<LoginProps> = ({
     sovereignVenue?.samlAuthProviderId
   );
 
-  const {
-    loading: isCustomAuthConfigLoading,
-    value: customAuthConfig,
-  } = useAsync(async () => {
-    return tracePromise(
-      "Login::fetchCustomAuthConfig",
-      () => fetchCustomAuthConfig(venueId),
-      {
-        attributes: {
-          venueId,
-        },
-        withDebugLog: true,
-      }
-    );
-  }, [venueId]);
+  const { loading: isCustomAuthConfigLoading, value: customAuthConfig } =
+    useAsync(async () => {
+      return tracePromise(
+        "Login::fetchCustomAuthConfig",
+        () => fetchCustomAuthConfig(venueId),
+        {
+          attributes: {
+            venueId,
+          },
+          withDebugLog: true,
+        }
+      );
+    }, [venueId]);
 
   const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
 

@@ -62,9 +62,8 @@ export const getSectionCapacity = (
     (section.rowsCount ?? venue.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT) -
     1;
 
-  const { videoWidthInSeats, videoHeightInSeats } = getVideoSizeInSeats(
-    baseColumnsCount
-  );
+  const { videoWidthInSeats, videoHeightInSeats } =
+    getVideoSizeInSeats(baseColumnsCount);
 
   const notValidSeats = videoHeightInSeats * videoWidthInSeats;
 

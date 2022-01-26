@@ -50,7 +50,8 @@ interface CloudDataProviderSetting {
  */
 export class CloudDataProvider
   extends utils.EventEmitter
-  implements DataProvider {
+  implements DataProvider
+{
   private _updateCounter = 0;
   private _maxUpdateCounter = 1000 / this.settings.playerioFrequencyUpdate;
 

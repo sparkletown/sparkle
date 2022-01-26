@@ -163,8 +163,8 @@ export class GameInstance {
   }
 
   private update(dt: number) {
-    const position = this._mapContainer?.entityFactory?.getPlayerNode()
-      ?.position;
+    const position =
+      this._mapContainer?.entityFactory?.getPlayerNode()?.position;
     if (position) this.dataProvider.setPlayerPosition(position.x, position.y);
     this.dataProvider.update(dt / settings.TARGET_FPMS);
     this._mapContainer?.update(dt);

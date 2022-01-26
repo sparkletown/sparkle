@@ -42,30 +42,28 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ space }) => {
   const store = useStore();
   const dispatch = useDispatch();
 
-  const [
-    { loading: isInitializing, error: errorInitializing },
-    initialize,
-  ] = useAsyncFn(async () => {
-    if (app || !dataProvider || !containerRef || !containerRef.current) {
-      return;
-    }
+  const [{ loading: isInitializing, error: errorInitializing }, initialize] =
+    useAsyncFn(async () => {
+      if (app || !dataProvider || !containerRef || !containerRef.current) {
+        return;
+      }
 
-    const config = space.gameOptions
-      ? new GameConfig(space.gameOptions)
-      : configs.animateMap;
+      const config = space.gameOptions
+        ? new GameConfig(space.gameOptions)
+        : configs.animateMap;
 
-    const game = new GameInstance(
-      config,
-      store,
-      dataProvider,
-      containerRef.current as HTMLDivElement
-    );
+      const game = new GameInstance(
+        config,
+        store,
+        dataProvider,
+        containerRef.current as HTMLDivElement
+      );
 
-    await game.init();
-    await game.start();
+      await game.init();
+      await game.start();
 
-    setApp(game);
-  }, [containerRef, app, dataProvider, store, space]);
+      setApp(game);
+    }, [containerRef, app, dataProvider, store, space]);
 
   useEffect(() => void initialize(), [initialize]);
   useEffect(() => () => void app?.release(), [app]);

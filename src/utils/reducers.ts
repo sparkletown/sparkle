@@ -13,21 +13,20 @@ import { WithId } from "./id";
  * @example
  *   TODO
  */
-export const makeMatrixReducer = <T>(
-  selectRow: (cur: T) => number,
-  selectCol: (cur: T) => number
-) => (acc: Matrix<T>, cur: T): Matrix<T> => {
-  const row = selectRow(cur);
-  const col = selectCol(cur);
+export const makeMatrixReducer =
+  <T>(selectRow: (cur: T) => number, selectCol: (cur: T) => number) =>
+  (acc: Matrix<T>, cur: T): Matrix<T> => {
+    const row = selectRow(cur);
+    const col = selectCol(cur);
 
-  if (acc[row] === undefined) {
-    acc[row] = [];
-  }
+    if (acc[row] === undefined) {
+      acc[row] = [];
+    }
 
-  acc[row][col] = cur;
+    acc[row][col] = cur;
 
-  return acc;
-};
+    return acc;
+  };
 
 /**
  * A reducer function to reduce items T[] to an object { [item.id]: item }

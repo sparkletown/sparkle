@@ -11,11 +11,8 @@ import { useUser } from "hooks/useUser";
 export const usePosterVideo = (venueId: string) => {
   const { userId } = useUser();
 
-  const {
-    participants,
-    becomeActiveParticipant,
-    becomePassiveParticipant,
-  } = useVideoRoomState(userId, venueId, false);
+  const { participants, becomeActiveParticipant, becomePassiveParticipant } =
+    useVideoRoomState(userId, venueId, false);
 
   const { passiveListeners, activeParticipants } = useMemo(
     () =>

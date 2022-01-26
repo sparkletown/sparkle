@@ -29,10 +29,8 @@ export const BackButton: React.FC<BackButtonProps> = ({
   const displayName = locationName ?? space?.name;
   const backButtonText = displayName ? `Back to ${displayName}` : "Back";
 
-  const {
-    push: customOpenRelativeUrl,
-    replace: customOpenExternalUrl,
-  } = useHistory();
+  const { push: customOpenRelativeUrl, replace: customOpenExternalUrl } =
+    useHistory();
 
   const handleClick = useCallback(() => {
     if (!spaceSlug) return;

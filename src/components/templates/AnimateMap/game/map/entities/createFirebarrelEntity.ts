@@ -59,15 +59,13 @@ const updateBarrelImage = (
     .catch((error) => {
       return new LoadImage(barrels[0]).execute();
     })
-    .then(
-      (comm: LoadImage): Promise<ImageToCanvas> => {
-        if (!comm.image) return Promise.reject();
+    .then((comm: LoadImage): Promise<ImageToCanvas> => {
+      if (!comm.image) return Promise.reject();
 
-        // the picture can be very large
-        const scale = ((getCollisionRadius() * 2) / comm.image.width) * 2;
-        return new ImageToCanvas(comm.image).scaleTo(scale).execute();
-      }
-    )
+      // the picture can be very large
+      const scale = ((getCollisionRadius() * 2) / comm.image.width) * 2;
+      return new ImageToCanvas(comm.image).scaleTo(scale).execute();
+    })
     .then((comm: ImageToCanvas) => {
       const scale = (getCollisionRadius() * 2) / comm.canvas.width / 2;
       positionComponent.scaleX = scale;
@@ -132,31 +130,25 @@ export const createFirebarrelEntity = (
   fsm
     .createState(barrelComponent.WITHOUT_HALO)
     .add(FirebarrelHaloEmpty)
-    .withMethod(
-      (): FirebarrelHaloEmpty => {
-        return new FirebarrelHaloEmpty(sprite);
-      }
-    );
+    .withMethod((): FirebarrelHaloEmpty => {
+      return new FirebarrelHaloEmpty(sprite);
+    });
   fsm
     .createState(barrelComponent.HALO)
     .add(FirebarrelHalo)
-    .withMethod(
-      (): FirebarrelHalo => {
-        return new FirebarrelHalo(sprite);
-      }
-    );
+    .withMethod((): FirebarrelHalo => {
+      return new FirebarrelHalo(sprite);
+    });
 
   fsm
     .createState(barrelComponent.HALO_ANIMATED)
     .add(AnimationComponent)
-    .withMethod(
-      (): AnimationComponent => {
-        return new AnimationComponent(
-          new FirebarrelHaloAnimated(sprite),
-          Number.MAX_VALUE
-        );
-      }
-    );
+    .withMethod((): AnimationComponent => {
+      return new AnimationComponent(
+        new FirebarrelHaloAnimated(sprite),
+        Number.MAX_VALUE
+      );
+    });
 
   let hoverEffectEntity: Entity;
   const hoverEffectDuration = 100;

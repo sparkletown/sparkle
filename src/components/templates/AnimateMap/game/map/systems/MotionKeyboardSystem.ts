@@ -75,8 +75,8 @@ export class MotionKeyboardSystem extends MotionBaseSystem {
         : 1;
 
     for (
-      let node: MotionKeyboardControlNode | null | undefined = this
-        .keyboardControl.head;
+      let node: MotionKeyboardControlNode | null | undefined =
+        this.keyboardControl.head;
       node;
       node = node.next
     ) {

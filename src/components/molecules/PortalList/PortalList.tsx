@@ -41,9 +41,10 @@ export const PortalList: React.FC<PortalListProps> = ({
   const error = name && get(errors, name);
 
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>();
-  const clearSelectedIndex = useCallback(() => setSelectedIndex(undefined), [
-    setSelectedIndex,
-  ]);
+  const clearSelectedIndex = useCallback(
+    () => setSelectedIndex(undefined),
+    [setSelectedIndex]
+  );
 
   const renderedItems = useMemo(
     () =>

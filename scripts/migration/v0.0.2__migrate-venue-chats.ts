@@ -86,10 +86,8 @@ const cleanupThreads = async (
     `\tMoving ${threadMessages.length} thread messages to corresponding collections..`
   );
 
-  const byThreadId: Record<
-    string,
-    QueryDocumentSnapshot<DocumentData>[]
-  > = groupBy(threadMessages, (x) => x.data().threadId);
+  const byThreadId: Record<string, QueryDocumentSnapshot<DocumentData>[]> =
+    groupBy(threadMessages, (x) => x.data().threadId);
 
   const nonExistentThreadIds = [];
   for (const threadId of Object.keys(byThreadId)) {

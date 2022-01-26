@@ -69,12 +69,11 @@ export const useParticipantState = <T extends "audio" | "video">(
   return {
     handleToggle,
     shouldDisableExternally: shouldDisableExternally,
-    icon:
-      icons[
-        `${isMe ? "me" : "other"}${
-          shouldDisableExternally ? "Disabled" : "Enabled"
-        }`
-      ],
+    icon: icons[
+      `${isMe ? "me" : "other"}${
+        shouldDisableExternally ? "Disabled" : "Enabled"
+      }`
+    ],
     ref,
     iconColor: shouldDisableExternally ? "red" : undefined,
   };

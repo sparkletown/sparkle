@@ -46,10 +46,8 @@ export const SpacesDashboard: React.FC = () => {
     [ownedVenues, world]
   );
 
-  const [
-    currentSortingOption,
-    setCurrentSortingOption,
-  ] = useState<SortingOptions>(SortingOptions.az);
+  const [currentSortingOption, setCurrentSortingOption] =
+    useState<SortingOptions>(SortingOptions.az);
 
   const sortedVenues = useMemo(
     () => sortVenues(venues, currentSortingOption) ?? [],

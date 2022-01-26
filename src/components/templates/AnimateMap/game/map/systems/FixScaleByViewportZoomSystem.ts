@@ -38,8 +38,8 @@ export class FixScaleByViewportZoomSystem extends System {
       this.currentZoomLevel = this.viewport.head.viewport.zoomLevel;
 
       for (
-        let node: FixScaleByViewportZoomNode | null | undefined = this.nodes
-          ?.head;
+        let node: FixScaleByViewportZoomNode | null | undefined =
+          this.nodes?.head;
         node;
         node = node.next
       ) {

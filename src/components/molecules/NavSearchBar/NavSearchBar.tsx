@@ -38,12 +38,8 @@ export interface NavSearchBarProps {
 export const NavSearchBar: React.FC<NavSearchBarProps> = ({
   sovereignVenueId,
 }) => {
-  const {
-    searchInputValue,
-    searchQuery,
-    setSearchInputValue,
-    clearSearch,
-  } = useDebounceSearch();
+  const { searchInputValue, searchQuery, setSearchInputValue, clearSearch } =
+    useDebounceSearch();
 
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

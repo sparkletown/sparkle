@@ -34,12 +34,8 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
 }) => {
   const { userId, profile, userWithId } = useUser();
 
-  const {
-    localParticipant,
-    participants,
-    renderErrorModal,
-    loading,
-  } = useVideoRoomState(userId, roomName);
+  const { localParticipant, participants, renderErrorModal, loading } =
+    useVideoRoomState(userId, roomName);
 
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;

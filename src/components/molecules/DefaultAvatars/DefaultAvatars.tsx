@@ -29,24 +29,20 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
 }) => {
   const firebase = useFirebase();
 
-  const {
-    sovereignVenueId,
-    isLoading: isSovereignVenueLoading,
-  } = useRelatedVenues();
+  const { sovereignVenueId, isLoading: isSovereignVenueLoading } =
+    useRelatedVenues();
 
-  const {
-    value: customAvatars,
-    loading: isLoadingCustomAvatars,
-  } = useAsync(async () => {
-    if (!sovereignVenueId) return;
+  const { value: customAvatars, loading: isLoadingCustomAvatars } =
+    useAsync(async () => {
+      if (!sovereignVenueId) return;
 
-    const storageRef = firebase.storage().ref();
-    const list = await storageRef
-      .child(`/assets/avatars/${sovereignVenueId}`)
-      .listAll();
+      const storageRef = firebase.storage().ref();
+      const list = await storageRef
+        .child(`/assets/avatars/${sovereignVenueId}`)
+        .listAll();
 
-    return Promise.all(list.items.map((item) => item.getDownloadURL()));
-  }, [firebase, sovereignVenueId]);
+      return Promise.all(list.items.map((item) => item.getDownloadURL()));
+    }, [firebase, sovereignVenueId]);
 
   const defaultAvatars = customAvatars?.length
     ? customAvatars

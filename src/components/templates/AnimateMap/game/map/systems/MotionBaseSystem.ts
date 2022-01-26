@@ -12,7 +12,8 @@ export class MotionBaseSystem extends System {
 
   constructor() {
     super();
-    this.speedByZoomLevel = GameInstance.instance.getConfig().speedByZoomLevelArray;
+    this.speedByZoomLevel =
+      GameInstance.instance.getConfig().speedByZoomLevelArray;
   }
 
   protected getSpeedByZoomLevel(zoomLevel: number = 0): number {

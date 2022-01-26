@@ -12,12 +12,10 @@ export const usePrivateChatPreviews = () => {
   const { userId } = useUser();
   const firestore = useFirestore();
 
-  const [
-    privateChatMessages,
-    isUserPrivateChatsLoaded,
-  ] = useChatMessagesRaw<PrivateChatMessage>(
-    firestore.collection("privatechats").doc(userId).collection("chats")
-  );
+  const [privateChatMessages, isUserPrivateChatsLoaded] =
+    useChatMessagesRaw<PrivateChatMessage>(
+      firestore.collection("privatechats").doc(userId).collection("chats")
+    );
 
   const privateChatPreviewsMap: PreviewChatMessageMap = useMemo(
     () =>

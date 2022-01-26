@@ -43,10 +43,8 @@ interface JazzProps {
 }
 
 export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
-  const {
-    isShown: showOnlyAvailableTables,
-    toggle: toggleTablesVisibility,
-  } = useShowHide();
+  const { isShown: showOnlyAvailableTables, toggle: toggleTablesVisibility } =
+    useShowHide();
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
   const { isLoaded: areSettingsLoaded, settings } = useSettings();
   const embedIframeUrl = convertToEmbeddableUrl({

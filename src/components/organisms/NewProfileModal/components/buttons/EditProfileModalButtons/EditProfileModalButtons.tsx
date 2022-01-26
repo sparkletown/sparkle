@@ -14,7 +14,9 @@ export interface UserProfileModalButtonsProps extends ContainerClassName {
   isSubmitting: boolean;
 }
 
-export const EditProfileModalButtons: React.FC<UserProfileModalButtonsProps> = ({
+export const EditProfileModalButtons: React.FC<
+  UserProfileModalButtonsProps
+> = ({
   onCancelClick,
   onChangePasswordClick,
   isChangePasswordShown,

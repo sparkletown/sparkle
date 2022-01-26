@@ -23,7 +23,9 @@ interface PortalScheduleItemProps {
   isSaved?: boolean;
 }
 
-export const PortalScheduleItem: React.FunctionComponent<PortalScheduleItemProps> = ({
+export const PortalScheduleItem: React.FunctionComponent<
+  PortalScheduleItemProps
+> = ({
   event,
   expandableDescription = false,
   defaultDescriptionLineNumber = 3,

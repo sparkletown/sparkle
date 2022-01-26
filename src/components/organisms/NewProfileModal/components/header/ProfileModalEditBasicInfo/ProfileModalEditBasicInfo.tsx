@@ -25,7 +25,9 @@ export interface ProfileModalEditBasicInfoProps extends ContainerClassName {
   partyNameError?: FieldError;
 }
 
-export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps> = ({
+export const ProfileModalEditBasicInfo: React.FC<
+  ProfileModalEditBasicInfoProps
+> = ({
   user,
   register,
   setValue,

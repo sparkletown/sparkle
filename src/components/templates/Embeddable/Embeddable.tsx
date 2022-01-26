@@ -15,13 +15,8 @@ export interface EmbeddableProps {
 }
 
 export const Embeddable: React.FC<EmbeddableProps> = ({ venue }) => {
-  const {
-    iframeUrl,
-    autoPlay,
-    containerStyles,
-    iframeStyles,
-    iframeOptions,
-  } = venue;
+  const { iframeUrl, autoPlay, containerStyles, iframeStyles, iframeOptions } =
+    venue;
 
   if (!iframeUrl) return <p>Error: iframeUrl is missing</p>;
 

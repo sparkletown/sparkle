@@ -76,7 +76,8 @@ export class ViewportBackgroundSystem extends System {
     this.setup().then(() => {
       this.setupTree();
 
-      this.container.filters[0].uniforms.texStaticLights = this.staticLightManager.renderSprite();
+      this.container.filters[0].uniforms.texStaticLights =
+        this.staticLightManager.renderSprite();
 
       const back: Sprite = Sprite.from(MAP_IMAGE);
       back.anchor.set(0.5);
@@ -270,9 +271,8 @@ export class ViewportBackgroundSystem extends System {
     // answer: white desert will happen
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
     this.container.filters[0].uniforms.ambientLight = light;
-    this.container.filters[0].uniforms.staticLightAlpha = staticLightKeyFramer.getFrame(
-      time
-    )[0];
+    this.container.filters[0].uniforms.staticLightAlpha =
+      staticLightKeyFramer.getFrame(time)[0];
   }
 
   private addTile(point: Point): Sprite {
