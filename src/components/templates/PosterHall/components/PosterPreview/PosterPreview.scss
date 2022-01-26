@@ -68,7 +68,7 @@ $online-container-min-width: 50px;
     flex-grow: 1;
     // Tiny initial height forces the container to grow to fill remaining space
     height: 1px;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
     img {
       max-width: 100%;
