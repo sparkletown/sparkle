@@ -1,21 +1,21 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 
 import { hoistHocStatics } from "utils/hoc";
 
-type WithRequiredOptions =
+type WithRequiredOptions<T> =
   | string[]
   | {
       required: string[];
-      fallback: React.FC;
+      fallback: React.FC<T>;
     };
 
-export const withRequired = (options: WithRequiredOptions) => (
-  Component: React.FC
+export const withRequired = <T = {}>(options: WithRequiredOptions<T>) => (
+  component: React.FC<T>
 ) => {
   const isArray = Array.isArray(options);
   const required = (isArray ? options : options?.required) ?? [];
 
-  const WithRequired: React.FC = (props) => {
+  const WithRequired = (props: PropsWithChildren<T>) => {
     const haystack = Object.entries(props);
 
     const invalidProp = (needle: string) =>
@@ -25,19 +25,20 @@ export const withRequired = (options: WithRequiredOptions) => (
       );
 
     if (isArray && options.some(invalidProp)) {
-      return <></>;
+      return React.createElement(React.Fragment, {});
     }
 
     if (!isArray) {
       if (required.some(invalidProp)) {
-        const Fallback = options?.fallback;
-        return Fallback ? <Fallback {...props} /> : <></>;
+        return options?.fallback
+          ? React.createElement(options?.fallback, props)
+          : React.createElement(React.Fragment, {});
       }
     }
 
-    return <Component {...props} />;
+    return React.createElement(component, props);
   };
 
-  hoistHocStatics("withRequired:" + required, WithRequired, Component);
+  hoistHocStatics("withRequired:" + required, WithRequired, component);
   return WithRequired;
 };
