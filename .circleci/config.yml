@@ -196,7 +196,6 @@ jobs:
               echo "Functions haven't changed. Nothing to deploy."
             else
               echo "Functions changed. Deploying..."
-              node --version
               # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
               ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
 
