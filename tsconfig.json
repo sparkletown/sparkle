@@ -21,7 +21,7 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "noFallthroughCasesInSwitch": true,
-    "useUnknownInCatchVariables": false,
+    "useUnknownInCatchVariables": false
   },
   "ts-node": {
     "transpileOnly": true,
