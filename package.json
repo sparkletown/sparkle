@@ -201,5 +201,8 @@
     "ws": "^8.4.2",
     "xhr2": "^0.2.1",
     "yup": "^0.29.2"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.2"
   }
 }
