@@ -6,6 +6,7 @@ import {
   ADMIN_IA_WORLD_BASE_URL,
   ADMIN_IA_WORLD_EDIT_PARAM_URL,
   ADMIN_IA_WORLD_SCHEDULE_URL,
+  ADMIN_IA_WORLD_TOOLS_PARAM_URL,
   SPACE_TAXON,
   SPACES_TAXON,
 } from "settings";
@@ -29,6 +30,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SortDropDown } from "components/atoms/SortDropDown";
+import { TesterRestricted } from "components/atoms/TesterRestricted";
 
 import "./SpacesDashboard.scss";
 
@@ -123,6 +125,22 @@ export const SpacesDashboard: React.FC = () => {
               World schedule
             </ButtonNG>
           </AdminTitleBar>
+
+          <TesterRestricted>
+            <div className="SpacesDashboard__tools">
+              <ButtonNG
+                variant="secondary"
+                isLink
+                linkTo={generateUrl({
+                  route: ADMIN_IA_WORLD_TOOLS_PARAM_URL,
+                  required: ["worldSlug"],
+                  params: { worldSlug },
+                })}
+              >
+                Tools
+              </ButtonNG>
+            </div>
+          </TesterRestricted>
 
           {hasPartyVenues && <AdminTitle>My map spaces</AdminTitle>}
           <main

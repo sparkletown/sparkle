@@ -29,6 +29,7 @@ admin.initializeApp({
 });
 
 const access = require("./access");
+const analytics = require("./analytics");
 const auth = require("./auth");
 const venue = require("./venue");
 const video = require("./video");
@@ -37,6 +38,7 @@ const world = require("./world");
 const triggered = require("./triggered");
 
 exports.access = access;
+exports.analytics = analytics;
 exports.auth = auth;
 exports.venue = venue;
 exports.video = video;

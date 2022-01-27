@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
-import { omit } from "lodash";
+import { omit, omitBy } from "lodash";
 
 import { PORTAL_INFO_ICON_MAPPING } from "settings";
 
@@ -20,13 +20,13 @@ const spaceNoneOption = Object.freeze({
   template: undefined,
 });
 
-export type SpacesDropdownPortal = {
+type SpacesDropdownPortal = {
   template?: PortalTemplate;
   name: string;
   id?: string;
 };
 
-export interface SpacesDropdownProps {
+interface SpacesDropdownProps {
   parentSpace?: SpacesDropdownPortal;
   setValue: <T>(prop: string, value: T, validate: boolean) => void;
   register: ReturnType<typeof useForm>["register"];
@@ -49,7 +49,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
   // @debt: Probably need to omit returning playa from the useOwnedVenues as it's deprecated and
   // doesn't exist on SPACE_PORTALS_ICONS_MAPPING
-  const filteredSpaces = omit(spaces, VenueTemplate.playa);
+  const spacesWithoutPlaya = omit(spaces, VenueTemplate.playa);
+  // @debt Filter out all the poster pages as poster hall currently uses (abuses?)
+  // spaces by creating a space for every single poster page. They aren't
+  // proper spaces though. We should make a better way of handling this.
+  const filteredSpaces = omitBy(
+    spacesWithoutPlaya,
+    (s) => s.template === VenueTemplate.posterpage
+  );
   const sortedSpaces = useMemo(
     () =>
       Object.values(filteredSpaces).sort((a, b) =>

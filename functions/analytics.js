@@ -1,48 +1,17 @@
-#!/usr/bin/env node -r esm -r ts-node/register
+const fs = require("fs");
+const admin = require("firebase-admin");
+const functions = require("firebase-functions");
+const lodash = require("lodash");
 
-import fs from "fs";
-import { resolve } from "path";
+const { formatSecondsAsHHMMSS } = require("./src/utils/time");
+const { checkIsAdmin } = require("./src/utils/permissions");
+const { checkAuth } = require("./src/utils/assert");
 
-import admin from "firebase-admin";
-import { chunk } from "lodash";
+const { chunk } = lodash;
 
-import { UserVisit } from "../src/types/Firestore";
-import { User } from "../src/types/User";
-import { WithId, withId } from "../src/utils/id";
-import { formatSecondsAsHHMMSS } from "../src/utils/time";
+const functionsConfig = functions.config();
 
-import {
-  initFirebaseAdminApp,
-  makeScriptUsage,
-  parseCredentialFile,
-} from "./lib/helpers";
-
-const usage = makeScriptUsage({
-  description:
-    "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each.",
-  usageParams: "VENUE_IDS [CREDENTIAL_PATH]",
-  exampleParams:
-    "venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
-});
-
-const [venueIds, credentialPath] = process.argv.slice(2);
-
-const { project_id: projectId } = parseCredentialFile(credentialPath);
-
-// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
-if (!projectId || !venueIds) {
-  usage();
-}
-
-const venueIdsArray = venueIds.split(",");
-
-initFirebaseAdminApp(projectId, {
-  credentialPath: credentialPath
-    ? resolve(__dirname, credentialPath)
-    : undefined,
-});
-
-const getUsersWithVisits = async () => {
+const getUsersWithVisits = async (venueIdsArray) => {
   const dto = await chunk(venueIdsArray, 10)
     .map(async (idsArray) => {
       return await admin
@@ -52,15 +21,17 @@ const getUsersWithVisits = async () => {
         .get()
         .then((usersSnapshot) =>
           usersSnapshot.docs.map(async (userDoc) => {
-            const user = withId(userDoc.data() as User, userDoc.id);
+            const user = { ...userDoc.data(), id: userDoc.id };
 
+            // eslint-disable-next-line promise/no-nesting
             const visits = await userDoc.ref
               .collection("visits")
               .get()
               .then((visitsSnapshot) =>
-                visitsSnapshot.docs.map((visitDoc) =>
-                  withId(visitDoc.data() as UserVisit, visitDoc.id)
-                )
+                visitsSnapshot.docs.map((visitDoc) => ({
+                  ...visitDoc.data(),
+                  id: visitDoc.id,
+                }))
               );
 
             return { user, visits };
@@ -72,20 +43,24 @@ const getUsersWithVisits = async () => {
   return Promise.all(await dto);
 };
 
-interface UsersWithVisitsResult {
-  user: WithId<User>;
-  visits: WithId<UserVisit>[];
-}
+exports.generateAnalytics = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
 
-(async () => {
+  await checkIsAdmin(context.auth.token.user_id);
+
+  const { venueIds = [] } = data;
+
+  const venueIdsArray = venueIds.split(",");
+
+  // TODO: CHECK IF ADMIN
   // TODO: extract this as a generic helper function?
-  const usersWithVisits: UsersWithVisitsResult[] = await Promise.all(
-    await getUsersWithVisits().then((res) => res.flat())
+  const usersWithVisits = await Promise.all(
+    await getUsersWithVisits(venueIdsArray).then((res) => res.flat())
   );
 
   // TODO: extract this as a generic helper function?
   // Note: 100 is the max that can be requested with getUsers() per chunk
-  const authUsers: admin.auth.UserRecord[] = await Promise.all(
+  const authUsers = await Promise.all(
     chunk(usersWithVisits, 100).map(async (usersWithVisitsChunk) => {
       const chunkUserIds = usersWithVisitsChunk.map((userWithVisits) => ({
         uid: userWithVisits.user.id,
@@ -97,23 +72,22 @@ interface UsersWithVisitsResult {
     })
   ).then((result) => result.flat());
 
-  const authUsersById: Record<
-    string,
-    admin.auth.UserRecord | undefined
-  > = authUsers.reduce(
+  const authUsersById = authUsers.reduce(
     (acc, authUser) => ({ ...acc, [authUser.uid]: authUser }),
     {}
   );
 
+  const allSpaceVisitsFileName = "allSpaceVisits.csv";
+
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
-    .reduce((arr: UsersWithVisitsResult[], userWithVisits) => {
+    .reduce((arr, userWithVisits) => {
       const { user, visits } = userWithVisits;
       const { id } = user;
-      const { email } = authUsersById[id] ?? {};
+      const { email } = authUsersById[id] || {};
 
       // filter out @sparkle users
-      if (email?.includes("@sparkle.space")) {
+      if (email && email.includes("@sparkle.space")) {
         return arr;
       }
 
@@ -123,7 +97,7 @@ interface UsersWithVisitsResult {
 
       if (matchingUserIndex > 0) {
         const newArr = [...arr[matchingUserIndex].visits, ...visits].reduce(
-          (visitsArr: WithId<UserVisit>[], visit) => {
+          (visitsArr, visit) => {
             if (visitsArr.map((arrVisit) => arrVisit.id).includes(visit.id)) {
               return visitsArr;
             }
@@ -147,11 +121,11 @@ interface UsersWithVisitsResult {
     .map((userWithVisits) => {
       const { user, visits } = userWithVisits;
       const { id, partyName } = user;
-      const { email } = authUsersById[id] ?? {};
+      const { email } = authUsersById[id] || {};
       const visitIds = visits.map((el) => el.id);
 
       visitIds.map((visit) =>
-        fs.writeFileSync("./allSpaceVisits.csv", `${visit} \n`, { flag: "a" })
+        fs.writeFileSync(allSpaceVisitsFileName, `${visit} \n`, { flag: "a" })
       );
 
       return {
@@ -161,10 +135,10 @@ interface UsersWithVisitsResult {
         visits,
       };
     })
-    .filter((user) => !!user.visits.length);
+    .filter((user) => Boolean(user.visits.length));
 
-  const allResultVisits: string[] = result.reduce((arr: string[], el) => {
-    const result: string[] = el.visits.map((e) => e.id);
+  const allResultVisits = result.reduce((arr, el) => {
+    const result = el.visits.map((e) => e.id);
 
     result.forEach((e) => arr.push(e));
 
@@ -173,10 +147,14 @@ interface UsersWithVisitsResult {
 
   const globalUniqueVisits = [...new Set(allResultVisits)];
 
+  const uniqueVenuesVisitedFileName = "uniqueVenuesVisited.csv";
+
   // write all unique venues
   globalUniqueVisits.map((el) =>
-    fs.writeFileSync("./uniqueVenuesVisited.csv", `${el} \n`, { flag: "a" })
+    fs.writeFileSync(uniqueVenuesVisitedFileName, `${el} \n`, { flag: "a" })
   );
+
+  const dataReportFileName = "dataReport.csv";
 
   // Write user venue headings
   (() => {
@@ -189,7 +167,7 @@ interface UsersWithVisitsResult {
       .map((heading) => `"${heading}"`)
       .join(",");
 
-    fs.writeFileSync("./dataReport.csv", `${headingLine} \n`, { flag: "a" });
+    fs.writeFileSync(dataReportFileName, `${headingLine} \n`, { flag: "a" });
   })();
 
   let globalVisitsValue = 0;
@@ -198,7 +176,7 @@ interface UsersWithVisitsResult {
   const allDataResult = result.map((user) => {
     const onlyVisitIds = user.visits.map((el) => el.id);
 
-    const getVisitData = (visitName: string) =>
+    const getVisitData = (visitName) =>
       user.visits.find((visit) => (visit.id === visitName ? visit : 0)) || {
         timeSpent: 0,
         id: 0,
@@ -217,7 +195,7 @@ interface UsersWithVisitsResult {
     });
 
     const bodyVisitColumns = formattedVisitColumns.map(
-      (column) => column?.formattedTime ?? ""
+      (column) => (column && column.formattedTime) || ""
     );
 
     const dto = [
@@ -231,25 +209,21 @@ interface UsersWithVisitsResult {
 
     const csvFormattedLine = dto.map((s) => `"${s}"`).join(",");
 
-    fs.writeFileSync("./dataReport.csv", `${csvFormattedLine} \n`, {
+    fs.writeFileSync(dataReportFileName, `${csvFormattedLine} \n`, {
       flag: "a",
     });
 
-    const result = formattedVisitColumns.map((visit) => visit.timeValue ?? 0);
+    const result = formattedVisitColumns.map((visit) => visit.timeValue || 0);
 
     return result;
   });
 
   // space between visit data & total data
   [0, 1, 2].map(() =>
-    fs.writeFileSync("./dataReport.csv", `\n`, { flag: "a" })
+    fs.writeFileSync(dataReportFileName, `\n`, { flag: "a" })
   );
 
-  const arrayOfResults: {
-    totalAmount: number;
-    totalValue: number;
-    totalUnique: number;
-  }[] = [];
+  const arrayOfResults = [];
 
   allDataResult.forEach((item) => {
     item.forEach((res, i) => {
@@ -282,17 +256,57 @@ interface UsersWithVisitsResult {
     ),
   ];
 
-  fs.writeFileSync("./dataReport.csv", `${uniqueVisitDataLine} \n`, {
+  fs.writeFileSync(dataReportFileName, `${uniqueVisitDataLine} \n`, {
     flag: "a",
   });
-  fs.writeFileSync("./dataReport.csv", `${averageVisitDataLine} \n`, {
+  fs.writeFileSync(dataReportFileName, `${averageVisitDataLine} \n`, {
     flag: "a",
   });
-})()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(() => {
-    process.exit(0);
+
+  const storage = await admin.storage();
+
+  const TEN_MINUTES_IN_MS = 10 * 60 * 1000;
+
+  // NOTE: Expire 10 minutes from now
+  const expiryDate = new Date().getTime() + TEN_MINUTES_IN_MS;
+
+  const bucket = storage.bucket(`${functionsConfig.project.id}.appspot.com`);
+
+  const [dataReportFile] = await bucket.upload(dataReportFileName, {
+    destination: `analytics/dataReportFile-${expiryDate}.csv`,
   });
+
+  const [allSpaceVisitsFile] = await bucket.upload(allSpaceVisitsFileName, {
+    destination: `analytics/allSpaceVisits-${expiryDate}.csv`,
+  });
+
+  const [uniqueVenuesVisitedFile] = await bucket.upload(
+    uniqueVenuesVisitedFileName,
+    {
+      destination: `analytics/uniqueVenuesVisited-${expiryDate}.csv`,
+    }
+  );
+
+  const [dataReportFileUrl] = await dataReportFile.getSignedUrl({
+    action: "read",
+    expires: expiryDate,
+  });
+
+  const [allSpaceVisitsFileUrl] = await allSpaceVisitsFile.getSignedUrl({
+    action: "read",
+    expires: expiryDate,
+  });
+
+  const [
+    uniqueVenuesVisitedFileUrl,
+  ] = await uniqueVenuesVisitedFile.getSignedUrl({
+    action: "read",
+    expires: expiryDate,
+  });
+
+  return {
+    dataReportFileUrl,
+    allSpaceVisitsFileUrl,
+    uniqueVenuesVisitedFileUrl,
+  };
+});

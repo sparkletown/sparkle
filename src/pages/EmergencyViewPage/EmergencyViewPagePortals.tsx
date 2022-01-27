@@ -4,38 +4,34 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import EmergencyViewRoom from "./EmergencyViewRoom";
+import { EmergencyViewPortal } from "./EmergencyViewPortal";
 
 type EmergencyViewTabsProps = {
   descendantVenues: WithId<AnyVenue>[];
 };
 
-const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
+export const EmergencyViewPagePortals: React.FC<EmergencyViewTabsProps> = ({
   descendantVenues,
 }) => {
-  const renderVenuesRooms = descendantVenues
+  const renderVenuesPortals = descendantVenues
     .map(
       (venue) =>
         !!venue?.rooms?.length && (
           <div key={venue.id}>
             <span className="EmergencyView__venue">{venue.name}</span>
             <div key={venue.id} className="EmergencyView__content">
-              {venue?.rooms?.map((room) => {
-                return (
-                  <EmergencyViewRoom
-                    key={room.title}
-                    room={room}
-                    isLive={false}
-                  />
-                );
-              })}
+              {venue?.rooms?.map((portal) => (
+                <EmergencyViewPortal
+                  key={portal.title}
+                  portal={portal}
+                  isLive={false}
+                />
+              ))}
             </div>
           </div>
         )
     )
     .filter((venue) => !!venue);
 
-  return <>{renderVenuesRooms}</>;
+  return <>{renderVenuesPortals}</>;
 };
-
-export default EmergencyViewPageRooms;

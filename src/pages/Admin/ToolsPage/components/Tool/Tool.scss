@@ -1,0 +1,13 @@
+@import "scss/constants.scss";
+
+.Tool {
+  &__input {
+    margin: $spacing--md 0;
+  }
+
+  &__input-label {
+    display: block;
+    opacity: 0.7;
+    margin-bottom: $spacing--sm;
+  }
+}

@@ -821,3 +821,39 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });
+
+exports.upsertScreeningRoomVideo = functions.https.onCall(
+  async (data, context) => {
+    const { spaceId, video, videoId } = data;
+
+    await checkUserIsOwner(spaceId, context.auth.token.user_id);
+
+    const videosCollection = await admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .collection("screeningRoomVideos");
+
+    if (videoId) {
+      await videosCollection.doc(videoId).set(video);
+    } else {
+      await videosCollection.doc().set(video);
+    }
+  }
+);
+
+exports.deleteScreeningRoomVideo = functions.https.onCall(
+  async (data, context) => {
+    const { spaceId, videoId } = data;
+
+    await checkUserIsOwner(spaceId, context.auth.token.user_id);
+
+    await admin
+      .firestore()
+      .collection("venues")
+      .doc(spaceId)
+      .collection("screeningRoomVideos")
+      .doc(videoId)
+      .delete();
+  }
+);
