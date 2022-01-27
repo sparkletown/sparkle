@@ -61,7 +61,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.
-  const { findVenueInRelatedVenues, relatedVenueIds } = useRelatedVenues();
+  const { findVenueInRelatedVenues, relatedSpaceSlugs } = useRelatedVenues();
   const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
 
   useEffect(() => {
@@ -127,7 +127,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const renderedSpaceIds = useMemo(
     () =>
-      relatedVenueIds.map((spaceId) => {
+      relatedSpaceSlugs.map((spaceId) => {
         return (
           <ReactBootstrapDropdown.Item
             key={spaceId}
@@ -140,7 +140,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
           </ReactBootstrapDropdown.Item>
         );
       }) ?? [],
-    [register, relatedVenueIds, setValue]
+    [register, relatedSpaceSlugs, setValue]
   );
 
   return (
