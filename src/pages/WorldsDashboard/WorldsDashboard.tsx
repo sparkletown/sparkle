@@ -29,6 +29,8 @@ export const WorldsDashboard: React.FC = () => {
 
   const worlds = useWorlds();
 
+  // NOTE: We could do this by forming a firebase query where([world.id, 'in', ownedUniqueWorldIds]), but it has a limit of 10 items in ownedUniqueWorldIds.
+  // Because of the limit, I decided to do it on frontend
   const uniqueWorlds = useMemo(
     () => worlds.filter((world) => ownedUniqueWorldIds.includes(world.id)),
     [worlds, ownedUniqueWorldIds]
