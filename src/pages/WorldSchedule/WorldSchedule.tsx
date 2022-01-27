@@ -112,8 +112,6 @@ export const WorldSchedule = () => {
   const { worldSlug } = useWorldParams();
   const { isLoaded, world } = useWorldBySlug(worldSlug);
 
-  console.log(world);
-
   const defaultValues = useMemo<WorldScheduleFormInput>(() => {
     const {
       inputFormattedDateSegment: startDate,
