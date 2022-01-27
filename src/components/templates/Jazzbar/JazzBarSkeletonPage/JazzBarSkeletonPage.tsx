@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import InformationCard from "components/molecules/InformationCard";
+import { InformationCard } from "components/molecules/InformationCard";
 
 import "./JazzBarSkeletonPage.scss";
 
@@ -18,7 +18,7 @@ interface PropsType {
   venue: WithId<JazzbarVenue>;
 }
 
-const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
+export const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
   children,
   venue,
 }) => {
@@ -46,5 +46,3 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
-export default JazzBarSkeletonPage;

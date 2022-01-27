@@ -15,7 +15,7 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import "./SecretPasswordForm.scss";
 
-const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
+export const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
@@ -110,5 +110,3 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
     </>
   );
 };
-
-export default SecretPasswordForm;

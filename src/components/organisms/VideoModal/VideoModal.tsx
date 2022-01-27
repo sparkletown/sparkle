@@ -16,7 +16,7 @@ interface PropsType {
   backdrop?: "static" | boolean | undefined;
 }
 
-const VideoModal: React.FunctionComponent<PropsType> = ({
+export const VideoModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   url,
@@ -55,4 +55,3 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
   );
 };
 
-export default VideoModal;

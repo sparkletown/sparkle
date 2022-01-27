@@ -28,7 +28,7 @@ import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedu
 
 import { NormalRadio } from "components/molecules/NavBar/components/NormalRadio";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
-import UpcomingTickets from "components/molecules/UpcomingTickets";
+import { UpcomingTickets } from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";

@@ -29,7 +29,7 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./TableComponent.scss";
 
-const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   imageSize = 50,
@@ -172,4 +172,3 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   );
 };
 
-export default TableComponent;

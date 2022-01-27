@@ -22,7 +22,7 @@ import { AdminInput } from "components/molecules/AdminInput";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 
 import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 

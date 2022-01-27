@@ -1,1 +1,1 @@
-export { default } from "./UpcomingTickets";
+export { UpcomingTickets } from "./UpcomingTickets";

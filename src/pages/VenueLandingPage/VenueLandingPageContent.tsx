@@ -35,8 +35,8 @@ import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import InformationCard from "components/molecules/InformationCard";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+import { InformationCard } from "components/molecules/InformationCard";
+import { SecretPasswordForm } from "components/molecules/SecretPasswordForm";
 
 dayjs.extend(advancedFormat);
 

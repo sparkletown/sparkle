@@ -26,7 +26,7 @@ import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUser
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
-import TableComponent from "components/molecules/TableComponent";
+import { TableComponent } from "components/molecules/TableComponent";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";

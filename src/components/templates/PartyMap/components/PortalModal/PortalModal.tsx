@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room, RoomType } from "types/rooms";
 import { WorldEvent } from "types/venues";
 
-import VideoModal from "components/organisms/VideoModal";
+import { VideoModal } from "components/organisms/VideoModal";
 
 import { PortalModalContent } from "./PortalModalContent";
 

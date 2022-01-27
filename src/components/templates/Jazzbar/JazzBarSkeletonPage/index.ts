@@ -1,1 +1,1 @@
-export { default } from "./JazzBarSkeletonPage";
+export { JazzBarSkeletonPage } from "./JazzBarSkeletonPage";

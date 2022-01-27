@@ -11,7 +11,9 @@ interface PropsType {
   events: UpcomingEvent[];
 }
 
-const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
+export const UpcomingTickets: React.FunctionComponent<PropsType> = ({
+  events,
+}) => {
   const sortedEvents = useMemo(
     () =>
       [...events].sort(
@@ -48,4 +50,3 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
   );
 };
 
-export default UpcomingTickets;
