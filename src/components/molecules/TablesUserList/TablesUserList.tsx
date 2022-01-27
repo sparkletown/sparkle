@@ -73,8 +73,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const isCurrentUserAdmin = arrayIncludes(venue.owners, userWithId?.id);
 
-  const [seatedTableUsers, isSeatedTableUsersLoaded] =
-    useSeatedTableUsers(venueId);
+  const [seatedTableUsers, isSeatedTableUsersLoaded] = useSeatedTableUsers(
+    venueId
+  );
 
   const userTableReference = seatedTableUsers.find(
     (u) => u.id === userWithId?.id
@@ -100,15 +101,17 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [userWithId, venueId]
   );
 
-  const usersSeatedAtTables: Record<string, WithId<TableSeatedUser>[]> =
-    useMemo(() => {
-      const tableReferences = tables.map((t) => t.reference);
+  const usersSeatedAtTables: Record<
+    string,
+    WithId<TableSeatedUser>[]
+  > = useMemo(() => {
+    const tableReferences = tables.map((t) => t.reference);
 
-      const filteredUsers = seatedTableUsers.filter((user) =>
-        tableReferences.includes(user.path.tableReference)
-      );
-      return groupBy(filteredUsers, (user) => user.path.tableReference);
-    }, [seatedTableUsers, tables]);
+    const filteredUsers = seatedTableUsers.filter((user) =>
+      tableReferences.includes(user.path.tableReference)
+    );
+    return groupBy(filteredUsers, (user) => user.path.tableReference);
+  }, [seatedTableUsers, tables]);
 
   const isFullTable = useCallback(
     (table: Table) => {
