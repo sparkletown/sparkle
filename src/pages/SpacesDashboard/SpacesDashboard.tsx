@@ -123,17 +123,19 @@ export const SpacesDashboard: React.FC = () => {
             </ButtonNG>
             <AdminTitle>{world?.name} dashboard</AdminTitle>
             <div>
-              <ButtonNG
-                variant="secondary"
-                isLink
-                linkTo={generateUrl({
-                  route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
-                  required: ["worldSlug"],
-                  params: { worldSlug },
-                })}
-              >
-                Settings
-              </ButtonNG>
+              {isWorldAdmin && (
+                <ButtonNG
+                  variant="secondary"
+                  isLink
+                  linkTo={generateUrl({
+                    route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
+                    required: ["worldSlug"],
+                    params: { worldSlug },
+                  })}
+                >
+                  Settings
+                </ButtonNG>
+              )}
             </div>
           </AdminTitleBar>
 
