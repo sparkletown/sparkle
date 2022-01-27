@@ -6,19 +6,22 @@ export const generateTable: (props: {
   tableNumber: number;
   columns?: number;
   rows?: number;
+  tableName?: string;
 }) => Table = ({
   tableNumber,
+  tableName,
   columns = DEFAULT_TABLE_COLUMNS,
   rows = DEFAULT_TABLE_ROWS,
 }) => {
-  const title = `Table ${tableNumber}`;
+  const titleWithNumber = `Table ${tableNumber}`;
+  const tableTitle = tableName ?? titleWithNumber;
 
   const capacity = columns * rows;
 
   return {
-    title,
+    title: tableTitle,
     capacity,
-    reference: title,
+    reference: titleWithNumber,
     rows,
     columns,
   };
