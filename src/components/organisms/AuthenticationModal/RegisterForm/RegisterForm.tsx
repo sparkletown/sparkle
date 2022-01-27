@@ -11,6 +11,7 @@ import {
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
+import { errorCode, errorMessage, errorStatus } from "types/errors";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { isTruthy } from "utils/types";
@@ -175,23 +176,23 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       history.push(profileUrl);
     } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
+      const status = errorStatus(error);
+      const message = errorMessage(error);
+      const code = errorCode(error);
+
+      if (code === "auth/email-already-in-use") {
         setShowLoginModal(true);
       }
-      if (error.response?.status === 404) {
+      if (status === 404) {
         setError(
           "email",
           "validation",
           `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
-      } else if (error.response?.status >= 500) {
-        setError(
-          "email",
-          "validation",
-          `Error checking ticket: ${error.message}`
-        );
+      } else if (status >= 500) {
+        setError("email", "validation", `Error checking ticket: ${message}`);
       } else {
-        setError("backend", "firebase", error.message);
+        setError("backend", "firebase", message);
       }
     }
   };
