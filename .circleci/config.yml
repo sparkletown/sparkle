@@ -125,7 +125,7 @@ jobs:
             if [ $CIRCLE_BRANCH = "sparkle6" ]; then
               ENV=sparkle-6
             fi
-            if [ $CIRCLE_BRANCH = "sparkle7" ]; then
+            if [ $CIRCLE_BRANCH = "new/upgrade-node" ]; then
               ENV=sparkle-7
             fi
             if [ $CIRCLE_BRANCH = "sparkle8" ]; then
@@ -270,7 +270,7 @@ jobs:
               TARGET=sparkle-6
               RELEASE_STAGE=sparkle6
             fi
-            if [ $CIRCLE_BRANCH = "sparkle7" ]; then
+            if [ $CIRCLE_BRANCH = "new/upgrade-node" ]; then
               PREFIX=SPARKLE7_
               ENV=sparkle-7
               TARGET=sparkle-7
@@ -431,7 +431,7 @@ workflows:
                 - sparkle4
                 - sparkle5
                 - sparkle6
-                - sparkle7
+                - new/upgrade-node
                 - sparkle8
                 - sparkle9
                 - sparkle10
@@ -465,7 +465,7 @@ workflows:
                 - sparkle4
                 - sparkle5
                 - sparkle6
-                - sparkle7
+                - new/upgrade-node
                 - sparkle8
                 - sparkle9
                 - sparkle10
