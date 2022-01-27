@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAsyncFn } from "react-use";
 import { FIREBASE } from "core/firebase";
 import { getDownloadURL, listAll, ref } from "firebase/storage";
+
 export interface UseFetchAssetsReturn {
   assets: string[];
   isLoading: boolean;
@@ -18,18 +19,24 @@ export const useFetchAssets = (path: string): UseFetchAssetsReturn => {
   const [assets, setAssets] = useState<string[]>([]);
 
   const [{ loading: isLoading, error }, fetchAssets] = useAsyncFn(async () => {
-    const listRef = await ref(FIREBASE.storage, `assets/${path}`);
-    const list = await listAll(listRef);
-    const promises = list.items.map((item) => getDownloadURL(item));
+    const assetsRef = await ref(FIREBASE.storage, `assets/${path}`);
+    const assetsList = await listAll(assetsRef);
 
-    const urls: string[] = await Promise.all(promises);
-
-    setAssets(urls);
+    return Promise.all(assetsList.items.map(getDownloadURL));
   }, [path]);
 
   useEffect(() => {
-    fetchAssets();
-  }, [fetchAssets, path]);
+    // prevents warning: Can't perform a React state update on an unmounted component.
+    let isMounted = true;
+
+    fetchAssets()
+      .then((urls) => isMounted && setAssets(urls))
+      .catch((e) => console.error(useFetchAssets.name, e));
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchAssets]);
 
   return { assets, isLoading, error };
 };
