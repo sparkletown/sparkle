@@ -1,6 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+import { errorMessage } from "types/errors";
 import { SoundConfig, SoundConfigMap, SoundConfigSchema } from "types/sounds";
 
 import { withId } from "utils/id";
@@ -18,7 +19,9 @@ export const fetchSoundConfigs = async (): Promise<SoundConfigMap> => {
       .map((docSnapshot) => withId(docSnapshot.data(), docSnapshot.id))
       .reduce(itemsToObjectByIdReducer, {});
   } catch (err) {
-    Bugsnag.notify(err, (event) => {
+    const message = errorMessage(err);
+
+    Bugsnag.notify({ name: message, message }, (event) => {
       event.addMetadata("context", {
         location: "api::sounds::fetchSoundConfigs",
       });
