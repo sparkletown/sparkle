@@ -1,9 +1,8 @@
-import firebaseAdmin from "firebase-admin";
-
 export interface FirebaseError extends Error {
   _baseMessage?: string;
   code?: string;
   customData?: { serverResponse?: string };
+  status?: number;
 }
 
 type ErrorMessage = (e: unknown) => string;
@@ -23,10 +22,8 @@ export const errorCode: ErrorCode = (errorWithCode) => {
   return e?.code ? String(e.code) : String(errorWithCode);
 };
 
-type WithResponse = { response: firebaseAdmin.HttpResponse };
-type ErrorResponse = (
-  errorWithResponse: unknown
-) => firebaseAdmin.HttpResponse | undefined;
+type WithResponse = { response: FirebaseError };
+type ErrorResponse = (errorWithResponse: unknown) => FirebaseError | undefined;
 export const errorResponse: ErrorResponse = (errorWithResponse) => {
   const e = errorWithResponse as WithResponse;
   return e?.response ? e.response : undefined;
