@@ -174,6 +174,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
           event={editedEvent}
           setEditedEvent={setEditedEvent}
           setShowDeleteEventModal={setShowDeleteEventModal}
+          worldId={venue?.worldId ?? worldId}
         />
       )}
 

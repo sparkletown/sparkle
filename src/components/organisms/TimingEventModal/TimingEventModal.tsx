@@ -27,6 +27,7 @@ export type TimingEventModalProps = {
   venueId?: string;
   setEditedEvent: Function | undefined;
   setShowDeleteEventModal: () => void;
+  worldId?: string;
 };
 
 // Dispatch<SetStateAction<WithId<Experience> | undefined>>
@@ -34,6 +35,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
   venueId,
+  worldId,
   setEditedEvent,
   event,
   setShowDeleteEventModal,
@@ -61,8 +63,17 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.
-  const { findVenueInRelatedVenues, relatedSpaceSlugs } = useRelatedVenues();
+  const {
+    findVenueInRelatedVenues,
+    relatedVenueIds,
+    relatedSpaceSlugs,
+  } = useRelatedVenues();
   const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
+
+  const spacesMap = relatedVenueIds.map((spaceId: string, index: number) => ({
+    id: spaceId,
+    slug: relatedSpaceSlugs[index],
+  }));
 
   useEffect(() => {
     if (event?.id) {
@@ -84,9 +95,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const onUpdateEvent = useCallback(
     async (data: WorldScheduleEvent) => {
-      const spaceId = eventSpaceId ?? data.spaceId;
+      const spaceId = data.space?.id ?? eventSpaceId;
+      const eventWorldId = eventSpace?.worldId ?? worldId;
 
-      if (!spaceId) {
+      if (!spaceId || !eventWorldId) {
         return;
       }
 
@@ -99,9 +111,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         durationMinutes: data.durationHours * 60 + (data.durationMinutes ?? 0),
         host: data.host,
         spaceId: spaceId,
-        // @debt this needs figuring out. We shouldn't get to here without
-        // an eventSpace
-        worldId: eventSpace?.worldId ?? "",
+        worldId: eventWorldId,
       };
       // Add the ID conditionally - otherwise the field is set to undefined
       // which firebase does not like.
@@ -115,7 +125,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       }
       onHide();
     },
-    [onHide, eventSpaceId, eventSpace, event]
+    [eventSpaceId, eventSpace?.worldId, worldId, onHide, event?.id]
   );
 
   const showDeleteButton = event?.id;
@@ -127,20 +137,20 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   const renderedSpaceIds = useMemo(
     () =>
-      relatedSpaceSlugs.map((spaceId) => {
+      spacesMap.map((space) => {
         return (
           <ReactBootstrapDropdown.Item
-            key={spaceId}
+            key={space.id}
             ref={register}
-            name="spaceId"
-            onClick={() => setValue("spaceId", spaceId)}
+            name={"space"}
+            onClick={() => setValue("space", space)}
             className="SpacesDropdown__item"
           >
-            {spaceId}
+            {space.slug}
           </ReactBootstrapDropdown.Item>
         );
       }) ?? [],
-    [register, relatedSpaceSlugs, setValue]
+    [register, setValue, spacesMap]
   );
 
   return (
@@ -160,13 +170,11 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               {eventSpace?.name ?? (
                 <div className="TimingEventModal__input-group">
                   <Dropdown
-                    title={values.spaceId ?? "None"}
+                    title={values.space?.slug ?? "None"}
                     options={renderedSpaceIds}
                   />
-                  {errors.spaceId && (
-                    <span className="input-error">
-                      {errors.spaceId.message}
-                    </span>
+                  {errors.space && (
+                    <span className="input-error">{errors.space.message}</span>
                   )}
                 </div>
               )}

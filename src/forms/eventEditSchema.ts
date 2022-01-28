@@ -4,12 +4,26 @@ import { START_DATE_FORMAT_RE } from "settings";
 
 import { WorldScheduleEvent } from "api/admin";
 
+export interface SpaceType {
+  id?: string;
+  slug?: string;
+}
+
 export const eventEditSchema = Yup.object().shape<WorldScheduleEvent>({
-  spaceId: Yup.string().when(
-    "$eventEditSchema",
-    (eventEditSchema: string, schema: Yup.StringSchema) =>
-      eventEditSchema ? schema : schema.required("Space id required")
-  ),
+  space: Yup.object()
+    .shape<SpaceType>({
+      id: Yup.string().notRequired(),
+      slug: Yup.string().notRequired(),
+    })
+    .when("$eventSpaceId", (eventSpaceId: string, schema: Yup.StringSchema) =>
+      eventSpaceId
+        ? schema.notRequired()
+        : schema.test(
+            "space",
+            "Space id required",
+            (space: SpaceType) => !!space.id
+          )
+    ),
   name: Yup.string().required("Name required"),
   description: Yup.string().required("Description required"),
   startDate: Yup.string()
