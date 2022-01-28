@@ -1,5 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 
+import { ROOM_TAXON } from "settings";
+
 import { EventsVariant } from "types/events";
 import { AnyVenue, WorldEvent } from "types/venues";
 
@@ -134,7 +136,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
             <Checkbox
               checked={showSplittedEvents}
               onChange={toggleSplittedEvents}
-              label="Split by space"
+              label={`Split by ${ROOM_TAXON.lower}`}
               labelClassName="WorldScheduleEvents__checkbox"
             />
           )}
