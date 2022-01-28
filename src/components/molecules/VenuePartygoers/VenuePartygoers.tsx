@@ -2,8 +2,8 @@ import React from "react";
 
 import { DEFAULT_ATTENDEES_TITLE } from "settings";
 
-import { useCurrentWorld } from "hooks/useCurrentWorld";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 import "./VenuePartygoers.scss";
 
@@ -15,7 +15,7 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
   worldId,
 }) => {
   const { sovereignVenue } = useRelatedVenues();
-  const { world } = useCurrentWorld({ worldId });
+  const { world } = useWorldById(worldId);
 
   // @debt recentUserCount should be moved to world
   const numberOfRecentWorldUsers = sovereignVenue?.recentUserCount ?? "";

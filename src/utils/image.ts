@@ -1,5 +1,4 @@
 import Resizer from "react-image-file-resizer";
-import firebase from "firebase/app";
 
 import {
   DEFAULT_AVATAR_LIST,
@@ -8,6 +7,7 @@ import {
   FIREBASE_STORAGE_IMAGES_ORIGIN,
 } from "settings";
 
+import { RefiAuthUser } from "types/fire";
 import { User } from "types/User";
 
 import { isDefined } from "utils/types";
@@ -84,7 +84,7 @@ type DetermineAvatar = (options?: {
   index?: number;
   partyName?: string;
   pictureUrl?: string;
-  userInfo?: firebase.UserInfo;
+  userInfo?: RefiAuthUser;
   user?: User;
 }) => string;
 

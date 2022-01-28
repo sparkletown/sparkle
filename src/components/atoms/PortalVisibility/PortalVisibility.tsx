@@ -6,13 +6,13 @@ import { get } from "lodash";
 
 import { LABEL_VISIBILITY_OPTIONS } from "settings";
 
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 import { isDefined } from "utils/types";
 
 import "./PortalVisibility.scss";
 
-export interface PortalVisibilityProps {
+interface PortalVisibilityProps {
   errors?: FieldErrors<FieldValues>;
   getValues: () => Record<string, unknown>;
   name: string;

@@ -17,7 +17,7 @@ import {
 import { createRoom, deleteRoom, upsertRoom } from "api/admin";
 
 import { PortalInput, Room, RoomType } from "types/rooms";
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 import { isTruthy } from "utils/types";
 
@@ -34,7 +34,7 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
@@ -42,7 +42,7 @@ import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 
 import "./PortalAddEditForm.scss";
 
-export interface PortalAddEditFormProps {
+interface PortalAddEditFormProps {
   item?: PortalInfoItem;
   onDone: () => void;
   portal?: Room;

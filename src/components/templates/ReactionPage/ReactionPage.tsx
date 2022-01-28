@@ -1,13 +1,15 @@
 import React from "react";
+import { orderBy } from "firebase/firestore";
 
 import { ALWAYS_EMPTY_ARRAY, SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
-import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
+import { EmojiReaction, TextReaction, TextReactionType } from "types/reactions";
 
+import { convertToFirestoreKey } from "utils/id";
+
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -15,28 +17,22 @@ import { ReactionList } from "./ReactionList";
 
 import "./ReactionPage.scss";
 
-const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
-  ? reactionsSelector
-  : messagesToTheBandSelector;
-
 // @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { space, spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
-  useFirestoreConnect(
-    spaceId
-      ? {
-          collection: "experiences",
-          doc: spaceId,
-          subcollections: [{ collection: "reactions" }],
-          orderBy: ["created_at", "desc"],
-          storeAs: "reactions",
-        }
-      : undefined
-  );
-  const reactions = useSelector(wantedReactionsSelector) ?? [];
+  const { data } = useRefiCollection<TextReaction | EmojiReaction>({
+    path: ["experiences", convertToFirestoreKey(spaceId), "reactions"],
+    constraints: [orderBy("created_at", "desc")],
+  });
+
+  const reactions = SHOW_EMOJI_IN_REACTION_PAGE
+    ? data ?? ALWAYS_EMPTY_ARRAY
+    : (data ?? ALWAYS_EMPTY_ARRAY).filter(
+        (reaction) => reaction.reaction === TextReactionType
+      );
 
   return (
     <div className="reaction-page-container">

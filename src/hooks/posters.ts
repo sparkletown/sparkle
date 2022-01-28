@@ -1,43 +1,35 @@
 import { useCallback, useMemo, useState } from "react";
+import { where } from "firebase/firestore";
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import {
+  COLLECTION_SPACES,
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+} from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { PosterPageVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
-import { posterVenuesSelector } from "utils/selectors";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 
-import { useDebounceSearch } from "./useDebounceSearch";
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export const useConnectPosterVenues = (posterHallId: string) => {
-  useFirestoreConnect(() => {
-    return [
-      {
-        collection: "venues",
-        where: [
-          ["template", "==", VenueTemplate.posterpage],
-          ["parentId", "==", posterHallId],
-        ],
-        storeAs: "posterVenues",
-      },
-    ];
-  });
-};
+import { useDebounceSearch } from "./useDebounceSearch";
 
 export const usePosterVenues = (posterHallId: string) => {
-  useConnectPosterVenues(posterHallId);
-
-  const posterVenues = useSelector(posterVenuesSelector);
-
+  const { data, isLoaded } = useRefiCollection<PosterPageVenue>({
+    path: [COLLECTION_SPACES],
+    constraints: [
+      where("template", "==", VenueTemplate.posterpage),
+      where("parentId", "==", posterHallId),
+    ],
+  });
   return useMemo(
     () => ({
-      posterVenues: posterVenues ?? [],
-      isPostersLoaded: isLoaded(posterVenues),
+      posterVenues: data ?? [],
+      isPostersLoaded: isLoaded,
     }),
-    [posterVenues]
+    [data, isLoaded]
   );
 };
 
@@ -50,7 +42,6 @@ export const usePosters = (posterHallId: string) => {
     setSearchInputValue,
   } = useDebounceSearch();
 
-  const [liveFilter, setLiveFilter] = useState<boolean>(false);
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(
     DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
   );
@@ -62,18 +53,10 @@ export const usePosters = (posterHallId: string) => {
     );
   }, []);
 
-  const filteredPosterVenues = useMemo(
-    () =>
-      liveFilter
-        ? posterVenues.filter((posterVenue) => posterVenue.isLive)
-        : posterVenues,
-    [posterVenues, liveFilter]
-  );
-
   // See https://fusejs.io/api/options.html
   const fuseVenues = useMemo(
     () =>
-      new Fuse(filteredPosterVenues, {
+      new Fuse(posterVenues, {
         keys: [
           "name",
           "poster.title",
@@ -87,19 +70,19 @@ export const usePosters = (posterHallId: string) => {
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
         findAllMatches: true,
       }),
-    [filteredPosterVenues]
+    [posterVenues]
   );
 
   const searchedPosterVenues = useMemo(() => {
     const normalizedSearchQuery = searchQuery.trim();
 
-    if (!normalizedSearchQuery) return filteredPosterVenues;
+    if (!normalizedSearchQuery) return posterVenues;
 
     const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
       normalizedSearchQuery
     );
 
-    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
+    if (tokenisedSearchQuery.length === 0) return posterVenues;
 
     return fuseVenues
       .search({
@@ -120,7 +103,7 @@ export const usePosters = (posterHallId: string) => {
         }),
       })
       .map((fuseResult) => fuseResult.item);
-  }, [searchQuery, fuseVenues, filteredPosterVenues]);
+  }, [searchQuery, fuseVenues, posterVenues]);
 
   const displayedPosterVenues = useMemo(
     () => searchedPosterVenues.slice(0, displayedPostersCount),
@@ -136,10 +119,8 @@ export const usePosters = (posterHallId: string) => {
     hasHiddenPosters,
 
     searchInputValue,
-    liveFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
-    setLiveFilter,
   };
 };

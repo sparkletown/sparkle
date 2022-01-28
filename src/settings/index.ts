@@ -1,15 +1,6 @@
-import {
-  API_KEY,
-  APP_ID,
-  AUTH_DOMAIN,
-  BUCKET_URL,
-  MEASUREMENT_ID,
-  PROJECT_ID,
-} from "secrets";
-
 import { RoomType } from "types/rooms";
 import { Table } from "types/Table";
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { generateTables } from "utils/table";
 import { FIVE_MINUTES_MS } from "utils/time";
@@ -477,15 +468,6 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.viewingwindow,
 ];
-
-export const FIREBASE_CONFIG = {
-  apiKey: API_KEY,
-  appId: APP_ID,
-  authDomain: AUTH_DOMAIN,
-  measurementId: MEASUREMENT_ID,
-  projectId: PROJECT_ID,
-  storageBucket: BUCKET_URL,
-};
 
 export const RANDOM_AVATARS = [
   "avatar-01.png",

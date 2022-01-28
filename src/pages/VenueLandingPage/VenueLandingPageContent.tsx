@@ -17,39 +17,45 @@ import {
 
 import { World } from "api/world";
 
+import {
+  UserId,
+  WorldAndSpaceIdLocation,
+  WorldAndSpaceSlugLocation,
+} from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 import { AnyVenue } from "types/venues";
 
 import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { WithId } from "utils/id";
-import { venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { useValidImage } from "hooks/useCheckImage";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import InformationCard from "components/molecules/InformationCard";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+import { InformationCard } from "components/molecules/InformationCard";
+import { SecretPasswordForm } from "components/molecules/SecretPasswordForm";
 
 dayjs.extend(advancedFormat);
 
-type VenueLandingPageContentProps = {
-  space: WithId<AnyVenue>;
-  world: WithId<World>;
-  withJoinEvent?: boolean;
-};
-const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
-  space,
-  world,
-  withJoinEvent = true,
-}) => {
-  const venueEvents = useSelector(venueEventsSelector);
+type VenueLandingPageContentProps = WorldAndSpaceIdLocation &
+  WorldAndSpaceSlugLocation & {
+    userId: UserId;
+    space: WithId<AnyVenue>;
+    world: WithId<World>;
+  };
 
-  const spaceSlug = space.slug;
+export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
+  userId,
+  space,
+  spaceId,
+  spaceSlug,
+  world,
+  worldSlug,
+}) => {
+  const { currentVenueEvents: events } = useConnectCurrentVenueNG({ spaceId });
 
   const [validBannerImageUrl] = useValidImage(
     space?.config?.landingPageConfig.coverImageUrl,
@@ -57,7 +63,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   );
 
   const [validLogoUrl] = useValidImage(space?.host?.icon, DEFAULT_VENUE_LOGO);
-  const futureOrOngoingVenueEvents = venueEvents?.filter(
+  const futureOrOngoingVenueEvents = events?.filter(
     (event) => !hasEventFinished(event)
   );
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
@@ -67,10 +73,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     if (!spaceSlug) return;
 
     const hasEntrance = world?.entrance?.length;
-    const worldSlug = world?.slug;
 
     window.location.href =
-      user && !hasEntrance
+      userId && !hasEntrance
         ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
         : generateUrl({
             route: ATTENDEE_STEPPING_PARAM_URL,
@@ -80,8 +85,6 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   };
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;
-
-  const { user } = useUser();
 
   const containerVars = useCss({
     background: `linear-gradient(
@@ -117,7 +120,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
           </div>
         )}
 
-        {!isPasswordRequired && withJoinEvent && (
+        {!isPasswordRequired && (
           // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
           // (!futureOrOngoingVenueEvents ||
           //   futureOrOngoingVenueEvents.length === 0) &&
@@ -233,5 +236,3 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     </div>
   );
 };
-
-export default VenueLandingPageContent;

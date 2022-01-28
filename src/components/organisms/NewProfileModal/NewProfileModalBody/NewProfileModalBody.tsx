@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import firebase from "firebase/compat/app";
 
-import { User } from "types/User";
-import { AnyVenue } from "types/venues";
+import { STRING_NEWLINE } from "settings";
 
-import { WithId } from "utils/id";
+import { SpaceWithId, UserId, UserWithId } from "types/id";
+
 import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
 import { useChatSidebarControls } from "hooks/chats/util/useChatSidebarControls";
@@ -17,21 +17,22 @@ import { EditingProfileModalContent } from "../EditingProfileModalContent";
 import { ProfileModalContent } from "../ProfileModalContent";
 
 export interface NewProfileModalBodyProps {
-  user: WithId<User>;
-  venue?: WithId<AnyVenue>;
+  userId: UserId;
+  profile: UserWithId;
+  space?: SpaceWithId;
   closeUserProfileModal: () => void;
 }
 
 export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
-  user,
-  venue,
+  userId,
+  profile,
+  space,
   closeUserProfileModal,
-}: NewProfileModalBodyProps) => {
-  const firebase = useFirebase();
-  const history = useHistory();
+}) => {
+  const spaceSlug = space?.slug;
   const { worldSlug } = useWorldParams();
-
-  const isCurrentUser = useIsCurrentUser(user.id);
+  const history = useHistory();
+  const isCurrentUser = useIsCurrentUser(userId);
 
   const {
     isShown: editMode,
@@ -43,35 +44,52 @@ export const NewProfileModalBody: React.FC<NewProfileModalBodyProps> = ({
     await firebase.auth().signOut();
     closeUserProfileModal();
 
-    history.push(generateAttendeeSpaceLandingUrl(worldSlug, venue?.slug));
-  }, [closeUserProfileModal, firebase, history, worldSlug, venue?.slug]);
+    history.push(generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug));
+  }, [closeUserProfileModal, history, worldSlug, spaceSlug]);
 
   const { selectRecipientChat } = useChatSidebarControls();
 
   const openChosenUserChat = useCallback(() => {
-    selectRecipientChat(user);
+    selectRecipientChat(profile);
     closeUserProfileModal();
-  }, [selectRecipientChat, user, closeUserProfileModal]);
+  }, [selectRecipientChat, profile, closeUserProfileModal]);
 
-  return isCurrentUser ? (
-    editMode ? (
+  if (!profile) {
+    return (
+      <div className="ProfileModalFetchUser">
+        <div>
+          Oops, an error occurred while trying to load user data.
+          {STRING_NEWLINE}
+          Please contact our support team.
+        </div>
+      </div>
+    );
+  }
+
+  if (isCurrentUser && editMode) {
+    return (
       <EditingProfileModalContent
-        user={user}
-        venue={venue}
+        user={profile}
+        space={space}
         onCancelEditing={turnOffEditMode}
       />
-    ) : (
+    );
+  }
+
+  if (isCurrentUser && !editMode)
+    return (
       <ProfileModalContent
-        venue={venue}
-        user={user}
+        space={space}
+        user={profile}
         onPrimaryButtonClick={logout}
         onEditMode={turnOnEditMode}
       />
-    )
-  ) : (
+    );
+
+  return (
     <ProfileModalContent
-      venue={venue}
-      user={user}
+      space={space}
+      user={profile}
       onPrimaryButtonClick={openChosenUserChat}
     />
   );

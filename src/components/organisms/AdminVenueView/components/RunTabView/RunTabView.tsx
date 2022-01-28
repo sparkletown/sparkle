@@ -2,6 +2,7 @@ import React from "react";
 
 import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
 
+import { SpaceId } from "types/id";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -9,7 +10,7 @@ import { WithId } from "utils/id";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminSidebar } from "components/organisms/AdminVenueView/components/AdminSidebar";
-import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
+import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { UserList } from "components/molecules/UserList";
@@ -37,7 +38,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           Run your {SPACE_TAXON.lower}
         </AdminSidebarSectionTitle>
         <div className="RunTabView__content">
-          <RunTabUsers venueId={venueId} />
+          <RunTabUsers spaceId={venueId as SpaceId} />
         </div>
       </AdminSidebar>
       <div className="RunTabView__body">

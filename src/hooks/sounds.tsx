@@ -7,8 +7,10 @@ import React, {
   useState,
 } from "react";
 import Bugsnag from "@bugsnag/js";
+import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { HowlOptions } from "howler";
-import useSound from "use-sound";
+import { compose } from "lodash/fp";
+import { useSound } from "use-sound";
 import {
   ExposedData,
   HookOptions,
@@ -16,13 +18,14 @@ import {
   PlayOptions,
 } from "use-sound/dist/types";
 
+import { ALWAYS_EMPTY_OBJECT } from "settings";
+
 import { fetchSoundConfigs } from "api/sounds";
 
+import { UserId } from "types/id";
 import { SoundConfigMap, SoundConfigReference } from "types/sounds";
 
 import { isDefined } from "utils/types";
-
-import { useUser } from "hooks/useUser";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
 export type PlaySpriteOptions = Omit<PlayOptions, "id">;
@@ -33,37 +36,27 @@ export interface ExposedDataWithPlay extends ExposedData {
   play: PlayFunction;
 }
 
-export interface CustomSoundsState {
-  soundConfigs: SoundConfigMap;
-  isLoading: boolean;
-}
-
-export const initialValue: CustomSoundsState = {
-  soundConfigs: {},
+const CustomSoundsContext = createContext({
+  soundConfigs: {} as SoundConfigMap,
   isLoading: false,
-};
+});
 
-export const CustomSoundsContext = createContext<CustomSoundsState>(
-  initialValue
-);
-
-export interface CustomSoundsProviderProps {
+interface CustomSoundsProviderProps {
   waitTillConfigLoaded?: boolean;
   loadingComponent?: React.ReactNode;
+  userId?: UserId;
 }
 
-export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
+const _CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
   loadingComponent = "Loading...",
   waitTillConfigLoaded = false,
+  userId,
   children,
 }) => {
   const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
-    initialValue.soundConfigs
+    ALWAYS_EMPTY_OBJECT
   );
-  const [isLoading, setIsLoading] = useState<boolean>(initialValue.isLoading);
-
-  const { user } = useUser();
-  const userId = user?.uid;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Fetch the sound configs data on first load
   useEffect(() => {
@@ -90,8 +83,11 @@ export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
   );
 };
 
-export const useCustomSoundsContext = (): CustomSoundsState =>
-  useContext(CustomSoundsContext);
+export const CustomSoundsProvider = compose(withCurrentUserId)(
+  _CustomSoundsProvider
+);
+
+export const useCustomSoundsContext = () => useContext(CustomSoundsContext);
 
 const USE_SOUND_DISABLED_URL = "";
 const USE_SOUND_DISABLED_CONFIG = { soundEnabled: false };

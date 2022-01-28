@@ -1,5 +1,8 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import firebase from "firebase/compat/app";
+import { httpsCallable } from "firebase/functions";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { omit } from "lodash";
 
 import {
@@ -14,15 +17,12 @@ import {
 
 import { findSpaceBySlug } from "api/space";
 
+import { SpaceSlug } from "types/id";
 import { PortalInput, Room, RoomInput } from "types/rooms";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import {
-  SpaceSlug,
-  VenueAdvancedConfig,
-  VenuePlacement,
-  VenueTemplate,
-  WorldEvent,
-} from "types/venues";
+import { VenueAdvancedConfig, VenuePlacement, WorldEvent } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId, WithoutId, WithWorldId } from "utils/id";
 import { generateAttendeeInsideUrl } from "utils/url";
@@ -96,8 +96,10 @@ export type PlacementInput = {
   height: number;
 };
 
-export const createSlug = (name: string) =>
-  name.replace(INVALID_SLUG_CHARS_REGEX, "").toLowerCase();
+export const createSlug = (name: string | unknown) =>
+  String(name ?? "")
+    .replace(INVALID_SLUG_CHARS_REGEX, "")
+    .toLowerCase();
 
 export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
@@ -117,7 +119,6 @@ const createFirestoreVenueInputWithoutId_v2 = async (
   input: Omit<VenueInput_v2, "id">,
   user: firebase.UserInfo
 ) => {
-  const storageRef = firebase.storage().ref();
   type ImageNaming = {
     fileKey: ImageFileKeys;
     urlKey: ImageUrlKeys;
@@ -153,12 +154,13 @@ const createFirestoreVenueInputWithoutId_v2 = async (
     const fileExtension = file.type.split("/").pop();
 
     // @debt this may cause missing or wrong image issues if two venues exchange their slugs, should take multiple steps to reproduce
-    const uploadFileRef = storageRef.child(
+    const uploadFileRef = ref(
+      FIREBASE.storage,
       `users/${user.uid}/venues/${input.slug}/${urlKey}.${fileExtension}`
     );
 
-    await uploadFileRef.put(file);
-    const downloadUrl: string = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, file);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
 
     imageInputData = {
       ...imageInputData,
@@ -216,9 +218,10 @@ export const createVenue_v2 = async (
   const worldId = input.worldId;
   const spaceSlug = firestoreVenueInput.slug;
 
-  const venueResponse = await firebase
-    .functions()
-    .httpsCallable("venue-createVenue_v2")({
+  const venueResponse = httpsCallable(
+    FIREBASE.functions,
+    "venue-createVenue_v2"
+  )({
     ...firestoreVenueInput,
     worldId,
   });
@@ -229,7 +232,10 @@ export const createVenue_v2 = async (
   });
 
   if (input.template === VenueTemplate.auditorium) {
-    await firebase.functions().httpsCallable("venue-setAuditoriumSections")({
+    await httpsCallable(
+      FIREBASE.functions,
+      "venue-setAuditoriumSections"
+    )({
       venueId: space?.id,
       numberOfSections: DEFAULT_SECTIONS_AMOUNT,
     });
@@ -243,22 +249,22 @@ export const updateVenue_v2 = async (
   user: firebase.UserInfo
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
-  return firebase
-    .functions()
-    .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
-    .catch((error) => {
-      const msg = `[updateVenue_v2] updating venue ${input.name}`;
-      const context = {
-        location: "api/admin::updateVenue_v2",
-      };
+  return httpsCallable(
+    FIREBASE.functions,
+    "venue-updateVenue_v2"
+  )(firestoreVenueInput).catch((error) => {
+    const msg = `[updateVenue_v2] updating venue ${input.name}`;
+    const context = {
+      location: "api/admin::updateVenue_v2",
+    };
 
-      Bugsnag.notify(msg, (event) => {
-        event.severity = "warning";
-        event.addMetadata("context", context);
-        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
-      });
-      throw error;
+    Bugsnag.notify(msg, (event) => {
+      event.severity = "warning";
+      event.addMetadata("context", context);
+      event.addMetadata("firestoreVenueInput", firestoreVenueInput);
     });
+    throw error;
+  });
 };
 
 export const updateMapBackground = async (
@@ -267,22 +273,22 @@ export const updateMapBackground = async (
 ) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
-  return firebase
-    .functions()
-    .httpsCallable("venue-updateMapBackground")(firestoreVenueInput)
-    .catch((error) => {
-      const msg = `[updateMapBackground] updating venue ${input.name}`;
-      const context = {
-        location: "api/admin::updateMapBackground",
-      };
+  return httpsCallable(
+    FIREBASE.functions,
+    "venue-updateMapBackground"
+  )(firestoreVenueInput).catch((error) => {
+    const msg = `[updateMapBackground] updating venue ${input.name}`;
+    const context = {
+      location: "api/admin::updateMapBackground",
+    };
 
-      Bugsnag.notify(msg, (event) => {
-        event.severity = "warning";
-        event.addMetadata("context", context);
-        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
-      });
-      throw error;
+    Bugsnag.notify(msg, (event) => {
+      event.severity = "warning";
+      event.addMetadata("context", context);
+      event.addMetadata("firestoreVenueInput", firestoreVenueInput);
     });
+    throw error;
+  });
 };
 
 const createFirestoreRoomInput = async (
@@ -290,43 +296,30 @@ const createFirestoreRoomInput = async (
   venueId: string,
   user: firebase.UserInfo
 ) => {
-  const storageRef = firebase.storage().ref();
-
-  const urlRoomName = createSlug(
+  const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
-  type ImageNaming = {
-    fileKey: RoomImageFileKeys;
-    urlKey: RoomImageUrlKeys;
-  };
-  const imageKeys: Array<ImageNaming> = [
-    {
-      fileKey: "image_file",
-      urlKey: "image_url",
-    },
-  ];
 
   let imageInputData = {};
 
   // upload the files
-  for (const entry of imageKeys) {
-    const fileArr = input[entry.fileKey];
-    if (!fileArr || fileArr.length === 0) continue;
+  if (input["image_file"]) {
+    const fileArr = input["image_file"];
     const file = fileArr[0];
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+    const uploadFileRef = ref(
+      FIREBASE.storage,
+      `users/${user.uid}/venues/${venueId}/${urlPortalName}/${file.name}`
     );
 
-    await uploadFileRef.put(file);
-    const downloadUrl: string = await uploadFileRef.getDownloadURL();
-    imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
+    await uploadBytes(uploadFileRef, file);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
+    imageInputData = { image_url: downloadUrl };
+  } else {
+    imageInputData = { image_url: input.image_url };
   }
 
   const firestoreRoomInput: FirestoreRoomInput = {
-    ...omit(
-      input,
-      imageKeys.map((entry) => entry.fileKey)
-    ),
+    ...omit(input, "image_file"),
     ...imageInputData,
   };
   return firestoreRoomInput;
@@ -337,9 +330,7 @@ const createFirestoreRoomInput_v2 = async (
   venueId: string,
   user: firebase.UserInfo
 ) => {
-  const storageRef = firebase.storage().ref();
-
-  const urlRoomName = createSlug(
+  const urlPortalName = createSlug(
     input.title + Math.random().toString() //room titles are not necessarily unique
   );
   type ImageNaming = {
@@ -363,12 +354,13 @@ const createFirestoreRoomInput_v2 = async (
     const fileArr = input[entry.fileKey];
     if (!fileArr || fileArr.length === 0) continue;
     const file = fileArr[0];
-    const uploadFileRef = storageRef.child(
-      `users/${user.uid}/venues/${venueId}/${urlRoomName}/${file.name}`
+    const uploadFileRef = ref(
+      FIREBASE.storage,
+      `users/${user.uid}/venues/${venueId}/${urlPortalName}/${file.name}`
     );
 
-    await uploadFileRef.put(file);
-    const downloadUrl: string = await uploadFileRef.getDownloadURL();
+    await uploadBytes(uploadFileRef, file);
+    const downloadUrl = await getDownloadURL(uploadFileRef);
     imageInputData = { ...imageInputData, [entry.urlKey]: downloadUrl };
   }
 
@@ -403,40 +395,40 @@ export const upsertRoom = async (
     user
   );
 
-  return await firebase
-    .functions()
-    .httpsCallable("venue-upsertRoom")({
-      venueId,
-      roomIndex,
-      room: firestoreVenueInput,
-    })
-    .catch((e) => {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("api/admin::upsertRoom", {
-          venueId,
-          roomIndex,
-        });
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertRoom"
+  )({
+    venueId,
+    roomIndex,
+    room: firestoreVenueInput,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::upsertRoom", {
+        venueId,
+        roomIndex,
       });
-      throw e;
     });
+    throw e;
+  });
 };
 
 export const deleteRoom = async (venueId: string, room: Room) => {
-  return await firebase
-    .functions()
-    .httpsCallable("venue-deleteRoom")({
-      venueId,
-      room,
-    })
-    .catch((e) => {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("api/admin::deleteRoom", {
-          venueId,
-          room,
-        });
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-deleteRoom"
+  )({
+    venueId,
+    room,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::deleteRoom", {
+        venueId,
+        room,
       });
-      throw e;
     });
+    throw e;
+  });
 };
 
 export const updateRoom = async (
@@ -451,7 +443,10 @@ export const updateRoom = async (
     user
   );
 
-  return await firebase.functions().httpsCallable("venue-upsertRoom")({
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertRoom"
+  )({
     venueId,
     roomIndex,
     room: firestoreVenueInput,
@@ -469,7 +464,10 @@ export const createRoom = async (
     user
   );
 
-  return await firebase.functions().httpsCallable("venue-upsertRoom")({
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertRoom"
+  )({
     venueId,
     room: {
       ...firestoreVenueInput,
@@ -499,13 +497,64 @@ export const deleteEvent = async (event: WorldEvent) => {
 };
 
 export const addVenueOwner = async (venueId: string, newOwnerId: string) =>
-  await firebase.functions().httpsCallable("venue-addVenueOwner")({
+  await httpsCallable(
+    FIREBASE.functions,
+    "venue-addVenueOwner"
+  )({
     venueId,
     newOwnerId,
   });
 
 export const removeVenueOwner = async (venueId: string, ownerId: string) =>
-  firebase.functions().httpsCallable("venue-removeVenueOwner")({
+  httpsCallable(
+    FIREBASE.functions,
+    "venue-removeVenueOwner"
+  )({
     venueId,
     ownerId,
   });
+
+export const upsertScreeningRoomVideo = async (
+  video: ScreeningRoomVideo,
+  spaceId: string,
+  videoId?: string
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-upsertScreeningRoomVideo"
+  )({
+    video,
+    videoId,
+    spaceId,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::upsertScreeningRoomVideo", {
+        spaceId,
+        video,
+        videoId,
+      });
+    });
+    throw e;
+  });
+};
+
+export const deleteScreeningRoomVideo = async (
+  videoId: string,
+  spaceId: string
+) => {
+  return await httpsCallable(
+    FIREBASE.functions,
+    "venue-deleteScreeningRoomVideo"
+  )({
+    spaceId,
+    videoId,
+  }).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("api/admin::deleteScreeningRoomVideo", {
+        videoId,
+        spaceId,
+      });
+    });
+    throw e;
+  });
+};

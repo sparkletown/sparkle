@@ -4,9 +4,9 @@ import {
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { SPACE_TAXON } from "settings/taxonomy";
+import { SPACE_TAXON } from "settings";
 
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 export type VisibilityLabelOption = {
   label: string;

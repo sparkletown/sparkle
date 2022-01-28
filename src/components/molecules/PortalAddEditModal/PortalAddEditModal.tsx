@@ -10,7 +10,7 @@ import { Modal } from "components/molecules/Modal";
 
 import "./PortalAddEditModal.scss";
 
-export type PortalAddEditModalProps = {
+type PortalAddEditModalProps = {
   item?: PortalInfoItem;
   show: boolean;
   onHide: () => void;

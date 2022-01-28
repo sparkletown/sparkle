@@ -13,7 +13,7 @@ import {
 import { deleteTable } from "api/table";
 
 import { TableComponentPropsType } from "types/Table";
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { determineAvatar } from "utils/image";
 
@@ -30,7 +30,7 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./TableComponent.scss";
 
-const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   imageSize = 50,
@@ -169,5 +169,3 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     </div>
   );
 };
-
-export default TableComponent;

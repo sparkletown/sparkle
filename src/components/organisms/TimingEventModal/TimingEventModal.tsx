@@ -6,7 +6,8 @@ import { DAYJS_INPUT_DATE_FORMAT, DAYJS_INPUT_TIME_FORMAT } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { AnyVenue, VenueTemplate, WorldEvent } from "types/venues";
+import { AnyVenue, WorldEvent } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { MaybeWithId, WithId } from "utils/id";
 
@@ -35,7 +36,6 @@ export type TimingEventModalProps = {
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
-  template,
   venue,
   setEditedEvent,
   event,

@@ -8,8 +8,13 @@ import classNames from "classnames";
 
 import { ADMIN_IA_WORLD_PARAM_URL, SPACE_TAXON } from "settings";
 
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import {
+  SpaceId,
+  SpaceSlug,
+  SpaceWithId,
+  WorldSlug,
+  WorldWithId,
+} from "types/id";
 
 import {
   adminNGVenueUrl,
@@ -17,7 +22,6 @@ import {
   generateUrl,
 } from "utils/url";
 
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useShowHide } from "hooks/useShowHide";
 
 import VenueDeleteModal from "pages/Admin/Venue/VenueDeleteModal";
@@ -26,7 +30,6 @@ import { SpaceTimingPanel } from "components/organisms/AdminVenueView/components
 
 import { AdminTitle } from "components/molecules/AdminTitle";
 import { AdminTitleBar } from "components/molecules/AdminTitleBar";
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { ButtonNG } from "components/atoms/ButtonNG";
@@ -63,7 +66,17 @@ const tabIcons = {
   [AdminVenueTab.run]: faPlayCircle,
 };
 
-export const AdminVenueView: React.FC = () => {
+type AdminVenueViewProps = {
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  world: WorldWithId;
+};
+
+export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
+  spaceId,
+  space,
+  world,
+}) => {
   const history = useHistory();
   const {
     worldSlug,
@@ -75,11 +88,6 @@ export const AdminVenueView: React.FC = () => {
     show: showDeleteModal,
     hide: closeDeleteModal,
   } = useShowHide();
-
-  const { space, spaceId, isLoaded, world } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
@@ -111,10 +119,6 @@ export const AdminVenueView: React.FC = () => {
       ),
     [history, worldSlug]
   );
-
-  if (!isLoaded) {
-    return <LoadingPage />;
-  }
 
   const navBarTitle = `${world?.name ?? ""}`;
 

@@ -1,6 +1,5 @@
 import { ChangeEvent, useCallback } from "react";
-import { useFirebase } from "react-redux-firebase";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { v4 as uuid } from "uuid";
 
 import {
@@ -8,16 +7,16 @@ import {
   MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
 
+import { UserId } from "types/id";
+
 import { resizeFile } from "utils/image";
 
 import "firebase/storage";
 
 export const useUploadProfilePictureHandler = (
   setError: (error: string) => void,
-  user?: firebase.UserInfo
+  userId?: UserId
 ) => {
-  const firebase = useFirebase();
-
   return useCallback(
     async (e: ChangeEvent<HTMLInputElement>) => {
       if (!e.target.files) return;
@@ -36,11 +35,11 @@ export const useUploadProfilePictureHandler = (
         file = new File([resizedImage], fileName);
       }
       const storageRef = firebase.storage().ref();
-      if (user?.uid) {
+      if (userId) {
         // We append a uuid to the filename to ensure every file created has a unique name.
         // This helps avoiding cache invalidation.
         const profilePictureRef = storageRef.child(
-          `/users/${user.uid}/${uuid()}_${file.name}`
+          `/users/${userId}/${uuid()}_${file.name}`
         );
         const uploadedProfilePicture = await profilePictureRef.put(file);
         return await uploadedProfilePicture.ref.getDownloadURL();
@@ -48,6 +47,6 @@ export const useUploadProfilePictureHandler = (
         return undefined;
       }
     },
-    [firebase, setError, user?.uid]
+    [setError, userId]
   );
 };

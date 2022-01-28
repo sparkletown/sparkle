@@ -47,7 +47,7 @@ export class FirebarrelSystem extends System {
     this._unsubscribeFirebarrelSet = subscribeActionAfter(
       AnimateMapActionTypes.SET_FIREBARREL,
       () => {
-        this.waitingEnterFirebarrelId = setTimeout(() => {
+        this.waitingEnterFirebarrelId = window.setTimeout(() => {
           if (this.player) {
             this.creator.exitFirebarrel();
             console.log("exit firebarrel 2");

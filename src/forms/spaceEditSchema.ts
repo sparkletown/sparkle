@@ -6,7 +6,7 @@ import {
   MIN_SECTIONS_AMOUNT,
 } from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { validUrlSchema } from "./validUrlSchema";
 

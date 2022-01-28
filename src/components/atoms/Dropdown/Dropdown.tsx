@@ -11,7 +11,6 @@ export interface DropdownProps {
   noArrow?: boolean;
 }
 
-// @debt look into the possibility of creating more robust (and isolated) component without Bootstrap
 export const Dropdown: React.FC<DropdownProps> = ({
   title,
   options,

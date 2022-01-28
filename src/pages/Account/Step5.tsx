@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 
-import VideoModal from "components/organisms/VideoModal";
+import { VideoModal } from "components/organisms/VideoModal";
 
 import "firebase/storage";
 

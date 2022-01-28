@@ -29,7 +29,7 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG, ButtonProps } from "components/atoms/ButtonNG/ButtonNG";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 
 import "./WorldGeneralForm.scss";
 

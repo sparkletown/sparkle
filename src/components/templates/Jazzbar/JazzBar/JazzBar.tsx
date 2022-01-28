@@ -10,13 +10,14 @@ import {
   JAZZBAR_TABLES,
 } from "settings";
 
-import { JazzbarVenue, VenueTemplate } from "types/venues";
+import { JazzbarVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useExperiences } from "hooks/useExperiences";
+import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSettings } from "hooks/useSettings";
 import { useShowHide } from "hooks/useShowHide";
@@ -25,7 +26,7 @@ import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUser
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
-import TableComponent from "components/molecules/TableComponent";
+import { TableComponent } from "components/molecules/TableComponent";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
@@ -55,7 +56,8 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   });
   const analytics = useAnalytics({ venue });
 
-  useExperiences(venue.name);
+  // @debt what does it do anyway? cache? no useSelector here so probably connected to useUpdateTableRecentSeatedUsers
+  useExperience(venue.name);
 
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 

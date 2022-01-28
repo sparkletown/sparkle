@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useFirestore } from "react-redux-firebase";
+import { useFirestore } from "reactfire";
 import { User } from "@bugsnag/js";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { chunk } from "lodash";
 
 import {
+  COLLECTION_SPACES,
   DEFAULT_BADGE_IMAGE,
   FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
 } from "settings";
@@ -75,14 +77,16 @@ export const Badges: React.FC<{
       visits,
       FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS
     ).map((visitChunk) =>
-      firestore
-        .collection("venues")
-        .where(
-          "name",
-          "in",
-          visitChunk.map((visit) => visit.id)
+      getDocs(
+        query(
+          collection(firestore, COLLECTION_SPACES),
+          where(
+            "name",
+            "in",
+            visitChunk.map((visit) => visit.id)
+          )
         )
-        .get()
+      )
     );
 
     let venues: WithId<AnyVenue>[] = [];

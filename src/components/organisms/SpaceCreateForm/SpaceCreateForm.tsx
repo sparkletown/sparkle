@@ -14,7 +14,7 @@ import { createSlug, createVenue_v2 } from "api/admin";
 
 import { spaceCreatePortalItem } from "store/actions/SpaceEdit";
 
-import { SpaceSlug } from "types/venues";
+import { SpaceSlug } from "types/id";
 
 import { adminNGVenueUrl, generateUrl } from "utils/url";
 import { buildEmptySpace } from "utils/venue";

@@ -252,7 +252,7 @@ $nav-bar-title-width: 120px;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: $media-breakpoint--md) {
   .schedule-text {
     display: none;
   }
@@ -300,5 +300,17 @@ $nav-bar-title-width: 120px;
     text-decoration: none;
     margin: $photobooth-button-text-margin;
     font-size: $font-size--sm;
+  }
+
+  @media (max-width: $media-breakpoint--sm) {
+    .NavSearchBar {
+      display: none;
+    }
+  }
+
+  @media (max-width: $media-breakpoint--md) {
+    .VenuePartygoers {
+      display: none;
+    }
   }
 }

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
 
 import {
@@ -32,17 +32,17 @@ import "./EditingProfileModalContent.scss";
 
 export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
-  venue?: WithId<AnyVenue>;
+  space?: WithId<AnyVenue>;
   onCancelEditing: () => void;
 }
 
 export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
   user,
-  venue,
+  space,
   onCancelEditing,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
-  const firebaseUser = useFirebase().auth()?.currentUser;
+  const { questions, answers } = useProfileQuestions(user, space?.worldId);
+  const firebaseUser = firebase.auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(
     user,

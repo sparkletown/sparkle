@@ -15,10 +15,10 @@ interface PropsType {
   url: string;
   caption?: string;
   autoplay?: boolean;
-  backdrop?: string | boolean;
+  backdrop?: "static" | boolean | undefined;
 }
 
-const VideoModal: React.FunctionComponent<PropsType> = ({
+export const VideoModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   url,
@@ -54,5 +54,3 @@ const VideoModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-
-export default VideoModal;

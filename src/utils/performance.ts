@@ -1,4 +1,5 @@
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import { getPerformance, trace } from "firebase/performance";
 
 export {
   unstable_trace as traceReactScheduler,
@@ -87,13 +88,13 @@ export const createPerformanceTrace = (
   const { startNow = false, attributes, metrics } = options ?? {};
 
   // Create a new Trace instance
-  const trace = firebase.performance().trace(traceName);
+  const tracer = trace(getPerformance(FIREBASE.app), traceName);
 
   // Configure our starting attributes
   if (attributes !== undefined) {
     Object.entries<string>(attributes).forEach(
       ([attributeName, attributeValue]) => {
-        trace.putAttribute(attributeName, attributeValue);
+        tracer.putAttribute(attributeName, attributeValue);
       }
     );
   }
@@ -101,15 +102,15 @@ export const createPerformanceTrace = (
   // Configure our starting metrics
   if (metrics !== undefined) {
     Object.entries<number>(metrics).forEach(([metricName, metricValue]) => {
-      trace.putMetric(metricName, metricValue);
+      tracer.putMetric(metricName, metricValue);
     });
   }
 
   if (startNow) {
-    trace.start();
+    tracer.start();
   }
 
-  return trace;
+  return tracer;
 };
 
 export interface TracePromiseOptions extends CreatePerformanceTraceOptions {

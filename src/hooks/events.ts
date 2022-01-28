@@ -1,10 +1,12 @@
-import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { where } from "firebase/firestore";
 
 import { COLLECTION_WORLD_EVENTS } from "settings";
 
 import { WorldEvent } from "types/venues";
 
-import { withIdConverter } from "utils/converters";
+import { convertToFirestoreKey } from "utils/id";
+
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export interface VenueEventsProps {
   worldId?: string;
@@ -20,16 +22,10 @@ export const useSpaceEvents = ({
   worldId,
   spaceIds,
 }: VenueEventsProps): VenueEventsData => {
-  const firestore = useFirestore();
-
-  const eventsRef = firestore
-    .collection(COLLECTION_WORLD_EVENTS)
-    .where("worldId", "==", worldId || "")
-    .withConverter(withIdConverter<WorldEvent>());
-
-  const { data: events, status } = useFirestoreCollectionData<WorldEvent>(
-    eventsRef
-  );
+  const { data: events, status } = useRefiCollection<WorldEvent>({
+    path: [COLLECTION_WORLD_EVENTS],
+    constraints: [where("worldId", "==", convertToFirestoreKey(worldId))],
+  });
 
   if (!spaceIds || !worldId) {
     return {

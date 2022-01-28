@@ -32,7 +32,9 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { UserId, WorldSlug } from "types/id";
+import { AnyVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
@@ -40,10 +42,8 @@ import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFetchAssets } from "hooks/useFetchAssets";
-import { useUser } from "hooks/useUser";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -60,7 +60,7 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
@@ -80,12 +80,15 @@ const HANDLED_ERRORS = [
 
 export interface SpaceEditFormProps {
   space: WithId<AnyVenue>;
+  userId: UserId;
+  worldSlug: WorldSlug;
 }
 
-export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
-  const { user } = useUser();
-  const { worldSlug } = useSpaceParams();
-
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
+  space,
+  userId,
+  worldSlug,
+}) => {
   const spaceLogoImage =
     PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
 
@@ -167,7 +170,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const [{ loading: isUpdating, error: updateError }, updateVenue] = useAsyncFn(
     async (data) => {
-      if (!user || !space.id) return;
+      if (!userId || !space.id) return;
 
       const embedUrl = convertToEmbeddableUrl({
         url: data.iframeUrl,
@@ -185,15 +188,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           },
           iframeUrl: embedUrl || DEFAULT_EMBED_URL,
         },
-        user
+        userId
       );
     },
-    [user, space.id, space.autoPlay, space.worldId, space.template]
+    [userId, space.id, space.autoPlay, space.worldId, space.template]
   );
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const { ownedVenues } = useOwnedVenues({});
+  const { ownedVenues } = useOwnedVenues({ worldId: space.worldId, userId });
 
   const backButtonOptionList = useMemo(
     () =>

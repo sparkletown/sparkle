@@ -1,10 +1,9 @@
 import React from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useHistory, useParams } from "react-router-dom";
 import { useAsync } from "react-use";
+import firebase from "firebase/compat/app";
 
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceSlug, WorldSlug } from "types/id";
 
 import { isDefined } from "utils/types";
 import { enterSpace } from "utils/url";
@@ -27,8 +26,6 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
   const { user } = useUser();
 
   const isLoggedInUser = isDefined(user);
-
-  const firebase = useFirebase();
 
   const { replace: replaceUrlUsingRouter } = useHistory();
 
@@ -58,7 +55,6 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
     worldSlug,
     spaceSlug,
     customToken,
-    firebase,
     replaceUrlUsingRouter,
   ]);
 

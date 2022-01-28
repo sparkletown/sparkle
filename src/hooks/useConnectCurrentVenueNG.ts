@@ -1,57 +1,66 @@
 import { useMemo } from "react";
+import { orderBy, where } from "firebase/firestore";
 
-import { COLLECTION_WORLD_EVENTS } from "settings";
+import {
+  COLLECTION_SPACES,
+  COLLECTION_WORLD_EVENTS,
+  FIELD_WORLD_ID,
+} from "settings";
 
-import { SparkleSelector } from "types/SparkleSelector";
-import { AnyVenue, WorldEvent } from "types/venues";
+import { WorldAndSpaceIdLocation, WorldEventWithId } from "types/id";
+import { AnyVenue } from "types/venues";
 
-import { withId } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
-const currentVenueNGSelector: SparkleSelector<AnyVenue | undefined> = (state) =>
-  state.firestore.data.currentVenueNG;
+type UseConnectCurrentVenueNG = ({
+  worldId,
+  spaceId,
+}: Partial<WorldAndSpaceIdLocation>) => {
+  isCurrentVenueEventsLoaded: boolean;
+  isCurrentVenueLoaded: boolean;
+  currentVenueEvents: WorldEventWithId[];
+  currentVenue?: WithId<AnyVenue>;
+};
+export const useConnectCurrentVenueNG: UseConnectCurrentVenueNG = ({
+  worldId,
+  spaceId,
+}) => {
+  const spaceKey = convertToFirestoreKey(spaceId);
 
-const currentVenueEventsNGSelector: SparkleSelector<
-  Record<string, WorldEvent> | undefined
-> = (state) => state.firestore.data.currentVenueEventsNG;
+  const {
+    data: space,
+    isLoaded: isCurrentVenueLoaded,
+  } = useRefiDocument<AnyVenue>([COLLECTION_SPACES, spaceKey]);
 
-export const useConnectCurrentVenueNG = (
-  worldId?: string,
-  spaceId?: string
-) => {
-  useFirestoreConnect(() => {
-    if (!worldId || !spaceId) return [];
-
-    return [
-      {
-        collection: "venues",
-        doc: spaceId,
-        storeAs: "currentVenueNG",
-      },
-      {
-        collection: COLLECTION_WORLD_EVENTS,
-        where: [
-          ["worldId", "==", worldId],
-          ["spaceId", "==", spaceId],
-        ],
-        orderBy: ["startUtcSeconds", "asc"],
-        storeAs: "currentVenueEventsNG",
-      },
-    ];
+  const {
+    data: currentVenueEvents,
+    isLoaded: isCurrentVenueEventsLoaded,
+  } = useRefiCollection<WorldEventWithId>({
+    path: [COLLECTION_WORLD_EVENTS],
+    constraints: [
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(worldId)),
+      where(FIELD_WORLD_ID, "==", convertToFirestoreKey(spaceId)),
+      orderBy("startUtcSeconds", "asc"),
+    ],
   });
 
-  const currentVenueNG = useSelector(currentVenueNGSelector);
-  const currentVenueEventsNG = useSelector(currentVenueEventsNGSelector);
+  const currentVenue = spaceId ? space ?? undefined : undefined;
+
   return useMemo(
     () => ({
-      currentVenue:
-        spaceId && currentVenueNG ? withId(currentVenueNG, spaceId) : undefined,
-      currentVenueEvents: currentVenueEventsNG,
-      isCurrentVenueLoaded: isLoaded(currentVenueNG),
-      isCurrentVenueEventsLoaded: isLoaded(currentVenueEventsNG),
+      currentVenue,
+      isCurrentVenueLoaded,
+      currentVenueEvents,
+      isCurrentVenueEventsLoaded,
     }),
-    [spaceId, currentVenueNG, currentVenueEventsNG]
+    [
+      currentVenue,
+      isCurrentVenueLoaded,
+      currentVenueEvents,
+      isCurrentVenueEventsLoaded,
+    ]
   );
 };

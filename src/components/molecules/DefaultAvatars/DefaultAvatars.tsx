@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import classNames from "classnames";
+import firebase from "firebase/compat/app";
 
 import { DEFAULT_AVATAR_LIST } from "settings";
 
@@ -27,8 +27,6 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   avatarPictureClassName,
   containerClassName,
 }) => {
-  const firebase = useFirebase();
-
   const {
     sovereignVenueId,
     isLoading: isSovereignVenueLoading,
@@ -46,7 +44,7 @@ export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
       .listAll();
 
     return Promise.all(list.items.map((item) => item.getDownloadURL()));
-  }, [firebase, sovereignVenueId]);
+  }, [sovereignVenueId]);
 
   const defaultAvatars = customAvatars?.length
     ? customAvatars

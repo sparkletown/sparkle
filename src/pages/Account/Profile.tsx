@@ -34,7 +34,7 @@ export interface ProfileFormData {
 
 export const Profile: React.FC = () => {
   const history = useHistory();
-  const { user, userWithId } = useUser();
+  const { userId, userWithId } = useUser();
 
   const { worldSlug, spaceSlug = DEFAULT_SPACE_SLUG } = useSpaceParams();
 
@@ -55,9 +55,9 @@ export const Profile: React.FC = () => {
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: ProfileFormData) => {
-      if (!user) return;
+      if (!userId) return;
 
-      await updateUserProfile(user.uid, data);
+      await updateUserProfile(userId, data);
 
       // @debt Should we throw an error here rather than defaulting to empty string?
       const nextUrl = generateUrl({
@@ -68,7 +68,7 @@ export const Profile: React.FC = () => {
 
       history.push(nextUrl);
     },
-    [history, user, worldSlug, spaceSlug]
+    [history, userId, worldSlug, spaceSlug]
   );
 
   const pictureUrl = watch("pictureUrl");
@@ -111,10 +111,10 @@ export const Profile: React.FC = () => {
               </span>
             )}
 
-            {user && (
+            {userId && (
               <ProfilePictureInput
                 setValue={setValue}
-                user={user}
+                userId={userId}
                 errors={errors}
                 pictureUrl={pictureUrl}
                 register={register}

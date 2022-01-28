@@ -1,6 +1,7 @@
 import React from "react";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import { httpsCallable } from "firebase/functions";
 
 import { SPACE_TAXON } from "settings";
 
@@ -29,7 +30,10 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   onCancel,
 }) => {
   const [{ error, loading: isDeleting }, deleteVenue] = useAsyncFn(async () => {
-    await firebase.functions().httpsCallable("venue-deleteVenue")({
+    await httpsCallable(
+      FIREBASE.functions,
+      "venue-deleteVenue"
+    )({
       id: venueId,
     });
     onDelete?.();

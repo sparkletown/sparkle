@@ -8,7 +8,7 @@ import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithAdminNavBar } from "components/organisms/WithAdminNavBar";
 
 import { WorldCard } from "components/molecules/WorldCard";
 
@@ -51,7 +51,7 @@ export const WorldsDashboard: React.FC = () => {
 
   return (
     <div className="WorldsDashboard">
-      <WithNavigationBar>
+      <WithAdminNavBar>
         <AdminRestricted>
           <AdminPanel variant="unbound">
             {hasWorlds ? (
@@ -92,7 +92,7 @@ export const WorldsDashboard: React.FC = () => {
             )}
           </AdminPanel>
         </AdminRestricted>
-      </WithNavigationBar>
+      </WithAdminNavBar>
     </div>
   );
 };
