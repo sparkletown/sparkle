@@ -20,4 +20,3 @@ export const InformationCard: React.FC<InformationCardProps> = ({
     <div className="information-card-text">{children}</div>
   </div>
 );
-

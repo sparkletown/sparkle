@@ -54,4 +54,3 @@ export const VideoModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-

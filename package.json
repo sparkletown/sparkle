@@ -16,8 +16,9 @@
     "eslint": "eslint --fix",
     "eslint:check": "eslint src scripts functions/src --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "eslint src scripts functions/src --fix --ext .js,.jsx,.ts,.tsx",
-    "prettier": "prettier --write \"{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "prettier:write": "prettier --write \"{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prettier:check": "prettier --check \"{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "reformat": "npm run eslint:fix && npm run prettier:write",
     "test": "npm run jest",
     "jest": "jest --passWithNoTests",
     "eject": "react-scripts eject",
@@ -54,10 +55,10 @@
     ]
   },
   "lint-staged": {
-    "{src,scripts,functions,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
     ],
-    "{src,scripts,functions,configs,reporting}/**/*.{js,jsx,ts,tsx}": [
+    "{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx}": [
       "eslint --max-warnings=0 --ext .js,.jsx,.ts,.tsx"
     ]
   },

@@ -49,4 +49,3 @@ export const UpcomingTickets: React.FunctionComponent<PropsType> = ({
     </div>
   );
 };
-
