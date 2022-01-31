@@ -19,6 +19,7 @@ export type UseAdminRole = (options: {
   adminRole: WithId<AdminRole>;
   adminUserIds: string[];
   isAdminUser: boolean;
+  isNotAdminUser: boolean;
 };
 
 export const useAdminRole: UseAdminRole = ({ userId }) => {
