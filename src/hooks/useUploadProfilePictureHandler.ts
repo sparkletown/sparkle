@@ -1,5 +1,5 @@
 import { ChangeEvent, useCallback } from "react";
-import firebase from "firebase/compat/app";
+import { getDownloadURL,getStorage, ref, uploadBytes } from "firebase/storage";
 import { v4 as uuid } from "uuid";
 
 import {
@@ -11,7 +11,6 @@ import { UserId } from "types/id";
 
 import { resizeFile } from "utils/image";
 
-import "firebase/storage";
 
 export const useUploadProfilePictureHandler = (
   setError: (error: string) => void,
@@ -34,15 +33,13 @@ export const useUploadProfilePictureHandler = (
         const fileName = file.name;
         file = new File([resizedImage], fileName);
       }
-      const storageRef = firebase.storage().ref();
       if (userId) {
         // We append a uuid to the filename to ensure every file created has a unique name.
         // This helps avoiding cache invalidation.
-        const profilePictureRef = storageRef.child(
-          `/users/${userId}/${uuid()}_${file.name}`
-        );
-        const uploadedProfilePicture = await profilePictureRef.put(file);
-        return await uploadedProfilePicture.ref.getDownloadURL();
+        const storage = getStorage();
+        const profilePictureRef = ref(storage, `/users/${userId}/${uuid()}_${file.name}`);
+        await uploadBytes(profilePictureRef, file);
+        return await getDownloadURL(profilePictureRef);
       } else {
         return undefined;
       }
