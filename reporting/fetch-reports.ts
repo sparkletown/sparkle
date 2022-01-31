@@ -233,7 +233,10 @@ const makeGetNumberOfReportsTotal = (
 
           // Only download the CSV if the event matches what we want
           shouldDownloadCsv =
-            event.trim() === desiredEventTrackingFieldValue.trim();
+            event.trim() ===
+            ((desiredEventTrackingFieldValue as unknown) as
+              | string
+              | undefined)?.trim();
 
           console.log(
             "  Event:",
