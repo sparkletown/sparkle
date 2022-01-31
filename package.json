@@ -14,7 +14,7 @@
     "analyze:bundle-stats:duplicates-2": "npx webpack-stats-duplicates ./build/bundle-stats.json",
     "lint": "npm run prettier:check && npm run eslint:check",
     "eslint": "eslint --fix",
-    "eslint:check": "eslint src scripts functions/src --ext .js,.jsx,.ts,.tsx --ignore-pattern '!functions/.ncurc.js'",
+    "eslint:check": "eslint src scripts functions/src --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "eslint src scripts functions/src --fix --ext .js,.jsx,.ts,.tsx",
     "prettier:write": "prettier --write \"{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
     "prettier:check": "prettier --check \"{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
