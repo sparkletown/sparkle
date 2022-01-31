@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { COLLECTION_USERS } from "settings";
 
-import { LoadStatusWithError } from "types/fire";
+import { LoadStatus } from "types/fire";
 import { UserId, UserWithId } from "types/id";
 
 import { convertToFirestoreKey } from "utils/id";
@@ -11,7 +11,7 @@ import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseProfileById = (options: {
   userId: UserId;
-}) => LoadStatusWithError & {
+}) => LoadStatus & {
   profile?: UserWithId;
   userId?: UserId;
 };

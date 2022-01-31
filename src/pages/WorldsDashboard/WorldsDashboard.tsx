@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
+import { WithAuthProps } from "components/hocs/db/withAuth";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
-import { useUser } from "hooks/useUser";
 import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
@@ -19,10 +19,10 @@ import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
 import "./WorldsDashboard.scss";
 
-export const WorldsDashboard: React.FC = () => {
-  const user = useUser();
+type Props = WithAuthProps;
 
-  const worlds = useOwnWorlds(user.userId);
+export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
+  const worlds = useOwnWorlds(userId);
 
   const hasWorlds = !!worlds.length;
 

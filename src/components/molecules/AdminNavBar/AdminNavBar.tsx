@@ -1,13 +1,14 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router-dom";
+import { WithSlugsProps } from "components/hocs/context/withSlugs";
+import { WithAuthProps } from "components/hocs/db/withAuth";
+import { WithProfileProps } from "components/hocs/db/withProfile";
+import { WithWorldOrSpaceProps } from "components/hocs/db/withWorldOrSpace";
 
 import { enterSpace } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
 
 import { BackButton } from "components/atoms/BackButton";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -17,44 +18,48 @@ import { NavBarLogin } from "./components/NavBarLogin";
 import "./AdminNavBar.scss";
 import "./playa.scss";
 
-interface AdminNavBarPropsType {
-  hasBackButton?: boolean;
-  withHiddenLoginButton?: boolean;
-  title?: string;
-}
+type Props = WithAuthProps &
+  WithProfileProps &
+  WithSlugsProps &
+  WithWorldOrSpaceProps & {
+    hasBackButton?: boolean;
+    withHiddenLoginButton?: boolean;
+    title?: string;
+  };
 
-export const AdminNavBar: React.FC<AdminNavBarPropsType> = ({
+export const AdminNavBar: React.FC<Props> = ({
   hasBackButton,
   title,
   withHiddenLoginButton,
+  auth,
+  userWithId,
+  worldSlug,
+  spaceId,
 }) => {
-  const { user, userWithId } = useUser();
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
-
-  const { currentVenue: relatedVenue, parentVenue } = useRelatedVenues({
+  const {
+    currentVenue: relatedSpace,
+    parentVenue: parentSpace,
+  } = useRelatedVenues({
     currentVenueId: spaceId,
   });
 
-  const currentVenue = relatedVenue;
-
   const { push: openUrlUsingRouter } = useHistory();
-
   const { openUserProfileModal } = useProfileModalControls();
 
-  const handleAvatarClick = useCallback(() => {
-    openUserProfileModal(userWithId?.id);
-  }, [openUserProfileModal, userWithId]);
+  const handleAvatarClick = useCallback(
+    () => void openUserProfileModal(userWithId?.id),
+    [openUserProfileModal, userWithId]
+  );
 
   const navigateToHomepage = useCallback(() => {
-    if (!relatedVenue) return;
+    if (!relatedSpace) return;
 
-    enterSpace(worldSlug, relatedVenue.slug, {
+    enterSpace(worldSlug, relatedSpace.slug, {
       customOpenRelativeUrl: openUrlUsingRouter,
     });
-  }, [worldSlug, relatedVenue, openUrlUsingRouter]);
+  }, [worldSlug, relatedSpace, openUrlUsingRouter]);
 
-  const navbarTitle = title || (parentVenue?.name ?? currentVenue?.name);
+  const navbarTitle = title || (parentSpace?.name ?? relatedSpace?.name);
 
   return (
     <>
@@ -76,9 +81,9 @@ export const AdminNavBar: React.FC<AdminNavBarPropsType> = ({
               <div>{navbarTitle}</div>
             </div>
 
-            {!withHiddenLoginButton && !user && <NavBarLogin />}
+            {!withHiddenLoginButton && !auth && <NavBarLogin />}
 
-            {user && (
+            {auth && (
               <div className="navbar-links">
                 <div
                   className="navbar-links-user-avatar"
@@ -93,8 +98,8 @@ export const AdminNavBar: React.FC<AdminNavBarPropsType> = ({
       </header>
 
       {/* @debt Remove back button from Navbar */}
-      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton variant="relative" space={parentVenue} />
+      {hasBackButton && relatedSpace?.parentId && parentSpace?.name && (
+        <BackButton variant="relative" space={parentSpace} />
       )}
     </>
   );
