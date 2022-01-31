@@ -54,7 +54,7 @@ service cloud.firestore {
       }
 
       function checkIfSpaceOrWorldOwner(userId) {
-        return $(userId) in role('admin').users && ($(userId) in venueData().owners || $(userId) in world().owners)
+        return $(userId) in role('admin').users || $(userId) in venueData().owners || $(userId) in world().owners
       }
 
       match /events/{event} {
