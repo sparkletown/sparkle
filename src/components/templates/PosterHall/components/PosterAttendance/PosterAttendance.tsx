@@ -1,6 +1,8 @@
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import "./PosterAttendance.scss";
+
 interface PosterAttendanceProps {
   userCount: number;
 }
