@@ -12,16 +12,5 @@ export type FirePath = (string | undefined)[];
 export type LoadStatus = {
   isLoading: boolean;
   isLoaded: boolean;
-};
-
-export type LoadStatusWithError = {
-  isLoading: boolean;
-  isLoaded: boolean;
-  error: Error | undefined;
-};
-
-export type LoadStatusWithErrorMessage = {
-  isLoading: boolean;
-  isLoaded: boolean;
-  error: string | undefined;
+  error?: Error | undefined;
 };

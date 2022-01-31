@@ -2,7 +2,12 @@
   "name": "@sparkletown/sparkle-functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "lint": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\" && eslint --ext .js,.ts src/",
+    "eslint:check": "eslint --ext .js,.ts src/",
+    "eslint:fix": "eslint --fix --ext .js,.ts src/",
+    "prettier:write": "prettier --write \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "prettier:check": "prettier --check \"./src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
+    "lint": "npm run prettier:check && npm run eslint:check",
+    "reformat": "npm run eslint:fix && npm run prettier:write",
     "ncu:check": "npx npm-check-updates",
     "ncu:upgrade": "npx npm-check-updates --upgrade",
     "npm:save-audit": "npm audit > npm-audit.result.txt",

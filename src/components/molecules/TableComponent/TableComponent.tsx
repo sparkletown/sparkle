@@ -17,8 +17,8 @@ import { VenueTemplate } from "types/VenueTemplate";
 
 import { determineAvatar } from "utils/image";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
@@ -45,7 +45,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
   const full = numberOfSeatsLeft === 0;
   const { userId } = useUser();
 
-  const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
+  const { isAdminUser, isLoading: isCheckingRole } = useAdminRole({ userId });
 
   const isRemoveButtonShown = !isCheckingRole && isAdminUser;
 

@@ -4,9 +4,6 @@ module.exports = {
     "faker",
     "@types/faker",
 
-    // easy to upgrade, might require rm -rf .git/hooks for cloned repos
-    "husky",
-
     // newer version has different API, should probably be easy to rework how it is used upon upgrade
     // @see https://github.com/FirebaseExtended/reactfire/blob/main/docs/upgrade-guide.md
     // "reactfire",

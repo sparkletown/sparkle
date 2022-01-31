@@ -2,7 +2,7 @@ import { useMemo } from "react";
 
 import { COLLECTION_USERS } from "settings";
 
-import { LoadStatusWithError, RefiAuthUser, RefiStatus } from "types/fire";
+import { LoadStatus, RefiAuthUser, RefiStatus } from "types/fire";
 import { UserId, UserWithId } from "types/id";
 import { Profile, UserLocation } from "types/User";
 
@@ -13,7 +13,7 @@ import { useRefiDocument } from "hooks/fire/useRefiDocument";
 
 type UseProfile = (options: {
   auth?: RefiAuthUser;
-}) => LoadStatusWithError & {
+}) => LoadStatus & {
   auth?: RefiAuthUser;
   profile?: Profile;
   userLocation?: UserLocation;

@@ -27,7 +27,7 @@ import { AnyVenue, PosterPageVenue, WorldEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { AdminRole } from "hooks/roles";
+import { AdminRole } from "hooks/user/useAdminRole";
 
 import { ArtCar, Firebarrel } from "./animateMap";
 
