@@ -7,11 +7,10 @@ import { World } from "api/world";
 import { worldConverter } from "utils/converters";
 import { WithId } from "utils/id";
 
-export const useOwnWorlds = (userId?: string): WithId<World>[] => {
+export const useWorlds = (): WithId<World>[] => {
   const firestore = useFirestore();
   const worldsRef = firestore
     .collection("worlds")
-    .where("owners", "array-contains", userId ?? "")
     .where("isHidden", "==", false)
     .withConverter(worldConverter);
 
