@@ -215,7 +215,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
           defaultTables={defaultTables}
           newTable={generateTable({
             tableNumber: tables.length + 1,
-            tableName: "New Table",
           })}
           venue={venue}
         />

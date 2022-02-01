@@ -718,18 +718,13 @@ exports.deleteTable = functions.https.onCall(async (data, context) => {
 
   tables.splice(index, 1);
 
-  const recalculatedTables = tables.map((table, i) => ({
-    ...table,
-    reference: `Table ${i + 1}`,
-  }));
-
   admin
     .firestore()
     .collection("venues")
     .doc(spaceId)
     .update({
       ...docData,
-      config: { ...docData.config, tables: recalculatedTables },
+      config: { ...docData.config, tables },
     });
 });
 

@@ -1,3 +1,5 @@
+import { uuid } from "uuidv4";
+
 import { DEFAULT_TABLE_COLUMNS, DEFAULT_TABLE_ROWS } from "settings";
 
 import { Table } from "types/Table";
@@ -6,22 +8,20 @@ export const generateTable: (props: {
   tableNumber: number;
   columns?: number;
   rows?: number;
-  tableName?: string;
 }) => Table = ({
   tableNumber,
-  tableName,
   columns = DEFAULT_TABLE_COLUMNS,
   rows = DEFAULT_TABLE_ROWS,
 }) => {
-  const titleWithNumber = `Table ${tableNumber}`;
-  const tableTitle = tableName ?? titleWithNumber;
+  const title = `Table ${tableNumber}`;
+  const reference = `${title}-${uuid()}`;
 
   const capacity = columns * rows;
 
   return {
-    title: tableTitle,
+    title,
     capacity,
-    reference: titleWithNumber,
+    reference,
     rows,
     columns,
   };
