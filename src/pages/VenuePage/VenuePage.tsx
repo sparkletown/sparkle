@@ -49,8 +49,6 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import "./VenuePage.scss";
-
 const TemplateWrapper = lazy(() =>
   tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
     import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
