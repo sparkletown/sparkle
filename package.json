@@ -99,7 +99,6 @@
     "normalize.css": "^8.0.1",
     "npm-check-updates": "^12.2.1",
     "phin": "^3.6.1",
-    "postcss": "^7.0.39",
     "source-map-explorer": "^2.5.2",
     "storybook-preset-craco": "0.0.6",
     "ts-node": "^10.4.0",
