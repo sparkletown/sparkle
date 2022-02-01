@@ -59,17 +59,20 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     isStatusEnabledForVenue,
   } = useVenueUserStatuses(user);
 
-  const avatarSrc = useMemo((): string => {
-    const url = determineAvatar({ user });
+  const [imageSrc, onImageLoadError] = useMemo(
+    () => determineAvatar({ user }),
+    [user]
+  );
 
+  const avatarSrc = useMemo((): string => {
     const facadeSize = size ? AVATAR_SIZE_MAP[size] : undefined;
     const resizeOptions: ImageResizeOptions = { fit: "crop" };
     if (facadeSize) {
       resizeOptions.width = resizeOptions.height = facadeSize;
     }
 
-    return getFirebaseStorageResizedImage(url, resizeOptions);
-  }, [user, size]);
+    return getFirebaseStorageResizedImage(imageSrc, resizeOptions);
+  }, [size, imageSrc]);
 
   const userDisplayName: string = user?.anonMode
     ? DEFAULT_PARTY_NAME
@@ -111,6 +114,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
         src={avatarSrc}
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
+        onError={onImageLoadError}
       />
 
       {hasUserStatus && (

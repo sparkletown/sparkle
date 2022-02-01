@@ -78,7 +78,7 @@ export const getFirebaseStorageResizedImage = (
 // @see https://crypto.stackexchange.com/questions/8533/why-are-bitwise-rotations-used-in-cryptography/8534#8534
 const DIFFUSION_PRIME = 31;
 
-type DetermineAvatar = (options?: {
+type DetermineAvatarProps = {
   avatars?: string[];
   email?: string;
   index?: number;
@@ -86,23 +86,32 @@ type DetermineAvatar = (options?: {
   pictureUrl?: string;
   userInfo?: firebase.UserInfo;
   user?: User;
-}) => string;
+};
 
-export const determineAvatar: DetermineAvatar = (options) => {
-  const { avatars, email, index, partyName, pictureUrl, user, userInfo } =
-    options ?? {};
+type DetermineAvatarFunc = (
+  options?: DetermineAvatarProps
+) => [string, React.ReactEventHandler<HTMLImageElement>];
+
+export const determineAvatar: DetermineAvatarFunc = (options) => {
+  const { avatars, pictureUrl, user, index } = options ?? {};
   const list = avatars ?? DEFAULT_AVATAR_LIST;
   const url = pictureUrl || user?.pictureUrl || "";
-
-  // checking user.anonMode ruled against by https://github.com/sparkletown/internal-sparkle-issues/issues/1615#issuecomment-991054012
-
-  if (url.startsWith("/static") || url.startsWith("http")) {
-    return url;
-  }
+  const onImageError = makeProfileImageLoadErrorHandler(
+    generateFallback(options)
+  );
 
   if (isDefined(index) && Number.isSafeInteger(index) && index >= 0) {
-    return list[index % list.length];
+    return [list[index % list.length], onImageError];
   }
+
+  return [url, onImageError];
+};
+
+type GenerateFallbackFunc = (options?: DetermineAvatarProps) => string;
+
+export const generateFallback: GenerateFallbackFunc = (options) => {
+  const { avatars, email, partyName, user, userInfo } = options ?? {};
+  const list = avatars ?? DEFAULT_AVATAR_LIST;
 
   // few fallbacks from most stable value to least
   // just in case callers have different access to user data
@@ -120,4 +129,11 @@ export const determineAvatar: DetermineAvatar = (options) => {
     .reduce((hash, code) => hash * DIFFUSION_PRIME + code, 0);
 
   return list[hash % list.length];
+};
+
+const makeProfileImageLoadErrorHandler = (
+  src: string
+): React.ReactEventHandler<HTMLImageElement> => ({ currentTarget }) => {
+  currentTarget.onerror = null; // prevents looping
+  currentTarget.src = src;
 };
