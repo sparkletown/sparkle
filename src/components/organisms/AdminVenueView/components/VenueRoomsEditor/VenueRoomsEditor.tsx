@@ -119,11 +119,11 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
             ...roomIconsArray[index],
             width: resizable
               ? (imageDims.width * roomIconsArray[index].width) /
-              coordinatesBoundary.width
+                coordinatesBoundary.width
               : roomIconsArray[index].width,
             height: resizable
               ? (imageDims.height * roomIconsArray[index].height) /
-              coordinatesBoundary.height
+                coordinatesBoundary.height
               : roomIconsArray[index].height,
             top:
               (imageDims.height * roomIconsArray[index].top) /

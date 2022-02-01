@@ -1,4 +1,4 @@
-import styles from './AttendeeFooter.module.scss';
+import styles from "./AttendeeFooter.module.scss";
 
 export const AttendeeFooter = () => (
   <footer className={styles.AttendeeFooter}>

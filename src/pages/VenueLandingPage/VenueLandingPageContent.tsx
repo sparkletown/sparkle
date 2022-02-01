@@ -82,10 +82,10 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
       userId && !hasEntrance
         ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
         : generateUrl({
-          route: ATTENDEE_STEPPING_PARAM_URL,
-          required: ["worldSlug", "spaceSlug", "step"],
-          params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
-        });
+            route: ATTENDEE_STEPPING_PARAM_URL,
+            required: ["worldSlug", "spaceSlug", "step"],
+            params: { worldSlug, spaceSlug, step: DEFAULT_ENTER_STEP },
+          });
   };
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;
@@ -209,8 +209,9 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
                   <InformationCard
                     title={venueEvent.name}
                     key={venueEvent.id}
-                    containerClassName={`${!isNextVenueEvent ? "disabled" : ""
-                      }`}
+                    containerClassName={`${
+                      !isNextVenueEvent ? "disabled" : ""
+                    }`}
                   >
                     <div className="date">
                       {`${startTime}-${endTime} ${startDay}`}

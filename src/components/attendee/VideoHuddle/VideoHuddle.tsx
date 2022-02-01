@@ -14,7 +14,7 @@ interface VideoHuddleContextType {
 }
 
 export const VideoHuddleContext = React.createContext<VideoHuddleContextType>({
-  setChannelId: () => { },
+  setChannelId: () => {},
 });
 
 interface VideoHuddleProps {
@@ -27,8 +27,7 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
   if (!channelId) {
     return <></>;
   }
-  return <ActiveVideoHuddle userId={userId} channelId={channelId} />
-
+  return <ActiveVideoHuddle userId={userId} channelId={channelId} />;
 };
 
 interface ActiveVideoHuddleProps {
@@ -36,7 +35,10 @@ interface ActiveVideoHuddleProps {
   userId: string;
 }
 
-const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId, channelId }) => {
+const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({
+  userId,
+  channelId,
+}) => {
   const {
     localParticipant,
     participants,
@@ -48,63 +50,65 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId, channelId
 
   if (loading) {
     // TODO Spinner?
-    return <div className={styles.VideoHuddle}>
-      Loading...
-    </div>
+    return <div className={styles.VideoHuddle}>Loading...</div>;
   }
 
   console.log("in huddle", channelId);
 
-
   // TODO Think about how the API is used internally vs externally. Ideally it should all go through the same.
 
-  return <div className={styles.VideoHuddle}>
-    <div className={styles.VideoHuddleControls}>
-      <a id="video-control-leave" href="#!" onClick={leaveHuddle}>
-        <span className="caption">Leave </span>
-        <span className="icon"></span>
-      </a>
-      <a id="video-control-audio" href="#!">
-        <span className="caption">Mute audio </span>
-        <span className="icon"></span>
-      </a>
-      <a id="video-control-camera" href="#!">
-        <span className="caption">Turn off camera </span>
-        <span className="icon"></span>
-      </a>
+  return (
+    <div className={styles.VideoHuddle}>
+      <div className={styles.VideoHuddleControls}>
+        <a id="video-control-leave" href="#!" onClick={leaveHuddle}>
+          <span className="caption">Leave </span>
+          <span className="icon"></span>
+        </a>
+        <a id="video-control-audio" href="#!">
+          <span className="caption">Mute audio </span>
+          <span className="icon"></span>
+        </a>
+        <a id="video-control-camera" href="#!">
+          <span className="caption">Turn off camera </span>
+          <span className="icon"></span>
+        </a>
+      </div>
+      <div className={styles.VideoHuddleVideos}>
+        {localParticipant && (
+          <div className={styles.VideoContainer} key={localParticipant.sid}>
+            <VideoParticipant
+              participant={localParticipant}
+              shouldMirrorVideo
+            />
+          </div>
+        )}
+        {participants.map((participant) => (
+          <div
+            key={participant.participant.identity}
+            className={styles.VideoContainer}
+          >
+            <VideoParticipant
+              participant={participant.participant}
+              participantUser={participant.user}
+            />
+          </div>
+        ))}
+      </div>
     </div>
-    <div className={styles.VideoHuddleVideos}>
-      {localParticipant && (
-        <div className={styles.VideoContainer} key={localParticipant.sid}>
-          <VideoParticipant
-            participant={localParticipant}
-            shouldMirrorVideo
-          />
-        </div>
-      )}
-      {participants.map((participant) => (
-        <div
-          key={participant.participant.identity}
-          className={styles.VideoContainer}
-        >
-          <VideoParticipant
-            participant={participant.participant}
-            participantUser={participant.user}
-          />
-        </div>
-      ))}
-    </div>
-  </div>;
-}
-
+  );
+};
 
 interface VideoHuddleProviderProps {
   children: React.ReactNode;
 }
 
-export const VideoHuddleProvider: React.FC<VideoHuddleProviderProps> = ({ children }) => {
+export const VideoHuddleProvider: React.FC<VideoHuddleProviderProps> = ({
+  children,
+}) => {
   const [channelId, setChannelId] = useState<string>();
-  return <VideoHuddleContext.Provider value={{ channelId, setChannelId }}>
-    {children}
-  </VideoHuddleContext.Provider>
+  return (
+    <VideoHuddleContext.Provider value={{ channelId, setChannelId }}>
+      {children}
+    </VideoHuddleContext.Provider>
+  );
 };

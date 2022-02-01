@@ -124,7 +124,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <div
       className={styles.MapRoom}
       style={roomInlineStyles}
-    /*onClick={shouldBeClickable ? selectRoomWithSound : undefined}
+      /*onClick={shouldBeClickable ? selectRoomWithSound : undefined}
     onMouseEnter={shouldBeClickable ? handleRoomHovered : undefined}
     onMouseLeave={shouldBeClickable ? handleRoomUnhovered : undefined}*/
     >
@@ -133,16 +133,25 @@ export const MapRoom: React.FC<MapRoomProps> = ({
           <img src={room.image_url} alt={room.title} />
         </div>
         <div className={styles.PortalTitle}>
-          {room.title} <span><span></span><RoomAttendance room={room} /></span>
-          { /* TODO Make the info icon display info */}
-          <button className={styles.InfoButton}><span /></button>
+          {room.title}{" "}
+          <span>
+            <span></span>
+            <RoomAttendance room={room} />
+          </span>
+          {/* TODO Make the info icon display info */}
+          <button className={styles.InfoButton}>
+            <span />
+          </button>
         </div>
       </div>
-      { /* TODO Allow these to be hidden */}
-      <div className={styles.PortalPopupInfo} >
+      {/* TODO Allow these to be hidden */}
+      <div className={styles.PortalPopupInfo}>
         <h3>TODO Lazer Show</h3>
         <p>TODO Put things here</p>
-        <button className={styles.PortalInfoButton} onClick={selectRoomWithSound}>
+        <button
+          className={styles.PortalInfoButton}
+          onClick={selectRoomWithSound}
+        >
           Enter
         </button>
       </div>

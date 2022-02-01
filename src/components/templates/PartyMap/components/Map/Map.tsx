@@ -18,8 +18,8 @@ interface MapTitleProps {
 
 const MapTitle: React.FC<MapTitleProps> = ({ title }) => {
   const titleParts = useMemo(
-    () => title.split(" ").map((part, idx) => (<span key={idx}>{part}</span>)),
-    [title],
+    () => title.split(" ").map((part, idx) => <span key={idx}>{part}</span>),
+    [title]
   );
   return <h1 className={styles.MapTitle}>{titleParts}</h1>;
 };
@@ -31,20 +31,21 @@ interface PortalsProps {
 }
 
 const Portals: React.FC<PortalsProps> = ({ space, selectPortal, portals }) => {
-
-  const portalsFragment = useMemo(() =>
-    portals
-      .filter(portal => portal.isEnabled)
-      .map(portal =>
-        <MapRoom
-          key={portal.title}
-          venue={space}
-          room={portal}
-          selectRoom={() => {
-            selectPortal(portal);
-          }}
-        />),
-    [portals, selectPortal, space],
+  const portalsFragment = useMemo(
+    () =>
+      portals
+        .filter((portal) => portal.isEnabled)
+        .map((portal) => (
+          <MapRoom
+            key={portal.title}
+            venue={space}
+            room={portal}
+            selectRoom={() => {
+              selectPortal(portal);
+            }}
+          />
+        )),
+    [portals, selectPortal, space]
   );
   return <div className={styles.Portals}>{portalsFragment}</div>;
 };
@@ -73,7 +74,11 @@ export const Map: React.FC<MapProps> = ({ user, venue, selectRoom }) => {
     <>
       <div className={styles.MapBackground} style={mapStyles} />
       <MapTitle title={venue.name} />
-      <Portals portals={venue.rooms ?? []} space={venue} selectPortal={selectRoom} />
+      <Portals
+        portals={venue.rooms ?? []}
+        space={venue}
+        selectPortal={selectRoom}
+      />
     </>
   );
 };

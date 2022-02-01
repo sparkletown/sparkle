@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useDrop } from "react-dnd";
 import ReactResizeDetector, { useResizeDetector } from "react-resize-detector";
 import update from "immutability-helper";
@@ -102,7 +108,7 @@ export const Container: React.FC<PropsType> = (props) => {
             : boxes[val].width,
           height: resizable
             ? (coordinatesBoundary.height * boxes[val].height) /
-            imageDims.height
+              imageDims.height
             : boxes[val].height,
           top: convertDisplayedCoordToIntrinsic(
             boxes[val].top,
@@ -140,11 +146,11 @@ export const Container: React.FC<PropsType> = (props) => {
           ...iconsMap[val],
           width: resizable
             ? (imageDims.width * iconsMap[val].width) /
-            coordinatesBoundary.width
+              coordinatesBoundary.width
             : iconsMap[val].width,
           height: resizable
             ? (imageDims.height * iconsMap[val].height) /
-            coordinatesBoundary.height
+              coordinatesBoundary.height
             : iconsMap[val].height,
           top:
             (imageDims.height * iconsMap[val].top) / coordinatesBoundary.height,
@@ -240,10 +246,12 @@ export const Container: React.FC<PropsType> = (props) => {
                     src={otherIcons[key].url || DEFAULT_MAP_ICON_URL}
                     style={{
                       position: "absolute",
-                      top: `${(100 * otherIcons[key].top) / coordinatesBoundary.height
-                        }%`,
-                      left: `${(100 * otherIcons[key].left) / coordinatesBoundary.width
-                        }%`,
+                      top: `${
+                        (100 * otherIcons[key].top) / coordinatesBoundary.height
+                      }%`,
+                      left: `${
+                        (100 * otherIcons[key].left) / coordinatesBoundary.width
+                      }%`,
                       width: resizable
                         ? `${otherIcons[key].width}%`
                         : otherIcons[key].width, //resizable dimensions are in percentages

@@ -36,7 +36,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   isAudioEffectDisabled,
   shouldMirrorVideo = false,
 }) => {
-
   const {
     shouldDisableExternally: shouldDisableVideoExternally,
     ref: videoRef,
@@ -57,13 +56,14 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
     [styles.Mirrored]: shouldMirrorVideo,
   });
 
-  return (<>
-    <video
-      className={videoClassNames}
-      ref={shouldDisableVideoExternally ? null : videoRef}
-      autoPlay={true}
-    />
-    { /*
+  return (
+    <>
+      <video
+        className={videoClassNames}
+        ref={shouldDisableVideoExternally ? null : videoRef}
+        autoPlay={true}
+      />
+      {/*
       TODO
       Audio is disabled
       <audio
@@ -71,11 +71,9 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
         autoPlay={true}
         muted={shouldDisableAudioExternally}
       />
-      */ }
+      */}
 
-
-    {
-      /*
+      {/*
       TODO
     <div className="VideoParticipant__controls">
       <FontAwesomeIcon
@@ -93,9 +91,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
         className="VideoParticipant__controls-mute"
       />
     </div>
-    */
-    }
-
-  </>
+    */}
+    </>
   );
 };

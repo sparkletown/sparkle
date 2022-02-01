@@ -108,13 +108,15 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     (settings.showReactions ?? DEFAULT_SHOW_REACTIONS) &&
     (venue.showReactions ?? DEFAULT_SHOW_REACTIONS);
 
-
   const { joinHuddle, inHuddle } = useVideoHuddle();
 
-  const joinTable = useCallback((table) => {
-    joinHuddle(`${venue.id}-${table}`);
-    setSeatedAtTable(table);
-  }, [joinHuddle, venue]);
+  const joinTable = useCallback(
+    (table) => {
+      joinHuddle(`${venue.id}-${table}`);
+      setSeatedAtTable(table);
+    },
+    [joinHuddle, venue]
+  );
 
   const leaveTable = useCallback(async () => {
     if (!userId) return;
@@ -131,15 +133,13 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
 
   return (
     <>
-      { /*
+      {/*
       <VenueWithOverlay
         venue={venue}
         containerClassNames={`music-bar ${containerClasses}`}
       >
       */}
-      {parentVenue && (
-        <BackButton variant="simple" space={parentVenue} />
-      )}
+      {parentVenue && <BackButton variant="simple" space={parentVenue} />}
 
       {!venue.hideVideo && (
         <div className="component-media-object">
