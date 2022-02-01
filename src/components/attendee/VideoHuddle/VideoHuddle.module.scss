@@ -8,8 +8,8 @@
   @media (min-width: 768px) {
     @include sparkle-panel;
     grid-column: 1 / 3;
-    margin: 0 $whitespace*-1;
-    width: calc(100% + #{$whitespace*2});
+    margin: 0 $whitespace * -1;
+    width: calc(100% + #{$whitespace * 2});
   }
   height: $video-chat-height;
   padding: $button-gap;
@@ -23,7 +23,7 @@
 .VideoHuddleControls {
   @include sparkle-panel;
   position: relative;
-  margin-top: $button-gap*-1;
+  margin-top: $button-gap * -1;
   width: $button-height;
   display: flex;
   flex-direction: column;
@@ -35,7 +35,7 @@
   flex-grow: 1;
   overflow-x: scroll;
   overflow-y: hidden;
-  min-width: ($video-chat-height * 1.7 + 2)*3;
+  min-width: ($video-chat-height * 1.7 + 2) * 3;
   display: flex;
   justify-content: center;
   gap: $button-gap;

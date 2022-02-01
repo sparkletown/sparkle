@@ -50,7 +50,7 @@
     padding-top: $button-gap;
     a {
       @include atom-icon;
-      margin-right: $whitespace*0.5;
+      margin-right: $whitespace * 0.5;
       opacity: $opacity;
       &:hover,
       &:focus {
@@ -82,20 +82,18 @@
     form {
       display: none;
       width: 100%;
-      margin-top: $whitespace*0.5;
+      margin-top: $whitespace * 0.5;
       background: transparent;
       border-width: 1px;
       border-style: solid;
       border-color: $sparkle-border;
       @include rounded;
     }
-    .chat-reply-button.clicked+form {
+    .chat-reply-button.clicked + form {
       display: block;
     }
   }
 }
-
-
 
 .ChatContainer {
   padding: 0 $whitespace;
@@ -111,7 +109,8 @@
       @include sparkle-panel;
       @include rounded;
     }
-    > a, > div {
+    > a,
+    > div {
       @include atom-button;
       position: relative;
       &.radio {
@@ -123,7 +122,7 @@
           padding-right: 0;
           .icon {
             @include atom-icon;
-            margin-left: $whitespace*0.5;
+            margin-left: $whitespace * 0.5;
             background-image: url(~assets/icons/icon-unmute.svg);
             filter: invert(1);
           }
@@ -141,10 +140,26 @@
         height: $button-height;
         overflow: hidden;
         flex-grow: 1;
-        -moz-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,1) 10px);
-        -ms-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,1) 10px);
-        -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,1) 10px);
-        mask-image: linear-gradient(to right, rgba(0,0,0,0) 0, rgba(0,0,0,1) 10px);
+        -moz-mask-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 1) 10px
+        );
+        -ms-mask-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 1) 10px
+        );
+        -webkit-mask-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 1) 10px
+        );
+        mask-image: linear-gradient(
+          to right,
+          rgba(0, 0, 0, 0) 0,
+          rgba(0, 0, 0, 1) 10px
+        );
         span {
           position: absolute;
           width: min-content;
@@ -175,17 +190,36 @@
     flex-direction: column;
     @include rounded-bottom;
     @media (min-width: 768px) {
-
     }
     #chat-scrollbox-mask {
       display: flex;
       flex-direction: column-reverse;
       flex-grow: 1;
       overflow: scroll;
-      -moz-mask-image: linear-gradient(to top, rgba(0,0,0,1) 75%, rgba(0,0,0,0.5) 95%, rgba(0,0,0,0) 100%);
-      -ms-mask-image: linear-gradient(to top, rgba(0,0,0,1) 75%, rgba(0,0,0,0.5) 95%, rgba(0,0,0,0) 100%);
-      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,1) 75%, rgba(0,0,0,0.5) 95%, rgba(0,0,0,0) 100%);
-      mask-image: linear-gradient(to top, rgba(0,0,0,1) 75%, rgba(0,0,0,0.5) 95%, rgba(0,0,0,0) 100%);
+      -moz-mask-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 1) 75%,
+        rgba(0, 0, 0, 0.5) 95%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      -ms-mask-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 1) 75%,
+        rgba(0, 0, 0, 0.5) 95%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      -webkit-mask-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 1) 75%,
+        rgba(0, 0, 0, 0.5) 95%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      mask-image: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 1) 75%,
+        rgba(0, 0, 0, 0.5) 95%,
+        rgba(0, 0, 0, 0) 100%
+      );
     }
     ol {
       display: flex;
@@ -193,7 +227,7 @@
       padding: 0 $whitespace;
       li {
         min-height: 50px;
-        padding: $whitespace*0.75 0;
+        padding: $whitespace * 0.75 0;
         @include atom-chat-message;
         .user-avatar {
           width: $button-height;
@@ -225,11 +259,13 @@
       }
     }
     @media (min-width: 768px) {
-      height: calc(100vh - #{$whitespace *2});
-      margin-top: calc(-100vh + #{$whitespace *2} + #{$button-height});
+      height: calc(100vh - #{$whitespace * 2});
+      margin-top: calc(-100vh + #{$whitespace * 2} + #{$button-height});
       &.component-table-video-open {
-        height: calc(100vh - #{$whitespace *2} - #{$video-chat-height});
-        margin-top: calc(-100vh + #{$whitespace *2} + #{$button-height} + #{$video-chat-height});
+        height: calc(100vh - #{$whitespace * 2} - #{$video-chat-height});
+        margin-top: calc(
+          -100vh + #{$whitespace * 2} + #{$button-height} + #{$video-chat-height}
+        );
       }
       display: flex;
       flex-direction: column-reverse;

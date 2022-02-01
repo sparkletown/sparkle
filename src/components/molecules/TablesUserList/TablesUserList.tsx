@@ -174,8 +174,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const renderedTables = useMemo(() => {
     const tablesToShow = showOnlyAvailableTables
       ? tables.filter(
-        (table) => !(isFullTable(table) || tableLocked(table.reference))
-      )
+          (table) => !(isFullTable(table) || tableLocked(table.reference))
+        )
       : tables;
 
     return tablesToShow.map((table: Table) => (

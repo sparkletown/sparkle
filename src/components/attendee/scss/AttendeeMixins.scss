@@ -25,14 +25,14 @@
 
 @mixin sparkle-panel-glass {
   color: $text-lightmode;
-  background: rgba($panel-lightmode,0.4);
+  background: rgba($panel-lightmode, 0.4);
   -moz-backdrop-filter: blur($blur);
   -ms-backdrop-filter: blur($blur);
   -webkit-backdrop-filter: blur($blur);
   backdrop-filter: blur($blur);
   @media (prefers-color-scheme: dark) {
     color: $text-darkmode;
-    background: rgba($panel-darkmode,0.4);
+    background: rgba($panel-darkmode, 0.4);
   }
 }
 
@@ -132,8 +132,8 @@
     @include atom-button;
     border-radius: 0;
     background-color: transparent;
-    height: $button-height - $button-gap*8;
-    margin: $button-gap*4 0;
+    height: $button-height - $button-gap * 8;
+    margin: $button-gap * 4 0;
     border-left: 1px solid $sparkle-border;
   }
 }

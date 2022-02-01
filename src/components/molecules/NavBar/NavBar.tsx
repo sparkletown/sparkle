@@ -200,8 +200,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               {shouldShowSchedule && spaceId ? (
                 <button
                   aria-label="Schedule"
-                  className={`nav-party-logo ${isEventScheduleVisible && "clicked"
-                    }`}
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
                   onClick={toggleEventSchedule}
                 >
                   {spaceId && navbarTitle} &nbsp;
@@ -277,8 +278,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       {shouldShowSchedule && spaceId && (
         <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
-          className={`schedule-dropdown-backdrop ${isEventScheduleVisible ? "show" : ""
-            }`}
+          className={`schedule-dropdown-backdrop ${
+            isEventScheduleVisible ? "show" : ""
+          }`}
           onClick={hideEventSchedule}
         >
           <div className={navBarScheduleClassName}>
