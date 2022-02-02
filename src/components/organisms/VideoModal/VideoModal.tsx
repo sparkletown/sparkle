@@ -32,7 +32,7 @@ export const VideoModal: React.FunctionComponent<PropsType> = ({
   return (
     <Modal isOpen={show} onClose={closeVideoModal} wide>
       <div className="VideoModal">
-        {caption && <h3>{caption}</h3>}
+        {caption && <div className="VideoModal__title">{caption}</div>}
         <div className="VideoModal__content">
           <iframe
             className="VideoModal__youtube"

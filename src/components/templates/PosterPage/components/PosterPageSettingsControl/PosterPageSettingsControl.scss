@@ -12,8 +12,8 @@
 
     padding: $spacing--sm $spacing--md;
   }
-}
-// Increase specificity to override third-party lib styles
-div.PosterPageSettingsControl__popover {
-  height: 100px;
+
+  &__popover {
+    height: 100px;
+  }
 }

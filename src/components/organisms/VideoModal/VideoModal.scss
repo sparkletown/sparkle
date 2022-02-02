@@ -6,6 +6,10 @@ $close-icon-right-margin: 100px;
   padding: $spacing--xl;
   width: 100%;
 
+  &__title {
+    font-size: $font-size--xl;
+  }
+
   &__content {
     display: flex;
     flex-grow: 1;

@@ -193,6 +193,8 @@ $admin-ia-dash-template-columns: 5fr minmax(#{$button-width--max-wrap}, 1fr);
 $admin-ia-manage-space-template-columns: 5fr
   minmax(#{2 * $button-width--max-wrap}, 1fr);
 
+$modal-overlay-background: rgba(26, 29, 36, 0.8);
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/PortalModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
@@ -216,7 +218,7 @@ $z-layer-auditorium-iframe: $z-layer-on-top-bg;
 $z-layer-jukebox: $z-layer-on-top-bg;
 $z-layer-popover: $z-layer-on-top-bg;
 $z-layer-start-table: 0;
-$z-layer-modal: 400;
+$z-layer-modal: $z-layer-footer + 10;
 $z-layer-mobile-warning: 20;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)

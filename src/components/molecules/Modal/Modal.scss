@@ -10,7 +10,7 @@
     left: 0;
     top: 0;
     z-index: z(modal);
-    background-color: rgba(26, 29, 36, 0.8) !important;
+    background-color: $modal-overlay-background !important;
     overflow-y: auto;
 
     &-centered {
