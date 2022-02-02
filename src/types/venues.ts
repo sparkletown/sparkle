@@ -121,7 +121,7 @@ export interface Venue_v2_Base {
   host: {
     icon: string;
   };
-  owners: string[];
+  owners?: string[];
   theme?: {
     primaryColor: string;
     backgroundColor?: string;
@@ -157,7 +157,7 @@ export interface BaseVenue {
   host?: {
     icon: string;
   };
-  owners: string[];
+  owners?: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
@@ -253,7 +253,6 @@ export interface PartyMapVenue extends BaseVenue {
   map_viewbox?: string;
   password?: string;
   admin_password?: string;
-  owners: string[];
   rooms?: Room[];
 }
 

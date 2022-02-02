@@ -75,7 +75,6 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     isJazzBar
       ? {}
       : {
-          height: `${table.rows && table.rows * 50 + 65}px`,
           width: `${table.columns && (table.columns + 1) * 55}px`,
         }
   );
