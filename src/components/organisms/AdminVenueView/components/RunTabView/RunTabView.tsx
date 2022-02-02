@@ -28,8 +28,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
     return <LoadingPage />;
   }
 
-  const venueId = venue.id;
-
   return (
     <AdminPanel variant="unbound" className="RunTabView">
       <AdminSidebar>
@@ -37,7 +35,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           Run your {SPACE_TAXON.lower}
         </AdminSidebarSectionTitle>
         <div className="RunTabView__content">
-          <RunTabUsers venueId={venueId} />
+          <RunTabUsers venue={venue} />
         </div>
       </AdminSidebar>
       <div className="RunTabView__body">

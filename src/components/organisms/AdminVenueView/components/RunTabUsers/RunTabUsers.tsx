@@ -6,10 +6,10 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 import { getUserRef } from "api/profile";
 
 import { User } from "types/User";
+import { AnyVenue } from "types/venues";
 
-import { withId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
@@ -21,11 +21,10 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./RunTabUsers.scss";
 
 interface RunTabSidebarProps {
-  venueId?: string;
+  venue?: WithId<AnyVenue>;
 }
 
-export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venue }) => {
   const {
     isShown: isShownInviteAdminModal,
     show: showInviteAdminModal,
