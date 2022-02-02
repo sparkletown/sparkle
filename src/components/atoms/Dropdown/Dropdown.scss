@@ -6,26 +6,9 @@
   border-radius: 50px;
   box-shadow: none;
   outline: none;
+  width: 100%;
 
-  &__button__control {
-    cursor: pointer;
-    padding: 8px;
-  }
-
-  &__button__input-container {
-    height: 0px;
-    border: none;
-    outline: none;
-    padding: 0px;
-    margin: 0px;
-    opacity: 0px;
-
-    & .Dropdown__button__input {
-      opacity: 0 !important;
-    }
-  }
-
-  &__button {
+  .Select {
     display: flex;
     align-items: center;
     padding: $spacing--md $spacing--xl;
@@ -37,28 +20,75 @@
     &:focus,
     &:hover {
       background: opaque-white(0.2);
-      box-shadow: 0px 2px 4px opaque-black(0.25);
+      box-shadow: 0 2px 4px opaque-black(0.25);
       border-radius: $border-radius--xl;
     }
-  }
 
-  &__button__menu {
-    background: var(--content--under-lighter-20pp);
-    box-shadow: 0px 10px 20px opaque-black(0.25);
-    border-radius: $border-radius--lg;
-    z-index: 1;
-  }
+    &__control {
+      cursor: pointer;
+      padding: 8px;
+      background: transparent;
+      border: none;
+      border-radius: $border-radius--xl;
+      box-shadow: none;
+      outline: none;
+      display: flex;
+    }
 
-  &__button__option {
-    cursor: pointer;
+    &__menu {
+      background: var(--content--under-lighter-20pp);
+      box-shadow: 0 10px 20px opaque-black(0.25);
+      border-radius: $border-radius--xl;
+      z-index: 1;
+      max-height: 240px;
+      position: absolute;
+      top: 45px;
+      overflow: auto;
+      cursor: default;
+      width: 100%;
+    }
 
-    &:hover {
-      background: opaque-white(0.2);
+    &__menu-list {
+      max-height: 240px;
+    }
+
+    &__option {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 17px;
+      padding: 0;
+      cursor: pointer;
+
+      &:hover {
+        background: opaque-white(0.2);
+      }
+    }
+
+    &__input-container {
+      height: 0;
+      border: none;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      opacity: 0;
+    }
+
+    &__input-container &__input {
+      opacity: 0 !important;
+    }
+
+    &__single-value {
+      color: white;
+    }
+
+    &__indicator-separator {
+      display: none;
     }
   }
 
-  .Dropdown__button__input-container {
-    margin: 0px;
-    padding: 0px;
+  &--arrowless .Select__dropdown-indicator {
+    display: none;
   }
 }

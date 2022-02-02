@@ -1,9 +1,23 @@
 import React, { ReactNode } from "react";
-import Select, { MenuPlacement, MenuPosition } from "react-select";
+import Select, { MenuPlacement } from "react-select";
+import classNames from "classnames";
+
+import { NO_STYLE_FUNCTION } from "settings";
 
 import "./Dropdown.scss";
 
-export interface DropdownProps {
+const NO_INLINE_STYLES_PLEASE = {
+  menu: NO_STYLE_FUNCTION,
+  option: NO_STYLE_FUNCTION,
+  control: NO_STYLE_FUNCTION,
+  menuList: NO_STYLE_FUNCTION,
+  singleValue: NO_STYLE_FUNCTION,
+  dropdownIndicator: NO_STYLE_FUNCTION,
+  indicatorSeparator: NO_STYLE_FUNCTION,
+};
+Object.freeze(NO_INLINE_STYLES_PLEASE);
+
+interface DropdownProps {
   title: { value: string; label: ReactNode };
   options: { value: string; label: ReactNode }[];
   className?: string;
@@ -17,48 +31,18 @@ export const Dropdown: React.FC<DropdownProps> = ({
   className,
   placement,
   noArrow,
-}) => {
-  const styles = {
-    indicatorSeparator: () => ({ display: "none" }),
-    control: () => ({
-      background: "transparent",
-      border: "none",
-      borderRadius: "20px",
-      boxShadow: "none",
-      outline: "none",
-      display: "flex",
-    }),
-    singleValue: () => ({ color: "white" }),
-    option: () => ({
-      display: "flex",
-      alignitems: "center",
-      textDecoration: "none",
-      fontSize: "14px",
-      lineHeight: "17px",
-      padding: "0px",
-      cursor: "pointer",
-    }),
-    menu: () => ({
-      borderRadius: "20px",
-      maxHeight: "240px",
-      position: "absolute" as MenuPosition,
-      top: "45px",
-      overflow: "auto",
-      cursor: "default",
-    }),
-    menuList: () => ({ maxHeight: "240px" }),
-    dropdownIndicator: () => ({ ...(noArrow && { display: "none" }) }),
-  };
-
-  return (
-    <Select
-      value={title}
-      className={className || "Dropdown"}
-      classNamePrefix="Dropdown__button"
-      options={options}
-      placeholder={title}
-      styles={styles}
-      menuPlacement={placement}
-    />
-  );
-};
+}) => (
+  <Select
+    className={classNames(
+      className,
+      "Dropdown",
+      noArrow ? "Dropdown--arrowless" : "Dropdown--arrowful"
+    )}
+    classNamePrefix="Select"
+    value={title}
+    options={options}
+    placeholder={title}
+    menuPlacement={placement}
+    styles={NO_INLINE_STYLES_PLEASE}
+  />
+);

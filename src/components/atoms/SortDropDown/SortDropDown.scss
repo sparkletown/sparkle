@@ -1,10 +1,6 @@
 @import "scss/constants";
 
 .SortDropDown {
-  // NOTE: this dropdown mimics the appearance of the ButtonNG default style
-  // NOTE: it is needed to mitigate the effects of the global SCSS file and Bootstrap
-
-  display: inline-block;
   margin: $spacing--xs;
   width: $button-width--normal;
   max-width: $button-width--max;
@@ -26,13 +22,7 @@
     width: 100%;
   }
 
-  .Dropdown__button__menu {
-    position: absolute;
-    left: -65px;
-  }
-
-  .Dropdown__button__option {
-    padding: 8px 12px;
-    text-decoration: underline;
+  .Dropdown .Select__option {
+    padding: $spacing--sm font-size--parent(2);
   }
 }
