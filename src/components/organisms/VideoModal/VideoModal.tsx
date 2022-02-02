@@ -30,7 +30,7 @@ export const VideoModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal isOpen={show} onClose={closeVideoModal} fullWidth>
+    <Modal isOpen={show} onClose={closeVideoModal} wide>
       <div className="VideoModal">
         {caption && <h3>{caption}</h3>}
         <div className="VideoModal__content">

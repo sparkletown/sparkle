@@ -1,7 +1,9 @@
 @import "scss/constants.scss";
 
+$close-icon-right-margin: 100px;
+
 .VideoModal {
-  padding: 20px;
+  padding: $spacing--xl;
   width: 100%;
 
   &__content {
@@ -19,7 +21,7 @@
   &__close-icon {
     @include square-size($spacing--xxl);
     position: absolute;
-    right: $spacing--xxl;
+    right: $close-icon-right-margin;
     top: $spacing--xxl;
     opacity: 0.6;
     cursor: pointer;

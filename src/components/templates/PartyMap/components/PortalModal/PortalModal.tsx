@@ -20,6 +20,7 @@ interface PortalModalProps {
   show: boolean;
   portal?: Room;
   venueEvents?: WorldEvent[];
+  absolute?: boolean;
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
@@ -27,6 +28,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   portal,
   show,
   venueEvents = emptyEvents,
+  absolute,
 }) => {
   if (!portal) return null;
 
@@ -44,18 +46,24 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   }
 
   return (
-    <Modal isOpen={show} onClose={onHide} className="PortalModal" isCentered>
-      <PortalModalContent
-        portal={portal}
-        venueEvents={venueEvents}
-        onHide={onHide}
-      />
-
+    <Modal
+      isOpen={show}
+      onClose={onHide}
+      className="PortalModal"
+      isCentered
+      shouldCloseOnOverlayClick
+      absolute={absolute}
+    >
       <img
         className="PortalModal__close-icon"
         src={PortalCloseIcon}
         alt="close portal"
         onClick={onHide}
+      />
+      <PortalModalContent
+        portal={portal}
+        venueEvents={venueEvents}
+        onHide={onHide}
       />
     </Modal>
   );

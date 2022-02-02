@@ -21,10 +21,8 @@ $spacing: 20px;
 
   &__close-icon {
     @include square-size($spacing--xxl);
-    position: absolute;
-    right: $spacing--lg;
-    top: $spacing--lg;
     opacity: 0.6;
+    margin-left: auto;
     cursor: pointer;
 
     &:hover {
@@ -46,7 +44,7 @@ $spacing: 20px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-    margin: $spacing--xxl $spacing--xxl $spacing--lg;
+    margin: 0 $spacing--xxl $spacing--lg;
   }
 
   &__icon {

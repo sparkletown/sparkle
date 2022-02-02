@@ -97,7 +97,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
   const hasResults = filteredUsers && filteredUsers?.length > 0;
 
   return (
-    <Modal isOpen={visible} onClose={onHide}>
+    <Modal isOpen={visible} onClose={onHide} isCentered>
       <div className="VenueOwnersModal">
         <h3>Manage Owners</h3>
         <div className="row-container">

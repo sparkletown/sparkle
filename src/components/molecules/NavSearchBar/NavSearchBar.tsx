@@ -180,6 +180,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
         show={isDefined(selectedPortal)}
         portal={selectedPortal}
         onHide={hidePortalModal}
+        absolute
       />
     </div>
   );

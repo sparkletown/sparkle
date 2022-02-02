@@ -18,7 +18,7 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
   introVideoUrl,
 }) => {
   return (
-    <Modal isOpen={true} onClose={onHide} isCentered>
+    <Modal isOpen={isVisible} onClose={onHide} isCentered wide>
       <div className="IntroVideoPreviewModal">
         <iframe
           className="IntroVideoPreviewModal__iframe"

@@ -1,53 +1,19 @@
-import React from "react";
-import ReactModal from "react-modal";
+import React, { useRef } from "react";
+import classNames from "classnames";
+
+import { useClickOutside } from "hooks/useClickOutside";
 
 import "./Modal.scss";
 
-interface StyleProps {
-  isCentered?: boolean;
-  fullWidth?: boolean;
-}
-
-interface CustomStylesProps extends StyleProps {
-  isCustom?: boolean;
-}
-
-export interface ModalProps extends StyleProps {
+export interface ModalProps {
   isOpen: boolean;
   onClose?: () => void;
   className?: string;
   shouldCloseOnOverlayClick?: boolean;
+  isCentered?: boolean;
+  absolute?: boolean;
+  wide?: boolean;
 }
-
-const customStyles = ({
-  isCustom,
-  fullWidth,
-  isCentered,
-}: CustomStylesProps) => ({
-  // ReactModal uses some default inline styles that need to be overwritten using !important or built-in
-  // styles prop. I've decided using the prop approach (recommended by the library),
-  // thus we're having these css rules here
-  content: {
-    ...(!isCustom && { backgroundColor: "black" }),
-    inset: "",
-    border: "none",
-    outline: "none",
-    borderRadius: "50px",
-    overflow: "none",
-    margin: !isCentered ? "40px auto" : "",
-    top: "0",
-    ...(fullWidth && { width: "90%" }),
-  },
-  overlay: {
-    ...(isCentered && {
-      "-webkit-box-align": "center",
-      "-webkit-box-pack": "center",
-      display: "-webkit-box",
-    }),
-  },
-});
-
-ReactModal.setAppElement("#root");
 
 export const Modal: React.FC<ModalProps> = ({
   children,
@@ -56,21 +22,34 @@ export const Modal: React.FC<ModalProps> = ({
   className = "",
   isCentered,
   shouldCloseOnOverlayClick,
-  fullWidth,
+  absolute,
+  wide,
 }) => {
-  const styles = customStyles({ isCentered, isCustom: !!className, fullWidth });
+  const overlayClasses = classNames("Modal__overlay", {
+    "Modal__overlay-centered": isCentered,
+    "Modal__overlay-absolute": absolute,
+  });
+  const containerClasses = classNames(`Modal__container ${className}`, {
+    "Modal__container-custom": !className,
+    "Modal__container-wide": wide,
+  });
+
+  const containerRef = useRef(null);
+
+  useClickOutside({
+    ref: containerRef,
+    hide: onClose,
+    closeRoot: shouldCloseOnOverlayClick,
+  });
+  if (!isOpen) {
+    return null;
+  }
 
   return (
-    <ReactModal
-      isOpen={isOpen}
-      style={styles}
-      onRequestClose={onClose}
-      overlayClassName="Modal__overlay"
-      className={className}
-      shouldCloseOnOverlayClick={shouldCloseOnOverlayClick}
-      htmlOpenClassName="Modal__html"
-    >
-      {children}
-    </ReactModal>
+    <div className={overlayClasses}>
+      <div className={containerClasses} ref={containerRef}>
+        {children}
+      </div>
+    </div>
   );
 };

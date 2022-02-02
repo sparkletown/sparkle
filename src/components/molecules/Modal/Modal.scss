@@ -2,26 +2,49 @@
 
 .Modal {
   &__overlay {
+    width: 100%;
+    height: 100%;
     position: absolute;
     display: block;
     right: 0;
     left: 0;
-    height: 100%;
+    top: 0;
     z-index: z(modal);
-    background-color: rgba(26, 29, 36, 0.8);
+    background-color: rgba(26, 29, 36, 0.8) !important;
     overflow-y: auto;
 
-    & .ReactModal__Content {
-      width: 35%;
-      position: relative !important;
-      padding: $spacing--lg;
-      display: flex;
-      align-items: center;
-      box-shadow: 0 $spacing--md $spacing--xxl 0 var(--content--under-30a);
+    &-centered {
+      -webkit-box-align: center;
+      -webkit-box-pack: center;
+      display: -webkit-box;
+    }
 
-      form {
-        width: 100%;
-      }
+    &-absolute {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      right: -120px;
+      left: auto;
+      top: -10px;
+    }
+  }
+
+  &__container {
+    width: 35%;
+    margin: auto;
+    padding: $spacing--lg;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 $spacing--md $spacing--xxl 0 var(--content--under-30a);
+    border-radius: 50px;
+    justify-content: center;
+
+    &-custom {
+      background-color: black;
+    }
+
+    &-wide {
+      width: 90%;
     }
   }
 

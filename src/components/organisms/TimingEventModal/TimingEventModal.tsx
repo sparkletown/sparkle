@@ -117,7 +117,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   return (
     <>
-      <Modal isOpen={show} onClose={onHide} className="TimingEventModal">
+      <Modal
+        isOpen={show}
+        onClose={onHide}
+        className="TimingEventModal"
+        isCentered
+        shouldCloseOnOverlayClick
+      >
         <div className="form-container">
           <h2>Add experience</h2>
           <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
