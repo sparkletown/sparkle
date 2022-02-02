@@ -35,18 +35,16 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      userStatuses.map((userStatus) => ({
-        value: userStatus.status,
-        label: (
-          <div
-            className="UserStatusDropdown__item"
-            key={userStatus.status}
-            onClick={() => changeUserStatus(userStatus.status)}
-          >
-            {userStatus.status}
-          </div>
-        ),
-      })),
+      userStatuses.map((userStatus) => (
+        <div
+          className="UserStatusDropdown__item"
+          key={userStatus.status}
+          onClick={() => changeUserStatus(userStatus.status)}
+          data-dropdown-value={userStatus.status}
+        >
+          {userStatus.status}
+        </div>
+      )),
     [userStatuses, changeUserStatus]
   );
 
@@ -56,11 +54,9 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
         {userStatus.status}&nbsp;
       </div>
       {showDropdown && (
-        <Dropdown
-          title={{ label: "change status", value: "change status" }}
-          options={userStatusDropdownOptions}
-          noArrow
-        />
+        <Dropdown title="change status" noArrow>
+          {userStatusDropdownOptions}
+        </Dropdown>
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import { omit, omitBy } from "lodash";
 
-import { PORTAL_INFO_ICON_MAPPING } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -80,29 +80,27 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
       spaceOptions.map(({ id, name, template }) => {
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
-        return {
-          value: name,
-          label: (
-            <div
-              key={id}
-              onClick={() => {
-                setSelected({ name, template, id });
-                setValue(fieldName, id, true);
-              }}
-              className="SpacesDropdown__item"
-            >
-              {name !== spaceNoneOption.name ? (
-                <img
-                  alt={`space-icon-${spaceIcon}`}
-                  src={spaceIcon}
-                  className="SpacesDropdown__item-icon"
-                />
-              ) : null}
-              {name || noneOptionName}
-            </div>
-          ),
-        };
-      }) ?? [],
+        return (
+          <div
+            key={id}
+            onClick={() => {
+              setSelected({ name, template, id });
+              setValue(fieldName, id, true);
+            }}
+            className="SpacesDropdown__item"
+            data-dropdown-value={name}
+          >
+            {name !== spaceNoneOption.name ? (
+              <img
+                alt={`space-icon-${spaceIcon}`}
+                src={spaceIcon}
+                className="SpacesDropdown__item-icon"
+              />
+            ) : null}
+            {name || noneOptionName}
+          </div>
+        );
+      }) ?? ALWAYS_EMPTY_ARRAY,
     [spaceOptions, setValue, fieldName]
   );
 
@@ -115,27 +113,27 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
 
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
-    return {
-      value: selected.name,
-      label: (
-        <span className="SpacesDropdown__value">
-          {selected.name !== spaceNoneOption.name ? (
-            <img
-              alt={`space-icon-${spaceIcon}`}
-              src={spaceIcon}
-              className="SpacesDropdown__item-icon"
-            />
-          ) : null}
-          {selected.name || noneOptionName}
-        </span>
-      ),
-    };
+    return (
+      <span
+        className="SpacesDropdown__value"
+        data-dropdown-value={selected.name}
+      >
+        {selected.name !== spaceNoneOption.name ? (
+          <img
+            alt={`space-icon-${spaceIcon}`}
+            src={spaceIcon}
+            className="SpacesDropdown__item-icon"
+          />
+        ) : null}
+        {selected.name || noneOptionName}
+      </span>
+    );
   }, [spaces, selected, parentSpace]);
 
   return (
     <>
       <div className="SpacesDropdown">
-        <Dropdown title={renderedTitle} options={renderedOptions} />
+        <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
         <input type="hidden" ref={register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}

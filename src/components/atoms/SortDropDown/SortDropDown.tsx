@@ -14,24 +14,19 @@ interface SortDropDownProps {
 export const SortDropDown: React.FC<SortDropDownProps> = ({
   onClick,
   title,
-}) => {
-  const name = { value: title, label: title };
-  const options = Object.values(SortingOptions).map((sortingOption) => ({
-    value: sortingOption,
-    label: (
-      <div
-        key={sortingOption}
-        onClick={() => onClick(sortingOption)}
-        className="SortDropDown__option"
-      >
-        {sortingOption}
-      </div>
-    ),
-  }));
-
-  return (
-    <div className="SortDropDown">
-      <Dropdown title={name} options={options} />
-    </div>
-  );
-};
+}) => (
+  <div className="SortDropDown">
+    <Dropdown title={title}>
+      {Object.values(SortingOptions).map((key) => (
+        <div
+          key={key}
+          className="SortDropDown__option"
+          onClick={() => onClick(key)}
+          data-dropdown-value={key}
+        >
+          {key}
+        </div>
+      ))}
+    </Dropdown>
+  </div>
+);
