@@ -1,11 +1,52 @@
-import React, { ReactNode } from "react";
-import Select, { MenuPlacement, MenuPosition } from "react-select";
+import React, { ReactElement, ReactNode } from "react";
+import Select, { MenuPlacement } from "react-select";
+import classNames from "classnames";
+
+import {
+  ALWAYS_EMPTY_ARRAY,
+  ALWAYS_EMPTY_SELECT_OPTION,
+  ALWAYS_NO_STYLE_FUNCTION,
+} from "settings";
 
 import "./Dropdown.scss";
 
-export interface DropdownProps {
-  title: { value: string; label: ReactNode };
-  options: { value: string; label: ReactNode }[];
+// if these are undefined, the 3rd party library will provide own defaults
+const NO_INLINE_STYLES_PLEASE = {
+  menu: ALWAYS_NO_STYLE_FUNCTION,
+  option: ALWAYS_NO_STYLE_FUNCTION,
+  control: ALWAYS_NO_STYLE_FUNCTION,
+  menuList: ALWAYS_NO_STYLE_FUNCTION,
+  singleValue: ALWAYS_NO_STYLE_FUNCTION,
+  dropdownIndicator: ALWAYS_NO_STYLE_FUNCTION,
+  indicatorSeparator: ALWAYS_NO_STYLE_FUNCTION,
+};
+Object.freeze(NO_INLINE_STYLES_PLEASE);
+
+const DROPDOWN_VALUE_PROP = "data-dropdown-value";
+type DropdownItemProps = { [DROPDOWN_VALUE_PROP]?: string };
+
+const remap: (label: ReactNode) => { label: ReactNode; value: string } = (
+  reactNode
+) => {
+  if (null === reactNode || undefined === reactNode || "" === reactNode) {
+    return ALWAYS_EMPTY_SELECT_OPTION;
+  }
+
+  const type = typeof reactNode;
+
+  return type === "string" || type === "number" || type === "boolean"
+    ? { label: reactNode, value: String(reactNode) }
+    : {
+        label: reactNode,
+        value:
+          (reactNode as ReactElement<DropdownItemProps>).props[
+            DROPDOWN_VALUE_PROP
+          ] ?? "",
+      };
+};
+
+interface DropdownProps {
+  title?: ReactNode;
   className?: string;
   placement?: MenuPlacement;
   noArrow?: boolean;
@@ -13,52 +54,29 @@ export interface DropdownProps {
 
 export const Dropdown: React.FC<DropdownProps> = ({
   title,
-  options,
   className,
   placement,
   noArrow,
+  children,
 }) => {
-  const styles = {
-    indicatorSeparator: () => ({ display: "none" }),
-    control: () => ({
-      background: "transparent",
-      border: "none",
-      borderRadius: "20px",
-      boxShadow: "none",
-      outline: "none",
-      display: "flex",
-    }),
-    singleValue: () => ({ color: "white" }),
-    option: () => ({
-      display: "flex",
-      alignitems: "center",
-      textDecoration: "none",
-      fontSize: "14px",
-      lineHeight: "17px",
-      padding: "0px",
-      cursor: "pointer",
-    }),
-    menu: () => ({
-      borderRadius: "20px",
-      maxHeight: "240px",
-      position: "absolute" as MenuPosition,
-      top: "45px",
-      overflow: "auto",
-      cursor: "default",
-    }),
-    menuList: () => ({ maxHeight: "240px" }),
-    dropdownIndicator: () => ({ ...(noArrow && { display: "none" }) }),
-  };
+  const value = remap(title);
+  const options = React.Children.map(children, remap) ?? ALWAYS_EMPTY_ARRAY;
+
+  const containerClasses = classNames(
+    className,
+    "Dropdown",
+    noArrow ? "Dropdown--arrowless" : "Dropdown--arrowful"
+  );
 
   return (
     <Select
-      value={title}
-      className={className || "Dropdown"}
-      classNamePrefix="Dropdown__button"
+      className={containerClasses}
+      classNamePrefix="Select"
+      value={value}
+      placeholder={value}
       options={options}
-      placeholder={title}
-      styles={styles}
       menuPlacement={placement}
+      styles={NO_INLINE_STYLES_PLEASE}
     />
   );
 };

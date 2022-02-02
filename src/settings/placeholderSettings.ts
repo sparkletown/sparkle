@@ -8,3 +8,9 @@ Object.freeze(ALWAYS_EMPTY_ARRAY);
 
 export const ALWAYS_NOOP_FUNCTION = () => {};
 Object.freeze(ALWAYS_NOOP_FUNCTION);
+
+export const ALWAYS_NO_STYLE_FUNCTION = () => ALWAYS_EMPTY_OBJECT;
+Object.freeze(ALWAYS_NO_STYLE_FUNCTION);
+
+export const ALWAYS_EMPTY_SELECT_OPTION = { label: "", value: "" };
+Object.freeze(ALWAYS_EMPTY_SELECT_OPTION);

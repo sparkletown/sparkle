@@ -45,31 +45,31 @@ $dropddown-list-max-height: 250px;
 
     &:hover {
       background: opaque-white(0.2);
-      box-shadow: 0px 2px 4px opaque-black(0.25);
+      box-shadow: 0 2px 4px opaque-black(0.25);
       border-radius: $border-radius--xl;
     }
-  }
 
-  .Dropdown__button__menu {
-    background: var(--content--under-lighter-20pp);
-    box-shadow: 0px 10px 20px opaque-black(0.25);
-    border-radius: $border-radius--lg;
-  }
+    .Select {
+      display: flex;
+      align-items: center;
+      padding: $spacing--md $spacing--xl;
 
-  .Dropdown__button {
-    display: flex;
-    align-items: center;
-    padding: $spacing--md $spacing--xl;
+      font-size: $font-size--lg;
+      font-weight: $font-weight--500;
+      line-height: 19px;
 
-    font-size: $font-size--lg;
-    font-weight: $font-weight--500;
-    line-height: 19px;
+      &:focus,
+      &:hover {
+        background: opaque-white(0.2);
+        box-shadow: 0 2px 4px opaque-black(0.25);
+        border-radius: $border-radius--xl;
+      }
 
-    &:focus,
-    &:hover {
-      background: opaque-white(0.2);
-      box-shadow: 0px 2px 4px opaque-black(0.25);
-      border-radius: $border-radius--xl;
+      &__menu {
+        background: var(--content--under-lighter-20pp);
+        box-shadow: 0 10px 20px opaque-black(0.25);
+        border-radius: $border-radius--lg;
+      }
     }
   }
 }

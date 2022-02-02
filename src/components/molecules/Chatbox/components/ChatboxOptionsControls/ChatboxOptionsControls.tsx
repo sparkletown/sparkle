@@ -23,19 +23,17 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
 
   const dropdownOptions = useMemo(
     () =>
-      ChatMessageOptions.map((option) => ({
-        value: option.name,
-        label: (
-          <div
-            key={option.name}
-            onClick={() => setActiveOption(option.type)}
-            className="ChatboxOptionsControls__option"
-          >
-            <span>{option.name}</span>
-            <FontAwesomeIcon icon={option.icon} />
-          </div>
-        ),
-      })),
+      ChatMessageOptions.map((option) => (
+        <div
+          key={option.name}
+          onClick={() => setActiveOption(option.type)}
+          className="ChatboxOptionsControls__option"
+          data-dropdown-value={option.name}
+        >
+          <span>{option.name}</span>
+          <FontAwesomeIcon icon={option.icon} />
+        </div>
+      )),
     [setActiveOption]
   );
 
@@ -49,12 +47,13 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
         <TextButton label="Cancel Poll" onClick={unselectOption} />
       ) : (
         <Dropdown
-          title={{ value: "Options", label: "Options" }}
+          title="Options"
           className="ChatboxOptionsControls__dropdown"
-          options={dropdownOptions}
           placement="top"
           noArrow
-        />
+        >
+          {dropdownOptions}
+        </Dropdown>
       )}
     </div>
   );
