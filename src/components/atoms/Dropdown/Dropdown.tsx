@@ -2,18 +2,18 @@ import React, { ReactNode } from "react";
 import Select, { MenuPlacement } from "react-select";
 import classNames from "classnames";
 
-import { NO_STYLE_FUNCTION } from "settings";
+import { ALWAYS_NO_STYLE_FUNCTION } from "settings";
 
 import "./Dropdown.scss";
 
 const NO_INLINE_STYLES_PLEASE = {
-  menu: NO_STYLE_FUNCTION,
-  option: NO_STYLE_FUNCTION,
-  control: NO_STYLE_FUNCTION,
-  menuList: NO_STYLE_FUNCTION,
-  singleValue: NO_STYLE_FUNCTION,
-  dropdownIndicator: NO_STYLE_FUNCTION,
-  indicatorSeparator: NO_STYLE_FUNCTION,
+  menu: ALWAYS_NO_STYLE_FUNCTION,
+  option: ALWAYS_NO_STYLE_FUNCTION,
+  control: ALWAYS_NO_STYLE_FUNCTION,
+  menuList: ALWAYS_NO_STYLE_FUNCTION,
+  singleValue: ALWAYS_NO_STYLE_FUNCTION,
+  dropdownIndicator: ALWAYS_NO_STYLE_FUNCTION,
+  indicatorSeparator: ALWAYS_NO_STYLE_FUNCTION,
 };
 Object.freeze(NO_INLINE_STYLES_PLEASE);
 
