@@ -122,7 +122,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         onClose={onHide}
         className="TimingEventModal"
         isCentered
-        shouldCloseOnOverlayClick
+        overlayClose
       >
         <div className="form-container">
           <h2>Add experience</h2>

@@ -16,7 +16,7 @@ export const Toggler: React.FC<TogglerProps> = ({
   ...extraProps
 }) => (
   <>
-    {title && <span>{title}</span>}
+    {title && <label>{title}</label>}
     <Checkbox
       {...extraProps}
       toggler

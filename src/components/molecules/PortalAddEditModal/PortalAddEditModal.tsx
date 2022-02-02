@@ -25,7 +25,7 @@ export const PortalAddEditModal: React.FC<PortalAddEditModalProps> = ({
   portal,
   portalIndex,
 }) => (
-  <Modal isOpen={show} onClose={onHide} shouldCloseOnOverlayClick>
+  <Modal isOpen={show} onClose={onHide} overlayClose>
     <PortalAddEditForm
       item={item}
       onDone={onHide}

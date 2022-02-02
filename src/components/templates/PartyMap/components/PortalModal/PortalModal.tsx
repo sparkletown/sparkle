@@ -51,7 +51,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
       onClose={onHide}
       className="PortalModal"
       isCentered
-      shouldCloseOnOverlayClick
+      overlayClose
       absolute={absolute}
     >
       <img

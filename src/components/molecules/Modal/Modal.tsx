@@ -9,7 +9,7 @@ export interface ModalProps {
   isOpen: boolean;
   onClose?: () => void;
   className?: string;
-  shouldCloseOnOverlayClick?: boolean;
+  overlayClose?: boolean;
   isCentered?: boolean;
   absolute?: boolean;
   wide?: boolean;
@@ -21,7 +21,7 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   className = "",
   isCentered,
-  shouldCloseOnOverlayClick,
+  overlayClose,
   absolute,
   wide,
 }) => {
@@ -39,7 +39,7 @@ export const Modal: React.FC<ModalProps> = ({
   useClickOutside({
     ref: containerRef,
     hide: onClose,
-    closeRoot: shouldCloseOnOverlayClick,
+    closeRoot: overlayClose,
   });
   if (!isOpen) {
     return null;

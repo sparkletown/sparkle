@@ -31,6 +31,8 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
   const id = useMemo(() => generateId("NormalRadio-popover"), []);
 
   const popoverClasses = classNames({
+    "NormalRadio NormalRadio--on": radioPlaying && volume,
+    "NormalRadio NormalRadio--off": !(radioPlaying && volume),
     "NormalRadio--on": radioPlaying && volume,
     "NormalRadio--off": !(radioPlaying && volume),
   });

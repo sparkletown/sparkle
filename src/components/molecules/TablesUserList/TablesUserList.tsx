@@ -236,7 +236,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       <Modal
         isOpen={isJoinMessageVisible}
         onClose={hideJoinMessage}
-        shouldCloseOnOverlayClick={false}
+        overlayClose={false}
       >
         <div className="modal-container modal-container_message">
           <p>

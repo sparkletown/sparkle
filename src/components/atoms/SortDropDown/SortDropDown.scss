@@ -8,7 +8,7 @@
   align-items: center;
   display: flex;
   justify-content: center;
-  border-radius: 20px;
+  border-radius: $border-radius--xl;
 
   color: var(--content--over);
   text-shadow: $text-shadow--thin;

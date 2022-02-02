@@ -233,15 +233,6 @@ button.btn {
   }
 }
 
-// ensure that fonts aren't restored to default
-input,
-button,
-select,
-optgroup,
-textarea {
-  font-family: inherit;
-  font-size: inherit;
-}
 button {
   cursor: pointer;
 }
@@ -346,7 +337,7 @@ textarea {
 .room-attendance {
   cursor: pointer;
   border-radius: 10px;
-  padding: $spacer * 0.25 $spacer * 0.75;
+  padding: font-size--root(0.25) font-size--root(0.75);
   background: $content--under;
   color: $content--over;
 
@@ -359,7 +350,7 @@ textarea {
 
   .icon {
     border-radius: 10px 0 0 10px;
-    padding: $spacer * 0.25 $spacer * 0.75;
+    padding: font-size--root(0.25) font-size--root(0.75);
     background: theme-color("primary");
   }
 

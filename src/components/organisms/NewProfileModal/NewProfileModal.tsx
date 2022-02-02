@@ -49,7 +49,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ space }) => {
       isOpen={hasSelectedProfile && isModalShown}
       onClose={hideHandler}
       isCentered
-      shouldCloseOnOverlayClick
+      overlayClose
     >
       <NewProfileModalBody
         userId={selectedUserId}
