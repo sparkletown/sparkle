@@ -97,10 +97,8 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
             className="TableComponent__profile-icon"
             src={profilePic}
             onError={onLoadError}
-            title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
-            alt={`${
-              (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
-            } profile`}
+            title={user.partyName || DEFAULT_PARTY_NAME}
+            alt={`${user.partyName || DEFAULT_PARTY_NAME} profile`}
             width={imageSize}
             height={imageSize}
           />

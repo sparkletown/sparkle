@@ -74,9 +74,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     return getFirebaseStorageResizedImage(imageSrc, resizeOptions);
   }, [size, imageSrc]);
 
-  const userDisplayName: string = user?.anonMode
-    ? DEFAULT_PARTY_NAME
-    : user?.partyName ?? DEFAULT_PARTY_NAME;
+  const userDisplayName: string = user?.partyName ?? DEFAULT_PARTY_NAME;
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,

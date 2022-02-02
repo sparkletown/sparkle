@@ -165,7 +165,7 @@ const UserRow: React.FC<UserRowProps> = (props) => {
   }, [venueId, user.id]);
 
   const { src: userPicture, onError: onLoadError } = determineAvatar({ user });
-  const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
+  const userName = user.partyName || DEFAULT_PARTY_NAME;
 
   return (
     <>
