@@ -233,6 +233,15 @@ button.btn {
   }
 }
 
+// ensure that fonts aren't restored to default
+input,
+button,
+select,
+optgroup,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
 button {
   cursor: pointer;
 }

@@ -139,6 +139,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
         onClose={hideModal}
         className="TableComponent__modal"
         isCentered
+        dark
       >
         <div className="TableComponent__modal-container">
           <h2>Delete table</h2>

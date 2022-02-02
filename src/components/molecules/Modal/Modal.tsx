@@ -13,6 +13,7 @@ export interface ModalProps {
   isCentered?: boolean;
   absolute?: boolean;
   wide?: boolean;
+  dark?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -24,13 +25,14 @@ export const Modal: React.FC<ModalProps> = ({
   overlayClose,
   absolute,
   wide,
+  dark,
 }) => {
   const overlayClasses = classNames("Modal__overlay", {
     "Modal__overlay-centered": isCentered,
     "Modal__overlay-absolute": absolute,
   });
   const containerClasses = classNames(`Modal__container ${className}`, {
-    "Modal__container-custom": !className,
+    "Modal__container-dark": dark,
     "Modal__container-wide": wide,
   });
 
@@ -41,6 +43,7 @@ export const Modal: React.FC<ModalProps> = ({
     hide: onClose,
     closeRoot: overlayClose,
   });
+
   if (!isOpen) {
     return null;
   }
