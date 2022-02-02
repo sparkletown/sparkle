@@ -16,10 +16,7 @@ export interface VenueEventsData {
   events: WorldEvent[];
 }
 
-export const useSpaceEvents = ({
-  worldId,
-  spaceIds,
-}: VenueEventsProps): VenueEventsData => {
+export const useWorldEvents = (worldId?: string): VenueEventsData => {
   const firestore = useFirestore();
 
   const eventsRef = firestore
@@ -31,7 +28,26 @@ export const useSpaceEvents = ({
     eventsRef
   );
 
-  if (!spaceIds || !worldId) {
+  if (!worldId) {
+    return {
+      isLoaded: true,
+      events: [],
+    };
+  }
+
+  return {
+    isLoaded: status !== "loading",
+    events: events,
+  };
+};
+
+export const useSpaceEvents = ({
+  worldId,
+  spaceIds,
+}: VenueEventsProps): VenueEventsData => {
+  const { isLoaded, events } = useWorldEvents(worldId);
+
+  if (!spaceIds) {
     return {
       isLoaded: true,
       events: [],
@@ -46,7 +62,7 @@ export const useSpaceEvents = ({
   spaceEvents.sort((a, b) => a.startUtcSeconds - b.startUtcSeconds);
 
   return {
-    isLoaded: status !== "loading",
+    isLoaded,
     events: spaceEvents,
   };
 };

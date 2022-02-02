@@ -22,12 +22,11 @@ import { AnyVenue } from "types/venues";
 
 import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { WithId } from "utils/id";
-import { venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
+import { useWorldEvents } from "hooks/events";
 import { useValidImage } from "hooks/useCheckImage";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -47,7 +46,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   world,
   withJoinEvent = true,
 }) => {
-  const venueEvents = useSelector(venueEventsSelector);
+  const { events: venueEvents } = useWorldEvents(world.id);
 
   const spaceSlug = space.slug;
 
