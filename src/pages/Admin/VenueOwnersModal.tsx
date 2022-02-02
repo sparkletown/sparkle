@@ -164,7 +164,7 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
-  const [userPicture, onLoadError] = determineAvatar({ user });
+  const { src: userPicture, onError: onLoadError } = determineAvatar({ user });
   const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
 
   return (

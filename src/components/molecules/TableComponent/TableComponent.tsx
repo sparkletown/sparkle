@@ -81,12 +81,14 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
 
   const itemClasses = classNames("TableComponent__item", itemStyles);
 
-  const userPictures = useMemo(
+  const renderedUserPictures = useMemo(
     () =>
       users &&
       users.length >= 0 &&
       users.map((user) => {
-        const [profilePic, onLoadError] = determineAvatar({ user });
+        const { src: profilePic, onError: onLoadError } = determineAvatar({
+          user,
+        });
 
         return (
           <img
@@ -127,7 +129,8 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           )}
         </div>
         <div className="TableComponent__users">
-          {userPictures}
+          {renderedUserPictures}
+
           {users &&
             table.capacity &&
             table.capacity - users.length >= 0 &&

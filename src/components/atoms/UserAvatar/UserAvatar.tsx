@@ -59,7 +59,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     isStatusEnabledForVenue,
   } = useVenueUserStatuses(user);
 
-  const [imageSrc, onImageLoadError] = useMemo(
+  const { src: imageSrc, onError: onImageLoadError } = useMemo(
     () => determineAvatar({ user }),
     [user]
   );

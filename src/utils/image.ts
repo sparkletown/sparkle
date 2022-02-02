@@ -78,7 +78,7 @@ export const getFirebaseStorageResizedImage = (
 // @see https://crypto.stackexchange.com/questions/8533/why-are-bitwise-rotations-used-in-cryptography/8534#8534
 const DIFFUSION_PRIME = 31;
 
-type DetermineAvatarProps = {
+type DetermineAvatarOptions = {
   avatars?: string[];
   email?: string;
   index?: number;
@@ -88,28 +88,31 @@ type DetermineAvatarProps = {
   user?: User;
 };
 
-type DetermineAvatarFunc = (
-  options?: DetermineAvatarProps
-) => [string, React.ReactEventHandler<HTMLImageElement>];
+type DetermineAvatarResult = {
+  src: string;
+  onError: React.ReactEventHandler<HTMLImageElement>;
+};
 
-export const determineAvatar: DetermineAvatarFunc = (options) => {
+type DetermineAvatar = (
+  options?: DetermineAvatarOptions
+) => DetermineAvatarResult;
+
+export const determineAvatar: DetermineAvatar = (options) => {
   const { avatars, pictureUrl, user, index } = options ?? {};
   const list = avatars ?? DEFAULT_AVATAR_LIST;
   const url = pictureUrl || user?.pictureUrl || "";
-  const onImageError = makeProfileImageLoadErrorHandler(
-    generateFallback(options)
-  );
+  const onError = makeProfileImageLoadErrorHandler(generateFallback(options));
 
   if (isDefined(index) && Number.isSafeInteger(index) && index >= 0) {
-    return [list[index % list.length], onImageError];
+    return { src: list[index % list.length], onError };
   }
 
-  return [url, onImageError];
+  return { src: url, onError };
 };
 
-type GenerateFallbackFunc = (options?: DetermineAvatarProps) => string;
+type GenerateFallback = (options?: DetermineAvatarOptions) => string;
 
-export const generateFallback: GenerateFallbackFunc = (options) => {
+export const generateFallback: GenerateFallback = (options) => {
   const { avatars, email, partyName, user, userInfo } = options ?? {};
   const list = avatars ?? DEFAULT_AVATAR_LIST;
 
@@ -134,6 +137,7 @@ export const generateFallback: GenerateFallbackFunc = (options) => {
 const makeProfileImageLoadErrorHandler = (
   src: string
 ): React.ReactEventHandler<HTMLImageElement> => ({ currentTarget }) => {
+  // @debt if our fallback image does not exist either we can report that to Bugsnag
   currentTarget.onerror = null; // prevents looping
   currentTarget.src = src;
 };

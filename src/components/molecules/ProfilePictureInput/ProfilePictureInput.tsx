@@ -65,7 +65,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const hasError = !!error;
 
-  const [pictureSrc, onPictureSrcError] = determineAvatar({
+  const { src: pictureSrc, onError: onPictureSrcError } = determineAvatar({
     pictureUrl,
     userInfo: user,
   });

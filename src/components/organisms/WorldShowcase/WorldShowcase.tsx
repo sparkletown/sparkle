@@ -23,7 +23,7 @@ export const WorldShowcase: React.FC<WorldShowcaseProps> = ({ world }) => {
   // NOTE: values can also be empty strings, not just missing
   const dirty = useSelector(worldEditStartValuesSelector);
   const { profile: user } = useUser();
-  const [avatar] = determineAvatar({ user });
+  const { src: avatar } = determineAvatar({ user });
   const banner =
     dirty?.bannerImageUrl ||
     (world?.config?.landingPageConfig?.coverImageUrl ?? DEFAULT_LANDING_BANNER);
