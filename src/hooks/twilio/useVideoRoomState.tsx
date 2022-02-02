@@ -67,12 +67,6 @@ export const useVideoRoomState = (
     [upsertParticipant]
   );
 
-  useEffect(() => {
-    if (!localParticipant) return;
-
-    participantConnected(localParticipant);
-  }, [participantConnected, localParticipant]);
-
   const participantDisconnected = useCallback(
     (participant: RemoteParticipant) => {
       filterParticipants(
@@ -121,7 +115,9 @@ export const useVideoRoomState = (
     room.on("participantDisconnected", participantDisconnected);
 
     setLocalParticipant(room.localParticipant);
-    [...room.participants.values()].forEach(participantConnected);
+    [room.localParticipant, ...room.participants.values()].forEach(
+      participantConnected
+    );
 
     return () => {
       setLocalParticipant(undefined);
