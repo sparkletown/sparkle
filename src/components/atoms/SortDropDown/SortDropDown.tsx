@@ -1,10 +1,8 @@
 import React from "react";
-import {
-  Dropdown as ReactBootstrapDropdown,
-  DropdownButton,
-} from "react-bootstrap";
 
 import { SortingOptions } from "utils/venue";
+
+import { Dropdown } from "components/atoms/Dropdown";
 
 import "./SortDropDown.scss";
 
@@ -18,15 +16,17 @@ export const SortDropDown: React.FC<SortDropDownProps> = ({
   title,
 }) => (
   <div className="SortDropDown">
-    <DropdownButton variant="secondary" title={title}>
-      {Object.values(SortingOptions).map((sortingOption) => (
-        <ReactBootstrapDropdown.Item
-          key={sortingOption}
-          onClick={() => onClick(sortingOption)}
+    <Dropdown title={title}>
+      {Object.values(SortingOptions).map((key) => (
+        <div
+          key={key}
+          className="SortDropDown__option"
+          onClick={() => onClick(key)}
+          data-dropdown-value={key}
         >
-          {sortingOption}
-        </ReactBootstrapDropdown.Item>
+          {key}
+        </div>
       ))}
-    </DropdownButton>
+    </Dropdown>
   </div>
 );

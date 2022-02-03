@@ -1,12 +1,11 @@
 @import "./profileModalStyles";
 
 .ProfileModal {
-  display: flex;
-  align-items: flex-start;
   font-size: $content-font-size;
+  background-color: $secondary--live;
+  padding: $modal-content-margin;
 
   &__body {
-    background-color: $secondary--live;
     padding: $modal-content-margin;
   }
 
@@ -18,13 +17,5 @@
     align-items: center;
     white-space: pre;
     text-align: center;
-  }
-
-  & > .modal-dialog {
-    max-width: $modal-content-max-width;
-    margin: $modal-dialog-viewport-margin;
-    & > .modal-content {
-      padding: 0;
-    }
   }
 }

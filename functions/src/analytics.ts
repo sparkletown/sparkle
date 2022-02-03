@@ -35,6 +35,8 @@ const getUsersWithVisits = async (venueIdsArray: string[]) => {
           usersSnapshot.docs.map(async (userDoc) => {
             const user = { ...userDoc.data(), id: userDoc.id };
 
+            // @debt redo this part, so that there's no nesting
+            // eslint-disable-next-line promise/no-nesting
             const visits = await userDoc.ref
               .collection("visits")
               .get()

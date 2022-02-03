@@ -3,4 +3,4 @@
 # shellcheck source=./_/husky.sh
 . "$(dirname "$0")/_/husky.sh"
 
-lint-staged
+npx lint-staged

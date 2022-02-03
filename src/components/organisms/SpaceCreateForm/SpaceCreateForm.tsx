@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
@@ -108,7 +107,7 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
   const isSaveDisabled = isLoading || !slug || !template;
 
   return (
-    <Form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
+    <form className="SpaceCreateForm" onSubmit={handleSubmit(createSpace)}>
       <FormCover displayed={isLoading}>
         <AdminSection withLabel title={`${SPACE_TAXON.capital} name`}>
           <AdminInput
@@ -155,6 +154,6 @@ export const SpaceCreateForm: React.FC<SpaceCreateFormProps> = ({
           </ButtonNG>
         </div>
       </FormCover>
-    </Form>
+    </form>
   );
 };

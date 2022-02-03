@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import { OverlayTrigger, Popover } from "react-bootstrap";
 import classNames from "classnames";
 
 import { generateId } from "utils/string";
 
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
+
+import { Popover } from "components/molecules/Popover";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -32,38 +33,29 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
   const popoverClasses = classNames({
     "NormalRadio NormalRadio--on": radioPlaying && volume,
     "NormalRadio NormalRadio--off": !(radioPlaying && volume),
+    "NormalRadio--on": radioPlaying && volume,
+    "NormalRadio--off": !(radioPlaying && volume),
   });
   const buttonClasses = classNames({
     "NormalRadio__button NormalRadio__button--on": radioPlaying && volume,
     "NormalRadio__button NormalRadio__button--off": !(radioPlaying && volume),
   });
 
-  const popoverStyle = useMemo(
-    () => ({
-      // @debt remove the popover style from global.scss, then remove this workaround
-      height: "fit-content",
-    }),
-    []
-  );
-
   const renderedOverlay = useMemo(
     () => (
-      <Popover id={id} className={popoverClasses} style={popoverStyle}>
-        <Popover.Content>
-          <RadioModal
-            volume={volume}
-            setVolume={setVolume}
-            title={title}
-            onEnableHandler={onEnableHandler}
-            isRadioPlaying={radioPlaying}
-          />
-        </Popover.Content>
-      </Popover>
+      <div id={id} className={popoverClasses}>
+        <RadioModal
+          volume={volume}
+          setVolume={setVolume}
+          title={title}
+          onEnableHandler={onEnableHandler}
+          isRadioPlaying={radioPlaying}
+        />
+      </div>
     ),
     [
       id,
       popoverClasses,
-      popoverStyle,
       volume,
       setVolume,
       title,
@@ -73,14 +65,8 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
   );
 
   return (
-    <OverlayTrigger
-      trigger="click"
-      placement="bottom-end"
-      overlay={renderedOverlay}
-      rootClose
-      defaultShow={defaultShow}
-    >
+    <Popover overlay={renderedOverlay} defaultShow={defaultShow} closeRoot>
       <ButtonNG className={buttonClasses} />
-    </OverlayTrigger>
+    </Popover>
   );
 };

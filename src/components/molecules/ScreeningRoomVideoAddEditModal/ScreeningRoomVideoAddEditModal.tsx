@@ -1,11 +1,12 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { WithId } from "utils/id";
 
 import { ScreeningRoomVideoAddEditForm } from "components/organisms/ScreeningRoomVideoAddEditForm";
+
+import { Modal } from "components/molecules/Modal";
 
 export type ScreeningRoomVideoAddEditModalProps = {
   show: boolean;
@@ -20,12 +21,10 @@ export const ScreeningRoomVideoAddEditModal: React.FC<ScreeningRoomVideoAddEditM
 }) => (
   <Modal
     className="ScreeningRoomVideoAddEditModal"
-    show={show}
-    onHide={onHide}
-    centered
+    isOpen={show}
+    onClose={onHide}
+    isCentered
   >
-    <Modal.Body>
-      <ScreeningRoomVideoAddEditForm onDone={onHide} video={video} />
-    </Modal.Body>
+    <ScreeningRoomVideoAddEditForm onDone={onHide} video={video} />
   </Modal>
 );

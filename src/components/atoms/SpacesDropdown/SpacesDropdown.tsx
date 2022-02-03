@@ -1,9 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import { FieldError, useForm } from "react-hook-form";
 import { omit, omitBy } from "lodash";
 
-import { PORTAL_INFO_ICON_MAPPING } from "settings";
+import { ALWAYS_EMPTY_ARRAY, PORTAL_INFO_ICON_MAPPING } from "settings";
 
 import { AnyVenue, PortalTemplate } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -82,13 +81,14 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
         const spaceIcon = PORTAL_INFO_ICON_MAPPING[template ?? ""];
 
         return (
-          <ReactBootstrapDropdown.Item
+          <div
             key={id}
             onClick={() => {
               setSelected({ name, template, id });
               setValue(fieldName, id, true);
             }}
             className="SpacesDropdown__item"
+            data-dropdown-value={name}
           >
             {name !== spaceNoneOption.name ? (
               <img
@@ -98,15 +98,15 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
               />
             ) : null}
             {name || noneOptionName}
-          </ReactBootstrapDropdown.Item>
+          </div>
         );
-      }) ?? [],
+      }) ?? ALWAYS_EMPTY_ARRAY,
     [spaceOptions, setValue, fieldName]
   );
 
   const renderedTitle = useMemo(() => {
     if (!selected) {
-      return "Select a space";
+      return { value: "", label: "Select a space" };
     }
 
     const space = spaces?.[selected.id ?? ""] ?? parentSpace;
@@ -114,7 +114,10 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
     const spaceIcon = PORTAL_INFO_ICON_MAPPING[space?.template ?? ""];
 
     return (
-      <span className="SpacesDropdown__value">
+      <span
+        className="SpacesDropdown__value"
+        data-dropdown-value={selected.name}
+      >
         {selected.name !== spaceNoneOption.name ? (
           <img
             alt={`space-icon-${spaceIcon}`}
@@ -128,10 +131,9 @@ export const SpacesDropdown: React.FC<SpacesDropdownProps> = ({
   }, [spaces, selected, parentSpace]);
 
   return (
-    // @debt align the style of the SpacesDropdown with the Dropdown component
     <>
       <div className="SpacesDropdown">
-        <Dropdown title={renderedTitle} options={renderedOptions} />
+        <Dropdown title={renderedTitle}>{renderedOptions}</Dropdown>
         <input type="hidden" ref={register} name={fieldName} />
       </div>
       {error && <span className="input-error">{error.message}</span>}

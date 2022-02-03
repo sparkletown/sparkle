@@ -1,5 +1,6 @@
 import React, { FC } from "react";
-import { Modal } from "react-bootstrap";
+
+import { Modal } from "components/molecules/Modal";
 
 import "./VideoErrorModal.scss";
 
@@ -29,7 +30,7 @@ export const VideoErrorModal: FC<PropsType> = ({
   onRetry,
 }) => {
   return (
-    <Modal show={show} onHide={onHide} backdrop="static">
+    <Modal isOpen={show} onClose={onHide} overlayClose={false}>
       <div className="modal-container">
         <div className="modal-title">
           {errorMessage &&

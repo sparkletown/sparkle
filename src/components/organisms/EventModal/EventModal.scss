@@ -1,0 +1,61 @@
+@import "scss/constants";
+
+$grey--disabled: #fff3;
+
+$EventModal--padding-top: 40px;
+
+.EventModal {
+  text-align: left;
+
+  &__content {
+    width: 100%;
+    border-radius: 50px;
+    padding: $EventModal--padding-top $spacing--xl $spacing--xl;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--greyscale-darker-50pp);
+  }
+
+  &__close-icon {
+    @include square-size($spacing--xxl);
+    position: absolute;
+    right: $spacing--xxl;
+    top: $spacing--xxl;
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__title {
+    font-size: 1.5rem;
+  }
+
+  &__subtitle {
+    font-size: $font-size--lg;
+    opacity: 0.8;
+  }
+
+  &__description {
+    font-size: $font-size--md;
+    opacity: 0.8;
+    padding-top: $spacing--xl;
+    padding-bottom: $spacing--xl;
+    white-space: pre-wrap;
+  }
+
+  // @debt we need to transform the rule to `&__button { ... }` once `<Button />` styles stop appearing later than the styles from this file
+  & .EventModal__button {
+    background-color: $accent--under;
+
+    &:hover {
+      background-color: $primary--live-hover;
+    }
+
+    &:disabled {
+      background-color: $grey--disabled;
+    }
+  }
+}
