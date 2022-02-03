@@ -46,7 +46,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   world,
   withJoinEvent = true,
 }) => {
-  const { events: venueEvents } = useWorldEvents(world.id);
+  const { events } = useWorldEvents(world.id);
 
   const spaceSlug = space.slug;
 
@@ -56,10 +56,13 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   );
 
   const [validLogoUrl] = useValidImage(space?.host?.icon, DEFAULT_VENUE_LOGO);
-  const futureOrOngoingVenueEvents = venueEvents?.filter(
+  const futureOrOngoingEvents = events?.filter(
     (event) => !hasEventFinished(event)
   );
-  const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
+  futureOrOngoingEvents.sort(
+    (eventA, eventB) => eventA.startUtcSeconds - eventB.startUtcSeconds
+  );
+  const nextVenueEventId = futureOrOngoingEvents?.[0]?.id;
 
   // @debt use callback hook and history push
   const onJoinClick = () => {
@@ -192,10 +195,10 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
         </div>
 
         <div className="col-lg-6 col-12 oncoming-events">
-          {futureOrOngoingVenueEvents && futureOrOngoingVenueEvents.length > 0 && (
+          {futureOrOngoingEvents && futureOrOngoingEvents.length > 0 && (
             <>
               <div className="upcoming-gigs-title">Upcoming events</div>
-              {futureOrOngoingVenueEvents.map((venueEvent) => {
+              {futureOrOngoingEvents.slice(0, 10).map((venueEvent) => {
                 const startTime = formatTimeLocalised(
                   eventStartTime({ event: venueEvent })
                 );
