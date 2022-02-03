@@ -4,10 +4,10 @@ import { useUser } from "hooks/useUser";
 
 import { VenuePage } from "pages/VenuePage";
 
-import { VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
+import { VideoCommsProvider } from "./VideoComms/VideoComms";
+import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
-import { VideoHuddle } from "./VideoHuddle";
 
 import styles from "./AttendeeLayout.module.scss";
 
@@ -21,8 +21,12 @@ export const AttendeeLayout: React.FC = () => {
     };
   }, []);
 
+  if (!userId) {
+    return <p>Loading</p>;
+  }
+
   return (
-    <VideoHuddleProvider>
+    <VideoCommsProvider userId={userId}>
       <header></header>
       <main>
         <section className={styles.Space}>
@@ -30,11 +34,15 @@ export const AttendeeLayout: React.FC = () => {
         </section>
         <div className={styles.LayerUi}>
           <ChatContainer />
+          {/*
+            TODO VideoHuddle being available depends on the context of the space we're in.
+            This probably needs more thought as to what API it provides.
+          */}
           {userId && <VideoHuddle userId={userId} />}
         </div>
       </main>
 
       <AttendeeFooter />
-    </VideoHuddleProvider>
+    </VideoCommsProvider>
   );
 };
