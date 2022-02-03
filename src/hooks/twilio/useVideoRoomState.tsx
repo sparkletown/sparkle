@@ -29,7 +29,7 @@ export const useVideoRoomState = (
   const [
     participants,
     { upsert: upsertParticipant, filter: filterParticipants },
-  ] = useList<ParticipantWithUser<RemoteParticipant | LocalParticipant>>([]);
+  ] = useList<ParticipantWithUser<RemoteParticipant>>([]);
 
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
@@ -54,7 +54,7 @@ export const useVideoRoomState = (
   } = useShowHide(activeParticipantByDefault);
 
   const participantConnected = useCallback(
-    async (participant: RemoteParticipant | LocalParticipant) => {
+    async (participant: RemoteParticipant) => {
       const user = await getUser(participant.identity);
       upsertParticipant(
         (existing) => existing.participant.identity === participant.identity,
@@ -115,9 +115,7 @@ export const useVideoRoomState = (
     room.on("participantDisconnected", participantDisconnected);
 
     setLocalParticipant(room.localParticipant);
-    [room.localParticipant, ...room.participants.values()].forEach(
-      participantConnected
-    );
+    [...room.participants.values()].forEach(participantConnected);
 
     return () => {
       setLocalParticipant(undefined);
