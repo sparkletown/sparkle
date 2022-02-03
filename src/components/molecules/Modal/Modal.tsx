@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import classNames from "classnames";
 
 import { useClickOutside } from "hooks/useClickOutside";
@@ -27,21 +27,18 @@ export const Modal: React.FC<ModalProps> = ({
   wide,
   dark,
 }) => {
-  const overlayClasses = classNames("Modal__overlay", {
-    "Modal__overlay-centered": isCentered,
-    "Modal__overlay-absolute": absolute,
+  const overlayClasses = classNames("Modal", "Modal__overlay", {
+    "Modal__overlay--centered": isCentered,
+    "Modal__overlay--absolute": absolute,
   });
-  const containerClasses = classNames(`Modal__container ${className}`, {
-    "Modal__container-dark": dark,
-    "Modal__container-wide": wide,
+  const containerClasses = classNames(className, "Modal__container", {
+    "Modal__container--dark": dark,
+    "Modal__container--wide": wide,
   });
 
-  const containerRef = useRef(null);
-
-  useClickOutside({
-    ref: containerRef,
-    hide: onClose,
-    closeRoot: overlayClose,
+  const { containerRef } = useClickOutside({
+    onHide: onClose,
+    autoHide: overlayClose,
   });
 
   if (!isOpen) {

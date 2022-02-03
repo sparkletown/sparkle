@@ -1,35 +1,47 @@
-import { RefObject, useEffect } from "react";
+import { MutableRefObject, useEffect, useRef } from "react";
 
-interface ClickOutsideProps {
-  ref: RefObject<HTMLDivElement>;
-  buttonRef?: RefObject<HTMLButtonElement>;
-  hide?: () => void;
-  closeRoot?: boolean;
-}
+const EVENT_TYPE = "mousedown";
 
-export const useClickOutside = ({
-  ref,
-  hide,
-  closeRoot,
-  buttonRef,
-}: ClickOutsideProps) => {
+type UseClickOutside = <
+  C extends HTMLElement = HTMLDivElement,
+  B extends HTMLElement = HTMLDivElement
+>(options: {
+  onHide?: () => void;
+  autoHide?: boolean;
+}) => {
+  buttonRef: MutableRefObject<B | null>;
+  containerRef: MutableRefObject<C | null>;
+};
+
+export const useClickOutside: UseClickOutside = ({ onHide, autoHide }) => {
+  const buttonRef = useRef(null);
+  const containerRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        ref.current &&
-        !ref.current.contains(event.target as Node) &&
-        (buttonRef
-          ? buttonRef?.current &&
-            !buttonRef.current.contains(event.target as Node)
-          : true)
-      ) {
-        hide && closeRoot && hide();
+      if (!autoHide) {
+        return;
       }
+
+      const target = event.target as Node;
+
+      // click needs to be outside the container, abort
+      if ((containerRef.current as HTMLElement | null)?.contains(target)) {
+        return;
+      }
+
+      // click on the close button that might be outside the container is also ignored
+      if ((buttonRef.current as HTMLElement | null)?.contains(target)) {
+        return;
+      }
+
+      onHide?.();
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, hide, closeRoot, buttonRef]);
+    // the above is just the listener, here it is registered and unregistered from the DOM
+    document.addEventListener(EVENT_TYPE, handleClickOutside);
+    return () => document.removeEventListener(EVENT_TYPE, handleClickOutside);
+  }, [containerRef, onHide, autoHide, buttonRef]);
+
+  return { containerRef, buttonRef };
 };

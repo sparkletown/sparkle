@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode } from "react";
 
 import { useClickOutside } from "hooks/useClickOutside";
 import { useShowHide } from "hooks/useShowHide";
@@ -19,17 +19,17 @@ export const Popover: React.FC<PopoverProps> = ({
   closeRoot = false,
   className,
 }) => {
-  const { isShown, toggle, hide } = useShowHide(defaultShow);
+  const { isShown, toggle, hide: onHide } = useShowHide(defaultShow);
 
-  const wrapperRef = useRef(null);
-  const buttonRef = useRef(null);
-
-  useClickOutside({ ref: wrapperRef, hide, closeRoot, buttonRef });
+  const { containerRef, buttonRef } = useClickOutside({
+    onHide,
+    autoHide: closeRoot,
+  });
 
   return (
     <div>
       {isShown && (
-        <div className={`Popover__overlay ${className}`} ref={wrapperRef}>
+        <div className={`Popover__overlay ${className}`} ref={containerRef}>
           {overlay}
         </div>
       )}

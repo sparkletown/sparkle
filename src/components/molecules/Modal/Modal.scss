@@ -13,13 +13,13 @@
     background-color: $modal-overlay-background !important;
     overflow-y: auto;
 
-    &-centered {
+    &--centered {
       -webkit-box-align: center;
       -webkit-box-pack: center;
       display: -webkit-box;
     }
 
-    &-absolute {
+    &--absolute {
       width: 100vw;
       height: 100vh;
       position: absolute;
@@ -40,11 +40,11 @@
     justify-content: center;
     background-color: $light-grey;
 
-    &-dark {
+    &--dark {
       background-color: var(--content--under);
     }
 
-    &-wide {
+    &--wide {
       width: 90%;
     }
   }
