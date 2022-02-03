@@ -412,20 +412,7 @@ jobs:
                 }
               }'
       - *notify-on-fail
-  chromatic-deployment:
-    executor: node/default
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            - v1-dependencies-
-      - run: npm install
-      - run: npm run chromatic --project-token=${CHROMATIC_PROJECT_TOKEN}
 workflows:
-  chromatic-deploy:
-    jobs:
-      - chromatic-deployment
   build-test-deploy:
     jobs:
       - lint-and-test
