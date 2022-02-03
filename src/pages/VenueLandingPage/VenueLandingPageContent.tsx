@@ -59,7 +59,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   const futureOrOngoingEvents = events?.filter(
     (event) => !hasEventFinished(event)
   );
-  futureOrOngoingEvents.sort(
+  futureOrOngoingEvents?.sort(
     (eventA, eventB) => eventA.startUtcSeconds - eventB.startUtcSeconds
   );
   const nextVenueEventId = futureOrOngoingEvents?.[0]?.id;
