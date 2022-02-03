@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
+import { errorMessage, errorStatus } from "types/errors";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { useSpaceParams } from "hooks/spaces/useSpaceParams";
@@ -77,18 +78,17 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
       postSignInCheck(data);
     } catch (error) {
-      if (error.response?.status === 404) {
+      const status = errorStatus(error);
+      const message = errorMessage(error);
+
+      if (status === 404) {
         setError(
           "email",
           "validation",
           `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
-      } else if (error.response?.status >= 500) {
-        setError(
-          "email",
-          "validation",
-          `Error checking ticket: ${error.message}`
-        );
+      } else if (status >= 500) {
+        setError("email", "validation", `Error checking ticket: ${message}`);
       } else {
         setError(
           "backend",
