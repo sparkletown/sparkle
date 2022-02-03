@@ -1,7 +1,4 @@
 import React, { lazy, Suspense } from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
-
-import { VENUES_WITH_CHAT_REQUIRED } from "settings";
 
 import { AnyVenue } from "types/venues";
 import { VenueTemplate } from "types/VenueTemplate";
@@ -11,27 +8,22 @@ import { tracePromise } from "utils/performance";
 import { isWebGl2Enabled } from "utils/webgl";
 
 import { ReactionsProvider } from "hooks/reactions";
-import { useSettings } from "hooks/useSettings";
 
 import { AnimateMapErrorPrompt } from "components/templates/AnimateMap/components/AnimateMapErrorPrompt";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
+import { ExperimentalSpace } from "components/templates/ExperimentalSpace";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { JazzBar } from "components/templates/Jazzbar/JazzBar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
-import { ReactionPage } from "components/templates/ReactionPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ViewingWindow } from "components/templates/ViewingWindow";
 
-import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 const AnimateMap = lazy(() =>
@@ -47,16 +39,7 @@ interface TemplateWrapperProps {
 }
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
-  const match = useRouteMatch();
-  const { isLoaded: areSettingsLoaded, settings } = useSettings();
-
-  const shouldShowChat =
-    areSettingsLoaded &&
-    (settings.showChat || VENUES_WITH_CHAT_REQUIRED.includes(venue.template));
-
   let template;
-  // @debt remove backButton from Navbar
-  let hasBackButton = true;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = <JazzBar venue={venue} />;
@@ -90,14 +73,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
-      // NOTE: Remove the back button, because we need to implement it differently in Section
-      hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
-      // Remove the back button, because we don't need it in Table view
-      hasBackButton = false;
       break;
 
     case VenueTemplate.embeddable:
@@ -118,6 +97,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.screeningroom:
       template = <ScreeningRoom venue={venue} />;
+      break;
+
+    case VenueTemplate.experiment:
+      template = <ExperimentalSpace venue={venue} />;
       break;
 
     case VenueTemplate.friendship:
