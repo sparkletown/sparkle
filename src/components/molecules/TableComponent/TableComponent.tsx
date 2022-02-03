@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
@@ -75,12 +75,37 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     isJazzBar
       ? {}
       : {
-          height: `${table.rows && table.rows * 50 + 65}px`,
           width: `${table.columns && (table.columns + 1) * 55}px`,
         }
   );
 
   const itemClasses = classNames("TableComponent__item", itemStyles);
+
+  const renderedUserPictures = useMemo(
+    () =>
+      users &&
+      users.length >= 0 &&
+      users.map((user) => {
+        const { src: profilePic, onError: onLoadError } = determineAvatar({
+          user,
+        });
+
+        return (
+          <img
+            onClick={() => openUserProfileModal(user.id)}
+            key={user.id}
+            className="TableComponent__profile-icon"
+            src={profilePic}
+            onError={onLoadError}
+            title={user.partyName || DEFAULT_PARTY_NAME}
+            alt={`${user.partyName || DEFAULT_PARTY_NAME} profile`}
+            width={imageSize}
+            height={imageSize}
+          />
+        );
+      }),
+    [imageSize, openUserProfileModal, users]
+  );
 
   return (
     <div className="TableComponent">
@@ -102,22 +127,8 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           )}
         </div>
         <div className="TableComponent__users">
-          {users &&
-            users.length >= 0 &&
-            users.map((user) => (
-              <img
-                onClick={() => openUserProfileModal(user.id)}
-                key={user.id}
-                className="TableComponent__profile-icon"
-                src={determineAvatar({ user })}
-                title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
-                alt={`${
-                  (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
-                } profile`}
-                width={imageSize}
-                height={imageSize}
-              />
-            ))}
+          {renderedUserPictures}
+
           {users &&
             table.capacity &&
             table.capacity - users.length >= 0 &&
