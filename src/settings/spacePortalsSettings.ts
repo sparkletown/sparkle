@@ -163,6 +163,13 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     description: "",
     template: VenueTemplate.screeningroom,
   },
+  [VenueTemplate.experiment]: {
+    text: "Experimental space",
+    icon: IconScreening,
+    poster: "",
+    description: "",
+    template: VenueTemplate.experiment,
+  },
 };
 
 // NOTE: Generally the PORTAL_INFO_LIST should be used, this one is for cases where narrow definition of Space is needed
