@@ -1,5 +1,4 @@
 import React from "react";
-import { Form } from "react-bootstrap";
 
 import { Checkbox, CheckboxProps } from "components/atoms/Checkbox";
 
@@ -17,7 +16,7 @@ export const Toggler: React.FC<TogglerProps> = ({
   ...extraProps
 }) => (
   <>
-    {title && <Form.Label>{title}</Form.Label>}
+    {title && <label>{title}</label>}
     <Checkbox
       {...extraProps}
       toggler

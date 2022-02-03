@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { Dropdown as ReactBootstrapDropdown } from "react-bootstrap";
 import classNames from "classnames";
 
 import { UserStatus } from "types/User";
@@ -37,25 +36,27 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   const userStatusDropdownOptions = useMemo(
     () =>
       userStatuses.map((userStatus) => (
-        <ReactBootstrapDropdown.Item
+        <div
           className="UserStatusDropdown__item"
           key={userStatus.status}
           onClick={() => changeUserStatus(userStatus.status)}
+          data-dropdown-value={userStatus.status}
         >
           {userStatus.status}
-        </ReactBootstrapDropdown.Item>
+        </div>
       )),
     [userStatuses, changeUserStatus]
   );
 
   return (
-    // @debt align the style of the SpacesDropdown with the Dropdown component
     <div className={classNames("UserStatusDropdown", containerClassName)}>
       <div className="UserStatusDropdown__status">
         {userStatus.status}&nbsp;
       </div>
       {showDropdown && (
-        <Dropdown title="change status" options={userStatusDropdownOptions} />
+        <Dropdown title="change status" noArrow>
+          {userStatusDropdownOptions}
+        </Dropdown>
       )}
     </div>
   );

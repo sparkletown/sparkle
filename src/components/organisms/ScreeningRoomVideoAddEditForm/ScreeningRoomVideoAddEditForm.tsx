@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { useAsyncFn } from "react-use";
@@ -145,7 +144,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
   );
 
   return (
-    <Form
+    <form
       className="ScreeningRoomVideoAddEditForm__form"
       onSubmit={handleSubmit(addVideo)}
     >
@@ -247,6 +246,6 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
           Save
         </ButtonNG>
       </div>
-    </Form>
+    </form>
   );
 };

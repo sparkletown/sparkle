@@ -30,12 +30,12 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   const { questions, answers } = useProfileQuestions(user, worldId);
 
   return (
-    <>
+    <div className="ProfileModalContent">
       <ProfileModalBasicInfo user={user} onEdit={onEditMode} />
       <ProfileModalQuestions questions={questions} answers={answers} />
       <ProfileModalLinks user={user} />
       {space && <Badges user={user} currentVenue={space} />}
       <ProfileModalButtons onClick={onPrimaryButtonClick} user={user} />
-    </>
+    </div>
   );
 };

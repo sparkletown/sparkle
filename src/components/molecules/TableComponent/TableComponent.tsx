@@ -1,5 +1,4 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
 
 import {
@@ -21,6 +20,8 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -97,9 +98,8 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
                 className="TableComponent__profile-icon"
                 src={determineAvatar({ user })}
                 title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
-                alt={`${
-                  (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
-                } profile`}
+                alt={`${(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
+                  } profile`}
                 width={imageSize}
                 height={imageSize}
               />
@@ -120,39 +120,37 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
         </div>
       </div>
       <Modal
-        show={isModalShown}
-        onHide={hideModal}
+        isOpen={isModalShown}
+        onClose={hideModal}
         className="TableComponent__modal"
-        backdrop="static"
-        centered
+        isCentered
+        dark
       >
-        <Modal.Body>
-          <div className="TableComponent__modal-container">
-            <h2>Delete table</h2>
-            <p>
-              WARNING: This action cannot be undone and will permanently remove
-              {STRING_SPACE}
-              {table.title}
-            </p>
-            <div className="TableComponent__modal-buttons">
-              <ButtonNG
-                variant="secondary"
-                onClick={hideModal}
-                disabled={isDeletingTable}
-              >
-                Cancel
-              </ButtonNG>
+        <div className="TableComponent__modal-container">
+          <h2>Delete table</h2>
+          <p>
+            WARNING: This action cannot be undone and will permanently remove
+            {STRING_SPACE}
+            {table.title}
+          </p>
+          <div className="TableComponent__modal-buttons">
+            <ButtonNG
+              variant="secondary"
+              onClick={hideModal}
+              disabled={isDeletingTable}
+            >
+              Cancel
+            </ButtonNG>
 
-              <ButtonNG
-                disabled={isDeletingTable}
-                variant="danger"
-                onClick={removeTable}
-              >
-                Delete
-              </ButtonNG>
-            </div>
+            <ButtonNG
+              disabled={isDeletingTable}
+              variant="danger"
+              onClick={removeTable}
+            >
+              Delete
+            </ButtonNG>
           </div>
-        </Modal.Body>
+        </div>
       </Modal>
     </div>
   );

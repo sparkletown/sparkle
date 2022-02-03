@@ -11,11 +11,6 @@ module.exports = {
     // will probably require update of components that use the older and testing of the forms
     "react-hook-form",
 
-    // best if replaced instead of upgraded
-    "bootstrap",
-    "bootswatch",
-    "react-bootstrap",
-
     // requires rework of routes to be relative and replacing some basic components like Switch
     "react-router-dom",
 

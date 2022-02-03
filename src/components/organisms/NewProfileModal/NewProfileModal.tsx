@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { Modal } from "react-bootstrap";
 
 import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
 
@@ -7,6 +6,8 @@ import { SpaceWithId } from "types/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
+
+import { Modal } from "components/molecules/Modal";
 
 import { NewProfileModalBody } from "./NewProfileModalBody";
 
@@ -45,16 +46,16 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ space }) => {
   return (
     <Modal
       className="ProfileModal"
-      show={hasSelectedProfile && isModalShown}
-      onHide={hideHandler}
+      isOpen={hasSelectedProfile && isModalShown}
+      onClose={hideHandler}
+      isCentered
+      overlayClose
     >
-      <Modal.Body className="ProfileModal__body">
-        <NewProfileModalBody
-          userId={selectedUserId}
-          space={space}
-          closeUserProfileModal={closeUserProfileModal}
-        />
-      </Modal.Body>
+      <NewProfileModalBody
+        userId={selectedUserId}
+        space={space}
+        closeUserProfileModal={closeUserProfileModal}
+      />
     </Modal>
   );
 };

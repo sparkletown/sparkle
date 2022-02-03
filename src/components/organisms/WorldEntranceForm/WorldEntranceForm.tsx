@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
@@ -165,7 +164,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
 
   return (
     <div className="WorldEntranceForm">
-      <Form onSubmit={handleSubmit(submit)}>
+      <form onSubmit={handleSubmit(submit)}>
         <AdminSection title="Limit access to world">
           <TesterRestricted>
             <AdminCheckbox
@@ -237,7 +236,7 @@ export const WorldEntranceForm: React.FC<WorldEntranceFormProps> = ({
             Save
           </ButtonNG>
         </AdminSidebarButtons>
-      </Form>
+      </form>
     </div>
   );
 };

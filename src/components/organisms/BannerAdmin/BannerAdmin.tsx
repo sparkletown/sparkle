@@ -177,7 +177,6 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         message={"Are you sure you want to clear this banner?"}
         saveBtnLabel="Yes, clear"
         cancelBtnLabel="Cancel"
-        isCentered
         confirmVariant="danger"
       />
     </div>

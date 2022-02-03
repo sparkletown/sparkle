@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Modal } from "react-bootstrap";
+
+import { Modal } from "components/molecules/Modal";
 
 import { InitialForm } from "./InitialForm";
 import { LoginForm } from "./LoginForm";
@@ -48,7 +49,7 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal show={show} onHide={closeAuthenticationModal}>
+    <Modal isOpen={show} onClose={closeAuthenticationModal}>
       <div className="authentication-modal-container">
         {formToDisplay === "initial" && (
           <InitialForm
