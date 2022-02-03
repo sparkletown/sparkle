@@ -23,7 +23,11 @@ import SendIcon from "assets/icons/send.svg";
 
 import "./ChatMessageBox.scss";
 
-const determineChatPlaceholder = (isPrivate: boolean, isQuestion: boolean, recipient?: string) => {
+const determineChatPlaceholder = (
+  isPrivate: boolean,
+  isQuestion: boolean,
+  recipient?: string
+) => {
   if (isQuestion) {
     return "Type your question";
   }
@@ -32,7 +36,7 @@ const determineChatPlaceholder = (isPrivate: boolean, isQuestion: boolean, recip
   }
 
   return "Type your message";
-}
+};
 
 export interface ChatMessageBoxProps {
   sendThreadMessageWrapper: SendChatMessage<SendThreadMessageProps>;
@@ -111,7 +115,9 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const placeholder = determineChatPlaceholder(
     chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
     isQuestion,
-    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT ? chatSettings.recipient?.partyName : undefined,
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
+      ? chatSettings.recipient?.partyName
+      : undefined
   );
 
   const buttonClasses = classNames("Chatbox__submit-button", {
