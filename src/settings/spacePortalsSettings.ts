@@ -1,6 +1,7 @@
 import { PortalBox, PortalInput } from "types/rooms";
 import { PortalTemplate, VenueTemplate } from "types/venues";
 
+import IconAnimateMap from "assets/icons/icon-room-animatemap.svg";
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import IconAuditorium from "assets/icons/icon-room-auditorium.svg";
 import IconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
@@ -76,7 +77,9 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     text: "Animated map",
     poster: "",
     description: "",
-    icon: "",
+    icon: IconAnimateMap,
+    template: VenueTemplate.animatemap,
+    hidden: true,
   },
   [VenueTemplate.conversationspace]: {
     text: "Conversation Space",
@@ -172,6 +175,7 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.embeddable],
   SPACE_INFO_MAP[VenueTemplate.screeningroom],
   SPACE_INFO_MAP[VenueTemplate.posterhall],
+  SPACE_INFO_MAP[VenueTemplate.animatemap],
 ];
 
 export const PORTAL_INFO_LIST: PortalInfoItem[] = [
