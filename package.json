@@ -39,10 +39,7 @@
     "npm:save-audit": "npm audit > npm-audit.result.txt",
     "npm:generate-lockfile": "npm i --legacy-peer-deps --package-lock-only",
     "npm:install": "npm install --legacy-peer-deps",
-    "npm:invalidate-cache": "npm cache clear --force",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public",
-    "chromatic": "chromatic --exit-zero-on-changes"
+    "npm:invalidate-cache": "npm cache clear --force"
   },
   "proxy": "http://localhost:3001",
   "browserslist": {
@@ -63,13 +60,6 @@
   "devDependencies": {
     "@craco/craco": "^6.4.3",
     "@headlessui/react": "^1.4.2",
-    "@storybook/addon-actions": "^6.4.12",
-    "@storybook/addon-essentials": "^6.4.12",
-    "@storybook/addon-links": "^6.4.12",
-    "@storybook/addon-postcss": "^2.0.0",
-    "@storybook/node-logger": "^6.4.12",
-    "@storybook/preset-create-react-app": "^3.2.0",
-    "@storybook/react": "^6.4.12",
     "@types/emoji-mart": "^3.0.9",
     "@types/faker": "^5.5.9",
     "@types/howler": "^2.2.4",
@@ -84,7 +74,6 @@
     "@types/scheduler": "^0.16.2",
     "@types/yup": "^0.29.3",
     "babel-plugin-lodash": "^3.3.4",
-    "chromatic": "^6.3.4",
     "csv-parse": "^5.0.4",
     "cypress": "^9.3.1",
     "cypress-file-upload": "^5.0.8",
@@ -99,9 +88,7 @@
     "normalize.css": "^8.0.1",
     "npm-check-updates": "^12.2.1",
     "phin": "^3.6.1",
-    "react-router": "^5.2.1",
     "source-map-explorer": "^2.5.2",
-    "storybook-preset-craco": "0.0.6",
     "tailwindcss": "^3.0.18",
     "ts-node": "^10.4.0",
     "ts-prune": "^0.10.3",
