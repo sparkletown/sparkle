@@ -359,6 +359,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     }
     remoteParticipants.unsubscribeAll();
     setRoom(() => undefined);
+    setStatus(VideoCommsStatus.Disconnected);
   }, [remoteParticipants, room]);
 
   const contextState: VideoCommsContextType = {

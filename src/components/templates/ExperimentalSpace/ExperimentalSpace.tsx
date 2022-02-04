@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
 import { VideoCommsStatus } from "components/attendee/VideoComms/VideoComms";
 import { VideoCommsParticipant } from "components/attendee/VideoCommsParticipant";
@@ -53,6 +53,13 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const disconnectCallback = useCallback(() => {
+    disconnect();
+  }, [disconnect]);
+  const connectCallback = useCallback(() => {
+    joinChannel(userId, "Test-channel");
+  }, [joinChannel, userId]);
+
   return (
     <>
       {/*
@@ -70,6 +77,12 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
         Experimental! {status} {localParticipant?.id} With{" "}
         {remoteParticipants.length} people
       </p>
+      {status === VideoCommsStatus.Connected && (
+        <p onClick={disconnectCallback}>Disconnect!</p>
+      )}
+      {status === VideoCommsStatus.Disconnected && (
+        <p onClick={connectCallback}>Connect!</p>
+      )}
     </>
   );
 };
