@@ -81,7 +81,8 @@ if (!posterHallSpaceId) {
 const data = fs.readFileSync(csvPath, "utf-8");
 
 const records = parse(data, {
-  columns: (header) => header.map((column) => column.toUpperCase()),
+  columns: (header) =>
+    header.map((column: unknown) => String(column).toUpperCase()),
   skip_empty_lines: true,
 });
 
@@ -130,12 +131,12 @@ db.runTransaction(async (transaction) => {
       transaction.set(existing.ref, payload, { merge: true });
     } else {
       // Generate a slug from the parent slug and the ID
-      const slug = `${posterHall.slug}-${posterId}`;
+      const slug = `${posterHall?.slug}-${posterId}`;
       const docRef = db.collection("venues").doc();
 
       transaction.set(docRef, {
         parentId: posterHallSpaceId,
-        worldId: posterHall.worldId,
+        worldId: posterHall?.worldId,
         template: "posterpage",
         name: "",
         posterId,
