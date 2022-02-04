@@ -53,6 +53,8 @@ export const useParticipantMediaState = (
     },
   ] = useList<VideoTrack | AudioTrack>();
 
+  console.log(media, tracks);
+
   const trackSubscribedHandler = useCallback(
     (track: VideoTrack | AudioTrack) => {
       pushTrack(track);
@@ -117,6 +119,7 @@ export const useParticipantMediaState = (
 
   // @debt should we be handling the other tracks too?
   const [firstTrack] = tracks;
+
   useEffect(() => {
     if (!firstTrack) return;
 

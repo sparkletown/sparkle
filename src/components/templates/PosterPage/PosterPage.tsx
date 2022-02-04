@@ -11,6 +11,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { VideoParticipant } from "components/organisms/Video";
 
+import { Loading } from "components/molecules/Loading";
 import { UserList } from "components/molecules/UserList";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
@@ -49,7 +50,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     activeParticipants,
     passiveListeners,
 
+    hasRoom,
+    hasParticipants,
+
     isMeActiveParticipant,
+    isRoomLoading,
 
     becomePassiveParticipant,
     becomeActiveParticipant,
@@ -78,6 +83,10 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
+
+  if (!hasRoom || !hasParticipants || isRoomLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="PosterPage">

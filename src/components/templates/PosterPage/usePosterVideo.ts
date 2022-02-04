@@ -15,6 +15,12 @@ export const usePosterVideo = (venueId: string) => {
   const {
     participants,
     localParticipant,
+
+    hasRoom,
+
+    loading: isRoomLoading,
+
+    retryConnect,
     becomeActiveParticipant,
     becomePassiveParticipant,
   } = useVideoRoomState(userId, venueId, false);
@@ -36,6 +42,8 @@ export const usePosterVideo = (venueId: string) => {
         : participants,
     [localParticipantWithUser, participants]
   );
+
+  const hasParticipants = allParticipants.length > 0;
 
   const { passiveListeners, activeParticipants } = useMemo(
     () =>
@@ -85,8 +93,13 @@ export const usePosterVideo = (venueId: string) => {
     activeParticipants,
     passiveListeners,
 
-    isMeActiveParticipant,
+    hasRoom,
+    hasParticipants,
 
+    isMeActiveParticipant,
+    isRoomLoading,
+
+    retryConnect,
     becomeActiveParticipant,
     becomePassiveParticipant,
   };

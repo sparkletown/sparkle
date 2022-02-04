@@ -23,13 +23,24 @@ export const useVideoRoomState = (
   activeParticipantByDefault = true
 ) => {
   const [room, setRoom] = useState<Room>();
+
   const [videoError, setVideoError] = useState("");
   const dismissVideoError = useCallback(() => setVideoError(""), []);
+
+  const hasRoom = room !== undefined;
+
   const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
   const [
     participants,
     { upsert: upsertParticipant, filter: filterParticipants },
   ] = useList<ParticipantWithUser<RemoteParticipant>>([]);
+
+  const {
+    isShown: isActiveParticipant,
+
+    show: becomeActiveParticipant,
+    hide: becomePassiveParticipant,
+  } = useShowHide(activeParticipantByDefault);
 
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
@@ -45,13 +56,6 @@ export const useVideoRoomState = (
       return undefined;
     });
   }, []);
-
-  const {
-    isShown: isActiveParticipant,
-
-    show: becomeActiveParticipant,
-    hide: becomePassiveParticipant,
-  } = useShowHide(activeParticipantByDefault);
 
   const participantConnected = useCallback(
     async (participant: RemoteParticipant) => {
@@ -149,8 +153,11 @@ export const useVideoRoomState = (
     localParticipant,
     participants,
 
+    hasRoom,
+
     renderErrorModal,
 
+    retryConnect,
     disconnect,
     becomeActiveParticipant,
     becomePassiveParticipant,

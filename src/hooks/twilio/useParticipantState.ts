@@ -42,6 +42,7 @@ export const useParticipantState = <T extends "audio" | "video">(
     participant,
     defaultMute
   );
+
   const icons: Record<string, IconDefinition> =
     media === "video"
       ? {
