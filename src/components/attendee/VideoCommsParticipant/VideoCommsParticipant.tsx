@@ -12,13 +12,14 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const firstTrack = participant.videoTracks?.[0];
+
   useEffect(() => {
     // TODO handle multiple tracks
-    if (participant.videoTracks?.[0] && videoRef.current) {
-      const videoTrack = participant.videoTracks[0];
-      videoTrack.attach(videoRef.current);
+    if (firstTrack && videoRef.current) {
+      firstTrack.attach(videoRef.current);
     }
-  }, [participant.videoTracks]);
+  }, [firstTrack]);
 
   // TODO Mirroring
 

@@ -38,20 +38,18 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   } = useVideoComms();
 
   useEffect(() => {
-    if (status === VideoCommsStatus.Disconnected) {
+    joinChannel(userId, "Test-channel");
+    /*
+    setTimeout(() => {
+      console.log("going for second connection");
       joinChannel(userId, "Test-channel");
-      /*
-      setTimeout(() => {
-        console.log("going for second connection");
-        joinChannel(userId, "Test-channel");
-      }, 10000);
-      */
-      return () => {
-        disconnect();
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    }, 10000);
+    */
+    return () => {
+      console.log("doing disconnect");
+      disconnect();
+    };
+  }, [disconnect, joinChannel, userId]);
 
   const disconnectCallback = useCallback(() => {
     disconnect();

@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from "react";
-import { useList } from "react-use";
+import React, { useCallback, useMemo, useState } from "react";
 import Twilio, {
   LocalAudioTrack,
   LocalVideoTrack,
@@ -105,6 +104,234 @@ interface HasNullableTrack {
   track: VideoTrack | null;
 }
 
+interface StateUpdateCallbackParams {
+  localParticipant?: LocalParticipant;
+  remoteParticipants: Participant[];
+  status: VideoCommsStatus;
+}
+
+type StateUpdateCallback = (update: StateUpdateCallbackParams) => void;
+
+/**
+ * This class provides an interface over the top of Twilio. It is designed to
+ * work outside of React as much as possible to avoid the complexity of dealing
+ * with hooks.
+ *
+ * Instead, the method triggerStatusUpdate is used to let React know that the
+ * state of the video call has changed.
+ *
+ * The downside of this, is that anyone maintaining this code needs to be aware
+ * of how closures and `this` interact. e.g. remember to use `bind`.
+ */
+class TwilioImpl {
+  remoteParticipants: Participant[];
+  onStateUpdateCallback: StateUpdateCallback;
+  room?: Room;
+  localParticipant?: LocalParticipant;
+  status: VideoCommsStatus;
+  participantEventSubscriptions: Map<
+    RemoteParticipant,
+    [string, (...args: unknown[]) => void][]
+  >;
+
+  constructor(onStateUpdateCallback: StateUpdateCallback) {
+    this.remoteParticipants = [];
+    this.onStateUpdateCallback = onStateUpdateCallback;
+    this.status = VideoCommsStatus.Disconnected;
+    this.participantEventSubscriptions = new Map();
+  }
+
+  // TODO, maybe the subscription management can go into it's own class to keep
+  // things tidy
+  subscribeToParticipantEvent(
+    participant: RemoteParticipant,
+    eventName: string,
+    callback: (...args: unknown[]) => void
+  ) {
+    participant.on(eventName, callback);
+    let existing = this.participantEventSubscriptions.get(participant);
+    if (!existing) {
+      existing = [[eventName, callback]];
+    } else {
+      existing = [...existing, [eventName, callback]];
+    }
+    this.participantEventSubscriptions.set(participant, existing);
+  }
+
+  unsubscribeParticipantEvents(participant: RemoteParticipant) {
+    const toUnsubscribe =
+      this.participantEventSubscriptions.get(participant) || [];
+    for (const [eventName, callbackFn] of toUnsubscribe) {
+      participant.off(eventName, callbackFn);
+    }
+    this.participantEventSubscriptions.delete(participant);
+  }
+
+  unsubscribeAllParticipantEvents() {
+    for (const [
+      participant,
+      subscriptions,
+    ] of this.participantEventSubscriptions.entries()) {
+      for (const [eventName, callbackFn] of subscriptions) {
+        participant.off(eventName, callbackFn);
+      }
+    }
+    this.participantEventSubscriptions = new Map();
+  }
+
+  participantConnected(participant: RemoteParticipant) {
+    this.remoteParticipants.push({
+      id: participant.sid,
+      audioTracks: [],
+      videoTracks: publicationsToTracks(participant.videoTracks),
+    });
+    this.subscribeToParticipantEvent(
+      participant,
+      "trackSubscribed",
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - Come back and fix the types here
+      (track: VideoTrack | AudioTrack) =>
+        this.onTrackSubscribed(participant, track)
+    );
+    this.triggerStatusUpdate();
+  }
+
+  participantDisconnected(participant: RemoteParticipant) {
+    this.remoteParticipants = this.remoteParticipants.filter(
+      (p) => p.id !== participant.sid
+    );
+    this.unsubscribeParticipantEvents(participant);
+    this.triggerStatusUpdate();
+  }
+
+  onTrackSubscribed(
+    participant: RemoteParticipant,
+    track: VideoTrack | AudioTrack
+  ) {
+    if (track.kind === "video") {
+      const mappedParticipant = this.remoteParticipants.find(
+        (p) => p.id === participant.sid
+      );
+      if (!mappedParticipant) {
+        // TODO probably warn
+        return;
+      }
+      mappedParticipant.videoTracks.push(track);
+    }
+    this.triggerStatusUpdate();
+  }
+
+  onTrackUnsubscribed(
+    participant: RemoteParticipant,
+    track: VideoTrack | AudioTrack
+  ) {
+    if (track.kind === "video") {
+      const mappedParticipant = this.remoteParticipants.find(
+        (p) => p.id === participant.sid
+      );
+      if (!mappedParticipant) {
+        // TODO probably warn
+        return;
+      }
+      mappedParticipant.videoTracks = mappedParticipant.videoTracks.filter(
+        (t) => t !== track
+      );
+    }
+    this.triggerStatusUpdate();
+  }
+
+  async joinChannel(userId: string, newChannelId: string) {
+    if (this.room) {
+      console.error(
+        "Attempting to join channel before disconnecting. Call disconnect first."
+      );
+      return;
+    }
+    this.status = VideoCommsStatus.Connecting;
+    this.triggerStatusUpdate();
+
+    const token = await getTwilioVideoToken({
+      userId,
+      roomName: newChannelId,
+    });
+    if (!token) {
+      console.error("Failed to get twilio token");
+      this.status = VideoCommsStatus.Errored;
+      this.triggerStatusUpdate();
+      return;
+    }
+
+    await Twilio.connect(token, {
+      video: true, // TODO Add these to the join method so we can join without video etc
+      audio: true,
+      enableDscp: true,
+    })
+      .then((room: Twilio.Room) => {
+        // TODO track these properly so they're easy to unsubscribe from
+        room.on("participantConnected", this.participantConnected.bind(this));
+        room.on(
+          "participantDisconnected",
+          this.participantDisconnected.bind(this)
+        );
+        room.participants.forEach(this.participantConnected.bind(this));
+
+        // Set the room etc
+        this.room = room;
+        this.status = VideoCommsStatus.Connected;
+        this.localParticipant = {
+          id: room.localParticipant.sid,
+          audioTracks: Array.from(room.localParticipant.audioTracks.values()),
+          videoTracks: publicationsToTracks(room.localParticipant.videoTracks),
+          startAudio: () => {},
+          stopAudio: () => {},
+          startVideo: () => {},
+          stopVideo: () => {},
+          isTransmittingAudio: false,
+          isTransmittingVideo: false,
+        };
+
+        this.triggerStatusUpdate();
+      })
+      .catch((error) => {
+        this.status = VideoCommsStatus.Errored;
+        this.triggerStatusUpdate();
+      });
+  }
+
+  disconnect() {
+    // This method is as best effort as possible so that it can be used as a way
+    // to reset the state of the system
+    if (this.room && this.room.localParticipant.state === "connected") {
+      this.room.localParticipant.tracks.forEach((trackPublication) => {
+        const track = trackPublication.track;
+        if (
+          track instanceof LocalVideoTrack ||
+          track instanceof LocalAudioTrack
+        ) {
+          track.stop();
+        }
+      });
+      this.room.disconnect();
+    }
+    this.unsubscribeAllParticipantEvents();
+    this.room = undefined;
+    this.status = VideoCommsStatus.Disconnected;
+    this.remoteParticipants = [];
+    this.triggerStatusUpdate();
+  }
+
+  triggerStatusUpdate() {
+    // TODO This should clone everything so that react isn't seeing internal
+    // versions of the state. Or, use immutable versions of everything.
+    // Ideally, just make everything immutable
+    this.onStateUpdateCallback({
+      localParticipant: this.localParticipant,
+      status: this.status,
+      remoteParticipants: [...this.remoteParticipants],
+    });
+  }
+}
+
 /**
  * Used with filter to allow Typescript to convert arrays that might have nulls
  * in them into arrays of just a specific type.
@@ -119,254 +346,44 @@ const publicationsToTracks = (
     .filter(notNull);
 };
 
-const useParticipantSubscriptions = () => {
-  const [, setParticipantSubscriptions] = useState<
-    Map<RemoteParticipant, [string, () => void][]>
-  >(new Map());
-
-  const subscribe = useCallback(
-    (participant: RemoteParticipant, eventName, callbackFn) => {
-      const wrappedCallback = (...args: unknown[]) =>
-        callbackFn(participant, ...args);
-      participant.on(eventName, wrappedCallback);
-      setParticipantSubscriptions((prevSubscriptions) => {
-        let existing = prevSubscriptions.get(participant);
-        if (!existing) {
-          existing = [[eventName, wrappedCallback]];
-        } else {
-          existing = [...existing, [eventName, wrappedCallback]];
-        }
-        const newSubscriptions = new Map(prevSubscriptions);
-        newSubscriptions.set(participant, existing);
-        return newSubscriptions;
-      });
-    },
-    []
-  );
-
-  const unsubscribe = useCallback((participant: RemoteParticipant) => {
-    setParticipantSubscriptions((prevSubscriptions) => {
-      const toUnsubscribe = prevSubscriptions.get(participant) || [];
-      for (const [eventName, callbackFn] of toUnsubscribe) {
-        participant.off(eventName, callbackFn);
-      }
-      const newSubscriptions = new Map(prevSubscriptions);
-      newSubscriptions.delete(participant);
-      return newSubscriptions;
-    });
-  }, []);
-
-  const unsubcribeAll = useCallback(() => {
-    setParticipantSubscriptions((prevSubscriptions) => {
-      for (const [participant, subscriptions] of prevSubscriptions.entries()) {
-        for (const [eventName, callbackFn] of subscriptions) {
-          participant.off(eventName, callbackFn);
-        }
-      }
-      return new Map();
-    });
-  }, []);
-
-  return {
-    subscribe,
-    unsubscribe,
-    unsubcribeAll,
-  };
-};
-
-const useRemoteParticipants = () => {
-  const [
-    participants,
-    {
-      set: setParticipants,
-      upsert: upsertParticipant,
-      filter: filterParticipants,
-    },
-  ] = useList<Participant>([]);
-  const participantEvents = useParticipantSubscriptions();
-
-  const modifyParticipant = useCallback(
-    (
-      participantId: string,
-      modifyFn: (participant: Participant) => Participant
-    ) => {
-      setParticipants((prevParticipants) => {
-        return prevParticipants.map((p) => {
-          if (p.id !== participantId) {
-            return p;
-          }
-          return modifyFn(p);
-        });
-      });
-    },
-    [setParticipants]
-  );
-
-  const onTrackSubscribed = useCallback(
-    (participant: RemoteParticipant, track: VideoTrack | AudioTrack) => {
-      if (track.kind === "video") {
-        modifyParticipant(participant.sid, (prevParticipant: Participant) => {
-          return {
-            ...prevParticipant,
-            videoTracks: [...prevParticipant.videoTracks, track],
-          };
-        });
-      }
-    },
-    [modifyParticipant]
-  );
-
-  const onTrackUnsubscribed = useCallback(
-    (participant: RemoteParticipant, track: VideoTrack | AudioTrack) => {
-      if (track.kind === "video") {
-        modifyParticipant(participant.sid, (prevParticipant: Participant) => {
-          return {
-            ...prevParticipant,
-            videoTracks: prevParticipant.videoTracks.filter((t) => t !== track),
-          };
-        });
-      }
-    },
-    [modifyParticipant]
-  );
-
-  const connected = useCallback(
-    (participant: RemoteParticipant) => {
-      console.debug("participantConnected", participant, participant.state);
-
-      upsertParticipant((p) => p.id === participant.sid, {
-        id: participant.sid,
-        audioTracks: [],
-        videoTracks: publicationsToTracks(participant.videoTracks),
-      });
-
-      participantEvents.subscribe(
-        participant,
-        "trackSubscribed",
-        onTrackSubscribed
-      );
-      participantEvents.subscribe(
-        participant,
-        "trackUnsubscribed",
-        onTrackUnsubscribed
-      );
-    },
-    [
-      onTrackSubscribed,
-      onTrackUnsubscribed,
-      participantEvents,
-      upsertParticipant,
-    ]
-  );
-  const disconnected = useCallback(
-    (participant: RemoteParticipant) => {
-      console.debug("participantDisconnected", participant);
-      filterParticipants((p) => p.id !== participant.sid);
-      participantEvents.unsubscribe(participant);
-    },
-    [filterParticipants, participantEvents]
-  );
-
-  return {
-    participants: participants,
-    connected,
-    disconnected,
-    unsubscribeAll: participantEvents.unsubcribeAll,
-  };
-};
-
 export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   userId,
   children,
 }) => {
-  const [room, setRoom] = useState<Room>();
   const [status, setStatus] = useState<VideoCommsStatus>(
     VideoCommsStatus.Disconnected
   );
-
   const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
-  const remoteParticipants = useRemoteParticipants();
+  const [remoteParticipants, setRemoteParticipants] = useState<Participant[]>(
+    []
+  );
+
+  const twilioCallback = useCallback((update: StateUpdateCallbackParams) => {
+    setLocalParticipant(update.localParticipant);
+    setStatus(update.status);
+    setRemoteParticipants(update.remoteParticipants);
+  }, []);
+
+  const twilioImpl = useMemo(
+    () => new TwilioImpl(twilioCallback),
+    [twilioCallback]
+  );
 
   const joinChannelCallback = useCallback(
     async (userId, newChannelId) => {
-      if (room) {
-        console.error(
-          "Attempting to join channel before disconnecting. Call disconnect first."
-        );
-        return;
-      }
-      setStatus(VideoCommsStatus.Connecting);
-      const token = await getTwilioVideoToken({
-        userId,
-        roomName: newChannelId,
-      });
-      if (!token) {
-        console.error("Failed to get twilio token");
-        setStatus(VideoCommsStatus.Errored);
-        return;
-      }
-
-      await Twilio.connect(token, {
-        video: true, // TODO Add these to the method
-        audio: true,
-        enableDscp: true,
-      })
-        .then((room: Twilio.Room) => {
-          // TODO track these properly so they're easy to unsubscribe from
-          room.on("participantConnected", remoteParticipants.connected);
-          room.on("participantDisconnected", remoteParticipants.disconnected);
-          room.participants.forEach(remoteParticipants.connected);
-
-          // Set the room etc
-          setRoom(room);
-          setStatus(VideoCommsStatus.Connected);
-          setLocalParticipant({
-            id: room.localParticipant.sid,
-            audioTracks: Array.from(room.localParticipant.audioTracks.values()),
-            videoTracks: publicationsToTracks(
-              room.localParticipant.videoTracks
-            ),
-            startAudio: () => {},
-            stopAudio: () => {},
-            startVideo: () => {},
-            stopVideo: () => {},
-            isTransmittingAudio: false,
-            isTransmittingVideo: false,
-          });
-          // TODO
-        })
-        .catch((error) => {
-          setStatus(VideoCommsStatus.Errored);
-          // TODO
-        });
+      twilioImpl.joinChannel(userId, newChannelId);
     },
-    [remoteParticipants.connected, remoteParticipants.disconnected, room]
+    [twilioImpl]
   );
 
   const disconnectCallback = useCallback(() => {
-    console.debug("Disconnecting");
-    if (room && room.localParticipant.state === "connected") {
-      room.localParticipant.tracks.forEach((trackPublication) => {
-        const track = trackPublication.track;
-        if (
-          track instanceof LocalVideoTrack ||
-          track instanceof LocalAudioTrack
-        ) {
-          track.stop();
-        }
-      });
-      room.disconnect();
-    }
-    remoteParticipants.unsubscribeAll();
-    setRoom(() => undefined);
-    setStatus(VideoCommsStatus.Disconnected);
-  }, [remoteParticipants, room]);
+    twilioImpl.disconnect();
+  }, [twilioImpl]);
 
   const contextState: VideoCommsContextType = {
     status,
-    channelId: room?.sid,
     localParticipant,
-    remoteParticipants: remoteParticipants.participants,
+    remoteParticipants,
     joinChannel: joinChannelCallback,
     disconnect: disconnectCallback,
   };
