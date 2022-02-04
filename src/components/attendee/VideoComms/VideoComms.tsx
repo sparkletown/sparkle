@@ -1,6 +1,11 @@
 import React, { useCallback, useState } from "react";
 import { useList } from "react-use";
-import Twilio, { RemoteParticipant, Room } from "twilio-video";
+import Twilio, {
+  LocalAudioTrack,
+  LocalVideoTrack,
+  RemoteParticipant,
+  Room,
+} from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
@@ -291,7 +296,6 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
         return;
       }
       setStatus(VideoCommsStatus.Connecting);
-      // TODO Async stuff, loading, etc.
       const token = await getTwilioVideoToken({
         userId,
         roomName: newChannelId,
@@ -340,14 +344,22 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   );
 
   const disconnectCallback = useCallback(() => {
-    // TODO
-    // This could happen *during* a connection attempt. Need to make best
-    // attempts to disconnect cleanly
-    // Including stopping any connection in progress
     console.debug("Disconnecting");
+    if (room && room.localParticipant.state === "connected") {
+      room.localParticipant.tracks.forEach((trackPublication) => {
+        const track = trackPublication.track;
+        if (
+          track instanceof LocalVideoTrack ||
+          track instanceof LocalAudioTrack
+        ) {
+          track.stop();
+        }
+      });
+      room.disconnect();
+    }
     remoteParticipants.unsubscribeAll();
     setRoom(() => undefined);
-  }, [remoteParticipants]);
+  }, [remoteParticipants, room]);
 
   const contextState: VideoCommsContextType = {
     status,
