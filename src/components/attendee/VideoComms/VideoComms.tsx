@@ -121,13 +121,15 @@ const useParticipantSubscriptions = () => {
 
   const subscribeToParticipantEvent = useCallback(
     (participant: RemoteParticipant, eventName, callbackFn) => {
-      participant.on(eventName, callbackFn);
+      const wrappedCallback = (...args: unknown[]) =>
+        callbackFn(participant, ...args);
+      participant.on(eventName, wrappedCallback);
       setParticipantSubscriptions((prevSubscriptions) => {
         let existing = prevSubscriptions.get(participant);
         if (!existing) {
-          existing = [[eventName, callbackFn]];
+          existing = [[eventName, wrappedCallback]];
         } else {
-          existing = [...existing, [eventName, callbackFn]];
+          existing = [...existing, [eventName, wrappedCallback]];
         }
         const newSubscriptions = new Map(prevSubscriptions);
         newSubscriptions.set(participant, existing);
@@ -194,7 +196,10 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   } = useParticipantSubscriptions();
 
   const modifyParticipant = useCallback(
-    (participantId, modifyFn) => {
+    (
+      participantId: string,
+      modifyFn: (participant: Participant) => Participant
+    ) => {
       setRemoteParticipants((prevRemoteParticipants) => {
         return prevRemoteParticipants.map((p) => {
           if (p.id !== participantId) {
@@ -210,19 +215,31 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   const onTrackSubscribed = useCallback(
     (participant: RemoteParticipant, track: VideoTrack | AudioTrack) => {
       if (track.kind === "video") {
-        modifyParticipant(
-          participant.sid,
-          (prevParticipant: RemoteParticipant) => {
-            return {
-              ...prevParticipant,
-              videoTracks: [...prevParticipant.videoTracks, track],
-            };
-          }
-        );
+        modifyParticipant(participant.sid, (prevParticipant: Participant) => {
+          return {
+            ...prevParticipant,
+            videoTracks: [...prevParticipant.videoTracks, track],
+          };
+        });
       }
     },
     [modifyParticipant]
   );
+
+  const onTrackUnsubscribed = useCallback(
+    (participant: RemoteParticipant, track: VideoTrack | AudioTrack) => {
+      if (track.kind === "video") {
+        modifyParticipant(participant.sid, (prevParticipant: Participant) => {
+          return {
+            ...prevParticipant,
+            videoTracks: prevParticipant.videoTracks.filter((t) => t !== track),
+          };
+        });
+      }
+    },
+    [modifyParticipant]
+  );
+
   const joinChannelCallback = useCallback(
     async (userId, newChannelId) => {
       if (room) {
@@ -264,18 +281,13 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
             subscribeToParticipantEvent(
               participant,
               "trackSubscribed",
-              (track: VideoTrack | AudioTrack) => {
-                onTrackSubscribed(participant, track);
-              }
+              onTrackSubscribed
             );
             subscribeToParticipantEvent(
               participant,
               "trackUnsubscribed",
-              (track: VideoTrack | AudioTrack) => {
-                onTrackSubscribed(participant, track);
-              }
+              onTrackUnsubscribed
             );
-            // Unsubscribe..
           };
           const participantDisconnected = (participant: RemoteParticipant) => {
             console.debug("participantDisconnected", participant);
@@ -313,6 +325,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     [
       filterRemoteParticipants,
       onTrackSubscribed,
+      onTrackUnsubscribed,
       room,
       subscribeToParticipantEvent,
       unsubscribeParticipantEvents,
