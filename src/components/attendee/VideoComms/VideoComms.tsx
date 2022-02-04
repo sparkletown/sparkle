@@ -113,103 +113,98 @@ interface StateUpdateCallbackParams {
 type StateUpdateCallback = (update: StateUpdateCallbackParams) => void;
 
 /**
- * This class provides an interface over the top of Twilio. It is designed to
+ * This provides an interface over the top of Twilio. It is designed to
  * work outside of React as much as possible to avoid the complexity of dealing
  * with hooks.
  *
  * Instead, the method triggerStatusUpdate is used to let React know that the
  * state of the video call has changed.
- *
- * The downside of this, is that anyone maintaining this code needs to be aware
- * of how closures and `this` interact. e.g. remember to use `bind`.
  */
-class TwilioImpl {
-  remoteParticipants: Participant[];
-  onStateUpdateCallback: StateUpdateCallback;
-  room?: Room;
-  localParticipant?: LocalParticipant;
-  status: VideoCommsStatus;
-  participantEventSubscriptions: Map<
+const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
+  let remoteParticipants: Participant[] = [];
+  let room: Room | undefined;
+  let localParticipant: LocalParticipant | undefined;
+  let status = VideoCommsStatus.Disconnected;
+  let participantEventSubscriptions: Map<
     RemoteParticipant,
     [string, (...args: unknown[]) => void][]
-  >;
-
-  constructor(onStateUpdateCallback: StateUpdateCallback) {
-    this.remoteParticipants = [];
-    this.onStateUpdateCallback = onStateUpdateCallback;
-    this.status = VideoCommsStatus.Disconnected;
-    this.participantEventSubscriptions = new Map();
-  }
+  > = new Map();
 
   // TODO, maybe the subscription management can go into it's own class to keep
   // things tidy
-  subscribeToParticipantEvent(
+  const subscribeToParticipantEvent = (
     participant: RemoteParticipant,
     eventName: string,
     callback: (...args: unknown[]) => void
-  ) {
+  ) => {
     participant.on(eventName, callback);
-    let existing = this.participantEventSubscriptions.get(participant);
+    let existing = participantEventSubscriptions.get(participant);
     if (!existing) {
       existing = [[eventName, callback]];
     } else {
       existing = [...existing, [eventName, callback]];
     }
-    this.participantEventSubscriptions.set(participant, existing);
-  }
+    participantEventSubscriptions.set(participant, existing);
+  };
 
-  unsubscribeParticipantEvents(participant: RemoteParticipant) {
-    const toUnsubscribe =
-      this.participantEventSubscriptions.get(participant) || [];
+  const unsubscribeParticipantEvents = (participant: RemoteParticipant) => {
+    const toUnsubscribe = participantEventSubscriptions.get(participant) || [];
     for (const [eventName, callbackFn] of toUnsubscribe) {
       participant.off(eventName, callbackFn);
     }
-    this.participantEventSubscriptions.delete(participant);
-  }
+    participantEventSubscriptions.delete(participant);
+  };
 
-  unsubscribeAllParticipantEvents() {
+  const unsubscribeAllParticipantEvents = () => {
     for (const [
       participant,
       subscriptions,
-    ] of this.participantEventSubscriptions.entries()) {
+    ] of participantEventSubscriptions.entries()) {
       for (const [eventName, callbackFn] of subscriptions) {
         participant.off(eventName, callbackFn);
       }
     }
-    this.participantEventSubscriptions = new Map();
-  }
+    participantEventSubscriptions = new Map();
+  };
 
-  participantConnected(participant: RemoteParticipant) {
-    this.remoteParticipants.push({
+  const participantConnected = (participant: RemoteParticipant) => {
+    remoteParticipants.push({
       id: participant.sid,
       audioTracks: [],
       videoTracks: publicationsToTracks(participant.videoTracks),
     });
-    this.subscribeToParticipantEvent(
+    subscribeToParticipantEvent(
       participant,
       "trackSubscribed",
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore - Come back and fix the types here
-      (track: VideoTrack | AudioTrack) =>
-        this.onTrackSubscribed(participant, track)
+      (track: VideoTrack | AudioTrack) => onTrackSubscribed(participant, track)
     );
-    this.triggerStatusUpdate();
-  }
+    subscribeToParticipantEvent(
+      participant,
+      "trackUnsubscribed",
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - Come back and fix the types here
+      (track: VideoTrack | AudioTrack) =>
+        onTrackUnsubscribed(participant, track)
+    );
+    triggerStatusUpdate();
+  };
 
-  participantDisconnected(participant: RemoteParticipant) {
-    this.remoteParticipants = this.remoteParticipants.filter(
+  const participantDisconnected = (participant: RemoteParticipant) => {
+    remoteParticipants = remoteParticipants.filter(
       (p) => p.id !== participant.sid
     );
-    this.unsubscribeParticipantEvents(participant);
-    this.triggerStatusUpdate();
-  }
+    unsubscribeParticipantEvents(participant);
+    triggerStatusUpdate();
+  };
 
-  onTrackSubscribed(
+  const onTrackSubscribed = (
     participant: RemoteParticipant,
     track: VideoTrack | AudioTrack
-  ) {
+  ) => {
     if (track.kind === "video") {
-      const mappedParticipant = this.remoteParticipants.find(
+      const mappedParticipant = remoteParticipants.find(
         (p) => p.id === participant.sid
       );
       if (!mappedParticipant) {
@@ -218,15 +213,15 @@ class TwilioImpl {
       }
       mappedParticipant.videoTracks.push(track);
     }
-    this.triggerStatusUpdate();
-  }
+    triggerStatusUpdate();
+  };
 
-  onTrackUnsubscribed(
+  const onTrackUnsubscribed = (
     participant: RemoteParticipant,
     track: VideoTrack | AudioTrack
-  ) {
+  ) => {
     if (track.kind === "video") {
-      const mappedParticipant = this.remoteParticipants.find(
+      const mappedParticipant = remoteParticipants.find(
         (p) => p.id === participant.sid
       );
       if (!mappedParticipant) {
@@ -237,18 +232,18 @@ class TwilioImpl {
         (t) => t !== track
       );
     }
-    this.triggerStatusUpdate();
-  }
+    triggerStatusUpdate();
+  };
 
-  async joinChannel(userId: string, newChannelId: string) {
-    if (this.room) {
+  const joinChannel = async (userId: string, newChannelId: string) => {
+    if (room) {
       console.error(
         "Attempting to join channel before disconnecting. Call disconnect first."
       );
       return;
     }
-    this.status = VideoCommsStatus.Connecting;
-    this.triggerStatusUpdate();
+    status = VideoCommsStatus.Connecting;
+    triggerStatusUpdate();
 
     const token = await getTwilioVideoToken({
       userId,
@@ -256,8 +251,8 @@ class TwilioImpl {
     });
     if (!token) {
       console.error("Failed to get twilio token");
-      this.status = VideoCommsStatus.Errored;
-      this.triggerStatusUpdate();
+      status = VideoCommsStatus.Errored;
+      triggerStatusUpdate();
       return;
     }
 
@@ -266,19 +261,16 @@ class TwilioImpl {
       audio: true,
       enableDscp: true,
     })
-      .then((room: Twilio.Room) => {
-        // TODO track these properly so they're easy to unsubscribe from
-        room.on("participantConnected", this.participantConnected.bind(this));
-        room.on(
-          "participantDisconnected",
-          this.participantDisconnected.bind(this)
-        );
-        room.participants.forEach(this.participantConnected.bind(this));
+      .then((newRoom: Twilio.Room) => {
+        room = newRoom;
 
-        // Set the room etc
-        this.room = room;
-        this.status = VideoCommsStatus.Connected;
-        this.localParticipant = {
+        // TODO track these properly so they're easy to unsubscribe from
+        room.on("participantConnected", participantConnected);
+        room.on("participantDisconnected", participantDisconnected);
+        room.participants.forEach(participantConnected);
+
+        status = VideoCommsStatus.Connected;
+        localParticipant = {
           id: room.localParticipant.sid,
           audioTracks: Array.from(room.localParticipant.audioTracks.values()),
           videoTracks: publicationsToTracks(room.localParticipant.videoTracks),
@@ -290,19 +282,19 @@ class TwilioImpl {
           isTransmittingVideo: false,
         };
 
-        this.triggerStatusUpdate();
+        triggerStatusUpdate();
       })
       .catch((error) => {
-        this.status = VideoCommsStatus.Errored;
-        this.triggerStatusUpdate();
+        status = VideoCommsStatus.Errored;
+        triggerStatusUpdate();
       });
-  }
+  };
 
-  disconnect() {
+  const disconnect = () => {
     // This method is as best effort as possible so that it can be used as a way
     // to reset the state of the system
-    if (this.room && this.room.localParticipant.state === "connected") {
-      this.room.localParticipant.tracks.forEach((trackPublication) => {
+    if (room && room.localParticipant.state === "connected") {
+      room.localParticipant.tracks.forEach((trackPublication) => {
         const track = trackPublication.track;
         if (
           track instanceof LocalVideoTrack ||
@@ -311,26 +303,31 @@ class TwilioImpl {
           track.stop();
         }
       });
-      this.room.disconnect();
+      room.disconnect();
     }
-    this.unsubscribeAllParticipantEvents();
-    this.room = undefined;
-    this.status = VideoCommsStatus.Disconnected;
-    this.remoteParticipants = [];
-    this.triggerStatusUpdate();
-  }
+    unsubscribeAllParticipantEvents();
+    room = undefined;
+    status = VideoCommsStatus.Disconnected;
+    remoteParticipants = [];
+    triggerStatusUpdate();
+  };
 
-  triggerStatusUpdate() {
+  const triggerStatusUpdate = () => {
     // TODO This should clone everything so that react isn't seeing internal
     // versions of the state. Or, use immutable versions of everything.
     // Ideally, just make everything immutable
-    this.onStateUpdateCallback({
-      localParticipant: this.localParticipant,
-      status: this.status,
-      remoteParticipants: [...this.remoteParticipants],
+    onStateUpdateCallback({
+      localParticipant,
+      status,
+      remoteParticipants: [...remoteParticipants],
     });
-  }
-}
+  };
+
+  return {
+    joinChannel,
+    disconnect,
+  };
+};
 
 /**
  * Used with filter to allow Typescript to convert arrays that might have nulls
@@ -365,7 +362,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   }, []);
 
   const twilioImpl = useMemo(
-    () => new TwilioImpl(twilioCallback),
+    () => TwilioImpl(twilioCallback),
     [twilioCallback]
   );
 
