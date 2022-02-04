@@ -174,11 +174,11 @@ const useParticipantSubscriptions = () => {
 
 const useRemoteParticipants = () => {
   const [
-    remoteParticipants,
+    participants,
     {
-      set: setRemoteParticipants,
-      upsert: upsertRemoteParticipant,
-      filter: filterRemoteParticipants,
+      set: setParticipants,
+      upsert: upsertParticipant,
+      filter: filterParticipants,
     },
   ] = useList<Participant>([]);
   const {
@@ -192,7 +192,7 @@ const useRemoteParticipants = () => {
       participantId: string,
       modifyFn: (participant: Participant) => Participant
     ) => {
-      setRemoteParticipants((prevRemoteParticipants) => {
+      setParticipants((prevRemoteParticipants) => {
         return prevRemoteParticipants.map((p) => {
           if (p.id !== participantId) {
             return p;
@@ -201,7 +201,7 @@ const useRemoteParticipants = () => {
         });
       });
     },
-    [setRemoteParticipants]
+    [setParticipants]
   );
 
   const onTrackSubscribed = useCallback(
@@ -232,11 +232,11 @@ const useRemoteParticipants = () => {
     [modifyParticipant]
   );
 
-  const remoteParticipantConnected = useCallback(
+  const connected = useCallback(
     (participant: RemoteParticipant) => {
       console.debug("participantConnected", participant, participant.state);
 
-      upsertRemoteParticipant((p) => p.id === participant.sid, {
+      upsertParticipant((p) => p.id === participant.sid, {
         id: participant.sid,
         audioTracks: [],
         videoTracks: publicationsToTracks(participant.videoTracks),
@@ -257,23 +257,23 @@ const useRemoteParticipants = () => {
       onTrackSubscribed,
       onTrackUnsubscribed,
       subscribeToParticipantEvent,
-      upsertRemoteParticipant,
+      upsertParticipant,
     ]
   );
-  const remoteParticipantDisconnected = useCallback(
+  const disconnected = useCallback(
     (participant: RemoteParticipant) => {
       console.debug("participantDisconnected", participant);
-      filterRemoteParticipants((p) => p.id !== participant.sid);
+      filterParticipants((p) => p.id !== participant.sid);
       unsubscribeParticipantEvents(participant);
     },
-    [filterRemoteParticipants, unsubscribeParticipantEvents]
+    [filterParticipants, unsubscribeParticipantEvents]
   );
 
   return {
-    remoteParticipants,
-    remoteParticipantConnected,
-    remoteParticipantDisconnected,
-    unsubscribeAllRemoteParticipants: unsubcribeAllParticipantEvents,
+    participants: participants,
+    connected,
+    disconnected,
+    unsubscribeAll: unsubcribeAllParticipantEvents,
   };
 };
 
@@ -287,12 +287,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   );
 
   const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
-  const {
-    remoteParticipants,
-    remoteParticipantDisconnected,
-    remoteParticipantConnected,
-    unsubscribeAllRemoteParticipants,
-  } = useRemoteParticipants();
+  const remoteParticipants = useRemoteParticipants();
 
   const joinChannelCallback = useCallback(
     async (userId, newChannelId) => {
@@ -321,9 +316,9 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
       })
         .then((room: Twilio.Room) => {
           // TODO track these properly so they're easy to unsubscribe from
-          room.on("participantConnected", remoteParticipantConnected);
-          room.on("participantDisconnected", remoteParticipantDisconnected);
-          room.participants.forEach(remoteParticipantConnected);
+          room.on("participantConnected", remoteParticipants.connected);
+          room.on("participantDisconnected", remoteParticipants.disconnected);
+          room.participants.forEach(remoteParticipants.connected);
 
           // Set the room etc
           setRoom(room);
@@ -348,7 +343,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
           // TODO
         });
     },
-    [remoteParticipantConnected, remoteParticipantDisconnected, room]
+    [remoteParticipants.connected, remoteParticipants.disconnected, room]
   );
 
   const disconnectCallback = useCallback(() => {
@@ -357,15 +352,15 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     // attempts to disconnect cleanly
     // Including stopping any connection in progress
     console.debug("Disconnecting");
-    unsubscribeAllRemoteParticipants();
+    remoteParticipants.unsubscribeAll();
     setRoom(() => undefined);
-  }, [unsubscribeAllRemoteParticipants]);
+  }, [remoteParticipants]);
 
   const contextState: VideoCommsContextType = {
     status,
     channelId: room?.sid,
     localParticipant,
-    remoteParticipants,
+    remoteParticipants: remoteParticipants.participants,
     joinChannel: joinChannelCallback,
     disconnect: disconnectCallback,
   };
