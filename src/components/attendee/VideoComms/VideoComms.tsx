@@ -119,7 +119,7 @@ const useParticipantSubscriptions = () => {
     Map<RemoteParticipant, [string, () => void][]>
   >(new Map());
 
-  const subscribeToParticipantEvent = useCallback(
+  const subscribe = useCallback(
     (participant: RemoteParticipant, eventName, callbackFn) => {
       const wrappedCallback = (...args: unknown[]) =>
         callbackFn(participant, ...args);
@@ -139,22 +139,19 @@ const useParticipantSubscriptions = () => {
     []
   );
 
-  const unsubscribeParticipantEvents = useCallback(
-    (participant: RemoteParticipant) => {
-      setParticipantSubscriptions((prevSubscriptions) => {
-        const toUnsubscribe = prevSubscriptions.get(participant) || [];
-        for (const [eventName, callbackFn] of toUnsubscribe) {
-          participant.off(eventName, callbackFn);
-        }
-        const newSubscriptions = new Map(prevSubscriptions);
-        newSubscriptions.delete(participant);
-        return newSubscriptions;
-      });
-    },
-    []
-  );
+  const unsubscribe = useCallback((participant: RemoteParticipant) => {
+    setParticipantSubscriptions((prevSubscriptions) => {
+      const toUnsubscribe = prevSubscriptions.get(participant) || [];
+      for (const [eventName, callbackFn] of toUnsubscribe) {
+        participant.off(eventName, callbackFn);
+      }
+      const newSubscriptions = new Map(prevSubscriptions);
+      newSubscriptions.delete(participant);
+      return newSubscriptions;
+    });
+  }, []);
 
-  const unsubcribeAllParticipantEvents = useCallback(() => {
+  const unsubcribeAll = useCallback(() => {
     setParticipantSubscriptions((prevSubscriptions) => {
       for (const [participant, subscriptions] of prevSubscriptions.entries()) {
         for (const [eventName, callbackFn] of subscriptions) {
@@ -166,9 +163,9 @@ const useParticipantSubscriptions = () => {
   }, []);
 
   return {
-    subscribeToParticipantEvent,
-    unsubscribeParticipantEvents,
-    unsubcribeAllParticipantEvents,
+    subscribe,
+    unsubscribe,
+    unsubcribeAll,
   };
 };
 
@@ -181,11 +178,7 @@ const useRemoteParticipants = () => {
       filter: filterParticipants,
     },
   ] = useList<Participant>([]);
-  const {
-    subscribeToParticipantEvent,
-    unsubscribeParticipantEvents,
-    unsubcribeAllParticipantEvents,
-  } = useParticipantSubscriptions();
+  const participantEvents = useParticipantSubscriptions();
 
   const modifyParticipant = useCallback(
     (
@@ -242,12 +235,12 @@ const useRemoteParticipants = () => {
         videoTracks: publicationsToTracks(participant.videoTracks),
       });
 
-      subscribeToParticipantEvent(
+      participantEvents.subscribe(
         participant,
         "trackSubscribed",
         onTrackSubscribed
       );
-      subscribeToParticipantEvent(
+      participantEvents.subscribe(
         participant,
         "trackUnsubscribed",
         onTrackUnsubscribed
@@ -256,7 +249,7 @@ const useRemoteParticipants = () => {
     [
       onTrackSubscribed,
       onTrackUnsubscribed,
-      subscribeToParticipantEvent,
+      participantEvents,
       upsertParticipant,
     ]
   );
@@ -264,16 +257,16 @@ const useRemoteParticipants = () => {
     (participant: RemoteParticipant) => {
       console.debug("participantDisconnected", participant);
       filterParticipants((p) => p.id !== participant.sid);
-      unsubscribeParticipantEvents(participant);
+      participantEvents.unsubscribe(participant);
     },
-    [filterParticipants, unsubscribeParticipantEvents]
+    [filterParticipants, participantEvents]
   );
 
   return {
     participants: participants,
     connected,
     disconnected,
-    unsubscribeAll: unsubcribeAllParticipantEvents,
+    unsubscribeAll: participantEvents.unsubcribeAll,
   };
 };
 
