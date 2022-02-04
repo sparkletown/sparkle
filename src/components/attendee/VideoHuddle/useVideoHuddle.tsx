@@ -3,14 +3,14 @@ import { useContext, useState } from "react";
 import { VideoCommsContext } from "../VideoComms/VideoComms";
 
 export const useVideoHuddle = () => {
-  const { joinChannel, disconnect, localParticipant, remoteParticipants } =
+  const { disconnect, localParticipant, remoteParticipants } =
     useContext(VideoCommsContext);
   const [inHuddle, setInHuddle] = useState(false);
 
   // TODO Docs
   const joinHuddle = (huddleId: string) => {
     console.log("joining huddle");
-    joinChannel(huddleId);
+    // joinChannel(huddleId);
     setInHuddle(true);
   };
 
