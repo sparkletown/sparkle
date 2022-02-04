@@ -50,9 +50,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     activeParticipants,
     passiveListeners,
 
-    hasRoom,
-    hasParticipants,
-
     isMeActiveParticipant,
     isRoomLoading,
 
@@ -84,7 +81,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
 
-  if (!hasRoom || !hasParticipants || isRoomLoading) {
+  if (isRoomLoading) {
     return <Loading />;
   }
 
