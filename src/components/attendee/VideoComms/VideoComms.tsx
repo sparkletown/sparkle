@@ -172,14 +172,7 @@ const useParticipantSubscriptions = () => {
   };
 };
 
-export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
-  userId,
-  children,
-}) => {
-  const [room, setRoom] = useState<Room>();
-  const [status, setStatus] = useState<VideoCommsStatus>(
-    VideoCommsStatus.Disconnected
-  );
+const useRemoteParticipants = () => {
   const [
     remoteParticipants,
     {
@@ -188,7 +181,6 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
       filter: filterRemoteParticipants,
     },
   ] = useList<Participant>([]);
-  const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
   const {
     subscribeToParticipantEvent,
     unsubscribeParticipantEvents,
@@ -240,6 +232,68 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     [modifyParticipant]
   );
 
+  const remoteParticipantConnected = useCallback(
+    (participant: RemoteParticipant) => {
+      console.debug("participantConnected", participant, participant.state);
+
+      upsertRemoteParticipant((p) => p.id === participant.sid, {
+        id: participant.sid,
+        audioTracks: [],
+        videoTracks: publicationsToTracks(participant.videoTracks),
+      });
+
+      subscribeToParticipantEvent(
+        participant,
+        "trackSubscribed",
+        onTrackSubscribed
+      );
+      subscribeToParticipantEvent(
+        participant,
+        "trackUnsubscribed",
+        onTrackUnsubscribed
+      );
+    },
+    [
+      onTrackSubscribed,
+      onTrackUnsubscribed,
+      subscribeToParticipantEvent,
+      upsertRemoteParticipant,
+    ]
+  );
+  const remoteParticipantDisconnected = useCallback(
+    (participant: RemoteParticipant) => {
+      console.debug("participantDisconnected", participant);
+      filterRemoteParticipants((p) => p.id !== participant.sid);
+      unsubscribeParticipantEvents(participant);
+    },
+    [filterRemoteParticipants, unsubscribeParticipantEvents]
+  );
+
+  return {
+    remoteParticipants,
+    remoteParticipantConnected,
+    remoteParticipantDisconnected,
+    unsubscribeAllRemoteParticipants: unsubcribeAllParticipantEvents,
+  };
+};
+
+export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
+  userId,
+  children,
+}) => {
+  const [room, setRoom] = useState<Room>();
+  const [status, setStatus] = useState<VideoCommsStatus>(
+    VideoCommsStatus.Disconnected
+  );
+
+  const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
+  const {
+    remoteParticipants,
+    remoteParticipantDisconnected,
+    remoteParticipantConnected,
+    unsubscribeAllRemoteParticipants,
+  } = useRemoteParticipants();
+
   const joinChannelCallback = useCallback(
     async (userId, newChannelId) => {
       if (room) {
@@ -266,38 +320,10 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
         enableDscp: true,
       })
         .then((room: Twilio.Room) => {
-          const participantConnected = (participant: RemoteParticipant) => {
-            console.debug(
-              "participantConnected",
-              participant,
-              participant.state
-            );
-            upsertRemoteParticipant((p) => p.id === participant.sid, {
-              id: participant.sid,
-              audioTracks: [],
-              videoTracks: publicationsToTracks(participant.videoTracks),
-            });
-
-            subscribeToParticipantEvent(
-              participant,
-              "trackSubscribed",
-              onTrackSubscribed
-            );
-            subscribeToParticipantEvent(
-              participant,
-              "trackUnsubscribed",
-              onTrackUnsubscribed
-            );
-          };
-          const participantDisconnected = (participant: RemoteParticipant) => {
-            console.debug("participantDisconnected", participant);
-            filterRemoteParticipants((p) => p.id !== participant.sid);
-            unsubscribeParticipantEvents(participant);
-          };
-
-          room.on("participantConnected", participantConnected);
-          room.on("participantDisconnected", participantDisconnected);
-          room.participants.forEach(participantConnected);
+          // TODO track these properly so they're easy to unsubscribe from
+          room.on("participantConnected", remoteParticipantConnected);
+          room.on("participantDisconnected", remoteParticipantDisconnected);
+          room.participants.forEach(remoteParticipantConnected);
 
           // Set the room etc
           setRoom(room);
@@ -322,15 +348,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
           // TODO
         });
     },
-    [
-      filterRemoteParticipants,
-      onTrackSubscribed,
-      onTrackUnsubscribed,
-      room,
-      subscribeToParticipantEvent,
-      unsubscribeParticipantEvents,
-      upsertRemoteParticipant,
-    ]
+    [remoteParticipantConnected, remoteParticipantDisconnected, room]
   );
 
   const disconnectCallback = useCallback(() => {
@@ -339,9 +357,9 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     // attempts to disconnect cleanly
     // Including stopping any connection in progress
     console.debug("Disconnecting");
-    unsubcribeAllParticipantEvents();
+    unsubscribeAllRemoteParticipants();
     setRoom(() => undefined);
-  }, [unsubcribeAllParticipantEvents]);
+  }, [unsubscribeAllRemoteParticipants]);
 
   const contextState: VideoCommsContextType = {
     status,
