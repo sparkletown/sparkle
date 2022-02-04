@@ -53,7 +53,7 @@ service cloud.firestore {
         return get(/databases/$(database)/documents/worlds/$(venueData().worldId)).data;
       }
 
-      function checkIfSpaceOrWorldOwner(userId) {
+      function checkIfSpaceOrWorldOwner() {
         return request.auth.uid in role('admin').users || request.auth.uid in venueData().owners || request.auth.uid in world().owners
       }
 
