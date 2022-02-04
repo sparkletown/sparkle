@@ -53,8 +53,6 @@ export const useParticipantMediaState = (
     },
   ] = useList<VideoTrack | AudioTrack>();
 
-  console.log(media, tracks);
-
   const trackSubscribedHandler = useCallback(
     (track: VideoTrack | AudioTrack) => {
       pushTrack(track);
