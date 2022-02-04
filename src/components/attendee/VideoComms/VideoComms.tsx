@@ -114,6 +114,62 @@ const publicationsToTracks = (
     .filter(notNull);
 };
 
+const useParticipantSubscriptions = () => {
+  const [, setParticipantSubscriptions] = useState<
+    Map<RemoteParticipant, [string, () => void][]>
+  >(new Map());
+
+  const subscribeToParticipantEvent = useCallback(
+    (participant: RemoteParticipant, eventName, callbackFn) => {
+      participant.on(eventName, callbackFn);
+      setParticipantSubscriptions((prevSubscriptions) => {
+        let existing = prevSubscriptions.get(participant);
+        if (!existing) {
+          existing = [[eventName, callbackFn]];
+        } else {
+          existing = [...existing, [eventName, callbackFn]];
+        }
+        const newSubscriptions = new Map(prevSubscriptions);
+        newSubscriptions.set(participant, existing);
+        return newSubscriptions;
+      });
+    },
+    []
+  );
+
+  const unsubscribeParticipantEvents = useCallback(
+    (participant: RemoteParticipant) => {
+      setParticipantSubscriptions((prevSubscriptions) => {
+        const toUnsubscribe = prevSubscriptions.get(participant) || [];
+        for (const [eventName, callbackFn] of toUnsubscribe) {
+          participant.off(eventName, callbackFn);
+        }
+        const newSubscriptions = new Map(prevSubscriptions);
+        newSubscriptions.delete(participant);
+        return newSubscriptions;
+      });
+    },
+    []
+  );
+
+  const unsubcribeAllParticipantEvents = useCallback(() => {
+    setParticipantSubscriptions((prevSubscriptions) => {
+      for (const [participant, subscriptions] of prevSubscriptions.entries()) {
+        for (const [eventName, callbackFn] of subscriptions) {
+          participant.off(eventName, callbackFn);
+        }
+      }
+      return new Map();
+    });
+  }, []);
+
+  return {
+    subscribeToParticipantEvent,
+    unsubscribeParticipantEvents,
+    unsubcribeAllParticipantEvents,
+  };
+};
+
 export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   userId,
   children,
@@ -131,9 +187,11 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     },
   ] = useList<Participant>([]);
   const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
-  const [, setParticipantSubscriptions] = useState<
-    Map<String, [string, () => void][]>
-  >(new Map());
+  const {
+    subscribeToParticipantEvent,
+    unsubscribeParticipantEvents,
+    unsubcribeAllParticipantEvents,
+  } = useParticipantSubscriptions();
 
   const modifyParticipant = useCallback(
     (participantId, modifyFn) => {
@@ -165,25 +223,6 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     },
     [modifyParticipant]
   );
-
-  const subscribeToParticipantEvent = useCallback(
-    (participant: RemoteParticipant, eventName, callbackFn) => {
-      participant.on(eventName, callbackFn);
-      setParticipantSubscriptions((prevSubscriptions) => {
-        let existing = prevSubscriptions.get(participant.sid);
-        if (!existing) {
-          existing = [[eventName, callbackFn]];
-        } else {
-          existing = [...existing, [eventName, callbackFn]];
-        }
-        const newSubscriptions = new Map(prevSubscriptions);
-        newSubscriptions.set(participant.sid, existing);
-        return newSubscriptions;
-      });
-    },
-    []
-  );
-
   const joinChannelCallback = useCallback(
     async (userId, newChannelId) => {
       if (room) {
@@ -241,16 +280,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
           const participantDisconnected = (participant: RemoteParticipant) => {
             console.debug("participantDisconnected", participant);
             filterRemoteParticipants((p) => p.id !== participant.sid);
-            setParticipantSubscriptions((prevSubscriptions) => {
-              const toUnsubscribe =
-                prevSubscriptions.get(participant.sid) || [];
-              for (const [eventName, callbackFn] of toUnsubscribe) {
-                participant.off(eventName, callbackFn);
-              }
-              const newSubscriptions = new Map(prevSubscriptions);
-              newSubscriptions.delete(participant.sid);
-              return newSubscriptions;
-            });
+            unsubscribeParticipantEvents(participant);
           };
 
           room.on("participantConnected", participantConnected);
@@ -285,6 +315,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
       onTrackSubscribed,
       room,
       subscribeToParticipantEvent,
+      unsubscribeParticipantEvents,
       upsertRemoteParticipant,
     ]
   );
@@ -295,8 +326,9 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     // attempts to disconnect cleanly
     // Including stopping any connection in progress
     console.debug("Disconnecting");
+    unsubcribeAllParticipantEvents();
     setRoom(() => undefined);
-  }, []);
+  }, [unsubcribeAllParticipantEvents]);
 
   const contextState: VideoCommsContextType = {
     status,
