@@ -192,8 +192,8 @@ const useRemoteParticipants = () => {
       participantId: string,
       modifyFn: (participant: Participant) => Participant
     ) => {
-      setParticipants((prevRemoteParticipants) => {
-        return prevRemoteParticipants.map((p) => {
+      setParticipants((prevParticipants) => {
+        return prevParticipants.map((p) => {
           if (p.id !== participantId) {
             return p;
           }
