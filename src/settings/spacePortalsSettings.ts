@@ -71,7 +71,9 @@ export const SPACE_INFO_MAP: Record<VenueTemplate, SpaceInfoItem> = {
     text: "Poster page",
     poster: "",
     description: "",
-    icon: "",
+    icon: IconPosterHall,
+    template: VenueTemplate.posterpage,
+    hidden: true,
   },
   [VenueTemplate.animatemap]: {
     text: "Animated map",
@@ -175,6 +177,7 @@ export const SPACE_INFO_LIST: SpaceInfoItem[] = [
   SPACE_INFO_MAP[VenueTemplate.embeddable],
   SPACE_INFO_MAP[VenueTemplate.screeningroom],
   SPACE_INFO_MAP[VenueTemplate.posterhall],
+  SPACE_INFO_MAP[VenueTemplate.posterpage],
   SPACE_INFO_MAP[VenueTemplate.animatemap],
 ];
 
