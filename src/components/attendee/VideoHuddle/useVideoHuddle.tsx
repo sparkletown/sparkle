@@ -1,25 +1,66 @@
-import { useContext, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 
-import { VideoCommsContext } from "../VideoComms/VideoComms";
+import { useVideoComms } from "../VideoComms/hooks";
 
-export const useVideoHuddle = () => {
-  const { disconnect, localParticipant, remoteParticipants } =
-    useContext(VideoCommsContext);
+interface HuddleContextType {
+  inHuddle: boolean;
+  setInHuddle: (inHuddle: boolean) => void;
+}
+
+export const HuddleContext = React.createContext<HuddleContextType>({
+  inHuddle: false,
+  setInHuddle: () => { },
+});
+
+interface HuddleProviderProps {
+  children: React.ReactNode;
+}
+
+export const HuddleProvider: React.FC<HuddleProviderProps> = ({
+  children,
+}) => {
   const [inHuddle, setInHuddle] = useState(false);
 
-  // TODO Docs
-  const joinHuddle = (huddleId: string) => {
-    console.log("joining huddle");
-    // joinChannel(huddleId);
-    setInHuddle(true);
-  };
+  const contextState = {
+    inHuddle,
+    setInHuddle,
+  }
+
+  return <HuddleContext.Provider value={contextState}>
+    {children}
+  </HuddleContext.Provider>
+};
+
+export const useVideoHuddle = () => {
+  const {
+    status,
+    localParticipant,
+    joinChannel,
+    disconnect,
+    remoteParticipants,
+  } = useVideoComms();
+
+  const { inHuddle, setInHuddle } = useContext(HuddleContext);
 
   // TODO Docs
-  const leaveHuddle = () => {
-    console.log("leaving huddle");
-    disconnect();
-    setInHuddle(false);
-  };
+  const joinHuddle = useMemo(() => {
+    return (userId: string, huddleId: string) => {
+      console.log("joining huddle");
+      joinChannel(userId, huddleId);
+      setInHuddle(true);
+    }
+  }, [joinChannel, setInHuddle]);
+
+  // TODO Docs
+  const leaveHuddle = useMemo(() => {
+    return () => {
+      if (inHuddle) {
+        console.log("leaving huddle");
+        disconnect();
+        setInHuddle(false);
+      }
+    }
+  }, [disconnect, inHuddle, setInHuddle]);
 
   return {
     joinHuddle,

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-import { Participant } from "../VideoComms/VideoComms";
+import { Participant } from "../VideoComms/types";
 
 interface VideoCommsParticipantProps {
   participant: Participant;

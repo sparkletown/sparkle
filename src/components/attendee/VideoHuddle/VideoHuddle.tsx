@@ -1,5 +1,7 @@
 import React from "react";
 
+import { VideoCommsParticipant } from "../VideoCommsParticipant";
+
 import { useVideoHuddle } from "./useVideoHuddle";
 
 import styles from "./VideoHuddle.module.scss";
@@ -44,30 +46,28 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId }) => {
         </a>
       </div>
       <div className={styles.VideoHuddleVideos}>
+        { /*  TODO shouldMirrorVideo */}
         {
-          localParticipant /* && (
-          <div className={styles.VideoContainer} key={localParticipant.sid}>
-            <VideoParticipant
+          localParticipant &&
+          <div className={styles.VideoContainer} key={localParticipant.id}>
+            <VideoCommsParticipant
               participant={localParticipant}
-              shouldMirrorVideo
             />
           </div>
-        )*/
         }
         {
-          remoteParticipants /*.map((participant) => (
-          <div
-            key={participant.participant.identity}
-            className={styles.VideoContainer}
-          >
-            <VideoParticipant
-              participant={participant.participant}
-              participantUser={participant.user}
-            />
-          </div>
-        ))*/
+          remoteParticipants.map((participant) => (
+            <div
+              key={participant.id}
+              className={styles.VideoContainer}
+            >
+              <VideoCommsParticipant
+                participant={participant}
+              />
+            </div>
+          ))
         }
       </div>
-    </div>
+    </div >
   );
 };

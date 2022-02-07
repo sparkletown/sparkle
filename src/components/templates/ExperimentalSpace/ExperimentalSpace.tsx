@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import { useVideoComms } from "components/attendee/VideoComms/hooks";
-import { VideoCommsStatus } from "components/attendee/VideoComms/VideoComms";
+import { VideoCommsStatus } from "components/attendee/VideoComms/types";
 import { VideoCommsParticipant } from "components/attendee/VideoCommsParticipant";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";
@@ -20,65 +21,33 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   userId,
 }) => {
   // TODO Share this live so everyone gets it.
-  /*
-  useEffect(() => {
-    huddle.enablePortaling()
-    return () => {
-      huddle.disablePortal()
-    }
 
-  }, [])
-  */
-  const {
-    status,
-    localParticipant,
-    joinChannel,
-    disconnect,
-    remoteParticipants,
-  } = useVideoComms();
+  const { inHuddle, joinHuddle, leaveHuddle, localParticipant, remoteParticipants } = useVideoHuddle();
 
   useEffect(() => {
-    joinChannel(userId, "Test-channel");
-    /*
-    setTimeout(() => {
-      console.log("going for second connection");
-      joinChannel(userId, "Test-channel");
-    }, 10000);
-    */
     return () => {
       console.log("doing disconnect");
-      disconnect();
+      leaveHuddle();
     };
-  }, [disconnect, joinChannel, userId]);
+  }, [leaveHuddle]);
 
   const disconnectCallback = useCallback(() => {
-    disconnect();
-  }, [disconnect]);
+    leaveHuddle();
+  }, [leaveHuddle]);
   const connectCallback = useCallback(() => {
-    joinChannel(userId, "Test-channel");
-  }, [joinChannel, userId]);
+    joinHuddle(userId, "playground-huddle");
+  }, [userId, joinHuddle]);
 
   return (
     <>
-      {/*
-    {huddle.portalTrack &&
-      <VideoTrack track={huddle.portalTrack} />
-    }
-  */}
-      {localParticipant && (
-        <VideoCommsParticipant participant={localParticipant} isLocal />
-      )}
-      {remoteParticipants.map((participant) => (
-        <VideoCommsParticipant key={participant.id} participant={participant} />
-      ))}
       <p>
-        Experimental! {status} {localParticipant?.id} With{" "}
+        Experimental! {localParticipant?.id} With{" "}
         {remoteParticipants.length} people
       </p>
-      {status === VideoCommsStatus.Connected && (
+      {inHuddle && (
         <p onClick={disconnectCallback}>Disconnect!</p>
       )}
-      {status === VideoCommsStatus.Disconnected && (
+      {!inHuddle && (
         <p onClick={connectCallback}>Connect!</p>
       )}
     </>

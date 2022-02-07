@@ -49,7 +49,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   }, [setSeatedAtTable, userId, venueId]);
 
   useEffect(() => {
-    joinHuddle(roomName);
+    joinHuddle(userId || '', `${venueId}-${roomName}`);
     return () => {
       leaveHuddle();
     };
