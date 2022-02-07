@@ -5,7 +5,6 @@ import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
 
 import {
-  profileModalPasswordsFields,
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
@@ -29,6 +28,13 @@ import { ProfileModalChangePassword } from "components/organisms/NewProfileModal
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
 
 import "./EditingProfileModalContent.scss";
+
+const PASSWORD_FIELDS: (keyof UserProfileModalFormDataPasswords)[] = [
+  "oldPassword",
+  "newPassword",
+  "confirmNewPassword",
+];
+Object.freeze(PASSWORD_FIELDS);
 
 export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
@@ -123,9 +129,9 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         ...data,
       };
 
-      const passwordsNotEmpty = Object.values(
-        pick(data, profileModalPasswordsFields)
-      ).some((x) => x);
+      const passwordsNotEmpty = Object.values(pick(data, PASSWORD_FIELDS)).some(
+        (x) => x
+      );
       if (passwordsNotEmpty) {
         if (!(await checkOldPassword(data.oldPassword))) {
           setError(formProp("oldPassword"), "validate", "Incorrect password");
@@ -140,7 +146,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         Array.from(formState.dirtyFields)
           .filter(
             (k) =>
-              !profileModalPasswordsFields.includes(
+              !PASSWORD_FIELDS.includes(
                 k as keyof UserProfileModalFormDataPasswords
               )
           )

@@ -111,13 +111,18 @@ export const Badges: React.FC<{
 
     setVenues(venues);
     setVisits(visits);
-    setIsLoading(false);
-  }, [firestore, user.id]);
+  }, [firestore, user.id, setVenues, setVisits]);
 
   useEffect(() => {
     setIsLoading(true);
-    fetchAllVenues().catch((e) => console.error(Badges.name, e));
-  }, [fetchAllVenues]);
+    const stop = () => setIsLoading(false);
+
+    fetchAllVenues()
+      .catch((e) => console.error(Badges.name, e))
+      .finally(stop);
+
+    return stop;
+  }, [setIsLoading, fetchAllVenues]);
 
   const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues]);
 
@@ -178,7 +183,11 @@ export const Badges: React.FC<{
     return <>Visit venues to collect badges!</>;
   }
 
-  return isWorldLoaded && world?.showBadges ? (
+  if (!isWorldLoaded || !world?.showBadges) {
+    return null;
+  }
+
+  return (
     <div className="Badges">
       <div className="Badges__visits">
         <div className="Badges__visit">
@@ -201,5 +210,5 @@ export const Badges: React.FC<{
         <ul className="Badges__list">{badgeList}</ul>
       </div>
     </div>
-  ) : null;
+  );
 };

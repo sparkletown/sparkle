@@ -17,6 +17,7 @@ const NO_INLINE_STYLES_PLEASE = {
   control: ALWAYS_NO_STYLE_FUNCTION,
   menuList: ALWAYS_NO_STYLE_FUNCTION,
   singleValue: ALWAYS_NO_STYLE_FUNCTION,
+  valueContainer: ALWAYS_NO_STYLE_FUNCTION,
   dropdownIndicator: ALWAYS_NO_STYLE_FUNCTION,
   indicatorSeparator: ALWAYS_NO_STYLE_FUNCTION,
 };

@@ -47,12 +47,11 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   }, [onCancel, hide]);
 
   const hasHeader = isTruthy(header);
-
   const isShown = show !== undefined ? show : isVisible;
 
   return (
-    <Modal className="ConfirmationModal" isOpen={isShown} onClose={hide}>
-      <div>
+    <Modal show={isShown} onHide={hide}>
+      <div className="ConfirmationModal">
         {hasHeader && <h4>{header}</h4>}
         <div className="ConfirmationModal__message">{message}</div>
         <div className="ConfirmationModal__buttons">

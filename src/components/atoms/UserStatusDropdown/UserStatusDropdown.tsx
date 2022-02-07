@@ -35,10 +35,10 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      userStatuses.map((userStatus) => (
+      userStatuses.map((userStatus, index) => (
         <div
           className="UserStatusDropdown__item"
-          key={userStatus.status}
+          key={`${index}-${userStatus.status}`}
           onClick={() => changeUserStatus(userStatus.status)}
           data-dropdown-value={userStatus.status}
         >

@@ -177,7 +177,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({
 
       {/* @debt use only one PortalModal instance with state controlled with redux */}
       <PortalModal
-        show={true}
+        show
         portal={selectedPortal}
         onHide={hidePortalModal}
         absolute

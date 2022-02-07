@@ -19,12 +19,7 @@ export const ScreeningRoomVideoAddEditModal: React.FC<ScreeningRoomVideoAddEditM
   show,
   video,
 }) => (
-  <Modal
-    className="ScreeningRoomVideoAddEditModal"
-    isOpen={show}
-    onClose={onHide}
-    isCentered
-  >
+  <Modal show={show} onHide={onHide} centered autoHide>
     <ScreeningRoomVideoAddEditForm onDone={onHide} video={video} />
   </Modal>
 );

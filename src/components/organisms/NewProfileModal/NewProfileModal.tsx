@@ -45,17 +45,19 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ space }) => {
 
   return (
     <Modal
-      className="ProfileModal"
-      isOpen={hasSelectedProfile && isModalShown}
-      onClose={hideHandler}
-      isCentered
-      overlayClose
+      show={hasSelectedProfile && isModalShown}
+      onHide={hideHandler}
+      centered
+      autoHide
+      background="live"
     >
-      <NewProfileModalBody
-        userId={selectedUserId}
-        space={space}
-        closeUserProfileModal={closeUserProfileModal}
-      />
+      <div className="NewProfileModal">
+        <NewProfileModalBody
+          userId={selectedUserId}
+          space={space}
+          closeUserProfileModal={closeUserProfileModal}
+        />
+      </div>
     </Modal>
   );
 };

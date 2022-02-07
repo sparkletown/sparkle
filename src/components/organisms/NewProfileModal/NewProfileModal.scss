@@ -1,21 +1,7 @@
 @import "./profileModalStyles";
 
-.ProfileModal {
+.NewProfileModal {
   font-size: $content-font-size;
   background-color: $secondary--live;
   padding: $modal-content-margin;
-
-  &__body {
-    padding: $modal-content-margin;
-  }
-
-  &__loading-or-error {
-    min-height: 10rem;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    white-space: pre;
-    text-align: center;
-  }
 }

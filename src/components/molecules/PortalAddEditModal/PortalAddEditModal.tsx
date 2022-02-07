@@ -8,8 +8,6 @@ import { PortalAddEditForm } from "components/organisms/PortalAddEditForm";
 
 import { Modal } from "components/molecules/Modal";
 
-import "./PortalAddEditModal.scss";
-
 type PortalAddEditModalProps = {
   item?: PortalInfoItem;
   show: boolean;
@@ -25,7 +23,7 @@ export const PortalAddEditModal: React.FC<PortalAddEditModalProps> = ({
   portal,
   portalIndex,
 }) => (
-  <Modal isOpen={show} onClose={onHide} overlayClose>
+  <Modal show={show} onHide={onHide} autoHide>
     <PortalAddEditForm
       item={item}
       onDone={onHide}

@@ -33,8 +33,6 @@ export const NormalRadio: React.FC<NormalRadioProps> = ({
   const popoverClasses = classNames({
     "NormalRadio NormalRadio--on": radioPlaying && volume,
     "NormalRadio NormalRadio--off": !(radioPlaying && volume),
-    "NormalRadio--on": radioPlaying && volume,
-    "NormalRadio--off": !(radioPlaying && volume),
   });
   const buttonClasses = classNames({
     "NormalRadio__button NormalRadio__button--on": radioPlaying && volume,

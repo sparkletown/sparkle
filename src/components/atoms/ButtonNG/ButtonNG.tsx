@@ -1,4 +1,10 @@
-import React, { CSSProperties, useCallback, useMemo } from "react";
+import React, {
+  ButtonHTMLAttributes,
+  CSSProperties,
+  RefObject,
+  useCallback,
+  useMemo,
+} from "react";
 import { Link, useHistory } from "react-router-dom";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
@@ -29,7 +35,7 @@ export type ButtonVariant =
 
 export type ButtonIconSize = "1x" | "2x" | "3x";
 
-export interface ButtonProps {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   style?: CSSProperties;
   disabled?: boolean;
@@ -44,6 +50,7 @@ export interface ButtonProps {
   iconName?: IconProp;
   iconSize?: ButtonIconSize;
   title?: string;
+  forwaredRef?: RefObject<HTMLButtonElement>;
 }
 
 export const ButtonNG: React.FC<ButtonProps> = ({
@@ -62,6 +69,8 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconName,
   iconSize = "1x",
   title,
+  forwaredRef,
+  ...extraParams
 }) => {
   const history = useHistory();
 
@@ -103,7 +112,14 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   if (loading) {
     return (
-      <button className={parentClasses} style={style} type={type} title={title}>
+      <button
+        ref={forwaredRef}
+        className={parentClasses}
+        style={style}
+        type={type}
+        title={title}
+        {...extraParams}
+      >
         <FontAwesomeIcon
           icon={faCircleNotch}
           spin
@@ -140,9 +156,11 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       className={parentClasses}
       style={style}
       type={type}
+      ref={forwaredRef}
       onClick={handleClick}
       disabled={disabled}
       title={title ?? resolvedUrl}
+      {...extraParams}
     >
       {iconName && (
         <FontAwesomeIcon

@@ -2,6 +2,8 @@ import React, { FC } from "react";
 
 import { Modal } from "components/molecules/Modal";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import "./VideoErrorModal.scss";
 
 interface PropsType {
@@ -28,25 +30,19 @@ export const VideoErrorModal: FC<PropsType> = ({
   onHide,
   onBack,
   onRetry,
-}) => {
-  return (
-    <Modal isOpen={show} onClose={onHide} overlayClose={false}>
-      <div className="modal-container">
-        <div className="modal-title">
-          {errorMessage &&
-            (errorMessages[errorMessage] ??
-              "Please ALLOW camera & microphone access in your browser settings in order to join the table. Click Allow when prompted.")}
-        </div>
-
-        <div>
-          <button className="btn btn-block btn-centered" onClick={onRetry}>
-            Retry
-          </button>
-          <button className="btn btn-block btn-centered" onClick={onBack}>
-            Back
-          </button>
-        </div>
+}) => (
+  <Modal show={show} onHide={onHide} autoHide closeButton>
+    <div className="VideoErrorModal">
+      <div className="VideoErrorModal__title">
+        {errorMessage &&
+          (errorMessages[errorMessage] ??
+            "Please ALLOW camera & microphone access in your browser settings in order to join the table. Click Allow when prompted.")}
       </div>
-    </Modal>
-  );
-};
+
+      <div className="VideoErrorModal__buttons">
+        <ButtonNG onClick={onRetry}>Retry</ButtonNG>
+        <ButtonNG onClick={onBack}>Back</ButtonNG>
+      </div>
+    </div>
+  </Modal>
+);

@@ -8,12 +8,9 @@ $edit-table-input-spacing: 5px 0;
 .EditTableTitleModal {
   padding: $edit-table-wrapper-padding;
   margin: auto;
-  width: 100%;
 
-  &__input {
-    &--spacing {
-      padding: $edit-table-input-spacing;
-    }
+  &__input--spacing {
+    padding: $edit-table-input-spacing;
   }
 
   &__capacity {

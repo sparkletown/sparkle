@@ -145,7 +145,7 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
 
   return (
     <form
-      className="ScreeningRoomVideoAddEditForm__form"
+      className="ScreeningRoomVideoAddEditModal ScreeningRoomVideoAddEditForm__form"
       onSubmit={handleSubmit(addVideo)}
     >
       <div className="ScreeningRoomVideoAddEditForm__title">{title}</div>

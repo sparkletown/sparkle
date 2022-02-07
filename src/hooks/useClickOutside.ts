@@ -1,5 +1,6 @@
 import { MutableRefObject, useEffect, useRef } from "react";
 
+// @debt Should be "click", however UserAvatar in NavBar is triggering the autoHide before modal even shows up
 const EVENT_TYPE = "mousedown";
 
 type UseClickOutside = <
@@ -18,8 +19,11 @@ export const useClickOutside: UseClickOutside = ({ onHide, autoHide }) => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // prevents warning: Can't perform a React state update on an unmounted component.
+    let isMounted = true;
+
     const handleClickOutside = (event: MouseEvent) => {
-      if (!autoHide) {
+      if (!autoHide || !isMounted) {
         return;
       }
 
@@ -40,7 +44,10 @@ export const useClickOutside: UseClickOutside = ({ onHide, autoHide }) => {
 
     // the above is just the listener, here it is registered and unregistered from the DOM
     document.addEventListener(EVENT_TYPE, handleClickOutside);
-    return () => document.removeEventListener(EVENT_TYPE, handleClickOutside);
+    return () => {
+      isMounted = false;
+      document.removeEventListener(EVENT_TYPE, handleClickOutside);
+    };
   }, [containerRef, onHide, autoHide, buttonRef]);
 
   return { containerRef, buttonRef };

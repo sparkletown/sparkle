@@ -16,18 +16,16 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
   isVisible,
   onHide,
   introVideoUrl,
-}) => {
-  return (
-    <Modal isOpen={isVisible} onClose={onHide} isCentered wide>
-      <div className="IntroVideoPreviewModal">
-        <iframe
-          className="IntroVideoPreviewModal__iframe"
-          title="IntroVideoPreviewModal-iframe"
-          src={introVideoUrl}
-          allow={IFRAME_ALLOW}
-          allowFullScreen
-        />
-      </div>
-    </Modal>
-  );
-};
+}) => (
+  <Modal show={isVisible} onHide={onHide} centered wide>
+    <div className="IntroVideoPreviewModal">
+      <iframe
+        className="IntroVideoPreviewModal__iframe"
+        title="IntroVideoPreviewModal-iframe"
+        src={introVideoUrl}
+        allow={IFRAME_ALLOW}
+        allowFullScreen
+      />
+    </div>
+  </Modal>
+);

@@ -80,11 +80,23 @@
     }
 
     &__single-value {
-      color: white;
+      color: var(--content--over);
     }
 
     &__indicator-separator {
       display: none;
+    }
+
+    &__value-container {
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      padding: $spacing--xs $spacing--sm;
+      flex: 1;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
     }
   }
 

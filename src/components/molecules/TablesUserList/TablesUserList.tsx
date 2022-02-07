@@ -23,6 +23,8 @@ import { Loading } from "components/molecules/Loading";
 import { Modal } from "components/molecules/Modal";
 import { StartTable } from "components/molecules/StartTable";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
+
 import "./TablesUserList.scss";
 
 export interface TablesUserListProps {
@@ -217,8 +219,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
           venue={venue}
         />
       )}
-      <Modal isOpen={isLockedMessageVisible} onClose={hideLockedMessage}>
-        <div className="modal-container modal-container_message">
+      <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
+        <div className="TableUserList__modal modal-container modal-container_message">
           <p>{`Can't join this table because it's been locked.`}</p>
 
           <p>Perhaps ask in the chat?</p>
@@ -234,11 +236,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       </Modal>
 
       <Modal
-        isOpen={isJoinMessageVisible}
-        onClose={hideJoinMessage}
-        overlayClose={false}
+        show={isJoinMessageVisible}
+        onHide={hideJoinMessage}
+        autoHide={false}
       >
-        <div className="modal-container modal-container_message">
+        <div className="TableUserList__modal modal-container modal-container_message">
           <p>
             You are now entering a video chat space. Please ALLOW camera &
             microphone access. You will be able to turn them back off again once
@@ -248,13 +250,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
           <p>You can also adjust the volume on the live stream.</p>
 
-          <button
-            type="button"
-            className="btn btn-block btn-centered"
-            onClick={acceptJoiningTable}
-          >
+          <ButtonNG onClick={acceptJoiningTable} variant="primary">
             OK
-          </button>
+          </ButtonNG>
         </div>
       </Modal>
     </>

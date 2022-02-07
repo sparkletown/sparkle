@@ -26,7 +26,7 @@ export const VideoModal: React.FunctionComponent<PropsType> = ({
   caption,
   autoplay = false,
 }) => (
-  <Modal isOpen={show} onClose={onHide} wide>
+  <Modal show={show} onHide={onHide} wide>
     <div className="VideoModal">
       {caption && <div className="VideoModal__title">{caption}</div>}
       <div className="VideoModal__content">

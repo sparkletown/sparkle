@@ -47,24 +47,26 @@ export const PortalModal: React.FC<PortalModalProps> = ({
 
   return (
     <Modal
-      isOpen={show}
-      onClose={onHide}
-      className="PortalModal"
-      isCentered
-      overlayClose
+      show={show}
+      onHide={onHide}
+      background="live"
+      centered
+      autoHide
       absolute={absolute}
     >
-      <img
-        className="PortalModal__close-icon"
-        src={PortalCloseIcon}
-        alt="close portal"
-        onClick={onHide}
-      />
-      <PortalModalContent
-        portal={portal}
-        venueEvents={venueEvents}
-        onHide={onHide}
-      />
+      <div className="PortalModal">
+        <img
+          className="PortalModal__close-icon"
+          src={PortalCloseIcon}
+          alt="close portal"
+          onClick={onHide}
+        />
+        <PortalModalContent
+          portal={portal}
+          venueEvents={venueEvents}
+          onHide={onHide}
+        />
+      </div>
     </Modal>
   );
 };

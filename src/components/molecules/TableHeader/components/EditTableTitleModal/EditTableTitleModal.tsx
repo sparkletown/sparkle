@@ -1,7 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import classNames from "classnames";
 
 import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
 
@@ -14,6 +13,7 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import { Modal } from "components/molecules/Modal";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 
 import "./EditTableTitleModal.scss";
@@ -75,12 +75,8 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
     [onHide, tableOfUser, spaceId, defaultTables]
   );
 
-  const saveButtonClassNames = classNames("btn btn-centered btn-primary", {
-    disabled: isUpdating,
-  });
-
   return (
-    <Modal isOpen={isShown} onClose={onHide}>
+    <Modal show={isShown} onHide={onHide}>
       <form
         onSubmit={handleSubmit(updateTables)}
         className="EditTableTitleModal"
@@ -138,20 +134,10 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
         )}
 
         <div className="EditTableTitleModal__footer-buttons">
-          <button
-            className="btn btn-centered btn-secondary"
-            onClick={onHide}
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={isUpdating}
-            className={saveButtonClassNames}
-          >
+          <ButtonNG onClick={onHide}>Cancel</ButtonNG>
+          <ButtonNG disabled={isUpdating} variant="primary">
             Save
-          </button>
+          </ButtonNG>
         </div>
       </form>
     </Modal>

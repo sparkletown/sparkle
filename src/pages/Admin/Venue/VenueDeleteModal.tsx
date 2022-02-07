@@ -40,7 +40,7 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   }, [onDelete, venueId]);
 
   return (
-    <Modal isOpen={show} onClose={onHide} isCentered dark>
+    <Modal show={show} onHide={onHide} centered background="dark">
       <div className="VenueDeleteModal">
         <h2 className="centered">Delete {SPACE_TAXON.lower}</h2>
         <div className="secondary-action">

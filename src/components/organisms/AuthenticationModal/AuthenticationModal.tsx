@@ -49,7 +49,7 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <Modal isOpen={show} onClose={closeAuthenticationModal}>
+    <Modal show={show} onHide={closeAuthenticationModal}>
       <div className="authentication-modal-container">
         {formToDisplay === "initial" && (
           <InitialForm
