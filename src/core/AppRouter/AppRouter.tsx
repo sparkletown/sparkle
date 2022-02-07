@@ -15,7 +15,6 @@ import {
   ATTENDEE_INSIDE_URL,
   ATTENDEE_LANDING_URL,
   ATTENDEE_STEPPING_PARAM_URL,
-  ENTER_ROOT_URL,
   EXTERNAL_SPARKLE_HOMEPAGE_URL,
   EXTERNAL_SPARKLEVERSE_HOMEPAGE_URL,
   LOGIN_CUSTOM_TOKEN_PARAM_URL,
@@ -56,14 +55,6 @@ const SubAdmin = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminSubRouter", () =>
     import("./AdminSubRouter").then(({ AdminSubRouter }) => ({
       default: AdminSubRouter,
-    }))
-  )
-);
-
-const SubEnter = lazy(() =>
-  tracePromise("AppRouter::lazy-import::EnterSubrouter", () =>
-    import("./EnterSubRouter").then(({ EnterSubRouter }) => ({
-      default: EnterSubRouter,
     }))
   )
 );
@@ -177,9 +168,6 @@ export const AppRouter: React.FC = () => {
             // Subs BEGIN
             // Subs get their analytics treatment inside them
           }
-          <Route path={ENTER_ROOT_URL}>
-            <SubEnter />
-          </Route>
           <Route path={ACCOUNT_ROOT_URL}>
             <Provided withRelatedVenues>
               <SubAccount />
