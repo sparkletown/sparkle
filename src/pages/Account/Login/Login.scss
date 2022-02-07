@@ -1,3 +1,5 @@
+@use "sass:math";
+
 @import "scss/constants.scss";
 
 $side-padding: 30px;
@@ -53,7 +55,7 @@ $auth-icon-top-margin: 5px;
   height: 100vh;
 
   .logo-container {
-    width: $auth-container-max-width / 2;
+    width: math.div($auth-container-max-width, 2);
     padding-bottom: 50px;
   }
 
