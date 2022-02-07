@@ -1,12 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 
-import { errorMessage, errorStatus } from "types/errors";
+import { SpaceWithId, WorldWithId } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
+import { errorMessage, errorStatus } from "utils/error";
+
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
@@ -15,11 +15,14 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
+
 export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal?: () => void;
   afterUserIsLoggedIn?: (data?: LoginFormData) => void;
+  world: WorldWithId;
+  space: SpaceWithId;
 }
 
 export interface LoginFormData {
@@ -29,18 +32,15 @@ export interface LoginFormData {
   backend?: string;
 }
 
-const LoginForm: React.FunctionComponent<LoginFormProps> = ({
+export const LoginForm: React.FC<LoginFormProps> = ({
   displayRegisterForm,
   displayPasswordResetForm,
   closeAuthenticationModal,
   afterUserIsLoggedIn,
+  world,
+  space,
 }) => {
-  const firebase = useFirebase();
-
   const { signInWithGoogle, signInWithFacebook } = useSocialSignIn();
-
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
 
   const {
     register,
@@ -229,5 +229,3 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
     </div>
   );
 };
-
-export default LoginForm;

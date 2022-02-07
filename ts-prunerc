@@ -1,3 +1,4 @@
 {
-  "skip": "serviceWorker.ts"
+  "skip": "serviceWorker.ts",
+  "error": true
 }

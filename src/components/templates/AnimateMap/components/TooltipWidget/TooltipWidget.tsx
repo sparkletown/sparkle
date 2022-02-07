@@ -49,7 +49,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
       if (state.timeoutFunc) {
         clearTimeout(state.timeoutFunc);
         if (state.lastVenue === venue) {
-          state.timeoutFunc = setTimeout(() => {
+          state.timeoutFunc = window.setTimeout(() => {
             const current =
               state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1;
             state.itemsData[current].status = null;
@@ -80,7 +80,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
       state.itemsData[prev].status = "hide";
       state.current = next;
 
-      state.timeoutFunc = setTimeout(() => {
+      state.timeoutFunc = window.setTimeout(() => {
         state.itemsData[current].status = null;
         state.timeoutFunc = null;
         setState({ ...state });

@@ -1,7 +1,9 @@
 import React from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import { WithSlugsProps } from "components/hocs/context/withSlugs";
+import { WithAuthProps } from "components/hocs/db/withAuth";
+import firebase from "firebase/compat/app";
 
 import {
   DEFAULT_SPACE_SLUG,
@@ -14,9 +16,7 @@ import {
   generateAttendeeSpaceLandingUrl,
 } from "utils/url";
 
-import { useIsAdminUser } from "hooks/roles";
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useUser } from "hooks/useUser";
+import { UseAdminRole } from "hooks/user/useAdminRole";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
@@ -25,20 +25,21 @@ import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 
 import "./AdminRestricted.scss";
 
-export const AdminRestricted: React.FC = ({ children }) => {
-  const firebase = useFirebase();
-  const history = useHistory();
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { userId } = useUser();
+type Props = WithAuthProps & WithSlugsProps & Partial<ReturnType<UseAdminRole>>;
 
-  const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
+export const AdminRestricted: React.FC<Props> = ({
+  userId,
+  worldSlug,
+  spaceSlug,
+}) => {
+  const history = useHistory();
 
   const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     history.push(
       spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
-  }, [firebase, history, worldSlug, spaceSlug]);
+  }, [history, worldSlug, spaceSlug]);
 
   const redirectToDefaultRoute = () =>
     history.push(
@@ -48,14 +49,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
       })
     );
 
-  const authHandler = userId ? logout : redirectToDefaultRoute;
-
-  if (isAdminUser) return <>{children}</>;
-
-  if (isCheckingRole)
-    return (
-      <div className="AdminRestricted AdminRestricted--loading">Loading...</div>
-    );
+  const handleLogout = userId ? logout : redirectToDefaultRoute;
 
   return (
     <div className="AdminRestricted AdminRestricted--forbidden">
@@ -81,7 +75,7 @@ export const AdminRestricted: React.FC = ({ children }) => {
             variant="primary"
             loading={isLoggingOut}
             disabled={isLoggingOut}
-            onClick={authHandler}
+            onClick={handleLogout}
           >
             {userId ? "Log Out" : "Log In"}
           </ButtonNG>

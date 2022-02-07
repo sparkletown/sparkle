@@ -1,5 +1,6 @@
 import { PortalBox, PortalInput } from "types/rooms";
-import { PortalTemplate, VenueTemplate } from "types/venues";
+import { PortalTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import IconAnimateMap from "assets/icons/icon-room-animatemap.svg";
 import IconArtPiece from "assets/icons/icon-room-artpiece.svg";

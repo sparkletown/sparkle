@@ -1,7 +1,7 @@
 var fs = require("fs");
-var firebase = require("firebase/app");
-require("firebase/auth");
-require("firebase/firestore");
+var firebase = require("firebase/compat/app");
+require("firebase/compat/auth");
+require("firebase/compat/firestore");
 var read = require("read");
 
 const usage = () => {

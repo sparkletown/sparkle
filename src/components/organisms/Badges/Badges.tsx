@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useFirestore } from "react-redux-firebase";
+import { useFirestore } from "reactfire";
 import { User } from "@bugsnag/js";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { chunk } from "lodash";
 
 import {
+  COLLECTION_SPACES,
   DEFAULT_BADGE_IMAGE,
   FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
 } from "settings";
@@ -75,14 +77,16 @@ export const Badges: React.FC<{
       visits,
       FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS
     ).map((visitChunk) =>
-      firestore
-        .collection("venues")
-        .where(
-          "name",
-          "in",
-          visitChunk.map((visit) => visit.id)
+      getDocs(
+        query(
+          collection(firestore, COLLECTION_SPACES),
+          where(
+            "name",
+            "in",
+            visitChunk.map((visit) => visit.id)
+          )
         )
-        .get()
+      )
     );
 
     let venues: WithId<AnyVenue>[] = [];
@@ -107,13 +111,18 @@ export const Badges: React.FC<{
 
     setVenues(venues);
     setVisits(visits);
-    setIsLoading(false);
-  }, [firestore, user.id]);
+  }, [firestore, user.id, setVenues, setVisits]);
 
   useEffect(() => {
     setIsLoading(true);
-    fetchAllVenues().catch((e) => console.error(Badges.name, e));
-  }, [fetchAllVenues]);
+    const stop = () => setIsLoading(false);
+
+    fetchAllVenues()
+      .catch((e) => console.error(Badges.name, e))
+      .finally(stop);
+
+    return stop;
+  }, [setIsLoading, fetchAllVenues]);
 
   const venueNames = useMemo(() => venues.map((venue) => venue.name), [venues]);
 
@@ -174,7 +183,11 @@ export const Badges: React.FC<{
     return <>Visit venues to collect badges!</>;
   }
 
-  return isWorldLoaded && world?.showBadges ? (
+  if (!isWorldLoaded || !world?.showBadges) {
+    return null;
+  }
+
+  return (
     <div className="Badges">
       <div className="Badges__visits">
         <div className="Badges__visit">
@@ -197,5 +210,5 @@ export const Badges: React.FC<{
         <ul className="Badges__list">{badgeList}</ul>
       </div>
     </div>
-  ) : null;
+  );
 };

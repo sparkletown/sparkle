@@ -1,22 +1,106 @@
 @import "scss/constants";
 
 .Dropdown {
-  &__button {
-    color: $accent--over;
-    background: none;
-    padding: 0;
-    margin: 0;
-    border: none;
-    line-height: unset;
-    vertical-align: baseline;
+  background: transparent;
+  border: none;
+  border-radius: 50px;
+  box-shadow: none;
+  outline: none;
+  width: 100%;
 
-    &:focus {
-      box-shadow: none;
-    }
+  .Select {
+    display: flex;
+    align-items: center;
+    padding: $spacing--md $spacing--xl;
+    cursor: pointer;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--500;
+    line-height: 19px;
 
+    &:focus,
     &:hover {
-      background-color: initial;
-      transform: none;
+      background: opaque-white(0.2);
+      box-shadow: 0 2px 4px opaque-black(0.25);
+      border-radius: $border-radius--xl;
     }
+
+    &__control {
+      cursor: pointer;
+      padding: 8px;
+      background: transparent;
+      border: none;
+      border-radius: $border-radius--xl;
+      box-shadow: none;
+      outline: none;
+      display: flex;
+    }
+
+    &__menu {
+      background: var(--content--under-lighter-20pp);
+      box-shadow: 0 10px 20px opaque-black(0.25);
+      border-radius: $border-radius--xl;
+      z-index: 1;
+      max-height: 240px;
+      position: absolute;
+      top: 45px;
+      overflow: auto;
+      cursor: default;
+      width: 100%;
+    }
+
+    &__menu-list {
+      max-height: 240px;
+    }
+
+    &__option {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 17px;
+      padding: 0;
+      cursor: pointer;
+
+      &:hover {
+        background: opaque-white(0.2);
+      }
+    }
+
+    &__input-container {
+      height: 0;
+      border: none;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      opacity: 0;
+    }
+
+    &__input-container &__input {
+      opacity: 0 !important;
+    }
+
+    &__single-value {
+      color: var(--content--over);
+    }
+
+    &__indicator-separator {
+      display: none;
+    }
+
+    &__value-container {
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      padding: $spacing--xs $spacing--sm;
+      flex: 1;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &--arrowless .Select__dropdown-indicator {
+    display: none;
   }
 }

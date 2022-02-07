@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo } from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useMap } from "react-use";
+import firebase from "firebase/compat/app";
 
 import { REACTION_TIMEOUT } from "settings";
 
@@ -36,8 +36,6 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
     { set: setReaction, remove: removeReaction },
   ] = useMap<ReactionsById>({});
 
-  const firebase = useFirebase();
-
   useEffect(() => {
     if (!venueId) return;
 
@@ -70,7 +68,7 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
     return () => {
       unsubscribeListener();
     };
-  }, [firebase, venueId, withPastReactions, setReaction, removeReaction]);
+  }, [venueId, withPastReactions, setReaction, removeReaction]);
 
   const reactionsState: ReactionsContextState = useMemo(
     () => ({

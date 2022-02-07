@@ -9,7 +9,7 @@ import { resolve } from "path";
 // import { PartyMapVenue, VenueTemplate } from "../src/types/venues";
 //
 // import { WithoutId } from "../src/utils/id";
-import { AdminRole } from "../src/hooks/roles";
+import { AdminRole } from "../src/hooks/user/useAdminRole";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
@@ -56,7 +56,7 @@ const bootstrapVenueData = {
       coverImageUrl: "/assets/Default_Venue_Banner.png",
     },
     theme: {
-      primaryColor: "#bc271a",
+      primaryColor: "#BC271A",
     },
   },
   owners: [],

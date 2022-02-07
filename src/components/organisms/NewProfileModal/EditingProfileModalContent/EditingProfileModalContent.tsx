@@ -1,11 +1,10 @@
 import React, { useCallback } from "react";
 import { FieldErrors, useFieldArray, useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/compat/app";
 import { pick, uniq } from "lodash";
 
 import {
-  profileModalPasswordsFields,
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
@@ -30,19 +29,26 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 
 import "./EditingProfileModalContent.scss";
 
+const PASSWORD_FIELDS: (keyof UserProfileModalFormDataPasswords)[] = [
+  "oldPassword",
+  "newPassword",
+  "confirmNewPassword",
+];
+Object.freeze(PASSWORD_FIELDS);
+
 export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
-  venue?: WithId<AnyVenue>;
+  space?: WithId<AnyVenue>;
   onCancelEditing: () => void;
 }
 
 export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
   user,
-  venue,
+  space,
   onCancelEditing,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
-  const firebaseUser = useFirebase().auth()?.currentUser;
+  const { questions, answers } = useProfileQuestions(user, space?.worldId);
+  const firebaseUser = firebase.auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(
     user,
@@ -123,9 +129,9 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         ...data,
       };
 
-      const passwordsNotEmpty = Object.values(
-        pick(data, profileModalPasswordsFields)
-      ).some((x) => x);
+      const passwordsNotEmpty = Object.values(pick(data, PASSWORD_FIELDS)).some(
+        (x) => x
+      );
       if (passwordsNotEmpty) {
         if (!(await checkOldPassword(data.oldPassword))) {
           setError(formProp("oldPassword"), "validate", "Incorrect password");
@@ -140,7 +146,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
         Array.from(formState.dirtyFields)
           .filter(
             (k) =>
-              !profileModalPasswordsFields.includes(
+              !PASSWORD_FIELDS.includes(
                 k as keyof UserProfileModalFormDataPasswords
               )
           )

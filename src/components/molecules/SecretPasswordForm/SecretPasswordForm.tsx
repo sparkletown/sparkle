@@ -1,5 +1,6 @@
 import React, { ChangeEventHandler, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { get } from "lodash/fp";
 
 import { ATTENDEE_STEPPING_PARAM_URL, DEFAULT_ENTER_STEP } from "settings";
 
@@ -14,7 +15,7 @@ import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 
 import "./SecretPasswordForm.scss";
 
-const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
+export const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
   const { spaceId } = useWorldAndSpaceBySlug(worldSlug, spaceSlug);
@@ -59,8 +60,9 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
         password,
       })
         .then((result) => {
-          if (isTruthy(result?.data?.token)) {
-            setLocalStorageToken(spaceId, result.data.token);
+          const token = get("token", result?.data);
+          if (isTruthy(token)) {
+            setLocalStorageToken(spaceId, token);
             history.push(
               generateUrl({
                 route: ATTENDEE_STEPPING_PARAM_URL,
@@ -108,5 +110,3 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
     </>
   );
 };
-
-export default SecretPasswordForm;

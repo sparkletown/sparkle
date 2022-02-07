@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsync, useAsyncFn } from "react-use";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
@@ -10,9 +9,9 @@ import { DEFAULT_PORTAL_IS_ENABLED, PORTAL_INFO_ICON_MAPPING } from "settings";
 import { upsertRoom } from "api/admin";
 import { fetchVenue } from "api/venue";
 
+import { WorldSlug } from "types/id";
 import { Room } from "types/rooms";
 import { AnyVenue } from "types/venues";
-import { WorldSlug } from "types/world";
 
 import {
   convertClickabilityToPortalType,
@@ -182,7 +181,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
 
   return (
     <>
-      <Form className="PortalStripForm">
+      <form className="PortalStripForm">
         <div className="PortalStripForm__cell PortalStripForm__icon">
           <PortalIcon src={portalIcon} />
         </div>
@@ -224,7 +223,7 @@ export const PortalStripForm: React.FC<PortalStripFormProps> = ({
         </div>
         <FormErrors errors={errors} />
         <SubmitError error={submitError} />
-      </Form>
+      </form>
       {isModalShown && (
         <PortalAddEditModal
           portal={portal}

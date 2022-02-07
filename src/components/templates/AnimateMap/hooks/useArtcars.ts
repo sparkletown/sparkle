@@ -1,46 +1,29 @@
 import { useMemo } from "react";
 
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
+
 import { ArtCar } from "types/animateMap";
 import { ReactHook } from "types/utility";
 
-import { animateMapArtCarsSelector } from "utils/selectors";
+import { convertToFirestoreKey } from "utils/id";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export interface UseArtcarProps {
-  animateMapId: string;
-}
-
-export interface UseArtcarData {
-  artcars: ArtCar[];
-}
-
-const useArtcarsConnect = (animateMapId: string) => {
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      doc: animateMapId,
-      subcollections: [{ collection: "artcars" }],
-      storeAs: "animatemapArtcars",
-    },
+export const useArtcars: ReactHook<
+  { animateMapId: string },
+  { artcars: ArtCar[] }
+> = ({ animateMapId }) => {
+  const { data, isLoaded } = useRefiCollection<ArtCar>([
+    COLLECTION_SPACES,
+    convertToFirestoreKey(animateMapId),
+    "artcars",
   ]);
-};
-
-const emptyAnimateMapArtcarsArray: ArtCar[] = [];
-
-export const useArtcars: ReactHook<UseArtcarProps, UseArtcarData> = ({
-  animateMapId,
-}) => {
-  useArtcarsConnect(animateMapId);
-
-  const artcars = useSelector(animateMapArtCarsSelector);
 
   return useMemo(
     () => ({
-      artcars: artcars ?? emptyAnimateMapArtcarsArray,
-      isArtcarsLoaded: isLoaded(artcars),
+      artcars: data ?? ALWAYS_EMPTY_ARRAY,
+      isArtcarsLoaded: isLoaded,
     }),
-    [artcars]
+    [data, isLoaded]
   );
 };

@@ -1,47 +1,31 @@
 import { useMemo } from "react";
 
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
+
 import { Firebarrel } from "types/animateMap";
 import { ReactHook } from "types/utility";
 
-import { animateMapFirebarrelsSelector } from "utils/selectors";
+import { convertToFirestoreKey } from "utils/id";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export interface UseFirebarrelProps {
-  animateMapId: string;
-}
+type UseFirebarrels = ReactHook<
+  { animateMapId: string },
+  { firebarrels: Firebarrel[] }
+>;
 
-export interface UseFirebarrelData {
-  firebarrels: Firebarrel[];
-}
-
-const useFirebarrelsConnect = (animateMapId: string) => {
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      doc: animateMapId,
-      subcollections: [{ collection: "firebarrels" }],
-      storeAs: "animatemapFirebarrels",
-    },
+export const useFirebarrels: UseFirebarrels = ({ animateMapId }) => {
+  const { data, isLoaded } = useRefiCollection<Firebarrel>([
+    COLLECTION_SPACES,
+    convertToFirestoreKey(animateMapId),
+    "firebarrels",
   ]);
-};
-
-const emptyAnimateMapFirebarrelsArray: Firebarrel[] = [];
-
-export const useFirebarrels: ReactHook<
-  UseFirebarrelProps,
-  UseFirebarrelData
-> = ({ animateMapId }) => {
-  useFirebarrelsConnect(animateMapId);
-
-  const firebarrels = useSelector(animateMapFirebarrelsSelector);
 
   return useMemo(
     () => ({
-      firebarrels: firebarrels ?? emptyAnimateMapFirebarrelsArray,
-      isFirebarrelsLoaded: isLoaded(firebarrels),
+      firebarrels: data ?? ALWAYS_EMPTY_ARRAY,
+      isFirebarrelsLoaded: isLoaded,
     }),
-    [firebarrels]
+    [data, isLoaded]
   );
 };

@@ -1,9 +1,6 @@
 import React from "react";
 
-import { User } from "types/User";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId, UserWithId, WorldId } from "types/id";
 
 import { useProfileQuestions } from "hooks/useProfileQuestions";
 
@@ -16,8 +13,9 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 import "./ProfileModalContent.scss";
 
 export interface ProfileModalContentProps {
-  user: WithId<User>;
-  venue?: WithId<AnyVenue>;
+  user: UserWithId;
+  space: SpaceWithId;
+  worldId: WorldId;
   onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }
@@ -26,17 +24,18 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   user,
   onPrimaryButtonClick,
   onEditMode,
-  venue,
+  space,
+  worldId,
 }) => {
-  const { questions, answers } = useProfileQuestions(user, venue?.worldId);
+  const { questions, answers } = useProfileQuestions(user, worldId);
 
   return (
-    <>
+    <div className="ProfileModalContent">
       <ProfileModalBasicInfo user={user} onEdit={onEditMode} />
       <ProfileModalQuestions questions={questions} answers={answers} />
       <ProfileModalLinks user={user} />
-      {venue && <Badges user={user} currentVenue={venue} />}
+      {space && <Badges user={user} currentVenue={space} />}
       <ProfileModalButtons onClick={onPrimaryButtonClick} user={user} />
-    </>
+    </div>
   );
 };

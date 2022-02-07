@@ -5,10 +5,10 @@ import { ALWAYS_EMPTY_ARRAY } from "settings";
 
 import { getUserRef } from "api/profile";
 
+import { SpaceWithId } from "types/id";
 import { User } from "types/User";
-import { AnyVenue } from "types/venues";
 
-import { WithId, withId } from "utils/id";
+import { withId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -21,17 +21,17 @@ import { ButtonNG } from "components/atoms/ButtonNG";
 import "./RunTabUsers.scss";
 
 interface RunTabSidebarProps {
-  venue?: WithId<AnyVenue>;
+  space: SpaceWithId;
 }
 
-export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venue }) => {
+export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ space }) => {
   const {
     isShown: isShownInviteAdminModal,
     show: showInviteAdminModal,
     hide: hideInviteAdminModal,
   } = useShowHide();
 
-  const owners = venue?.owners ?? ALWAYS_EMPTY_ARRAY;
+  const owners = space.owners ?? ALWAYS_EMPTY_ARRAY;
 
   const { value: admins = ALWAYS_EMPTY_ARRAY } = useAsync(
     async () =>
@@ -40,10 +40,6 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venue }) => {
       ),
     [owners]
   );
-
-  if (!venue) {
-    return null;
-  }
 
   return (
     <div className="RunTabUsers">
@@ -56,7 +52,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venue }) => {
       <VenueOwnersModal
         visible={isShownInviteAdminModal}
         onHide={hideInviteAdminModal}
-        venue={venue}
+        venue={space}
       />
       {admins.map((user) => (
         <RunTabUserInfo key={user.id} user={user} />
