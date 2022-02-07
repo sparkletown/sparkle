@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 import React, { useMemo } from "react";
-import { useAsyncFn, useCss } from "react-use";
-import classNames from "classnames";
-=======
-import React from "react";
-import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
->>>>>>> Remove all the styling from the app
 
 import {
   CONVERSATION_TABLES,
@@ -36,7 +29,9 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./TableComponent.scss";
 
-export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+export const TableComponent: React.FunctionComponent<
+  TableComponentPropsType
+> = ({
   users,
   onJoinClicked,
   imageSize = 50,
@@ -75,18 +70,6 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
 
     toggleModal();
   }, [table.reference, venue.id, venue.template, toggleModal]);
-
-  const isJazzBar = template === VenueTemplate.jazzbar;
-
-  const itemStyles = useCss(
-    isJazzBar
-      ? {}
-      : {
-        width: `${table.columns && (table.columns + 1) * 55}px`,
-      }
-  );
-
-  const itemClasses = classNames("TableComponent__item", itemStyles);
 
   const renderedUserPictures = useMemo(
     () =>
