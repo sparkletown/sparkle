@@ -110,7 +110,31 @@ interface StateUpdateCallbackParams {
   status: VideoCommsStatus;
 }
 
+type TrackSubscriptionCallback = (
+  track: Twilio.RemoteTrack,
+  publication: Twilio.RemoteTrackPublication
+) => void;
+
 type StateUpdateCallback = (update: StateUpdateCallbackParams) => void;
+
+// @debt I imagine someone with more partience could figure out how to get
+// rid of the type repitition here. It wasn't immediately obvious to me.
+type SubscribeToParticipantEvent = {
+  (
+    participant: RemoteParticipant,
+    eventName: "trackSubscribed",
+    callback: TrackSubscriptionCallback
+  ): void;
+  (
+    participant: RemoteParticipant,
+    eventName: "trackUnsubscribed",
+    callback: TrackSubscriptionCallback
+  ): void;
+};
+
+type EventSubscription =
+  | ["trackSubscribed", TrackSubscriptionCallback]
+  | ["trackUnsubscribed", TrackSubscriptionCallback];
 
 /**
  * This provides an interface over the top of Twilio. It is designed to
@@ -127,15 +151,15 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   let status = VideoCommsStatus.Disconnected;
   let participantEventSubscriptions: Map<
     RemoteParticipant,
-    [string, (...args: unknown[]) => void][]
+    EventSubscription[]
   > = new Map();
 
   // TODO, maybe the subscription management can go into it's own class to keep
   // things tidy
-  const subscribeToParticipantEvent = (
-    participant: RemoteParticipant,
-    eventName: string,
-    callback: (...args: unknown[]) => void
+  const subscribeToParticipantEvent: SubscribeToParticipantEvent = (
+    participant,
+    eventName,
+    callback
   ) => {
     participant.on(eventName, callback);
     let existing = participantEventSubscriptions.get(participant);
@@ -173,20 +197,11 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       audioTracks: [],
       videoTracks: publicationsToTracks(participant.videoTracks),
     });
-    subscribeToParticipantEvent(
-      participant,
-      "trackSubscribed",
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - Come back and fix the types here
-      (track: VideoTrack | AudioTrack) => onTrackSubscribed(participant, track)
+    subscribeToParticipantEvent(participant, "trackSubscribed", (track) =>
+      onTrackSubscribed(participant, track)
     );
-    subscribeToParticipantEvent(
-      participant,
-      "trackUnsubscribed",
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore - Come back and fix the types here
-      (track: VideoTrack | AudioTrack) =>
-        onTrackUnsubscribed(participant, track)
+    subscribeToParticipantEvent(participant, "trackUnsubscribed", (track) =>
+      onTrackUnsubscribed(participant, track)
     );
     triggerStatusUpdate();
   };
@@ -201,7 +216,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
 
   const onTrackSubscribed = (
     participant: RemoteParticipant,
-    track: VideoTrack | AudioTrack
+    track: Twilio.RemoteTrack
   ) => {
     if (track.kind === "video") {
       const mappedParticipant = remoteParticipants.find(
@@ -218,7 +233,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
 
   const onTrackUnsubscribed = (
     participant: RemoteParticipant,
-    track: VideoTrack | AudioTrack
+    track: Twilio.RemoteTrack
   ) => {
     if (track.kind === "video") {
       const mappedParticipant = remoteParticipants.find(
