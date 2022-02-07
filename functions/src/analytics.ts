@@ -8,6 +8,7 @@ import { chunk } from "lodash";
 import { HttpsFunctionHandler } from "./types/utility";
 import { assertValidAuth } from "./utils/assert";
 import { checkIsAdmin } from "./utils/permissions";
+import { formatSecondsAsHHMMSS } from "./utils/time";
 
 const functionsConfig = functions.config();
 
