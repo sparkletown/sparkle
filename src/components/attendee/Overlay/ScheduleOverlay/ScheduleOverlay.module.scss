@@ -1,0 +1,36 @@
+@import "../../scss/AttendeeMixins.scss";
+
+.ScheduleOverlay {
+  &__wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 800px;
+    min-height: 100vh;
+    margin: $whitespace * 10 auto 0 $whitespace * 5;
+    padding: $whitespace * 4 $whitespace * 3;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: $element-height-normal;
+    margin: $whitespace * 3 0;
+  }
+
+  &__content {
+    height: 100%;
+    width: 100%;
+  }
+
+  &__button {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__bookmark {
+    cursor: pointer;
+  }
+}

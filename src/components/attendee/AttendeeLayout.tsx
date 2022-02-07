@@ -4,6 +4,7 @@ import { useUser } from "hooks/useUser";
 
 import { VenuePage } from "pages/VenuePage";
 
+import { AttendeeHeader } from "./Header/AttendeeHeader";
 import { VideoHuddleProvider } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";
 import { ChatContainer } from "./ChatContainer";
@@ -23,7 +24,7 @@ export const AttendeeLayout: React.FC = () => {
 
   return (
     <VideoHuddleProvider>
-      <header></header>
+      <AttendeeHeader />
       <main>
         <section className={styles.Space}>
           <VenuePage />

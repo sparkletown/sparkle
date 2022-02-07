@@ -1,0 +1,11 @@
+@import "../scss/AttendeeMixins.scss";
+
+.Button {
+  @include sparkle-color-glass;
+  padding: 0 $whitespace;
+  height: $element-height-normal;
+  margin: $button-gap;
+  border-radius: $border-radius-normal;
+  white-space: nowrap;
+  cursor: pointer;
+}
