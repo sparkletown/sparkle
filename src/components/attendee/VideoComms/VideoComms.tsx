@@ -1,19 +1,23 @@
 import React, { useCallback, useMemo, useState } from "react";
-import Twilio, {
-  LocalAudioTrack,
-  LocalVideoTrack,
-  RemoteParticipant,
-  Room,
-} from "twilio-video";
+import Twilio from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
-export enum VideoCommsStatus {
-  Disconnected = "DISCONNECTED",
-  Connecting = "CONNECTING",
-  Connected = "CONNECTED",
-  Errored = "ERRORED",
-}
+import {
+  EventSubscription,
+  SubscribeToParticipantEvent,
+} from "./internalTypes";
+import {
+  HasNullableTrack,
+  LocalParticipant,
+  Participant,
+  StateUpdateCallback,
+  StateUpdateCallbackParams,
+  VideoCommsContextType,
+  VideoCommsProviderProps,
+  VideoCommsStatus,
+  VideoTrack,
+} from "./types";
 
 export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   status: VideoCommsStatus.Disconnected,
@@ -21,120 +25,6 @@ export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   disconnect: () => {},
   remoteParticipants: [],
 });
-
-interface VideoCommsProviderProps {
-  userId: string;
-  children: React.ReactNode;
-}
-
-interface Track {
-  kind: "video" | "audio";
-}
-
-interface VideoTrack extends Track {
-  attach: (el: HTMLVideoElement) => void;
-  kind: "video";
-}
-
-interface AudioTrack extends Track {
-  kind: "audio";
-}
-
-export interface Participant {
-  /**
-   * ID of the participant - used for communication with the video platform
-   */
-  id: string;
-
-  /**
-   * Video tracks
-   */
-  videoTracks: VideoTrack[];
-
-  /**
-   * Audio tracks
-   */
-  audioTracks: AudioTrack[];
-}
-
-type JoinChannelFunc = (userId: string, channelId: string) => void;
-type DisconnectFunc = () => void;
-type StartAudioFunc = () => void;
-type StopAudioFunc = () => void;
-type StartVideoFunc = () => void;
-type StopVideoFunc = () => void;
-type StartScreenshareFunc = () => void;
-type StopScreenshareFunc = () => void;
-
-export interface LocalParticipant extends Participant {
-  startAudio: () => void;
-  stopAudio: () => void;
-  stopVideo: () => void;
-  startVideo: () => void;
-
-  isTransmittingAudio: boolean;
-  isTransmittingVideo: boolean;
-}
-
-interface VideoCommsContextType {
-  channelId?: string;
-  status: VideoCommsStatus;
-  joinChannel: JoinChannelFunc;
-  disconnect: DisconnectFunc;
-
-  localParticipant?: LocalParticipant;
-  remoteParticipants: Participant[];
-}
-
-export interface VideoCommsImplementation {
-  joinChannel: JoinChannelFunc;
-  disconnect: DisconnectFunc;
-
-  stopLocalAudio: StopAudioFunc;
-  startLocalAudio: StartAudioFunc;
-  stopLocalVideo: StopVideoFunc;
-  startLocalVideo: StartVideoFunc;
-
-  // TODO implement this
-  startScreenshare: StartScreenshareFunc;
-  stopScreenshare: StopScreenshareFunc;
-}
-
-interface HasNullableTrack {
-  track: VideoTrack | null;
-}
-
-interface StateUpdateCallbackParams {
-  localParticipant?: LocalParticipant;
-  remoteParticipants: Participant[];
-  status: VideoCommsStatus;
-}
-
-type TrackSubscriptionCallback = (
-  track: Twilio.RemoteTrack,
-  publication: Twilio.RemoteTrackPublication
-) => void;
-
-type StateUpdateCallback = (update: StateUpdateCallbackParams) => void;
-
-// @debt I imagine someone with more partience could figure out how to get
-// rid of the type repitition here. It wasn't immediately obvious to me.
-type SubscribeToParticipantEvent = {
-  (
-    participant: RemoteParticipant,
-    eventName: "trackSubscribed",
-    callback: TrackSubscriptionCallback
-  ): void;
-  (
-    participant: RemoteParticipant,
-    eventName: "trackUnsubscribed",
-    callback: TrackSubscriptionCallback
-  ): void;
-};
-
-type EventSubscription =
-  | ["trackSubscribed", TrackSubscriptionCallback]
-  | ["trackUnsubscribed", TrackSubscriptionCallback];
 
 /**
  * This provides an interface over the top of Twilio. It is designed to
@@ -146,11 +36,11 @@ type EventSubscription =
  */
 const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   let remoteParticipants: Participant[] = [];
-  let room: Room | undefined;
+  let room: Twilio.Room | undefined;
   let localParticipant: LocalParticipant | undefined;
   let status = VideoCommsStatus.Disconnected;
   let participantEventSubscriptions: Map<
-    RemoteParticipant,
+    Twilio.RemoteParticipant,
     EventSubscription[]
   > = new Map();
 
@@ -171,7 +61,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     participantEventSubscriptions.set(participant, existing);
   };
 
-  const unsubscribeParticipantEvents = (participant: RemoteParticipant) => {
+  const unsubscribeParticipantEvents = (
+    participant: Twilio.RemoteParticipant
+  ) => {
     const toUnsubscribe = participantEventSubscriptions.get(participant) || [];
     for (const [eventName, callbackFn] of toUnsubscribe) {
       participant.off(eventName, callbackFn);
@@ -191,7 +83,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     participantEventSubscriptions = new Map();
   };
 
-  const participantConnected = (participant: RemoteParticipant) => {
+  const participantConnected = (participant: Twilio.RemoteParticipant) => {
     remoteParticipants.push({
       id: participant.sid,
       audioTracks: [],
@@ -206,7 +98,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     triggerStatusUpdate();
   };
 
-  const participantDisconnected = (participant: RemoteParticipant) => {
+  const participantDisconnected = (participant: Twilio.RemoteParticipant) => {
     remoteParticipants = remoteParticipants.filter(
       (p) => p.id !== participant.sid
     );
@@ -215,7 +107,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
 
   const onTrackSubscribed = (
-    participant: RemoteParticipant,
+    participant: Twilio.RemoteParticipant,
     track: Twilio.RemoteTrack
   ) => {
     if (track.kind === "video") {
@@ -232,7 +124,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
 
   const onTrackUnsubscribed = (
-    participant: RemoteParticipant,
+    participant: Twilio.RemoteParticipant,
     track: Twilio.RemoteTrack
   ) => {
     if (track.kind === "video") {
@@ -312,8 +204,8 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       room.localParticipant.tracks.forEach((trackPublication) => {
         const track = trackPublication.track;
         if (
-          track instanceof LocalVideoTrack ||
-          track instanceof LocalAudioTrack
+          track instanceof Twilio.LocalVideoTrack ||
+          track instanceof Twilio.LocalAudioTrack
         ) {
           track.stop();
         }
