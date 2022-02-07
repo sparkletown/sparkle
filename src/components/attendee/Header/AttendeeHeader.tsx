@@ -1,7 +1,7 @@
 import { useShowHide } from "hooks/useShowHide";
 
 import { Button } from "../Button/Button";
-import { Overlay } from "../Overlay/Overlay";
+import { NavOverlay } from "../NavOverlay/NavOverlay";
 
 import styles from "./AttendeeHeader.module.scss";
 
@@ -20,7 +20,7 @@ export const AttendeeHeader = () => {
           <Button>Search</Button>
         </div>
       </div>
-      <Overlay isShown={isScheduleShown} onClose={hide} type="Schedule" />
+      <NavOverlay isShown={isScheduleShown} onClose={hide} type="Schedule" />
     </header>
   );
 };
