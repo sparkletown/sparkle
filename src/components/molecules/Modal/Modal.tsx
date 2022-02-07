@@ -9,7 +9,7 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./Modal.scss";
 
-type ModalBackground = "dark" | "live";
+type ModalBackgroundVariant = "dark" | "live";
 
 interface ModalProps {
   show: boolean;
@@ -18,7 +18,7 @@ interface ModalProps {
   centered?: boolean;
   absolute?: boolean;
   wide?: boolean;
-  background?: ModalBackground;
+  bgVariant?: ModalBackgroundVariant;
   closeButton?: boolean;
   title?: string;
 }
@@ -31,7 +31,7 @@ export const Modal: React.FC<ModalProps> = ({
   autoHide,
   absolute,
   wide,
-  background,
+  bgVariant,
   closeButton = false,
   title = "",
 }) => {
@@ -41,8 +41,8 @@ export const Modal: React.FC<ModalProps> = ({
     "Modal__overlay--autohide": autoHide,
   });
   const containerClasses = classNames("Modal__container", {
-    "Modal__container--dark": background === "dark",
-    "Modal__container--live": background === "live",
+    "Modal__container--dark": bgVariant === "dark",
+    "Modal__container--live": bgVariant === "live",
     "Modal__container--wide": wide,
   });
 

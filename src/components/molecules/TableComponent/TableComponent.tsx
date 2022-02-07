@@ -145,7 +145,7 @@ export const TableComponent: React.FunctionComponent<TableComponentPropsType> = 
             ))}
         </div>
       </div>
-      <Modal show={isModalShown} onHide={hideModal} centered background="dark">
+      <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
         <div className="TableComponent__modal-container">
           <h2>Delete table</h2>
           <p>

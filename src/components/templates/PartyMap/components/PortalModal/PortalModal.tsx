@@ -49,7 +49,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
     <Modal
       show={show}
       onHide={onHide}
-      background="live"
+      bgVariant="live"
       centered
       autoHide
       absolute={absolute}

@@ -49,7 +49,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ space }) => {
       onHide={hideHandler}
       centered
       autoHide
-      background="live"
+      bgVariant="live"
     >
       <div className="NewProfileModal">
         <NewProfileModalBody
