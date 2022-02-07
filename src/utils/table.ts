@@ -1,4 +1,4 @@
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 import { DEFAULT_TABLE_COLUMNS, DEFAULT_TABLE_ROWS } from "settings";
 

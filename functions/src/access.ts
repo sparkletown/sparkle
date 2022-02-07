@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import { HttpsError } from "firebase-functions/v1/https";
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 import { passwordsMatch } from "./auth";
 

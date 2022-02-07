@@ -38,10 +38,11 @@
     "lodash": "^4.17.21",
     "simple-oauth2": "^4.3.0",
     "twilio": "^3.73.0",
-    "uuidv4": "^6.2.12",
+    "uuid": "^8.3.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "eslint": "^8.7.0",
