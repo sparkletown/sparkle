@@ -62,6 +62,8 @@ const generateAnalytics: HttpsFunctionHandler<{
 }> = async (data, context) => {
   assertValidAuth(context);
 
+  if (!context.auth) return;
+
   await checkIsAdmin(context.auth.token.user_id);
 
   const venueIdsArray = Array.isArray(data?.venueIds)
@@ -328,6 +330,7 @@ const generateAnalytics: HttpsFunctionHandler<{
     expires: expiryDate,
   });
 
+  // eslint-disable-next-line consistent-return
   return {
     dataReportFileUrl,
     allSpaceVisitsFileUrl,
