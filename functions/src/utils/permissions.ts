@@ -1,7 +1,7 @@
 import * as admin from "firebase-admin";
 import { HttpsError } from "firebase-functions/v1/https";
 
-const checkIsAdmin = async (uid: string) => {
+export const checkIsAdmin = async (uid: string) => {
   try {
     const adminDoc = await admin
       .firestore()
@@ -25,6 +25,39 @@ const checkIsAdmin = async (uid: string) => {
     throw new HttpsError(
       "internal",
       `Error occurred checking admin ${uid}: ${error}`
+    );
+  }
+};
+
+export const checkIsWorldOwner = async (worldId: string, uid: string) => {
+  try {
+    const worldDoc = await admin
+      .firestore()
+      .collection("worlds")
+      .doc(worldId)
+      .get();
+
+    if (!worldDoc || !worldDoc.exists) {
+      throw new HttpsError("not-found", `World ${worldId} does not exist`);
+    }
+
+    const world = worldDoc.data();
+    if (!world) {
+      throw new HttpsError("internal", "Data not found");
+    }
+
+    if (world.owners && world.owners.includes(uid)) {
+      return;
+    }
+
+    throw new HttpsError(
+      "permission-denied",
+      `User is not an owner of ${worldId}`
+    );
+  } catch (error) {
+    throw new HttpsError(
+      "internal",
+      `Error occurred obtaining world ${worldId}: ${error}`
     );
   }
 };

@@ -7,7 +7,7 @@ import { chunk } from "lodash";
 
 import { HttpsFunctionHandler } from "./types/utility";
 import { assertValidAuth } from "./utils/assert";
-import { formatSecondsAsHHMMSS } from "./utils/time";
+import { checkIsAdmin } from "./utils/permissions";
 
 const functionsConfig = functions.config();
 
@@ -61,15 +61,11 @@ const generateAnalytics: HttpsFunctionHandler<{
 }> = async (data, context) => {
   assertValidAuth(context);
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   await checkIsAdmin(context.auth.token.user_id);
 
   const venueIdsArray = Array.isArray(data?.venueIds)
     ? data.venueIds
     : (data?.venueIds ?? "").split(",");
-
-  // TODO: CHECK IF ADMIN
   // TODO: extract this as a generic helper function?
   const usersWithVisits: UserWithVisits[] = await Promise.all(
     await getUsersWithVisits(venueIdsArray).then((res) => res.flat())
