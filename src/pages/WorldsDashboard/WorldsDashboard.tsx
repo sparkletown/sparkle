@@ -70,7 +70,7 @@ export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
                   <SectionTitle>My worlds</SectionTitle>
                   <HeaderButton
                     to={ADMIN_IA_WORLD_CREATE_URL}
-                    extraClasses="text-white bg-sparkle rounded-full"
+                    extraClasses="text-white bg-sparkle"
                     name="Create new world"
                     iconExtraClasses=""
                   />

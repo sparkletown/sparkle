@@ -1,6 +1,9 @@
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { MenuIcon } from "@heroicons/react/outline";
 
+import { AdminProfileModal } from "components/organisms/AdminProfileModal";
+
+import { AdminFooter } from "components/molecules/AdminFooter";
 import { AdminNavBar } from "components/molecules/AdminNavBar";
 
 export interface AdminLayoutPropsType {
@@ -15,6 +18,7 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
       document.documentElement.classList.add(htmlClass)
     );
     document.body.classList.add("h-full");
+
     return () => {
       htmlClasses.map((htmlClass) =>
         document.documentElement.classList.remove(htmlClass)
@@ -49,8 +53,13 @@ export const AdminLayout: React.FC<AdminLayoutPropsType> = ({ children }) => {
             <MenuIcon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          {children}
+          <AdminFooter />
+        </main>
       </div>
+
+      <AdminProfileModal />
     </div>
   );
 };
