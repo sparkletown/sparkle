@@ -30,11 +30,13 @@ import "./AdminSpaceCard.scss";
 export interface AdminSpaceCardProps {
   venue: WithId<AnyVenue>;
   worldSlug?: WorldSlug;
+  isEditable?: boolean;
 }
 
 export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
   venue,
   worldSlug,
+  isEditable,
 }) => {
   const [imageUrl] = useValidImage(
     venue?.config?.landingPageConfig.coverImageUrl ||
@@ -125,7 +127,7 @@ export const AdminSpaceCard: React.FC<AdminSpaceCardProps> = ({
                 ? adminNGVenueUrl(worldSlug, venue.slug)
                 : "#"
             }
-            disabled={!venue.slug}
+            disabled={!venue.slug || !isEditable}
           >
             Edit
           </ButtonNG>

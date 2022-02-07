@@ -24,7 +24,7 @@ export const useProfileModalFormDefaultValues: (
   useMemo(
     () => ({
       profileLinks: user.profileLinks ?? [],
-      pictureUrl: determineAvatar({ user }),
+      pictureUrl: determineAvatar({ user }).src,
       partyName: user.partyName ?? DEFAULT_PARTY_NAME,
       ...(questions
         ? Object.assign(

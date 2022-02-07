@@ -223,7 +223,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
 
       if (auth.message) {
         setError("backend", "firebase", "Error");
-
         return;
       }
 

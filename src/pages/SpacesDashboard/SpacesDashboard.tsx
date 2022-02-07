@@ -39,10 +39,13 @@ interface SpacesDashboardProps {
 
 export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
   ownSpaces,
+  userId,
   world,
   worldId,
   worldSlug,
 }) => {
+  const isWorldAdmin = userId ? world?.owners.includes(userId) : undefined;
+
   const spaces = useMemo(
     () => (world ? ownSpaces.filter((venue) => venue.worldId === worldId) : []),
     [ownSpaces, world, worldId]
@@ -60,22 +63,40 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
 
   const renderedPartyVenues = useMemo(
     () =>
-      sortedVenues
-        ?.filter(isPartyMapVenue)
-        .map((venue) => (
-          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
-        )),
-    [sortedVenues, worldSlug]
+      sortedVenues?.filter(isPartyMapVenue).map((venue) => {
+        const isSpaceAdmin = userId
+          ? venue.owners?.includes(userId)
+          : undefined;
+
+        return (
+          <AdminSpaceCard
+            key={venue.id}
+            venue={venue}
+            worldSlug={worldSlug}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
+    [sortedVenues, worldSlug, isWorldAdmin, userId]
   );
 
   const renderedOtherVenues = useMemo(
     () =>
-      sortedVenues
-        ?.filter(isNotPartyMapVenue)
-        .map((venue) => (
-          <AdminSpaceCard key={venue.id} venue={venue} worldSlug={worldSlug} />
-        )),
-    [sortedVenues, worldSlug]
+      sortedVenues?.filter(isNotPartyMapVenue).map((venue) => {
+        const isSpaceAdmin = userId
+          ? venue.owners?.includes(userId)
+          : undefined;
+
+        return (
+          <AdminSpaceCard
+            key={venue.id}
+            venue={venue}
+            worldSlug={worldSlug}
+            isEditable={isWorldAdmin || isSpaceAdmin}
+          />
+        );
+      }),
+    [sortedVenues, worldSlug, isWorldAdmin, userId]
   );
 
   const hasPartyVenues = renderedPartyVenues.length > 0;
@@ -98,17 +119,19 @@ export const SpacesDashboard: React.FC<SpacesDashboardProps> = ({
             </ButtonNG>
             <AdminTitle>{world?.name} dashboard</AdminTitle>
             <div>
-              <ButtonNG
-                variant="secondary"
-                isLink
-                linkTo={generateUrl({
-                  route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
-                  required: ["worldSlug"],
-                  params: { worldSlug },
-                })}
-              >
-                Settings
-              </ButtonNG>
+              {isWorldAdmin && (
+                <ButtonNG
+                  variant="secondary"
+                  isLink
+                  linkTo={generateUrl({
+                    route: ADMIN_IA_WORLD_EDIT_PARAM_URL,
+                    required: ["worldSlug"],
+                    params: { worldSlug },
+                  })}
+                >
+                  Settings
+                </ButtonNG>
+              )}
             </div>
           </AdminTitleBar>
 

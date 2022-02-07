@@ -9,6 +9,8 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./Modal.scss";
 
+type ModalBackground = "dark" | "live";
+
 interface ModalProps {
   show: boolean;
   onHide?: () => void;
@@ -16,7 +18,7 @@ interface ModalProps {
   centered?: boolean;
   absolute?: boolean;
   wide?: boolean;
-  background?: "dark" | "live";
+  background?: ModalBackground;
   closeButton?: boolean;
   title?: string;
 }

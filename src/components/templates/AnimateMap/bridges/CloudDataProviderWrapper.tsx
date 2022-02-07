@@ -39,6 +39,7 @@ export type RoomWithFullData = (WithVenue<Room> | Room) & {
   countUsers?: number;
 };
 
+// @debt use ALWAYS_EMPTY_ARRAY to avoid shared mutable state
 const emptyRelatedVenues: WithId<AnyVenue>[] = [];
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({

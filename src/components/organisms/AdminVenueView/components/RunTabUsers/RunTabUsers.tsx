@@ -31,7 +31,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ space }) => {
     hide: hideInviteAdminModal,
   } = useShowHide();
 
-  const owners = space?.owners ?? ALWAYS_EMPTY_ARRAY;
+  const owners = space.owners ?? ALWAYS_EMPTY_ARRAY;
 
   const { value: admins = ALWAYS_EMPTY_ARRAY } = useAsync(
     async () =>

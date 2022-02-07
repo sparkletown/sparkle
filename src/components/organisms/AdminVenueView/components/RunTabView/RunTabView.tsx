@@ -2,10 +2,7 @@ import React from "react";
 
 import { ALWAYS_EMPTY_ARRAY, SPACE_TAXON } from "settings";
 
-import { SpaceId } from "types/id";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceWithId } from "types/id";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -21,15 +18,18 @@ import { MapPreview } from "../MapPreview";
 import "./RunTabView.scss";
 
 export interface RunTabViewProps {
-  venue?: WithId<AnyVenue>;
+  space?: SpaceWithId;
 }
 
-export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
-  if (!venue) {
+export const RunTabView: React.FC<RunTabViewProps> = ({ space }) => {
+  if (!space) {
     return <LoadingPage />;
   }
 
-  const venueId = venue.id;
+  const mapBackground = space.mapBackgroundImageUrl;
+  const usersSample = space.recentUsersSample ?? ALWAYS_EMPTY_ARRAY;
+  const userCount = space.recentUserCount ?? 0;
+  const rooms = space.rooms || ALWAYS_EMPTY_ARRAY;
 
   return (
     <AdminPanel variant="unbound" className="RunTabView">
@@ -38,14 +38,14 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           Run your {SPACE_TAXON.lower}
         </AdminSidebarSectionTitle>
         <div className="RunTabView__content">
-          <RunTabUsers spaceId={venueId as SpaceId} />
+          <RunTabUsers space={space} />
         </div>
       </AdminSidebar>
       <div className="RunTabView__body">
         <div className="RunTabView__user-list">
           <UserList
-            usersSample={venue?.recentUsersSample ?? ALWAYS_EMPTY_ARRAY}
-            userCount={venue?.recentUserCount ?? 0}
+            usersSample={usersSample}
+            userCount={userCount}
             showTitle={false}
             activity={`in ${SPACE_TAXON.lower}`}
           />
@@ -54,8 +54,8 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           <div className="RunTabView__map RunTabView--spacing">
             <MapPreview
               isEditing={false}
-              mapBackground={venue?.mapBackgroundImageUrl}
-              rooms={venue.rooms || []}
+              mapBackground={mapBackground}
+              rooms={rooms}
               setSelectedRoom={() => undefined}
             />
           </div>

@@ -171,9 +171,9 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({
 
           {selectedTab === AdminVenueTab.spaces && <Spaces venue={space} />}
           {selectedTab === AdminVenueTab.timing && (
-            <SpaceTimingPanel venue={space} />
+            <SpaceTimingPanel space={space} />
           )}
-          {selectedTab === AdminVenueTab.run && <RunTabView venue={space} />}
+          {selectedTab === AdminVenueTab.run && <RunTabView space={space} />}
           <VenueDeleteModal
             venueId={spaceId}
             venueName={space?.name}

@@ -1,48 +1,69 @@
 import { where } from "firebase/firestore";
 
-import { COLLECTION_WORLD_EVENTS } from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLD_EVENTS } from "settings";
 
+import { LoadStatus } from "types/fire";
+import { WorldId } from "types/id";
 import { WorldEvent } from "types/venues";
-
-import { convertToFirestoreKey } from "utils/id";
 
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export interface VenueEventsProps {
-  worldId?: string;
-  spaceIds: string[];
-}
-
-export interface VenueEventsData {
-  isLoaded: boolean;
+type UseWorldEvents = (options: {
+  worldId?: WorldId | string;
+}) => LoadStatus & {
   events: WorldEvent[];
-}
+};
 
-export const useSpaceEvents = ({
-  worldId,
-  spaceIds,
-}: VenueEventsProps): VenueEventsData => {
-  const { data: events, status } = useRefiCollection<WorldEvent>({
+export const useWorldEvents: UseWorldEvents = ({ worldId }) => {
+  const { data, status } = useRefiCollection<WorldEvent>({
     path: [COLLECTION_WORLD_EVENTS],
-    constraints: [where("worldId", "==", convertToFirestoreKey(worldId))],
+    constraints: [where("worldId", "==", worldId || "")],
   });
 
-  if (!spaceIds || !worldId) {
+  if (!worldId) {
     return {
       isLoaded: true,
-      events: [],
+      isLoading: false,
+      events: ALWAYS_EMPTY_ARRAY,
     };
   }
 
-  // Filter in code as firebase only supports a maximum of 10 items in an array
-  // query.
-  const spaceEvents = (events || []).filter((event) =>
-    spaceIds.includes(event.spaceId)
-  );
-  spaceEvents.sort((a, b) => a.startUtcSeconds - b.startUtcSeconds);
-
   return {
     isLoaded: status !== "loading",
-    events: spaceEvents,
+    isLoading: status === "loading",
+    events: data,
+  };
+};
+
+type UseSpaceEvents = (options: {
+  worldId?: WorldId | string;
+  spaceIds: string[];
+}) => LoadStatus & {
+  events: WorldEvent[];
+};
+
+export const useSpaceEvents: UseSpaceEvents = ({ worldId, spaceIds }) => {
+  const { isLoaded, isLoading, events: worldEvents } = useWorldEvents({
+    worldId,
+  });
+
+  if (!spaceIds) {
+    return {
+      isLoaded: true,
+      isLoading: false,
+      events: ALWAYS_EMPTY_ARRAY,
+    };
+  }
+
+  // Filter in code as firebase only supports a maximum of 10 items in an array query
+  const events = (worldEvents || ALWAYS_EMPTY_ARRAY).filter(({ spaceId }) =>
+    spaceIds.includes(spaceId)
+  );
+  events.sort((a, b) => a.startUtcSeconds - b.startUtcSeconds);
+
+  return {
+    isLoaded,
+    isLoading,
+    events,
   };
 };

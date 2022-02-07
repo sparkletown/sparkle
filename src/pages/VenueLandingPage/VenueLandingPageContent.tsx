@@ -15,23 +15,21 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { World } from "api/world";
-
 import {
+  SpaceWithId,
   UserId,
   WorldAndSpaceIdLocation,
   WorldAndSpaceSlugLocation,
+  WorldWithId,
 } from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
-import { AnyVenue } from "types/venues";
 
 import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
-import { WithId } from "utils/id";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
+import { useWorldEvents } from "hooks/events";
 import { useValidImage } from "hooks/useCheckImage";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -43,30 +41,34 @@ dayjs.extend(advancedFormat);
 type VenueLandingPageContentProps = WorldAndSpaceIdLocation &
   WorldAndSpaceSlugLocation & {
     userId: UserId;
-    space: WithId<AnyVenue>;
-    world: WithId<World>;
+    space: SpaceWithId;
+    world: WorldWithId;
   };
 
 export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
   userId,
   space,
-  spaceId,
   spaceSlug,
   world,
+  worldId,
   worldSlug,
 }) => {
-  const { currentVenueEvents: events } = useConnectCurrentVenueNG({ spaceId });
+  const landingPageConfig = space.config?.landingPageConfig;
+  const logoUrl = space?.host?.icon;
+  const coverUrl = landingPageConfig?.coverImageUrl;
 
-  const [validBannerImageUrl] = useValidImage(
-    space?.config?.landingPageConfig.coverImageUrl,
-    DEFAULT_LANDING_BANNER
-  );
+  const [validLogoUrl] = useValidImage(logoUrl, DEFAULT_VENUE_LOGO);
+  const [validBannerUrl] = useValidImage(coverUrl, DEFAULT_LANDING_BANNER);
 
-  const [validLogoUrl] = useValidImage(space?.host?.icon, DEFAULT_VENUE_LOGO);
-  const futureOrOngoingVenueEvents = events?.filter(
+  const { events } = useWorldEvents({ worldId });
+
+  const futureOrOngoingEvents = events?.filter(
     (event) => !hasEventFinished(event)
   );
-  const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
+  futureOrOngoingEvents?.sort(
+    (eventA, eventB) => eventA.startUtcSeconds - eventB.startUtcSeconds
+  );
+  const nextVenueEventId = futureOrOngoingEvents?.[0]?.id;
 
   // @debt use callback hook and history push
   const onJoinClick = () => {
@@ -91,11 +93,15 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
             0deg,
             rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
-          ), url("${validBannerImageUrl}")`,
+          ), url("${validBannerUrl}")`,
     backgroundSize: "cover",
   });
 
-  const containerClasses = classNames("header", containerVars);
+  const containerClasses = classNames(
+    "VenueLandingPageContent__header",
+    "header",
+    containerVars
+  );
 
   return (
     <div className="VenueLandingPageContent container venue-entrance-experience-container">
@@ -107,15 +113,13 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
 
           <div className="title">{space.name}</div>
 
-          <div className="subtitle">
-            {space.config?.landingPageConfig.subtitle}
-          </div>
+          <div className="subtitle">{landingPageConfig?.subtitle}</div>
         </div>
 
         {isPasswordRequired && (
           <div className="secret-password-form-wrapper">
             <SecretPasswordForm
-              buttonText={space.config?.landingPageConfig.joinButtonText}
+              buttonText={landingPageConfig?.joinButtonText}
             />
           </div>
         )}
@@ -142,11 +146,11 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
         <div className="col-lg-6 col-12 venue-presentation">
           <div>
             <div style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-              {space.config?.landingPageConfig.description}
+              {landingPageConfig?.description}
             </div>
 
             <div>
-              {space.config?.landingPageConfig?.checkList?.map(
+              {landingPageConfig?.checkList?.map(
                 (checkListItem: string, index: number) => (
                   <div
                     key={`checklist-item-${index}`}
@@ -162,7 +166,7 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
             </div>
           </div>
 
-          {space.config?.landingPageConfig?.iframeUrl && (
+          {landingPageConfig?.iframeUrl && (
             <iframe
               title="entrance video"
               width="100%"
@@ -174,16 +178,14 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
             />
           )}
 
-          {space.config?.landingPageConfig?.quotations?.map(
-            (quotation, index) => (
-              <div className="quotation-container" key={index}>
-                <div className="quotation">{quotation.text}</div>
-                <div className="quotation-author">- {quotation.author}</div>
-              </div>
-            )
-          )}
+          {landingPageConfig?.quotations?.map((quotation, index) => (
+            <div className="quotation-container" key={index}>
+              <div className="quotation">{quotation.text}</div>
+              <div className="quotation-author">- {quotation.author}</div>
+            </div>
+          ))}
 
-          {space.config?.landingPageConfig?.presentation?.map(
+          {landingPageConfig?.presentation?.map(
             (paragraph: string, index: number) => (
               <p
                 key={`venue-presentation-paragraph-${index}`}
@@ -196,10 +198,10 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
         </div>
 
         <div className="col-lg-6 col-12 oncoming-events">
-          {futureOrOngoingVenueEvents && futureOrOngoingVenueEvents.length > 0 && (
+          {futureOrOngoingEvents && futureOrOngoingEvents.length > 0 && (
             <>
               <div className="upcoming-gigs-title">Upcoming events</div>
-              {futureOrOngoingVenueEvents.map((venueEvent) => {
+              {futureOrOngoingEvents.slice(0, 10).map((venueEvent) => {
                 const startTime = formatTimeLocalised(
                   eventStartTime({ event: venueEvent })
                 );

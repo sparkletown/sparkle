@@ -68,6 +68,11 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const hasError = !!error;
 
+  const { src: pictureSrc, onError: onPictureSrcError } = determineAvatar({
+    pictureUrl,
+    userInfo: user,
+  });
+
   return (
     <div className="ProfilePictureUploadForm">
       <div
@@ -75,7 +80,8 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={determineAvatar({ pictureUrl, email: user?.email ?? undefined })}
+          src={pictureSrc}
+          onError={onPictureSrcError}
           className="profile-icon ProfilePicturePreviewContainer__image"
           alt="your profile"
         />

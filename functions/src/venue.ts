@@ -938,31 +938,20 @@ export const deleteTable = functions.https.onCall(async (data, context) => {
     (val: { reference: string }) => val.reference === tableName
   );
 
-  // there are venues that don't have tables inserted in the database and use default ones instead
-  // if that's the case, then we won't be able to delete any of the tables
-  // thus we have to create tables (excluding the one being deleted) before modifying them
-  if (!docData.config || !docData.config.tables) {
-    defaultTables.splice(index, 1);
-
-    admin
-      .firestore()
-      .collection("venues")
-      .doc(spaceId)
-      .update({
-        ...docData,
-        config: { ...docData.config, tables: defaultTables },
-      });
-
-    return;
-  }
-
   if (index === -1) {
     throw new HttpsError("not-found", `Table does not exist`);
-  } else {
-    docData.config.tables.splice(index, 1);
   }
 
-  admin.firestore().collection("venues").doc(spaceId).update(docData);
+  tables.splice(index, 1);
+
+  admin
+    .firestore()
+    .collection("venues")
+    .doc(spaceId)
+    .update({
+      ...docData,
+      config: { ...docData.config, tables },
+    });
 });
 
 export const deleteVenue = functions.https.onCall(async (data, context) => {

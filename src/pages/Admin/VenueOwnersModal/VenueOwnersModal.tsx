@@ -165,14 +165,14 @@ const UserRow: React.FC<UserRowProps> = (props) => {
     setError("Something went wrong. Try again.");
   }, [venueId, user.id]);
 
-  const userPicture = determineAvatar({ user });
-  const userName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
+  const { src: userPicture, onError: onLoadError } = determineAvatar({ user });
+  const userName = user.partyName || DEFAULT_PARTY_NAME;
 
   return (
     <>
       <div className="user-row">
         <div className="info-container">
-          <img src={userPicture} alt="profile pic" />
+          <img src={userPicture} alt="profile pic" onError={onLoadError} />
           {userName}
         </div>
         {isLoading && <div>Loading...</div>}

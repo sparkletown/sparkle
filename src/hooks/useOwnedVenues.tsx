@@ -1,10 +1,10 @@
 import { useMemo } from "react";
 import { where } from "firebase/firestore";
 
-import { COLLECTION_SPACES } from "settings";
+import { ALWAYS_EMPTY_ARRAY, COLLECTION_SPACES } from "settings";
 
+import { LoadStatus } from "types/fire";
 import { UserId } from "types/id";
-import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -12,38 +12,41 @@ import { WithId } from "utils/id";
 import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
 export interface UseOwnedVenuesOptions {
-  worldId: string;
-  currentVenueId?: string;
+  worldId?: string;
   userId: UserId;
 }
 
-export interface UseOwnedVenuesResult {
-  isLoading: boolean;
-  currentVenue?: WithId<AnyVenue>;
+type UseOwnedVenuesResult = LoadStatus & {
   ownedVenues: WithId<AnyVenue>[];
-}
+};
 
-export const useOwnedVenues: ReactHook<
-  UseOwnedVenuesOptions,
-  UseOwnedVenuesResult
-> = ({ worldId, currentVenueId, userId }): UseOwnedVenuesResult => {
-  const {
-    data: venues,
-    isLoading: isLoadingSpaces,
-  } = useRefiCollection<AnyVenue>({
+type UseOwnedVenues = (options: UseOwnedVenuesOptions) => UseOwnedVenuesResult;
+
+export const useOwnedVenues: UseOwnedVenues = ({ worldId, userId }) => {
+  const constraints = useMemo(
+    () =>
+      worldId
+        ? [
+            where("worldId", "==", worldId),
+            where("owners", "array-contains", userId),
+          ]
+        : [where("owners", "array-contains", userId)],
+    [worldId, userId]
+  );
+
+  const { data, isLoading } = useRefiCollection<AnyVenue>({
     path: [COLLECTION_SPACES],
-    constraints: [
-      where("worldId", "==", worldId),
-      where("owners", "array-contains", userId),
-    ],
+    constraints,
   });
+
+  const ownedVenues = data || ALWAYS_EMPTY_ARRAY;
 
   return useMemo(
     () => ({
-      isLoading: isLoadingSpaces,
-      ownedVenues: venues ?? [],
-      currentVenue: (venues || []).find((venue) => venue.id === currentVenueId),
+      isLoading,
+      isLoaded: !isLoading,
+      ownedVenues,
     }),
-    [venues, isLoadingSpaces, currentVenueId]
+    [isLoading, ownedVenues]
   );
 };

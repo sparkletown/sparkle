@@ -6,13 +6,12 @@ import { ALWAYS_EMPTY_ARRAY, COLLECTION_WORLDS } from "settings";
 import { World } from "api/world";
 
 import { CONVERTER_WORLD_WITH_ID } from "utils/converters";
-import { convertToFirestoreKey, WithId } from "utils/id";
+import { WithId } from "utils/id";
 
-export const useOwnWorlds = (userId?: string): WithId<World>[] => {
+export const useWorlds = (): WithId<World>[] => {
   const firestore = useFirestore();
   const worldsRef = query(
     collection(firestore, COLLECTION_WORLDS),
-    where("owners", "array-contains", convertToFirestoreKey(userId)),
     where("isHidden", "==", false)
   ).withConverter(CONVERTER_WORLD_WITH_ID);
 

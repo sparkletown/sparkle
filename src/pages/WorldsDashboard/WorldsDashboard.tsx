@@ -1,9 +1,11 @@
 import React, { useMemo } from "react";
-import { WithAuthProps } from "components/hocs/db/withAuth";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
-import { useOwnWorlds } from "hooks/worlds/useOwnWorlds";
+import { UserId } from "types/id";
+
+import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
@@ -19,10 +21,23 @@ import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
 import "./WorldsDashboard.scss";
 
-type Props = WithAuthProps;
+type WorldsDashboardProps = { userId: UserId };
 
-export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
-  const worlds = useOwnWorlds(userId);
+export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
+  const { ownedVenues } = useOwnedVenues({ userId });
+  const worlds = useWorlds();
+
+  const ownedUniqueWorldIds = useMemo(
+    // @debt should use uniq function of Lodash, or create our own in ./src/utils
+    () => [...new Set(ownedVenues.map(({ worldId }) => worldId))],
+    [ownedVenues]
+  );
+
+  // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here
+  const uniqueWorlds = useMemo(
+    () => worlds.filter(({ id }) => ownedUniqueWorldIds.includes(id)),
+    [worlds, ownedUniqueWorldIds]
+  );
 
   const hasWorlds = !!worlds.length;
 
@@ -41,12 +56,12 @@ export const WorldsDashboard: React.FC<Props> = ({ userId }) => {
   const renderedWorldsList = useMemo(
     () => (
       <div className="WorldsDashboard__worlds-list">
-        {worlds.map((world) => (
+        {uniqueWorlds.map((world) => (
           <WorldCard key={world.id} world={world} />
         ))}
       </div>
     ),
-    [worlds]
+    [uniqueWorlds]
   );
 
   return (
