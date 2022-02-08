@@ -6,8 +6,7 @@ import { UserStatus } from "types/User";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { AdminInput } from "components/molecules/AdminInput";
-import { AdminInputProps } from "components/molecules/AdminInput/AdminInput";
+import { AdminInput, AdminInputProps } from "components/molecules/AdminInput";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 

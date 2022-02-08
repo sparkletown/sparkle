@@ -2,13 +2,15 @@ import React, { useMemo } from "react";
 
 import { ADMIN_IA_WORLD_CREATE_URL } from "settings";
 
-import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { UserId } from "types/id";
+
+import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useWorlds } from "hooks/worlds/useWorlds";
 
 import { AdminPanel } from "components/organisms/AdminVenueView/components/AdminPanel";
 import { AdminShowcase } from "components/organisms/AdminVenueView/components/AdminShowcase";
 import { AdminShowcaseTitle } from "components/organisms/AdminVenueView/components/AdminShowcaseTitle";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { WithAdminNavBar } from "components/organisms/WithAdminNavBar";
 
 import { WorldCard } from "components/molecules/WorldCard";
 
@@ -19,20 +21,21 @@ import ARROW from "assets/images/admin/dashboard-arrow.svg";
 
 import "./WorldsDashboard.scss";
 
-export const WorldsDashboard: React.FC = () => {
-  const { ownedVenues } = useOwnedVenues({});
+type WorldsDashboardProps = { userId: UserId };
+
+export const WorldsDashboard: React.FC<WorldsDashboardProps> = ({ userId }) => {
+  const { ownedVenues } = useOwnedVenues({ userId });
+  const worlds = useWorlds();
 
   const ownedUniqueWorldIds = useMemo(
-    () => [...new Set(ownedVenues.map((venue) => venue.worldId))],
+    // @debt should use uniq function of Lodash, or create our own in ./src/utils
+    () => [...new Set(ownedVenues.map(({ worldId }) => worldId))],
     [ownedVenues]
   );
 
-  const worlds = useWorlds();
-
-  // NOTE: We could do this by forming a firebase query where([world.id, 'in', ownedUniqueWorldIds]), but it has a limit of 10 items in ownedUniqueWorldIds.
-  // Because of the limit, I decided to do it on frontend
+  // Firebase query where([world.id, 'in', ownedUniqueWorldIds]) has a limit of 10 items in ownedUniqueWorldIds. Because of that, it is filtered here
   const uniqueWorlds = useMemo(
-    () => worlds.filter((world) => ownedUniqueWorldIds.includes(world.id)),
+    () => worlds.filter(({ id }) => ownedUniqueWorldIds.includes(id)),
     [worlds, ownedUniqueWorldIds]
   );
 
@@ -63,7 +66,7 @@ export const WorldsDashboard: React.FC = () => {
 
   return (
     <div className="WorldsDashboard">
-      <WithNavigationBar>
+      <WithAdminNavBar>
         <AdminRestricted>
           <AdminPanel variant="unbound">
             {hasWorlds ? (
@@ -104,7 +107,7 @@ export const WorldsDashboard: React.FC = () => {
             )}
           </AdminPanel>
         </AdminRestricted>
-      </WithNavigationBar>
+      </WithAdminNavBar>
     </div>
   );
 };

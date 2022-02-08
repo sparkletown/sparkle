@@ -1,10 +1,11 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 
 import { Room, RoomType } from "types/rooms";
 import { WorldEvent } from "types/venues";
 
-import VideoModal from "components/organisms/VideoModal";
+import { VideoModal } from "components/organisms/VideoModal";
+
+import { Modal } from "components/molecules/Modal";
 
 import { PortalModalContent } from "./PortalModalContent";
 
@@ -19,6 +20,7 @@ interface PortalModalProps {
   show: boolean;
   portal?: Room;
   venueEvents?: WorldEvent[];
+  absolute?: boolean;
 }
 
 export const PortalModal: React.FC<PortalModalProps> = ({
@@ -26,6 +28,7 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   portal,
   show,
   venueEvents = emptyEvents,
+  absolute,
 }) => {
   if (!portal) return null;
 
@@ -43,21 +46,27 @@ export const PortalModal: React.FC<PortalModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide} className="PortalModal" centered>
-      <Modal.Body className="PortalModal__modal-body">
-        <PortalModalContent
-          portal={portal}
-          venueEvents={venueEvents}
-          onHide={onHide}
-        />
-
+    <Modal
+      show={show}
+      onHide={onHide}
+      bgVariant="live"
+      centered
+      autoHide
+      absolute={absolute}
+    >
+      <div className="PortalModal">
         <img
           className="PortalModal__close-icon"
           src={PortalCloseIcon}
           alt="close portal"
           onClick={onHide}
         />
-      </Modal.Body>
+        <PortalModalContent
+          portal={portal}
+          venueEvents={venueEvents}
+          onHide={onHide}
+        />
+      </div>
     </Modal>
   );
 };

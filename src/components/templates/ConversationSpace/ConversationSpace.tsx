@@ -7,12 +7,13 @@ import {
   PORTAL_INFO_ICON_MAPPING,
 } from "settings";
 
-import { GenericVenue, VenueTemplate } from "types/venues";
+import { GenericVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useExperiences } from "hooks/useExperiences";
+import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
@@ -21,8 +22,8 @@ import { InformationLeftColumn } from "components/organisms/InformationLeftColum
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { Room } from "components/organisms/Room";
 
-import InformationCard from "components/molecules/InformationCard";
-import TableComponent from "components/molecules/TableComponent";
+import { InformationCard } from "components/molecules/InformationCard";
+import { TableComponent } from "components/molecules/TableComponent";
 import { TableHeader } from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
@@ -62,7 +63,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     if (seatedAtTable) analytics.trackSelectTableEvent();
   }, [analytics, seatedAtTable]);
 
-  useExperiences(venue?.name);
+  // @debt what does it do anyway? probably copy from the same in JazzBar.tsx
+  useExperience(venue?.name);
 
   const generatedTables = venue?.config?.tables;
 

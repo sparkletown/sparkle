@@ -1,39 +1,33 @@
 import { useCallback, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  COLLECTION_SPACES,
+  DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT,
+} from "settings";
 
-import { screeningRoomVideosSelector } from "utils/selectors";
+import { ScreeningRoomVideo } from "types/screeningRoom";
+
+import { convertToFirestoreKey } from "utils/id";
 import { isTruthy } from "utils/types";
 
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
-
-const emptyScreeningRoomVideosArray: never[] = [];
-
-export const useConnectScreeningRoomVideos = (screeningRoomVenueId: string) => {
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      doc: screeningRoomVenueId,
-      subcollections: [{ collection: "screeningRoomVideos" }],
-      storeAs: "screeningRoomVideos",
-    },
-  ]);
-};
 
 export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
-  useConnectScreeningRoomVideos(screeningRoomVenueId);
-
-  const screeningRoomVideos = useSelector(screeningRoomVideosSelector);
+  const { data, isLoaded } = useRefiCollection<ScreeningRoomVideo>([
+    COLLECTION_SPACES,
+    convertToFirestoreKey(screeningRoomVenueId),
+    "screeningRoomVideos",
+  ]);
 
   return useMemo(
     () => ({
-      screeningRoomVideos: screeningRoomVideos ?? emptyScreeningRoomVideosArray,
-      isScreeningRoomVideosLoaded: isLoaded(screeningRoomVideos),
+      screeningRoomVideos: data ?? ALWAYS_EMPTY_ARRAY,
+      isScreeningRoomVideosLoaded: isLoaded,
     }),
-    [screeningRoomVideos]
+    [data, isLoaded]
   );
 };
 

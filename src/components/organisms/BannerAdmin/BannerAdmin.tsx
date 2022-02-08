@@ -173,11 +173,10 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
         show={isShowBannerChangeModal}
         onConfirm={confirmChangeBannerData}
         onCancel={hideBannerChangeModal}
-        header={"Erase your beautiful work?"}
-        message={"Are you sure you want to clear this banner?"}
+        header="Erase your beautiful work?"
+        message="Are you sure you want to clear this banner?"
         saveBtnLabel="Yes, clear"
         cancelBtnLabel="Cancel"
-        isCentered
         confirmVariant="danger"
       />
     </div>

@@ -15,47 +15,53 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { World } from "api/world";
-
+import {
+  SpaceWithId,
+  UserId,
+  WorldAndSpaceIdLocation,
+  WorldAndSpaceSlugLocation,
+  WorldWithId,
+} from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
-import { AnyVenue } from "types/venues";
 
 import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
-import { WithId } from "utils/id";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { generateAttendeeInsideUrl, generateUrl } from "utils/url";
 
 import { useWorldEvents } from "hooks/events";
 import { useValidImage } from "hooks/useCheckImage";
-import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import InformationCard from "components/molecules/InformationCard";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+import { InformationCard } from "components/molecules/InformationCard";
+import { SecretPasswordForm } from "components/molecules/SecretPasswordForm";
 
 dayjs.extend(advancedFormat);
 
-type VenueLandingPageContentProps = {
-  space: WithId<AnyVenue>;
-  world: WithId<World>;
-  withJoinEvent?: boolean;
-};
-const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
+type VenueLandingPageContentProps = WorldAndSpaceIdLocation &
+  WorldAndSpaceSlugLocation & {
+    userId: UserId;
+    space: SpaceWithId;
+    world: WorldWithId;
+  };
+
+export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
+  userId,
   space,
+  spaceSlug,
   world,
-  withJoinEvent = true,
+  worldId,
+  worldSlug,
 }) => {
-  const { events } = useWorldEvents(world.id);
+  const landingPageConfig = space.config?.landingPageConfig;
+  const logoUrl = space?.host?.icon;
+  const coverUrl = landingPageConfig?.coverImageUrl;
 
-  const spaceSlug = space.slug;
+  const [validLogoUrl] = useValidImage(logoUrl, DEFAULT_VENUE_LOGO);
+  const [validBannerUrl] = useValidImage(coverUrl, DEFAULT_LANDING_BANNER);
 
-  const [validBannerImageUrl] = useValidImage(
-    space?.config?.landingPageConfig.coverImageUrl,
-    DEFAULT_LANDING_BANNER
-  );
+  const { events } = useWorldEvents({ worldId });
 
-  const [validLogoUrl] = useValidImage(space?.host?.icon, DEFAULT_VENUE_LOGO);
   const futureOrOngoingEvents = events?.filter(
     (event) => !hasEventFinished(event)
   );
@@ -69,10 +75,9 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     if (!spaceSlug) return;
 
     const hasEntrance = world?.entrance?.length;
-    const worldSlug = world?.slug;
 
     window.location.href =
-      user && !hasEntrance
+      userId && !hasEntrance
         ? generateAttendeeInsideUrl({ worldSlug, spaceSlug })
         : generateUrl({
             route: ATTENDEE_STEPPING_PARAM_URL,
@@ -83,18 +88,20 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
   const isPasswordRequired = space.access === VenueAccessMode.Password;
 
-  const { user } = useUser();
-
   const containerVars = useCss({
     background: `linear-gradient(
             0deg,
             rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
-          ), url("${validBannerImageUrl}")`,
+          ), url("${validBannerUrl}")`,
     backgroundSize: "cover",
   });
 
-  const containerClasses = classNames("header", containerVars);
+  const containerClasses = classNames(
+    "VenueLandingPageContent__header",
+    "header",
+    containerVars
+  );
 
   return (
     <div className="VenueLandingPageContent container venue-entrance-experience-container">
@@ -106,20 +113,18 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
 
           <div className="title">{space.name}</div>
 
-          <div className="subtitle">
-            {space.config?.landingPageConfig.subtitle}
-          </div>
+          <div className="subtitle">{landingPageConfig?.subtitle}</div>
         </div>
 
         {isPasswordRequired && (
           <div className="secret-password-form-wrapper">
             <SecretPasswordForm
-              buttonText={space.config?.landingPageConfig.joinButtonText}
+              buttonText={landingPageConfig?.joinButtonText}
             />
           </div>
         )}
 
-        {!isPasswordRequired && withJoinEvent && (
+        {!isPasswordRequired && (
           // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
           // (!futureOrOngoingVenueEvents ||
           //   futureOrOngoingVenueEvents.length === 0) &&
@@ -141,11 +146,11 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
         <div className="col-lg-6 col-12 venue-presentation">
           <div>
             <div style={{ whiteSpace: "pre-wrap", overflowWrap: "break-word" }}>
-              {space.config?.landingPageConfig.description}
+              {landingPageConfig?.description}
             </div>
 
             <div>
-              {space.config?.landingPageConfig?.checkList?.map(
+              {landingPageConfig?.checkList?.map(
                 (checkListItem: string, index: number) => (
                   <div
                     key={`checklist-item-${index}`}
@@ -161,7 +166,7 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
             </div>
           </div>
 
-          {space.config?.landingPageConfig?.iframeUrl && (
+          {landingPageConfig?.iframeUrl && (
             <iframe
               title="entrance video"
               width="100%"
@@ -173,16 +178,14 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
             />
           )}
 
-          {space.config?.landingPageConfig?.quotations?.map(
-            (quotation, index) => (
-              <div className="quotation-container" key={index}>
-                <div className="quotation">{quotation.text}</div>
-                <div className="quotation-author">- {quotation.author}</div>
-              </div>
-            )
-          )}
+          {landingPageConfig?.quotations?.map((quotation, index) => (
+            <div className="quotation-container" key={index}>
+              <div className="quotation">{quotation.text}</div>
+              <div className="quotation-author">- {quotation.author}</div>
+            </div>
+          ))}
 
-          {space.config?.landingPageConfig?.presentation?.map(
+          {landingPageConfig?.presentation?.map(
             (paragraph: string, index: number) => (
               <p
                 key={`venue-presentation-paragraph-${index}`}
@@ -235,5 +238,3 @@ const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = ({
     </div>
   );
 };
-
-export default VenueLandingPageContent;

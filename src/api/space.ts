@@ -1,7 +1,7 @@
 // NOTE: use this space.ts for new API while moving the still useful ones from venue.ts to this place
 
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { COLLECTION_SPACES, FIELD_SLUG, FIELD_WORLD_ID } from "settings";
 

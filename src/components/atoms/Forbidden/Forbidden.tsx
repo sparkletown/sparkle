@@ -1,7 +1,7 @@
 import React from "react";
-import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/compat/app";
 
 import { generateAttendeeSpaceLandingUrl } from "utils/url";
 
@@ -17,7 +17,6 @@ import "./Forbidden.scss";
 
 export const Forbidden: React.FC = ({ children }) => {
   const { user } = useUser();
-  const firebase = useFirebase();
   const history = useHistory();
   const { worldSlug, spaceSlug } = useSpaceParams();
 
@@ -26,7 +25,7 @@ export const Forbidden: React.FC = ({ children }) => {
     history.push(
       spaceSlug ? generateAttendeeSpaceLandingUrl(worldSlug, spaceSlug) : "/"
     );
-  }, [firebase, history, worldSlug, spaceSlug]);
+  }, [history, worldSlug, spaceSlug]);
 
   return (
     <div className="Forbidden">

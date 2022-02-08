@@ -2,7 +2,8 @@ import React from "react";
 
 import { BACKGROUND_IMG_TEMPLATES } from "settings";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 

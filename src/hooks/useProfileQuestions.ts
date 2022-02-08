@@ -2,10 +2,10 @@ import { useMemo } from "react";
 
 import { User } from "types/User";
 
-import { useCurrentWorld } from "./useCurrentWorld";
+import { useWorldById } from "hooks/worlds/useWorldById";
 
 export const useProfileQuestions = (user?: User, worldId?: string) => {
-  const { world } = useCurrentWorld({ worldId });
+  const { world } = useWorldById(worldId);
 
   const questions = world?.questions?.profile;
   const answers = useMemo(

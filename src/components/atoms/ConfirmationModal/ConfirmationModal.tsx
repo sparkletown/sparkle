@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from "react";
-import { Modal } from "react-bootstrap";
 
 import { isTruthy } from "utils/types";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ButtonVariant } from "components/atoms/ButtonNG/ButtonNG";
@@ -17,7 +18,6 @@ interface ConfirmationModalProps {
   saveBtnLabel?: string;
   onConfirm: () => void;
   onCancel?: () => void;
-  isCentered?: boolean;
 }
 
 export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -28,7 +28,6 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onCancel,
   cancelBtnLabel = "No",
   saveBtnLabel = "Yes",
-  isCentered = false,
   confirmVariant = "primary",
 }) => {
   const [isVisible, setIsVisible] = useState(true);
@@ -48,28 +47,20 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   }, [onCancel, hide]);
 
   const hasHeader = isTruthy(header);
-
   const isShown = show !== undefined ? show : isVisible;
 
   return (
-    <Modal
-      className="ConfirmationModal"
-      show={isShown}
-      onHide={hide}
-      centered={isCentered}
-    >
-      <Modal.Body>
-        <div>
-          {hasHeader && <h4>{header}</h4>}
-          <div className="ConfirmationModal__message">{message}</div>
-          <div className="ConfirmationModal__buttons">
-            <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
-            <ButtonNG variant={confirmVariant} onClick={confirm}>
-              {saveBtnLabel}
-            </ButtonNG>
-          </div>
+    <Modal show={isShown} onHide={hide}>
+      <div className="ConfirmationModal">
+        {hasHeader && <h4>{header}</h4>}
+        <div className="ConfirmationModal__message">{message}</div>
+        <div className="ConfirmationModal__buttons">
+          <ButtonNG onClick={cancel}>{cancelBtnLabel}</ButtonNG>
+          <ButtonNG variant={confirmVariant} onClick={confirm}>
+            {saveBtnLabel}
+          </ButtonNG>
         </div>
-      </Modal.Body>
+      </div>
     </Modal>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
@@ -33,7 +32,9 @@ import {
 import { createSlug } from "api/admin";
 import { updateVenueNG } from "api/venue";
 
-import { AnyVenue, VenueTemplate } from "types/venues";
+import { UserId, WorldSlug } from "types/id";
+import { AnyVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
@@ -41,10 +42,8 @@ import { generateUrl } from "utils/url";
 
 import { spaceEditSchema } from "forms/spaceEditSchema";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
 import { useFetchAssets } from "hooks/useFetchAssets";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
@@ -61,7 +60,7 @@ import { SubmitError } from "components/molecules/SubmitError";
 import { YourUrlDisplay } from "components/molecules/YourUrlDisplay";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
@@ -81,12 +80,15 @@ const HANDLED_ERRORS = [
 
 export interface SpaceEditFormProps {
   space: WithId<AnyVenue>;
+  userId: UserId;
+  worldSlug: WorldSlug;
 }
 
-export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
-  const { user } = useUser();
-  const { worldSlug } = useSpaceParams();
-
+export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({
+  space,
+  userId,
+  worldSlug,
+}) => {
   const spaceLogoImage =
     PORTAL_INFO_ICON_MAPPING[space.template] ?? DEFAULT_VENUE_LOGO;
 
@@ -168,7 +170,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
 
   const [{ loading: isUpdating, error: updateError }, updateVenue] = useAsyncFn(
     async (data) => {
-      if (!user || !space.id) return;
+      if (!userId || !space.id) return;
 
       const embedUrl = convertToEmbeddableUrl({
         url: data.iframeUrl,
@@ -186,17 +188,15 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           },
           iframeUrl: embedUrl || DEFAULT_EMBED_URL,
         },
-        user
+        userId
       );
     },
-    [user, space.id, space.autoPlay, space.worldId, space.template]
+    [userId, space.id, space.autoPlay, space.worldId, space.template]
   );
 
   const isReactionsMutedDisabled = !values?.showReactions;
 
-  const {
-    relatedVenues
-  } = useRelatedVenues();
+  const { relatedVenues } = useRelatedVenues();
 
   const backButtonOptionList = useMemo(
     () =>
@@ -355,26 +355,26 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
           {BACKGROUND_IMG_TEMPLATES.includes(
             space.template as VenueTemplate
           ) && (
-              <AdminSidebarAccordion title="Map background">
-                <BackgroundSelect
-                  isLoadingBackgrounds={isLoadingBackgrounds}
-                  mapBackgrounds={mapBackgrounds}
-                  venueName={space.name}
-                  spaceSlug={space.slug}
-                  worldId={space.worldId}
-                  venueId={space.id}
-                />
-                {errorFetchBackgrounds && (
-                  <>
-                    <div>
-                      The preset map backgrounds could not be fetched. Please,
-                      refresh the page or upload a custom map background.
-                    </div>
-                    <div>Error: {errorFetchBackgrounds.message}</div>
-                  </>
-                )}
-              </AdminSidebarAccordion>
-            )}
+            <AdminSidebarAccordion title="Map background">
+              <BackgroundSelect
+                isLoadingBackgrounds={isLoadingBackgrounds}
+                mapBackgrounds={mapBackgrounds}
+                venueName={space.name}
+                spaceSlug={space.slug}
+                worldId={space.worldId}
+                venueId={space.id}
+              />
+              {errorFetchBackgrounds && (
+                <>
+                  <div>
+                    The preset map backgrounds could not be fetched. Please,
+                    refresh the page or upload a custom map background.
+                  </div>
+                  <div>Error: {errorFetchBackgrounds.message}</div>
+                </>
+              )}
+            </AdminSidebarAccordion>
+          )}
 
           <AdminSidebarAccordion title="Embedable content" open>
             {space.template &&
@@ -399,16 +399,16 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
             {space.template &&
               // @debt use a single structure of type Record<VenueTemplate,TemplateInfo> to compile all these .includes() arrays' flags
               ZOOM_URL_TEMPLATES.includes(space.template as VenueTemplate) && (
-                <div>
-                  <Form.Label>URL</Form.Label>
-                  <InputField
+                <AdminSection title="URL" withLabel>
+                  <AdminInput
                     name="zoomUrl"
                     type="text"
-                    autoComplete="off"
                     placeholder="URL"
-                    ref={register}
+                    register={register}
+                    errors={errors}
+                    autoComplete="off"
                   />
-                </div>
+                </AdminSection>
               )}
 
             {!DISABLED_DUE_TO_1253 &&

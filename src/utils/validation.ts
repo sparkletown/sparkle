@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 import { TestMessageParams } from "yup";
 
 import { createSlug } from "api/admin";
@@ -12,32 +12,30 @@ export const messageMustBeMaximum = (fieldName: string, max: number) =>
 export const messageInvalidUrl = ({ path }: Partial<TestMessageParams>) =>
   `${path} is not a supported URL`;
 
-export const testGeneratesValidSlug = (value: string) =>
+export const testGeneratesValidSlug = (value: unknown) =>
   createSlug(value).length > 0;
 
-export const testVenueByNameExists = async (value: string) =>
-  !(
-    value &&
-    // @debt Replace with a function from api/worlds
-    (
-      await firebase
-        .firestore()
-        .collection("venues")
-        .doc(createSlug(value))
-        .get()
-    ).exists
-  );
+export const testVenueByNameExists = async (value: unknown) => {
+  const slug = createSlug(value);
+  if (!slug) return false;
 
-export const testWorldBySlugExists = async (value: string) =>
-  !(
-    value &&
-    // @debt Replace with a function from api/worlds
-    (
-      await firebase
-        .firestore()
-        .collection("worlds")
-        .where("slug", "==", createSlug(value))
-        .where("isHidden", "==", false)
-        .get()
-    ).docs.length
-  );
+  // @debt Replace with a function from api/worlds
+  const snap = await firebase.firestore().collection("venues").doc(slug).get();
+
+  return !snap.exists;
+};
+
+export const testWorldBySlugExists = async (value: unknown) => {
+  const slug = createSlug(value);
+  if (!slug) return false;
+
+  // @debt Replace with a function from api/worlds
+  const snap = await firebase
+    .firestore()
+    .collection("worlds")
+    .where("slug", "==", slug)
+    .where("isHidden", "==", false)
+    .get();
+
+  return !snap.docs.length;
+};

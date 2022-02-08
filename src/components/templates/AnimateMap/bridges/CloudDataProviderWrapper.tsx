@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 
 import { ALWAYS_EMPTY_ARRAY } from "settings";
 
@@ -39,6 +39,7 @@ export type RoomWithFullData = (WithVenue<Room> | Room) & {
   countUsers?: number;
 };
 
+// @debt use ALWAYS_EMPTY_ARRAY to avoid shared mutable state
 const emptyRelatedVenues: WithId<AnyVenue>[] = [];
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
@@ -50,7 +51,6 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
   );
-  const firebase = useFirebase();
   const user = useUser();
 
   const venues: WithId<AnyVenue>[] = useMemo(
@@ -157,7 +157,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     },
     // note: we really doesn't need rerender this for others dependencies
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, dataProvider, firebase, reInitOnError]
+    [user, dataProvider, reInitOnError]
   );
 
   return null;

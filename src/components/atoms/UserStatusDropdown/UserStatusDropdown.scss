@@ -8,20 +8,39 @@
     font-weight: $font-weight--500;
   }
 
-  .Dropdown__button {
+  &__item {
+    text-decoration: none;
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    opacity: 0.8;
+    width: 100%;
+    padding: $spacing--sm;
+  }
+
+  .Dropdown .Select {
     text-decoration: underline;
     font-weight: $font-weight--400;
 
     &::after {
       display: none;
     }
-  }
 
-  &__item {
-    text-decoration: none;
-    display: flex;
-    justify-content: space-between;
-    padding: 0 $spacing--md;
-    opacity: 0.8;
+    &__menu {
+      top: 30px;
+      width: 150px;
+    }
+
+    &__value-container {
+      padding: 0;
+    }
+
+    &__single-value {
+      text-decoration: underline;
+    }
+
+    &__control {
+      padding: 0;
+    }
   }
 }

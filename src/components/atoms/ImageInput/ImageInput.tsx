@@ -41,7 +41,7 @@ export interface ImageInputProps {
   isInputHidden?: boolean;
 }
 
-const ImageInput: React.FC<ImageInputProps> = ({
+export const ImageInput: React.FC<ImageInputProps> = ({
   onChange,
   name,
   imgUrl,
@@ -135,5 +135,3 @@ const ImageInput: React.FC<ImageInputProps> = ({
     </>
   );
 };
-
-export default ImageInput;

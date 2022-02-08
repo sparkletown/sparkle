@@ -1,43 +1,35 @@
 import { useCallback, useMemo, useState } from "react";
+import { where } from "firebase/firestore";
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import {
+  COLLECTION_SPACES,
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+} from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { PosterPageVenue } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
-import { posterVenuesSelector } from "utils/selectors";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 
-import { useDebounceSearch } from "./useDebounceSearch";
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
 
-export const useConnectPosterVenues = (posterHallId: string) => {
-  useFirestoreConnect(() => {
-    return [
-      {
-        collection: "venues",
-        where: [
-          ["template", "==", VenueTemplate.posterpage],
-          ["parentId", "==", posterHallId],
-        ],
-        storeAs: "posterVenues",
-      },
-    ];
-  });
-};
+import { useDebounceSearch } from "./useDebounceSearch";
 
 export const usePosterVenues = (posterHallId: string) => {
-  useConnectPosterVenues(posterHallId);
-
-  const posterVenues = useSelector(posterVenuesSelector);
-
+  const { data, isLoaded } = useRefiCollection<PosterPageVenue>({
+    path: [COLLECTION_SPACES],
+    constraints: [
+      where("template", "==", VenueTemplate.posterpage),
+      where("parentId", "==", posterHallId),
+    ],
+  });
   return useMemo(
     () => ({
-      posterVenues: posterVenues ?? [],
-      isPostersLoaded: isLoaded(posterVenues),
+      posterVenues: data ?? [],
+      isPostersLoaded: isLoaded,
     }),
-    [posterVenues]
+    [data, isLoaded]
   );
 };
 

@@ -1,8 +1,9 @@
 import { DisplayUser } from "types/User";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
 
-import { AnyVenue, VenueTemplate } from "./venues";
+import { AnyVenue } from "./venues";
 
 export interface Table {
   title: string;

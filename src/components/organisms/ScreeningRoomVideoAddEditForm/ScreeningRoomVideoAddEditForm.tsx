@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { useAsyncFn } from "react-use";
@@ -22,7 +21,7 @@ import { AdminInput } from "components/molecules/AdminInput";
 import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 
 import { AdminVenueViewRouteParams } from "../AdminVenueView/AdminVenueView";
 
@@ -145,8 +144,8 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
   );
 
   return (
-    <Form
-      className="ScreeningRoomVideoAddEditForm__form"
+    <form
+      className="ScreeningRoomVideoAddEditModal ScreeningRoomVideoAddEditForm__form"
       onSubmit={handleSubmit(addVideo)}
     >
       <div className="ScreeningRoomVideoAddEditForm__title">{title}</div>
@@ -247,6 +246,6 @@ export const ScreeningRoomVideoAddEditForm: React.FC<ScreeningRoomVideoAddEditFo
           Save
         </ButtonNG>
       </div>
-    </Form>
+    </form>
   );
 };

@@ -1,5 +1,7 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import firebase from "firebase/compat/app";
+import { httpsCallable } from "firebase/functions";
 
 import { Banner } from "types/banner";
 
@@ -19,17 +21,17 @@ export const updateBanner = async ({
     banner: banner ?? firebase.firestore.FieldValue.delete(),
   };
 
-  await firebase
-    .functions()
-    .httpsCallable("venue-adminUpdateBannerMessage")(params)
-    .catch((e) => {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("context", {
-          location: "api/bannerAdmin::updateBanner",
-          venueId,
-          banner,
-        });
+  await httpsCallable(
+    FIREBASE.functions,
+    "venue-adminUpdateBannerMessage"
+  )(params).catch((e) => {
+    Bugsnag.notify(e, (event) => {
+      event.addMetadata("context", {
+        location: "api/bannerAdmin::updateBanner",
+        venueId,
+        banner,
       });
-      onError?.(e.toString());
     });
+    onError?.(e.toString());
+  });
 };

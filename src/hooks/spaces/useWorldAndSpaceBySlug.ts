@@ -1,18 +1,22 @@
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
 import Bugsnag from "@bugsnag/js";
+import { collection, query, where } from "firebase/firestore";
+
+import { COLLECTION_SPACES, COLLECTION_WORLDS } from "settings";
 
 import { World } from "api/world";
 
-import { AnyVenue, SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceId, SpaceSlug, WorldId, WorldSlug } from "types/id";
+import { AnyVenue } from "types/venues";
 
 import { withIdConverter } from "utils/converters";
-import { WithId } from "utils/id";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
 export type UseSpaceBySlugResult = {
   world?: WithId<World>;
+  worldId?: WorldId;
   space?: WithId<AnyVenue>;
-  spaceId?: string;
+  spaceId?: SpaceId;
   isLoaded: boolean;
   error?: string;
 };
@@ -20,6 +24,7 @@ export type UseSpaceBySlugResult = {
 /**
  * Hook which will return the space when the slug is provided.
  * The intention is to be used on the client side, when the space slug is provided in the url.
+ * @param worldSlug
  * @param spaceSlug
  * @returns
  */
@@ -29,27 +34,29 @@ export const useWorldAndSpaceBySlug = (
 ): UseSpaceBySlugResult => {
   const firestore = useFirestore();
 
-  const spacesRef = firestore
-    .collection("venues")
-    .where("slug", "==", spaceSlug ?? "")
-    .withConverter(withIdConverter<AnyVenue>());
-
   // Note: Avoid using the option 'initialData' because it will make status always return 'success'
+
   const { data: spaces, status: spaceStatus } = useFirestoreCollectionData<
     WithId<AnyVenue>
-  >(spacesRef);
+  >(
+    query(
+      collection(firestore, COLLECTION_SPACES),
+      where("slug", "==", convertToFirestoreKey(spaceSlug))
+    ).withConverter(withIdConverter<AnyVenue>())
+  );
 
-  const worldsRef = firestore
-    .collection("worlds")
-    .where("isHidden", "==", false)
-    // @debt we don't properly deal with the slug being undefined. This query
-    // shouldn't happen if we don't have a world slug. This whole hook needs
-    // a bit of a rethink. It's used incorrectly by the NavBar.
-    .where("slug", "==", worldSlug || "")
-    .withConverter(withIdConverter<World>());
   const { data: worlds, status: worldStatus } = useFirestoreCollectionData<
     WithId<World>
-  >(worldsRef);
+  >(
+    query(
+      collection(firestore, COLLECTION_WORLDS),
+      where("isHidden", "==", false),
+      // @debt we don't properly deal with the slug being undefined. This query
+      // shouldn't happen if we don't have a world slug. This whole hook needs
+      // a bit of a rethink. It's used incorrectly by the NavBar.
+      where("slug", "==", convertToFirestoreKey(worldSlug))
+    ).withConverter(withIdConverter<World>())
+  );
 
   const isSpaceLoaded = spaceStatus !== "loading";
   const isWorldLoaded = worldStatus !== "loading";
@@ -71,6 +78,7 @@ export const useWorldAndSpaceBySlug = (
   if (!isWorldLoaded || !isSpaceLoaded) {
     return {
       world: undefined,
+      worldId: undefined,
       space: undefined,
       spaceId: undefined,
       isLoaded: false,
@@ -80,6 +88,7 @@ export const useWorldAndSpaceBySlug = (
   if (!world) {
     return {
       world: undefined,
+      worldId: undefined,
       space: undefined,
       spaceId: undefined,
       isLoaded: true,
@@ -110,6 +119,7 @@ export const useWorldAndSpaceBySlug = (
   if (!space) {
     return {
       world: undefined,
+      worldId: undefined,
       space: undefined,
       spaceId: undefined,
       isLoaded: true,
@@ -120,7 +130,8 @@ export const useWorldAndSpaceBySlug = (
   return {
     world,
     space,
-    spaceId: space?.id,
+    worldId: world?.id as WorldId | undefined,
+    spaceId: space?.id as SpaceId | undefined,
     isLoaded: true,
   };
 };
