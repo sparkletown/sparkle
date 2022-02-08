@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
+import { noop } from "lodash";
 import Twilio from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
@@ -25,6 +26,12 @@ export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   disconnect: () => {},
   remoteParticipants: [],
   shareScreen: () => {},
+  startAudio: noop,
+  stopAudio: noop,
+  startVideo: noop,
+  stopVideo: noop,
+  isTransmittingAudio: false,
+  isTransmittingVideo: false,
 });
 
 // @debt These four functions could be combined.
@@ -84,12 +91,13 @@ const wrapLocalAudioTrack = (track: Twilio.LocalAudioTrack): AudioTrack => {
 const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   let remoteParticipants: Participant[] = [];
   let room: Twilio.Room | undefined;
-  let localParticipant: LocalParticipant | undefined;
   let status = VideoCommsStatus.Disconnected;
   let participantEventSubscriptions: Map<
     Twilio.RemoteParticipant,
     EventSubscription[]
   > = new Map();
+  let isTransmittingAudio = true;
+  let isTransmittingVideo = true;
 
   const updateLocalParticipant = () => {
     if (!room) {
@@ -103,61 +111,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       videoTracks: localPublicationsToVideoTracks(
         room.localParticipant.videoTracks
       ),
-      startAudio: () => {
-        if (!room) {
-          console.warn("startAudio called from invalid state");
-          return;
-        }
-        room.localParticipant.audioTracks.forEach((track) => {
-          track.track.enable();
-        });
-        if (localParticipant) {
-          localParticipant.isTransmittingAudio = true;
-        }
-        triggerStatusUpdate();
-      },
-      stopAudio: () => {
-        if (!room) {
-          console.warn("startAudio called from invalid state");
-          return;
-        }
-        room.localParticipant.audioTracks.forEach((track) => {
-          track.track.disable();
-        });
-        if (localParticipant) {
-          localParticipant.isTransmittingAudio = false;
-        }
-        triggerStatusUpdate();
-      },
-      startVideo: () => {
-        if (!room) {
-          console.warn("startAudio called from invalid state");
-          return;
-        }
-
-        room.localParticipant.videoTracks.forEach((track) => {
-          track.track.enable();
-        });
-        if (localParticipant) {
-          localParticipant.isTransmittingVideo = true;
-        }
-        triggerStatusUpdate();
-      },
-      stopVideo: () => {
-        if (!room) {
-          console.warn("startAudio called from invalid state");
-          return;
-        }
-        room.localParticipant.videoTracks.forEach((track) => {
-          track.track.disable();
-        });
-        if (localParticipant) {
-          localParticipant.isTransmittingVideo = false;
-        }
-        triggerStatusUpdate();
-      },
-      isTransmittingAudio: true,
-      isTransmittingVideo: true,
+      // @debt Maybe these methods are in the wrong place.
     };
   };
 
@@ -378,7 +332,6 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
         room.participants.forEach(participantConnected);
 
         status = VideoCommsStatus.Connected;
-        localParticipant = updateLocalParticipant();
 
         triggerStatusUpdate();
       })
@@ -428,8 +381,6 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
           // TODO
           // screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
 
-          localParticipant = updateLocalParticipant();
-
           triggerStatusUpdate();
         });
       })
@@ -442,17 +393,75 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     // TODO This should clone everything so that react isn't seeing internal
     // versions of the state. Or, use immutable versions of everything.
     // Ideally, just make everything immutable
+    // This isn't particularly performant. However, we generally don't get
+    // a lot of state changes happening during a call so this is probably ok.
+    // It's more important to present a simple API than it is to overly fixate
+    // on performance
+    const localParticipant = updateLocalParticipant();
+
     onStateUpdateCallback({
       localParticipant,
       status,
       remoteParticipants: [...remoteParticipants],
+      isTransmittingAudio,
+      isTransmittingVideo,
     });
+  };
+
+  const startAudio = () => {
+    if (!room) {
+      console.warn("startAudio called from invalid state");
+      return;
+    }
+    room.localParticipant.audioTracks.forEach((track) => {
+      track.track.enable();
+    });
+    isTransmittingAudio = true;
+    triggerStatusUpdate();
+  };
+  const stopAudio = () => {
+    if (!room) {
+      console.warn("startAudio called from invalid state");
+      return;
+    }
+    room.localParticipant.audioTracks.forEach((track) => {
+      track.track.disable();
+    });
+    isTransmittingAudio = false;
+    triggerStatusUpdate();
+  };
+  const startVideo = () => {
+    if (!room) {
+      console.warn("startAudio called from invalid state");
+      return;
+    }
+
+    room.localParticipant.videoTracks.forEach((track) => {
+      track.track.enable();
+    });
+    isTransmittingVideo = true;
+    triggerStatusUpdate();
+  };
+  const stopVideo = () => {
+    if (!room) {
+      console.warn("startAudio called from invalid state");
+      return;
+    }
+    room.localParticipant.videoTracks.forEach((track) => {
+      track.track.disable();
+    });
+    isTransmittingVideo = false;
+    triggerStatusUpdate();
   };
 
   return {
     joinChannel,
     disconnect,
     shareScreen,
+    startAudio,
+    stopAudio,
+    startVideo,
+    stopVideo,
   };
 };
 
@@ -497,11 +506,16 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   const [remoteParticipants, setRemoteParticipants] = useState<Participant[]>(
     []
   );
+  const [isTransmittingAudio, setIsTransmittingAudio] = useState(true);
+  const [isTransmittingVideo, setIsTransmittingVideo] = useState(true);
 
   const twilioCallback = useCallback((update: StateUpdateCallbackParams) => {
+    // TODO All these state updates should be batched into one.
     setLocalParticipant(update.localParticipant);
     setStatus(update.status);
     setRemoteParticipants(update.remoteParticipants);
+    setIsTransmittingAudio(update.isTransmittingAudio);
+    setIsTransmittingVideo(update.isTransmittingVideo);
   }, []);
 
   const twilioImpl = useMemo(() => TwilioImpl(twilioCallback), [
@@ -530,6 +544,12 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     joinChannel: joinChannelCallback,
     disconnect: disconnectCallback,
     shareScreen: shareScreenCallback,
+    isTransmittingAudio,
+    isTransmittingVideo,
+    startAudio: twilioImpl.startAudio,
+    stopAudio: twilioImpl.stopAudio,
+    startVideo: twilioImpl.startVideo,
+    stopVideo: twilioImpl.stopVideo,
   };
 
   return (

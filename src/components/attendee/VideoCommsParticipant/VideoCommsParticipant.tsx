@@ -1,4 +1,5 @@
 import { AudioTrackPlayer } from "../VideoComms/AudioTrackPlayer";
+import { useVideoComms } from "../VideoComms/hooks";
 import { LocalParticipant, Participant } from "../VideoComms/types";
 import { VideoTrackDisplay } from "../VideoComms/VideoTrackDisplay";
 
@@ -14,17 +15,26 @@ interface VideoCommsControlsProps {
 const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
   participant,
 }) => {
+  const {
+    startAudio,
+    stopAudio,
+    startVideo,
+    stopVideo,
+    isTransmittingAudio,
+    isTransmittingVideo,
+  } = useVideoComms();
+
   return (
     <>
-      {participant.isTransmittingAudio ? (
-        <span onClick={participant.stopAudio}>Mute</span>
+      {isTransmittingAudio ? (
+        <span onClick={stopAudio}>Mute</span>
       ) : (
-        <span onClick={participant.startAudio}>Unmute</span>
+        <span onClick={startAudio}>Unmute</span>
       )}
-      {participant.isTransmittingVideo ? (
-        <span onClick={participant.stopVideo}>Hide</span>
+      {isTransmittingVideo ? (
+        <span onClick={stopVideo}>Hide</span>
       ) : (
-        <span onClick={participant.startVideo}>Reveal</span>
+        <span onClick={startVideo}>Reveal</span>
       )}
     </>
   );

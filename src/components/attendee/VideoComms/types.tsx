@@ -53,15 +53,7 @@ type JoinChannelFunc = (userId: string, channelId: string) => void;
 type DisconnectFunc = () => void;
 type ShareScreenFunc = () => void;
 
-export interface LocalParticipant extends Participant {
-  startAudio: () => void;
-  stopAudio: () => void;
-  stopVideo: () => void;
-  startVideo: () => void;
-
-  isTransmittingAudio: boolean;
-  isTransmittingVideo: boolean;
-}
+export interface LocalParticipant extends Participant {}
 
 export interface VideoCommsContextType {
   channelId?: string;
@@ -72,12 +64,20 @@ export interface VideoCommsContextType {
 
   localParticipant?: LocalParticipant;
   remoteParticipants: Participant[];
+  startAudio: () => void;
+  stopAudio: () => void;
+  stopVideo: () => void;
+  startVideo: () => void;
+  isTransmittingAudio: boolean;
+  isTransmittingVideo: boolean;
 }
 
 export interface StateUpdateCallbackParams {
   localParticipant?: LocalParticipant;
   remoteParticipants: Participant[];
   status: VideoCommsStatus;
+  isTransmittingAudio: boolean;
+  isTransmittingVideo: boolean;
 }
 
 export type StateUpdateCallback = (update: StateUpdateCallbackParams) => void;
