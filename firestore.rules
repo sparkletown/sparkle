@@ -45,6 +45,11 @@ service cloud.firestore {
     match /venues/{venue} {
       allow read: if true;
 
+      // Allow anyone to set the centrally project track.
+      // TODO Decide whether this belongs on the venue, or, somewhere else.
+      allow update: if (request.resource.data.diff(resource.data).affectedKeys()
+        .hasOnly(['projectedVideoTrackId']));
+
       function venueData() {
         return get(/databases/$(database)/documents/venues/$(venue)).data;
       }

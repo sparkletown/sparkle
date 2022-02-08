@@ -1,3 +1,5 @@
+import Twilio from "twilio-video";
+
 export enum VideoCommsStatus {
   Disconnected = "DISCONNECTED",
   Connecting = "CONNECTING",
@@ -12,11 +14,14 @@ export interface VideoCommsProviderProps {
 
 interface Track {
   kind: "video" | "audio";
+  id: string;
 }
 
 export interface VideoTrack extends Track {
   attach: (el: HTMLVideoElement) => void;
+  detach: () => void;
   kind: "video";
+  twilioTrack: Twilio.VideoTrack;
 }
 
 export interface AudioTrack extends Track {
@@ -42,6 +47,7 @@ export interface Participant {
 
 type JoinChannelFunc = (userId: string, channelId: string) => void;
 type DisconnectFunc = () => void;
+type ShareScreenFunc = () => void;
 
 export interface LocalParticipant extends Participant {
   startAudio: () => void;
@@ -58,13 +64,10 @@ export interface VideoCommsContextType {
   status: VideoCommsStatus;
   joinChannel: JoinChannelFunc;
   disconnect: DisconnectFunc;
+  shareScreen: ShareScreenFunc;
 
   localParticipant?: LocalParticipant;
   remoteParticipants: Participant[];
-}
-
-export interface HasNullableTrack {
-  track: VideoTrack | null;
 }
 
 export interface StateUpdateCallbackParams {

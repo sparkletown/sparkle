@@ -9,6 +9,7 @@ export const useVideoComms = () => {
     remoteParticipants,
     joinChannel,
     disconnect,
+    shareScreen,
   } = useContext(VideoCommsContext);
 
   return {
@@ -17,5 +18,6 @@ export const useVideoComms = () => {
     remoteParticipants,
     joinChannel,
     disconnect,
+    shareScreen,
   };
 };

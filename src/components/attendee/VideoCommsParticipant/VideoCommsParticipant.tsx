@@ -1,6 +1,5 @@
-import { useEffect, useRef } from "react";
-
 import { Participant } from "../VideoComms/types";
+import { VideoTrackDisplay } from "../VideoComms/VideoTrackDisplay";
 
 interface VideoCommsParticipantProps {
   participant: Participant;
@@ -10,24 +9,14 @@ interface VideoCommsParticipantProps {
 export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const firstTrack = participant.videoTracks?.[0];
-
-  useEffect(() => {
-    // TODO handle multiple tracks
-    if (firstTrack && videoRef.current) {
-      firstTrack.attach(videoRef.current);
-    }
-  }, [firstTrack]);
 
   // TODO Mirroring
 
   return (
     <>
-      {participant.videoTracks?.[0] && (
-        <video ref={videoRef} autoPlay={true} style={{ width: "400px" }} />
-      )}
+      {participant.videoTracks.map((track) => (
+        <VideoTrackDisplay key={track.id} track={track} />
+      ))}
     </>
   );
 };
