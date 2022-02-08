@@ -1,43 +1,23 @@
-import { Fragment, useCallback, useRef } from "react";
+import { Fragment, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 
-import { REACT_BOOTSTRAP_MODAL_HIDE_DURATION } from "settings";
-
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useShowHide } from "hooks/useShowHide";
+
+import { AdminButton } from "components/atoms/AdminButton";
 
 export const AdminProfileModal = () => {
   const { hasSelectedProfile, closeUserProfileModal } =
     useProfileModalControls();
 
-  const {
-    isShown: isModalShown,
-    hide: hideModal,
-    show: showModal,
-  } = useShowHide(true);
-
-  const hideHandler = useCallback(async () => {
-    hideModal();
-    // when closeUserProfileModal is called modal hide animation starts
-    // but selectedUserId is immediately undefined and while the modal is sliding away
-    // an error message from ProfileModalFetchUser is shown
-
-    // This is to fix that.
-    window.setTimeout(() => {
-      closeUserProfileModal();
-      showModal();
-    }, REACT_BOOTSTRAP_MODAL_HIDE_DURATION);
-  }, [closeUserProfileModal, hideModal, showModal]);
-
   const cancelButtonRef = useRef(null);
 
   return (
-    <Transition.Root show={hasSelectedProfile && isModalShown} as={Fragment}>
+    <Transition.Root show={hasSelectedProfile} as={Fragment}>
       <Dialog
         as="div"
         className="fixed z-10 inset-0 overflow-y-auto"
         initialFocus={cancelButtonRef}
-        onClose={showModal}
+        onClose={closeUserProfileModal}
       >
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
@@ -111,21 +91,17 @@ export const AdminProfileModal = () => {
                 </div>
               </div>
               <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                <button
-                  type="button"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-sparkle text-base font-medium text-white hover:bg-sparkle-darker focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={hideHandler}
-                >
+                <AdminButton onClick={closeUserProfileModal}>
                   Edit profile
-                </button>
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  onClick={hideHandler}
-                  ref={cancelButtonRef}
+                </AdminButton>
+
+                <AdminButton
+                  onClick={closeUserProfileModal}
+                  variant="secondary"
+                  forwaredRef={cancelButtonRef}
                 >
                   Cancel
-                </button>
+                </AdminButton>
               </div>
             </div>
           </Transition.Child>

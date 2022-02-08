@@ -61,31 +61,40 @@ export const SidebarContent = () => {
 
         const isCurrentRoute = targetUrl === location.pathname;
 
+        const linkClasses = classNames(
+          isCurrentRoute
+            ? "bg-sparkle text-white"
+            : "text-gray-300 hover:bg-sparkle-darker hover:text-white",
+          "group flex items-center px-2 py-2 text-base font-regular rounded-md"
+        );
+
+        const iconClasses = classNames(
+          isCurrentRoute
+            ? "text-gray-300"
+            : "text-gray-400 group-hover:text-gray-300",
+          "mr-4 flex-shrink-0 h-6 w-6"
+        );
+
         return (
-          <Link
-            to={targetUrl}
-            key={item.name}
-            className={classNames(
-              isCurrentRoute
-                ? "bg-sparkle text-white"
-                : "text-gray-300 hover:bg-sparkle-darker hover:text-white",
-              "group flex items-center px-2 py-2 text-base font-regular rounded-md"
-            )}
-          >
-            <item.icon
-              className={classNames(
-                isCurrentRoute
-                  ? "text-gray-300"
-                  : "text-gray-400 group-hover:text-gray-300",
-                "mr-4 flex-shrink-0 h-6 w-6"
-              )}
-              aria-hidden="true"
-            />
+          <Link to={targetUrl} key={item.name} className={linkClasses}>
+            <item.icon className={iconClasses} aria-hidden="true" />
             {item.name}
           </Link>
         );
       }),
     [location.pathname, worldSlug]
+  );
+
+  const switchWorldLinkClasses = classNames(
+    "flex items-center px-2 py-2 text-sm uppercase tracking-wider rounded-md group",
+    worldIsChosen
+      ? "text-gray-300 hover:bg-gray-700 hover:text-white font-regular"
+      : "text-gray-30 font-medium bg-sparkle text-white"
+  );
+
+  const switchWorldIconClasses = classNames(
+    "mr-3 flex-shrink-0 h-6 w-6",
+    worldIsChosen ? "text-gray-400 group-hover:text-gray-300" : "text-gray-300"
   );
 
   return (
@@ -110,22 +119,9 @@ export const SidebarContent = () => {
 
       <div className="flex-shrink-0">
         <div className="flex-1 flex flex-col overflow-y-auto px-2 py-2">
-          <Link
-            to={ADMIN_IA_WORLD_BASE_URL}
-            className={classNames(
-              "flex items-center px-2 py-2 text-sm uppercase tracking-wider rounded-md group",
-              worldIsChosen
-                ? "text-gray-300 hover:bg-gray-700 hover:text-white font-regular"
-                : "text-gray-30 font-medium bg-sparkle text-white"
-            )}
-          >
+          <Link to={ADMIN_IA_WORLD_BASE_URL} className={switchWorldLinkClasses}>
             <SwitchHorizontalIcon
-              className={classNames(
-                "mr-3 flex-shrink-0 h-6 w-6",
-                worldIsChosen
-                  ? "text-gray-400 group-hover:text-gray-300"
-                  : "text-gray-300"
-              )}
+              className={switchWorldIconClasses}
               aria-hidden="true"
             />
             Switch world
