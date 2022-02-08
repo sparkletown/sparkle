@@ -10,6 +10,10 @@
     min-height: 100vh;
     margin: $whitespace * 10 auto 0 $whitespace * 5;
     padding: $whitespace * 4 $whitespace * 3;
+
+    @media (max-width: 768px) {
+      margin: 0;
+    }
   }
 
   &__header {

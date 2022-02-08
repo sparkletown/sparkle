@@ -54,16 +54,16 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
   };
 
   return (
-    <div className={styles.navOverlay}>
-      <div className={styles.navOverlay__close} onClick={onClose}>
+    <div className={styles.NavOverlay}>
+      <div className={styles.NavOverlay__close} onClick={onClose}>
         Close
-        <span className={styles.navOverlay__close_icon} />
+        <span className={styles.NavOverlay__close_icon} />
       </div>
-      <div className={styles.navOverlay__container}>
-        <div className={styles.navOverlay__navigation}>
+      <div className={styles.NavOverlay__container}>
+        <div className={styles.NavOverlay__navigation}>
           {Object.entries(navOverlayTypeList).map(([key, label]) => (
             <span
-              className={styles.navOverlay__navigation_button}
+              className={styles.NavOverlay__navigation_button}
               key={key}
               onClick={() => setnavOverlay(label)}
             >
@@ -71,7 +71,7 @@ export const NavOverlay: React.FC<navOverlayProps> = ({
             </span>
           ))}
         </div>
-        <div className={styles.navOverlay__content}>
+        <div className={styles.NavOverlay__content}>
           {navOverlayType === "Schedule" && <ScheduleOverlay />}
         </div>
       </div>
