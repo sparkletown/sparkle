@@ -68,7 +68,6 @@ const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack => {
   };
 };
 
-// @debt would this be neater as a proxy? Avoids copying state all the time...
 const wrapLocalAudioTrack = (track: Twilio.LocalAudioTrack): AudioTrack => {
   return {
     kind: "audio",
@@ -192,6 +191,10 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     triggerStatusUpdate();
   };
 
+  const findParticipantById = (id: string) => {
+    return remoteParticipants.find((p) => p.id === id);
+  };
+
   const onTrackEnabled = (
     participant: Twilio.RemoteParticipant,
     publication: Twilio.RemoteTrackPublication
@@ -200,9 +203,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     if (!track) {
       return;
     }
-    const mappedParticipant = remoteParticipants.find(
-      (p) => p.id === participant.sid
-    );
+    const mappedParticipant = findParticipantById(participant.sid);
     if (!mappedParticipant) {
       // TODO probably warn
       return;
@@ -421,7 +422,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
   const stopAudio = () => {
     if (!room) {
-      console.warn("startAudio called from invalid state");
+      console.warn("stopAudio called from invalid state");
       return;
     }
     room.localParticipant.audioTracks.forEach((track) => {
@@ -432,10 +433,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
   const startVideo = () => {
     if (!room) {
-      console.warn("startAudio called from invalid state");
+      console.warn("startVideo called from invalid state");
       return;
     }
-
     room.localParticipant.videoTracks.forEach((track) => {
       track.track.enable();
     });
@@ -444,7 +444,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
   const stopVideo = () => {
     if (!room) {
-      console.warn("startAudio called from invalid state");
+      console.warn("stopVideo called from invalid state");
       return;
     }
     room.localParticipant.videoTracks.forEach((track) => {
