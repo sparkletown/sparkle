@@ -176,9 +176,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     ].forEach((eventName) => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      subscribeToParticipantEvent(participant, eventName, triggerStatusUpdate);
+      subscribeToParticipantEvent(participant, eventName, recalculateStatus);
     });
-    triggerStatusUpdate();
+    recalculateStatus();
   };
 
   const participantDisconnected = (participant: Twilio.RemoteParticipant) => {
@@ -186,7 +186,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       (p) => p.id !== participant.sid
     );
     unsubscribeParticipantEvents(participant);
-    triggerStatusUpdate();
+    recalculateStatus();
   };
 
   const wrapRemoteParticipant = (
@@ -211,7 +211,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       return;
     }
     status = VideoCommsStatus.Connecting;
-    triggerStatusUpdate();
+    recalculateStatus();
 
     const token = await getTwilioVideoToken({
       userId,
@@ -220,7 +220,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     if (!token) {
       console.error("Failed to get twilio token");
       status = VideoCommsStatus.Errored;
-      triggerStatusUpdate();
+      recalculateStatus();
       return;
     }
 
@@ -239,11 +239,11 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
 
         status = VideoCommsStatus.Connected;
 
-        triggerStatusUpdate();
+        recalculateStatus();
       })
       .catch((error) => {
         status = VideoCommsStatus.Errored;
-        triggerStatusUpdate();
+        recalculateStatus();
       });
   };
 
@@ -266,7 +266,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     room = undefined;
     status = VideoCommsStatus.Disconnected;
     remoteParticipants = [];
-    triggerStatusUpdate();
+    recalculateStatus();
   };
 
   const shareScreen = () => {
@@ -287,7 +287,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
           // TODO
           // screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
 
-          triggerStatusUpdate();
+          recalculateStatus();
         });
       })
       .catch(() => {
@@ -295,7 +295,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       });
   };
 
-  const triggerStatusUpdate = () => {
+  const recalculateStatus = () => {
     // TODO This should clone everything so that react isn't seeing internal
     // versions of the state. Or, use immutable versions of everything.
     // Ideally, just make everything immutable
@@ -326,7 +326,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       track.track.enable();
     });
     isTransmittingAudio = true;
-    triggerStatusUpdate();
+    recalculateStatus();
   };
   const stopAudio = () => {
     if (!room) {
@@ -337,7 +337,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       track.track.disable();
     });
     isTransmittingAudio = false;
-    triggerStatusUpdate();
+    recalculateStatus();
   };
   const startVideo = () => {
     if (!room) {
@@ -348,7 +348,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       track.track.enable();
     });
     isTransmittingVideo = true;
-    triggerStatusUpdate();
+    recalculateStatus();
   };
   const stopVideo = () => {
     if (!room) {
@@ -359,7 +359,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       track.track.disable();
     });
     isTransmittingVideo = false;
-    triggerStatusUpdate();
+    recalculateStatus();
   };
 
   return {
