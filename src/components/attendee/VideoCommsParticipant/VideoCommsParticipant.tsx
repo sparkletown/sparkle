@@ -1,5 +1,5 @@
 import { AudioTrackPlayer } from "../VideoComms/AudioTrackPlayer";
-import { Participant } from "../VideoComms/types";
+import { LocalParticipant, Participant } from "../VideoComms/types";
 import { VideoTrackDisplay } from "../VideoComms/VideoTrackDisplay";
 
 interface VideoCommsParticipantProps {
@@ -7,8 +7,32 @@ interface VideoCommsParticipantProps {
   isLocal?: boolean;
 }
 
+interface VideoCommsControlsProps {
+  participant: LocalParticipant;
+}
+
+const VideoCommsControls: React.FC<VideoCommsControlsProps> = ({
+  participant,
+}) => {
+  return (
+    <>
+      {participant.isTransmittingAudio ? (
+        <span onClick={participant.stopAudio}>Mute</span>
+      ) : (
+        <span onClick={participant.startAudio}>Unmute</span>
+      )}
+      {participant.isTransmittingVideo ? (
+        <span onClick={participant.stopVideo}>Hide</span>
+      ) : (
+        <span onClick={participant.startVideo}>Reveal</span>
+      )}
+    </>
+  );
+};
+
 export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
+  isLocal,
 }) => {
   // TODO Mirroring
 
@@ -20,6 +44,9 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
       {participant.audioTracks.map((track) => (
         <AudioTrackPlayer key={track.id} track={track} />
       ))}
+      {isLocal && (
+        <VideoCommsControls participant={participant as LocalParticipant} />
+      )}
     </>
   );
 };

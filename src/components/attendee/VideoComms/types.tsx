@@ -15,6 +15,7 @@ export interface VideoCommsProviderProps {
 interface Track {
   kind: "video" | "audio";
   id: string;
+  enabled: boolean;
 }
 
 export interface VideoTrack extends Track {

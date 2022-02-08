@@ -46,28 +46,21 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId }) => {
         </a>
       </div>
       <div className={styles.VideoHuddleVideos}>
-        { /*  TODO shouldMirrorVideo */}
-        {
-          localParticipant &&
+        {/*  TODO shouldMirrorVideo */}
+        {localParticipant && (
           <div className={styles.VideoContainer} key={localParticipant.id}>
             <VideoCommsParticipant
+              isLocal={true}
               participant={localParticipant}
             />
           </div>
-        }
-        {
-          remoteParticipants.map((participant) => (
-            <div
-              key={participant.id}
-              className={styles.VideoContainer}
-            >
-              <VideoCommsParticipant
-                participant={participant}
-              />
-            </div>
-          ))
-        }
+        )}
+        {remoteParticipants.map((participant) => (
+          <div key={participant.id} className={styles.VideoContainer}>
+            <VideoCommsParticipant participant={participant} />
+          </div>
+        ))}
       </div>
-    </div >
+    </div>
   );
 };

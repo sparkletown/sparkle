@@ -27,24 +27,32 @@ export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
 
   const { extraButtons } = useVideoHuddle();
 
+  // @debt we should make tracks immutable or something so that this actually
+  // triggers the useEffect to be recalculated
+  const enabled = track.enabled;
+
   useEffect(() => {
-    if (track && videoRef.current) {
+    if (track && videoRef.current && enabled) {
+      console.log("attaching");
       track.attach(videoRef.current);
       return () => {
+        console.log("detaching");
         track.detach();
       };
     }
-  }, [track]);
+  }, [track, enabled]);
 
   return (
     <>
-      {track && (
+      {track.enabled ? (
         <>
           <video ref={videoRef} autoPlay={true} />
           {extraButtons.map((buttonConfig, idx) => (
             <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />
           ))}
         </>
+      ) : (
+        <span>Video disabled</span>
       )}
     </>
   );

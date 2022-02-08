@@ -35,6 +35,7 @@ const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
+    enabled: track.isEnabled,
   };
 };
 
@@ -45,6 +46,7 @@ const wrapLocalVideoTrack = (track: Twilio.LocalVideoTrack): VideoTrack => {
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
+    enabled: track.isEnabled,
   };
 };
 
@@ -55,9 +57,11 @@ const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack => {
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
+    enabled: track.isEnabled,
   };
 };
 
+// @debt would this be neater as a proxy? Avoids copying state all the time...
 const wrapLocalAudioTrack = (track: Twilio.LocalAudioTrack): AudioTrack => {
   return {
     kind: "audio",
@@ -65,6 +69,7 @@ const wrapLocalAudioTrack = (track: Twilio.LocalAudioTrack): AudioTrack => {
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
+    enabled: track.isEnabled,
   };
 };
 
@@ -96,10 +101,19 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     participant.on(eventName, callback);
     let existing = participantEventSubscriptions.get(participant);
     if (!existing) {
+      // TODO Come back to this
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       existing = [[eventName, callback]];
     } else {
+      // TODO Come back to this
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       existing = [...existing, [eventName, callback]];
     }
+    // TODO Come back to this
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     participantEventSubscriptions.set(participant, existing);
   };
 
@@ -137,6 +151,12 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     subscribeToParticipantEvent(participant, "trackUnsubscribed", (track) =>
       onTrackUnsubscribed(participant, track)
     );
+    subscribeToParticipantEvent(participant, "trackEnabled", (publication) =>
+      onTrackEnabled(participant, publication)
+    );
+    subscribeToParticipantEvent(participant, "trackDisabled", (publication) =>
+      onTrackDisabled(participant, publication)
+    );
     triggerStatusUpdate();
   };
 
@@ -145,6 +165,65 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       (p) => p.id !== participant.sid
     );
     unsubscribeParticipantEvents(participant);
+    triggerStatusUpdate();
+  };
+
+  const onTrackEnabled = (
+    participant: Twilio.RemoteParticipant,
+    publication: Twilio.RemoteTrackPublication
+  ) => {
+    const track = publication.track;
+    if (!track) {
+      return;
+    }
+    const mappedParticipant = remoteParticipants.find(
+      (p) => p.id === participant.sid
+    );
+    if (!mappedParticipant) {
+      // TODO probably warn
+      return;
+    }
+
+    // @debt tidy up this track finding...
+    const allTracks = [
+      ...mappedParticipant.audioTracks,
+      ...mappedParticipant.videoTracks,
+    ];
+    const wrappedTrack = allTracks.find((wt) => wt.id === track.sid);
+    if (!wrappedTrack) {
+      // TODO warn here
+      return;
+    }
+    wrappedTrack.enabled = true;
+    triggerStatusUpdate();
+  };
+
+  const onTrackDisabled = (
+    participant: Twilio.RemoteParticipant,
+    publication: Twilio.RemoteTrackPublication
+  ) => {
+    const track = publication.track;
+    if (!track) {
+      return;
+    }
+    const mappedParticipant = remoteParticipants.find(
+      (p) => p.id === participant.sid
+    );
+    if (!mappedParticipant) {
+      // TODO probably warn
+      return;
+    }
+
+    const allTracks = [
+      ...mappedParticipant.audioTracks,
+      ...mappedParticipant.videoTracks,
+    ];
+    const wrappedTrack = allTracks.find((wt) => wt.id === track.sid);
+    if (!wrappedTrack) {
+      // TODO warn here
+      return;
+    }
+    wrappedTrack.enabled = false;
     triggerStatusUpdate();
   };
 
@@ -237,12 +316,44 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
           videoTracks: localPublicationsToVideoTracks(
             room.localParticipant.videoTracks
           ),
-          startAudio: () => {},
-          stopAudio: () => {},
-          startVideo: () => {},
-          stopVideo: () => {},
-          isTransmittingAudio: false,
-          isTransmittingVideo: false,
+          startAudio: () => {
+            newRoom.localParticipant.audioTracks.forEach((track) => {
+              track.track.enable();
+            });
+            if (localParticipant) {
+              localParticipant.isTransmittingAudio = true;
+            }
+            triggerStatusUpdate();
+          },
+          stopAudio: () => {
+            newRoom.localParticipant.audioTracks.forEach((track) => {
+              track.track.disable();
+            });
+            if (localParticipant) {
+              localParticipant.isTransmittingAudio = false;
+            }
+            triggerStatusUpdate();
+          },
+          startVideo: () => {
+            newRoom.localParticipant.videoTracks.forEach((track) => {
+              track.track.enable();
+            });
+            if (localParticipant) {
+              localParticipant.isTransmittingVideo = true;
+            }
+            triggerStatusUpdate();
+          },
+          stopVideo: () => {
+            newRoom.localParticipant.videoTracks.forEach((track) => {
+              track.track.disable();
+            });
+            if (localParticipant) {
+              localParticipant.isTransmittingVideo = false;
+            }
+            triggerStatusUpdate();
+          },
+          isTransmittingAudio: true,
+          isTransmittingVideo: true,
         };
 
         triggerStatusUpdate();

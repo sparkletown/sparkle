@@ -4,8 +4,12 @@
  */
 import Twilio from "twilio-video";
 
-type TrackSubscriptionCallback = (
+type TwilioTrackAndPublicationCallback = (
   track: Twilio.RemoteTrack,
+  publication: Twilio.RemoteTrackPublication
+) => void;
+
+type TwilioPublicationCallback = (
   publication: Twilio.RemoteTrackPublication
 ) => void;
 
@@ -15,15 +19,27 @@ export type SubscribeToParticipantEvent = {
   (
     participant: Twilio.RemoteParticipant,
     eventName: "trackSubscribed",
-    callback: TrackSubscriptionCallback
+    callback: TwilioTrackAndPublicationCallback
   ): void;
   (
     participant: Twilio.RemoteParticipant,
     eventName: "trackUnsubscribed",
-    callback: TrackSubscriptionCallback
+    callback: TwilioTrackAndPublicationCallback
+  ): void;
+  (
+    participant: Twilio.RemoteParticipant,
+    eventName: "trackEnabled",
+    callback: TwilioPublicationCallback
+  ): void;
+  (
+    participant: Twilio.RemoteParticipant,
+    eventName: "trackDisabled",
+    callback: TwilioPublicationCallback
   ): void;
 };
 
 export type EventSubscription =
-  | ["trackSubscribed", TrackSubscriptionCallback]
-  | ["trackUnsubscribed", TrackSubscriptionCallback];
+  | ["trackSubscribed", TwilioTrackAndPublicationCallback]
+  | ["trackUnsubscribed", TwilioTrackAndPublicationCallback]
+  | ["trackEnabled", TwilioPublicationCallback]
+  | ["trackDisabled", TwilioPublicationCallback];
