@@ -42,10 +42,13 @@ const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
   };
 };
 
-const wrapLocalVideoTrack = (track: Twilio.LocalVideoTrack): VideoTrack => {
+const wrapLocalVideoPublication = (
+  publication: Twilio.LocalVideoTrackPublication
+): VideoTrack => {
+  const track = publication.track;
   return {
     kind: "video",
-    id: track.id,
+    id: publication.trackSid,
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
@@ -64,10 +67,13 @@ const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack => {
   };
 };
 
-const wrapLocalAudioTrack = (track: Twilio.LocalAudioTrack): AudioTrack => {
+const wrapLocalAudioPublication = (
+  publication: Twilio.LocalAudioTrackPublication
+): AudioTrack => {
+  const track = publication.track;
   return {
     kind: "audio",
-    id: track.id,
+    id: publication.trackSid,
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
@@ -359,7 +365,7 @@ const localPublicationsToVideoTracks = (
   publications: Map<String, Twilio.LocalVideoTrackPublication>
 ): VideoTrack[] => {
   return Array.from(publications.values())
-    .map((vt) => vt.track && wrapLocalVideoTrack(vt.track))
+    .map((p) => p.track && wrapLocalVideoPublication(p))
     .filter(notNull);
 };
 
@@ -367,7 +373,7 @@ const localPublicationsToAudioTracks = (
   publications: Map<String, Twilio.LocalAudioTrackPublication>
 ): AudioTrack[] => {
   return Array.from(publications.values())
-    .map((at) => at.track && wrapLocalAudioTrack(at.track))
+    .map((p) => p.track && wrapLocalAudioPublication(p))
     .filter(notNull);
 };
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
 import { VideoTrack } from "components/attendee/VideoComms/types";
 import {
@@ -97,14 +97,21 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     shareScreen();
   }, [shareScreen]);
 
-  const allTracks = [...(localParticipant?.videoTracks || [])];
-  remoteParticipants.forEach((remoteParticipant) => {
-    allTracks.push(...remoteParticipant.videoTracks);
-  });
+  const allTracks = useMemo(() => {
+    const result = [...(localParticipant?.videoTracks || [])];
+    remoteParticipants.forEach((remoteParticipant) => {
+      result.push(...remoteParticipant.videoTracks);
+    });
+    return result;
+  }, [localParticipant?.videoTracks, remoteParticipants]);
 
-  const projectedVideoTrack =
-    venue.projectedVideoTrackId &&
-    allTracks.find((t) => t.id === venue.projectedVideoTrackId);
+  const projectedVideoTrack = useMemo(
+    () =>
+      venue.projectedVideoTrackId
+        ? allTracks.find((t) => t.id === venue.projectedVideoTrackId)
+        : undefined,
+    [allTracks, venue.projectedVideoTrackId]
+  );
 
   return (
     <div className={styles.Container}>

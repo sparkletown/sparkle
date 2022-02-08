@@ -32,7 +32,7 @@ export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
   const enabled = track.enabled;
 
   useEffect(() => {
-    if (track && videoRef.current && enabled) {
+    if (videoRef.current && enabled) {
       console.log("attaching");
       track.attach(videoRef.current);
       return () => {
