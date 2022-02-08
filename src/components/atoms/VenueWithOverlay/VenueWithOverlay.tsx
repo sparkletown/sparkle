@@ -27,7 +27,7 @@ export const VenueWithOverlay: React.FC<VenueWithOverlayProps> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig?.coverImageUrl ||
-    venue?.config?.landingPageConfig?.bannerImageUrl,
+      venue?.config?.landingPageConfig?.bannerImageUrl,
     DEFAULT_VENUE_BANNER_COLOR
   );
 
