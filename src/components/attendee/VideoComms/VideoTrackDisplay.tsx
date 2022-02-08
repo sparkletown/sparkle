@@ -4,8 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { VideoTrack } from "../VideoComms/types";
 import { ButtonConfig, useVideoHuddle } from "../VideoHuddle/useVideoHuddle";
 
-import styles from "./VideoTrackDisplay.module.scss";
-
 interface VideoTrackDisplayProps {
   track: VideoTrack;
 }
@@ -27,7 +25,7 @@ export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const { augmentFunction: AugmentFunction, extraButtons } = useVideoHuddle();
+  const { extraButtons } = useVideoHuddle();
 
   useEffect(() => {
     if (track && videoRef.current) {
@@ -38,14 +36,11 @@ export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
     }
   }, [track]);
 
-  const augment = AugmentFunction && <AugmentFunction track={track} />;
-
   return (
     <>
       {track && (
         <>
           <video ref={videoRef} autoPlay={true} />
-          {augment}
           {extraButtons.map((buttonConfig, idx) => (
             <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />
           ))}

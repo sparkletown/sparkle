@@ -62,7 +62,6 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
     leaveHuddle,
     localParticipant,
     remoteParticipants,
-    setAugmentFunction,
     setExtraButtons,
   } = useVideoHuddle();
 
@@ -85,7 +84,7 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
       setExtraButtons([]);
       leaveHuddle();
     };
-  }, [setAugmentFunction, leaveHuddle, setExtraButtons, projectTrack]);
+  }, [leaveHuddle, setExtraButtons, projectTrack]);
 
   const disconnectCallback = useCallback(() => {
     leaveHuddle();
@@ -99,7 +98,7 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   }, [shareScreen]);
 
   const allTracks = [...(localParticipant?.videoTracks || [])];
-  remoteParticipants.map((remoteParticipant) => {
+  remoteParticipants.forEach((remoteParticipant) => {
     allTracks.push(...remoteParticipant.videoTracks);
   });
 

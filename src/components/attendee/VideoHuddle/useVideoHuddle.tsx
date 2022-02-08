@@ -8,16 +8,9 @@ interface HuddleContextType {
   inHuddle: boolean;
   setInHuddle: (cb: (prevInHuddle: boolean) => void) => void;
 
-  augmentFunction?: React.FC<AugmentProps>;
-  setAugmentFunction: (cb?: React.FC<AugmentProps>) => void;
-
   extraButtons: ButtonConfig[];
   setExtraButtons: (buttons: ButtonConfig[]) => void;
 }
-interface AugmentProps {
-  track: VideoTrack;
-}
-
 export type ButtonCallbackArgs = {
   track: VideoTrack;
 };
@@ -30,9 +23,6 @@ export interface ButtonConfig {
 export const HuddleContext = React.createContext<HuddleContextType>({
   inHuddle: false,
   setInHuddle: (cb: (prevInHuddle: boolean) => void) => {},
-  augmentFunction: undefined,
-  setAugmentFunction: (cb?: React.FC<AugmentProps>) => {},
-  // TODO Make extra buttons a configurable array of icons, tooltips, callbacks
   // TODO Make it so classes can be set on the video element
   extraButtons: [],
   setExtraButtons: (buttons: ButtonConfig[]) => [],
@@ -44,9 +34,6 @@ interface HuddleProviderProps {
 
 export const HuddleProvider: React.FC<HuddleProviderProps> = ({ children }) => {
   const [inHuddle, setInHuddle] = useState(false);
-  const [augmentFunction, setAugmentFunction] = useState<
-    undefined | React.FC<AugmentProps>
-  >(undefined);
 
   const [extraButtons, setExtraButtons] = useState<ButtonConfig[]>([]);
 
@@ -55,8 +42,6 @@ export const HuddleProvider: React.FC<HuddleProviderProps> = ({ children }) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     setInHuddle,
-    augmentFunction,
-    setAugmentFunction,
     extraButtons,
     setExtraButtons,
   };
@@ -70,7 +55,6 @@ export const HuddleProvider: React.FC<HuddleProviderProps> = ({ children }) => {
 
 export const useVideoHuddle = () => {
   const {
-    status,
     localParticipant,
     joinChannel,
     disconnect,
@@ -78,14 +62,8 @@ export const useVideoHuddle = () => {
     shareScreen,
   } = useVideoComms();
 
-  const {
-    inHuddle,
-    setInHuddle,
-    augmentFunction,
-    setAugmentFunction,
-    extraButtons,
-    setExtraButtons,
-  } = useContext(HuddleContext);
+  const { inHuddle, setInHuddle, extraButtons, setExtraButtons } =
+    useContext(HuddleContext);
 
   // TODO Docs
   const joinHuddle = useMemo(() => {
@@ -118,8 +96,6 @@ export const useVideoHuddle = () => {
     localParticipant,
     remoteParticipants,
     shareScreen,
-    augmentFunction,
-    setAugmentFunction,
     extraButtons,
     setExtraButtons,
   };
