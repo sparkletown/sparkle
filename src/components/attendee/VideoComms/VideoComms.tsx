@@ -8,6 +8,7 @@ import {
   SubscribeToParticipantEvent,
 } from "./internalTypes";
 import {
+  AudioTrack,
   LocalParticipant,
   Participant,
   StateUpdateCallback,
@@ -20,12 +21,13 @@ import {
 
 export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   status: VideoCommsStatus.Disconnected,
-  joinChannel: () => { },
-  disconnect: () => { },
+  joinChannel: () => {},
+  disconnect: () => {},
   remoteParticipants: [],
-  shareScreen: () => { },
+  shareScreen: () => {},
 });
 
+// @debt These four functions could be combined.
 const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
   return {
     kind: "video",
@@ -33,8 +35,8 @@ const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
-  }
-}
+  };
+};
 
 const wrapLocalVideoTrack = (track: Twilio.LocalVideoTrack): VideoTrack => {
   return {
@@ -43,8 +45,28 @@ const wrapLocalVideoTrack = (track: Twilio.LocalVideoTrack): VideoTrack => {
     attach: track.attach.bind(track),
     detach: track.detach.bind(track),
     twilioTrack: track,
-  }
-}
+  };
+};
+
+const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack => {
+  return {
+    kind: "audio",
+    id: track.sid,
+    attach: track.attach.bind(track),
+    detach: track.detach.bind(track),
+    twilioTrack: track,
+  };
+};
+
+const wrapLocalAudioTrack = (track: Twilio.LocalAudioTrack): AudioTrack => {
+  return {
+    kind: "audio",
+    id: track.id,
+    attach: track.attach.bind(track),
+    detach: track.detach.bind(track),
+    twilioTrack: track,
+  };
+};
 
 /**
  * This provides an interface over the top of Twilio. It is designed to
@@ -130,15 +152,18 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     participant: Twilio.RemoteParticipant,
     track: Twilio.RemoteTrack
   ) => {
+    const mappedParticipant = remoteParticipants.find(
+      (p) => p.id === participant.sid
+    );
+    if (!mappedParticipant) {
+      // TODO probably warn
+      return;
+    }
+
     if (track.kind === "video") {
-      const mappedParticipant = remoteParticipants.find(
-        (p) => p.id === participant.sid
-      );
-      if (!mappedParticipant) {
-        // TODO probably warn
-        return;
-      }
       mappedParticipant.videoTracks.push(wrapRemoteVideoTrack(track));
+    } else if (track.kind === "audio") {
+      mappedParticipant.audioTracks.push(wrapRemoteAudioTrack(track));
     }
     triggerStatusUpdate();
   };
@@ -147,18 +172,25 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     participant: Twilio.RemoteParticipant,
     track: Twilio.RemoteTrack
   ) => {
+    // @debt duplicated of finding participant
+    const mappedParticipant = remoteParticipants.find(
+      (p) => p.id === participant.sid
+    );
+    if (!mappedParticipant) {
+      // TODO probably warn
+      return;
+    }
     if (track.kind === "video") {
-      const mappedParticipant = remoteParticipants.find(
-        (p) => p.id === participant.sid
-      );
-      if (!mappedParticipant) {
-        // TODO probably warn
-        return;
-      }
       mappedParticipant.videoTracks = mappedParticipant.videoTracks.filter(
         (t) => t.id !== track.sid
       );
     }
+    if (track.kind === "audio") {
+      mappedParticipant.audioTracks = mappedParticipant.audioTracks.filter(
+        (t) => t.id !== track.sid
+      );
+    }
+
     triggerStatusUpdate();
   };
 
@@ -199,12 +231,16 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
         status = VideoCommsStatus.Connected;
         localParticipant = {
           id: room.localParticipant.sid,
-          audioTracks: [], // Array.from(room.localParticipant.audioTracks.values()),
-          videoTracks: localPublicationsToTracks(room.localParticipant.videoTracks),
-          startAudio: () => { },
-          stopAudio: () => { },
-          startVideo: () => { },
-          stopVideo: () => { },
+          audioTracks: localPublicationsToAudioTracks(
+            room.localParticipant.audioTracks
+          ),
+          videoTracks: localPublicationsToVideoTracks(
+            room.localParticipant.videoTracks
+          ),
+          startAudio: () => {},
+          stopAudio: () => {},
+          startVideo: () => {},
+          stopVideo: () => {},
           isTransmittingAudio: false,
           isTransmittingVideo: false,
         };
@@ -240,42 +276,49 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
 
   const shareScreen = () => {
-    navigator.mediaDevices.getDisplayMedia().then(stream => {
-      const screenTrack = new Twilio.LocalVideoTrack(stream.getTracks()[0]);
-      if (!room) {
-        console.error("Attempted to share screen before room connected");
-        return;
-      }
-      room.localParticipant.publishTrack(screenTrack).then(() => {
+    navigator.mediaDevices
+      .getDisplayMedia()
+      .then((stream) => {
+        const screenTrack = new Twilio.LocalVideoTrack(stream.getTracks()[0]);
         if (!room) {
           console.error("Attempted to share screen before room connected");
           return;
         }
+        room.localParticipant.publishTrack(screenTrack).then(() => {
+          if (!room) {
+            console.error("Attempted to share screen before room connected");
+            return;
+          }
 
-        // TODO
-        // screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
+          // TODO
+          // screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
 
+          // TODO Extract this as it is repetitive
+          console.log(
+            "I want to update local particiapnt",
+            room.localParticipant
+          );
+          localParticipant = {
+            id: room.localParticipant.sid,
+            audioTracks: [], // Array.from(room.localParticipant.audioTracks.values()),
+            videoTracks: localPublicationsToVideoTracks(
+              room.localParticipant.videoTracks
+            ),
+            startAudio: () => {},
+            stopAudio: () => {},
+            startVideo: () => {},
+            stopVideo: () => {},
+            isTransmittingAudio: false,
+            isTransmittingVideo: false,
+          };
 
-        // TODO Extract this as it is repetitive
-        console.log("I want to update local particiapnt", room.localParticipant)
-        localParticipant = {
-          id: room.localParticipant.sid,
-          audioTracks: [], // Array.from(room.localParticipant.audioTracks.values()),
-          videoTracks: localPublicationsToTracks(room.localParticipant.videoTracks),
-          startAudio: () => { },
-          stopAudio: () => { },
-          startVideo: () => { },
-          stopVideo: () => { },
-          isTransmittingAudio: false,
-          isTransmittingVideo: false,
-        };
-
-        triggerStatusUpdate();
+          triggerStatusUpdate();
+        });
+      })
+      .catch(() => {
+        alert("Could not share the screen.");
       });
-    }).catch(() => {
-      alert('Could not share the screen.')
-    });
-  }
+  };
 
   const triggerStatusUpdate = () => {
     // TODO This should clone everything so that react isn't seeing internal
@@ -309,11 +352,19 @@ const remotePublicationsToTracks = (
     .filter(notNull);
 };
 
-const localPublicationsToTracks = (
+const localPublicationsToVideoTracks = (
   publications: Map<String, Twilio.LocalVideoTrackPublication>
 ): VideoTrack[] => {
   return Array.from(publications.values())
     .map((vt) => vt.track && wrapLocalVideoTrack(vt.track))
+    .filter(notNull);
+};
+
+const localPublicationsToAudioTracks = (
+  publications: Map<String, Twilio.LocalAudioTrackPublication>
+): AudioTrack[] => {
+  return Array.from(publications.values())
+    .map((at) => at.track && wrapLocalAudioTrack(at.track))
     .filter(notNull);
 };
 
@@ -351,12 +402,9 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     twilioImpl.disconnect();
   }, [twilioImpl]);
 
-  const shareScreenCallback = useCallback(
-    () => {
-      twilioImpl.shareScreen();
-    },
-    [twilioImpl],
-  );
+  const shareScreenCallback = useCallback(() => {
+    twilioImpl.shareScreen();
+  }, [twilioImpl]);
 
   const contextState: VideoCommsContextType = {
     status,

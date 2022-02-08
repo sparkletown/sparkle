@@ -25,7 +25,10 @@ export interface VideoTrack extends Track {
 }
 
 export interface AudioTrack extends Track {
+  attach: (el: HTMLAudioElement) => void;
+  detach: () => void;
   kind: "audio";
+  twilioTrack: Twilio.AudioTrack;
 }
 
 export interface Participant {
