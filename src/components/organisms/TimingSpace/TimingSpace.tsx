@@ -36,6 +36,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
     () =>
       spaceEvents?.map((event) => (
         <TimingEvent
+          worldId={space.worldId}
           event={event}
           setShowCreateEventModal={setShowCreateEventModal}
           // @debt these need to be renamed as a proper callback props onSomething
@@ -43,7 +44,7 @@ export const TimingSpace: React.FC<TimingSpaceProps> = ({
           key={event.id}
         />
       )),
-    [spaceEvents, setShowCreateEventModal, setEditedEvent]
+    [spaceEvents, space.worldId, setShowCreateEventModal, setEditedEvent]
   );
 
   const spaceNameTitle = useMemo(() => {

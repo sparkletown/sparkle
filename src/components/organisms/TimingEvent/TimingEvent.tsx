@@ -8,23 +8,28 @@ import { WorldEvent } from "types/venues";
 import { eventEndTime, eventStartTime } from "utils/event";
 import { formatTimeLocalised } from "utils/time";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
+import { useUser } from "hooks/useUser";
 
 export type TimingEventProps = {
   event: WorldEvent;
+  worldId?: string;
   setShowCreateEventModal: () => void;
   setEditedEvent: (event: WorldEvent) => void;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({
   event,
+  worldId,
   setShowCreateEventModal,
   setEditedEvent,
 }) => {
   const [display, setDisplay] = useState(false);
 
-  const { findVenueInRelatedVenues } = useRelatedVenues();
-  const space = findVenueInRelatedVenues({ spaceId: event.spaceId });
+  const { userId } = useUser();
+
+  const { ownedVenues } = useOwnedVenues({ worldId, userId });
+  const space = ownedVenues.find((space) => space.id === event.spaceId);
 
   const showButton = (e: React.MouseEvent) => {
     e.preventDefault();

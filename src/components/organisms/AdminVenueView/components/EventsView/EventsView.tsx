@@ -83,6 +83,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
     () =>
       events?.map((event) => (
         <TimingEvent
+          worldId={space?.worldId ?? worldId}
           event={event}
           setShowCreateEventModal={setShowCreateEventModal}
           // @debt these need to be renamed as a proper callback props onSomething
@@ -90,7 +91,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
           key={event.id}
         />
       )),
-    [events, setShowCreateEventModal, setEditedEvent]
+    [events, space?.worldId, worldId, setShowCreateEventModal]
   );
 
   const renderedSpaces = useMemo(() => {
