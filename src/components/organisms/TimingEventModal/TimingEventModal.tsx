@@ -166,10 +166,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <p>Your experience is in {eventSpace?.name}</p>
 
-              {eventSpace?.name ?? (
+              {!eventSpace?.name && (
                 <div className="TimingEventModal__input-group">
                   <Dropdown
-                    title={values.space?.slug ?? "None"}
+                    title={values.space?.name ?? "None"}
                     options={renderedSpaceIds}
                   />
                   {errors.space && (

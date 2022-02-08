@@ -52,7 +52,7 @@ export interface WorldScheduleEvent {
   host: string;
   space?: {
     id?: string;
-    slug?: string;
+    name?: string;
   };
 }
 
@@ -235,9 +235,9 @@ export const createVenue_v2 = async (
   const venueResponse = await firebase
     .functions()
     .httpsCallable("venue-createVenue_v2")({
-    ...firestoreVenueInput,
-    worldId,
-  });
+      ...firestoreVenueInput,
+      worldId,
+    });
 
   const space = await findSpaceBySlug({
     spaceSlug,
@@ -380,10 +380,10 @@ const createFirestoreRoomInput_v2 = async (
       input.useUrl || !input.venueName
         ? input.url
         : window.origin +
-          generateAttendeeInsideUrl({
-            worldSlug: world.slug,
-            spaceSlug: input.venueName as SpaceSlug,
-          }),
+        generateAttendeeInsideUrl({
+          worldSlug: world.slug,
+          spaceSlug: input.venueName as SpaceSlug,
+        }),
     ...imageInputData,
   };
 

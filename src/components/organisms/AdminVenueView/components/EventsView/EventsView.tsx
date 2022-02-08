@@ -44,9 +44,11 @@ export const EventsView: React.FC<EventsViewProps> = ({
     currentVenueId: venueId,
   });
 
+  const spaceIds = venueId ? [venueId] : relatedVenueIds
+
   const { events, isLoaded: isEventsLoaded } = useSpaceEvents({
     worldId: venue?.worldId ?? worldId,
-    spaceIds: relatedVenueIds,
+    spaceIds: spaceIds,
   });
 
   const isWorldEvent = variant === EventsVariant.world;
