@@ -295,7 +295,7 @@ export const SpaceEditForm: React.FC<SpaceEditFormProps> = ({ space }) => {
               />
             </AdminSection>
             <AdminSection
-              title="Select the parent space for the “back” button"
+              title="Select the space for the “back” button"
               withLabel
             >
               <SpacesDropdown
