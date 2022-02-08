@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from "react";
-import classNames from "classnames";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 
 import {
-  ALWAYS_EMPTY_ARRAY,
   DEFAULT_REACTIONS_MUTED,
   DEFAULT_SHOW_REACTIONS,
   DEFAULT_SHOW_SHOUTOUTS,
@@ -30,17 +29,10 @@ import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import { ReactionsBar } from "components/molecules/ReactionsBar";
 import { TableComponent } from "components/molecules/TableComponent";
-import { TableHeader } from "components/molecules/TableHeader";
-import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { TablesUserList } from "components/molecules/TablesUserList";
-import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
-import { VenueWithOverlay } from "components/atoms/VenueWithOverlay/VenueWithOverlay";
-
-import { JazzBarRoom } from "../components/JazzBarRoom";
 
 import "./JazzBar.scss";
 

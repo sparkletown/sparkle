@@ -151,7 +151,7 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
                 )
               )}
             </div>
-          </div >
+          </div>
 
           {landingPageConfig?.iframeUrl && (
             <iframe
@@ -165,28 +165,24 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
             />
           )}
 
-          {
-            landingPageConfig?.quotations?.map((quotation, index) => (
-              <div className="quotation-container" key={index}>
-                <div className="quotation">{quotation.text}</div>
-                <div className="quotation-author">- {quotation.author}</div>
-              </div>
-            ))
-          }
+          {landingPageConfig?.quotations?.map((quotation, index) => (
+            <div className="quotation-container" key={index}>
+              <div className="quotation">{quotation.text}</div>
+              <div className="quotation-author">- {quotation.author}</div>
+            </div>
+          ))}
 
-          {
-            landingPageConfig?.presentation?.map(
-              (paragraph: string, index: number) => (
-                <p
-                  key={`venue-presentation-paragraph-${index}`}
-                  className="presentation-paragraph"
-                >
-                  {paragraph}
-                </p>
-              )
+          {landingPageConfig?.presentation?.map(
+            (paragraph: string, index: number) => (
+              <p
+                key={`venue-presentation-paragraph-${index}`}
+                className="presentation-paragraph"
+              >
+                {paragraph}
+              </p>
             )
-          }
-        </div >
+          )}
+        </div>
 
         <div className="col-lg-6 col-12 oncoming-events">
           {futureOrOngoingEvents && futureOrOngoingEvents.length > 0 && (
@@ -225,7 +221,7 @@ export const VenueLandingPageContent: React.FC<VenueLandingPageContentProps> = (
             </>
           )}
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
