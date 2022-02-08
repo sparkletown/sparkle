@@ -522,28 +522,13 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     twilioCallback,
   ]);
 
-  const joinChannelCallback = useCallback(
-    async (userId, newChannelId) => {
-      twilioImpl.joinChannel(userId, newChannelId);
-    },
-    [twilioImpl]
-  );
-
-  const disconnectCallback = useCallback(() => {
-    twilioImpl.disconnect();
-  }, [twilioImpl]);
-
-  const shareScreenCallback = useCallback(() => {
-    twilioImpl.shareScreen();
-  }, [twilioImpl]);
-
   const contextState: VideoCommsContextType = {
     status,
     localParticipant,
     remoteParticipants,
-    joinChannel: joinChannelCallback,
-    disconnect: disconnectCallback,
-    shareScreen: shareScreenCallback,
+    joinChannel: twilioImpl.joinChannel,
+    disconnect: twilioImpl.disconnect,
+    shareScreen: twilioImpl.shareScreen,
     isTransmittingAudio,
     isTransmittingVideo,
     startAudio: twilioImpl.startAudio,
