@@ -2,7 +2,9 @@
 
 import admin from "firebase-admin";
 
-import { JazzbarVenue, VenueTemplate } from "../src/types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
+
+import { JazzbarVenue } from "../src/types/venues";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 

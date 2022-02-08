@@ -30,6 +30,7 @@ export const useVideoRoomState = (
     participants,
     { upsert: upsertParticipant, filter: filterParticipants },
   ] = useList<ParticipantWithUser<RemoteParticipant>>([]);
+
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
       if (currentRoom?.localParticipant?.state !== "connected")

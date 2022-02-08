@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router";
 import { useAsyncFn, useToggle } from "react-use";
@@ -18,7 +17,7 @@ import {
 import { createRoom, deleteRoom, upsertRoom } from "api/admin";
 
 import { PortalInput, Room, RoomType } from "types/rooms";
-import { RoomVisibility } from "types/venues";
+import { RoomVisibility } from "types/RoomVisibility";
 
 import { isTruthy } from "utils/types";
 
@@ -35,7 +34,7 @@ import { SubmitError } from "components/molecules/SubmitError";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Checkbox } from "components/atoms/Checkbox";
-import ImageInput from "components/atoms/ImageInput";
+import { ImageInput } from "components/atoms/ImageInput";
 import { PortalVisibility } from "components/atoms/PortalVisibility";
 import { SpacesDropdown } from "components/atoms/SpacesDropdown";
 
@@ -210,7 +209,7 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
   );
 
   return (
-    <Form
+    <form
       className="PortalAddEditForm__form"
       onSubmit={handleSubmit(addPortal)}
     >
@@ -316,6 +315,6 @@ export const PortalAddEditForm: React.FC<PortalAddEditFormProps> = ({
           Save
         </ButtonNG>
       </div>
-    </Form>
+    </form>
   );
 };

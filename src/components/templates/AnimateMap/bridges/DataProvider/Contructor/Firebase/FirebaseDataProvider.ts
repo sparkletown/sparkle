@@ -1,13 +1,10 @@
-import {
-  ExtendedFirebaseInstance,
-  ExtendedFirestoreInstance,
-} from "react-redux-firebase";
+import firebase from "firebase/compat/app";
 import { utils } from "pixi.js";
 
 export class FirebaseDataProvider extends utils.EventEmitter {
-  protected _firestore: ExtendedFirestoreInstance;
+  protected _firestore: firebase.firestore.Firestore;
 
-  constructor(protected _firebase: ExtendedFirebaseInstance) {
+  constructor(protected _firebase: typeof firebase) {
     super();
 
     this._firestore = _firebase.firestore();

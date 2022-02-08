@@ -1,5 +1,4 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
+import React, { useMemo } from "react";
 import { useAsyncFn, useCss } from "react-use";
 import classNames from "classnames";
 
@@ -14,14 +13,16 @@ import {
 import { deleteTable } from "api/table";
 
 import { TableComponentPropsType } from "types/Table";
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { determineAvatar } from "utils/image";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useAdminRole } from "hooks/user/useAdminRole";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
@@ -29,7 +30,7 @@ import PortalCloseIcon from "assets/icons/icon-close-portal.svg";
 
 import "./TableComponent.scss";
 
-const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
+export const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   users,
   onJoinClicked,
   imageSize = 50,
@@ -44,7 +45,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   const full = numberOfSeatsLeft === 0;
   const { userId } = useUser();
 
-  const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
+  const { isAdminUser, isLoading: isCheckingRole } = useAdminRole({ userId });
 
   const isRemoveButtonShown = !isCheckingRole && isAdminUser;
 
@@ -75,12 +76,37 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
     isJazzBar
       ? {}
       : {
-          height: `${table.rows && table.rows * 50 + 65}px`,
           width: `${table.columns && (table.columns + 1) * 55}px`,
         }
   );
 
   const itemClasses = classNames("TableComponent__item", itemStyles);
+
+  const renderedUserPictures = useMemo(
+    () =>
+      users &&
+      users.length >= 0 &&
+      users.map((user) => {
+        const { src: profilePic, onError: onLoadError } = determineAvatar({
+          user,
+        });
+
+        return (
+          <img
+            onClick={() => openUserProfileModal(user.id)}
+            key={user.id}
+            className="TableComponent__profile-icon"
+            src={profilePic}
+            onError={onLoadError}
+            title={user.partyName || DEFAULT_PARTY_NAME}
+            alt={`${user.partyName || DEFAULT_PARTY_NAME} profile`}
+            width={imageSize}
+            height={imageSize}
+          />
+        );
+      }),
+    [imageSize, openUserProfileModal, users]
+  );
 
   return (
     <div className="TableComponent">
@@ -102,22 +128,8 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           )}
         </div>
         <div className="TableComponent__users">
-          {users &&
-            users.length >= 0 &&
-            users.map((user) => (
-              <img
-                onClick={() => openUserProfileModal(user.id)}
-                key={user.id}
-                className="TableComponent__profile-icon"
-                src={determineAvatar({ user })}
-                title={(!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME}
-                alt={`${
-                  (!user.anonMode && user.partyName) || DEFAULT_PARTY_NAME
-                } profile`}
-                width={imageSize}
-                height={imageSize}
-              />
-            ))}
+          {renderedUserPictures}
+
           {users &&
             table.capacity &&
             table.capacity - users.length >= 0 &&
@@ -133,43 +145,33 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
             ))}
         </div>
       </div>
-      <Modal
-        show={isModalShown}
-        onHide={hideModal}
-        className="TableComponent__modal"
-        backdrop="static"
-        centered
-      >
-        <Modal.Body>
-          <div className="TableComponent__modal-container">
-            <h2>Delete table</h2>
-            <p>
-              WARNING: This action cannot be undone and will permanently remove
-              {STRING_SPACE}
-              {table.title}
-            </p>
-            <div className="TableComponent__modal-buttons">
-              <ButtonNG
-                variant="secondary"
-                onClick={hideModal}
-                disabled={isDeletingTable}
-              >
-                Cancel
-              </ButtonNG>
+      <Modal show={isModalShown} onHide={hideModal} centered bgVariant="dark">
+        <div className="TableComponent__modal-container">
+          <h2>Delete table</h2>
+          <p>
+            WARNING: This action cannot be undone and will permanently remove
+            {STRING_SPACE}
+            {table.title}
+          </p>
+          <div className="TableComponent__modal-buttons">
+            <ButtonNG
+              variant="secondary"
+              onClick={hideModal}
+              disabled={isDeletingTable}
+            >
+              Cancel
+            </ButtonNG>
 
-              <ButtonNG
-                disabled={isDeletingTable}
-                variant="danger"
-                onClick={removeTable}
-              >
-                Delete
-              </ButtonNG>
-            </div>
+            <ButtonNG
+              disabled={isDeletingTable}
+              variant="danger"
+              onClick={removeTable}
+            >
+              Delete
+            </ButtonNG>
           </div>
-        </Modal.Body>
+        </div>
       </Modal>
     </div>
   );
 };
-
-export default TableComponent;

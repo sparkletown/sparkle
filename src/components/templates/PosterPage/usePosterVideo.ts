@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
+import { ParticipantWithUser } from "types/rooms";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
@@ -9,17 +10,36 @@ import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";
 import { useUser } from "hooks/useUser";
 
 export const usePosterVideo = (venueId: string) => {
-  const { userId } = useUser();
+  const { userId, userWithId } = useUser();
 
   const {
     participants,
+    localParticipant,
     becomeActiveParticipant,
     becomePassiveParticipant,
   } = useVideoRoomState(userId, venueId, false);
 
+  const localParticipantWithUser:
+    | ParticipantWithUser<LocalParticipant>
+    | undefined = useMemo(
+    () =>
+      localParticipant && userWithId
+        ? { participant: localParticipant, user: userWithId }
+        : undefined,
+    [localParticipant, userWithId]
+  );
+
+  const allParticipants = useMemo(
+    () =>
+      localParticipantWithUser
+        ? [localParticipantWithUser, ...participants]
+        : participants,
+    [localParticipantWithUser, participants]
+  );
+
   const { passiveListeners, activeParticipants } = useMemo(
     () =>
-      participants.reduce<{
+      allParticipants.reduce<{
         passiveListeners: WithId<User>[];
         activeParticipants: {
           participant: RemoteParticipant | LocalParticipant;
@@ -50,7 +70,7 @@ export const usePosterVideo = (venueId: string) => {
           activeParticipants: [],
         }
       ),
-    [participants]
+    [allParticipants]
   );
 
   const isMeActiveParticipant = useMemo(

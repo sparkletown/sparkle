@@ -1,0 +1,8 @@
+{
+  "{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+    "prettier --write"
+  ],
+  "{src,scripts,functions/src,configs,reporting}/**/*.{js,jsx,ts,tsx}": [
+    "eslint --fix --max-warnings=0 --ext .js,.jsx,.ts,.tsx"
+  ]
+}

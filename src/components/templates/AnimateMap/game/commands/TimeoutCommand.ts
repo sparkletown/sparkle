@@ -1,5 +1,3 @@
-import { setTimeout } from "timers";
-
 import Command from "./Command";
 
 export class TimeoutCommand implements Command {
@@ -7,7 +5,7 @@ export class TimeoutCommand implements Command {
 
   public execute(): Promise<Command> {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      window.setTimeout(() => {
         resolve(this);
       }, this.timeout);
     });

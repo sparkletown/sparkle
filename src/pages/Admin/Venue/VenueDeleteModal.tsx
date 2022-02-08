@@ -1,7 +1,11 @@
 import React from "react";
-import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import { httpsCallable } from "firebase/functions";
+
+import { SPACE_TAXON } from "settings";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { LoadingSpinner } from "components/atoms/LoadingSpinner";
@@ -26,16 +30,19 @@ const VenueDeleteModal: React.FunctionComponent<VenueDeleteModalProps> = ({
   onCancel,
 }) => {
   const [{ error, loading: isDeleting }, deleteVenue] = useAsyncFn(async () => {
-    await firebase.functions().httpsCallable("venue-deleteVenue")({
+    await httpsCallable(
+      FIREBASE.functions,
+      "venue-deleteVenue"
+    )({
       id: venueId,
     });
     onDelete?.();
   }, [onDelete, venueId]);
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} centered bgVariant="dark">
       <div className="VenueDeleteModal">
-        <h2 className="centered">Delete space</h2>
+        <h2 className="centered">Delete {SPACE_TAXON.lower}</h2>
         <div className="secondary-action">
           WARNING: This action cannot be undone and will permanently remove the
           space <b>{venueName}</b>!

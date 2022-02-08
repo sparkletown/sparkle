@@ -1,6 +1,6 @@
-var firebase = require("firebase/app");
-require("firebase/auth");
-require("firebase/firestore");
+var firebase = require("firebase/compat/app");
+require("firebase/compat/auth");
+require("firebase/compat/firestore");
 var validate = require("jsonschema").validate;
 var read = require("read");
 

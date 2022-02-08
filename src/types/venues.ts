@@ -3,9 +3,11 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { AuditoriumSectionPath } from "types/auditorium";
+import { SpaceSlug } from "types/id";
+import { RoomVisibility } from "types/RoomVisibility";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { WithId } from "utils/id";
-import { Branded } from "utils/types";
 
 import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
@@ -18,66 +20,6 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { User, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
-
-export type SpaceSlug = Branded<string, "SpaceSlug">;
-
-// These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
-// @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
-export enum VenueTemplate {
-  auditorium = "auditorium",
-  conversationspace = "conversationspace",
-  firebarrel = "firebarrel",
-  jazzbar = "jazzbar",
-  partymap = "partymap",
-  animatemap = "animatemap",
-  posterhall = "posterhall",
-  posterpage = "posterpage",
-  screeningroom = "screeningroom",
-  viewingwindow = "viewingwindow",
-  zoomroom = "zoomroom",
-
-  /**
-   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
-   */
-  artpiece = "artpiece",
-  /**
-   * @deprecated Legacy template is going to be removed soon, try VenueTemplate.viewingwindow instead?
-   */
-  embeddable = "embeddable",
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.auditorium instead?
-   */
-  audience = "audience",
-  /**
-   * @deprecated Legacy template removed
-   */
-  artcar = "artcar",
-  /**
-   * @deprecated Legacy template removed
-   */
-  friendship = "friendship",
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  themecamp = "themecamp",
-  /**
-   * @deprecated Legacy template removed
-   */
-  performancevenue = "performancevenue",
-  /**
-   * @deprecated Legacy template removed
-   */
-  avatargrid = "avatargrid",
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  preplaya = "preplaya",
-
-  /**
-   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
-   */
-  playa = "playa",
-}
 
 export type PortalTemplate = VenueTemplate | "external";
 
@@ -121,7 +63,7 @@ export interface Venue_v2_Base {
   host: {
     icon: string;
   };
-  owners: string[];
+  owners?: string[];
   theme?: {
     primaryColor: string;
     backgroundColor?: string;
@@ -157,7 +99,7 @@ export interface BaseVenue {
   host?: {
     icon: string;
   };
-  owners: string[];
+  owners?: string[];
   iframeUrl?: string;
   autoPlay?: boolean;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
@@ -253,7 +195,6 @@ export interface PartyMapVenue extends BaseVenue {
   map_viewbox?: string;
   password?: string;
   admin_password?: string;
-  owners: string[];
   rooms?: Room[];
 }
 
@@ -308,14 +249,6 @@ interface TermOfService {
   name: string;
   text: string;
   link?: string;
-}
-
-export enum RoomVisibility {
-  hover = "hover",
-  count = "count",
-  nameCount = "count/name",
-  none = "none",
-  unclickable = "unclickable",
 }
 
 export interface VenueConfig {

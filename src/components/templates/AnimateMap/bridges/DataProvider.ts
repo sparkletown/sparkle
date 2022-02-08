@@ -5,10 +5,12 @@ import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-export interface DataProvider {
-  on(eventName: string, callback: Function, context?: object): void;
+type ListenerFn = (...args: unknown[]) => void;
 
-  off(eventName: string, callback: Function): void;
+export interface DataProvider {
+  on(eventName: string, callback: ListenerFn, context?: object): void;
+
+  off(eventName: string, callback: ListenerFn): void;
 
   // eslint-disable-next-line
   // emit(eventName: string, props: any): void;

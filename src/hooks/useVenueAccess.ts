@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { get } from "lodash/fp";
 
 import { checkAccess } from "api/auth";
 
@@ -41,7 +42,7 @@ export const useVenueAccess = (
         token,
       })
         .then((result) => {
-          if (!isTruthy(result?.data?.token)) {
+          if (!isTruthy(get("token", result?.data))) {
             denyAccess();
           }
         })

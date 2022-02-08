@@ -1,8 +1,6 @@
-import { FirebaseReducer } from "react-redux-firebase";
-
 import { getUserRef } from "api/profile";
 
-import { User } from "types/User";
+import { Profile } from "types/User";
 
 import { isTruthy } from "./types";
 
@@ -30,5 +28,5 @@ export const updateProfileEnteredWorldIds = async (
   }
 };
 
-export const isCompleteProfile = (profile: FirebaseReducer.Profile<User>) =>
-  isTruthy(profile.partyName) && isTruthy(profile.pictureUrl);
+export const isCompleteProfile = (profile: Profile | null | undefined) =>
+  isTruthy(profile?.partyName) && isTruthy(profile?.pictureUrl);

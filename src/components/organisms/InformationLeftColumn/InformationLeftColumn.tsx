@@ -99,3 +99,6 @@ export const InformationLeftColumn = forwardRef<
     </div>
   );
 });
+
+// forwardRef() didn't set the display name, so force it
+InformationLeftColumn.displayName = "InformationLeftColumn";

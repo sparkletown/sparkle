@@ -1,9 +1,15 @@
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { useFirestore, useFirestoreCollectionData } from "reactfire";
+import { collection, limit, query } from "firebase/firestore";
 import { noop } from "lodash";
 
-import { ALWAYS_EMPTY_ARRAY, SECTIONS_NEXT_FETCH_SIZE } from "settings";
+import {
+  ALWAYS_EMPTY_ARRAY,
+  COLLECTION_SECTIONS,
+  COLLECTION_SPACES,
+  SECTIONS_NEXT_FETCH_SIZE,
+} from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -36,16 +42,14 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     setFetchSectionsCount((prev) => prev + SECTIONS_NEXT_FETCH_SIZE);
   }, []);
 
-  const sectionsRef = firestore
-    .collection("venues")
-    .doc(venueId)
-    .collection("sections")
-    .limit(fetchSectionsCount)
-    .withConverter(withIdConverter<AuditoriumSection>());
+  const sectionsRef = query(
+    collection(firestore, COLLECTION_SPACES, venueId, COLLECTION_SECTIONS),
+    limit(fetchSectionsCount)
+  ).withConverter(withIdConverter<AuditoriumSection>());
 
-  const { data: sections = ALWAYS_EMPTY_ARRAY } = useFirestoreCollectionData<
-    WithId<AuditoriumSection>
-  >(sectionsRef);
+  const { data: sections = ALWAYS_EMPTY_ARRAY } = useFirestoreCollectionData(
+    sectionsRef
+  );
 
   const enterSection = useCallback(
     (sectionId: string) => {

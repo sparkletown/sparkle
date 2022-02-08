@@ -1,4 +1,4 @@
-import { uuid } from "uuidv4";
+import { v4 as uuid } from "uuid";
 
 import { DEFAULT_AVATAR_LIST } from "settings";
 
@@ -187,7 +187,7 @@ export const stubUsersData = () => {
         pictureUrl: determineAvatar({
           avatars: DEFAULT_AVATAR_LIST,
           index: getRandomInt(DEFAULT_AVATAR_LIST.length - 1),
-        }),
+        }).src,
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
         accessories: avatarAccessories[y % avatarAccessories.length],

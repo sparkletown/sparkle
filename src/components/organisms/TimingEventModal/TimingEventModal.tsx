@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { Dropdown as ReactBootstrapDropdown, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
@@ -14,6 +13,8 @@ import { MaybeWithId } from "utils/id";
 import { eventEditSchema } from "forms/eventEditSchema";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+
+import { Modal } from "components/molecules/Modal";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { Dropdown } from "components/atoms/Dropdown";
@@ -63,13 +64,10 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
   // When we're creating a new event it will default to
   // being on the space that triggered this modal.
-  const {
-    findVenueInRelatedVenues,
-    relatedVenues,
-  } = useRelatedVenues();
+  const { findVenueInRelatedVenues, relatedVenues } = useRelatedVenues();
   const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
 
-  const spacesMap = relatedVenues.map(venue => ({
+  const spacesMap = relatedVenues.map((venue) => ({
     id: venue.id,
     name: venue.name,
   }));
@@ -138,198 +136,217 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     () =>
       spacesMap.map((space) => {
         return (
-          <ReactBootstrapDropdown.Item
+          <div
             key={space.id}
             ref={register}
-            name={"space"}
             onClick={() => setValue("space", space)}
             className="SpacesDropdown__item"
           >
             {space.name}
-          </ReactBootstrapDropdown.Item>
+          </div>
         );
       }) ?? [],
     [register, setValue, spacesMap]
   );
 
   return (
-    <>
-      <Modal
-        show={show}
-        onHide={onHide}
-        className="TimingEventModal"
-        backdrop="static"
-      >
-        <Modal.Body>
-          <div className="form-container">
-            <h2>Add experience</h2>
-            <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
-              <p>Your experience is in {eventSpace?.name}</p>
+    <Modal show={show} onHide={onHide} centered autoHide>
+      <div className="TimingEventModal form-container">
+        <h2>Add experience</h2>
+        <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
+          <p>Your experience is in {eventSpace?.name}</p>
 
-              {!eventSpace?.name && (
-                <div className="TimingEventModal__input-group">
-                  <Dropdown
-                    title={values.space?.name ?? "None"}
-                    options={renderedSpaceIds}
-                  />
-                  {errors.space && (
-                    <span className="input-error">{errors.space.message}</span>
-                  )}
-                </div>
+          {!eventSpace?.name && (
+            <div className="TimingEventModal__input-group">
+              <Dropdown title={values.space?.name ?? "None"}>
+                {renderedSpaceIds}
+              </Dropdown>
+              {errors.space && (
+                <span className="input-error">{errors.space.message}</span>
               )}
+            </div>
+          )}
 
-              <div className="TimingEventModal__input-group">
-                <label htmlFor="name">Name your experience</label>
-                <input
-                  id="name"
-                  name="name"
-                  className="TimingEventModal__input-group__modal-input"
-                  placeholder="Name"
-                  ref={register}
-                />
-                {errors.name && (
-                  <span className="input-error">{errors.name.message}</span>
-                )}
-              </div>
+          <div className="TimingEventModal__input-group">
+            <label htmlFor="name">Name your experience</label>
+            <input
+              id="name"
+              name="name"
+              className="TimingEventModal__input-group__modal-input"
+              placeholder="Name"
+              ref={register}
+            />
+            {errors.name && (
+              <span className="input-error">{errors.name.message}</span>
+            )}
+          </div>
 
-              <div className="TimingEventModal__input-group">
-                <label htmlFor="description">Describe your experience</label>
-                <textarea
-                  name="description"
-                  className="TimingEventModal__input-group__modal-input"
-                  placeholder="Description"
-                  ref={register}
-                />
-                {errors.description && (
-                  <span className="input-error">
-                    {errors.description.message}
-                  </span>
-                )}
-              </div>
+          <div className="TimingEventModal__input-group">
+            <label htmlFor="description">Describe your experience</label>
+            <textarea
+              name="description"
+              className="TimingEventModal__input-group__modal-input"
+              placeholder="Description"
+              ref={register}
+            />
+            {errors.description && (
+              <span className="input-error">{errors.description.message}</span>
+            )}
+          </div>
 
-              <div className="TimingEventModal__input-group">
-                <label htmlFor="host">Host (people hosting the event)</label>
-                <input
-                  id="host"
-                  name="host"
-                  className="TimingEventModal__input-group__modal-input"
-                  placeholder="Dottie Longstockings"
-                  ref={register}
-                />
-                {errors.host && (
-                  <span className="input-error">{errors.host.message}</span>
-                )}
-              </div>
+          <div className="TimingEventModal__input-group">
+            <label htmlFor="host">Host (people hosting the event)</label>
+            <input
+              id="host"
+              name="host"
+              className="TimingEventModal__input-group__modal-input"
+              placeholder="Dottie Longstockings"
+              ref={register}
+            />
+            {errors.host && (
+              <span className="input-error">{errors.host.message}</span>
+            )}
+          </div>
 
-              <div className="TimingEventModal__input-group">
-                <label htmlFor="date">
-                  Start date and time (use your own time zone; it will be
-                  automatically localized)
-                </label>
-                <div className="TimingEventModal__container">
-                  {/*
+          <div className="TimingEventModal__input-group">
+            <label htmlFor="date">
+              Start date and time (use your own time zone; it will be
+              automatically localized)
+            </label>
+            <div className="TimingEventModal__container">
+              {/*
                   These wrapper divs are here to unmuddle some precedance issues
                   in the CSS that causes the inputs to have 100% width. This
                   form is going to have some layout changes applied that should
                   resolve this..
                   */}
-                  <div>
-                    <input
-                      type="date"
-                      min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
-                      name="startDate"
-                      className="TimingEventModal__input-group__modal-input"
-                      ref={register}
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="time"
-                      name="startTime"
-                      className="TimingEventModal__input-group__modal-input"
-                      ref={register}
-                    />
-                  </div>
-                </div>
-
-                <div className="TimingEventModal__container">
-                  {errors.startDate && (
-                    <span className="input-error">
-                      {errors.startDate.message}
-                    </span>
-                  )}
-                  {errors.startTime && (
-                    <span className="input-error">
-                      {errors.startTime.message}
-                    </span>
-                  )}
-                </div>
+              <div>
+                <input
+                  type="date"
+                  min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
+                  name="start_date"
+                  className="TimingEventModal__input-group__modal-input"
+                  ref={register}
+                />
               </div>
+              <div>
+                <input
+                  type="time"
+                  name="start_time"
+                  className="TimingEventModal__input-group__modal-input"
+                  ref={register}
+                />
+              </div>
+            </div>
 
-              <div className="TimingEventModal__input-group">
-                <label>Duration</label>
-                <div className="TimingEventModal__duration_container">
+            <div className="TimingEventModal__input-group">
+              <label htmlFor="date">
+                Start date and time (use your own time zone; it will be
+                automatically localized)
+              </label>
+              <div className="TimingEventModal__container">
+                {/*
+                  These wrapper divs are here to unmuddle some precedance issues
+                  in the CSS that causes the inputs to have 100% width. This
+                  form is going to have some layout changes applied that should
+                  resolve this..
+                  */}
+                <div>
                   <input
-                    name="durationHours"
-                    className="TimingEventModal__input-group__modal-input--indent"
-                    placeholder="hours"
+                    type="date"
+                    min={dayjs().format(DAYJS_INPUT_DATE_FORMAT)}
+                    name="startDate"
+                    className="TimingEventModal__input-group__modal-input"
                     ref={register}
-                    size={8}
                   />
-                  <label htmlFor="durationHours">hour(s)</label>
-                  <input
-                    name="durationMinutes"
-                    className="TimingEventModal__input-group__modal-input--indent"
-                    placeholder="minutes"
-                    ref={register}
-                    size={8}
-                  />
-                  <label htmlFor="durationMinutes">minutes</label>
                 </div>
-                <div className="TimingEventModal__container">
-                  {errors.durationHours && (
-                    <span className="input-error">
-                      {errors.durationHours.message}
-                    </span>
-                  )}
-                  {errors.durationMinutes && (
-                    <span className="input-error">
-                      {errors.durationMinutes.message}
-                    </span>
-                  )}
+                <div>
+                  <input
+                    type="time"
+                    name="startTime"
+                    className="TimingEventModal__input-group__modal-input"
+                    ref={register}
+                  />
                 </div>
               </div>
 
               <div className="TimingEventModal__container">
-                {
-                  // @debt: move this delete button to the experience list component
-                }
-                {showDeleteButton && (
-                  <ButtonNG
-                    disabled={formState.isSubmitting}
-                    variant="danger"
-                    onClick={handleDelete}
-                  >
-                    Delete
-                  </ButtonNG>
+                {errors.startDate && (
+                  <span className="input-error">
+                    {errors.startDate.message}
+                  </span>
                 )}
+                {errors.startTime && (
+                  <span className="input-error">
+                    {errors.startTime.message}
+                  </span>
+                )}
+              </div>
+            </div>
 
-                <ButtonNG variant="secondary" onClick={onHide}>
-                  Cancel
-                </ButtonNG>
+            <div className="TimingEventModal__input-group">
+              <label>Duration</label>
+              <div className="TimingEventModal__duration_container">
+                <input
+                  name="durationHours"
+                  className="TimingEventModal__input-group__modal-input--indent"
+                  placeholder="hours"
+                  ref={register}
+                  size={8}
+                />
+                <label htmlFor="durationHours">hour(s)</label>
+                <input
+                  name="durationMinutes"
+                  className="TimingEventModal__input-group__modal-input--indent"
+                  placeholder="minutes"
+                  ref={register}
+                  size={8}
+                />
+                <label htmlFor="durationMinutes">minutes</label>
+              </div>
+              <div className="TimingEventModal__container">
+                {errors.durationHours && (
+                  <span className="input-error">
+                    {errors.durationHours.message}
+                  </span>
+                )}
+                {errors.durationMinutes && (
+                  <span className="input-error">
+                    {errors.durationMinutes.message}
+                  </span>
+                )}
+              </div>
+            </div>
 
+            <div className="TimingEventModal__container">
+              {
+                // @debt: move this delete button to the experience list component
+              }
+              {showDeleteButton && (
                 <ButtonNG
                   disabled={formState.isSubmitting}
-                  variant="primary"
-                  type="submit"
+                  variant="danger"
+                  onClick={handleDelete}
                 >
-                  {event?.id ? "Update" : "Create"}
+                  Delete
                 </ButtonNG>
-              </div>
-            </form>
+              )}
+
+              <ButtonNG variant="secondary" onClick={onHide}>
+                Cancel
+              </ButtonNG>
+
+              <ButtonNG
+                disabled={formState.isSubmitting}
+                variant="primary"
+                type="submit"
+              >
+                {event?.id ? "Update" : "Create"}
+              </ButtonNG>
+            </div>
           </div>
-        </Modal.Body>
-      </Modal>
-    </>
+        </form>
+      </div>
+    </Modal>
   );
 };

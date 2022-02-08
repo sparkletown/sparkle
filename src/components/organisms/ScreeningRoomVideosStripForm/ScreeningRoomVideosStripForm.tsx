@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { Form } from "react-bootstrap";
 import { faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -45,7 +44,7 @@ export const ScreeningRoomVideosStripForm: React.FC<ScreeningRoomVideosStripForm
 
   return (
     <>
-      <Form className="ScreeningRoomVideosStripForm">
+      <form className="ScreeningRoomVideosStripForm">
         <div className="ScreeningRoomVideosStripForm__cell">
           <img
             className="ScreeningRoomVideosStripForm__thumbnail-img"
@@ -66,7 +65,7 @@ export const ScreeningRoomVideosStripForm: React.FC<ScreeningRoomVideosStripForm
         >
           Delete
         </div>
-      </Form>
+      </form>
 
       {isModalShown && (
         <ScreeningRoomVideoAddEditModal

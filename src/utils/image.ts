@@ -1,5 +1,5 @@
+import React from "react";
 import Resizer from "react-image-file-resizer";
-import firebase from "firebase/app";
 
 import {
   DEFAULT_AVATAR_LIST,
@@ -8,6 +8,7 @@ import {
   FIREBASE_STORAGE_IMAGES_ORIGIN,
 } from "settings";
 
+import { RefiAuthUser } from "types/fire";
 import { User } from "types/User";
 
 import { isDefined } from "utils/types";
@@ -78,31 +79,43 @@ export const getFirebaseStorageResizedImage = (
 // @see https://crypto.stackexchange.com/questions/8533/why-are-bitwise-rotations-used-in-cryptography/8534#8534
 const DIFFUSION_PRIME = 31;
 
-type DetermineAvatar = (options?: {
+type DetermineAvatarOptions = {
   avatars?: string[];
   email?: string;
   index?: number;
   partyName?: string;
   pictureUrl?: string;
-  userInfo?: firebase.UserInfo;
+  userInfo?: RefiAuthUser;
   user?: User;
-}) => string;
+};
+
+type DetermineAvatarResult = {
+  src: string;
+  onError: React.ReactEventHandler<HTMLImageElement>;
+};
+
+type DetermineAvatar = (
+  options?: DetermineAvatarOptions
+) => DetermineAvatarResult;
 
 export const determineAvatar: DetermineAvatar = (options) => {
-  const { avatars, email, index, partyName, pictureUrl, user, userInfo } =
-    options ?? {};
+  const { avatars, pictureUrl, user, index } = options ?? {};
   const list = avatars ?? DEFAULT_AVATAR_LIST;
   const url = pictureUrl || user?.pictureUrl || "";
-
-  // checking user.anonMode ruled against by https://github.com/sparkletown/internal-sparkle-issues/issues/1615#issuecomment-991054012
-
-  if (url.startsWith("/static") || url.startsWith("http")) {
-    return url;
-  }
+  const onError = makeProfileImageLoadErrorHandler(generateFallback(options));
 
   if (isDefined(index) && Number.isSafeInteger(index) && index >= 0) {
-    return list[index % list.length];
+    return { src: list[index % list.length], onError };
   }
+
+  return { src: url, onError };
+};
+
+type GenerateFallback = (options?: DetermineAvatarOptions) => string;
+
+export const generateFallback: GenerateFallback = (options) => {
+  const { avatars, email, partyName, user, userInfo } = options ?? {};
+  const list = avatars ?? DEFAULT_AVATAR_LIST;
 
   // few fallbacks from most stable value to least
   // just in case callers have different access to user data
@@ -120,4 +133,12 @@ export const determineAvatar: DetermineAvatar = (options) => {
     .reduce((hash, code) => hash * DIFFUSION_PRIME + code, 0);
 
   return list[hash % list.length];
+};
+
+const makeProfileImageLoadErrorHandler = (
+  src: string
+): React.ReactEventHandler<HTMLImageElement> => ({ currentTarget }) => {
+  // @debt if our fallback image does not exist either we can report that to Bugsnag
+  currentTarget.onerror = null; // prevents looping
+  currentTarget.src = src;
 };

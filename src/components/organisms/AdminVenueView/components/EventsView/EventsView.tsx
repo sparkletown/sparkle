@@ -3,13 +3,13 @@ import React, { useCallback, useMemo, useState } from "react";
 import { ROOM_TAXON } from "settings";
 
 import { EventsVariant } from "types/events";
-import { AnyVenue, WorldEvent } from "types/venues";
-
-import { WithId } from "utils/id";
+import { SpaceId, SpaceWithId } from "types/id";
+import { WorldEvent } from "types/venues";
 
 import { useSpaceEvents } from "hooks/events";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useOwnedVenues } from "hooks/useOwnedVenues";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
@@ -24,30 +24,30 @@ import { Checkbox } from "components/atoms/Checkbox";
 import "./EventsView.scss";
 
 export type EventsViewProps = {
-  venueId?: string;
-  venue?: WithId<AnyVenue>;
+  spaceId?: SpaceId | string;
+  space?: SpaceWithId;
   worldId?: string;
   variant: EventsVariant;
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({
   variant,
-  venueId,
-  venue,
+  spaceId,
+  space,
   worldId,
 }) => {
-  const {
-    relatedVenueIds,
-    isLoading: isVenuesLoading,
-    findVenueInRelatedVenues,
-  } = useRelatedVenues({
-    currentVenueId: venueId,
+  const { userId } = useUser();
+  const { ownedVenues, isLoading: isSpacesLoading } = useOwnedVenues({
+    worldId,
+    userId,
   });
 
-  const spaceIds = venueId ? [venueId] : relatedVenueIds
+  const worldSpacesIds = ownedVenues.map((space) => space.id);
+
+  const spaceIds = spaceId ? [spaceId] : worldSpacesIds;
 
   const { events, isLoaded: isEventsLoaded } = useSpaceEvents({
-    worldId: venue?.worldId ?? worldId,
+    worldId: space?.worldId ?? worldId,
     spaceIds: spaceIds,
   });
 
@@ -102,7 +102,7 @@ export const EventsView: React.FC<EventsViewProps> = ({
       if (!spaceId) {
         return undefined;
       }
-      const space = findVenueInRelatedVenues({ spaceId });
+      const space = ownedVenues.find((space) => space.id === spaceId);
       if (!space) {
         return undefined;
       }
@@ -116,18 +116,13 @@ export const EventsView: React.FC<EventsViewProps> = ({
         />
       );
     });
-  }, [
-    events,
-    setShowCreateEventModal,
-    setEditedEvent,
-    findVenueInRelatedVenues,
-  ]);
+  }, [events, setShowCreateEventModal, setEditedEvent, ownedVenues]);
 
-  if (isVenuesLoading || !isEventsLoaded) {
+  if (isSpacesLoading || !isEventsLoaded) {
     return <Loading />;
   }
 
-  const spaceId = venue?.id ?? editedEvent?.id;
+  const spaceEventId = space?.id ?? editedEvent?.id;
 
   return (
     <div className="EventsView">
@@ -174,11 +169,11 @@ export const EventsView: React.FC<EventsViewProps> = ({
             setHideCreateEventModal();
             adminEventModalOnHide();
           }}
-          venueId={spaceId}
+          venueId={spaceEventId}
           event={editedEvent}
           setEditedEvent={setEditedEvent}
           setShowDeleteEventModal={setShowDeleteEventModal}
-          worldId={venue?.worldId ?? worldId}
+          worldId={space?.worldId}
         />
       )}
 

@@ -5,7 +5,7 @@ import { resolve } from "path";
 
 import admin from "firebase-admin";
 
-import "firebase/firestore";
+import "firebase/compat/firestore";
 
 import { VenueAccessMode } from "../src/types/VenueAcccess";
 

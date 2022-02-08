@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { differenceInYears, parseISO } from "date-fns";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import {
   ACCOUNT_PROFILE_VENUE_PARAM_URL,
@@ -11,13 +11,19 @@ import {
 
 import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
+import {
+  SpaceId,
+  SpaceSlug,
+  SpaceWithId,
+  WorldSlug,
+  WorldWithId,
+} from "types/id";
 import { VenueAccessMode } from "types/VenueAcccess";
 
+import { errorCode, errorMessage, errorStatus } from "utils/error";
 import { isTruthy } from "utils/types";
 import { generateUrl } from "utils/url";
 
-import { useSpaceParams } from "hooks/spaces/useSpaceParams";
-import { useWorldAndSpaceBySlug } from "hooks/spaces/useWorldAndSpaceBySlug";
 import { useAnalytics } from "hooks/useAnalytics";
 import { useSocialSignIn } from "hooks/useSocialSignIn";
 
@@ -28,7 +34,6 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
-import { NotFound } from "components/atoms/NotFound";
 
 import fIcon from "assets/icons/facebook-social-icon.svg";
 import gIcon from "assets/icons/google-social-icon.svg";
@@ -55,20 +60,26 @@ export interface RegisterFormProps {
   displayPasswordResetForm: () => void;
   afterUserIsLoggedIn?: (data?: LoginFormData) => void;
   closeAuthenticationModal?: () => void;
+  world: WorldWithId;
+  space: SpaceWithId;
+  spaceId: SpaceId;
+  worldSlug: WorldSlug;
+  spaceSlug: SpaceSlug;
+  isWorldLoaded: boolean;
 }
 
-const RegisterForm: React.FC<RegisterFormProps> = ({
+export const RegisterForm: React.FC<RegisterFormProps> = ({
   displayLoginForm,
   afterUserIsLoggedIn,
   closeAuthenticationModal,
+  spaceId,
+  space,
+  world,
+  worldSlug,
+  spaceSlug,
+  isWorldLoaded,
 }) => {
   const history = useHistory();
-
-  const { worldSlug, spaceSlug } = useSpaceParams();
-  const { world, space, spaceId, isLoaded } = useWorldAndSpaceBySlug(
-    worldSlug,
-    spaceSlug
-  );
 
   const [showLoginModal, setShowLoginModal] = useState(false);
   const analytics = useAnalytics({ venue: space });
@@ -96,14 +107,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   const clearBackendErrors = () => {
     clearError("backend");
   };
-
-  if (!isLoaded) {
-    return <>Loading...</>;
-  }
-
-  if (!space || !spaceId || !world) {
-    return <NotFound />;
-  }
 
   const checkVenueAccessLevels = async (data: RegisterFormInput) => {
     if (space.access === VenueAccessMode.Emails) {
@@ -174,24 +177,24 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
       });
 
       history.push(profileUrl);
-    } catch (error) {
-      if (error.code === "auth/email-already-in-use") {
+    } catch (e) {
+      const code = errorCode(e);
+      const status = errorStatus(e);
+      const message = errorMessage(e);
+
+      if (code === "auth/email-already-in-use") {
         setShowLoginModal(true);
       }
-      if (error.response?.status === 404) {
+      if (status === 404) {
         setError(
           "email",
           "validation",
           `Email ${data.email} does not have a ticket; get your ticket at ${space.ticketUrl}`
         );
-      } else if (error.response?.status >= 500) {
-        setError(
-          "email",
-          "validation",
-          `Error checking ticket: ${error.message}`
-        );
+      } else if (status >= 500) {
+        setError("email", "validation", `Error checking ticket: ${message}`);
       } else {
-        setError("backend", "firebase", error.message);
+        setError("backend", "firebase", message);
       }
     }
   };
@@ -220,7 +223,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
       if (auth.message) {
         setError("backend", "firebase", "Error");
-
         return;
       }
 
@@ -239,7 +241,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   };
 
   const isDobRequired =
-    isLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
+    isWorldLoaded && (world?.requiresDateOfBirth ?? DEFAULT_REQUIRES_DOB);
 
   return (
     <div className="form-container">
@@ -418,5 +420,3 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
     </div>
   );
 };
-
-export default RegisterForm;

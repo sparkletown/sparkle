@@ -1,19 +1,29 @@
-import firebase from "firebase/app";
+import { useFirestore } from "reactfire";
+import { collection, limit, query } from "firebase/firestore";
+
+import { COLLECTION_SPACE_CHATS, COLLECTION_SPACES } from "settings";
 
 import { MessageToDisplay, VenueChatMessage } from "types/chat";
 
-import { WithId } from "utils/id";
+import { identityConverter } from "utils/converters";
+import { convertToFirestoreKey, WithId } from "utils/id";
 
 import { useChatMessagesRaw } from "hooks/chats/common/useChatMessages";
-import { getChatsRef } from "hooks/chats/venue/util";
 
 export const useVenueChatMessages = (
-  venueId: string,
-  limit?: number
+  spaceId: string,
+  limitNumber?: number
 ): WithId<MessageToDisplay<VenueChatMessage>>[] => {
-  let ref: firebase.firestore.Query = getChatsRef(venueId);
-  if (limit) ref = ref.limit(limit);
-  const [venueChatMessages] = useChatMessagesRaw<VenueChatMessage>(ref);
-
-  return venueChatMessages;
+  const firestore = useFirestore();
+  return useChatMessagesRaw(
+    query(
+      collection(
+        firestore,
+        COLLECTION_SPACES,
+        convertToFirestoreKey(spaceId),
+        COLLECTION_SPACE_CHATS
+      ),
+      ...(limitNumber ? [limit(limitNumber)] : [])
+    ).withConverter(identityConverter<VenueChatMessage>())
+  )[0];
 };

@@ -1,0 +1,19 @@
+@import "scss/constants";
+
+.PosterPageSettingsControl {
+  margin-top: 150px;
+  &__popover-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 100%;
+
+    padding: $spacing--sm $spacing--md;
+  }
+
+  &__popover {
+    height: 100px;
+  }
+}

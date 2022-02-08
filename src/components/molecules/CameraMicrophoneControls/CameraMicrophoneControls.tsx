@@ -9,8 +9,10 @@ import { DEFAULT_CAMERA_ENABLED } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
-import { VideoOverlayButton } from "components/atoms/VideoOverlayButton";
-import { VideoOverlayButtonVariant } from "components/atoms/VideoOverlayButton/VideoOverlayButton";
+import {
+  VideoOverlayButton,
+  VideoOverlayButtonVariant,
+} from "components/atoms/VideoOverlayButton";
 
 import "./CameraMicrophoneControls.scss";
 

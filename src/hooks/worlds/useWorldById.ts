@@ -1,36 +1,40 @@
-import { useFirestore, useFirestoreDocData } from "reactfire";
+import { useMemo } from "react";
 
-import { World } from "api/world";
+import { COLLECTION_WORLDS } from "settings";
 
-import { worldConverter } from "utils/converters";
-import { WithId } from "utils/id";
+import { LoadStatus } from "types/fire";
+import { WorldId, WorldWithId } from "types/id";
+import { ReactHook } from "types/utility";
 
-type UseWorldByIdResult = {
-  world?: WithId<World>;
-  isLoaded: boolean;
-};
+import { useFireDocument } from "hooks/fire/useFireDocument";
 
-export const useWorldById: (worldId?: string) => UseWorldByIdResult = (
-  worldId
-) => {
-  const firestore = useFirestore();
+type UseWorldById = ReactHook<
+  string | undefined,
+  LoadStatus & {
+    error?: Error;
+    world?: WorldWithId;
+    worldId?: WorldId;
+  }
+>;
 
-  const worldsRef = firestore
-    .collection("worlds")
-    .doc(worldId)
-    .withConverter(worldConverter);
-
-  const { data: world, status } = useFirestoreDocData<WithId<World>>(
-    worldsRef,
-    {
-      initialData: undefined,
-    }
+export const useWorldById: UseWorldById = (worldId) => {
+  const {
+    data: world,
+    isLoaded,
+    isLoading,
+    error,
+  } = useFireDocument<WorldWithId>(
+    useMemo(() => [COLLECTION_WORLDS, worldId], [worldId])
   );
 
-  const isWorldLoaded = status !== "loading";
-
-  return {
-    world,
-    isLoaded: isWorldLoaded,
-  };
+  return useMemo(
+    () => ({
+      world,
+      worldId: world?.id,
+      isLoaded,
+      isLoading,
+      error,
+    }),
+    [world, error, isLoaded, isLoading]
+  );
 };

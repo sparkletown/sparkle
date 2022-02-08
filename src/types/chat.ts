@@ -3,7 +3,7 @@ import {
   faQuestion,
   IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
-import firebase from "firebase/app";
+import firebase from "firebase/compat/app";
 
 import { DisplayUser, User } from "types/User";
 

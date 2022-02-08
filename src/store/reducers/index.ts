@@ -1,7 +1,7 @@
 import { spaceCreateItemReducer } from "store/reducers/SpaceEdit";
 import { worldEditStartValuesReducer } from "store/reducers/WorldEdit";
 
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate } from "types/VenueTemplate";
 
 import { animateMapReducer } from "./AnimateMap";
 import { attendanceReducer } from "./Attendance";

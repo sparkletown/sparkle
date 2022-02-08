@@ -1,60 +1,43 @@
-import { isEqual } from "lodash";
+import { where } from "firebase/firestore";
 
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
-import { useUser } from "./useUser";
+import { COLLECTION_ROLES } from "settings";
+
+import { convertToFirestoreKey } from "utils/id";
+
+import { useRefiCollection } from "hooks/fire/useRefiCollection";
+import { useLoginCheck } from "hooks/user/useLoginCheck";
 
 export const useRoles = () => {
-  const { user } = useUser();
+  const { userId, isLoading: isUserLoading } = useLoginCheck();
 
-  useFirestoreConnect(
-    user
-      ? {
-          collection: "roles",
-          where: [["users", "array-contains", user.uid]],
-          storeAs: "userRoles",
-        }
-      : undefined
-  );
-
-  useFirestoreConnect({
-    collection: "roles",
-    where: [["allowAll", "==", true]],
-    storeAs: "allowAllRoles",
+  const {
+    data: userRolesData,
+    isLoaded: isUserRolesLoaded,
+  } = useRefiCollection({
+    path: [COLLECTION_ROLES],
+    constraints: [
+      where("users", "array-contains", convertToFirestoreKey(userId)),
+    ],
   });
 
   const {
-    isUserRolesLoaded,
-    isAllowAllRolesLoaded,
-    isRolesLoaded,
-    userRoles,
-    allowAllRoles,
-    roles,
-  } = useSelector((state) => {
-    const { userRoles, allowAllRoles } = state.firestore.data;
+    data: allowAllRolesData,
+    isLoaded: isAllowAllRolesLoaded,
+  } = useRefiCollection({
+    path: [COLLECTION_ROLES],
+    constraints: [where("allowAll", "==", true)],
+  });
 
-    const rolesForUser = userRoles ? Object.keys(userRoles) : [];
-    const rolesForAll = allowAllRoles ? Object.keys(allowAllRoles) : [];
-    const combinedRoles = [...rolesForUser, ...rolesForAll];
-
-    return {
-      isUserRolesLoaded: isLoaded(userRoles),
-      userRoles: rolesForUser,
-
-      isAllowAllRolesLoaded: isLoaded(allowAllRoles),
-      allowAllRoles: rolesForAll,
-
-      isRolesLoaded: isLoaded(userRoles) && isLoaded(allowAllRoles),
-      roles: combinedRoles,
-    };
-  }, isEqual);
+  const rolesForUser = userRolesData ? Object.keys(userRolesData) : [];
+  const rolesForAll = allowAllRolesData ? Object.keys(allowAllRolesData) : [];
+  const rolesCombined = [...rolesForUser, ...rolesForAll];
 
   return {
-    isUserRolesLoaded,
-    isAllowAllRolesLoaded,
-    isRolesLoaded,
-    userRoles,
-    allowAllRoles,
-    roles,
+    isUserRolesLoaded: !isUserLoading && isUserRolesLoaded,
+    isAllowAllRolesLoaded: !isUserLoading && isAllowAllRolesLoaded,
+    isRolesLoaded: !isUserLoading && isUserRolesLoaded && isAllowAllRolesLoaded,
+    userRoles: rolesForUser,
+    allowAllRoles: rolesForAll,
+    roles: rolesCombined,
   };
 };

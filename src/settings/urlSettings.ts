@@ -1,5 +1,4 @@
-import { SpaceSlug } from "types/venues";
-import { WorldSlug } from "types/world";
+import { SpaceSlug, WorldSlug } from "types/id";
 
 export const DEFAULT_SPACE_SLUG = "bootstrap" as SpaceSlug;
 export const DEFAULT_WORLD_SLUG = "bootstrap" as WorldSlug;
@@ -35,7 +34,6 @@ export const ROOT_URL = "/";
 
 export const ACCOUNT_ROOT_URL = "/account";
 export const ADMIN_ROOT_URL = "/admin";
-export const ENTER_ROOT_URL = "/enter";
 export const SPARKLEVERSE_REDIRECT_URL = "/sparkleverse";
 export const VERSION_URL = "/version";
 
@@ -72,12 +70,3 @@ export const ADMIN_IA_SPACE_CREATE_PARAM_URL = `${ADMIN_IA_WORLD_PARAM_URL}/crea
 export const ADMIN_IA_WORLD_SCHEDULE_URL = `${ADMIN_IA_WORLD_PARAM_URL}/schedule`; // e.g. /admin/w/world123/schedule
 // @debt this is in the wrong place completely
 export const ADMIN_IA_SPACE_ADMIN_PARAM_URL = `${ADMIN_IA_SPACE_BASE_PARAM_URL}/:spaceSlug/admin`; // e.g. /admin/w/world123/s/space456/admin
-
-// Enter URLs
-export const ENTER_STEP_1_URL = `${ENTER_ROOT_URL}/step1`;
-export const ENTER_STEP_2_URL = `${ENTER_ROOT_URL}/step2`;
-export const ENTER_STEP_3_URL = `${ENTER_ROOT_URL}/step3`;
-export const ENTER_STEP_4_URL = `${ENTER_ROOT_URL}/step4`;
-export const ENTER_STEP_5_URL = `${ENTER_ROOT_URL}/step5`;
-export const ENTER_STEP_6A_URL = `${ENTER_ROOT_URL}/step6a`;
-export const ENTER_STEP_6B_URL = `${ENTER_ROOT_URL}/step6b`;

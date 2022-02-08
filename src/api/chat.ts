@@ -1,5 +1,7 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import firebase from "firebase/compat/app";
+import { httpsCallable } from "firebase/functions";
 import { noop } from "lodash";
 
 import { getVenueRef } from "api/venue";
@@ -66,7 +68,10 @@ export interface VoteInPollProps {
 }
 
 export const voteInVenuePoll = async ({ pollVote, venueId }: VoteInPollProps) =>
-  await firebase.functions().httpsCallable("venue-voteInPoll")({
+  await httpsCallable(
+    FIREBASE.functions,
+    "venue-voteInPoll"
+  )({
     pollVote,
     venueId,
   });

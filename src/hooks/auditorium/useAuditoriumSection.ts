@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { useFirestore, useFirestoreDocData } from "reactfire";
+import { doc } from "firebase/firestore";
 
 import {
+  COLLECTION_SECTIONS,
+  COLLECTION_SPACES,
   REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
@@ -48,12 +51,13 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const sectionRef = firestore
-    .collection("venues")
-    .doc(venueId)
-    .collection("sections")
-    .doc(sectionId)
-    .withConverter(withIdConverter<AuditoriumSection>());
+  const sectionRef = doc(
+    firestore,
+    COLLECTION_SPACES,
+    venueId,
+    COLLECTION_SECTIONS,
+    sectionId
+  ).withConverter(withIdConverter<AuditoriumSection>());
 
   const { data: section, status } = useFirestoreDocData<
     WithId<AuditoriumSection>

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
+import { FIREBASE } from "core/firebase";
+import { httpsCallable } from "firebase/functions";
 
 import { Loading } from "components/molecules/Loading";
 
@@ -12,16 +13,18 @@ import { SelfServeScript } from "../../types";
 
 import "./Tool.scss";
 
+type ReturnedDataProps = { [key: string]: string };
 export const Tool: React.FC<{ tool: SelfServeScript }> = ({ tool }) => {
   const { register, handleSubmit, errors } = useForm();
 
-  const [returnedData, setReturnedData] = useState<{ [key: string]: string }>();
+  const [returnedData, setReturnedData] = useState<ReturnedDataProps>();
 
   const [{ loading: isLoading }, onSubmit] = useAsyncFn(
     async (data: Object) => {
-      const response = await firebase
-        .functions()
-        .httpsCallable(tool.functionLocation)(data);
+      const response = await httpsCallable<Object, ReturnedDataProps>(
+        FIREBASE.functions,
+        tool.functionLocation
+      )(data);
 
       setReturnedData(response.data);
     },

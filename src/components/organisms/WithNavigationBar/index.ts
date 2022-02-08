@@ -1,6 +1,6 @@
-export { WithNavigationBar } from "./WithNavigationBar";
+import { withWorldOrSpace } from "components/hocs/db/withWorldOrSpace";
+import { compose } from "lodash/fp";
 
-/**
- * @deprecated use named export instead
- */
-export { default } from "./WithNavigationBar";
+import { WithNavigationBar as _WithNavigationBar } from "./WithNavigationBar";
+
+export const WithNavigationBar = compose(withWorldOrSpace)(_WithNavigationBar);
