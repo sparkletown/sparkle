@@ -5,10 +5,6 @@ import Twilio from "twilio-video";
 import { getTwilioVideoToken } from "api/video";
 
 import {
-  EventSubscription,
-  SubscribeToParticipantEvent,
-} from "./internalTypes";
-import {
   AudioTrack,
   LocalParticipant,
   Participant,
@@ -91,12 +87,15 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   let remoteParticipants: Participant[] = [];
   let room: Twilio.Room | undefined;
   let status = VideoCommsStatus.Disconnected;
-  let participantEventSubscriptions: Map<
-    Twilio.RemoteParticipant,
-    EventSubscription[]
-  > = new Map();
   let isTransmittingAudio = true;
   let isTransmittingVideo = true;
+
+  const subscribedEvents = [
+    "trackSubscribed",
+    "trackUnsubscribed",
+    "trackEnabled",
+    "trackDisabled",
+  ];
 
   const updateLocalParticipant = () => {
     if (!room) {
@@ -114,52 +113,21 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     };
   };
 
-  // TODO, maybe the subscription management can go into it's own class to keep
-  // things tidy
-  const subscribeToParticipantEvent: SubscribeToParticipantEvent = (
-    participant,
-    eventName,
-    callback
-  ) => {
-    participant.on(eventName, callback);
-    let existing = participantEventSubscriptions.get(participant);
-    if (!existing) {
-      // TODO Come back to this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      existing = [[eventName, callback]];
-    } else {
-      // TODO Come back to this
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      existing = [...existing, [eventName, callback]];
-    }
-    // TODO Come back to this
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    participantEventSubscriptions.set(participant, existing);
-  };
-
   const unsubscribeParticipantEvents = (
     participant: Twilio.RemoteParticipant
   ) => {
-    const toUnsubscribe = participantEventSubscriptions.get(participant) || [];
-    for (const [eventName, callbackFn] of toUnsubscribe) {
-      participant.off(eventName, callbackFn);
+    for (const eventName of subscribedEvents) {
+      participant.off(eventName, recalculateStatus);
     }
-    participantEventSubscriptions.delete(participant);
   };
 
   const unsubscribeAllParticipantEvents = () => {
-    for (const [
-      participant,
-      subscriptions,
-    ] of participantEventSubscriptions.entries()) {
-      for (const [eventName, callbackFn] of subscriptions) {
-        participant.off(eventName, callbackFn);
-      }
+    if (!room) {
+      return;
     }
-    participantEventSubscriptions = new Map();
+    for (const [, participant] of room.participants) {
+      unsubscribeParticipantEvents(participant);
+    }
   };
 
   const participantConnected = (participant: Twilio.RemoteParticipant) => {
@@ -168,16 +136,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       audioTracks: [],
       videoTracks: remotePublicationsToTracks(participant.videoTracks),
     });
-    [
-      "trackSubscribed",
-      "trackUnsubscribed",
-      "trackEnabled",
-      "trackDisabled",
-    ].forEach((eventName) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      subscribeToParticipantEvent(participant, eventName, recalculateStatus);
-    });
+    for (const eventName of subscribedEvents) {
+      participant.on(eventName, recalculateStatus);
+    }
     recalculateStatus();
   };
 
@@ -232,7 +193,6 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       .then((newRoom: Twilio.Room) => {
         room = newRoom;
 
-        // TODO track these properly so they're easy to unsubscribe from
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
@@ -251,6 +211,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     // This method is as best effort as possible so that it can be used as a way
     // to reset the state of the system
     if (room && room.localParticipant.state === "connected") {
+      room.off("participantConnected", participantConnected);
+      room.off("participantDisconnected", participantDisconnected);
+
       room.localParticipant.tracks.forEach((trackPublication) => {
         const track = trackPublication.track;
         if (
@@ -296,9 +259,6 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
 
   const recalculateStatus = () => {
-    // TODO This should clone everything so that react isn't seeing internal
-    // versions of the state. Or, use immutable versions of everything.
-    // Ideally, just make everything immutable
     // This isn't particularly performant. However, we generally don't get
     // a lot of state changes happening during a call so this is probably ok.
     // It's more important to present a simple API than it is to overly fixate
@@ -322,9 +282,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("startAudio called from invalid state");
       return;
     }
-    room.localParticipant.audioTracks.forEach((track) => {
+    for (const track of room.localParticipant.audioTracks.values()) {
       track.track.enable();
-    });
+    }
     isTransmittingAudio = true;
     recalculateStatus();
   };
@@ -333,9 +293,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("stopAudio called from invalid state");
       return;
     }
-    room.localParticipant.audioTracks.forEach((track) => {
+    for (const track of room.localParticipant.audioTracks.values()) {
       track.track.disable();
-    });
+    }
     isTransmittingAudio = false;
     recalculateStatus();
   };
@@ -344,9 +304,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("startVideo called from invalid state");
       return;
     }
-    room.localParticipant.videoTracks.forEach((track) => {
+    for (const track of room.localParticipant.audioTracks.values()) {
       track.track.enable();
-    });
+    }
     isTransmittingVideo = true;
     recalculateStatus();
   };
@@ -355,9 +315,9 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("stopVideo called from invalid state");
       return;
     }
-    room.localParticipant.videoTracks.forEach((track) => {
+    for (const track of room.localParticipant.audioTracks.values()) {
       track.track.disable();
-    });
+    }
     isTransmittingVideo = false;
     recalculateStatus();
   };
