@@ -1,12 +1,16 @@
 @import "scss/constants";
 
+$indicator-size: 20px;
+
 .Dropdown {
   background: transparent;
   border: none;
-  border-radius: 50px;
+  border-radius: $border-radius--xl;
   box-shadow: none;
   outline: none;
   width: 100%;
+  position: relative;
+  box-sizing: border-box;
 
   .Select {
     display: flex;
@@ -19,14 +23,14 @@
 
     &:focus,
     &:hover {
-      background: opaque-white(0.2);
-      box-shadow: 0 2px 4px opaque-black(0.25);
+      background: var(--content--over-20a);
+      box-shadow: 0 2px 4px var(--content--under-25a);
       border-radius: $border-radius--xl;
     }
 
     &__control {
       cursor: pointer;
-      padding: 8px;
+      padding: $spacing--sm;
       background: transparent;
       border: none;
       border-radius: $border-radius--xl;
@@ -37,12 +41,12 @@
 
     &__menu {
       background: var(--content--under-lighter-20pp);
-      box-shadow: 0 10px 20px opaque-black(0.25);
+      box-shadow: 0 10px 20px var(--content--under-25a);
       border-radius: $border-radius--xl;
       z-index: 1;
-      max-height: 240px;
+      max-height: font-size--root(15);
       position: absolute;
-      top: 45px;
+      top: calc(font-size--root(2) + #{$spacing--xs});
       overflow: auto;
       cursor: default;
       width: 100%;
@@ -62,7 +66,7 @@
       cursor: pointer;
 
       &:hover {
-        background: opaque-white(0.2);
+        background: var(--content--over-20a);
       }
     }
 
@@ -73,10 +77,22 @@
       padding: 0;
       margin: 0;
       opacity: 0;
+      visibility: visible;
+      // color: hsl(0, 0%, 20%);
+      flex: 1 1 auto;
+      display: inline-grid;
+      grid-area: 1/1/2/3;
+      grid-template-columns: 0 min-content;
+      box-sizing: border-box;
     }
 
-    &__input-container &__input {
-      opacity: 0 !important;
+    &__input-container {
+      display: inline;
+
+      &__input {
+        //height: 0;
+        opacity: 0 !important;
+      }
     }
 
     &__single-value {
@@ -87,9 +103,10 @@
       display: none;
     }
 
+    // &__Select__value-container--has-value
     &__value-container {
+      //overflow: hidden; // NOTE: makes the static text move up and hide
       position: relative;
-      overflow: hidden;
       box-sizing: border-box;
       flex-wrap: wrap;
       padding: $spacing--xs $spacing--sm;
@@ -97,6 +114,18 @@
       align-items: center;
       display: flex;
       flex-direction: column;
+    }
+
+    &__indicators {
+      align-items: center;
+      align-self: stretch;
+      display: flex;
+      flex-shrink: 0;
+      box-sizing: border-box;
+    }
+
+    &__indicator {
+      @include square-size($indicator-size);
     }
   }
 
