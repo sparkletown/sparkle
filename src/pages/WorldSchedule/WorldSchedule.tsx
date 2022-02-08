@@ -2,8 +2,6 @@ import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import * as Yup from "yup";
-import { TestFunction } from "yup";
 
 import { ADMIN_IA_WORLD_PARAM_URL } from "settings";
 
@@ -16,6 +14,8 @@ import {
   convertUtcSecondsFromInputDateAndTime,
 } from "utils/time";
 import { generateUrl } from "utils/url";
+
+import { worldScheduleSchema } from "forms/worldScheduleSchema";
 
 import { useWorldBySlug } from "hooks/worlds/useWorldBySlug";
 import { useWorldParams } from "hooks/worlds/useWorldParams";
@@ -47,59 +47,7 @@ const HANDLED_ERRORS: string[] = [
   "endTime",
 ];
 
-const testEndDate: TestFunction = function testEndIsAfterStart() {
-  const { startDate, endDate } = this.parent;
 
-  const zeroHour = "00:00";
-  const start = convertUtcSecondsFromInputDateAndTime({
-    date: startDate,
-    time: zeroHour,
-  });
-  const end = convertUtcSecondsFromInputDateAndTime({
-    date: endDate,
-    time: zeroHour,
-  });
-
-  return start <= end;
-};
-
-const testEndTime: TestFunction = function testEndIsAfterStart() {
-  const { endTime, startTime, startDate, endDate } = this.parent;
-
-  const start = convertUtcSecondsFromInputDateAndTime({
-    date: startDate,
-    time: startTime,
-  });
-  const end = convertUtcSecondsFromInputDateAndTime({
-    date: endDate,
-    time: endTime,
-  });
-
-  return start < end;
-};
-
-const validationSchema = Yup.object().shape({
-  startDate: Yup.string()
-    .required()
-    .test(
-      "startDate",
-      "Start date must not be after the end date",
-      testEndDate
-    ),
-  startTime: Yup.string()
-    .required()
-    .test("startTime", "Start time must be before the end time", testEndTime),
-  endDate: Yup.string()
-    .required()
-    .test(
-      "endDate",
-      "End date must not be before the starting date",
-      testEndDate
-    ),
-  endTime: Yup.string()
-    .required()
-    .test("endTime", "End time must be after the start time", testEndTime),
-});
 
 export interface WorldScheduleFormInput {
   startDate: string;
@@ -140,11 +88,9 @@ export const WorldSchedule = () => {
   } = useForm<WorldScheduleFormInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: worldScheduleSchema,
     defaultValues,
   });
-
-  useEffect(() => {}, []);
 
   const [{ error, loading: isSaving }, submit] = useAsyncFn(
     async (input: WorldScheduleFormInput) => {

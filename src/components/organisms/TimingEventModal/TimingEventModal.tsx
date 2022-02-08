@@ -65,14 +65,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   // being on the space that triggered this modal.
   const {
     findVenueInRelatedVenues,
-    relatedVenueIds,
-    relatedSpaceSlugs,
+    relatedVenues,
   } = useRelatedVenues();
   const eventSpace = findVenueInRelatedVenues({ spaceId: eventSpaceId });
 
-  const spacesMap = relatedVenueIds.map((spaceId: string, index: number) => ({
-    id: spaceId,
-    slug: relatedSpaceSlugs[index],
+  const spacesMap = relatedVenues.map(venue => ({
+    id: venue.id,
+    name: venue.name,
   }));
 
   useEffect(() => {
@@ -146,7 +145,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
             onClick={() => setValue("space", space)}
             className="SpacesDropdown__item"
           >
-            {space.slug}
+            {space.name}
           </ReactBootstrapDropdown.Item>
         );
       }) ?? [],

@@ -26,7 +26,6 @@ export interface RelatedVenuesContextState {
   relatedVenues: WithId<AnyVenue>[];
   descendantVenues: WithId<AnyVenue>[];
   relatedVenueIds: string[];
-  relatedSpaceSlugs: SpaceSlug[];
 
   findVenueInRelatedVenues: (
     searchOptions: FindVenueInRelatedVenuesOptions
@@ -76,11 +75,6 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     [relatedVenues]
   );
 
-  const relatedSpaceSlugs = useMemo(
-    () => relatedVenues.map((venue) => venue.slug),
-    [relatedVenues]
-  );
-
   const descendantVenues = useMemo(
     () => relatedVenues.filter((venue) => venue.id !== sovereignVenueId),
     [relatedVenues, sovereignVenueId]
@@ -125,7 +119,6 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
       relatedVenues,
       relatedVenueIds,
-      relatedSpaceSlugs,
 
       descendantVenues,
 
@@ -134,7 +127,6 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     [
       relatedVenues,
       relatedVenueIds,
-      relatedSpaceSlugs,
       descendantVenues,
       findVenueInRelatedVenues,
       sovereignVenue,
