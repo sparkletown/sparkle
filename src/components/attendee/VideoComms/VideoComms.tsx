@@ -168,18 +168,16 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       audioTracks: [],
       videoTracks: remotePublicationsToTracks(participant.videoTracks),
     });
-    subscribeToParticipantEvent(participant, "trackSubscribed", (track) =>
-      onTrackSubscribed(participant, track)
-    );
-    subscribeToParticipantEvent(participant, "trackUnsubscribed", (track) =>
-      onTrackUnsubscribed(participant, track)
-    );
-    subscribeToParticipantEvent(participant, "trackEnabled", (publication) =>
-      onTrackEnabled(participant, publication)
-    );
-    subscribeToParticipantEvent(participant, "trackDisabled", (publication) =>
-      onTrackDisabled(participant, publication)
-    );
+    [
+      "trackSubscribed",
+      "trackUnsubscribed",
+      "trackEnabled",
+      "trackDisabled",
+    ].forEach((eventName) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      subscribeToParticipantEvent(participant, eventName, triggerStatusUpdate);
+    });
     triggerStatusUpdate();
   };
 
@@ -191,111 +189,18 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     triggerStatusUpdate();
   };
 
-  const findParticipantById = (id: string) => {
-    return remoteParticipants.find((p) => p.id === id);
-  };
-
-  const onTrackEnabled = (
-    participant: Twilio.RemoteParticipant,
-    publication: Twilio.RemoteTrackPublication
-  ) => {
-    const track = publication.track;
-    if (!track) {
-      return;
-    }
-    const mappedParticipant = findParticipantById(participant.sid);
-    if (!mappedParticipant) {
-      // TODO probably warn
-      return;
-    }
-
-    // @debt tidy up this track finding...
-    const allTracks = [
-      ...mappedParticipant.audioTracks,
-      ...mappedParticipant.videoTracks,
-    ];
-    const wrappedTrack = allTracks.find((wt) => wt.id === track.sid);
-    if (!wrappedTrack) {
-      // TODO warn here
-      return;
-    }
-    wrappedTrack.enabled = true;
-    triggerStatusUpdate();
-  };
-
-  const onTrackDisabled = (
-    participant: Twilio.RemoteParticipant,
-    publication: Twilio.RemoteTrackPublication
-  ) => {
-    const track = publication.track;
-    if (!track) {
-      return;
-    }
-    const mappedParticipant = remoteParticipants.find(
-      (p) => p.id === participant.sid
+  const wrapRemoteParticipant = (
+    participant: Twilio.RemoteParticipant
+  ): Participant => {
+    const videoTracks = remotePublicationsToTracks(participant.videoTracks);
+    const audioTracks = remotePublicationsToAudioTracks(
+      participant.audioTracks
     );
-    if (!mappedParticipant) {
-      // TODO probably warn
-      return;
-    }
-
-    const allTracks = [
-      ...mappedParticipant.audioTracks,
-      ...mappedParticipant.videoTracks,
-    ];
-    const wrappedTrack = allTracks.find((wt) => wt.id === track.sid);
-    if (!wrappedTrack) {
-      // TODO warn here
-      return;
-    }
-    wrappedTrack.enabled = false;
-    triggerStatusUpdate();
-  };
-
-  const onTrackSubscribed = (
-    participant: Twilio.RemoteParticipant,
-    track: Twilio.RemoteTrack
-  ) => {
-    const mappedParticipant = remoteParticipants.find(
-      (p) => p.id === participant.sid
-    );
-    if (!mappedParticipant) {
-      // TODO probably warn
-      return;
-    }
-
-    if (track.kind === "video") {
-      mappedParticipant.videoTracks.push(wrapRemoteVideoTrack(track));
-    } else if (track.kind === "audio") {
-      mappedParticipant.audioTracks.push(wrapRemoteAudioTrack(track));
-    }
-    triggerStatusUpdate();
-  };
-
-  const onTrackUnsubscribed = (
-    participant: Twilio.RemoteParticipant,
-    track: Twilio.RemoteTrack
-  ) => {
-    // @debt duplicated of finding participant
-    const mappedParticipant = remoteParticipants.find(
-      (p) => p.id === participant.sid
-    );
-    if (!mappedParticipant) {
-      // TODO probably warn
-      return;
-    }
-    if (track.kind === "video") {
-      mappedParticipant.videoTracks = mappedParticipant.videoTracks.filter(
-        (t) => t.id !== track.sid
-      );
-    }
-    if (track.kind === "audio") {
-      mappedParticipant.audioTracks = mappedParticipant.audioTracks.filter(
-        (t) => t.id !== track.sid
-      );
-    }
-
-    triggerStatusUpdate();
+    return {
+      id: participant.sid,
+      audioTracks,
+      videoTracks,
+    };
   };
 
   const joinChannel = async (userId: string, newChannelId: string) => {
@@ -399,11 +304,14 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     // It's more important to present a simple API than it is to overly fixate
     // on performance
     const localParticipant = updateLocalParticipant();
+    const remoteParticipants = Array.from(
+      room?.participants.values() || []
+    ).map(wrapRemoteParticipant);
 
     onStateUpdateCallback({
       localParticipant,
       status,
-      remoteParticipants: [...remoteParticipants],
+      remoteParticipants,
       isTransmittingAudio,
       isTransmittingVideo,
     });
@@ -476,6 +384,14 @@ const remotePublicationsToTracks = (
 ): VideoTrack[] => {
   return Array.from(publications.values())
     .map((vt) => vt.track && wrapRemoteVideoTrack(vt.track))
+    .filter(notNull);
+};
+
+const remotePublicationsToAudioTracks = (
+  publications: Map<String, Twilio.RemoteAudioTrackPublication>
+): AudioTrack[] => {
+  return Array.from(publications.values())
+    .map((at) => at.track && wrapRemoteAudioTrack(at.track))
     .filter(notNull);
 };
 
