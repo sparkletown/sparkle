@@ -91,6 +91,76 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     EventSubscription[]
   > = new Map();
 
+  const updateLocalParticipant = () => {
+    if (!room) {
+      return undefined;
+    }
+    return {
+      id: room.localParticipant.sid,
+      audioTracks: localPublicationsToAudioTracks(
+        room.localParticipant.audioTracks
+      ),
+      videoTracks: localPublicationsToVideoTracks(
+        room.localParticipant.videoTracks
+      ),
+      startAudio: () => {
+        if (!room) {
+          console.warn("startAudio called from invalid state");
+          return;
+        }
+        room.localParticipant.audioTracks.forEach((track) => {
+          track.track.enable();
+        });
+        if (localParticipant) {
+          localParticipant.isTransmittingAudio = true;
+        }
+        triggerStatusUpdate();
+      },
+      stopAudio: () => {
+        if (!room) {
+          console.warn("startAudio called from invalid state");
+          return;
+        }
+        room.localParticipant.audioTracks.forEach((track) => {
+          track.track.disable();
+        });
+        if (localParticipant) {
+          localParticipant.isTransmittingAudio = false;
+        }
+        triggerStatusUpdate();
+      },
+      startVideo: () => {
+        if (!room) {
+          console.warn("startAudio called from invalid state");
+          return;
+        }
+
+        room.localParticipant.videoTracks.forEach((track) => {
+          track.track.enable();
+        });
+        if (localParticipant) {
+          localParticipant.isTransmittingVideo = true;
+        }
+        triggerStatusUpdate();
+      },
+      stopVideo: () => {
+        if (!room) {
+          console.warn("startAudio called from invalid state");
+          return;
+        }
+        room.localParticipant.videoTracks.forEach((track) => {
+          track.track.disable();
+        });
+        if (localParticipant) {
+          localParticipant.isTransmittingVideo = false;
+        }
+        triggerStatusUpdate();
+      },
+      isTransmittingAudio: true,
+      isTransmittingVideo: true,
+    };
+  };
+
   // TODO, maybe the subscription management can go into it's own class to keep
   // things tidy
   const subscribeToParticipantEvent: SubscribeToParticipantEvent = (
@@ -308,53 +378,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
         room.participants.forEach(participantConnected);
 
         status = VideoCommsStatus.Connected;
-        localParticipant = {
-          id: room.localParticipant.sid,
-          audioTracks: localPublicationsToAudioTracks(
-            room.localParticipant.audioTracks
-          ),
-          videoTracks: localPublicationsToVideoTracks(
-            room.localParticipant.videoTracks
-          ),
-          startAudio: () => {
-            newRoom.localParticipant.audioTracks.forEach((track) => {
-              track.track.enable();
-            });
-            if (localParticipant) {
-              localParticipant.isTransmittingAudio = true;
-            }
-            triggerStatusUpdate();
-          },
-          stopAudio: () => {
-            newRoom.localParticipant.audioTracks.forEach((track) => {
-              track.track.disable();
-            });
-            if (localParticipant) {
-              localParticipant.isTransmittingAudio = false;
-            }
-            triggerStatusUpdate();
-          },
-          startVideo: () => {
-            newRoom.localParticipant.videoTracks.forEach((track) => {
-              track.track.enable();
-            });
-            if (localParticipant) {
-              localParticipant.isTransmittingVideo = true;
-            }
-            triggerStatusUpdate();
-          },
-          stopVideo: () => {
-            newRoom.localParticipant.videoTracks.forEach((track) => {
-              track.track.disable();
-            });
-            if (localParticipant) {
-              localParticipant.isTransmittingVideo = false;
-            }
-            triggerStatusUpdate();
-          },
-          isTransmittingAudio: true,
-          isTransmittingVideo: true,
-        };
+        localParticipant = updateLocalParticipant();
 
         triggerStatusUpdate();
       })
@@ -404,24 +428,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
           // TODO
           // screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
 
-          // TODO Extract this as it is repetitive
-          console.log(
-            "I want to update local particiapnt",
-            room.localParticipant
-          );
-          localParticipant = {
-            id: room.localParticipant.sid,
-            audioTracks: [], // Array.from(room.localParticipant.audioTracks.values()),
-            videoTracks: localPublicationsToVideoTracks(
-              room.localParticipant.videoTracks
-            ),
-            startAudio: () => {},
-            stopAudio: () => {},
-            startVideo: () => {},
-            stopVideo: () => {},
-            isTransmittingAudio: false,
-            isTransmittingVideo: false,
-          };
+          localParticipant = updateLocalParticipant();
 
           triggerStatusUpdate();
         });
@@ -497,10 +504,9 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     setRemoteParticipants(update.remoteParticipants);
   }, []);
 
-  const twilioImpl = useMemo(
-    () => TwilioImpl(twilioCallback),
-    [twilioCallback]
-  );
+  const twilioImpl = useMemo(() => TwilioImpl(twilioCallback), [
+    twilioCallback,
+  ]);
 
   const joinChannelCallback = useCallback(
     async (userId, newChannelId) => {
