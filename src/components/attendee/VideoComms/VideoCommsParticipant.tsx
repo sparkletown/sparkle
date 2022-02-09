@@ -8,6 +8,11 @@ import { VideoTrackDisplay } from "./VideoTrackDisplay";
 interface VideoCommsParticipantProps {
   participant: Participant;
   isLocal?: boolean;
+  /**
+   * A function that will generate controls on a per-video-track basis. Useful for
+   * adding things like "share" buttons or similar on each track. The Video
+   * Huddle components makes use of this.
+   */
   videoTrackControls?: (track: VideoTrack) => JSX.Element;
 }
 

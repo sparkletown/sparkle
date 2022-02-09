@@ -66,7 +66,10 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
         )}
         {remoteParticipants.map((participant) => (
           <div key={participant.id} className={styles.VideoContainer}>
-            <VideoCommsParticipant participant={participant} />
+            <VideoCommsParticipant
+              participant={participant}
+              videoTrackControls={addButtons}
+            />
           </div>
         ))}
       </div>

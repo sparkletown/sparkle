@@ -7,6 +7,10 @@ interface VideoTrackDisplayProps {
   isMirrored?: boolean;
 }
 
+/**
+ * Low level component for displaying a single video track. In general, consider
+ * using VideoCommsParticipant before this.
+ */
 export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
   track,
   isMirrored = false,
