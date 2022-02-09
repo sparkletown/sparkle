@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-import { AudioTrack } from "./types";
+import { AudioTrack } from "../types";
 
 interface AudioTrackPlayerProps {
   track: AudioTrack;
