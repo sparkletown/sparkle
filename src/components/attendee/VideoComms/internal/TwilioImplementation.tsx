@@ -1,34 +1,14 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { noop } from "lodash";
 import Twilio from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
 import {
   AudioTrack,
-  LocalParticipant,
   Participant,
   StateUpdateCallback,
-  StateUpdateCallbackParams,
-  VideoCommsContextType,
-  VideoCommsProviderProps,
   VideoCommsStatus,
   VideoTrack,
-} from "./types";
-
-export const VideoCommsContext = React.createContext<VideoCommsContextType>({
-  status: VideoCommsStatus.Disconnected,
-  joinChannel: () => {},
-  disconnect: () => {},
-  remoteParticipants: [],
-  shareScreen: () => {},
-  startAudio: noop,
-  stopAudio: noop,
-  startVideo: noop,
-  stopVideo: noop,
-  isTransmittingAudio: false,
-  isTransmittingVideo: false,
-});
+} from "../types";
 
 // @debt These four functions could be combined.
 const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
@@ -82,6 +62,44 @@ const wrapLocalAudioPublication = (
 };
 
 /**
+ * Used with filter to allow Typescript to convert arrays that might have nulls
+ * in them into arrays of just a specific type.
+ */
+const notNull = <T,>(value: T | null): value is T => value !== null;
+
+const remotePublicationsToTracks = (
+  publications: Map<String, Twilio.RemoteVideoTrackPublication>
+): VideoTrack[] => {
+  return Array.from(publications.values())
+    .map((vt) => vt.track && wrapRemoteVideoTrack(vt.track))
+    .filter(notNull);
+};
+
+const remotePublicationsToAudioTracks = (
+  publications: Map<String, Twilio.RemoteAudioTrackPublication>
+): AudioTrack[] => {
+  return Array.from(publications.values())
+    .map((at) => at.track && wrapRemoteAudioTrack(at.track))
+    .filter(notNull);
+};
+
+const localPublicationsToVideoTracks = (
+  publications: Map<String, Twilio.LocalVideoTrackPublication>
+): VideoTrack[] => {
+  return Array.from(publications.values())
+    .map((p) => p.track && wrapLocalVideoPublication(p))
+    .filter(notNull);
+};
+
+const localPublicationsToAudioTracks = (
+  publications: Map<String, Twilio.LocalAudioTrackPublication>
+): AudioTrack[] => {
+  return Array.from(publications.values())
+    .map((p) => p.track && wrapLocalAudioPublication(p))
+    .filter(notNull);
+};
+
+/**
  * This provides an interface over the top of Twilio. It is designed to
  * work outside of React as much as possible to avoid the complexity of dealing
  * with hooks.
@@ -89,7 +107,7 @@ const wrapLocalAudioPublication = (
  * Instead, the method triggerStatusUpdate is used to let React know that the
  * state of the video call has changed.
  */
-const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
+export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   let remoteParticipants: Participant[] = [];
   let room: Twilio.Room | undefined;
   let status = VideoCommsStatus.Disconnected;
@@ -338,91 +356,4 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     startVideo,
     stopVideo,
   };
-};
-
-/**
- * Used with filter to allow Typescript to convert arrays that might have nulls
- * in them into arrays of just a specific type.
- */
-const notNull = <T,>(value: T | null): value is T => value !== null;
-
-const remotePublicationsToTracks = (
-  publications: Map<String, Twilio.RemoteVideoTrackPublication>
-): VideoTrack[] => {
-  return Array.from(publications.values())
-    .map((vt) => vt.track && wrapRemoteVideoTrack(vt.track))
-    .filter(notNull);
-};
-
-const remotePublicationsToAudioTracks = (
-  publications: Map<String, Twilio.RemoteAudioTrackPublication>
-): AudioTrack[] => {
-  return Array.from(publications.values())
-    .map((at) => at.track && wrapRemoteAudioTrack(at.track))
-    .filter(notNull);
-};
-
-const localPublicationsToVideoTracks = (
-  publications: Map<String, Twilio.LocalVideoTrackPublication>
-): VideoTrack[] => {
-  return Array.from(publications.values())
-    .map((p) => p.track && wrapLocalVideoPublication(p))
-    .filter(notNull);
-};
-
-const localPublicationsToAudioTracks = (
-  publications: Map<String, Twilio.LocalAudioTrackPublication>
-): AudioTrack[] => {
-  return Array.from(publications.values())
-    .map((p) => p.track && wrapLocalAudioPublication(p))
-    .filter(notNull);
-};
-
-export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
-  userId,
-  children,
-}) => {
-  const [status, setStatus] = useState<VideoCommsStatus>(
-    VideoCommsStatus.Disconnected
-  );
-  const [localParticipant, setLocalParticipant] = useState<LocalParticipant>();
-  const [remoteParticipants, setRemoteParticipants] = useState<Participant[]>(
-    []
-  );
-  const [isTransmittingAudio, setIsTransmittingAudio] = useState(true);
-  const [isTransmittingVideo, setIsTransmittingVideo] = useState(true);
-
-  const twilioCallback = useCallback((update: StateUpdateCallbackParams) => {
-    // TODO All these state updates should be batched into one.
-    setLocalParticipant(update.localParticipant);
-    setStatus(update.status);
-    setRemoteParticipants(update.remoteParticipants);
-    setIsTransmittingAudio(update.isTransmittingAudio);
-    setIsTransmittingVideo(update.isTransmittingVideo);
-  }, []);
-
-  const twilioImpl = useMemo(() => TwilioImpl(twilioCallback), [
-    twilioCallback,
-  ]);
-
-  const contextState: VideoCommsContextType = {
-    status,
-    localParticipant,
-    remoteParticipants,
-    joinChannel: twilioImpl.joinChannel,
-    disconnect: twilioImpl.disconnect,
-    shareScreen: twilioImpl.shareScreen,
-    isTransmittingAudio,
-    isTransmittingVideo,
-    startAudio: twilioImpl.startAudio,
-    stopAudio: twilioImpl.stopAudio,
-    startVideo: twilioImpl.startVideo,
-    stopVideo: twilioImpl.stopVideo,
-  };
-
-  return (
-    <VideoCommsContext.Provider value={contextState}>
-      {children}
-    </VideoCommsContext.Provider>
-  );
 };
