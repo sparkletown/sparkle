@@ -98,6 +98,9 @@ const localPublicationsToAudioTracks = (
  *
  * Instead, the method triggerStatusUpdate is used to let React know that the
  * state of the video call has changed.
+ *
+ * It is expected that this is not used directly by developers and all
+ * interactions happen via the hooks and components provided in VideoComms.
  */
 export const TwilioImplementation = (
   onStateUpdateCallback: StateUpdateCallback
