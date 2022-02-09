@@ -99,7 +99,9 @@ const localPublicationsToAudioTracks = (
  * Instead, the method triggerStatusUpdate is used to let React know that the
  * state of the video call has changed.
  */
-export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
+export const TwilioImplementation = (
+  onStateUpdateCallback: StateUpdateCallback
+) => {
   let remoteParticipants: Participant[] = [];
   let room: Twilio.Room | undefined;
   let status = VideoCommsStatus.Disconnected;

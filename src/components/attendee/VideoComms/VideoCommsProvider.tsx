@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { noop } from "lodash";
 
-import { TwilioImpl } from "./internal/TwilioImplementation";
+import { TwilioImplementation } from "./internal/TwilioImplementation";
 import {
   StateUpdateCallbackParams,
   VideoCommsContextType,
@@ -38,7 +38,7 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
     setCommsState(update);
   }, []);
 
-  const twilioImpl = useMemo(() => TwilioImpl(twilioCallback), [
+  const twilioImpl = useMemo(() => TwilioImplementation(twilioCallback), [
     twilioCallback,
   ]);
 
