@@ -62,13 +62,17 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   isLocal,
   extraButtons = [],
 }) => {
-  // TODO Mirroring
+  // TODO Mirroring and screen shares...
 
   return (
     <>
       {participant.videoTracks.map((track) => (
         <React.Fragment key={track.id}>
-          <VideoTrackDisplay key={track.id} track={track} />
+          <VideoTrackDisplay
+            key={track.id}
+            track={track}
+            isMirrored={isLocal}
+          />
           {extraButtons.map((buttonConfig, idx) => (
             <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />
           ))}
