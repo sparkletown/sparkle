@@ -62,14 +62,15 @@ export const useVideoHuddle = () => {
     shareScreen,
   } = useVideoComms();
 
-  const { inHuddle, setInHuddle, extraButtons, setExtraButtons } =
-    useContext(HuddleContext);
+  const { inHuddle, setInHuddle, extraButtons, setExtraButtons } = useContext(
+    HuddleContext
+  );
 
   // TODO Docs
   const joinHuddle = useMemo(() => {
     return (userId: string, huddleId: string) => {
       console.log("joining huddle");
-      joinChannel(userId, huddleId);
+      joinChannel(userId, huddleId, false, false);
       setInHuddle(() => true);
     };
   }, [joinChannel, setInHuddle]);

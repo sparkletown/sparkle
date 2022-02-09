@@ -198,7 +198,12 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     };
   };
 
-  const joinChannel = async (userId: string, newChannelId: string) => {
+  const joinChannel = async (
+    userId: string,
+    newChannelId: string,
+    enableVideo: boolean,
+    enableAudio: boolean
+  ) => {
     if (room) {
       console.error(
         "Attempting to join channel before disconnecting. Call disconnect first."
@@ -220,12 +225,14 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     }
 
     await Twilio.connect(token, {
-      video: true, // TODO Add these to the join method so we can join without video etc
-      audio: true,
+      video: enableVideo,
+      audio: enableAudio,
       enableDscp: true,
     })
       .then((newRoom: Twilio.Room) => {
         room = newRoom;
+        isTransmittingAudio = enableAudio;
+        isTransmittingVideo = enableVideo;
 
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
@@ -326,6 +333,18 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("startAudio called from invalid state");
       return;
     }
+    if (!room.localParticipant.audioTracks.size) {
+      // This situation arises when the local participant joins a call without
+      // audio enabled at the start. Create the audio stream now.
+      Twilio.createLocalAudioTrack().then((localAudioTrack) => {
+        if (!room) {
+          return;
+        }
+        room.localParticipant.publishTrack(localAudioTrack).then(() => {
+          recalculateStatus();
+        });
+      });
+    }
     for (const track of room.localParticipant.audioTracks.values()) {
       track.track.enable();
     }
@@ -347,6 +366,18 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     if (!room) {
       console.warn("startVideo called from invalid state");
       return;
+    }
+    if (!room.localParticipant.videoTracks.size) {
+      // This situation arises when the local participant joins a call without
+      // video enabled at the start. Create the video stream now.
+      Twilio.createLocalVideoTrack().then((localVideoTrack) => {
+        if (!room) {
+          return;
+        }
+        room.localParticipant.publishTrack(localVideoTrack).then(() => {
+          recalculateStatus();
+        });
+      });
     }
     for (const track of room.localParticipant.videoTracks.values()) {
       track.track.enable();

@@ -55,7 +55,12 @@ export interface Participant {
   audioTracks: AudioTrack[];
 }
 
-type JoinChannelFunc = (userId: string, channelId: string) => void;
+type JoinChannelFunc = (
+  userId: string,
+  channelId: string,
+  enableVideo: boolean,
+  enableAudio: boolean
+) => void;
 type DisconnectFunc = () => void;
 type ShareScreenFunc = () => void;
 
