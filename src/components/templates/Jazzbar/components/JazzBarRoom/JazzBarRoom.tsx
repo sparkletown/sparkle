@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
+import React, { useCallback, useMemo } from "react";
 
 import { unsetTableSeat } from "api/venue";
 
@@ -42,8 +41,6 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
     loading,
   } = useVideoRoomState(userId, roomName);
 
-  const { joinHuddle, leaveHuddle } = useVideoHuddle();
-
   const leaveSeat = useCallback(async () => {
     if (!userId || !venueId) return;
 
@@ -51,13 +48,6 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
 
     setSeatedAtTable?.("");
   }, [setSeatedAtTable, userId, venueId]);
-
-  useEffect(() => {
-    joinHuddle(userId || "", `${venueId}-${roomName}`);
-    return () => {
-      leaveHuddle();
-    };
-  }, [joinHuddle, leaveHuddle, roomName]);
 
   // Video stream and local participant take up 2 slots
   // Ensure capacity is always even, so the grid works

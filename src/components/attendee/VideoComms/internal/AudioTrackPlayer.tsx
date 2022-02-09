@@ -25,5 +25,5 @@ export const AudioTrackPlayer: React.FC<AudioTrackPlayerProps> = ({
     }
   }, [track]);
 
-  return <audio ref={audioRef} autoPlay={true} />;
+  return <audio ref={audioRef} autoPlay />;
 };

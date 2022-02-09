@@ -28,5 +28,5 @@ export const TwilioTrackDisplay: React.FC<TwilioTrackDisplayProps> = ({
       };
     }
   }, [track]);
-  return <video className={classNames} ref={videoRef} autoPlay={true} />;
+  return <video className={classNames} ref={videoRef} autoPlay />;
 };
