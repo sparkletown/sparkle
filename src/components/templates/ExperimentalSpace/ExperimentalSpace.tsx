@@ -2,10 +2,8 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
 import { VideoTrack } from "components/attendee/VideoComms/types";
 import { VideoTrackDisplay } from "components/attendee/VideoComms/VideoTrackDisplay";
-import {
-  ButtonCallbackArgs,
-  useVideoHuddle,
-} from "components/attendee/VideoHuddle/useVideoHuddle";
+import { ButtonCallbackArgs } from "components/attendee/VideoHuddle/HuddleProvider";
+import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 import { withCurrentUserId } from "components/hocs/db/withCurrentUserId";
 import { withRequired } from "components/hocs/gate/withRequired";
 import { compose } from "lodash/fp";

@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useCallback } from "react";
 
+import { VideoTrack } from "../VideoComms/types";
 import { VideoCommsParticipant } from "../VideoComms/VideoCommsParticipant";
 
+import { ExtraButton } from "./internal/ExtraButton";
 import { useVideoHuddle } from "./useVideoHuddle";
 
 import styles from "./VideoHuddle.module.scss";
@@ -18,6 +20,19 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
     remoteParticipants,
     leaveHuddle,
   } = useVideoHuddle();
+
+  const addButtons = useCallback(
+    (track: VideoTrack) => {
+      return (
+        <>
+          {extraButtons.map((buttonConfig, idx) => (
+            <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />
+          ))}
+        </>
+      );
+    },
+    [extraButtons]
+  );
 
   if (!inHuddle) {
     return <></>;
@@ -45,16 +60,13 @@ export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
             <VideoCommsParticipant
               isLocal
               participant={localParticipant}
-              extraButtons={extraButtons}
+              videoTrackControls={addButtons}
             />
           </div>
         )}
         {remoteParticipants.map((participant) => (
           <div key={participant.id} className={styles.VideoContainer}>
-            <VideoCommsParticipant
-              participant={participant}
-              extraButtons={extraButtons}
-            />
+            <VideoCommsParticipant participant={participant} />
           </div>
         ))}
       </div>

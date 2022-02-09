@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonConfig } from "components/attendee/VideoHuddle/useVideoHuddle";
 
-import { VideoTrack } from "../types";
+import { VideoTrack } from "../../VideoComms/types";
+import { ButtonConfig } from "../HuddleProvider";
 
 interface ExtraButtonProps {
   buttonConfig: ButtonConfig;

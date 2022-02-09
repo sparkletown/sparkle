@@ -1,23 +1,20 @@
 import React from "react";
 
-import { ButtonConfig } from "../VideoHuddle/useVideoHuddle";
-
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
-import { ExtraButton } from "./internal/ExtraButton";
 import { VideoCommsControls } from "./internal/VideoCommsControls";
-import { Participant, VideoSource } from "./types";
+import { Participant, VideoSource, VideoTrack } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
 interface VideoCommsParticipantProps {
   participant: Participant;
   isLocal?: boolean;
-  extraButtons?: ButtonConfig[];
+  videoTrackControls?: (track: VideoTrack) => JSX.Element;
 }
 
 export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
   isLocal,
-  extraButtons = [],
+  videoTrackControls,
 }) => {
   return (
     <>
@@ -28,9 +25,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
             track={track}
             isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
           />
-          {extraButtons.map((buttonConfig, idx) => (
-            <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />
-          ))}
+          {videoTrackControls && videoTrackControls(track)}
         </React.Fragment>
       ))}
       {participant.audioTracks.map((track) => (
