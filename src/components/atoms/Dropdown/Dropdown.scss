@@ -41,7 +41,7 @@ $indicator-size: 20px;
 
     &__menu {
       background: var(--content--under-lighter-20pp);
-      box-shadow: 0 10px 20px var(--content--under-25a);
+      box-shadow: box-shadow--menu(var(--content--under-25a));
       border-radius: $border-radius--xl;
       z-index: 1;
       max-height: font-size--root(15);
@@ -78,19 +78,19 @@ $indicator-size: 20px;
       margin: 0;
       opacity: 0;
       visibility: visible;
-      // color: hsl(0, 0%, 20%);
       flex: 1 1 auto;
       display: inline-grid;
       grid-area: 1/1/2/3;
       grid-template-columns: 0 min-content;
       box-sizing: border-box;
+      // this is copied from the 3rd party library, but not currently useful, kept here for reference
+      // color: hsl(0, 0%, 20%);
     }
 
     &__input-container {
       display: inline;
 
       &__input {
-        //height: 0;
         opacity: 0 !important;
       }
     }
@@ -103,9 +103,12 @@ $indicator-size: 20px;
       display: none;
     }
 
+    // this is copied from the 3rd party library, but not currently useful, kept here for reference
     // &__Select__value-container--has-value
+
     &__value-container {
-      //overflow: hidden; // NOTE: makes the static text move up and hide
+      // this is copied from the 3rd party library, but not currently useful, kept here for reference
+      //overflow: hidden; // NOTE: using this makes the static text move up and hide
       position: relative;
       box-sizing: border-box;
       flex-wrap: wrap;
