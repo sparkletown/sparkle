@@ -1,4 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
+import {
+  faCompressArrowsAlt,
+  faExpandArrowsAlt,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
 
@@ -17,7 +23,6 @@ import { convertToEmbeddableUrl } from "utils/embeddableUrl";
 import { WithId } from "utils/id";
 
 import { useAnalytics } from "hooks/useAnalytics";
-import { useExperience } from "hooks/useExperience";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useUpdateTableRecentSeatedUsers } from "hooks/useUpdateRecentSeatedUsers";
@@ -30,7 +35,7 @@ import { TablesUserList } from "components/molecules/TablesUserList";
 
 import { BackButton } from "components/atoms/BackButton";
 
-import "./JazzBar.scss";
+import styles from "./JazzBar.module.scss";
 
 interface JazzProps {
   venue: WithId<JazzbarVenue>;
@@ -46,9 +51,6 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const analytics = useAnalytics({ venue });
 
   useBackgroundGradient();
-
-  // @debt what does it do anyway? cache? no useSelector here so probably connected to useUpdateTableRecentSeatedUsers
-  useExperience(venue.name);
 
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
@@ -104,7 +106,17 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
     leaveTable();
   }
 
+  const [expandedIframe, setExpandedIframe] = useState(false);
+
+  const toggleExpandedIframe = useCallback(() => {
+    setExpandedIframe((prevValue) => !prevValue);
+  }, [setExpandedIframe]);
+
   if (!venue) return <>Loading...</>;
+
+  const videoClassnames = classNames(styles.video, {
+    [styles.video__expanded]: expandedIframe,
+  });
 
   return (
     <>
@@ -117,24 +129,30 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
       {parentVenue && <BackButton variant="simple" space={parentVenue} />}
 
       {!venue.hideVideo && (
-        <div className="component-media-object">
-          <div className="iframe-container">
+        <div className={styles.componentMediaObject}>
+          <div className={videoClassnames}>
             {embedIframeUrl ? (
               <iframe
                 key="main-event"
                 title="main event"
-                className="iframe-video"
+                className={styles.iframe}
                 src={embedIframeUrl}
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
               />
             ) : (
               <div className="iframe-video">
+                {/* TODO */}
                 Embedded Video URL not yet set up
               </div>
             )}
           </div>
-          <div className="media-controls"></div>
+          <div className={styles.mediaControls}>
+            <FontAwesomeIcon
+              icon={expandedIframe ? faCompressArrowsAlt : faExpandArrowsAlt}
+              onClick={toggleExpandedIframe}
+            />
+          </div>
         </div>
       )}
 
