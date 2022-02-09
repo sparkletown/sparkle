@@ -10,8 +10,6 @@ interface AudioTrackPlayerProps {
  * This low level component exists to play an audio track from Twilio.
  * This component should not be used directly and only be components within
  * the VideoComms folder.
- *
- * @returns
  */
 export const AudioTrackPlayer: React.FC<AudioTrackPlayerProps> = ({
   track,
