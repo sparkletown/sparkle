@@ -11,27 +11,17 @@ interface VideoHuddleProps {
 }
 
 export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
-  const { inHuddle } = useVideoHuddle();
-
-  if (!inHuddle) {
-    return <></>;
-  }
-  return <ActiveVideoHuddle userId={userId} />;
-};
-
-interface ActiveVideoHuddleProps {
-  userId: string;
-}
-
-const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId }) => {
   const {
+    inHuddle,
     extraButtons,
     localParticipant,
     remoteParticipants,
     leaveHuddle,
   } = useVideoHuddle();
 
-  // TODO Think about how the API is used internally vs externally. Ideally it should all go through the same.
+  if (!inHuddle) {
+    return <></>;
+  }
 
   return (
     <div className={styles.VideoHuddle}>
@@ -50,11 +40,10 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId }) => {
         </a>
       </div>
       <div className={styles.VideoHuddleVideos}>
-        {/*  TODO shouldMirrorVideo */}
         {localParticipant && (
           <div className={styles.VideoContainer} key={localParticipant.id}>
             <VideoCommsParticipant
-              isLocal={true}
+              isLocal
               participant={localParticipant}
               extraButtons={extraButtons}
             />
