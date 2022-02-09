@@ -7,6 +7,7 @@ import {
   Participant,
   StateUpdateCallback,
   VideoCommsStatus,
+  VideoSource,
   VideoTrack,
 } from "../types";
 
@@ -19,6 +20,7 @@ const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
     detach: track.detach.bind(track),
     twilioTrack: track,
     enabled: track.isEnabled,
+    sourceType: VideoSource.Webcam,
   };
 };
 
@@ -33,6 +35,7 @@ const wrapLocalVideoPublication = (
     detach: track.detach.bind(track),
     twilioTrack: track,
     enabled: track.isEnabled,
+    sourceType: VideoSource.Webcam,
   };
 };
 

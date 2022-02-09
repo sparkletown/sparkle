@@ -18,11 +18,17 @@ interface Track {
   enabled: boolean;
 }
 
+export enum VideoSource {
+  Webcam = "WEBCAM",
+  Screenshare = "SCREENSHARE",
+}
+
 export interface VideoTrack extends Track {
   attach: (el: HTMLVideoElement) => void;
   detach: () => void;
   kind: "video";
   twilioTrack: Twilio.VideoTrack;
+  sourceType: VideoSource;
 }
 
 export interface AudioTrack extends Track {

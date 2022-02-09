@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { noop } from "lodash";
 
 import { TwilioImpl } from "./internal/TwilioImplementation";
@@ -51,6 +51,15 @@ export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   const twilioImpl = useMemo(() => TwilioImpl(twilioCallback), [
     twilioCallback,
   ]);
+
+  useEffect(() => {
+    // This gives us a reasonably good chance of disconnecting from any ongoing
+    // sessions when the user navigates away. It is not 100% guaranteed.
+    // See https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
+    window.addEventListener("beforeunload", (event) => {
+      twilioImpl.disconnect();
+    });
+  }, [twilioImpl]);
 
   const contextState: VideoCommsContextType = {
     status,
