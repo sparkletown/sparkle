@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useContext, useState } from "react";
 
 import { useVideoRoomState } from "hooks/twilio/useVideoRoomState";

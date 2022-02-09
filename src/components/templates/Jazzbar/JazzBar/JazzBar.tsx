@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from "react";
 import { useBackgroundGradient } from "components/attendee/useBackgroundGradient";
 import { useVideoHuddle } from "components/attendee/VideoHuddle/useVideoHuddle";
