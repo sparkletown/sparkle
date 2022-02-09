@@ -273,40 +273,30 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     recalculateStatus();
   };
 
-  const shareScreen = () => {
-    navigator.mediaDevices
-      .getDisplayMedia()
-      .then((stream) => {
-        // The name of the track is used to identify that this is a screenshare
-        // rather than a webcam source. This can then be used when displaying
-        // the stream
-        const screenTrack = new Twilio.LocalVideoTrack(stream.getTracks()[0], {
-          logLevel: "off",
-          name: TRACK_NAME_SCREENSHARE,
-        });
-        if (!room) {
-          console.error("Attempted to share screen before room connected");
-          return;
-        }
-        room.localParticipant.publishTrack(screenTrack).then(() => {
-          if (!room) {
-            console.error("Attempted to share screen before room connected");
-            return;
-          }
+  const shareScreen = async () => {
+    if (!room) {
+      console.error("Attempted to share screen before room connected");
+      return;
+    }
 
-          recalculateStatus();
-        });
-        screenTrack.mediaStreamTrack.onended = () => {
-          if (!room) {
-            return;
-          }
-          room.localParticipant.unpublishTrack(screenTrack);
-          recalculateStatus();
-        };
-      })
-      .catch(() => {
-        alert("Could not share the screen.");
-      });
+    const stream = await navigator.mediaDevices.getDisplayMedia();
+    // The name of the track is used to identify that this is a screenshare
+    // rather than a webcam source. This can then be used when displaying
+    // the stream
+    const screenTrack = new Twilio.LocalVideoTrack(stream.getTracks()[0], {
+      logLevel: "off",
+      name: TRACK_NAME_SCREENSHARE,
+    });
+    await room.localParticipant.publishTrack(screenTrack);
+    recalculateStatus();
+
+    screenTrack.mediaStreamTrack.onended = () => {
+      if (!room) {
+        return;
+      }
+      room.localParticipant.unpublishTrack(screenTrack);
+      recalculateStatus();
+    };
   };
 
   const recalculateStatus = () => {
@@ -328,7 +318,7 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     });
   };
 
-  const startAudio = () => {
+  const startAudio = async () => {
     if (!room) {
       console.warn("startAudio called from invalid state");
       return;
@@ -336,14 +326,13 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     if (!room.localParticipant.audioTracks.size) {
       // This situation arises when the local participant joins a call without
       // audio enabled at the start. Create the audio stream now.
-      Twilio.createLocalAudioTrack().then((localAudioTrack) => {
-        if (!room) {
-          return;
-        }
-        room.localParticipant.publishTrack(localAudioTrack).then(() => {
-          recalculateStatus();
-        });
-      });
+      // Update the UI whilst we're publishing the streams
+      isTransmittingAudio = true;
+      recalculateStatus();
+
+      const localAudioTrack = await Twilio.createLocalAudioTrack();
+      await room.localParticipant.publishTrack(localAudioTrack);
+      recalculateStatus();
     }
     for (const track of room.localParticipant.audioTracks.values()) {
       track.track.enable();
@@ -362,7 +351,7 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     isTransmittingAudio = false;
     recalculateStatus();
   };
-  const startVideo = () => {
+  const startVideo = async () => {
     if (!room) {
       console.warn("startVideo called from invalid state");
       return;
@@ -370,14 +359,12 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     if (!room.localParticipant.videoTracks.size) {
       // This situation arises when the local participant joins a call without
       // video enabled at the start. Create the video stream now.
-      Twilio.createLocalVideoTrack().then((localVideoTrack) => {
-        if (!room) {
-          return;
-        }
-        room.localParticipant.publishTrack(localVideoTrack).then(() => {
-          recalculateStatus();
-        });
-      });
+      isTransmittingVideo = true;
+      recalculateStatus();
+
+      const localVideoTrack = await Twilio.createLocalVideoTrack();
+      await room.localParticipant.publishTrack(localVideoTrack);
+      recalculateStatus();
     }
     for (const track of room.localParticipant.videoTracks.values()) {
       track.track.enable();
