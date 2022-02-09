@@ -43,11 +43,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
           </section>
           <div className={styles.LayerUi}>
             <ChatContainer />
-            {/*
-          TODO VideoHuddle being available depends on the context of the space we're in.
-          This probably needs more thought as to what API it provides.
-        */}
-            {userId && <VideoHuddle userId={userId} />}
+            <VideoHuddle userId={userId} />
           </div>
         </main>
 
