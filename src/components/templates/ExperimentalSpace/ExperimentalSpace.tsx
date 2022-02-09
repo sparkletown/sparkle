@@ -39,8 +39,6 @@ const _ExperimentalSpace: React.FC<ExperimentalSpaceProps> = ({
   venue,
   userId,
 }) => {
-  // TODO Share this live so everyone gets it.
-
   const {
     shareScreen,
     inHuddle,
