@@ -1,6 +1,6 @@
 import React from "react";
 
-import { VideoCommsParticipant } from "../VideoCommsParticipant";
+import { VideoCommsParticipant } from "../VideoComms/VideoCommsParticipant";
 
 import { useVideoHuddle } from "./useVideoHuddle";
 

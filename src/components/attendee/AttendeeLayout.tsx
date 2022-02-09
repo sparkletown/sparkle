@@ -12,7 +12,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotLoggedInFallback } from "components/atoms/NotLoggedInFallback";
 
-import { VideoCommsProvider } from "./VideoComms/VideoComms";
+import { VideoCommsProvider } from "./VideoComms/VideoCommsProvider";
 import { HuddleProvider } from "./VideoHuddle/useVideoHuddle";
 import { VideoHuddle } from "./VideoHuddle/VideoHuddle";
 import { AttendeeFooter } from "./AttendeeFooter";

@@ -1,11 +1,12 @@
 import React, { useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { AudioTrackPlayer } from "../VideoComms/AudioTrackPlayer";
-import { useVideoComms } from "../VideoComms/hooks";
-import { LocalParticipant, Participant, VideoTrack } from "../VideoComms/types";
-import { VideoTrackDisplay } from "../VideoComms/VideoTrackDisplay";
 import { ButtonConfig } from "../VideoHuddle/useVideoHuddle";
+
+import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
+import { useVideoComms } from "./hooks";
+import { LocalParticipant, Participant, VideoTrack } from "./types";
+import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
 interface VideoCommsParticipantProps {
   participant: Participant;
