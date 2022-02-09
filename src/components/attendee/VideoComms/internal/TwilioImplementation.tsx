@@ -91,6 +91,16 @@ const localPublicationsToAudioTracks = (
     .filter(notNull);
 };
 
+const wrapLocalParticipant = (room: Twilio.Room) => ({
+  id: room.localParticipant.sid,
+  audioTracks: localPublicationsToAudioTracks(
+    room.localParticipant.audioTracks
+  ),
+  videoTracks: localPublicationsToVideoTracks(
+    room.localParticipant.videoTracks
+  ),
+});
+
 /**
  * This provides an interface over the top of Twilio. It is designed to
  * work outside of React as much as possible to avoid the complexity of dealing
@@ -105,7 +115,6 @@ const localPublicationsToAudioTracks = (
 export const TwilioImplementation = (
   onStateUpdateCallback: StateUpdateCallback
 ) => {
-  let remoteParticipants: Participant[] = [];
   let room: Twilio.Room | undefined;
   let status = VideoCommsStatus.Disconnected;
   let isTransmittingAudio = true;
@@ -117,22 +126,6 @@ export const TwilioImplementation = (
     "trackEnabled",
     "trackDisabled",
   ];
-
-  const updateLocalParticipant = () => {
-    if (!room) {
-      return undefined;
-    }
-    return {
-      id: room.localParticipant.sid,
-      audioTracks: localPublicationsToAudioTracks(
-        room.localParticipant.audioTracks
-      ),
-      videoTracks: localPublicationsToVideoTracks(
-        room.localParticipant.videoTracks
-      ),
-      // @debt Maybe these methods are in the wrong place.
-    };
-  };
 
   const unsubscribeParticipantEvents = (
     participant: Twilio.RemoteParticipant
@@ -159,9 +152,6 @@ export const TwilioImplementation = (
   };
 
   const participantDisconnected = (participant: Twilio.RemoteParticipant) => {
-    remoteParticipants = remoteParticipants.filter(
-      (p) => p.id !== participant.sid
-    );
     unsubscribeParticipantEvents(participant);
     recalculateStatus();
   };
@@ -251,7 +241,6 @@ export const TwilioImplementation = (
     unsubscribeAllParticipantEvents();
     room = undefined;
     status = VideoCommsStatus.Disconnected;
-    remoteParticipants = [];
     recalculateStatus();
   };
 
@@ -286,10 +275,20 @@ export const TwilioImplementation = (
     // a lot of state changes happening during a call so this is probably ok.
     // It's more important to present a simple API than it is to overly fixate
     // on performance
-    const localParticipant = updateLocalParticipant();
-    const remoteParticipants = Array.from(
-      room?.participants.values() || []
-    ).map(wrapRemoteParticipant);
+    if (!room) {
+      onStateUpdateCallback({
+        status,
+        remoteParticipants: [],
+        isTransmittingAudio: false,
+        isTransmittingVideo: false,
+      });
+      return;
+    }
+
+    const localParticipant = wrapLocalParticipant(room);
+    const remoteParticipants = Array.from(room.participants.values()).map(
+      wrapRemoteParticipant
+    );
 
     onStateUpdateCallback({
       localParticipant,
