@@ -5,7 +5,7 @@ import { ButtonConfig } from "../VideoHuddle/useVideoHuddle";
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
 import { ExtraButton } from "./internal/ExtraButton";
 import { VideoCommsControls } from "./internal/VideoCommsControls";
-import { Participant } from "./types";
+import { Participant, VideoSource } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
 interface VideoCommsParticipantProps {
@@ -19,8 +19,6 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   isLocal,
   extraButtons = [],
 }) => {
-  // TODO Mirroring and screen shares...
-
   return (
     <>
       {participant.videoTracks.map((track) => (
@@ -28,7 +26,7 @@ export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
           <VideoTrackDisplay
             key={track.id}
             track={track}
-            isMirrored={isLocal}
+            isMirrored={isLocal && track.sourceType === VideoSource.Webcam}
           />
           {extraButtons.map((buttonConfig, idx) => (
             <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />

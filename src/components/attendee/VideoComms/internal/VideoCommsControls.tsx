@@ -1,4 +1,4 @@
-import { useVideoComms } from "./hooks";
+import { useVideoComms } from "../hooks";
 
 interface VideoCommsControlsProps {}
 

@@ -11,6 +11,13 @@ import {
   VideoTrack,
 } from "../types";
 
+const TRACK_NAME_SCREENSHARE = "screenshare";
+
+const getTrackSource = (track: Twilio.VideoTrack) =>
+  track.name === TRACK_NAME_SCREENSHARE
+    ? VideoSource.Screenshare
+    : VideoSource.Webcam;
+
 // @debt These four functions could be combined.
 const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
   return {
@@ -20,7 +27,7 @@ const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
     detach: track.detach.bind(track),
     twilioTrack: track,
     enabled: track.isEnabled,
-    sourceType: VideoSource.Webcam,
+    sourceType: getTrackSource(track),
   };
 };
 
@@ -35,7 +42,7 @@ const wrapLocalVideoPublication = (
     detach: track.detach.bind(track),
     twilioTrack: track,
     enabled: track.isEnabled,
-    sourceType: VideoSource.Webcam,
+    sourceType: getTrackSource(track),
   };
 };
 
@@ -263,7 +270,13 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
     navigator.mediaDevices
       .getDisplayMedia()
       .then((stream) => {
-        const screenTrack = new Twilio.LocalVideoTrack(stream.getTracks()[0]);
+        // The name of the track is used to identify that this is a screenshare
+        // rather than a webcam source. This can then be used when displaying
+        // the stream
+        const screenTrack = new Twilio.LocalVideoTrack(stream.getTracks()[0], {
+          logLevel: "off",
+          name: TRACK_NAME_SCREENSHARE,
+        });
         if (!room) {
           console.error("Attempted to share screen before room connected");
           return;
