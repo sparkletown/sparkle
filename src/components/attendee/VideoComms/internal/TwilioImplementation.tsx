@@ -377,7 +377,6 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("stopVideo called from invalid state");
       return;
     }
-    console.log("stopping video");
     for (const track of room.localParticipant.videoTracks.values()) {
       track.track.disable();
     }
