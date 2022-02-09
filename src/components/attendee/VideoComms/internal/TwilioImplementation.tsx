@@ -13,63 +13,45 @@ import {
 
 const TRACK_NAME_SCREENSHARE = "screenshare";
 
-const getTrackSource = (track: Twilio.VideoTrack) =>
+const getTrackSource = (track: Tracklike) =>
   track.name === TRACK_NAME_SCREENSHARE
     ? VideoSource.Screenshare
     : VideoSource.Webcam;
 
-// @debt These four functions could be combined.
-const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack => {
-  return {
-    kind: "video",
-    id: track.sid,
-    attach: track.attach.bind(track),
-    detach: track.detach.bind(track),
-    twilioTrack: track,
-    enabled: track.isEnabled,
-    sourceType: getTrackSource(track),
-  };
-};
+interface Tracklike {
+  name: string;
+  attach: () => void;
+  detach: () => void;
+  isEnabled: boolean;
+}
+
+const wrapTrack = <Kind, TrackType extends Tracklike>(
+  track: TrackType,
+  kind: Kind,
+  id: string
+) => ({
+  kind,
+  id,
+  attach: track.attach,
+  detach: track.detach,
+  twilioTrack: track,
+  enabled: track.isEnabled,
+  sourceType: getTrackSource(track),
+});
+
+const wrapRemoteVideoTrack = (track: Twilio.RemoteVideoTrack): VideoTrack =>
+  wrapTrack(track, "video", track.sid);
 
 const wrapLocalVideoPublication = (
   publication: Twilio.LocalVideoTrackPublication
-): VideoTrack => {
-  const track = publication.track;
-  return {
-    kind: "video",
-    id: publication.trackSid,
-    attach: track.attach.bind(track),
-    detach: track.detach.bind(track),
-    twilioTrack: track,
-    enabled: track.isEnabled,
-    sourceType: getTrackSource(track),
-  };
-};
+): VideoTrack => wrapTrack(publication.track, "video", publication.trackSid);
 
-const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack => {
-  return {
-    kind: "audio",
-    id: track.sid,
-    attach: track.attach.bind(track),
-    detach: track.detach.bind(track),
-    twilioTrack: track,
-    enabled: track.isEnabled,
-  };
-};
+const wrapRemoteAudioTrack = (track: Twilio.RemoteAudioTrack): AudioTrack =>
+  wrapTrack(track, "audio", track.sid);
 
 const wrapLocalAudioPublication = (
   publication: Twilio.LocalAudioTrackPublication
-): AudioTrack => {
-  const track = publication.track;
-  return {
-    kind: "audio",
-    id: publication.trackSid,
-    attach: track.attach.bind(track),
-    detach: track.detach.bind(track),
-    twilioTrack: track,
-    enabled: track.isEnabled,
-  };
-};
+): AudioTrack => wrapTrack(publication.track, "audio", publication.trackSid);
 
 /**
  * Used with filter to allow Typescript to convert arrays that might have nulls
