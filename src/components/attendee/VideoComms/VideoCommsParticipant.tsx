@@ -1,11 +1,11 @@
-import React, { useCallback } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from "react";
 
 import { ButtonConfig } from "../VideoHuddle/useVideoHuddle";
 
 import { AudioTrackPlayer } from "./internal/AudioTrackPlayer";
-import { Participant, VideoTrack } from "./types";
-import { VideoCommsControls } from "./VideoCommsControls";
+import { ExtraButton } from "./internal/ExtraButton";
+import { VideoCommsControls } from "./internal/VideoCommsControls";
+import { Participant } from "./types";
 import { VideoTrackDisplay } from "./VideoTrackDisplay";
 
 interface VideoCommsParticipantProps {
@@ -14,17 +14,6 @@ interface VideoCommsParticipantProps {
   extraButtons?: ButtonConfig[];
 }
 
-interface ExtraButtonProps {
-  buttonConfig: ButtonConfig;
-  track: VideoTrack;
-}
-
-const ExtraButton: React.FC<ExtraButtonProps> = ({ buttonConfig, track }) => {
-  const clickHandler = useCallback(() => {
-    buttonConfig.callback({ track });
-  }, [buttonConfig, track]);
-  return <FontAwesomeIcon icon={buttonConfig.icon} onClick={clickHandler} />;
-};
 export const VideoCommsParticipant: React.FC<VideoCommsParticipantProps> = ({
   participant,
   isLocal,
