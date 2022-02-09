@@ -147,11 +147,6 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
   };
 
   const participantConnected = (participant: Twilio.RemoteParticipant) => {
-    remoteParticipants.push({
-      id: participant.sid,
-      audioTracks: [],
-      videoTracks: remotePublicationsToTracks(participant.videoTracks),
-    });
     for (const eventName of subscribedEvents) {
       participant.on(eventName, recalculateStatus);
     }
