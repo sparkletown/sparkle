@@ -50,23 +50,23 @@ export interface Participant {
   audioTracks: AudioTrack[];
 }
 
-type JoinChannelFunc = (
+type JoinChannel = (
   userId: string,
   channelId: string,
   enableVideo: boolean,
   enableAudio: boolean
 ) => void;
-type DisconnectFunc = () => void;
-type ShareScreenFunc = () => void;
+type Disconnect = () => void;
+type ShareScreen = () => void;
 
 export interface LocalParticipant extends Participant {}
 
 export interface VideoCommsContextType {
   channelId?: string;
   status: VideoCommsStatus;
-  joinChannel: JoinChannelFunc;
-  disconnect: DisconnectFunc;
-  shareScreen: ShareScreenFunc;
+  joinChannel: JoinChannel;
+  disconnect: Disconnect;
+  shareScreen: ShareScreen;
 
   localParticipant?: LocalParticipant;
   remoteParticipants: Participant[];
