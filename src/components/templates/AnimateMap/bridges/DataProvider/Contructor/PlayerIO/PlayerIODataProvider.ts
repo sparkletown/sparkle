@@ -41,7 +41,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     readonly reInitOnError: boolean = true
   ) {
     super();
-    this._init();
+    // this._init();
   }
 
   private _init() {
