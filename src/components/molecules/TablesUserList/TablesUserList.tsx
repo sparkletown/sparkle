@@ -193,7 +193,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       />
     ));
   }, [
-    isSeatedAtTable,
     showOnlyAvailableTables,
     tables,
     isFullTable,

@@ -22,7 +22,7 @@ interface VideoHuddleProps {
 }
 
 export const VideoHuddle: React.FC<VideoHuddleProps> = ({ userId }) => {
-  const { channelId, setChannelId } = useContext(VideoHuddleContext);
+  const { channelId } = useContext(VideoHuddleContext);
 
   if (!channelId) {
     return <></>;
@@ -39,12 +39,10 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({
   userId,
   channelId,
 }) => {
-  const {
-    localParticipant,
-    participants,
-    renderErrorModal,
-    loading,
-  } = useVideoRoomState(userId, channelId);
+  const { localParticipant, participants, loading } = useVideoRoomState(
+    userId,
+    channelId
+  );
 
   const { leaveHuddle } = useVideoHuddle();
 
