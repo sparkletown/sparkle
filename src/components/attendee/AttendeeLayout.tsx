@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { withAuth } from "components/hocs/db/withAuth";
 import { withFallback } from "components/hocs/gate/withFallback";
-import { withRequired } from "components/hocs/gate/withRequired";
-import { compose } from "lodash/fp";
+import { withRequired, withRequired } from "components/hocs/gate/withRequired";
+import { compose, compose } from "lodash/fp";
 
 import { useUser } from "hooks/useUser";
 
@@ -21,19 +21,17 @@ import { ChatContainer } from "./ChatContainer";
 import "scss/attendee/initial.scss";
 import styles from "./AttendeeLayout.module.scss";
 
-const _AttendeeLayout: React.FC = () => {
-  const { userId } = useUser();
+interface _AttendeeLayoutProps {
+  userId: string;
+}
 
+const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   useEffect(() => {
     document.documentElement.classList.add(styles.html);
     return () => {
       document.documentElement.classList.remove(styles.html);
     };
   }, []);
-
-  if (!userId) {
-    return <p>Loading</p>;
-  }
 
   return (
     <VideoCommsProvider userId={userId}>
