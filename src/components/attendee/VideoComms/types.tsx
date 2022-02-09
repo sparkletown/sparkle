@@ -59,8 +59,6 @@ type JoinChannel = (
 type Disconnect = () => void;
 type ShareScreen = () => void;
 
-export interface LocalParticipant extends Participant {}
-
 export interface VideoCommsContextType {
   channelId?: string;
   status: VideoCommsStatus;
@@ -68,7 +66,7 @@ export interface VideoCommsContextType {
   disconnect: Disconnect;
   shareScreen: ShareScreen;
 
-  localParticipant?: LocalParticipant;
+  localParticipant?: Participant;
   remoteParticipants: Participant[];
   startAudio: () => void;
   stopAudio: () => void;
@@ -79,7 +77,7 @@ export interface VideoCommsContextType {
 }
 
 export interface StateUpdateCallbackContext {
-  localParticipant?: LocalParticipant;
+  localParticipant?: Participant;
   remoteParticipants: Participant[];
   status: VideoCommsStatus;
   isTransmittingAudio: boolean;
