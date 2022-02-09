@@ -310,7 +310,7 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("startVideo called from invalid state");
       return;
     }
-    for (const track of room.localParticipant.audioTracks.values()) {
+    for (const track of room.localParticipant.videoTracks.values()) {
       track.track.enable();
     }
     isTransmittingVideo = true;
@@ -321,7 +321,8 @@ const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
       console.warn("stopVideo called from invalid state");
       return;
     }
-    for (const track of room.localParticipant.audioTracks.values()) {
+    console.log("stopping video");
+    for (const track of room.localParticipant.videoTracks.values()) {
       track.track.disable();
     }
     isTransmittingVideo = false;

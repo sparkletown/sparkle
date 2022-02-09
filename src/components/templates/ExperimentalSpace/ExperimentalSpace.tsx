@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { faArrowAltCircleUp } from "@fortawesome/free-solid-svg-icons";
 import { VideoTrack } from "components/attendee/VideoComms/types";
+import { VideoTrackDisplay } from "components/attendee/VideoComms/VideoTrackDisplay";
 import {
   ButtonCallbackArgs,
   useVideoHuddle,
@@ -29,23 +30,10 @@ interface ProjectedVideoTrackProps {
 // @debt Maybe this gets merged with VideoTrackDisplay
 // Not entirely convinced they are the same though.
 const ProjectedVideoTrack: React.FC<ProjectedVideoTrackProps> = ({ track }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    if (track && videoRef.current) {
-      track.attach(videoRef.current);
-      return () => {
-        track.detach();
-      };
-    }
-  }, [track]);
-
   return (
-    <video
-      ref={videoRef}
-      autoPlay={true}
-      className={styles.ProjectedVideoTrack}
-    />
+    <div className={styles.ProjectedVideoTrack}>
+      <VideoTrackDisplay track={track} />
+    </div>
   );
 };
 

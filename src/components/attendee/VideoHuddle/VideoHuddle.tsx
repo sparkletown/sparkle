@@ -24,8 +24,12 @@ interface ActiveVideoHuddleProps {
 }
 
 const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId }) => {
-  const { localParticipant, remoteParticipants, leaveHuddle } =
-    useVideoHuddle();
+  const {
+    extraButtons,
+    localParticipant,
+    remoteParticipants,
+    leaveHuddle,
+  } = useVideoHuddle();
 
   // TODO Think about how the API is used internally vs externally. Ideally it should all go through the same.
 
@@ -52,12 +56,16 @@ const ActiveVideoHuddle: React.FC<ActiveVideoHuddleProps> = ({ userId }) => {
             <VideoCommsParticipant
               isLocal={true}
               participant={localParticipant}
+              extraButtons={extraButtons}
             />
           </div>
         )}
         {remoteParticipants.map((participant) => (
           <div key={participant.id} className={styles.VideoContainer}>
-            <VideoCommsParticipant participant={participant} />
+            <VideoCommsParticipant
+              participant={participant}
+              extraButtons={extraButtons}
+            />
           </div>
         ))}
       </div>

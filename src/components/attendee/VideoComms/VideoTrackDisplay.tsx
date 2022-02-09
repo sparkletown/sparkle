@@ -1,55 +1,42 @@
-import React, { useCallback, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useEffect, useRef } from "react";
+import Twilio from "twilio-video";
 
 import { VideoTrack } from "../VideoComms/types";
-import { ButtonConfig, useVideoHuddle } from "../VideoHuddle/useVideoHuddle";
 
 interface VideoTrackDisplayProps {
   track: VideoTrack;
 }
 
-interface ExtraButtonProps {
-  buttonConfig: ButtonConfig;
-  track: VideoTrack;
+interface _TwilioTrackDisplayProps {
+  track: Twilio.VideoTrack;
 }
 
-const ExtraButton: React.FC<ExtraButtonProps> = ({ buttonConfig, track }) => {
-  const clickHandler = useCallback(() => {
-    buttonConfig.callback({ track });
-  }, [buttonConfig, track]);
-  return <FontAwesomeIcon icon={buttonConfig.icon} onClick={clickHandler} />;
+const TwilioTrackDisplay: React.FC<_TwilioTrackDisplayProps> = ({ track }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (videoRef.current) {
+      console.log("attachgin");
+      track.attach(videoRef.current);
+      return () => {
+        console.log("detachgin");
+        track.detach();
+      };
+    }
+  }, [track]);
+  return <video ref={videoRef} autoPlay={true} />;
 };
 
 export const VideoTrackDisplay: React.FC<VideoTrackDisplayProps> = ({
   track,
 }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const { extraButtons } = useVideoHuddle();
-
   // @debt we should make tracks immutable or something so that this actually
   // triggers the useEffect to be recalculated
-  const enabled = track.enabled;
-
-  useEffect(() => {
-    if (videoRef.current && enabled) {
-      console.log("attaching");
-      track.attach(videoRef.current);
-      return () => {
-        console.log("detaching");
-        track.detach();
-      };
-    }
-  }, [track, enabled]);
 
   return (
     <>
       {track.enabled ? (
         <>
-          <video ref={videoRef} autoPlay={true} />
-          {extraButtons.map((buttonConfig, idx) => (
-            <ExtraButton key={idx} buttonConfig={buttonConfig} track={track} />
-          ))}
+          <TwilioTrackDisplay track={track.twilioTrack} />
         </>
       ) : (
         <span>Video disabled</span>
