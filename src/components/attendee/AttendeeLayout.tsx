@@ -34,7 +34,7 @@ const _AttendeeLayout: React.FC<_AttendeeLayoutProps> = ({ userId }) => {
   }, []);
 
   return (
-    <VideoCommsProvider userId={userId}>
+    <VideoCommsProvider>
       <HuddleProvider>
         <header></header>
         <main>

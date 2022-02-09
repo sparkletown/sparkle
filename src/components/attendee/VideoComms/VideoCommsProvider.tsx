@@ -5,9 +5,12 @@ import { TwilioImplementation } from "./internal/TwilioImplementation";
 import {
   StateUpdateCallbackParams,
   VideoCommsContextType,
-  VideoCommsProviderProps,
   VideoCommsStatus,
 } from "./types";
+
+interface VideoCommsProviderProps {
+  children: React.ReactNode;
+}
 
 export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   status: VideoCommsStatus.Disconnected,
@@ -23,8 +26,24 @@ export const VideoCommsContext = React.createContext<VideoCommsContextType>({
   isTransmittingVideo: false,
 });
 
+/**
+ * The VideoCommsProvider provides an API for interacting with video comms.
+ * It uses a single instance of TwilioImplementation that lasts for the entire
+ * lifecycle of the component. It is expected that only one VideoCommsProvider
+ * is in existence at any one time and that it is kept mounted between route
+ * changes in the attendee experience - thus allowing for persistent
+ * video chat as attendees move around.
+ *
+ * The implementation of Twilio has been done outside of React as attempting
+ * to use React hooks with Twilio led to convoluted code that was hard to
+ * follow, hard to debug and often re-rendered unexpectedly.
+ *
+ * It is expected that developers wanting to add video comms to their
+ * spaces will use the components *outside* of the `internal` folder. The
+ * internal components are low level primitives that are used by the higher
+ * level components.
+ */
 export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
-  userId,
   children,
 }) => {
   const [commsStatus, setCommsState] = useState<StateUpdateCallbackParams>({

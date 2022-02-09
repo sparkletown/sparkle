@@ -7,11 +7,6 @@ export enum VideoCommsStatus {
   Errored = "ERRORED",
 }
 
-export interface VideoCommsProviderProps {
-  userId: string;
-  children: React.ReactNode;
-}
-
 interface Track {
   kind: "video" | "audio";
   id: string;
