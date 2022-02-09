@@ -78,7 +78,7 @@ export interface VideoCommsContextType {
   isTransmittingVideo: boolean;
 }
 
-export interface StateUpdateCallbackParams {
+export interface StateUpdateCallbackContext {
   localParticipant?: LocalParticipant;
   remoteParticipants: Participant[];
   status: VideoCommsStatus;
@@ -86,4 +86,4 @@ export interface StateUpdateCallbackParams {
   isTransmittingVideo: boolean;
 }
 
-export type StateUpdateCallback = (update: StateUpdateCallbackParams) => void;
+export type StateUpdateCallback = (update: StateUpdateCallbackContext) => void;

@@ -3,7 +3,7 @@ import { noop } from "lodash";
 
 import { TwilioImplementation } from "./internal/TwilioImplementation";
 import {
-  StateUpdateCallbackParams,
+  StateUpdateCallbackContext,
   VideoCommsContextType,
   VideoCommsStatus,
 } from "./types";
@@ -46,14 +46,14 @@ export const VideoCommsContext = React.createContext<VideoCommsContextType>({
 export const VideoCommsProvider: React.FC<VideoCommsProviderProps> = ({
   children,
 }) => {
-  const [commsStatus, setCommsState] = useState<StateUpdateCallbackParams>({
+  const [commsStatus, setCommsState] = useState<StateUpdateCallbackContext>({
     status: VideoCommsStatus.Disconnected,
     remoteParticipants: [],
     isTransmittingAudio: false,
     isTransmittingVideo: false,
   });
 
-  const twilioCallback = useCallback((update: StateUpdateCallbackParams) => {
+  const twilioCallback = useCallback((update: StateUpdateCallbackContext) => {
     setCommsState(update);
   }, []);
 
