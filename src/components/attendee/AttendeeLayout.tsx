@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import { withAuth } from "components/hocs/db/withAuth";
 import { withFallback } from "components/hocs/gate/withFallback";
-import { withRequired, withRequired } from "components/hocs/gate/withRequired";
-import { compose, compose } from "lodash/fp";
-
-import { useUser } from "hooks/useUser";
+import { withRequired } from "components/hocs/gate/withRequired";
+import { compose } from "lodash/fp";
 
 import { VenuePage } from "pages/VenuePage";
 
