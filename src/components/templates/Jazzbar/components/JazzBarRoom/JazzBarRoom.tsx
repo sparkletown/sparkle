@@ -35,8 +35,12 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
 }) => {
   const { userId, profile, userWithId } = useUser();
 
-  const { localParticipant, participants, renderErrorModal, loading } =
-    useVideoRoomState(userId, roomName);
+  const {
+    localParticipant,
+    participants,
+    renderErrorModal,
+    loading,
+  } = useVideoRoomState(userId, roomName);
 
   const { joinHuddle, leaveHuddle } = useVideoHuddle();
 
@@ -49,7 +53,7 @@ export const JazzBarRoom: React.FC<RoomProps> = ({
   }, [setSeatedAtTable, userId, venueId]);
 
   useEffect(() => {
-    joinHuddle(userId || '', `${venueId}-${roomName}`);
+    joinHuddle(userId || "", `${venueId}-${roomName}`);
     return () => {
       leaveHuddle();
     };

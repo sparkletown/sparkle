@@ -87,7 +87,7 @@ export const JazzBar: React.FC<JazzProps> = ({ venue }) => {
   const joinTable = useCallback(
     (table) => {
       // @debt TOOD Fix this
-      joinHuddle(userId || '', `${venue.id}-${table}`);
+      joinHuddle(userId || "", `${venue.id}-${table}`);
       setSeatedAtTable(table);
     },
     [joinHuddle, userId, venue.id]
