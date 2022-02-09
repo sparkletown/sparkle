@@ -287,11 +287,15 @@ export const TwilioImpl = (onStateUpdateCallback: StateUpdateCallback) => {
             return;
           }
 
-          // TODO
-          // screenTrack.mediaStreamTrack.onended = () => { shareScreenHandler() };
-
           recalculateStatus();
         });
+        screenTrack.mediaStreamTrack.onended = () => {
+          if (!room) {
+            return;
+          }
+          room.localParticipant.unpublishTrack(screenTrack);
+          recalculateStatus();
+        };
       })
       .catch(() => {
         alert("Could not share the screen.");
