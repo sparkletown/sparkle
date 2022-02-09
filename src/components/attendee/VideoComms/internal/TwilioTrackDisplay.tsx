@@ -5,6 +5,13 @@ interface _TwilioTrackDisplayProps {
   track: Twilio.VideoTrack;
 }
 
+/**
+ * This low level component exists to do the display of a track from Twilio.
+ * This component should not be used directly and only be components within
+ * the VideoComms folder.
+ *
+ * @returns
+ */
 export const TwilioTrackDisplay: React.FC<_TwilioTrackDisplayProps> = ({
   track,
 }) => {
